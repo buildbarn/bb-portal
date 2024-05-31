@@ -1,0 +1,26 @@
+.searchWidgetInput {
+  margin: 8px 8px 0 8px !important;
+}
+
+.searchWidgetRangePickerInput {
+  margin-bottom: 8px !important;
+}
+
+.searchWidgetTextInput {
+  width: 20rem !important;
+  display: block;
+}
+
+.searchWidgetDivider {
+  margin: 0 !important;
+}
+
+.searchWidgetButtons {
+  display: flex;
+  margin: 0 8px 8px 8px;
+  text-align: center !important;
+}
+
+.searchWidgetButtonsSpacing {
+  flex: auto;
+}

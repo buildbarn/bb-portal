@@ -1,0 +1,66 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  backdrop-filter: blur(6px);
+  box-shadow: var(--ant-card-box-shadow);
+}
+
+.appBar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  display: flex !important;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 1rem;
+  height: var(--app-bar-height);
+}
+
+.icon {
+  font-size: 1.5rem;
+}
+
+.menu {
+  width: 177px;
+  background-color: inherit !important;
+}
+
+.appBarMenuContainer {
+  margin-left: auto;
+}
+
+.appBarMenu {
+  min-width: 177px; /* Hack to get the menu to not disappear on resize */
+}
+
+.buttons {
+  margin-left: 1rem;
+  white-space: nowrap;
+}
+
+.buttonContainer {
+  text-align: center;
+}
+
+.menuButton {
+  margin-left: auto;
+}
+
+.footerBar {
+  flex-direction: column;
+  align-items: center;
+  background-color: inherit !important;
+}
+
+.copyright {
+  display: none;
+}
+
+.linkItem {
+  /* empty style will override default behavior of hiding on smaller screen. */
+}

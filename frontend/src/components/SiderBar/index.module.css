@@ -1,0 +1,9 @@
+.menu {
+  overflow-y: auto;
+  position: fixed;
+  top: var(--app-bar-height);
+  bottom: 0;
+  padding: calc(0.5rem + 8px) 0 36px 0 !important;
+  box-shadow: var(--ant-card-box-shadow) !important;
+  z-index: 2;
+}

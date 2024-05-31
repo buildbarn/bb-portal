@@ -1,0 +1,5 @@
+.BuildTitle .BuildTitleInfo {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8rem;
+}

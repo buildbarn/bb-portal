@@ -1,0 +1,2 @@
+build --bes_backend=grpc://localhost:8082
+build --bes_results_url=http://localhost:8081/bazel-invocations/

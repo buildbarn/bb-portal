@@ -1,0 +1,25 @@
+.content {
+  padding: 1rem 2rem 0 2rem;
+  margin: 0;
+}
+
+.contentWithSiderBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100% !important;
+  padding-left: var(--sider-width);
+}
+
+.container {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: calc(var(--footer-height) + 12px) !important;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: var(--footer-height);
+}

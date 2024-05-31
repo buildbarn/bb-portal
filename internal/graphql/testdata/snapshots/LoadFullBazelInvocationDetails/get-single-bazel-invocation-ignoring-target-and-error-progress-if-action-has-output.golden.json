@@ -1,0 +1,46 @@
+{
+  "bazelInvocation": {
+    "bazelCommand": {
+      "buildOptions": "--build_event_json_file=./pkg/summary/testdata/nextjs_target_failed.bep.ndjson",
+      "command": "build",
+      "executable": "bazel",
+      "id": "",
+      "residual": "//..."
+    },
+    "build": null,
+    "endedAt": "2024-05-03T00:29:47.784Z",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
+    "invocationID": "df7178e2-a815-4654-a409-d18e845d1e35",
+    "problems": [
+      {
+        "__typename": "ProgressProblem",
+        "id": "UHJvZ3Jlc3NQcm9ibGVtOjI=",
+        "label": "",
+        "output": "ERROR: no such package 'next.js/pages2': BUILD file not found in any of the following directories. Add a BUILD file to a directory to mark it as a package.\n - /Volumes/LocalData/code/bazelbuild/examples/frontend/next.js/pages2\nERROR: /Volumes/LocalData/code/bazelbuild/examples/frontend/next.js/BUILD.bazel:21:5: no such package 'next.js/pages2': BUILD file not found in any of the following directories. Add a BUILD file to a directory to mark it as a package.\n - /Volumes/LocalData/code/bazelbuild/examples/frontend/next.js/pages2 and referenced by '//next.js:next_dev'\nERROR: Analysis of target '//next.js:next_dev' failed; build aborted: Analysis failed\nINFO: Elapsed time: 0.341s, Critical Path: 0.00s\nINFO: 1 process: 1 internal.\nERROR: Build did NOT complete successfully\nFAILED: \n"
+      }
+    ],
+    "relatedFiles": [
+      {
+        "name": "command.profile.gz",
+        "url": "file:///private/var/tmp/_bazel_max/785aba6fa73b7504b05bf113721e0096/command.profile.gz"
+      },
+      {
+        "name": "nextjs_error_progress.bep.ndjson",
+        "url": "../summary/testdata/nextjs_error_progress.bep.ndjson"
+      }
+    ],
+    "startedAt": "2024-05-03T00:29:47.443Z",
+    "state": {
+      "bepCompleted": true,
+      "buildEndTime": "2024-05-03T00:29:47.784Z",
+      "buildStartTime": "2024-05-03T00:29:47.784Z",
+      "exitCode": {
+        "code": 1,
+        "id": "",
+        "name": "PARSING_FAILURE"
+      },
+      "id": ""
+    },
+    "stepLabel": ""
+  }
+}

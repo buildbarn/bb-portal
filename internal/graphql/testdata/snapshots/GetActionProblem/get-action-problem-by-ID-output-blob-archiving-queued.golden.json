@@ -1,0 +1,13 @@
+{
+  "node": {
+    "id": "QWN0aW9uUHJvYmxlbTox",
+    "label": "//next.js/pages:pages",
+    "stderr": null,
+    "stdout": {
+      "availabilityStatus": "PROCESSING",
+      "downloadURL": "/api/v1/blobs/1/stdout",
+      "name": "stdout",
+      "sizeInBytes": 0
+    }
+  }
+}

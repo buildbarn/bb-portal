@@ -1,0 +1,14 @@
+.divider {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.duration {
+  font-family: var(--font-mono);
+  font-size: 90% !important;
+  display: inline-block !important;
+}
+
+.popover {
+  text-align: center;
+}

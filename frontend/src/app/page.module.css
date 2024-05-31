@@ -1,0 +1,18 @@
+.container {
+  text-align: center;
+  width: 100%;
+  overflow: auto;
+}
+
+.item {
+  margin: 0 48px;
+}
+
+.card {
+  width: 280px;
+  text-align: left;
+}
+
+.description {
+  text-align: center;
+}

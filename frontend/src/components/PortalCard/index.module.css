@@ -1,0 +1,60 @@
+.header {
+  display: inline-block;
+  align-items: center;
+  white-space: nowrap;
+  line-height: 32px;
+}
+
+.title a:not(:hover) {
+  color: inherit !important;
+}
+
+.extra {
+  --visibility-transition-duration: 100ms;
+}
+
+.button {
+  padding: 4px 8px !important;
+}
+
+.visible {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity var(--visibility-transition-duration) linear;
+}
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    visibility 0s var(--visibility-transition-duration),
+    opacity var(--visibility-transition-duration) linear;
+  position: absolute;
+  right: 24px;
+}
+
+.divider {
+  margin-left: 0 !important;
+}
+
+.item {
+  display: block !important;
+  text-align: center;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.item:first-of-type {
+  padding-top: 0 !important;
+}
+
+.item:last-of-type {
+  padding-bottom: 0 !important;
+}
+
+.outer {
+  box-shadow:
+    rgba(0, 0, 0, 0.06) 0 2px 4px 0,
+    rgba(0, 0, 0, 0.06) 0 2px 12px -1px,
+    rgba(0, 0, 0, 0.06) 0 4px 8px 0 !important;
+}

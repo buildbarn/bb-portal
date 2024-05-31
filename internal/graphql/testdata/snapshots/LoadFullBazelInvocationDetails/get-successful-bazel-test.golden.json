@@ -1,0 +1,39 @@
+{
+  "bazelInvocation": {
+    "bazelCommand": {
+      "buildOptions": "--build_event_json_file=./pkg/summary/testdata/nextjs_test.bep.ndjson",
+      "command": "test",
+      "executable": "bazel",
+      "id": "",
+      "residual": "//..."
+    },
+    "build": null,
+    "endedAt": "2024-05-03T00:23:40.441Z",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",
+    "invocationID": "10a37e86-6e2b-4adb-83dd-c2906f42bdd6",
+    "problems": [],
+    "relatedFiles": [
+      {
+        "name": "command.profile.gz",
+        "url": "file:///private/var/tmp/_bazel_max/785aba6fa73b7504b05bf113721e0096/command.profile.gz"
+      },
+      {
+        "name": "nextjs_test.bep.ndjson",
+        "url": "../summary/testdata/nextjs_test.bep.ndjson"
+      }
+    ],
+    "startedAt": "2024-05-03T00:23:37.843Z",
+    "state": {
+      "bepCompleted": true,
+      "buildEndTime": "2024-05-03T00:23:40.441Z",
+      "buildStartTime": "2024-05-03T00:23:40.441Z",
+      "exitCode": {
+        "code": 0,
+        "id": "",
+        "name": "SUCCESS"
+      },
+      "id": ""
+    },
+    "stepLabel": ""
+  }
+}

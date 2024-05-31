@@ -1,0 +1,3 @@
+.breadcrumbs {
+  padding: calc(var(--app-bar-height) + 1.5rem) 2rem 0.5rem 36px; /* Align left with content card */
+}

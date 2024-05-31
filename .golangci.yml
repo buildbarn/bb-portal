@@ -1,0 +1,164 @@
+run:
+  deadline: 30s
+  tests: true
+  modules-download-mode: readonly
+
+linters-settings:
+  goimports:
+    local-prefixes: github.com/buildbarn
+  govet:
+    check-shadowing: true
+  golint:
+    min-confidence: 0
+  gocyclo:
+    min-complexity: 10
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  gomnd:
+    ignored-numbers:
+      - '0755' # common file mode
+      - '0640' # common file mode
+      - '0644' # common file mode
+      - '2' # common and usually clear (e.g. splitting in half)
+  depguard:
+    rules:
+      main:
+        deny:
+          - pkg: gocloud.dev/blob
+            desc: "Use our blob package instead, which wraps gocloud.dev/blob with some additional features."
+          - pkg: gocloud.dev/pubsub
+            desc: "Use our pubsub package instead, which wraps gocloud.dev/blob with some additional features."
+      events:
+        files:
+          - "**/pkg/events/**.go"
+          - "!**/*_test.go"
+        allow:
+          - $gostd
+          # NOTE: $gostd seems to match google.golang.org, even though I don't think it should.
+          - github.com/buildbarn/bb-portal/third_party/bazel/gen/bes
+
+
+  gomodguard:
+    # Currently just blocked, so everything is allowed. But we might want to start putting allowed so we can
+    # use this file to avoid dependency creep.
+    blocked:
+      modules:
+        - gopkg.in/DataDog/dd-trace-go.v1:
+            recommendations:
+              - github.com/buildbarn/bb-portal/pkg/monitoring
+              - go.opentelemetry.io/otel/trace
+            reason: "Use OpenTelemetry or pkg/monitoring. Avoid vendor (DataDog) specific libraries"
+        - go.opencensus.io:
+            recommendations:
+              - github.com/buildbarn/bb-portal/pkg/monitoring
+              - go.opentelemetry.io/otel/trace
+            reason: "Use OpenTelemetry or pkg/monitoring. OpenCensus & OpenTracing are deprecated as they're merging to OpenTelemetry"
+        - github.com/prometheus/client_golang:
+            recommendations:
+              - github.com/buildbarn/bb-portal/pkg/monitoring
+              - go.opentelemetry.io/otel/trace
+            reason: "Don't use prometheus directly. If needed, use it via pkg/monitoring. Adopt metrics via OpenTelemetry once supported - via OpenCensus for now"
+        - github.com/dgrijalva/jwt-go:
+            recommendations:
+              - github.com/lestrrat-go/jwx/jwt
+            reason: "`jwx/jwt` is part of a more complete set of related JSON Web standards"
+        - github.com/lestrrat/go-jwx:
+            recommendations:
+              - github.com/lestrrat-go/jwx/jwt
+            reason: "Newer versions moved to `jwxgithub.com/lestrrat-go/jwx`"
+  gosec:
+    config:
+      # Maximum allowed permissions mode for os.WriteFile and ioutil.WriteFile
+      # Default: "0600"
+      G306: "0640"
+
+issues:
+  exclude-files:
+    - ".*_gen.go$"
+  exclude-dirs:
+    - .*/ent/gen
+  exclude:
+    # False positive for table-driven tests: https://github.com/kyoh86/scopelint/issues/4
+    - Using the variable on range scope `tt` in function literal
+  exclude-rules:
+    - path: main.go
+      linters:
+        # Allow global variables (for flags) in main.go.
+        - gochecknoglobals
+
+    - path: _test\.go
+      linters:
+        # Allow global variables without explanation in tests.
+        - gochecknoglobals
+        # Allow long test functions (NOTE: but not high cyclomatic complexity)
+        - funlen
+    - path: _controller.go
+      linters:
+        - godot # Swagger comments that may not make sense to end with a period.
+    - path: pkg/connections/*.go
+      linters:
+        - dupl # Lots of similar boilerplate code
+
+linters:
+  disable-all: true
+  enable:
+    # Run `golangci-lint linters` to see what's available. They're getting rid of --enable-all and disable,
+    # so picking the specific linters that made sense when this was setup. As they add more linters we can
+    # periodically evaluate & enable or exclude them.
+    - asciicheck # Simple linter to check that your code does not contain non-ASCII identifiers
+    - bodyclose # checks whether HTTP response body is closed successfully
+    - depguard # Tentatively skipped, see also gomodguard
+    - dogsled # Checks assignments with too many blank identifiers
+    - dupl # Tool for code clone detection
+    - errcheck # Errcheck is a program for checking for unchecked errors in go programs
+    - exhaustive # check exhaustiveness of enum switch statements
+    - exportloopref # checks for pointers to enclosing loop variables
+    - funlen # Tool for detection of long functions
+    # - gci # Intentionally skipped; can conflict with other import order tools including reformat.sh
+    - gochecknoglobals # Checks that no globals are present in Go code
+    - gochecknoinits # Checks that no init functions are present in Go code
+    - gocognit # Computes and checks the cognitive complexity of functions
+    - goconst # Finds repeated strings that could be replaced by a constant
+    # - gocritic # Tentatively skipped; it's vague & opinionated so will review it last.
+    - gocyclo # Computes and checks the cyclomatic complexity of functions
+    - godot # Check if comments end in a period
+#    - godox # Tool for detection of FIXME, TODO and other comment keywords
+    - goerr113 # Golang linter to check the errors handling expressions
+    - gofmt # Gofmt checks whether code was gofmt-ed. By default this tool runs with -s option to check for code simplification
+    # - gofumpt # Tenatively skipped; it's an extension of gofmt so evaluate the base set of rules first
+    # - goheader # Skipped; we don't have a header convention.
+    - goimports # Goimports does everything that gofmt does. Additionally it checks unused imports
+    - revive # Fast, configurable, extensible, flexible, and beautiful linter for Go. Drop-in replacement of golint.
+    - gomnd # An analyzer to detect magic numbers.
+    - gomodguard # see also depguard
+    - goprintffuncname # Checks that printf-like functions are named with `f` at the end
+    - gosec # Inspects source code for security problems
+    - gosimple # Linter for Go source code that specializes in simplifying a code
+    - govet # Vet examines Go source code and reports suspicious constructs, such as Printf calls whose arguments do not align with the format string
+    - ineffassign # Detects when assignments to existing variables are not used
+    # - lll # Disabled for now as it's noisy. Want to focus on the other rules first.
+    # - maligned # Disabled for now as it's a memory/performance optimization. Focusing on readability & bugs first.
+    - misspell # Finds commonly misspelled English words in comments
+    - nakedret # Finds naked returns in functions greater than a specified function length
+    - nestif # Reports deeply nested if statements
+    # Turned off nlreturn as it's too tedious. Will reenable if they add autofix.
+    # - nlreturn # nlreturn checks for a new line before return and branch statements to increase code clarity
+    - noctx # noctx finds sending http request without context.Context
+    - nolintlint # Reports ill-formed or insufficient nolint directives
+    - prealloc # Finds slice declarations that could potentially be preallocated
+    - rowserrcheck # checks whether Err of rows is checked successfully
+    - sqlclosecheck # Checks that sql.Rows and sql.Stmt are closed.
+    # - staticcheck # Tenatively skipped as it's a megalinter
+    # - stylecheck # Tenatively skipepd as it is a replacement for golint
+    - testpackage # linter that makes you use a separate _test package
+    - typecheck # Like the front-end of a Go compiler, parses and type-checks Go code
+    - unconvert # Remove unnecessary type conversions
+    - unparam # Reports unused function parameters
+    - unused # Checks Go code for unused constants, variables, functions and types
+    - whitespace # Tool for detection of leading and trailing whitespace
+    # - wsl # Tentatively skipped; it's highly opinionated & may seem trivial

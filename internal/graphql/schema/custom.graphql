@@ -1,0 +1,125 @@
+extend type Query {
+  bazelInvocation(invocationId: String!): BazelInvocation!
+  getBuild(buildURL: String, buildUUID: UUID): Build
+}
+
+type BazelCommand {
+  id: ID!
+  command: String!
+  executable: String!
+  options: String!
+  residual: String!
+}
+
+extend type BazelInvocation {
+  bazelCommand: BazelCommand!
+}
+
+type ExitCode {
+  id: ID!
+  code: Int!
+  name: String!
+}
+
+type BazelInvocationState {
+  id: ID!
+  buildEndTime: Time!
+  buildStartTime: Time!
+  exitCode: ExitCode
+  bepCompleted: Boolean!
+}
+
+extend type BazelInvocation {
+  state: BazelInvocationState!
+}
+
+type NamedFile {
+  name: String!
+  url: String!
+}
+
+extend type BazelInvocation {
+  relatedFiles: [NamedFile!]!
+}
+
+interface Problem implements Node {
+  id: ID!
+  label: String!
+}
+
+enum ActionOutputStatus {
+  PROCESSING
+  AVAILABLE
+  UNAVAILABLE
+}
+
+type BlobReference {
+  name: String!
+  downloadURL: String! @goField(forceResolver: true)
+  sizeInBytes: Int @goField(forceResolver: true)
+  availabilityStatus: ActionOutputStatus! @goField(forceResolver: true)
+}
+
+type ActionProblem implements Node & Problem {
+  id: ID!
+  label: String!
+  type: String!
+  stdout: BlobReference @goField(forceResolver: true)
+  stderr: BlobReference @goField(forceResolver: true)
+}
+
+type ProgressProblem implements Node & Problem {
+  id: ID!
+  label: String!
+#  TODO: Possibly store these as blobs?
+  output: String!
+}
+
+type TargetProblem implements Node & Problem {
+  id: ID!
+  label: String!
+}
+
+type TestProblem implements Node & Problem {
+  id: ID!
+  label: String!
+  status: String!
+  results: [TestResult!]!
+}
+
+type TestResult implements Node {
+  id: ID!
+  run: Int!
+  shard: Int!
+  attempt: Int!
+  status: String!
+  actionLogOutput: BlobReference! @goField(forceResolver: true)
+  undeclaredTestOutputs: BlobReference @goField(forceResolver: true)
+}
+
+extend type BazelInvocation {
+    problems: [Problem!]!
+}
+
+enum BuildStepStatus {
+  Successful
+  Failed
+  Cancelled
+  Unknown
+}
+
+interface BuildStep {
+  id: ID!
+  stepLabel: String!
+  buildStepStatus: BuildStepStatus!
+}
+
+
+type EnvVar {
+  key: String!
+  value: String!
+}
+
+extend type Build {
+  env: [EnvVar!]!
+}

@@ -1,0 +1,3 @@
+.TabAnimationSafari13Fix {
+  -webkit-backface-visibility: hidden;
+}

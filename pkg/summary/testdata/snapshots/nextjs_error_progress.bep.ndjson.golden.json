@@ -1,0 +1,81 @@
+{
+  "summary": {
+    "EnvVars": {
+      "BAZELISK_SKIP_WRAPPER": "true",
+      "HOME": "/Users/nameless",
+      "PATH": "/Users/nameless/Library/Caches/bazelisk/downloads/sha256/fb5e7bc62fc3c8f2511e3b64d795296444129b26f13d8dece4d4cee1845b758f/bin:/Users/nameless/.pyenv/shims:/opt/homebrew/Caskroom/miniforge/base/condabin:/Library/Frameworks/Python.framework/Versions/3.11/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:/opt/buildbarninternal/bin:/opt/buildbarn/bin:/Library/Buildbarn/usr/bin:/opt/xbs/bin:/usr/buildbarninternal/bin:/private/var/tanuki:/Users/nameless/Library/Application Support/JetBrains/Toolbox/scripts:/Users/nameless/.local/bin:/Users/nameless/.yarn/bin:/Users/nameless/code/go/bin:/Users/nameless/.local/bin",
+      "__CF_USER_TEXT_ENCODING": "0x1F5:0x0:0x0"
+    },
+    "ExitCode": {
+      "Code": 1,
+      "Name": "PARSING_FAILURE"
+    },
+    "BazelVersion": "7.1.0",
+    "BazelCommandLine": {
+      "Executable": "bazel",
+      "Command": "build",
+      "Residual": "//...",
+      "Options": [
+        "--build_event_json_file=./pkg/summary/testdata/nextjs_target_failed.bep.ndjson"
+      ]
+    },
+    "Problems": [
+      {
+        "DetectedBlobs": null,
+        "ProblemType": "ERROR_PROGRESS",
+        "Label": "",
+        "BEPEvents": [
+          {
+            "id": {
+              "progress": {
+                "opaqueCount": 15
+              }
+            },
+            "children": [
+              {
+                "progress": {
+                  "opaqueCount": 16
+                }
+              },
+              {
+                "configuredLabel": {
+                  "label": "//next.js/pages2:pages2",
+                  "configuration": {
+                    "id": "c2963a46add6c3e91df2df593bc8bed9f041306a424d0aae347094deb8733654"
+                  }
+                }
+              }
+            ],
+            "progress": {
+              "stderr": "ERROR: no such package \u0027next.js/pages2\u0027: BUILD file not found in any of the following directories. Add a BUILD file to a directory to mark it as a package.\n - /Volumes/LocalData/code/bazelbuild/examples/frontend/next.js/pages2\nERROR: /Volumes/LocalData/code/bazelbuild/examples/frontend/next.js/BUILD.bazel:21:5: no such package \u0027next.js/pages2\u0027: BUILD file not found in any of the following directories. Add a BUILD file to a directory to mark it as a package.\n - /Volumes/LocalData/code/bazelbuild/examples/frontend/next.js/pages2 and referenced by \u0027//next.js:next_dev\u0027\n"
+            }
+          },
+          {
+            "id": {
+              "progress": {
+                "opaqueCount": 16
+              }
+            },
+            "progress": {
+              "stderr": "ERROR: Analysis of target \u0027//next.js:next_dev\u0027 failed; build aborted: Analysis failed\nINFO: Elapsed time: 0.341s, Critical Path: 0.00s\nINFO: 1 process: 1 internal.\nERROR: Build did NOT complete successfully\nFAILED: \n"
+            }
+          }
+        ]
+      }
+    ],
+    "RelatedFiles": {
+      "command.profile.gz": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/command.profile.gz",
+      "nextjs_error_progress.bep.ndjson": "testdata/nextjs_error_progress.bep.ndjson"
+    },
+    "EventFileURL": "testdata/nextjs_error_progress.bep.ndjson",
+    "BEPCompleted": true,
+    "StartedAt": "2024-05-03T00:29:47.443Z",
+    "InvocationID": "df7178e2-a815-4654-a409-d18e845d1e35",
+    "StepLabel": "",
+    "EndedAt": "2024-05-03T00:29:47.784Z",
+    "ChangeNumber": 0,
+    "PatchsetNumber": 0,
+    "BuildURL": "",
+    "BuildUUID": "1b4db7eb-4057-5ddf-91e0-36dec72071f5"
+  }
+}

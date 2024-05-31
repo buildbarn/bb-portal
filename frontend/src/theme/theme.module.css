@@ -1,0 +1,97 @@
+.collapse {
+  box-shadow: var(--ant-card-box-shadow-inset);
+}
+
+.colorAborted {
+  color: var(--color-status-aborted) !important;
+}
+
+.colorDisabled {
+  color: var(--color-status-disabled) !important;
+}
+
+.colorFailure {
+  color: var(--color-status-failure) !important;
+}
+
+.colorSuccess {
+  color: var(--color-status-success) !important;
+}
+
+.flex {
+  display: flex;
+}
+
+.inheritColor {
+  color: inherit !important;
+}
+
+.linkExtraInfo {
+  margin-left: 10px;
+}
+
+.errorPageContainer {
+  margin-top: 8%;
+  text-align: center;
+  width: 100%;
+  overflow: auto;
+}
+
+.errorPageSubtitle {
+  margin-top: 36px !important;
+}
+
+.space {
+  display: flex !important;
+  width: 100% !important;
+}
+
+.table {
+  box-shadow: var(--ant-card-box-shadow);
+}
+
+.tableEmptyTextTypography {
+  display: block;
+  text-align: center;
+}
+
+.tag {
+  border: 0 !important;
+  margin: 0 !important;
+  padding: 2px 7px !important;
+  box-shadow: var(--ant-card-box-shadow-inset);
+  cursor: default;
+}
+
+.tagClickable {
+  border: 0 !important;
+  margin: 0 !important;
+  padding: 2px 7px !important;
+  box-shadow: var(--ant-card-box-shadow-inset);
+  cursor: pointer;
+}
+
+.tagLink {
+  border: 0 !important;
+  margin: 0 !important;
+  padding: 2px 7px !important;
+  box-shadow: var(--ant-card-box-shadow-inset);
+  cursor: pointer;
+  text-underline-offset: 4px;
+}
+
+.tagLink:hover {
+  text-decoration: underline;
+}
+
+.tagContent {
+  font-size: inherit;
+}
+
+.tooltip {
+  text-align: center;
+}
+
+.tooltipSecondaryContent {
+  font-size: 80% !important;
+}

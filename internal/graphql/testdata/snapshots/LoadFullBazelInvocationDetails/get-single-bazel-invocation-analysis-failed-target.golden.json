@@ -1,0 +1,66 @@
+{
+  "bazelInvocation": {
+    "bazelCommand": {
+      "buildOptions": "--build_metadata=BUILD_STEP_LABEL=nextjs_test --build_event_json_file=./pkg/summary/testdata/nextjs_test_fail.bep.ndjson",
+      "command": "test",
+      "executable": "bazel",
+      "id": "",
+      "residual": "//next.js/..."
+    },
+    "build": {
+      "buildUUID": "16276f4b-81e2-5b48-a09a-7c7c7b8b692f",
+      "id": "QnVpbGQ6MQ=="
+    },
+    "endedAt": "2024-05-13T23:43:26.247Z",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjU=",
+    "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
+    "problems": [
+      {
+        "__typename": "TestProblem",
+        "id": "VGVzdFByb2JsZW06Mw==",
+        "label": "//next.js/pages:jest_test",
+        "results": [
+          {
+            "__typename": "TestResult",
+            "actionLogOutput": {
+              "availabilityStatus": "PROCESSING",
+              "downloadURL": "/api/v1/blobs/2/test.log",
+              "name": "test.log",
+              "sizeInBytes": 0
+            },
+            "attempt": 1,
+            "id": "VGVzdFJlc3VsdDoz",
+            "run": 1,
+            "shard": 1,
+            "status": "FAILED",
+            "undeclaredTestOutputs": null
+          }
+        ],
+        "status": "FAILED"
+      }
+    ],
+    "relatedFiles": [
+      {
+        "name": "command.profile.gz",
+        "url": "file:///private/var/tmp/_bazel_max/785aba6fa73b7504b05bf113721e0096/command.profile.gz"
+      },
+      {
+        "name": "nextjs_test_fail.bep.ndjson",
+        "url": "../summary/testdata/nextjs_test_fail.bep.ndjson"
+      }
+    ],
+    "startedAt": "2024-05-13T23:43:23.045Z",
+    "state": {
+      "bepCompleted": true,
+      "buildEndTime": "2024-05-13T23:43:26.247Z",
+      "buildStartTime": "2024-05-13T23:43:26.247Z",
+      "exitCode": {
+        "code": 3,
+        "id": "",
+        "name": "TESTS_FAILED"
+      },
+      "id": ""
+    },
+    "stepLabel": "nextjs_test"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "summary": {
+    "EnvVars": {
+      "BAZELISK_SKIP_WRAPPER": "true",
+      "HOME": "/Users/nameless",
+      "PATH": "/Users/nameless/Library/Caches/bazelisk/downloads/sha256/fb5e7bc62fc3c8f2511e3b64d795296444129b26f13d8dece4d4cee1845b758f/bin:/Users/nameless/.pyenv/shims:/opt/homebrew/Caskroom/miniforge/base/condabin:/Library/Frameworks/Python.framework/Versions/3.11/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:/opt/buildbarninternal/bin:/opt/buildbarn/bin:/Library/Buildbarn/usr/bin:/opt/xbs/bin:/usr/buildbarninternal/bin:/private/var/tanuki:/Users/nameless/Library/Application Support/JetBrains/Toolbox/scripts:/Users/nameless/.local/bin:/Users/nameless/.yarn/bin:/Users/nameless/code/go/bin:/Users/nameless/.local/bin",
+      "__CF_USER_TEXT_ENCODING": "0x1F5:0x0:0x0"
+    },
+    "ExitCode": {
+      "Code": 1,
+      "Name": "BUILD_FAILURE"
+    },
+    "BazelVersion": "7.1.0",
+    "BazelCommandLine": {
+      "Executable": "bazel",
+      "Command": "test",
+      "Residual": "//...",
+      "Options": [
+        "--build_event_json_file=./pkg/summary/testdata/nextjs_build_fail.bep.ndjson"
+      ]
+    },
+    "Problems": [
+      {
+        "DetectedBlobs": [
+          "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/_tmp/actions/stdout-3"
+        ],
+        "ProblemType": "ACTION_PROBLEM",
+        "Label": "//next.js/pages:pages",
+        "BEPEvents": [
+          {
+            "id": {
+              "actionCompleted": {
+                "primaryOutput": "bazel-out/darwin_arm64-fastbuild/bin/next.js/pages/_app.js",
+                "label": "//next.js/pages:pages",
+                "configuration": {
+                  "id": "c2963a46add6c3e91df2df593bc8bed9f041306a424d0aae347094deb8733654"
+                }
+              }
+            },
+            "action": {
+              "exitCode": 1,
+              "stdout": {
+                "name": "stdout",
+                "uri": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/_tmp/actions/stdout-3"
+              },
+              "label": "//next.js/pages:pages",
+              "configuration": {
+                "id": "c2963a46add6c3e91df2df593bc8bed9f041306a424d0aae347094deb8733654"
+              },
+              "type": "TsProject",
+              "commandLine": [
+                "bazel-out/darwin_arm64-opt-exec-ST-13d3ddad9198/bin/external/aspect_rules_ts~~ext~npm_typescript/tsc.sh",
+                "--skipLibCheck",
+                "--project",
+                "next.js/tsconfig.json",
+                "--outDir",
+                "next.js/pages",
+                "--rootDir",
+                "next.js/pages",
+                "--declarationDir",
+                "next.js/pages"
+              ],
+              "failureDetail": {
+                "message": "tsc.sh failed: error executing TsProject command (from target //next.js/pages:pages) bazel-out/darwin_arm64-opt-exec-ST-13d3ddad9198/bin/external/aspect_rules_ts~~ext~npm_typescript/tsc.sh --skipLibCheck --project next.js/tsconfig.json --outDir next.js/pages --rootDir next.js/pages ... (remaining 2 arguments skipped)\n\nUse --sandbox_debug to see verbose messages from the sandbox and retain the sandbox build root for debugging",
+                "spawn": {
+                  "code": "NON_ZERO_EXIT",
+                  "spawnExitCode": 2
+                }
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "RelatedFiles": {
+      "command.profile.gz": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/command.profile.gz",
+      "nextjs_build_fail.bep.ndjson": "testdata/nextjs_build_fail.bep.ndjson"
+    },
+    "EventFileURL": "testdata/nextjs_build_fail.bep.ndjson",
+    "BEPCompleted": true,
+    "StartedAt": "2024-05-03T00:24:15.374Z",
+    "InvocationID": "08ae089d-4c85-405c-83fc-dbe9fc1dc942",
+    "StepLabel": "",
+    "EndedAt": "2024-05-03T00:24:16.367Z",
+    "ChangeNumber": 0,
+    "PatchsetNumber": 0,
+    "BuildURL": "",
+    "BuildUUID": "1b4db7eb-4057-5ddf-91e0-36dec72071f5"
+  }
+}

@@ -1,0 +1,7 @@
+.idea/
+buildportal.db*
+bep-files/
+blob-archive/
+
+bazel-demo/bazel-*
+bazel-demo/*.ndjson
