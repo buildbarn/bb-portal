@@ -25,6 +25,7 @@ go_library(
 go_test(
     name = "processing_test",
     srcs = ["workflow_test.go"],
+    data = ["//pkg/summary:testdata"],
     deps = [
         ":processing",
         "//ent/gen/ent/enttest",

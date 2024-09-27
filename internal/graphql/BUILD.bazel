@@ -41,7 +41,7 @@ go_test(
         "graphql_helpers_test.go",
         "graphql_service_test.go",
     ],
-    data = glob(["testdata/**"]),
+    data = glob(["testdata/**"]) + ["//frontend/src/graphql:__generated__"],
     deps = [
         ":graphql",
         "//ent/gen/ent",

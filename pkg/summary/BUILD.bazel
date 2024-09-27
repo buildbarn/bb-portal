@@ -1,5 +1,11 @@
 load("@rules_go//go:def.bzl", "go_library", "go_test")
 
+filegroup(
+    name = "testdata",
+    srcs = glob(["testdata/**"]),
+    visibility = ["//pkg:__subpackages__"],
+)
+
 go_library(
     name = "summary",
     srcs = [
@@ -23,7 +29,7 @@ go_library(
 go_test(
     name = "summary_test",
     srcs = ["summarizer_test.go"],
-    data = glob(["testdata/**"]),
+    data = [":testdata"],
     deps = [
         ":summary",
         "//pkg/testkit",

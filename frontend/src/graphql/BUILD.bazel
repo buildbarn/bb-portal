@@ -1,0 +1,5 @@
+filegroup(
+    name = "__generated__",
+    srcs = glob(["__generated__/**"]),
+    visibility = ["//visibility:public"],
+)
