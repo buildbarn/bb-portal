@@ -1,15 +1,25 @@
 module(name = "com_github_buildbarn_bb_portal")
 
 bazel_dep(name = "bazel_remote_apis", version = "0.0.0")
+bazel_dep(name = "com_github_buildbarn_bb_storage")
 bazel_dep(name = "gazelle", version = "0.38.0")
 bazel_dep(name = "googleapis", version = "0.0.0-20240819-fe8ba054a")
 bazel_dep(name = "googletest", version = "1.15.2")
 bazel_dep(name = "rules_go", version = "0.50.0")
+bazel_dep(name = "rules_jsonnet", version = "0.6.0")
+bazel_dep(name = "rules_oci", version = "1.8.0")
+bazel_dep(name = "toolchains_llvm", version = "1.1.2")
 
 git_override(
     module_name = "bazel_remote_apis",
     commit = "de1d77b12feb81f96909f0410991c3c966d9d8e7",
     remote = "https://github.com/bazelbuild/remote-apis.git",
+)
+
+git_override(
+    module_name = "com_github_buildbarn_bb_storage",
+    commit = "256ec6c483a05f1aeefff6fc57a2044f746c5a08",
+    remote = "https://github.com/buildbarn/bb-storage.git",
 )
 
 git_override(
@@ -59,3 +69,9 @@ use_repo(
     "org_golang_x_lint",
     "org_golang_x_sync",
 )
+
+llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", dev_dependency = True)
+llvm.toolchain(
+    llvm_version = "14.0.0",
+)
+use_repo(llvm, "llvm_toolchain_llvm")

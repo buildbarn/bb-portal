@@ -1,9 +1,11 @@
+load("@com_github_buildbarn_bb_storage//tools:container.bzl", "container_push_official", "multiarch_go_image")
 load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index")
 
 go_library(
-    name = "bb-portal_lib",
+    name = "bb_portal_lib",
     srcs = ["main.go"],
-    importpath = "github.com/buildbarn/bb-portal/cmd/bb-portal",
+    importpath = "github.com/buildbarn/bb-portal/cmd/bb_portal",
     visibility = ["//visibility:private"],
     deps = [
         "//ent/gen/ent",
@@ -23,7 +25,18 @@ go_library(
 )
 
 go_binary(
-    name = "bb-portal",
-    embed = [":bb-portal_lib"],
+    name = "bb_portal",
+    embed = [":bb_portal_lib"],
     visibility = ["//visibility:public"],
+)
+
+multiarch_go_image(
+    name = "bb_portal_container",
+    binary = ":bb_portal",
+)
+
+container_push_official(
+    name = "bb_portal_container_push",
+    component = "bb-portal",
+    image = ":bb_portal_container",
 )
