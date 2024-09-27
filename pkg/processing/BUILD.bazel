@@ -1,0 +1,35 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "processing",
+    srcs = [
+        "archive.go",
+        "doc.go",
+        "save.go",
+        "summarize.go",
+        "workflow.go",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/pkg/processing",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//ent/gen/ent",
+        "//ent/gen/ent/blob",
+        "//ent/gen/ent/build",
+        "//pkg/summary",
+        "//pkg/summary/detectors",
+        "@com_github_bazelbuild_remote_apis_sdks//go/pkg/digest",
+        "@com_github_google_uuid//:uuid",
+    ],
+)
+
+go_test(
+    name = "processing_test",
+    srcs = ["workflow_test.go"],
+    data = ["//pkg/summary:testdata"],
+    deps = [
+        ":processing",
+        "//ent/gen/ent/enttest",
+        "@com_github_mattn_go_sqlite3//:go-sqlite3",
+        "@com_github_stretchr_testify//require",
+    ],
+)

@@ -1,0 +1,21 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "detectors",
+    srcs = [
+        "action_problem_detector.go",
+        "bazel_invocation_problem_detector.go",
+        "doc.go",
+        "error_progress_bazel_invocation_problem_detector.go",
+        "failed_target_bazel_invocation_problem_detector.go",
+        "problem.go",
+        "test_problem_detector.go",
+        "types.go",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/pkg/summary/detectors",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/events",
+        "//third_party/bazel/gen/bes",
+    ],
+)

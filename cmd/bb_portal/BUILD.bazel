@@ -1,0 +1,42 @@
+load("@com_github_buildbarn_bb_storage//tools:container.bzl", "container_push_official", "multiarch_go_image")
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index")
+
+go_library(
+    name = "bb_portal_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/buildbarn/bb-portal/cmd/bb_portal",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//ent/gen/ent",
+        "//ent/gen/ent/migrate",
+        "//internal/api",
+        "//internal/api/grpc",
+        "//internal/graphql",
+        "//pkg/cas",
+        "//pkg/processing",
+        "@com_github_99designs_gqlgen//graphql/handler",
+        "@com_github_99designs_gqlgen//graphql/handler/debug",
+        "@com_github_99designs_gqlgen//graphql/playground",
+        "@com_github_fsnotify_fsnotify//:fsnotify",
+        "@com_github_mattn_go_sqlite3//:go-sqlite3",
+        "@io_entgo_contrib//entgql",
+    ],
+)
+
+go_binary(
+    name = "bb_portal",
+    embed = [":bb_portal_lib"],
+    visibility = ["//visibility:public"],
+)
+
+multiarch_go_image(
+    name = "bb_portal_container",
+    binary = ":bb_portal",
+)
+
+container_push_official(
+    name = "bb_portal_container_push",
+    component = "bb-portal",
+    image = ":bb_portal_container",
+)

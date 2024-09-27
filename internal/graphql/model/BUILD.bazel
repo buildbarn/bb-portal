@@ -1,0 +1,16 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "model",
+    srcs = [
+        "model_hack.go",
+        "models_gen.go",
+        "test_result_id.go",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/internal/graphql/model",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//ent/gen/ent",
+        "//third_party/bazel/gen/bes",
+    ],
+)

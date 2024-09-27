@@ -1,0 +1,12 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "auth",
+    srcs = ["credentials_helper.go"],
+    importpath = "github.com/buildbarn/bb-portal/pkg/auth",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_google_shlex//:shlex",
+        "@org_golang_google_grpc//credentials",
+    ],
+)

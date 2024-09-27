@@ -1,0 +1,19 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "testkit",
+    srcs = [
+        "golden.go",
+        "graphql.go",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/pkg/testkit",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_machinebox_graphql//:graphql",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+        "@com_github_vektah_gqlparser_v2//ast",
+        "@com_github_vektah_gqlparser_v2//parser",
+    ],
+)

@@ -1,4 +1,6 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_path")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_path")
+load("@io_bazel_rules_go//proto:compiler.bzl", "go_proto_compiler")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 
 ## gopath defines a directory that is structured in a way that is compatible
 ## with standard Go tools. Things like godoc, editors and refactor tools should
@@ -16,8 +18,6 @@ go_path(
     ],
 )
 
-load("@io_bazel_rules_go//proto:compiler.bzl", "go_proto_compiler")
-
 go_proto_compiler(
     name = "custom_go_proto_compiler",
     options = [
@@ -29,8 +29,6 @@ go_proto_compiler(
         "Msrc/main/protobuf/invocation_policy.proto=github.com/buildbarn/bb-portal/third_party/bazel/gen/bescore",
     ],
 )
-
-load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
 
 go_proto_library(
     name = "build_event_stream_go_proto",
@@ -56,8 +54,6 @@ go_proto_library(
     ],
     tags = ["manual"],  # prevent it from being part of any build unless explicitly targeted
 )
-
-load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "build_event_stream_go",

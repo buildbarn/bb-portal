@@ -1,0 +1,12 @@
+# gazelle:ignore
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("@gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix github.com/buildbarn/bb-portal
+gazelle(
+    name = "gazelle",
+)
+
+buildifier(
+    name = "buildifier",
+)

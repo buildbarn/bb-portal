@@ -1,0 +1,31 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "events",
+    srcs = [
+        "doc.go",
+        "reader.go",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/pkg/events",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//third_party/bazel/gen/bes",
+        "@org_golang_google_api//iterator",
+        "@org_golang_google_protobuf//encoding/protojson",
+        "@org_golang_google_protobuf//proto",
+    ],
+)
+
+go_test(
+    name = "events_test",
+    srcs = ["reader_test.go"],
+    data = glob(["testdata/**"]),
+    deps = [
+        ":events",
+        "//third_party/bazel/gen/bes",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+        "@org_golang_google_api//iterator",
+        "@org_golang_google_protobuf//proto",
+    ],
+)

@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "schema",
+    srcs = [
+        "bazelinvocation.go",
+        "bazelinvocationproblem.go",
+        "blob.go",
+        "build.go",
+        "eventfile.go",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/ent/schema",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/summary",
+        "@com_github_google_uuid//:uuid",
+        "@io_entgo_contrib//entgql",
+        "@io_entgo_ent//:ent",
+        "@io_entgo_ent//schema",
+        "@io_entgo_ent//schema/edge",
+        "@io_entgo_ent//schema/field",
+        "@io_entgo_ent//schema/index",
+    ],
+)

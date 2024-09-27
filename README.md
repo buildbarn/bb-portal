@@ -26,7 +26,7 @@ npm install
 From repository root, run:
 
 ```
-go run cmd/bb-portal/main.go
+go run cmd/bb_portal/main.go
 ```
 
 The backend runs a reverse proxy for the frontend.
