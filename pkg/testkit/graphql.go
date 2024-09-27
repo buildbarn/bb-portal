@@ -27,7 +27,7 @@ type QueryRegistry struct {
 	entries map[string]*registryEntry
 }
 
-func LoadQueryRegistry(t *testing.T, queryDir string, consumerContractFile string) *QueryRegistry {
+func LoadQueryRegistry(t *testing.T, queryDir, consumerContractFile string) *QueryRegistry {
 	reg := QueryRegistry{entries: make(map[string]*registryEntry)}
 
 	queryFiles, err := os.ReadDir(queryDir)
@@ -96,8 +96,10 @@ type ConsumerContract struct {
 	Operations  map[string]Operation `yaml:"operations"`
 }
 
-type Document string
-type Variables map[string]interface{}
+type (
+	Document  string
+	Variables map[string]interface{}
+)
 
 type Operation struct {
 	Document  Document `yaml:"document"`

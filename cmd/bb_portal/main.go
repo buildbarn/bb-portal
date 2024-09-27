@@ -30,7 +30,7 @@ import (
 
 const (
 	readHeaderTimeout = 3 * time.Second
-	folderPermission  = 0750
+	folderPermission  = 0o750
 )
 
 var (

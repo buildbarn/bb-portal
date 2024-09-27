@@ -17,9 +17,7 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
 )
 
-var (
-	errNoArchiver = errors.New("no archiver registered")
-)
+var errNoArchiver = errors.New("no archiver registered")
 
 type BlobArchiver interface {
 	ArchiveBlob(ctx context.Context, blobURI detectors.BlobURI) ent.Blob

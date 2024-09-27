@@ -60,7 +60,7 @@ func (b BES) PublishBuildToolEventStream(stream build.PublishBuildEvent_PublishB
 			slog.ErrorContext(stream.Context(), "Recv failed", "err", err)
 			return err
 		}
-		//slog.InfoContext(stream.Context(), "Received ordered build event", "event", protojson.Format(req))
+		// slog.InfoContext(stream.Context(), "Received ordered build event", "event", protojson.Format(req))
 
 		if streamID == nil {
 			streamID = req.GetOrderedBuildEvent().GetStreamId()
