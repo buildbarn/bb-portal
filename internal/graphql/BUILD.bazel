@@ -1,0 +1,59 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "graphql",
+    srcs = [
+        "custom.resolvers.go",
+        "ent.resolvers.go",
+        "resolver.go",
+        "server_gen.go",
+    ],
+    embedsrcs = [
+        "schema/custom.graphql",
+        "schema/ent.graphql",
+        "schema/scalars.graphql",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/internal/graphql",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//ent/gen/ent",
+        "//ent/gen/ent/bazelinvocation",
+        "//ent/gen/ent/bazelinvocationproblem",
+        "//ent/gen/ent/blob",
+        "//ent/gen/ent/build",
+        "//ent/gen/ent/eventfile",
+        "//internal/graphql/helpers",
+        "//internal/graphql/model",
+        "//pkg/uuidgql",
+        "//third_party/bazel/gen/bes",
+        "@com_github_99designs_gqlgen//graphql",
+        "@com_github_99designs_gqlgen//graphql/introspection",
+        "@com_github_google_uuid//:uuid",
+        "@com_github_vektah_gqlparser_v2//:gqlparser",
+        "@com_github_vektah_gqlparser_v2//ast",
+        "@io_entgo_contrib//entgql",
+    ],
+)
+
+go_test(
+    name = "graphql_test",
+    srcs = [
+        "graphql_helpers_test.go",
+        "graphql_service_test.go",
+    ],
+    data = glob(["testdata/**"]),
+    deps = [
+        ":graphql",
+        "//ent/gen/ent",
+        "//ent/gen/ent/enttest",
+        "//internal/graphql/helpers",
+        "//pkg/testkit",
+        "@com_github_99designs_gqlgen//graphql",
+        "@com_github_99designs_gqlgen//graphql/handler",
+        "@com_github_google_uuid//:uuid",
+        "@com_github_machinebox_graphql//:graphql",
+        "@com_github_mattn_go_sqlite3//:go-sqlite3",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
+    ],
+)

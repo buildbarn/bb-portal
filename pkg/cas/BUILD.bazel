@@ -1,0 +1,13 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "cas",
+    srcs = ["client.go"],
+    importpath = "github.com/buildbarn/bb-portal/pkg/cas",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/auth",
+        "@com_github_bazelbuild_remote_apis_sdks//go/pkg/client",
+        "@com_github_bazelbuild_remote_apis_sdks//go/pkg/digest",
+    ],
+)

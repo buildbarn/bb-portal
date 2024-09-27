@@ -1,0 +1,32 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "summary",
+    srcs = [
+        "doc.go",
+        "env.go",
+        "summarizer.go",
+        "summary.go",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/pkg/summary",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/events",
+        "//pkg/summary/detectors",
+        "//third_party/bazel/gen/bes",
+        "//third_party/bazel/gen/bescore",
+        "@com_github_google_uuid//:uuid",
+        "@org_golang_google_api//iterator",
+    ],
+)
+
+go_test(
+    name = "summary_test",
+    srcs = ["summarizer_test.go"],
+    data = glob(["testdata/**"]),
+    deps = [
+        ":summary",
+        "//pkg/testkit",
+        "@com_github_stretchr_testify//require",
+    ],
+)
