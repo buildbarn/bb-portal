@@ -3,5 +3,7 @@ buildportal.db*
 bep-files/
 blob-archive/
 
+bazel-*
+!bazel-demo/
 bazel-demo/bazel-*
 bazel-demo/*.ndjson

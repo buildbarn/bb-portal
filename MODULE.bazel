@@ -1,0 +1,61 @@
+module(name = "com_github_buildbarn_bb_portal")
+
+bazel_dep(name = "bazel_remote_apis", version = "0.0.0")
+bazel_dep(name = "gazelle", version = "0.38.0")
+bazel_dep(name = "googleapis", version = "0.0.0-20240819-fe8ba054a")
+bazel_dep(name = "googletest", version = "1.15.2")
+bazel_dep(name = "rules_go", version = "0.50.0")
+
+git_override(
+    module_name = "bazel_remote_apis",
+    commit = "de1d77b12feb81f96909f0410991c3c966d9d8e7",
+    remote = "https://github.com/bazelbuild/remote-apis.git",
+)
+
+git_override(
+    module_name = "gazelle",
+    commit = "4d0129d7adae33e8e648d3624aff8fa8f93f375b",
+    patches = [
+        "//:patches/gazelle/bazel-remote-apis.diff",
+        "//:patches/gazelle/dont-flatten-srcs.diff",
+    ],
+    remote = "https://github.com/bazelbuild/bazel-gazelle.git",
+)
+
+go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
+go_sdk.download(version = "1.23.0")
+
+go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
+go_deps.gazelle_override(
+    build_file_generation = "on",
+    directives = [
+        "gazelle:resolve go github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2 @bazel_remote_apis//build/bazel/remote/execution/v2:remote_execution_go_proto",
+        "gazelle:resolve go github.com/bazelbuild/remote-apis/build/bazel/semver @bazel_remote_apis//build/bazel/semver:semver_go_proto",
+    ],
+    path = "github.com/bazelbuild/remote-apis-sdks",
+)
+go_deps.from_file(go_mod = "//:go.mod")
+use_repo(
+    go_deps,
+    "cc_mvdan_gofumpt",
+    "com_github_99designs_gqlgen",
+    "com_github_bazelbuild_buildtools",
+    "com_github_bazelbuild_remote_apis_sdks",
+    "com_github_fsnotify_fsnotify",
+    "com_github_google_shlex",
+    "com_github_google_uuid",
+    "com_github_hashicorp_go_multierror",
+    "com_github_machinebox_graphql",
+    "com_github_mattn_go_sqlite3",
+    "com_github_pkg_errors",
+    "com_github_stretchr_testify",
+    "com_github_vektah_gqlparser_v2",
+    "io_entgo_contrib",
+    "io_entgo_ent",
+    "org_golang_google_api",
+    "org_golang_google_genproto",
+    "org_golang_google_grpc",
+    "org_golang_google_protobuf",
+    "org_golang_x_lint",
+    "org_golang_x_sync",
+)

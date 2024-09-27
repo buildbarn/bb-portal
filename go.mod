@@ -6,6 +6,7 @@ require (
 	entgo.io/contrib v0.5.0
 	entgo.io/ent v0.13.1
 	github.com/99designs/gqlgen v0.17.43
+	github.com/bazelbuild/buildtools v0.0.0-20240918101019-be1c24cc9a44
 	github.com/bazelbuild/remote-apis-sdks v0.0.0-20240522145720-89b6d6b399ad
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
@@ -16,11 +17,13 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.9.0
 	github.com/vektah/gqlparser/v2 v2.5.11
+	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5
 	golang.org/x/sync v0.7.0
 	google.golang.org/api v0.177.0
 	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de
 	google.golang.org/grpc v1.63.2
 	google.golang.org/protobuf v1.34.0
+	mvdan.cc/gofumpt v0.7.0
 )
 
 require (
