@@ -10,9 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var (
-	errExpectedString = errors.New("expected string")
-)
+var errExpectedString = errors.New("expected string")
 
 func MarshalUUID(u uuid.UUID) graphql.Marshaler {
 	return graphql.WriterFunc(func(w io.Writer) {

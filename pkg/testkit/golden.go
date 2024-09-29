@@ -26,14 +26,14 @@ type CompareOptions struct {
 // goldenDir defines the directory that holds golden files.
 // testName is the name of the test, which will be sluggified to determine the golden file to use
 // update is a flag that determines if we should update the golden file.
-func CheckAgainstGoldenFile(t *testing.T, got map[string]interface{}, goldenDir string, testName string, update *bool, opts *CompareOptions) {
+func CheckAgainstGoldenFile(t *testing.T, got map[string]interface{}, goldenDir, testName string, update *bool, opts *CompareOptions) {
 	testSlug := strings.ReplaceAll(testName, " ", "-")
 	golden := filepath.Join(goldenDir, fmt.Sprintf("%s.golden.json", testSlug))
 
 	if *update {
 		dir := filepath.Dir(golden)
 		require.NoError(t, os.MkdirAll(dir, os.ModePerm))
-		require.NoError(t, os.WriteFile(golden, prettyJSON(got), 0640))
+		require.NoError(t, os.WriteFile(golden, prettyJSON(got), 0o640))
 	}
 
 	// get golden file
@@ -94,6 +94,7 @@ func replaceTimes(str string) (string, error) {
 
 	return lastModifiedPattern.ReplaceAllString(res, `Mon, 01 Jan 0001 00:00:00 GMT`), nil
 }
+
 func prettyJSON(data interface{}) []byte {
 	jsonText, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {

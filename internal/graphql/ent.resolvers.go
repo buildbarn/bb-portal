@@ -346,14 +346,16 @@ func (r *Resolver) EventFileWhereInput() EventFileWhereInputResolver {
 	return &eventFileWhereInputResolver{r}
 }
 
-type bazelInvocationResolver struct{ *Resolver }
-type bazelInvocationProblemResolver struct{ *Resolver }
-type blobResolver struct{ *Resolver }
-type buildResolver struct{ *Resolver }
-type eventFileResolver struct{ *Resolver }
-type queryResolver struct{ *Resolver }
-type bazelInvocationProblemWhereInputResolver struct{ *Resolver }
-type bazelInvocationWhereInputResolver struct{ *Resolver }
-type blobWhereInputResolver struct{ *Resolver }
-type buildWhereInputResolver struct{ *Resolver }
-type eventFileWhereInputResolver struct{ *Resolver }
+type (
+	bazelInvocationResolver                  struct{ *Resolver }
+	bazelInvocationProblemResolver           struct{ *Resolver }
+	blobResolver                             struct{ *Resolver }
+	buildResolver                            struct{ *Resolver }
+	eventFileResolver                        struct{ *Resolver }
+	queryResolver                            struct{ *Resolver }
+	bazelInvocationProblemWhereInputResolver struct{ *Resolver }
+	bazelInvocationWhereInputResolver        struct{ *Resolver }
+	blobWhereInputResolver                   struct{ *Resolver }
+	buildWhereInputResolver                  struct{ *Resolver }
+	eventFileWhereInputResolver              struct{ *Resolver }
+)

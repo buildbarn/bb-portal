@@ -204,7 +204,6 @@ func (it *BuildEventIterator) Next() (*BuildEvent, error) {
 	}
 
 	lineBytes, err := it.scanner.Bytes(), it.scanner.Err()
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to read a line from build event file: %w", err)
 	}

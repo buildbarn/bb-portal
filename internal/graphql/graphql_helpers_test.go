@@ -18,9 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/graphql"
 )
 
-var (
-	update = flag.Bool("update-golden", false, "update golden (.out.json) files")
-)
+var update = flag.Bool("update-golden", false, "update golden (.out.json) files")
 
 type setupFuncEnt func(ctx context.Context, client *ent.Client)
 
@@ -68,7 +66,7 @@ func newMockServer(t *testing.T, entDataSource string) *mockServer {
 		Server: server,
 		URL:    server.URL,
 		ctx:    ctx,
-		//ctrl:   ctrl,
+		// ctrl:   ctrl,
 		client: client,
 	}
 	t.Cleanup(func() {
