@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 )
 
+// Error helpers.
 var (
 	ErrOnlyURLOrUUID      = errors.New("either buildURL or buildUUID variable must be used, but not both")
 	ErrWrongType          = errors.New("received unexpected type while trying to convert node to *ent.BazelInvocationProblem")
@@ -22,18 +23,22 @@ var (
 	errStatusNotFound     = errors.New("status not found")
 )
 
+// Helper A Helper struct.
 type Helper struct {
 	*problemHelper
 }
 
+// NewHelper Initializer for helper
 func NewHelper() *Helper {
 	return &Helper{
 		problemHelper: &problemHelper{},
 	}
 }
 
+// A problem helper.
 type problemHelper struct{}
 
+// DBProblemsToAPIProblems Convert db problem to api problem.
 func (ph problemHelper) DBProblemsToAPIProblems(ctx context.Context, dbProblems []*ent.BazelInvocationProblem) ([]model.Problem, error) {
 	problems := make([]model.Problem, 0, len(dbProblems))
 	for _, dbProblem := range dbProblems {
@@ -47,6 +52,7 @@ func (ph problemHelper) DBProblemsToAPIProblems(ctx context.Context, dbProblems 
 	return problems, nil
 }
 
+// DBProblemToAPIProblem Convert a DB problem to an API problem.
 func (ph problemHelper) DBProblemToAPIProblem(ctx context.Context, problem *ent.BazelInvocationProblem) (model.Problem, error) {
 	switch problem.ProblemType {
 	case detectors.BazelInvocationActionProblem:
@@ -95,6 +101,7 @@ func (ph problemHelper) DBProblemToAPIProblem(ctx context.Context, problem *ent.
 	}
 }
 
+// Get an action type.
 func (ph problemHelper) getActionType(ctx context.Context, problem *ent.BazelInvocationProblem) (string, error) {
 	action, err := ph.getAction(ctx, problem)
 	if err != nil {
@@ -103,6 +110,7 @@ func (ph problemHelper) getActionType(ctx context.Context, problem *ent.BazelInv
 	return action.GetType(), nil
 }
 
+// Get an action.
 func (ph problemHelper) getAction(ctx context.Context, problem *ent.BazelInvocationProblem) (*bes.ActionExecuted, error) {
 	bepEvents, err := events.FromJSONArray(problem.BepEvents)
 	if err != nil {
@@ -117,6 +125,7 @@ func (ph problemHelper) getAction(ctx context.Context, problem *ent.BazelInvocat
 	return nil, errActionNotFound
 }
 
+// Get an action problem form a database model.
 func (ph problemHelper) actionProblemFromDBModel(problem *ent.BazelInvocationProblem, actionType string) model.Problem {
 	return &model.ActionProblem{
 		ID:      GraphQLIDFromTypeAndID("ActionProblem", problem.ID),
@@ -126,15 +135,18 @@ func (ph problemHelper) actionProblemFromDBModel(problem *ent.BazelInvocationPro
 	}
 }
 
+// A test problem helper struct
 type testProblemHelper struct {
 	*ent.BazelInvocationProblem
 }
 
+// Get the graphql id.
 func (problem testProblemHelper) GraphQLID() string {
 	// TODO: scalars.GraphQLIDFromString
 	return fmt.Sprintf("testProblem:%d", problem.ID)
 }
 
+// get the status of the problm helper.
 func (problem testProblemHelper) Status() (string, error) {
 	bepEvents, err := events.FromJSONArray(problem.BepEvents)
 	if err != nil {
@@ -148,6 +160,7 @@ func (problem testProblemHelper) Status() (string, error) {
 	return "", errStatusNotFound
 }
 
+// The results.
 func (problem testProblemHelper) Results() ([]*model.TestResult, error) {
 	bepEvents, err := events.FromJSONArray(problem.BepEvents)
 	if err != nil {
@@ -160,7 +173,7 @@ func (problem testProblemHelper) Results() ([]*model.TestResult, error) {
 			helper := testResultOverviewHelper{
 				TestResult: event.GetTestResult(),
 				testResultID: model.TestResultID{
-					ProblemID: uint64(problem.ID),
+					ProblemID: uint64(problem.ID), //nolint:gosec
 					Run:       testResultEventID.GetRun(),
 					Shard:     testResultEventID.GetShard(),
 					Attempt:   testResultEventID.GetAttempt(),
@@ -181,10 +194,12 @@ func (problem testProblemHelper) Results() ([]*model.TestResult, error) {
 	return results, nil
 }
 
+// The Progress problem helper.
 type progressProblemHelper struct {
 	*ent.BazelInvocationProblem
 }
 
+// The Output.
 func (e progressProblemHelper) Output() (string, error) {
 	bepEvents, err := events.FromJSONArray(e.BepEvents)
 	if err != nil {
@@ -198,23 +213,28 @@ func (e progressProblemHelper) Output() (string, error) {
 	return output.String(), nil
 }
 
+// Test Result Overview Helper.
 type testResultOverviewHelper struct {
 	*bes.TestResult
 	testResultID model.TestResultID
 }
 
+// The Run property.
 func (helper testResultOverviewHelper) Run() int32 {
 	return helper.testResultID.Run
 }
 
+// The Shard property.
 func (helper testResultOverviewHelper) Shard() int32 {
 	return helper.testResultID.Shard
 }
 
+// The Attempt.
 func (helper testResultOverviewHelper) Attempt() int32 {
 	return helper.testResultID.Attempt
 }
 
+// The Status.
 func (helper testResultOverviewHelper) Status() string {
 	return helper.GetStatus().String()
 }

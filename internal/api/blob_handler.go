@@ -16,15 +16,18 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/cas"
 )
 
+// A struct to handle blobs.
 type blobHandler struct {
 	client     *ent.Client
 	casManager *cas.ConnectionManager
 }
 
+// NewBlobHandler Constructor functio for a blob hanlder.
 func NewBlobHandler(client *ent.Client, casManager *cas.ConnectionManager) http.Handler {
 	return &blobHandler{client: client, casManager: casManager}
 }
 
+// ServeHTTP Serve this over http.
 func (b *blobHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	blobIDPathValue := request.PathValue("blobID")
 	name := request.PathValue("name")
@@ -49,6 +52,7 @@ func (b *blobHandler) ServeHTTP(writer http.ResponseWriter, request *http.Reques
 	b.serveBlob(writer, request, name, blobRecord)
 }
 
+// Serve a blob.
 func (b *blobHandler) serveBlob(writer http.ResponseWriter, request *http.Request, name string, blobRecord *ent.Blob) {
 	if blobRecord.ArchivingStatus == blob.ArchivingStatusSUCCESS {
 		http.ServeFile(writer, request, blobRecord.ArchiveURL)
@@ -76,6 +80,7 @@ func (b *blobHandler) serveBlob(writer http.ResponseWriter, request *http.Reques
 	}
 }
 
+// Serve from bytestream function.
 func (b *blobHandler) serveFromBytestream(writer http.ResponseWriter, request *http.Request, name string, uri *url.URL) {
 	casClient, err := b.casManager.GetClientForURI(request.Context(), uri)
 	if err != nil {
@@ -105,6 +110,7 @@ func (b *blobHandler) serveFromBytestream(writer http.ResponseWriter, request *h
 	http.ServeContent(writer, request, name, time.Time{}, tmpFile)
 }
 
+// A function to write an error.
 func writeErr(writer http.ResponseWriter, request *http.Request, statusCode int, msg string) {
 	writer.WriteHeader(statusCode)
 	if _, err := writer.Write([]byte(msg)); err != nil {

@@ -17,9 +17,15 @@ type BazelInvocationProblem struct {
 // Fields of the BazelInvocationProblem.
 func (BazelInvocationProblem) Fields() []ent.Field {
 	return []ent.Field{
+		// The Problem Type.
 		field.String("problem_type"),
+
+		// The Problem Label.
 		field.String("label"),
-		field.JSON("bep_events", json.RawMessage{}).Annotations(entgql.Skip()), // NOTE: Internal model, not exposed to API.
+
+		// The bep_events raw message associated with the field.
+		// NOTE: Internal model, not exposed to API.
+		field.JSON("bep_events", json.RawMessage{}).Annotations(entgql.Skip()),
 	}
 }
 

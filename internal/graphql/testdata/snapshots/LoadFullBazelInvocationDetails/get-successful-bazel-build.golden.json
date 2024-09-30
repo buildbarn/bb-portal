@@ -11,6 +11,7 @@
     "endedAt": "2024-05-03T00:24:29.605Z",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjE=",
     "invocationID": "fd03240f-697e-4b64-95bc-888e27445bf9",
+    "metrics": null,
     "problems": [],
     "relatedFiles": [
       {
@@ -34,6 +35,12 @@
       },
       "id": ""
     },
-    "stepLabel": ""
+    "stepLabel": "",
+    "targets": [],
+    "testCollection": [],
+    "user": {
+      "Email": "",
+      "LDAP": ""
+    }
   }
 }

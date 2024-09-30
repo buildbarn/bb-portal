@@ -7,11 +7,13 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 )
 
+// Workflow struct.
 type Workflow struct {
 	SummarizeActor
 	SaveActor
 }
 
+// New Worflow constructor
 func New(db *ent.Client, blobArchiver BlobMultiArchiver) *Workflow {
 	return &Workflow{
 		SummarizeActor: SummarizeActor{},
@@ -22,6 +24,7 @@ func New(db *ent.Client, blobArchiver BlobMultiArchiver) *Workflow {
 	}
 }
 
+// ProcessFile function.
 func (w Workflow) ProcessFile(ctx context.Context, file string) (*ent.BazelInvocation, error) {
 	summary, err := w.Summarize(ctx, file)
 	if err != nil {

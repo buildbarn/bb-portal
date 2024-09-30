@@ -44,7 +44,16 @@ func newMockServer(t *testing.T, entDataSource string) *mockServer {
 	}
 
 	require.FileExists(t, entDataSource)
-	entDataSource = "file:" + entDataSource + "?mode=ro&_fk=1"
+
+	var mode string
+	if *update {
+		mode = "?mode=rw&_fk=1"
+	} else {
+		mode = "?mode=ro&_fk=1"
+	}
+
+	entDataSource = "file:" + entDataSource + mode
+
 	client := enttest.Open(t, "sqlite3", entDataSource)
 
 	graphQLHandler := handler.NewDefaultServer(graphql.NewSchema(client))

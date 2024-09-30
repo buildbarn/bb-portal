@@ -5,12 +5,14 @@ import (
 	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 )
 
+// TestProblemDetector struct
 type TestProblemDetector struct {
 	testSummaries map[labelKey]*events.BuildEvent
 	testResults   map[labelKey]*events.BuildEvent
 	outputBlobs   map[labelKey][]BlobURI
 }
 
+// NewTestProblemDetector constructor
 func NewTestProblemDetector() TestProblemDetector {
 	return TestProblemDetector{
 		testSummaries: map[labelKey]*events.BuildEvent{},
@@ -19,6 +21,7 @@ func NewTestProblemDetector() TestProblemDetector {
 	}
 }
 
+// ProcessBEPEvent function
 func (t TestProblemDetector) ProcessBEPEvent(event *events.BuildEvent) {
 	if event.IsTestSummary() {
 		// Keep only non-successful test summaries.
@@ -46,6 +49,7 @@ func (t TestProblemDetector) ProcessBEPEvent(event *events.BuildEvent) {
 	}
 }
 
+// Problems method
 func (t TestProblemDetector) Problems() ([]Problem, error) {
 	problems := make([]Problem, 0, len(t.testResults))
 	for label, testSummary := range t.testSummaries {

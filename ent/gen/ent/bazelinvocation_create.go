@@ -14,6 +14,9 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/pkg/summary"
 	"github.com/google/uuid"
 )
@@ -52,13 +55,13 @@ func (bic *BazelInvocationCreate) SetNillableEndedAt(t *time.Time) *BazelInvocat
 }
 
 // SetChangeNumber sets the "change_number" field.
-func (bic *BazelInvocationCreate) SetChangeNumber(i int32) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetChangeNumber(i int) *BazelInvocationCreate {
 	bic.mutation.SetChangeNumber(i)
 	return bic
 }
 
 // SetNillableChangeNumber sets the "change_number" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableChangeNumber(i *int32) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetNillableChangeNumber(i *int) *BazelInvocationCreate {
 	if i != nil {
 		bic.SetChangeNumber(*i)
 	}
@@ -66,13 +69,13 @@ func (bic *BazelInvocationCreate) SetNillableChangeNumber(i *int32) *BazelInvoca
 }
 
 // SetPatchsetNumber sets the "patchset_number" field.
-func (bic *BazelInvocationCreate) SetPatchsetNumber(i int32) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetPatchsetNumber(i int) *BazelInvocationCreate {
 	bic.mutation.SetPatchsetNumber(i)
 	return bic
 }
 
 // SetNillablePatchsetNumber sets the "patchset_number" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillablePatchsetNumber(i *int32) *BazelInvocationCreate {
+func (bic *BazelInvocationCreate) SetNillablePatchsetNumber(i *int) *BazelInvocationCreate {
 	if i != nil {
 		bic.SetPatchsetNumber(*i)
 	}
@@ -108,6 +111,104 @@ func (bic *BazelInvocationCreate) SetStepLabel(s string) *BazelInvocationCreate 
 // SetRelatedFiles sets the "related_files" field.
 func (bic *BazelInvocationCreate) SetRelatedFiles(m map[string]string) *BazelInvocationCreate {
 	bic.mutation.SetRelatedFiles(m)
+	return bic
+}
+
+// SetUserEmail sets the "user_email" field.
+func (bic *BazelInvocationCreate) SetUserEmail(s string) *BazelInvocationCreate {
+	bic.mutation.SetUserEmail(s)
+	return bic
+}
+
+// SetNillableUserEmail sets the "user_email" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableUserEmail(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetUserEmail(*s)
+	}
+	return bic
+}
+
+// SetUserLdap sets the "user_ldap" field.
+func (bic *BazelInvocationCreate) SetUserLdap(s string) *BazelInvocationCreate {
+	bic.mutation.SetUserLdap(s)
+	return bic
+}
+
+// SetNillableUserLdap sets the "user_ldap" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableUserLdap(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetUserLdap(*s)
+	}
+	return bic
+}
+
+// SetBuildLogs sets the "build_logs" field.
+func (bic *BazelInvocationCreate) SetBuildLogs(s string) *BazelInvocationCreate {
+	bic.mutation.SetBuildLogs(s)
+	return bic
+}
+
+// SetNillableBuildLogs sets the "build_logs" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableBuildLogs(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetBuildLogs(*s)
+	}
+	return bic
+}
+
+// SetCPU sets the "cpu" field.
+func (bic *BazelInvocationCreate) SetCPU(s string) *BazelInvocationCreate {
+	bic.mutation.SetCPU(s)
+	return bic
+}
+
+// SetNillableCPU sets the "cpu" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableCPU(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetCPU(*s)
+	}
+	return bic
+}
+
+// SetPlatformName sets the "platform_name" field.
+func (bic *BazelInvocationCreate) SetPlatformName(s string) *BazelInvocationCreate {
+	bic.mutation.SetPlatformName(s)
+	return bic
+}
+
+// SetNillablePlatformName sets the "platform_name" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillablePlatformName(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetPlatformName(*s)
+	}
+	return bic
+}
+
+// SetConfigurationMnemonic sets the "configuration_mnemonic" field.
+func (bic *BazelInvocationCreate) SetConfigurationMnemonic(s string) *BazelInvocationCreate {
+	bic.mutation.SetConfigurationMnemonic(s)
+	return bic
+}
+
+// SetNillableConfigurationMnemonic sets the "configuration_mnemonic" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableConfigurationMnemonic(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetConfigurationMnemonic(*s)
+	}
+	return bic
+}
+
+// SetNumFetches sets the "num_fetches" field.
+func (bic *BazelInvocationCreate) SetNumFetches(i int64) *BazelInvocationCreate {
+	bic.mutation.SetNumFetches(i)
+	return bic
+}
+
+// SetNillableNumFetches sets the "num_fetches" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableNumFetches(i *int64) *BazelInvocationCreate {
+	if i != nil {
+		bic.SetNumFetches(*i)
+	}
 	return bic
 }
 
@@ -154,6 +255,55 @@ func (bic *BazelInvocationCreate) AddProblems(b ...*BazelInvocationProblem) *Baz
 		ids[i] = b[i].ID
 	}
 	return bic.AddProblemIDs(ids...)
+}
+
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (bic *BazelInvocationCreate) SetMetricsID(id int) *BazelInvocationCreate {
+	bic.mutation.SetMetricsID(id)
+	return bic
+}
+
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableMetricsID(id *int) *BazelInvocationCreate {
+	if id != nil {
+		bic = bic.SetMetricsID(*id)
+	}
+	return bic
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (bic *BazelInvocationCreate) SetMetrics(m *Metrics) *BazelInvocationCreate {
+	return bic.SetMetricsID(m.ID)
+}
+
+// AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by IDs.
+func (bic *BazelInvocationCreate) AddTestCollectionIDs(ids ...int) *BazelInvocationCreate {
+	bic.mutation.AddTestCollectionIDs(ids...)
+	return bic
+}
+
+// AddTestCollection adds the "test_collection" edges to the TestCollection entity.
+func (bic *BazelInvocationCreate) AddTestCollection(t ...*TestCollection) *BazelInvocationCreate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return bic.AddTestCollectionIDs(ids...)
+}
+
+// AddTargetIDs adds the "targets" edge to the TargetPair entity by IDs.
+func (bic *BazelInvocationCreate) AddTargetIDs(ids ...int) *BazelInvocationCreate {
+	bic.mutation.AddTargetIDs(ids...)
+	return bic
+}
+
+// AddTargets adds the "targets" edges to the TargetPair entity.
+func (bic *BazelInvocationCreate) AddTargets(t ...*TargetPair) *BazelInvocationCreate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return bic.AddTargetIDs(ids...)
 }
 
 // Mutation returns the BazelInvocationMutation object of the builder.
@@ -247,11 +397,11 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_node.EndedAt = value
 	}
 	if value, ok := bic.mutation.ChangeNumber(); ok {
-		_spec.SetField(bazelinvocation.FieldChangeNumber, field.TypeInt32, value)
+		_spec.SetField(bazelinvocation.FieldChangeNumber, field.TypeInt, value)
 		_node.ChangeNumber = value
 	}
 	if value, ok := bic.mutation.PatchsetNumber(); ok {
-		_spec.SetField(bazelinvocation.FieldPatchsetNumber, field.TypeInt32, value)
+		_spec.SetField(bazelinvocation.FieldPatchsetNumber, field.TypeInt, value)
 		_node.PatchsetNumber = value
 	}
 	if value, ok := bic.mutation.Summary(); ok {
@@ -269,6 +419,34 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	if value, ok := bic.mutation.RelatedFiles(); ok {
 		_spec.SetField(bazelinvocation.FieldRelatedFiles, field.TypeJSON, value)
 		_node.RelatedFiles = value
+	}
+	if value, ok := bic.mutation.UserEmail(); ok {
+		_spec.SetField(bazelinvocation.FieldUserEmail, field.TypeString, value)
+		_node.UserEmail = value
+	}
+	if value, ok := bic.mutation.UserLdap(); ok {
+		_spec.SetField(bazelinvocation.FieldUserLdap, field.TypeString, value)
+		_node.UserLdap = value
+	}
+	if value, ok := bic.mutation.BuildLogs(); ok {
+		_spec.SetField(bazelinvocation.FieldBuildLogs, field.TypeString, value)
+		_node.BuildLogs = value
+	}
+	if value, ok := bic.mutation.CPU(); ok {
+		_spec.SetField(bazelinvocation.FieldCPU, field.TypeString, value)
+		_node.CPU = value
+	}
+	if value, ok := bic.mutation.PlatformName(); ok {
+		_spec.SetField(bazelinvocation.FieldPlatformName, field.TypeString, value)
+		_node.PlatformName = value
+	}
+	if value, ok := bic.mutation.ConfigurationMnemonic(); ok {
+		_spec.SetField(bazelinvocation.FieldConfigurationMnemonic, field.TypeString, value)
+		_node.ConfigurationMnemonic = value
+	}
+	if value, ok := bic.mutation.NumFetches(); ok {
+		_spec.SetField(bazelinvocation.FieldNumFetches, field.TypeInt64, value)
+		_node.NumFetches = value
 	}
 	if nodes := bic.mutation.EventFileIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -313,6 +491,54 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.MetricsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.MetricsTable,
+			Columns: []string{bazelinvocation.MetricsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.TestCollectionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   bazelinvocation.TestCollectionTable,
+			Columns: bazelinvocation.TestCollectionPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.TargetsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   bazelinvocation.TargetsTable,
+			Columns: bazelinvocation.TargetsPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

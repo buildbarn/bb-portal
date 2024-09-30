@@ -65,9 +65,15 @@ models:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
+      - github.com/99designs/gqlgen/graphql.Uint
+      - github.com/99designs/gqlgen/graphql.Uint32
+      - github.com/99designs/gqlgen/graphql.Uint64
   UUID:
     model:
       - github.com/buildbarn/bb-portal/pkg/uuidgql.UUID
+  Duration:
+    model:
+      - github.com/99designs/gqlgen/graphql.Duration
   BlobReference:
     extraFields:
       Blob:

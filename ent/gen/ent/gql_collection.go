@@ -6,12 +6,511 @@ import (
 	"context"
 
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/timingbreakdown"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/timingchild"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 )
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (acs *ActionCacheStatisticsQuery) CollectFields(ctx context.Context, satisfies ...string) (*ActionCacheStatisticsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return acs, nil
+	}
+	if err := acs.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return acs, nil
+}
+
+func (acs *ActionCacheStatisticsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(actioncachestatistics.Columns))
+		selectedFields = []string{actioncachestatistics.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "actionSummary":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ActionSummaryClient{config: acs.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
+				return err
+			}
+			acs.WithNamedActionSummary(alias, func(wq *ActionSummaryQuery) {
+				*wq = *query
+			})
+
+		case "missDetails":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MissDetailClient{config: acs.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, missdetailImplementors)...); err != nil {
+				return err
+			}
+			acs.WithNamedMissDetails(alias, func(wq *MissDetailQuery) {
+				*wq = *query
+			})
+		case "sizeInBytes":
+			if _, ok := fieldSeen[actioncachestatistics.FieldSizeInBytes]; !ok {
+				selectedFields = append(selectedFields, actioncachestatistics.FieldSizeInBytes)
+				fieldSeen[actioncachestatistics.FieldSizeInBytes] = struct{}{}
+			}
+		case "saveTimeInMs":
+			if _, ok := fieldSeen[actioncachestatistics.FieldSaveTimeInMs]; !ok {
+				selectedFields = append(selectedFields, actioncachestatistics.FieldSaveTimeInMs)
+				fieldSeen[actioncachestatistics.FieldSaveTimeInMs] = struct{}{}
+			}
+		case "loadTimeInMs":
+			if _, ok := fieldSeen[actioncachestatistics.FieldLoadTimeInMs]; !ok {
+				selectedFields = append(selectedFields, actioncachestatistics.FieldLoadTimeInMs)
+				fieldSeen[actioncachestatistics.FieldLoadTimeInMs] = struct{}{}
+			}
+		case "hits":
+			if _, ok := fieldSeen[actioncachestatistics.FieldHits]; !ok {
+				selectedFields = append(selectedFields, actioncachestatistics.FieldHits)
+				fieldSeen[actioncachestatistics.FieldHits] = struct{}{}
+			}
+		case "misses":
+			if _, ok := fieldSeen[actioncachestatistics.FieldMisses]; !ok {
+				selectedFields = append(selectedFields, actioncachestatistics.FieldMisses)
+				fieldSeen[actioncachestatistics.FieldMisses] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		acs.Select(selectedFields...)
+	}
+	return nil
+}
+
+type actioncachestatisticsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ActionCacheStatisticsPaginateOption
+}
+
+func newActionCacheStatisticsPaginateArgs(rv map[string]any) *actioncachestatisticsPaginateArgs {
+	args := &actioncachestatisticsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*ActionCacheStatisticsWhereInput); ok {
+		args.opts = append(args.opts, WithActionCacheStatisticsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ad *ActionDataQuery) CollectFields(ctx context.Context, satisfies ...string) (*ActionDataQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return ad, nil
+	}
+	if err := ad.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return ad, nil
+}
+
+func (ad *ActionDataQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(actiondata.Columns))
+		selectedFields = []string{actiondata.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "actionSummary":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ActionSummaryClient{config: ad.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
+				return err
+			}
+			ad.WithNamedActionSummary(alias, func(wq *ActionSummaryQuery) {
+				*wq = *query
+			})
+		case "mnemonic":
+			if _, ok := fieldSeen[actiondata.FieldMnemonic]; !ok {
+				selectedFields = append(selectedFields, actiondata.FieldMnemonic)
+				fieldSeen[actiondata.FieldMnemonic] = struct{}{}
+			}
+		case "actionsExecuted":
+			if _, ok := fieldSeen[actiondata.FieldActionsExecuted]; !ok {
+				selectedFields = append(selectedFields, actiondata.FieldActionsExecuted)
+				fieldSeen[actiondata.FieldActionsExecuted] = struct{}{}
+			}
+		case "actionsCreated":
+			if _, ok := fieldSeen[actiondata.FieldActionsCreated]; !ok {
+				selectedFields = append(selectedFields, actiondata.FieldActionsCreated)
+				fieldSeen[actiondata.FieldActionsCreated] = struct{}{}
+			}
+		case "firstStartedMs":
+			if _, ok := fieldSeen[actiondata.FieldFirstStartedMs]; !ok {
+				selectedFields = append(selectedFields, actiondata.FieldFirstStartedMs)
+				fieldSeen[actiondata.FieldFirstStartedMs] = struct{}{}
+			}
+		case "lastEndedMs":
+			if _, ok := fieldSeen[actiondata.FieldLastEndedMs]; !ok {
+				selectedFields = append(selectedFields, actiondata.FieldLastEndedMs)
+				fieldSeen[actiondata.FieldLastEndedMs] = struct{}{}
+			}
+		case "systemTime":
+			if _, ok := fieldSeen[actiondata.FieldSystemTime]; !ok {
+				selectedFields = append(selectedFields, actiondata.FieldSystemTime)
+				fieldSeen[actiondata.FieldSystemTime] = struct{}{}
+			}
+		case "userTime":
+			if _, ok := fieldSeen[actiondata.FieldUserTime]; !ok {
+				selectedFields = append(selectedFields, actiondata.FieldUserTime)
+				fieldSeen[actiondata.FieldUserTime] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		ad.Select(selectedFields...)
+	}
+	return nil
+}
+
+type actiondataPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ActionDataPaginateOption
+}
+
+func newActionDataPaginateArgs(rv map[string]any) *actiondataPaginateArgs {
+	args := &actiondataPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*ActionDataWhereInput); ok {
+		args.opts = append(args.opts, WithActionDataFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (as *ActionSummaryQuery) CollectFields(ctx context.Context, satisfies ...string) (*ActionSummaryQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return as, nil
+	}
+	if err := as.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return as, nil
+}
+
+func (as *ActionSummaryQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(actionsummary.Columns))
+		selectedFields = []string{actionsummary.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "metrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MetricsClient{config: as.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+				return err
+			}
+			as.withMetrics = query
+
+		case "actionData":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ActionDataClient{config: as.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actiondataImplementors)...); err != nil {
+				return err
+			}
+			as.WithNamedActionData(alias, func(wq *ActionDataQuery) {
+				*wq = *query
+			})
+
+		case "runnerCount":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&RunnerCountClient{config: as.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, runnercountImplementors)...); err != nil {
+				return err
+			}
+			as.WithNamedRunnerCount(alias, func(wq *RunnerCountQuery) {
+				*wq = *query
+			})
+
+		case "actionCacheStatistics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ActionCacheStatisticsClient{config: as.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actioncachestatisticsImplementors)...); err != nil {
+				return err
+			}
+			as.WithNamedActionCacheStatistics(alias, func(wq *ActionCacheStatisticsQuery) {
+				*wq = *query
+			})
+		case "actionsCreated":
+			if _, ok := fieldSeen[actionsummary.FieldActionsCreated]; !ok {
+				selectedFields = append(selectedFields, actionsummary.FieldActionsCreated)
+				fieldSeen[actionsummary.FieldActionsCreated] = struct{}{}
+			}
+		case "actionsCreatedNotIncludingAspects":
+			if _, ok := fieldSeen[actionsummary.FieldActionsCreatedNotIncludingAspects]; !ok {
+				selectedFields = append(selectedFields, actionsummary.FieldActionsCreatedNotIncludingAspects)
+				fieldSeen[actionsummary.FieldActionsCreatedNotIncludingAspects] = struct{}{}
+			}
+		case "actionsExecuted":
+			if _, ok := fieldSeen[actionsummary.FieldActionsExecuted]; !ok {
+				selectedFields = append(selectedFields, actionsummary.FieldActionsExecuted)
+				fieldSeen[actionsummary.FieldActionsExecuted] = struct{}{}
+			}
+		case "remoteCacheHits":
+			if _, ok := fieldSeen[actionsummary.FieldRemoteCacheHits]; !ok {
+				selectedFields = append(selectedFields, actionsummary.FieldRemoteCacheHits)
+				fieldSeen[actionsummary.FieldRemoteCacheHits] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		as.Select(selectedFields...)
+	}
+	return nil
+}
+
+type actionsummaryPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ActionSummaryPaginateOption
+}
+
+func newActionSummaryPaginateArgs(rv map[string]any) *actionsummaryPaginateArgs {
+	args := &actionsummaryPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*ActionSummaryWhereInput); ok {
+		args.opts = append(args.opts, WithActionSummaryFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (am *ArtifactMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*ArtifactMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return am, nil
+	}
+	if err := am.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return am, nil
+}
+
+func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "metrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MetricsClient{config: am.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+				return err
+			}
+			am.WithNamedMetrics(alias, func(wq *MetricsQuery) {
+				*wq = *query
+			})
+
+		case "sourceArtifactsRead":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FilesMetricClient{config: am.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
+				return err
+			}
+			am.WithNamedSourceArtifactsRead(alias, func(wq *FilesMetricQuery) {
+				*wq = *query
+			})
+
+		case "outputArtifactsSeen":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FilesMetricClient{config: am.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
+				return err
+			}
+			am.WithNamedOutputArtifactsSeen(alias, func(wq *FilesMetricQuery) {
+				*wq = *query
+			})
+
+		case "outputArtifactsFromActionCache":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FilesMetricClient{config: am.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
+				return err
+			}
+			am.WithNamedOutputArtifactsFromActionCache(alias, func(wq *FilesMetricQuery) {
+				*wq = *query
+			})
+
+		case "topLevelArtifacts":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&FilesMetricClient{config: am.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
+				return err
+			}
+			am.WithNamedTopLevelArtifacts(alias, func(wq *FilesMetricQuery) {
+				*wq = *query
+			})
+		}
+	}
+	return nil
+}
+
+type artifactmetricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ArtifactMetricsPaginateOption
+}
+
+func newArtifactMetricsPaginateArgs(rv map[string]any) *artifactmetricsPaginateArgs {
+	args := &artifactmetricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*ArtifactMetricsWhereInput); ok {
+		args.opts = append(args.opts, WithArtifactMetricsFilter(v.Filter))
+	}
+	return args
+}
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (bi *BazelInvocationQuery) CollectFields(ctx context.Context, satisfies ...string) (*BazelInvocationQuery, error) {
@@ -56,6 +555,43 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				return err
 			}
 			bi.withBuild = query
+
+		case "metrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MetricsClient{config: bi.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+				return err
+			}
+			bi.withMetrics = query
+
+		case "testCollection":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestCollectionClient{config: bi.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testcollectionImplementors)...); err != nil {
+				return err
+			}
+			bi.WithNamedTestCollection(alias, func(wq *TestCollectionQuery) {
+				*wq = *query
+			})
+
+		case "targets":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TargetPairClient{config: bi.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetpairImplementors)...); err != nil {
+				return err
+			}
+			bi.WithNamedTargets(alias, func(wq *TargetPairQuery) {
+				*wq = *query
+			})
 		case "invocationID":
 			if _, ok := fieldSeen[bazelinvocation.FieldInvocationID]; !ok {
 				selectedFields = append(selectedFields, bazelinvocation.FieldInvocationID)
@@ -90,6 +626,41 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			if _, ok := fieldSeen[bazelinvocation.FieldStepLabel]; !ok {
 				selectedFields = append(selectedFields, bazelinvocation.FieldStepLabel)
 				fieldSeen[bazelinvocation.FieldStepLabel] = struct{}{}
+			}
+		case "userEmail":
+			if _, ok := fieldSeen[bazelinvocation.FieldUserEmail]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldUserEmail)
+				fieldSeen[bazelinvocation.FieldUserEmail] = struct{}{}
+			}
+		case "userLdap":
+			if _, ok := fieldSeen[bazelinvocation.FieldUserLdap]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldUserLdap)
+				fieldSeen[bazelinvocation.FieldUserLdap] = struct{}{}
+			}
+		case "buildLogs":
+			if _, ok := fieldSeen[bazelinvocation.FieldBuildLogs]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldBuildLogs)
+				fieldSeen[bazelinvocation.FieldBuildLogs] = struct{}{}
+			}
+		case "cpu":
+			if _, ok := fieldSeen[bazelinvocation.FieldCPU]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldCPU)
+				fieldSeen[bazelinvocation.FieldCPU] = struct{}{}
+			}
+		case "platformName":
+			if _, ok := fieldSeen[bazelinvocation.FieldPlatformName]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldPlatformName)
+				fieldSeen[bazelinvocation.FieldPlatformName] = struct{}{}
+			}
+		case "configurationMnemonic":
+			if _, ok := fieldSeen[bazelinvocation.FieldConfigurationMnemonic]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldConfigurationMnemonic)
+				fieldSeen[bazelinvocation.FieldConfigurationMnemonic] = struct{}{}
+			}
+		case "numFetches":
+			if _, ok := fieldSeen[bazelinvocation.FieldNumFetches]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldNumFetches)
+				fieldSeen[bazelinvocation.FieldNumFetches] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -388,6 +959,437 @@ func newBuildPaginateArgs(rv map[string]any) *buildPaginateArgs {
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (bgm *BuildGraphMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*BuildGraphMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return bgm, nil
+	}
+	if err := bgm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return bgm, nil
+}
+
+func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(buildgraphmetrics.Columns))
+		selectedFields = []string{buildgraphmetrics.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "metrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MetricsClient{config: bgm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+				return err
+			}
+			bgm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
+				*wq = *query
+			})
+
+		case "dirtiedValues":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&EvaluationStatClient{config: bgm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
+				return err
+			}
+			bgm.WithNamedDirtiedValues(alias, func(wq *EvaluationStatQuery) {
+				*wq = *query
+			})
+
+		case "changedValues":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&EvaluationStatClient{config: bgm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
+				return err
+			}
+			bgm.WithNamedChangedValues(alias, func(wq *EvaluationStatQuery) {
+				*wq = *query
+			})
+
+		case "builtValues":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&EvaluationStatClient{config: bgm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
+				return err
+			}
+			bgm.WithNamedBuiltValues(alias, func(wq *EvaluationStatQuery) {
+				*wq = *query
+			})
+
+		case "cleanedValues":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&EvaluationStatClient{config: bgm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
+				return err
+			}
+			bgm.WithNamedCleanedValues(alias, func(wq *EvaluationStatQuery) {
+				*wq = *query
+			})
+
+		case "evaluatedValues":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&EvaluationStatClient{config: bgm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
+				return err
+			}
+			bgm.WithNamedEvaluatedValues(alias, func(wq *EvaluationStatQuery) {
+				*wq = *query
+			})
+		case "actionLookupValueCount":
+			if _, ok := fieldSeen[buildgraphmetrics.FieldActionLookupValueCount]; !ok {
+				selectedFields = append(selectedFields, buildgraphmetrics.FieldActionLookupValueCount)
+				fieldSeen[buildgraphmetrics.FieldActionLookupValueCount] = struct{}{}
+			}
+		case "actionLookupValueCountNotIncludingAspects":
+			if _, ok := fieldSeen[buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects]; !ok {
+				selectedFields = append(selectedFields, buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects)
+				fieldSeen[buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects] = struct{}{}
+			}
+		case "actionCount":
+			if _, ok := fieldSeen[buildgraphmetrics.FieldActionCount]; !ok {
+				selectedFields = append(selectedFields, buildgraphmetrics.FieldActionCount)
+				fieldSeen[buildgraphmetrics.FieldActionCount] = struct{}{}
+			}
+		case "actionCountNotIncludingAspects":
+			if _, ok := fieldSeen[buildgraphmetrics.FieldActionCountNotIncludingAspects]; !ok {
+				selectedFields = append(selectedFields, buildgraphmetrics.FieldActionCountNotIncludingAspects)
+				fieldSeen[buildgraphmetrics.FieldActionCountNotIncludingAspects] = struct{}{}
+			}
+		case "inputFileConfiguredTargetCount":
+			if _, ok := fieldSeen[buildgraphmetrics.FieldInputFileConfiguredTargetCount]; !ok {
+				selectedFields = append(selectedFields, buildgraphmetrics.FieldInputFileConfiguredTargetCount)
+				fieldSeen[buildgraphmetrics.FieldInputFileConfiguredTargetCount] = struct{}{}
+			}
+		case "outputFileConfiguredTargetCount":
+			if _, ok := fieldSeen[buildgraphmetrics.FieldOutputFileConfiguredTargetCount]; !ok {
+				selectedFields = append(selectedFields, buildgraphmetrics.FieldOutputFileConfiguredTargetCount)
+				fieldSeen[buildgraphmetrics.FieldOutputFileConfiguredTargetCount] = struct{}{}
+			}
+		case "otherConfiguredTargetCount":
+			if _, ok := fieldSeen[buildgraphmetrics.FieldOtherConfiguredTargetCount]; !ok {
+				selectedFields = append(selectedFields, buildgraphmetrics.FieldOtherConfiguredTargetCount)
+				fieldSeen[buildgraphmetrics.FieldOtherConfiguredTargetCount] = struct{}{}
+			}
+		case "outputArtifactCount":
+			if _, ok := fieldSeen[buildgraphmetrics.FieldOutputArtifactCount]; !ok {
+				selectedFields = append(selectedFields, buildgraphmetrics.FieldOutputArtifactCount)
+				fieldSeen[buildgraphmetrics.FieldOutputArtifactCount] = struct{}{}
+			}
+		case "postInvocationSkyframeNodeCount":
+			if _, ok := fieldSeen[buildgraphmetrics.FieldPostInvocationSkyframeNodeCount]; !ok {
+				selectedFields = append(selectedFields, buildgraphmetrics.FieldPostInvocationSkyframeNodeCount)
+				fieldSeen[buildgraphmetrics.FieldPostInvocationSkyframeNodeCount] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		bgm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type buildgraphmetricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []BuildGraphMetricsPaginateOption
+}
+
+func newBuildGraphMetricsPaginateArgs(rv map[string]any) *buildgraphmetricsPaginateArgs {
+	args := &buildgraphmetricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*BuildGraphMetricsWhereInput); ok {
+		args.opts = append(args.opts, WithBuildGraphMetricsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (cm *CumulativeMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*CumulativeMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return cm, nil
+	}
+	if err := cm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return cm, nil
+}
+
+func (cm *CumulativeMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(cumulativemetrics.Columns))
+		selectedFields = []string{cumulativemetrics.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "metrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MetricsClient{config: cm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+				return err
+			}
+			cm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
+				*wq = *query
+			})
+		case "numAnalyses":
+			if _, ok := fieldSeen[cumulativemetrics.FieldNumAnalyses]; !ok {
+				selectedFields = append(selectedFields, cumulativemetrics.FieldNumAnalyses)
+				fieldSeen[cumulativemetrics.FieldNumAnalyses] = struct{}{}
+			}
+		case "numBuilds":
+			if _, ok := fieldSeen[cumulativemetrics.FieldNumBuilds]; !ok {
+				selectedFields = append(selectedFields, cumulativemetrics.FieldNumBuilds)
+				fieldSeen[cumulativemetrics.FieldNumBuilds] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		cm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type cumulativemetricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []CumulativeMetricsPaginateOption
+}
+
+func newCumulativeMetricsPaginateArgs(rv map[string]any) *cumulativemetricsPaginateArgs {
+	args := &cumulativemetricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*CumulativeMetricsWhereInput); ok {
+		args.opts = append(args.opts, WithCumulativeMetricsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (dem *DynamicExecutionMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*DynamicExecutionMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return dem, nil
+	}
+	if err := dem.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return dem, nil
+}
+
+func (dem *DynamicExecutionMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "metrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MetricsClient{config: dem.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+				return err
+			}
+			dem.WithNamedMetrics(alias, func(wq *MetricsQuery) {
+				*wq = *query
+			})
+
+		case "raceStatistics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&RaceStatisticsClient{config: dem.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, racestatisticsImplementors)...); err != nil {
+				return err
+			}
+			dem.WithNamedRaceStatistics(alias, func(wq *RaceStatisticsQuery) {
+				*wq = *query
+			})
+		}
+	}
+	return nil
+}
+
+type dynamicexecutionmetricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []DynamicExecutionMetricsPaginateOption
+}
+
+func newDynamicExecutionMetricsPaginateArgs(rv map[string]any) *dynamicexecutionmetricsPaginateArgs {
+	args := &dynamicexecutionmetricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*DynamicExecutionMetricsWhereInput); ok {
+		args.opts = append(args.opts, WithDynamicExecutionMetricsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (es *EvaluationStatQuery) CollectFields(ctx context.Context, satisfies ...string) (*EvaluationStatQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return es, nil
+	}
+	if err := es.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return es, nil
+}
+
+func (es *EvaluationStatQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(evaluationstat.Columns))
+		selectedFields = []string{evaluationstat.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "buildGraphMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BuildGraphMetricsClient{config: es.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, buildgraphmetricsImplementors)...); err != nil {
+				return err
+			}
+			es.WithNamedBuildGraphMetrics(alias, func(wq *BuildGraphMetricsQuery) {
+				*wq = *query
+			})
+		case "skyfunctionName":
+			if _, ok := fieldSeen[evaluationstat.FieldSkyfunctionName]; !ok {
+				selectedFields = append(selectedFields, evaluationstat.FieldSkyfunctionName)
+				fieldSeen[evaluationstat.FieldSkyfunctionName] = struct{}{}
+			}
+		case "count":
+			if _, ok := fieldSeen[evaluationstat.FieldCount]; !ok {
+				selectedFields = append(selectedFields, evaluationstat.FieldCount)
+				fieldSeen[evaluationstat.FieldCount] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		es.Select(selectedFields...)
+	}
+	return nil
+}
+
+type evaluationstatPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []EvaluationStatPaginateOption
+}
+
+func newEvaluationStatPaginateArgs(rv map[string]any) *evaluationstatPaginateArgs {
+	args := &evaluationstatPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*EvaluationStatWhereInput); ok {
+		args.opts = append(args.opts, WithEvaluationStatFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (ef *EventFileQuery) CollectFields(ctx context.Context, satisfies ...string) (*EventFileQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
@@ -486,6 +1488,2801 @@ func newEventFilePaginateArgs(rv map[string]any) *eventfilePaginateArgs {
 	}
 	if v, ok := rv[whereField].(*EventFileWhereInput); ok {
 		args.opts = append(args.opts, WithEventFileFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ei *ExectionInfoQuery) CollectFields(ctx context.Context, satisfies ...string) (*ExectionInfoQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return ei, nil
+	}
+	if err := ei.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return ei, nil
+}
+
+func (ei *ExectionInfoQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(exectioninfo.Columns))
+		selectedFields = []string{exectioninfo.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "testResult":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestResultBESClient{config: ei.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testresultbesImplementors)...); err != nil {
+				return err
+			}
+			ei.WithNamedTestResult(alias, func(wq *TestResultBESQuery) {
+				*wq = *query
+			})
+
+		case "timingBreakdown":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TimingBreakdownClient{config: ei.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, timingbreakdownImplementors)...); err != nil {
+				return err
+			}
+			ei.withTimingBreakdown = query
+
+		case "resourceUsage":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ResourceUsageClient{config: ei.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, resourceusageImplementors)...); err != nil {
+				return err
+			}
+			ei.WithNamedResourceUsage(alias, func(wq *ResourceUsageQuery) {
+				*wq = *query
+			})
+		case "timeoutSeconds":
+			if _, ok := fieldSeen[exectioninfo.FieldTimeoutSeconds]; !ok {
+				selectedFields = append(selectedFields, exectioninfo.FieldTimeoutSeconds)
+				fieldSeen[exectioninfo.FieldTimeoutSeconds] = struct{}{}
+			}
+		case "strategy":
+			if _, ok := fieldSeen[exectioninfo.FieldStrategy]; !ok {
+				selectedFields = append(selectedFields, exectioninfo.FieldStrategy)
+				fieldSeen[exectioninfo.FieldStrategy] = struct{}{}
+			}
+		case "cachedRemotely":
+			if _, ok := fieldSeen[exectioninfo.FieldCachedRemotely]; !ok {
+				selectedFields = append(selectedFields, exectioninfo.FieldCachedRemotely)
+				fieldSeen[exectioninfo.FieldCachedRemotely] = struct{}{}
+			}
+		case "exitCode":
+			if _, ok := fieldSeen[exectioninfo.FieldExitCode]; !ok {
+				selectedFields = append(selectedFields, exectioninfo.FieldExitCode)
+				fieldSeen[exectioninfo.FieldExitCode] = struct{}{}
+			}
+		case "hostname":
+			if _, ok := fieldSeen[exectioninfo.FieldHostname]; !ok {
+				selectedFields = append(selectedFields, exectioninfo.FieldHostname)
+				fieldSeen[exectioninfo.FieldHostname] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		ei.Select(selectedFields...)
+	}
+	return nil
+}
+
+type exectioninfoPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ExectionInfoPaginateOption
+}
+
+func newExectionInfoPaginateArgs(rv map[string]any) *exectioninfoPaginateArgs {
+	args := &exectioninfoPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*ExectionInfoWhereInput); ok {
+		args.opts = append(args.opts, WithExectionInfoFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (fm *FilesMetricQuery) CollectFields(ctx context.Context, satisfies ...string) (*FilesMetricQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return fm, nil
+	}
+	if err := fm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return fm, nil
+}
+
+func (fm *FilesMetricQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(filesmetric.Columns))
+		selectedFields = []string{filesmetric.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "artifactMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ArtifactMetricsClient{config: fm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, artifactmetricsImplementors)...); err != nil {
+				return err
+			}
+			fm.WithNamedArtifactMetrics(alias, func(wq *ArtifactMetricsQuery) {
+				*wq = *query
+			})
+		case "sizeInBytes":
+			if _, ok := fieldSeen[filesmetric.FieldSizeInBytes]; !ok {
+				selectedFields = append(selectedFields, filesmetric.FieldSizeInBytes)
+				fieldSeen[filesmetric.FieldSizeInBytes] = struct{}{}
+			}
+		case "count":
+			if _, ok := fieldSeen[filesmetric.FieldCount]; !ok {
+				selectedFields = append(selectedFields, filesmetric.FieldCount)
+				fieldSeen[filesmetric.FieldCount] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		fm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type filesmetricPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []FilesMetricPaginateOption
+}
+
+func newFilesMetricPaginateArgs(rv map[string]any) *filesmetricPaginateArgs {
+	args := &filesmetricPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*FilesMetricWhereInput); ok {
+		args.opts = append(args.opts, WithFilesMetricFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (gm *GarbageMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*GarbageMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return gm, nil
+	}
+	if err := gm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return gm, nil
+}
+
+func (gm *GarbageMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(garbagemetrics.Columns))
+		selectedFields = []string{garbagemetrics.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "memoryMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MemoryMetricsClient{config: gm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, memorymetricsImplementors)...); err != nil {
+				return err
+			}
+			gm.WithNamedMemoryMetrics(alias, func(wq *MemoryMetricsQuery) {
+				*wq = *query
+			})
+		case "type":
+			if _, ok := fieldSeen[garbagemetrics.FieldType]; !ok {
+				selectedFields = append(selectedFields, garbagemetrics.FieldType)
+				fieldSeen[garbagemetrics.FieldType] = struct{}{}
+			}
+		case "garbageCollected":
+			if _, ok := fieldSeen[garbagemetrics.FieldGarbageCollected]; !ok {
+				selectedFields = append(selectedFields, garbagemetrics.FieldGarbageCollected)
+				fieldSeen[garbagemetrics.FieldGarbageCollected] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		gm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type garbagemetricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []GarbageMetricsPaginateOption
+}
+
+func newGarbageMetricsPaginateArgs(rv map[string]any) *garbagemetricsPaginateArgs {
+	args := &garbagemetricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*GarbageMetricsWhereInput); ok {
+		args.opts = append(args.opts, WithGarbageMetricsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (mm *MemoryMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*MemoryMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return mm, nil
+	}
+	if err := mm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return mm, nil
+}
+
+func (mm *MemoryMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(memorymetrics.Columns))
+		selectedFields = []string{memorymetrics.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "metrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MetricsClient{config: mm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+				return err
+			}
+			mm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
+				*wq = *query
+			})
+
+		case "garbageMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&GarbageMetricsClient{config: mm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, garbagemetricsImplementors)...); err != nil {
+				return err
+			}
+			mm.WithNamedGarbageMetrics(alias, func(wq *GarbageMetricsQuery) {
+				*wq = *query
+			})
+		case "peakPostGcHeapSize":
+			if _, ok := fieldSeen[memorymetrics.FieldPeakPostGcHeapSize]; !ok {
+				selectedFields = append(selectedFields, memorymetrics.FieldPeakPostGcHeapSize)
+				fieldSeen[memorymetrics.FieldPeakPostGcHeapSize] = struct{}{}
+			}
+		case "usedHeapSizePostBuild":
+			if _, ok := fieldSeen[memorymetrics.FieldUsedHeapSizePostBuild]; !ok {
+				selectedFields = append(selectedFields, memorymetrics.FieldUsedHeapSizePostBuild)
+				fieldSeen[memorymetrics.FieldUsedHeapSizePostBuild] = struct{}{}
+			}
+		case "peakPostGcTenuredSpaceHeapSize":
+			if _, ok := fieldSeen[memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize]; !ok {
+				selectedFields = append(selectedFields, memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize)
+				fieldSeen[memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		mm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type memorymetricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []MemoryMetricsPaginateOption
+}
+
+func newMemoryMetricsPaginateArgs(rv map[string]any) *memorymetricsPaginateArgs {
+	args := &memorymetricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*MemoryMetricsWhereInput); ok {
+		args.opts = append(args.opts, WithMemoryMetricsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (m *MetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*MetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return m, nil
+	}
+	if err := m.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "bazelInvocation":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BazelInvocationClient{config: m.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
+				return err
+			}
+			m.withBazelInvocation = query
+
+		case "actionSummary":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ActionSummaryClient{config: m.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
+				return err
+			}
+			m.WithNamedActionSummary(alias, func(wq *ActionSummaryQuery) {
+				*wq = *query
+			})
+
+		case "memoryMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MemoryMetricsClient{config: m.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, memorymetricsImplementors)...); err != nil {
+				return err
+			}
+			m.WithNamedMemoryMetrics(alias, func(wq *MemoryMetricsQuery) {
+				*wq = *query
+			})
+
+		case "targetMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TargetMetricsClient{config: m.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetmetricsImplementors)...); err != nil {
+				return err
+			}
+			m.WithNamedTargetMetrics(alias, func(wq *TargetMetricsQuery) {
+				*wq = *query
+			})
+
+		case "packageMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&PackageMetricsClient{config: m.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, packagemetricsImplementors)...); err != nil {
+				return err
+			}
+			m.WithNamedPackageMetrics(alias, func(wq *PackageMetricsQuery) {
+				*wq = *query
+			})
+
+		case "timingMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TimingMetricsClient{config: m.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, timingmetricsImplementors)...); err != nil {
+				return err
+			}
+			m.WithNamedTimingMetrics(alias, func(wq *TimingMetricsQuery) {
+				*wq = *query
+			})
+
+		case "cumulativeMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&CumulativeMetricsClient{config: m.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, cumulativemetricsImplementors)...); err != nil {
+				return err
+			}
+			m.WithNamedCumulativeMetrics(alias, func(wq *CumulativeMetricsQuery) {
+				*wq = *query
+			})
+
+		case "artifactMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ArtifactMetricsClient{config: m.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, artifactmetricsImplementors)...); err != nil {
+				return err
+			}
+			m.WithNamedArtifactMetrics(alias, func(wq *ArtifactMetricsQuery) {
+				*wq = *query
+			})
+
+		case "networkMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&NetworkMetricsClient{config: m.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, networkmetricsImplementors)...); err != nil {
+				return err
+			}
+			m.WithNamedNetworkMetrics(alias, func(wq *NetworkMetricsQuery) {
+				*wq = *query
+			})
+
+		case "dynamicExecutionMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DynamicExecutionMetricsClient{config: m.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, dynamicexecutionmetricsImplementors)...); err != nil {
+				return err
+			}
+			m.WithNamedDynamicExecutionMetrics(alias, func(wq *DynamicExecutionMetricsQuery) {
+				*wq = *query
+			})
+
+		case "buildGraphMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BuildGraphMetricsClient{config: m.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, buildgraphmetricsImplementors)...); err != nil {
+				return err
+			}
+			m.WithNamedBuildGraphMetrics(alias, func(wq *BuildGraphMetricsQuery) {
+				*wq = *query
+			})
+		}
+	}
+	return nil
+}
+
+type metricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []MetricsPaginateOption
+}
+
+func newMetricsPaginateArgs(rv map[string]any) *metricsPaginateArgs {
+	args := &metricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*MetricsWhereInput); ok {
+		args.opts = append(args.opts, WithMetricsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (md *MissDetailQuery) CollectFields(ctx context.Context, satisfies ...string) (*MissDetailQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return md, nil
+	}
+	if err := md.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return md, nil
+}
+
+func (md *MissDetailQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(missdetail.Columns))
+		selectedFields = []string{missdetail.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "actionCacheStatistics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ActionCacheStatisticsClient{config: md.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actioncachestatisticsImplementors)...); err != nil {
+				return err
+			}
+			md.WithNamedActionCacheStatistics(alias, func(wq *ActionCacheStatisticsQuery) {
+				*wq = *query
+			})
+		case "reason":
+			if _, ok := fieldSeen[missdetail.FieldReason]; !ok {
+				selectedFields = append(selectedFields, missdetail.FieldReason)
+				fieldSeen[missdetail.FieldReason] = struct{}{}
+			}
+		case "count":
+			if _, ok := fieldSeen[missdetail.FieldCount]; !ok {
+				selectedFields = append(selectedFields, missdetail.FieldCount)
+				fieldSeen[missdetail.FieldCount] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		md.Select(selectedFields...)
+	}
+	return nil
+}
+
+type missdetailPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []MissDetailPaginateOption
+}
+
+func newMissDetailPaginateArgs(rv map[string]any) *missdetailPaginateArgs {
+	args := &missdetailPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*MissDetailWhereInput); ok {
+		args.opts = append(args.opts, WithMissDetailFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (nsof *NamedSetOfFilesQuery) CollectFields(ctx context.Context, satisfies ...string) (*NamedSetOfFilesQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return nsof, nil
+	}
+	if err := nsof.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return nsof, nil
+}
+
+func (nsof *NamedSetOfFilesQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "outputGroup":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OutputGroupClient{config: nsof.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, outputgroupImplementors)...); err != nil {
+				return err
+			}
+			nsof.WithNamedOutputGroup(alias, func(wq *OutputGroupQuery) {
+				*wq = *query
+			})
+
+		case "files":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestFileClient{config: nsof.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testfileImplementors)...); err != nil {
+				return err
+			}
+			nsof.WithNamedFiles(alias, func(wq *TestFileQuery) {
+				*wq = *query
+			})
+
+		case "fileSets":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&NamedSetOfFilesClient{config: nsof.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, namedsetoffilesImplementors)...); err != nil {
+				return err
+			}
+			nsof.withFileSets = query
+		}
+	}
+	return nil
+}
+
+type namedsetoffilesPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []NamedSetOfFilesPaginateOption
+}
+
+func newNamedSetOfFilesPaginateArgs(rv map[string]any) *namedsetoffilesPaginateArgs {
+	args := &namedsetoffilesPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*NamedSetOfFilesWhereInput); ok {
+		args.opts = append(args.opts, WithNamedSetOfFilesFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (nm *NetworkMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*NetworkMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return nm, nil
+	}
+	if err := nm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return nm, nil
+}
+
+func (nm *NetworkMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "metrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MetricsClient{config: nm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+				return err
+			}
+			nm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
+				*wq = *query
+			})
+
+		case "systemNetworkStats":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&SystemNetworkStatsClient{config: nm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, systemnetworkstatsImplementors)...); err != nil {
+				return err
+			}
+			nm.WithNamedSystemNetworkStats(alias, func(wq *SystemNetworkStatsQuery) {
+				*wq = *query
+			})
+		}
+	}
+	return nil
+}
+
+type networkmetricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []NetworkMetricsPaginateOption
+}
+
+func newNetworkMetricsPaginateArgs(rv map[string]any) *networkmetricsPaginateArgs {
+	args := &networkmetricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*NetworkMetricsWhereInput); ok {
+		args.opts = append(args.opts, WithNetworkMetricsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (og *OutputGroupQuery) CollectFields(ctx context.Context, satisfies ...string) (*OutputGroupQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return og, nil
+	}
+	if err := og.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return og, nil
+}
+
+func (og *OutputGroupQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(outputgroup.Columns))
+		selectedFields = []string{outputgroup.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "targetComplete":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TargetCompleteClient{config: og.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetcompleteImplementors)...); err != nil {
+				return err
+			}
+			og.WithNamedTargetComplete(alias, func(wq *TargetCompleteQuery) {
+				*wq = *query
+			})
+
+		case "inlineFiles":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestFileClient{config: og.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testfileImplementors)...); err != nil {
+				return err
+			}
+			og.WithNamedInlineFiles(alias, func(wq *TestFileQuery) {
+				*wq = *query
+			})
+
+		case "fileSets":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&NamedSetOfFilesClient{config: og.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, namedsetoffilesImplementors)...); err != nil {
+				return err
+			}
+			og.withFileSets = query
+		case "name":
+			if _, ok := fieldSeen[outputgroup.FieldName]; !ok {
+				selectedFields = append(selectedFields, outputgroup.FieldName)
+				fieldSeen[outputgroup.FieldName] = struct{}{}
+			}
+		case "incomplete":
+			if _, ok := fieldSeen[outputgroup.FieldIncomplete]; !ok {
+				selectedFields = append(selectedFields, outputgroup.FieldIncomplete)
+				fieldSeen[outputgroup.FieldIncomplete] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		og.Select(selectedFields...)
+	}
+	return nil
+}
+
+type outputgroupPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []OutputGroupPaginateOption
+}
+
+func newOutputGroupPaginateArgs(rv map[string]any) *outputgroupPaginateArgs {
+	args := &outputgroupPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*OutputGroupWhereInput); ok {
+		args.opts = append(args.opts, WithOutputGroupFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (plm *PackageLoadMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*PackageLoadMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return plm, nil
+	}
+	if err := plm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return plm, nil
+}
+
+func (plm *PackageLoadMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(packageloadmetrics.Columns))
+		selectedFields = []string{packageloadmetrics.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "packageMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&PackageMetricsClient{config: plm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, packagemetricsImplementors)...); err != nil {
+				return err
+			}
+			plm.WithNamedPackageMetrics(alias, func(wq *PackageMetricsQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[packageloadmetrics.FieldName]; !ok {
+				selectedFields = append(selectedFields, packageloadmetrics.FieldName)
+				fieldSeen[packageloadmetrics.FieldName] = struct{}{}
+			}
+		case "loadDuration":
+			if _, ok := fieldSeen[packageloadmetrics.FieldLoadDuration]; !ok {
+				selectedFields = append(selectedFields, packageloadmetrics.FieldLoadDuration)
+				fieldSeen[packageloadmetrics.FieldLoadDuration] = struct{}{}
+			}
+		case "numTargets":
+			if _, ok := fieldSeen[packageloadmetrics.FieldNumTargets]; !ok {
+				selectedFields = append(selectedFields, packageloadmetrics.FieldNumTargets)
+				fieldSeen[packageloadmetrics.FieldNumTargets] = struct{}{}
+			}
+		case "computationSteps":
+			if _, ok := fieldSeen[packageloadmetrics.FieldComputationSteps]; !ok {
+				selectedFields = append(selectedFields, packageloadmetrics.FieldComputationSteps)
+				fieldSeen[packageloadmetrics.FieldComputationSteps] = struct{}{}
+			}
+		case "numTransitiveLoads":
+			if _, ok := fieldSeen[packageloadmetrics.FieldNumTransitiveLoads]; !ok {
+				selectedFields = append(selectedFields, packageloadmetrics.FieldNumTransitiveLoads)
+				fieldSeen[packageloadmetrics.FieldNumTransitiveLoads] = struct{}{}
+			}
+		case "packageOverhead":
+			if _, ok := fieldSeen[packageloadmetrics.FieldPackageOverhead]; !ok {
+				selectedFields = append(selectedFields, packageloadmetrics.FieldPackageOverhead)
+				fieldSeen[packageloadmetrics.FieldPackageOverhead] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		plm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type packageloadmetricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []PackageLoadMetricsPaginateOption
+}
+
+func newPackageLoadMetricsPaginateArgs(rv map[string]any) *packageloadmetricsPaginateArgs {
+	args := &packageloadmetricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*PackageLoadMetricsWhereInput); ok {
+		args.opts = append(args.opts, WithPackageLoadMetricsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (pm *PackageMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*PackageMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return pm, nil
+	}
+	if err := pm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return pm, nil
+}
+
+func (pm *PackageMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(packagemetrics.Columns))
+		selectedFields = []string{packagemetrics.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "metrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MetricsClient{config: pm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+				return err
+			}
+			pm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
+				*wq = *query
+			})
+
+		case "packageLoadMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&PackageLoadMetricsClient{config: pm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, packageloadmetricsImplementors)...); err != nil {
+				return err
+			}
+			pm.WithNamedPackageLoadMetrics(alias, func(wq *PackageLoadMetricsQuery) {
+				*wq = *query
+			})
+		case "packagesLoaded":
+			if _, ok := fieldSeen[packagemetrics.FieldPackagesLoaded]; !ok {
+				selectedFields = append(selectedFields, packagemetrics.FieldPackagesLoaded)
+				fieldSeen[packagemetrics.FieldPackagesLoaded] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		pm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type packagemetricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []PackageMetricsPaginateOption
+}
+
+func newPackageMetricsPaginateArgs(rv map[string]any) *packagemetricsPaginateArgs {
+	args := &packagemetricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*PackageMetricsWhereInput); ok {
+		args.opts = append(args.opts, WithPackageMetricsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (rs *RaceStatisticsQuery) CollectFields(ctx context.Context, satisfies ...string) (*RaceStatisticsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return rs, nil
+	}
+	if err := rs.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return rs, nil
+}
+
+func (rs *RaceStatisticsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(racestatistics.Columns))
+		selectedFields = []string{racestatistics.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "dynamicExecutionMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&DynamicExecutionMetricsClient{config: rs.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, dynamicexecutionmetricsImplementors)...); err != nil {
+				return err
+			}
+			rs.WithNamedDynamicExecutionMetrics(alias, func(wq *DynamicExecutionMetricsQuery) {
+				*wq = *query
+			})
+		case "mnemonic":
+			if _, ok := fieldSeen[racestatistics.FieldMnemonic]; !ok {
+				selectedFields = append(selectedFields, racestatistics.FieldMnemonic)
+				fieldSeen[racestatistics.FieldMnemonic] = struct{}{}
+			}
+		case "localRunner":
+			if _, ok := fieldSeen[racestatistics.FieldLocalRunner]; !ok {
+				selectedFields = append(selectedFields, racestatistics.FieldLocalRunner)
+				fieldSeen[racestatistics.FieldLocalRunner] = struct{}{}
+			}
+		case "remoteRunner":
+			if _, ok := fieldSeen[racestatistics.FieldRemoteRunner]; !ok {
+				selectedFields = append(selectedFields, racestatistics.FieldRemoteRunner)
+				fieldSeen[racestatistics.FieldRemoteRunner] = struct{}{}
+			}
+		case "localWins":
+			if _, ok := fieldSeen[racestatistics.FieldLocalWins]; !ok {
+				selectedFields = append(selectedFields, racestatistics.FieldLocalWins)
+				fieldSeen[racestatistics.FieldLocalWins] = struct{}{}
+			}
+		case "renoteWins":
+			if _, ok := fieldSeen[racestatistics.FieldRenoteWins]; !ok {
+				selectedFields = append(selectedFields, racestatistics.FieldRenoteWins)
+				fieldSeen[racestatistics.FieldRenoteWins] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		rs.Select(selectedFields...)
+	}
+	return nil
+}
+
+type racestatisticsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []RaceStatisticsPaginateOption
+}
+
+func newRaceStatisticsPaginateArgs(rv map[string]any) *racestatisticsPaginateArgs {
+	args := &racestatisticsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*RaceStatisticsWhereInput); ok {
+		args.opts = append(args.opts, WithRaceStatisticsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ru *ResourceUsageQuery) CollectFields(ctx context.Context, satisfies ...string) (*ResourceUsageQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return ru, nil
+	}
+	if err := ru.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return ru, nil
+}
+
+func (ru *ResourceUsageQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(resourceusage.Columns))
+		selectedFields = []string{resourceusage.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "executionInfo":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ExectionInfoClient{config: ru.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, exectioninfoImplementors)...); err != nil {
+				return err
+			}
+			ru.WithNamedExecutionInfo(alias, func(wq *ExectionInfoQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[resourceusage.FieldName]; !ok {
+				selectedFields = append(selectedFields, resourceusage.FieldName)
+				fieldSeen[resourceusage.FieldName] = struct{}{}
+			}
+		case "value":
+			if _, ok := fieldSeen[resourceusage.FieldValue]; !ok {
+				selectedFields = append(selectedFields, resourceusage.FieldValue)
+				fieldSeen[resourceusage.FieldValue] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		ru.Select(selectedFields...)
+	}
+	return nil
+}
+
+type resourceusagePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ResourceUsagePaginateOption
+}
+
+func newResourceUsagePaginateArgs(rv map[string]any) *resourceusagePaginateArgs {
+	args := &resourceusagePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*ResourceUsageWhereInput); ok {
+		args.opts = append(args.opts, WithResourceUsageFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (rc *RunnerCountQuery) CollectFields(ctx context.Context, satisfies ...string) (*RunnerCountQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return rc, nil
+	}
+	if err := rc.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return rc, nil
+}
+
+func (rc *RunnerCountQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(runnercount.Columns))
+		selectedFields = []string{runnercount.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "actionSummary":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ActionSummaryClient{config: rc.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
+				return err
+			}
+			rc.WithNamedActionSummary(alias, func(wq *ActionSummaryQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[runnercount.FieldName]; !ok {
+				selectedFields = append(selectedFields, runnercount.FieldName)
+				fieldSeen[runnercount.FieldName] = struct{}{}
+			}
+		case "execKind":
+			if _, ok := fieldSeen[runnercount.FieldExecKind]; !ok {
+				selectedFields = append(selectedFields, runnercount.FieldExecKind)
+				fieldSeen[runnercount.FieldExecKind] = struct{}{}
+			}
+		case "actionsExecuted":
+			if _, ok := fieldSeen[runnercount.FieldActionsExecuted]; !ok {
+				selectedFields = append(selectedFields, runnercount.FieldActionsExecuted)
+				fieldSeen[runnercount.FieldActionsExecuted] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		rc.Select(selectedFields...)
+	}
+	return nil
+}
+
+type runnercountPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []RunnerCountPaginateOption
+}
+
+func newRunnerCountPaginateArgs(rv map[string]any) *runnercountPaginateArgs {
+	args := &runnercountPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*RunnerCountWhereInput); ok {
+		args.opts = append(args.opts, WithRunnerCountFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (sns *SystemNetworkStatsQuery) CollectFields(ctx context.Context, satisfies ...string) (*SystemNetworkStatsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return sns, nil
+	}
+	if err := sns.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return sns, nil
+}
+
+func (sns *SystemNetworkStatsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(systemnetworkstats.Columns))
+		selectedFields = []string{systemnetworkstats.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "networkMetrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&NetworkMetricsClient{config: sns.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, networkmetricsImplementors)...); err != nil {
+				return err
+			}
+			sns.withNetworkMetrics = query
+		case "bytesSent":
+			if _, ok := fieldSeen[systemnetworkstats.FieldBytesSent]; !ok {
+				selectedFields = append(selectedFields, systemnetworkstats.FieldBytesSent)
+				fieldSeen[systemnetworkstats.FieldBytesSent] = struct{}{}
+			}
+		case "bytesRecv":
+			if _, ok := fieldSeen[systemnetworkstats.FieldBytesRecv]; !ok {
+				selectedFields = append(selectedFields, systemnetworkstats.FieldBytesRecv)
+				fieldSeen[systemnetworkstats.FieldBytesRecv] = struct{}{}
+			}
+		case "packetsSent":
+			if _, ok := fieldSeen[systemnetworkstats.FieldPacketsSent]; !ok {
+				selectedFields = append(selectedFields, systemnetworkstats.FieldPacketsSent)
+				fieldSeen[systemnetworkstats.FieldPacketsSent] = struct{}{}
+			}
+		case "packetsRecv":
+			if _, ok := fieldSeen[systemnetworkstats.FieldPacketsRecv]; !ok {
+				selectedFields = append(selectedFields, systemnetworkstats.FieldPacketsRecv)
+				fieldSeen[systemnetworkstats.FieldPacketsRecv] = struct{}{}
+			}
+		case "peakBytesSentPerSec":
+			if _, ok := fieldSeen[systemnetworkstats.FieldPeakBytesSentPerSec]; !ok {
+				selectedFields = append(selectedFields, systemnetworkstats.FieldPeakBytesSentPerSec)
+				fieldSeen[systemnetworkstats.FieldPeakBytesSentPerSec] = struct{}{}
+			}
+		case "peakBytesRecvPerSec":
+			if _, ok := fieldSeen[systemnetworkstats.FieldPeakBytesRecvPerSec]; !ok {
+				selectedFields = append(selectedFields, systemnetworkstats.FieldPeakBytesRecvPerSec)
+				fieldSeen[systemnetworkstats.FieldPeakBytesRecvPerSec] = struct{}{}
+			}
+		case "peakPacketsSentPerSec":
+			if _, ok := fieldSeen[systemnetworkstats.FieldPeakPacketsSentPerSec]; !ok {
+				selectedFields = append(selectedFields, systemnetworkstats.FieldPeakPacketsSentPerSec)
+				fieldSeen[systemnetworkstats.FieldPeakPacketsSentPerSec] = struct{}{}
+			}
+		case "peakPacketsRecvPerSec":
+			if _, ok := fieldSeen[systemnetworkstats.FieldPeakPacketsRecvPerSec]; !ok {
+				selectedFields = append(selectedFields, systemnetworkstats.FieldPeakPacketsRecvPerSec)
+				fieldSeen[systemnetworkstats.FieldPeakPacketsRecvPerSec] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		sns.Select(selectedFields...)
+	}
+	return nil
+}
+
+type systemnetworkstatsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []SystemNetworkStatsPaginateOption
+}
+
+func newSystemNetworkStatsPaginateArgs(rv map[string]any) *systemnetworkstatsPaginateArgs {
+	args := &systemnetworkstatsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*SystemNetworkStatsWhereInput); ok {
+		args.opts = append(args.opts, WithSystemNetworkStatsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (tc *TargetCompleteQuery) CollectFields(ctx context.Context, satisfies ...string) (*TargetCompleteQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return tc, nil
+	}
+	if err := tc.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return tc, nil
+}
+
+func (tc *TargetCompleteQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(targetcomplete.Columns))
+		selectedFields = []string{targetcomplete.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "targetPair":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TargetPairClient{config: tc.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetpairImplementors)...); err != nil {
+				return err
+			}
+			tc.WithNamedTargetPair(alias, func(wq *TargetPairQuery) {
+				*wq = *query
+			})
+
+		case "importantOutput":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestFileClient{config: tc.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testfileImplementors)...); err != nil {
+				return err
+			}
+			tc.WithNamedImportantOutput(alias, func(wq *TestFileQuery) {
+				*wq = *query
+			})
+
+		case "directoryOutput":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestFileClient{config: tc.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testfileImplementors)...); err != nil {
+				return err
+			}
+			tc.WithNamedDirectoryOutput(alias, func(wq *TestFileQuery) {
+				*wq = *query
+			})
+
+		case "outputGroup":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&OutputGroupClient{config: tc.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, outputgroupImplementors)...); err != nil {
+				return err
+			}
+			tc.withOutputGroup = query
+		case "success":
+			if _, ok := fieldSeen[targetcomplete.FieldSuccess]; !ok {
+				selectedFields = append(selectedFields, targetcomplete.FieldSuccess)
+				fieldSeen[targetcomplete.FieldSuccess] = struct{}{}
+			}
+		case "tag":
+			if _, ok := fieldSeen[targetcomplete.FieldTag]; !ok {
+				selectedFields = append(selectedFields, targetcomplete.FieldTag)
+				fieldSeen[targetcomplete.FieldTag] = struct{}{}
+			}
+		case "targetKind":
+			if _, ok := fieldSeen[targetcomplete.FieldTargetKind]; !ok {
+				selectedFields = append(selectedFields, targetcomplete.FieldTargetKind)
+				fieldSeen[targetcomplete.FieldTargetKind] = struct{}{}
+			}
+		case "endTimeInMs":
+			if _, ok := fieldSeen[targetcomplete.FieldEndTimeInMs]; !ok {
+				selectedFields = append(selectedFields, targetcomplete.FieldEndTimeInMs)
+				fieldSeen[targetcomplete.FieldEndTimeInMs] = struct{}{}
+			}
+		case "testTimeoutSeconds":
+			if _, ok := fieldSeen[targetcomplete.FieldTestTimeoutSeconds]; !ok {
+				selectedFields = append(selectedFields, targetcomplete.FieldTestTimeoutSeconds)
+				fieldSeen[targetcomplete.FieldTestTimeoutSeconds] = struct{}{}
+			}
+		case "testTimeout":
+			if _, ok := fieldSeen[targetcomplete.FieldTestTimeout]; !ok {
+				selectedFields = append(selectedFields, targetcomplete.FieldTestTimeout)
+				fieldSeen[targetcomplete.FieldTestTimeout] = struct{}{}
+			}
+		case "testSize":
+			if _, ok := fieldSeen[targetcomplete.FieldTestSize]; !ok {
+				selectedFields = append(selectedFields, targetcomplete.FieldTestSize)
+				fieldSeen[targetcomplete.FieldTestSize] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		tc.Select(selectedFields...)
+	}
+	return nil
+}
+
+type targetcompletePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TargetCompletePaginateOption
+}
+
+func newTargetCompletePaginateArgs(rv map[string]any) *targetcompletePaginateArgs {
+	args := &targetcompletePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TargetCompleteWhereInput); ok {
+		args.opts = append(args.opts, WithTargetCompleteFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (tc *TargetConfiguredQuery) CollectFields(ctx context.Context, satisfies ...string) (*TargetConfiguredQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return tc, nil
+	}
+	if err := tc.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return tc, nil
+}
+
+func (tc *TargetConfiguredQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(targetconfigured.Columns))
+		selectedFields = []string{targetconfigured.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "targetPair":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TargetPairClient{config: tc.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetpairImplementors)...); err != nil {
+				return err
+			}
+			tc.WithNamedTargetPair(alias, func(wq *TargetPairQuery) {
+				*wq = *query
+			})
+		case "tag":
+			if _, ok := fieldSeen[targetconfigured.FieldTag]; !ok {
+				selectedFields = append(selectedFields, targetconfigured.FieldTag)
+				fieldSeen[targetconfigured.FieldTag] = struct{}{}
+			}
+		case "targetKind":
+			if _, ok := fieldSeen[targetconfigured.FieldTargetKind]; !ok {
+				selectedFields = append(selectedFields, targetconfigured.FieldTargetKind)
+				fieldSeen[targetconfigured.FieldTargetKind] = struct{}{}
+			}
+		case "startTimeInMs":
+			if _, ok := fieldSeen[targetconfigured.FieldStartTimeInMs]; !ok {
+				selectedFields = append(selectedFields, targetconfigured.FieldStartTimeInMs)
+				fieldSeen[targetconfigured.FieldStartTimeInMs] = struct{}{}
+			}
+		case "testSize":
+			if _, ok := fieldSeen[targetconfigured.FieldTestSize]; !ok {
+				selectedFields = append(selectedFields, targetconfigured.FieldTestSize)
+				fieldSeen[targetconfigured.FieldTestSize] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		tc.Select(selectedFields...)
+	}
+	return nil
+}
+
+type targetconfiguredPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TargetConfiguredPaginateOption
+}
+
+func newTargetConfiguredPaginateArgs(rv map[string]any) *targetconfiguredPaginateArgs {
+	args := &targetconfiguredPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TargetConfiguredWhereInput); ok {
+		args.opts = append(args.opts, WithTargetConfiguredFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (tm *TargetMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*TargetMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return tm, nil
+	}
+	if err := tm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return tm, nil
+}
+
+func (tm *TargetMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(targetmetrics.Columns))
+		selectedFields = []string{targetmetrics.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "metrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MetricsClient{config: tm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+				return err
+			}
+			tm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
+				*wq = *query
+			})
+		case "targetsLoaded":
+			if _, ok := fieldSeen[targetmetrics.FieldTargetsLoaded]; !ok {
+				selectedFields = append(selectedFields, targetmetrics.FieldTargetsLoaded)
+				fieldSeen[targetmetrics.FieldTargetsLoaded] = struct{}{}
+			}
+		case "targetsConfigured":
+			if _, ok := fieldSeen[targetmetrics.FieldTargetsConfigured]; !ok {
+				selectedFields = append(selectedFields, targetmetrics.FieldTargetsConfigured)
+				fieldSeen[targetmetrics.FieldTargetsConfigured] = struct{}{}
+			}
+		case "targetsConfiguredNotIncludingAspects":
+			if _, ok := fieldSeen[targetmetrics.FieldTargetsConfiguredNotIncludingAspects]; !ok {
+				selectedFields = append(selectedFields, targetmetrics.FieldTargetsConfiguredNotIncludingAspects)
+				fieldSeen[targetmetrics.FieldTargetsConfiguredNotIncludingAspects] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		tm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type targetmetricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TargetMetricsPaginateOption
+}
+
+func newTargetMetricsPaginateArgs(rv map[string]any) *targetmetricsPaginateArgs {
+	args := &targetmetricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TargetMetricsWhereInput); ok {
+		args.opts = append(args.opts, WithTargetMetricsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (tp *TargetPairQuery) CollectFields(ctx context.Context, satisfies ...string) (*TargetPairQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return tp, nil
+	}
+	if err := tp.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return tp, nil
+}
+
+func (tp *TargetPairQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(targetpair.Columns))
+		selectedFields = []string{targetpair.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "bazelInvocation":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BazelInvocationClient{config: tp.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
+				return err
+			}
+			tp.WithNamedBazelInvocation(alias, func(wq *BazelInvocationQuery) {
+				*wq = *query
+			})
+
+		case "configuration":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TargetConfiguredClient{config: tp.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, targetconfiguredImplementors)...); err != nil {
+				return err
+			}
+			tp.withConfiguration = query
+
+		case "completion":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TargetCompleteClient{config: tp.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, targetcompleteImplementors)...); err != nil {
+				return err
+			}
+			tp.withCompletion = query
+		case "label":
+			if _, ok := fieldSeen[targetpair.FieldLabel]; !ok {
+				selectedFields = append(selectedFields, targetpair.FieldLabel)
+				fieldSeen[targetpair.FieldLabel] = struct{}{}
+			}
+		case "durationInMs":
+			if _, ok := fieldSeen[targetpair.FieldDurationInMs]; !ok {
+				selectedFields = append(selectedFields, targetpair.FieldDurationInMs)
+				fieldSeen[targetpair.FieldDurationInMs] = struct{}{}
+			}
+		case "success":
+			if _, ok := fieldSeen[targetpair.FieldSuccess]; !ok {
+				selectedFields = append(selectedFields, targetpair.FieldSuccess)
+				fieldSeen[targetpair.FieldSuccess] = struct{}{}
+			}
+		case "targetKind":
+			if _, ok := fieldSeen[targetpair.FieldTargetKind]; !ok {
+				selectedFields = append(selectedFields, targetpair.FieldTargetKind)
+				fieldSeen[targetpair.FieldTargetKind] = struct{}{}
+			}
+		case "testSize":
+			if _, ok := fieldSeen[targetpair.FieldTestSize]; !ok {
+				selectedFields = append(selectedFields, targetpair.FieldTestSize)
+				fieldSeen[targetpair.FieldTestSize] = struct{}{}
+			}
+		case "abortReason":
+			if _, ok := fieldSeen[targetpair.FieldAbortReason]; !ok {
+				selectedFields = append(selectedFields, targetpair.FieldAbortReason)
+				fieldSeen[targetpair.FieldAbortReason] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		tp.Select(selectedFields...)
+	}
+	return nil
+}
+
+type targetpairPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TargetPairPaginateOption
+}
+
+func newTargetPairPaginateArgs(rv map[string]any) *targetpairPaginateArgs {
+	args := &targetpairPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TargetPairWhereInput); ok {
+		args.opts = append(args.opts, WithTargetPairFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (tc *TestCollectionQuery) CollectFields(ctx context.Context, satisfies ...string) (*TestCollectionQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return tc, nil
+	}
+	if err := tc.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return tc, nil
+}
+
+func (tc *TestCollectionQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(testcollection.Columns))
+		selectedFields = []string{testcollection.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "bazelInvocation":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BazelInvocationClient{config: tc.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
+				return err
+			}
+			tc.WithNamedBazelInvocation(alias, func(wq *BazelInvocationQuery) {
+				*wq = *query
+			})
+
+		case "testSummary":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestSummaryClient{config: tc.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, testsummaryImplementors)...); err != nil {
+				return err
+			}
+			tc.withTestSummary = query
+
+		case "testResults":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestResultBESClient{config: tc.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testresultbesImplementors)...); err != nil {
+				return err
+			}
+			tc.WithNamedTestResults(alias, func(wq *TestResultBESQuery) {
+				*wq = *query
+			})
+		case "label":
+			if _, ok := fieldSeen[testcollection.FieldLabel]; !ok {
+				selectedFields = append(selectedFields, testcollection.FieldLabel)
+				fieldSeen[testcollection.FieldLabel] = struct{}{}
+			}
+		case "overallStatus":
+			if _, ok := fieldSeen[testcollection.FieldOverallStatus]; !ok {
+				selectedFields = append(selectedFields, testcollection.FieldOverallStatus)
+				fieldSeen[testcollection.FieldOverallStatus] = struct{}{}
+			}
+		case "strategy":
+			if _, ok := fieldSeen[testcollection.FieldStrategy]; !ok {
+				selectedFields = append(selectedFields, testcollection.FieldStrategy)
+				fieldSeen[testcollection.FieldStrategy] = struct{}{}
+			}
+		case "cachedLocally":
+			if _, ok := fieldSeen[testcollection.FieldCachedLocally]; !ok {
+				selectedFields = append(selectedFields, testcollection.FieldCachedLocally)
+				fieldSeen[testcollection.FieldCachedLocally] = struct{}{}
+			}
+		case "cachedRemotely":
+			if _, ok := fieldSeen[testcollection.FieldCachedRemotely]; !ok {
+				selectedFields = append(selectedFields, testcollection.FieldCachedRemotely)
+				fieldSeen[testcollection.FieldCachedRemotely] = struct{}{}
+			}
+		case "durationMs":
+			if _, ok := fieldSeen[testcollection.FieldDurationMs]; !ok {
+				selectedFields = append(selectedFields, testcollection.FieldDurationMs)
+				fieldSeen[testcollection.FieldDurationMs] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		tc.Select(selectedFields...)
+	}
+	return nil
+}
+
+type testcollectionPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TestCollectionPaginateOption
+}
+
+func newTestCollectionPaginateArgs(rv map[string]any) *testcollectionPaginateArgs {
+	args := &testcollectionPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TestCollectionWhereInput); ok {
+		args.opts = append(args.opts, WithTestCollectionFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (tf *TestFileQuery) CollectFields(ctx context.Context, satisfies ...string) (*TestFileQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return tf, nil
+	}
+	if err := tf.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return tf, nil
+}
+
+func (tf *TestFileQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(testfile.Columns))
+		selectedFields = []string{testfile.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "testResult":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestResultBESClient{config: tf.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testresultbesImplementors)...); err != nil {
+				return err
+			}
+			tf.WithNamedTestResult(alias, func(wq *TestResultBESQuery) {
+				*wq = *query
+			})
+		case "digest":
+			if _, ok := fieldSeen[testfile.FieldDigest]; !ok {
+				selectedFields = append(selectedFields, testfile.FieldDigest)
+				fieldSeen[testfile.FieldDigest] = struct{}{}
+			}
+		case "file":
+			if _, ok := fieldSeen[testfile.FieldFile]; !ok {
+				selectedFields = append(selectedFields, testfile.FieldFile)
+				fieldSeen[testfile.FieldFile] = struct{}{}
+			}
+		case "length":
+			if _, ok := fieldSeen[testfile.FieldLength]; !ok {
+				selectedFields = append(selectedFields, testfile.FieldLength)
+				fieldSeen[testfile.FieldLength] = struct{}{}
+			}
+		case "name":
+			if _, ok := fieldSeen[testfile.FieldName]; !ok {
+				selectedFields = append(selectedFields, testfile.FieldName)
+				fieldSeen[testfile.FieldName] = struct{}{}
+			}
+		case "prefix":
+			if _, ok := fieldSeen[testfile.FieldPrefix]; !ok {
+				selectedFields = append(selectedFields, testfile.FieldPrefix)
+				fieldSeen[testfile.FieldPrefix] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		tf.Select(selectedFields...)
+	}
+	return nil
+}
+
+type testfilePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TestFilePaginateOption
+}
+
+func newTestFilePaginateArgs(rv map[string]any) *testfilePaginateArgs {
+	args := &testfilePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TestFileWhereInput); ok {
+		args.opts = append(args.opts, WithTestFileFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (trb *TestResultBESQuery) CollectFields(ctx context.Context, satisfies ...string) (*TestResultBESQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return trb, nil
+	}
+	if err := trb.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return trb, nil
+}
+
+func (trb *TestResultBESQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(testresultbes.Columns))
+		selectedFields = []string{testresultbes.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "testCollection":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestCollectionClient{config: trb.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, testcollectionImplementors)...); err != nil {
+				return err
+			}
+			trb.withTestCollection = query
+
+		case "testActionOutput":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestFileClient{config: trb.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testfileImplementors)...); err != nil {
+				return err
+			}
+			trb.WithNamedTestActionOutput(alias, func(wq *TestFileQuery) {
+				*wq = *query
+			})
+
+		case "executionInfo":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ExectionInfoClient{config: trb.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, exectioninfoImplementors)...); err != nil {
+				return err
+			}
+			trb.withExecutionInfo = query
+		case "testStatus":
+			if _, ok := fieldSeen[testresultbes.FieldTestStatus]; !ok {
+				selectedFields = append(selectedFields, testresultbes.FieldTestStatus)
+				fieldSeen[testresultbes.FieldTestStatus] = struct{}{}
+			}
+		case "statusDetails":
+			if _, ok := fieldSeen[testresultbes.FieldStatusDetails]; !ok {
+				selectedFields = append(selectedFields, testresultbes.FieldStatusDetails)
+				fieldSeen[testresultbes.FieldStatusDetails] = struct{}{}
+			}
+		case "label":
+			if _, ok := fieldSeen[testresultbes.FieldLabel]; !ok {
+				selectedFields = append(selectedFields, testresultbes.FieldLabel)
+				fieldSeen[testresultbes.FieldLabel] = struct{}{}
+			}
+		case "warning":
+			if _, ok := fieldSeen[testresultbes.FieldWarning]; !ok {
+				selectedFields = append(selectedFields, testresultbes.FieldWarning)
+				fieldSeen[testresultbes.FieldWarning] = struct{}{}
+			}
+		case "cachedLocally":
+			if _, ok := fieldSeen[testresultbes.FieldCachedLocally]; !ok {
+				selectedFields = append(selectedFields, testresultbes.FieldCachedLocally)
+				fieldSeen[testresultbes.FieldCachedLocally] = struct{}{}
+			}
+		case "testAttemptStartMillisEpoch":
+			if _, ok := fieldSeen[testresultbes.FieldTestAttemptStartMillisEpoch]; !ok {
+				selectedFields = append(selectedFields, testresultbes.FieldTestAttemptStartMillisEpoch)
+				fieldSeen[testresultbes.FieldTestAttemptStartMillisEpoch] = struct{}{}
+			}
+		case "testAttemptStart":
+			if _, ok := fieldSeen[testresultbes.FieldTestAttemptStart]; !ok {
+				selectedFields = append(selectedFields, testresultbes.FieldTestAttemptStart)
+				fieldSeen[testresultbes.FieldTestAttemptStart] = struct{}{}
+			}
+		case "testAttemptDurationMillis":
+			if _, ok := fieldSeen[testresultbes.FieldTestAttemptDurationMillis]; !ok {
+				selectedFields = append(selectedFields, testresultbes.FieldTestAttemptDurationMillis)
+				fieldSeen[testresultbes.FieldTestAttemptDurationMillis] = struct{}{}
+			}
+		case "testAttemptDuration":
+			if _, ok := fieldSeen[testresultbes.FieldTestAttemptDuration]; !ok {
+				selectedFields = append(selectedFields, testresultbes.FieldTestAttemptDuration)
+				fieldSeen[testresultbes.FieldTestAttemptDuration] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		trb.Select(selectedFields...)
+	}
+	return nil
+}
+
+type testresultbesPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TestResultBESPaginateOption
+}
+
+func newTestResultBESPaginateArgs(rv map[string]any) *testresultbesPaginateArgs {
+	args := &testresultbesPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TestResultBESWhereInput); ok {
+		args.opts = append(args.opts, WithTestResultBESFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (ts *TestSummaryQuery) CollectFields(ctx context.Context, satisfies ...string) (*TestSummaryQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return ts, nil
+	}
+	if err := ts.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return ts, nil
+}
+
+func (ts *TestSummaryQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(testsummary.Columns))
+		selectedFields = []string{testsummary.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "testCollection":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestCollectionClient{config: ts.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testcollectionImplementors)...); err != nil {
+				return err
+			}
+			ts.WithNamedTestCollection(alias, func(wq *TestCollectionQuery) {
+				*wq = *query
+			})
+
+		case "passed":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestFileClient{config: ts.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testfileImplementors)...); err != nil {
+				return err
+			}
+			ts.WithNamedPassed(alias, func(wq *TestFileQuery) {
+				*wq = *query
+			})
+
+		case "failed":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TestFileClient{config: ts.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testfileImplementors)...); err != nil {
+				return err
+			}
+			ts.WithNamedFailed(alias, func(wq *TestFileQuery) {
+				*wq = *query
+			})
+		case "overallStatus":
+			if _, ok := fieldSeen[testsummary.FieldOverallStatus]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldOverallStatus)
+				fieldSeen[testsummary.FieldOverallStatus] = struct{}{}
+			}
+		case "totalRunCount":
+			if _, ok := fieldSeen[testsummary.FieldTotalRunCount]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldTotalRunCount)
+				fieldSeen[testsummary.FieldTotalRunCount] = struct{}{}
+			}
+		case "runCount":
+			if _, ok := fieldSeen[testsummary.FieldRunCount]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldRunCount)
+				fieldSeen[testsummary.FieldRunCount] = struct{}{}
+			}
+		case "attemptCount":
+			if _, ok := fieldSeen[testsummary.FieldAttemptCount]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldAttemptCount)
+				fieldSeen[testsummary.FieldAttemptCount] = struct{}{}
+			}
+		case "shardCount":
+			if _, ok := fieldSeen[testsummary.FieldShardCount]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldShardCount)
+				fieldSeen[testsummary.FieldShardCount] = struct{}{}
+			}
+		case "totalNumCached":
+			if _, ok := fieldSeen[testsummary.FieldTotalNumCached]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldTotalNumCached)
+				fieldSeen[testsummary.FieldTotalNumCached] = struct{}{}
+			}
+		case "firstStartTime":
+			if _, ok := fieldSeen[testsummary.FieldFirstStartTime]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldFirstStartTime)
+				fieldSeen[testsummary.FieldFirstStartTime] = struct{}{}
+			}
+		case "lastStopTime":
+			if _, ok := fieldSeen[testsummary.FieldLastStopTime]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldLastStopTime)
+				fieldSeen[testsummary.FieldLastStopTime] = struct{}{}
+			}
+		case "totalRunDuration":
+			if _, ok := fieldSeen[testsummary.FieldTotalRunDuration]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldTotalRunDuration)
+				fieldSeen[testsummary.FieldTotalRunDuration] = struct{}{}
+			}
+		case "label":
+			if _, ok := fieldSeen[testsummary.FieldLabel]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldLabel)
+				fieldSeen[testsummary.FieldLabel] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		ts.Select(selectedFields...)
+	}
+	return nil
+}
+
+type testsummaryPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TestSummaryPaginateOption
+}
+
+func newTestSummaryPaginateArgs(rv map[string]any) *testsummaryPaginateArgs {
+	args := &testsummaryPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TestSummaryWhereInput); ok {
+		args.opts = append(args.opts, WithTestSummaryFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (tb *TimingBreakdownQuery) CollectFields(ctx context.Context, satisfies ...string) (*TimingBreakdownQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return tb, nil
+	}
+	if err := tb.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return tb, nil
+}
+
+func (tb *TimingBreakdownQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(timingbreakdown.Columns))
+		selectedFields = []string{timingbreakdown.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "executionInfo":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ExectionInfoClient{config: tb.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, exectioninfoImplementors)...); err != nil {
+				return err
+			}
+			tb.WithNamedExecutionInfo(alias, func(wq *ExectionInfoQuery) {
+				*wq = *query
+			})
+
+		case "child":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TimingChildClient{config: tb.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, timingchildImplementors)...); err != nil {
+				return err
+			}
+			tb.WithNamedChild(alias, func(wq *TimingChildQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[timingbreakdown.FieldName]; !ok {
+				selectedFields = append(selectedFields, timingbreakdown.FieldName)
+				fieldSeen[timingbreakdown.FieldName] = struct{}{}
+			}
+		case "time":
+			if _, ok := fieldSeen[timingbreakdown.FieldTime]; !ok {
+				selectedFields = append(selectedFields, timingbreakdown.FieldTime)
+				fieldSeen[timingbreakdown.FieldTime] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		tb.Select(selectedFields...)
+	}
+	return nil
+}
+
+type timingbreakdownPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TimingBreakdownPaginateOption
+}
+
+func newTimingBreakdownPaginateArgs(rv map[string]any) *timingbreakdownPaginateArgs {
+	args := &timingbreakdownPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TimingBreakdownWhereInput); ok {
+		args.opts = append(args.opts, WithTimingBreakdownFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (tc *TimingChildQuery) CollectFields(ctx context.Context, satisfies ...string) (*TimingChildQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return tc, nil
+	}
+	if err := tc.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return tc, nil
+}
+
+func (tc *TimingChildQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(timingchild.Columns))
+		selectedFields = []string{timingchild.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "timingBreakdown":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TimingBreakdownClient{config: tc.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, timingbreakdownImplementors)...); err != nil {
+				return err
+			}
+			tc.WithNamedTimingBreakdown(alias, func(wq *TimingBreakdownQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[timingchild.FieldName]; !ok {
+				selectedFields = append(selectedFields, timingchild.FieldName)
+				fieldSeen[timingchild.FieldName] = struct{}{}
+			}
+		case "time":
+			if _, ok := fieldSeen[timingchild.FieldTime]; !ok {
+				selectedFields = append(selectedFields, timingchild.FieldTime)
+				fieldSeen[timingchild.FieldTime] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		tc.Select(selectedFields...)
+	}
+	return nil
+}
+
+type timingchildPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TimingChildPaginateOption
+}
+
+func newTimingChildPaginateArgs(rv map[string]any) *timingchildPaginateArgs {
+	args := &timingchildPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TimingChildWhereInput); ok {
+		args.opts = append(args.opts, WithTimingChildFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (tm *TimingMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*TimingMetricsQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return tm, nil
+	}
+	if err := tm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return tm, nil
+}
+
+func (tm *TimingMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(timingmetrics.Columns))
+		selectedFields = []string{timingmetrics.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "metrics":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&MetricsClient{config: tm.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+				return err
+			}
+			tm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
+				*wq = *query
+			})
+		case "cpuTimeInMs":
+			if _, ok := fieldSeen[timingmetrics.FieldCPUTimeInMs]; !ok {
+				selectedFields = append(selectedFields, timingmetrics.FieldCPUTimeInMs)
+				fieldSeen[timingmetrics.FieldCPUTimeInMs] = struct{}{}
+			}
+		case "wallTimeInMs":
+			if _, ok := fieldSeen[timingmetrics.FieldWallTimeInMs]; !ok {
+				selectedFields = append(selectedFields, timingmetrics.FieldWallTimeInMs)
+				fieldSeen[timingmetrics.FieldWallTimeInMs] = struct{}{}
+			}
+		case "analysisPhaseTimeInMs":
+			if _, ok := fieldSeen[timingmetrics.FieldAnalysisPhaseTimeInMs]; !ok {
+				selectedFields = append(selectedFields, timingmetrics.FieldAnalysisPhaseTimeInMs)
+				fieldSeen[timingmetrics.FieldAnalysisPhaseTimeInMs] = struct{}{}
+			}
+		case "executionPhaseTimeInMs":
+			if _, ok := fieldSeen[timingmetrics.FieldExecutionPhaseTimeInMs]; !ok {
+				selectedFields = append(selectedFields, timingmetrics.FieldExecutionPhaseTimeInMs)
+				fieldSeen[timingmetrics.FieldExecutionPhaseTimeInMs] = struct{}{}
+			}
+		case "actionsExecutionStartInMs":
+			if _, ok := fieldSeen[timingmetrics.FieldActionsExecutionStartInMs]; !ok {
+				selectedFields = append(selectedFields, timingmetrics.FieldActionsExecutionStartInMs)
+				fieldSeen[timingmetrics.FieldActionsExecutionStartInMs] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		tm.Select(selectedFields...)
+	}
+	return nil
+}
+
+type timingmetricsPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []TimingMetricsPaginateOption
+}
+
+func newTimingMetricsPaginateArgs(rv map[string]any) *timingmetricsPaginateArgs {
+	args := &timingmetricsPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*TimingMetricsWhereInput); ok {
+		args.opts = append(args.opts, WithTimingMetricsFilter(v.Filter))
 	}
 	return args
 }

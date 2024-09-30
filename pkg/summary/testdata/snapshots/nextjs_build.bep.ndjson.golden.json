@@ -33,6 +33,2984 @@
     "ChangeNumber": 0,
     "PatchsetNumber": 0,
     "BuildURL": "",
-    "BuildUUID": "1b4db7eb-4057-5ddf-91e0-36dec72071f5"
+    "BuildUUID": "1b4db7eb-4057-5ddf-91e0-36dec72071f5",
+    "UserLDAP": "",
+    "UserEmail": "",
+    "BuildLogs": {},
+    "Metrics": {
+      "ActionSummary": {
+        "ActionsCreated": 0,
+        "ActionsCreatedNotIncludingAspects": 0,
+        "ActionsExecuted": 3,
+        "ActionData": [
+          {
+            "Mnemonic": "BazelWorkspaceStatusAction",
+            "ActionsExecuted": 1,
+            "FirstStartedMs": 1714695868925,
+            "LastEndedMs": 1714695868927,
+            "SystemTime": 0,
+            "UserTime": 0
+          },
+          {
+            "Mnemonic": "CopyFile",
+            "ActionsExecuted": 1,
+            "FirstStartedMs": 1714695868965,
+            "LastEndedMs": 1714695868981,
+            "SystemTime": 2,
+            "UserTime": 1
+          },
+          {
+            "Mnemonic": "TsProject",
+            "ActionsExecuted": 1,
+            "FirstStartedMs": 1714695868981,
+            "LastEndedMs": 1714695869600,
+            "SystemTime": 55,
+            "UserTime": 1009
+          }
+        ],
+        "RemoteCacheHits": 0,
+        "RunnerCount": [
+          {
+            "Name": "total",
+            "Count": 3,
+            "ExecKind": ""
+          },
+          {
+            "Name": "internal",
+            "Count": 1,
+            "ExecKind": ""
+          },
+          {
+            "Name": "darwin-sandbox",
+            "Count": 1,
+            "ExecKind": "Local"
+          },
+          {
+            "Name": "local",
+            "Count": 1,
+            "ExecKind": "Local"
+          }
+        ],
+        "ActionCacheStatistics": {
+          "SizeInBytes": 1549126,
+          "SaveTimeInMs": 0,
+          "LoadTimeInMs": 0,
+          "Hits": 19,
+          "Misses": 3,
+          "MissDetails": [
+            {
+              "Reason": 0,
+              "Count": 0
+            },
+            {
+              "Reason": 1,
+              "Count": 0
+            },
+            {
+              "Reason": 2,
+              "Count": 0
+            },
+            {
+              "Reason": 3,
+              "Count": 1
+            },
+            {
+              "Reason": 4,
+              "Count": 0
+            },
+            {
+              "Reason": 5,
+              "Count": 1
+            },
+            {
+              "Reason": 6,
+              "Count": 1
+            }
+          ]
+        }
+      },
+      "MemoryMetrics": {
+        "UsedHeapSizePostBuild": 0,
+        "PeakPostGcHeapSize": 0,
+        "PeakPostGcTenuredSpaceHeapSize": 0,
+        "GarbageMetrics": []
+      },
+      "TargetMetrics": {
+        "TargetsLoaded": 0,
+        "TargetsConfigured": 0,
+        "TargetsConfiguredNotIncludingAspects": 0
+      },
+      "PackageMetrics": {
+        "PackagesLoaded": 0,
+        "PackageLoadMetrics": []
+      },
+      "TimingMetrics": {
+        "CPUTimeInMs": 2619,
+        "WallTimeInMs": 954,
+        "AnalysisPhaseTimeInMs": 51,
+        "ExecutionPhaseTimeInMs": 680
+      },
+      "CumulativeMetrics": {
+        "NumAnalyses": 11,
+        "NumBuilds": 11
+      },
+      "ArtifactMetrics": {
+        "SourceArtifactsRead": {
+          "SizeInBytes": 2521,
+          "Count": 1
+        },
+        "OutputArtifactsSeen": {
+          "SizeInBytes": 8560829,
+          "Count": 85
+        },
+        "OutputArtifactsFromActionCache": {
+          "SizeInBytes": 8553573,
+          "Count": 78
+        },
+        "TopLevelArtifacts": {
+          "SizeInBytes": 5731462997,
+          "Count": 40231
+        }
+      },
+      "BuildGraphMetrics": {
+        "ActionLookupValueCount": 0,
+        "ActionLookupValueCountNotIncludingAspects": 0,
+        "ActionCount": 0,
+        "InputFileConfiguredTargetCount": 0,
+        "OutputFileConfiguredTargetCount": 0,
+        "OtherConfiguredTargetCount": 0,
+        "OutputArtifactCount": 0,
+        "PostInvocationSkyframeNodeCount": 117836,
+        "DirtiedValues": null,
+        "ChangedValues": null,
+        "BuiltValues": null,
+        "CleanedValues": null,
+        "EvaluatedValues": null
+      },
+      "NetworkMetrics": {
+        "SystemNetworkStats": null
+      },
+      "DynamicExecutionMetrics": {
+        "RaceStatistics": null
+      }
+    },
+    "Tests": {
+      "//next.js/pages:jest_test": {
+        "TestSummary": {
+          "Label": "//next.js/pages:jest_test",
+          "Status": 1,
+          "TotalRunCount": 1,
+          "RunCount": 1,
+          "AttemptCount": 1,
+          "ShardCount": 0,
+          "TotalNumCached": 1,
+          "FirstStartTime": 0,
+          "LastStopTime": 0,
+          "TotalRunDuration": 1134000,
+          "Passed": null,
+          "Failed": null
+        },
+        "TestResults": [
+          {
+            "Status": 1,
+            "StatusDetails": "",
+            "Label": "//next.js/pages:jest_test",
+            "Warning": null,
+            "CachedLocally": true,
+            "TestAttemptDuration": 0,
+            "TestAttemptStart": "2024-05-03 00:23:39.112 +0000 UTC",
+            "TestActionOutput": [
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/next.js/pages/jest_test/test.log",
+                "Length": 0,
+                "Name": "test.log",
+                "Prefix": null
+              },
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/next.js/pages/jest_test/test.xml",
+                "Length": 0,
+                "Name": "test.xml",
+                "Prefix": null
+              }
+            ],
+            "ExecutionInfo": {
+              "Strategy": "",
+              "CachedRemotely": false,
+              "ExitCode": 0,
+              "Hostname": "",
+              "TimingBreakdown": {
+                "Name": "",
+                "Time": "0",
+                "Child": null
+              },
+              "ResourceUsage": null
+            }
+          }
+        ],
+        "OverallStatus": 1,
+        "Strategy": "",
+        "CachedLocally": true,
+        "CachedRemotely": false,
+        "DurationMs": 0
+      },
+      "//next.js:build_smoke_test": {
+        "TestSummary": {
+          "Label": "//next.js:build_smoke_test",
+          "Status": 1,
+          "TotalRunCount": 1,
+          "RunCount": 1,
+          "AttemptCount": 1,
+          "ShardCount": 0,
+          "TotalNumCached": 1,
+          "FirstStartTime": 0,
+          "LastStopTime": 0,
+          "TotalRunDuration": 354000,
+          "Passed": null,
+          "Failed": null
+        },
+        "TestResults": [
+          {
+            "Status": 1,
+            "StatusDetails": "",
+            "Label": "//next.js:build_smoke_test",
+            "Warning": null,
+            "CachedLocally": true,
+            "TestAttemptDuration": 0,
+            "TestAttemptStart": "2024-05-03 00:21:57.396 +0000 UTC",
+            "TestActionOutput": [
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/next.js/build_smoke_test/test.log",
+                "Length": 0,
+                "Name": "test.log",
+                "Prefix": null
+              },
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/next.js/build_smoke_test/test.xml",
+                "Length": 0,
+                "Name": "test.xml",
+                "Prefix": null
+              }
+            ],
+            "ExecutionInfo": {
+              "Strategy": "",
+              "CachedRemotely": false,
+              "ExitCode": 0,
+              "Hostname": "",
+              "TimingBreakdown": {
+                "Name": "",
+                "Time": "0",
+                "Child": null
+              },
+              "ResourceUsage": null
+            }
+          }
+        ],
+        "OverallStatus": 1,
+        "Strategy": "",
+        "CachedLocally": true,
+        "CachedRemotely": false,
+        "DurationMs": 0
+      },
+      "//next.js:build_test": {
+        "TestSummary": {
+          "Label": "//next.js:build_test",
+          "Status": 1,
+          "TotalRunCount": 1,
+          "RunCount": 1,
+          "AttemptCount": 1,
+          "ShardCount": 0,
+          "TotalNumCached": 1,
+          "FirstStartTime": 0,
+          "LastStopTime": 0,
+          "TotalRunDuration": 89000,
+          "Passed": null,
+          "Failed": null
+        },
+        "TestResults": [
+          {
+            "Status": 1,
+            "StatusDetails": "",
+            "Label": "//next.js:build_test",
+            "Warning": null,
+            "CachedLocally": true,
+            "TestAttemptDuration": 0,
+            "TestAttemptStart": "2024-05-03 00:21:57.458 +0000 UTC",
+            "TestActionOutput": [
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/next.js/build_test/test.log",
+                "Length": 0,
+                "Name": "test.log",
+                "Prefix": null
+              },
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/next.js/build_test/test.xml",
+                "Length": 0,
+                "Name": "test.xml",
+                "Prefix": null
+              }
+            ],
+            "ExecutionInfo": {
+              "Strategy": "",
+              "CachedRemotely": false,
+              "ExitCode": 0,
+              "Hostname": "",
+              "TimingBreakdown": {
+                "Name": "",
+                "Time": "0",
+                "Child": null
+              },
+              "ResourceUsage": null
+            }
+          }
+        ],
+        "OverallStatus": 1,
+        "Strategy": "",
+        "CachedLocally": true,
+        "CachedRemotely": false,
+        "DurationMs": 0
+      },
+      "//react-webpack:build_smoke_test": {
+        "TestSummary": {
+          "Label": "//react-webpack:build_smoke_test",
+          "Status": 1,
+          "TotalRunCount": 1,
+          "RunCount": 1,
+          "AttemptCount": 1,
+          "ShardCount": 0,
+          "TotalNumCached": 1,
+          "FirstStartTime": 0,
+          "LastStopTime": 0,
+          "TotalRunDuration": 170000,
+          "Passed": null,
+          "Failed": null
+        },
+        "TestResults": [
+          {
+            "Status": 1,
+            "StatusDetails": "",
+            "Label": "//react-webpack:build_smoke_test",
+            "Warning": null,
+            "CachedLocally": true,
+            "TestAttemptDuration": 0,
+            "TestAttemptStart": "2024-05-03 00:21:57.581 +0000 UTC",
+            "TestActionOutput": [
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react-webpack/build_smoke_test/test.log",
+                "Length": 0,
+                "Name": "test.log",
+                "Prefix": null
+              },
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react-webpack/build_smoke_test/test.xml",
+                "Length": 0,
+                "Name": "test.xml",
+                "Prefix": null
+              }
+            ],
+            "ExecutionInfo": {
+              "Strategy": "",
+              "CachedRemotely": false,
+              "ExitCode": 0,
+              "Hostname": "",
+              "TimingBreakdown": {
+                "Name": "",
+                "Time": "0",
+                "Child": null
+              },
+              "ResourceUsage": null
+            }
+          }
+        ],
+        "OverallStatus": 1,
+        "Strategy": "",
+        "CachedLocally": true,
+        "CachedRemotely": false,
+        "DurationMs": 0
+      },
+      "//react/src:lint": {
+        "TestSummary": {
+          "Label": "//react/src:lint",
+          "Status": 1,
+          "TotalRunCount": 1,
+          "RunCount": 1,
+          "AttemptCount": 1,
+          "ShardCount": 0,
+          "TotalNumCached": 1,
+          "FirstStartTime": 0,
+          "LastStopTime": 0,
+          "TotalRunDuration": 112000,
+          "Passed": null,
+          "Failed": null
+        },
+        "TestResults": [
+          {
+            "Status": 1,
+            "StatusDetails": "",
+            "Label": "//react/src:lint",
+            "Warning": null,
+            "CachedLocally": true,
+            "TestAttemptDuration": 0,
+            "TestAttemptStart": "2024-05-03 00:21:57.52 +0000 UTC",
+            "TestActionOutput": [
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react/src/lint/test.log",
+                "Length": 0,
+                "Name": "test.log",
+                "Prefix": null
+              },
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react/src/lint/test.xml",
+                "Length": 0,
+                "Name": "test.xml",
+                "Prefix": null
+              }
+            ],
+            "ExecutionInfo": {
+              "Strategy": "",
+              "CachedRemotely": false,
+              "ExitCode": 0,
+              "Hostname": "",
+              "TimingBreakdown": {
+                "Name": "",
+                "Time": "0",
+                "Child": null
+              },
+              "ResourceUsage": null
+            }
+          }
+        ],
+        "OverallStatus": 1,
+        "Strategy": "",
+        "CachedLocally": true,
+        "CachedRemotely": false,
+        "DurationMs": 0
+      },
+      "//react/src:src_typecheck_test": {
+        "TestSummary": {
+          "Label": "//react/src:src_typecheck_test",
+          "Status": 1,
+          "TotalRunCount": 1,
+          "RunCount": 1,
+          "AttemptCount": 1,
+          "ShardCount": 0,
+          "TotalNumCached": 1,
+          "FirstStartTime": 0,
+          "LastStopTime": 0,
+          "TotalRunDuration": 85000,
+          "Passed": null,
+          "Failed": null
+        },
+        "TestResults": [
+          {
+            "Status": 1,
+            "StatusDetails": "",
+            "Label": "//react/src:src_typecheck_test",
+            "Warning": null,
+            "CachedLocally": true,
+            "TestAttemptDuration": 0,
+            "TestAttemptStart": "2024-05-03 00:21:57.477 +0000 UTC",
+            "TestActionOutput": [
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react/src/src_typecheck_test/test.log",
+                "Length": 0,
+                "Name": "test.log",
+                "Prefix": null
+              },
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react/src/src_typecheck_test/test.xml",
+                "Length": 0,
+                "Name": "test.xml",
+                "Prefix": null
+              }
+            ],
+            "ExecutionInfo": {
+              "Strategy": "",
+              "CachedRemotely": false,
+              "ExitCode": 0,
+              "Hostname": "",
+              "TimingBreakdown": {
+                "Name": "",
+                "Time": "0",
+                "Child": null
+              },
+              "ResourceUsage": null
+            }
+          }
+        ],
+        "OverallStatus": 1,
+        "Strategy": "",
+        "CachedLocally": true,
+        "CachedRemotely": false,
+        "DurationMs": 0
+      },
+      "//react/src:test": {
+        "TestSummary": {
+          "Label": "//react/src:test",
+          "Status": 1,
+          "TotalRunCount": 1,
+          "RunCount": 1,
+          "AttemptCount": 1,
+          "ShardCount": 0,
+          "TotalNumCached": 1,
+          "FirstStartTime": 0,
+          "LastStopTime": 0,
+          "TotalRunDuration": 1715000,
+          "Passed": null,
+          "Failed": null
+        },
+        "TestResults": [
+          {
+            "Status": 1,
+            "StatusDetails": "",
+            "Label": "//react/src:test",
+            "Warning": null,
+            "CachedLocally": true,
+            "TestAttemptDuration": 0,
+            "TestAttemptStart": "2024-05-03 00:21:57.508 +0000 UTC",
+            "TestActionOutput": [
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react/src/test/test.log",
+                "Length": 0,
+                "Name": "test.log",
+                "Prefix": null
+              },
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react/src/test/test.xml",
+                "Length": 0,
+                "Name": "test.xml",
+                "Prefix": null
+              }
+            ],
+            "ExecutionInfo": {
+              "Strategy": "",
+              "CachedRemotely": false,
+              "ExitCode": 0,
+              "Hostname": "",
+              "TimingBreakdown": {
+                "Name": "",
+                "Time": "0",
+                "Child": null
+              },
+              "ResourceUsage": null
+            }
+          }
+        ],
+        "OverallStatus": 1,
+        "Strategy": "",
+        "CachedLocally": true,
+        "CachedRemotely": false,
+        "DurationMs": 0
+      },
+      "//react/src:test_lib_typecheck_test": {
+        "TestSummary": {
+          "Label": "//react/src:test_lib_typecheck_test",
+          "Status": 1,
+          "TotalRunCount": 1,
+          "RunCount": 1,
+          "AttemptCount": 1,
+          "ShardCount": 0,
+          "TotalNumCached": 1,
+          "FirstStartTime": 0,
+          "LastStopTime": 0,
+          "TotalRunDuration": 95000,
+          "Passed": null,
+          "Failed": null
+        },
+        "TestResults": [
+          {
+            "Status": 1,
+            "StatusDetails": "",
+            "Label": "//react/src:test_lib_typecheck_test",
+            "Warning": null,
+            "CachedLocally": true,
+            "TestAttemptDuration": 0,
+            "TestAttemptStart": "2024-05-03 00:21:57.499 +0000 UTC",
+            "TestActionOutput": [
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react/src/test_lib_typecheck_test/test.log",
+                "Length": 0,
+                "Name": "test.log",
+                "Prefix": null
+              },
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react/src/test_lib_typecheck_test/test.xml",
+                "Length": 0,
+                "Name": "test.xml",
+                "Prefix": null
+              }
+            ],
+            "ExecutionInfo": {
+              "Strategy": "",
+              "CachedRemotely": false,
+              "ExitCode": 0,
+              "Hostname": "",
+              "TimingBreakdown": {
+                "Name": "",
+                "Time": "0",
+                "Child": null
+              },
+              "ResourceUsage": null
+            }
+          }
+        ],
+        "OverallStatus": 1,
+        "Strategy": "",
+        "CachedLocally": true,
+        "CachedRemotely": false,
+        "DurationMs": 0
+      },
+      "//react:build_smoke_test": {
+        "TestSummary": {
+          "Label": "//react:build_smoke_test",
+          "Status": 1,
+          "TotalRunCount": 1,
+          "RunCount": 1,
+          "AttemptCount": 1,
+          "ShardCount": 0,
+          "TotalNumCached": 1,
+          "FirstStartTime": 0,
+          "LastStopTime": 0,
+          "TotalRunDuration": 191000,
+          "Passed": null,
+          "Failed": null
+        },
+        "TestResults": [
+          {
+            "Status": 1,
+            "StatusDetails": "",
+            "Label": "//react:build_smoke_test",
+            "Warning": null,
+            "CachedLocally": true,
+            "TestAttemptDuration": 0,
+            "TestAttemptStart": "2024-05-03 00:21:57.549 +0000 UTC",
+            "TestActionOutput": [
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react/build_smoke_test/test.log",
+                "Length": 0,
+                "Name": "test.log",
+                "Prefix": null
+              },
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/react/build_smoke_test/test.xml",
+                "Length": 0,
+                "Name": "test.xml",
+                "Prefix": null
+              }
+            ],
+            "ExecutionInfo": {
+              "Strategy": "",
+              "CachedRemotely": false,
+              "ExitCode": 0,
+              "Hostname": "",
+              "TimingBreakdown": {
+                "Name": "",
+                "Time": "0",
+                "Child": null
+              },
+              "ResourceUsage": null
+            }
+          }
+        ],
+        "OverallStatus": 1,
+        "Strategy": "",
+        "CachedLocally": true,
+        "CachedRemotely": false,
+        "DurationMs": 0
+      },
+      "//vue:build_test": {
+        "TestSummary": {
+          "Label": "//vue:build_test",
+          "Status": 1,
+          "TotalRunCount": 1,
+          "RunCount": 1,
+          "AttemptCount": 1,
+          "ShardCount": 0,
+          "TotalNumCached": 1,
+          "FirstStartTime": 0,
+          "LastStopTime": 0,
+          "TotalRunDuration": 68000,
+          "Passed": null,
+          "Failed": null
+        },
+        "TestResults": [
+          {
+            "Status": 1,
+            "StatusDetails": "",
+            "Label": "//vue:build_test",
+            "Warning": null,
+            "CachedLocally": true,
+            "TestAttemptDuration": 0,
+            "TestAttemptStart": "2024-05-03 00:21:57.568 +0000 UTC",
+            "TestActionOutput": [
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/vue/build_test/test.log",
+                "Length": 0,
+                "Name": "test.log",
+                "Prefix": null
+              },
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/vue/build_test/test.xml",
+                "Length": 0,
+                "Name": "test.xml",
+                "Prefix": null
+              }
+            ],
+            "ExecutionInfo": {
+              "Strategy": "",
+              "CachedRemotely": false,
+              "ExitCode": 0,
+              "Hostname": "",
+              "TimingBreakdown": {
+                "Name": "",
+                "Time": "0",
+                "Child": null
+              },
+              "ResourceUsage": null
+            }
+          }
+        ],
+        "OverallStatus": 1,
+        "Strategy": "",
+        "CachedLocally": true,
+        "CachedRemotely": false,
+        "DurationMs": 0
+      },
+      "//vue:type-check": {
+        "TestSummary": {
+          "Label": "//vue:type-check",
+          "Status": 1,
+          "TotalRunCount": 1,
+          "RunCount": 1,
+          "AttemptCount": 1,
+          "ShardCount": 0,
+          "TotalNumCached": 1,
+          "FirstStartTime": 0,
+          "LastStopTime": 0,
+          "TotalRunDuration": 1180000,
+          "Passed": null,
+          "Failed": null
+        },
+        "TestResults": [
+          {
+            "Status": 1,
+            "StatusDetails": "",
+            "Label": "//vue:type-check",
+            "Warning": null,
+            "CachedLocally": true,
+            "TestAttemptDuration": 0,
+            "TestAttemptStart": "2024-05-03 00:21:57.536 +0000 UTC",
+            "TestActionOutput": [
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/vue/type-check/test.log",
+                "Length": 0,
+                "Name": "test.log",
+                "Prefix": null
+              },
+              {
+                "Digest": "",
+                "File": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/execroot/_main/bazel-out/darwin_arm64-fastbuild/testlogs/vue/type-check/test.xml",
+                "Length": 0,
+                "Name": "test.xml",
+                "Prefix": null
+              }
+            ],
+            "ExecutionInfo": {
+              "Strategy": "",
+              "CachedRemotely": false,
+              "ExitCode": 0,
+              "Hostname": "",
+              "TimingBreakdown": {
+                "Name": "",
+                "Time": "0",
+                "Child": null
+              },
+              "ResourceUsage": null
+            }
+          }
+        ],
+        "OverallStatus": 1,
+        "Strategy": "",
+        "CachedLocally": true,
+        "CachedRemotely": false,
+        "DurationMs": 0
+      }
+    },
+    "Targets": {
+      "//:eslint": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/pages/api:api": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_project rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "ts_project rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/pages:_jest_test_bazel_sequencer": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_copy_file rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_copy_file rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/pages:_jest_test_bazel_snapshot_reporter": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_copy_file rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_copy_file rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/pages:_jest_test_bazel_snapshot_resolver": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_copy_file rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_copy_file rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/pages:_jest_test_jest_entrypoint": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "directory_path rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "directory_path rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/pages:jest_test": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "jest_test rule",
+          "TestSize": 2,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "medium",
+            "short",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 60,
+          "TestTimeout": 60,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "jest_test rule",
+        "TestSize": 2,
+        "AbortReason": 0
+      },
+      "//next.js/pages:pages": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_project rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "ts_project rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/pages:specs": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_project rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "ts_project rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/public:public": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/styles:styles": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js:build_smoke_test": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_test rule",
+          "TestSize": 2,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "medium",
+            "moderate",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 300,
+          "TestTimeout": 300,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_test rule",
+        "TestSize": 2,
+        "AbortReason": 0
+      },
+      "//next.js:build_test": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_empty_test rule",
+          "TestSize": 1,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "small",
+            "short",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 60,
+          "TestTimeout": 60,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_empty_test rule",
+        "TestSize": 1,
+        "AbortReason": 0
+      },
+      "//next.js:eslintrc": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js:jest_config": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js:next": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_run_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_run_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js:next_dev": {
+        "Configuration": {
+          "Tag": [
+            "ibazel_notify_changes"
+          ],
+          "TargetKind": "_js_run_devserver rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "ibazel_notify_changes"
+          ],
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_js_run_devserver rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js:next_js_binary": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js:next_start": {
+        "Configuration": {
+          "Tag": [
+            "ibazel_notify_changes"
+          ],
+          "TargetKind": "_js_run_devserver rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "ibazel_notify_changes"
+          ],
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_js_run_devserver rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js:package_json": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js:tsconfig": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_config rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "ts_config rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//packages/one:one": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_npm_package rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_npm_package rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//packages/one:one_ts": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_project rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "ts_project rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react-webpack/src:transpile": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "swc_compile rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "swc_compile rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react-webpack:_bundle_webpack_binary": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react-webpack:_bundle_webpack_binary_entrypoint": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "directory_path rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "directory_path rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react-webpack:_dev_server_webpack_binary": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react-webpack:_dev_server_webpack_binary_entrypoint": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "directory_path rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "directory_path rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react-webpack:build_smoke_test": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_test rule",
+          "TestSize": 2,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "medium",
+            "short",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 60,
+          "TestTimeout": 60,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_test rule",
+        "TestSize": 2,
+        "AbortReason": 0
+      },
+      "//react-webpack:bundle": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_webpack_bundle rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_webpack_bundle rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react-webpack:dev_server": {
+        "Configuration": {
+          "Tag": [
+            "ibazel_notify_changes"
+          ],
+          "TargetKind": "_js_run_devserver rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "ibazel_notify_changes"
+          ],
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_js_run_devserver rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/public:public": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:assets": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:lint": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "eslint_test rule",
+          "TestSize": 2,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "medium",
+            "short",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 60,
+          "TestTimeout": 60,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "eslint_test rule",
+        "TestSize": 2,
+        "AbortReason": 0
+      },
+      "//react/src:src": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:src_transpile": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "swc_compile rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "swc_compile rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:src_typecheck": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "filegroup rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "filegroup rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:src_typecheck_test": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_empty_test rule",
+          "TestSize": 1,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "small",
+            "short",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 60,
+          "TestTimeout": 60,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_empty_test rule",
+        "TestSize": 1,
+        "AbortReason": 0
+      },
+      "//react/src:src_typings": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_project rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "ts_project rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:test": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_test rule",
+          "TestSize": 2,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "medium",
+            "moderate",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 300,
+          "TestTimeout": 300,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_test rule",
+        "TestSize": 2,
+        "AbortReason": 0
+      },
+      "//react/src:test_lib": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:test_lib_transpile": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "swc_compile rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "swc_compile rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:test_lib_typecheck": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "filegroup rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "filegroup rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:test_lib_typecheck_test": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_empty_test rule",
+          "TestSize": 1,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "small",
+            "short",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 60,
+          "TestTimeout": 60,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_empty_test rule",
+        "TestSize": 1,
+        "AbortReason": 0
+      },
+      "//react/src:test_lib_typings": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_project rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "ts_project rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react:build": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_run_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_run_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react:build_smoke_test": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_test rule",
+          "TestSize": 2,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "medium",
+            "short",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 60,
+          "TestTimeout": 60,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_test rule",
+        "TestSize": 2,
+        "AbortReason": 0
+      },
+      "//react:package_json": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react:preview": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react:start": {
+        "Configuration": {
+          "Tag": [
+            "ibazel_notify_changes"
+          ],
+          "TargetKind": "_js_run_devserver rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "ibazel_notify_changes"
+          ],
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_js_run_devserver rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react:tsconfig": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_config rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "ts_config rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react:vite": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react:vite.config": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react:write_swcrc": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_run_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_run_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//vue/libraries/simple:build": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_run_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_run_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//vue/libraries/simple:simple": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_npm_package rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_npm_package rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//vue/libraries/simple:types": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_run_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_run_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//vue/libraries/simple:vite.config": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//vue/src:src": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_copy_to_bin rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_copy_to_bin rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//vue:build": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_run_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_run_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//vue:build_test": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_empty_test rule",
+          "TestSize": 1,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "small",
+            "short",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 60,
+          "TestTimeout": 60,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_empty_test rule",
+        "TestSize": 1,
+        "AbortReason": 0
+      },
+      "//vue:type-check": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_test rule",
+          "TestSize": 2,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "medium",
+            "moderate",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 300,
+          "TestTimeout": 300,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_test rule",
+        "TestSize": 2,
+        "AbortReason": 0
+      },
+      "//vue:vite": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_binary rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      }
+    },
+    "NumFetches": 0,
+    "CPU": "darwin_arm64",
+    "PlatformName": "darwin_arm64",
+    "ConfigrationMnemonic": "darwin_arm64-fastbuild"
   }
 }

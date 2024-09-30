@@ -8,6 +8,8 @@ import PortalAlert from '@/components/PortalAlert';
 import IntrinsicAttributes = JSX.IntrinsicAttributes;
 
 const ansi = new AnsiUp();
+//large logs were causing a stack overflow, so setting a configurable max length and tailing the logs for that length
+const MAX_LOG_LENGTH = 50000
 
 const FILE_EXTENSIONS_IGNORE = ['.py', '.so'];
 
@@ -20,6 +22,9 @@ const LogViewer: React.FC<Props> = ({ log }) => {
     return (
       <PortalAlert message="There is no information to display" type="warning" showIcon className={styles.alert} />
     );
+  }
+  if (log.length > MAX_LOG_LENGTH) {
+    log = log.slice(0, MAX_LOG_LENGTH / 2) + "\n\n...\n\n**************LOG CONTENT TRUNCATED********************\n\n...\n\n" + log.slice(log.length - (MAX_LOG_LENGTH / 2), log.length)
   }
   const innerHTML =
     linkifyHtml(ansi.ansi_to_html(log), {

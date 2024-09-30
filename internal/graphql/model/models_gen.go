@@ -135,6 +135,12 @@ type TestResult struct {
 
 func (TestResult) IsNode() {}
 
+type User struct {
+	ID    string `json:"id"`
+	Email string `json:"Email"`
+	Ldap  string `json:"LDAP"`
+}
+
 type ActionOutputStatus string
 
 const (

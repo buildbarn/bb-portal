@@ -25,6 +25,7 @@
         "endedAt": "2024-05-13T23:43:26.247Z",
         "id": "QmF6ZWxJbnZvY2F0aW9uOjU=",
         "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
+        "metrics": null,
         "problems": [
           {
             "__typename": "TestProblem",
@@ -72,7 +73,13 @@
           },
           "id": ""
         },
-        "stepLabel": "nextjs_test"
+        "stepLabel": "nextjs_test",
+        "targets": [],
+        "testCollection": [],
+        "user": {
+          "Email": "",
+          "LDAP": ""
+        }
       }
     ]
   }

@@ -6,8 +6,10 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/events"
 )
 
+// ErrorProgressBazelInvocationProblemDetector type
 type ErrorProgressBazelInvocationProblemDetector []*events.BuildEvent
 
+// ProcessBEPEvent function
 func (e *ErrorProgressBazelInvocationProblemDetector) ProcessBEPEvent(event *events.BuildEvent) {
 	if event == nil || event.GetProgress() == nil {
 		return
@@ -18,6 +20,7 @@ func (e *ErrorProgressBazelInvocationProblemDetector) ProcessBEPEvent(event *eve
 	}
 }
 
+// Problems function
 func (e *ErrorProgressBazelInvocationProblemDetector) Problems() ([]Problem, error) {
 	if len(*e) == 0 {
 		return nil, nil

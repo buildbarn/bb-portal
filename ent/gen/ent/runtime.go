@@ -4,6 +4,7 @@ package ent
 
 import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 	"github.com/buildbarn/bb-portal/ent/schema"
 )
 
@@ -19,4 +20,18 @@ func init() {
 	eventfileDescStatus := eventfileFields[4].Descriptor()
 	// eventfile.DefaultStatus holds the default value on creation for the status field.
 	eventfile.DefaultStatus = eventfileDescStatus.Default.(string)
+	missdetailFields := schema.MissDetail{}.Fields()
+	_ = missdetailFields
+	targetpairFields := schema.TargetPair{}.Fields()
+	_ = targetpairFields
+	// targetpairDescSuccess is the schema descriptor for success field.
+	targetpairDescSuccess := targetpairFields[2].Descriptor()
+	// targetpair.DefaultSuccess holds the default value on creation for the success field.
+	targetpair.DefaultSuccess = targetpairDescSuccess.Default.(bool)
+	testcollectionFields := schema.TestCollection{}.Fields()
+	_ = testcollectionFields
+	testresultbesFields := schema.TestResultBES{}.Fields()
+	_ = testresultbesFields
+	testsummaryFields := schema.TestSummary{}.Fields()
+	_ = testsummaryFields
 }

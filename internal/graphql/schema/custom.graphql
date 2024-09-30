@@ -33,6 +33,17 @@ extend type BazelInvocation {
   state: BazelInvocationState!
 }
 
+type User {
+  id: ID!
+  Email: String!
+  LDAP: String!
+}
+
+
+extend type BazelInvocation {
+  user: User
+}
+
 type NamedFile {
   name: String!
   url: String!

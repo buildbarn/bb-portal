@@ -71,6 +71,14 @@ func (r *bazelInvocationResolver) State(ctx context.Context, obj *ent.BazelInvoc
 	}, nil
 }
 
+// User is the resolver for the user field.
+func (r *bazelInvocationResolver) User(ctx context.Context, obj *ent.BazelInvocation) (*model.User, error) {
+	return &model.User{
+		Email: obj.UserEmail,
+		Ldap:  obj.UserLdap,
+	}, nil
+}
+
 // RelatedFiles is the resolver for the relatedFiles field.
 func (r *bazelInvocationResolver) RelatedFiles(ctx context.Context, obj *ent.BazelInvocation) ([]*model.NamedFile, error) {
 	namedFiles := make([]*model.NamedFile, 0, len(obj.RelatedFiles))
@@ -191,8 +199,11 @@ func (r *Resolver) BlobReference() BlobReferenceResolver { return &blobReference
 // TestResult returns TestResultResolver implementation.
 func (r *Resolver) TestResult() TestResultResolver { return &testResultResolver{r} }
 
-type (
-	actionProblemResolver struct{ *Resolver }
-	blobReferenceResolver struct{ *Resolver }
-	testResultResolver    struct{ *Resolver }
-)
+// The action problem resolver type
+type actionProblemResolver struct{ *Resolver }
+
+// The blob reference resolver type
+type blobReferenceResolver struct{ *Resolver }
+
+// the test result resolver type
+type testResultResolver struct{ *Resolver }

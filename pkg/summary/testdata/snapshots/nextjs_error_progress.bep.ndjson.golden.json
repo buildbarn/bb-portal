@@ -76,6 +76,982 @@
     "ChangeNumber": 0,
     "PatchsetNumber": 0,
     "BuildURL": "",
-    "BuildUUID": "1b4db7eb-4057-5ddf-91e0-36dec72071f5"
+    "BuildUUID": "1b4db7eb-4057-5ddf-91e0-36dec72071f5",
+    "UserLDAP": "",
+    "UserEmail": "",
+    "BuildLogs": {},
+    "Metrics": {
+      "ActionSummary": {
+        "ActionsCreated": 0,
+        "ActionsCreatedNotIncludingAspects": 0,
+        "ActionsExecuted": 1,
+        "ActionData": [
+          {
+            "Mnemonic": "BazelWorkspaceStatusAction",
+            "ActionsExecuted": 1,
+            "FirstStartedMs": 1714696187752,
+            "LastEndedMs": 1714696187754,
+            "SystemTime": 0,
+            "UserTime": 0
+          }
+        ],
+        "RemoteCacheHits": 0,
+        "RunnerCount": [
+          {
+            "Name": "total",
+            "Count": 1,
+            "ExecKind": ""
+          },
+          {
+            "Name": "internal",
+            "Count": 1,
+            "ExecKind": ""
+          }
+        ],
+        "ActionCacheStatistics": {
+          "SizeInBytes": 1549398,
+          "SaveTimeInMs": 0,
+          "LoadTimeInMs": 0,
+          "Hits": 4,
+          "Misses": 1,
+          "MissDetails": [
+            {
+              "Reason": 0,
+              "Count": 0
+            },
+            {
+              "Reason": 1,
+              "Count": 0
+            },
+            {
+              "Reason": 2,
+              "Count": 0
+            },
+            {
+              "Reason": 3,
+              "Count": 0
+            },
+            {
+              "Reason": 4,
+              "Count": 0
+            },
+            {
+              "Reason": 5,
+              "Count": 0
+            },
+            {
+              "Reason": 6,
+              "Count": 1
+            }
+          ]
+        }
+      },
+      "MemoryMetrics": {
+        "UsedHeapSizePostBuild": 0,
+        "PeakPostGcHeapSize": 0,
+        "PeakPostGcTenuredSpaceHeapSize": 0,
+        "GarbageMetrics": []
+      },
+      "TargetMetrics": {
+        "TargetsLoaded": 0,
+        "TargetsConfigured": 0,
+        "TargetsConfiguredNotIncludingAspects": 0
+      },
+      "PackageMetrics": {
+        "PackagesLoaded": 0,
+        "PackageLoadMetrics": []
+      },
+      "TimingMetrics": {
+        "CPUTimeInMs": 2508,
+        "WallTimeInMs": 307,
+        "AnalysisPhaseTimeInMs": 0,
+        "ExecutionPhaseTimeInMs": 32
+      },
+      "CumulativeMetrics": {
+        "NumAnalyses": 13,
+        "NumBuilds": 13
+      },
+      "ArtifactMetrics": {
+        "SourceArtifactsRead": {
+          "SizeInBytes": 0,
+          "Count": 0
+        },
+        "OutputArtifactsSeen": {
+          "SizeInBytes": 26241,
+          "Count": 5
+        },
+        "OutputArtifactsFromActionCache": {
+          "SizeInBytes": 26106,
+          "Count": 3
+        },
+        "TopLevelArtifacts": {
+          "SizeInBytes": 0,
+          "Count": 0
+        }
+      },
+      "BuildGraphMetrics": {
+        "ActionLookupValueCount": 0,
+        "ActionLookupValueCountNotIncludingAspects": 0,
+        "ActionCount": 0,
+        "InputFileConfiguredTargetCount": 0,
+        "OutputFileConfiguredTargetCount": 0,
+        "OtherConfiguredTargetCount": 0,
+        "OutputArtifactCount": 0,
+        "PostInvocationSkyframeNodeCount": 117503,
+        "DirtiedValues": null,
+        "ChangedValues": null,
+        "BuiltValues": null,
+        "CleanedValues": null,
+        "EvaluatedValues": null
+      },
+      "NetworkMetrics": {
+        "SystemNetworkStats": null
+      },
+      "DynamicExecutionMetrics": {
+        "RaceStatistics": null
+      }
+    },
+    "Tests": null,
+    "Targets": {
+      "//next.js/pages/api:api": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_project rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "ts_project rule",
+        "TestSize": 0,
+        "AbortReason": 10
+      },
+      "//next.js/pages:_jest_test_bazel_sequencer": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_copy_file rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_copy_file rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/pages:_jest_test_bazel_snapshot_reporter": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_copy_file rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_copy_file rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/pages:_jest_test_bazel_snapshot_resolver": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_copy_file rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_copy_file rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/pages:_jest_test_jest_entrypoint": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "directory_path rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "directory_path rule",
+        "TestSize": 0,
+        "AbortReason": 10
+      },
+      "//next.js/pages:pages": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_project rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "ts_project rule",
+        "TestSize": 0,
+        "AbortReason": 10
+      },
+      "//next.js/pages:specs": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_project rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "ts_project rule",
+        "TestSize": 0,
+        "AbortReason": 10
+      },
+      "//next.js/public:public": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js/styles:styles": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//next.js:eslintrc": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 10
+      },
+      "//next.js:jest_config": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 10
+      },
+      "//next.js:next_js_binary": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_binary rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "js_binary rule",
+        "TestSize": 0,
+        "AbortReason": 10
+      },
+      "//next.js:package_json": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 10
+      },
+      "//next.js:tsconfig": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_config rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "ts_config rule",
+        "TestSize": 0,
+        "AbortReason": 10
+      },
+      "//packages/one:one": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_npm_package rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "_npm_package rule",
+        "TestSize": 0,
+        "AbortReason": 10
+      },
+      "//packages/one:one_ts": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_project rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "ts_project rule",
+        "TestSize": 0,
+        "AbortReason": 10
+      },
+      "//react/public:public": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:assets": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:lint": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "eslint_test rule",
+          "TestSize": 2,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": false,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": false,
+        "TargetKind": "eslint_test rule",
+        "TestSize": 2,
+        "AbortReason": 10
+      },
+      "//react/src:src": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_library rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_library rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:src_transpile": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "swc_compile rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "swc_compile rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:src_typecheck": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "filegroup rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "filegroup rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:src_typecheck_test": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "_empty_test rule",
+          "TestSize": 1,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "small",
+            "short",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "_empty_test rule",
+        "TestSize": 1,
+        "AbortReason": 0
+      },
+      "//react/src:src_typings": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "ts_project rule",
+          "TestSize": 0,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": null,
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "ts_project rule",
+        "TestSize": 0,
+        "AbortReason": 0
+      },
+      "//react/src:test": {
+        "Configuration": {
+          "Tag": null,
+          "TargetKind": "js_test rule",
+          "TestSize": 2,
+          "StartTimeInMs": 0
+        },
+        "Completion": {
+          "Success": true,
+          "TargetKind": "",
+          "TestSize": 0,
+          "OutputGroup": {
+            "Name": "",
+            "Incomplete": false,
+            "InlineFiles": null,
+            "FileSets": {
+              "Files": null,
+              "FileSets": null
+            }
+          },
+          "ImportantOutput": null,
+          "DirectoryOutput": null,
+          "Tag": [
+            "medium",
+            "moderate",
+            "noflaky",
+            "nolocal"
+          ],
+          "TestTimeoutSeconds": 0,
+          "TestTimeout": 0,
+          "EndTimeInMs": 0
+        },
+        "DurationInMs": 0,
+        "Success": true,
+        "TargetKind": "js_test rule",
+        "TestSize": 2,
+        "AbortReason": 0
+      }
+    },
+    "NumFetches": 0,
+    "CPU": "darwin_arm64",
+    "PlatformName": "darwin_arm64",
+    "ConfigrationMnemonic": "darwin_arm64-fastbuild"
   }
 }

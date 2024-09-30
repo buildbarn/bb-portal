@@ -16,17 +16,21 @@ import (
 	"github.com/vektah/gqlparser/v2/parser"
 )
 
+// errOpRegistered
 var errOpRegistered = errors.New("operation is already registered")
 
+// registryEntry struct
 type registryEntry struct {
 	document Document
 	used     bool
 }
 
+// QueryRegistry struct
 type QueryRegistry struct {
 	entries map[string]*registryEntry
 }
 
+// LoadQueryRegistry function
 func LoadQueryRegistry(t *testing.T, queryDir, consumerContractFile string) *QueryRegistry {
 	reg := QueryRegistry{entries: make(map[string]*registryEntry)}
 
@@ -56,6 +60,7 @@ func LoadQueryRegistry(t *testing.T, queryDir, consumerContractFile string) *Que
 	return &reg
 }
 
+// Register function
 func (reg QueryRegistry) Register(opName string, document Document) error {
 	_, exists := reg.entries[opName]
 	if exists {
@@ -67,11 +72,13 @@ func (reg QueryRegistry) Register(opName string, document Document) error {
 	return nil
 }
 
+// NewRequest fuction
 func (reg QueryRegistry) NewRequest(opName string) *graphql.Request {
 	document := reg.MustGet(opName)
 	return graphql.NewRequest(string(document))
 }
 
+// MustGet function
 func (reg QueryRegistry) MustGet(opName string) Document {
 	if entry, exists := reg.entries[opName]; exists {
 		entry.used = true
@@ -80,6 +87,7 @@ func (reg QueryRegistry) MustGet(opName string) Document {
 	panic(fmt.Sprintf("operation %s is not regisitered", opName))
 }
 
+// UnusedOperations function
 func (reg QueryRegistry) UnusedOperations() []string {
 	unused := []string{}
 	for name, entry := range reg.entries {
@@ -91,21 +99,27 @@ func (reg QueryRegistry) UnusedOperations() []string {
 	return unused
 }
 
+// ConsumerContract struct
 type ConsumerContract struct {
 	GeneratedAt time.Time            `yaml:"generatedAt"`
 	Operations  map[string]Operation `yaml:"operations"`
 }
 
 type (
-	Document  string
+	// Document and Variables types
+	Document string
+
+	// Variables struct
 	Variables map[string]interface{}
 )
 
+// Operation struct
 type Operation struct {
 	Document  Document `yaml:"document"`
 	Signature string   `yaml:"signature"`
 }
 
+// mustLoadContract
 func mustLoadContract(contractFile string) ConsumerContract {
 	c := ConsumerContract{
 		Operations: map[string]Operation{},

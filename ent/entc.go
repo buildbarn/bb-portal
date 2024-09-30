@@ -9,6 +9,7 @@ import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/entc"
 	"entgo.io/ent/entc/gen"
+	"github.com/hedwigz/entviz"
 )
 
 func main() {
@@ -24,6 +25,7 @@ func main() {
 		log.Fatalf("creating entgql extension: %v", err)
 	}
 	extensions := []entc.Extension{ex}
+	extensions = append(extensions, entviz.Extension{})
 	if err := os.RemoveAll("./ent/gen"); err != nil {
 		log.Fatalf("failed to remove ./ent/gen: %v", err)
 	}

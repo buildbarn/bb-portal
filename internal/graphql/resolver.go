@@ -11,6 +11,7 @@ import (
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
+// The Resolver Type for DI
 type Resolver struct {
 	client *ent.Client
 	helper *helpers.Helper

@@ -37,7 +37,7 @@ const startedAtColumn: ColumnType<BazelInvocationNodeFragment> = {
   filterIcon: filtered => <SearchFilterIcon icon={<ClockCircleFilled />} filtered={filtered} />,
 };
 
-const durationColumn: ColumnType<BazelInvocationNodeFragment> ={
+const durationColumn: ColumnType<BazelInvocationNodeFragment> = {
   key: 'duration',
   width: 100,
   title: 'Duration',
@@ -68,8 +68,18 @@ const buildColumn: ColumnType<BazelInvocationNodeFragment> = {
   filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
 };
 
+const userColumn: ColumnType<BazelInvocationNodeFragment> = {
+  key: 'user',
+  width: 120,
+  title: "User",
+  render: (_, record) => <Link href={`mailto:${record.user?.Email}`}>{record.user?.LDAP}</Link>,
+
+  filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
+}
+
 const getColumns = (): ColumnType<BazelInvocationNodeFragment>[] => {
   return [
+    userColumn,
     invocationIdColumn,
     startedAtColumn,
     durationColumn,

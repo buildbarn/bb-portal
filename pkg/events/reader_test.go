@@ -19,6 +19,7 @@ import (
 	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 )
 
+// TestBuildEventIteratorBasic A test build event iterator.
 func TestBuildEventIteratorBasic(t *testing.T) {
 	type setup struct {
 		fileName string
@@ -91,6 +92,7 @@ func TestBuildEventIteratorBasic(t *testing.T) {
 	}
 }
 
+// TestBuildEventIterator_SpecificEvent A test build event iterator for a specific event.
 func TestBuildEventIterator_SpecificEvent(t *testing.T) {
 	filePath := filepath.Join("testdata", "namedSetOfFiles.ndjson")
 	file, err := os.Open(filePath)
@@ -138,6 +140,7 @@ func TestBuildEventIterator_SpecificEvent(t *testing.T) {
 	require.Nil(t, buildEvent)
 }
 
+// TestBuildEventIterator_EmptyLinesNotAllowed Prevents Empty Lines.
 func TestBuildEventIterator_EmptyLinesNotAllowed(t *testing.T) {
 	content, err := os.ReadFile(filepath.Join("testdata", "bazelbuild/examples/cpp-tutorial/stage1/build.bep.ndjson"))
 	require.NoError(t, err)
@@ -166,6 +169,7 @@ func TestBuildEventIterator_EmptyLinesNotAllowed(t *testing.T) {
 	assert.Contains(t, err.Error(), "unexpected token")
 }
 
+// TestBuildEventIterator_FinalNewlineIsOptional Final newline is optional helper.
 func TestBuildEventIterator_FinalNewlineIsOptional(t *testing.T) {
 	content, err := os.ReadFile(filepath.Join("testdata", "bazelbuild/examples/cpp-tutorial/stage1/build.bep.ndjson"))
 	require.NoError(t, err)

@@ -18,11 +18,13 @@ import (
 	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 )
 
+// BES A type for the Build Event Service.
 type BES struct {
 	db           *ent.Client
 	blobArchiver processing.BlobMultiArchiver
 }
 
+// New BES initializer function.
 func New(db *ent.Client, blobArchiver processing.BlobMultiArchiver) build.PublishBuildEventServer {
 	return &BES{
 		db:           db,
@@ -30,11 +32,13 @@ func New(db *ent.Client, blobArchiver processing.BlobMultiArchiver) build.Publis
 	}
 }
 
+// PublishLifecycleEvent Publush a life cycle event.
 func (b BES) PublishLifecycleEvent(ctx context.Context, request *build.PublishLifecycleEventRequest) (*emptypb.Empty, error) {
 	slog.InfoContext(ctx, "Received event", "event", protojson.Format(request.BuildEvent.GetEvent()))
 	return &emptypb.Empty{}, nil
 }
 
+// PublishBuildToolEventStream Public a build tool event stream.
 func (b BES) PublishBuildToolEventStream(stream build.PublishBuildEvent_PublishBuildToolEventStreamServer) error {
 	slog.InfoContext(stream.Context(), "Stream started", "event", stream.Context())
 
@@ -95,6 +99,7 @@ func (b BES) PublishBuildToolEventStream(stream build.PublishBuildEvent_PublishB
 	return nil
 }
 
+// Process a bazel Event.
 func processBazelEvent(ctx context.Context, event *build.BuildEvent, summarizer *summary.Summarizer) error {
 	if event.GetBazelEvent() == nil {
 		return nil
