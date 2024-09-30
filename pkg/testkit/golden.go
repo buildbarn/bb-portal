@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// CompareOptions struct
 type CompareOptions struct {
 	// Whether to ignore date/times when comparing or writing the golden
 	// file to disk
@@ -95,6 +96,7 @@ func replaceTimes(str string) (string, error) {
 	return lastModifiedPattern.ReplaceAllString(res, `Mon, 01 Jan 0001 00:00:00 GMT`), nil
 }
 
+// prettyJSON
 func prettyJSON(data interface{}) []byte {
 	jsonText, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {

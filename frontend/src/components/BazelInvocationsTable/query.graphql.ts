@@ -20,6 +20,10 @@ export const BAZEL_INVOCATION_NODE_FRAGMENT = gql(/* GraphQL */ `
     id
     invocationID
     startedAt
+    user {
+      Email
+      LDAP
+    }
     endedAt
     state {
       bepCompleted

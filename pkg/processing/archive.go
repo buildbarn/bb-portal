@@ -17,26 +17,32 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
 )
 
+// errNoArchiver An error helper.
 var errNoArchiver = errors.New("no archiver registered")
 
+// BlobArchiver A blob arhiver interace.
 type BlobArchiver interface {
 	ArchiveBlob(ctx context.Context, blobURI detectors.BlobURI) ent.Blob
 }
 
+// BlobMultiArchiver A blob Multi Archiver.
 type BlobMultiArchiver struct {
 	archivers map[string]BlobArchiver
 }
 
+// NewBlobMultiArchiver A blob multi archiver constructor.
 func NewBlobMultiArchiver() BlobMultiArchiver {
 	return BlobMultiArchiver{
 		archivers: map[string]BlobArchiver{},
 	}
 }
 
+// RegisterArchiver Regsters an archiver.
 func (ma *BlobMultiArchiver) RegisterArchiver(schema string, archiver BlobArchiver) {
 	ma.archivers[schema] = archiver
 }
 
+// ArchiveBlobs Archives blobs.
 func (ma *BlobMultiArchiver) ArchiveBlobs(ctx context.Context, blobURIs []detectors.BlobURI) ([]ent.Blob, error) {
 	if len(blobURIs) == 0 {
 		return nil, nil
@@ -60,14 +66,17 @@ func (ma *BlobMultiArchiver) ArchiveBlobs(ctx context.Context, blobURIs []detect
 	return blobs, nil
 }
 
+// LocalFileArchiver Load file archiver struct.
 type LocalFileArchiver struct {
 	blobArchiveFolder string
 }
 
+// NewLocalFileArchiver Constrctor for file archiver.
 func NewLocalFileArchiver(blobArchiveFolder string) LocalFileArchiver {
 	return LocalFileArchiver{blobArchiveFolder: blobArchiveFolder}
 }
 
+// ArchiveBlob Archive Blob function.
 func (lfa LocalFileArchiver) ArchiveBlob(_ context.Context, blobURI detectors.BlobURI) ent.Blob {
 	b, err := lfa.archiveBlob(blobURI)
 	if err != nil {
@@ -84,6 +93,7 @@ func (lfa LocalFileArchiver) ArchiveBlob(_ context.Context, blobURI detectors.Bl
 	}
 }
 
+// A function to archive a blob.
 func (lfa LocalFileArchiver) archiveBlob(blobURI detectors.BlobURI) (*ent.Blob, error) {
 	sourcePath := strings.TrimPrefix(string(blobURI), "file://")
 	d, err := digest.NewFromFile(sourcePath)

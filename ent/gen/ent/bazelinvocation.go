@@ -13,6 +13,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/pkg/summary"
 	"github.com/google/uuid"
 )
@@ -29,9 +30,9 @@ type BazelInvocation struct {
 	// EndedAt holds the value of the "ended_at" field.
 	EndedAt time.Time `json:"ended_at,omitempty"`
 	// ChangeNumber holds the value of the "change_number" field.
-	ChangeNumber int32 `json:"change_number,omitempty"`
+	ChangeNumber int `json:"change_number,omitempty"`
 	// PatchsetNumber holds the value of the "patchset_number" field.
-	PatchsetNumber int32 `json:"patchset_number,omitempty"`
+	PatchsetNumber int `json:"patchset_number,omitempty"`
 	// Summary holds the value of the "summary" field.
 	Summary summary.InvocationSummary `json:"summary,omitempty"`
 	// BepCompleted holds the value of the "bep_completed" field.
@@ -40,6 +41,20 @@ type BazelInvocation struct {
 	StepLabel string `json:"step_label,omitempty"`
 	// RelatedFiles holds the value of the "related_files" field.
 	RelatedFiles map[string]string `json:"related_files,omitempty"`
+	// UserEmail holds the value of the "user_email" field.
+	UserEmail string `json:"user_email,omitempty"`
+	// UserLdap holds the value of the "user_ldap" field.
+	UserLdap string `json:"user_ldap,omitempty"`
+	// BuildLogs holds the value of the "build_logs" field.
+	BuildLogs string `json:"build_logs,omitempty"`
+	// CPU holds the value of the "cpu" field.
+	CPU string `json:"cpu,omitempty"`
+	// PlatformName holds the value of the "platform_name" field.
+	PlatformName string `json:"platform_name,omitempty"`
+	// ConfigurationMnemonic holds the value of the "configuration_mnemonic" field.
+	ConfigurationMnemonic string `json:"configuration_mnemonic,omitempty"`
+	// NumFetches holds the value of the "num_fetches" field.
+	NumFetches int64 `json:"num_fetches,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BazelInvocationQuery when eager-loading is set.
 	Edges                       BazelInvocationEdges `json:"edges"`
@@ -56,13 +71,21 @@ type BazelInvocationEdges struct {
 	Build *Build `json:"build,omitempty"`
 	// Problems holds the value of the problems edge.
 	Problems []*BazelInvocationProblem `json:"problems,omitempty"`
+	// Metrics holds the value of the metrics edge.
+	Metrics *Metrics `json:"metrics,omitempty"`
+	// TestCollection holds the value of the test_collection edge.
+	TestCollection []*TestCollection `json:"test_collection,omitempty"`
+	// Targets holds the value of the targets edge.
+	Targets []*TargetPair `json:"targets,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [6]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [5]map[string]int
 
-	namedProblems map[string][]*BazelInvocationProblem
+	namedProblems       map[string][]*BazelInvocationProblem
+	namedTestCollection map[string][]*TestCollection
+	namedTargets        map[string][]*TargetPair
 }
 
 // EventFileOrErr returns the EventFile value or an error if the edge
@@ -96,6 +119,35 @@ func (e BazelInvocationEdges) ProblemsOrErr() ([]*BazelInvocationProblem, error)
 	return nil, &NotLoadedError{edge: "problems"}
 }
 
+// MetricsOrErr returns the Metrics value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BazelInvocationEdges) MetricsOrErr() (*Metrics, error) {
+	if e.Metrics != nil {
+		return e.Metrics, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: metrics.Label}
+	}
+	return nil, &NotLoadedError{edge: "metrics"}
+}
+
+// TestCollectionOrErr returns the TestCollection value or an error if the edge
+// was not loaded in eager-loading.
+func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
+	if e.loadedTypes[4] {
+		return e.TestCollection, nil
+	}
+	return nil, &NotLoadedError{edge: "test_collection"}
+}
+
+// TargetsOrErr returns the Targets value or an error if the edge
+// was not loaded in eager-loading.
+func (e BazelInvocationEdges) TargetsOrErr() ([]*TargetPair, error) {
+	if e.loadedTypes[5] {
+		return e.Targets, nil
+	}
+	return nil, &NotLoadedError{edge: "targets"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -105,9 +157,9 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case bazelinvocation.FieldBepCompleted:
 			values[i] = new(sql.NullBool)
-		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber:
+		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber, bazelinvocation.FieldNumFetches:
 			values[i] = new(sql.NullInt64)
-		case bazelinvocation.FieldStepLabel:
+		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldBuildLogs, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldConfigurationMnemonic:
 			values[i] = new(sql.NullString)
 		case bazelinvocation.FieldStartedAt, bazelinvocation.FieldEndedAt:
 			values[i] = new(sql.NullTime)
@@ -160,13 +212,13 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field change_number", values[i])
 			} else if value.Valid {
-				bi.ChangeNumber = int32(value.Int64)
+				bi.ChangeNumber = int(value.Int64)
 			}
 		case bazelinvocation.FieldPatchsetNumber:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field patchset_number", values[i])
 			} else if value.Valid {
-				bi.PatchsetNumber = int32(value.Int64)
+				bi.PatchsetNumber = int(value.Int64)
 			}
 		case bazelinvocation.FieldSummary:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -195,6 +247,48 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 				if err := json.Unmarshal(*value, &bi.RelatedFiles); err != nil {
 					return fmt.Errorf("unmarshal field related_files: %w", err)
 				}
+			}
+		case bazelinvocation.FieldUserEmail:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field user_email", values[i])
+			} else if value.Valid {
+				bi.UserEmail = value.String
+			}
+		case bazelinvocation.FieldUserLdap:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field user_ldap", values[i])
+			} else if value.Valid {
+				bi.UserLdap = value.String
+			}
+		case bazelinvocation.FieldBuildLogs:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field build_logs", values[i])
+			} else if value.Valid {
+				bi.BuildLogs = value.String
+			}
+		case bazelinvocation.FieldCPU:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field cpu", values[i])
+			} else if value.Valid {
+				bi.CPU = value.String
+			}
+		case bazelinvocation.FieldPlatformName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field platform_name", values[i])
+			} else if value.Valid {
+				bi.PlatformName = value.String
+			}
+		case bazelinvocation.FieldConfigurationMnemonic:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field configuration_mnemonic", values[i])
+			} else if value.Valid {
+				bi.ConfigurationMnemonic = value.String
+			}
+		case bazelinvocation.FieldNumFetches:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field num_fetches", values[i])
+			} else if value.Valid {
+				bi.NumFetches = value.Int64
 			}
 		case bazelinvocation.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -236,6 +330,21 @@ func (bi *BazelInvocation) QueryBuild() *BuildQuery {
 // QueryProblems queries the "problems" edge of the BazelInvocation entity.
 func (bi *BazelInvocation) QueryProblems() *BazelInvocationProblemQuery {
 	return NewBazelInvocationClient(bi.config).QueryProblems(bi)
+}
+
+// QueryMetrics queries the "metrics" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryMetrics() *MetricsQuery {
+	return NewBazelInvocationClient(bi.config).QueryMetrics(bi)
+}
+
+// QueryTestCollection queries the "test_collection" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryTestCollection() *TestCollectionQuery {
+	return NewBazelInvocationClient(bi.config).QueryTestCollection(bi)
+}
+
+// QueryTargets queries the "targets" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryTargets() *TargetPairQuery {
+	return NewBazelInvocationClient(bi.config).QueryTargets(bi)
 }
 
 // Update returns a builder for updating this BazelInvocation.
@@ -287,6 +396,27 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("related_files=")
 	builder.WriteString(fmt.Sprintf("%v", bi.RelatedFiles))
+	builder.WriteString(", ")
+	builder.WriteString("user_email=")
+	builder.WriteString(bi.UserEmail)
+	builder.WriteString(", ")
+	builder.WriteString("user_ldap=")
+	builder.WriteString(bi.UserLdap)
+	builder.WriteString(", ")
+	builder.WriteString("build_logs=")
+	builder.WriteString(bi.BuildLogs)
+	builder.WriteString(", ")
+	builder.WriteString("cpu=")
+	builder.WriteString(bi.CPU)
+	builder.WriteString(", ")
+	builder.WriteString("platform_name=")
+	builder.WriteString(bi.PlatformName)
+	builder.WriteString(", ")
+	builder.WriteString("configuration_mnemonic=")
+	builder.WriteString(bi.ConfigurationMnemonic)
+	builder.WriteString(", ")
+	builder.WriteString("num_fetches=")
+	builder.WriteString(fmt.Sprintf("%v", bi.NumFetches))
 	builder.WriteByte(')')
 	return builder.String()
 }
@@ -312,6 +442,54 @@ func (bi *BazelInvocation) appendNamedProblems(name string, edges ...*BazelInvoc
 		bi.Edges.namedProblems[name] = []*BazelInvocationProblem{}
 	} else {
 		bi.Edges.namedProblems[name] = append(bi.Edges.namedProblems[name], edges...)
+	}
+}
+
+// NamedTestCollection returns the TestCollection named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (bi *BazelInvocation) NamedTestCollection(name string) ([]*TestCollection, error) {
+	if bi.Edges.namedTestCollection == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := bi.Edges.namedTestCollection[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (bi *BazelInvocation) appendNamedTestCollection(name string, edges ...*TestCollection) {
+	if bi.Edges.namedTestCollection == nil {
+		bi.Edges.namedTestCollection = make(map[string][]*TestCollection)
+	}
+	if len(edges) == 0 {
+		bi.Edges.namedTestCollection[name] = []*TestCollection{}
+	} else {
+		bi.Edges.namedTestCollection[name] = append(bi.Edges.namedTestCollection[name], edges...)
+	}
+}
+
+// NamedTargets returns the Targets named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (bi *BazelInvocation) NamedTargets(name string) ([]*TargetPair, error) {
+	if bi.Edges.namedTargets == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := bi.Edges.namedTargets[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (bi *BazelInvocation) appendNamedTargets(name string, edges ...*TargetPair) {
+	if bi.Edges.namedTargets == nil {
+		bi.Edges.namedTargets = make(map[string][]*TargetPair)
+	}
+	if len(edges) == 0 {
+		bi.Edges.namedTargets[name] = []*TargetPair{}
+	} else {
+		bi.Edges.namedTargets[name] = append(bi.Edges.namedTargets[name], edges...)
 	}
 }
 

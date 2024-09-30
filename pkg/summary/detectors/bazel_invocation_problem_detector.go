@@ -2,16 +2,19 @@ package detectors
 
 import "github.com/buildbarn/bb-portal/pkg/events"
 
+// BazelInvocationProblemDetector interface
 type BazelInvocationProblemDetector interface {
 	ProcessBEPEvent(*events.BuildEvent)
 	Problems() ([]Problem, error)
 }
 
+// ProblemDetector struct
 type ProblemDetector struct {
 	detectors         []BazelInvocationProblemDetector
 	fallbackDetectors []BazelInvocationProblemDetector
 }
 
+// NewProblemDetector function
 func NewProblemDetector() ProblemDetector {
 	return ProblemDetector{
 		detectors: []BazelInvocationProblemDetector{
@@ -25,6 +28,7 @@ func NewProblemDetector() ProblemDetector {
 	}
 }
 
+// ProcessBEPEvent function
 func (p ProblemDetector) ProcessBEPEvent(event *events.BuildEvent) {
 	for _, detector := range p.detectors {
 		detector.ProcessBEPEvent(event)
@@ -34,6 +38,7 @@ func (p ProblemDetector) ProcessBEPEvent(event *events.BuildEvent) {
 	}
 }
 
+// Problems function
 func (p ProblemDetector) Problems() ([]Problem, error) {
 	problems, err := p.detectorsProblems(p.detectors)
 	if err != nil {
@@ -50,6 +55,7 @@ func (p ProblemDetector) Problems() ([]Problem, error) {
 	return problems, nil
 }
 
+// detectorsProblems
 func (p ProblemDetector) detectorsProblems(detectors []BazelInvocationProblemDetector) ([]Problem, error) {
 	var problems []Problem
 	for _, detector := range detectors {
@@ -62,6 +68,7 @@ func (p ProblemDetector) detectorsProblems(detectors []BazelInvocationProblemDet
 	return problems, nil
 }
 
+// detectorsFoundProblems
 func (p ProblemDetector) detectorsFoundProblems(detectors []BazelInvocationProblemDetector) bool {
 	for _, detector := range detectors {
 		problems, _ := detector.Problems()

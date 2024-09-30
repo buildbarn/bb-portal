@@ -7,15 +7,17 @@ import (
 	"strings"
 )
 
-// graphQLIDFromString converts a string ID to a base64 encoded string for use as a GraphQL ID.
+// graphQLIDFromString graphQLIDFromString converts a string ID to a base64 encoded string for use as a GraphQL ID.
 func graphQLIDFromString(input string) string {
 	return base64.URLEncoding.EncodeToString([]byte(input))
 }
 
+// GraphQLIDFromTypeAndID Takes an id and returns the b64enc string.
 func GraphQLIDFromTypeAndID(objType string, id int) string {
 	return graphQLIDFromString(fmt.Sprintf("%s:%d", objType, id))
 }
 
+// GraphQLTypeAndIntIDFromID ID Decoder helper
 func GraphQLTypeAndIntIDFromID(id string) (string, int, error) {
 	bytes, err := base64.URLEncoding.DecodeString(id)
 	if err != nil {

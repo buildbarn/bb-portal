@@ -12,8 +12,10 @@ import (
 	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 )
 
+// FileLookup A file lookup type.
 type FileLookup func(ctx context.Context) (*bes.File, error)
 
+// BlobReferenceForFile Blob Reference for File function.
 func BlobReferenceForFile(ctx context.Context, db *ent.Client, fileLookup FileLookup) (*model.BlobReference, error) {
 	file, err := fileLookup(ctx)
 	if err != nil {
@@ -32,6 +34,7 @@ func BlobReferenceForFile(ctx context.Context, db *ent.Client, fileLookup FileLo
 	}, nil
 }
 
+// find blob function.
 func findBlob(ctx context.Context, db *ent.Client, file *bes.File) (*ent.Blob, error) {
 	uri := file.GetUri()
 	if uri == "" {
@@ -41,6 +44,7 @@ func findBlob(ctx context.Context, db *ent.Client, file *bes.File) (*ent.Blob, e
 	return db.Blob.Query().Where(blob.URI(uri)).First(ctx)
 }
 
+// GetAction Get an Action.
 func GetAction(ctx context.Context, problem *ent.BazelInvocationProblem) (*bes.ActionExecuted, error) {
 	bepEvents, err := events.FromJSONArray(problem.BepEvents)
 	if err != nil {

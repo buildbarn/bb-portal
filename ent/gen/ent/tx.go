@@ -12,6 +12,14 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// ActionCacheStatistics is the client for interacting with the ActionCacheStatistics builders.
+	ActionCacheStatistics *ActionCacheStatisticsClient
+	// ActionData is the client for interacting with the ActionData builders.
+	ActionData *ActionDataClient
+	// ActionSummary is the client for interacting with the ActionSummary builders.
+	ActionSummary *ActionSummaryClient
+	// ArtifactMetrics is the client for interacting with the ArtifactMetrics builders.
+	ArtifactMetrics *ArtifactMetricsClient
 	// BazelInvocation is the client for interacting with the BazelInvocation builders.
 	BazelInvocation *BazelInvocationClient
 	// BazelInvocationProblem is the client for interacting with the BazelInvocationProblem builders.
@@ -20,8 +28,68 @@ type Tx struct {
 	Blob *BlobClient
 	// Build is the client for interacting with the Build builders.
 	Build *BuildClient
+	// BuildGraphMetrics is the client for interacting with the BuildGraphMetrics builders.
+	BuildGraphMetrics *BuildGraphMetricsClient
+	// CumulativeMetrics is the client for interacting with the CumulativeMetrics builders.
+	CumulativeMetrics *CumulativeMetricsClient
+	// DynamicExecutionMetrics is the client for interacting with the DynamicExecutionMetrics builders.
+	DynamicExecutionMetrics *DynamicExecutionMetricsClient
+	// EvaluationStat is the client for interacting with the EvaluationStat builders.
+	EvaluationStat *EvaluationStatClient
 	// EventFile is the client for interacting with the EventFile builders.
 	EventFile *EventFileClient
+	// ExectionInfo is the client for interacting with the ExectionInfo builders.
+	ExectionInfo *ExectionInfoClient
+	// FilesMetric is the client for interacting with the FilesMetric builders.
+	FilesMetric *FilesMetricClient
+	// GarbageMetrics is the client for interacting with the GarbageMetrics builders.
+	GarbageMetrics *GarbageMetricsClient
+	// MemoryMetrics is the client for interacting with the MemoryMetrics builders.
+	MemoryMetrics *MemoryMetricsClient
+	// Metrics is the client for interacting with the Metrics builders.
+	Metrics *MetricsClient
+	// MissDetail is the client for interacting with the MissDetail builders.
+	MissDetail *MissDetailClient
+	// NamedSetOfFiles is the client for interacting with the NamedSetOfFiles builders.
+	NamedSetOfFiles *NamedSetOfFilesClient
+	// NetworkMetrics is the client for interacting with the NetworkMetrics builders.
+	NetworkMetrics *NetworkMetricsClient
+	// OutputGroup is the client for interacting with the OutputGroup builders.
+	OutputGroup *OutputGroupClient
+	// PackageLoadMetrics is the client for interacting with the PackageLoadMetrics builders.
+	PackageLoadMetrics *PackageLoadMetricsClient
+	// PackageMetrics is the client for interacting with the PackageMetrics builders.
+	PackageMetrics *PackageMetricsClient
+	// RaceStatistics is the client for interacting with the RaceStatistics builders.
+	RaceStatistics *RaceStatisticsClient
+	// ResourceUsage is the client for interacting with the ResourceUsage builders.
+	ResourceUsage *ResourceUsageClient
+	// RunnerCount is the client for interacting with the RunnerCount builders.
+	RunnerCount *RunnerCountClient
+	// SystemNetworkStats is the client for interacting with the SystemNetworkStats builders.
+	SystemNetworkStats *SystemNetworkStatsClient
+	// TargetComplete is the client for interacting with the TargetComplete builders.
+	TargetComplete *TargetCompleteClient
+	// TargetConfigured is the client for interacting with the TargetConfigured builders.
+	TargetConfigured *TargetConfiguredClient
+	// TargetMetrics is the client for interacting with the TargetMetrics builders.
+	TargetMetrics *TargetMetricsClient
+	// TargetPair is the client for interacting with the TargetPair builders.
+	TargetPair *TargetPairClient
+	// TestCollection is the client for interacting with the TestCollection builders.
+	TestCollection *TestCollectionClient
+	// TestFile is the client for interacting with the TestFile builders.
+	TestFile *TestFileClient
+	// TestResultBES is the client for interacting with the TestResultBES builders.
+	TestResultBES *TestResultBESClient
+	// TestSummary is the client for interacting with the TestSummary builders.
+	TestSummary *TestSummaryClient
+	// TimingBreakdown is the client for interacting with the TimingBreakdown builders.
+	TimingBreakdown *TimingBreakdownClient
+	// TimingChild is the client for interacting with the TimingChild builders.
+	TimingChild *TimingChildClient
+	// TimingMetrics is the client for interacting with the TimingMetrics builders.
+	TimingMetrics *TimingMetricsClient
 
 	// lazily loaded.
 	client     *Client
@@ -153,11 +221,45 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.ActionCacheStatistics = NewActionCacheStatisticsClient(tx.config)
+	tx.ActionData = NewActionDataClient(tx.config)
+	tx.ActionSummary = NewActionSummaryClient(tx.config)
+	tx.ArtifactMetrics = NewArtifactMetricsClient(tx.config)
 	tx.BazelInvocation = NewBazelInvocationClient(tx.config)
 	tx.BazelInvocationProblem = NewBazelInvocationProblemClient(tx.config)
 	tx.Blob = NewBlobClient(tx.config)
 	tx.Build = NewBuildClient(tx.config)
+	tx.BuildGraphMetrics = NewBuildGraphMetricsClient(tx.config)
+	tx.CumulativeMetrics = NewCumulativeMetricsClient(tx.config)
+	tx.DynamicExecutionMetrics = NewDynamicExecutionMetricsClient(tx.config)
+	tx.EvaluationStat = NewEvaluationStatClient(tx.config)
 	tx.EventFile = NewEventFileClient(tx.config)
+	tx.ExectionInfo = NewExectionInfoClient(tx.config)
+	tx.FilesMetric = NewFilesMetricClient(tx.config)
+	tx.GarbageMetrics = NewGarbageMetricsClient(tx.config)
+	tx.MemoryMetrics = NewMemoryMetricsClient(tx.config)
+	tx.Metrics = NewMetricsClient(tx.config)
+	tx.MissDetail = NewMissDetailClient(tx.config)
+	tx.NamedSetOfFiles = NewNamedSetOfFilesClient(tx.config)
+	tx.NetworkMetrics = NewNetworkMetricsClient(tx.config)
+	tx.OutputGroup = NewOutputGroupClient(tx.config)
+	tx.PackageLoadMetrics = NewPackageLoadMetricsClient(tx.config)
+	tx.PackageMetrics = NewPackageMetricsClient(tx.config)
+	tx.RaceStatistics = NewRaceStatisticsClient(tx.config)
+	tx.ResourceUsage = NewResourceUsageClient(tx.config)
+	tx.RunnerCount = NewRunnerCountClient(tx.config)
+	tx.SystemNetworkStats = NewSystemNetworkStatsClient(tx.config)
+	tx.TargetComplete = NewTargetCompleteClient(tx.config)
+	tx.TargetConfigured = NewTargetConfiguredClient(tx.config)
+	tx.TargetMetrics = NewTargetMetricsClient(tx.config)
+	tx.TargetPair = NewTargetPairClient(tx.config)
+	tx.TestCollection = NewTestCollectionClient(tx.config)
+	tx.TestFile = NewTestFileClient(tx.config)
+	tx.TestResultBES = NewTestResultBESClient(tx.config)
+	tx.TestSummary = NewTestSummaryClient(tx.config)
+	tx.TimingBreakdown = NewTimingBreakdownClient(tx.config)
+	tx.TimingChild = NewTimingChildClient(tx.config)
+	tx.TimingMetrics = NewTimingMetricsClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -167,7 +269,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: BazelInvocation.QueryXXX(), the query will be executed
+// applies a query, for example: ActionCacheStatistics.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

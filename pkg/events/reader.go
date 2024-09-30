@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 )
 
+// a constant for sizes
 const (
 	// initialBufferSize is the starting size of the scanner buffer.
 	initialBufferSize = 20 * 1024 * 1024
@@ -34,6 +35,7 @@ type BuildEventIterator struct {
 	unmarshaler protojson.UnmarshalOptions
 }
 
+// BuildEvent A build event.
 type BuildEvent struct {
 	*bes.BuildEvent
 	rawEvent json.RawMessage
@@ -61,10 +63,12 @@ func (e BuildEvent) Clone() BuildEvent {
 	}
 }
 
+// RawMessage The Raw Message.
 func (e BuildEvent) RawMessage() json.RawMessage {
 	return e.rawEvent
 }
 
+// AsJSONArray Get it as a Json array.
 func AsJSONArray(buildEvents []*BuildEvent) (jsonb json.RawMessage, err error) {
 	rawEvents := []json.RawMessage{}
 	for _, event := range buildEvents {
@@ -80,6 +84,7 @@ func AsJSONArray(buildEvents []*BuildEvent) (jsonb json.RawMessage, err error) {
 	return
 }
 
+// FromJSONArray Get it from a JSON array.
 func FromJSONArray(events json.RawMessage) (buildEvents []BuildEvent, err error) {
 	// Unpack list of bytes.
 	var rawEvents []json.RawMessage
@@ -103,42 +108,48 @@ func FromJSONArray(events json.RawMessage) (buildEvents []BuildEvent, err error)
 	return
 }
 
+// IsActionCompleted Is the action completed.
 func (e BuildEvent) IsActionCompleted() bool {
 	return e.GetId() != nil &&
 		e.GetId().GetActionCompleted() != nil
 }
 
-// IsTargetConfigured returns true if this event is `targetConfigured` event.
+// IsTargetConfigured IsTargetConfigured returns true if this event is `targetConfigured` event.
 func (e BuildEvent) IsTargetConfigured() bool {
 	return e.GetId() != nil &&
 		e.GetId().GetTargetConfigured() != nil
 }
 
+// IsTargetCompleted Is the Target Completed.
 func (e BuildEvent) IsTargetCompleted() bool {
 	return e.GetId() != nil &&
 		e.GetId().GetTargetCompleted() != nil
 }
 
+// IsTestSummary Is the Test Summary.
 func (e BuildEvent) IsTestSummary() bool {
 	return e.GetId() != nil &&
 		e.GetId().GetTestSummary() != nil &&
 		e.GetTestSummary() != nil
 }
 
+// IsTestResult Is a test result.
 func (e BuildEvent) IsTestResult() bool {
 	return e.GetId().GetTestResult() != nil &&
 		e.GetTestResult() != nil
 }
 
+// IsWorkspaceStatus Is a Workspace Status.
 func (e BuildEvent) IsWorkspaceStatus() bool {
 	return e.GetId() != nil && e.GetId().GetWorkspaceStatus() != nil && e.GetWorkspaceStatus() != nil
 }
 
+// IsStructuredCommandLine Is a structured command line.
 func (e BuildEvent) IsStructuredCommandLine() bool {
 	return e.GetId() != nil && e.GetId().GetStructuredCommandLine() != nil && e.GetStructuredCommandLine() != nil
 }
 
-// GetTargetConfiguredLabel returns label of this event if it is `targetConfigured` event.
+// GetTargetConfiguredLabel GetTargetConfiguredLabel returns label of this event if it is `targetConfigured` event.
 // Otherwise it returns an empty string.
 func (e BuildEvent) GetTargetConfiguredLabel() string {
 	if !e.IsTargetConfigured() {
@@ -147,6 +158,7 @@ func (e BuildEvent) GetTargetConfiguredLabel() string {
 	return e.GetId().GetTargetConfigured().GetLabel()
 }
 
+// GetTargetCompletedLabel Get label for target completed.
 func (e BuildEvent) GetTargetCompletedLabel() string {
 	if !e.IsTargetCompleted() {
 		return ""
@@ -154,6 +166,7 @@ func (e BuildEvent) GetTargetCompletedLabel() string {
 	return e.GetId().GetTargetCompleted().GetLabel()
 }
 
+// GetActionCompletedLabel Get action complete label
 func (e BuildEvent) GetActionCompletedLabel() string {
 	if !e.IsActionCompleted() {
 		return ""
@@ -161,6 +174,7 @@ func (e BuildEvent) GetActionCompletedLabel() string {
 	return e.GetId().GetActionCompleted().GetLabel()
 }
 
+// FindUndeclaredTestOutputsURI Find underclared outputs URI.
 func (e BuildEvent) FindUndeclaredTestOutputsURI() string {
 	if !e.IsTestResult() {
 		return ""
@@ -173,6 +187,7 @@ func (e BuildEvent) FindUndeclaredTestOutputsURI() string {
 	return ""
 }
 
+// NewBuildEventIterator Build Event Iterator constructor.
 func NewBuildEventIterator(ctx context.Context, reader io.Reader) *BuildEventIterator {
 	unmarshaler := protojson.UnmarshalOptions{
 		DiscardUnknown: true,

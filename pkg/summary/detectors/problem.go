@@ -4,6 +4,7 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/events"
 )
 
+// a constant for status
 const (
 	BazelInvocationProblemFailedTarget  = "FAILED_TARGET"
 	BazelInvocationProblemErrorProgress = "ERROR_PROGRESS"
@@ -11,6 +12,7 @@ const (
 	BazelInvocationActionProblem        = "ACTION_PROBLEM"
 )
 
+// createProblem
 func createProblem(problemType BazelInvocationProblemType, label string, buildEvents []*events.BuildEvent) (*Problem, error) {
 	bepEvents, err := events.AsJSONArray(buildEvents)
 	if err != nil {
@@ -24,6 +26,7 @@ func createProblem(problemType BazelInvocationProblemType, label string, buildEv
 	}, nil
 }
 
+// createProblemWithBlobs
 func createProblemWithBlobs(problemType BazelInvocationProblemType, key labelKey, events []*events.BuildEvent, outputBlobs map[labelKey][]BlobURI) (*Problem, error) {
 	problem, err := createProblem(problemType, string(key), events)
 	if err != nil {

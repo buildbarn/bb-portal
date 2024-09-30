@@ -5,8 +5,10 @@ import (
 	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 )
 
+// FailedTargetBazelInvocationProblemDetector map
 type FailedTargetBazelInvocationProblemDetector map[string]*events.BuildEvent
 
+// ProcessBEPEvent function
 func (f FailedTargetBazelInvocationProblemDetector) ProcessBEPEvent(event *events.BuildEvent) {
 	if event == nil || !isFailedTarget(event) {
 		return
@@ -18,6 +20,7 @@ func (f FailedTargetBazelInvocationProblemDetector) ProcessBEPEvent(event *event
 	f[label] = event
 }
 
+// Problems function
 func (f FailedTargetBazelInvocationProblemDetector) Problems() ([]Problem, error) {
 	if len(f) == 0 {
 		return nil, nil
@@ -34,6 +37,7 @@ func (f FailedTargetBazelInvocationProblemDetector) Problems() ([]Problem, error
 	return problems, nil
 }
 
+// isFailedTarget
 func isFailedTarget(event *events.BuildEvent) bool {
 	if !event.IsTargetCompleted() {
 		return false

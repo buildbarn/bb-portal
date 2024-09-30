@@ -30,12 +30,32 @@ const (
 	FieldStepLabel = "step_label"
 	// FieldRelatedFiles holds the string denoting the related_files field in the database.
 	FieldRelatedFiles = "related_files"
+	// FieldUserEmail holds the string denoting the user_email field in the database.
+	FieldUserEmail = "user_email"
+	// FieldUserLdap holds the string denoting the user_ldap field in the database.
+	FieldUserLdap = "user_ldap"
+	// FieldBuildLogs holds the string denoting the build_logs field in the database.
+	FieldBuildLogs = "build_logs"
+	// FieldCPU holds the string denoting the cpu field in the database.
+	FieldCPU = "cpu"
+	// FieldPlatformName holds the string denoting the platform_name field in the database.
+	FieldPlatformName = "platform_name"
+	// FieldConfigurationMnemonic holds the string denoting the configuration_mnemonic field in the database.
+	FieldConfigurationMnemonic = "configuration_mnemonic"
+	// FieldNumFetches holds the string denoting the num_fetches field in the database.
+	FieldNumFetches = "num_fetches"
 	// EdgeEventFile holds the string denoting the event_file edge name in mutations.
 	EdgeEventFile = "event_file"
 	// EdgeBuild holds the string denoting the build edge name in mutations.
 	EdgeBuild = "build"
 	// EdgeProblems holds the string denoting the problems edge name in mutations.
 	EdgeProblems = "problems"
+	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
+	EdgeMetrics = "metrics"
+	// EdgeTestCollection holds the string denoting the test_collection edge name in mutations.
+	EdgeTestCollection = "test_collection"
+	// EdgeTargets holds the string denoting the targets edge name in mutations.
+	EdgeTargets = "targets"
 	// Table holds the table name of the bazelinvocation in the database.
 	Table = "bazel_invocations"
 	// EventFileTable is the table that holds the event_file relation/edge.
@@ -59,6 +79,23 @@ const (
 	ProblemsInverseTable = "bazel_invocation_problems"
 	// ProblemsColumn is the table column denoting the problems relation/edge.
 	ProblemsColumn = "bazel_invocation_problems"
+	// MetricsTable is the table that holds the metrics relation/edge.
+	MetricsTable = "metrics"
+	// MetricsInverseTable is the table name for the Metrics entity.
+	// It exists in this package in order to avoid circular dependency with the "metrics" package.
+	MetricsInverseTable = "metrics"
+	// MetricsColumn is the table column denoting the metrics relation/edge.
+	MetricsColumn = "bazel_invocation_metrics"
+	// TestCollectionTable is the table that holds the test_collection relation/edge. The primary key declared below.
+	TestCollectionTable = "bazel_invocation_test_collection"
+	// TestCollectionInverseTable is the table name for the TestCollection entity.
+	// It exists in this package in order to avoid circular dependency with the "testcollection" package.
+	TestCollectionInverseTable = "test_collections"
+	// TargetsTable is the table that holds the targets relation/edge. The primary key declared below.
+	TargetsTable = "bazel_invocation_targets"
+	// TargetsInverseTable is the table name for the TargetPair entity.
+	// It exists in this package in order to avoid circular dependency with the "targetpair" package.
+	TargetsInverseTable = "target_pairs"
 )
 
 // Columns holds all SQL columns for bazelinvocation fields.
@@ -73,6 +110,13 @@ var Columns = []string{
 	FieldBepCompleted,
 	FieldStepLabel,
 	FieldRelatedFiles,
+	FieldUserEmail,
+	FieldUserLdap,
+	FieldBuildLogs,
+	FieldCPU,
+	FieldPlatformName,
+	FieldConfigurationMnemonic,
+	FieldNumFetches,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "bazel_invocations"
@@ -81,6 +125,15 @@ var ForeignKeys = []string{
 	"build_invocations",
 	"event_file_bazel_invocation",
 }
+
+var (
+	// TestCollectionPrimaryKey and TestCollectionColumn2 are the table columns denoting the
+	// primary key for the test_collection relation (M2M).
+	TestCollectionPrimaryKey = []string{"bazel_invocation_id", "test_collection_id"}
+	// TargetsPrimaryKey and TargetsColumn2 are the table columns denoting the
+	// primary key for the targets relation (M2M).
+	TargetsPrimaryKey = []string{"bazel_invocation_id", "target_pair_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -140,6 +193,41 @@ func ByStepLabel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStepLabel, opts...).ToFunc()
 }
 
+// ByUserEmail orders the results by the user_email field.
+func ByUserEmail(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUserEmail, opts...).ToFunc()
+}
+
+// ByUserLdap orders the results by the user_ldap field.
+func ByUserLdap(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUserLdap, opts...).ToFunc()
+}
+
+// ByBuildLogs orders the results by the build_logs field.
+func ByBuildLogs(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBuildLogs, opts...).ToFunc()
+}
+
+// ByCPU orders the results by the cpu field.
+func ByCPU(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCPU, opts...).ToFunc()
+}
+
+// ByPlatformName orders the results by the platform_name field.
+func ByPlatformName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPlatformName, opts...).ToFunc()
+}
+
+// ByConfigurationMnemonic orders the results by the configuration_mnemonic field.
+func ByConfigurationMnemonic(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldConfigurationMnemonic, opts...).ToFunc()
+}
+
+// ByNumFetches orders the results by the num_fetches field.
+func ByNumFetches(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNumFetches, opts...).ToFunc()
+}
+
 // ByEventFileField orders the results by event_file field.
 func ByEventFileField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -167,6 +255,41 @@ func ByProblems(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newProblemsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByMetricsField orders the results by metrics field.
+func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByTestCollectionCount orders the results by test_collection count.
+func ByTestCollectionCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTestCollectionStep(), opts...)
+	}
+}
+
+// ByTestCollection orders the results by test_collection terms.
+func ByTestCollection(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTestCollectionStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByTargetsCount orders the results by targets count.
+func ByTargetsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTargetsStep(), opts...)
+	}
+}
+
+// ByTargets orders the results by targets terms.
+func ByTargets(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTargetsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newEventFileStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -186,5 +309,26 @@ func newProblemsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ProblemsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, ProblemsTable, ProblemsColumn),
+	)
+}
+func newMetricsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(MetricsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, MetricsTable, MetricsColumn),
+	)
+}
+func newTestCollectionStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TestCollectionInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, TestCollectionTable, TestCollectionPrimaryKey...),
+	)
+}
+func newTargetsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TargetsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, TargetsTable, TargetsPrimaryKey...),
 	)
 }

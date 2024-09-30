@@ -5,11 +5,13 @@ import (
 	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 )
 
+// ActionProblemDetector struct
 type ActionProblemDetector struct {
 	actionsCompleted map[labelKey]*events.BuildEvent
 	outputBlobs      map[labelKey][]BlobURI
 }
 
+// NewActionProblemDetector function
 func NewActionProblemDetector() ActionProblemDetector {
 	return ActionProblemDetector{
 		actionsCompleted: map[labelKey]*events.BuildEvent{},
@@ -17,6 +19,7 @@ func NewActionProblemDetector() ActionProblemDetector {
 	}
 }
 
+// ProcessBEPEvent function
 func (a ActionProblemDetector) ProcessBEPEvent(event *events.BuildEvent) {
 	if event == nil || !isFailedAction(event) {
 		return
@@ -40,6 +43,7 @@ func (a ActionProblemDetector) ProcessBEPEvent(event *events.BuildEvent) {
 	a.outputBlobs[key] = getOutputsBlobs(outputs)
 }
 
+// getActionOutputs
 func getActionOutputs(event *events.BuildEvent) []*bes.File {
 	action := event.GetAction()
 	if action == nil {
@@ -55,6 +59,7 @@ func getActionOutputs(event *events.BuildEvent) []*bes.File {
 	return outputs
 }
 
+// getOutputsBlobs
 func getOutputsBlobs(outputs []*bes.File) []BlobURI {
 	if outputs == nil {
 		return nil
@@ -66,6 +71,7 @@ func getOutputsBlobs(outputs []*bes.File) []BlobURI {
 	return blobs
 }
 
+// Problems function
 func (a ActionProblemDetector) Problems() ([]Problem, error) {
 	if len(a.actionsCompleted) == 0 {
 		return nil, nil
@@ -84,6 +90,7 @@ func (a ActionProblemDetector) Problems() ([]Problem, error) {
 	return problems, nil
 }
 
+// isFailedAction
 func isFailedAction(event *events.BuildEvent) bool {
 	if !event.IsActionCompleted() {
 		return false

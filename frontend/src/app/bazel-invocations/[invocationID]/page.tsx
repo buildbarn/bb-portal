@@ -1,8 +1,8 @@
 'use client';
 
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Content from "@/components/Content";
-import {ApolloError, NetworkStatus, useQuery} from "@apollo/client";
+import { ApolloError, NetworkStatus, useQuery } from "@apollo/client";
 import {
   BazelInvocationInfoFragment,
   FullBazelInvocationDetailsFragment,
@@ -13,8 +13,8 @@ import {
   FULL_BAZEL_INVOCATION_DETAILS,
   LOAD_FULL_BAZEL_INVOCATION_DETAILS, PROBLEM_INFO_FRAGMENT
 } from "@/app/bazel-invocations/[invocationID]/index.graphql";
-import {getFragmentData} from "@/graphql/__generated__";
-import {Spin} from "antd";
+import { getFragmentData } from "@/graphql/__generated__";
+import { Spin } from "antd";
 import ErrorAlert from "@/components/ErrorAlert";
 import BuildProblems from "@/components/Problems";
 import BazelInvocation from "@/components/BazelInvocation";
@@ -55,6 +55,7 @@ const BazelInvocationsContent: React.FC<Props> = ({ loading, error, networkStatu
         problems={problems}
       />
     </BazelInvocation>
+
   }
 
   return <></>
@@ -64,7 +65,7 @@ const shouldStopPolling = (invocation: FullBazelInvocationDetailsFragment | null
   return !!invocation;
 }
 
-const Page: React.FC<PageParams> = ({params}) => {
+const Page: React.FC<PageParams> = ({ params }) => {
   const { data, error, loading, stopPolling, networkStatus } = useQuery<LoadFullBazelInvocationDetailsQuery>(
     LOAD_FULL_BAZEL_INVOCATION_DETAILS,
     {

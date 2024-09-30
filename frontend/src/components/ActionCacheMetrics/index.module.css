@@ -1,0 +1,27 @@
+.ac-miss-detail-UNKNOWN {
+    color: "#9f9f9f" !important;
+}
+
+.ac-miss-detail-DIFFERENT_ACTION_KEY {
+    color: "#336bff"
+}
+
+.ac-miss-detail-DIFFERENT_DEPS {
+    color: "#9900cc"
+}
+
+.ac-miss-detail-DIFFERENT_ENVIRONMENT {
+    color: "#9900cc"
+}
+
+.ac-miss-detail-DIFFERENT_FILES {
+    color: "#dbff33"
+}
+
+.ac-miss-detail-CORRUPTED_CACHE_ENTRY {
+    color: "#ff5733"
+}
+
+.ac-miss-detail-NOT_CACHED {
+    color: "#ffbd33"
+}

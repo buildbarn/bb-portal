@@ -13,10 +13,12 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/auth"
 )
 
+// ConnectionManager A connection manager.
 type ConnectionManager struct {
 	params ManagerParams
 }
 
+// ManagerParams A manager Params struct.
 type ManagerParams struct {
 	// TLSCACertFile is the PEM file that contains TLS root certificates.
 	TLSCACertFile string
@@ -25,16 +27,19 @@ type ManagerParams struct {
 	CredentialsHelperCommand string
 }
 
+// NewConnectionManager Connection Manager constructor.
 func NewConnectionManager(params ManagerParams) *ConnectionManager {
 	return &ConnectionManager{
 		params: params,
 	}
 }
 
+// Client A client struct.
 type Client struct {
 	client *client.Client
 }
 
+// GetClientForURI A client to Get a connection for a given URI.
 func (manager *ConnectionManager) GetClientForURI(ctx context.Context, uri *url.URL) (*Client, error) {
 	instanceName := strings.Split(strings.TrimPrefix(uri.Path, "/"), "/")[0]
 	dialParms := client.DialParams{
@@ -55,6 +60,7 @@ func (manager *ConnectionManager) GetClientForURI(ctx context.Context, uri *url.
 	}, nil
 }
 
+// ReadBlobToFile Reads a blob to a file.
 func (c *Client) ReadBlobToFile(ctx context.Context, uri *url.URL, fpath string) error {
 	pathParts := strings.Split(uri.Path, "/")
 	digestPath := strings.Join(pathParts[len(pathParts)-2:], "/")
@@ -73,6 +79,7 @@ func (c *Client) ReadBlobToFile(ctx context.Context, uri *url.URL, fpath string)
 	return nil
 }
 
+// Close Close the connection.
 func (c *Client) Close() error {
 	return c.client.Close()
 }

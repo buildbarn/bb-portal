@@ -55,6 +55,7 @@ use_repo(
     "com_github_google_shlex",
     "com_github_google_uuid",
     "com_github_hashicorp_go_multierror",
+    "com_github_hedwigz_entviz",
     "com_github_machinebox_graphql",
     "com_github_mattn_go_sqlite3",
     "com_github_pkg_errors",

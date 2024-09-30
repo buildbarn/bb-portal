@@ -12,22 +12,27 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
+// A credentials Helper request struct.
 type credentialHelperRequest struct {
 	URI string `json:"uri"`
 }
 
+// A credential helpers response struct.
 type credentialHelperResponse struct {
 	Headers map[string][]string `json:"headers"`
 }
 
+// A credential Helpers struct.
 type credentialsHelper struct {
 	command string
 }
 
+// NewCredentialsHelper Credential Helper constructor.
 func NewCredentialsHelper(command string) credentials.PerRPCCredentials {
 	return &credentialsHelper{command: command}
 }
 
+// GetRequestMetadata Get the Request Metadata.
 func (h credentialsHelper) GetRequestMetadata(_ context.Context, uri ...string) (map[string]string, error) {
 	resp, err := h.getCredentialsFromHelper(uri[0])
 	if err != nil {
@@ -40,6 +45,7 @@ func (h credentialsHelper) GetRequestMetadata(_ context.Context, uri ...string) 
 	return headers, nil
 }
 
+// Get credentials from helper function.
 func (h credentialsHelper) getCredentialsFromHelper(uri string) (*credentialHelperResponse, error) {
 	reqBytes, err := json.Marshal(credentialHelperRequest{
 		URI: uri,
@@ -66,6 +72,7 @@ func (h credentialsHelper) getCredentialsFromHelper(uri string) (*credentialHelp
 	return &resp, nil
 }
 
+// RequireTransportSecurity Require Transport Security function.
 func (h credentialsHelper) RequireTransportSecurity() bool {
 	return false
 }

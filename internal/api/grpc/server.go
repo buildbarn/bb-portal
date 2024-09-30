@@ -9,8 +9,10 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/processing"
 )
 
+// Server A helper type for a grpc server.
 type Server = grpc.Server
 
+// NewServer Initializes a new server.
 func NewServer(db *ent.Client, blobArchiver processing.BlobMultiArchiver, opts ...grpc.ServerOption) *grpc.Server {
 	grpcServer := grpc.NewServer(opts...)
 

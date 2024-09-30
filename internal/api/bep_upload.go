@@ -12,16 +12,19 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/processing"
 )
 
+// A constant for strong mb and upload size informations.
 const (
 	MB            = 1024 * 1024
 	MaxUploadSize = 500 * MB
 )
 
+// Bep upload handler struct.
 type bepUploadHandler struct {
 	client       *ent.Client
 	blobArchiver processing.BlobMultiArchiver
 }
 
+// NewBEPUploadHandler Constructor function for BEP upload handler.
 func NewBEPUploadHandler(client *ent.Client, blobArchiver processing.BlobMultiArchiver) http.Handler {
 	return &bepUploadHandler{
 		client:       client,
@@ -29,6 +32,7 @@ func NewBEPUploadHandler(client *ent.Client, blobArchiver processing.BlobMultiAr
 	}
 }
 
+// ServeHTTP A function to serve HTTP.
 func (b bepUploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -77,6 +81,7 @@ func (b bepUploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	writeLocationResponse(w, location)
 }
 
+// A function to write location responses.
 func writeLocationResponse(w http.ResponseWriter, location string) {
 	w.WriteHeader(http.StatusOK)
 	resp := struct {
