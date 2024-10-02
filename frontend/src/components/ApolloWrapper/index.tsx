@@ -11,7 +11,7 @@ import possibleTypes from './possibleTypes.json';
 
 export const makeClient = () => {
   const httpLink = new HttpLink({
-    uri: "http://localhost:8081/graphql",
+    uri: `${process.env.NEXT_PUBLIC_BES_BACKEND_URL}/graphql`,
     fetchOptions: { cache: "no-store" },
   });
 
