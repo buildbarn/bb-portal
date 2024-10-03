@@ -6,7 +6,7 @@ import styles from './page.module.css';
 import Content from '@/components/Content';
 import Uploader from '@/components/Uploader';
 
-const bazelrcLines = 'build --bes_backend=grpc://localhost:8082\nbuild --bes_results_url=http://localhost:8081/bazel-invocations/';
+const bazelrcLines = `build --bes_backend=${process.env.NEXT_PUBLIC_BES_GRPC_BACKEND_URL}\nbuild --bes_results_url=${process.env.NEXT_PUBLIC_BES_BACKEND_URL}/bazel-invocations/`;
 
 export default function Home() {
   return (

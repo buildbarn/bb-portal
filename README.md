@@ -39,6 +39,16 @@ From `./frontend`, run:
 npm run dev
 ```
 
+### Change where the backend listens
+
+You can run the backend on different bind addresses, but you'll need to update
+the frontend too:
+
+```
+go run ../cmd/bb_portal/main.go --bind-http=:9091 --bind-grpc=:9092 &
+NEXT_PUBLIC_BES_BACKEND_URL=http://localhost:9091 NEXT_PUBLIC_BES_GRPC_BACKEND_URL=grpc://localhost:9092 npm run dev
+```
+
 ## Using the Application
 
 Go to http://localhost:8081.
