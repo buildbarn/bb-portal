@@ -2170,239 +2170,84 @@ func (r *Resolver) TimingMetricsWhereInput() TimingMetricsWhereInputResolver {
 	return &timingMetricsWhereInputResolver{r}
 }
 
-// actionCacheStatisticsResolver
-type actionCacheStatisticsResolver struct{ *Resolver }
-
-// actionDataResolver
-type actionDataResolver struct{ *Resolver }
-
-// actionSummaryResolver
-type actionSummaryResolver struct{ *Resolver }
-
-// artifactMetricsResolver
-type artifactMetricsResolver struct{ *Resolver }
-
-// bazelInvocationResolver
-type bazelInvocationResolver struct{ *Resolver }
-
-// bazelInvocationProblemResolver
-type bazelInvocationProblemResolver struct{ *Resolver }
-
-// blobResolver
-type blobResolver struct{ *Resolver }
-
-// buildResolver
-type buildResolver struct{ *Resolver }
-
-// buildGraphMetricsResolver
-type buildGraphMetricsResolver struct{ *Resolver }
-
-// cumulativeMetricsResolver
-type cumulativeMetricsResolver struct{ *Resolver }
-
-// dynamicExecutionMetricsResolver
-type dynamicExecutionMetricsResolver struct{ *Resolver }
-
-// evaluationStatResolver
-type evaluationStatResolver struct{ *Resolver }
-
-// eventFileResolver
-type eventFileResolver struct{ *Resolver }
-
-// exectionInfoResolver
-type exectionInfoResolver struct{ *Resolver }
-
-// filesMetricResolver
-type filesMetricResolver struct{ *Resolver }
-
-// garbageMetricsResolver
-type garbageMetricsResolver struct{ *Resolver }
-
-// memoryMetricsResolver
-type memoryMetricsResolver struct{ *Resolver }
-
-// metricsResolver
-type metricsResolver struct{ *Resolver }
-
-// missDetailResolver
-type missDetailResolver struct{ *Resolver }
-
-// namedSetOfFilesResolver
-type namedSetOfFilesResolver struct{ *Resolver }
-
-// networkMetricsResolver
-type networkMetricsResolver struct{ *Resolver }
-
-// outputGroupResolver
-type outputGroupResolver struct{ *Resolver }
-
-// packageLoadMetricsResolver
-type packageLoadMetricsResolver struct{ *Resolver }
-
-// packageMetricsResolver
-type packageMetricsResolver struct{ *Resolver }
-
-// queryResolver
-type queryResolver struct{ *Resolver }
-
-// raceStatisticsResolver
-type raceStatisticsResolver struct{ *Resolver }
-
-// resourceUsageResolver
-type resourceUsageResolver struct{ *Resolver }
-
-// runnerCountResolver
-type runnerCountResolver struct{ *Resolver }
-
-// systemNetworkStatsResolver
-type systemNetworkStatsResolver struct{ *Resolver }
-
-// targetCompleteResolver
-type targetCompleteResolver struct{ *Resolver }
-
-// targetConfiguredResolver
-type targetConfiguredResolver struct{ *Resolver }
-
-// targetMetricsResolver
-type targetMetricsResolver struct{ *Resolver }
-
-// targetPairResolver
-type targetPairResolver struct{ *Resolver }
-
-// testCollectionResolver
-type testCollectionResolver struct{ *Resolver }
-
-// testFileResolver
-type testFileResolver struct{ *Resolver }
-
-// testResultBESResolver
-type testResultBESResolver struct{ *Resolver }
-
-// testSummaryResolver
-type testSummaryResolver struct{ *Resolver }
-
-// timingBreakdownResolver
-type timingBreakdownResolver struct{ *Resolver }
-
-// timingChildResolver
-type timingChildResolver struct{ *Resolver }
-
-// timingMetricsResolver
-type timingMetricsResolver struct{ *Resolver }
-
-// actionCacheStatistics
-type actionCacheStatisticsWhereInputResolver struct{ *Resolver }
-
-// actionDataWhereInputResolver
-type actionDataWhereInputResolver struct{ *Resolver }
-
-// actionSummaryWhereInput
-type actionSummaryWhereInputResolver struct{ *Resolver }
-
-// artifactMetricsWhereInputResolver
-type artifactMetricsWhereInputResolver struct{ *Resolver }
-
-// bazelInvocationProblemWhereInputResolver
-type bazelInvocationProblemWhereInputResolver struct{ *Resolver }
-
-// bazelInvocationWhereInputResolver
-type bazelInvocationWhereInputResolver struct{ *Resolver }
-
-// blobWhereInputResolver
-type blobWhereInputResolver struct{ *Resolver }
-
-// buildGraphMetricsWhereInputResolver
-type buildGraphMetricsWhereInputResolver struct{ *Resolver }
-
-// buildWhereInputResolver
-type buildWhereInputResolver struct{ *Resolver }
-
-// cumulativeMetricsWhereInputresolver
-type cumulativeMetricsWhereInputResolver struct{ *Resolver }
-
-// dynamicExecutionMetricsWhereInputResolver
-type dynamicExecutionMetricsWhereInputResolver struct{ *Resolver }
-
-// evaluationStatWhereInputResolver
-type evaluationStatWhereInputResolver struct{ *Resolver }
-
-// eventFileWhereInputResolver
-type eventFileWhereInputResolver struct{ *Resolver }
-
-// exectionInfoWhereInputResolver
-type exectionInfoWhereInputResolver struct{ *Resolver }
-
-// filesMetricWhereInputResolver
-type filesMetricWhereInputResolver struct{ *Resolver }
-
-// garbageMetricsWhereInputResolver
-type garbageMetricsWhereInputResolver struct{ *Resolver }
-
-// memoryMetricsWhereInputResolver
-type memoryMetricsWhereInputResolver struct{ *Resolver }
-
-// metricsWhereInputResolver
-type metricsWhereInputResolver struct{ *Resolver }
-
-// missDetailWhereInputResolver
-type missDetailWhereInputResolver struct{ *Resolver }
-
-// namedSetOfFilesWhereInputResolver
-type namedSetOfFilesWhereInputResolver struct{ *Resolver }
-
-// networkMetricsWhereInputResolver
-type networkMetricsWhereInputResolver struct{ *Resolver }
-
-// outputGroupWhereInputResolver
-type outputGroupWhereInputResolver struct{ *Resolver }
-
-// packageLoadMetricsWhereInputResolver
-type packageLoadMetricsWhereInputResolver struct{ *Resolver }
-
-// packageMetricsWhereInputResolver
-type packageMetricsWhereInputResolver struct{ *Resolver }
-
-// raceStatisticsWhereInputResolver
-type raceStatisticsWhereInputResolver struct{ *Resolver }
-
-// resourceUsageWhereInputResolver
-type resourceUsageWhereInputResolver struct{ *Resolver }
-
-// runnerCountWhereInputResolver
-type runnerCountWhereInputResolver struct{ *Resolver }
-
-// systemNetworkStatsWhereInputResolver
-type systemNetworkStatsWhereInputResolver struct{ *Resolver }
-
-// targetCompleteWhereInputResolver
-type targetCompleteWhereInputResolver struct{ *Resolver }
-
-// targetConfiguredWhereInputResolver
-type targetConfiguredWhereInputResolver struct{ *Resolver }
-
-// targetMetricsWhereInputResolver
-type targetMetricsWhereInputResolver struct{ *Resolver }
-
-// targetPairWhereInputResolcer
-type targetPairWhereInputResolver struct{ *Resolver }
-
-// testCollectionWhereInputResolver
-type testCollectionWhereInputResolver struct{ *Resolver }
-
-// testFileWhereInputResolver
-type testFileWhereInputResolver struct{ *Resolver }
-
-// testResultBESWhereInputResolver
-type testResultBESWhereInputResolver struct{ *Resolver }
-
-// testSummaryWhereInputResolver
-type testSummaryWhereInputResolver struct{ *Resolver }
-
-// timingBreakdownWhereInputResolver
-type timingBreakdownWhereInputResolver struct{ *Resolver }
-
-// timingChildWhereInputResolver
-type timingChildWhereInputResolver struct{ *Resolver }
-
-// timingMetricsWhereInputResolver
-type timingMetricsWhereInputResolver struct{ *Resolver }
+type (
+	actionCacheStatisticsResolver             struct{ *Resolver }
+	actionDataResolver                        struct{ *Resolver }
+	actionSummaryResolver                     struct{ *Resolver }
+	artifactMetricsResolver                   struct{ *Resolver }
+	bazelInvocationResolver                   struct{ *Resolver }
+	bazelInvocationProblemResolver            struct{ *Resolver }
+	blobResolver                              struct{ *Resolver }
+	buildResolver                             struct{ *Resolver }
+	buildGraphMetricsResolver                 struct{ *Resolver }
+	cumulativeMetricsResolver                 struct{ *Resolver }
+	dynamicExecutionMetricsResolver           struct{ *Resolver }
+	evaluationStatResolver                    struct{ *Resolver }
+	eventFileResolver                         struct{ *Resolver }
+	exectionInfoResolver                      struct{ *Resolver }
+	filesMetricResolver                       struct{ *Resolver }
+	garbageMetricsResolver                    struct{ *Resolver }
+	memoryMetricsResolver                     struct{ *Resolver }
+	metricsResolver                           struct{ *Resolver }
+	missDetailResolver                        struct{ *Resolver }
+	namedSetOfFilesResolver                   struct{ *Resolver }
+	networkMetricsResolver                    struct{ *Resolver }
+	outputGroupResolver                       struct{ *Resolver }
+	packageLoadMetricsResolver                struct{ *Resolver }
+	packageMetricsResolver                    struct{ *Resolver }
+	queryResolver                             struct{ *Resolver }
+	raceStatisticsResolver                    struct{ *Resolver }
+	resourceUsageResolver                     struct{ *Resolver }
+	runnerCountResolver                       struct{ *Resolver }
+	systemNetworkStatsResolver                struct{ *Resolver }
+	targetCompleteResolver                    struct{ *Resolver }
+	targetConfiguredResolver                  struct{ *Resolver }
+	targetMetricsResolver                     struct{ *Resolver }
+	targetPairResolver                        struct{ *Resolver }
+	testCollectionResolver                    struct{ *Resolver }
+	testFileResolver                          struct{ *Resolver }
+	testResultBESResolver                     struct{ *Resolver }
+	testSummaryResolver                       struct{ *Resolver }
+	timingBreakdownResolver                   struct{ *Resolver }
+	timingChildResolver                       struct{ *Resolver }
+	timingMetricsResolver                     struct{ *Resolver }
+	actionCacheStatisticsWhereInputResolver   struct{ *Resolver }
+	actionDataWhereInputResolver              struct{ *Resolver }
+	actionSummaryWhereInputResolver           struct{ *Resolver }
+	artifactMetricsWhereInputResolver         struct{ *Resolver }
+	bazelInvocationProblemWhereInputResolver  struct{ *Resolver }
+	bazelInvocationWhereInputResolver         struct{ *Resolver }
+	blobWhereInputResolver                    struct{ *Resolver }
+	buildGraphMetricsWhereInputResolver       struct{ *Resolver }
+	buildWhereInputResolver                   struct{ *Resolver }
+	cumulativeMetricsWhereInputResolver       struct{ *Resolver }
+	dynamicExecutionMetricsWhereInputResolver struct{ *Resolver }
+	evaluationStatWhereInputResolver          struct{ *Resolver }
+	eventFileWhereInputResolver               struct{ *Resolver }
+	exectionInfoWhereInputResolver            struct{ *Resolver }
+	filesMetricWhereInputResolver             struct{ *Resolver }
+	garbageMetricsWhereInputResolver          struct{ *Resolver }
+	memoryMetricsWhereInputResolver           struct{ *Resolver }
+	metricsWhereInputResolver                 struct{ *Resolver }
+	missDetailWhereInputResolver              struct{ *Resolver }
+	namedSetOfFilesWhereInputResolver         struct{ *Resolver }
+	networkMetricsWhereInputResolver          struct{ *Resolver }
+	outputGroupWhereInputResolver             struct{ *Resolver }
+	packageLoadMetricsWhereInputResolver      struct{ *Resolver }
+	packageMetricsWhereInputResolver          struct{ *Resolver }
+	raceStatisticsWhereInputResolver          struct{ *Resolver }
+	resourceUsageWhereInputResolver           struct{ *Resolver }
+	runnerCountWhereInputResolver             struct{ *Resolver }
+	systemNetworkStatsWhereInputResolver      struct{ *Resolver }
+	targetCompleteWhereInputResolver          struct{ *Resolver }
+	targetConfiguredWhereInputResolver        struct{ *Resolver }
+	targetMetricsWhereInputResolver           struct{ *Resolver }
+	targetPairWhereInputResolver              struct{ *Resolver }
+	testCollectionWhereInputResolver          struct{ *Resolver }
+	testFileWhereInputResolver                struct{ *Resolver }
+	testResultBESWhereInputResolver           struct{ *Resolver }
+	testSummaryWhereInputResolver             struct{ *Resolver }
+	timingBreakdownWhereInputResolver         struct{ *Resolver }
+	timingChildWhereInputResolver             struct{ *Resolver }
+	timingMetricsWhereInputResolver           struct{ *Resolver }
+)

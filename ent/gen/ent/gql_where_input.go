@@ -1710,6 +1710,21 @@ type BazelInvocationWhereInput struct {
 	NumFetchesIsNil  bool    `json:"numFetchesIsNil,omitempty"`
 	NumFetchesNotNil bool    `json:"numFetchesNotNil,omitempty"`
 
+	// "profile_name" field predicates.
+	ProfileName             *string  `json:"profileName,omitempty"`
+	ProfileNameNEQ          *string  `json:"profileNameNEQ,omitempty"`
+	ProfileNameIn           []string `json:"profileNameIn,omitempty"`
+	ProfileNameNotIn        []string `json:"profileNameNotIn,omitempty"`
+	ProfileNameGT           *string  `json:"profileNameGT,omitempty"`
+	ProfileNameGTE          *string  `json:"profileNameGTE,omitempty"`
+	ProfileNameLT           *string  `json:"profileNameLT,omitempty"`
+	ProfileNameLTE          *string  `json:"profileNameLTE,omitempty"`
+	ProfileNameContains     *string  `json:"profileNameContains,omitempty"`
+	ProfileNameHasPrefix    *string  `json:"profileNameHasPrefix,omitempty"`
+	ProfileNameHasSuffix    *string  `json:"profileNameHasSuffix,omitempty"`
+	ProfileNameEqualFold    *string  `json:"profileNameEqualFold,omitempty"`
+	ProfileNameContainsFold *string  `json:"profileNameContainsFold,omitempty"`
+
 	// "event_file" edge predicates.
 	HasEventFile     *bool                  `json:"hasEventFile,omitempty"`
 	HasEventFileWith []*EventFileWhereInput `json:"hasEventFileWith,omitempty"`
@@ -2318,6 +2333,45 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 	}
 	if i.NumFetchesNotNil {
 		predicates = append(predicates, bazelinvocation.NumFetchesNotNil())
+	}
+	if i.ProfileName != nil {
+		predicates = append(predicates, bazelinvocation.ProfileNameEQ(*i.ProfileName))
+	}
+	if i.ProfileNameNEQ != nil {
+		predicates = append(predicates, bazelinvocation.ProfileNameNEQ(*i.ProfileNameNEQ))
+	}
+	if len(i.ProfileNameIn) > 0 {
+		predicates = append(predicates, bazelinvocation.ProfileNameIn(i.ProfileNameIn...))
+	}
+	if len(i.ProfileNameNotIn) > 0 {
+		predicates = append(predicates, bazelinvocation.ProfileNameNotIn(i.ProfileNameNotIn...))
+	}
+	if i.ProfileNameGT != nil {
+		predicates = append(predicates, bazelinvocation.ProfileNameGT(*i.ProfileNameGT))
+	}
+	if i.ProfileNameGTE != nil {
+		predicates = append(predicates, bazelinvocation.ProfileNameGTE(*i.ProfileNameGTE))
+	}
+	if i.ProfileNameLT != nil {
+		predicates = append(predicates, bazelinvocation.ProfileNameLT(*i.ProfileNameLT))
+	}
+	if i.ProfileNameLTE != nil {
+		predicates = append(predicates, bazelinvocation.ProfileNameLTE(*i.ProfileNameLTE))
+	}
+	if i.ProfileNameContains != nil {
+		predicates = append(predicates, bazelinvocation.ProfileNameContains(*i.ProfileNameContains))
+	}
+	if i.ProfileNameHasPrefix != nil {
+		predicates = append(predicates, bazelinvocation.ProfileNameHasPrefix(*i.ProfileNameHasPrefix))
+	}
+	if i.ProfileNameHasSuffix != nil {
+		predicates = append(predicates, bazelinvocation.ProfileNameHasSuffix(*i.ProfileNameHasSuffix))
+	}
+	if i.ProfileNameEqualFold != nil {
+		predicates = append(predicates, bazelinvocation.ProfileNameEqualFold(*i.ProfileNameEqualFold))
+	}
+	if i.ProfileNameContainsFold != nil {
+		predicates = append(predicates, bazelinvocation.ProfileNameContainsFold(*i.ProfileNameContainsFold))
 	}
 
 	if i.HasEventFile != nil {

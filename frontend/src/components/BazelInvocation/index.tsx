@@ -39,6 +39,7 @@ import themeStyles from '@/theme/theme.module.css';
 import { debugMode } from "@/components/Utilities/debugMode";
 import DebugInfo from "@/components/DebugInfo";
 import BuildStepResultTag, { BuildStepResultEnum } from "@/components/BuildStepResultTag";
+import DownloadButton from '@/components/DownloadButton'
 import Link from '@/components/Link';
 import { LogViewerCard } from "../LogViewer";
 import RunnerMetrics from "../RunnerMetrics";
@@ -64,6 +65,7 @@ const BazelInvocation: React.FC<{
     state,
     stepLabel,
     bazelCommand,
+    profile,
     relatedFiles,
     user,
     metrics,
@@ -248,6 +250,14 @@ const BazelInvocation: React.FC<{
   const extraBits: React.ReactNode[] = [
     <PortalDuration key="duration" from={invocationOverview.startedAt} to={invocationOverview.endedAt} includeIcon includePopover />,
   ];
+
+  if (process.env.NEXT_PUBLIC_BROWSER_URL && profile) {
+    var url = new URL(`blobs/sha256/file/${profile.digest}-${profile.sizeInBytes}/${profile.name}`, process.env.NEXT_PUBLIC_BROWSER_URL)
+    extraBits.push(
+      <DownloadButton url={url.toString()} fileName="profile" buttonLabel="Profile" enabled={true} />
+    );
+  }
+
   if (problems?.length) {
     extraBits.push(
       <CopyTextButton buttonText="Copy Problems" copyText={problems.map(problem => problem.label).join(' ')} />
@@ -257,6 +267,7 @@ const BazelInvocation: React.FC<{
   if (!isNestedWithinBuildCard && build?.buildUUID) {
     extraBits.unshift(<span key="build">Build <Link href={`/builds/${build.buildUUID}`}>{build.buildUUID}</Link></span>);
   }
+
   return (
     <PortalCard type={isNestedWithinBuildCard ? "inner" : undefined} icon={<BuildOutlined />} titleBits={titleBits} extraBits={extraBits}>
       <Tabs defaultActiveKey="1" items={items} />

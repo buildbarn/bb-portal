@@ -187,6 +187,7 @@ type Summary struct {
 	NumFetches           int64
 	CPU                  string
 	PlatformName         string
+	ProfileName          string
 	ConfigrationMnemonic string
 }
 

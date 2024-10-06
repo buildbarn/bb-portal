@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"net/url"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
@@ -102,6 +103,35 @@ func (r *bazelInvocationResolver) Problems(ctx context.Context, obj *ent.BazelIn
 	}
 
 	return r.helper.DBProblemsToAPIProblems(ctx, problems)
+}
+
+// Profile is the resolver for the profile field.
+func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInvocation) (*model.Profile, error) {
+	uriString := strings.ReplaceAll(obj.RelatedFiles[obj.ProfileName], "/"+obj.ProfileName, "")
+	uri, err := url.Parse(uriString)
+	if err != nil {
+		return nil, err
+	}
+
+	// Can only provide Profile download for profiles in CAS
+	if uri.Scheme != "bytestream" {
+		return nil, nil
+	}
+
+	components := strings.FieldsFunc(uriString, func(r rune) bool { return r == '/' })
+
+	sizeString := components[len(components)-1]
+	size, err := strconv.Atoi(sizeString)
+	if err != nil {
+		return nil, err
+	}
+	digest := components[len(components)-2]
+
+	return &model.Profile{
+		Name:        obj.ProfileName,
+		Digest:      digest,
+		SizeInBytes: size,
+	}, nil
 }
 
 // DownloadURL is the resolver for the downloadURL field.
@@ -199,11 +229,8 @@ func (r *Resolver) BlobReference() BlobReferenceResolver { return &blobReference
 // TestResult returns TestResultResolver implementation.
 func (r *Resolver) TestResult() TestResultResolver { return &testResultResolver{r} }
 
-// The action problem resolver type
-type actionProblemResolver struct{ *Resolver }
-
-// The blob reference resolver type
-type blobReferenceResolver struct{ *Resolver }
-
-// the test result resolver type
-type testResultResolver struct{ *Resolver }
+type (
+	actionProblemResolver struct{ *Resolver }
+	blobReferenceResolver struct{ *Resolver }
+	testResultResolver    struct{ *Resolver }
+)

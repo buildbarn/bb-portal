@@ -3919,6 +3919,7 @@ type BazelInvocationMutation struct {
 	configuration_mnemonic *string
 	num_fetches            *int64
 	addnum_fetches         *int64
+	profile_name           *string
 	clearedFields          map[string]struct{}
 	event_file             *int
 	clearedevent_file      bool
@@ -4820,6 +4821,42 @@ func (m *BazelInvocationMutation) ResetNumFetches() {
 	delete(m.clearedFields, bazelinvocation.FieldNumFetches)
 }
 
+// SetProfileName sets the "profile_name" field.
+func (m *BazelInvocationMutation) SetProfileName(s string) {
+	m.profile_name = &s
+}
+
+// ProfileName returns the value of the "profile_name" field in the mutation.
+func (m *BazelInvocationMutation) ProfileName() (r string, exists bool) {
+	v := m.profile_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProfileName returns the old "profile_name" field's value of the BazelInvocation entity.
+// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BazelInvocationMutation) OldProfileName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProfileName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProfileName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProfileName: %w", err)
+	}
+	return oldValue.ProfileName, nil
+}
+
+// ResetProfileName resets all changes to the "profile_name" field.
+func (m *BazelInvocationMutation) ResetProfileName() {
+	m.profile_name = nil
+}
+
 // SetEventFileID sets the "event_file" edge to the EventFile entity by id.
 func (m *BazelInvocationMutation) SetEventFileID(id int) {
 	m.event_file = &id
@@ -5133,7 +5170,7 @@ func (m *BazelInvocationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BazelInvocationMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 17)
 	if m.invocation_id != nil {
 		fields = append(fields, bazelinvocation.FieldInvocationID)
 	}
@@ -5182,6 +5219,9 @@ func (m *BazelInvocationMutation) Fields() []string {
 	if m.num_fetches != nil {
 		fields = append(fields, bazelinvocation.FieldNumFetches)
 	}
+	if m.profile_name != nil {
+		fields = append(fields, bazelinvocation.FieldProfileName)
+	}
 	return fields
 }
 
@@ -5222,6 +5262,8 @@ func (m *BazelInvocationMutation) Field(name string) (ent.Value, bool) {
 		return m.ConfigurationMnemonic()
 	case bazelinvocation.FieldNumFetches:
 		return m.NumFetches()
+	case bazelinvocation.FieldProfileName:
+		return m.ProfileName()
 	}
 	return nil, false
 }
@@ -5263,6 +5305,8 @@ func (m *BazelInvocationMutation) OldField(ctx context.Context, name string) (en
 		return m.OldConfigurationMnemonic(ctx)
 	case bazelinvocation.FieldNumFetches:
 		return m.OldNumFetches(ctx)
+	case bazelinvocation.FieldProfileName:
+		return m.OldProfileName(ctx)
 	}
 	return nil, fmt.Errorf("unknown BazelInvocation field %s", name)
 }
@@ -5383,6 +5427,13 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetNumFetches(v)
+		return nil
+	case bazelinvocation.FieldProfileName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProfileName(v)
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation field %s", name)
@@ -5588,6 +5639,9 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 		return nil
 	case bazelinvocation.FieldNumFetches:
 		m.ResetNumFetches()
+		return nil
+	case bazelinvocation.FieldProfileName:
+		m.ResetProfileName()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation field %s", name)

@@ -124,6 +124,7 @@ func (act SaveActor) saveBazelInvocation(
 ) (*ent.BazelInvocation, error) {
 	create := act.db.BazelInvocation.Create().
 		SetInvocationID(uuid.MustParse(summary.InvocationID)).
+		SetProfileName(summary.ProfileName).
 		SetStartedAt(summary.StartedAt).
 		SetNillableEndedAt(summary.EndedAt).
 		SetChangeNumber(summary.ChangeNumber).

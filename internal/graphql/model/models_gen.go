@@ -83,6 +83,13 @@ type NamedFile struct {
 	URL  string `json:"url"`
 }
 
+type Profile struct {
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	Digest      string `json:"digest"`
+	SizeInBytes int    `json:"sizeInBytes"`
+}
+
 type ProgressProblem struct {
 	ID     string `json:"id"`
 	Label  string `json:"label"`

@@ -39,7 +39,6 @@ type User {
   LDAP: String!
 }
 
-
 extend type BazelInvocation {
   user: User
 }
@@ -125,7 +124,6 @@ interface BuildStep {
   buildStepStatus: BuildStepStatus!
 }
 
-
 type EnvVar {
   key: String!
   value: String!
@@ -133,4 +131,15 @@ type EnvVar {
 
 extend type Build {
   env: [EnvVar!]!
+}
+
+type Profile {
+  id: ID!
+  name: String!
+  digest: String!
+  sizeInBytes: Int!
+}
+
+extend type BazelInvocation {
+    profile: Profile
 }

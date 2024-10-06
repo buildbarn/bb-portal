@@ -3011,6 +3011,7 @@
     "NumFetches": 0,
     "CPU": "darwin_arm64",
     "PlatformName": "darwin_arm64",
+    "ProfileName": "command.profile.gz",
     "ConfigrationMnemonic": "darwin_arm64-fastbuild"
   }
 }

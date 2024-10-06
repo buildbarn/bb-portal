@@ -733,6 +733,22 @@ input BazelInvocationWhereInput {
   numFetchesIsNil: Boolean
   numFetchesNotNil: Boolean
   """
+  profile_name field predicates
+  """
+  profileName: String
+  profileNameNEQ: String
+  profileNameIn: [String!]
+  profileNameNotIn: [String!]
+  profileNameGT: String
+  profileNameGTE: String
+  profileNameLT: String
+  profileNameLTE: String
+  profileNameContains: String
+  profileNameHasPrefix: String
+  profileNameHasSuffix: String
+  profileNameEqualFold: String
+  profileNameContainsFold: String
+  """
   event_file edge predicates
   """
   hasEventFile: Boolean

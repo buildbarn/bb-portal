@@ -126,6 +126,11 @@ func NumFetches(v int64) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldNumFetches, v))
 }
 
+// ProfileName applies equality check predicate on the "profile_name" field. It's identical to ProfileNameEQ.
+func ProfileName(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProfileName, v))
+}
+
 // InvocationIDEQ applies the EQ predicate on the "invocation_id" field.
 func InvocationIDEQ(v uuid.UUID) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldInvocationID, v))
@@ -939,6 +944,71 @@ func NumFetchesIsNil() predicate.BazelInvocation {
 // NumFetchesNotNil applies the NotNil predicate on the "num_fetches" field.
 func NumFetchesNotNil() predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldNotNull(FieldNumFetches))
+}
+
+// ProfileNameEQ applies the EQ predicate on the "profile_name" field.
+func ProfileNameEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProfileName, v))
+}
+
+// ProfileNameNEQ applies the NEQ predicate on the "profile_name" field.
+func ProfileNameNEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldProfileName, v))
+}
+
+// ProfileNameIn applies the In predicate on the "profile_name" field.
+func ProfileNameIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldProfileName, vs...))
+}
+
+// ProfileNameNotIn applies the NotIn predicate on the "profile_name" field.
+func ProfileNameNotIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldProfileName, vs...))
+}
+
+// ProfileNameGT applies the GT predicate on the "profile_name" field.
+func ProfileNameGT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGT(FieldProfileName, v))
+}
+
+// ProfileNameGTE applies the GTE predicate on the "profile_name" field.
+func ProfileNameGTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGTE(FieldProfileName, v))
+}
+
+// ProfileNameLT applies the LT predicate on the "profile_name" field.
+func ProfileNameLT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLT(FieldProfileName, v))
+}
+
+// ProfileNameLTE applies the LTE predicate on the "profile_name" field.
+func ProfileNameLTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLTE(FieldProfileName, v))
+}
+
+// ProfileNameContains applies the Contains predicate on the "profile_name" field.
+func ProfileNameContains(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContains(FieldProfileName, v))
+}
+
+// ProfileNameHasPrefix applies the HasPrefix predicate on the "profile_name" field.
+func ProfileNameHasPrefix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldProfileName, v))
+}
+
+// ProfileNameHasSuffix applies the HasSuffix predicate on the "profile_name" field.
+func ProfileNameHasSuffix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldProfileName, v))
+}
+
+// ProfileNameEqualFold applies the EqualFold predicate on the "profile_name" field.
+func ProfileNameEqualFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEqualFold(FieldProfileName, v))
+}
+
+// ProfileNameContainsFold applies the ContainsFold predicate on the "profile_name" field.
+func ProfileNameContainsFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContainsFold(FieldProfileName, v))
 }
 
 // HasEventFile applies the HasEdge predicate on the "event_file" edge.

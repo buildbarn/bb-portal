@@ -49,6 +49,16 @@ go run ../cmd/bb_portal/main.go --bind-http=:9091 --bind-grpc=:9092 &
 NEXT_PUBLIC_BES_BACKEND_URL=http://localhost:9091 NEXT_PUBLIC_BES_GRPC_BACKEND_URL=grpc://localhost:9092 npm run dev
 ```
 
+### Download blobs through bb-browser
+
+You can supply a URL to bb-browser, which is used to create links for downloading blobs:
+
+```
+NEXT_PUBLIC_BROWSER_URL=browser.example.com npm run dev
+```
+
+Currently this is used to download the build profile.
+
 ## Using the Application
 
 Go to http://localhost:8081.
