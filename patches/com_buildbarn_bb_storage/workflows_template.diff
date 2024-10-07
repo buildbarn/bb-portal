@@ -1,0 +1,38 @@
+diff --git tools/github_workflows/workflows_template.libsonnet tools/github_workflows/workflows_template.libsonnet
+index 1016937..5bee227 100644
+--- tools/github_workflows/workflows_template.libsonnet
++++ tools/github_workflows/workflows_template.libsonnet
+@@ -6,18 +6,6 @@
+       buildJustBinaries: false,
+       extension: '',
+     },
+-    {
+-      name: 'linux_386',
+-      buildAndTestCommand: 'test --test_output=errors',
+-      buildJustBinaries: false,
+-      extension: '',
+-    },
+-    {
+-      name: 'linux_arm',
+-      buildAndTestCommand: 'build',
+-      buildJustBinaries: false,
+-      extension: '',
+-    },
+     {
+       name: 'linux_arm64',
+       buildAndTestCommand: 'build',
+@@ -192,12 +180,12 @@
+     'master.yaml': {
+       name: 'master',
+       on: { push: { branches: ['main', 'master'] } },
+-      jobs: getJobs(binaries, containers, true, false),
++      jobs: getJobs(binaries, containers, true, true),
+     },
+     'pull-requests.yaml': {
+       name: 'pull-requests',
+       on: { pull_request: { branches: ['main', 'master'] } },
+-      jobs: getJobs(binaries, containers, false, false),
++      jobs: getJobs(binaries, containers, false, true),
+     },
+   },
+ }

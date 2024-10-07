@@ -56,32 +56,24 @@
                "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_amd64_cgo //..."
             },
             {
-               "name": "linux_386: build and test",
-               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_386 //..."
-            },
-            {
-               "name": "linux_arm: build and test",
-               "run": "bazel build --platforms=@rules_go//go/toolchain:linux_arm //..."
-            },
-            {
                "name": "linux_arm64: build and test",
-               "run": "bazel build --platforms=@rules_go//go/toolchain:linux_arm64 //..."
+               "run": "bazel build --platforms=@rules_go//go/toolchain:linux_arm64_cgo //..."
             },
             {
                "name": "darwin_amd64: build and test",
-               "run": "bazel build --platforms=@rules_go//go/toolchain:darwin_amd64 //..."
+               "run": "bazel build --platforms=@rules_go//go/toolchain:darwin_amd64_cgo //..."
             },
             {
                "name": "darwin_arm64: build and test",
-               "run": "bazel build --platforms=@rules_go//go/toolchain:darwin_arm64 //..."
+               "run": "bazel build --platforms=@rules_go//go/toolchain:darwin_arm64_cgo //..."
             },
             {
                "name": "freebsd_amd64: build and test",
-               "run": "bazel build --platforms=@rules_go//go/toolchain:freebsd_amd64 //cmd/bb_portal"
+               "run": "bazel build --platforms=@rules_go//go/toolchain:freebsd_amd64_cgo //cmd/bb_portal"
             },
             {
                "name": "windows_amd64: build and test",
-               "run": "bazel build --platforms=@rules_go//go/toolchain:windows_amd64 //..."
+               "run": "bazel build --platforms=@rules_go//go/toolchain:windows_amd64_cgo //..."
             }
          ]
       }
