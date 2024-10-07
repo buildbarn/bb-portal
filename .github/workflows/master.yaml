@@ -68,38 +68,6 @@
                }
             },
             {
-               "name": "linux_386: build and test",
-               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_386_cgo //..."
-            },
-            {
-               "name": "linux_386: copy bb_portal",
-               "run": "rm -f bb_portal && bazel run --run_under cp --platforms=@rules_go//go/toolchain:linux_386_cgo //cmd/bb_portal $(pwd)/bb_portal"
-            },
-            {
-               "name": "linux_386: upload bb_portal",
-               "uses": "actions/upload-artifact@v4",
-               "with": {
-                  "name": "bb_portal.linux_386",
-                  "path": "bb_portal"
-               }
-            },
-            {
-               "name": "linux_arm: build and test",
-               "run": "bazel build --platforms=@rules_go//go/toolchain:linux_arm_cgo //..."
-            },
-            {
-               "name": "linux_arm: copy bb_portal",
-               "run": "rm -f bb_portal && bazel run --run_under cp --platforms=@rules_go//go/toolchain:linux_arm_cgo //cmd/bb_portal $(pwd)/bb_portal"
-            },
-            {
-               "name": "linux_arm: upload bb_portal",
-               "uses": "actions/upload-artifact@v4",
-               "with": {
-                  "name": "bb_portal.linux_arm",
-                  "path": "bb_portal"
-               }
-            },
-            {
                "name": "linux_arm64: build and test",
                "run": "bazel build --platforms=@rules_go//go/toolchain:linux_arm64_cgo //..."
             },

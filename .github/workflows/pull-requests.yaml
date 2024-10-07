@@ -56,14 +56,6 @@
                "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_amd64_cgo //..."
             },
             {
-               "name": "linux_386: build and test",
-               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_386_cgo //..."
-            },
-            {
-               "name": "linux_arm: build and test",
-               "run": "bazel build --platforms=@rules_go//go/toolchain:linux_arm_cgo //..."
-            },
-            {
                "name": "linux_arm64: build and test",
                "run": "bazel build --platforms=@rules_go//go/toolchain:linux_arm64_cgo //..."
             },
