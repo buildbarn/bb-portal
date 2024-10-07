@@ -1,0 +1,19 @@
+diff --git tools/github_workflows/workflows_template.libsonnet tools/github_workflows/workflows_template.libsonnet
+index 1016937..16e2de8 100644
+--- tools/github_workflows/workflows_template.libsonnet
++++ tools/github_workflows/workflows_template.libsonnet
+@@ -192,12 +192,12 @@
+     'master.yaml': {
+       name: 'master',
+       on: { push: { branches: ['main', 'master'] } },
+-      jobs: getJobs(binaries, containers, true, false),
++      jobs: getJobs(binaries, containers, true, true),
+     },
+     'pull-requests.yaml': {
+       name: 'pull-requests',
+       on: { pull_request: { branches: ['main', 'master'] } },
+-      jobs: getJobs(binaries, containers, false, false),
++      jobs: getJobs(binaries, containers, false, true),
+     },
+   },
+ }
