@@ -324,6 +324,20 @@ func (biu *BazelInvocationUpdate) ClearNumFetches() *BazelInvocationUpdate {
 	return biu
 }
 
+// SetProfileName sets the "profile_name" field.
+func (biu *BazelInvocationUpdate) SetProfileName(s string) *BazelInvocationUpdate {
+	biu.mutation.SetProfileName(s)
+	return biu
+}
+
+// SetNillableProfileName sets the "profile_name" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableProfileName(s *string) *BazelInvocationUpdate {
+	if s != nil {
+		biu.SetProfileName(*s)
+	}
+	return biu
+}
+
 // SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
 func (biu *BazelInvocationUpdate) SetEventFileID(id int) *BazelInvocationUpdate {
 	biu.mutation.SetEventFileID(id)
@@ -637,6 +651,9 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.NumFetchesCleared() {
 		_spec.ClearField(bazelinvocation.FieldNumFetches, field.TypeInt64)
+	}
+	if value, ok := biu.mutation.ProfileName(); ok {
+		_spec.SetField(bazelinvocation.FieldProfileName, field.TypeString, value)
 	}
 	if biu.mutation.EventFileCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1169,6 +1186,20 @@ func (biuo *BazelInvocationUpdateOne) ClearNumFetches() *BazelInvocationUpdateOn
 	return biuo
 }
 
+// SetProfileName sets the "profile_name" field.
+func (biuo *BazelInvocationUpdateOne) SetProfileName(s string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetProfileName(s)
+	return biuo
+}
+
+// SetNillableProfileName sets the "profile_name" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableProfileName(s *string) *BazelInvocationUpdateOne {
+	if s != nil {
+		biuo.SetProfileName(*s)
+	}
+	return biuo
+}
+
 // SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
 func (biuo *BazelInvocationUpdateOne) SetEventFileID(id int) *BazelInvocationUpdateOne {
 	biuo.mutation.SetEventFileID(id)
@@ -1512,6 +1543,9 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.NumFetchesCleared() {
 		_spec.ClearField(bazelinvocation.FieldNumFetches, field.TypeInt64)
+	}
+	if value, ok := biuo.mutation.ProfileName(); ok {
+		_spec.SetField(bazelinvocation.FieldProfileName, field.TypeString, value)
 	}
 	if biuo.mutation.EventFileCleared() {
 		edge := &sqlgraph.EdgeSpec{

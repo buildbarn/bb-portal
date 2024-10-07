@@ -70,6 +70,9 @@ func (BazelInvocation) Fields() []ent.Field {
 
 		// The number of successful fetch events seen.
 		field.Int64("num_fetches").Optional(),
+
+		// The name of the build profile.
+		field.String("profile_name").Annotations(entgql.Skip(entgql.SkipType)),
 	}
 }
 

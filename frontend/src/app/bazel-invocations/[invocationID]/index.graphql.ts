@@ -164,6 +164,12 @@ fragment BazelInvocationInfo on BazelInvocation {
     id
     buildUUID
   }
+  profile {
+    id
+    name
+    digest
+    sizeInBytes
+  }
   targets {
     id
     label

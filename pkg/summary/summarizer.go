@@ -713,7 +713,7 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		return nil
 	}
 
-	s.updateEnvVarsAndCommandFromStructuredCommandLine(structuredCommandLine)
+	s.updateSummaryFromStructuredCommandLine(structuredCommandLine)
 
 	// Parse Gerrit change number if available.
 	if changeNumberStr, ok := s.summary.InvocationSummary.EnvVars["GERRIT_CHANGE_NUMBER"]; ok && changeNumberStr != "" {
@@ -778,14 +778,16 @@ func (s Summarizer) handleBuildToolLogs(buildToolLogs *bes.BuildToolLogs) error 
 	return nil
 }
 
-// updateEnvVarsAndCommandFromStructuredCommandLine
-func (s Summarizer) updateEnvVarsAndCommandFromStructuredCommandLine(structuredCommandLine *bescore.CommandLine) {
+// updateSummaryFromStructuredCommandLine
+func (s Summarizer) updateSummaryFromStructuredCommandLine(structuredCommandLine *bescore.CommandLine) {
 	sections := structuredCommandLine.GetSections()
 	for _, section := range sections {
 		label := section.GetSectionLabel()
 		if label == "command options" {
 			s.summary.InvocationSummary.EnvVars = map[string]string{}
-			ParseEnvVarsFromSectionOptions(section, &s.summary.InvocationSummary.EnvVars)
+			parseEnvVarsFromSectionOptions(section, &s.summary.InvocationSummary.EnvVars)
+
+			s.summary.ProfileName = parseProfileNameFromSectionOptions(section)
 		} else if section.GetChunkList() != nil {
 			sectionChunksStr := strings.Join(section.GetChunkList().GetChunk(), " ")
 			switch label {
@@ -815,8 +817,7 @@ func envToI(envVars map[string]string, name string) (int, error) {
 	return res, nil
 }
 
-// ParseEnvVarsFromSectionOptions function
-func ParseEnvVarsFromSectionOptions(section *bescore.CommandLineSection, destMap *map[string]string) {
+func parseEnvVarsFromSectionOptions(section *bescore.CommandLineSection, destMap *map[string]string) {
 	if section.GetOptionList() == nil {
 		return
 	}
@@ -836,4 +837,18 @@ func ParseEnvVarsFromSectionOptions(section *bescore.CommandLineSection, destMap
 		envValue := envPair[equalIndex+1:]
 		(*destMap)[envName] = envValue
 	}
+}
+
+func parseProfileNameFromSectionOptions(section *bescore.CommandLineSection) string {
+	if section.GetOptionList() != nil {
+		options := section.GetOptionList().GetOption()
+		for _, option := range options {
+			if option.GetOptionName() == "profile" {
+				return option.GetOptionValue()
+			}
+		}
+	}
+
+	// Default value if --profile is not set
+	return "command.profile.gz"
 }

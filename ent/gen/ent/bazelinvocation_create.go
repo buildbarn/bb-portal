@@ -212,6 +212,12 @@ func (bic *BazelInvocationCreate) SetNillableNumFetches(i *int64) *BazelInvocati
 	return bic
 }
 
+// SetProfileName sets the "profile_name" field.
+func (bic *BazelInvocationCreate) SetProfileName(s string) *BazelInvocationCreate {
+	bic.mutation.SetProfileName(s)
+	return bic
+}
+
 // SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
 func (bic *BazelInvocationCreate) SetEventFileID(id int) *BazelInvocationCreate {
 	bic.mutation.SetEventFileID(id)
@@ -355,6 +361,9 @@ func (bic *BazelInvocationCreate) check() error {
 	if _, ok := bic.mutation.RelatedFiles(); !ok {
 		return &ValidationError{Name: "related_files", err: errors.New(`ent: missing required field "BazelInvocation.related_files"`)}
 	}
+	if _, ok := bic.mutation.ProfileName(); !ok {
+		return &ValidationError{Name: "profile_name", err: errors.New(`ent: missing required field "BazelInvocation.profile_name"`)}
+	}
 	if _, ok := bic.mutation.EventFileID(); !ok {
 		return &ValidationError{Name: "event_file", err: errors.New(`ent: missing required edge "BazelInvocation.event_file"`)}
 	}
@@ -447,6 +456,10 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	if value, ok := bic.mutation.NumFetches(); ok {
 		_spec.SetField(bazelinvocation.FieldNumFetches, field.TypeInt64, value)
 		_node.NumFetches = value
+	}
+	if value, ok := bic.mutation.ProfileName(); ok {
+		_spec.SetField(bazelinvocation.FieldProfileName, field.TypeString, value)
+		_node.ProfileName = value
 	}
 	if nodes := bic.mutation.EventFileIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

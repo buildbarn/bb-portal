@@ -55,6 +55,8 @@ type BazelInvocation struct {
 	ConfigurationMnemonic string `json:"configuration_mnemonic,omitempty"`
 	// NumFetches holds the value of the "num_fetches" field.
 	NumFetches int64 `json:"num_fetches,omitempty"`
+	// ProfileName holds the value of the "profile_name" field.
+	ProfileName string `json:"profile_name,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BazelInvocationQuery when eager-loading is set.
 	Edges                       BazelInvocationEdges `json:"edges"`
@@ -159,7 +161,7 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber, bazelinvocation.FieldNumFetches:
 			values[i] = new(sql.NullInt64)
-		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldBuildLogs, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldConfigurationMnemonic:
+		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldBuildLogs, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldConfigurationMnemonic, bazelinvocation.FieldProfileName:
 			values[i] = new(sql.NullString)
 		case bazelinvocation.FieldStartedAt, bazelinvocation.FieldEndedAt:
 			values[i] = new(sql.NullTime)
@@ -290,6 +292,12 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				bi.NumFetches = value.Int64
 			}
+		case bazelinvocation.FieldProfileName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field profile_name", values[i])
+			} else if value.Valid {
+				bi.ProfileName = value.String
+			}
 		case bazelinvocation.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_invocations", value)
@@ -417,6 +425,9 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("num_fetches=")
 	builder.WriteString(fmt.Sprintf("%v", bi.NumFetches))
+	builder.WriteString(", ")
+	builder.WriteString("profile_name=")
+	builder.WriteString(bi.ProfileName)
 	builder.WriteByte(')')
 	return builder.String()
 }
