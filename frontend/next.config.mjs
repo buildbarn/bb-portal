@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'standalone',
+    reactStrictMode: true,
+    swcMinify: true,
+    // https://nextjs.org/docs/messages/export-image-api
+    images: {
+      unoptimized: true,
+    },
 };
 
 export default nextConfig;

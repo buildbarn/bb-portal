@@ -1,0 +1,4 @@
+alias(
+    name = "bb_portal_frontend",
+    actual = "//frontend",
+)

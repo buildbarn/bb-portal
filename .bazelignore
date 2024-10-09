@@ -1,2 +1,3 @@
 bazel-demo
+frontend/node_modules
 third_party/bazel/_generate-via-bazel

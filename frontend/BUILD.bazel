@@ -1,0 +1,29 @@
+load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@npm//frontend:next/package_json.bzl", next_bin = "bin")
+load(":next.bzl", "next")
+
+npm_link_all_packages(name = "node_modules")
+
+next_bin.next_binary(name = "next_binary")
+
+filegroup(
+    name = "graphql",
+    srcs = glob(["src/graphql/__generated__/*"]),
+    visibility = ["//visibility:public"]
+)
+
+next(
+    name = "frontend",
+    srcs = [
+        ".env",
+        "next.config.mjs",
+        "package.json",
+        "tsconfig.json",
+    ] + glob(["src/**"]),
+    data = [
+        "//frontend:node_modules",
+    ],
+    next_bin = "./node_modules/next/dist/bin/next",
+    next_js_binary = ":next_binary",
+    visibility = ["//visibility:public"]
+)

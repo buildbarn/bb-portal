@@ -1,11 +1,13 @@
 module(name = "com_github_buildbarn_bb_portal")
 
+bazel_dep(name = "aspect_bazel_lib", version = "2.9.1")
+bazel_dep(name = "aspect_rules_js", version = "2.0.2")
 bazel_dep(name = "bazel_remote_apis", version = "0.0.0")
 bazel_dep(name = "com_github_buildbarn_bb_storage")
 bazel_dep(name = "gazelle", version = "0.38.0")
 bazel_dep(name = "googleapis", version = "0.0.0-20240819-fe8ba054a")
 bazel_dep(name = "googletest", version = "1.15.2")
-bazel_dep(name = "rules_go", version = "0.50.0")
+bazel_dep(name = "rules_go", version = "0.50.1")
 bazel_dep(name = "rules_jsonnet", version = "0.6.0")
 bazel_dep(name = "rules_oci", version = "1.8.0")
 bazel_dep(name = "toolchains_llvm", version = "1.1.2")
@@ -79,3 +81,12 @@ llvm.toolchain(
     llvm_version = "14.0.0",
 )
 use_repo(llvm, "llvm_toolchain_llvm")
+
+npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm", dev_dependency = True)
+npm.npm_translate_lock(
+    name = "npm",
+    npmrc = "//frontend:.npmrc",
+    pnpm_lock = "//frontend:pnpm-lock.yaml",
+    verify_node_modules_ignored = "//:.bazelignore",
+)
+use_repo(npm, "npm")
