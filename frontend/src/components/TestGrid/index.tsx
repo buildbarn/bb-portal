@@ -85,8 +85,9 @@ const columns: TableColumnsType<TestGridRowDataType> = [
     render: (_, record) => <span className={styles.duration}>{millisecondsToTime(record.max_duration)}</span>
   },
   {
-    title: "Num Runs",
+    title: "# Runs",
     dataIndex: "total_count",
+    align: "center"
     //sorter: (a, b) => a.total_count - b.total_count,
   },
   {
