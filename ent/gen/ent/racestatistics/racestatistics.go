@@ -26,11 +26,13 @@ const (
 	EdgeDynamicExecutionMetrics = "dynamic_execution_metrics"
 	// Table holds the table name of the racestatistics in the database.
 	Table = "race_statistics"
-	// DynamicExecutionMetricsTable is the table that holds the dynamic_execution_metrics relation/edge. The primary key declared below.
-	DynamicExecutionMetricsTable = "dynamic_execution_metrics_race_statistics"
+	// DynamicExecutionMetricsTable is the table that holds the dynamic_execution_metrics relation/edge.
+	DynamicExecutionMetricsTable = "race_statistics"
 	// DynamicExecutionMetricsInverseTable is the table name for the DynamicExecutionMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "dynamicexecutionmetrics" package.
 	DynamicExecutionMetricsInverseTable = "dynamic_execution_metrics"
+	// DynamicExecutionMetricsColumn is the table column denoting the dynamic_execution_metrics relation/edge.
+	DynamicExecutionMetricsColumn = "dynamic_execution_metrics_race_statistics"
 )
 
 // Columns holds all SQL columns for racestatistics fields.
@@ -43,16 +45,21 @@ var Columns = []string{
 	FieldRenoteWins,
 }
 
-var (
-	// DynamicExecutionMetricsPrimaryKey and DynamicExecutionMetricsColumn2 are the table columns denoting the
-	// primary key for the dynamic_execution_metrics relation (M2M).
-	DynamicExecutionMetricsPrimaryKey = []string{"dynamic_execution_metrics_id", "race_statistics_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "race_statistics"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"dynamic_execution_metrics_race_statistics",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -92,23 +99,16 @@ func ByRenoteWins(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRenoteWins, opts...).ToFunc()
 }
 
-// ByDynamicExecutionMetricsCount orders the results by dynamic_execution_metrics count.
-func ByDynamicExecutionMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByDynamicExecutionMetricsField orders the results by dynamic_execution_metrics field.
+func ByDynamicExecutionMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newDynamicExecutionMetricsStep(), opts...)
-	}
-}
-
-// ByDynamicExecutionMetrics orders the results by dynamic_execution_metrics terms.
-func ByDynamicExecutionMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newDynamicExecutionMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newDynamicExecutionMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newDynamicExecutionMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DynamicExecutionMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, DynamicExecutionMetricsTable, DynamicExecutionMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.M2O, true, DynamicExecutionMetricsTable, DynamicExecutionMetricsColumn),
 	)
 }

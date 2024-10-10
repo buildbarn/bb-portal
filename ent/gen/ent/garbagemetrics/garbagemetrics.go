@@ -20,11 +20,13 @@ const (
 	EdgeMemoryMetrics = "memory_metrics"
 	// Table holds the table name of the garbagemetrics in the database.
 	Table = "garbage_metrics"
-	// MemoryMetricsTable is the table that holds the memory_metrics relation/edge. The primary key declared below.
-	MemoryMetricsTable = "memory_metrics_garbage_metrics"
+	// MemoryMetricsTable is the table that holds the memory_metrics relation/edge.
+	MemoryMetricsTable = "garbage_metrics"
 	// MemoryMetricsInverseTable is the table name for the MemoryMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "memorymetrics" package.
 	MemoryMetricsInverseTable = "memory_metrics"
+	// MemoryMetricsColumn is the table column denoting the memory_metrics relation/edge.
+	MemoryMetricsColumn = "memory_metrics_garbage_metrics"
 )
 
 // Columns holds all SQL columns for garbagemetrics fields.
@@ -34,16 +36,21 @@ var Columns = []string{
 	FieldGarbageCollected,
 }
 
-var (
-	// MemoryMetricsPrimaryKey and MemoryMetricsColumn2 are the table columns denoting the
-	// primary key for the memory_metrics relation (M2M).
-	MemoryMetricsPrimaryKey = []string{"memory_metrics_id", "garbage_metrics_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "garbage_metrics"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"memory_metrics_garbage_metrics",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -68,23 +75,16 @@ func ByGarbageCollected(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldGarbageCollected, opts...).ToFunc()
 }
 
-// ByMemoryMetricsCount orders the results by memory_metrics count.
-func ByMemoryMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByMemoryMetricsField orders the results by memory_metrics field.
+func ByMemoryMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newMemoryMetricsStep(), opts...)
-	}
-}
-
-// ByMemoryMetrics orders the results by memory_metrics terms.
-func ByMemoryMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newMemoryMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newMemoryMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newMemoryMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MemoryMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, MemoryMetricsTable, MemoryMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.M2O, true, MemoryMetricsTable, MemoryMetricsColumn),
 	)
 }

@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 )
 
@@ -22,32 +23,29 @@ type EvaluationStat struct {
 	Count int64 `json:"count,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EvaluationStatQuery when eager-loading is set.
-	Edges                              EvaluationStatEdges `json:"edges"`
-	build_graph_metrics_dirtied_values *int
-	build_graph_metrics_changed_values *int
-	build_graph_metrics_built_values   *int
-	build_graph_metrics_cleaned_values *int
-	selectValues                       sql.SelectValues
+	Edges                                EvaluationStatEdges `json:"edges"`
+	build_graph_metrics_evaluated_values *int
+	selectValues                         sql.SelectValues
 }
 
 // EvaluationStatEdges holds the relations/edges for other nodes in the graph.
 type EvaluationStatEdges struct {
 	// BuildGraphMetrics holds the value of the build_graph_metrics edge.
-	BuildGraphMetrics []*BuildGraphMetrics `json:"build_graph_metrics,omitempty"`
+	BuildGraphMetrics *BuildGraphMetrics `json:"build_graph_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedBuildGraphMetrics map[string][]*BuildGraphMetrics
 }
 
 // BuildGraphMetricsOrErr returns the BuildGraphMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e EvaluationStatEdges) BuildGraphMetricsOrErr() ([]*BuildGraphMetrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e EvaluationStatEdges) BuildGraphMetricsOrErr() (*BuildGraphMetrics, error) {
+	if e.BuildGraphMetrics != nil {
 		return e.BuildGraphMetrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: buildgraphmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "build_graph_metrics"}
 }
@@ -61,13 +59,7 @@ func (*EvaluationStat) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case evaluationstat.FieldSkyfunctionName:
 			values[i] = new(sql.NullString)
-		case evaluationstat.ForeignKeys[0]: // build_graph_metrics_dirtied_values
-			values[i] = new(sql.NullInt64)
-		case evaluationstat.ForeignKeys[1]: // build_graph_metrics_changed_values
-			values[i] = new(sql.NullInt64)
-		case evaluationstat.ForeignKeys[2]: // build_graph_metrics_built_values
-			values[i] = new(sql.NullInt64)
-		case evaluationstat.ForeignKeys[3]: // build_graph_metrics_cleaned_values
+		case evaluationstat.ForeignKeys[0]: // build_graph_metrics_evaluated_values
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -104,31 +96,10 @@ func (es *EvaluationStat) assignValues(columns []string, values []any) error {
 			}
 		case evaluationstat.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_dirtied_values", value)
+				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_evaluated_values", value)
 			} else if value.Valid {
-				es.build_graph_metrics_dirtied_values = new(int)
-				*es.build_graph_metrics_dirtied_values = int(value.Int64)
-			}
-		case evaluationstat.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_changed_values", value)
-			} else if value.Valid {
-				es.build_graph_metrics_changed_values = new(int)
-				*es.build_graph_metrics_changed_values = int(value.Int64)
-			}
-		case evaluationstat.ForeignKeys[2]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_built_values", value)
-			} else if value.Valid {
-				es.build_graph_metrics_built_values = new(int)
-				*es.build_graph_metrics_built_values = int(value.Int64)
-			}
-		case evaluationstat.ForeignKeys[3]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_cleaned_values", value)
-			} else if value.Valid {
-				es.build_graph_metrics_cleaned_values = new(int)
-				*es.build_graph_metrics_cleaned_values = int(value.Int64)
+				es.build_graph_metrics_evaluated_values = new(int)
+				*es.build_graph_metrics_evaluated_values = int(value.Int64)
 			}
 		default:
 			es.selectValues.Set(columns[i], values[i])
@@ -178,30 +149,6 @@ func (es *EvaluationStat) String() string {
 	builder.WriteString(fmt.Sprintf("%v", es.Count))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedBuildGraphMetrics returns the BuildGraphMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (es *EvaluationStat) NamedBuildGraphMetrics(name string) ([]*BuildGraphMetrics, error) {
-	if es.Edges.namedBuildGraphMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := es.Edges.namedBuildGraphMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (es *EvaluationStat) appendNamedBuildGraphMetrics(name string, edges ...*BuildGraphMetrics) {
-	if es.Edges.namedBuildGraphMetrics == nil {
-		es.Edges.namedBuildGraphMetrics = make(map[string][]*BuildGraphMetrics)
-	}
-	if len(edges) == 0 {
-		es.Edges.namedBuildGraphMetrics[name] = []*BuildGraphMetrics{}
-	} else {
-		es.Edges.namedBuildGraphMetrics[name] = append(es.Edges.namedBuildGraphMetrics[name], edges...)
-	}
 }
 
 // EvaluationStats is a parsable slice of EvaluationStat.

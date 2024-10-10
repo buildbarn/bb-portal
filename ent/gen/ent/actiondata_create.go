@@ -117,19 +117,23 @@ func (adc *ActionDataCreate) SetNillableUserTime(i *int64) *ActionDataCreate {
 	return adc
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by IDs.
-func (adc *ActionDataCreate) AddActionSummaryIDs(ids ...int) *ActionDataCreate {
-	adc.mutation.AddActionSummaryIDs(ids...)
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
+func (adc *ActionDataCreate) SetActionSummaryID(id int) *ActionDataCreate {
+	adc.mutation.SetActionSummaryID(id)
 	return adc
 }
 
-// AddActionSummary adds the "action_summary" edges to the ActionSummary entity.
-func (adc *ActionDataCreate) AddActionSummary(a ...*ActionSummary) *ActionDataCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
+func (adc *ActionDataCreate) SetNillableActionSummaryID(id *int) *ActionDataCreate {
+	if id != nil {
+		adc = adc.SetActionSummaryID(*id)
 	}
-	return adc.AddActionSummaryIDs(ids...)
+	return adc
+}
+
+// SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
+func (adc *ActionDataCreate) SetActionSummary(a *ActionSummary) *ActionDataCreate {
+	return adc.SetActionSummaryID(a.ID)
 }
 
 // Mutation returns the ActionDataMutation object of the builder.
@@ -222,10 +226,10 @@ func (adc *ActionDataCreate) createSpec() (*ActionData, *sqlgraph.CreateSpec) {
 	}
 	if nodes := adc.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   actiondata.ActionSummaryTable,
-			Columns: actiondata.ActionSummaryPrimaryKey,
+			Columns: []string{actiondata.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
@@ -234,6 +238,7 @@ func (adc *ActionDataCreate) createSpec() (*ActionData, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.action_summary_action_data = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

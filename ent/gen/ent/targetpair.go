@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
@@ -32,16 +33,15 @@ type TargetPair struct {
 	AbortReason targetpair.AbortReason `json:"abort_reason,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetPairQuery when eager-loading is set.
-	Edges                     TargetPairEdges `json:"edges"`
-	target_pair_configuration *int
-	target_pair_completion    *int
-	selectValues              sql.SelectValues
+	Edges                    TargetPairEdges `json:"edges"`
+	bazel_invocation_targets *int
+	selectValues             sql.SelectValues
 }
 
 // TargetPairEdges holds the relations/edges for other nodes in the graph.
 type TargetPairEdges struct {
 	// BazelInvocation holds the value of the bazel_invocation edge.
-	BazelInvocation []*BazelInvocation `json:"bazel_invocation,omitempty"`
+	BazelInvocation *BazelInvocation `json:"bazel_invocation,omitempty"`
 	// Configuration holds the value of the configuration edge.
 	Configuration *TargetConfigured `json:"configuration,omitempty"`
 	// Completion holds the value of the completion edge.
@@ -51,15 +51,15 @@ type TargetPairEdges struct {
 	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
 	totalCount [3]map[string]int
-
-	namedBazelInvocation map[string][]*BazelInvocation
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
-// was not loaded in eager-loading.
-func (e TargetPairEdges) BazelInvocationOrErr() ([]*BazelInvocation, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TargetPairEdges) BazelInvocationOrErr() (*BazelInvocation, error) {
+	if e.BazelInvocation != nil {
 		return e.BazelInvocation, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: bazelinvocation.Label}
 	}
 	return nil, &NotLoadedError{edge: "bazel_invocation"}
 }
@@ -97,9 +97,7 @@ func (*TargetPair) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case targetpair.FieldLabel, targetpair.FieldTargetKind, targetpair.FieldTestSize, targetpair.FieldAbortReason:
 			values[i] = new(sql.NullString)
-		case targetpair.ForeignKeys[0]: // target_pair_configuration
-			values[i] = new(sql.NullInt64)
-		case targetpair.ForeignKeys[1]: // target_pair_completion
+		case targetpair.ForeignKeys[0]: // bazel_invocation_targets
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -160,17 +158,10 @@ func (tp *TargetPair) assignValues(columns []string, values []any) error {
 			}
 		case targetpair.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field target_pair_configuration", value)
+				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_targets", value)
 			} else if value.Valid {
-				tp.target_pair_configuration = new(int)
-				*tp.target_pair_configuration = int(value.Int64)
-			}
-		case targetpair.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field target_pair_completion", value)
-			} else if value.Valid {
-				tp.target_pair_completion = new(int)
-				*tp.target_pair_completion = int(value.Int64)
+				tp.bazel_invocation_targets = new(int)
+				*tp.bazel_invocation_targets = int(value.Int64)
 			}
 		default:
 			tp.selectValues.Set(columns[i], values[i])
@@ -242,30 +233,6 @@ func (tp *TargetPair) String() string {
 	builder.WriteString(fmt.Sprintf("%v", tp.AbortReason))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedBazelInvocation returns the BazelInvocation named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (tp *TargetPair) NamedBazelInvocation(name string) ([]*BazelInvocation, error) {
-	if tp.Edges.namedBazelInvocation == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := tp.Edges.namedBazelInvocation[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (tp *TargetPair) appendNamedBazelInvocation(name string, edges ...*BazelInvocation) {
-	if tp.Edges.namedBazelInvocation == nil {
-		tp.Edges.namedBazelInvocation = make(map[string][]*BazelInvocation)
-	}
-	if len(edges) == 0 {
-		tp.Edges.namedBazelInvocation[name] = []*BazelInvocation{}
-	} else {
-		tp.Edges.namedBazelInvocation[name] = append(tp.Edges.namedBazelInvocation[name], edges...)
-	}
 }
 
 // TargetPairs is a parsable slice of TargetPair.

@@ -789,10 +789,10 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.TestCollectionCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TestCollectionTable,
-			Columns: bazelinvocation.TestCollectionPrimaryKey,
+			Columns: []string{bazelinvocation.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
@@ -802,10 +802,10 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if nodes := biu.mutation.RemovedTestCollectionIDs(); len(nodes) > 0 && !biu.mutation.TestCollectionCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TestCollectionTable,
-			Columns: bazelinvocation.TestCollectionPrimaryKey,
+			Columns: []string{bazelinvocation.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
@@ -818,10 +818,10 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if nodes := biu.mutation.TestCollectionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TestCollectionTable,
-			Columns: bazelinvocation.TestCollectionPrimaryKey,
+			Columns: []string{bazelinvocation.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
@@ -834,10 +834,10 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.TargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TargetsTable,
-			Columns: bazelinvocation.TargetsPrimaryKey,
+			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
@@ -847,10 +847,10 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if nodes := biu.mutation.RemovedTargetsIDs(); len(nodes) > 0 && !biu.mutation.TargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TargetsTable,
-			Columns: bazelinvocation.TargetsPrimaryKey,
+			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
@@ -863,10 +863,10 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if nodes := biu.mutation.TargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TargetsTable,
-			Columns: bazelinvocation.TargetsPrimaryKey,
+			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
@@ -1681,10 +1681,10 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.TestCollectionCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TestCollectionTable,
-			Columns: bazelinvocation.TestCollectionPrimaryKey,
+			Columns: []string{bazelinvocation.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
@@ -1694,10 +1694,10 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if nodes := biuo.mutation.RemovedTestCollectionIDs(); len(nodes) > 0 && !biuo.mutation.TestCollectionCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TestCollectionTable,
-			Columns: bazelinvocation.TestCollectionPrimaryKey,
+			Columns: []string{bazelinvocation.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
@@ -1710,10 +1710,10 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if nodes := biuo.mutation.TestCollectionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TestCollectionTable,
-			Columns: bazelinvocation.TestCollectionPrimaryKey,
+			Columns: []string{bazelinvocation.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
@@ -1726,10 +1726,10 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.TargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TargetsTable,
-			Columns: bazelinvocation.TargetsPrimaryKey,
+			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
@@ -1739,10 +1739,10 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if nodes := biuo.mutation.RemovedTargetsIDs(); len(nodes) > 0 && !biuo.mutation.TargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TargetsTable,
-			Columns: bazelinvocation.TargetsPrimaryKey,
+			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
@@ -1755,10 +1755,10 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if nodes := biuo.mutation.TargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TargetsTable,
-			Columns: bazelinvocation.TargetsPrimaryKey,
+			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),

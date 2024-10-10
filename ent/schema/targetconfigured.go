@@ -44,6 +44,7 @@ func (TargetConfigured) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the target pair.
 		edge.From("target_pair", TargetPair.Type).
-			Ref("configuration"),
+			Ref("configuration").
+			Unique(),
 	}
 }

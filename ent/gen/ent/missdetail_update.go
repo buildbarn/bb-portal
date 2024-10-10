@@ -75,19 +75,23 @@ func (mdu *MissDetailUpdate) ClearCount() *MissDetailUpdate {
 	return mdu
 }
 
-// AddActionCacheStatisticIDs adds the "action_cache_statistics" edge to the ActionCacheStatistics entity by IDs.
-func (mdu *MissDetailUpdate) AddActionCacheStatisticIDs(ids ...int) *MissDetailUpdate {
-	mdu.mutation.AddActionCacheStatisticIDs(ids...)
+// SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
+func (mdu *MissDetailUpdate) SetActionCacheStatisticsID(id int) *MissDetailUpdate {
+	mdu.mutation.SetActionCacheStatisticsID(id)
 	return mdu
 }
 
-// AddActionCacheStatistics adds the "action_cache_statistics" edges to the ActionCacheStatistics entity.
-func (mdu *MissDetailUpdate) AddActionCacheStatistics(a ...*ActionCacheStatistics) *MissDetailUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
+func (mdu *MissDetailUpdate) SetNillableActionCacheStatisticsID(id *int) *MissDetailUpdate {
+	if id != nil {
+		mdu = mdu.SetActionCacheStatisticsID(*id)
 	}
-	return mdu.AddActionCacheStatisticIDs(ids...)
+	return mdu
+}
+
+// SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
+func (mdu *MissDetailUpdate) SetActionCacheStatistics(a *ActionCacheStatistics) *MissDetailUpdate {
+	return mdu.SetActionCacheStatisticsID(a.ID)
 }
 
 // Mutation returns the MissDetailMutation object of the builder.
@@ -95,25 +99,10 @@ func (mdu *MissDetailUpdate) Mutation() *MissDetailMutation {
 	return mdu.mutation
 }
 
-// ClearActionCacheStatistics clears all "action_cache_statistics" edges to the ActionCacheStatistics entity.
+// ClearActionCacheStatistics clears the "action_cache_statistics" edge to the ActionCacheStatistics entity.
 func (mdu *MissDetailUpdate) ClearActionCacheStatistics() *MissDetailUpdate {
 	mdu.mutation.ClearActionCacheStatistics()
 	return mdu
-}
-
-// RemoveActionCacheStatisticIDs removes the "action_cache_statistics" edge to ActionCacheStatistics entities by IDs.
-func (mdu *MissDetailUpdate) RemoveActionCacheStatisticIDs(ids ...int) *MissDetailUpdate {
-	mdu.mutation.RemoveActionCacheStatisticIDs(ids...)
-	return mdu
-}
-
-// RemoveActionCacheStatistics removes "action_cache_statistics" edges to ActionCacheStatistics entities.
-func (mdu *MissDetailUpdate) RemoveActionCacheStatistics(a ...*ActionCacheStatistics) *MissDetailUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return mdu.RemoveActionCacheStatisticIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -182,39 +171,23 @@ func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if mdu.mutation.ActionCacheStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   missdetail.ActionCacheStatisticsTable,
-			Columns: missdetail.ActionCacheStatisticsPrimaryKey,
+			Columns: []string{missdetail.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mdu.mutation.RemovedActionCacheStatisticsIDs(); len(nodes) > 0 && !mdu.mutation.ActionCacheStatisticsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   missdetail.ActionCacheStatisticsTable,
-			Columns: missdetail.ActionCacheStatisticsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mdu.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   missdetail.ActionCacheStatisticsTable,
-			Columns: missdetail.ActionCacheStatisticsPrimaryKey,
+			Columns: []string{missdetail.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
@@ -292,19 +265,23 @@ func (mduo *MissDetailUpdateOne) ClearCount() *MissDetailUpdateOne {
 	return mduo
 }
 
-// AddActionCacheStatisticIDs adds the "action_cache_statistics" edge to the ActionCacheStatistics entity by IDs.
-func (mduo *MissDetailUpdateOne) AddActionCacheStatisticIDs(ids ...int) *MissDetailUpdateOne {
-	mduo.mutation.AddActionCacheStatisticIDs(ids...)
+// SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
+func (mduo *MissDetailUpdateOne) SetActionCacheStatisticsID(id int) *MissDetailUpdateOne {
+	mduo.mutation.SetActionCacheStatisticsID(id)
 	return mduo
 }
 
-// AddActionCacheStatistics adds the "action_cache_statistics" edges to the ActionCacheStatistics entity.
-func (mduo *MissDetailUpdateOne) AddActionCacheStatistics(a ...*ActionCacheStatistics) *MissDetailUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
+func (mduo *MissDetailUpdateOne) SetNillableActionCacheStatisticsID(id *int) *MissDetailUpdateOne {
+	if id != nil {
+		mduo = mduo.SetActionCacheStatisticsID(*id)
 	}
-	return mduo.AddActionCacheStatisticIDs(ids...)
+	return mduo
+}
+
+// SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
+func (mduo *MissDetailUpdateOne) SetActionCacheStatistics(a *ActionCacheStatistics) *MissDetailUpdateOne {
+	return mduo.SetActionCacheStatisticsID(a.ID)
 }
 
 // Mutation returns the MissDetailMutation object of the builder.
@@ -312,25 +289,10 @@ func (mduo *MissDetailUpdateOne) Mutation() *MissDetailMutation {
 	return mduo.mutation
 }
 
-// ClearActionCacheStatistics clears all "action_cache_statistics" edges to the ActionCacheStatistics entity.
+// ClearActionCacheStatistics clears the "action_cache_statistics" edge to the ActionCacheStatistics entity.
 func (mduo *MissDetailUpdateOne) ClearActionCacheStatistics() *MissDetailUpdateOne {
 	mduo.mutation.ClearActionCacheStatistics()
 	return mduo
-}
-
-// RemoveActionCacheStatisticIDs removes the "action_cache_statistics" edge to ActionCacheStatistics entities by IDs.
-func (mduo *MissDetailUpdateOne) RemoveActionCacheStatisticIDs(ids ...int) *MissDetailUpdateOne {
-	mduo.mutation.RemoveActionCacheStatisticIDs(ids...)
-	return mduo
-}
-
-// RemoveActionCacheStatistics removes "action_cache_statistics" edges to ActionCacheStatistics entities.
-func (mduo *MissDetailUpdateOne) RemoveActionCacheStatistics(a ...*ActionCacheStatistics) *MissDetailUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return mduo.RemoveActionCacheStatisticIDs(ids...)
 }
 
 // Where appends a list predicates to the MissDetailUpdate builder.
@@ -429,39 +391,23 @@ func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail
 	}
 	if mduo.mutation.ActionCacheStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   missdetail.ActionCacheStatisticsTable,
-			Columns: missdetail.ActionCacheStatisticsPrimaryKey,
+			Columns: []string{missdetail.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mduo.mutation.RemovedActionCacheStatisticsIDs(); len(nodes) > 0 && !mduo.mutation.ActionCacheStatisticsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   missdetail.ActionCacheStatisticsTable,
-			Columns: missdetail.ActionCacheStatisticsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mduo.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   missdetail.ActionCacheStatisticsTable,
-			Columns: missdetail.ActionCacheStatisticsPrimaryKey,
+			Columns: []string{missdetail.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),

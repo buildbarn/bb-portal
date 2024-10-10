@@ -39,6 +39,8 @@ func (PackageLoadMetrics) Fields() []ent.Field {
 func (PackageLoadMetrics) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the package metrics
-		edge.From("package_metrics", PackageMetrics.Type).Ref("package_load_metrics"),
+		edge.From("package_metrics", PackageMetrics.Type).
+			Ref("package_load_metrics").
+			Unique(),
 	}
 }

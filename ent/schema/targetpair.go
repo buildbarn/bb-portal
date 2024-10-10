@@ -60,12 +60,15 @@ func (TargetPair) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the bazel invocation.
 		edge.From("bazel_invocation", BazelInvocation.Type).
-			Ref("targets"),
+			Ref("targets").
+			Unique(),
 
 		// Edge to the target configuration object.
-		edge.To("configuration", TargetConfigured.Type).Unique(),
+		edge.To("configuration", TargetConfigured.Type).
+			Unique(),
 
 		// Edge to the target completed object.
-		edge.To("completion", TargetComplete.Type).Unique(),
+		edge.To("completion", TargetComplete.Type).
+			Unique(),
 	}
 }

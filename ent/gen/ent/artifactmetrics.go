@@ -9,6 +9,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 )
 
 // ArtifactMetrics is the model entity for the ArtifactMetrics schema.
@@ -18,76 +20,84 @@ type ArtifactMetrics struct {
 	ID int `json:"id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ArtifactMetricsQuery when eager-loading is set.
-	Edges        ArtifactMetricsEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                                               ArtifactMetricsEdges `json:"edges"`
+	artifact_metrics_source_artifacts_read              *int
+	artifact_metrics_output_artifacts_seen              *int
+	artifact_metrics_output_artifacts_from_action_cache *int
+	metrics_artifact_metrics                            *int
+	selectValues                                        sql.SelectValues
 }
 
 // ArtifactMetricsEdges holds the relations/edges for other nodes in the graph.
 type ArtifactMetricsEdges struct {
 	// Metrics holds the value of the metrics edge.
-	Metrics []*Metrics `json:"metrics,omitempty"`
+	Metrics *Metrics `json:"metrics,omitempty"`
 	// SourceArtifactsRead holds the value of the source_artifacts_read edge.
-	SourceArtifactsRead []*FilesMetric `json:"source_artifacts_read,omitempty"`
+	SourceArtifactsRead *FilesMetric `json:"source_artifacts_read,omitempty"`
 	// OutputArtifactsSeen holds the value of the output_artifacts_seen edge.
-	OutputArtifactsSeen []*FilesMetric `json:"output_artifacts_seen,omitempty"`
+	OutputArtifactsSeen *FilesMetric `json:"output_artifacts_seen,omitempty"`
 	// OutputArtifactsFromActionCache holds the value of the output_artifacts_from_action_cache edge.
-	OutputArtifactsFromActionCache []*FilesMetric `json:"output_artifacts_from_action_cache,omitempty"`
+	OutputArtifactsFromActionCache *FilesMetric `json:"output_artifacts_from_action_cache,omitempty"`
 	// TopLevelArtifacts holds the value of the top_level_artifacts edge.
-	TopLevelArtifacts []*FilesMetric `json:"top_level_artifacts,omitempty"`
+	TopLevelArtifacts *FilesMetric `json:"top_level_artifacts,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [5]bool
 	// totalCount holds the count of the edges above.
 	totalCount [5]map[string]int
-
-	namedMetrics                        map[string][]*Metrics
-	namedSourceArtifactsRead            map[string][]*FilesMetric
-	namedOutputArtifactsSeen            map[string][]*FilesMetric
-	namedOutputArtifactsFromActionCache map[string][]*FilesMetric
-	namedTopLevelArtifacts              map[string][]*FilesMetric
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e ArtifactMetricsEdges) MetricsOrErr() ([]*Metrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ArtifactMetricsEdges) MetricsOrErr() (*Metrics, error) {
+	if e.Metrics != nil {
 		return e.Metrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
 }
 
 // SourceArtifactsReadOrErr returns the SourceArtifactsRead value or an error if the edge
-// was not loaded in eager-loading.
-func (e ArtifactMetricsEdges) SourceArtifactsReadOrErr() ([]*FilesMetric, error) {
-	if e.loadedTypes[1] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ArtifactMetricsEdges) SourceArtifactsReadOrErr() (*FilesMetric, error) {
+	if e.SourceArtifactsRead != nil {
 		return e.SourceArtifactsRead, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: filesmetric.Label}
 	}
 	return nil, &NotLoadedError{edge: "source_artifacts_read"}
 }
 
 // OutputArtifactsSeenOrErr returns the OutputArtifactsSeen value or an error if the edge
-// was not loaded in eager-loading.
-func (e ArtifactMetricsEdges) OutputArtifactsSeenOrErr() ([]*FilesMetric, error) {
-	if e.loadedTypes[2] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ArtifactMetricsEdges) OutputArtifactsSeenOrErr() (*FilesMetric, error) {
+	if e.OutputArtifactsSeen != nil {
 		return e.OutputArtifactsSeen, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: filesmetric.Label}
 	}
 	return nil, &NotLoadedError{edge: "output_artifacts_seen"}
 }
 
 // OutputArtifactsFromActionCacheOrErr returns the OutputArtifactsFromActionCache value or an error if the edge
-// was not loaded in eager-loading.
-func (e ArtifactMetricsEdges) OutputArtifactsFromActionCacheOrErr() ([]*FilesMetric, error) {
-	if e.loadedTypes[3] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ArtifactMetricsEdges) OutputArtifactsFromActionCacheOrErr() (*FilesMetric, error) {
+	if e.OutputArtifactsFromActionCache != nil {
 		return e.OutputArtifactsFromActionCache, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: filesmetric.Label}
 	}
 	return nil, &NotLoadedError{edge: "output_artifacts_from_action_cache"}
 }
 
 // TopLevelArtifactsOrErr returns the TopLevelArtifacts value or an error if the edge
-// was not loaded in eager-loading.
-func (e ArtifactMetricsEdges) TopLevelArtifactsOrErr() ([]*FilesMetric, error) {
-	if e.loadedTypes[4] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ArtifactMetricsEdges) TopLevelArtifactsOrErr() (*FilesMetric, error) {
+	if e.TopLevelArtifacts != nil {
 		return e.TopLevelArtifacts, nil
+	} else if e.loadedTypes[4] {
+		return nil, &NotFoundError{label: filesmetric.Label}
 	}
 	return nil, &NotLoadedError{edge: "top_level_artifacts"}
 }
@@ -98,6 +108,14 @@ func (*ArtifactMetrics) scanValues(columns []string) ([]any, error) {
 	for i := range columns {
 		switch columns[i] {
 		case artifactmetrics.FieldID:
+			values[i] = new(sql.NullInt64)
+		case artifactmetrics.ForeignKeys[0]: // artifact_metrics_source_artifacts_read
+			values[i] = new(sql.NullInt64)
+		case artifactmetrics.ForeignKeys[1]: // artifact_metrics_output_artifacts_seen
+			values[i] = new(sql.NullInt64)
+		case artifactmetrics.ForeignKeys[2]: // artifact_metrics_output_artifacts_from_action_cache
+			values[i] = new(sql.NullInt64)
+		case artifactmetrics.ForeignKeys[3]: // metrics_artifact_metrics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -120,6 +138,34 @@ func (am *ArtifactMetrics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			am.ID = int(value.Int64)
+		case artifactmetrics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_source_artifacts_read", value)
+			} else if value.Valid {
+				am.artifact_metrics_source_artifacts_read = new(int)
+				*am.artifact_metrics_source_artifacts_read = int(value.Int64)
+			}
+		case artifactmetrics.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_output_artifacts_seen", value)
+			} else if value.Valid {
+				am.artifact_metrics_output_artifacts_seen = new(int)
+				*am.artifact_metrics_output_artifacts_seen = int(value.Int64)
+			}
+		case artifactmetrics.ForeignKeys[2]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_output_artifacts_from_action_cache", value)
+			} else if value.Valid {
+				am.artifact_metrics_output_artifacts_from_action_cache = new(int)
+				*am.artifact_metrics_output_artifacts_from_action_cache = int(value.Int64)
+			}
+		case artifactmetrics.ForeignKeys[3]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field metrics_artifact_metrics", value)
+			} else if value.Valid {
+				am.metrics_artifact_metrics = new(int)
+				*am.metrics_artifact_metrics = int(value.Int64)
+			}
 		default:
 			am.selectValues.Set(columns[i], values[i])
 		}
@@ -183,126 +229,6 @@ func (am *ArtifactMetrics) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", am.ID))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedMetrics returns the Metrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (am *ArtifactMetrics) NamedMetrics(name string) ([]*Metrics, error) {
-	if am.Edges.namedMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := am.Edges.namedMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (am *ArtifactMetrics) appendNamedMetrics(name string, edges ...*Metrics) {
-	if am.Edges.namedMetrics == nil {
-		am.Edges.namedMetrics = make(map[string][]*Metrics)
-	}
-	if len(edges) == 0 {
-		am.Edges.namedMetrics[name] = []*Metrics{}
-	} else {
-		am.Edges.namedMetrics[name] = append(am.Edges.namedMetrics[name], edges...)
-	}
-}
-
-// NamedSourceArtifactsRead returns the SourceArtifactsRead named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (am *ArtifactMetrics) NamedSourceArtifactsRead(name string) ([]*FilesMetric, error) {
-	if am.Edges.namedSourceArtifactsRead == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := am.Edges.namedSourceArtifactsRead[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (am *ArtifactMetrics) appendNamedSourceArtifactsRead(name string, edges ...*FilesMetric) {
-	if am.Edges.namedSourceArtifactsRead == nil {
-		am.Edges.namedSourceArtifactsRead = make(map[string][]*FilesMetric)
-	}
-	if len(edges) == 0 {
-		am.Edges.namedSourceArtifactsRead[name] = []*FilesMetric{}
-	} else {
-		am.Edges.namedSourceArtifactsRead[name] = append(am.Edges.namedSourceArtifactsRead[name], edges...)
-	}
-}
-
-// NamedOutputArtifactsSeen returns the OutputArtifactsSeen named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (am *ArtifactMetrics) NamedOutputArtifactsSeen(name string) ([]*FilesMetric, error) {
-	if am.Edges.namedOutputArtifactsSeen == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := am.Edges.namedOutputArtifactsSeen[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (am *ArtifactMetrics) appendNamedOutputArtifactsSeen(name string, edges ...*FilesMetric) {
-	if am.Edges.namedOutputArtifactsSeen == nil {
-		am.Edges.namedOutputArtifactsSeen = make(map[string][]*FilesMetric)
-	}
-	if len(edges) == 0 {
-		am.Edges.namedOutputArtifactsSeen[name] = []*FilesMetric{}
-	} else {
-		am.Edges.namedOutputArtifactsSeen[name] = append(am.Edges.namedOutputArtifactsSeen[name], edges...)
-	}
-}
-
-// NamedOutputArtifactsFromActionCache returns the OutputArtifactsFromActionCache named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (am *ArtifactMetrics) NamedOutputArtifactsFromActionCache(name string) ([]*FilesMetric, error) {
-	if am.Edges.namedOutputArtifactsFromActionCache == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := am.Edges.namedOutputArtifactsFromActionCache[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (am *ArtifactMetrics) appendNamedOutputArtifactsFromActionCache(name string, edges ...*FilesMetric) {
-	if am.Edges.namedOutputArtifactsFromActionCache == nil {
-		am.Edges.namedOutputArtifactsFromActionCache = make(map[string][]*FilesMetric)
-	}
-	if len(edges) == 0 {
-		am.Edges.namedOutputArtifactsFromActionCache[name] = []*FilesMetric{}
-	} else {
-		am.Edges.namedOutputArtifactsFromActionCache[name] = append(am.Edges.namedOutputArtifactsFromActionCache[name], edges...)
-	}
-}
-
-// NamedTopLevelArtifacts returns the TopLevelArtifacts named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (am *ArtifactMetrics) NamedTopLevelArtifacts(name string) ([]*FilesMetric, error) {
-	if am.Edges.namedTopLevelArtifacts == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := am.Edges.namedTopLevelArtifacts[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (am *ArtifactMetrics) appendNamedTopLevelArtifacts(name string, edges ...*FilesMetric) {
-	if am.Edges.namedTopLevelArtifacts == nil {
-		am.Edges.namedTopLevelArtifacts = make(map[string][]*FilesMetric)
-	}
-	if len(edges) == 0 {
-		am.Edges.namedTopLevelArtifacts[name] = []*FilesMetric{}
-	} else {
-		am.Edges.namedTopLevelArtifacts[name] = append(am.Edges.namedTopLevelArtifacts[name], edges...)
-	}
 }
 
 // ArtifactMetricsSlice is a parsable slice of ArtifactMetrics.

@@ -19,7 +19,6 @@ import PortalCard from "@/components/PortalCard";
 import { Space, Tabs, Typography } from "antd";
 import type { TabsProps } from "antd/lib";
 import CopyTextButton from "@/components/CopyTextButton";
-
 import PortalAlert from "@/components/PortalAlert";
 import {
   BuildOutlined,
@@ -52,7 +51,6 @@ import TimingMetricsDisplay from "../TimingMetrics";
 import NetworkMetricsDisplay from "../NetworkMetrics";
 import TestMetricsDisplay from "../TestsMetrics";
 
-
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
   problems?: ProblemInfoFragment[] | null | undefined;
@@ -77,30 +75,30 @@ const BazelInvocation: React.FC<{
   var buildLogs = "tmp"
   //data for runner metrics
   var runnerMetrics: RunnerCount[] = [];
-  metrics?.actionSummary?.at(0)?.runnerCount?.map((item: RunnerCount) => runnerMetrics.push(item));
+  metrics?.actionSummary?.runnerCount?.map((item: RunnerCount) => runnerMetrics.push(item));
 
   //data for ac metrics
-  var acMetrics: ActionSummary | undefined = metrics?.actionSummary?.at(0);
+  var acMetrics: ActionSummary | undefined = metrics?.actionSummary ?? undefined;
 
   //artifact metrics
-  var artifactMetrics: ArtifactMetrics | undefined = metrics?.artifactMetrics?.at(0);
+  var artifactMetrics: ArtifactMetrics | undefined = metrics?.artifactMetrics ?? undefined;
 
   //data for target metrics
-  var targetMetrics: TargetMetrics | undefined | null = metrics?.targetMetrics?.at(0)
+  var targetMetrics: TargetMetrics | undefined | null = metrics?.targetMetrics ?? undefined
 
   //memory metrics
-  var memoryMetrics: MemoryMetrics | undefined = metrics?.memoryMetrics?.at(0)
+  var memoryMetrics: MemoryMetrics | undefined = metrics?.memoryMetrics ?? undefined
 
   //build graph metrics
-  var buildGraphMetrics: BuildGraphMetrics | undefined = metrics?.buildGraphMetrics?.at(0)
+  var buildGraphMetrics: BuildGraphMetrics | undefined = metrics?.buildGraphMetrics ?? undefined
 
   //timing metrics
-  var timingMetrics: TimingMetrics | undefined = metrics?.timingMetrics?.at(0)
+  var timingMetrics: TimingMetrics | undefined = metrics?.timingMetrics ?? undefined
 
   //netowrk metrics
-  var networkMetrics: NetworkMetrics | undefined = metrics?.networkMetrics?.at(0)
-  const bytesRecv = networkMetrics?.systemNetworkStats?.at(0)?.bytesRecv ?? 0
-  const bytesSent = networkMetrics?.systemNetworkStats?.at(0)?.bytesSent ?? 0
+  var networkMetrics: NetworkMetrics | undefined = metrics?.networkMetrics ?? undefined
+  const bytesRecv = networkMetrics?.systemNetworkStats?.bytesRecv ?? 0
+  const bytesSent = networkMetrics?.systemNetworkStats?.bytesSent ?? 0
   const hideNetworkMetricsTab: boolean = bytesRecv == 0 && bytesSent == 0
 
   //test data
@@ -128,7 +126,7 @@ const BazelInvocation: React.FC<{
 
   var items: TabsProps['items'] = [
     {
-      key: 'BazelInvocationTabs-1',
+      key: 'BazelInvocationTabs-Problems',
       label: 'Problems',
       icon: <ExclamationCircleOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
@@ -147,7 +145,7 @@ const BazelInvocation: React.FC<{
       </Space>,
     },
     {
-      key: 'BazelInvocationTabs-2',
+      key: 'BazelInvocationTabs-Logs',
       label: 'Logs',
       icon: <FileSearchOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
@@ -157,7 +155,7 @@ const BazelInvocation: React.FC<{
       </Space>,
     },
     {
-      key: 'BazelInvocationTabs-3',
+      key: 'BazelInvocationTabs-Runners',
       label: 'Runners',
       icon: <ClusterOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
@@ -165,7 +163,7 @@ const BazelInvocation: React.FC<{
       </Space>,
     },
     {
-      key: 'BazelInvocationTabs-4',
+      key: 'BazelInvocationTabs-ActionCache',
       label: 'Action Cache',
       icon: <HddOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
@@ -173,7 +171,7 @@ const BazelInvocation: React.FC<{
       </Space>,
     },
     {
-      key: 'BazelInvocationTabs-5',
+      key: 'BazelInvocationTabs-ActionsData',
       label: 'Actions Data',
       icon: <NodeCollapseOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
@@ -182,7 +180,7 @@ const BazelInvocation: React.FC<{
     },
 
     {
-      key: 'BazelInvocationTabs-8',
+      key: 'BazelInvocationTabs-Artifacts',
       label: 'Artifacts',
       icon: <RadiusUprightOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
@@ -190,7 +188,7 @@ const BazelInvocation: React.FC<{
       </Space>,
     },
     {
-      key: 'BazelInvocationTabs-9',
+      key: 'BazelInvocationTabs-Memory',
       label: 'Memory',
       icon: <AreaChartOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
@@ -198,7 +196,7 @@ const BazelInvocation: React.FC<{
       </Space>,
     },
     {
-      key: 'BazelInvocationTabs-10',
+      key: 'BazelInvocationTabs-Timing',
       label: 'Timing',
       icon: <FieldTimeOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
@@ -207,7 +205,7 @@ const BazelInvocation: React.FC<{
     },
 
     {
-      key: 'BazelInvocationTabs-6',
+      key: 'BazelInvocationTabs-Targets',
       label: 'Targets',
       icon: <DeploymentUnitOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
@@ -215,7 +213,7 @@ const BazelInvocation: React.FC<{
       </Space>,
     },
     {
-      key: 'BazelInvocationTabs-7',
+      key: 'BazelInvocationTabs-Tests',
       label: 'Tests',
       icon: <ExperimentOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
@@ -223,7 +221,7 @@ const BazelInvocation: React.FC<{
       </Space>,
     },
     {
-      key: 'BazelInvocationTabs-11',
+      key: 'BazelInvocationTabs-Network',
       label: 'Network',
       icon: <WifiOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
@@ -232,20 +230,27 @@ const BazelInvocation: React.FC<{
     },
   ];
 
+  const hideLogs = true //hide the logs tab for now
+  if (hideLogs == true) {
+    var idx = items.findIndex((x, _) => x.key == "BazelInvocationTabs-Logs")
+    if (idx > -1) {
+      items.splice(idx, 1);
+    }
+  }
+
   if (hideTestsTab == true) {
-    var idx = items.findIndex((x, _) => x.key == "BazelInvocationTabs-7")
+    var idx = items.findIndex((x, _) => x.key == "BazelInvocationTabs-Tests")
     if (idx > -1) {
       items.splice(idx, 1);
     }
   }
 
   if (hideNetworkMetricsTab == true) {
-    var idx = items.findIndex((x, _) => x.key == "BazelInvocationTabs-11")
+    var idx = items.findIndex((x, _) => x.key == "BazelInvocationTabs-Network")
     if (idx > -1) {
       items.splice(idx, 1);
     }
   }
-
 
   const extraBits: React.ReactNode[] = [
     <PortalDuration key="duration" from={invocationOverview.startedAt} to={invocationOverview.endedAt} includeIcon includePopover />,

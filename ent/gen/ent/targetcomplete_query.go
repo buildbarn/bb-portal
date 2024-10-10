@@ -32,7 +32,6 @@ type TargetCompleteQuery struct {
 	withFKs                  bool
 	modifiers                []func(*sql.Selector)
 	loadTotal                []func(context.Context, []*TargetComplete) error
-	withNamedTargetPair      map[string]*TargetPairQuery
 	withNamedImportantOutput map[string]*TestFileQuery
 	withNamedDirectoryOutput map[string]*TestFileQuery
 	// intermediate query (i.e. traversal path).
@@ -85,7 +84,7 @@ func (tcq *TargetCompleteQuery) QueryTargetPair() *TargetPairQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetcomplete.Table, targetcomplete.FieldID, selector),
 			sqlgraph.To(targetpair.Table, targetpair.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, targetcomplete.TargetPairTable, targetcomplete.TargetPairColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, targetcomplete.TargetPairTable, targetcomplete.TargetPairColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tcq.driver.Dialect(), step)
 		return fromU, nil
@@ -151,7 +150,7 @@ func (tcq *TargetCompleteQuery) QueryOutputGroup() *OutputGroupQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetcomplete.Table, targetcomplete.FieldID, selector),
 			sqlgraph.To(outputgroup.Table, outputgroup.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, targetcomplete.OutputGroupTable, targetcomplete.OutputGroupColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, targetcomplete.OutputGroupTable, targetcomplete.OutputGroupColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tcq.driver.Dialect(), step)
 		return fromU, nil
@@ -491,7 +490,7 @@ func (tcq *TargetCompleteQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			tcq.withOutputGroup != nil,
 		}
 	)
-	if tcq.withOutputGroup != nil {
+	if tcq.withTargetPair != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -519,9 +518,8 @@ func (tcq *TargetCompleteQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		return nodes, nil
 	}
 	if query := tcq.withTargetPair; query != nil {
-		if err := tcq.loadTargetPair(ctx, query, nodes,
-			func(n *TargetComplete) { n.Edges.TargetPair = []*TargetPair{} },
-			func(n *TargetComplete, e *TargetPair) { n.Edges.TargetPair = append(n.Edges.TargetPair, e) }); err != nil {
+		if err := tcq.loadTargetPair(ctx, query, nodes, nil,
+			func(n *TargetComplete, e *TargetPair) { n.Edges.TargetPair = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -542,13 +540,6 @@ func (tcq *TargetCompleteQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 	if query := tcq.withOutputGroup; query != nil {
 		if err := tcq.loadOutputGroup(ctx, query, nodes, nil,
 			func(n *TargetComplete, e *OutputGroup) { n.Edges.OutputGroup = e }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range tcq.withNamedTargetPair {
-		if err := tcq.loadTargetPair(ctx, query, nodes,
-			func(n *TargetComplete) { n.appendNamedTargetPair(name) },
-			func(n *TargetComplete, e *TargetPair) { n.appendNamedTargetPair(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -575,33 +566,34 @@ func (tcq *TargetCompleteQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (tcq *TargetCompleteQuery) loadTargetPair(ctx context.Context, query *TargetPairQuery, nodes []*TargetComplete, init func(*TargetComplete), assign func(*TargetComplete, *TargetPair)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*TargetComplete)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*TargetComplete)
 	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
+		if nodes[i].target_pair_completion == nil {
+			continue
 		}
+		fk := *nodes[i].target_pair_completion
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.withFKs = true
-	query.Where(predicate.TargetPair(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(targetcomplete.TargetPairColumn), fks...))
-	}))
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(targetpair.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.target_pair_completion
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "target_pair_completion" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "target_pair_completion" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "target_pair_completion" returned %v`, n.ID)
 		}
-		assign(node, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }
@@ -668,34 +660,30 @@ func (tcq *TargetCompleteQuery) loadDirectoryOutput(ctx context.Context, query *
 	return nil
 }
 func (tcq *TargetCompleteQuery) loadOutputGroup(ctx context.Context, query *OutputGroupQuery, nodes []*TargetComplete, init func(*TargetComplete), assign func(*TargetComplete, *OutputGroup)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TargetComplete)
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*TargetComplete)
 	for i := range nodes {
-		if nodes[i].target_complete_output_group == nil {
-			continue
-		}
-		fk := *nodes[i].target_complete_output_group
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(outputgroup.IDIn(ids...))
+	query.withFKs = true
+	query.Where(predicate.OutputGroup(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(targetcomplete.OutputGroupColumn), fks...))
+	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
+		fk := n.target_complete_output_group
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "target_complete_output_group" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "target_complete_output_group" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "target_complete_output_group" returned %v for node %v`, *fk, n.ID)
 		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -782,20 +770,6 @@ func (tcq *TargetCompleteQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedTargetPair tells the query-builder to eager-load the nodes that are connected to the "target_pair"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (tcq *TargetCompleteQuery) WithNamedTargetPair(name string, opts ...func(*TargetPairQuery)) *TargetCompleteQuery {
-	query := (&TargetPairClient{config: tcq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if tcq.withNamedTargetPair == nil {
-		tcq.withNamedTargetPair = make(map[string]*TargetPairQuery)
-	}
-	tcq.withNamedTargetPair[name] = query
-	return tcq
 }
 
 // WithNamedImportantOutput tells the query-builder to eager-load the nodes that are connected to the "important_output"

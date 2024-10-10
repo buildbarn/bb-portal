@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -19,14 +18,14 @@ import (
 // TimingChildQuery is the builder for querying TimingChild entities.
 type TimingChildQuery struct {
 	config
-	ctx                      *QueryContext
-	order                    []timingchild.OrderOption
-	inters                   []Interceptor
-	predicates               []predicate.TimingChild
-	withTimingBreakdown      *TimingBreakdownQuery
-	modifiers                []func(*sql.Selector)
-	loadTotal                []func(context.Context, []*TimingChild) error
-	withNamedTimingBreakdown map[string]*TimingBreakdownQuery
+	ctx                 *QueryContext
+	order               []timingchild.OrderOption
+	inters              []Interceptor
+	predicates          []predicate.TimingChild
+	withTimingBreakdown *TimingBreakdownQuery
+	withFKs             bool
+	modifiers           []func(*sql.Selector)
+	loadTotal           []func(context.Context, []*TimingChild) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,7 +76,7 @@ func (tcq *TimingChildQuery) QueryTimingBreakdown() *TimingBreakdownQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(timingchild.Table, timingchild.FieldID, selector),
 			sqlgraph.To(timingbreakdown.Table, timingbreakdown.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, timingchild.TimingBreakdownTable, timingchild.TimingBreakdownPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, timingchild.TimingBreakdownTable, timingchild.TimingBreakdownColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tcq.driver.Dialect(), step)
 		return fromU, nil
@@ -372,11 +371,18 @@ func (tcq *TimingChildQuery) prepareQuery(ctx context.Context) error {
 func (tcq *TimingChildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TimingChild, error) {
 	var (
 		nodes       = []*TimingChild{}
+		withFKs     = tcq.withFKs
 		_spec       = tcq.querySpec()
 		loadedTypes = [1]bool{
 			tcq.withTimingBreakdown != nil,
 		}
 	)
+	if tcq.withTimingBreakdown != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, timingchild.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TimingChild).scanValues(nil, columns)
 	}
@@ -399,16 +405,8 @@ func (tcq *TimingChildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 		return nodes, nil
 	}
 	if query := tcq.withTimingBreakdown; query != nil {
-		if err := tcq.loadTimingBreakdown(ctx, query, nodes,
-			func(n *TimingChild) { n.Edges.TimingBreakdown = []*TimingBreakdown{} },
-			func(n *TimingChild, e *TimingBreakdown) { n.Edges.TimingBreakdown = append(n.Edges.TimingBreakdown, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range tcq.withNamedTimingBreakdown {
-		if err := tcq.loadTimingBreakdown(ctx, query, nodes,
-			func(n *TimingChild) { n.appendNamedTimingBreakdown(name) },
-			func(n *TimingChild, e *TimingBreakdown) { n.appendNamedTimingBreakdown(name, e) }); err != nil {
+		if err := tcq.loadTimingBreakdown(ctx, query, nodes, nil,
+			func(n *TimingChild, e *TimingBreakdown) { n.Edges.TimingBreakdown = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -421,62 +419,33 @@ func (tcq *TimingChildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 }
 
 func (tcq *TimingChildQuery) loadTimingBreakdown(ctx context.Context, query *TimingBreakdownQuery, nodes []*TimingChild, init func(*TimingChild), assign func(*TimingChild, *TimingBreakdown)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*TimingChild)
-	nids := make(map[int]map[*TimingChild]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*TimingChild)
+	for i := range nodes {
+		if nodes[i].timing_breakdown_child == nil {
+			continue
 		}
+		fk := *nodes[i].timing_breakdown_child
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(timingchild.TimingBreakdownTable)
-		s.Join(joinT).On(s.C(timingbreakdown.FieldID), joinT.C(timingchild.TimingBreakdownPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(timingchild.TimingBreakdownPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(timingchild.TimingBreakdownPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*TimingChild]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*TimingBreakdown](ctx, query, qr, query.inters)
+	query.Where(timingbreakdown.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "timing_breakdown" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "timing_breakdown_child" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -564,20 +533,6 @@ func (tcq *TimingChildQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedTimingBreakdown tells the query-builder to eager-load the nodes that are connected to the "timing_breakdown"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (tcq *TimingChildQuery) WithNamedTimingBreakdown(name string, opts ...func(*TimingBreakdownQuery)) *TimingChildQuery {
-	query := (&TimingBreakdownClient{config: tcq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if tcq.withNamedTimingBreakdown == nil {
-		tcq.withNamedTimingBreakdown = make(map[string]*TimingBreakdownQuery)
-	}
-	tcq.withNamedTimingBreakdown[name] = query
-	return tcq
 }
 
 // TimingChildGroupBy is the group-by builder for TimingChild entities.

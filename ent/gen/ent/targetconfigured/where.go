@@ -233,7 +233,7 @@ func HasTargetPair() predicate.TargetConfigured {
 	return predicate.TargetConfigured(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, TargetPairTable, TargetPairColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, TargetPairTable, TargetPairColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

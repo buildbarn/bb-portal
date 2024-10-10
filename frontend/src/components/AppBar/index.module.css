@@ -26,7 +26,7 @@
 }
 
 .menu {
-  width: 177px;
+  width: 400px;
   background-color: inherit !important;
 }
 
@@ -35,7 +35,8 @@
 }
 
 .appBarMenu {
-  min-width: 177px; /* Hack to get the menu to not disappear on resize */
+  min-width: 177px;
+  /* Hack to get the menu to not disappear on resize */
 }
 
 .buttons {

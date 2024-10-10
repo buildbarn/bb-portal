@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -19,15 +18,14 @@ import (
 // FilesMetricQuery is the builder for querying FilesMetric entities.
 type FilesMetricQuery struct {
 	config
-	ctx                      *QueryContext
-	order                    []filesmetric.OrderOption
-	inters                   []Interceptor
-	predicates               []predicate.FilesMetric
-	withArtifactMetrics      *ArtifactMetricsQuery
-	withFKs                  bool
-	modifiers                []func(*sql.Selector)
-	loadTotal                []func(context.Context, []*FilesMetric) error
-	withNamedArtifactMetrics map[string]*ArtifactMetricsQuery
+	ctx                 *QueryContext
+	order               []filesmetric.OrderOption
+	inters              []Interceptor
+	predicates          []predicate.FilesMetric
+	withArtifactMetrics *ArtifactMetricsQuery
+	withFKs             bool
+	modifiers           []func(*sql.Selector)
+	loadTotal           []func(context.Context, []*FilesMetric) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -78,7 +76,7 @@ func (fmq *FilesMetricQuery) QueryArtifactMetrics() *ArtifactMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(filesmetric.Table, filesmetric.FieldID, selector),
 			sqlgraph.To(artifactmetrics.Table, artifactmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, filesmetric.ArtifactMetricsTable, filesmetric.ArtifactMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, filesmetric.ArtifactMetricsTable, filesmetric.ArtifactMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fmq.driver.Dialect(), step)
 		return fromU, nil
@@ -379,6 +377,9 @@ func (fmq *FilesMetricQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 			fmq.withArtifactMetrics != nil,
 		}
 	)
+	if fmq.withArtifactMetrics != nil {
+		withFKs = true
+	}
 	if withFKs {
 		_spec.Node.Columns = append(_spec.Node.Columns, filesmetric.ForeignKeys...)
 	}
@@ -404,16 +405,8 @@ func (fmq *FilesMetricQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 		return nodes, nil
 	}
 	if query := fmq.withArtifactMetrics; query != nil {
-		if err := fmq.loadArtifactMetrics(ctx, query, nodes,
-			func(n *FilesMetric) { n.Edges.ArtifactMetrics = []*ArtifactMetrics{} },
-			func(n *FilesMetric, e *ArtifactMetrics) { n.Edges.ArtifactMetrics = append(n.Edges.ArtifactMetrics, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range fmq.withNamedArtifactMetrics {
-		if err := fmq.loadArtifactMetrics(ctx, query, nodes,
-			func(n *FilesMetric) { n.appendNamedArtifactMetrics(name) },
-			func(n *FilesMetric, e *ArtifactMetrics) { n.appendNamedArtifactMetrics(name, e) }); err != nil {
+		if err := fmq.loadArtifactMetrics(ctx, query, nodes, nil,
+			func(n *FilesMetric, e *ArtifactMetrics) { n.Edges.ArtifactMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -426,62 +419,33 @@ func (fmq *FilesMetricQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 }
 
 func (fmq *FilesMetricQuery) loadArtifactMetrics(ctx context.Context, query *ArtifactMetricsQuery, nodes []*FilesMetric, init func(*FilesMetric), assign func(*FilesMetric, *ArtifactMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*FilesMetric)
-	nids := make(map[int]map[*FilesMetric]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*FilesMetric)
+	for i := range nodes {
+		if nodes[i].artifact_metrics_top_level_artifacts == nil {
+			continue
 		}
+		fk := *nodes[i].artifact_metrics_top_level_artifacts
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(filesmetric.ArtifactMetricsTable)
-		s.Join(joinT).On(s.C(artifactmetrics.FieldID), joinT.C(filesmetric.ArtifactMetricsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(filesmetric.ArtifactMetricsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(filesmetric.ArtifactMetricsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*FilesMetric]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*ArtifactMetrics](ctx, query, qr, query.inters)
+	query.Where(artifactmetrics.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "artifact_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "artifact_metrics_top_level_artifacts" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -569,20 +533,6 @@ func (fmq *FilesMetricQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedArtifactMetrics tells the query-builder to eager-load the nodes that are connected to the "artifact_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (fmq *FilesMetricQuery) WithNamedArtifactMetrics(name string, opts ...func(*ArtifactMetricsQuery)) *FilesMetricQuery {
-	query := (&ArtifactMetricsClient{config: fmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if fmq.withNamedArtifactMetrics == nil {
-		fmq.withNamedArtifactMetrics = make(map[string]*ArtifactMetricsQuery)
-	}
-	fmq.withNamedArtifactMetrics[name] = query
-	return fmq
 }
 
 // FilesMetricGroupBy is the group-by builder for FilesMetric entities.

@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -19,14 +18,14 @@ import (
 // MissDetailQuery is the builder for querying MissDetail entities.
 type MissDetailQuery struct {
 	config
-	ctx                            *QueryContext
-	order                          []missdetail.OrderOption
-	inters                         []Interceptor
-	predicates                     []predicate.MissDetail
-	withActionCacheStatistics      *ActionCacheStatisticsQuery
-	modifiers                      []func(*sql.Selector)
-	loadTotal                      []func(context.Context, []*MissDetail) error
-	withNamedActionCacheStatistics map[string]*ActionCacheStatisticsQuery
+	ctx                       *QueryContext
+	order                     []missdetail.OrderOption
+	inters                    []Interceptor
+	predicates                []predicate.MissDetail
+	withActionCacheStatistics *ActionCacheStatisticsQuery
+	withFKs                   bool
+	modifiers                 []func(*sql.Selector)
+	loadTotal                 []func(context.Context, []*MissDetail) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,7 +76,7 @@ func (mdq *MissDetailQuery) QueryActionCacheStatistics() *ActionCacheStatisticsQ
 		step := sqlgraph.NewStep(
 			sqlgraph.From(missdetail.Table, missdetail.FieldID, selector),
 			sqlgraph.To(actioncachestatistics.Table, actioncachestatistics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, missdetail.ActionCacheStatisticsTable, missdetail.ActionCacheStatisticsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, missdetail.ActionCacheStatisticsTable, missdetail.ActionCacheStatisticsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mdq.driver.Dialect(), step)
 		return fromU, nil
@@ -372,11 +371,18 @@ func (mdq *MissDetailQuery) prepareQuery(ctx context.Context) error {
 func (mdq *MissDetailQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*MissDetail, error) {
 	var (
 		nodes       = []*MissDetail{}
+		withFKs     = mdq.withFKs
 		_spec       = mdq.querySpec()
 		loadedTypes = [1]bool{
 			mdq.withActionCacheStatistics != nil,
 		}
 	)
+	if mdq.withActionCacheStatistics != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, missdetail.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*MissDetail).scanValues(nil, columns)
 	}
@@ -399,18 +405,8 @@ func (mdq *MissDetailQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		return nodes, nil
 	}
 	if query := mdq.withActionCacheStatistics; query != nil {
-		if err := mdq.loadActionCacheStatistics(ctx, query, nodes,
-			func(n *MissDetail) { n.Edges.ActionCacheStatistics = []*ActionCacheStatistics{} },
-			func(n *MissDetail, e *ActionCacheStatistics) {
-				n.Edges.ActionCacheStatistics = append(n.Edges.ActionCacheStatistics, e)
-			}); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range mdq.withNamedActionCacheStatistics {
-		if err := mdq.loadActionCacheStatistics(ctx, query, nodes,
-			func(n *MissDetail) { n.appendNamedActionCacheStatistics(name) },
-			func(n *MissDetail, e *ActionCacheStatistics) { n.appendNamedActionCacheStatistics(name, e) }); err != nil {
+		if err := mdq.loadActionCacheStatistics(ctx, query, nodes, nil,
+			func(n *MissDetail, e *ActionCacheStatistics) { n.Edges.ActionCacheStatistics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -423,62 +419,33 @@ func (mdq *MissDetailQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 }
 
 func (mdq *MissDetailQuery) loadActionCacheStatistics(ctx context.Context, query *ActionCacheStatisticsQuery, nodes []*MissDetail, init func(*MissDetail), assign func(*MissDetail, *ActionCacheStatistics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*MissDetail)
-	nids := make(map[int]map[*MissDetail]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*MissDetail)
+	for i := range nodes {
+		if nodes[i].action_cache_statistics_miss_details == nil {
+			continue
 		}
+		fk := *nodes[i].action_cache_statistics_miss_details
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(missdetail.ActionCacheStatisticsTable)
-		s.Join(joinT).On(s.C(actioncachestatistics.FieldID), joinT.C(missdetail.ActionCacheStatisticsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(missdetail.ActionCacheStatisticsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(missdetail.ActionCacheStatisticsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*MissDetail]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*ActionCacheStatistics](ctx, query, qr, query.inters)
+	query.Where(actioncachestatistics.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "action_cache_statistics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "action_cache_statistics_miss_details" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -566,20 +533,6 @@ func (mdq *MissDetailQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedActionCacheStatistics tells the query-builder to eager-load the nodes that are connected to the "action_cache_statistics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mdq *MissDetailQuery) WithNamedActionCacheStatistics(name string, opts ...func(*ActionCacheStatisticsQuery)) *MissDetailQuery {
-	query := (&ActionCacheStatisticsClient{config: mdq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if mdq.withNamedActionCacheStatistics == nil {
-		mdq.withNamedActionCacheStatistics = make(map[string]*ActionCacheStatisticsQuery)
-	}
-	mdq.withNamedActionCacheStatistics[name] = query
-	return mdq
 }
 
 // MissDetailGroupBy is the group-by builder for MissDetail entities.

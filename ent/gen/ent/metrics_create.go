@@ -48,154 +48,194 @@ func (mc *MetricsCreate) SetBazelInvocation(b *BazelInvocation) *MetricsCreate {
 	return mc.SetBazelInvocationID(b.ID)
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by IDs.
-func (mc *MetricsCreate) AddActionSummaryIDs(ids ...int) *MetricsCreate {
-	mc.mutation.AddActionSummaryIDs(ids...)
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
+func (mc *MetricsCreate) SetActionSummaryID(id int) *MetricsCreate {
+	mc.mutation.SetActionSummaryID(id)
 	return mc
 }
 
-// AddActionSummary adds the "action_summary" edges to the ActionSummary entity.
-func (mc *MetricsCreate) AddActionSummary(a ...*ActionSummary) *MetricsCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
+func (mc *MetricsCreate) SetNillableActionSummaryID(id *int) *MetricsCreate {
+	if id != nil {
+		mc = mc.SetActionSummaryID(*id)
 	}
-	return mc.AddActionSummaryIDs(ids...)
-}
-
-// AddMemoryMetricIDs adds the "memory_metrics" edge to the MemoryMetrics entity by IDs.
-func (mc *MetricsCreate) AddMemoryMetricIDs(ids ...int) *MetricsCreate {
-	mc.mutation.AddMemoryMetricIDs(ids...)
 	return mc
 }
 
-// AddMemoryMetrics adds the "memory_metrics" edges to the MemoryMetrics entity.
-func (mc *MetricsCreate) AddMemoryMetrics(m ...*MemoryMetrics) *MetricsCreate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return mc.AddMemoryMetricIDs(ids...)
+// SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
+func (mc *MetricsCreate) SetActionSummary(a *ActionSummary) *MetricsCreate {
+	return mc.SetActionSummaryID(a.ID)
 }
 
-// AddTargetMetricIDs adds the "target_metrics" edge to the TargetMetrics entity by IDs.
-func (mc *MetricsCreate) AddTargetMetricIDs(ids ...int) *MetricsCreate {
-	mc.mutation.AddTargetMetricIDs(ids...)
+// SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
+func (mc *MetricsCreate) SetMemoryMetricsID(id int) *MetricsCreate {
+	mc.mutation.SetMemoryMetricsID(id)
 	return mc
 }
 
-// AddTargetMetrics adds the "target_metrics" edges to the TargetMetrics entity.
-func (mc *MetricsCreate) AddTargetMetrics(t ...*TargetMetrics) *MetricsCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
+func (mc *MetricsCreate) SetNillableMemoryMetricsID(id *int) *MetricsCreate {
+	if id != nil {
+		mc = mc.SetMemoryMetricsID(*id)
 	}
-	return mc.AddTargetMetricIDs(ids...)
-}
-
-// AddPackageMetricIDs adds the "package_metrics" edge to the PackageMetrics entity by IDs.
-func (mc *MetricsCreate) AddPackageMetricIDs(ids ...int) *MetricsCreate {
-	mc.mutation.AddPackageMetricIDs(ids...)
 	return mc
 }
 
-// AddPackageMetrics adds the "package_metrics" edges to the PackageMetrics entity.
-func (mc *MetricsCreate) AddPackageMetrics(p ...*PackageMetrics) *MetricsCreate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
-	}
-	return mc.AddPackageMetricIDs(ids...)
+// SetMemoryMetrics sets the "memory_metrics" edge to the MemoryMetrics entity.
+func (mc *MetricsCreate) SetMemoryMetrics(m *MemoryMetrics) *MetricsCreate {
+	return mc.SetMemoryMetricsID(m.ID)
 }
 
-// AddTimingMetricIDs adds the "timing_metrics" edge to the TimingMetrics entity by IDs.
-func (mc *MetricsCreate) AddTimingMetricIDs(ids ...int) *MetricsCreate {
-	mc.mutation.AddTimingMetricIDs(ids...)
+// SetTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID.
+func (mc *MetricsCreate) SetTargetMetricsID(id int) *MetricsCreate {
+	mc.mutation.SetTargetMetricsID(id)
 	return mc
 }
 
-// AddTimingMetrics adds the "timing_metrics" edges to the TimingMetrics entity.
-func (mc *MetricsCreate) AddTimingMetrics(t ...*TimingMetrics) *MetricsCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID if the given value is not nil.
+func (mc *MetricsCreate) SetNillableTargetMetricsID(id *int) *MetricsCreate {
+	if id != nil {
+		mc = mc.SetTargetMetricsID(*id)
 	}
-	return mc.AddTimingMetricIDs(ids...)
-}
-
-// AddCumulativeMetricIDs adds the "cumulative_metrics" edge to the CumulativeMetrics entity by IDs.
-func (mc *MetricsCreate) AddCumulativeMetricIDs(ids ...int) *MetricsCreate {
-	mc.mutation.AddCumulativeMetricIDs(ids...)
 	return mc
 }
 
-// AddCumulativeMetrics adds the "cumulative_metrics" edges to the CumulativeMetrics entity.
-func (mc *MetricsCreate) AddCumulativeMetrics(c ...*CumulativeMetrics) *MetricsCreate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
-	}
-	return mc.AddCumulativeMetricIDs(ids...)
+// SetTargetMetrics sets the "target_metrics" edge to the TargetMetrics entity.
+func (mc *MetricsCreate) SetTargetMetrics(t *TargetMetrics) *MetricsCreate {
+	return mc.SetTargetMetricsID(t.ID)
 }
 
-// AddArtifactMetricIDs adds the "artifact_metrics" edge to the ArtifactMetrics entity by IDs.
-func (mc *MetricsCreate) AddArtifactMetricIDs(ids ...int) *MetricsCreate {
-	mc.mutation.AddArtifactMetricIDs(ids...)
+// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
+func (mc *MetricsCreate) SetPackageMetricsID(id int) *MetricsCreate {
+	mc.mutation.SetPackageMetricsID(id)
 	return mc
 }
 
-// AddArtifactMetrics adds the "artifact_metrics" edges to the ArtifactMetrics entity.
-func (mc *MetricsCreate) AddArtifactMetrics(a ...*ArtifactMetrics) *MetricsCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
+func (mc *MetricsCreate) SetNillablePackageMetricsID(id *int) *MetricsCreate {
+	if id != nil {
+		mc = mc.SetPackageMetricsID(*id)
 	}
-	return mc.AddArtifactMetricIDs(ids...)
-}
-
-// AddNetworkMetricIDs adds the "network_metrics" edge to the NetworkMetrics entity by IDs.
-func (mc *MetricsCreate) AddNetworkMetricIDs(ids ...int) *MetricsCreate {
-	mc.mutation.AddNetworkMetricIDs(ids...)
 	return mc
 }
 
-// AddNetworkMetrics adds the "network_metrics" edges to the NetworkMetrics entity.
-func (mc *MetricsCreate) AddNetworkMetrics(n ...*NetworkMetrics) *MetricsCreate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
-	}
-	return mc.AddNetworkMetricIDs(ids...)
+// SetPackageMetrics sets the "package_metrics" edge to the PackageMetrics entity.
+func (mc *MetricsCreate) SetPackageMetrics(p *PackageMetrics) *MetricsCreate {
+	return mc.SetPackageMetricsID(p.ID)
 }
 
-// AddDynamicExecutionMetricIDs adds the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by IDs.
-func (mc *MetricsCreate) AddDynamicExecutionMetricIDs(ids ...int) *MetricsCreate {
-	mc.mutation.AddDynamicExecutionMetricIDs(ids...)
+// SetTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID.
+func (mc *MetricsCreate) SetTimingMetricsID(id int) *MetricsCreate {
+	mc.mutation.SetTimingMetricsID(id)
 	return mc
 }
 
-// AddDynamicExecutionMetrics adds the "dynamic_execution_metrics" edges to the DynamicExecutionMetrics entity.
-func (mc *MetricsCreate) AddDynamicExecutionMetrics(d ...*DynamicExecutionMetrics) *MetricsCreate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// SetNillableTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID if the given value is not nil.
+func (mc *MetricsCreate) SetNillableTimingMetricsID(id *int) *MetricsCreate {
+	if id != nil {
+		mc = mc.SetTimingMetricsID(*id)
 	}
-	return mc.AddDynamicExecutionMetricIDs(ids...)
-}
-
-// AddBuildGraphMetricIDs adds the "build_graph_metrics" edge to the BuildGraphMetrics entity by IDs.
-func (mc *MetricsCreate) AddBuildGraphMetricIDs(ids ...int) *MetricsCreate {
-	mc.mutation.AddBuildGraphMetricIDs(ids...)
 	return mc
 }
 
-// AddBuildGraphMetrics adds the "build_graph_metrics" edges to the BuildGraphMetrics entity.
-func (mc *MetricsCreate) AddBuildGraphMetrics(b ...*BuildGraphMetrics) *MetricsCreate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetTimingMetrics sets the "timing_metrics" edge to the TimingMetrics entity.
+func (mc *MetricsCreate) SetTimingMetrics(t *TimingMetrics) *MetricsCreate {
+	return mc.SetTimingMetricsID(t.ID)
+}
+
+// SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID.
+func (mc *MetricsCreate) SetCumulativeMetricsID(id int) *MetricsCreate {
+	mc.mutation.SetCumulativeMetricsID(id)
+	return mc
+}
+
+// SetNillableCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID if the given value is not nil.
+func (mc *MetricsCreate) SetNillableCumulativeMetricsID(id *int) *MetricsCreate {
+	if id != nil {
+		mc = mc.SetCumulativeMetricsID(*id)
 	}
-	return mc.AddBuildGraphMetricIDs(ids...)
+	return mc
+}
+
+// SetCumulativeMetrics sets the "cumulative_metrics" edge to the CumulativeMetrics entity.
+func (mc *MetricsCreate) SetCumulativeMetrics(c *CumulativeMetrics) *MetricsCreate {
+	return mc.SetCumulativeMetricsID(c.ID)
+}
+
+// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
+func (mc *MetricsCreate) SetArtifactMetricsID(id int) *MetricsCreate {
+	mc.mutation.SetArtifactMetricsID(id)
+	return mc
+}
+
+// SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
+func (mc *MetricsCreate) SetNillableArtifactMetricsID(id *int) *MetricsCreate {
+	if id != nil {
+		mc = mc.SetArtifactMetricsID(*id)
+	}
+	return mc
+}
+
+// SetArtifactMetrics sets the "artifact_metrics" edge to the ArtifactMetrics entity.
+func (mc *MetricsCreate) SetArtifactMetrics(a *ArtifactMetrics) *MetricsCreate {
+	return mc.SetArtifactMetricsID(a.ID)
+}
+
+// SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
+func (mc *MetricsCreate) SetNetworkMetricsID(id int) *MetricsCreate {
+	mc.mutation.SetNetworkMetricsID(id)
+	return mc
+}
+
+// SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
+func (mc *MetricsCreate) SetNillableNetworkMetricsID(id *int) *MetricsCreate {
+	if id != nil {
+		mc = mc.SetNetworkMetricsID(*id)
+	}
+	return mc
+}
+
+// SetNetworkMetrics sets the "network_metrics" edge to the NetworkMetrics entity.
+func (mc *MetricsCreate) SetNetworkMetrics(n *NetworkMetrics) *MetricsCreate {
+	return mc.SetNetworkMetricsID(n.ID)
+}
+
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
+func (mc *MetricsCreate) SetDynamicExecutionMetricsID(id int) *MetricsCreate {
+	mc.mutation.SetDynamicExecutionMetricsID(id)
+	return mc
+}
+
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
+func (mc *MetricsCreate) SetNillableDynamicExecutionMetricsID(id *int) *MetricsCreate {
+	if id != nil {
+		mc = mc.SetDynamicExecutionMetricsID(*id)
+	}
+	return mc
+}
+
+// SetDynamicExecutionMetrics sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
+func (mc *MetricsCreate) SetDynamicExecutionMetrics(d *DynamicExecutionMetrics) *MetricsCreate {
+	return mc.SetDynamicExecutionMetricsID(d.ID)
+}
+
+// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
+func (mc *MetricsCreate) SetBuildGraphMetricsID(id int) *MetricsCreate {
+	mc.mutation.SetBuildGraphMetricsID(id)
+	return mc
+}
+
+// SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
+func (mc *MetricsCreate) SetNillableBuildGraphMetricsID(id *int) *MetricsCreate {
+	if id != nil {
+		mc = mc.SetBuildGraphMetricsID(*id)
+	}
+	return mc
+}
+
+// SetBuildGraphMetrics sets the "build_graph_metrics" edge to the BuildGraphMetrics entity.
+func (mc *MetricsCreate) SetBuildGraphMetrics(b *BuildGraphMetrics) *MetricsCreate {
+	return mc.SetBuildGraphMetricsID(b.ID)
 }
 
 // Mutation returns the MetricsMutation object of the builder.
@@ -277,7 +317,7 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 	}
 	if nodes := mc.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.ActionSummaryTable,
 			Columns: []string{metrics.ActionSummaryColumn},
@@ -293,10 +333,10 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 	}
 	if nodes := mc.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.MemoryMetricsTable,
-			Columns: metrics.MemoryMetricsPrimaryKey,
+			Columns: []string{metrics.MemoryMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
@@ -309,10 +349,10 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 	}
 	if nodes := mc.mutation.TargetMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.TargetMetricsTable,
-			Columns: metrics.TargetMetricsPrimaryKey,
+			Columns: []string{metrics.TargetMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt),
@@ -325,10 +365,10 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 	}
 	if nodes := mc.mutation.PackageMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.PackageMetricsTable,
-			Columns: metrics.PackageMetricsPrimaryKey,
+			Columns: []string{metrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
@@ -341,10 +381,10 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 	}
 	if nodes := mc.mutation.TimingMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.TimingMetricsTable,
-			Columns: metrics.TimingMetricsPrimaryKey,
+			Columns: []string{metrics.TimingMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt),
@@ -357,10 +397,10 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 	}
 	if nodes := mc.mutation.CumulativeMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.CumulativeMetricsTable,
-			Columns: metrics.CumulativeMetricsPrimaryKey,
+			Columns: []string{metrics.CumulativeMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt),
@@ -373,10 +413,10 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 	}
 	if nodes := mc.mutation.ArtifactMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.ArtifactMetricsTable,
-			Columns: metrics.ArtifactMetricsPrimaryKey,
+			Columns: []string{metrics.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
@@ -389,10 +429,10 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 	}
 	if nodes := mc.mutation.NetworkMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.NetworkMetricsTable,
-			Columns: metrics.NetworkMetricsPrimaryKey,
+			Columns: []string{metrics.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
@@ -405,10 +445,10 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 	}
 	if nodes := mc.mutation.DynamicExecutionMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.DynamicExecutionMetricsTable,
-			Columns: metrics.DynamicExecutionMetricsPrimaryKey,
+			Columns: []string{metrics.DynamicExecutionMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
@@ -421,10 +461,10 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 	}
 	if nodes := mc.mutation.BuildGraphMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.BuildGraphMetricsTable,
-			Columns: metrics.BuildGraphMetricsPrimaryKey,
+			Columns: []string{metrics.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),

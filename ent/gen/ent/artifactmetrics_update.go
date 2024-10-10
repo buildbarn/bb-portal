@@ -29,79 +29,99 @@ func (amu *ArtifactMetricsUpdate) Where(ps ...predicate.ArtifactMetrics) *Artifa
 	return amu
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (amu *ArtifactMetricsUpdate) AddMetricIDs(ids ...int) *ArtifactMetricsUpdate {
-	amu.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (amu *ArtifactMetricsUpdate) SetMetricsID(id int) *ArtifactMetricsUpdate {
+	amu.mutation.SetMetricsID(id)
 	return amu
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (amu *ArtifactMetricsUpdate) AddMetrics(m ...*Metrics) *ArtifactMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (amu *ArtifactMetricsUpdate) SetNillableMetricsID(id *int) *ArtifactMetricsUpdate {
+	if id != nil {
+		amu = amu.SetMetricsID(*id)
 	}
-	return amu.AddMetricIDs(ids...)
-}
-
-// AddSourceArtifactsReadIDs adds the "source_artifacts_read" edge to the FilesMetric entity by IDs.
-func (amu *ArtifactMetricsUpdate) AddSourceArtifactsReadIDs(ids ...int) *ArtifactMetricsUpdate {
-	amu.mutation.AddSourceArtifactsReadIDs(ids...)
 	return amu
 }
 
-// AddSourceArtifactsRead adds the "source_artifacts_read" edges to the FilesMetric entity.
-func (amu *ArtifactMetricsUpdate) AddSourceArtifactsRead(f ...*FilesMetric) *ArtifactMetricsUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amu.AddSourceArtifactsReadIDs(ids...)
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (amu *ArtifactMetricsUpdate) SetMetrics(m *Metrics) *ArtifactMetricsUpdate {
+	return amu.SetMetricsID(m.ID)
 }
 
-// AddOutputArtifactsSeenIDs adds the "output_artifacts_seen" edge to the FilesMetric entity by IDs.
-func (amu *ArtifactMetricsUpdate) AddOutputArtifactsSeenIDs(ids ...int) *ArtifactMetricsUpdate {
-	amu.mutation.AddOutputArtifactsSeenIDs(ids...)
+// SetSourceArtifactsReadID sets the "source_artifacts_read" edge to the FilesMetric entity by ID.
+func (amu *ArtifactMetricsUpdate) SetSourceArtifactsReadID(id int) *ArtifactMetricsUpdate {
+	amu.mutation.SetSourceArtifactsReadID(id)
 	return amu
 }
 
-// AddOutputArtifactsSeen adds the "output_artifacts_seen" edges to the FilesMetric entity.
-func (amu *ArtifactMetricsUpdate) AddOutputArtifactsSeen(f ...*FilesMetric) *ArtifactMetricsUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+// SetNillableSourceArtifactsReadID sets the "source_artifacts_read" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amu *ArtifactMetricsUpdate) SetNillableSourceArtifactsReadID(id *int) *ArtifactMetricsUpdate {
+	if id != nil {
+		amu = amu.SetSourceArtifactsReadID(*id)
 	}
-	return amu.AddOutputArtifactsSeenIDs(ids...)
-}
-
-// AddOutputArtifactsFromActionCacheIDs adds the "output_artifacts_from_action_cache" edge to the FilesMetric entity by IDs.
-func (amu *ArtifactMetricsUpdate) AddOutputArtifactsFromActionCacheIDs(ids ...int) *ArtifactMetricsUpdate {
-	amu.mutation.AddOutputArtifactsFromActionCacheIDs(ids...)
 	return amu
 }
 
-// AddOutputArtifactsFromActionCache adds the "output_artifacts_from_action_cache" edges to the FilesMetric entity.
-func (amu *ArtifactMetricsUpdate) AddOutputArtifactsFromActionCache(f ...*FilesMetric) *ArtifactMetricsUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amu.AddOutputArtifactsFromActionCacheIDs(ids...)
+// SetSourceArtifactsRead sets the "source_artifacts_read" edge to the FilesMetric entity.
+func (amu *ArtifactMetricsUpdate) SetSourceArtifactsRead(f *FilesMetric) *ArtifactMetricsUpdate {
+	return amu.SetSourceArtifactsReadID(f.ID)
 }
 
-// AddTopLevelArtifactIDs adds the "top_level_artifacts" edge to the FilesMetric entity by IDs.
-func (amu *ArtifactMetricsUpdate) AddTopLevelArtifactIDs(ids ...int) *ArtifactMetricsUpdate {
-	amu.mutation.AddTopLevelArtifactIDs(ids...)
+// SetOutputArtifactsSeenID sets the "output_artifacts_seen" edge to the FilesMetric entity by ID.
+func (amu *ArtifactMetricsUpdate) SetOutputArtifactsSeenID(id int) *ArtifactMetricsUpdate {
+	amu.mutation.SetOutputArtifactsSeenID(id)
 	return amu
 }
 
-// AddTopLevelArtifacts adds the "top_level_artifacts" edges to the FilesMetric entity.
-func (amu *ArtifactMetricsUpdate) AddTopLevelArtifacts(f ...*FilesMetric) *ArtifactMetricsUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+// SetNillableOutputArtifactsSeenID sets the "output_artifacts_seen" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amu *ArtifactMetricsUpdate) SetNillableOutputArtifactsSeenID(id *int) *ArtifactMetricsUpdate {
+	if id != nil {
+		amu = amu.SetOutputArtifactsSeenID(*id)
 	}
-	return amu.AddTopLevelArtifactIDs(ids...)
+	return amu
+}
+
+// SetOutputArtifactsSeen sets the "output_artifacts_seen" edge to the FilesMetric entity.
+func (amu *ArtifactMetricsUpdate) SetOutputArtifactsSeen(f *FilesMetric) *ArtifactMetricsUpdate {
+	return amu.SetOutputArtifactsSeenID(f.ID)
+}
+
+// SetOutputArtifactsFromActionCacheID sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity by ID.
+func (amu *ArtifactMetricsUpdate) SetOutputArtifactsFromActionCacheID(id int) *ArtifactMetricsUpdate {
+	amu.mutation.SetOutputArtifactsFromActionCacheID(id)
+	return amu
+}
+
+// SetNillableOutputArtifactsFromActionCacheID sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amu *ArtifactMetricsUpdate) SetNillableOutputArtifactsFromActionCacheID(id *int) *ArtifactMetricsUpdate {
+	if id != nil {
+		amu = amu.SetOutputArtifactsFromActionCacheID(*id)
+	}
+	return amu
+}
+
+// SetOutputArtifactsFromActionCache sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity.
+func (amu *ArtifactMetricsUpdate) SetOutputArtifactsFromActionCache(f *FilesMetric) *ArtifactMetricsUpdate {
+	return amu.SetOutputArtifactsFromActionCacheID(f.ID)
+}
+
+// SetTopLevelArtifactsID sets the "top_level_artifacts" edge to the FilesMetric entity by ID.
+func (amu *ArtifactMetricsUpdate) SetTopLevelArtifactsID(id int) *ArtifactMetricsUpdate {
+	amu.mutation.SetTopLevelArtifactsID(id)
+	return amu
+}
+
+// SetNillableTopLevelArtifactsID sets the "top_level_artifacts" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amu *ArtifactMetricsUpdate) SetNillableTopLevelArtifactsID(id *int) *ArtifactMetricsUpdate {
+	if id != nil {
+		amu = amu.SetTopLevelArtifactsID(*id)
+	}
+	return amu
+}
+
+// SetTopLevelArtifacts sets the "top_level_artifacts" edge to the FilesMetric entity.
+func (amu *ArtifactMetricsUpdate) SetTopLevelArtifacts(f *FilesMetric) *ArtifactMetricsUpdate {
+	return amu.SetTopLevelArtifactsID(f.ID)
 }
 
 // Mutation returns the ArtifactMetricsMutation object of the builder.
@@ -109,109 +129,34 @@ func (amu *ArtifactMetricsUpdate) Mutation() *ArtifactMetricsMutation {
 	return amu.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (amu *ArtifactMetricsUpdate) ClearMetrics() *ArtifactMetricsUpdate {
 	amu.mutation.ClearMetrics()
 	return amu
 }
 
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (amu *ArtifactMetricsUpdate) RemoveMetricIDs(ids ...int) *ArtifactMetricsUpdate {
-	amu.mutation.RemoveMetricIDs(ids...)
-	return amu
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (amu *ArtifactMetricsUpdate) RemoveMetrics(m ...*Metrics) *ArtifactMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return amu.RemoveMetricIDs(ids...)
-}
-
-// ClearSourceArtifactsRead clears all "source_artifacts_read" edges to the FilesMetric entity.
+// ClearSourceArtifactsRead clears the "source_artifacts_read" edge to the FilesMetric entity.
 func (amu *ArtifactMetricsUpdate) ClearSourceArtifactsRead() *ArtifactMetricsUpdate {
 	amu.mutation.ClearSourceArtifactsRead()
 	return amu
 }
 
-// RemoveSourceArtifactsReadIDs removes the "source_artifacts_read" edge to FilesMetric entities by IDs.
-func (amu *ArtifactMetricsUpdate) RemoveSourceArtifactsReadIDs(ids ...int) *ArtifactMetricsUpdate {
-	amu.mutation.RemoveSourceArtifactsReadIDs(ids...)
-	return amu
-}
-
-// RemoveSourceArtifactsRead removes "source_artifacts_read" edges to FilesMetric entities.
-func (amu *ArtifactMetricsUpdate) RemoveSourceArtifactsRead(f ...*FilesMetric) *ArtifactMetricsUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amu.RemoveSourceArtifactsReadIDs(ids...)
-}
-
-// ClearOutputArtifactsSeen clears all "output_artifacts_seen" edges to the FilesMetric entity.
+// ClearOutputArtifactsSeen clears the "output_artifacts_seen" edge to the FilesMetric entity.
 func (amu *ArtifactMetricsUpdate) ClearOutputArtifactsSeen() *ArtifactMetricsUpdate {
 	amu.mutation.ClearOutputArtifactsSeen()
 	return amu
 }
 
-// RemoveOutputArtifactsSeenIDs removes the "output_artifacts_seen" edge to FilesMetric entities by IDs.
-func (amu *ArtifactMetricsUpdate) RemoveOutputArtifactsSeenIDs(ids ...int) *ArtifactMetricsUpdate {
-	amu.mutation.RemoveOutputArtifactsSeenIDs(ids...)
-	return amu
-}
-
-// RemoveOutputArtifactsSeen removes "output_artifacts_seen" edges to FilesMetric entities.
-func (amu *ArtifactMetricsUpdate) RemoveOutputArtifactsSeen(f ...*FilesMetric) *ArtifactMetricsUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amu.RemoveOutputArtifactsSeenIDs(ids...)
-}
-
-// ClearOutputArtifactsFromActionCache clears all "output_artifacts_from_action_cache" edges to the FilesMetric entity.
+// ClearOutputArtifactsFromActionCache clears the "output_artifacts_from_action_cache" edge to the FilesMetric entity.
 func (amu *ArtifactMetricsUpdate) ClearOutputArtifactsFromActionCache() *ArtifactMetricsUpdate {
 	amu.mutation.ClearOutputArtifactsFromActionCache()
 	return amu
 }
 
-// RemoveOutputArtifactsFromActionCacheIDs removes the "output_artifacts_from_action_cache" edge to FilesMetric entities by IDs.
-func (amu *ArtifactMetricsUpdate) RemoveOutputArtifactsFromActionCacheIDs(ids ...int) *ArtifactMetricsUpdate {
-	amu.mutation.RemoveOutputArtifactsFromActionCacheIDs(ids...)
-	return amu
-}
-
-// RemoveOutputArtifactsFromActionCache removes "output_artifacts_from_action_cache" edges to FilesMetric entities.
-func (amu *ArtifactMetricsUpdate) RemoveOutputArtifactsFromActionCache(f ...*FilesMetric) *ArtifactMetricsUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amu.RemoveOutputArtifactsFromActionCacheIDs(ids...)
-}
-
-// ClearTopLevelArtifacts clears all "top_level_artifacts" edges to the FilesMetric entity.
+// ClearTopLevelArtifacts clears the "top_level_artifacts" edge to the FilesMetric entity.
 func (amu *ArtifactMetricsUpdate) ClearTopLevelArtifacts() *ArtifactMetricsUpdate {
 	amu.mutation.ClearTopLevelArtifacts()
 	return amu
-}
-
-// RemoveTopLevelArtifactIDs removes the "top_level_artifacts" edge to FilesMetric entities by IDs.
-func (amu *ArtifactMetricsUpdate) RemoveTopLevelArtifactIDs(ids ...int) *ArtifactMetricsUpdate {
-	amu.mutation.RemoveTopLevelArtifactIDs(ids...)
-	return amu
-}
-
-// RemoveTopLevelArtifacts removes "top_level_artifacts" edges to FilesMetric entities.
-func (amu *ArtifactMetricsUpdate) RemoveTopLevelArtifacts(f ...*FilesMetric) *ArtifactMetricsUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amu.RemoveTopLevelArtifactIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -252,39 +197,23 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if amu.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   artifactmetrics.MetricsTable,
-			Columns: artifactmetrics.MetricsPrimaryKey,
+			Columns: []string{artifactmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amu.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !amu.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   artifactmetrics.MetricsTable,
-			Columns: artifactmetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := amu.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   artifactmetrics.MetricsTable,
-			Columns: artifactmetrics.MetricsPrimaryKey,
+			Columns: []string{artifactmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -297,7 +226,7 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if amu.mutation.SourceArtifactsReadCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.SourceArtifactsReadTable,
 			Columns: []string{artifactmetrics.SourceArtifactsReadColumn},
@@ -305,28 +234,12 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amu.mutation.RemovedSourceArtifactsReadIDs(); len(nodes) > 0 && !amu.mutation.SourceArtifactsReadCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   artifactmetrics.SourceArtifactsReadTable,
-			Columns: []string{artifactmetrics.SourceArtifactsReadColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := amu.mutation.SourceArtifactsReadIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.SourceArtifactsReadTable,
 			Columns: []string{artifactmetrics.SourceArtifactsReadColumn},
@@ -342,7 +255,7 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if amu.mutation.OutputArtifactsSeenCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.OutputArtifactsSeenTable,
 			Columns: []string{artifactmetrics.OutputArtifactsSeenColumn},
@@ -350,28 +263,12 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amu.mutation.RemovedOutputArtifactsSeenIDs(); len(nodes) > 0 && !amu.mutation.OutputArtifactsSeenCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   artifactmetrics.OutputArtifactsSeenTable,
-			Columns: []string{artifactmetrics.OutputArtifactsSeenColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := amu.mutation.OutputArtifactsSeenIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.OutputArtifactsSeenTable,
 			Columns: []string{artifactmetrics.OutputArtifactsSeenColumn},
@@ -387,7 +284,7 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if amu.mutation.OutputArtifactsFromActionCacheCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.OutputArtifactsFromActionCacheTable,
 			Columns: []string{artifactmetrics.OutputArtifactsFromActionCacheColumn},
@@ -395,28 +292,12 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amu.mutation.RemovedOutputArtifactsFromActionCacheIDs(); len(nodes) > 0 && !amu.mutation.OutputArtifactsFromActionCacheCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   artifactmetrics.OutputArtifactsFromActionCacheTable,
-			Columns: []string{artifactmetrics.OutputArtifactsFromActionCacheColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := amu.mutation.OutputArtifactsFromActionCacheIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.OutputArtifactsFromActionCacheTable,
 			Columns: []string{artifactmetrics.OutputArtifactsFromActionCacheColumn},
@@ -432,39 +313,23 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if amu.mutation.TopLevelArtifactsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   artifactmetrics.TopLevelArtifactsTable,
-			Columns: artifactmetrics.TopLevelArtifactsPrimaryKey,
+			Columns: []string{artifactmetrics.TopLevelArtifactsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amu.mutation.RemovedTopLevelArtifactsIDs(); len(nodes) > 0 && !amu.mutation.TopLevelArtifactsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   artifactmetrics.TopLevelArtifactsTable,
-			Columns: artifactmetrics.TopLevelArtifactsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := amu.mutation.TopLevelArtifactsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   artifactmetrics.TopLevelArtifactsTable,
-			Columns: artifactmetrics.TopLevelArtifactsPrimaryKey,
+			Columns: []string{artifactmetrics.TopLevelArtifactsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
@@ -495,79 +360,99 @@ type ArtifactMetricsUpdateOne struct {
 	mutation *ArtifactMetricsMutation
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (amuo *ArtifactMetricsUpdateOne) AddMetricIDs(ids ...int) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (amuo *ArtifactMetricsUpdateOne) SetMetricsID(id int) *ArtifactMetricsUpdateOne {
+	amuo.mutation.SetMetricsID(id)
 	return amuo
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (amuo *ArtifactMetricsUpdateOne) AddMetrics(m ...*Metrics) *ArtifactMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (amuo *ArtifactMetricsUpdateOne) SetNillableMetricsID(id *int) *ArtifactMetricsUpdateOne {
+	if id != nil {
+		amuo = amuo.SetMetricsID(*id)
 	}
-	return amuo.AddMetricIDs(ids...)
-}
-
-// AddSourceArtifactsReadIDs adds the "source_artifacts_read" edge to the FilesMetric entity by IDs.
-func (amuo *ArtifactMetricsUpdateOne) AddSourceArtifactsReadIDs(ids ...int) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddSourceArtifactsReadIDs(ids...)
 	return amuo
 }
 
-// AddSourceArtifactsRead adds the "source_artifacts_read" edges to the FilesMetric entity.
-func (amuo *ArtifactMetricsUpdateOne) AddSourceArtifactsRead(f ...*FilesMetric) *ArtifactMetricsUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amuo.AddSourceArtifactsReadIDs(ids...)
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (amuo *ArtifactMetricsUpdateOne) SetMetrics(m *Metrics) *ArtifactMetricsUpdateOne {
+	return amuo.SetMetricsID(m.ID)
 }
 
-// AddOutputArtifactsSeenIDs adds the "output_artifacts_seen" edge to the FilesMetric entity by IDs.
-func (amuo *ArtifactMetricsUpdateOne) AddOutputArtifactsSeenIDs(ids ...int) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddOutputArtifactsSeenIDs(ids...)
+// SetSourceArtifactsReadID sets the "source_artifacts_read" edge to the FilesMetric entity by ID.
+func (amuo *ArtifactMetricsUpdateOne) SetSourceArtifactsReadID(id int) *ArtifactMetricsUpdateOne {
+	amuo.mutation.SetSourceArtifactsReadID(id)
 	return amuo
 }
 
-// AddOutputArtifactsSeen adds the "output_artifacts_seen" edges to the FilesMetric entity.
-func (amuo *ArtifactMetricsUpdateOne) AddOutputArtifactsSeen(f ...*FilesMetric) *ArtifactMetricsUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+// SetNillableSourceArtifactsReadID sets the "source_artifacts_read" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amuo *ArtifactMetricsUpdateOne) SetNillableSourceArtifactsReadID(id *int) *ArtifactMetricsUpdateOne {
+	if id != nil {
+		amuo = amuo.SetSourceArtifactsReadID(*id)
 	}
-	return amuo.AddOutputArtifactsSeenIDs(ids...)
-}
-
-// AddOutputArtifactsFromActionCacheIDs adds the "output_artifacts_from_action_cache" edge to the FilesMetric entity by IDs.
-func (amuo *ArtifactMetricsUpdateOne) AddOutputArtifactsFromActionCacheIDs(ids ...int) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddOutputArtifactsFromActionCacheIDs(ids...)
 	return amuo
 }
 
-// AddOutputArtifactsFromActionCache adds the "output_artifacts_from_action_cache" edges to the FilesMetric entity.
-func (amuo *ArtifactMetricsUpdateOne) AddOutputArtifactsFromActionCache(f ...*FilesMetric) *ArtifactMetricsUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amuo.AddOutputArtifactsFromActionCacheIDs(ids...)
+// SetSourceArtifactsRead sets the "source_artifacts_read" edge to the FilesMetric entity.
+func (amuo *ArtifactMetricsUpdateOne) SetSourceArtifactsRead(f *FilesMetric) *ArtifactMetricsUpdateOne {
+	return amuo.SetSourceArtifactsReadID(f.ID)
 }
 
-// AddTopLevelArtifactIDs adds the "top_level_artifacts" edge to the FilesMetric entity by IDs.
-func (amuo *ArtifactMetricsUpdateOne) AddTopLevelArtifactIDs(ids ...int) *ArtifactMetricsUpdateOne {
-	amuo.mutation.AddTopLevelArtifactIDs(ids...)
+// SetOutputArtifactsSeenID sets the "output_artifacts_seen" edge to the FilesMetric entity by ID.
+func (amuo *ArtifactMetricsUpdateOne) SetOutputArtifactsSeenID(id int) *ArtifactMetricsUpdateOne {
+	amuo.mutation.SetOutputArtifactsSeenID(id)
 	return amuo
 }
 
-// AddTopLevelArtifacts adds the "top_level_artifacts" edges to the FilesMetric entity.
-func (amuo *ArtifactMetricsUpdateOne) AddTopLevelArtifacts(f ...*FilesMetric) *ArtifactMetricsUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+// SetNillableOutputArtifactsSeenID sets the "output_artifacts_seen" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amuo *ArtifactMetricsUpdateOne) SetNillableOutputArtifactsSeenID(id *int) *ArtifactMetricsUpdateOne {
+	if id != nil {
+		amuo = amuo.SetOutputArtifactsSeenID(*id)
 	}
-	return amuo.AddTopLevelArtifactIDs(ids...)
+	return amuo
+}
+
+// SetOutputArtifactsSeen sets the "output_artifacts_seen" edge to the FilesMetric entity.
+func (amuo *ArtifactMetricsUpdateOne) SetOutputArtifactsSeen(f *FilesMetric) *ArtifactMetricsUpdateOne {
+	return amuo.SetOutputArtifactsSeenID(f.ID)
+}
+
+// SetOutputArtifactsFromActionCacheID sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity by ID.
+func (amuo *ArtifactMetricsUpdateOne) SetOutputArtifactsFromActionCacheID(id int) *ArtifactMetricsUpdateOne {
+	amuo.mutation.SetOutputArtifactsFromActionCacheID(id)
+	return amuo
+}
+
+// SetNillableOutputArtifactsFromActionCacheID sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amuo *ArtifactMetricsUpdateOne) SetNillableOutputArtifactsFromActionCacheID(id *int) *ArtifactMetricsUpdateOne {
+	if id != nil {
+		amuo = amuo.SetOutputArtifactsFromActionCacheID(*id)
+	}
+	return amuo
+}
+
+// SetOutputArtifactsFromActionCache sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity.
+func (amuo *ArtifactMetricsUpdateOne) SetOutputArtifactsFromActionCache(f *FilesMetric) *ArtifactMetricsUpdateOne {
+	return amuo.SetOutputArtifactsFromActionCacheID(f.ID)
+}
+
+// SetTopLevelArtifactsID sets the "top_level_artifacts" edge to the FilesMetric entity by ID.
+func (amuo *ArtifactMetricsUpdateOne) SetTopLevelArtifactsID(id int) *ArtifactMetricsUpdateOne {
+	amuo.mutation.SetTopLevelArtifactsID(id)
+	return amuo
+}
+
+// SetNillableTopLevelArtifactsID sets the "top_level_artifacts" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amuo *ArtifactMetricsUpdateOne) SetNillableTopLevelArtifactsID(id *int) *ArtifactMetricsUpdateOne {
+	if id != nil {
+		amuo = amuo.SetTopLevelArtifactsID(*id)
+	}
+	return amuo
+}
+
+// SetTopLevelArtifacts sets the "top_level_artifacts" edge to the FilesMetric entity.
+func (amuo *ArtifactMetricsUpdateOne) SetTopLevelArtifacts(f *FilesMetric) *ArtifactMetricsUpdateOne {
+	return amuo.SetTopLevelArtifactsID(f.ID)
 }
 
 // Mutation returns the ArtifactMetricsMutation object of the builder.
@@ -575,109 +460,34 @@ func (amuo *ArtifactMetricsUpdateOne) Mutation() *ArtifactMetricsMutation {
 	return amuo.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (amuo *ArtifactMetricsUpdateOne) ClearMetrics() *ArtifactMetricsUpdateOne {
 	amuo.mutation.ClearMetrics()
 	return amuo
 }
 
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (amuo *ArtifactMetricsUpdateOne) RemoveMetricIDs(ids ...int) *ArtifactMetricsUpdateOne {
-	amuo.mutation.RemoveMetricIDs(ids...)
-	return amuo
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (amuo *ArtifactMetricsUpdateOne) RemoveMetrics(m ...*Metrics) *ArtifactMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return amuo.RemoveMetricIDs(ids...)
-}
-
-// ClearSourceArtifactsRead clears all "source_artifacts_read" edges to the FilesMetric entity.
+// ClearSourceArtifactsRead clears the "source_artifacts_read" edge to the FilesMetric entity.
 func (amuo *ArtifactMetricsUpdateOne) ClearSourceArtifactsRead() *ArtifactMetricsUpdateOne {
 	amuo.mutation.ClearSourceArtifactsRead()
 	return amuo
 }
 
-// RemoveSourceArtifactsReadIDs removes the "source_artifacts_read" edge to FilesMetric entities by IDs.
-func (amuo *ArtifactMetricsUpdateOne) RemoveSourceArtifactsReadIDs(ids ...int) *ArtifactMetricsUpdateOne {
-	amuo.mutation.RemoveSourceArtifactsReadIDs(ids...)
-	return amuo
-}
-
-// RemoveSourceArtifactsRead removes "source_artifacts_read" edges to FilesMetric entities.
-func (amuo *ArtifactMetricsUpdateOne) RemoveSourceArtifactsRead(f ...*FilesMetric) *ArtifactMetricsUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amuo.RemoveSourceArtifactsReadIDs(ids...)
-}
-
-// ClearOutputArtifactsSeen clears all "output_artifacts_seen" edges to the FilesMetric entity.
+// ClearOutputArtifactsSeen clears the "output_artifacts_seen" edge to the FilesMetric entity.
 func (amuo *ArtifactMetricsUpdateOne) ClearOutputArtifactsSeen() *ArtifactMetricsUpdateOne {
 	amuo.mutation.ClearOutputArtifactsSeen()
 	return amuo
 }
 
-// RemoveOutputArtifactsSeenIDs removes the "output_artifacts_seen" edge to FilesMetric entities by IDs.
-func (amuo *ArtifactMetricsUpdateOne) RemoveOutputArtifactsSeenIDs(ids ...int) *ArtifactMetricsUpdateOne {
-	amuo.mutation.RemoveOutputArtifactsSeenIDs(ids...)
-	return amuo
-}
-
-// RemoveOutputArtifactsSeen removes "output_artifacts_seen" edges to FilesMetric entities.
-func (amuo *ArtifactMetricsUpdateOne) RemoveOutputArtifactsSeen(f ...*FilesMetric) *ArtifactMetricsUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amuo.RemoveOutputArtifactsSeenIDs(ids...)
-}
-
-// ClearOutputArtifactsFromActionCache clears all "output_artifacts_from_action_cache" edges to the FilesMetric entity.
+// ClearOutputArtifactsFromActionCache clears the "output_artifacts_from_action_cache" edge to the FilesMetric entity.
 func (amuo *ArtifactMetricsUpdateOne) ClearOutputArtifactsFromActionCache() *ArtifactMetricsUpdateOne {
 	amuo.mutation.ClearOutputArtifactsFromActionCache()
 	return amuo
 }
 
-// RemoveOutputArtifactsFromActionCacheIDs removes the "output_artifacts_from_action_cache" edge to FilesMetric entities by IDs.
-func (amuo *ArtifactMetricsUpdateOne) RemoveOutputArtifactsFromActionCacheIDs(ids ...int) *ArtifactMetricsUpdateOne {
-	amuo.mutation.RemoveOutputArtifactsFromActionCacheIDs(ids...)
-	return amuo
-}
-
-// RemoveOutputArtifactsFromActionCache removes "output_artifacts_from_action_cache" edges to FilesMetric entities.
-func (amuo *ArtifactMetricsUpdateOne) RemoveOutputArtifactsFromActionCache(f ...*FilesMetric) *ArtifactMetricsUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amuo.RemoveOutputArtifactsFromActionCacheIDs(ids...)
-}
-
-// ClearTopLevelArtifacts clears all "top_level_artifacts" edges to the FilesMetric entity.
+// ClearTopLevelArtifacts clears the "top_level_artifacts" edge to the FilesMetric entity.
 func (amuo *ArtifactMetricsUpdateOne) ClearTopLevelArtifacts() *ArtifactMetricsUpdateOne {
 	amuo.mutation.ClearTopLevelArtifacts()
 	return amuo
-}
-
-// RemoveTopLevelArtifactIDs removes the "top_level_artifacts" edge to FilesMetric entities by IDs.
-func (amuo *ArtifactMetricsUpdateOne) RemoveTopLevelArtifactIDs(ids ...int) *ArtifactMetricsUpdateOne {
-	amuo.mutation.RemoveTopLevelArtifactIDs(ids...)
-	return amuo
-}
-
-// RemoveTopLevelArtifacts removes "top_level_artifacts" edges to FilesMetric entities.
-func (amuo *ArtifactMetricsUpdateOne) RemoveTopLevelArtifacts(f ...*FilesMetric) *ArtifactMetricsUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amuo.RemoveTopLevelArtifactIDs(ids...)
 }
 
 // Where appends a list predicates to the ArtifactMetricsUpdate builder.
@@ -748,39 +558,23 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 	}
 	if amuo.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   artifactmetrics.MetricsTable,
-			Columns: artifactmetrics.MetricsPrimaryKey,
+			Columns: []string{artifactmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amuo.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !amuo.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   artifactmetrics.MetricsTable,
-			Columns: artifactmetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := amuo.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   artifactmetrics.MetricsTable,
-			Columns: artifactmetrics.MetricsPrimaryKey,
+			Columns: []string{artifactmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -793,7 +587,7 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 	}
 	if amuo.mutation.SourceArtifactsReadCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.SourceArtifactsReadTable,
 			Columns: []string{artifactmetrics.SourceArtifactsReadColumn},
@@ -801,28 +595,12 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amuo.mutation.RemovedSourceArtifactsReadIDs(); len(nodes) > 0 && !amuo.mutation.SourceArtifactsReadCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   artifactmetrics.SourceArtifactsReadTable,
-			Columns: []string{artifactmetrics.SourceArtifactsReadColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := amuo.mutation.SourceArtifactsReadIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.SourceArtifactsReadTable,
 			Columns: []string{artifactmetrics.SourceArtifactsReadColumn},
@@ -838,7 +616,7 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 	}
 	if amuo.mutation.OutputArtifactsSeenCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.OutputArtifactsSeenTable,
 			Columns: []string{artifactmetrics.OutputArtifactsSeenColumn},
@@ -846,28 +624,12 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amuo.mutation.RemovedOutputArtifactsSeenIDs(); len(nodes) > 0 && !amuo.mutation.OutputArtifactsSeenCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   artifactmetrics.OutputArtifactsSeenTable,
-			Columns: []string{artifactmetrics.OutputArtifactsSeenColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := amuo.mutation.OutputArtifactsSeenIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.OutputArtifactsSeenTable,
 			Columns: []string{artifactmetrics.OutputArtifactsSeenColumn},
@@ -883,7 +645,7 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 	}
 	if amuo.mutation.OutputArtifactsFromActionCacheCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.OutputArtifactsFromActionCacheTable,
 			Columns: []string{artifactmetrics.OutputArtifactsFromActionCacheColumn},
@@ -891,28 +653,12 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amuo.mutation.RemovedOutputArtifactsFromActionCacheIDs(); len(nodes) > 0 && !amuo.mutation.OutputArtifactsFromActionCacheCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   artifactmetrics.OutputArtifactsFromActionCacheTable,
-			Columns: []string{artifactmetrics.OutputArtifactsFromActionCacheColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := amuo.mutation.OutputArtifactsFromActionCacheIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.OutputArtifactsFromActionCacheTable,
 			Columns: []string{artifactmetrics.OutputArtifactsFromActionCacheColumn},
@@ -928,39 +674,23 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 	}
 	if amuo.mutation.TopLevelArtifactsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   artifactmetrics.TopLevelArtifactsTable,
-			Columns: artifactmetrics.TopLevelArtifactsPrimaryKey,
+			Columns: []string{artifactmetrics.TopLevelArtifactsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := amuo.mutation.RemovedTopLevelArtifactsIDs(); len(nodes) > 0 && !amuo.mutation.TopLevelArtifactsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   artifactmetrics.TopLevelArtifactsTable,
-			Columns: artifactmetrics.TopLevelArtifactsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := amuo.mutation.TopLevelArtifactsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   artifactmetrics.TopLevelArtifactsTable,
-			Columns: artifactmetrics.TopLevelArtifactsPrimaryKey,
+			Columns: []string{artifactmetrics.TopLevelArtifactsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),

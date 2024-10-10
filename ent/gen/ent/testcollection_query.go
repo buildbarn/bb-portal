@@ -21,18 +21,17 @@ import (
 // TestCollectionQuery is the builder for querying TestCollection entities.
 type TestCollectionQuery struct {
 	config
-	ctx                      *QueryContext
-	order                    []testcollection.OrderOption
-	inters                   []Interceptor
-	predicates               []predicate.TestCollection
-	withBazelInvocation      *BazelInvocationQuery
-	withTestSummary          *TestSummaryQuery
-	withTestResults          *TestResultBESQuery
-	withFKs                  bool
-	modifiers                []func(*sql.Selector)
-	loadTotal                []func(context.Context, []*TestCollection) error
-	withNamedBazelInvocation map[string]*BazelInvocationQuery
-	withNamedTestResults     map[string]*TestResultBESQuery
+	ctx                  *QueryContext
+	order                []testcollection.OrderOption
+	inters               []Interceptor
+	predicates           []predicate.TestCollection
+	withBazelInvocation  *BazelInvocationQuery
+	withTestSummary      *TestSummaryQuery
+	withTestResults      *TestResultBESQuery
+	withFKs              bool
+	modifiers            []func(*sql.Selector)
+	loadTotal            []func(context.Context, []*TestCollection) error
+	withNamedTestResults map[string]*TestResultBESQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -83,7 +82,7 @@ func (tcq *TestCollectionQuery) QueryBazelInvocation() *BazelInvocationQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(testcollection.Table, testcollection.FieldID, selector),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, testcollection.BazelInvocationTable, testcollection.BazelInvocationPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, testcollection.BazelInvocationTable, testcollection.BazelInvocationColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tcq.driver.Dialect(), step)
 		return fromU, nil
@@ -105,7 +104,7 @@ func (tcq *TestCollectionQuery) QueryTestSummary() *TestSummaryQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(testcollection.Table, testcollection.FieldID, selector),
 			sqlgraph.To(testsummary.Table, testsummary.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, testcollection.TestSummaryTable, testcollection.TestSummaryColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, testcollection.TestSummaryTable, testcollection.TestSummaryColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tcq.driver.Dialect(), step)
 		return fromU, nil
@@ -454,7 +453,7 @@ func (tcq *TestCollectionQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			tcq.withTestResults != nil,
 		}
 	)
-	if tcq.withTestSummary != nil {
+	if tcq.withBazelInvocation != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -482,11 +481,8 @@ func (tcq *TestCollectionQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		return nodes, nil
 	}
 	if query := tcq.withBazelInvocation; query != nil {
-		if err := tcq.loadBazelInvocation(ctx, query, nodes,
-			func(n *TestCollection) { n.Edges.BazelInvocation = []*BazelInvocation{} },
-			func(n *TestCollection, e *BazelInvocation) {
-				n.Edges.BazelInvocation = append(n.Edges.BazelInvocation, e)
-			}); err != nil {
+		if err := tcq.loadBazelInvocation(ctx, query, nodes, nil,
+			func(n *TestCollection, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -500,13 +496,6 @@ func (tcq *TestCollectionQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		if err := tcq.loadTestResults(ctx, query, nodes,
 			func(n *TestCollection) { n.Edges.TestResults = []*TestResultBES{} },
 			func(n *TestCollection, e *TestResultBES) { n.Edges.TestResults = append(n.Edges.TestResults, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range tcq.withNamedBazelInvocation {
-		if err := tcq.loadBazelInvocation(ctx, query, nodes,
-			func(n *TestCollection) { n.appendNamedBazelInvocation(name) },
-			func(n *TestCollection, e *BazelInvocation) { n.appendNamedBazelInvocation(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -526,74 +515,13 @@ func (tcq *TestCollectionQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (tcq *TestCollectionQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*TestCollection, init func(*TestCollection), assign func(*TestCollection, *BazelInvocation)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*TestCollection)
-	nids := make(map[int]map[*TestCollection]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(testcollection.BazelInvocationTable)
-		s.Join(joinT).On(s.C(bazelinvocation.FieldID), joinT.C(testcollection.BazelInvocationPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(testcollection.BazelInvocationPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(testcollection.BazelInvocationPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*TestCollection]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*BazelInvocation](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "bazel_invocation" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
-	}
-	return nil
-}
-func (tcq *TestCollectionQuery) loadTestSummary(ctx context.Context, query *TestSummaryQuery, nodes []*TestCollection, init func(*TestCollection), assign func(*TestCollection, *TestSummary)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TestCollection)
 	for i := range nodes {
-		if nodes[i].test_collection_test_summary == nil {
+		if nodes[i].bazel_invocation_test_collection == nil {
 			continue
 		}
-		fk := *nodes[i].test_collection_test_summary
+		fk := *nodes[i].bazel_invocation_test_collection
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -602,7 +530,7 @@ func (tcq *TestCollectionQuery) loadTestSummary(ctx context.Context, query *Test
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(testsummary.IDIn(ids...))
+	query.Where(bazelinvocation.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
@@ -610,11 +538,39 @@ func (tcq *TestCollectionQuery) loadTestSummary(ctx context.Context, query *Test
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "test_collection_test_summary" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_test_collection" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (tcq *TestCollectionQuery) loadTestSummary(ctx context.Context, query *TestSummaryQuery, nodes []*TestCollection, init func(*TestCollection), assign func(*TestCollection, *TestSummary)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*TestCollection)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	query.withFKs = true
+	query.Where(predicate.TestSummary(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(testcollection.TestSummaryColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.test_collection_test_summary
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "test_collection_test_summary" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "test_collection_test_summary" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -732,20 +688,6 @@ func (tcq *TestCollectionQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedBazelInvocation tells the query-builder to eager-load the nodes that are connected to the "bazel_invocation"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (tcq *TestCollectionQuery) WithNamedBazelInvocation(name string, opts ...func(*BazelInvocationQuery)) *TestCollectionQuery {
-	query := (&BazelInvocationClient{config: tcq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if tcq.withNamedBazelInvocation == nil {
-		tcq.withNamedBazelInvocation = make(map[string]*BazelInvocationQuery)
-	}
-	tcq.withNamedBazelInvocation[name] = query
-	return tcq
 }
 
 // WithNamedTestResults tells the query-builder to eager-load the nodes that are connected to the "test_results"

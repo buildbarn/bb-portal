@@ -50,51 +50,69 @@ const (
 	ActionSummaryInverseTable = "action_summaries"
 	// ActionSummaryColumn is the table column denoting the action_summary relation/edge.
 	ActionSummaryColumn = "metrics_action_summary"
-	// MemoryMetricsTable is the table that holds the memory_metrics relation/edge. The primary key declared below.
-	MemoryMetricsTable = "metrics_memory_metrics"
+	// MemoryMetricsTable is the table that holds the memory_metrics relation/edge.
+	MemoryMetricsTable = "memory_metrics"
 	// MemoryMetricsInverseTable is the table name for the MemoryMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "memorymetrics" package.
 	MemoryMetricsInverseTable = "memory_metrics"
-	// TargetMetricsTable is the table that holds the target_metrics relation/edge. The primary key declared below.
-	TargetMetricsTable = "metrics_target_metrics"
+	// MemoryMetricsColumn is the table column denoting the memory_metrics relation/edge.
+	MemoryMetricsColumn = "metrics_memory_metrics"
+	// TargetMetricsTable is the table that holds the target_metrics relation/edge.
+	TargetMetricsTable = "target_metrics"
 	// TargetMetricsInverseTable is the table name for the TargetMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "targetmetrics" package.
 	TargetMetricsInverseTable = "target_metrics"
-	// PackageMetricsTable is the table that holds the package_metrics relation/edge. The primary key declared below.
-	PackageMetricsTable = "metrics_package_metrics"
+	// TargetMetricsColumn is the table column denoting the target_metrics relation/edge.
+	TargetMetricsColumn = "metrics_target_metrics"
+	// PackageMetricsTable is the table that holds the package_metrics relation/edge.
+	PackageMetricsTable = "package_metrics"
 	// PackageMetricsInverseTable is the table name for the PackageMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "packagemetrics" package.
 	PackageMetricsInverseTable = "package_metrics"
-	// TimingMetricsTable is the table that holds the timing_metrics relation/edge. The primary key declared below.
-	TimingMetricsTable = "metrics_timing_metrics"
+	// PackageMetricsColumn is the table column denoting the package_metrics relation/edge.
+	PackageMetricsColumn = "metrics_package_metrics"
+	// TimingMetricsTable is the table that holds the timing_metrics relation/edge.
+	TimingMetricsTable = "timing_metrics"
 	// TimingMetricsInverseTable is the table name for the TimingMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "timingmetrics" package.
 	TimingMetricsInverseTable = "timing_metrics"
-	// CumulativeMetricsTable is the table that holds the cumulative_metrics relation/edge. The primary key declared below.
-	CumulativeMetricsTable = "metrics_cumulative_metrics"
+	// TimingMetricsColumn is the table column denoting the timing_metrics relation/edge.
+	TimingMetricsColumn = "metrics_timing_metrics"
+	// CumulativeMetricsTable is the table that holds the cumulative_metrics relation/edge.
+	CumulativeMetricsTable = "cumulative_metrics"
 	// CumulativeMetricsInverseTable is the table name for the CumulativeMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "cumulativemetrics" package.
 	CumulativeMetricsInverseTable = "cumulative_metrics"
-	// ArtifactMetricsTable is the table that holds the artifact_metrics relation/edge. The primary key declared below.
-	ArtifactMetricsTable = "metrics_artifact_metrics"
+	// CumulativeMetricsColumn is the table column denoting the cumulative_metrics relation/edge.
+	CumulativeMetricsColumn = "metrics_cumulative_metrics"
+	// ArtifactMetricsTable is the table that holds the artifact_metrics relation/edge.
+	ArtifactMetricsTable = "artifact_metrics"
 	// ArtifactMetricsInverseTable is the table name for the ArtifactMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "artifactmetrics" package.
 	ArtifactMetricsInverseTable = "artifact_metrics"
-	// NetworkMetricsTable is the table that holds the network_metrics relation/edge. The primary key declared below.
-	NetworkMetricsTable = "metrics_network_metrics"
+	// ArtifactMetricsColumn is the table column denoting the artifact_metrics relation/edge.
+	ArtifactMetricsColumn = "metrics_artifact_metrics"
+	// NetworkMetricsTable is the table that holds the network_metrics relation/edge.
+	NetworkMetricsTable = "network_metrics"
 	// NetworkMetricsInverseTable is the table name for the NetworkMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "networkmetrics" package.
 	NetworkMetricsInverseTable = "network_metrics"
-	// DynamicExecutionMetricsTable is the table that holds the dynamic_execution_metrics relation/edge. The primary key declared below.
-	DynamicExecutionMetricsTable = "metrics_dynamic_execution_metrics"
+	// NetworkMetricsColumn is the table column denoting the network_metrics relation/edge.
+	NetworkMetricsColumn = "metrics_network_metrics"
+	// DynamicExecutionMetricsTable is the table that holds the dynamic_execution_metrics relation/edge.
+	DynamicExecutionMetricsTable = "dynamic_execution_metrics"
 	// DynamicExecutionMetricsInverseTable is the table name for the DynamicExecutionMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "dynamicexecutionmetrics" package.
 	DynamicExecutionMetricsInverseTable = "dynamic_execution_metrics"
-	// BuildGraphMetricsTable is the table that holds the build_graph_metrics relation/edge. The primary key declared below.
-	BuildGraphMetricsTable = "metrics_build_graph_metrics"
+	// DynamicExecutionMetricsColumn is the table column denoting the dynamic_execution_metrics relation/edge.
+	DynamicExecutionMetricsColumn = "metrics_dynamic_execution_metrics"
+	// BuildGraphMetricsTable is the table that holds the build_graph_metrics relation/edge.
+	BuildGraphMetricsTable = "build_graph_metrics"
 	// BuildGraphMetricsInverseTable is the table name for the BuildGraphMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "buildgraphmetrics" package.
 	BuildGraphMetricsInverseTable = "build_graph_metrics"
+	// BuildGraphMetricsColumn is the table column denoting the build_graph_metrics relation/edge.
+	BuildGraphMetricsColumn = "metrics_build_graph_metrics"
 )
 
 // Columns holds all SQL columns for metrics fields.
@@ -107,36 +125,6 @@ var Columns = []string{
 var ForeignKeys = []string{
 	"bazel_invocation_metrics",
 }
-
-var (
-	// MemoryMetricsPrimaryKey and MemoryMetricsColumn2 are the table columns denoting the
-	// primary key for the memory_metrics relation (M2M).
-	MemoryMetricsPrimaryKey = []string{"metrics_id", "memory_metrics_id"}
-	// TargetMetricsPrimaryKey and TargetMetricsColumn2 are the table columns denoting the
-	// primary key for the target_metrics relation (M2M).
-	TargetMetricsPrimaryKey = []string{"metrics_id", "target_metrics_id"}
-	// PackageMetricsPrimaryKey and PackageMetricsColumn2 are the table columns denoting the
-	// primary key for the package_metrics relation (M2M).
-	PackageMetricsPrimaryKey = []string{"metrics_id", "package_metrics_id"}
-	// TimingMetricsPrimaryKey and TimingMetricsColumn2 are the table columns denoting the
-	// primary key for the timing_metrics relation (M2M).
-	TimingMetricsPrimaryKey = []string{"metrics_id", "timing_metrics_id"}
-	// CumulativeMetricsPrimaryKey and CumulativeMetricsColumn2 are the table columns denoting the
-	// primary key for the cumulative_metrics relation (M2M).
-	CumulativeMetricsPrimaryKey = []string{"metrics_id", "cumulative_metrics_id"}
-	// ArtifactMetricsPrimaryKey and ArtifactMetricsColumn2 are the table columns denoting the
-	// primary key for the artifact_metrics relation (M2M).
-	ArtifactMetricsPrimaryKey = []string{"metrics_id", "artifact_metrics_id"}
-	// NetworkMetricsPrimaryKey and NetworkMetricsColumn2 are the table columns denoting the
-	// primary key for the network_metrics relation (M2M).
-	NetworkMetricsPrimaryKey = []string{"metrics_id", "network_metrics_id"}
-	// DynamicExecutionMetricsPrimaryKey and DynamicExecutionMetricsColumn2 are the table columns denoting the
-	// primary key for the dynamic_execution_metrics relation (M2M).
-	DynamicExecutionMetricsPrimaryKey = []string{"metrics_id", "dynamic_execution_metrics_id"}
-	// BuildGraphMetricsPrimaryKey and BuildGraphMetricsColumn2 are the table columns denoting the
-	// primary key for the build_graph_metrics relation (M2M).
-	BuildGraphMetricsPrimaryKey = []string{"metrics_id", "build_graph_metrics_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -168,143 +156,73 @@ func ByBazelInvocationField(field string, opts ...sql.OrderTermOption) OrderOpti
 	}
 }
 
-// ByActionSummaryCount orders the results by action_summary count.
-func ByActionSummaryCount(opts ...sql.OrderTermOption) OrderOption {
+// ByActionSummaryField orders the results by action_summary field.
+func ByActionSummaryField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newActionSummaryStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newActionSummaryStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByActionSummary orders the results by action_summary terms.
-func ByActionSummary(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByMemoryMetricsField orders the results by memory_metrics field.
+func ByMemoryMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newActionSummaryStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newMemoryMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByMemoryMetricsCount orders the results by memory_metrics count.
-func ByMemoryMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTargetMetricsField orders the results by target_metrics field.
+func ByTargetMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newMemoryMetricsStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newTargetMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByMemoryMetrics orders the results by memory_metrics terms.
-func ByMemoryMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByPackageMetricsField orders the results by package_metrics field.
+func ByPackageMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newMemoryMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newPackageMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByTargetMetricsCount orders the results by target_metrics count.
-func ByTargetMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTimingMetricsField orders the results by timing_metrics field.
+func ByTimingMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTargetMetricsStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newTimingMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByTargetMetrics orders the results by target_metrics terms.
-func ByTargetMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByCumulativeMetricsField orders the results by cumulative_metrics field.
+func ByCumulativeMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTargetMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newCumulativeMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByPackageMetricsCount orders the results by package_metrics count.
-func ByPackageMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByArtifactMetricsField orders the results by artifact_metrics field.
+func ByArtifactMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newPackageMetricsStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newArtifactMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByPackageMetrics orders the results by package_metrics terms.
-func ByPackageMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByNetworkMetricsField orders the results by network_metrics field.
+func ByNetworkMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newPackageMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newNetworkMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByTimingMetricsCount orders the results by timing_metrics count.
-func ByTimingMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByDynamicExecutionMetricsField orders the results by dynamic_execution_metrics field.
+func ByDynamicExecutionMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTimingMetricsStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newDynamicExecutionMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByTimingMetrics orders the results by timing_metrics terms.
-func ByTimingMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByBuildGraphMetricsField orders the results by build_graph_metrics field.
+func ByBuildGraphMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTimingMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByCumulativeMetricsCount orders the results by cumulative_metrics count.
-func ByCumulativeMetricsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newCumulativeMetricsStep(), opts...)
-	}
-}
-
-// ByCumulativeMetrics orders the results by cumulative_metrics terms.
-func ByCumulativeMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newCumulativeMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByArtifactMetricsCount orders the results by artifact_metrics count.
-func ByArtifactMetricsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newArtifactMetricsStep(), opts...)
-	}
-}
-
-// ByArtifactMetrics orders the results by artifact_metrics terms.
-func ByArtifactMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newArtifactMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByNetworkMetricsCount orders the results by network_metrics count.
-func ByNetworkMetricsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newNetworkMetricsStep(), opts...)
-	}
-}
-
-// ByNetworkMetrics orders the results by network_metrics terms.
-func ByNetworkMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newNetworkMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByDynamicExecutionMetricsCount orders the results by dynamic_execution_metrics count.
-func ByDynamicExecutionMetricsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newDynamicExecutionMetricsStep(), opts...)
-	}
-}
-
-// ByDynamicExecutionMetrics orders the results by dynamic_execution_metrics terms.
-func ByDynamicExecutionMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newDynamicExecutionMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByBuildGraphMetricsCount orders the results by build_graph_metrics count.
-func ByBuildGraphMetricsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newBuildGraphMetricsStep(), opts...)
-	}
-}
-
-// ByBuildGraphMetrics orders the results by build_graph_metrics terms.
-func ByBuildGraphMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBuildGraphMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newBuildGraphMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newBazelInvocationStep() *sqlgraph.Step {
@@ -318,69 +236,69 @@ func newActionSummaryStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ActionSummaryInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, ActionSummaryTable, ActionSummaryColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, ActionSummaryTable, ActionSummaryColumn),
 	)
 }
 func newMemoryMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MemoryMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, MemoryMetricsTable, MemoryMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, MemoryMetricsTable, MemoryMetricsColumn),
 	)
 }
 func newTargetMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TargetMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, TargetMetricsTable, TargetMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, TargetMetricsTable, TargetMetricsColumn),
 	)
 }
 func newPackageMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(PackageMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, PackageMetricsTable, PackageMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, PackageMetricsTable, PackageMetricsColumn),
 	)
 }
 func newTimingMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TimingMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, TimingMetricsTable, TimingMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, TimingMetricsTable, TimingMetricsColumn),
 	)
 }
 func newCumulativeMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(CumulativeMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, CumulativeMetricsTable, CumulativeMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, CumulativeMetricsTable, CumulativeMetricsColumn),
 	)
 }
 func newArtifactMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ArtifactMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, ArtifactMetricsTable, ArtifactMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, ArtifactMetricsTable, ArtifactMetricsColumn),
 	)
 }
 func newNetworkMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(NetworkMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, NetworkMetricsTable, NetworkMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, NetworkMetricsTable, NetworkMetricsColumn),
 	)
 }
 func newDynamicExecutionMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DynamicExecutionMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, DynamicExecutionMetricsTable, DynamicExecutionMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, DynamicExecutionMetricsTable, DynamicExecutionMetricsColumn),
 	)
 }
 func newBuildGraphMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(BuildGraphMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, BuildGraphMetricsTable, BuildGraphMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, BuildGraphMetricsTable, BuildGraphMetricsColumn),
 	)
 }

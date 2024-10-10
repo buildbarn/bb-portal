@@ -20,34 +20,42 @@ type NetworkMetricsCreate struct {
 	hooks    []Hook
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (nmc *NetworkMetricsCreate) AddMetricIDs(ids ...int) *NetworkMetricsCreate {
-	nmc.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (nmc *NetworkMetricsCreate) SetMetricsID(id int) *NetworkMetricsCreate {
+	nmc.mutation.SetMetricsID(id)
 	return nmc
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (nmc *NetworkMetricsCreate) AddMetrics(m ...*Metrics) *NetworkMetricsCreate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (nmc *NetworkMetricsCreate) SetNillableMetricsID(id *int) *NetworkMetricsCreate {
+	if id != nil {
+		nmc = nmc.SetMetricsID(*id)
 	}
-	return nmc.AddMetricIDs(ids...)
-}
-
-// AddSystemNetworkStatIDs adds the "system_network_stats" edge to the SystemNetworkStats entity by IDs.
-func (nmc *NetworkMetricsCreate) AddSystemNetworkStatIDs(ids ...int) *NetworkMetricsCreate {
-	nmc.mutation.AddSystemNetworkStatIDs(ids...)
 	return nmc
 }
 
-// AddSystemNetworkStats adds the "system_network_stats" edges to the SystemNetworkStats entity.
-func (nmc *NetworkMetricsCreate) AddSystemNetworkStats(s ...*SystemNetworkStats) *NetworkMetricsCreate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (nmc *NetworkMetricsCreate) SetMetrics(m *Metrics) *NetworkMetricsCreate {
+	return nmc.SetMetricsID(m.ID)
+}
+
+// SetSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID.
+func (nmc *NetworkMetricsCreate) SetSystemNetworkStatsID(id int) *NetworkMetricsCreate {
+	nmc.mutation.SetSystemNetworkStatsID(id)
+	return nmc
+}
+
+// SetNillableSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID if the given value is not nil.
+func (nmc *NetworkMetricsCreate) SetNillableSystemNetworkStatsID(id *int) *NetworkMetricsCreate {
+	if id != nil {
+		nmc = nmc.SetSystemNetworkStatsID(*id)
 	}
-	return nmc.AddSystemNetworkStatIDs(ids...)
+	return nmc
+}
+
+// SetSystemNetworkStats sets the "system_network_stats" edge to the SystemNetworkStats entity.
+func (nmc *NetworkMetricsCreate) SetSystemNetworkStats(s *SystemNetworkStats) *NetworkMetricsCreate {
+	return nmc.SetSystemNetworkStatsID(s.ID)
 }
 
 // Mutation returns the NetworkMetricsMutation object of the builder.
@@ -112,10 +120,10 @@ func (nmc *NetworkMetricsCreate) createSpec() (*NetworkMetrics, *sqlgraph.Create
 	)
 	if nodes := nmc.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   networkmetrics.MetricsTable,
-			Columns: networkmetrics.MetricsPrimaryKey,
+			Columns: []string{networkmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -124,11 +132,12 @@ func (nmc *NetworkMetricsCreate) createSpec() (*NetworkMetrics, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.metrics_network_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := nmc.mutation.SystemNetworkStatsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   networkmetrics.SystemNetworkStatsTable,
 			Columns: []string{networkmetrics.SystemNetworkStatsColumn},

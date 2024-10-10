@@ -36,6 +36,8 @@ func (RaceStatistics) Fields() []ent.Field {
 func (RaceStatistics) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the dynamic execution metrics object.
-		edge.From("dynamic_execution_metrics", DynamicExecutionMetrics.Type).Ref("race_statistics"),
+		edge.From("dynamic_execution_metrics", DynamicExecutionMetrics.Type).
+			Ref("race_statistics").
+			Unique(),
 	}
 }

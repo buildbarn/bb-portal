@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -19,14 +18,14 @@ import (
 // CumulativeMetricsQuery is the builder for querying CumulativeMetrics entities.
 type CumulativeMetricsQuery struct {
 	config
-	ctx              *QueryContext
-	order            []cumulativemetrics.OrderOption
-	inters           []Interceptor
-	predicates       []predicate.CumulativeMetrics
-	withMetrics      *MetricsQuery
-	modifiers        []func(*sql.Selector)
-	loadTotal        []func(context.Context, []*CumulativeMetrics) error
-	withNamedMetrics map[string]*MetricsQuery
+	ctx         *QueryContext
+	order       []cumulativemetrics.OrderOption
+	inters      []Interceptor
+	predicates  []predicate.CumulativeMetrics
+	withMetrics *MetricsQuery
+	withFKs     bool
+	modifiers   []func(*sql.Selector)
+	loadTotal   []func(context.Context, []*CumulativeMetrics) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,7 +76,7 @@ func (cmq *CumulativeMetricsQuery) QueryMetrics() *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(cumulativemetrics.Table, cumulativemetrics.FieldID, selector),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, cumulativemetrics.MetricsTable, cumulativemetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, cumulativemetrics.MetricsTable, cumulativemetrics.MetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(cmq.driver.Dialect(), step)
 		return fromU, nil
@@ -372,11 +371,18 @@ func (cmq *CumulativeMetricsQuery) prepareQuery(ctx context.Context) error {
 func (cmq *CumulativeMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*CumulativeMetrics, error) {
 	var (
 		nodes       = []*CumulativeMetrics{}
+		withFKs     = cmq.withFKs
 		_spec       = cmq.querySpec()
 		loadedTypes = [1]bool{
 			cmq.withMetrics != nil,
 		}
 	)
+	if cmq.withMetrics != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, cumulativemetrics.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*CumulativeMetrics).scanValues(nil, columns)
 	}
@@ -399,16 +405,8 @@ func (cmq *CumulativeMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 		return nodes, nil
 	}
 	if query := cmq.withMetrics; query != nil {
-		if err := cmq.loadMetrics(ctx, query, nodes,
-			func(n *CumulativeMetrics) { n.Edges.Metrics = []*Metrics{} },
-			func(n *CumulativeMetrics, e *Metrics) { n.Edges.Metrics = append(n.Edges.Metrics, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range cmq.withNamedMetrics {
-		if err := cmq.loadMetrics(ctx, query, nodes,
-			func(n *CumulativeMetrics) { n.appendNamedMetrics(name) },
-			func(n *CumulativeMetrics, e *Metrics) { n.appendNamedMetrics(name, e) }); err != nil {
+		if err := cmq.loadMetrics(ctx, query, nodes, nil,
+			func(n *CumulativeMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -421,62 +419,33 @@ func (cmq *CumulativeMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 }
 
 func (cmq *CumulativeMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*CumulativeMetrics, init func(*CumulativeMetrics), assign func(*CumulativeMetrics, *Metrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*CumulativeMetrics)
-	nids := make(map[int]map[*CumulativeMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*CumulativeMetrics)
+	for i := range nodes {
+		if nodes[i].metrics_cumulative_metrics == nil {
+			continue
 		}
+		fk := *nodes[i].metrics_cumulative_metrics
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(cumulativemetrics.MetricsTable)
-		s.Join(joinT).On(s.C(metrics.FieldID), joinT.C(cumulativemetrics.MetricsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(cumulativemetrics.MetricsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(cumulativemetrics.MetricsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*CumulativeMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*Metrics](ctx, query, qr, query.inters)
+	query.Where(metrics.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_cumulative_metrics" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -564,20 +533,6 @@ func (cmq *CumulativeMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedMetrics tells the query-builder to eager-load the nodes that are connected to the "metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (cmq *CumulativeMetricsQuery) WithNamedMetrics(name string, opts ...func(*MetricsQuery)) *CumulativeMetricsQuery {
-	query := (&MetricsClient{config: cmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if cmq.withNamedMetrics == nil {
-		cmq.withNamedMetrics = make(map[string]*MetricsQuery)
-	}
-	cmq.withNamedMetrics[name] = query
-	return cmq
 }
 
 // CumulativeMetricsGroupBy is the group-by builder for CumulativeMetrics entities.

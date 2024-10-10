@@ -21,17 +21,16 @@ import (
 // TargetPairQuery is the builder for querying TargetPair entities.
 type TargetPairQuery struct {
 	config
-	ctx                      *QueryContext
-	order                    []targetpair.OrderOption
-	inters                   []Interceptor
-	predicates               []predicate.TargetPair
-	withBazelInvocation      *BazelInvocationQuery
-	withConfiguration        *TargetConfiguredQuery
-	withCompletion           *TargetCompleteQuery
-	withFKs                  bool
-	modifiers                []func(*sql.Selector)
-	loadTotal                []func(context.Context, []*TargetPair) error
-	withNamedBazelInvocation map[string]*BazelInvocationQuery
+	ctx                 *QueryContext
+	order               []targetpair.OrderOption
+	inters              []Interceptor
+	predicates          []predicate.TargetPair
+	withBazelInvocation *BazelInvocationQuery
+	withConfiguration   *TargetConfiguredQuery
+	withCompletion      *TargetCompleteQuery
+	withFKs             bool
+	modifiers           []func(*sql.Selector)
+	loadTotal           []func(context.Context, []*TargetPair) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -82,7 +81,7 @@ func (tpq *TargetPairQuery) QueryBazelInvocation() *BazelInvocationQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetpair.Table, targetpair.FieldID, selector),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, targetpair.BazelInvocationTable, targetpair.BazelInvocationPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, targetpair.BazelInvocationTable, targetpair.BazelInvocationColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tpq.driver.Dialect(), step)
 		return fromU, nil
@@ -104,7 +103,7 @@ func (tpq *TargetPairQuery) QueryConfiguration() *TargetConfiguredQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetpair.Table, targetpair.FieldID, selector),
 			sqlgraph.To(targetconfigured.Table, targetconfigured.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, targetpair.ConfigurationTable, targetpair.ConfigurationColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, targetpair.ConfigurationTable, targetpair.ConfigurationColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tpq.driver.Dialect(), step)
 		return fromU, nil
@@ -126,7 +125,7 @@ func (tpq *TargetPairQuery) QueryCompletion() *TargetCompleteQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetpair.Table, targetpair.FieldID, selector),
 			sqlgraph.To(targetcomplete.Table, targetcomplete.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, targetpair.CompletionTable, targetpair.CompletionColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, targetpair.CompletionTable, targetpair.CompletionColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tpq.driver.Dialect(), step)
 		return fromU, nil
@@ -453,7 +452,7 @@ func (tpq *TargetPairQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 			tpq.withCompletion != nil,
 		}
 	)
-	if tpq.withConfiguration != nil || tpq.withCompletion != nil {
+	if tpq.withBazelInvocation != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -481,9 +480,8 @@ func (tpq *TargetPairQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		return nodes, nil
 	}
 	if query := tpq.withBazelInvocation; query != nil {
-		if err := tpq.loadBazelInvocation(ctx, query, nodes,
-			func(n *TargetPair) { n.Edges.BazelInvocation = []*BazelInvocation{} },
-			func(n *TargetPair, e *BazelInvocation) { n.Edges.BazelInvocation = append(n.Edges.BazelInvocation, e) }); err != nil {
+		if err := tpq.loadBazelInvocation(ctx, query, nodes, nil,
+			func(n *TargetPair, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -499,13 +497,6 @@ func (tpq *TargetPairQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 			return nil, err
 		}
 	}
-	for name, query := range tpq.withNamedBazelInvocation {
-		if err := tpq.loadBazelInvocation(ctx, query, nodes,
-			func(n *TargetPair) { n.appendNamedBazelInvocation(name) },
-			func(n *TargetPair, e *BazelInvocation) { n.appendNamedBazelInvocation(name, e) }); err != nil {
-			return nil, err
-		}
-	}
 	for i := range tpq.loadTotal {
 		if err := tpq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
@@ -515,127 +506,90 @@ func (tpq *TargetPairQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 }
 
 func (tpq *TargetPairQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*TargetPair, init func(*TargetPair), assign func(*TargetPair, *BazelInvocation)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*TargetPair)
-	nids := make(map[int]map[*TargetPair]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*TargetPair)
+	for i := range nodes {
+		if nodes[i].bazel_invocation_targets == nil {
+			continue
 		}
+		fk := *nodes[i].bazel_invocation_targets
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(targetpair.BazelInvocationTable)
-		s.Join(joinT).On(s.C(bazelinvocation.FieldID), joinT.C(targetpair.BazelInvocationPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(targetpair.BazelInvocationPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(targetpair.BazelInvocationPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*TargetPair]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*BazelInvocation](ctx, query, qr, query.inters)
+	query.Where(bazelinvocation.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "bazel_invocation" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_targets" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
 }
 func (tpq *TargetPairQuery) loadConfiguration(ctx context.Context, query *TargetConfiguredQuery, nodes []*TargetPair, init func(*TargetPair), assign func(*TargetPair, *TargetConfigured)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TargetPair)
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*TargetPair)
 	for i := range nodes {
-		if nodes[i].target_pair_configuration == nil {
-			continue
-		}
-		fk := *nodes[i].target_pair_configuration
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(targetconfigured.IDIn(ids...))
+	query.withFKs = true
+	query.Where(predicate.TargetConfigured(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(targetpair.ConfigurationColumn), fks...))
+	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
+		fk := n.target_pair_configuration
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "target_pair_configuration" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "target_pair_configuration" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "target_pair_configuration" returned %v for node %v`, *fk, n.ID)
 		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
 func (tpq *TargetPairQuery) loadCompletion(ctx context.Context, query *TargetCompleteQuery, nodes []*TargetPair, init func(*TargetPair), assign func(*TargetPair, *TargetComplete)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TargetPair)
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*TargetPair)
 	for i := range nodes {
-		if nodes[i].target_pair_completion == nil {
-			continue
-		}
-		fk := *nodes[i].target_pair_completion
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(targetcomplete.IDIn(ids...))
+	query.withFKs = true
+	query.Where(predicate.TargetComplete(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(targetpair.CompletionColumn), fks...))
+	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
+		fk := n.target_pair_completion
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "target_pair_completion" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "target_pair_completion" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "target_pair_completion" returned %v for node %v`, *fk, n.ID)
 		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -722,20 +676,6 @@ func (tpq *TargetPairQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedBazelInvocation tells the query-builder to eager-load the nodes that are connected to the "bazel_invocation"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (tpq *TargetPairQuery) WithNamedBazelInvocation(name string, opts ...func(*BazelInvocationQuery)) *TargetPairQuery {
-	query := (&BazelInvocationClient{config: tpq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if tpq.withNamedBazelInvocation == nil {
-		tpq.withNamedBazelInvocation = make(map[string]*BazelInvocationQuery)
-	}
-	tpq.withNamedBazelInvocation[name] = query
-	return tpq
 }
 
 // TargetPairGroupBy is the group-by builder for TargetPair entities.

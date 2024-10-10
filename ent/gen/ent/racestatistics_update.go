@@ -142,19 +142,23 @@ func (rsu *RaceStatisticsUpdate) ClearRenoteWins() *RaceStatisticsUpdate {
 	return rsu
 }
 
-// AddDynamicExecutionMetricIDs adds the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by IDs.
-func (rsu *RaceStatisticsUpdate) AddDynamicExecutionMetricIDs(ids ...int) *RaceStatisticsUpdate {
-	rsu.mutation.AddDynamicExecutionMetricIDs(ids...)
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
+func (rsu *RaceStatisticsUpdate) SetDynamicExecutionMetricsID(id int) *RaceStatisticsUpdate {
+	rsu.mutation.SetDynamicExecutionMetricsID(id)
 	return rsu
 }
 
-// AddDynamicExecutionMetrics adds the "dynamic_execution_metrics" edges to the DynamicExecutionMetrics entity.
-func (rsu *RaceStatisticsUpdate) AddDynamicExecutionMetrics(d ...*DynamicExecutionMetrics) *RaceStatisticsUpdate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
+func (rsu *RaceStatisticsUpdate) SetNillableDynamicExecutionMetricsID(id *int) *RaceStatisticsUpdate {
+	if id != nil {
+		rsu = rsu.SetDynamicExecutionMetricsID(*id)
 	}
-	return rsu.AddDynamicExecutionMetricIDs(ids...)
+	return rsu
+}
+
+// SetDynamicExecutionMetrics sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
+func (rsu *RaceStatisticsUpdate) SetDynamicExecutionMetrics(d *DynamicExecutionMetrics) *RaceStatisticsUpdate {
+	return rsu.SetDynamicExecutionMetricsID(d.ID)
 }
 
 // Mutation returns the RaceStatisticsMutation object of the builder.
@@ -162,25 +166,10 @@ func (rsu *RaceStatisticsUpdate) Mutation() *RaceStatisticsMutation {
 	return rsu.mutation
 }
 
-// ClearDynamicExecutionMetrics clears all "dynamic_execution_metrics" edges to the DynamicExecutionMetrics entity.
+// ClearDynamicExecutionMetrics clears the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
 func (rsu *RaceStatisticsUpdate) ClearDynamicExecutionMetrics() *RaceStatisticsUpdate {
 	rsu.mutation.ClearDynamicExecutionMetrics()
 	return rsu
-}
-
-// RemoveDynamicExecutionMetricIDs removes the "dynamic_execution_metrics" edge to DynamicExecutionMetrics entities by IDs.
-func (rsu *RaceStatisticsUpdate) RemoveDynamicExecutionMetricIDs(ids ...int) *RaceStatisticsUpdate {
-	rsu.mutation.RemoveDynamicExecutionMetricIDs(ids...)
-	return rsu
-}
-
-// RemoveDynamicExecutionMetrics removes "dynamic_execution_metrics" edges to DynamicExecutionMetrics entities.
-func (rsu *RaceStatisticsUpdate) RemoveDynamicExecutionMetrics(d ...*DynamicExecutionMetrics) *RaceStatisticsUpdate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
-	}
-	return rsu.RemoveDynamicExecutionMetricIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -257,39 +246,23 @@ func (rsu *RaceStatisticsUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if rsu.mutation.DynamicExecutionMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   racestatistics.DynamicExecutionMetricsTable,
-			Columns: racestatistics.DynamicExecutionMetricsPrimaryKey,
+			Columns: []string{racestatistics.DynamicExecutionMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := rsu.mutation.RemovedDynamicExecutionMetricsIDs(); len(nodes) > 0 && !rsu.mutation.DynamicExecutionMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   racestatistics.DynamicExecutionMetricsTable,
-			Columns: racestatistics.DynamicExecutionMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := rsu.mutation.DynamicExecutionMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   racestatistics.DynamicExecutionMetricsTable,
-			Columns: racestatistics.DynamicExecutionMetricsPrimaryKey,
+			Columns: []string{racestatistics.DynamicExecutionMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
@@ -434,19 +407,23 @@ func (rsuo *RaceStatisticsUpdateOne) ClearRenoteWins() *RaceStatisticsUpdateOne 
 	return rsuo
 }
 
-// AddDynamicExecutionMetricIDs adds the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by IDs.
-func (rsuo *RaceStatisticsUpdateOne) AddDynamicExecutionMetricIDs(ids ...int) *RaceStatisticsUpdateOne {
-	rsuo.mutation.AddDynamicExecutionMetricIDs(ids...)
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
+func (rsuo *RaceStatisticsUpdateOne) SetDynamicExecutionMetricsID(id int) *RaceStatisticsUpdateOne {
+	rsuo.mutation.SetDynamicExecutionMetricsID(id)
 	return rsuo
 }
 
-// AddDynamicExecutionMetrics adds the "dynamic_execution_metrics" edges to the DynamicExecutionMetrics entity.
-func (rsuo *RaceStatisticsUpdateOne) AddDynamicExecutionMetrics(d ...*DynamicExecutionMetrics) *RaceStatisticsUpdateOne {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
+func (rsuo *RaceStatisticsUpdateOne) SetNillableDynamicExecutionMetricsID(id *int) *RaceStatisticsUpdateOne {
+	if id != nil {
+		rsuo = rsuo.SetDynamicExecutionMetricsID(*id)
 	}
-	return rsuo.AddDynamicExecutionMetricIDs(ids...)
+	return rsuo
+}
+
+// SetDynamicExecutionMetrics sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
+func (rsuo *RaceStatisticsUpdateOne) SetDynamicExecutionMetrics(d *DynamicExecutionMetrics) *RaceStatisticsUpdateOne {
+	return rsuo.SetDynamicExecutionMetricsID(d.ID)
 }
 
 // Mutation returns the RaceStatisticsMutation object of the builder.
@@ -454,25 +431,10 @@ func (rsuo *RaceStatisticsUpdateOne) Mutation() *RaceStatisticsMutation {
 	return rsuo.mutation
 }
 
-// ClearDynamicExecutionMetrics clears all "dynamic_execution_metrics" edges to the DynamicExecutionMetrics entity.
+// ClearDynamicExecutionMetrics clears the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
 func (rsuo *RaceStatisticsUpdateOne) ClearDynamicExecutionMetrics() *RaceStatisticsUpdateOne {
 	rsuo.mutation.ClearDynamicExecutionMetrics()
 	return rsuo
-}
-
-// RemoveDynamicExecutionMetricIDs removes the "dynamic_execution_metrics" edge to DynamicExecutionMetrics entities by IDs.
-func (rsuo *RaceStatisticsUpdateOne) RemoveDynamicExecutionMetricIDs(ids ...int) *RaceStatisticsUpdateOne {
-	rsuo.mutation.RemoveDynamicExecutionMetricIDs(ids...)
-	return rsuo
-}
-
-// RemoveDynamicExecutionMetrics removes "dynamic_execution_metrics" edges to DynamicExecutionMetrics entities.
-func (rsuo *RaceStatisticsUpdateOne) RemoveDynamicExecutionMetrics(d ...*DynamicExecutionMetrics) *RaceStatisticsUpdateOne {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
-	}
-	return rsuo.RemoveDynamicExecutionMetricIDs(ids...)
 }
 
 // Where appends a list predicates to the RaceStatisticsUpdate builder.
@@ -579,39 +541,23 @@ func (rsuo *RaceStatisticsUpdateOne) sqlSave(ctx context.Context) (_node *RaceSt
 	}
 	if rsuo.mutation.DynamicExecutionMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   racestatistics.DynamicExecutionMetricsTable,
-			Columns: racestatistics.DynamicExecutionMetricsPrimaryKey,
+			Columns: []string{racestatistics.DynamicExecutionMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := rsuo.mutation.RemovedDynamicExecutionMetricsIDs(); len(nodes) > 0 && !rsuo.mutation.DynamicExecutionMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   racestatistics.DynamicExecutionMetricsTable,
-			Columns: racestatistics.DynamicExecutionMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := rsuo.mutation.DynamicExecutionMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   racestatistics.DynamicExecutionMetricsTable,
-			Columns: racestatistics.DynamicExecutionMetricsPrimaryKey,
+			Columns: []string{racestatistics.DynamicExecutionMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),

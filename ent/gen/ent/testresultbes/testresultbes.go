@@ -49,13 +49,15 @@ const (
 	TestCollectionInverseTable = "test_collections"
 	// TestCollectionColumn is the table column denoting the test_collection relation/edge.
 	TestCollectionColumn = "test_collection_test_results"
-	// TestActionOutputTable is the table that holds the test_action_output relation/edge. The primary key declared below.
-	TestActionOutputTable = "test_result_bes_test_action_output"
+	// TestActionOutputTable is the table that holds the test_action_output relation/edge.
+	TestActionOutputTable = "test_files"
 	// TestActionOutputInverseTable is the table name for the TestFile entity.
 	// It exists in this package in order to avoid circular dependency with the "testfile" package.
 	TestActionOutputInverseTable = "test_files"
+	// TestActionOutputColumn is the table column denoting the test_action_output relation/edge.
+	TestActionOutputColumn = "test_result_bes_test_action_output"
 	// ExecutionInfoTable is the table that holds the execution_info relation/edge.
-	ExecutionInfoTable = "test_result_be_ss"
+	ExecutionInfoTable = "exection_infos"
 	// ExecutionInfoInverseTable is the table name for the ExectionInfo entity.
 	// It exists in this package in order to avoid circular dependency with the "exectioninfo" package.
 	ExecutionInfoInverseTable = "exection_infos"
@@ -81,14 +83,7 @@ var Columns = []string{
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"test_collection_test_results",
-	"test_result_bes_execution_info",
 }
-
-var (
-	// TestActionOutputPrimaryKey and TestActionOutputColumn2 are the table columns denoting the
-	// primary key for the test_action_output relation (M2M).
-	TestActionOutputPrimaryKey = []string{"test_result_bes_id", "test_file_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -224,14 +219,14 @@ func newTestActionOutputStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TestActionOutputInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, TestActionOutputTable, TestActionOutputPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, TestActionOutputTable, TestActionOutputColumn),
 	)
 }
 func newExecutionInfoStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ExecutionInfoInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, ExecutionInfoTable, ExecutionInfoColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, ExecutionInfoTable, ExecutionInfoColumn),
 	)
 }
 

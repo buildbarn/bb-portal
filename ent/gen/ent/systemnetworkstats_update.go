@@ -384,7 +384,7 @@ func (snsu *SystemNetworkStatsUpdate) sqlSave(ctx context.Context) (n int, err e
 	}
 	if snsu.mutation.NetworkMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   systemnetworkstats.NetworkMetricsTable,
 			Columns: []string{systemnetworkstats.NetworkMetricsColumn},
@@ -397,7 +397,7 @@ func (snsu *SystemNetworkStatsUpdate) sqlSave(ctx context.Context) (n int, err e
 	}
 	if nodes := snsu.mutation.NetworkMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   systemnetworkstats.NetworkMetricsTable,
 			Columns: []string{systemnetworkstats.NetworkMetricsColumn},
@@ -817,7 +817,7 @@ func (snsuo *SystemNetworkStatsUpdateOne) sqlSave(ctx context.Context) (_node *S
 	}
 	if snsuo.mutation.NetworkMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   systemnetworkstats.NetworkMetricsTable,
 			Columns: []string{systemnetworkstats.NetworkMetricsColumn},
@@ -830,7 +830,7 @@ func (snsuo *SystemNetworkStatsUpdateOne) sqlSave(ctx context.Context) (_node *S
 	}
 	if nodes := snsuo.mutation.NetworkMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   systemnetworkstats.NetworkMetricsTable,
 			Columns: []string{systemnetworkstats.NetworkMetricsColumn},

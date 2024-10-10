@@ -133,6 +133,6 @@ func newNetworkMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(NetworkMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, NetworkMetricsTable, NetworkMetricsColumn),
+		sqlgraph.Edge(sqlgraph.O2O, true, NetworkMetricsTable, NetworkMetricsColumn),
 	)
 }

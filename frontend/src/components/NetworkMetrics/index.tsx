@@ -13,7 +13,7 @@ const formatter: StatisticProps['formatter'] = (value) => (
 const NetworkMetricsDisplay: React.FC<{ networkMetrics: NetworkMetrics | undefined }> = ({
     networkMetrics: networkMetrics
 }) => {
-    const systemNetworkStats: SystemNetworkStats | undefined = networkMetrics?.systemNetworkStats?.at(0)
+    const systemNetworkStats: SystemNetworkStats | undefined = networkMetrics?.systemNetworkStats ?? undefined
     return (
         <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
             <PortalCard titleBits={["Systen Network Metrics"]} icon={<FieldTimeOutlined />}>

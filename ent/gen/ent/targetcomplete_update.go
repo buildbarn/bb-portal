@@ -190,19 +190,23 @@ func (tcu *TargetCompleteUpdate) ClearTestSize() *TargetCompleteUpdate {
 	return tcu
 }
 
-// AddTargetPairIDs adds the "target_pair" edge to the TargetPair entity by IDs.
-func (tcu *TargetCompleteUpdate) AddTargetPairIDs(ids ...int) *TargetCompleteUpdate {
-	tcu.mutation.AddTargetPairIDs(ids...)
+// SetTargetPairID sets the "target_pair" edge to the TargetPair entity by ID.
+func (tcu *TargetCompleteUpdate) SetTargetPairID(id int) *TargetCompleteUpdate {
+	tcu.mutation.SetTargetPairID(id)
 	return tcu
 }
 
-// AddTargetPair adds the "target_pair" edges to the TargetPair entity.
-func (tcu *TargetCompleteUpdate) AddTargetPair(t ...*TargetPair) *TargetCompleteUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetPairID sets the "target_pair" edge to the TargetPair entity by ID if the given value is not nil.
+func (tcu *TargetCompleteUpdate) SetNillableTargetPairID(id *int) *TargetCompleteUpdate {
+	if id != nil {
+		tcu = tcu.SetTargetPairID(*id)
 	}
-	return tcu.AddTargetPairIDs(ids...)
+	return tcu
+}
+
+// SetTargetPair sets the "target_pair" edge to the TargetPair entity.
+func (tcu *TargetCompleteUpdate) SetTargetPair(t *TargetPair) *TargetCompleteUpdate {
+	return tcu.SetTargetPairID(t.ID)
 }
 
 // AddImportantOutputIDs adds the "important_output" edge to the TestFile entity by IDs.
@@ -259,25 +263,10 @@ func (tcu *TargetCompleteUpdate) Mutation() *TargetCompleteMutation {
 	return tcu.mutation
 }
 
-// ClearTargetPair clears all "target_pair" edges to the TargetPair entity.
+// ClearTargetPair clears the "target_pair" edge to the TargetPair entity.
 func (tcu *TargetCompleteUpdate) ClearTargetPair() *TargetCompleteUpdate {
 	tcu.mutation.ClearTargetPair()
 	return tcu
-}
-
-// RemoveTargetPairIDs removes the "target_pair" edge to TargetPair entities by IDs.
-func (tcu *TargetCompleteUpdate) RemoveTargetPairIDs(ids ...int) *TargetCompleteUpdate {
-	tcu.mutation.RemoveTargetPairIDs(ids...)
-	return tcu
-}
-
-// RemoveTargetPair removes "target_pair" edges to TargetPair entities.
-func (tcu *TargetCompleteUpdate) RemoveTargetPair(t ...*TargetPair) *TargetCompleteUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tcu.RemoveTargetPairIDs(ids...)
 }
 
 // ClearImportantOutput clears all "important_output" edges to the TestFile entity.
@@ -435,7 +424,7 @@ func (tcu *TargetCompleteUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if tcu.mutation.TargetPairCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   targetcomplete.TargetPairTable,
 			Columns: []string{targetcomplete.TargetPairColumn},
@@ -443,28 +432,12 @@ func (tcu *TargetCompleteUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tcu.mutation.RemovedTargetPairIDs(); len(nodes) > 0 && !tcu.mutation.TargetPairCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   targetcomplete.TargetPairTable,
-			Columns: []string{targetcomplete.TargetPairColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tcu.mutation.TargetPairIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   targetcomplete.TargetPairTable,
 			Columns: []string{targetcomplete.TargetPairColumn},
@@ -570,7 +543,7 @@ func (tcu *TargetCompleteUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if tcu.mutation.OutputGroupCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetcomplete.OutputGroupTable,
 			Columns: []string{targetcomplete.OutputGroupColumn},
@@ -583,7 +556,7 @@ func (tcu *TargetCompleteUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if nodes := tcu.mutation.OutputGroupIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetcomplete.OutputGroupTable,
 			Columns: []string{targetcomplete.OutputGroupColumn},
@@ -776,19 +749,23 @@ func (tcuo *TargetCompleteUpdateOne) ClearTestSize() *TargetCompleteUpdateOne {
 	return tcuo
 }
 
-// AddTargetPairIDs adds the "target_pair" edge to the TargetPair entity by IDs.
-func (tcuo *TargetCompleteUpdateOne) AddTargetPairIDs(ids ...int) *TargetCompleteUpdateOne {
-	tcuo.mutation.AddTargetPairIDs(ids...)
+// SetTargetPairID sets the "target_pair" edge to the TargetPair entity by ID.
+func (tcuo *TargetCompleteUpdateOne) SetTargetPairID(id int) *TargetCompleteUpdateOne {
+	tcuo.mutation.SetTargetPairID(id)
 	return tcuo
 }
 
-// AddTargetPair adds the "target_pair" edges to the TargetPair entity.
-func (tcuo *TargetCompleteUpdateOne) AddTargetPair(t ...*TargetPair) *TargetCompleteUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetPairID sets the "target_pair" edge to the TargetPair entity by ID if the given value is not nil.
+func (tcuo *TargetCompleteUpdateOne) SetNillableTargetPairID(id *int) *TargetCompleteUpdateOne {
+	if id != nil {
+		tcuo = tcuo.SetTargetPairID(*id)
 	}
-	return tcuo.AddTargetPairIDs(ids...)
+	return tcuo
+}
+
+// SetTargetPair sets the "target_pair" edge to the TargetPair entity.
+func (tcuo *TargetCompleteUpdateOne) SetTargetPair(t *TargetPair) *TargetCompleteUpdateOne {
+	return tcuo.SetTargetPairID(t.ID)
 }
 
 // AddImportantOutputIDs adds the "important_output" edge to the TestFile entity by IDs.
@@ -845,25 +822,10 @@ func (tcuo *TargetCompleteUpdateOne) Mutation() *TargetCompleteMutation {
 	return tcuo.mutation
 }
 
-// ClearTargetPair clears all "target_pair" edges to the TargetPair entity.
+// ClearTargetPair clears the "target_pair" edge to the TargetPair entity.
 func (tcuo *TargetCompleteUpdateOne) ClearTargetPair() *TargetCompleteUpdateOne {
 	tcuo.mutation.ClearTargetPair()
 	return tcuo
-}
-
-// RemoveTargetPairIDs removes the "target_pair" edge to TargetPair entities by IDs.
-func (tcuo *TargetCompleteUpdateOne) RemoveTargetPairIDs(ids ...int) *TargetCompleteUpdateOne {
-	tcuo.mutation.RemoveTargetPairIDs(ids...)
-	return tcuo
-}
-
-// RemoveTargetPair removes "target_pair" edges to TargetPair entities.
-func (tcuo *TargetCompleteUpdateOne) RemoveTargetPair(t ...*TargetPair) *TargetCompleteUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tcuo.RemoveTargetPairIDs(ids...)
 }
 
 // ClearImportantOutput clears all "important_output" edges to the TestFile entity.
@@ -1051,7 +1013,7 @@ func (tcuo *TargetCompleteUpdateOne) sqlSave(ctx context.Context) (_node *Target
 	}
 	if tcuo.mutation.TargetPairCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   targetcomplete.TargetPairTable,
 			Columns: []string{targetcomplete.TargetPairColumn},
@@ -1059,28 +1021,12 @@ func (tcuo *TargetCompleteUpdateOne) sqlSave(ctx context.Context) (_node *Target
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tcuo.mutation.RemovedTargetPairIDs(); len(nodes) > 0 && !tcuo.mutation.TargetPairCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   targetcomplete.TargetPairTable,
-			Columns: []string{targetcomplete.TargetPairColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tcuo.mutation.TargetPairIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   targetcomplete.TargetPairTable,
 			Columns: []string{targetcomplete.TargetPairColumn},
@@ -1186,7 +1132,7 @@ func (tcuo *TargetCompleteUpdateOne) sqlSave(ctx context.Context) (_node *Target
 	}
 	if tcuo.mutation.OutputGroupCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetcomplete.OutputGroupTable,
 			Columns: []string{targetcomplete.OutputGroupColumn},
@@ -1199,7 +1145,7 @@ func (tcuo *TargetCompleteUpdateOne) sqlSave(ctx context.Context) (_node *Target
 	}
 	if nodes := tcuo.mutation.OutputGroupIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetcomplete.OutputGroupTable,
 			Columns: []string{targetcomplete.OutputGroupColumn},

@@ -19,7 +19,9 @@ func (DynamicExecutionMetrics) Fields() []ent.Field {
 func (DynamicExecutionMetrics) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the metrics object.
-		edge.From("metrics", Metrics.Type).Ref("dynamic_execution_metrics"),
+		edge.From("metrics", Metrics.Type).
+			Ref("dynamic_execution_metrics").
+			Unique(),
 
 		// Race statistics grouped by mnemonic, local_name, remote_name.
 		edge.To("race_statistics", RaceStatistics.Type),

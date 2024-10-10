@@ -34,19 +34,23 @@ func (pmc *PackageMetricsCreate) SetNillablePackagesLoaded(i *int64) *PackageMet
 	return pmc
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (pmc *PackageMetricsCreate) AddMetricIDs(ids ...int) *PackageMetricsCreate {
-	pmc.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (pmc *PackageMetricsCreate) SetMetricsID(id int) *PackageMetricsCreate {
+	pmc.mutation.SetMetricsID(id)
 	return pmc
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (pmc *PackageMetricsCreate) AddMetrics(m ...*Metrics) *PackageMetricsCreate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (pmc *PackageMetricsCreate) SetNillableMetricsID(id *int) *PackageMetricsCreate {
+	if id != nil {
+		pmc = pmc.SetMetricsID(*id)
 	}
-	return pmc.AddMetricIDs(ids...)
+	return pmc
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (pmc *PackageMetricsCreate) SetMetrics(m *Metrics) *PackageMetricsCreate {
+	return pmc.SetMetricsID(m.ID)
 }
 
 // AddPackageLoadMetricIDs adds the "package_load_metrics" edge to the PackageLoadMetrics entity by IDs.
@@ -130,10 +134,10 @@ func (pmc *PackageMetricsCreate) createSpec() (*PackageMetrics, *sqlgraph.Create
 	}
 	if nodes := pmc.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   packagemetrics.MetricsTable,
-			Columns: packagemetrics.MetricsPrimaryKey,
+			Columns: []string{packagemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -142,14 +146,15 @@ func (pmc *PackageMetricsCreate) createSpec() (*PackageMetrics, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.metrics_package_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := pmc.mutation.PackageLoadMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   packagemetrics.PackageLoadMetricsTable,
-			Columns: packagemetrics.PackageLoadMetricsPrimaryKey,
+			Columns: []string{packagemetrics.PackageLoadMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt),

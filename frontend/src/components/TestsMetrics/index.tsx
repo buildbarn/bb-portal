@@ -9,6 +9,7 @@ import NullBooleanTag from "../NullableBooleanTag";
 import PortalCard from "../PortalCard";
 import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
 import { SearchOutlined, ExperimentOutlined, } from "@ant-design/icons";
+import Link from "next/link";
 
 interface TestDataType {
     key: React.Key;
@@ -29,7 +30,7 @@ const test_columns: TableColumnsType<TestDataType> = [
     {
         title: "Status",
         dataIndex: "status",
-        render: (x) => <TestStatusTag key="status" status={x as TestStatusEnum} />,
+        render: (x) => <TestStatusTag displayText={true} key="status" status={x as TestStatusEnum} />,
         showSorterTooltip: { target: 'full-header' },
         filters: [
             {
@@ -73,9 +74,9 @@ const test_columns: TableColumnsType<TestDataType> = [
 
     },
     {
-        title: "Mnemonic",
+        title: "Label",
         dataIndex: "name",
-
+        render: (_, record) => <Link href={"/tests/" + encodeURIComponent(record.name)}>{record.name}</Link>,
         filterSearch: true,
         filterDropdown: filterProps => (
             <SearchWidget placeholder="Target Pattern..." {...filterProps} />

@@ -76,7 +76,7 @@ func (snsq *SystemNetworkStatsQuery) QueryNetworkMetrics() *NetworkMetricsQuery 
 		step := sqlgraph.NewStep(
 			sqlgraph.From(systemnetworkstats.Table, systemnetworkstats.FieldID, selector),
 			sqlgraph.To(networkmetrics.Table, networkmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, systemnetworkstats.NetworkMetricsTable, systemnetworkstats.NetworkMetricsColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, systemnetworkstats.NetworkMetricsTable, systemnetworkstats.NetworkMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(snsq.driver.Dialect(), step)
 		return fromU, nil

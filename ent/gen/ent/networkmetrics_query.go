@@ -20,16 +20,15 @@ import (
 // NetworkMetricsQuery is the builder for querying NetworkMetrics entities.
 type NetworkMetricsQuery struct {
 	config
-	ctx                         *QueryContext
-	order                       []networkmetrics.OrderOption
-	inters                      []Interceptor
-	predicates                  []predicate.NetworkMetrics
-	withMetrics                 *MetricsQuery
-	withSystemNetworkStats      *SystemNetworkStatsQuery
-	modifiers                   []func(*sql.Selector)
-	loadTotal                   []func(context.Context, []*NetworkMetrics) error
-	withNamedMetrics            map[string]*MetricsQuery
-	withNamedSystemNetworkStats map[string]*SystemNetworkStatsQuery
+	ctx                    *QueryContext
+	order                  []networkmetrics.OrderOption
+	inters                 []Interceptor
+	predicates             []predicate.NetworkMetrics
+	withMetrics            *MetricsQuery
+	withSystemNetworkStats *SystemNetworkStatsQuery
+	withFKs                bool
+	modifiers              []func(*sql.Selector)
+	loadTotal              []func(context.Context, []*NetworkMetrics) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -80,7 +79,7 @@ func (nmq *NetworkMetricsQuery) QueryMetrics() *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(networkmetrics.Table, networkmetrics.FieldID, selector),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, networkmetrics.MetricsTable, networkmetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, networkmetrics.MetricsTable, networkmetrics.MetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(nmq.driver.Dialect(), step)
 		return fromU, nil
@@ -102,7 +101,7 @@ func (nmq *NetworkMetricsQuery) QuerySystemNetworkStats() *SystemNetworkStatsQue
 		step := sqlgraph.NewStep(
 			sqlgraph.From(networkmetrics.Table, networkmetrics.FieldID, selector),
 			sqlgraph.To(systemnetworkstats.Table, systemnetworkstats.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, networkmetrics.SystemNetworkStatsTable, networkmetrics.SystemNetworkStatsColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, networkmetrics.SystemNetworkStatsTable, networkmetrics.SystemNetworkStatsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(nmq.driver.Dialect(), step)
 		return fromU, nil
@@ -387,12 +386,19 @@ func (nmq *NetworkMetricsQuery) prepareQuery(ctx context.Context) error {
 func (nmq *NetworkMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*NetworkMetrics, error) {
 	var (
 		nodes       = []*NetworkMetrics{}
+		withFKs     = nmq.withFKs
 		_spec       = nmq.querySpec()
 		loadedTypes = [2]bool{
 			nmq.withMetrics != nil,
 			nmq.withSystemNetworkStats != nil,
 		}
 	)
+	if nmq.withMetrics != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, networkmetrics.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*NetworkMetrics).scanValues(nil, columns)
 	}
@@ -415,32 +421,14 @@ func (nmq *NetworkMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		return nodes, nil
 	}
 	if query := nmq.withMetrics; query != nil {
-		if err := nmq.loadMetrics(ctx, query, nodes,
-			func(n *NetworkMetrics) { n.Edges.Metrics = []*Metrics{} },
-			func(n *NetworkMetrics, e *Metrics) { n.Edges.Metrics = append(n.Edges.Metrics, e) }); err != nil {
+		if err := nmq.loadMetrics(ctx, query, nodes, nil,
+			func(n *NetworkMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := nmq.withSystemNetworkStats; query != nil {
-		if err := nmq.loadSystemNetworkStats(ctx, query, nodes,
-			func(n *NetworkMetrics) { n.Edges.SystemNetworkStats = []*SystemNetworkStats{} },
-			func(n *NetworkMetrics, e *SystemNetworkStats) {
-				n.Edges.SystemNetworkStats = append(n.Edges.SystemNetworkStats, e)
-			}); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range nmq.withNamedMetrics {
-		if err := nmq.loadMetrics(ctx, query, nodes,
-			func(n *NetworkMetrics) { n.appendNamedMetrics(name) },
-			func(n *NetworkMetrics, e *Metrics) { n.appendNamedMetrics(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range nmq.withNamedSystemNetworkStats {
-		if err := nmq.loadSystemNetworkStats(ctx, query, nodes,
-			func(n *NetworkMetrics) { n.appendNamedSystemNetworkStats(name) },
-			func(n *NetworkMetrics, e *SystemNetworkStats) { n.appendNamedSystemNetworkStats(name, e) }); err != nil {
+		if err := nmq.loadSystemNetworkStats(ctx, query, nodes, nil,
+			func(n *NetworkMetrics, e *SystemNetworkStats) { n.Edges.SystemNetworkStats = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -453,62 +441,33 @@ func (nmq *NetworkMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (nmq *NetworkMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*NetworkMetrics, init func(*NetworkMetrics), assign func(*NetworkMetrics, *Metrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*NetworkMetrics)
-	nids := make(map[int]map[*NetworkMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*NetworkMetrics)
+	for i := range nodes {
+		if nodes[i].metrics_network_metrics == nil {
+			continue
 		}
+		fk := *nodes[i].metrics_network_metrics
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(networkmetrics.MetricsTable)
-		s.Join(joinT).On(s.C(metrics.FieldID), joinT.C(networkmetrics.MetricsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(networkmetrics.MetricsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(networkmetrics.MetricsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*NetworkMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*Metrics](ctx, query, qr, query.inters)
+	query.Where(metrics.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_network_metrics" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -519,9 +478,6 @@ func (nmq *NetworkMetricsQuery) loadSystemNetworkStats(ctx context.Context, quer
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
 	}
 	query.withFKs = true
 	query.Where(predicate.SystemNetworkStats(func(s *sql.Selector) {
@@ -627,34 +583,6 @@ func (nmq *NetworkMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedMetrics tells the query-builder to eager-load the nodes that are connected to the "metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (nmq *NetworkMetricsQuery) WithNamedMetrics(name string, opts ...func(*MetricsQuery)) *NetworkMetricsQuery {
-	query := (&MetricsClient{config: nmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if nmq.withNamedMetrics == nil {
-		nmq.withNamedMetrics = make(map[string]*MetricsQuery)
-	}
-	nmq.withNamedMetrics[name] = query
-	return nmq
-}
-
-// WithNamedSystemNetworkStats tells the query-builder to eager-load the nodes that are connected to the "system_network_stats"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (nmq *NetworkMetricsQuery) WithNamedSystemNetworkStats(name string, opts ...func(*SystemNetworkStatsQuery)) *NetworkMetricsQuery {
-	query := (&SystemNetworkStatsClient{config: nmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if nmq.withNamedSystemNetworkStats == nil {
-		nmq.withNamedSystemNetworkStats = make(map[string]*SystemNetworkStatsQuery)
-	}
-	nmq.withNamedSystemNetworkStats[name] = query
-	return nmq
 }
 
 // NetworkMetricsGroupBy is the group-by builder for NetworkMetrics entities.

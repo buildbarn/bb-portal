@@ -19,9 +19,12 @@ func (NetworkMetrics) Fields() []ent.Field {
 func (NetworkMetrics) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the metrics object.
-		edge.From("metrics", Metrics.Type).Ref("network_metrics"),
+		edge.From("metrics", Metrics.Type).
+			Ref("network_metrics").
+			Unique(),
 
 		// Information about host network.
-		edge.To("system_network_stats", SystemNetworkStats.Type),
+		edge.To("system_network_stats", SystemNetworkStats.Type).
+			Unique(),
 	}
 }

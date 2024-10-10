@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/timingbreakdown"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingchild"
 )
 
@@ -22,28 +23,29 @@ type TimingChild struct {
 	Time string `json:"time,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TimingChildQuery when eager-loading is set.
-	Edges        TimingChildEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                  TimingChildEdges `json:"edges"`
+	timing_breakdown_child *int
+	selectValues           sql.SelectValues
 }
 
 // TimingChildEdges holds the relations/edges for other nodes in the graph.
 type TimingChildEdges struct {
 	// TimingBreakdown holds the value of the timing_breakdown edge.
-	TimingBreakdown []*TimingBreakdown `json:"timing_breakdown,omitempty"`
+	TimingBreakdown *TimingBreakdown `json:"timing_breakdown,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedTimingBreakdown map[string][]*TimingBreakdown
 }
 
 // TimingBreakdownOrErr returns the TimingBreakdown value or an error if the edge
-// was not loaded in eager-loading.
-func (e TimingChildEdges) TimingBreakdownOrErr() ([]*TimingBreakdown, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TimingChildEdges) TimingBreakdownOrErr() (*TimingBreakdown, error) {
+	if e.TimingBreakdown != nil {
 		return e.TimingBreakdown, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: timingbreakdown.Label}
 	}
 	return nil, &NotLoadedError{edge: "timing_breakdown"}
 }
@@ -57,6 +59,8 @@ func (*TimingChild) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case timingchild.FieldName, timingchild.FieldTime:
 			values[i] = new(sql.NullString)
+		case timingchild.ForeignKeys[0]: // timing_breakdown_child
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -89,6 +93,13 @@ func (tc *TimingChild) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field time", values[i])
 			} else if value.Valid {
 				tc.Time = value.String
+			}
+		case timingchild.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field timing_breakdown_child", value)
+			} else if value.Valid {
+				tc.timing_breakdown_child = new(int)
+				*tc.timing_breakdown_child = int(value.Int64)
 			}
 		default:
 			tc.selectValues.Set(columns[i], values[i])
@@ -138,30 +149,6 @@ func (tc *TimingChild) String() string {
 	builder.WriteString(tc.Time)
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedTimingBreakdown returns the TimingBreakdown named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (tc *TimingChild) NamedTimingBreakdown(name string) ([]*TimingBreakdown, error) {
-	if tc.Edges.namedTimingBreakdown == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := tc.Edges.namedTimingBreakdown[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (tc *TimingChild) appendNamedTimingBreakdown(name string, edges ...*TimingBreakdown) {
-	if tc.Edges.namedTimingBreakdown == nil {
-		tc.Edges.namedTimingBreakdown = make(map[string][]*TimingBreakdown)
-	}
-	if len(edges) == 0 {
-		tc.Edges.namedTimingBreakdown[name] = []*TimingBreakdown{}
-	} else {
-		tc.Edges.namedTimingBreakdown[name] = append(tc.Edges.namedTimingBreakdown[name], edges...)
-	}
 }
 
 // TimingChilds is a parsable slice of TimingChild.

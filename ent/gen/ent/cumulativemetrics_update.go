@@ -82,19 +82,23 @@ func (cmu *CumulativeMetricsUpdate) ClearNumBuilds() *CumulativeMetricsUpdate {
 	return cmu
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (cmu *CumulativeMetricsUpdate) AddMetricIDs(ids ...int) *CumulativeMetricsUpdate {
-	cmu.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (cmu *CumulativeMetricsUpdate) SetMetricsID(id int) *CumulativeMetricsUpdate {
+	cmu.mutation.SetMetricsID(id)
 	return cmu
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (cmu *CumulativeMetricsUpdate) AddMetrics(m ...*Metrics) *CumulativeMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (cmu *CumulativeMetricsUpdate) SetNillableMetricsID(id *int) *CumulativeMetricsUpdate {
+	if id != nil {
+		cmu = cmu.SetMetricsID(*id)
 	}
-	return cmu.AddMetricIDs(ids...)
+	return cmu
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (cmu *CumulativeMetricsUpdate) SetMetrics(m *Metrics) *CumulativeMetricsUpdate {
+	return cmu.SetMetricsID(m.ID)
 }
 
 // Mutation returns the CumulativeMetricsMutation object of the builder.
@@ -102,25 +106,10 @@ func (cmu *CumulativeMetricsUpdate) Mutation() *CumulativeMetricsMutation {
 	return cmu.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (cmu *CumulativeMetricsUpdate) ClearMetrics() *CumulativeMetricsUpdate {
 	cmu.mutation.ClearMetrics()
 	return cmu
-}
-
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (cmu *CumulativeMetricsUpdate) RemoveMetricIDs(ids ...int) *CumulativeMetricsUpdate {
-	cmu.mutation.RemoveMetricIDs(ids...)
-	return cmu
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (cmu *CumulativeMetricsUpdate) RemoveMetrics(m ...*Metrics) *CumulativeMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return cmu.RemoveMetricIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -179,39 +168,23 @@ func (cmu *CumulativeMetricsUpdate) sqlSave(ctx context.Context) (n int, err err
 	}
 	if cmu.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   cumulativemetrics.MetricsTable,
-			Columns: cumulativemetrics.MetricsPrimaryKey,
+			Columns: []string{cumulativemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := cmu.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !cmu.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   cumulativemetrics.MetricsTable,
-			Columns: cumulativemetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := cmu.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   cumulativemetrics.MetricsTable,
-			Columns: cumulativemetrics.MetricsPrimaryKey,
+			Columns: []string{cumulativemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -296,19 +269,23 @@ func (cmuo *CumulativeMetricsUpdateOne) ClearNumBuilds() *CumulativeMetricsUpdat
 	return cmuo
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (cmuo *CumulativeMetricsUpdateOne) AddMetricIDs(ids ...int) *CumulativeMetricsUpdateOne {
-	cmuo.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (cmuo *CumulativeMetricsUpdateOne) SetMetricsID(id int) *CumulativeMetricsUpdateOne {
+	cmuo.mutation.SetMetricsID(id)
 	return cmuo
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (cmuo *CumulativeMetricsUpdateOne) AddMetrics(m ...*Metrics) *CumulativeMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (cmuo *CumulativeMetricsUpdateOne) SetNillableMetricsID(id *int) *CumulativeMetricsUpdateOne {
+	if id != nil {
+		cmuo = cmuo.SetMetricsID(*id)
 	}
-	return cmuo.AddMetricIDs(ids...)
+	return cmuo
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (cmuo *CumulativeMetricsUpdateOne) SetMetrics(m *Metrics) *CumulativeMetricsUpdateOne {
+	return cmuo.SetMetricsID(m.ID)
 }
 
 // Mutation returns the CumulativeMetricsMutation object of the builder.
@@ -316,25 +293,10 @@ func (cmuo *CumulativeMetricsUpdateOne) Mutation() *CumulativeMetricsMutation {
 	return cmuo.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (cmuo *CumulativeMetricsUpdateOne) ClearMetrics() *CumulativeMetricsUpdateOne {
 	cmuo.mutation.ClearMetrics()
 	return cmuo
-}
-
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (cmuo *CumulativeMetricsUpdateOne) RemoveMetricIDs(ids ...int) *CumulativeMetricsUpdateOne {
-	cmuo.mutation.RemoveMetricIDs(ids...)
-	return cmuo
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (cmuo *CumulativeMetricsUpdateOne) RemoveMetrics(m ...*Metrics) *CumulativeMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return cmuo.RemoveMetricIDs(ids...)
 }
 
 // Where appends a list predicates to the CumulativeMetricsUpdate builder.
@@ -423,39 +385,23 @@ func (cmuo *CumulativeMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Cum
 	}
 	if cmuo.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   cumulativemetrics.MetricsTable,
-			Columns: cumulativemetrics.MetricsPrimaryKey,
+			Columns: []string{cumulativemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := cmuo.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !cmuo.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   cumulativemetrics.MetricsTable,
-			Columns: cumulativemetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := cmuo.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   cumulativemetrics.MetricsTable,
-			Columns: cumulativemetrics.MetricsPrimaryKey,
+			Columns: []string{cumulativemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),

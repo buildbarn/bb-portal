@@ -353,7 +353,7 @@ func HasTestResult() predicate.ExectionInfo {
 	return predicate.ExectionInfo(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, TestResultTable, TestResultColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, TestResultTable, TestResultColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -376,7 +376,7 @@ func HasTimingBreakdown() predicate.ExectionInfo {
 	return predicate.ExectionInfo(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, TimingBreakdownTable, TimingBreakdownColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, TimingBreakdownTable, TimingBreakdownColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -399,7 +399,7 @@ func HasResourceUsage() predicate.ExectionInfo {
 	return predicate.ExectionInfo(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, ResourceUsageTable, ResourceUsagePrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, ResourceUsageTable, ResourceUsageColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

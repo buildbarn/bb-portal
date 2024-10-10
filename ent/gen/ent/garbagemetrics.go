@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 )
 
 // GarbageMetrics is the model entity for the GarbageMetrics schema.
@@ -22,28 +23,29 @@ type GarbageMetrics struct {
 	GarbageCollected int64 `json:"garbage_collected,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the GarbageMetricsQuery when eager-loading is set.
-	Edges        GarbageMetricsEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                          GarbageMetricsEdges `json:"edges"`
+	memory_metrics_garbage_metrics *int
+	selectValues                   sql.SelectValues
 }
 
 // GarbageMetricsEdges holds the relations/edges for other nodes in the graph.
 type GarbageMetricsEdges struct {
 	// MemoryMetrics holds the value of the memory_metrics edge.
-	MemoryMetrics []*MemoryMetrics `json:"memory_metrics,omitempty"`
+	MemoryMetrics *MemoryMetrics `json:"memory_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedMemoryMetrics map[string][]*MemoryMetrics
 }
 
 // MemoryMetricsOrErr returns the MemoryMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e GarbageMetricsEdges) MemoryMetricsOrErr() ([]*MemoryMetrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e GarbageMetricsEdges) MemoryMetricsOrErr() (*MemoryMetrics, error) {
+	if e.MemoryMetrics != nil {
 		return e.MemoryMetrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: memorymetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "memory_metrics"}
 }
@@ -57,6 +59,8 @@ func (*GarbageMetrics) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case garbagemetrics.FieldType:
 			values[i] = new(sql.NullString)
+		case garbagemetrics.ForeignKeys[0]: // memory_metrics_garbage_metrics
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -89,6 +93,13 @@ func (gm *GarbageMetrics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field garbage_collected", values[i])
 			} else if value.Valid {
 				gm.GarbageCollected = value.Int64
+			}
+		case garbagemetrics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field memory_metrics_garbage_metrics", value)
+			} else if value.Valid {
+				gm.memory_metrics_garbage_metrics = new(int)
+				*gm.memory_metrics_garbage_metrics = int(value.Int64)
 			}
 		default:
 			gm.selectValues.Set(columns[i], values[i])
@@ -138,30 +149,6 @@ func (gm *GarbageMetrics) String() string {
 	builder.WriteString(fmt.Sprintf("%v", gm.GarbageCollected))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedMemoryMetrics returns the MemoryMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (gm *GarbageMetrics) NamedMemoryMetrics(name string) ([]*MemoryMetrics, error) {
-	if gm.Edges.namedMemoryMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := gm.Edges.namedMemoryMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (gm *GarbageMetrics) appendNamedMemoryMetrics(name string, edges ...*MemoryMetrics) {
-	if gm.Edges.namedMemoryMetrics == nil {
-		gm.Edges.namedMemoryMetrics = make(map[string][]*MemoryMetrics)
-	}
-	if len(edges) == 0 {
-		gm.Edges.namedMemoryMetrics[name] = []*MemoryMetrics{}
-	} else {
-		gm.Edges.namedMemoryMetrics[name] = append(gm.Edges.namedMemoryMetrics[name], edges...)
-	}
 }
 
 // GarbageMetricsSlice is a parsable slice of GarbageMetrics.

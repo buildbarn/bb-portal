@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 )
 
@@ -28,28 +29,29 @@ type TimingMetrics struct {
 	ActionsExecutionStartInMs int64 `json:"actions_execution_start_in_ms,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TimingMetricsQuery when eager-loading is set.
-	Edges        TimingMetricsEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                  TimingMetricsEdges `json:"edges"`
+	metrics_timing_metrics *int
+	selectValues           sql.SelectValues
 }
 
 // TimingMetricsEdges holds the relations/edges for other nodes in the graph.
 type TimingMetricsEdges struct {
 	// Metrics holds the value of the metrics edge.
-	Metrics []*Metrics `json:"metrics,omitempty"`
+	Metrics *Metrics `json:"metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedMetrics map[string][]*Metrics
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e TimingMetricsEdges) MetricsOrErr() ([]*Metrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TimingMetricsEdges) MetricsOrErr() (*Metrics, error) {
+	if e.Metrics != nil {
 		return e.Metrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
 }
@@ -60,6 +62,8 @@ func (*TimingMetrics) scanValues(columns []string) ([]any, error) {
 	for i := range columns {
 		switch columns[i] {
 		case timingmetrics.FieldID, timingmetrics.FieldCPUTimeInMs, timingmetrics.FieldWallTimeInMs, timingmetrics.FieldAnalysisPhaseTimeInMs, timingmetrics.FieldExecutionPhaseTimeInMs, timingmetrics.FieldActionsExecutionStartInMs:
+			values[i] = new(sql.NullInt64)
+		case timingmetrics.ForeignKeys[0]: // metrics_timing_metrics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -111,6 +115,13 @@ func (tm *TimingMetrics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field actions_execution_start_in_ms", values[i])
 			} else if value.Valid {
 				tm.ActionsExecutionStartInMs = value.Int64
+			}
+		case timingmetrics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field metrics_timing_metrics", value)
+			} else if value.Valid {
+				tm.metrics_timing_metrics = new(int)
+				*tm.metrics_timing_metrics = int(value.Int64)
 			}
 		default:
 			tm.selectValues.Set(columns[i], values[i])
@@ -169,30 +180,6 @@ func (tm *TimingMetrics) String() string {
 	builder.WriteString(fmt.Sprintf("%v", tm.ActionsExecutionStartInMs))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedMetrics returns the Metrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (tm *TimingMetrics) NamedMetrics(name string) ([]*Metrics, error) {
-	if tm.Edges.namedMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := tm.Edges.namedMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (tm *TimingMetrics) appendNamedMetrics(name string, edges ...*Metrics) {
-	if tm.Edges.namedMetrics == nil {
-		tm.Edges.namedMetrics = make(map[string][]*Metrics)
-	}
-	if len(edges) == 0 {
-		tm.Edges.namedMetrics[name] = []*Metrics{}
-	} else {
-		tm.Edges.namedMetrics[name] = append(tm.Edges.namedMetrics[name], edges...)
-	}
 }
 
 // TimingMetricsSlice is a parsable slice of TimingMetrics.

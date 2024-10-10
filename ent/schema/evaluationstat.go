@@ -55,6 +55,7 @@ func (EvaluationStat) Edges() []ent.Edge {
 			// evaluations, which means there can be multiple evaluations per built
 			// SkyValue. Subtract built_values from this number to get the number of
 			// restarted evaluations.
-			Ref("evaluated_values"),
+			Ref("evaluated_values").
+			Unique(),
 	}
 }

@@ -244,7 +244,7 @@ func (snsc *SystemNetworkStatsCreate) createSpec() (*SystemNetworkStats, *sqlgra
 	}
 	if nodes := snsc.mutation.NetworkMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   systemnetworkstats.NetworkMetricsTable,
 			Columns: []string{systemnetworkstats.NetworkMetricsColumn},

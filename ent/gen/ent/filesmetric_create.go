@@ -47,19 +47,23 @@ func (fmc *FilesMetricCreate) SetNillableCount(i *int32) *FilesMetricCreate {
 	return fmc
 }
 
-// AddArtifactMetricIDs adds the "artifact_metrics" edge to the ArtifactMetrics entity by IDs.
-func (fmc *FilesMetricCreate) AddArtifactMetricIDs(ids ...int) *FilesMetricCreate {
-	fmc.mutation.AddArtifactMetricIDs(ids...)
+// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
+func (fmc *FilesMetricCreate) SetArtifactMetricsID(id int) *FilesMetricCreate {
+	fmc.mutation.SetArtifactMetricsID(id)
 	return fmc
 }
 
-// AddArtifactMetrics adds the "artifact_metrics" edges to the ArtifactMetrics entity.
-func (fmc *FilesMetricCreate) AddArtifactMetrics(a ...*ArtifactMetrics) *FilesMetricCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
+func (fmc *FilesMetricCreate) SetNillableArtifactMetricsID(id *int) *FilesMetricCreate {
+	if id != nil {
+		fmc = fmc.SetArtifactMetricsID(*id)
 	}
-	return fmc.AddArtifactMetricIDs(ids...)
+	return fmc
+}
+
+// SetArtifactMetrics sets the "artifact_metrics" edge to the ArtifactMetrics entity.
+func (fmc *FilesMetricCreate) SetArtifactMetrics(a *ArtifactMetrics) *FilesMetricCreate {
+	return fmc.SetArtifactMetricsID(a.ID)
 }
 
 // Mutation returns the FilesMetricMutation object of the builder.
@@ -132,10 +136,10 @@ func (fmc *FilesMetricCreate) createSpec() (*FilesMetric, *sqlgraph.CreateSpec) 
 	}
 	if nodes := fmc.mutation.ArtifactMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   filesmetric.ArtifactMetricsTable,
-			Columns: filesmetric.ArtifactMetricsPrimaryKey,
+			Columns: []string{filesmetric.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
@@ -144,6 +148,7 @@ func (fmc *FilesMetricCreate) createSpec() (*FilesMetric, *sqlgraph.CreateSpec) 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.artifact_metrics_top_level_artifacts = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

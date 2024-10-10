@@ -408,7 +408,7 @@ func HasDynamicExecutionMetrics() predicate.RaceStatistics {
 	return predicate.RaceStatistics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, DynamicExecutionMetricsTable, DynamicExecutionMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, DynamicExecutionMetricsTable, DynamicExecutionMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

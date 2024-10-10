@@ -469,10 +469,10 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if trbu.mutation.TestActionOutputCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   testresultbes.TestActionOutputTable,
-			Columns: testresultbes.TestActionOutputPrimaryKey,
+			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
@@ -482,10 +482,10 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if nodes := trbu.mutation.RemovedTestActionOutputIDs(); len(nodes) > 0 && !trbu.mutation.TestActionOutputCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   testresultbes.TestActionOutputTable,
-			Columns: testresultbes.TestActionOutputPrimaryKey,
+			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
@@ -498,10 +498,10 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if nodes := trbu.mutation.TestActionOutputIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   testresultbes.TestActionOutputTable,
-			Columns: testresultbes.TestActionOutputPrimaryKey,
+			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
@@ -514,7 +514,7 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if trbu.mutation.ExecutionInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   testresultbes.ExecutionInfoTable,
 			Columns: []string{testresultbes.ExecutionInfoColumn},
@@ -527,7 +527,7 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if nodes := trbu.mutation.ExecutionInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   testresultbes.ExecutionInfoTable,
 			Columns: []string{testresultbes.ExecutionInfoColumn},
@@ -1029,10 +1029,10 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 	}
 	if trbuo.mutation.TestActionOutputCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   testresultbes.TestActionOutputTable,
-			Columns: testresultbes.TestActionOutputPrimaryKey,
+			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
@@ -1042,10 +1042,10 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 	}
 	if nodes := trbuo.mutation.RemovedTestActionOutputIDs(); len(nodes) > 0 && !trbuo.mutation.TestActionOutputCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   testresultbes.TestActionOutputTable,
-			Columns: testresultbes.TestActionOutputPrimaryKey,
+			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
@@ -1058,10 +1058,10 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 	}
 	if nodes := trbuo.mutation.TestActionOutputIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   testresultbes.TestActionOutputTable,
-			Columns: testresultbes.TestActionOutputPrimaryKey,
+			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
@@ -1074,7 +1074,7 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 	}
 	if trbuo.mutation.ExecutionInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   testresultbes.ExecutionInfoTable,
 			Columns: []string{testresultbes.ExecutionInfoColumn},
@@ -1087,7 +1087,7 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 	}
 	if nodes := trbuo.mutation.ExecutionInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   testresultbes.ExecutionInfoTable,
 			Columns: []string{testresultbes.ExecutionInfoColumn},

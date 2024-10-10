@@ -114,19 +114,23 @@ func (tcu *TargetConfiguredUpdate) ClearTestSize() *TargetConfiguredUpdate {
 	return tcu
 }
 
-// AddTargetPairIDs adds the "target_pair" edge to the TargetPair entity by IDs.
-func (tcu *TargetConfiguredUpdate) AddTargetPairIDs(ids ...int) *TargetConfiguredUpdate {
-	tcu.mutation.AddTargetPairIDs(ids...)
+// SetTargetPairID sets the "target_pair" edge to the TargetPair entity by ID.
+func (tcu *TargetConfiguredUpdate) SetTargetPairID(id int) *TargetConfiguredUpdate {
+	tcu.mutation.SetTargetPairID(id)
 	return tcu
 }
 
-// AddTargetPair adds the "target_pair" edges to the TargetPair entity.
-func (tcu *TargetConfiguredUpdate) AddTargetPair(t ...*TargetPair) *TargetConfiguredUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetPairID sets the "target_pair" edge to the TargetPair entity by ID if the given value is not nil.
+func (tcu *TargetConfiguredUpdate) SetNillableTargetPairID(id *int) *TargetConfiguredUpdate {
+	if id != nil {
+		tcu = tcu.SetTargetPairID(*id)
 	}
-	return tcu.AddTargetPairIDs(ids...)
+	return tcu
+}
+
+// SetTargetPair sets the "target_pair" edge to the TargetPair entity.
+func (tcu *TargetConfiguredUpdate) SetTargetPair(t *TargetPair) *TargetConfiguredUpdate {
+	return tcu.SetTargetPairID(t.ID)
 }
 
 // Mutation returns the TargetConfiguredMutation object of the builder.
@@ -134,25 +138,10 @@ func (tcu *TargetConfiguredUpdate) Mutation() *TargetConfiguredMutation {
 	return tcu.mutation
 }
 
-// ClearTargetPair clears all "target_pair" edges to the TargetPair entity.
+// ClearTargetPair clears the "target_pair" edge to the TargetPair entity.
 func (tcu *TargetConfiguredUpdate) ClearTargetPair() *TargetConfiguredUpdate {
 	tcu.mutation.ClearTargetPair()
 	return tcu
-}
-
-// RemoveTargetPairIDs removes the "target_pair" edge to TargetPair entities by IDs.
-func (tcu *TargetConfiguredUpdate) RemoveTargetPairIDs(ids ...int) *TargetConfiguredUpdate {
-	tcu.mutation.RemoveTargetPairIDs(ids...)
-	return tcu
-}
-
-// RemoveTargetPair removes "target_pair" edges to TargetPair entities.
-func (tcu *TargetConfiguredUpdate) RemoveTargetPair(t ...*TargetPair) *TargetConfiguredUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tcu.RemoveTargetPairIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -238,7 +227,7 @@ func (tcu *TargetConfiguredUpdate) sqlSave(ctx context.Context) (n int, err erro
 	}
 	if tcu.mutation.TargetPairCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   targetconfigured.TargetPairTable,
 			Columns: []string{targetconfigured.TargetPairColumn},
@@ -246,28 +235,12 @@ func (tcu *TargetConfiguredUpdate) sqlSave(ctx context.Context) (n int, err erro
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tcu.mutation.RemovedTargetPairIDs(); len(nodes) > 0 && !tcu.mutation.TargetPairCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   targetconfigured.TargetPairTable,
-			Columns: []string{targetconfigured.TargetPairColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tcu.mutation.TargetPairIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   targetconfigured.TargetPairTable,
 			Columns: []string{targetconfigured.TargetPairColumn},
@@ -386,19 +359,23 @@ func (tcuo *TargetConfiguredUpdateOne) ClearTestSize() *TargetConfiguredUpdateOn
 	return tcuo
 }
 
-// AddTargetPairIDs adds the "target_pair" edge to the TargetPair entity by IDs.
-func (tcuo *TargetConfiguredUpdateOne) AddTargetPairIDs(ids ...int) *TargetConfiguredUpdateOne {
-	tcuo.mutation.AddTargetPairIDs(ids...)
+// SetTargetPairID sets the "target_pair" edge to the TargetPair entity by ID.
+func (tcuo *TargetConfiguredUpdateOne) SetTargetPairID(id int) *TargetConfiguredUpdateOne {
+	tcuo.mutation.SetTargetPairID(id)
 	return tcuo
 }
 
-// AddTargetPair adds the "target_pair" edges to the TargetPair entity.
-func (tcuo *TargetConfiguredUpdateOne) AddTargetPair(t ...*TargetPair) *TargetConfiguredUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetPairID sets the "target_pair" edge to the TargetPair entity by ID if the given value is not nil.
+func (tcuo *TargetConfiguredUpdateOne) SetNillableTargetPairID(id *int) *TargetConfiguredUpdateOne {
+	if id != nil {
+		tcuo = tcuo.SetTargetPairID(*id)
 	}
-	return tcuo.AddTargetPairIDs(ids...)
+	return tcuo
+}
+
+// SetTargetPair sets the "target_pair" edge to the TargetPair entity.
+func (tcuo *TargetConfiguredUpdateOne) SetTargetPair(t *TargetPair) *TargetConfiguredUpdateOne {
+	return tcuo.SetTargetPairID(t.ID)
 }
 
 // Mutation returns the TargetConfiguredMutation object of the builder.
@@ -406,25 +383,10 @@ func (tcuo *TargetConfiguredUpdateOne) Mutation() *TargetConfiguredMutation {
 	return tcuo.mutation
 }
 
-// ClearTargetPair clears all "target_pair" edges to the TargetPair entity.
+// ClearTargetPair clears the "target_pair" edge to the TargetPair entity.
 func (tcuo *TargetConfiguredUpdateOne) ClearTargetPair() *TargetConfiguredUpdateOne {
 	tcuo.mutation.ClearTargetPair()
 	return tcuo
-}
-
-// RemoveTargetPairIDs removes the "target_pair" edge to TargetPair entities by IDs.
-func (tcuo *TargetConfiguredUpdateOne) RemoveTargetPairIDs(ids ...int) *TargetConfiguredUpdateOne {
-	tcuo.mutation.RemoveTargetPairIDs(ids...)
-	return tcuo
-}
-
-// RemoveTargetPair removes "target_pair" edges to TargetPair entities.
-func (tcuo *TargetConfiguredUpdateOne) RemoveTargetPair(t ...*TargetPair) *TargetConfiguredUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tcuo.RemoveTargetPairIDs(ids...)
 }
 
 // Where appends a list predicates to the TargetConfiguredUpdate builder.
@@ -540,7 +502,7 @@ func (tcuo *TargetConfiguredUpdateOne) sqlSave(ctx context.Context) (_node *Targ
 	}
 	if tcuo.mutation.TargetPairCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   targetconfigured.TargetPairTable,
 			Columns: []string{targetconfigured.TargetPairColumn},
@@ -548,28 +510,12 @@ func (tcuo *TargetConfiguredUpdateOne) sqlSave(ctx context.Context) (_node *Targ
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tcuo.mutation.RemovedTargetPairIDs(); len(nodes) > 0 && !tcuo.mutation.TargetPairCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   targetconfigured.TargetPairTable,
-			Columns: []string{targetconfigured.TargetPairColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tcuo.mutation.TargetPairIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   targetconfigured.TargetPairTable,
 			Columns: []string{targetconfigured.TargetPairColumn},

@@ -29,7 +29,6 @@ const TimingMetricsDisplay: React.FC<{
                             <Statistic title="CPU Time(ms)" value={timingMetrics?.cpuTimeInMs ?? 0} formatter={formatter} />
                             <Statistic title="Execuction(ms)" value={timingMetrics?.executionPhaseTimeInMs ?? 0} formatter={formatter} />
                             <Statistic title="Actions Execution Start" value={timingMetrics?.actionsExecutionStartInMs ?? 0} formatter={formatter} />
-
                         </Space>
                     </Row>
                 </PortalCard>
@@ -47,7 +46,6 @@ const TimingMetricsDisplay: React.FC<{
                     </Row>
                 </PortalCard>
             </Space>
-
         )
     }
 

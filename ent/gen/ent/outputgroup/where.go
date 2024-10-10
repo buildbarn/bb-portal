@@ -163,7 +163,7 @@ func HasTargetComplete() predicate.OutputGroup {
 	return predicate.OutputGroup(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, TargetCompleteTable, TargetCompleteColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, TargetCompleteTable, TargetCompleteColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -209,7 +209,7 @@ func HasFileSets() predicate.OutputGroup {
 	return predicate.OutputGroup(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, FileSetsTable, FileSetsColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, FileSetsTable, FileSetsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

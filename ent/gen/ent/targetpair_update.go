@@ -157,19 +157,23 @@ func (tpu *TargetPairUpdate) ClearAbortReason() *TargetPairUpdate {
 	return tpu
 }
 
-// AddBazelInvocationIDs adds the "bazel_invocation" edge to the BazelInvocation entity by IDs.
-func (tpu *TargetPairUpdate) AddBazelInvocationIDs(ids ...int) *TargetPairUpdate {
-	tpu.mutation.AddBazelInvocationIDs(ids...)
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
+func (tpu *TargetPairUpdate) SetBazelInvocationID(id int) *TargetPairUpdate {
+	tpu.mutation.SetBazelInvocationID(id)
 	return tpu
 }
 
-// AddBazelInvocation adds the "bazel_invocation" edges to the BazelInvocation entity.
-func (tpu *TargetPairUpdate) AddBazelInvocation(b ...*BazelInvocation) *TargetPairUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
+func (tpu *TargetPairUpdate) SetNillableBazelInvocationID(id *int) *TargetPairUpdate {
+	if id != nil {
+		tpu = tpu.SetBazelInvocationID(*id)
 	}
-	return tpu.AddBazelInvocationIDs(ids...)
+	return tpu
+}
+
+// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
+func (tpu *TargetPairUpdate) SetBazelInvocation(b *BazelInvocation) *TargetPairUpdate {
+	return tpu.SetBazelInvocationID(b.ID)
 }
 
 // SetConfigurationID sets the "configuration" edge to the TargetConfigured entity by ID.
@@ -215,25 +219,10 @@ func (tpu *TargetPairUpdate) Mutation() *TargetPairMutation {
 	return tpu.mutation
 }
 
-// ClearBazelInvocation clears all "bazel_invocation" edges to the BazelInvocation entity.
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
 func (tpu *TargetPairUpdate) ClearBazelInvocation() *TargetPairUpdate {
 	tpu.mutation.ClearBazelInvocation()
 	return tpu
-}
-
-// RemoveBazelInvocationIDs removes the "bazel_invocation" edge to BazelInvocation entities by IDs.
-func (tpu *TargetPairUpdate) RemoveBazelInvocationIDs(ids ...int) *TargetPairUpdate {
-	tpu.mutation.RemoveBazelInvocationIDs(ids...)
-	return tpu
-}
-
-// RemoveBazelInvocation removes "bazel_invocation" edges to BazelInvocation entities.
-func (tpu *TargetPairUpdate) RemoveBazelInvocation(b ...*BazelInvocation) *TargetPairUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return tpu.RemoveBazelInvocationIDs(ids...)
 }
 
 // ClearConfiguration clears the "configuration" edge to the TargetConfigured entity.
@@ -343,39 +332,23 @@ func (tpu *TargetPairUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if tpu.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   targetpair.BazelInvocationTable,
-			Columns: targetpair.BazelInvocationPrimaryKey,
+			Columns: []string{targetpair.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tpu.mutation.RemovedBazelInvocationIDs(); len(nodes) > 0 && !tpu.mutation.BazelInvocationCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   targetpair.BazelInvocationTable,
-			Columns: targetpair.BazelInvocationPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tpu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   targetpair.BazelInvocationTable,
-			Columns: targetpair.BazelInvocationPrimaryKey,
+			Columns: []string{targetpair.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
@@ -388,7 +361,7 @@ func (tpu *TargetPairUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if tpu.mutation.ConfigurationCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetpair.ConfigurationTable,
 			Columns: []string{targetpair.ConfigurationColumn},
@@ -401,7 +374,7 @@ func (tpu *TargetPairUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := tpu.mutation.ConfigurationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetpair.ConfigurationTable,
 			Columns: []string{targetpair.ConfigurationColumn},
@@ -417,7 +390,7 @@ func (tpu *TargetPairUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if tpu.mutation.CompletionCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetpair.CompletionTable,
 			Columns: []string{targetpair.CompletionColumn},
@@ -430,7 +403,7 @@ func (tpu *TargetPairUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := tpu.mutation.CompletionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetpair.CompletionTable,
 			Columns: []string{targetpair.CompletionColumn},
@@ -591,19 +564,23 @@ func (tpuo *TargetPairUpdateOne) ClearAbortReason() *TargetPairUpdateOne {
 	return tpuo
 }
 
-// AddBazelInvocationIDs adds the "bazel_invocation" edge to the BazelInvocation entity by IDs.
-func (tpuo *TargetPairUpdateOne) AddBazelInvocationIDs(ids ...int) *TargetPairUpdateOne {
-	tpuo.mutation.AddBazelInvocationIDs(ids...)
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
+func (tpuo *TargetPairUpdateOne) SetBazelInvocationID(id int) *TargetPairUpdateOne {
+	tpuo.mutation.SetBazelInvocationID(id)
 	return tpuo
 }
 
-// AddBazelInvocation adds the "bazel_invocation" edges to the BazelInvocation entity.
-func (tpuo *TargetPairUpdateOne) AddBazelInvocation(b ...*BazelInvocation) *TargetPairUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
+func (tpuo *TargetPairUpdateOne) SetNillableBazelInvocationID(id *int) *TargetPairUpdateOne {
+	if id != nil {
+		tpuo = tpuo.SetBazelInvocationID(*id)
 	}
-	return tpuo.AddBazelInvocationIDs(ids...)
+	return tpuo
+}
+
+// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
+func (tpuo *TargetPairUpdateOne) SetBazelInvocation(b *BazelInvocation) *TargetPairUpdateOne {
+	return tpuo.SetBazelInvocationID(b.ID)
 }
 
 // SetConfigurationID sets the "configuration" edge to the TargetConfigured entity by ID.
@@ -649,25 +626,10 @@ func (tpuo *TargetPairUpdateOne) Mutation() *TargetPairMutation {
 	return tpuo.mutation
 }
 
-// ClearBazelInvocation clears all "bazel_invocation" edges to the BazelInvocation entity.
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
 func (tpuo *TargetPairUpdateOne) ClearBazelInvocation() *TargetPairUpdateOne {
 	tpuo.mutation.ClearBazelInvocation()
 	return tpuo
-}
-
-// RemoveBazelInvocationIDs removes the "bazel_invocation" edge to BazelInvocation entities by IDs.
-func (tpuo *TargetPairUpdateOne) RemoveBazelInvocationIDs(ids ...int) *TargetPairUpdateOne {
-	tpuo.mutation.RemoveBazelInvocationIDs(ids...)
-	return tpuo
-}
-
-// RemoveBazelInvocation removes "bazel_invocation" edges to BazelInvocation entities.
-func (tpuo *TargetPairUpdateOne) RemoveBazelInvocation(b ...*BazelInvocation) *TargetPairUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return tpuo.RemoveBazelInvocationIDs(ids...)
 }
 
 // ClearConfiguration clears the "configuration" edge to the TargetConfigured entity.
@@ -807,39 +769,23 @@ func (tpuo *TargetPairUpdateOne) sqlSave(ctx context.Context) (_node *TargetPair
 	}
 	if tpuo.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   targetpair.BazelInvocationTable,
-			Columns: targetpair.BazelInvocationPrimaryKey,
+			Columns: []string{targetpair.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tpuo.mutation.RemovedBazelInvocationIDs(); len(nodes) > 0 && !tpuo.mutation.BazelInvocationCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   targetpair.BazelInvocationTable,
-			Columns: targetpair.BazelInvocationPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tpuo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   targetpair.BazelInvocationTable,
-			Columns: targetpair.BazelInvocationPrimaryKey,
+			Columns: []string{targetpair.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
@@ -852,7 +798,7 @@ func (tpuo *TargetPairUpdateOne) sqlSave(ctx context.Context) (_node *TargetPair
 	}
 	if tpuo.mutation.ConfigurationCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetpair.ConfigurationTable,
 			Columns: []string{targetpair.ConfigurationColumn},
@@ -865,7 +811,7 @@ func (tpuo *TargetPairUpdateOne) sqlSave(ctx context.Context) (_node *TargetPair
 	}
 	if nodes := tpuo.mutation.ConfigurationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetpair.ConfigurationTable,
 			Columns: []string{targetpair.ConfigurationColumn},
@@ -881,7 +827,7 @@ func (tpuo *TargetPairUpdateOne) sqlSave(ctx context.Context) (_node *TargetPair
 	}
 	if tpuo.mutation.CompletionCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetpair.CompletionTable,
 			Columns: []string{targetpair.CompletionColumn},
@@ -894,7 +840,7 @@ func (tpuo *TargetPairUpdateOne) sqlSave(ctx context.Context) (_node *TargetPair
 	}
 	if nodes := tpuo.mutation.CompletionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetpair.CompletionTable,
 			Columns: []string{targetpair.CompletionColumn},

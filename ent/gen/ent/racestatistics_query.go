@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -19,14 +18,14 @@ import (
 // RaceStatisticsQuery is the builder for querying RaceStatistics entities.
 type RaceStatisticsQuery struct {
 	config
-	ctx                              *QueryContext
-	order                            []racestatistics.OrderOption
-	inters                           []Interceptor
-	predicates                       []predicate.RaceStatistics
-	withDynamicExecutionMetrics      *DynamicExecutionMetricsQuery
-	modifiers                        []func(*sql.Selector)
-	loadTotal                        []func(context.Context, []*RaceStatistics) error
-	withNamedDynamicExecutionMetrics map[string]*DynamicExecutionMetricsQuery
+	ctx                         *QueryContext
+	order                       []racestatistics.OrderOption
+	inters                      []Interceptor
+	predicates                  []predicate.RaceStatistics
+	withDynamicExecutionMetrics *DynamicExecutionMetricsQuery
+	withFKs                     bool
+	modifiers                   []func(*sql.Selector)
+	loadTotal                   []func(context.Context, []*RaceStatistics) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,7 +76,7 @@ func (rsq *RaceStatisticsQuery) QueryDynamicExecutionMetrics() *DynamicExecution
 		step := sqlgraph.NewStep(
 			sqlgraph.From(racestatistics.Table, racestatistics.FieldID, selector),
 			sqlgraph.To(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, racestatistics.DynamicExecutionMetricsTable, racestatistics.DynamicExecutionMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, racestatistics.DynamicExecutionMetricsTable, racestatistics.DynamicExecutionMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(rsq.driver.Dialect(), step)
 		return fromU, nil
@@ -372,11 +371,18 @@ func (rsq *RaceStatisticsQuery) prepareQuery(ctx context.Context) error {
 func (rsq *RaceStatisticsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*RaceStatistics, error) {
 	var (
 		nodes       = []*RaceStatistics{}
+		withFKs     = rsq.withFKs
 		_spec       = rsq.querySpec()
 		loadedTypes = [1]bool{
 			rsq.withDynamicExecutionMetrics != nil,
 		}
 	)
+	if rsq.withDynamicExecutionMetrics != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, racestatistics.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*RaceStatistics).scanValues(nil, columns)
 	}
@@ -399,18 +405,8 @@ func (rsq *RaceStatisticsQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		return nodes, nil
 	}
 	if query := rsq.withDynamicExecutionMetrics; query != nil {
-		if err := rsq.loadDynamicExecutionMetrics(ctx, query, nodes,
-			func(n *RaceStatistics) { n.Edges.DynamicExecutionMetrics = []*DynamicExecutionMetrics{} },
-			func(n *RaceStatistics, e *DynamicExecutionMetrics) {
-				n.Edges.DynamicExecutionMetrics = append(n.Edges.DynamicExecutionMetrics, e)
-			}); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range rsq.withNamedDynamicExecutionMetrics {
-		if err := rsq.loadDynamicExecutionMetrics(ctx, query, nodes,
-			func(n *RaceStatistics) { n.appendNamedDynamicExecutionMetrics(name) },
-			func(n *RaceStatistics, e *DynamicExecutionMetrics) { n.appendNamedDynamicExecutionMetrics(name, e) }); err != nil {
+		if err := rsq.loadDynamicExecutionMetrics(ctx, query, nodes, nil,
+			func(n *RaceStatistics, e *DynamicExecutionMetrics) { n.Edges.DynamicExecutionMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -423,62 +419,33 @@ func (rsq *RaceStatisticsQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (rsq *RaceStatisticsQuery) loadDynamicExecutionMetrics(ctx context.Context, query *DynamicExecutionMetricsQuery, nodes []*RaceStatistics, init func(*RaceStatistics), assign func(*RaceStatistics, *DynamicExecutionMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*RaceStatistics)
-	nids := make(map[int]map[*RaceStatistics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*RaceStatistics)
+	for i := range nodes {
+		if nodes[i].dynamic_execution_metrics_race_statistics == nil {
+			continue
 		}
+		fk := *nodes[i].dynamic_execution_metrics_race_statistics
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(racestatistics.DynamicExecutionMetricsTable)
-		s.Join(joinT).On(s.C(dynamicexecutionmetrics.FieldID), joinT.C(racestatistics.DynamicExecutionMetricsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(racestatistics.DynamicExecutionMetricsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(racestatistics.DynamicExecutionMetricsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*RaceStatistics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*DynamicExecutionMetrics](ctx, query, qr, query.inters)
+	query.Where(dynamicexecutionmetrics.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "dynamic_execution_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "dynamic_execution_metrics_race_statistics" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -566,20 +533,6 @@ func (rsq *RaceStatisticsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedDynamicExecutionMetrics tells the query-builder to eager-load the nodes that are connected to the "dynamic_execution_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (rsq *RaceStatisticsQuery) WithNamedDynamicExecutionMetrics(name string, opts ...func(*DynamicExecutionMetricsQuery)) *RaceStatisticsQuery {
-	query := (&DynamicExecutionMetricsClient{config: rsq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if rsq.withNamedDynamicExecutionMetrics == nil {
-		rsq.withNamedDynamicExecutionMetrics = make(map[string]*DynamicExecutionMetricsQuery)
-	}
-	rsq.withNamedDynamicExecutionMetrics[name] = query
-	return rsq
 }
 
 // RaceStatisticsGroupBy is the group-by builder for RaceStatistics entities.

@@ -498,7 +498,7 @@ func HasNetworkMetrics() predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, NetworkMetricsTable, NetworkMetricsColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, NetworkMetricsTable, NetworkMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

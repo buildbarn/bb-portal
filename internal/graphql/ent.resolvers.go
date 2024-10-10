@@ -191,8 +191,8 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, e
 }
 
 // FindBazelInvocations is the resolver for the findBazelInvocations field.
-func (r *queryResolver) FindBazelInvocations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.BazelInvocationWhereInput) (*ent.BazelInvocationConnection, error) {
-	return r.client.BazelInvocation.Query().Paginate(ctx, after, first, before, last, ent.WithBazelInvocationFilter(where.Filter))
+func (r *queryResolver) FindBazelInvocations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) (*ent.BazelInvocationConnection, error) {
+	return r.client.BazelInvocation.Query().Paginate(ctx, after, first, before, last, ent.WithBazelInvocationFilter(where.Filter), ent.WithBazelInvocationOrder(orderBy))
 }
 
 // FindBuilds is the resolver for the findBuilds field.
@@ -208,6 +208,11 @@ func (r *queryResolver) FindMetrics(ctx context.Context, after *entgql.Cursor[in
 // FindRunnerCounts is the resolver for the findRunnerCounts field.
 func (r *queryResolver) FindRunnerCounts(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.RunnerCountWhereInput) (*ent.RunnerCountConnection, error) {
 	return r.client.RunnerCount.Query().Paginate(ctx, after, first, before, last, ent.WithRunnerCountFilter(where.Filter))
+}
+
+// FindTests is the resolver for the findTests field.
+func (r *queryResolver) FindTests(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) (*ent.TestCollectionConnection, error) {
+	return r.client.TestCollection.Query().Paginate(ctx, after, first, before, last, ent.WithTestCollectionFilter(where.Filter), ent.WithTestCollectionOrder(orderBy))
 }
 
 // ID is the resolver for the id field.

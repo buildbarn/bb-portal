@@ -81,19 +81,23 @@ func (tfc *TestFileCreate) SetPrefix(s []string) *TestFileCreate {
 	return tfc
 }
 
-// AddTestResultIDs adds the "test_result" edge to the TestResultBES entity by IDs.
-func (tfc *TestFileCreate) AddTestResultIDs(ids ...int) *TestFileCreate {
-	tfc.mutation.AddTestResultIDs(ids...)
+// SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
+func (tfc *TestFileCreate) SetTestResultID(id int) *TestFileCreate {
+	tfc.mutation.SetTestResultID(id)
 	return tfc
 }
 
-// AddTestResult adds the "test_result" edges to the TestResultBES entity.
-func (tfc *TestFileCreate) AddTestResult(t ...*TestResultBES) *TestFileCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
+func (tfc *TestFileCreate) SetNillableTestResultID(id *int) *TestFileCreate {
+	if id != nil {
+		tfc = tfc.SetTestResultID(*id)
 	}
-	return tfc.AddTestResultIDs(ids...)
+	return tfc
+}
+
+// SetTestResult sets the "test_result" edge to the TestResultBES entity.
+func (tfc *TestFileCreate) SetTestResult(t *TestResultBES) *TestFileCreate {
+	return tfc.SetTestResultID(t.ID)
 }
 
 // Mutation returns the TestFileMutation object of the builder.
@@ -178,10 +182,10 @@ func (tfc *TestFileCreate) createSpec() (*TestFile, *sqlgraph.CreateSpec) {
 	}
 	if nodes := tfc.mutation.TestResultIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   testfile.TestResultTable,
-			Columns: testfile.TestResultPrimaryKey,
+			Columns: []string{testfile.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
@@ -190,6 +194,7 @@ func (tfc *TestFileCreate) createSpec() (*TestFile, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.test_result_bes_test_action_output = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

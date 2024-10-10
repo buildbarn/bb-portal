@@ -26,6 +26,8 @@ const (
 	FieldCachedLocally = "cached_locally"
 	// FieldCachedRemotely holds the string denoting the cached_remotely field in the database.
 	FieldCachedRemotely = "cached_remotely"
+	// FieldFirstSeen holds the string denoting the first_seen field in the database.
+	FieldFirstSeen = "first_seen"
 	// FieldDurationMs holds the string denoting the duration_ms field in the database.
 	FieldDurationMs = "duration_ms"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
@@ -36,13 +38,15 @@ const (
 	EdgeTestResults = "test_results"
 	// Table holds the table name of the testcollection in the database.
 	Table = "test_collections"
-	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge. The primary key declared below.
-	BazelInvocationTable = "bazel_invocation_test_collection"
+	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
+	BazelInvocationTable = "test_collections"
 	// BazelInvocationInverseTable is the table name for the BazelInvocation entity.
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
 	BazelInvocationInverseTable = "bazel_invocations"
+	// BazelInvocationColumn is the table column denoting the bazel_invocation relation/edge.
+	BazelInvocationColumn = "bazel_invocation_test_collection"
 	// TestSummaryTable is the table that holds the test_summary relation/edge.
-	TestSummaryTable = "test_collections"
+	TestSummaryTable = "test_summaries"
 	// TestSummaryInverseTable is the table name for the TestSummary entity.
 	// It exists in this package in order to avoid circular dependency with the "testsummary" package.
 	TestSummaryInverseTable = "test_summaries"
@@ -65,20 +69,15 @@ var Columns = []string{
 	FieldStrategy,
 	FieldCachedLocally,
 	FieldCachedRemotely,
+	FieldFirstSeen,
 	FieldDurationMs,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "test_collections"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"test_collection_test_summary",
+	"bazel_invocation_test_collection",
 }
-
-var (
-	// BazelInvocationPrimaryKey and BazelInvocationColumn2 are the table columns denoting the
-	// primary key for the bazel_invocation relation (M2M).
-	BazelInvocationPrimaryKey = []string{"bazel_invocation_id", "test_collection_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -161,22 +160,20 @@ func ByCachedRemotely(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCachedRemotely, opts...).ToFunc()
 }
 
+// ByFirstSeen orders the results by the first_seen field.
+func ByFirstSeen(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFirstSeen, opts...).ToFunc()
+}
+
 // ByDurationMs orders the results by the duration_ms field.
 func ByDurationMs(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDurationMs, opts...).ToFunc()
 }
 
-// ByBazelInvocationCount orders the results by bazel_invocation count.
-func ByBazelInvocationCount(opts ...sql.OrderTermOption) OrderOption {
+// ByBazelInvocationField orders the results by bazel_invocation field.
+func ByBazelInvocationField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newBazelInvocationStep(), opts...)
-	}
-}
-
-// ByBazelInvocation orders the results by bazel_invocation terms.
-func ByBazelInvocation(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBazelInvocationStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newBazelInvocationStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -204,14 +201,14 @@ func newBazelInvocationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(BazelInvocationInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, BazelInvocationTable, BazelInvocationPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.M2O, true, BazelInvocationTable, BazelInvocationColumn),
 	)
 }
 func newTestSummaryStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TestSummaryInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, TestSummaryTable, TestSummaryColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, TestSummaryTable, TestSummaryColumn),
 	)
 }
 func newTestResultsStep() *sqlgraph.Step {

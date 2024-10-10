@@ -20,11 +20,13 @@ const (
 	EdgeArtifactMetrics = "artifact_metrics"
 	// Table holds the table name of the filesmetric in the database.
 	Table = "files_metrics"
-	// ArtifactMetricsTable is the table that holds the artifact_metrics relation/edge. The primary key declared below.
-	ArtifactMetricsTable = "artifact_metrics_top_level_artifacts"
+	// ArtifactMetricsTable is the table that holds the artifact_metrics relation/edge.
+	ArtifactMetricsTable = "files_metrics"
 	// ArtifactMetricsInverseTable is the table name for the ArtifactMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "artifactmetrics" package.
 	ArtifactMetricsInverseTable = "artifact_metrics"
+	// ArtifactMetricsColumn is the table column denoting the artifact_metrics relation/edge.
+	ArtifactMetricsColumn = "artifact_metrics_top_level_artifacts"
 )
 
 // Columns holds all SQL columns for filesmetric fields.
@@ -37,16 +39,8 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "files_metrics"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"artifact_metrics_source_artifacts_read",
-	"artifact_metrics_output_artifacts_seen",
-	"artifact_metrics_output_artifacts_from_action_cache",
+	"artifact_metrics_top_level_artifacts",
 }
-
-var (
-	// ArtifactMetricsPrimaryKey and ArtifactMetricsColumn2 are the table columns denoting the
-	// primary key for the artifact_metrics relation (M2M).
-	ArtifactMetricsPrimaryKey = []string{"artifact_metrics_id", "files_metric_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -81,23 +75,16 @@ func ByCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCount, opts...).ToFunc()
 }
 
-// ByArtifactMetricsCount orders the results by artifact_metrics count.
-func ByArtifactMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByArtifactMetricsField orders the results by artifact_metrics field.
+func ByArtifactMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newArtifactMetricsStep(), opts...)
-	}
-}
-
-// ByArtifactMetrics orders the results by artifact_metrics terms.
-func ByArtifactMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newArtifactMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newArtifactMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newArtifactMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ArtifactMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, ArtifactMetricsTable, ArtifactMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, true, ArtifactMetricsTable, ArtifactMetricsColumn),
 	)
 }

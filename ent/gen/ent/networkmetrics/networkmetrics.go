@@ -18,11 +18,13 @@ const (
 	EdgeSystemNetworkStats = "system_network_stats"
 	// Table holds the table name of the networkmetrics in the database.
 	Table = "network_metrics"
-	// MetricsTable is the table that holds the metrics relation/edge. The primary key declared below.
-	MetricsTable = "metrics_network_metrics"
+	// MetricsTable is the table that holds the metrics relation/edge.
+	MetricsTable = "network_metrics"
 	// MetricsInverseTable is the table name for the Metrics entity.
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
+	// MetricsColumn is the table column denoting the metrics relation/edge.
+	MetricsColumn = "metrics_network_metrics"
 	// SystemNetworkStatsTable is the table that holds the system_network_stats relation/edge.
 	SystemNetworkStatsTable = "system_network_stats"
 	// SystemNetworkStatsInverseTable is the table name for the SystemNetworkStats entity.
@@ -37,16 +39,21 @@ var Columns = []string{
 	FieldID,
 }
 
-var (
-	// MetricsPrimaryKey and MetricsColumn2 are the table columns denoting the
-	// primary key for the metrics relation (M2M).
-	MetricsPrimaryKey = []string{"metrics_id", "network_metrics_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "network_metrics"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"metrics_network_metrics",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -61,44 +68,30 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByMetricsCount orders the results by metrics count.
-func ByMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByMetricsField orders the results by metrics field.
+func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newMetricsStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByMetrics orders the results by metrics terms.
-func ByMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// BySystemNetworkStatsField orders the results by system_network_stats field.
+func BySystemNetworkStatsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// BySystemNetworkStatsCount orders the results by system_network_stats count.
-func BySystemNetworkStatsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newSystemNetworkStatsStep(), opts...)
-	}
-}
-
-// BySystemNetworkStats orders the results by system_network_stats terms.
-func BySystemNetworkStats(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newSystemNetworkStatsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newSystemNetworkStatsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, MetricsTable, MetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
 	)
 }
 func newSystemNetworkStatsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(SystemNetworkStatsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, SystemNetworkStatsTable, SystemNetworkStatsColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, SystemNetworkStatsTable, SystemNetworkStatsColumn),
 	)
 }

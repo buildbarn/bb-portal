@@ -18,16 +18,20 @@ const (
 	EdgeRaceStatistics = "race_statistics"
 	// Table holds the table name of the dynamicexecutionmetrics in the database.
 	Table = "dynamic_execution_metrics"
-	// MetricsTable is the table that holds the metrics relation/edge. The primary key declared below.
-	MetricsTable = "metrics_dynamic_execution_metrics"
+	// MetricsTable is the table that holds the metrics relation/edge.
+	MetricsTable = "dynamic_execution_metrics"
 	// MetricsInverseTable is the table name for the Metrics entity.
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
-	// RaceStatisticsTable is the table that holds the race_statistics relation/edge. The primary key declared below.
-	RaceStatisticsTable = "dynamic_execution_metrics_race_statistics"
+	// MetricsColumn is the table column denoting the metrics relation/edge.
+	MetricsColumn = "metrics_dynamic_execution_metrics"
+	// RaceStatisticsTable is the table that holds the race_statistics relation/edge.
+	RaceStatisticsTable = "race_statistics"
 	// RaceStatisticsInverseTable is the table name for the RaceStatistics entity.
 	// It exists in this package in order to avoid circular dependency with the "racestatistics" package.
 	RaceStatisticsInverseTable = "race_statistics"
+	// RaceStatisticsColumn is the table column denoting the race_statistics relation/edge.
+	RaceStatisticsColumn = "dynamic_execution_metrics_race_statistics"
 )
 
 // Columns holds all SQL columns for dynamicexecutionmetrics fields.
@@ -35,19 +39,21 @@ var Columns = []string{
 	FieldID,
 }
 
-var (
-	// MetricsPrimaryKey and MetricsColumn2 are the table columns denoting the
-	// primary key for the metrics relation (M2M).
-	MetricsPrimaryKey = []string{"metrics_id", "dynamic_execution_metrics_id"}
-	// RaceStatisticsPrimaryKey and RaceStatisticsColumn2 are the table columns denoting the
-	// primary key for the race_statistics relation (M2M).
-	RaceStatisticsPrimaryKey = []string{"dynamic_execution_metrics_id", "race_statistics_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "dynamic_execution_metrics"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"metrics_dynamic_execution_metrics",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -62,17 +68,10 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByMetricsCount orders the results by metrics count.
-func ByMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByMetricsField orders the results by metrics field.
+func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newMetricsStep(), opts...)
-	}
-}
-
-// ByMetrics orders the results by metrics terms.
-func ByMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -93,13 +92,13 @@ func newMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, MetricsTable, MetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
 	)
 }
 func newRaceStatisticsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(RaceStatisticsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, RaceStatisticsTable, RaceStatisticsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, RaceStatisticsTable, RaceStatisticsColumn),
 	)
 }

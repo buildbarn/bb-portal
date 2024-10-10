@@ -41,7 +41,7 @@ const (
 	// Table holds the table name of the targetcomplete in the database.
 	Table = "target_completes"
 	// TargetPairTable is the table that holds the target_pair relation/edge.
-	TargetPairTable = "target_pairs"
+	TargetPairTable = "target_completes"
 	// TargetPairInverseTable is the table name for the TargetPair entity.
 	// It exists in this package in order to avoid circular dependency with the "targetpair" package.
 	TargetPairInverseTable = "target_pairs"
@@ -62,7 +62,7 @@ const (
 	// DirectoryOutputColumn is the table column denoting the directory_output relation/edge.
 	DirectoryOutputColumn = "target_complete_directory_output"
 	// OutputGroupTable is the table that holds the output_group relation/edge.
-	OutputGroupTable = "target_completes"
+	OutputGroupTable = "output_groups"
 	// OutputGroupInverseTable is the table name for the OutputGroup entity.
 	// It exists in this package in order to avoid circular dependency with the "outputgroup" package.
 	OutputGroupInverseTable = "output_groups"
@@ -85,7 +85,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "target_completes"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"target_complete_output_group",
+	"target_pair_completion",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -167,17 +167,10 @@ func ByTestSize(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTestSize, opts...).ToFunc()
 }
 
-// ByTargetPairCount orders the results by target_pair count.
-func ByTargetPairCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTargetPairField orders the results by target_pair field.
+func ByTargetPairField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTargetPairStep(), opts...)
-	}
-}
-
-// ByTargetPair orders the results by target_pair terms.
-func ByTargetPair(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTargetPairStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newTargetPairStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -219,7 +212,7 @@ func newTargetPairStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TargetPairInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, TargetPairTable, TargetPairColumn),
+		sqlgraph.Edge(sqlgraph.O2O, true, TargetPairTable, TargetPairColumn),
 	)
 }
 func newImportantOutputStep() *sqlgraph.Step {
@@ -240,7 +233,7 @@ func newOutputGroupStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(OutputGroupInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, OutputGroupTable, OutputGroupColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, OutputGroupTable, OutputGroupColumn),
 	)
 }
 

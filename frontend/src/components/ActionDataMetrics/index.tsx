@@ -18,7 +18,18 @@ const formatter: StatisticProps['formatter'] = (value) => (
     <CountUp end={value as number} separator="," />
 );
 
-const ad_columns: TableColumnsType<ActionData> = [
+interface ActionDataColumnType {
+    key: React.Key;
+    mnemonic: string;
+    actionsExecuted: number;
+    actionsCreated: number;
+    firstStartedMs: number;
+    lastEndedMs: number;
+    systemTime: number;
+    userTime: number;
+}
+
+const ad_columns: TableColumnsType<ActionDataColumnType> = [
     {
         title: "Mnemonic",
         dataIndex: "mnemonic"
@@ -57,10 +68,19 @@ const ad_columns: TableColumnsType<ActionData> = [
 
 const ActionDataMetrics: React.FC<{ acMetrics: ActionSummary | undefined; }> = ({ acMetrics }) => {
 
-    const actions_data: ActionData[] = [];
+    const actions_data: ActionDataColumnType[] = [];
     const actions_graph_data: ActionDataGraphDisplayType[] = [];
     acMetrics?.actionData?.map((ad: ActionData, idx) => {
-        actions_data.push(ad)
+        actions_data.push({
+            key: "action_data_key" + ad.id,
+            mnemonic: ad.mnemonic ?? "",
+            actionsExecuted: ad.actionsExecuted ?? 0,
+            actionsCreated: ad.actionsCreated ?? 0,
+            firstStartedMs: ad.firstStartedMs ?? 0,
+            lastEndedMs: ad.lastEndedMs ?? 0,
+            systemTime: ad.systemTime ?? 0,
+            userTime: ad.userTime ?? 0
+        })
         var agd: ActionDataGraphDisplayType = {
             key: "actiondatagraphdisplaytype-" + String(idx),
             name: ad.mnemonic ?? "",
