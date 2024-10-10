@@ -47,19 +47,23 @@ func (cmc *CumulativeMetricsCreate) SetNillableNumBuilds(i *int32) *CumulativeMe
 	return cmc
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (cmc *CumulativeMetricsCreate) AddMetricIDs(ids ...int) *CumulativeMetricsCreate {
-	cmc.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (cmc *CumulativeMetricsCreate) SetMetricsID(id int) *CumulativeMetricsCreate {
+	cmc.mutation.SetMetricsID(id)
 	return cmc
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (cmc *CumulativeMetricsCreate) AddMetrics(m ...*Metrics) *CumulativeMetricsCreate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (cmc *CumulativeMetricsCreate) SetNillableMetricsID(id *int) *CumulativeMetricsCreate {
+	if id != nil {
+		cmc = cmc.SetMetricsID(*id)
 	}
-	return cmc.AddMetricIDs(ids...)
+	return cmc
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (cmc *CumulativeMetricsCreate) SetMetrics(m *Metrics) *CumulativeMetricsCreate {
+	return cmc.SetMetricsID(m.ID)
 }
 
 // Mutation returns the CumulativeMetricsMutation object of the builder.
@@ -132,10 +136,10 @@ func (cmc *CumulativeMetricsCreate) createSpec() (*CumulativeMetrics, *sqlgraph.
 	}
 	if nodes := cmc.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   cumulativemetrics.MetricsTable,
-			Columns: cumulativemetrics.MetricsPrimaryKey,
+			Columns: []string{cumulativemetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -144,6 +148,7 @@ func (cmc *CumulativeMetricsCreate) createSpec() (*CumulativeMetrics, *sqlgraph.
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.metrics_cumulative_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

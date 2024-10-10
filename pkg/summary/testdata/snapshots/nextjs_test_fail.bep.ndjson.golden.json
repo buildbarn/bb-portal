@@ -384,7 +384,8 @@
         "Strategy": "darwin-sandbox",
         "CachedLocally": false,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.891310919Z"
       },
       "//next.js:build_smoke_test": {
         "TestSummary": {
@@ -444,7 +445,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.890823078Z"
       },
       "//next.js:build_test": {
         "TestSummary": {
@@ -504,7 +506,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.890768125Z"
       }
     },
     "Targets": {

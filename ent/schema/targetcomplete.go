@@ -55,7 +55,8 @@ func (TargetComplete) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the target pair.
 		edge.From("target_pair", TargetPair.Type).
-			Ref("completion"),
+			Ref("completion").
+			Unique(),
 
 		// Temporarily, also report the important outputs directly.
 		// This is only to allow existing clients help transition to the deduplicated representation;

@@ -523,6 +523,7 @@ type TestsCollection struct {
 	CachedLocally  bool
 	CachedRemotely bool
 	DurationMs     int64
+	FirstSeen      time.Time
 }
 
 // TargetPair struct summary object for a target.

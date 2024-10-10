@@ -21,7 +21,7 @@ const AppBarMenu: React.FC<Props> = ({ mode, items, className }) => {
   if (className) {
     classNames.push(className);
   }
-  return <Menu selectedKeys={currentKeys} mode={mode} items={items} className={classNames.join(' ')} />;
+  return <Menu selectedKeys={currentKeys} mode={mode} style={{ minWidth: 0, flex: "auto" }} items={items} className={classNames.join(' ')} />;
 };
 
 export default AppBarMenu;

@@ -20,24 +20,19 @@ import (
 // BuildGraphMetricsQuery is the builder for querying BuildGraphMetrics entities.
 type BuildGraphMetricsQuery struct {
 	config
-	ctx                      *QueryContext
-	order                    []buildgraphmetrics.OrderOption
-	inters                   []Interceptor
-	predicates               []predicate.BuildGraphMetrics
-	withMetrics              *MetricsQuery
-	withDirtiedValues        *EvaluationStatQuery
-	withChangedValues        *EvaluationStatQuery
-	withBuiltValues          *EvaluationStatQuery
-	withCleanedValues        *EvaluationStatQuery
-	withEvaluatedValues      *EvaluationStatQuery
-	modifiers                []func(*sql.Selector)
-	loadTotal                []func(context.Context, []*BuildGraphMetrics) error
-	withNamedMetrics         map[string]*MetricsQuery
-	withNamedDirtiedValues   map[string]*EvaluationStatQuery
-	withNamedChangedValues   map[string]*EvaluationStatQuery
-	withNamedBuiltValues     map[string]*EvaluationStatQuery
-	withNamedCleanedValues   map[string]*EvaluationStatQuery
-	withNamedEvaluatedValues map[string]*EvaluationStatQuery
+	ctx                 *QueryContext
+	order               []buildgraphmetrics.OrderOption
+	inters              []Interceptor
+	predicates          []predicate.BuildGraphMetrics
+	withMetrics         *MetricsQuery
+	withDirtiedValues   *EvaluationStatQuery
+	withChangedValues   *EvaluationStatQuery
+	withBuiltValues     *EvaluationStatQuery
+	withCleanedValues   *EvaluationStatQuery
+	withEvaluatedValues *EvaluationStatQuery
+	withFKs             bool
+	modifiers           []func(*sql.Selector)
+	loadTotal           []func(context.Context, []*BuildGraphMetrics) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -88,7 +83,7 @@ func (bgmq *BuildGraphMetricsQuery) QueryMetrics() *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, selector),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, buildgraphmetrics.MetricsTable, buildgraphmetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, buildgraphmetrics.MetricsTable, buildgraphmetrics.MetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(bgmq.driver.Dialect(), step)
 		return fromU, nil
@@ -110,7 +105,7 @@ func (bgmq *BuildGraphMetricsQuery) QueryDirtiedValues() *EvaluationStatQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, selector),
 			sqlgraph.To(evaluationstat.Table, evaluationstat.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.DirtiedValuesTable, buildgraphmetrics.DirtiedValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, buildgraphmetrics.DirtiedValuesTable, buildgraphmetrics.DirtiedValuesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(bgmq.driver.Dialect(), step)
 		return fromU, nil
@@ -132,7 +127,7 @@ func (bgmq *BuildGraphMetricsQuery) QueryChangedValues() *EvaluationStatQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, selector),
 			sqlgraph.To(evaluationstat.Table, evaluationstat.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.ChangedValuesTable, buildgraphmetrics.ChangedValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, buildgraphmetrics.ChangedValuesTable, buildgraphmetrics.ChangedValuesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(bgmq.driver.Dialect(), step)
 		return fromU, nil
@@ -154,7 +149,7 @@ func (bgmq *BuildGraphMetricsQuery) QueryBuiltValues() *EvaluationStatQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, selector),
 			sqlgraph.To(evaluationstat.Table, evaluationstat.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.BuiltValuesTable, buildgraphmetrics.BuiltValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, buildgraphmetrics.BuiltValuesTable, buildgraphmetrics.BuiltValuesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(bgmq.driver.Dialect(), step)
 		return fromU, nil
@@ -176,7 +171,7 @@ func (bgmq *BuildGraphMetricsQuery) QueryCleanedValues() *EvaluationStatQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, selector),
 			sqlgraph.To(evaluationstat.Table, evaluationstat.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.CleanedValuesTable, buildgraphmetrics.CleanedValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, buildgraphmetrics.CleanedValuesTable, buildgraphmetrics.CleanedValuesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(bgmq.driver.Dialect(), step)
 		return fromU, nil
@@ -198,7 +193,7 @@ func (bgmq *BuildGraphMetricsQuery) QueryEvaluatedValues() *EvaluationStatQuery 
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, selector),
 			sqlgraph.To(evaluationstat.Table, evaluationstat.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, buildgraphmetrics.EvaluatedValuesTable, buildgraphmetrics.EvaluatedValuesPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, buildgraphmetrics.EvaluatedValuesTable, buildgraphmetrics.EvaluatedValuesColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(bgmq.driver.Dialect(), step)
 		return fromU, nil
@@ -553,6 +548,7 @@ func (bgmq *BuildGraphMetricsQuery) prepareQuery(ctx context.Context) error {
 func (bgmq *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*BuildGraphMetrics, error) {
 	var (
 		nodes       = []*BuildGraphMetrics{}
+		withFKs     = bgmq.withFKs
 		_spec       = bgmq.querySpec()
 		loadedTypes = [6]bool{
 			bgmq.withMetrics != nil,
@@ -563,6 +559,12 @@ func (bgmq *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHo
 			bgmq.withEvaluatedValues != nil,
 		}
 	)
+	if bgmq.withMetrics != nil || bgmq.withDirtiedValues != nil || bgmq.withChangedValues != nil || bgmq.withBuiltValues != nil || bgmq.withCleanedValues != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, buildgraphmetrics.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*BuildGraphMetrics).scanValues(nil, columns)
 	}
@@ -585,94 +587,38 @@ func (bgmq *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHo
 		return nodes, nil
 	}
 	if query := bgmq.withMetrics; query != nil {
-		if err := bgmq.loadMetrics(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.Edges.Metrics = []*Metrics{} },
-			func(n *BuildGraphMetrics, e *Metrics) { n.Edges.Metrics = append(n.Edges.Metrics, e) }); err != nil {
+		if err := bgmq.loadMetrics(ctx, query, nodes, nil,
+			func(n *BuildGraphMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := bgmq.withDirtiedValues; query != nil {
-		if err := bgmq.loadDirtiedValues(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.Edges.DirtiedValues = []*EvaluationStat{} },
-			func(n *BuildGraphMetrics, e *EvaluationStat) {
-				n.Edges.DirtiedValues = append(n.Edges.DirtiedValues, e)
-			}); err != nil {
+		if err := bgmq.loadDirtiedValues(ctx, query, nodes, nil,
+			func(n *BuildGraphMetrics, e *EvaluationStat) { n.Edges.DirtiedValues = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := bgmq.withChangedValues; query != nil {
-		if err := bgmq.loadChangedValues(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.Edges.ChangedValues = []*EvaluationStat{} },
-			func(n *BuildGraphMetrics, e *EvaluationStat) {
-				n.Edges.ChangedValues = append(n.Edges.ChangedValues, e)
-			}); err != nil {
+		if err := bgmq.loadChangedValues(ctx, query, nodes, nil,
+			func(n *BuildGraphMetrics, e *EvaluationStat) { n.Edges.ChangedValues = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := bgmq.withBuiltValues; query != nil {
-		if err := bgmq.loadBuiltValues(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.Edges.BuiltValues = []*EvaluationStat{} },
-			func(n *BuildGraphMetrics, e *EvaluationStat) { n.Edges.BuiltValues = append(n.Edges.BuiltValues, e) }); err != nil {
+		if err := bgmq.loadBuiltValues(ctx, query, nodes, nil,
+			func(n *BuildGraphMetrics, e *EvaluationStat) { n.Edges.BuiltValues = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := bgmq.withCleanedValues; query != nil {
-		if err := bgmq.loadCleanedValues(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.Edges.CleanedValues = []*EvaluationStat{} },
-			func(n *BuildGraphMetrics, e *EvaluationStat) {
-				n.Edges.CleanedValues = append(n.Edges.CleanedValues, e)
-			}); err != nil {
+		if err := bgmq.loadCleanedValues(ctx, query, nodes, nil,
+			func(n *BuildGraphMetrics, e *EvaluationStat) { n.Edges.CleanedValues = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := bgmq.withEvaluatedValues; query != nil {
-		if err := bgmq.loadEvaluatedValues(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.Edges.EvaluatedValues = []*EvaluationStat{} },
-			func(n *BuildGraphMetrics, e *EvaluationStat) {
-				n.Edges.EvaluatedValues = append(n.Edges.EvaluatedValues, e)
-			}); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range bgmq.withNamedMetrics {
-		if err := bgmq.loadMetrics(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.appendNamedMetrics(name) },
-			func(n *BuildGraphMetrics, e *Metrics) { n.appendNamedMetrics(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range bgmq.withNamedDirtiedValues {
-		if err := bgmq.loadDirtiedValues(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.appendNamedDirtiedValues(name) },
-			func(n *BuildGraphMetrics, e *EvaluationStat) { n.appendNamedDirtiedValues(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range bgmq.withNamedChangedValues {
-		if err := bgmq.loadChangedValues(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.appendNamedChangedValues(name) },
-			func(n *BuildGraphMetrics, e *EvaluationStat) { n.appendNamedChangedValues(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range bgmq.withNamedBuiltValues {
-		if err := bgmq.loadBuiltValues(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.appendNamedBuiltValues(name) },
-			func(n *BuildGraphMetrics, e *EvaluationStat) { n.appendNamedBuiltValues(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range bgmq.withNamedCleanedValues {
-		if err := bgmq.loadCleanedValues(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.appendNamedCleanedValues(name) },
-			func(n *BuildGraphMetrics, e *EvaluationStat) { n.appendNamedCleanedValues(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range bgmq.withNamedEvaluatedValues {
-		if err := bgmq.loadEvaluatedValues(ctx, query, nodes,
-			func(n *BuildGraphMetrics) { n.appendNamedEvaluatedValues(name) },
-			func(n *BuildGraphMetrics, e *EvaluationStat) { n.appendNamedEvaluatedValues(name, e) }); err != nil {
+		if err := bgmq.loadEvaluatedValues(ctx, query, nodes, nil,
+			func(n *BuildGraphMetrics, e *EvaluationStat) { n.Edges.EvaluatedValues = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -685,248 +631,190 @@ func (bgmq *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHo
 }
 
 func (bgmq *BuildGraphMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *Metrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*BuildGraphMetrics)
-	nids := make(map[int]map[*BuildGraphMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*BuildGraphMetrics)
+	for i := range nodes {
+		if nodes[i].metrics_build_graph_metrics == nil {
+			continue
 		}
+		fk := *nodes[i].metrics_build_graph_metrics
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(buildgraphmetrics.MetricsTable)
-		s.Join(joinT).On(s.C(metrics.FieldID), joinT.C(buildgraphmetrics.MetricsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(buildgraphmetrics.MetricsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(buildgraphmetrics.MetricsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*BuildGraphMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*Metrics](ctx, query, qr, query.inters)
+	query.Where(metrics.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_build_graph_metrics" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
 }
 func (bgmq *BuildGraphMetricsQuery) loadDirtiedValues(ctx context.Context, query *EvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *EvaluationStat)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BuildGraphMetrics)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*BuildGraphMetrics)
 	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
+		if nodes[i].build_graph_metrics_dirtied_values == nil {
+			continue
 		}
+		fk := *nodes[i].build_graph_metrics_dirtied_values
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.withFKs = true
-	query.Where(predicate.EvaluationStat(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(buildgraphmetrics.DirtiedValuesColumn), fks...))
-	}))
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(evaluationstat.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.build_graph_metrics_dirtied_values
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "build_graph_metrics_dirtied_values" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "build_graph_metrics_dirtied_values" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "build_graph_metrics_dirtied_values" returned %v`, n.ID)
 		}
-		assign(node, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }
 func (bgmq *BuildGraphMetricsQuery) loadChangedValues(ctx context.Context, query *EvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *EvaluationStat)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BuildGraphMetrics)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*BuildGraphMetrics)
 	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
+		if nodes[i].build_graph_metrics_changed_values == nil {
+			continue
 		}
+		fk := *nodes[i].build_graph_metrics_changed_values
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.withFKs = true
-	query.Where(predicate.EvaluationStat(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(buildgraphmetrics.ChangedValuesColumn), fks...))
-	}))
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(evaluationstat.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.build_graph_metrics_changed_values
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "build_graph_metrics_changed_values" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "build_graph_metrics_changed_values" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "build_graph_metrics_changed_values" returned %v`, n.ID)
 		}
-		assign(node, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }
 func (bgmq *BuildGraphMetricsQuery) loadBuiltValues(ctx context.Context, query *EvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *EvaluationStat)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*BuildGraphMetrics)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*BuildGraphMetrics)
 	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
+		if nodes[i].build_graph_metrics_built_values == nil {
+			continue
 		}
+		fk := *nodes[i].build_graph_metrics_built_values
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.withFKs = true
-	query.Where(predicate.EvaluationStat(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(buildgraphmetrics.BuiltValuesColumn), fks...))
-	}))
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(evaluationstat.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.build_graph_metrics_built_values
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "build_graph_metrics_built_values" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "build_graph_metrics_built_values" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "build_graph_metrics_built_values" returned %v`, n.ID)
 		}
-		assign(node, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }
 func (bgmq *BuildGraphMetricsQuery) loadCleanedValues(ctx context.Context, query *EvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *EvaluationStat)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*BuildGraphMetrics)
+	for i := range nodes {
+		if nodes[i].build_graph_metrics_cleaned_values == nil {
+			continue
+		}
+		fk := *nodes[i].build_graph_metrics_cleaned_values
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(evaluationstat.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "build_graph_metrics_cleaned_values" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (bgmq *BuildGraphMetricsQuery) loadEvaluatedValues(ctx context.Context, query *EvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *EvaluationStat)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*BuildGraphMetrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
 	}
 	query.withFKs = true
 	query.Where(predicate.EvaluationStat(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(buildgraphmetrics.CleanedValuesColumn), fks...))
+		s.Where(sql.InValues(s.C(buildgraphmetrics.EvaluatedValuesColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.build_graph_metrics_cleaned_values
+		fk := n.build_graph_metrics_evaluated_values
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "build_graph_metrics_cleaned_values" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "build_graph_metrics_evaluated_values" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "build_graph_metrics_cleaned_values" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "build_graph_metrics_evaluated_values" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
-	}
-	return nil
-}
-func (bgmq *BuildGraphMetricsQuery) loadEvaluatedValues(ctx context.Context, query *EvaluationStatQuery, nodes []*BuildGraphMetrics, init func(*BuildGraphMetrics), assign func(*BuildGraphMetrics, *EvaluationStat)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*BuildGraphMetrics)
-	nids := make(map[int]map[*BuildGraphMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(buildgraphmetrics.EvaluatedValuesTable)
-		s.Join(joinT).On(s.C(evaluationstat.FieldID), joinT.C(buildgraphmetrics.EvaluatedValuesPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(buildgraphmetrics.EvaluatedValuesPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(buildgraphmetrics.EvaluatedValuesPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*BuildGraphMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*EvaluationStat](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "evaluated_values" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
 	}
 	return nil
 }
@@ -1013,90 +901,6 @@ func (bgmq *BuildGraphMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector 
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedMetrics tells the query-builder to eager-load the nodes that are connected to the "metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (bgmq *BuildGraphMetricsQuery) WithNamedMetrics(name string, opts ...func(*MetricsQuery)) *BuildGraphMetricsQuery {
-	query := (&MetricsClient{config: bgmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if bgmq.withNamedMetrics == nil {
-		bgmq.withNamedMetrics = make(map[string]*MetricsQuery)
-	}
-	bgmq.withNamedMetrics[name] = query
-	return bgmq
-}
-
-// WithNamedDirtiedValues tells the query-builder to eager-load the nodes that are connected to the "dirtied_values"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (bgmq *BuildGraphMetricsQuery) WithNamedDirtiedValues(name string, opts ...func(*EvaluationStatQuery)) *BuildGraphMetricsQuery {
-	query := (&EvaluationStatClient{config: bgmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if bgmq.withNamedDirtiedValues == nil {
-		bgmq.withNamedDirtiedValues = make(map[string]*EvaluationStatQuery)
-	}
-	bgmq.withNamedDirtiedValues[name] = query
-	return bgmq
-}
-
-// WithNamedChangedValues tells the query-builder to eager-load the nodes that are connected to the "changed_values"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (bgmq *BuildGraphMetricsQuery) WithNamedChangedValues(name string, opts ...func(*EvaluationStatQuery)) *BuildGraphMetricsQuery {
-	query := (&EvaluationStatClient{config: bgmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if bgmq.withNamedChangedValues == nil {
-		bgmq.withNamedChangedValues = make(map[string]*EvaluationStatQuery)
-	}
-	bgmq.withNamedChangedValues[name] = query
-	return bgmq
-}
-
-// WithNamedBuiltValues tells the query-builder to eager-load the nodes that are connected to the "built_values"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (bgmq *BuildGraphMetricsQuery) WithNamedBuiltValues(name string, opts ...func(*EvaluationStatQuery)) *BuildGraphMetricsQuery {
-	query := (&EvaluationStatClient{config: bgmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if bgmq.withNamedBuiltValues == nil {
-		bgmq.withNamedBuiltValues = make(map[string]*EvaluationStatQuery)
-	}
-	bgmq.withNamedBuiltValues[name] = query
-	return bgmq
-}
-
-// WithNamedCleanedValues tells the query-builder to eager-load the nodes that are connected to the "cleaned_values"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (bgmq *BuildGraphMetricsQuery) WithNamedCleanedValues(name string, opts ...func(*EvaluationStatQuery)) *BuildGraphMetricsQuery {
-	query := (&EvaluationStatClient{config: bgmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if bgmq.withNamedCleanedValues == nil {
-		bgmq.withNamedCleanedValues = make(map[string]*EvaluationStatQuery)
-	}
-	bgmq.withNamedCleanedValues[name] = query
-	return bgmq
-}
-
-// WithNamedEvaluatedValues tells the query-builder to eager-load the nodes that are connected to the "evaluated_values"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (bgmq *BuildGraphMetricsQuery) WithNamedEvaluatedValues(name string, opts ...func(*EvaluationStatQuery)) *BuildGraphMetricsQuery {
-	query := (&EvaluationStatClient{config: bgmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if bgmq.withNamedEvaluatedValues == nil {
-		bgmq.withNamedEvaluatedValues = make(map[string]*EvaluationStatQuery)
-	}
-	bgmq.withNamedEvaluatedValues[name] = query
-	return bgmq
 }
 
 // BuildGraphMetricsGroupBy is the group-by builder for BuildGraphMetrics entities.

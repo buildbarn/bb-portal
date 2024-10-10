@@ -22,7 +22,6 @@ const formatter: StatisticProps['formatter'] = (value) => (
     <CountUp end={value as number} separator="," />
 );
 
-
 const TargetMetricsDisplay: React.FC<{
     targetMetrics: TargetMetrics | undefined | null,
     targetData: TargetPair[] | undefined | null,
@@ -36,6 +35,7 @@ const TargetMetricsDisplay: React.FC<{
         var all_types: string[] = []
         var targets_skipped: number = 0;
         var targets_built_successfully: number = 0;
+
         targetData?.map(x => {
             count++;
             var targetKind = x.targetKind ?? ""
@@ -166,19 +166,16 @@ const TargetMetricsDisplay: React.FC<{
             },
         ]
 
-
         return (
             <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
                 <PortalCard icon={<DeploymentUnitOutlined />} titleBits={["Targets"]}>
                     <Row>
                         <Space size="large">
-
                             <Statistic title="Targets Analyzed" value={targets_analyzed} formatter={formatter} />
                             <Statistic title="Targets Built Successfully" value={targets_built_successfully} formatter={formatter} valueStyle={{ color: "green" }} />
                             <Statistic title="Targets Skipped" value={targets_skipped} formatter={formatter} valueStyle={{ color: "purple" }} />
                             <Statistic title="Targets Configured" value={targetMetrics?.targetsConfigured ?? 0} formatter={formatter} />
                             <Statistic title="Targets Configured Not Including Aspects" value={targetMetrics?.targetsConfiguredNotIncludingAspects ?? 0} formatter={formatter} />
-
                         </Space>
                     </Row>
                     <Row justify="space-around" align="middle">
@@ -193,7 +190,6 @@ const TargetMetricsDisplay: React.FC<{
                         <Col span="1" />
                     </Row>
                 </PortalCard>
-
             </Space>
         )
     }

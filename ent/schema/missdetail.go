@@ -35,6 +35,8 @@ func (MissDetail) Fields() []ent.Field {
 func (MissDetail) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the action cache statistics object.
-		edge.From("action_cache_statistics", ActionCacheStatistics.Type).Ref("miss_details"),
+		edge.From("action_cache_statistics", ActionCacheStatistics.Type).
+			Ref("miss_details").
+			Unique(),
 	}
 }

@@ -20,16 +20,20 @@ const (
 	EdgePackageLoadMetrics = "package_load_metrics"
 	// Table holds the table name of the packagemetrics in the database.
 	Table = "package_metrics"
-	// MetricsTable is the table that holds the metrics relation/edge. The primary key declared below.
-	MetricsTable = "metrics_package_metrics"
+	// MetricsTable is the table that holds the metrics relation/edge.
+	MetricsTable = "package_metrics"
 	// MetricsInverseTable is the table name for the Metrics entity.
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
-	// PackageLoadMetricsTable is the table that holds the package_load_metrics relation/edge. The primary key declared below.
-	PackageLoadMetricsTable = "package_metrics_package_load_metrics"
+	// MetricsColumn is the table column denoting the metrics relation/edge.
+	MetricsColumn = "metrics_package_metrics"
+	// PackageLoadMetricsTable is the table that holds the package_load_metrics relation/edge.
+	PackageLoadMetricsTable = "package_load_metrics"
 	// PackageLoadMetricsInverseTable is the table name for the PackageLoadMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "packageloadmetrics" package.
 	PackageLoadMetricsInverseTable = "package_load_metrics"
+	// PackageLoadMetricsColumn is the table column denoting the package_load_metrics relation/edge.
+	PackageLoadMetricsColumn = "package_metrics_package_load_metrics"
 )
 
 // Columns holds all SQL columns for packagemetrics fields.
@@ -38,19 +42,21 @@ var Columns = []string{
 	FieldPackagesLoaded,
 }
 
-var (
-	// MetricsPrimaryKey and MetricsColumn2 are the table columns denoting the
-	// primary key for the metrics relation (M2M).
-	MetricsPrimaryKey = []string{"metrics_id", "package_metrics_id"}
-	// PackageLoadMetricsPrimaryKey and PackageLoadMetricsColumn2 are the table columns denoting the
-	// primary key for the package_load_metrics relation (M2M).
-	PackageLoadMetricsPrimaryKey = []string{"package_metrics_id", "package_load_metrics_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "package_metrics"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"metrics_package_metrics",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -70,17 +76,10 @@ func ByPackagesLoaded(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPackagesLoaded, opts...).ToFunc()
 }
 
-// ByMetricsCount orders the results by metrics count.
-func ByMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByMetricsField orders the results by metrics field.
+func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newMetricsStep(), opts...)
-	}
-}
-
-// ByMetrics orders the results by metrics terms.
-func ByMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -101,13 +100,13 @@ func newMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, MetricsTable, MetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
 	)
 }
 func newPackageLoadMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(PackageLoadMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, PackageLoadMetricsTable, PackageLoadMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, PackageLoadMetricsTable, PackageLoadMetricsColumn),
 	)
 }

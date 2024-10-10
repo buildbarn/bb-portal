@@ -89,19 +89,23 @@ func (rsc *RaceStatisticsCreate) SetNillableRenoteWins(i *int64) *RaceStatistics
 	return rsc
 }
 
-// AddDynamicExecutionMetricIDs adds the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by IDs.
-func (rsc *RaceStatisticsCreate) AddDynamicExecutionMetricIDs(ids ...int) *RaceStatisticsCreate {
-	rsc.mutation.AddDynamicExecutionMetricIDs(ids...)
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
+func (rsc *RaceStatisticsCreate) SetDynamicExecutionMetricsID(id int) *RaceStatisticsCreate {
+	rsc.mutation.SetDynamicExecutionMetricsID(id)
 	return rsc
 }
 
-// AddDynamicExecutionMetrics adds the "dynamic_execution_metrics" edges to the DynamicExecutionMetrics entity.
-func (rsc *RaceStatisticsCreate) AddDynamicExecutionMetrics(d ...*DynamicExecutionMetrics) *RaceStatisticsCreate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
+func (rsc *RaceStatisticsCreate) SetNillableDynamicExecutionMetricsID(id *int) *RaceStatisticsCreate {
+	if id != nil {
+		rsc = rsc.SetDynamicExecutionMetricsID(*id)
 	}
-	return rsc.AddDynamicExecutionMetricIDs(ids...)
+	return rsc
+}
+
+// SetDynamicExecutionMetrics sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
+func (rsc *RaceStatisticsCreate) SetDynamicExecutionMetrics(d *DynamicExecutionMetrics) *RaceStatisticsCreate {
+	return rsc.SetDynamicExecutionMetricsID(d.ID)
 }
 
 // Mutation returns the RaceStatisticsMutation object of the builder.
@@ -186,10 +190,10 @@ func (rsc *RaceStatisticsCreate) createSpec() (*RaceStatistics, *sqlgraph.Create
 	}
 	if nodes := rsc.mutation.DynamicExecutionMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   racestatistics.DynamicExecutionMetricsTable,
-			Columns: racestatistics.DynamicExecutionMetricsPrimaryKey,
+			Columns: []string{racestatistics.DynamicExecutionMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
@@ -198,6 +202,7 @@ func (rsc *RaceStatisticsCreate) createSpec() (*RaceStatistics, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.dynamic_execution_metrics_race_statistics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

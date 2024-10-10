@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 )
 
@@ -22,31 +23,29 @@ type FilesMetric struct {
 	Count int32 `json:"count,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FilesMetricQuery when eager-loading is set.
-	Edges                                               FilesMetricEdges `json:"edges"`
-	artifact_metrics_source_artifacts_read              *int
-	artifact_metrics_output_artifacts_seen              *int
-	artifact_metrics_output_artifacts_from_action_cache *int
-	selectValues                                        sql.SelectValues
+	Edges                                FilesMetricEdges `json:"edges"`
+	artifact_metrics_top_level_artifacts *int
+	selectValues                         sql.SelectValues
 }
 
 // FilesMetricEdges holds the relations/edges for other nodes in the graph.
 type FilesMetricEdges struct {
 	// ArtifactMetrics holds the value of the artifact_metrics edge.
-	ArtifactMetrics []*ArtifactMetrics `json:"artifact_metrics,omitempty"`
+	ArtifactMetrics *ArtifactMetrics `json:"artifact_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedArtifactMetrics map[string][]*ArtifactMetrics
 }
 
 // ArtifactMetricsOrErr returns the ArtifactMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e FilesMetricEdges) ArtifactMetricsOrErr() ([]*ArtifactMetrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e FilesMetricEdges) ArtifactMetricsOrErr() (*ArtifactMetrics, error) {
+	if e.ArtifactMetrics != nil {
 		return e.ArtifactMetrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: artifactmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "artifact_metrics"}
 }
@@ -58,11 +57,7 @@ func (*FilesMetric) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case filesmetric.FieldID, filesmetric.FieldSizeInBytes, filesmetric.FieldCount:
 			values[i] = new(sql.NullInt64)
-		case filesmetric.ForeignKeys[0]: // artifact_metrics_source_artifacts_read
-			values[i] = new(sql.NullInt64)
-		case filesmetric.ForeignKeys[1]: // artifact_metrics_output_artifacts_seen
-			values[i] = new(sql.NullInt64)
-		case filesmetric.ForeignKeys[2]: // artifact_metrics_output_artifacts_from_action_cache
+		case filesmetric.ForeignKeys[0]: // artifact_metrics_top_level_artifacts
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -99,24 +94,10 @@ func (fm *FilesMetric) assignValues(columns []string, values []any) error {
 			}
 		case filesmetric.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_source_artifacts_read", value)
+				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_top_level_artifacts", value)
 			} else if value.Valid {
-				fm.artifact_metrics_source_artifacts_read = new(int)
-				*fm.artifact_metrics_source_artifacts_read = int(value.Int64)
-			}
-		case filesmetric.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_output_artifacts_seen", value)
-			} else if value.Valid {
-				fm.artifact_metrics_output_artifacts_seen = new(int)
-				*fm.artifact_metrics_output_artifacts_seen = int(value.Int64)
-			}
-		case filesmetric.ForeignKeys[2]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_output_artifacts_from_action_cache", value)
-			} else if value.Valid {
-				fm.artifact_metrics_output_artifacts_from_action_cache = new(int)
-				*fm.artifact_metrics_output_artifacts_from_action_cache = int(value.Int64)
+				fm.artifact_metrics_top_level_artifacts = new(int)
+				*fm.artifact_metrics_top_level_artifacts = int(value.Int64)
 			}
 		default:
 			fm.selectValues.Set(columns[i], values[i])
@@ -166,30 +147,6 @@ func (fm *FilesMetric) String() string {
 	builder.WriteString(fmt.Sprintf("%v", fm.Count))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedArtifactMetrics returns the ArtifactMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (fm *FilesMetric) NamedArtifactMetrics(name string) ([]*ArtifactMetrics, error) {
-	if fm.Edges.namedArtifactMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := fm.Edges.namedArtifactMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (fm *FilesMetric) appendNamedArtifactMetrics(name string, edges ...*ArtifactMetrics) {
-	if fm.Edges.namedArtifactMetrics == nil {
-		fm.Edges.namedArtifactMetrics = make(map[string][]*ArtifactMetrics)
-	}
-	if len(edges) == 0 {
-		fm.Edges.namedArtifactMetrics[name] = []*ArtifactMetrics{}
-	} else {
-		fm.Edges.namedArtifactMetrics[name] = append(fm.Edges.namedArtifactMetrics[name], edges...)
-	}
 }
 
 // FilesMetrics is a parsable slice of FilesMetric.

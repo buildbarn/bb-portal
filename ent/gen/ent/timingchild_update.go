@@ -68,19 +68,23 @@ func (tcu *TimingChildUpdate) ClearTime() *TimingChildUpdate {
 	return tcu
 }
 
-// AddTimingBreakdownIDs adds the "timing_breakdown" edge to the TimingBreakdown entity by IDs.
-func (tcu *TimingChildUpdate) AddTimingBreakdownIDs(ids ...int) *TimingChildUpdate {
-	tcu.mutation.AddTimingBreakdownIDs(ids...)
+// SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
+func (tcu *TimingChildUpdate) SetTimingBreakdownID(id int) *TimingChildUpdate {
+	tcu.mutation.SetTimingBreakdownID(id)
 	return tcu
 }
 
-// AddTimingBreakdown adds the "timing_breakdown" edges to the TimingBreakdown entity.
-func (tcu *TimingChildUpdate) AddTimingBreakdown(t ...*TimingBreakdown) *TimingChildUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID if the given value is not nil.
+func (tcu *TimingChildUpdate) SetNillableTimingBreakdownID(id *int) *TimingChildUpdate {
+	if id != nil {
+		tcu = tcu.SetTimingBreakdownID(*id)
 	}
-	return tcu.AddTimingBreakdownIDs(ids...)
+	return tcu
+}
+
+// SetTimingBreakdown sets the "timing_breakdown" edge to the TimingBreakdown entity.
+func (tcu *TimingChildUpdate) SetTimingBreakdown(t *TimingBreakdown) *TimingChildUpdate {
+	return tcu.SetTimingBreakdownID(t.ID)
 }
 
 // Mutation returns the TimingChildMutation object of the builder.
@@ -88,25 +92,10 @@ func (tcu *TimingChildUpdate) Mutation() *TimingChildMutation {
 	return tcu.mutation
 }
 
-// ClearTimingBreakdown clears all "timing_breakdown" edges to the TimingBreakdown entity.
+// ClearTimingBreakdown clears the "timing_breakdown" edge to the TimingBreakdown entity.
 func (tcu *TimingChildUpdate) ClearTimingBreakdown() *TimingChildUpdate {
 	tcu.mutation.ClearTimingBreakdown()
 	return tcu
-}
-
-// RemoveTimingBreakdownIDs removes the "timing_breakdown" edge to TimingBreakdown entities by IDs.
-func (tcu *TimingChildUpdate) RemoveTimingBreakdownIDs(ids ...int) *TimingChildUpdate {
-	tcu.mutation.RemoveTimingBreakdownIDs(ids...)
-	return tcu
-}
-
-// RemoveTimingBreakdown removes "timing_breakdown" edges to TimingBreakdown entities.
-func (tcu *TimingChildUpdate) RemoveTimingBreakdown(t ...*TimingBreakdown) *TimingChildUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tcu.RemoveTimingBreakdownIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -159,39 +148,23 @@ func (tcu *TimingChildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if tcu.mutation.TimingBreakdownCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   timingchild.TimingBreakdownTable,
-			Columns: timingchild.TimingBreakdownPrimaryKey,
+			Columns: []string{timingchild.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tcu.mutation.RemovedTimingBreakdownIDs(); len(nodes) > 0 && !tcu.mutation.TimingBreakdownCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   timingchild.TimingBreakdownTable,
-			Columns: timingchild.TimingBreakdownPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tcu.mutation.TimingBreakdownIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   timingchild.TimingBreakdownTable,
-			Columns: timingchild.TimingBreakdownPrimaryKey,
+			Columns: []string{timingchild.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
@@ -262,19 +235,23 @@ func (tcuo *TimingChildUpdateOne) ClearTime() *TimingChildUpdateOne {
 	return tcuo
 }
 
-// AddTimingBreakdownIDs adds the "timing_breakdown" edge to the TimingBreakdown entity by IDs.
-func (tcuo *TimingChildUpdateOne) AddTimingBreakdownIDs(ids ...int) *TimingChildUpdateOne {
-	tcuo.mutation.AddTimingBreakdownIDs(ids...)
+// SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
+func (tcuo *TimingChildUpdateOne) SetTimingBreakdownID(id int) *TimingChildUpdateOne {
+	tcuo.mutation.SetTimingBreakdownID(id)
 	return tcuo
 }
 
-// AddTimingBreakdown adds the "timing_breakdown" edges to the TimingBreakdown entity.
-func (tcuo *TimingChildUpdateOne) AddTimingBreakdown(t ...*TimingBreakdown) *TimingChildUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID if the given value is not nil.
+func (tcuo *TimingChildUpdateOne) SetNillableTimingBreakdownID(id *int) *TimingChildUpdateOne {
+	if id != nil {
+		tcuo = tcuo.SetTimingBreakdownID(*id)
 	}
-	return tcuo.AddTimingBreakdownIDs(ids...)
+	return tcuo
+}
+
+// SetTimingBreakdown sets the "timing_breakdown" edge to the TimingBreakdown entity.
+func (tcuo *TimingChildUpdateOne) SetTimingBreakdown(t *TimingBreakdown) *TimingChildUpdateOne {
+	return tcuo.SetTimingBreakdownID(t.ID)
 }
 
 // Mutation returns the TimingChildMutation object of the builder.
@@ -282,25 +259,10 @@ func (tcuo *TimingChildUpdateOne) Mutation() *TimingChildMutation {
 	return tcuo.mutation
 }
 
-// ClearTimingBreakdown clears all "timing_breakdown" edges to the TimingBreakdown entity.
+// ClearTimingBreakdown clears the "timing_breakdown" edge to the TimingBreakdown entity.
 func (tcuo *TimingChildUpdateOne) ClearTimingBreakdown() *TimingChildUpdateOne {
 	tcuo.mutation.ClearTimingBreakdown()
 	return tcuo
-}
-
-// RemoveTimingBreakdownIDs removes the "timing_breakdown" edge to TimingBreakdown entities by IDs.
-func (tcuo *TimingChildUpdateOne) RemoveTimingBreakdownIDs(ids ...int) *TimingChildUpdateOne {
-	tcuo.mutation.RemoveTimingBreakdownIDs(ids...)
-	return tcuo
-}
-
-// RemoveTimingBreakdown removes "timing_breakdown" edges to TimingBreakdown entities.
-func (tcuo *TimingChildUpdateOne) RemoveTimingBreakdown(t ...*TimingBreakdown) *TimingChildUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tcuo.RemoveTimingBreakdownIDs(ids...)
 }
 
 // Where appends a list predicates to the TimingChildUpdate builder.
@@ -383,39 +345,23 @@ func (tcuo *TimingChildUpdateOne) sqlSave(ctx context.Context) (_node *TimingChi
 	}
 	if tcuo.mutation.TimingBreakdownCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   timingchild.TimingBreakdownTable,
-			Columns: timingchild.TimingBreakdownPrimaryKey,
+			Columns: []string{timingchild.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tcuo.mutation.RemovedTimingBreakdownIDs(); len(nodes) > 0 && !tcuo.mutation.TimingBreakdownCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   timingchild.TimingBreakdownTable,
-			Columns: timingchild.TimingBreakdownPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tcuo.mutation.TimingBreakdownIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   timingchild.TimingBreakdownTable,
-			Columns: timingchild.TimingBreakdownPrimaryKey,
+			Columns: []string{timingchild.TimingBreakdownColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt),

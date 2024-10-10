@@ -27,7 +27,9 @@ func (TimingBreakdown) Fields() []ent.Field {
 func (TimingBreakdown) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the execution info object
-		edge.From("execution_info", ExectionInfo.Type).Ref("timing_breakdown"),
+		edge.From("execution_info", ExectionInfo.Type).
+			Ref("timing_breakdown").
+			Unique(),
 
 		// Timing children (this could probably be better reempleted as a node to itself.
 		// except the relationship to the executio info object.  maybe we don't care about that?

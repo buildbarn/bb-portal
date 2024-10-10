@@ -58,7 +58,7 @@ func HasMetrics() predicate.ArtifactMetrics {
 	return predicate.ArtifactMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, MetricsTable, MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -81,7 +81,7 @@ func HasSourceArtifactsRead() predicate.ArtifactMetrics {
 	return predicate.ArtifactMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, SourceArtifactsReadTable, SourceArtifactsReadColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, SourceArtifactsReadTable, SourceArtifactsReadColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -104,7 +104,7 @@ func HasOutputArtifactsSeen() predicate.ArtifactMetrics {
 	return predicate.ArtifactMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, OutputArtifactsSeenTable, OutputArtifactsSeenColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, OutputArtifactsSeenTable, OutputArtifactsSeenColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -127,7 +127,7 @@ func HasOutputArtifactsFromActionCache() predicate.ArtifactMetrics {
 	return predicate.ArtifactMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, OutputArtifactsFromActionCacheTable, OutputArtifactsFromActionCacheColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, OutputArtifactsFromActionCacheTable, OutputArtifactsFromActionCacheColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -150,7 +150,7 @@ func HasTopLevelArtifacts() predicate.ArtifactMetrics {
 	return predicate.ArtifactMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, TopLevelArtifactsTable, TopLevelArtifactsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, TopLevelArtifactsTable, TopLevelArtifactsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

@@ -16,12 +16,21 @@ var (
 		{Name: "load_time_in_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "hits", Type: field.TypeInt32, Nullable: true},
 		{Name: "misses", Type: field.TypeInt32, Nullable: true},
+		{Name: "action_summary_action_cache_statistics", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// ActionCacheStatisticsTable holds the schema information for the "action_cache_statistics" table.
 	ActionCacheStatisticsTable = &schema.Table{
 		Name:       "action_cache_statistics",
 		Columns:    ActionCacheStatisticsColumns,
 		PrimaryKey: []*schema.Column{ActionCacheStatisticsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "action_cache_statistics_action_summaries_action_cache_statistics",
+				Columns:    []*schema.Column{ActionCacheStatisticsColumns[6]},
+				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// ActionDataColumns holds the columns for the "action_data" table.
 	ActionDataColumns = []*schema.Column{
@@ -33,12 +42,21 @@ var (
 		{Name: "last_ended_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "system_time", Type: field.TypeInt64, Nullable: true},
 		{Name: "user_time", Type: field.TypeInt64, Nullable: true},
+		{Name: "action_summary_action_data", Type: field.TypeInt, Nullable: true},
 	}
 	// ActionDataTable holds the schema information for the "action_data" table.
 	ActionDataTable = &schema.Table{
 		Name:       "action_data",
 		Columns:    ActionDataColumns,
 		PrimaryKey: []*schema.Column{ActionDataColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "action_data_action_summaries_action_data",
+				Columns:    []*schema.Column{ActionDataColumns[8]},
+				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// ActionSummariesColumns holds the columns for the "action_summaries" table.
 	ActionSummariesColumns = []*schema.Column{
@@ -47,7 +65,7 @@ var (
 		{Name: "actions_created_not_including_aspects", Type: field.TypeInt64, Nullable: true},
 		{Name: "actions_executed", Type: field.TypeInt64, Nullable: true},
 		{Name: "remote_cache_hits", Type: field.TypeInt64, Nullable: true},
-		{Name: "metrics_action_summary", Type: field.TypeInt, Nullable: true},
+		{Name: "metrics_action_summary", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// ActionSummariesTable holds the schema information for the "action_summaries" table.
 	ActionSummariesTable = &schema.Table{
@@ -66,12 +84,42 @@ var (
 	// ArtifactMetricsColumns holds the columns for the "artifact_metrics" table.
 	ArtifactMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "artifact_metrics_source_artifacts_read", Type: field.TypeInt, Nullable: true},
+		{Name: "artifact_metrics_output_artifacts_seen", Type: field.TypeInt, Nullable: true},
+		{Name: "artifact_metrics_output_artifacts_from_action_cache", Type: field.TypeInt, Nullable: true},
+		{Name: "metrics_artifact_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// ArtifactMetricsTable holds the schema information for the "artifact_metrics" table.
 	ArtifactMetricsTable = &schema.Table{
 		Name:       "artifact_metrics",
 		Columns:    ArtifactMetricsColumns,
 		PrimaryKey: []*schema.Column{ArtifactMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "artifact_metrics_files_metrics_source_artifacts_read",
+				Columns:    []*schema.Column{ArtifactMetricsColumns[1]},
+				RefColumns: []*schema.Column{FilesMetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "artifact_metrics_files_metrics_output_artifacts_seen",
+				Columns:    []*schema.Column{ArtifactMetricsColumns[2]},
+				RefColumns: []*schema.Column{FilesMetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "artifact_metrics_files_metrics_output_artifacts_from_action_cache",
+				Columns:    []*schema.Column{ArtifactMetricsColumns[3]},
+				RefColumns: []*schema.Column{FilesMetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "artifact_metrics_metrics_artifact_metrics",
+				Columns:    []*schema.Column{ArtifactMetricsColumns[4]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// BazelInvocationsColumns holds the columns for the "bazel_invocations" table.
 	BazelInvocationsColumns = []*schema.Column{
@@ -192,44 +240,96 @@ var (
 		{Name: "other_configured_target_count", Type: field.TypeInt32, Nullable: true},
 		{Name: "output_artifact_count", Type: field.TypeInt32, Nullable: true},
 		{Name: "post_invocation_skyframe_node_count", Type: field.TypeInt32, Nullable: true},
+		{Name: "build_graph_metrics_dirtied_values", Type: field.TypeInt, Nullable: true},
+		{Name: "build_graph_metrics_changed_values", Type: field.TypeInt, Nullable: true},
+		{Name: "build_graph_metrics_built_values", Type: field.TypeInt, Nullable: true},
+		{Name: "build_graph_metrics_cleaned_values", Type: field.TypeInt, Nullable: true},
+		{Name: "metrics_build_graph_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// BuildGraphMetricsTable holds the schema information for the "build_graph_metrics" table.
 	BuildGraphMetricsTable = &schema.Table{
 		Name:       "build_graph_metrics",
 		Columns:    BuildGraphMetricsColumns,
 		PrimaryKey: []*schema.Column{BuildGraphMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "build_graph_metrics_evaluation_stats_dirtied_values",
+				Columns:    []*schema.Column{BuildGraphMetricsColumns[10]},
+				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "build_graph_metrics_evaluation_stats_changed_values",
+				Columns:    []*schema.Column{BuildGraphMetricsColumns[11]},
+				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "build_graph_metrics_evaluation_stats_built_values",
+				Columns:    []*schema.Column{BuildGraphMetricsColumns[12]},
+				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "build_graph_metrics_evaluation_stats_cleaned_values",
+				Columns:    []*schema.Column{BuildGraphMetricsColumns[13]},
+				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "build_graph_metrics_metrics_build_graph_metrics",
+				Columns:    []*schema.Column{BuildGraphMetricsColumns[14]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// CumulativeMetricsColumns holds the columns for the "cumulative_metrics" table.
 	CumulativeMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "num_analyses", Type: field.TypeInt32, Nullable: true},
 		{Name: "num_builds", Type: field.TypeInt32, Nullable: true},
+		{Name: "metrics_cumulative_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// CumulativeMetricsTable holds the schema information for the "cumulative_metrics" table.
 	CumulativeMetricsTable = &schema.Table{
 		Name:       "cumulative_metrics",
 		Columns:    CumulativeMetricsColumns,
 		PrimaryKey: []*schema.Column{CumulativeMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "cumulative_metrics_metrics_cumulative_metrics",
+				Columns:    []*schema.Column{CumulativeMetricsColumns[3]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// DynamicExecutionMetricsColumns holds the columns for the "dynamic_execution_metrics" table.
 	DynamicExecutionMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "metrics_dynamic_execution_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// DynamicExecutionMetricsTable holds the schema information for the "dynamic_execution_metrics" table.
 	DynamicExecutionMetricsTable = &schema.Table{
 		Name:       "dynamic_execution_metrics",
 		Columns:    DynamicExecutionMetricsColumns,
 		PrimaryKey: []*schema.Column{DynamicExecutionMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "dynamic_execution_metrics_metrics_dynamic_execution_metrics",
+				Columns:    []*schema.Column{DynamicExecutionMetricsColumns[1]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// EvaluationStatsColumns holds the columns for the "evaluation_stats" table.
 	EvaluationStatsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "skyfunction_name", Type: field.TypeString, Nullable: true},
 		{Name: "count", Type: field.TypeInt64, Nullable: true},
-		{Name: "build_graph_metrics_dirtied_values", Type: field.TypeInt, Nullable: true},
-		{Name: "build_graph_metrics_changed_values", Type: field.TypeInt, Nullable: true},
-		{Name: "build_graph_metrics_built_values", Type: field.TypeInt, Nullable: true},
-		{Name: "build_graph_metrics_cleaned_values", Type: field.TypeInt, Nullable: true},
+		{Name: "build_graph_metrics_evaluated_values", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// EvaluationStatsTable holds the schema information for the "evaluation_stats" table.
 	EvaluationStatsTable = &schema.Table{
@@ -238,26 +338,8 @@ var (
 		PrimaryKey: []*schema.Column{EvaluationStatsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "evaluation_stats_build_graph_metrics_dirtied_values",
+				Symbol:     "evaluation_stats_build_graph_metrics_evaluated_values",
 				Columns:    []*schema.Column{EvaluationStatsColumns[3]},
-				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "evaluation_stats_build_graph_metrics_changed_values",
-				Columns:    []*schema.Column{EvaluationStatsColumns[4]},
-				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "evaluation_stats_build_graph_metrics_built_values",
-				Columns:    []*schema.Column{EvaluationStatsColumns[5]},
-				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "evaluation_stats_build_graph_metrics_cleaned_values",
-				Columns:    []*schema.Column{EvaluationStatsColumns[6]},
 				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -294,7 +376,7 @@ var (
 		{Name: "cached_remotely", Type: field.TypeBool, Nullable: true},
 		{Name: "exit_code", Type: field.TypeInt32, Nullable: true},
 		{Name: "hostname", Type: field.TypeString, Nullable: true},
-		{Name: "exection_info_timing_breakdown", Type: field.TypeInt, Nullable: true},
+		{Name: "test_result_bes_execution_info", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// ExectionInfosTable holds the schema information for the "exection_infos" table.
 	ExectionInfosTable = &schema.Table{
@@ -303,9 +385,9 @@ var (
 		PrimaryKey: []*schema.Column{ExectionInfosColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "exection_infos_timing_breakdowns_timing_breakdown",
+				Symbol:     "exection_infos_test_result_be_ss_execution_info",
 				Columns:    []*schema.Column{ExectionInfosColumns[6]},
-				RefColumns: []*schema.Column{TimingBreakdownsColumns[0]},
+				RefColumns: []*schema.Column{TestResultBeSsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -315,9 +397,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "size_in_bytes", Type: field.TypeInt64, Nullable: true},
 		{Name: "count", Type: field.TypeInt32, Nullable: true},
-		{Name: "artifact_metrics_source_artifacts_read", Type: field.TypeInt, Nullable: true},
-		{Name: "artifact_metrics_output_artifacts_seen", Type: field.TypeInt, Nullable: true},
-		{Name: "artifact_metrics_output_artifacts_from_action_cache", Type: field.TypeInt, Nullable: true},
+		{Name: "artifact_metrics_top_level_artifacts", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// FilesMetricsTable holds the schema information for the "files_metrics" table.
 	FilesMetricsTable = &schema.Table{
@@ -326,20 +406,8 @@ var (
 		PrimaryKey: []*schema.Column{FilesMetricsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "files_metrics_artifact_metrics_source_artifacts_read",
+				Symbol:     "files_metrics_artifact_metrics_top_level_artifacts",
 				Columns:    []*schema.Column{FilesMetricsColumns[3]},
-				RefColumns: []*schema.Column{ArtifactMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "files_metrics_artifact_metrics_output_artifacts_seen",
-				Columns:    []*schema.Column{FilesMetricsColumns[4]},
-				RefColumns: []*schema.Column{ArtifactMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "files_metrics_artifact_metrics_output_artifacts_from_action_cache",
-				Columns:    []*schema.Column{FilesMetricsColumns[5]},
 				RefColumns: []*schema.Column{ArtifactMetricsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -350,12 +418,21 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "type", Type: field.TypeString, Nullable: true},
 		{Name: "garbage_collected", Type: field.TypeInt64, Nullable: true},
+		{Name: "memory_metrics_garbage_metrics", Type: field.TypeInt, Nullable: true},
 	}
 	// GarbageMetricsTable holds the schema information for the "garbage_metrics" table.
 	GarbageMetricsTable = &schema.Table{
 		Name:       "garbage_metrics",
 		Columns:    GarbageMetricsColumns,
 		PrimaryKey: []*schema.Column{GarbageMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "garbage_metrics_memory_metrics_garbage_metrics",
+				Columns:    []*schema.Column{GarbageMetricsColumns[3]},
+				RefColumns: []*schema.Column{MemoryMetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// MemoryMetricsColumns holds the columns for the "memory_metrics" table.
 	MemoryMetricsColumns = []*schema.Column{
@@ -363,12 +440,21 @@ var (
 		{Name: "peak_post_gc_heap_size", Type: field.TypeInt64, Nullable: true},
 		{Name: "used_heap_size_post_build", Type: field.TypeInt64, Nullable: true},
 		{Name: "peak_post_gc_tenured_space_heap_size", Type: field.TypeInt64, Nullable: true},
+		{Name: "metrics_memory_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// MemoryMetricsTable holds the schema information for the "memory_metrics" table.
 	MemoryMetricsTable = &schema.Table{
 		Name:       "memory_metrics",
 		Columns:    MemoryMetricsColumns,
 		PrimaryKey: []*schema.Column{MemoryMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "memory_metrics_metrics_memory_metrics",
+				Columns:    []*schema.Column{MemoryMetricsColumns[4]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// MetricsColumns holds the columns for the "metrics" table.
 	MetricsColumns = []*schema.Column{
@@ -394,17 +480,27 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "reason", Type: field.TypeEnum, Nullable: true, Enums: []string{"DIFFERENT_ACTION_KEY", "DIFFERENT_DEPS", "DIFFERENT_ENVIRONMENT", "DIFFERENT_FILES", "CORRUPTED_CACHE_ENTRY", "NOT_CACHED", "UNCONDITIONAL_EXECUTION", "UNKNOWN"}, Default: "UNKNOWN"},
 		{Name: "count", Type: field.TypeInt32, Nullable: true},
+		{Name: "action_cache_statistics_miss_details", Type: field.TypeInt, Nullable: true},
 	}
 	// MissDetailsTable holds the schema information for the "miss_details" table.
 	MissDetailsTable = &schema.Table{
 		Name:       "miss_details",
 		Columns:    MissDetailsColumns,
 		PrimaryKey: []*schema.Column{MissDetailsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "miss_details_action_cache_statistics_miss_details",
+				Columns:    []*schema.Column{MissDetailsColumns[3]},
+				RefColumns: []*schema.Column{ActionCacheStatisticsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// NamedSetOfFilesColumns holds the columns for the "named_set_of_files" table.
 	NamedSetOfFilesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "named_set_of_files_file_sets", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "output_group_file_sets", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// NamedSetOfFilesTable holds the schema information for the "named_set_of_files" table.
 	NamedSetOfFilesTable = &schema.Table{
@@ -418,24 +514,39 @@ var (
 				RefColumns: []*schema.Column{NamedSetOfFilesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
+			{
+				Symbol:     "named_set_of_files_output_groups_file_sets",
+				Columns:    []*schema.Column{NamedSetOfFilesColumns[2]},
+				RefColumns: []*schema.Column{OutputGroupsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
 		},
 	}
 	// NetworkMetricsColumns holds the columns for the "network_metrics" table.
 	NetworkMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "metrics_network_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// NetworkMetricsTable holds the schema information for the "network_metrics" table.
 	NetworkMetricsTable = &schema.Table{
 		Name:       "network_metrics",
 		Columns:    NetworkMetricsColumns,
 		PrimaryKey: []*schema.Column{NetworkMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "network_metrics_metrics_network_metrics",
+				Columns:    []*schema.Column{NetworkMetricsColumns[1]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// OutputGroupsColumns holds the columns for the "output_groups" table.
 	OutputGroupsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "incomplete", Type: field.TypeBool, Nullable: true},
-		{Name: "output_group_file_sets", Type: field.TypeInt, Nullable: true},
+		{Name: "target_complete_output_group", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// OutputGroupsTable holds the schema information for the "output_groups" table.
 	OutputGroupsTable = &schema.Table{
@@ -444,9 +555,9 @@ var (
 		PrimaryKey: []*schema.Column{OutputGroupsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "output_groups_named_set_of_files_file_sets",
+				Symbol:     "output_groups_target_completes_output_group",
 				Columns:    []*schema.Column{OutputGroupsColumns[3]},
-				RefColumns: []*schema.Column{NamedSetOfFilesColumns[0]},
+				RefColumns: []*schema.Column{TargetCompletesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -460,23 +571,41 @@ var (
 		{Name: "computation_steps", Type: field.TypeUint64, Nullable: true},
 		{Name: "num_transitive_loads", Type: field.TypeUint64, Nullable: true},
 		{Name: "package_overhead", Type: field.TypeUint64, Nullable: true},
+		{Name: "package_metrics_package_load_metrics", Type: field.TypeInt, Nullable: true},
 	}
 	// PackageLoadMetricsTable holds the schema information for the "package_load_metrics" table.
 	PackageLoadMetricsTable = &schema.Table{
 		Name:       "package_load_metrics",
 		Columns:    PackageLoadMetricsColumns,
 		PrimaryKey: []*schema.Column{PackageLoadMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "package_load_metrics_package_metrics_package_load_metrics",
+				Columns:    []*schema.Column{PackageLoadMetricsColumns[7]},
+				RefColumns: []*schema.Column{PackageMetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// PackageMetricsColumns holds the columns for the "package_metrics" table.
 	PackageMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "packages_loaded", Type: field.TypeInt64, Nullable: true},
+		{Name: "metrics_package_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// PackageMetricsTable holds the schema information for the "package_metrics" table.
 	PackageMetricsTable = &schema.Table{
 		Name:       "package_metrics",
 		Columns:    PackageMetricsColumns,
 		PrimaryKey: []*schema.Column{PackageMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "package_metrics_metrics_package_metrics",
+				Columns:    []*schema.Column{PackageMetricsColumns[2]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// RaceStatisticsColumns holds the columns for the "race_statistics" table.
 	RaceStatisticsColumns = []*schema.Column{
@@ -486,24 +615,42 @@ var (
 		{Name: "remote_runner", Type: field.TypeString, Nullable: true},
 		{Name: "local_wins", Type: field.TypeInt64, Nullable: true},
 		{Name: "renote_wins", Type: field.TypeInt64, Nullable: true},
+		{Name: "dynamic_execution_metrics_race_statistics", Type: field.TypeInt, Nullable: true},
 	}
 	// RaceStatisticsTable holds the schema information for the "race_statistics" table.
 	RaceStatisticsTable = &schema.Table{
 		Name:       "race_statistics",
 		Columns:    RaceStatisticsColumns,
 		PrimaryKey: []*schema.Column{RaceStatisticsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "race_statistics_dynamic_execution_metrics_race_statistics",
+				Columns:    []*schema.Column{RaceStatisticsColumns[6]},
+				RefColumns: []*schema.Column{DynamicExecutionMetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// ResourceUsagesColumns holds the columns for the "resource_usages" table.
 	ResourceUsagesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "value", Type: field.TypeString, Nullable: true},
+		{Name: "exection_info_resource_usage", Type: field.TypeInt, Nullable: true},
 	}
 	// ResourceUsagesTable holds the schema information for the "resource_usages" table.
 	ResourceUsagesTable = &schema.Table{
 		Name:       "resource_usages",
 		Columns:    ResourceUsagesColumns,
 		PrimaryKey: []*schema.Column{ResourceUsagesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "resource_usages_exection_infos_resource_usage",
+				Columns:    []*schema.Column{ResourceUsagesColumns[3]},
+				RefColumns: []*schema.Column{ExectionInfosColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// RunnerCountsColumns holds the columns for the "runner_counts" table.
 	RunnerCountsColumns = []*schema.Column{
@@ -511,12 +658,21 @@ var (
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "exec_kind", Type: field.TypeString, Nullable: true},
 		{Name: "actions_executed", Type: field.TypeInt64, Nullable: true},
+		{Name: "action_summary_runner_count", Type: field.TypeInt, Nullable: true},
 	}
 	// RunnerCountsTable holds the schema information for the "runner_counts" table.
 	RunnerCountsTable = &schema.Table{
 		Name:       "runner_counts",
 		Columns:    RunnerCountsColumns,
 		PrimaryKey: []*schema.Column{RunnerCountsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "runner_counts_action_summaries_runner_count",
+				Columns:    []*schema.Column{RunnerCountsColumns[4]},
+				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// SystemNetworkStatsColumns holds the columns for the "system_network_stats" table.
 	SystemNetworkStatsColumns = []*schema.Column{
@@ -529,7 +685,7 @@ var (
 		{Name: "peak_bytes_recv_per_sec", Type: field.TypeUint64, Nullable: true},
 		{Name: "peak_packets_sent_per_sec", Type: field.TypeUint64, Nullable: true},
 		{Name: "peak_packets_recv_per_sec", Type: field.TypeUint64, Nullable: true},
-		{Name: "network_metrics_system_network_stats", Type: field.TypeInt, Nullable: true},
+		{Name: "network_metrics_system_network_stats", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// SystemNetworkStatsTable holds the schema information for the "system_network_stats" table.
 	SystemNetworkStatsTable = &schema.Table{
@@ -555,7 +711,7 @@ var (
 		{Name: "test_timeout_seconds", Type: field.TypeInt64, Nullable: true},
 		{Name: "test_timeout", Type: field.TypeInt64, Nullable: true},
 		{Name: "test_size", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNKNOWN", "SMALL", "MEDIUM", "LARGE", "ENORMOUS"}},
-		{Name: "target_complete_output_group", Type: field.TypeInt, Nullable: true},
+		{Name: "target_pair_completion", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// TargetCompletesTable holds the schema information for the "target_completes" table.
 	TargetCompletesTable = &schema.Table{
@@ -564,9 +720,9 @@ var (
 		PrimaryKey: []*schema.Column{TargetCompletesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "target_completes_output_groups_output_group",
+				Symbol:     "target_completes_target_pairs_completion",
 				Columns:    []*schema.Column{TargetCompletesColumns[8]},
-				RefColumns: []*schema.Column{OutputGroupsColumns[0]},
+				RefColumns: []*schema.Column{TargetPairsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -578,12 +734,21 @@ var (
 		{Name: "target_kind", Type: field.TypeString, Nullable: true},
 		{Name: "start_time_in_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "test_size", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNKNOWN", "SMALL", "MEDIUM", "LARGE", "ENORMOUS"}},
+		{Name: "target_pair_configuration", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// TargetConfiguredsTable holds the schema information for the "target_configureds" table.
 	TargetConfiguredsTable = &schema.Table{
 		Name:       "target_configureds",
 		Columns:    TargetConfiguredsColumns,
 		PrimaryKey: []*schema.Column{TargetConfiguredsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "target_configureds_target_pairs_configuration",
+				Columns:    []*schema.Column{TargetConfiguredsColumns[5]},
+				RefColumns: []*schema.Column{TargetPairsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// TargetMetricsColumns holds the columns for the "target_metrics" table.
 	TargetMetricsColumns = []*schema.Column{
@@ -591,12 +756,21 @@ var (
 		{Name: "targets_loaded", Type: field.TypeInt64, Nullable: true},
 		{Name: "targets_configured", Type: field.TypeInt64, Nullable: true},
 		{Name: "targets_configured_not_including_aspects", Type: field.TypeInt64, Nullable: true},
+		{Name: "metrics_target_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// TargetMetricsTable holds the schema information for the "target_metrics" table.
 	TargetMetricsTable = &schema.Table{
 		Name:       "target_metrics",
 		Columns:    TargetMetricsColumns,
 		PrimaryKey: []*schema.Column{TargetMetricsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "target_metrics_metrics_target_metrics",
+				Columns:    []*schema.Column{TargetMetricsColumns[4]},
+				RefColumns: []*schema.Column{MetricsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// TargetPairsColumns holds the columns for the "target_pairs" table.
 	TargetPairsColumns = []*schema.Column{
@@ -607,8 +781,7 @@ var (
 		{Name: "target_kind", Type: field.TypeString, Nullable: true},
 		{Name: "test_size", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNKNOWN", "SMALL", "MEDIUM", "LARGE", "ENORMOUS"}, Default: "UNKNOWN"},
 		{Name: "abort_reason", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNKNOWN", "USER_INTERRUPTED", "NO_ANALYZE", "NO_BUILD", "TIME_OUT", "REMOTE_ENVIRONMENT_FAILURE", "INTERNAL", "LOADING_FAILURE", "ANALYSIS_FAILURE", "SKIPPED", "INCOMPLETE", "OUT_OF_MEMORY"}},
-		{Name: "target_pair_configuration", Type: field.TypeInt, Nullable: true},
-		{Name: "target_pair_completion", Type: field.TypeInt, Nullable: true},
+		{Name: "bazel_invocation_targets", Type: field.TypeInt, Nullable: true},
 	}
 	// TargetPairsTable holds the schema information for the "target_pairs" table.
 	TargetPairsTable = &schema.Table{
@@ -617,15 +790,9 @@ var (
 		PrimaryKey: []*schema.Column{TargetPairsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "target_pairs_target_configureds_configuration",
+				Symbol:     "target_pairs_bazel_invocations_targets",
 				Columns:    []*schema.Column{TargetPairsColumns[7]},
-				RefColumns: []*schema.Column{TargetConfiguredsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "target_pairs_target_completes_completion",
-				Columns:    []*schema.Column{TargetPairsColumns[8]},
-				RefColumns: []*schema.Column{TargetCompletesColumns[0]},
+				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -638,8 +805,9 @@ var (
 		{Name: "strategy", Type: field.TypeString, Nullable: true},
 		{Name: "cached_locally", Type: field.TypeBool, Nullable: true},
 		{Name: "cached_remotely", Type: field.TypeBool, Nullable: true},
+		{Name: "first_seen", Type: field.TypeTime, Nullable: true},
 		{Name: "duration_ms", Type: field.TypeInt64, Nullable: true},
-		{Name: "test_collection_test_summary", Type: field.TypeInt, Nullable: true},
+		{Name: "bazel_invocation_test_collection", Type: field.TypeInt, Nullable: true},
 	}
 	// TestCollectionsTable holds the schema information for the "test_collections" table.
 	TestCollectionsTable = &schema.Table{
@@ -648,9 +816,9 @@ var (
 		PrimaryKey: []*schema.Column{TestCollectionsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "test_collections_test_summaries_test_summary",
-				Columns:    []*schema.Column{TestCollectionsColumns[7]},
-				RefColumns: []*schema.Column{TestSummariesColumns[0]},
+				Symbol:     "test_collections_bazel_invocations_test_collection",
+				Columns:    []*schema.Column{TestCollectionsColumns[8]},
+				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -667,6 +835,7 @@ var (
 		{Name: "output_group_inline_files", Type: field.TypeInt, Nullable: true},
 		{Name: "target_complete_important_output", Type: field.TypeInt, Nullable: true},
 		{Name: "target_complete_directory_output", Type: field.TypeInt, Nullable: true},
+		{Name: "test_result_bes_test_action_output", Type: field.TypeInt, Nullable: true},
 		{Name: "test_summary_passed", Type: field.TypeInt, Nullable: true},
 		{Name: "test_summary_failed", Type: field.TypeInt, Nullable: true},
 	}
@@ -701,14 +870,20 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 			{
-				Symbol:     "test_files_test_summaries_passed",
+				Symbol:     "test_files_test_result_be_ss_test_action_output",
 				Columns:    []*schema.Column{TestFilesColumns[10]},
+				RefColumns: []*schema.Column{TestResultBeSsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "test_files_test_summaries_passed",
+				Columns:    []*schema.Column{TestFilesColumns[11]},
 				RefColumns: []*schema.Column{TestSummariesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "test_files_test_summaries_failed",
-				Columns:    []*schema.Column{TestFilesColumns[11]},
+				Columns:    []*schema.Column{TestFilesColumns[12]},
 				RefColumns: []*schema.Column{TestSummariesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -727,7 +902,6 @@ var (
 		{Name: "test_attempt_duration_millis", Type: field.TypeInt64, Nullable: true},
 		{Name: "test_attempt_duration", Type: field.TypeInt64, Nullable: true},
 		{Name: "test_collection_test_results", Type: field.TypeInt, Nullable: true},
-		{Name: "test_result_bes_execution_info", Type: field.TypeInt, Nullable: true},
 	}
 	// TestResultBeSsTable holds the schema information for the "test_result_be_ss" table.
 	TestResultBeSsTable = &schema.Table{
@@ -739,12 +913,6 @@ var (
 				Symbol:     "test_result_be_ss_test_collections_test_results",
 				Columns:    []*schema.Column{TestResultBeSsColumns[10]},
 				RefColumns: []*schema.Column{TestCollectionsColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-			{
-				Symbol:     "test_result_be_ss_exection_infos_execution_info",
-				Columns:    []*schema.Column{TestResultBeSsColumns[11]},
-				RefColumns: []*schema.Column{ExectionInfosColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -762,36 +930,63 @@ var (
 		{Name: "last_stop_time", Type: field.TypeInt64, Nullable: true},
 		{Name: "total_run_duration", Type: field.TypeInt64, Nullable: true},
 		{Name: "label", Type: field.TypeString, Nullable: true},
+		{Name: "test_collection_test_summary", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// TestSummariesTable holds the schema information for the "test_summaries" table.
 	TestSummariesTable = &schema.Table{
 		Name:       "test_summaries",
 		Columns:    TestSummariesColumns,
 		PrimaryKey: []*schema.Column{TestSummariesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "test_summaries_test_collections_test_summary",
+				Columns:    []*schema.Column{TestSummariesColumns[11]},
+				RefColumns: []*schema.Column{TestCollectionsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// TimingBreakdownsColumns holds the columns for the "timing_breakdowns" table.
 	TimingBreakdownsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "time", Type: field.TypeString, Nullable: true},
+		{Name: "exection_info_timing_breakdown", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// TimingBreakdownsTable holds the schema information for the "timing_breakdowns" table.
 	TimingBreakdownsTable = &schema.Table{
 		Name:       "timing_breakdowns",
 		Columns:    TimingBreakdownsColumns,
 		PrimaryKey: []*schema.Column{TimingBreakdownsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "timing_breakdowns_exection_infos_timing_breakdown",
+				Columns:    []*schema.Column{TimingBreakdownsColumns[3]},
+				RefColumns: []*schema.Column{ExectionInfosColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// TimingChildsColumns holds the columns for the "timing_childs" table.
 	TimingChildsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "time", Type: field.TypeString, Nullable: true},
+		{Name: "timing_breakdown_child", Type: field.TypeInt, Nullable: true},
 	}
 	// TimingChildsTable holds the schema information for the "timing_childs" table.
 	TimingChildsTable = &schema.Table{
 		Name:       "timing_childs",
 		Columns:    TimingChildsColumns,
 		PrimaryKey: []*schema.Column{TimingChildsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "timing_childs_timing_breakdowns_child",
+				Columns:    []*schema.Column{TimingChildsColumns[3]},
+				RefColumns: []*schema.Column{TimingBreakdownsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// TimingMetricsColumns holds the columns for the "timing_metrics" table.
 	TimingMetricsColumns = []*schema.Column{
@@ -801,585 +996,19 @@ var (
 		{Name: "analysis_phase_time_in_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "execution_phase_time_in_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "actions_execution_start_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "metrics_timing_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// TimingMetricsTable holds the schema information for the "timing_metrics" table.
 	TimingMetricsTable = &schema.Table{
 		Name:       "timing_metrics",
 		Columns:    TimingMetricsColumns,
 		PrimaryKey: []*schema.Column{TimingMetricsColumns[0]},
-	}
-	// ActionCacheStatisticsMissDetailsColumns holds the columns for the "action_cache_statistics_miss_details" table.
-	ActionCacheStatisticsMissDetailsColumns = []*schema.Column{
-		{Name: "action_cache_statistics_id", Type: field.TypeInt},
-		{Name: "miss_detail_id", Type: field.TypeInt},
-	}
-	// ActionCacheStatisticsMissDetailsTable holds the schema information for the "action_cache_statistics_miss_details" table.
-	ActionCacheStatisticsMissDetailsTable = &schema.Table{
-		Name:       "action_cache_statistics_miss_details",
-		Columns:    ActionCacheStatisticsMissDetailsColumns,
-		PrimaryKey: []*schema.Column{ActionCacheStatisticsMissDetailsColumns[0], ActionCacheStatisticsMissDetailsColumns[1]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "action_cache_statistics_miss_details_action_cache_statistics_id",
-				Columns:    []*schema.Column{ActionCacheStatisticsMissDetailsColumns[0]},
-				RefColumns: []*schema.Column{ActionCacheStatisticsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "action_cache_statistics_miss_details_miss_detail_id",
-				Columns:    []*schema.Column{ActionCacheStatisticsMissDetailsColumns[1]},
-				RefColumns: []*schema.Column{MissDetailsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// ActionSummaryActionDataColumns holds the columns for the "action_summary_action_data" table.
-	ActionSummaryActionDataColumns = []*schema.Column{
-		{Name: "action_summary_id", Type: field.TypeInt},
-		{Name: "action_data_id", Type: field.TypeInt},
-	}
-	// ActionSummaryActionDataTable holds the schema information for the "action_summary_action_data" table.
-	ActionSummaryActionDataTable = &schema.Table{
-		Name:       "action_summary_action_data",
-		Columns:    ActionSummaryActionDataColumns,
-		PrimaryKey: []*schema.Column{ActionSummaryActionDataColumns[0], ActionSummaryActionDataColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "action_summary_action_data_action_summary_id",
-				Columns:    []*schema.Column{ActionSummaryActionDataColumns[0]},
-				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "action_summary_action_data_action_data_id",
-				Columns:    []*schema.Column{ActionSummaryActionDataColumns[1]},
-				RefColumns: []*schema.Column{ActionDataColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// ActionSummaryRunnerCountColumns holds the columns for the "action_summary_runner_count" table.
-	ActionSummaryRunnerCountColumns = []*schema.Column{
-		{Name: "action_summary_id", Type: field.TypeInt},
-		{Name: "runner_count_id", Type: field.TypeInt},
-	}
-	// ActionSummaryRunnerCountTable holds the schema information for the "action_summary_runner_count" table.
-	ActionSummaryRunnerCountTable = &schema.Table{
-		Name:       "action_summary_runner_count",
-		Columns:    ActionSummaryRunnerCountColumns,
-		PrimaryKey: []*schema.Column{ActionSummaryRunnerCountColumns[0], ActionSummaryRunnerCountColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "action_summary_runner_count_action_summary_id",
-				Columns:    []*schema.Column{ActionSummaryRunnerCountColumns[0]},
-				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "action_summary_runner_count_runner_count_id",
-				Columns:    []*schema.Column{ActionSummaryRunnerCountColumns[1]},
-				RefColumns: []*schema.Column{RunnerCountsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// ActionSummaryActionCacheStatisticsColumns holds the columns for the "action_summary_action_cache_statistics" table.
-	ActionSummaryActionCacheStatisticsColumns = []*schema.Column{
-		{Name: "action_summary_id", Type: field.TypeInt},
-		{Name: "action_cache_statistics_id", Type: field.TypeInt},
-	}
-	// ActionSummaryActionCacheStatisticsTable holds the schema information for the "action_summary_action_cache_statistics" table.
-	ActionSummaryActionCacheStatisticsTable = &schema.Table{
-		Name:       "action_summary_action_cache_statistics",
-		Columns:    ActionSummaryActionCacheStatisticsColumns,
-		PrimaryKey: []*schema.Column{ActionSummaryActionCacheStatisticsColumns[0], ActionSummaryActionCacheStatisticsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "action_summary_action_cache_statistics_action_summary_id",
-				Columns:    []*schema.Column{ActionSummaryActionCacheStatisticsColumns[0]},
-				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "action_summary_action_cache_statistics_action_cache_statistics_id",
-				Columns:    []*schema.Column{ActionSummaryActionCacheStatisticsColumns[1]},
-				RefColumns: []*schema.Column{ActionCacheStatisticsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// ArtifactMetricsTopLevelArtifactsColumns holds the columns for the "artifact_metrics_top_level_artifacts" table.
-	ArtifactMetricsTopLevelArtifactsColumns = []*schema.Column{
-		{Name: "artifact_metrics_id", Type: field.TypeInt},
-		{Name: "files_metric_id", Type: field.TypeInt},
-	}
-	// ArtifactMetricsTopLevelArtifactsTable holds the schema information for the "artifact_metrics_top_level_artifacts" table.
-	ArtifactMetricsTopLevelArtifactsTable = &schema.Table{
-		Name:       "artifact_metrics_top_level_artifacts",
-		Columns:    ArtifactMetricsTopLevelArtifactsColumns,
-		PrimaryKey: []*schema.Column{ArtifactMetricsTopLevelArtifactsColumns[0], ArtifactMetricsTopLevelArtifactsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "artifact_metrics_top_level_artifacts_artifact_metrics_id",
-				Columns:    []*schema.Column{ArtifactMetricsTopLevelArtifactsColumns[0]},
-				RefColumns: []*schema.Column{ArtifactMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "artifact_metrics_top_level_artifacts_files_metric_id",
-				Columns:    []*schema.Column{ArtifactMetricsTopLevelArtifactsColumns[1]},
-				RefColumns: []*schema.Column{FilesMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// BazelInvocationTestCollectionColumns holds the columns for the "bazel_invocation_test_collection" table.
-	BazelInvocationTestCollectionColumns = []*schema.Column{
-		{Name: "bazel_invocation_id", Type: field.TypeInt},
-		{Name: "test_collection_id", Type: field.TypeInt},
-	}
-	// BazelInvocationTestCollectionTable holds the schema information for the "bazel_invocation_test_collection" table.
-	BazelInvocationTestCollectionTable = &schema.Table{
-		Name:       "bazel_invocation_test_collection",
-		Columns:    BazelInvocationTestCollectionColumns,
-		PrimaryKey: []*schema.Column{BazelInvocationTestCollectionColumns[0], BazelInvocationTestCollectionColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "bazel_invocation_test_collection_bazel_invocation_id",
-				Columns:    []*schema.Column{BazelInvocationTestCollectionColumns[0]},
-				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "bazel_invocation_test_collection_test_collection_id",
-				Columns:    []*schema.Column{BazelInvocationTestCollectionColumns[1]},
-				RefColumns: []*schema.Column{TestCollectionsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// BazelInvocationTargetsColumns holds the columns for the "bazel_invocation_targets" table.
-	BazelInvocationTargetsColumns = []*schema.Column{
-		{Name: "bazel_invocation_id", Type: field.TypeInt},
-		{Name: "target_pair_id", Type: field.TypeInt},
-	}
-	// BazelInvocationTargetsTable holds the schema information for the "bazel_invocation_targets" table.
-	BazelInvocationTargetsTable = &schema.Table{
-		Name:       "bazel_invocation_targets",
-		Columns:    BazelInvocationTargetsColumns,
-		PrimaryKey: []*schema.Column{BazelInvocationTargetsColumns[0], BazelInvocationTargetsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "bazel_invocation_targets_bazel_invocation_id",
-				Columns:    []*schema.Column{BazelInvocationTargetsColumns[0]},
-				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "bazel_invocation_targets_target_pair_id",
-				Columns:    []*schema.Column{BazelInvocationTargetsColumns[1]},
-				RefColumns: []*schema.Column{TargetPairsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// BuildGraphMetricsEvaluatedValuesColumns holds the columns for the "build_graph_metrics_evaluated_values" table.
-	BuildGraphMetricsEvaluatedValuesColumns = []*schema.Column{
-		{Name: "build_graph_metrics_id", Type: field.TypeInt},
-		{Name: "evaluation_stat_id", Type: field.TypeInt},
-	}
-	// BuildGraphMetricsEvaluatedValuesTable holds the schema information for the "build_graph_metrics_evaluated_values" table.
-	BuildGraphMetricsEvaluatedValuesTable = &schema.Table{
-		Name:       "build_graph_metrics_evaluated_values",
-		Columns:    BuildGraphMetricsEvaluatedValuesColumns,
-		PrimaryKey: []*schema.Column{BuildGraphMetricsEvaluatedValuesColumns[0], BuildGraphMetricsEvaluatedValuesColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "build_graph_metrics_evaluated_values_build_graph_metrics_id",
-				Columns:    []*schema.Column{BuildGraphMetricsEvaluatedValuesColumns[0]},
-				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "build_graph_metrics_evaluated_values_evaluation_stat_id",
-				Columns:    []*schema.Column{BuildGraphMetricsEvaluatedValuesColumns[1]},
-				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// DynamicExecutionMetricsRaceStatisticsColumns holds the columns for the "dynamic_execution_metrics_race_statistics" table.
-	DynamicExecutionMetricsRaceStatisticsColumns = []*schema.Column{
-		{Name: "dynamic_execution_metrics_id", Type: field.TypeInt},
-		{Name: "race_statistics_id", Type: field.TypeInt},
-	}
-	// DynamicExecutionMetricsRaceStatisticsTable holds the schema information for the "dynamic_execution_metrics_race_statistics" table.
-	DynamicExecutionMetricsRaceStatisticsTable = &schema.Table{
-		Name:       "dynamic_execution_metrics_race_statistics",
-		Columns:    DynamicExecutionMetricsRaceStatisticsColumns,
-		PrimaryKey: []*schema.Column{DynamicExecutionMetricsRaceStatisticsColumns[0], DynamicExecutionMetricsRaceStatisticsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "dynamic_execution_metrics_race_statistics_dynamic_execution_metrics_id",
-				Columns:    []*schema.Column{DynamicExecutionMetricsRaceStatisticsColumns[0]},
-				RefColumns: []*schema.Column{DynamicExecutionMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "dynamic_execution_metrics_race_statistics_race_statistics_id",
-				Columns:    []*schema.Column{DynamicExecutionMetricsRaceStatisticsColumns[1]},
-				RefColumns: []*schema.Column{RaceStatisticsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// ExectionInfoResourceUsageColumns holds the columns for the "exection_info_resource_usage" table.
-	ExectionInfoResourceUsageColumns = []*schema.Column{
-		{Name: "exection_info_id", Type: field.TypeInt},
-		{Name: "resource_usage_id", Type: field.TypeInt},
-	}
-	// ExectionInfoResourceUsageTable holds the schema information for the "exection_info_resource_usage" table.
-	ExectionInfoResourceUsageTable = &schema.Table{
-		Name:       "exection_info_resource_usage",
-		Columns:    ExectionInfoResourceUsageColumns,
-		PrimaryKey: []*schema.Column{ExectionInfoResourceUsageColumns[0], ExectionInfoResourceUsageColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "exection_info_resource_usage_exection_info_id",
-				Columns:    []*schema.Column{ExectionInfoResourceUsageColumns[0]},
-				RefColumns: []*schema.Column{ExectionInfosColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "exection_info_resource_usage_resource_usage_id",
-				Columns:    []*schema.Column{ExectionInfoResourceUsageColumns[1]},
-				RefColumns: []*schema.Column{ResourceUsagesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// MemoryMetricsGarbageMetricsColumns holds the columns for the "memory_metrics_garbage_metrics" table.
-	MemoryMetricsGarbageMetricsColumns = []*schema.Column{
-		{Name: "memory_metrics_id", Type: field.TypeInt},
-		{Name: "garbage_metrics_id", Type: field.TypeInt},
-	}
-	// MemoryMetricsGarbageMetricsTable holds the schema information for the "memory_metrics_garbage_metrics" table.
-	MemoryMetricsGarbageMetricsTable = &schema.Table{
-		Name:       "memory_metrics_garbage_metrics",
-		Columns:    MemoryMetricsGarbageMetricsColumns,
-		PrimaryKey: []*schema.Column{MemoryMetricsGarbageMetricsColumns[0], MemoryMetricsGarbageMetricsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "memory_metrics_garbage_metrics_memory_metrics_id",
-				Columns:    []*schema.Column{MemoryMetricsGarbageMetricsColumns[0]},
-				RefColumns: []*schema.Column{MemoryMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "memory_metrics_garbage_metrics_garbage_metrics_id",
-				Columns:    []*schema.Column{MemoryMetricsGarbageMetricsColumns[1]},
-				RefColumns: []*schema.Column{GarbageMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// MetricsMemoryMetricsColumns holds the columns for the "metrics_memory_metrics" table.
-	MetricsMemoryMetricsColumns = []*schema.Column{
-		{Name: "metrics_id", Type: field.TypeInt},
-		{Name: "memory_metrics_id", Type: field.TypeInt},
-	}
-	// MetricsMemoryMetricsTable holds the schema information for the "metrics_memory_metrics" table.
-	MetricsMemoryMetricsTable = &schema.Table{
-		Name:       "metrics_memory_metrics",
-		Columns:    MetricsMemoryMetricsColumns,
-		PrimaryKey: []*schema.Column{MetricsMemoryMetricsColumns[0], MetricsMemoryMetricsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "metrics_memory_metrics_metrics_id",
-				Columns:    []*schema.Column{MetricsMemoryMetricsColumns[0]},
+				Symbol:     "timing_metrics_metrics_timing_metrics",
+				Columns:    []*schema.Column{TimingMetricsColumns[6]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "metrics_memory_metrics_memory_metrics_id",
-				Columns:    []*schema.Column{MetricsMemoryMetricsColumns[1]},
-				RefColumns: []*schema.Column{MemoryMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// MetricsTargetMetricsColumns holds the columns for the "metrics_target_metrics" table.
-	MetricsTargetMetricsColumns = []*schema.Column{
-		{Name: "metrics_id", Type: field.TypeInt},
-		{Name: "target_metrics_id", Type: field.TypeInt},
-	}
-	// MetricsTargetMetricsTable holds the schema information for the "metrics_target_metrics" table.
-	MetricsTargetMetricsTable = &schema.Table{
-		Name:       "metrics_target_metrics",
-		Columns:    MetricsTargetMetricsColumns,
-		PrimaryKey: []*schema.Column{MetricsTargetMetricsColumns[0], MetricsTargetMetricsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "metrics_target_metrics_metrics_id",
-				Columns:    []*schema.Column{MetricsTargetMetricsColumns[0]},
-				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "metrics_target_metrics_target_metrics_id",
-				Columns:    []*schema.Column{MetricsTargetMetricsColumns[1]},
-				RefColumns: []*schema.Column{TargetMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// MetricsPackageMetricsColumns holds the columns for the "metrics_package_metrics" table.
-	MetricsPackageMetricsColumns = []*schema.Column{
-		{Name: "metrics_id", Type: field.TypeInt},
-		{Name: "package_metrics_id", Type: field.TypeInt},
-	}
-	// MetricsPackageMetricsTable holds the schema information for the "metrics_package_metrics" table.
-	MetricsPackageMetricsTable = &schema.Table{
-		Name:       "metrics_package_metrics",
-		Columns:    MetricsPackageMetricsColumns,
-		PrimaryKey: []*schema.Column{MetricsPackageMetricsColumns[0], MetricsPackageMetricsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "metrics_package_metrics_metrics_id",
-				Columns:    []*schema.Column{MetricsPackageMetricsColumns[0]},
-				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "metrics_package_metrics_package_metrics_id",
-				Columns:    []*schema.Column{MetricsPackageMetricsColumns[1]},
-				RefColumns: []*schema.Column{PackageMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// MetricsTimingMetricsColumns holds the columns for the "metrics_timing_metrics" table.
-	MetricsTimingMetricsColumns = []*schema.Column{
-		{Name: "metrics_id", Type: field.TypeInt},
-		{Name: "timing_metrics_id", Type: field.TypeInt},
-	}
-	// MetricsTimingMetricsTable holds the schema information for the "metrics_timing_metrics" table.
-	MetricsTimingMetricsTable = &schema.Table{
-		Name:       "metrics_timing_metrics",
-		Columns:    MetricsTimingMetricsColumns,
-		PrimaryKey: []*schema.Column{MetricsTimingMetricsColumns[0], MetricsTimingMetricsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "metrics_timing_metrics_metrics_id",
-				Columns:    []*schema.Column{MetricsTimingMetricsColumns[0]},
-				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "metrics_timing_metrics_timing_metrics_id",
-				Columns:    []*schema.Column{MetricsTimingMetricsColumns[1]},
-				RefColumns: []*schema.Column{TimingMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// MetricsCumulativeMetricsColumns holds the columns for the "metrics_cumulative_metrics" table.
-	MetricsCumulativeMetricsColumns = []*schema.Column{
-		{Name: "metrics_id", Type: field.TypeInt},
-		{Name: "cumulative_metrics_id", Type: field.TypeInt},
-	}
-	// MetricsCumulativeMetricsTable holds the schema information for the "metrics_cumulative_metrics" table.
-	MetricsCumulativeMetricsTable = &schema.Table{
-		Name:       "metrics_cumulative_metrics",
-		Columns:    MetricsCumulativeMetricsColumns,
-		PrimaryKey: []*schema.Column{MetricsCumulativeMetricsColumns[0], MetricsCumulativeMetricsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "metrics_cumulative_metrics_metrics_id",
-				Columns:    []*schema.Column{MetricsCumulativeMetricsColumns[0]},
-				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "metrics_cumulative_metrics_cumulative_metrics_id",
-				Columns:    []*schema.Column{MetricsCumulativeMetricsColumns[1]},
-				RefColumns: []*schema.Column{CumulativeMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// MetricsArtifactMetricsColumns holds the columns for the "metrics_artifact_metrics" table.
-	MetricsArtifactMetricsColumns = []*schema.Column{
-		{Name: "metrics_id", Type: field.TypeInt},
-		{Name: "artifact_metrics_id", Type: field.TypeInt},
-	}
-	// MetricsArtifactMetricsTable holds the schema information for the "metrics_artifact_metrics" table.
-	MetricsArtifactMetricsTable = &schema.Table{
-		Name:       "metrics_artifact_metrics",
-		Columns:    MetricsArtifactMetricsColumns,
-		PrimaryKey: []*schema.Column{MetricsArtifactMetricsColumns[0], MetricsArtifactMetricsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "metrics_artifact_metrics_metrics_id",
-				Columns:    []*schema.Column{MetricsArtifactMetricsColumns[0]},
-				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "metrics_artifact_metrics_artifact_metrics_id",
-				Columns:    []*schema.Column{MetricsArtifactMetricsColumns[1]},
-				RefColumns: []*schema.Column{ArtifactMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// MetricsNetworkMetricsColumns holds the columns for the "metrics_network_metrics" table.
-	MetricsNetworkMetricsColumns = []*schema.Column{
-		{Name: "metrics_id", Type: field.TypeInt},
-		{Name: "network_metrics_id", Type: field.TypeInt},
-	}
-	// MetricsNetworkMetricsTable holds the schema information for the "metrics_network_metrics" table.
-	MetricsNetworkMetricsTable = &schema.Table{
-		Name:       "metrics_network_metrics",
-		Columns:    MetricsNetworkMetricsColumns,
-		PrimaryKey: []*schema.Column{MetricsNetworkMetricsColumns[0], MetricsNetworkMetricsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "metrics_network_metrics_metrics_id",
-				Columns:    []*schema.Column{MetricsNetworkMetricsColumns[0]},
-				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "metrics_network_metrics_network_metrics_id",
-				Columns:    []*schema.Column{MetricsNetworkMetricsColumns[1]},
-				RefColumns: []*schema.Column{NetworkMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// MetricsDynamicExecutionMetricsColumns holds the columns for the "metrics_dynamic_execution_metrics" table.
-	MetricsDynamicExecutionMetricsColumns = []*schema.Column{
-		{Name: "metrics_id", Type: field.TypeInt},
-		{Name: "dynamic_execution_metrics_id", Type: field.TypeInt},
-	}
-	// MetricsDynamicExecutionMetricsTable holds the schema information for the "metrics_dynamic_execution_metrics" table.
-	MetricsDynamicExecutionMetricsTable = &schema.Table{
-		Name:       "metrics_dynamic_execution_metrics",
-		Columns:    MetricsDynamicExecutionMetricsColumns,
-		PrimaryKey: []*schema.Column{MetricsDynamicExecutionMetricsColumns[0], MetricsDynamicExecutionMetricsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "metrics_dynamic_execution_metrics_metrics_id",
-				Columns:    []*schema.Column{MetricsDynamicExecutionMetricsColumns[0]},
-				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "metrics_dynamic_execution_metrics_dynamic_execution_metrics_id",
-				Columns:    []*schema.Column{MetricsDynamicExecutionMetricsColumns[1]},
-				RefColumns: []*schema.Column{DynamicExecutionMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// MetricsBuildGraphMetricsColumns holds the columns for the "metrics_build_graph_metrics" table.
-	MetricsBuildGraphMetricsColumns = []*schema.Column{
-		{Name: "metrics_id", Type: field.TypeInt},
-		{Name: "build_graph_metrics_id", Type: field.TypeInt},
-	}
-	// MetricsBuildGraphMetricsTable holds the schema information for the "metrics_build_graph_metrics" table.
-	MetricsBuildGraphMetricsTable = &schema.Table{
-		Name:       "metrics_build_graph_metrics",
-		Columns:    MetricsBuildGraphMetricsColumns,
-		PrimaryKey: []*schema.Column{MetricsBuildGraphMetricsColumns[0], MetricsBuildGraphMetricsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "metrics_build_graph_metrics_metrics_id",
-				Columns:    []*schema.Column{MetricsBuildGraphMetricsColumns[0]},
-				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "metrics_build_graph_metrics_build_graph_metrics_id",
-				Columns:    []*schema.Column{MetricsBuildGraphMetricsColumns[1]},
-				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// PackageMetricsPackageLoadMetricsColumns holds the columns for the "package_metrics_package_load_metrics" table.
-	PackageMetricsPackageLoadMetricsColumns = []*schema.Column{
-		{Name: "package_metrics_id", Type: field.TypeInt},
-		{Name: "package_load_metrics_id", Type: field.TypeInt},
-	}
-	// PackageMetricsPackageLoadMetricsTable holds the schema information for the "package_metrics_package_load_metrics" table.
-	PackageMetricsPackageLoadMetricsTable = &schema.Table{
-		Name:       "package_metrics_package_load_metrics",
-		Columns:    PackageMetricsPackageLoadMetricsColumns,
-		PrimaryKey: []*schema.Column{PackageMetricsPackageLoadMetricsColumns[0], PackageMetricsPackageLoadMetricsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "package_metrics_package_load_metrics_package_metrics_id",
-				Columns:    []*schema.Column{PackageMetricsPackageLoadMetricsColumns[0]},
-				RefColumns: []*schema.Column{PackageMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "package_metrics_package_load_metrics_package_load_metrics_id",
-				Columns:    []*schema.Column{PackageMetricsPackageLoadMetricsColumns[1]},
-				RefColumns: []*schema.Column{PackageLoadMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// TestResultBesTestActionOutputColumns holds the columns for the "test_result_bes_test_action_output" table.
-	TestResultBesTestActionOutputColumns = []*schema.Column{
-		{Name: "test_result_bes_id", Type: field.TypeInt},
-		{Name: "test_file_id", Type: field.TypeInt},
-	}
-	// TestResultBesTestActionOutputTable holds the schema information for the "test_result_bes_test_action_output" table.
-	TestResultBesTestActionOutputTable = &schema.Table{
-		Name:       "test_result_bes_test_action_output",
-		Columns:    TestResultBesTestActionOutputColumns,
-		PrimaryKey: []*schema.Column{TestResultBesTestActionOutputColumns[0], TestResultBesTestActionOutputColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "test_result_bes_test_action_output_test_result_bes_id",
-				Columns:    []*schema.Column{TestResultBesTestActionOutputColumns[0]},
-				RefColumns: []*schema.Column{TestResultBeSsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "test_result_bes_test_action_output_test_file_id",
-				Columns:    []*schema.Column{TestResultBesTestActionOutputColumns[1]},
-				RefColumns: []*schema.Column{TestFilesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// TimingBreakdownChildColumns holds the columns for the "timing_breakdown_child" table.
-	TimingBreakdownChildColumns = []*schema.Column{
-		{Name: "timing_breakdown_id", Type: field.TypeInt},
-		{Name: "timing_child_id", Type: field.TypeInt},
-	}
-	// TimingBreakdownChildTable holds the schema information for the "timing_breakdown_child" table.
-	TimingBreakdownChildTable = &schema.Table{
-		Name:       "timing_breakdown_child",
-		Columns:    TimingBreakdownChildColumns,
-		PrimaryKey: []*schema.Column{TimingBreakdownChildColumns[0], TimingBreakdownChildColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "timing_breakdown_child_timing_breakdown_id",
-				Columns:    []*schema.Column{TimingBreakdownChildColumns[0]},
-				RefColumns: []*schema.Column{TimingBreakdownsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "timing_breakdown_child_timing_child_id",
-				Columns:    []*schema.Column{TimingBreakdownChildColumns[1]},
-				RefColumns: []*schema.Column{TimingChildsColumns[0]},
-				OnDelete:   schema.Cascade,
+				OnDelete:   schema.SetNull,
 			},
 		},
 	}
@@ -1424,105 +1053,59 @@ var (
 		TimingBreakdownsTable,
 		TimingChildsTable,
 		TimingMetricsTable,
-		ActionCacheStatisticsMissDetailsTable,
-		ActionSummaryActionDataTable,
-		ActionSummaryRunnerCountTable,
-		ActionSummaryActionCacheStatisticsTable,
-		ArtifactMetricsTopLevelArtifactsTable,
-		BazelInvocationTestCollectionTable,
-		BazelInvocationTargetsTable,
-		BuildGraphMetricsEvaluatedValuesTable,
-		DynamicExecutionMetricsRaceStatisticsTable,
-		ExectionInfoResourceUsageTable,
-		MemoryMetricsGarbageMetricsTable,
-		MetricsMemoryMetricsTable,
-		MetricsTargetMetricsTable,
-		MetricsPackageMetricsTable,
-		MetricsTimingMetricsTable,
-		MetricsCumulativeMetricsTable,
-		MetricsArtifactMetricsTable,
-		MetricsNetworkMetricsTable,
-		MetricsDynamicExecutionMetricsTable,
-		MetricsBuildGraphMetricsTable,
-		PackageMetricsPackageLoadMetricsTable,
-		TestResultBesTestActionOutputTable,
-		TimingBreakdownChildTable,
 	}
 )
 
 func init() {
+	ActionCacheStatisticsTable.ForeignKeys[0].RefTable = ActionSummariesTable
+	ActionDataTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	ActionSummariesTable.ForeignKeys[0].RefTable = MetricsTable
+	ArtifactMetricsTable.ForeignKeys[0].RefTable = FilesMetricsTable
+	ArtifactMetricsTable.ForeignKeys[1].RefTable = FilesMetricsTable
+	ArtifactMetricsTable.ForeignKeys[2].RefTable = FilesMetricsTable
+	ArtifactMetricsTable.ForeignKeys[3].RefTable = MetricsTable
 	BazelInvocationsTable.ForeignKeys[0].RefTable = BuildsTable
 	BazelInvocationsTable.ForeignKeys[1].RefTable = EventFilesTable
 	BazelInvocationProblemsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	BuildGraphMetricsTable.ForeignKeys[0].RefTable = EvaluationStatsTable
+	BuildGraphMetricsTable.ForeignKeys[1].RefTable = EvaluationStatsTable
+	BuildGraphMetricsTable.ForeignKeys[2].RefTable = EvaluationStatsTable
+	BuildGraphMetricsTable.ForeignKeys[3].RefTable = EvaluationStatsTable
+	BuildGraphMetricsTable.ForeignKeys[4].RefTable = MetricsTable
+	CumulativeMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	DynamicExecutionMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	EvaluationStatsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
-	EvaluationStatsTable.ForeignKeys[1].RefTable = BuildGraphMetricsTable
-	EvaluationStatsTable.ForeignKeys[2].RefTable = BuildGraphMetricsTable
-	EvaluationStatsTable.ForeignKeys[3].RefTable = BuildGraphMetricsTable
-	ExectionInfosTable.ForeignKeys[0].RefTable = TimingBreakdownsTable
+	ExectionInfosTable.ForeignKeys[0].RefTable = TestResultBeSsTable
 	FilesMetricsTable.ForeignKeys[0].RefTable = ArtifactMetricsTable
-	FilesMetricsTable.ForeignKeys[1].RefTable = ArtifactMetricsTable
-	FilesMetricsTable.ForeignKeys[2].RefTable = ArtifactMetricsTable
+	GarbageMetricsTable.ForeignKeys[0].RefTable = MemoryMetricsTable
+	MemoryMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	MetricsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	MissDetailsTable.ForeignKeys[0].RefTable = ActionCacheStatisticsTable
 	NamedSetOfFilesTable.ForeignKeys[0].RefTable = NamedSetOfFilesTable
-	OutputGroupsTable.ForeignKeys[0].RefTable = NamedSetOfFilesTable
+	NamedSetOfFilesTable.ForeignKeys[1].RefTable = OutputGroupsTable
+	NetworkMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	OutputGroupsTable.ForeignKeys[0].RefTable = TargetCompletesTable
+	PackageLoadMetricsTable.ForeignKeys[0].RefTable = PackageMetricsTable
+	PackageMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	RaceStatisticsTable.ForeignKeys[0].RefTable = DynamicExecutionMetricsTable
+	ResourceUsagesTable.ForeignKeys[0].RefTable = ExectionInfosTable
+	RunnerCountsTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	SystemNetworkStatsTable.ForeignKeys[0].RefTable = NetworkMetricsTable
-	TargetCompletesTable.ForeignKeys[0].RefTable = OutputGroupsTable
-	TargetPairsTable.ForeignKeys[0].RefTable = TargetConfiguredsTable
-	TargetPairsTable.ForeignKeys[1].RefTable = TargetCompletesTable
-	TestCollectionsTable.ForeignKeys[0].RefTable = TestSummariesTable
+	TargetCompletesTable.ForeignKeys[0].RefTable = TargetPairsTable
+	TargetConfiguredsTable.ForeignKeys[0].RefTable = TargetPairsTable
+	TargetMetricsTable.ForeignKeys[0].RefTable = MetricsTable
+	TargetPairsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	TestCollectionsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	TestFilesTable.ForeignKeys[0].RefTable = NamedSetOfFilesTable
 	TestFilesTable.ForeignKeys[1].RefTable = OutputGroupsTable
 	TestFilesTable.ForeignKeys[2].RefTable = TargetCompletesTable
 	TestFilesTable.ForeignKeys[3].RefTable = TargetCompletesTable
-	TestFilesTable.ForeignKeys[4].RefTable = TestSummariesTable
+	TestFilesTable.ForeignKeys[4].RefTable = TestResultBeSsTable
 	TestFilesTable.ForeignKeys[5].RefTable = TestSummariesTable
+	TestFilesTable.ForeignKeys[6].RefTable = TestSummariesTable
 	TestResultBeSsTable.ForeignKeys[0].RefTable = TestCollectionsTable
-	TestResultBeSsTable.ForeignKeys[1].RefTable = ExectionInfosTable
-	ActionCacheStatisticsMissDetailsTable.ForeignKeys[0].RefTable = ActionCacheStatisticsTable
-	ActionCacheStatisticsMissDetailsTable.ForeignKeys[1].RefTable = MissDetailsTable
-	ActionSummaryActionDataTable.ForeignKeys[0].RefTable = ActionSummariesTable
-	ActionSummaryActionDataTable.ForeignKeys[1].RefTable = ActionDataTable
-	ActionSummaryRunnerCountTable.ForeignKeys[0].RefTable = ActionSummariesTable
-	ActionSummaryRunnerCountTable.ForeignKeys[1].RefTable = RunnerCountsTable
-	ActionSummaryActionCacheStatisticsTable.ForeignKeys[0].RefTable = ActionSummariesTable
-	ActionSummaryActionCacheStatisticsTable.ForeignKeys[1].RefTable = ActionCacheStatisticsTable
-	ArtifactMetricsTopLevelArtifactsTable.ForeignKeys[0].RefTable = ArtifactMetricsTable
-	ArtifactMetricsTopLevelArtifactsTable.ForeignKeys[1].RefTable = FilesMetricsTable
-	BazelInvocationTestCollectionTable.ForeignKeys[0].RefTable = BazelInvocationsTable
-	BazelInvocationTestCollectionTable.ForeignKeys[1].RefTable = TestCollectionsTable
-	BazelInvocationTargetsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
-	BazelInvocationTargetsTable.ForeignKeys[1].RefTable = TargetPairsTable
-	BuildGraphMetricsEvaluatedValuesTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
-	BuildGraphMetricsEvaluatedValuesTable.ForeignKeys[1].RefTable = EvaluationStatsTable
-	DynamicExecutionMetricsRaceStatisticsTable.ForeignKeys[0].RefTable = DynamicExecutionMetricsTable
-	DynamicExecutionMetricsRaceStatisticsTable.ForeignKeys[1].RefTable = RaceStatisticsTable
-	ExectionInfoResourceUsageTable.ForeignKeys[0].RefTable = ExectionInfosTable
-	ExectionInfoResourceUsageTable.ForeignKeys[1].RefTable = ResourceUsagesTable
-	MemoryMetricsGarbageMetricsTable.ForeignKeys[0].RefTable = MemoryMetricsTable
-	MemoryMetricsGarbageMetricsTable.ForeignKeys[1].RefTable = GarbageMetricsTable
-	MetricsMemoryMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	MetricsMemoryMetricsTable.ForeignKeys[1].RefTable = MemoryMetricsTable
-	MetricsTargetMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	MetricsTargetMetricsTable.ForeignKeys[1].RefTable = TargetMetricsTable
-	MetricsPackageMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	MetricsPackageMetricsTable.ForeignKeys[1].RefTable = PackageMetricsTable
-	MetricsTimingMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	MetricsTimingMetricsTable.ForeignKeys[1].RefTable = TimingMetricsTable
-	MetricsCumulativeMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	MetricsCumulativeMetricsTable.ForeignKeys[1].RefTable = CumulativeMetricsTable
-	MetricsArtifactMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	MetricsArtifactMetricsTable.ForeignKeys[1].RefTable = ArtifactMetricsTable
-	MetricsNetworkMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	MetricsNetworkMetricsTable.ForeignKeys[1].RefTable = NetworkMetricsTable
-	MetricsDynamicExecutionMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	MetricsDynamicExecutionMetricsTable.ForeignKeys[1].RefTable = DynamicExecutionMetricsTable
-	MetricsBuildGraphMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	MetricsBuildGraphMetricsTable.ForeignKeys[1].RefTable = BuildGraphMetricsTable
-	PackageMetricsPackageLoadMetricsTable.ForeignKeys[0].RefTable = PackageMetricsTable
-	PackageMetricsPackageLoadMetricsTable.ForeignKeys[1].RefTable = PackageLoadMetricsTable
-	TestResultBesTestActionOutputTable.ForeignKeys[0].RefTable = TestResultBeSsTable
-	TestResultBesTestActionOutputTable.ForeignKeys[1].RefTable = TestFilesTable
-	TimingBreakdownChildTable.ForeignKeys[0].RefTable = TimingBreakdownsTable
-	TimingBreakdownChildTable.ForeignKeys[1].RefTable = TimingChildsTable
+	TestSummariesTable.ForeignKeys[0].RefTable = TestCollectionsTable
+	TimingBreakdownsTable.ForeignKeys[0].RefTable = ExectionInfosTable
+	TimingChildsTable.ForeignKeys[0].RefTable = TimingBreakdownsTable
+	TimingMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 }

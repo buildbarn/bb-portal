@@ -20,18 +20,17 @@ import (
 // NamedSetOfFilesQuery is the builder for querying NamedSetOfFiles entities.
 type NamedSetOfFilesQuery struct {
 	config
-	ctx                  *QueryContext
-	order                []namedsetoffiles.OrderOption
-	inters               []Interceptor
-	predicates           []predicate.NamedSetOfFiles
-	withOutputGroup      *OutputGroupQuery
-	withFiles            *TestFileQuery
-	withFileSets         *NamedSetOfFilesQuery
-	withFKs              bool
-	modifiers            []func(*sql.Selector)
-	loadTotal            []func(context.Context, []*NamedSetOfFiles) error
-	withNamedOutputGroup map[string]*OutputGroupQuery
-	withNamedFiles       map[string]*TestFileQuery
+	ctx             *QueryContext
+	order           []namedsetoffiles.OrderOption
+	inters          []Interceptor
+	predicates      []predicate.NamedSetOfFiles
+	withOutputGroup *OutputGroupQuery
+	withFiles       *TestFileQuery
+	withFileSets    *NamedSetOfFilesQuery
+	withFKs         bool
+	modifiers       []func(*sql.Selector)
+	loadTotal       []func(context.Context, []*NamedSetOfFiles) error
+	withNamedFiles  map[string]*TestFileQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -82,7 +81,7 @@ func (nsofq *NamedSetOfFilesQuery) QueryOutputGroup() *OutputGroupQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(namedsetoffiles.Table, namedsetoffiles.FieldID, selector),
 			sqlgraph.To(outputgroup.Table, outputgroup.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, namedsetoffiles.OutputGroupTable, namedsetoffiles.OutputGroupColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, namedsetoffiles.OutputGroupTable, namedsetoffiles.OutputGroupColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(nsofq.driver.Dialect(), step)
 		return fromU, nil
@@ -431,7 +430,7 @@ func (nsofq *NamedSetOfFilesQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 			nsofq.withFileSets != nil,
 		}
 	)
-	if nsofq.withFileSets != nil {
+	if nsofq.withOutputGroup != nil || nsofq.withFileSets != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -459,9 +458,8 @@ func (nsofq *NamedSetOfFilesQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 		return nodes, nil
 	}
 	if query := nsofq.withOutputGroup; query != nil {
-		if err := nsofq.loadOutputGroup(ctx, query, nodes,
-			func(n *NamedSetOfFiles) { n.Edges.OutputGroup = []*OutputGroup{} },
-			func(n *NamedSetOfFiles, e *OutputGroup) { n.Edges.OutputGroup = append(n.Edges.OutputGroup, e) }); err != nil {
+		if err := nsofq.loadOutputGroup(ctx, query, nodes, nil,
+			func(n *NamedSetOfFiles, e *OutputGroup) { n.Edges.OutputGroup = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -475,13 +473,6 @@ func (nsofq *NamedSetOfFilesQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 	if query := nsofq.withFileSets; query != nil {
 		if err := nsofq.loadFileSets(ctx, query, nodes, nil,
 			func(n *NamedSetOfFiles, e *NamedSetOfFiles) { n.Edges.FileSets = e }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range nsofq.withNamedOutputGroup {
-		if err := nsofq.loadOutputGroup(ctx, query, nodes,
-			func(n *NamedSetOfFiles) { n.appendNamedOutputGroup(name) },
-			func(n *NamedSetOfFiles, e *OutputGroup) { n.appendNamedOutputGroup(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -501,33 +492,34 @@ func (nsofq *NamedSetOfFilesQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 }
 
 func (nsofq *NamedSetOfFilesQuery) loadOutputGroup(ctx context.Context, query *OutputGroupQuery, nodes []*NamedSetOfFiles, init func(*NamedSetOfFiles), assign func(*NamedSetOfFiles, *OutputGroup)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*NamedSetOfFiles)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*NamedSetOfFiles)
 	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
+		if nodes[i].output_group_file_sets == nil {
+			continue
 		}
+		fk := *nodes[i].output_group_file_sets
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.withFKs = true
-	query.Where(predicate.OutputGroup(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(namedsetoffiles.OutputGroupColumn), fks...))
-	}))
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(outputgroup.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.output_group_file_sets
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "output_group_file_sets" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "output_group_file_sets" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "output_group_file_sets" returned %v`, n.ID)
 		}
-		assign(node, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }
@@ -677,20 +669,6 @@ func (nsofq *NamedSetOfFilesQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedOutputGroup tells the query-builder to eager-load the nodes that are connected to the "output_group"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (nsofq *NamedSetOfFilesQuery) WithNamedOutputGroup(name string, opts ...func(*OutputGroupQuery)) *NamedSetOfFilesQuery {
-	query := (&OutputGroupClient{config: nsofq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if nsofq.withNamedOutputGroup == nil {
-		nsofq.withNamedOutputGroup = make(map[string]*OutputGroupQuery)
-	}
-	nsofq.withNamedOutputGroup[name] = query
-	return nsofq
 }
 
 // WithNamedFiles tells the query-builder to eager-load the nodes that are connected to the "files"

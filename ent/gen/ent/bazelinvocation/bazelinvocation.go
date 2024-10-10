@@ -88,16 +88,20 @@ const (
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
 	MetricsColumn = "bazel_invocation_metrics"
-	// TestCollectionTable is the table that holds the test_collection relation/edge. The primary key declared below.
-	TestCollectionTable = "bazel_invocation_test_collection"
+	// TestCollectionTable is the table that holds the test_collection relation/edge.
+	TestCollectionTable = "test_collections"
 	// TestCollectionInverseTable is the table name for the TestCollection entity.
 	// It exists in this package in order to avoid circular dependency with the "testcollection" package.
 	TestCollectionInverseTable = "test_collections"
-	// TargetsTable is the table that holds the targets relation/edge. The primary key declared below.
-	TargetsTable = "bazel_invocation_targets"
+	// TestCollectionColumn is the table column denoting the test_collection relation/edge.
+	TestCollectionColumn = "bazel_invocation_test_collection"
+	// TargetsTable is the table that holds the targets relation/edge.
+	TargetsTable = "target_pairs"
 	// TargetsInverseTable is the table name for the TargetPair entity.
 	// It exists in this package in order to avoid circular dependency with the "targetpair" package.
 	TargetsInverseTable = "target_pairs"
+	// TargetsColumn is the table column denoting the targets relation/edge.
+	TargetsColumn = "bazel_invocation_targets"
 )
 
 // Columns holds all SQL columns for bazelinvocation fields.
@@ -128,15 +132,6 @@ var ForeignKeys = []string{
 	"build_invocations",
 	"event_file_bazel_invocation",
 }
-
-var (
-	// TestCollectionPrimaryKey and TestCollectionColumn2 are the table columns denoting the
-	// primary key for the test_collection relation (M2M).
-	TestCollectionPrimaryKey = []string{"bazel_invocation_id", "test_collection_id"}
-	// TargetsPrimaryKey and TargetsColumn2 are the table columns denoting the
-	// primary key for the targets relation (M2M).
-	TargetsPrimaryKey = []string{"bazel_invocation_id", "target_pair_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -330,13 +325,13 @@ func newTestCollectionStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TestCollectionInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, TestCollectionTable, TestCollectionPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, TestCollectionTable, TestCollectionColumn),
 	)
 }
 func newTargetsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TargetsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, TargetsTable, TargetsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, TargetsTable, TargetsColumn),
 	)
 }

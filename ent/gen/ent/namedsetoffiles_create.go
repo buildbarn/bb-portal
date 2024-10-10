@@ -20,19 +20,23 @@ type NamedSetOfFilesCreate struct {
 	hooks    []Hook
 }
 
-// AddOutputGroupIDs adds the "output_group" edge to the OutputGroup entity by IDs.
-func (nsofc *NamedSetOfFilesCreate) AddOutputGroupIDs(ids ...int) *NamedSetOfFilesCreate {
-	nsofc.mutation.AddOutputGroupIDs(ids...)
+// SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID.
+func (nsofc *NamedSetOfFilesCreate) SetOutputGroupID(id int) *NamedSetOfFilesCreate {
+	nsofc.mutation.SetOutputGroupID(id)
 	return nsofc
 }
 
-// AddOutputGroup adds the "output_group" edges to the OutputGroup entity.
-func (nsofc *NamedSetOfFilesCreate) AddOutputGroup(o ...*OutputGroup) *NamedSetOfFilesCreate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+// SetNillableOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID if the given value is not nil.
+func (nsofc *NamedSetOfFilesCreate) SetNillableOutputGroupID(id *int) *NamedSetOfFilesCreate {
+	if id != nil {
+		nsofc = nsofc.SetOutputGroupID(*id)
 	}
-	return nsofc.AddOutputGroupIDs(ids...)
+	return nsofc
+}
+
+// SetOutputGroup sets the "output_group" edge to the OutputGroup entity.
+func (nsofc *NamedSetOfFilesCreate) SetOutputGroup(o *OutputGroup) *NamedSetOfFilesCreate {
+	return nsofc.SetOutputGroupID(o.ID)
 }
 
 // AddFileIDs adds the "files" edge to the TestFile entity by IDs.
@@ -131,7 +135,7 @@ func (nsofc *NamedSetOfFilesCreate) createSpec() (*NamedSetOfFiles, *sqlgraph.Cr
 	)
 	if nodes := nsofc.mutation.OutputGroupIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   namedsetoffiles.OutputGroupTable,
 			Columns: []string{namedsetoffiles.OutputGroupColumn},
@@ -143,6 +147,7 @@ func (nsofc *NamedSetOfFilesCreate) createSpec() (*NamedSetOfFiles, *sqlgraph.Cr
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.output_group_file_sets = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := nsofc.mutation.FilesIDs(); len(nodes) > 0 {

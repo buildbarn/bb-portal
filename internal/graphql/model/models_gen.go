@@ -9,7 +9,9 @@ import (
 	"time"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
+	"github.com/google/uuid"
 )
 
 type BuildStep interface {
@@ -102,6 +104,16 @@ func (ProgressProblem) IsProblem()            {}
 func (this ProgressProblem) GetID() string    { return this.ID }
 func (this ProgressProblem) GetLabel() string { return this.Label }
 
+type TargetAggregate struct {
+	Label *string `json:"label,omitempty"`
+	Count *int    `json:"count,omitempty"`
+	Sum   *int    `json:"sum,omitempty"`
+	Min   *int    `json:"min,omitempty"`
+	Max   *int    `json:"max,omitempty"`
+	Avg   *int    `json:"avg,omitempty"`
+	Pass  *int    `json:"pass,omitempty"`
+}
+
 type TargetProblem struct {
 	ID    string `json:"id"`
 	Label string `json:"label"`
@@ -112,6 +124,27 @@ func (TargetProblem) IsNode() {}
 func (TargetProblem) IsProblem()            {}
 func (this TargetProblem) GetID() string    { return this.ID }
 func (this TargetProblem) GetLabel() string { return this.Label }
+
+type TestGridCell struct {
+	InvocationID *uuid.UUID                    `json:"invocationId,omitempty"`
+	Status       *testcollection.OverallStatus `json:"status,omitempty"`
+}
+
+type TestGridResult struct {
+	Total  *int           `json:"total,omitempty"`
+	Result []*TestGridRow `json:"result,omitempty"`
+}
+
+type TestGridRow struct {
+	Label    *string         `json:"label,omitempty"`
+	Count    *int            `json:"count,omitempty"`
+	Sum      *int            `json:"sum,omitempty"`
+	Min      *int            `json:"min,omitempty"`
+	Max      *int            `json:"max,omitempty"`
+	Avg      *float64        `json:"avg,omitempty"`
+	PassRate *float64        `json:"passRate,omitempty"`
+	Cells    []*TestGridCell `json:"cells,omitempty"`
+}
 
 type TestProblem struct {
 	ID      string        `json:"id"`

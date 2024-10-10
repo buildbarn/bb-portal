@@ -1108,7 +1108,7 @@ func HasTestCollection() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, TestCollectionTable, TestCollectionPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, TestCollectionTable, TestCollectionColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -1131,7 +1131,7 @@ func HasTargets() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, TargetsTable, TargetsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, TargetsTable, TargetsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

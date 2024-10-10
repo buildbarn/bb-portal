@@ -20,22 +20,18 @@ import (
 // ArtifactMetricsQuery is the builder for querying ArtifactMetrics entities.
 type ArtifactMetricsQuery struct {
 	config
-	ctx                                     *QueryContext
-	order                                   []artifactmetrics.OrderOption
-	inters                                  []Interceptor
-	predicates                              []predicate.ArtifactMetrics
-	withMetrics                             *MetricsQuery
-	withSourceArtifactsRead                 *FilesMetricQuery
-	withOutputArtifactsSeen                 *FilesMetricQuery
-	withOutputArtifactsFromActionCache      *FilesMetricQuery
-	withTopLevelArtifacts                   *FilesMetricQuery
-	modifiers                               []func(*sql.Selector)
-	loadTotal                               []func(context.Context, []*ArtifactMetrics) error
-	withNamedMetrics                        map[string]*MetricsQuery
-	withNamedSourceArtifactsRead            map[string]*FilesMetricQuery
-	withNamedOutputArtifactsSeen            map[string]*FilesMetricQuery
-	withNamedOutputArtifactsFromActionCache map[string]*FilesMetricQuery
-	withNamedTopLevelArtifacts              map[string]*FilesMetricQuery
+	ctx                                *QueryContext
+	order                              []artifactmetrics.OrderOption
+	inters                             []Interceptor
+	predicates                         []predicate.ArtifactMetrics
+	withMetrics                        *MetricsQuery
+	withSourceArtifactsRead            *FilesMetricQuery
+	withOutputArtifactsSeen            *FilesMetricQuery
+	withOutputArtifactsFromActionCache *FilesMetricQuery
+	withTopLevelArtifacts              *FilesMetricQuery
+	withFKs                            bool
+	modifiers                          []func(*sql.Selector)
+	loadTotal                          []func(context.Context, []*ArtifactMetrics) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -86,7 +82,7 @@ func (amq *ArtifactMetricsQuery) QueryMetrics() *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, selector),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, artifactmetrics.MetricsTable, artifactmetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, artifactmetrics.MetricsTable, artifactmetrics.MetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
 		return fromU, nil
@@ -108,7 +104,7 @@ func (amq *ArtifactMetricsQuery) QuerySourceArtifactsRead() *FilesMetricQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, selector),
 			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, artifactmetrics.SourceArtifactsReadTable, artifactmetrics.SourceArtifactsReadColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, artifactmetrics.SourceArtifactsReadTable, artifactmetrics.SourceArtifactsReadColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
 		return fromU, nil
@@ -130,7 +126,7 @@ func (amq *ArtifactMetricsQuery) QueryOutputArtifactsSeen() *FilesMetricQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, selector),
 			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, artifactmetrics.OutputArtifactsSeenTable, artifactmetrics.OutputArtifactsSeenColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, artifactmetrics.OutputArtifactsSeenTable, artifactmetrics.OutputArtifactsSeenColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
 		return fromU, nil
@@ -152,7 +148,7 @@ func (amq *ArtifactMetricsQuery) QueryOutputArtifactsFromActionCache() *FilesMet
 		step := sqlgraph.NewStep(
 			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, selector),
 			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, artifactmetrics.OutputArtifactsFromActionCacheTable, artifactmetrics.OutputArtifactsFromActionCacheColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, artifactmetrics.OutputArtifactsFromActionCacheTable, artifactmetrics.OutputArtifactsFromActionCacheColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
 		return fromU, nil
@@ -174,7 +170,7 @@ func (amq *ArtifactMetricsQuery) QueryTopLevelArtifacts() *FilesMetricQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, selector),
 			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, artifactmetrics.TopLevelArtifactsTable, artifactmetrics.TopLevelArtifactsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, artifactmetrics.TopLevelArtifactsTable, artifactmetrics.TopLevelArtifactsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(amq.driver.Dialect(), step)
 		return fromU, nil
@@ -495,6 +491,7 @@ func (amq *ArtifactMetricsQuery) prepareQuery(ctx context.Context) error {
 func (amq *ArtifactMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ArtifactMetrics, error) {
 	var (
 		nodes       = []*ArtifactMetrics{}
+		withFKs     = amq.withFKs
 		_spec       = amq.querySpec()
 		loadedTypes = [5]bool{
 			amq.withMetrics != nil,
@@ -504,6 +501,12 @@ func (amq *ArtifactMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			amq.withTopLevelArtifacts != nil,
 		}
 	)
+	if amq.withMetrics != nil || amq.withSourceArtifactsRead != nil || amq.withOutputArtifactsSeen != nil || amq.withOutputArtifactsFromActionCache != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, artifactmetrics.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ArtifactMetrics).scanValues(nil, columns)
 	}
@@ -526,80 +529,32 @@ func (amq *ArtifactMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		return nodes, nil
 	}
 	if query := amq.withMetrics; query != nil {
-		if err := amq.loadMetrics(ctx, query, nodes,
-			func(n *ArtifactMetrics) { n.Edges.Metrics = []*Metrics{} },
-			func(n *ArtifactMetrics, e *Metrics) { n.Edges.Metrics = append(n.Edges.Metrics, e) }); err != nil {
+		if err := amq.loadMetrics(ctx, query, nodes, nil,
+			func(n *ArtifactMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := amq.withSourceArtifactsRead; query != nil {
-		if err := amq.loadSourceArtifactsRead(ctx, query, nodes,
-			func(n *ArtifactMetrics) { n.Edges.SourceArtifactsRead = []*FilesMetric{} },
-			func(n *ArtifactMetrics, e *FilesMetric) {
-				n.Edges.SourceArtifactsRead = append(n.Edges.SourceArtifactsRead, e)
-			}); err != nil {
+		if err := amq.loadSourceArtifactsRead(ctx, query, nodes, nil,
+			func(n *ArtifactMetrics, e *FilesMetric) { n.Edges.SourceArtifactsRead = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := amq.withOutputArtifactsSeen; query != nil {
-		if err := amq.loadOutputArtifactsSeen(ctx, query, nodes,
-			func(n *ArtifactMetrics) { n.Edges.OutputArtifactsSeen = []*FilesMetric{} },
-			func(n *ArtifactMetrics, e *FilesMetric) {
-				n.Edges.OutputArtifactsSeen = append(n.Edges.OutputArtifactsSeen, e)
-			}); err != nil {
+		if err := amq.loadOutputArtifactsSeen(ctx, query, nodes, nil,
+			func(n *ArtifactMetrics, e *FilesMetric) { n.Edges.OutputArtifactsSeen = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := amq.withOutputArtifactsFromActionCache; query != nil {
-		if err := amq.loadOutputArtifactsFromActionCache(ctx, query, nodes,
-			func(n *ArtifactMetrics) { n.Edges.OutputArtifactsFromActionCache = []*FilesMetric{} },
-			func(n *ArtifactMetrics, e *FilesMetric) {
-				n.Edges.OutputArtifactsFromActionCache = append(n.Edges.OutputArtifactsFromActionCache, e)
-			}); err != nil {
+		if err := amq.loadOutputArtifactsFromActionCache(ctx, query, nodes, nil,
+			func(n *ArtifactMetrics, e *FilesMetric) { n.Edges.OutputArtifactsFromActionCache = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := amq.withTopLevelArtifacts; query != nil {
-		if err := amq.loadTopLevelArtifacts(ctx, query, nodes,
-			func(n *ArtifactMetrics) { n.Edges.TopLevelArtifacts = []*FilesMetric{} },
-			func(n *ArtifactMetrics, e *FilesMetric) {
-				n.Edges.TopLevelArtifacts = append(n.Edges.TopLevelArtifacts, e)
-			}); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range amq.withNamedMetrics {
-		if err := amq.loadMetrics(ctx, query, nodes,
-			func(n *ArtifactMetrics) { n.appendNamedMetrics(name) },
-			func(n *ArtifactMetrics, e *Metrics) { n.appendNamedMetrics(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range amq.withNamedSourceArtifactsRead {
-		if err := amq.loadSourceArtifactsRead(ctx, query, nodes,
-			func(n *ArtifactMetrics) { n.appendNamedSourceArtifactsRead(name) },
-			func(n *ArtifactMetrics, e *FilesMetric) { n.appendNamedSourceArtifactsRead(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range amq.withNamedOutputArtifactsSeen {
-		if err := amq.loadOutputArtifactsSeen(ctx, query, nodes,
-			func(n *ArtifactMetrics) { n.appendNamedOutputArtifactsSeen(name) },
-			func(n *ArtifactMetrics, e *FilesMetric) { n.appendNamedOutputArtifactsSeen(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range amq.withNamedOutputArtifactsFromActionCache {
-		if err := amq.loadOutputArtifactsFromActionCache(ctx, query, nodes,
-			func(n *ArtifactMetrics) { n.appendNamedOutputArtifactsFromActionCache(name) },
-			func(n *ArtifactMetrics, e *FilesMetric) { n.appendNamedOutputArtifactsFromActionCache(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range amq.withNamedTopLevelArtifacts {
-		if err := amq.loadTopLevelArtifacts(ctx, query, nodes,
-			func(n *ArtifactMetrics) { n.appendNamedTopLevelArtifacts(name) },
-			func(n *ArtifactMetrics, e *FilesMetric) { n.appendNamedTopLevelArtifacts(name, e) }); err != nil {
+		if err := amq.loadTopLevelArtifacts(ctx, query, nodes, nil,
+			func(n *ArtifactMetrics, e *FilesMetric) { n.Edges.TopLevelArtifacts = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -612,217 +567,158 @@ func (amq *ArtifactMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 }
 
 func (amq *ArtifactMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*ArtifactMetrics, init func(*ArtifactMetrics), assign func(*ArtifactMetrics, *Metrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*ArtifactMetrics)
-	nids := make(map[int]map[*ArtifactMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*ArtifactMetrics)
+	for i := range nodes {
+		if nodes[i].metrics_artifact_metrics == nil {
+			continue
 		}
+		fk := *nodes[i].metrics_artifact_metrics
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(artifactmetrics.MetricsTable)
-		s.Join(joinT).On(s.C(metrics.FieldID), joinT.C(artifactmetrics.MetricsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(artifactmetrics.MetricsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(artifactmetrics.MetricsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*ArtifactMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*Metrics](ctx, query, qr, query.inters)
+	query.Where(metrics.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_artifact_metrics" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
 }
 func (amq *ArtifactMetricsQuery) loadSourceArtifactsRead(ctx context.Context, query *FilesMetricQuery, nodes []*ArtifactMetrics, init func(*ArtifactMetrics), assign func(*ArtifactMetrics, *FilesMetric)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*ArtifactMetrics)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*ArtifactMetrics)
 	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
+		if nodes[i].artifact_metrics_source_artifacts_read == nil {
+			continue
 		}
+		fk := *nodes[i].artifact_metrics_source_artifacts_read
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.withFKs = true
-	query.Where(predicate.FilesMetric(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(artifactmetrics.SourceArtifactsReadColumn), fks...))
-	}))
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(filesmetric.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.artifact_metrics_source_artifacts_read
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "artifact_metrics_source_artifacts_read" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "artifact_metrics_source_artifacts_read" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "artifact_metrics_source_artifacts_read" returned %v`, n.ID)
 		}
-		assign(node, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }
 func (amq *ArtifactMetricsQuery) loadOutputArtifactsSeen(ctx context.Context, query *FilesMetricQuery, nodes []*ArtifactMetrics, init func(*ArtifactMetrics), assign func(*ArtifactMetrics, *FilesMetric)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*ArtifactMetrics)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*ArtifactMetrics)
 	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
+		if nodes[i].artifact_metrics_output_artifacts_seen == nil {
+			continue
 		}
+		fk := *nodes[i].artifact_metrics_output_artifacts_seen
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.withFKs = true
-	query.Where(predicate.FilesMetric(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(artifactmetrics.OutputArtifactsSeenColumn), fks...))
-	}))
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(filesmetric.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.artifact_metrics_output_artifacts_seen
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "artifact_metrics_output_artifacts_seen" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "artifact_metrics_output_artifacts_seen" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "artifact_metrics_output_artifacts_seen" returned %v`, n.ID)
 		}
-		assign(node, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }
 func (amq *ArtifactMetricsQuery) loadOutputArtifactsFromActionCache(ctx context.Context, query *FilesMetricQuery, nodes []*ArtifactMetrics, init func(*ArtifactMetrics), assign func(*ArtifactMetrics, *FilesMetric)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*ArtifactMetrics)
+	for i := range nodes {
+		if nodes[i].artifact_metrics_output_artifacts_from_action_cache == nil {
+			continue
+		}
+		fk := *nodes[i].artifact_metrics_output_artifacts_from_action_cache
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(filesmetric.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "artifact_metrics_output_artifacts_from_action_cache" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (amq *ArtifactMetricsQuery) loadTopLevelArtifacts(ctx context.Context, query *FilesMetricQuery, nodes []*ArtifactMetrics, init func(*ArtifactMetrics), assign func(*ArtifactMetrics, *FilesMetric)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*ArtifactMetrics)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
 	}
 	query.withFKs = true
 	query.Where(predicate.FilesMetric(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(artifactmetrics.OutputArtifactsFromActionCacheColumn), fks...))
+		s.Where(sql.InValues(s.C(artifactmetrics.TopLevelArtifactsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.artifact_metrics_output_artifacts_from_action_cache
+		fk := n.artifact_metrics_top_level_artifacts
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "artifact_metrics_output_artifacts_from_action_cache" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "artifact_metrics_top_level_artifacts" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "artifact_metrics_output_artifacts_from_action_cache" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "artifact_metrics_top_level_artifacts" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
-	}
-	return nil
-}
-func (amq *ArtifactMetricsQuery) loadTopLevelArtifacts(ctx context.Context, query *FilesMetricQuery, nodes []*ArtifactMetrics, init func(*ArtifactMetrics), assign func(*ArtifactMetrics, *FilesMetric)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*ArtifactMetrics)
-	nids := make(map[int]map[*ArtifactMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(artifactmetrics.TopLevelArtifactsTable)
-		s.Join(joinT).On(s.C(filesmetric.FieldID), joinT.C(artifactmetrics.TopLevelArtifactsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(artifactmetrics.TopLevelArtifactsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(artifactmetrics.TopLevelArtifactsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*ArtifactMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*FilesMetric](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "top_level_artifacts" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
 	}
 	return nil
 }
@@ -909,76 +805,6 @@ func (amq *ArtifactMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedMetrics tells the query-builder to eager-load the nodes that are connected to the "metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (amq *ArtifactMetricsQuery) WithNamedMetrics(name string, opts ...func(*MetricsQuery)) *ArtifactMetricsQuery {
-	query := (&MetricsClient{config: amq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if amq.withNamedMetrics == nil {
-		amq.withNamedMetrics = make(map[string]*MetricsQuery)
-	}
-	amq.withNamedMetrics[name] = query
-	return amq
-}
-
-// WithNamedSourceArtifactsRead tells the query-builder to eager-load the nodes that are connected to the "source_artifacts_read"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (amq *ArtifactMetricsQuery) WithNamedSourceArtifactsRead(name string, opts ...func(*FilesMetricQuery)) *ArtifactMetricsQuery {
-	query := (&FilesMetricClient{config: amq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if amq.withNamedSourceArtifactsRead == nil {
-		amq.withNamedSourceArtifactsRead = make(map[string]*FilesMetricQuery)
-	}
-	amq.withNamedSourceArtifactsRead[name] = query
-	return amq
-}
-
-// WithNamedOutputArtifactsSeen tells the query-builder to eager-load the nodes that are connected to the "output_artifacts_seen"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (amq *ArtifactMetricsQuery) WithNamedOutputArtifactsSeen(name string, opts ...func(*FilesMetricQuery)) *ArtifactMetricsQuery {
-	query := (&FilesMetricClient{config: amq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if amq.withNamedOutputArtifactsSeen == nil {
-		amq.withNamedOutputArtifactsSeen = make(map[string]*FilesMetricQuery)
-	}
-	amq.withNamedOutputArtifactsSeen[name] = query
-	return amq
-}
-
-// WithNamedOutputArtifactsFromActionCache tells the query-builder to eager-load the nodes that are connected to the "output_artifacts_from_action_cache"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (amq *ArtifactMetricsQuery) WithNamedOutputArtifactsFromActionCache(name string, opts ...func(*FilesMetricQuery)) *ArtifactMetricsQuery {
-	query := (&FilesMetricClient{config: amq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if amq.withNamedOutputArtifactsFromActionCache == nil {
-		amq.withNamedOutputArtifactsFromActionCache = make(map[string]*FilesMetricQuery)
-	}
-	amq.withNamedOutputArtifactsFromActionCache[name] = query
-	return amq
-}
-
-// WithNamedTopLevelArtifacts tells the query-builder to eager-load the nodes that are connected to the "top_level_artifacts"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (amq *ArtifactMetricsQuery) WithNamedTopLevelArtifacts(name string, opts ...func(*FilesMetricQuery)) *ArtifactMetricsQuery {
-	query := (&FilesMetricClient{config: amq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if amq.withNamedTopLevelArtifacts == nil {
-		amq.withNamedTopLevelArtifacts = make(map[string]*FilesMetricQuery)
-	}
-	amq.withNamedTopLevelArtifacts[name] = query
-	return amq
 }
 
 // ArtifactMetricsGroupBy is the group-by builder for ArtifactMetrics entities.

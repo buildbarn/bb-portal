@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 )
 
 // ActionCacheStatistics is the model entity for the ActionCacheStatistics schema.
@@ -28,14 +29,15 @@ type ActionCacheStatistics struct {
 	Misses int32 `json:"misses,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActionCacheStatisticsQuery when eager-loading is set.
-	Edges        ActionCacheStatisticsEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                                  ActionCacheStatisticsEdges `json:"edges"`
+	action_summary_action_cache_statistics *int
+	selectValues                           sql.SelectValues
 }
 
 // ActionCacheStatisticsEdges holds the relations/edges for other nodes in the graph.
 type ActionCacheStatisticsEdges struct {
 	// ActionSummary holds the value of the action_summary edge.
-	ActionSummary []*ActionSummary `json:"action_summary,omitempty"`
+	ActionSummary *ActionSummary `json:"action_summary,omitempty"`
 	// MissDetails holds the value of the miss_details edge.
 	MissDetails []*MissDetail `json:"miss_details,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -44,15 +46,16 @@ type ActionCacheStatisticsEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [2]map[string]int
 
-	namedActionSummary map[string][]*ActionSummary
-	namedMissDetails   map[string][]*MissDetail
+	namedMissDetails map[string][]*MissDetail
 }
 
 // ActionSummaryOrErr returns the ActionSummary value or an error if the edge
-// was not loaded in eager-loading.
-func (e ActionCacheStatisticsEdges) ActionSummaryOrErr() ([]*ActionSummary, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ActionCacheStatisticsEdges) ActionSummaryOrErr() (*ActionSummary, error) {
+	if e.ActionSummary != nil {
 		return e.ActionSummary, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: actionsummary.Label}
 	}
 	return nil, &NotLoadedError{edge: "action_summary"}
 }
@@ -72,6 +75,8 @@ func (*ActionCacheStatistics) scanValues(columns []string) ([]any, error) {
 	for i := range columns {
 		switch columns[i] {
 		case actioncachestatistics.FieldID, actioncachestatistics.FieldSizeInBytes, actioncachestatistics.FieldSaveTimeInMs, actioncachestatistics.FieldLoadTimeInMs, actioncachestatistics.FieldHits, actioncachestatistics.FieldMisses:
+			values[i] = new(sql.NullInt64)
+		case actioncachestatistics.ForeignKeys[0]: // action_summary_action_cache_statistics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -123,6 +128,13 @@ func (acs *ActionCacheStatistics) assignValues(columns []string, values []any) e
 				return fmt.Errorf("unexpected type %T for field misses", values[i])
 			} else if value.Valid {
 				acs.Misses = int32(value.Int64)
+			}
+		case actioncachestatistics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field action_summary_action_cache_statistics", value)
+			} else if value.Valid {
+				acs.action_summary_action_cache_statistics = new(int)
+				*acs.action_summary_action_cache_statistics = int(value.Int64)
 			}
 		default:
 			acs.selectValues.Set(columns[i], values[i])
@@ -186,30 +198,6 @@ func (acs *ActionCacheStatistics) String() string {
 	builder.WriteString(fmt.Sprintf("%v", acs.Misses))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedActionSummary returns the ActionSummary named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (acs *ActionCacheStatistics) NamedActionSummary(name string) ([]*ActionSummary, error) {
-	if acs.Edges.namedActionSummary == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := acs.Edges.namedActionSummary[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (acs *ActionCacheStatistics) appendNamedActionSummary(name string, edges ...*ActionSummary) {
-	if acs.Edges.namedActionSummary == nil {
-		acs.Edges.namedActionSummary = make(map[string][]*ActionSummary)
-	}
-	if len(edges) == 0 {
-		acs.Edges.namedActionSummary[name] = []*ActionSummary{}
-	} else {
-		acs.Edges.namedActionSummary[name] = append(acs.Edges.namedActionSummary[name], edges...)
-	}
 }
 
 // NamedMissDetails returns the MissDetails named value or an error if the edge was not

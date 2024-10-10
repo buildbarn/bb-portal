@@ -47,19 +47,23 @@ func (ruc *ResourceUsageCreate) SetNillableValue(s *string) *ResourceUsageCreate
 	return ruc
 }
 
-// AddExecutionInfoIDs adds the "execution_info" edge to the ExectionInfo entity by IDs.
-func (ruc *ResourceUsageCreate) AddExecutionInfoIDs(ids ...int) *ResourceUsageCreate {
-	ruc.mutation.AddExecutionInfoIDs(ids...)
+// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
+func (ruc *ResourceUsageCreate) SetExecutionInfoID(id int) *ResourceUsageCreate {
+	ruc.mutation.SetExecutionInfoID(id)
 	return ruc
 }
 
-// AddExecutionInfo adds the "execution_info" edges to the ExectionInfo entity.
-func (ruc *ResourceUsageCreate) AddExecutionInfo(e ...*ExectionInfo) *ResourceUsageCreate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
+func (ruc *ResourceUsageCreate) SetNillableExecutionInfoID(id *int) *ResourceUsageCreate {
+	if id != nil {
+		ruc = ruc.SetExecutionInfoID(*id)
 	}
-	return ruc.AddExecutionInfoIDs(ids...)
+	return ruc
+}
+
+// SetExecutionInfo sets the "execution_info" edge to the ExectionInfo entity.
+func (ruc *ResourceUsageCreate) SetExecutionInfo(e *ExectionInfo) *ResourceUsageCreate {
+	return ruc.SetExecutionInfoID(e.ID)
 }
 
 // Mutation returns the ResourceUsageMutation object of the builder.
@@ -132,10 +136,10 @@ func (ruc *ResourceUsageCreate) createSpec() (*ResourceUsage, *sqlgraph.CreateSp
 	}
 	if nodes := ruc.mutation.ExecutionInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   resourceusage.ExecutionInfoTable,
-			Columns: resourceusage.ExecutionInfoPrimaryKey,
+			Columns: []string{resourceusage.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
@@ -144,6 +148,7 @@ func (ruc *ResourceUsageCreate) createSpec() (*ResourceUsage, *sqlgraph.CreateSp
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.exection_info_resource_usage = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

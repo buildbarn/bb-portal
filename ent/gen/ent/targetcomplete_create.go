@@ -111,19 +111,23 @@ func (tcc *TargetCompleteCreate) SetNillableTestSize(ts *targetcomplete.TestSize
 	return tcc
 }
 
-// AddTargetPairIDs adds the "target_pair" edge to the TargetPair entity by IDs.
-func (tcc *TargetCompleteCreate) AddTargetPairIDs(ids ...int) *TargetCompleteCreate {
-	tcc.mutation.AddTargetPairIDs(ids...)
+// SetTargetPairID sets the "target_pair" edge to the TargetPair entity by ID.
+func (tcc *TargetCompleteCreate) SetTargetPairID(id int) *TargetCompleteCreate {
+	tcc.mutation.SetTargetPairID(id)
 	return tcc
 }
 
-// AddTargetPair adds the "target_pair" edges to the TargetPair entity.
-func (tcc *TargetCompleteCreate) AddTargetPair(t ...*TargetPair) *TargetCompleteCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetPairID sets the "target_pair" edge to the TargetPair entity by ID if the given value is not nil.
+func (tcc *TargetCompleteCreate) SetNillableTargetPairID(id *int) *TargetCompleteCreate {
+	if id != nil {
+		tcc = tcc.SetTargetPairID(*id)
 	}
-	return tcc.AddTargetPairIDs(ids...)
+	return tcc
+}
+
+// SetTargetPair sets the "target_pair" edge to the TargetPair entity.
+func (tcc *TargetCompleteCreate) SetTargetPair(t *TargetPair) *TargetCompleteCreate {
+	return tcc.SetTargetPairID(t.ID)
 }
 
 // AddImportantOutputIDs adds the "important_output" edge to the TestFile entity by IDs.
@@ -270,7 +274,7 @@ func (tcc *TargetCompleteCreate) createSpec() (*TargetComplete, *sqlgraph.Create
 	}
 	if nodes := tcc.mutation.TargetPairIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   targetcomplete.TargetPairTable,
 			Columns: []string{targetcomplete.TargetPairColumn},
@@ -282,6 +286,7 @@ func (tcc *TargetCompleteCreate) createSpec() (*TargetComplete, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.target_pair_completion = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tcc.mutation.ImportantOutputIDs(); len(nodes) > 0 {
@@ -318,7 +323,7 @@ func (tcc *TargetCompleteCreate) createSpec() (*TargetComplete, *sqlgraph.Create
 	}
 	if nodes := tcc.mutation.OutputGroupIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetcomplete.OutputGroupTable,
 			Columns: []string{targetcomplete.OutputGroupColumn},
@@ -330,7 +335,6 @@ func (tcc *TargetCompleteCreate) createSpec() (*TargetComplete, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.target_complete_output_group = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

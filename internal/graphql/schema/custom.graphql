@@ -1,6 +1,45 @@
 extend type Query {
   bazelInvocation(invocationId: String!): BazelInvocation!
   getBuild(buildURL: String, buildUUID: UUID): Build
+  getUniqueTestLabels(param: String): [String]
+  getUniqueTargetLabels(param: String): [String]
+  getTestDurationAggregation(label: String): [TargetAggregate]
+  getTestPassAggregation(label: String): [TargetAggregate]
+  getTargetDurationAggregation(label: String): [TargetAggregate]
+  getTargetPassAggregation(label: String):[TargetAggregate]
+  getTestsWithOffset(label: String, offset: Int, limit: Int, sortBy: String, direction: String):TestGridResult
+  getAveragePassPercentageForLabel(label: String!):Float
+}
+
+type TargetAggregate {
+  label: String
+	count: Int
+	sum: Int
+  min: Int
+  max: Int
+  avg: Int
+  pass: Int
+}
+
+type TestGridResult {
+  total: Int
+  result: [TestGridRow]
+}
+
+type TestGridRow {
+  label: String
+  count: Int
+  sum: Int
+  min: Int
+  max: Int
+  avg: Float
+  passRate: Float
+  cells: [TestGridCell]
+}
+
+type TestGridCell {
+  invocationId: UUID
+  status: TestCollectionOverallStatus
 }
 
 type BazelCommand {

@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 )
 
@@ -38,14 +39,15 @@ type TestSummary struct {
 	Label string `json:"label,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestSummaryQuery when eager-loading is set.
-	Edges        TestSummaryEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                        TestSummaryEdges `json:"edges"`
+	test_collection_test_summary *int
+	selectValues                 sql.SelectValues
 }
 
 // TestSummaryEdges holds the relations/edges for other nodes in the graph.
 type TestSummaryEdges struct {
 	// TestCollection holds the value of the test_collection edge.
-	TestCollection []*TestCollection `json:"test_collection,omitempty"`
+	TestCollection *TestCollection `json:"test_collection,omitempty"`
 	// Passed holds the value of the passed edge.
 	Passed []*TestFile `json:"passed,omitempty"`
 	// Failed holds the value of the failed edge.
@@ -56,16 +58,17 @@ type TestSummaryEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [3]map[string]int
 
-	namedTestCollection map[string][]*TestCollection
-	namedPassed         map[string][]*TestFile
-	namedFailed         map[string][]*TestFile
+	namedPassed map[string][]*TestFile
+	namedFailed map[string][]*TestFile
 }
 
 // TestCollectionOrErr returns the TestCollection value or an error if the edge
-// was not loaded in eager-loading.
-func (e TestSummaryEdges) TestCollectionOrErr() ([]*TestCollection, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TestSummaryEdges) TestCollectionOrErr() (*TestCollection, error) {
+	if e.TestCollection != nil {
 		return e.TestCollection, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: testcollection.Label}
 	}
 	return nil, &NotLoadedError{edge: "test_collection"}
 }
@@ -97,6 +100,8 @@ func (*TestSummary) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case testsummary.FieldOverallStatus, testsummary.FieldLabel:
 			values[i] = new(sql.NullString)
+		case testsummary.ForeignKeys[0]: // test_collection_test_summary
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -177,6 +182,13 @@ func (ts *TestSummary) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field label", values[i])
 			} else if value.Valid {
 				ts.Label = value.String
+			}
+		case testsummary.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field test_collection_test_summary", value)
+			} else if value.Valid {
+				ts.test_collection_test_summary = new(int)
+				*ts.test_collection_test_summary = int(value.Int64)
 			}
 		default:
 			ts.selectValues.Set(columns[i], values[i])
@@ -260,30 +272,6 @@ func (ts *TestSummary) String() string {
 	builder.WriteString(ts.Label)
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedTestCollection returns the TestCollection named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (ts *TestSummary) NamedTestCollection(name string) ([]*TestCollection, error) {
-	if ts.Edges.namedTestCollection == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := ts.Edges.namedTestCollection[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (ts *TestSummary) appendNamedTestCollection(name string, edges ...*TestCollection) {
-	if ts.Edges.namedTestCollection == nil {
-		ts.Edges.namedTestCollection = make(map[string][]*TestCollection)
-	}
-	if len(edges) == 0 {
-		ts.Edges.namedTestCollection[name] = []*TestCollection{}
-	} else {
-		ts.Edges.namedTestCollection[name] = append(ts.Edges.namedTestCollection[name], edges...)
-	}
 }
 
 // NamedPassed returns the Passed named value or an error if the edge was not

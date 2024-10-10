@@ -5,9 +5,11 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 )
@@ -27,19 +29,21 @@ type TestCollection struct {
 	CachedLocally bool `json:"cached_locally,omitempty"`
 	// CachedRemotely holds the value of the "cached_remotely" field.
 	CachedRemotely bool `json:"cached_remotely,omitempty"`
+	// FirstSeen holds the value of the "first_seen" field.
+	FirstSeen *time.Time `json:"first_seen,omitempty"`
 	// DurationMs holds the value of the "duration_ms" field.
 	DurationMs int64 `json:"duration_ms,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestCollectionQuery when eager-loading is set.
-	Edges                        TestCollectionEdges `json:"edges"`
-	test_collection_test_summary *int
-	selectValues                 sql.SelectValues
+	Edges                            TestCollectionEdges `json:"edges"`
+	bazel_invocation_test_collection *int
+	selectValues                     sql.SelectValues
 }
 
 // TestCollectionEdges holds the relations/edges for other nodes in the graph.
 type TestCollectionEdges struct {
 	// BazelInvocation holds the value of the bazel_invocation edge.
-	BazelInvocation []*BazelInvocation `json:"bazel_invocation,omitempty"`
+	BazelInvocation *BazelInvocation `json:"bazel_invocation,omitempty"`
 	// TestSummary holds the value of the test_summary edge.
 	TestSummary *TestSummary `json:"test_summary,omitempty"`
 	// TestResults holds the value of the test_results edge.
@@ -50,15 +54,16 @@ type TestCollectionEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [3]map[string]int
 
-	namedBazelInvocation map[string][]*BazelInvocation
-	namedTestResults     map[string][]*TestResultBES
+	namedTestResults map[string][]*TestResultBES
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
-// was not loaded in eager-loading.
-func (e TestCollectionEdges) BazelInvocationOrErr() ([]*BazelInvocation, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TestCollectionEdges) BazelInvocationOrErr() (*BazelInvocation, error) {
+	if e.BazelInvocation != nil {
 		return e.BazelInvocation, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: bazelinvocation.Label}
 	}
 	return nil, &NotLoadedError{edge: "bazel_invocation"}
 }
@@ -94,7 +99,9 @@ func (*TestCollection) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case testcollection.FieldLabel, testcollection.FieldOverallStatus, testcollection.FieldStrategy:
 			values[i] = new(sql.NullString)
-		case testcollection.ForeignKeys[0]: // test_collection_test_summary
+		case testcollection.FieldFirstSeen:
+			values[i] = new(sql.NullTime)
+		case testcollection.ForeignKeys[0]: // bazel_invocation_test_collection
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -147,6 +154,13 @@ func (tc *TestCollection) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				tc.CachedRemotely = value.Bool
 			}
+		case testcollection.FieldFirstSeen:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field first_seen", values[i])
+			} else if value.Valid {
+				tc.FirstSeen = new(time.Time)
+				*tc.FirstSeen = value.Time
+			}
 		case testcollection.FieldDurationMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field duration_ms", values[i])
@@ -155,10 +169,10 @@ func (tc *TestCollection) assignValues(columns []string, values []any) error {
 			}
 		case testcollection.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field test_collection_test_summary", value)
+				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_test_collection", value)
 			} else if value.Valid {
-				tc.test_collection_test_summary = new(int)
-				*tc.test_collection_test_summary = int(value.Int64)
+				tc.bazel_invocation_test_collection = new(int)
+				*tc.bazel_invocation_test_collection = int(value.Int64)
 			}
 		default:
 			tc.selectValues.Set(columns[i], values[i])
@@ -226,34 +240,15 @@ func (tc *TestCollection) String() string {
 	builder.WriteString("cached_remotely=")
 	builder.WriteString(fmt.Sprintf("%v", tc.CachedRemotely))
 	builder.WriteString(", ")
+	if v := tc.FirstSeen; v != nil {
+		builder.WriteString("first_seen=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
+	builder.WriteString(", ")
 	builder.WriteString("duration_ms=")
 	builder.WriteString(fmt.Sprintf("%v", tc.DurationMs))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedBazelInvocation returns the BazelInvocation named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (tc *TestCollection) NamedBazelInvocation(name string) ([]*BazelInvocation, error) {
-	if tc.Edges.namedBazelInvocation == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := tc.Edges.namedBazelInvocation[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (tc *TestCollection) appendNamedBazelInvocation(name string, edges ...*BazelInvocation) {
-	if tc.Edges.namedBazelInvocation == nil {
-		tc.Edges.namedBazelInvocation = make(map[string][]*BazelInvocation)
-	}
-	if len(edges) == 0 {
-		tc.Edges.namedBazelInvocation[name] = []*BazelInvocation{}
-	} else {
-		tc.Edges.namedBazelInvocation[name] = append(tc.Edges.namedBazelInvocation[name], edges...)
-	}
 }
 
 // NamedTestResults returns the TestResults named value or an error if the edge was not

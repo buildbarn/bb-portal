@@ -67,19 +67,23 @@ func (tcc *TargetConfiguredCreate) SetNillableTestSize(ts *targetconfigured.Test
 	return tcc
 }
 
-// AddTargetPairIDs adds the "target_pair" edge to the TargetPair entity by IDs.
-func (tcc *TargetConfiguredCreate) AddTargetPairIDs(ids ...int) *TargetConfiguredCreate {
-	tcc.mutation.AddTargetPairIDs(ids...)
+// SetTargetPairID sets the "target_pair" edge to the TargetPair entity by ID.
+func (tcc *TargetConfiguredCreate) SetTargetPairID(id int) *TargetConfiguredCreate {
+	tcc.mutation.SetTargetPairID(id)
 	return tcc
 }
 
-// AddTargetPair adds the "target_pair" edges to the TargetPair entity.
-func (tcc *TargetConfiguredCreate) AddTargetPair(t ...*TargetPair) *TargetConfiguredCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetPairID sets the "target_pair" edge to the TargetPair entity by ID if the given value is not nil.
+func (tcc *TargetConfiguredCreate) SetNillableTargetPairID(id *int) *TargetConfiguredCreate {
+	if id != nil {
+		tcc = tcc.SetTargetPairID(*id)
 	}
-	return tcc.AddTargetPairIDs(ids...)
+	return tcc
+}
+
+// SetTargetPair sets the "target_pair" edge to the TargetPair entity.
+func (tcc *TargetConfiguredCreate) SetTargetPair(t *TargetPair) *TargetConfiguredCreate {
+	return tcc.SetTargetPairID(t.ID)
 }
 
 // Mutation returns the TargetConfiguredMutation object of the builder.
@@ -165,7 +169,7 @@ func (tcc *TargetConfiguredCreate) createSpec() (*TargetConfigured, *sqlgraph.Cr
 	}
 	if nodes := tcc.mutation.TargetPairIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   targetconfigured.TargetPairTable,
 			Columns: []string{targetconfigured.TargetPairColumn},
@@ -177,6 +181,7 @@ func (tcc *TargetConfiguredCreate) createSpec() (*TargetConfigured, *sqlgraph.Cr
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.target_pair_configuration = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

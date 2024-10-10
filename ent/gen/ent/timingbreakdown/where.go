@@ -218,7 +218,7 @@ func HasExecutionInfo() predicate.TimingBreakdown {
 	return predicate.TimingBreakdown(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, ExecutionInfoTable, ExecutionInfoColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, ExecutionInfoTable, ExecutionInfoColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -241,7 +241,7 @@ func HasChild() predicate.TimingBreakdown {
 	return predicate.TimingBreakdown(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, ChildTable, ChildPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, ChildTable, ChildColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

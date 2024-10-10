@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingbreakdown"
 )
 
@@ -22,14 +23,15 @@ type TimingBreakdown struct {
 	Time string `json:"time,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TimingBreakdownQuery when eager-loading is set.
-	Edges        TimingBreakdownEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                          TimingBreakdownEdges `json:"edges"`
+	exection_info_timing_breakdown *int
+	selectValues                   sql.SelectValues
 }
 
 // TimingBreakdownEdges holds the relations/edges for other nodes in the graph.
 type TimingBreakdownEdges struct {
 	// ExecutionInfo holds the value of the execution_info edge.
-	ExecutionInfo []*ExectionInfo `json:"execution_info,omitempty"`
+	ExecutionInfo *ExectionInfo `json:"execution_info,omitempty"`
 	// Child holds the value of the child edge.
 	Child []*TimingChild `json:"child,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -38,15 +40,16 @@ type TimingBreakdownEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [2]map[string]int
 
-	namedExecutionInfo map[string][]*ExectionInfo
-	namedChild         map[string][]*TimingChild
+	namedChild map[string][]*TimingChild
 }
 
 // ExecutionInfoOrErr returns the ExecutionInfo value or an error if the edge
-// was not loaded in eager-loading.
-func (e TimingBreakdownEdges) ExecutionInfoOrErr() ([]*ExectionInfo, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TimingBreakdownEdges) ExecutionInfoOrErr() (*ExectionInfo, error) {
+	if e.ExecutionInfo != nil {
 		return e.ExecutionInfo, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: exectioninfo.Label}
 	}
 	return nil, &NotLoadedError{edge: "execution_info"}
 }
@@ -69,6 +72,8 @@ func (*TimingBreakdown) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case timingbreakdown.FieldName, timingbreakdown.FieldTime:
 			values[i] = new(sql.NullString)
+		case timingbreakdown.ForeignKeys[0]: // exection_info_timing_breakdown
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -101,6 +106,13 @@ func (tb *TimingBreakdown) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field time", values[i])
 			} else if value.Valid {
 				tb.Time = value.String
+			}
+		case timingbreakdown.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field exection_info_timing_breakdown", value)
+			} else if value.Valid {
+				tb.exection_info_timing_breakdown = new(int)
+				*tb.exection_info_timing_breakdown = int(value.Int64)
 			}
 		default:
 			tb.selectValues.Set(columns[i], values[i])
@@ -155,30 +167,6 @@ func (tb *TimingBreakdown) String() string {
 	builder.WriteString(tb.Time)
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedExecutionInfo returns the ExecutionInfo named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (tb *TimingBreakdown) NamedExecutionInfo(name string) ([]*ExectionInfo, error) {
-	if tb.Edges.namedExecutionInfo == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := tb.Edges.namedExecutionInfo[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (tb *TimingBreakdown) appendNamedExecutionInfo(name string, edges ...*ExectionInfo) {
-	if tb.Edges.namedExecutionInfo == nil {
-		tb.Edges.namedExecutionInfo = make(map[string][]*ExectionInfo)
-	}
-	if len(edges) == 0 {
-		tb.Edges.namedExecutionInfo[name] = []*ExectionInfo{}
-	} else {
-		tb.Edges.namedExecutionInfo[name] = append(tb.Edges.namedExecutionInfo[name], edges...)
-	}
 }
 
 // NamedChild returns the Child named value or an error if the edge was not

@@ -49,19 +49,23 @@ func (ogc *OutputGroupCreate) SetNillableIncomplete(b *bool) *OutputGroupCreate 
 	return ogc
 }
 
-// AddTargetCompleteIDs adds the "target_complete" edge to the TargetComplete entity by IDs.
-func (ogc *OutputGroupCreate) AddTargetCompleteIDs(ids ...int) *OutputGroupCreate {
-	ogc.mutation.AddTargetCompleteIDs(ids...)
+// SetTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID.
+func (ogc *OutputGroupCreate) SetTargetCompleteID(id int) *OutputGroupCreate {
+	ogc.mutation.SetTargetCompleteID(id)
 	return ogc
 }
 
-// AddTargetComplete adds the "target_complete" edges to the TargetComplete entity.
-func (ogc *OutputGroupCreate) AddTargetComplete(t ...*TargetComplete) *OutputGroupCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID if the given value is not nil.
+func (ogc *OutputGroupCreate) SetNillableTargetCompleteID(id *int) *OutputGroupCreate {
+	if id != nil {
+		ogc = ogc.SetTargetCompleteID(*id)
 	}
-	return ogc.AddTargetCompleteIDs(ids...)
+	return ogc
+}
+
+// SetTargetComplete sets the "target_complete" edge to the TargetComplete entity.
+func (ogc *OutputGroupCreate) SetTargetComplete(t *TargetComplete) *OutputGroupCreate {
+	return ogc.SetTargetCompleteID(t.ID)
 }
 
 // AddInlineFileIDs adds the "inline_files" edge to the TestFile entity by IDs.
@@ -168,7 +172,7 @@ func (ogc *OutputGroupCreate) createSpec() (*OutputGroup, *sqlgraph.CreateSpec) 
 	}
 	if nodes := ogc.mutation.TargetCompleteIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   outputgroup.TargetCompleteTable,
 			Columns: []string{outputgroup.TargetCompleteColumn},
@@ -180,6 +184,7 @@ func (ogc *OutputGroupCreate) createSpec() (*OutputGroup, *sqlgraph.CreateSpec) 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.target_complete_output_group = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := ogc.mutation.InlineFilesIDs(); len(nodes) > 0 {
@@ -200,7 +205,7 @@ func (ogc *OutputGroupCreate) createSpec() (*OutputGroup, *sqlgraph.CreateSpec) 
 	}
 	if nodes := ogc.mutation.FileSetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   outputgroup.FileSetsTable,
 			Columns: []string{outputgroup.FileSetsColumn},
@@ -212,7 +217,6 @@ func (ogc *OutputGroupCreate) createSpec() (*OutputGroup, *sqlgraph.CreateSpec) 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.output_group_file_sets = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

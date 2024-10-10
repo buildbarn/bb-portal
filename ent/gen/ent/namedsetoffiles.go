@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/namedsetoffiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 )
 
 // NamedSetOfFiles is the model entity for the NamedSetOfFiles schema.
@@ -20,13 +21,14 @@ type NamedSetOfFiles struct {
 	// The values are being populated by the NamedSetOfFilesQuery when eager-loading is set.
 	Edges                        NamedSetOfFilesEdges `json:"edges"`
 	named_set_of_files_file_sets *int
+	output_group_file_sets       *int
 	selectValues                 sql.SelectValues
 }
 
 // NamedSetOfFilesEdges holds the relations/edges for other nodes in the graph.
 type NamedSetOfFilesEdges struct {
 	// OutputGroup holds the value of the output_group edge.
-	OutputGroup []*OutputGroup `json:"output_group,omitempty"`
+	OutputGroup *OutputGroup `json:"output_group,omitempty"`
 	// Files holds the value of the files edge.
 	Files []*TestFile `json:"files,omitempty"`
 	// FileSets holds the value of the file_sets edge.
@@ -37,15 +39,16 @@ type NamedSetOfFilesEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [3]map[string]int
 
-	namedOutputGroup map[string][]*OutputGroup
-	namedFiles       map[string][]*TestFile
+	namedFiles map[string][]*TestFile
 }
 
 // OutputGroupOrErr returns the OutputGroup value or an error if the edge
-// was not loaded in eager-loading.
-func (e NamedSetOfFilesEdges) OutputGroupOrErr() ([]*OutputGroup, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e NamedSetOfFilesEdges) OutputGroupOrErr() (*OutputGroup, error) {
+	if e.OutputGroup != nil {
 		return e.OutputGroup, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: outputgroup.Label}
 	}
 	return nil, &NotLoadedError{edge: "output_group"}
 }
@@ -79,6 +82,8 @@ func (*NamedSetOfFiles) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case namedsetoffiles.ForeignKeys[0]: // named_set_of_files_file_sets
 			values[i] = new(sql.NullInt64)
+		case namedsetoffiles.ForeignKeys[1]: // output_group_file_sets
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -106,6 +111,13 @@ func (nsof *NamedSetOfFiles) assignValues(columns []string, values []any) error 
 			} else if value.Valid {
 				nsof.named_set_of_files_file_sets = new(int)
 				*nsof.named_set_of_files_file_sets = int(value.Int64)
+			}
+		case namedsetoffiles.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field output_group_file_sets", value)
+			} else if value.Valid {
+				nsof.output_group_file_sets = new(int)
+				*nsof.output_group_file_sets = int(value.Int64)
 			}
 		default:
 			nsof.selectValues.Set(columns[i], values[i])
@@ -160,30 +172,6 @@ func (nsof *NamedSetOfFiles) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", nsof.ID))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedOutputGroup returns the OutputGroup named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (nsof *NamedSetOfFiles) NamedOutputGroup(name string) ([]*OutputGroup, error) {
-	if nsof.Edges.namedOutputGroup == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := nsof.Edges.namedOutputGroup[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (nsof *NamedSetOfFiles) appendNamedOutputGroup(name string, edges ...*OutputGroup) {
-	if nsof.Edges.namedOutputGroup == nil {
-		nsof.Edges.namedOutputGroup = make(map[string][]*OutputGroup)
-	}
-	if len(edges) == 0 {
-		nsof.Edges.namedOutputGroup[name] = []*OutputGroup{}
-	} else {
-		nsof.Edges.namedOutputGroup[name] = append(nsof.Edges.namedOutputGroup[name], edges...)
-	}
 }
 
 // NamedFiles returns the Files named value or an error if the edge was not

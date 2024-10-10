@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
 )
 
 // TestFile is the model entity for the TestFile schema.
@@ -29,34 +30,35 @@ type TestFile struct {
 	Prefix []string `json:"prefix,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestFileQuery when eager-loading is set.
-	Edges                            TestFileEdges `json:"edges"`
-	named_set_of_files_files         *int
-	output_group_inline_files        *int
-	target_complete_important_output *int
-	target_complete_directory_output *int
-	test_summary_passed              *int
-	test_summary_failed              *int
-	selectValues                     sql.SelectValues
+	Edges                              TestFileEdges `json:"edges"`
+	named_set_of_files_files           *int
+	output_group_inline_files          *int
+	target_complete_important_output   *int
+	target_complete_directory_output   *int
+	test_result_bes_test_action_output *int
+	test_summary_passed                *int
+	test_summary_failed                *int
+	selectValues                       sql.SelectValues
 }
 
 // TestFileEdges holds the relations/edges for other nodes in the graph.
 type TestFileEdges struct {
 	// TestResult holds the value of the test_result edge.
-	TestResult []*TestResultBES `json:"test_result,omitempty"`
+	TestResult *TestResultBES `json:"test_result,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedTestResult map[string][]*TestResultBES
 }
 
 // TestResultOrErr returns the TestResult value or an error if the edge
-// was not loaded in eager-loading.
-func (e TestFileEdges) TestResultOrErr() ([]*TestResultBES, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TestFileEdges) TestResultOrErr() (*TestResultBES, error) {
+	if e.TestResult != nil {
 		return e.TestResult, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: testresultbes.Label}
 	}
 	return nil, &NotLoadedError{edge: "test_result"}
 }
@@ -80,9 +82,11 @@ func (*TestFile) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case testfile.ForeignKeys[3]: // target_complete_directory_output
 			values[i] = new(sql.NullInt64)
-		case testfile.ForeignKeys[4]: // test_summary_passed
+		case testfile.ForeignKeys[4]: // test_result_bes_test_action_output
 			values[i] = new(sql.NullInt64)
-		case testfile.ForeignKeys[5]: // test_summary_failed
+		case testfile.ForeignKeys[5]: // test_summary_passed
+			values[i] = new(sql.NullInt64)
+		case testfile.ForeignKeys[6]: // test_summary_failed
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -167,12 +171,19 @@ func (tf *TestFile) assignValues(columns []string, values []any) error {
 			}
 		case testfile.ForeignKeys[4]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field test_result_bes_test_action_output", value)
+			} else if value.Valid {
+				tf.test_result_bes_test_action_output = new(int)
+				*tf.test_result_bes_test_action_output = int(value.Int64)
+			}
+		case testfile.ForeignKeys[5]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_summary_passed", value)
 			} else if value.Valid {
 				tf.test_summary_passed = new(int)
 				*tf.test_summary_passed = int(value.Int64)
 			}
-		case testfile.ForeignKeys[5]:
+		case testfile.ForeignKeys[6]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_summary_failed", value)
 			} else if value.Valid {
@@ -236,30 +247,6 @@ func (tf *TestFile) String() string {
 	builder.WriteString(fmt.Sprintf("%v", tf.Prefix))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedTestResult returns the TestResult named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (tf *TestFile) NamedTestResult(name string) ([]*TestResultBES, error) {
-	if tf.Edges.namedTestResult == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := tf.Edges.namedTestResult[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (tf *TestFile) appendNamedTestResult(name string, edges ...*TestResultBES) {
-	if tf.Edges.namedTestResult == nil {
-		tf.Edges.namedTestResult = make(map[string][]*TestResultBES)
-	}
-	if len(edges) == 0 {
-		tf.Edges.namedTestResult[name] = []*TestResultBES{}
-	} else {
-		tf.Edges.namedTestResult[name] = append(tf.Edges.namedTestResult[name], edges...)
-	}
 }
 
 // TestFiles is a parsable slice of TestFile.

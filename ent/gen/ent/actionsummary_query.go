@@ -22,20 +22,19 @@ import (
 // ActionSummaryQuery is the builder for querying ActionSummary entities.
 type ActionSummaryQuery struct {
 	config
-	ctx                            *QueryContext
-	order                          []actionsummary.OrderOption
-	inters                         []Interceptor
-	predicates                     []predicate.ActionSummary
-	withMetrics                    *MetricsQuery
-	withActionData                 *ActionDataQuery
-	withRunnerCount                *RunnerCountQuery
-	withActionCacheStatistics      *ActionCacheStatisticsQuery
-	withFKs                        bool
-	modifiers                      []func(*sql.Selector)
-	loadTotal                      []func(context.Context, []*ActionSummary) error
-	withNamedActionData            map[string]*ActionDataQuery
-	withNamedRunnerCount           map[string]*RunnerCountQuery
-	withNamedActionCacheStatistics map[string]*ActionCacheStatisticsQuery
+	ctx                       *QueryContext
+	order                     []actionsummary.OrderOption
+	inters                    []Interceptor
+	predicates                []predicate.ActionSummary
+	withMetrics               *MetricsQuery
+	withActionData            *ActionDataQuery
+	withRunnerCount           *RunnerCountQuery
+	withActionCacheStatistics *ActionCacheStatisticsQuery
+	withFKs                   bool
+	modifiers                 []func(*sql.Selector)
+	loadTotal                 []func(context.Context, []*ActionSummary) error
+	withNamedActionData       map[string]*ActionDataQuery
+	withNamedRunnerCount      map[string]*RunnerCountQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -86,7 +85,7 @@ func (asq *ActionSummaryQuery) QueryMetrics() *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actionsummary.Table, actionsummary.FieldID, selector),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, actionsummary.MetricsTable, actionsummary.MetricsColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, actionsummary.MetricsTable, actionsummary.MetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(asq.driver.Dialect(), step)
 		return fromU, nil
@@ -108,7 +107,7 @@ func (asq *ActionSummaryQuery) QueryActionData() *ActionDataQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actionsummary.Table, actionsummary.FieldID, selector),
 			sqlgraph.To(actiondata.Table, actiondata.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, actionsummary.ActionDataTable, actionsummary.ActionDataPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, actionsummary.ActionDataTable, actionsummary.ActionDataColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(asq.driver.Dialect(), step)
 		return fromU, nil
@@ -130,7 +129,7 @@ func (asq *ActionSummaryQuery) QueryRunnerCount() *RunnerCountQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actionsummary.Table, actionsummary.FieldID, selector),
 			sqlgraph.To(runnercount.Table, runnercount.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, actionsummary.RunnerCountTable, actionsummary.RunnerCountPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, actionsummary.RunnerCountTable, actionsummary.RunnerCountColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(asq.driver.Dialect(), step)
 		return fromU, nil
@@ -152,7 +151,7 @@ func (asq *ActionSummaryQuery) QueryActionCacheStatistics() *ActionCacheStatisti
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actionsummary.Table, actionsummary.FieldID, selector),
 			sqlgraph.To(actioncachestatistics.Table, actioncachestatistics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, actionsummary.ActionCacheStatisticsTable, actionsummary.ActionCacheStatisticsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, actionsummary.ActionCacheStatisticsTable, actionsummary.ActionCacheStatisticsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(asq.driver.Dialect(), step)
 		return fromU, nil
@@ -540,11 +539,8 @@ func (asq *ActionSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 		}
 	}
 	if query := asq.withActionCacheStatistics; query != nil {
-		if err := asq.loadActionCacheStatistics(ctx, query, nodes,
-			func(n *ActionSummary) { n.Edges.ActionCacheStatistics = []*ActionCacheStatistics{} },
-			func(n *ActionSummary, e *ActionCacheStatistics) {
-				n.Edges.ActionCacheStatistics = append(n.Edges.ActionCacheStatistics, e)
-			}); err != nil {
+		if err := asq.loadActionCacheStatistics(ctx, query, nodes, nil,
+			func(n *ActionSummary, e *ActionCacheStatistics) { n.Edges.ActionCacheStatistics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -559,13 +555,6 @@ func (asq *ActionSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 		if err := asq.loadRunnerCount(ctx, query, nodes,
 			func(n *ActionSummary) { n.appendNamedRunnerCount(name) },
 			func(n *ActionSummary, e *RunnerCount) { n.appendNamedRunnerCount(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range asq.withNamedActionCacheStatistics {
-		if err := asq.loadActionCacheStatistics(ctx, query, nodes,
-			func(n *ActionSummary) { n.appendNamedActionCacheStatistics(name) },
-			func(n *ActionSummary, e *ActionCacheStatistics) { n.appendNamedActionCacheStatistics(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -610,185 +599,92 @@ func (asq *ActionSummaryQuery) loadMetrics(ctx context.Context, query *MetricsQu
 	return nil
 }
 func (asq *ActionSummaryQuery) loadActionData(ctx context.Context, query *ActionDataQuery, nodes []*ActionSummary, init func(*ActionSummary), assign func(*ActionSummary, *ActionData)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*ActionSummary)
-	nids := make(map[int]map[*ActionSummary]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*ActionSummary)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 		if init != nil {
-			init(node)
+			init(nodes[i])
 		}
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(actionsummary.ActionDataTable)
-		s.Join(joinT).On(s.C(actiondata.FieldID), joinT.C(actionsummary.ActionDataPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(actionsummary.ActionDataPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(actionsummary.ActionDataPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*ActionSummary]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*ActionData](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.ActionData(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(actionsummary.ActionDataColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.action_summary_action_data
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "action_summary_action_data" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "action_data" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "action_summary_action_data" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
 func (asq *ActionSummaryQuery) loadRunnerCount(ctx context.Context, query *RunnerCountQuery, nodes []*ActionSummary, init func(*ActionSummary), assign func(*ActionSummary, *RunnerCount)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*ActionSummary)
-	nids := make(map[int]map[*ActionSummary]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*ActionSummary)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 		if init != nil {
-			init(node)
+			init(nodes[i])
 		}
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(actionsummary.RunnerCountTable)
-		s.Join(joinT).On(s.C(runnercount.FieldID), joinT.C(actionsummary.RunnerCountPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(actionsummary.RunnerCountPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(actionsummary.RunnerCountPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*ActionSummary]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*RunnerCount](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.RunnerCount(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(actionsummary.RunnerCountColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.action_summary_runner_count
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "action_summary_runner_count" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "runner_count" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "action_summary_runner_count" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
 func (asq *ActionSummaryQuery) loadActionCacheStatistics(ctx context.Context, query *ActionCacheStatisticsQuery, nodes []*ActionSummary, init func(*ActionSummary), assign func(*ActionSummary, *ActionCacheStatistics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*ActionSummary)
-	nids := make(map[int]map[*ActionSummary]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*ActionSummary)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(actionsummary.ActionCacheStatisticsTable)
-		s.Join(joinT).On(s.C(actioncachestatistics.FieldID), joinT.C(actionsummary.ActionCacheStatisticsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(actionsummary.ActionCacheStatisticsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(actionsummary.ActionCacheStatisticsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*ActionSummary]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*ActionCacheStatistics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.ActionCacheStatistics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(actionsummary.ActionCacheStatisticsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.action_summary_action_cache_statistics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "action_summary_action_cache_statistics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "action_cache_statistics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "action_summary_action_cache_statistics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -902,20 +798,6 @@ func (asq *ActionSummaryQuery) WithNamedRunnerCount(name string, opts ...func(*R
 		asq.withNamedRunnerCount = make(map[string]*RunnerCountQuery)
 	}
 	asq.withNamedRunnerCount[name] = query
-	return asq
-}
-
-// WithNamedActionCacheStatistics tells the query-builder to eager-load the nodes that are connected to the "action_cache_statistics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (asq *ActionSummaryQuery) WithNamedActionCacheStatistics(name string, opts ...func(*ActionCacheStatisticsQuery)) *ActionSummaryQuery {
-	query := (&ActionCacheStatisticsClient{config: asq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if asq.withNamedActionCacheStatistics == nil {
-		asq.withNamedActionCacheStatistics = make(map[string]*ActionCacheStatisticsQuery)
-	}
-	asq.withNamedActionCacheStatistics[name] = query
 	return asq
 }
 

@@ -66,7 +66,8 @@ func (TestSummary) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back tot he test collection.
 		edge.From("test_collection", TestCollection.Type).
-			Ref("test_summary"),
+			Ref("test_summary").
+			Unique(),
 
 		// Path to logs of passed runs.
 		edge.To("passed", TestFile.Type),

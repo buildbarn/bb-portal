@@ -26,194 +26,168 @@
         "id": "QmF6ZWxJbnZvY2F0aW9uOjU=",
         "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
         "metrics": {
-          "actionSummary": [
-            {
-              "actionCacheStatistics": [
-                {
-                  "hits": 9,
-                  "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjU=",
-                  "loadTimeInMs": 0,
-                  "missDetails": [
-                    {
-                      "count": 0,
-                      "id": "TWlzc0RldGFpOjI5",
-                      "reason": "UNKNOWN"
-                    },
-                    {
-                      "count": 0,
-                      "id": "TWlzc0RldGFpOjMw",
-                      "reason": "DIFFERENT_ACTION_KEY"
-                    },
-                    {
-                      "count": 0,
-                      "id": "TWlzc0RldGFpOjMx",
-                      "reason": "DIFFERENT_DEPS"
-                    },
-                    {
-                      "count": 0,
-                      "id": "TWlzc0RldGFpOjMy",
-                      "reason": "DIFFERENT_ENVIRONMENT"
-                    },
-                    {
-                      "count": 0,
-                      "id": "TWlzc0RldGFpOjMz",
-                      "reason": "DIFFERENT_FILES"
-                    },
-                    {
-                      "count": 0,
-                      "id": "TWlzc0RldGFpOjM0",
-                      "reason": "CORRUPTED_CACHE_ENTRY"
-                    },
-                    {
-                      "count": 2,
-                      "id": "TWlzc0RldGFpOjM1",
-                      "reason": "NOT_CACHED"
-                    }
-                  ],
-                  "misses": 2,
-                  "saveTimeInMs": 0,
-                  "sizeInBytes": 1549056
-                }
-              ],
-              "actionData": [
-                {
-                  "actionsCreated": 0,
-                  "actionsExecuted": 1,
-                  "firstStartedMs": 1715643804513,
-                  "id": "QWN0aW9uRGF0YToxMg==",
-                  "lastEndedMs": 1715643806245,
-                  "mnemonic": "TestRunner",
-                  "systemTime": 397,
-                  "userTime": 842
-                },
-                {
-                  "actionsCreated": 0,
-                  "actionsExecuted": 1,
-                  "firstStartedMs": 1715643803398,
-                  "id": "QWN0aW9uRGF0YToxMw==",
-                  "lastEndedMs": 1715643803400,
-                  "mnemonic": "BazelWorkspaceStatusAction",
-                  "systemTime": 0,
-                  "userTime": 0
-                }
-              ],
-              "actionsCreated": 22,
-              "actionsCreatedNotIncludingAspects": 22,
-              "actionsExecuted": 2,
-              "id": "QWN0aW9uU3VtbWFyeTo1",
-              "remoteCacheHits": 0,
-              "runnerCount": [
-                {
-                  "actionsExecuted": 2,
-                  "execKind": "",
-                  "id": "UnVubmVyQ291bnQ6MTQ=",
-                  "name": "total"
-                },
-                {
-                  "actionsExecuted": 1,
-                  "execKind": "",
-                  "id": "UnVubmVyQ291bnQ6MTU=",
-                  "name": "internal"
-                },
-                {
-                  "actionsExecuted": 1,
-                  "execKind": "Local",
-                  "id": "UnVubmVyQ291bnQ6MTY=",
-                  "name": "darwin-sandbox"
-                }
-              ]
-            }
-          ],
-          "artifactMetrics": [
-            {
-              "id": "QXJ0aWZhY3RNZXRyaWNzOjU=",
-              "outputArtifactsFromActionCache": [
-                {
-                  "count": 11,
-                  "id": "RmlsZXNNZXRyaWM6MTk=",
-                  "sizeInBytes": 690376
-                }
-              ],
-              "outputArtifactsSeen": [
-                {
-                  "count": 15,
-                  "id": "RmlsZXNNZXRyaWM6MTg=",
-                  "sizeInBytes": 692189
-                }
-              ],
-              "sourceArtifactsRead": [
+          "actionSummary": {
+            "actionCacheStatistics": {
+              "hits": 9,
+              "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjU=",
+              "loadTimeInMs": 0,
+              "missDetails": [
                 {
                   "count": 0,
-                  "id": "RmlsZXNNZXRyaWM6MTc=",
-                  "sizeInBytes": 0
+                  "id": "TWlzc0RldGFpOjI5",
+                  "reason": "UNKNOWN"
+                },
+                {
+                  "count": 0,
+                  "id": "TWlzc0RldGFpOjMw",
+                  "reason": "DIFFERENT_ACTION_KEY"
+                },
+                {
+                  "count": 0,
+                  "id": "TWlzc0RldGFpOjMx",
+                  "reason": "DIFFERENT_DEPS"
+                },
+                {
+                  "count": 0,
+                  "id": "TWlzc0RldGFpOjMy",
+                  "reason": "DIFFERENT_ENVIRONMENT"
+                },
+                {
+                  "count": 0,
+                  "id": "TWlzc0RldGFpOjMz",
+                  "reason": "DIFFERENT_FILES"
+                },
+                {
+                  "count": 0,
+                  "id": "TWlzc0RldGFpOjM0",
+                  "reason": "CORRUPTED_CACHE_ENTRY"
+                },
+                {
+                  "count": 2,
+                  "id": "TWlzc0RldGFpOjM1",
+                  "reason": "NOT_CACHED"
                 }
               ],
-              "topLevelArtifacts": [
-                {
-                  "count": 12392,
-                  "id": "RmlsZXNNZXRyaWM6MjA=",
-                  "sizeInBytes": 1157054839
-                }
-              ]
+              "misses": 2,
+              "saveTimeInMs": 0,
+              "sizeInBytes": 1549056
+            },
+            "actionData": [
+              {
+                "actionsCreated": 0,
+                "actionsExecuted": 1,
+                "firstStartedMs": 1715643804513,
+                "id": "QWN0aW9uRGF0YToxMg==",
+                "lastEndedMs": 1715643806245,
+                "mnemonic": "TestRunner",
+                "systemTime": 397,
+                "userTime": 842
+              },
+              {
+                "actionsCreated": 0,
+                "actionsExecuted": 1,
+                "firstStartedMs": 1715643803398,
+                "id": "QWN0aW9uRGF0YToxMw==",
+                "lastEndedMs": 1715643803400,
+                "mnemonic": "BazelWorkspaceStatusAction",
+                "systemTime": 0,
+                "userTime": 0
+              }
+            ],
+            "actionsCreated": 22,
+            "actionsCreatedNotIncludingAspects": 22,
+            "actionsExecuted": 2,
+            "id": "QWN0aW9uU3VtbWFyeTo1",
+            "remoteCacheHits": 0,
+            "runnerCount": [
+              {
+                "actionsExecuted": 2,
+                "execKind": "",
+                "id": "UnVubmVyQ291bnQ6MTQ=",
+                "name": "total"
+              },
+              {
+                "actionsExecuted": 1,
+                "execKind": "",
+                "id": "UnVubmVyQ291bnQ6MTU=",
+                "name": "internal"
+              },
+              {
+                "actionsExecuted": 1,
+                "execKind": "Local",
+                "id": "UnVubmVyQ291bnQ6MTY=",
+                "name": "darwin-sandbox"
+              }
+            ]
+          },
+          "artifactMetrics": {
+            "id": "QXJ0aWZhY3RNZXRyaWNzOjU=",
+            "outputArtifactsFromActionCache": {
+              "count": 11,
+              "id": "RmlsZXNNZXRyaWM6MTk=",
+              "sizeInBytes": 690376
+            },
+            "outputArtifactsSeen": {
+              "count": 15,
+              "id": "RmlsZXNNZXRyaWM6MTg=",
+              "sizeInBytes": 692189
+            },
+            "sourceArtifactsRead": {
+              "count": 0,
+              "id": "RmlsZXNNZXRyaWM6MTc=",
+              "sizeInBytes": 0
+            },
+            "topLevelArtifacts": {
+              "count": 12392,
+              "id": "RmlsZXNNZXRyaWM6MjA=",
+              "sizeInBytes": 1157054839
             }
-          ],
-          "buildGraphMetrics": [
-            {
-              "actionCount": 2893,
-              "actionLookupValueCount": 5586,
-              "actionLookupValueCountNotIncludingAspects": 5585,
-              "id": "QnVpbGRHcmFwaE1ldHJpY3M6NQ==",
-              "inputFileConfiguredTargetCount": 3091,
-              "otherConfiguredTargetCount": 25,
-              "outputArtifactCount": 2405,
-              "outputFileConfiguredTargetCount": 0,
-              "postInvocationSkyframeNodeCount": 117718
-            }
-          ],
-          "cumulativeMetrics": [
-            {
-              "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6NQ==",
-              "numAnalyses": 6,
-              "numBuilds": 4
-            }
-          ],
-          "dynamicExecutionMetrics": [],
+          },
+          "buildGraphMetrics": {
+            "actionCount": 2893,
+            "actionLookupValueCount": 5586,
+            "actionLookupValueCountNotIncludingAspects": 5585,
+            "id": "QnVpbGRHcmFwaE1ldHJpY3M6NQ==",
+            "inputFileConfiguredTargetCount": 3091,
+            "otherConfiguredTargetCount": 25,
+            "outputArtifactCount": 2405,
+            "outputFileConfiguredTargetCount": 0,
+            "postInvocationSkyframeNodeCount": 117718
+          },
+          "cumulativeMetrics": {
+            "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6NQ==",
+            "numAnalyses": 6,
+            "numBuilds": 4
+          },
+          "dynamicExecutionMetrics": null,
           "id": "TWV0cmljczo1",
-          "memoryMetrics": [
-            {
-              "garbageMetrics": [],
-              "id": "TWVtb3J5TWV0cmljczo1",
-              "peakPostGcHeapSize": 0,
-              "peakPostGcTenuredSpaceHeapSize": 0,
-              "usedHeapSizePostBuild": 0
-            }
-          ],
-          "networkMetrics": [],
-          "packageMetrics": [
-            {
-              "id": "UGFja2FnZU1ldHJpY3M6NQ==",
-              "packageLoadMetrics": [],
-              "packagesLoaded": 1
-            }
-          ],
-          "targetMetrics": [
-            {
-              "id": "VGFyZ2V0TWV0cmljczo1",
-              "targetsConfigured": 16,
-              "targetsConfiguredNotIncludingAspects": 16,
-              "targetsLoaded": 0
-            }
-          ],
-          "timingMetrics": [
-            {
-              "actionsExecutionStartInMs": 0,
-              "analysisPhaseTimeInMs": 1101,
-              "cpuTimeInMs": 3287,
-              "executionPhaseTimeInMs": 2849,
-              "id": "VGltaW5nTWV0cmljczo1",
-              "wallTimeInMs": 3149
-            }
-          ]
+          "memoryMetrics": {
+            "garbageMetrics": [],
+            "id": "TWVtb3J5TWV0cmljczo1",
+            "peakPostGcHeapSize": 0,
+            "peakPostGcTenuredSpaceHeapSize": 0,
+            "usedHeapSizePostBuild": 0
+          },
+          "networkMetrics": null,
+          "packageMetrics": {
+            "id": "UGFja2FnZU1ldHJpY3M6NQ==",
+            "packageLoadMetrics": [],
+            "packagesLoaded": 1
+          },
+          "targetMetrics": {
+            "id": "VGFyZ2V0TWV0cmljczo1",
+            "targetsConfigured": 16,
+            "targetsConfiguredNotIncludingAspects": 16,
+            "targetsLoaded": 0
+          },
+          "timingMetrics": {
+            "actionsExecutionStartInMs": 0,
+            "analysisPhaseTimeInMs": 1101,
+            "cpuTimeInMs": 3287,
+            "executionPhaseTimeInMs": 2849,
+            "id": "VGltaW5nTWV0cmljczo1",
+            "wallTimeInMs": 3149
+          }
         },
         "problems": [
           {
@@ -267,26 +241,17 @@
         "targets": [
           {
             "abortReason": "",
-            "durationInMs": 0,
+            "durationInMs": 3,
             "id": "VGFyZ2V0UGFpcjoyMTU=",
-            "label": "//next.js:next",
+            "label": "//next.js/pages:_jest_test_bazel_sequencer",
             "success": true,
-            "targetKind": "_run_binary rule",
+            "targetKind": "_copy_file rule",
             "testSize": "UNKNOWN"
           },
           {
             "abortReason": "",
-            "durationInMs": 0,
+            "durationInMs": 2,
             "id": "VGFyZ2V0UGFpcjoyMTY=",
-            "label": "//next.js:next_dev",
-            "success": true,
-            "targetKind": "_js_run_devserver rule",
-            "testSize": "UNKNOWN"
-          },
-          {
-            "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMTc=",
             "label": "//next.js/pages:_jest_test_bazel_snapshot_resolver",
             "success": true,
             "targetKind": "_copy_file rule",
@@ -294,26 +259,8 @@
           },
           {
             "abortReason": "",
-            "durationInMs": 1,
-            "id": "VGFyZ2V0UGFpcjoyMTg=",
-            "label": "//next.js/pages:_jest_test_jest_entrypoint",
-            "success": true,
-            "targetKind": "directory_path rule",
-            "testSize": "UNKNOWN"
-          },
-          {
-            "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMTk=",
-            "label": "//next.js:jest_config",
-            "success": true,
-            "targetKind": "js_library rule",
-            "testSize": "UNKNOWN"
-          },
-          {
-            "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMjA=",
+            "durationInMs": 2,
+            "id": "VGFyZ2V0UGFpcjoyMTc=",
             "label": "//next.js/public:public",
             "success": true,
             "targetKind": "js_library rule",
@@ -321,17 +268,26 @@
           },
           {
             "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMjE=",
-            "label": "//next.js:next_start",
+            "durationInMs": 2,
+            "id": "VGFyZ2V0UGFpcjoyMTg=",
+            "label": "//next.js:next",
+            "success": true,
+            "targetKind": "_run_binary rule",
+            "testSize": "UNKNOWN"
+          },
+          {
+            "abortReason": "",
+            "durationInMs": 2,
+            "id": "VGFyZ2V0UGFpcjoyMTk=",
+            "label": "//next.js:next_dev",
             "success": true,
             "targetKind": "_js_run_devserver rule",
             "testSize": "UNKNOWN"
           },
           {
             "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMjI=",
+            "durationInMs": 1,
+            "id": "VGFyZ2V0UGFpcjoyMjA=",
             "label": "//next.js:package_json",
             "success": true,
             "targetKind": "js_library rule",
@@ -340,25 +296,7 @@
           {
             "abortReason": "",
             "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMjM=",
-            "label": "//next.js/pages:jest_test",
-            "success": true,
-            "targetKind": "jest_test rule",
-            "testSize": "MEDIUM"
-          },
-          {
-            "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMjQ=",
-            "label": "//next.js/pages:_jest_test_bazel_sequencer",
-            "success": true,
-            "targetKind": "_copy_file rule",
-            "testSize": "UNKNOWN"
-          },
-          {
-            "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMjU=",
+            "id": "VGFyZ2V0UGFpcjoyMjE=",
             "label": "//next.js/pages/api:api",
             "success": true,
             "targetKind": "ts_project rule",
@@ -366,8 +304,8 @@
           },
           {
             "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMjY=",
+            "durationInMs": 2,
+            "id": "VGFyZ2V0UGFpcjoyMjI=",
             "label": "//next.js/pages:_jest_test_bazel_snapshot_reporter",
             "success": true,
             "targetKind": "_copy_file rule",
@@ -375,35 +313,17 @@
           },
           {
             "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMjc=",
-            "label": "//next.js:next_js_binary",
+            "durationInMs": 3,
+            "id": "VGFyZ2V0UGFpcjoyMjM=",
+            "label": "//next.js:build_smoke_test",
             "success": true,
-            "targetKind": "js_binary rule",
-            "testSize": "UNKNOWN"
+            "targetKind": "js_test rule",
+            "testSize": "MEDIUM"
           },
           {
             "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMjg=",
-            "label": "//next.js/pages:pages",
-            "success": true,
-            "targetKind": "ts_project rule",
-            "testSize": "UNKNOWN"
-          },
-          {
-            "abortReason": "",
-            "durationInMs": 1,
-            "id": "VGFyZ2V0UGFpcjoyMjk=",
-            "label": "//next.js/pages:specs",
-            "success": true,
-            "targetKind": "ts_project rule",
-            "testSize": "UNKNOWN"
-          },
-          {
-            "abortReason": "",
-            "durationInMs": 1,
-            "id": "VGFyZ2V0UGFpcjoyMzA=",
+            "durationInMs": 3,
+            "id": "VGFyZ2V0UGFpcjoyMjQ=",
             "label": "//next.js:eslintrc",
             "success": true,
             "targetKind": "js_library rule",
@@ -412,7 +332,43 @@
           {
             "abortReason": "",
             "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMzE=",
+            "id": "VGFyZ2V0UGFpcjoyMjU=",
+            "label": "//next.js:jest_config",
+            "success": true,
+            "targetKind": "js_library rule",
+            "testSize": "UNKNOWN"
+          },
+          {
+            "abortReason": "",
+            "durationInMs": 2,
+            "id": "VGFyZ2V0UGFpcjoyMjY=",
+            "label": "//next.js/pages:pages",
+            "success": true,
+            "targetKind": "ts_project rule",
+            "testSize": "UNKNOWN"
+          },
+          {
+            "abortReason": "",
+            "durationInMs": 2,
+            "id": "VGFyZ2V0UGFpcjoyMjc=",
+            "label": "//next.js/styles:styles",
+            "success": true,
+            "targetKind": "js_library rule",
+            "testSize": "UNKNOWN"
+          },
+          {
+            "abortReason": "",
+            "durationInMs": 2,
+            "id": "VGFyZ2V0UGFpcjoyMjg=",
+            "label": "//next.js:next_js_binary",
+            "success": true,
+            "targetKind": "js_binary rule",
+            "testSize": "UNKNOWN"
+          },
+          {
+            "abortReason": "",
+            "durationInMs": 0,
+            "id": "VGFyZ2V0UGFpcjoyMjk=",
             "label": "//next.js:tsconfig",
             "success": true,
             "targetKind": "ts_config rule",
@@ -421,29 +377,47 @@
           {
             "abortReason": "",
             "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMzI=",
-            "label": "//next.js/styles:styles",
+            "id": "VGFyZ2V0UGFpcjoyMzA=",
+            "label": "//next.js/pages:jest_test",
             "success": true,
-            "targetKind": "js_library rule",
-            "testSize": "UNKNOWN"
-          },
-          {
-            "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMzM=",
-            "label": "//next.js:build_smoke_test",
-            "success": true,
-            "targetKind": "js_test rule",
+            "targetKind": "jest_test rule",
             "testSize": "MEDIUM"
           },
           {
             "abortReason": "",
-            "durationInMs": 0,
-            "id": "VGFyZ2V0UGFpcjoyMzQ=",
+            "durationInMs": 3,
+            "id": "VGFyZ2V0UGFpcjoyMzE=",
+            "label": "//next.js/pages:_jest_test_jest_entrypoint",
+            "success": true,
+            "targetKind": "directory_path rule",
+            "testSize": "UNKNOWN"
+          },
+          {
+            "abortReason": "",
+            "durationInMs": 3,
+            "id": "VGFyZ2V0UGFpcjoyMzI=",
+            "label": "//next.js/pages:specs",
+            "success": true,
+            "targetKind": "ts_project rule",
+            "testSize": "UNKNOWN"
+          },
+          {
+            "abortReason": "",
+            "durationInMs": 3,
+            "id": "VGFyZ2V0UGFpcjoyMzM=",
             "label": "//next.js:build_test",
             "success": true,
             "targetKind": "_empty_test rule",
             "testSize": "SMALL"
+          },
+          {
+            "abortReason": "",
+            "durationInMs": 1,
+            "id": "VGFyZ2V0UGFpcjoyMzQ=",
+            "label": "//next.js:next_start",
+            "success": true,
+            "targetKind": "_js_run_devserver rule",
+            "testSize": "UNKNOWN"
           }
         ],
         "testCollection": [

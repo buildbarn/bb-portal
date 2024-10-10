@@ -160,19 +160,23 @@ func (tsc *TestSummaryCreate) SetNillableLabel(s *string) *TestSummaryCreate {
 	return tsc
 }
 
-// AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by IDs.
-func (tsc *TestSummaryCreate) AddTestCollectionIDs(ids ...int) *TestSummaryCreate {
-	tsc.mutation.AddTestCollectionIDs(ids...)
+// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
+func (tsc *TestSummaryCreate) SetTestCollectionID(id int) *TestSummaryCreate {
+	tsc.mutation.SetTestCollectionID(id)
 	return tsc
 }
 
-// AddTestCollection adds the "test_collection" edges to the TestCollection entity.
-func (tsc *TestSummaryCreate) AddTestCollection(t ...*TestCollection) *TestSummaryCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
+func (tsc *TestSummaryCreate) SetNillableTestCollectionID(id *int) *TestSummaryCreate {
+	if id != nil {
+		tsc = tsc.SetTestCollectionID(*id)
 	}
-	return tsc.AddTestCollectionIDs(ids...)
+	return tsc
+}
+
+// SetTestCollection sets the "test_collection" edge to the TestCollection entity.
+func (tsc *TestSummaryCreate) SetTestCollection(t *TestCollection) *TestSummaryCreate {
+	return tsc.SetTestCollectionID(t.ID)
 }
 
 // AddPassedIDs adds the "passed" edge to the TestFile entity by IDs.
@@ -321,7 +325,7 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 	}
 	if nodes := tsc.mutation.TestCollectionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   testsummary.TestCollectionTable,
 			Columns: []string{testsummary.TestCollectionColumn},
@@ -333,6 +337,7 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.test_collection_test_summary = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tsc.mutation.PassedIDs(); len(nodes) > 0 {

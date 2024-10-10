@@ -20,18 +20,18 @@ import (
 // TestSummaryQuery is the builder for querying TestSummary entities.
 type TestSummaryQuery struct {
 	config
-	ctx                     *QueryContext
-	order                   []testsummary.OrderOption
-	inters                  []Interceptor
-	predicates              []predicate.TestSummary
-	withTestCollection      *TestCollectionQuery
-	withPassed              *TestFileQuery
-	withFailed              *TestFileQuery
-	modifiers               []func(*sql.Selector)
-	loadTotal               []func(context.Context, []*TestSummary) error
-	withNamedTestCollection map[string]*TestCollectionQuery
-	withNamedPassed         map[string]*TestFileQuery
-	withNamedFailed         map[string]*TestFileQuery
+	ctx                *QueryContext
+	order              []testsummary.OrderOption
+	inters             []Interceptor
+	predicates         []predicate.TestSummary
+	withTestCollection *TestCollectionQuery
+	withPassed         *TestFileQuery
+	withFailed         *TestFileQuery
+	withFKs            bool
+	modifiers          []func(*sql.Selector)
+	loadTotal          []func(context.Context, []*TestSummary) error
+	withNamedPassed    map[string]*TestFileQuery
+	withNamedFailed    map[string]*TestFileQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -82,7 +82,7 @@ func (tsq *TestSummaryQuery) QueryTestCollection() *TestCollectionQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(testsummary.Table, testsummary.FieldID, selector),
 			sqlgraph.To(testcollection.Table, testcollection.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, testsummary.TestCollectionTable, testsummary.TestCollectionColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, testsummary.TestCollectionTable, testsummary.TestCollectionColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tsq.driver.Dialect(), step)
 		return fromU, nil
@@ -445,6 +445,7 @@ func (tsq *TestSummaryQuery) prepareQuery(ctx context.Context) error {
 func (tsq *TestSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TestSummary, error) {
 	var (
 		nodes       = []*TestSummary{}
+		withFKs     = tsq.withFKs
 		_spec       = tsq.querySpec()
 		loadedTypes = [3]bool{
 			tsq.withTestCollection != nil,
@@ -452,6 +453,12 @@ func (tsq *TestSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 			tsq.withFailed != nil,
 		}
 	)
+	if tsq.withTestCollection != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, testsummary.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TestSummary).scanValues(nil, columns)
 	}
@@ -474,9 +481,8 @@ func (tsq *TestSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 		return nodes, nil
 	}
 	if query := tsq.withTestCollection; query != nil {
-		if err := tsq.loadTestCollection(ctx, query, nodes,
-			func(n *TestSummary) { n.Edges.TestCollection = []*TestCollection{} },
-			func(n *TestSummary, e *TestCollection) { n.Edges.TestCollection = append(n.Edges.TestCollection, e) }); err != nil {
+		if err := tsq.loadTestCollection(ctx, query, nodes, nil,
+			func(n *TestSummary, e *TestCollection) { n.Edges.TestCollection = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -491,13 +497,6 @@ func (tsq *TestSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 		if err := tsq.loadFailed(ctx, query, nodes,
 			func(n *TestSummary) { n.Edges.Failed = []*TestFile{} },
 			func(n *TestSummary, e *TestFile) { n.Edges.Failed = append(n.Edges.Failed, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range tsq.withNamedTestCollection {
-		if err := tsq.loadTestCollection(ctx, query, nodes,
-			func(n *TestSummary) { n.appendNamedTestCollection(name) },
-			func(n *TestSummary, e *TestCollection) { n.appendNamedTestCollection(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -524,33 +523,34 @@ func (tsq *TestSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 }
 
 func (tsq *TestSummaryQuery) loadTestCollection(ctx context.Context, query *TestCollectionQuery, nodes []*TestSummary, init func(*TestSummary), assign func(*TestSummary, *TestCollection)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*TestSummary)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*TestSummary)
 	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
+		if nodes[i].test_collection_test_summary == nil {
+			continue
 		}
+		fk := *nodes[i].test_collection_test_summary
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.withFKs = true
-	query.Where(predicate.TestCollection(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(testsummary.TestCollectionColumn), fks...))
-	}))
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(testcollection.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.test_collection_test_summary
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "test_collection_test_summary" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "test_collection_test_summary" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "test_collection_test_summary" returned %v`, n.ID)
 		}
-		assign(node, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }
@@ -699,20 +699,6 @@ func (tsq *TestSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedTestCollection tells the query-builder to eager-load the nodes that are connected to the "test_collection"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (tsq *TestSummaryQuery) WithNamedTestCollection(name string, opts ...func(*TestCollectionQuery)) *TestSummaryQuery {
-	query := (&TestCollectionClient{config: tsq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if tsq.withNamedTestCollection == nil {
-		tsq.withNamedTestCollection = make(map[string]*TestCollectionQuery)
-	}
-	tsq.withNamedTestCollection[name] = query
-	return tsq
 }
 
 // WithNamedPassed tells the query-builder to eager-load the nodes that are connected to the "passed"

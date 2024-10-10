@@ -23,6 +23,25 @@ var (
 	errStatusNotFound     = errors.New("status not found")
 )
 
+// StringSliceArrayToPointerArray takes an array of strings and returns an array of string pointers
+func StringSliceArrayToPointerArray(strings []string) []*string {
+	result := make([]*string, len(strings))
+	for i, str := range strings {
+		result[i] = &str
+	}
+	return result
+}
+
+// GetFloatPointer returns a pointer to a float
+func GetFloatPointer(f *float64) *float64 {
+	return f
+}
+
+// GetInt64Pointer returns a pointer to an int64
+func GetInt64Pointer(i *int64) *int64 {
+	return i
+}
+
 // Helper A Helper struct.
 type Helper struct {
 	*problemHelper

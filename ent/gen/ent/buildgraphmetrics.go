@@ -9,6 +9,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 )
 
 // BuildGraphMetrics is the model entity for the BuildGraphMetrics schema.
@@ -36,88 +38,98 @@ type BuildGraphMetrics struct {
 	PostInvocationSkyframeNodeCount int32 `json:"post_invocation_skyframe_node_count,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BuildGraphMetricsQuery when eager-loading is set.
-	Edges        BuildGraphMetricsEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                              BuildGraphMetricsEdges `json:"edges"`
+	build_graph_metrics_dirtied_values *int
+	build_graph_metrics_changed_values *int
+	build_graph_metrics_built_values   *int
+	build_graph_metrics_cleaned_values *int
+	metrics_build_graph_metrics        *int
+	selectValues                       sql.SelectValues
 }
 
 // BuildGraphMetricsEdges holds the relations/edges for other nodes in the graph.
 type BuildGraphMetricsEdges struct {
 	// Metrics holds the value of the metrics edge.
-	Metrics []*Metrics `json:"metrics,omitempty"`
+	Metrics *Metrics `json:"metrics,omitempty"`
 	// DirtiedValues holds the value of the dirtied_values edge.
-	DirtiedValues []*EvaluationStat `json:"dirtied_values,omitempty"`
+	DirtiedValues *EvaluationStat `json:"dirtied_values,omitempty"`
 	// ChangedValues holds the value of the changed_values edge.
-	ChangedValues []*EvaluationStat `json:"changed_values,omitempty"`
+	ChangedValues *EvaluationStat `json:"changed_values,omitempty"`
 	// BuiltValues holds the value of the built_values edge.
-	BuiltValues []*EvaluationStat `json:"built_values,omitempty"`
+	BuiltValues *EvaluationStat `json:"built_values,omitempty"`
 	// CleanedValues holds the value of the cleaned_values edge.
-	CleanedValues []*EvaluationStat `json:"cleaned_values,omitempty"`
+	CleanedValues *EvaluationStat `json:"cleaned_values,omitempty"`
 	// EvaluatedValues holds the value of the evaluated_values edge.
-	EvaluatedValues []*EvaluationStat `json:"evaluated_values,omitempty"`
+	EvaluatedValues *EvaluationStat `json:"evaluated_values,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [6]bool
 	// totalCount holds the count of the edges above.
 	totalCount [6]map[string]int
-
-	namedMetrics         map[string][]*Metrics
-	namedDirtiedValues   map[string][]*EvaluationStat
-	namedChangedValues   map[string][]*EvaluationStat
-	namedBuiltValues     map[string][]*EvaluationStat
-	namedCleanedValues   map[string][]*EvaluationStat
-	namedEvaluatedValues map[string][]*EvaluationStat
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e BuildGraphMetricsEdges) MetricsOrErr() ([]*Metrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BuildGraphMetricsEdges) MetricsOrErr() (*Metrics, error) {
+	if e.Metrics != nil {
 		return e.Metrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
 }
 
 // DirtiedValuesOrErr returns the DirtiedValues value or an error if the edge
-// was not loaded in eager-loading.
-func (e BuildGraphMetricsEdges) DirtiedValuesOrErr() ([]*EvaluationStat, error) {
-	if e.loadedTypes[1] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BuildGraphMetricsEdges) DirtiedValuesOrErr() (*EvaluationStat, error) {
+	if e.DirtiedValues != nil {
 		return e.DirtiedValues, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: evaluationstat.Label}
 	}
 	return nil, &NotLoadedError{edge: "dirtied_values"}
 }
 
 // ChangedValuesOrErr returns the ChangedValues value or an error if the edge
-// was not loaded in eager-loading.
-func (e BuildGraphMetricsEdges) ChangedValuesOrErr() ([]*EvaluationStat, error) {
-	if e.loadedTypes[2] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BuildGraphMetricsEdges) ChangedValuesOrErr() (*EvaluationStat, error) {
+	if e.ChangedValues != nil {
 		return e.ChangedValues, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: evaluationstat.Label}
 	}
 	return nil, &NotLoadedError{edge: "changed_values"}
 }
 
 // BuiltValuesOrErr returns the BuiltValues value or an error if the edge
-// was not loaded in eager-loading.
-func (e BuildGraphMetricsEdges) BuiltValuesOrErr() ([]*EvaluationStat, error) {
-	if e.loadedTypes[3] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BuildGraphMetricsEdges) BuiltValuesOrErr() (*EvaluationStat, error) {
+	if e.BuiltValues != nil {
 		return e.BuiltValues, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: evaluationstat.Label}
 	}
 	return nil, &NotLoadedError{edge: "built_values"}
 }
 
 // CleanedValuesOrErr returns the CleanedValues value or an error if the edge
-// was not loaded in eager-loading.
-func (e BuildGraphMetricsEdges) CleanedValuesOrErr() ([]*EvaluationStat, error) {
-	if e.loadedTypes[4] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BuildGraphMetricsEdges) CleanedValuesOrErr() (*EvaluationStat, error) {
+	if e.CleanedValues != nil {
 		return e.CleanedValues, nil
+	} else if e.loadedTypes[4] {
+		return nil, &NotFoundError{label: evaluationstat.Label}
 	}
 	return nil, &NotLoadedError{edge: "cleaned_values"}
 }
 
 // EvaluatedValuesOrErr returns the EvaluatedValues value or an error if the edge
-// was not loaded in eager-loading.
-func (e BuildGraphMetricsEdges) EvaluatedValuesOrErr() ([]*EvaluationStat, error) {
-	if e.loadedTypes[5] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BuildGraphMetricsEdges) EvaluatedValuesOrErr() (*EvaluationStat, error) {
+	if e.EvaluatedValues != nil {
 		return e.EvaluatedValues, nil
+	} else if e.loadedTypes[5] {
+		return nil, &NotFoundError{label: evaluationstat.Label}
 	}
 	return nil, &NotLoadedError{edge: "evaluated_values"}
 }
@@ -128,6 +140,16 @@ func (*BuildGraphMetrics) scanValues(columns []string) ([]any, error) {
 	for i := range columns {
 		switch columns[i] {
 		case buildgraphmetrics.FieldID, buildgraphmetrics.FieldActionLookupValueCount, buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects, buildgraphmetrics.FieldActionCount, buildgraphmetrics.FieldActionCountNotIncludingAspects, buildgraphmetrics.FieldInputFileConfiguredTargetCount, buildgraphmetrics.FieldOutputFileConfiguredTargetCount, buildgraphmetrics.FieldOtherConfiguredTargetCount, buildgraphmetrics.FieldOutputArtifactCount, buildgraphmetrics.FieldPostInvocationSkyframeNodeCount:
+			values[i] = new(sql.NullInt64)
+		case buildgraphmetrics.ForeignKeys[0]: // build_graph_metrics_dirtied_values
+			values[i] = new(sql.NullInt64)
+		case buildgraphmetrics.ForeignKeys[1]: // build_graph_metrics_changed_values
+			values[i] = new(sql.NullInt64)
+		case buildgraphmetrics.ForeignKeys[2]: // build_graph_metrics_built_values
+			values[i] = new(sql.NullInt64)
+		case buildgraphmetrics.ForeignKeys[3]: // build_graph_metrics_cleaned_values
+			values[i] = new(sql.NullInt64)
+		case buildgraphmetrics.ForeignKeys[4]: // metrics_build_graph_metrics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -203,6 +225,41 @@ func (bgm *BuildGraphMetrics) assignValues(columns []string, values []any) error
 				return fmt.Errorf("unexpected type %T for field post_invocation_skyframe_node_count", values[i])
 			} else if value.Valid {
 				bgm.PostInvocationSkyframeNodeCount = int32(value.Int64)
+			}
+		case buildgraphmetrics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_dirtied_values", value)
+			} else if value.Valid {
+				bgm.build_graph_metrics_dirtied_values = new(int)
+				*bgm.build_graph_metrics_dirtied_values = int(value.Int64)
+			}
+		case buildgraphmetrics.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_changed_values", value)
+			} else if value.Valid {
+				bgm.build_graph_metrics_changed_values = new(int)
+				*bgm.build_graph_metrics_changed_values = int(value.Int64)
+			}
+		case buildgraphmetrics.ForeignKeys[2]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_built_values", value)
+			} else if value.Valid {
+				bgm.build_graph_metrics_built_values = new(int)
+				*bgm.build_graph_metrics_built_values = int(value.Int64)
+			}
+		case buildgraphmetrics.ForeignKeys[3]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_cleaned_values", value)
+			} else if value.Valid {
+				bgm.build_graph_metrics_cleaned_values = new(int)
+				*bgm.build_graph_metrics_cleaned_values = int(value.Int64)
+			}
+		case buildgraphmetrics.ForeignKeys[4]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field metrics_build_graph_metrics", value)
+			} else if value.Valid {
+				bgm.metrics_build_graph_metrics = new(int)
+				*bgm.metrics_build_graph_metrics = int(value.Int64)
 			}
 		default:
 			bgm.selectValues.Set(columns[i], values[i])
@@ -298,150 +355,6 @@ func (bgm *BuildGraphMetrics) String() string {
 	builder.WriteString(fmt.Sprintf("%v", bgm.PostInvocationSkyframeNodeCount))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedMetrics returns the Metrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (bgm *BuildGraphMetrics) NamedMetrics(name string) ([]*Metrics, error) {
-	if bgm.Edges.namedMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := bgm.Edges.namedMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (bgm *BuildGraphMetrics) appendNamedMetrics(name string, edges ...*Metrics) {
-	if bgm.Edges.namedMetrics == nil {
-		bgm.Edges.namedMetrics = make(map[string][]*Metrics)
-	}
-	if len(edges) == 0 {
-		bgm.Edges.namedMetrics[name] = []*Metrics{}
-	} else {
-		bgm.Edges.namedMetrics[name] = append(bgm.Edges.namedMetrics[name], edges...)
-	}
-}
-
-// NamedDirtiedValues returns the DirtiedValues named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (bgm *BuildGraphMetrics) NamedDirtiedValues(name string) ([]*EvaluationStat, error) {
-	if bgm.Edges.namedDirtiedValues == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := bgm.Edges.namedDirtiedValues[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (bgm *BuildGraphMetrics) appendNamedDirtiedValues(name string, edges ...*EvaluationStat) {
-	if bgm.Edges.namedDirtiedValues == nil {
-		bgm.Edges.namedDirtiedValues = make(map[string][]*EvaluationStat)
-	}
-	if len(edges) == 0 {
-		bgm.Edges.namedDirtiedValues[name] = []*EvaluationStat{}
-	} else {
-		bgm.Edges.namedDirtiedValues[name] = append(bgm.Edges.namedDirtiedValues[name], edges...)
-	}
-}
-
-// NamedChangedValues returns the ChangedValues named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (bgm *BuildGraphMetrics) NamedChangedValues(name string) ([]*EvaluationStat, error) {
-	if bgm.Edges.namedChangedValues == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := bgm.Edges.namedChangedValues[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (bgm *BuildGraphMetrics) appendNamedChangedValues(name string, edges ...*EvaluationStat) {
-	if bgm.Edges.namedChangedValues == nil {
-		bgm.Edges.namedChangedValues = make(map[string][]*EvaluationStat)
-	}
-	if len(edges) == 0 {
-		bgm.Edges.namedChangedValues[name] = []*EvaluationStat{}
-	} else {
-		bgm.Edges.namedChangedValues[name] = append(bgm.Edges.namedChangedValues[name], edges...)
-	}
-}
-
-// NamedBuiltValues returns the BuiltValues named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (bgm *BuildGraphMetrics) NamedBuiltValues(name string) ([]*EvaluationStat, error) {
-	if bgm.Edges.namedBuiltValues == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := bgm.Edges.namedBuiltValues[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (bgm *BuildGraphMetrics) appendNamedBuiltValues(name string, edges ...*EvaluationStat) {
-	if bgm.Edges.namedBuiltValues == nil {
-		bgm.Edges.namedBuiltValues = make(map[string][]*EvaluationStat)
-	}
-	if len(edges) == 0 {
-		bgm.Edges.namedBuiltValues[name] = []*EvaluationStat{}
-	} else {
-		bgm.Edges.namedBuiltValues[name] = append(bgm.Edges.namedBuiltValues[name], edges...)
-	}
-}
-
-// NamedCleanedValues returns the CleanedValues named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (bgm *BuildGraphMetrics) NamedCleanedValues(name string) ([]*EvaluationStat, error) {
-	if bgm.Edges.namedCleanedValues == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := bgm.Edges.namedCleanedValues[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (bgm *BuildGraphMetrics) appendNamedCleanedValues(name string, edges ...*EvaluationStat) {
-	if bgm.Edges.namedCleanedValues == nil {
-		bgm.Edges.namedCleanedValues = make(map[string][]*EvaluationStat)
-	}
-	if len(edges) == 0 {
-		bgm.Edges.namedCleanedValues[name] = []*EvaluationStat{}
-	} else {
-		bgm.Edges.namedCleanedValues[name] = append(bgm.Edges.namedCleanedValues[name], edges...)
-	}
-}
-
-// NamedEvaluatedValues returns the EvaluatedValues named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (bgm *BuildGraphMetrics) NamedEvaluatedValues(name string) ([]*EvaluationStat, error) {
-	if bgm.Edges.namedEvaluatedValues == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := bgm.Edges.namedEvaluatedValues[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (bgm *BuildGraphMetrics) appendNamedEvaluatedValues(name string, edges ...*EvaluationStat) {
-	if bgm.Edges.namedEvaluatedValues == nil {
-		bgm.Edges.namedEvaluatedValues = make(map[string][]*EvaluationStat)
-	}
-	if len(edges) == 0 {
-		bgm.Edges.namedEvaluatedValues[name] = []*EvaluationStat{}
-	} else {
-		bgm.Edges.namedEvaluatedValues[name] = append(bgm.Edges.namedEvaluatedValues[name], edges...)
-	}
 }
 
 // BuildGraphMetricsSlice is a parsable slice of BuildGraphMetrics.

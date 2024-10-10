@@ -29,7 +29,8 @@ func (OutputGroup) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the target completion object.
 		edge.From("target_complete", TargetComplete.Type).
-			Ref("output_group"),
+			Ref("output_group").
+			Unique(),
 
 		// Inline Files.
 		// Inlined files that belong to this output group, requested via

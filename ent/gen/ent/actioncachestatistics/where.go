@@ -333,7 +333,7 @@ func HasActionSummary() predicate.ActionCacheStatistics {
 	return predicate.ActionCacheStatistics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, ActionSummaryTable, ActionSummaryPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, ActionSummaryTable, ActionSummaryColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -356,7 +356,7 @@ func HasMissDetails() predicate.ActionCacheStatistics {
 	return predicate.ActionCacheStatistics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, MissDetailsTable, MissDetailsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, MissDetailsTable, MissDetailsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

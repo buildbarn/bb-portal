@@ -26,9 +26,9 @@ type DynamicExecutionMetricsQuery struct {
 	predicates              []predicate.DynamicExecutionMetrics
 	withMetrics             *MetricsQuery
 	withRaceStatistics      *RaceStatisticsQuery
+	withFKs                 bool
 	modifiers               []func(*sql.Selector)
 	loadTotal               []func(context.Context, []*DynamicExecutionMetrics) error
-	withNamedMetrics        map[string]*MetricsQuery
 	withNamedRaceStatistics map[string]*RaceStatisticsQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -80,7 +80,7 @@ func (demq *DynamicExecutionMetricsQuery) QueryMetrics() *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID, selector),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, dynamicexecutionmetrics.MetricsTable, dynamicexecutionmetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, dynamicexecutionmetrics.MetricsTable, dynamicexecutionmetrics.MetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(demq.driver.Dialect(), step)
 		return fromU, nil
@@ -102,7 +102,7 @@ func (demq *DynamicExecutionMetricsQuery) QueryRaceStatistics() *RaceStatisticsQ
 		step := sqlgraph.NewStep(
 			sqlgraph.From(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID, selector),
 			sqlgraph.To(racestatistics.Table, racestatistics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, dynamicexecutionmetrics.RaceStatisticsTable, dynamicexecutionmetrics.RaceStatisticsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, dynamicexecutionmetrics.RaceStatisticsTable, dynamicexecutionmetrics.RaceStatisticsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(demq.driver.Dialect(), step)
 		return fromU, nil
@@ -387,12 +387,19 @@ func (demq *DynamicExecutionMetricsQuery) prepareQuery(ctx context.Context) erro
 func (demq *DynamicExecutionMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*DynamicExecutionMetrics, error) {
 	var (
 		nodes       = []*DynamicExecutionMetrics{}
+		withFKs     = demq.withFKs
 		_spec       = demq.querySpec()
 		loadedTypes = [2]bool{
 			demq.withMetrics != nil,
 			demq.withRaceStatistics != nil,
 		}
 	)
+	if demq.withMetrics != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, dynamicexecutionmetrics.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*DynamicExecutionMetrics).scanValues(nil, columns)
 	}
@@ -415,9 +422,8 @@ func (demq *DynamicExecutionMetricsQuery) sqlAll(ctx context.Context, hooks ...q
 		return nodes, nil
 	}
 	if query := demq.withMetrics; query != nil {
-		if err := demq.loadMetrics(ctx, query, nodes,
-			func(n *DynamicExecutionMetrics) { n.Edges.Metrics = []*Metrics{} },
-			func(n *DynamicExecutionMetrics, e *Metrics) { n.Edges.Metrics = append(n.Edges.Metrics, e) }); err != nil {
+		if err := demq.loadMetrics(ctx, query, nodes, nil,
+			func(n *DynamicExecutionMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -427,13 +433,6 @@ func (demq *DynamicExecutionMetricsQuery) sqlAll(ctx context.Context, hooks ...q
 			func(n *DynamicExecutionMetrics, e *RaceStatistics) {
 				n.Edges.RaceStatistics = append(n.Edges.RaceStatistics, e)
 			}); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range demq.withNamedMetrics {
-		if err := demq.loadMetrics(ctx, query, nodes,
-			func(n *DynamicExecutionMetrics) { n.appendNamedMetrics(name) },
-			func(n *DynamicExecutionMetrics, e *Metrics) { n.appendNamedMetrics(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -453,124 +452,65 @@ func (demq *DynamicExecutionMetricsQuery) sqlAll(ctx context.Context, hooks ...q
 }
 
 func (demq *DynamicExecutionMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*DynamicExecutionMetrics, init func(*DynamicExecutionMetrics), assign func(*DynamicExecutionMetrics, *Metrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*DynamicExecutionMetrics)
-	nids := make(map[int]map[*DynamicExecutionMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*DynamicExecutionMetrics)
+	for i := range nodes {
+		if nodes[i].metrics_dynamic_execution_metrics == nil {
+			continue
 		}
+		fk := *nodes[i].metrics_dynamic_execution_metrics
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(dynamicexecutionmetrics.MetricsTable)
-		s.Join(joinT).On(s.C(metrics.FieldID), joinT.C(dynamicexecutionmetrics.MetricsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(dynamicexecutionmetrics.MetricsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(dynamicexecutionmetrics.MetricsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*DynamicExecutionMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*Metrics](ctx, query, qr, query.inters)
+	query.Where(metrics.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_dynamic_execution_metrics" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
 }
 func (demq *DynamicExecutionMetricsQuery) loadRaceStatistics(ctx context.Context, query *RaceStatisticsQuery, nodes []*DynamicExecutionMetrics, init func(*DynamicExecutionMetrics), assign func(*DynamicExecutionMetrics, *RaceStatistics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*DynamicExecutionMetrics)
-	nids := make(map[int]map[*DynamicExecutionMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*DynamicExecutionMetrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 		if init != nil {
-			init(node)
+			init(nodes[i])
 		}
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(dynamicexecutionmetrics.RaceStatisticsTable)
-		s.Join(joinT).On(s.C(racestatistics.FieldID), joinT.C(dynamicexecutionmetrics.RaceStatisticsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(dynamicexecutionmetrics.RaceStatisticsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(dynamicexecutionmetrics.RaceStatisticsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*DynamicExecutionMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*RaceStatistics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.RaceStatistics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(dynamicexecutionmetrics.RaceStatisticsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.dynamic_execution_metrics_race_statistics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "dynamic_execution_metrics_race_statistics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "race_statistics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "dynamic_execution_metrics_race_statistics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -657,20 +597,6 @@ func (demq *DynamicExecutionMetricsQuery) sqlQuery(ctx context.Context) *sql.Sel
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedMetrics tells the query-builder to eager-load the nodes that are connected to the "metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (demq *DynamicExecutionMetricsQuery) WithNamedMetrics(name string, opts ...func(*MetricsQuery)) *DynamicExecutionMetricsQuery {
-	query := (&MetricsClient{config: demq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if demq.withNamedMetrics == nil {
-		demq.withNamedMetrics = make(map[string]*MetricsQuery)
-	}
-	demq.withNamedMetrics[name] = query
-	return demq
 }
 
 // WithNamedRaceStatistics tells the query-builder to eager-load the nodes that are connected to the "race_statistics"

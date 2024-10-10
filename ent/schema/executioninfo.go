@@ -37,7 +37,9 @@ func (ExectionInfo) Fields() []ent.Field {
 func (ExectionInfo) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the test result
-		edge.From("test_result", TestResultBES.Type).Ref("execution_info"),
+		edge.From("test_result", TestResultBES.Type).
+			Ref("execution_info").
+			Unique(),
 
 		// Represents a hierarchical timing breakdown of an activity.
 		// The top level time should be the total time of the activity.

@@ -15,36 +15,36 @@ export default function Home() {
         <div className={styles.container}>
           <Space direction="vertical" size="large">
             <Typography.Title level={1} className={styles.item}>
-              Welcome to Buildbarn Portal
+              Welcome to the {process.env.NEXT_PUBLIC_COMPANY_NAME} Buildbarn Portal
             </Typography.Title>
             <Typography.Title level={5} className={styles.item}>
               Providing insights into Bazel build outputs
             </Typography.Title>
-            <Divider/>
+            <Divider />
             <Uploader
               label="Upload Build Event Protocol (BEP) files to analyze"
               description={
                 <Typography.Text type="secondary">
                   Upload one or more{' '}
                   <Typography.Text type="secondary" italic>*.bep.ndjson</Typography.Text>{' '}
-                  file(s) produced with Bazel’s{' '}
+                  file(s) produced with Bazel&apos;s{' '}
                   <Typography.Text code>--build_event_json_file</Typography.Text>{' '}
                   flag to analyze
                 </Typography.Text>
               }
               action="/api/v1/bep/upload"
             />
-            <Divider/>
+            <Divider />
             <Typography.Text>
               Alternatively, add the following lines to your{' '}
               <Typography.Text italic>.bazelrc</Typography.Text>{' '}
               to start sending build events to the service:
             </Typography.Text>
             <Space size="middle">
-              <Typography.Text copyable={{ text: bazelrcLines}} />
-              <pre style={{textAlign: "left"}}>{bazelrcLines}</pre>
+              <Typography.Text copyable={{ text: bazelrcLines }} />
+              <pre style={{ textAlign: "left" }}>{bazelrcLines}</pre>
+            </Space>
           </Space>
-        </Space>
         </div>
       }
     />

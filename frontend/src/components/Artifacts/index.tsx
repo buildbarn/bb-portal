@@ -39,23 +39,23 @@ const ArtifactsDataMetrics: React.FC<{ artifactMetrics: ArtifactMetrics | undefi
     artifacts_data.push(
         {
             name: "Source Artifacts Read",
-            sizeInBytes: artifactMetrics?.sourceArtifactsRead?.at(0)?.sizeInBytes ?? 0,
-            count: artifactMetrics?.sourceArtifactsRead?.at(0)?.count ?? 0
+            sizeInBytes: artifactMetrics?.sourceArtifactsRead?.sizeInBytes ?? 0,
+            count: artifactMetrics?.sourceArtifactsRead?.count ?? 0
         },
         {
             name: "Output Artifacts From Action Cache",
-            sizeInBytes: artifactMetrics?.outputArtifactsFromActionCache?.at(0)?.sizeInBytes ?? 0,
-            count: artifactMetrics?.outputArtifactsFromActionCache?.at(0)?.count ?? 0
+            sizeInBytes: artifactMetrics?.outputArtifactsFromActionCache?.sizeInBytes ?? 0,
+            count: artifactMetrics?.outputArtifactsFromActionCache?.count ?? 0
         },
         {
             name: "Output Artifacts Seen",
-            sizeInBytes: artifactMetrics?.outputArtifactsSeen?.at(0)?.sizeInBytes ?? 0,
-            count: artifactMetrics?.outputArtifactsSeen?.at(0)?.count ?? 0
+            sizeInBytes: artifactMetrics?.outputArtifactsSeen?.sizeInBytes ?? 0,
+            count: artifactMetrics?.outputArtifactsSeen?.count ?? 0
         },
         {
             name: "Top Level Artifacts",
-            sizeInBytes: artifactMetrics?.topLevelArtifacts?.at(0)?.sizeInBytes ?? 0,
-            count: artifactMetrics?.topLevelArtifacts?.at(0)?.count ?? 0
+            sizeInBytes: artifactMetrics?.topLevelArtifacts?.sizeInBytes ?? 0,
+            count: artifactMetrics?.topLevelArtifacts?.count ?? 0
         },
     )
 

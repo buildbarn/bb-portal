@@ -53,7 +53,7 @@ const ac_columns: TableColumnsType<MissDetailDisplayDataType> = [
 
 const AcMetrics: React.FC<{ acMetrics: ActionSummary | undefined; }> = ({ acMetrics }) => {
 
-    const acMetricsData: ActionCacheStatistics | undefined = acMetrics?.actionCacheStatistics?.at(0)
+    const acMetricsData: ActionCacheStatistics | undefined = acMetrics?.actionCacheStatistics ?? undefined
 
     var hitMissTotal: number = (acMetricsData?.misses ?? 0) + (acMetricsData?.hits ?? 0);
 

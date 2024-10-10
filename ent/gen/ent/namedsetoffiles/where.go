@@ -58,7 +58,7 @@ func HasOutputGroup() predicate.NamedSetOfFiles {
 	return predicate.NamedSetOfFiles(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, OutputGroupTable, OutputGroupColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, OutputGroupTable, OutputGroupColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

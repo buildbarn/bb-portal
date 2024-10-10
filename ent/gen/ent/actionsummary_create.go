@@ -127,19 +127,23 @@ func (asc *ActionSummaryCreate) AddRunnerCount(r ...*RunnerCount) *ActionSummary
 	return asc.AddRunnerCountIDs(ids...)
 }
 
-// AddActionCacheStatisticIDs adds the "action_cache_statistics" edge to the ActionCacheStatistics entity by IDs.
-func (asc *ActionSummaryCreate) AddActionCacheStatisticIDs(ids ...int) *ActionSummaryCreate {
-	asc.mutation.AddActionCacheStatisticIDs(ids...)
+// SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
+func (asc *ActionSummaryCreate) SetActionCacheStatisticsID(id int) *ActionSummaryCreate {
+	asc.mutation.SetActionCacheStatisticsID(id)
 	return asc
 }
 
-// AddActionCacheStatistics adds the "action_cache_statistics" edges to the ActionCacheStatistics entity.
-func (asc *ActionSummaryCreate) AddActionCacheStatistics(a ...*ActionCacheStatistics) *ActionSummaryCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
+func (asc *ActionSummaryCreate) SetNillableActionCacheStatisticsID(id *int) *ActionSummaryCreate {
+	if id != nil {
+		asc = asc.SetActionCacheStatisticsID(*id)
 	}
-	return asc.AddActionCacheStatisticIDs(ids...)
+	return asc
+}
+
+// SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
+func (asc *ActionSummaryCreate) SetActionCacheStatistics(a *ActionCacheStatistics) *ActionSummaryCreate {
+	return asc.SetActionCacheStatisticsID(a.ID)
 }
 
 // Mutation returns the ActionSummaryMutation object of the builder.
@@ -220,7 +224,7 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 	}
 	if nodes := asc.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   actionsummary.MetricsTable,
 			Columns: []string{actionsummary.MetricsColumn},
@@ -237,10 +241,10 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 	}
 	if nodes := asc.mutation.ActionDataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.ActionDataTable,
-			Columns: actionsummary.ActionDataPrimaryKey,
+			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
@@ -253,10 +257,10 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 	}
 	if nodes := asc.mutation.RunnerCountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.RunnerCountTable,
-			Columns: actionsummary.RunnerCountPrimaryKey,
+			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
@@ -269,10 +273,10 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 	}
 	if nodes := asc.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   actionsummary.ActionCacheStatisticsTable,
-			Columns: actionsummary.ActionCacheStatisticsPrimaryKey,
+			Columns: []string{actionsummary.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),

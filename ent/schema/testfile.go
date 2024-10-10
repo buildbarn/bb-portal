@@ -42,6 +42,8 @@ func (TestFile) Fields() []ent.Field {
 func (TestFile) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the test result.
-		edge.From("test_result", TestResultBES.Type).Ref("test_action_output"),
+		edge.From("test_result", TestResultBES.Type).
+			Ref("test_action_output").
+			Unique(),
 	}
 }

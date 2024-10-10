@@ -26,6 +26,8 @@ func (TimingChild) Fields() []ent.Field {
 // Edges of TimingChild.
 func (TimingChild) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("timing_breakdown", TimingBreakdown.Type).Ref("child"),
+		edge.From("timing_breakdown", TimingBreakdown.Type).
+			Ref("child").
+			Unique(),
 	}
 }
