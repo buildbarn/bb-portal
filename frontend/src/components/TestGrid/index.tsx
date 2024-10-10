@@ -14,11 +14,25 @@ import { GetTestsWithOffsetQueryVariables } from '@/graphql/__generated__/graphq
 import TestGridRow from '../TestGridRow';
 import PortalAlert from '../PortalAlert';
 import Link from 'next/link';
+import styles from "../PortalDuration/index.module.css"
 
 interface Props {
   //labelData: GetTestsWithOffsetQuery | undefined
 }
 
+function millisecondsToTime(milliseconds: number): string {
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const remainingMilliseconds = Math.floor(milliseconds % 1000);
+
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}:${pad(remainingMilliseconds, 3)}`;
+}
+
+function pad(num: number, size: number = 2): string {
+  return num.toString().padStart(size, '0');
+}
 const formatter: StatisticProps['formatter'] = (value) => (
   <CountUp end={value as number} separator="," />
 );
@@ -56,19 +70,19 @@ const columns: TableColumnsType<TestGridRowDataType> = [
     title: "Average Duration",
     dataIndex: "average_duration",
     //sorter: (a, b) => a.average_duration - b.average_duration,
-    render: (_, record) => record.average_duration.toFixed(0)
+    render: (_, record) => <span className={styles.duration}>{millisecondsToTime(record.average_duration)}</span>
   },
   {
     title: "Min Duration",
     dataIndex: "min_duration",
     //sorter: (a, b) => a.average_duration - b.average_duration,
-    render: (_, record) => record.average_duration.toFixed(0)
+    render: (_, record) => <span className={styles.duration}>{millisecondsToTime(record.min_duration)}</span>
   },
   {
     title: "Max Duration",
     dataIndex: "max_duration",
     //sorter: (a, b) => a.average_duration - b.average_duration,
-    render: (_, record) => record.average_duration.toFixed(0)
+    render: (_, record) => <span className={styles.duration}>{millisecondsToTime(record.max_duration)}</span>
   },
   {
     title: "Num Runs",
@@ -79,7 +93,7 @@ const columns: TableColumnsType<TestGridRowDataType> = [
     title: "Pass Rate",
     dataIndex: "pass_rate",
     //sorter: (a, b) => a.pass_rate - b.pass_rate,
-    render: (_, record) => record.pass_rate.toFixed(2) + "%"
+    render: (_, record) => (record.pass_rate * 100).toFixed(2) + "%"
   }
 ]
 
