@@ -73,6 +73,7 @@ func (TestCollection) Edges() []ent.Edge {
 	}
 }
 
+// Annotations of the Test Collection
 func (TestCollection) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
