@@ -26,7 +26,7 @@ go_library(
 
 go_binary(
     name = "bb_portal",
-    cgo = True,
+    cgo = True,  # keep
     embed = [":bb_portal_lib"],
     visibility = ["//visibility:public"],
 )
