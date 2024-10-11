@@ -18,7 +18,7 @@ index 7f3bade..1323c32 100644
 +)
 +use_repo(oci, "distroless_base")
 diff --git tools/container.bzl tools/container.bzl
-index e4aa679..6e92429 100644
+index e4aa679..4900487 100644
 --- tools/container.bzl
 +++ tools/container.bzl
 @@ -22,7 +22,7 @@ def multiarch_go_image(name, binary):
@@ -30,3 +30,20 @@ index e4aa679..6e92429 100644
          entrypoint = ["/app/{}".format(native.package_relative_label(binary).name)],
          tars = [tar_target],
          # Don't build un-transitioned images, as the default target architecture might be unsupported
+@@ -32,7 +32,7 @@ def multiarch_go_image(name, binary):
+
+     for arch in ["amd64", "arm64"]:
+         arch_image_target = "{}_{}_image".format(name, arch)
+-        target_platform = "@rules_go//go/toolchain:linux_" + arch
++        target_platform = "@rules_go//go/toolchain:linux_" + arch + "_cgo"
+         images.append(arch_image_target)
+         platform_transition_filegroup(
+             name = arch_image_target,
+@@ -49,6 +49,6 @@ def container_push_official(name, image, component):
+     oci_push(
+         name = name,
+         image = image,
+-        repository = "ghcr.io/buildbarn/" + component,
++        repository = "ghcr.io/buildbarn/" + component + "/backend",
+         remote_tags = "@com_github_buildbarn_bb_storage//tools:stamped_tags",
+     )
