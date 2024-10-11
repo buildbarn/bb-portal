@@ -5,7 +5,7 @@ bazel_dep(name = "com_github_buildbarn_bb_storage")
 bazel_dep(name = "gazelle", version = "0.38.0")
 bazel_dep(name = "googleapis", version = "0.0.0-20240819-fe8ba054a")
 bazel_dep(name = "googletest", version = "1.15.2")
-bazel_dep(name = "rules_go", version = "0.50.0")
+bazel_dep(name = "rules_go", version = "0.50.1")
 bazel_dep(name = "rules_jsonnet", version = "0.6.0")
 bazel_dep(name = "rules_oci", version = "1.8.0")
 bazel_dep(name = "toolchains_llvm", version = "1.1.2")
@@ -20,6 +20,7 @@ git_override(
     module_name = "com_github_buildbarn_bb_storage",
     commit = "0941111f29e31905e4081e6262bccf0c123940ed",
     patches = [
+        "//:patches/com_buildbarn_bb_storage/containers.diff",
         "//:patches/com_buildbarn_bb_storage/workflows_template.diff",
     ],
     remote = "https://github.com/buildbarn/bb-storage.git",

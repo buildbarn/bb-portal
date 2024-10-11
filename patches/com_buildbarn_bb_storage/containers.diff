@@ -1,0 +1,13 @@
+diff --git tools/container.bzl tools/container.bzl
+index e4aa679..9a6f756 100644
+--- tools/container.bzl
++++ tools/container.bzl
+@@ -32,7 +32,7 @@ def multiarch_go_image(name, binary):
+ 
+     for arch in ["amd64", "arm64"]:
+         arch_image_target = "{}_{}_image".format(name, arch)
+-        target_platform = "@rules_go//go/toolchain:linux_" + arch
++        target_platform = "@rules_go//go/toolchain:linux_" + arch + "_cgo"
+         images.append(arch_image_target)
+         platform_transition_filegroup(
+             name = arch_image_target,
