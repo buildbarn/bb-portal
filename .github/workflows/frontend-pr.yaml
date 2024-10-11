@@ -1,0 +1,20 @@
+name: Build frontend
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  publish:
+    name: Build frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      - name: Build
+        uses: docker/build-push-action@v4
+        with:
+          context: frontend
+          file: ./frontend/Dockerfile
+          push: false
+          tags: ghcr.io/buildbarn/bb-portal-frontend:${{ github.sha }}
