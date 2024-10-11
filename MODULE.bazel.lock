@@ -1526,7 +1526,7 @@
     "@@rules_oci~//oci:extensions.bzl%oci": {
       "general": {
         "bzlTransitiveDigest": "uR4Z+y828uDdulNg1z4TcTN60yXGiBjTczXUV7abKZI=",
-        "usagesDigest": "O3uPFmZAI/qjxO88QIWr9Oj26bPEoOszjO/yc8nD8pc=",
+        "usagesDigest": "joS4pXRJcgV5hfxZkbV5BrHf37K+dLnMXp6ZPFZVW4E=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
@@ -1567,11 +1567,41 @@
               "version": "1.7"
             }
           },
+          "distroless_base": {
+            "bzlFile": "@@rules_oci~//oci/private:pull.bzl",
+            "ruleClassName": "oci_alias",
+            "attributes": {
+              "target_name": "distroless_base",
+              "scheme": "https",
+              "registry": "gcr.io",
+              "repository": "distroless/base",
+              "identifier": "sha256:6ae5fe659f28c6afe9cc2903aebc78a5c6ad3aaa3d9d0369760ac6aaea2529c8",
+              "platforms": {
+                "@@platforms//cpu:x86_64": "@distroless_base_linux_amd64",
+                "@@platforms//cpu:arm64": "@distroless_base_linux_arm64_v8"
+              },
+              "bzlmod_repository": "distroless_base",
+              "reproducible": true
+            }
+          },
           "copy_to_directory_freebsd_amd64": {
             "bzlFile": "@@aspect_bazel_lib~//lib/private:copy_to_directory_toolchain.bzl",
             "ruleClassName": "copy_to_directory_platform_repo",
             "attributes": {
               "platform": "freebsd_amd64"
+            }
+          },
+          "distroless_base_linux_arm64_v8": {
+            "bzlFile": "@@rules_oci~//oci/private:pull.bzl",
+            "ruleClassName": "oci_pull",
+            "attributes": {
+              "scheme": "https",
+              "registry": "gcr.io",
+              "repository": "distroless/base",
+              "identifier": "sha256:6ae5fe659f28c6afe9cc2903aebc78a5c6ad3aaa3d9d0369760ac6aaea2529c8",
+              "platform": "linux/arm64/v8",
+              "target_name": "distroless_base_linux_arm64_v8",
+              "bazel_tags": []
             }
           },
           "copy_to_directory_linux_amd64": {
@@ -1693,6 +1723,19 @@
             "attributes": {
               "platform": "darwin_arm64",
               "crane_version": "v0.18.0"
+            }
+          },
+          "distroless_base_linux_amd64": {
+            "bzlFile": "@@rules_oci~//oci/private:pull.bzl",
+            "ruleClassName": "oci_pull",
+            "attributes": {
+              "scheme": "https",
+              "registry": "gcr.io",
+              "repository": "distroless/base",
+              "identifier": "sha256:6ae5fe659f28c6afe9cc2903aebc78a5c6ad3aaa3d9d0369760ac6aaea2529c8",
+              "platform": "linux/amd64",
+              "target_name": "distroless_base_linux_amd64",
+              "bazel_tags": []
             }
           },
           "jq_darwin_arm64": {

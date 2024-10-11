@@ -1,0 +1,32 @@
+diff --git MODULE.bazel MODULE.bazel
+index 7f3bade..1323c32 100644
+--- MODULE.bazel
++++ MODULE.bazel
+@@ -137,3 +137,14 @@ oci.pull(
+     ],
+ )
+ use_repo(oci, "distroless_static")
++
++oci.pull(
++    name = "distroless_base",
++    digest = "sha256:6ae5fe659f28c6afe9cc2903aebc78a5c6ad3aaa3d9d0369760ac6aaea2529c8",
++    image = "gcr.io/distroless/base",
++    platforms = [
++        "linux/amd64",
++        "linux/arm64/v8",
++    ],
++)
++use_repo(oci, "distroless_base")
+diff --git tools/container.bzl tools/container.bzl
+index e4aa679..6e92429 100644
+--- tools/container.bzl
++++ tools/container.bzl
+@@ -22,7 +22,7 @@ def multiarch_go_image(name, binary):
+ 
+     oci_image(
+         name = image_target,
+-        base = Label("@distroless_static"),
++        base = Label("@distroless_base"),
+         entrypoint = ["/app/{}".format(native.package_relative_label(binary).name)],
+         tars = [tar_target],
+         # Don't build un-transitioned images, as the default target architecture might be unsupported
