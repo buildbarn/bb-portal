@@ -47,19 +47,23 @@ func (esc *EvaluationStatCreate) SetNillableCount(i *int64) *EvaluationStatCreat
 	return esc
 }
 
-// AddBuildGraphMetricIDs adds the "build_graph_metrics" edge to the BuildGraphMetrics entity by IDs.
-func (esc *EvaluationStatCreate) AddBuildGraphMetricIDs(ids ...int) *EvaluationStatCreate {
-	esc.mutation.AddBuildGraphMetricIDs(ids...)
+// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
+func (esc *EvaluationStatCreate) SetBuildGraphMetricsID(id int) *EvaluationStatCreate {
+	esc.mutation.SetBuildGraphMetricsID(id)
 	return esc
 }
 
-// AddBuildGraphMetrics adds the "build_graph_metrics" edges to the BuildGraphMetrics entity.
-func (esc *EvaluationStatCreate) AddBuildGraphMetrics(b ...*BuildGraphMetrics) *EvaluationStatCreate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
+func (esc *EvaluationStatCreate) SetNillableBuildGraphMetricsID(id *int) *EvaluationStatCreate {
+	if id != nil {
+		esc = esc.SetBuildGraphMetricsID(*id)
 	}
-	return esc.AddBuildGraphMetricIDs(ids...)
+	return esc
+}
+
+// SetBuildGraphMetrics sets the "build_graph_metrics" edge to the BuildGraphMetrics entity.
+func (esc *EvaluationStatCreate) SetBuildGraphMetrics(b *BuildGraphMetrics) *EvaluationStatCreate {
+	return esc.SetBuildGraphMetricsID(b.ID)
 }
 
 // Mutation returns the EvaluationStatMutation object of the builder.
@@ -132,10 +136,10 @@ func (esc *EvaluationStatCreate) createSpec() (*EvaluationStat, *sqlgraph.Create
 	}
 	if nodes := esc.mutation.BuildGraphMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   evaluationstat.BuildGraphMetricsTable,
-			Columns: evaluationstat.BuildGraphMetricsPrimaryKey,
+			Columns: []string{evaluationstat.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
@@ -144,6 +148,7 @@ func (esc *EvaluationStatCreate) createSpec() (*EvaluationStat, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.build_graph_metrics_evaluated_values = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

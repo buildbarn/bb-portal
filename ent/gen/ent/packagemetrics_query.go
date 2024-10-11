@@ -26,9 +26,9 @@ type PackageMetricsQuery struct {
 	predicates                  []predicate.PackageMetrics
 	withMetrics                 *MetricsQuery
 	withPackageLoadMetrics      *PackageLoadMetricsQuery
+	withFKs                     bool
 	modifiers                   []func(*sql.Selector)
 	loadTotal                   []func(context.Context, []*PackageMetrics) error
-	withNamedMetrics            map[string]*MetricsQuery
 	withNamedPackageLoadMetrics map[string]*PackageLoadMetricsQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -80,7 +80,7 @@ func (pmq *PackageMetricsQuery) QueryMetrics() *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(packagemetrics.Table, packagemetrics.FieldID, selector),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, packagemetrics.MetricsTable, packagemetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, packagemetrics.MetricsTable, packagemetrics.MetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(pmq.driver.Dialect(), step)
 		return fromU, nil
@@ -102,7 +102,7 @@ func (pmq *PackageMetricsQuery) QueryPackageLoadMetrics() *PackageLoadMetricsQue
 		step := sqlgraph.NewStep(
 			sqlgraph.From(packagemetrics.Table, packagemetrics.FieldID, selector),
 			sqlgraph.To(packageloadmetrics.Table, packageloadmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, packagemetrics.PackageLoadMetricsTable, packagemetrics.PackageLoadMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, packagemetrics.PackageLoadMetricsTable, packagemetrics.PackageLoadMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(pmq.driver.Dialect(), step)
 		return fromU, nil
@@ -409,12 +409,19 @@ func (pmq *PackageMetricsQuery) prepareQuery(ctx context.Context) error {
 func (pmq *PackageMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*PackageMetrics, error) {
 	var (
 		nodes       = []*PackageMetrics{}
+		withFKs     = pmq.withFKs
 		_spec       = pmq.querySpec()
 		loadedTypes = [2]bool{
 			pmq.withMetrics != nil,
 			pmq.withPackageLoadMetrics != nil,
 		}
 	)
+	if pmq.withMetrics != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, packagemetrics.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*PackageMetrics).scanValues(nil, columns)
 	}
@@ -437,9 +444,8 @@ func (pmq *PackageMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 		return nodes, nil
 	}
 	if query := pmq.withMetrics; query != nil {
-		if err := pmq.loadMetrics(ctx, query, nodes,
-			func(n *PackageMetrics) { n.Edges.Metrics = []*Metrics{} },
-			func(n *PackageMetrics, e *Metrics) { n.Edges.Metrics = append(n.Edges.Metrics, e) }); err != nil {
+		if err := pmq.loadMetrics(ctx, query, nodes, nil,
+			func(n *PackageMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -449,13 +455,6 @@ func (pmq *PackageMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			func(n *PackageMetrics, e *PackageLoadMetrics) {
 				n.Edges.PackageLoadMetrics = append(n.Edges.PackageLoadMetrics, e)
 			}); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range pmq.withNamedMetrics {
-		if err := pmq.loadMetrics(ctx, query, nodes,
-			func(n *PackageMetrics) { n.appendNamedMetrics(name) },
-			func(n *PackageMetrics, e *Metrics) { n.appendNamedMetrics(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -475,124 +474,65 @@ func (pmq *PackageMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 }
 
 func (pmq *PackageMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*PackageMetrics, init func(*PackageMetrics), assign func(*PackageMetrics, *Metrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*PackageMetrics)
-	nids := make(map[int]map[*PackageMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*PackageMetrics)
+	for i := range nodes {
+		if nodes[i].metrics_package_metrics == nil {
+			continue
 		}
+		fk := *nodes[i].metrics_package_metrics
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(packagemetrics.MetricsTable)
-		s.Join(joinT).On(s.C(metrics.FieldID), joinT.C(packagemetrics.MetricsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(packagemetrics.MetricsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(packagemetrics.MetricsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*PackageMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*Metrics](ctx, query, qr, query.inters)
+	query.Where(metrics.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_package_metrics" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
 }
 func (pmq *PackageMetricsQuery) loadPackageLoadMetrics(ctx context.Context, query *PackageLoadMetricsQuery, nodes []*PackageMetrics, init func(*PackageMetrics), assign func(*PackageMetrics, *PackageLoadMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*PackageMetrics)
-	nids := make(map[int]map[*PackageMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*PackageMetrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 		if init != nil {
-			init(node)
+			init(nodes[i])
 		}
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(packagemetrics.PackageLoadMetricsTable)
-		s.Join(joinT).On(s.C(packageloadmetrics.FieldID), joinT.C(packagemetrics.PackageLoadMetricsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(packagemetrics.PackageLoadMetricsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(packagemetrics.PackageLoadMetricsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*PackageMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*PackageLoadMetrics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.PackageLoadMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(packagemetrics.PackageLoadMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.package_metrics_package_load_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "package_metrics_package_load_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "package_load_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "package_metrics_package_load_metrics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -679,20 +619,6 @@ func (pmq *PackageMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedMetrics tells the query-builder to eager-load the nodes that are connected to the "metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (pmq *PackageMetricsQuery) WithNamedMetrics(name string, opts ...func(*MetricsQuery)) *PackageMetricsQuery {
-	query := (&MetricsClient{config: pmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if pmq.withNamedMetrics == nil {
-		pmq.withNamedMetrics = make(map[string]*MetricsQuery)
-	}
-	pmq.withNamedMetrics[name] = query
-	return pmq
 }
 
 // WithNamedPackageLoadMetrics tells the query-builder to eager-load the nodes that are connected to the "package_load_metrics"

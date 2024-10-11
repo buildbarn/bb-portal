@@ -65,24 +65,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <title>Buildbarn Portal</title>
       <html lang="en" className={styles.html}>
         <body className={styles.body}>
-          <ApolloWrapper>
-            <RootStyleRegistry>
-              <ConfigProvider theme={theme}>
-                <Dynamic>
-                  <Layout className={styles.layout}>
-                    <AppBar
-                      toggleTheme={toggleTheme}
-                      prefersDark={prefersDark}
-                      extraMenuItems={extraAppBarMenuItems}
-                    />
-                    <SetExtraAppBarMenuItemsContext.Provider value={setExtraAppBarMenuItems}>
-                      {children}
-                    </SetExtraAppBarMenuItemsContext.Provider>
-                  </Layout>
-                </Dynamic>
-              </ConfigProvider>
-            </RootStyleRegistry>
-          </ApolloWrapper>
+          <div style={{ display: "flex" }}>
+            <ApolloWrapper>
+              <RootStyleRegistry>
+                <ConfigProvider theme={theme}>
+                  <Dynamic>
+                    <Layout className={styles.layout}>
+                      <AppBar
+                        toggleTheme={toggleTheme}
+                        prefersDark={prefersDark}
+                        extraMenuItems={extraAppBarMenuItems}
+                      />
+                      <SetExtraAppBarMenuItemsContext.Provider value={setExtraAppBarMenuItems}>
+                        {children}
+                      </SetExtraAppBarMenuItemsContext.Provider>
+                    </Layout>
+                  </Dynamic>
+                </ConfigProvider>
+              </RootStyleRegistry>
+            </ApolloWrapper>
+          </div>
         </body>
       </html>
     </>

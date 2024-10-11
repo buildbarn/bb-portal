@@ -188,19 +188,23 @@ func (asu *ActionSummaryUpdate) AddRunnerCount(r ...*RunnerCount) *ActionSummary
 	return asu.AddRunnerCountIDs(ids...)
 }
 
-// AddActionCacheStatisticIDs adds the "action_cache_statistics" edge to the ActionCacheStatistics entity by IDs.
-func (asu *ActionSummaryUpdate) AddActionCacheStatisticIDs(ids ...int) *ActionSummaryUpdate {
-	asu.mutation.AddActionCacheStatisticIDs(ids...)
+// SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
+func (asu *ActionSummaryUpdate) SetActionCacheStatisticsID(id int) *ActionSummaryUpdate {
+	asu.mutation.SetActionCacheStatisticsID(id)
 	return asu
 }
 
-// AddActionCacheStatistics adds the "action_cache_statistics" edges to the ActionCacheStatistics entity.
-func (asu *ActionSummaryUpdate) AddActionCacheStatistics(a ...*ActionCacheStatistics) *ActionSummaryUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
+func (asu *ActionSummaryUpdate) SetNillableActionCacheStatisticsID(id *int) *ActionSummaryUpdate {
+	if id != nil {
+		asu = asu.SetActionCacheStatisticsID(*id)
 	}
-	return asu.AddActionCacheStatisticIDs(ids...)
+	return asu
+}
+
+// SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
+func (asu *ActionSummaryUpdate) SetActionCacheStatistics(a *ActionCacheStatistics) *ActionSummaryUpdate {
+	return asu.SetActionCacheStatisticsID(a.ID)
 }
 
 // Mutation returns the ActionSummaryMutation object of the builder.
@@ -256,25 +260,10 @@ func (asu *ActionSummaryUpdate) RemoveRunnerCount(r ...*RunnerCount) *ActionSumm
 	return asu.RemoveRunnerCountIDs(ids...)
 }
 
-// ClearActionCacheStatistics clears all "action_cache_statistics" edges to the ActionCacheStatistics entity.
+// ClearActionCacheStatistics clears the "action_cache_statistics" edge to the ActionCacheStatistics entity.
 func (asu *ActionSummaryUpdate) ClearActionCacheStatistics() *ActionSummaryUpdate {
 	asu.mutation.ClearActionCacheStatistics()
 	return asu
-}
-
-// RemoveActionCacheStatisticIDs removes the "action_cache_statistics" edge to ActionCacheStatistics entities by IDs.
-func (asu *ActionSummaryUpdate) RemoveActionCacheStatisticIDs(ids ...int) *ActionSummaryUpdate {
-	asu.mutation.RemoveActionCacheStatisticIDs(ids...)
-	return asu
-}
-
-// RemoveActionCacheStatistics removes "action_cache_statistics" edges to ActionCacheStatistics entities.
-func (asu *ActionSummaryUpdate) RemoveActionCacheStatistics(a ...*ActionCacheStatistics) *ActionSummaryUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return asu.RemoveActionCacheStatisticIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -351,7 +340,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if asu.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   actionsummary.MetricsTable,
 			Columns: []string{actionsummary.MetricsColumn},
@@ -364,7 +353,7 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if nodes := asu.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   actionsummary.MetricsTable,
 			Columns: []string{actionsummary.MetricsColumn},
@@ -380,10 +369,10 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if asu.mutation.ActionDataCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.ActionDataTable,
-			Columns: actionsummary.ActionDataPrimaryKey,
+			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
@@ -393,10 +382,10 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if nodes := asu.mutation.RemovedActionDataIDs(); len(nodes) > 0 && !asu.mutation.ActionDataCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.ActionDataTable,
-			Columns: actionsummary.ActionDataPrimaryKey,
+			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
@@ -409,10 +398,10 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if nodes := asu.mutation.ActionDataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.ActionDataTable,
-			Columns: actionsummary.ActionDataPrimaryKey,
+			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
@@ -425,10 +414,10 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if asu.mutation.RunnerCountCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.RunnerCountTable,
-			Columns: actionsummary.RunnerCountPrimaryKey,
+			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
@@ -438,10 +427,10 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if nodes := asu.mutation.RemovedRunnerCountIDs(); len(nodes) > 0 && !asu.mutation.RunnerCountCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.RunnerCountTable,
-			Columns: actionsummary.RunnerCountPrimaryKey,
+			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
@@ -454,10 +443,10 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if nodes := asu.mutation.RunnerCountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.RunnerCountTable,
-			Columns: actionsummary.RunnerCountPrimaryKey,
+			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
@@ -470,39 +459,23 @@ func (asu *ActionSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if asu.mutation.ActionCacheStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   actionsummary.ActionCacheStatisticsTable,
-			Columns: actionsummary.ActionCacheStatisticsPrimaryKey,
+			Columns: []string{actionsummary.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := asu.mutation.RemovedActionCacheStatisticsIDs(); len(nodes) > 0 && !asu.mutation.ActionCacheStatisticsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   actionsummary.ActionCacheStatisticsTable,
-			Columns: actionsummary.ActionCacheStatisticsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := asu.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   actionsummary.ActionCacheStatisticsTable,
-			Columns: actionsummary.ActionCacheStatisticsPrimaryKey,
+			Columns: []string{actionsummary.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
@@ -690,19 +663,23 @@ func (asuo *ActionSummaryUpdateOne) AddRunnerCount(r ...*RunnerCount) *ActionSum
 	return asuo.AddRunnerCountIDs(ids...)
 }
 
-// AddActionCacheStatisticIDs adds the "action_cache_statistics" edge to the ActionCacheStatistics entity by IDs.
-func (asuo *ActionSummaryUpdateOne) AddActionCacheStatisticIDs(ids ...int) *ActionSummaryUpdateOne {
-	asuo.mutation.AddActionCacheStatisticIDs(ids...)
+// SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
+func (asuo *ActionSummaryUpdateOne) SetActionCacheStatisticsID(id int) *ActionSummaryUpdateOne {
+	asuo.mutation.SetActionCacheStatisticsID(id)
 	return asuo
 }
 
-// AddActionCacheStatistics adds the "action_cache_statistics" edges to the ActionCacheStatistics entity.
-func (asuo *ActionSummaryUpdateOne) AddActionCacheStatistics(a ...*ActionCacheStatistics) *ActionSummaryUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
+func (asuo *ActionSummaryUpdateOne) SetNillableActionCacheStatisticsID(id *int) *ActionSummaryUpdateOne {
+	if id != nil {
+		asuo = asuo.SetActionCacheStatisticsID(*id)
 	}
-	return asuo.AddActionCacheStatisticIDs(ids...)
+	return asuo
+}
+
+// SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
+func (asuo *ActionSummaryUpdateOne) SetActionCacheStatistics(a *ActionCacheStatistics) *ActionSummaryUpdateOne {
+	return asuo.SetActionCacheStatisticsID(a.ID)
 }
 
 // Mutation returns the ActionSummaryMutation object of the builder.
@@ -758,25 +735,10 @@ func (asuo *ActionSummaryUpdateOne) RemoveRunnerCount(r ...*RunnerCount) *Action
 	return asuo.RemoveRunnerCountIDs(ids...)
 }
 
-// ClearActionCacheStatistics clears all "action_cache_statistics" edges to the ActionCacheStatistics entity.
+// ClearActionCacheStatistics clears the "action_cache_statistics" edge to the ActionCacheStatistics entity.
 func (asuo *ActionSummaryUpdateOne) ClearActionCacheStatistics() *ActionSummaryUpdateOne {
 	asuo.mutation.ClearActionCacheStatistics()
 	return asuo
-}
-
-// RemoveActionCacheStatisticIDs removes the "action_cache_statistics" edge to ActionCacheStatistics entities by IDs.
-func (asuo *ActionSummaryUpdateOne) RemoveActionCacheStatisticIDs(ids ...int) *ActionSummaryUpdateOne {
-	asuo.mutation.RemoveActionCacheStatisticIDs(ids...)
-	return asuo
-}
-
-// RemoveActionCacheStatistics removes "action_cache_statistics" edges to ActionCacheStatistics entities.
-func (asuo *ActionSummaryUpdateOne) RemoveActionCacheStatistics(a ...*ActionCacheStatistics) *ActionSummaryUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return asuo.RemoveActionCacheStatisticIDs(ids...)
 }
 
 // Where appends a list predicates to the ActionSummaryUpdate builder.
@@ -883,7 +845,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 	}
 	if asuo.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   actionsummary.MetricsTable,
 			Columns: []string{actionsummary.MetricsColumn},
@@ -896,7 +858,7 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 	}
 	if nodes := asuo.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   actionsummary.MetricsTable,
 			Columns: []string{actionsummary.MetricsColumn},
@@ -912,10 +874,10 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 	}
 	if asuo.mutation.ActionDataCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.ActionDataTable,
-			Columns: actionsummary.ActionDataPrimaryKey,
+			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
@@ -925,10 +887,10 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 	}
 	if nodes := asuo.mutation.RemovedActionDataIDs(); len(nodes) > 0 && !asuo.mutation.ActionDataCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.ActionDataTable,
-			Columns: actionsummary.ActionDataPrimaryKey,
+			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
@@ -941,10 +903,10 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 	}
 	if nodes := asuo.mutation.ActionDataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.ActionDataTable,
-			Columns: actionsummary.ActionDataPrimaryKey,
+			Columns: []string{actionsummary.ActionDataColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt),
@@ -957,10 +919,10 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 	}
 	if asuo.mutation.RunnerCountCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.RunnerCountTable,
-			Columns: actionsummary.RunnerCountPrimaryKey,
+			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
@@ -970,10 +932,10 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 	}
 	if nodes := asuo.mutation.RemovedRunnerCountIDs(); len(nodes) > 0 && !asuo.mutation.RunnerCountCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.RunnerCountTable,
-			Columns: actionsummary.RunnerCountPrimaryKey,
+			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
@@ -986,10 +948,10 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 	}
 	if nodes := asuo.mutation.RunnerCountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actionsummary.RunnerCountTable,
-			Columns: actionsummary.RunnerCountPrimaryKey,
+			Columns: []string{actionsummary.RunnerCountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt),
@@ -1002,39 +964,23 @@ func (asuo *ActionSummaryUpdateOne) sqlSave(ctx context.Context) (_node *ActionS
 	}
 	if asuo.mutation.ActionCacheStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   actionsummary.ActionCacheStatisticsTable,
-			Columns: actionsummary.ActionCacheStatisticsPrimaryKey,
+			Columns: []string{actionsummary.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := asuo.mutation.RemovedActionCacheStatisticsIDs(); len(nodes) > 0 && !asuo.mutation.ActionCacheStatisticsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   actionsummary.ActionCacheStatisticsTable,
-			Columns: actionsummary.ActionCacheStatisticsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := asuo.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   actionsummary.ActionCacheStatisticsTable,
-			Columns: actionsummary.ActionCacheStatisticsPrimaryKey,
+			Columns: []string{actionsummary.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),

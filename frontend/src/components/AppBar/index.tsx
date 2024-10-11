@@ -20,6 +20,8 @@ export const SetExtraAppBarMenuItemsContext = createContext<
 const APP_BAR_MENU_ITEMS: ItemType[] = [
   getItem({ depth: 0, href: '/builds', title: 'Builds' }),
   getItem({ depth: 0, href: '/bazel-invocations', title: 'Invocations' }),
+  getItem({ depth: 0, href: '/trends', title: "Trends" }),
+  getItem({ depth: 0, href: '/tests', title: "Tests" }),
 ];
 
 type Props = {

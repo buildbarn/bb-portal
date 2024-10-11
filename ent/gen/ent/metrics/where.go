@@ -81,7 +81,7 @@ func HasActionSummary() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ActionSummaryTable, ActionSummaryColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, ActionSummaryTable, ActionSummaryColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -104,7 +104,7 @@ func HasMemoryMetrics() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, MemoryMetricsTable, MemoryMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, MemoryMetricsTable, MemoryMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -127,7 +127,7 @@ func HasTargetMetrics() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, TargetMetricsTable, TargetMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, TargetMetricsTable, TargetMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -150,7 +150,7 @@ func HasPackageMetrics() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, PackageMetricsTable, PackageMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, PackageMetricsTable, PackageMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -173,7 +173,7 @@ func HasTimingMetrics() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, TimingMetricsTable, TimingMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, TimingMetricsTable, TimingMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -196,7 +196,7 @@ func HasCumulativeMetrics() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, CumulativeMetricsTable, CumulativeMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, CumulativeMetricsTable, CumulativeMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -219,7 +219,7 @@ func HasArtifactMetrics() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, ArtifactMetricsTable, ArtifactMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, ArtifactMetricsTable, ArtifactMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -242,7 +242,7 @@ func HasNetworkMetrics() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, NetworkMetricsTable, NetworkMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, NetworkMetricsTable, NetworkMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -265,7 +265,7 @@ func HasDynamicExecutionMetrics() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, DynamicExecutionMetricsTable, DynamicExecutionMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, DynamicExecutionMetricsTable, DynamicExecutionMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -288,7 +288,7 @@ func HasBuildGraphMetrics() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, BuildGraphMetricsTable, BuildGraphMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, BuildGraphMetricsTable, BuildGraphMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

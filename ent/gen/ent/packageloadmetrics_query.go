@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -19,14 +18,14 @@ import (
 // PackageLoadMetricsQuery is the builder for querying PackageLoadMetrics entities.
 type PackageLoadMetricsQuery struct {
 	config
-	ctx                     *QueryContext
-	order                   []packageloadmetrics.OrderOption
-	inters                  []Interceptor
-	predicates              []predicate.PackageLoadMetrics
-	withPackageMetrics      *PackageMetricsQuery
-	modifiers               []func(*sql.Selector)
-	loadTotal               []func(context.Context, []*PackageLoadMetrics) error
-	withNamedPackageMetrics map[string]*PackageMetricsQuery
+	ctx                *QueryContext
+	order              []packageloadmetrics.OrderOption
+	inters             []Interceptor
+	predicates         []predicate.PackageLoadMetrics
+	withPackageMetrics *PackageMetricsQuery
+	withFKs            bool
+	modifiers          []func(*sql.Selector)
+	loadTotal          []func(context.Context, []*PackageLoadMetrics) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,7 +76,7 @@ func (plmq *PackageLoadMetricsQuery) QueryPackageMetrics() *PackageMetricsQuery 
 		step := sqlgraph.NewStep(
 			sqlgraph.From(packageloadmetrics.Table, packageloadmetrics.FieldID, selector),
 			sqlgraph.To(packagemetrics.Table, packagemetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, packageloadmetrics.PackageMetricsTable, packageloadmetrics.PackageMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, packageloadmetrics.PackageMetricsTable, packageloadmetrics.PackageMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(plmq.driver.Dialect(), step)
 		return fromU, nil
@@ -372,11 +371,18 @@ func (plmq *PackageLoadMetricsQuery) prepareQuery(ctx context.Context) error {
 func (plmq *PackageLoadMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*PackageLoadMetrics, error) {
 	var (
 		nodes       = []*PackageLoadMetrics{}
+		withFKs     = plmq.withFKs
 		_spec       = plmq.querySpec()
 		loadedTypes = [1]bool{
 			plmq.withPackageMetrics != nil,
 		}
 	)
+	if plmq.withPackageMetrics != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, packageloadmetrics.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*PackageLoadMetrics).scanValues(nil, columns)
 	}
@@ -399,18 +405,8 @@ func (plmq *PackageLoadMetricsQuery) sqlAll(ctx context.Context, hooks ...queryH
 		return nodes, nil
 	}
 	if query := plmq.withPackageMetrics; query != nil {
-		if err := plmq.loadPackageMetrics(ctx, query, nodes,
-			func(n *PackageLoadMetrics) { n.Edges.PackageMetrics = []*PackageMetrics{} },
-			func(n *PackageLoadMetrics, e *PackageMetrics) {
-				n.Edges.PackageMetrics = append(n.Edges.PackageMetrics, e)
-			}); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range plmq.withNamedPackageMetrics {
-		if err := plmq.loadPackageMetrics(ctx, query, nodes,
-			func(n *PackageLoadMetrics) { n.appendNamedPackageMetrics(name) },
-			func(n *PackageLoadMetrics, e *PackageMetrics) { n.appendNamedPackageMetrics(name, e) }); err != nil {
+		if err := plmq.loadPackageMetrics(ctx, query, nodes, nil,
+			func(n *PackageLoadMetrics, e *PackageMetrics) { n.Edges.PackageMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -423,62 +419,33 @@ func (plmq *PackageLoadMetricsQuery) sqlAll(ctx context.Context, hooks ...queryH
 }
 
 func (plmq *PackageLoadMetricsQuery) loadPackageMetrics(ctx context.Context, query *PackageMetricsQuery, nodes []*PackageLoadMetrics, init func(*PackageLoadMetrics), assign func(*PackageLoadMetrics, *PackageMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*PackageLoadMetrics)
-	nids := make(map[int]map[*PackageLoadMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*PackageLoadMetrics)
+	for i := range nodes {
+		if nodes[i].package_metrics_package_load_metrics == nil {
+			continue
 		}
+		fk := *nodes[i].package_metrics_package_load_metrics
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(packageloadmetrics.PackageMetricsTable)
-		s.Join(joinT).On(s.C(packagemetrics.FieldID), joinT.C(packageloadmetrics.PackageMetricsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(packageloadmetrics.PackageMetricsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(packageloadmetrics.PackageMetricsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*PackageLoadMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*PackageMetrics](ctx, query, qr, query.inters)
+	query.Where(packagemetrics.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "package_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "package_metrics_package_load_metrics" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -566,20 +533,6 @@ func (plmq *PackageLoadMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedPackageMetrics tells the query-builder to eager-load the nodes that are connected to the "package_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (plmq *PackageLoadMetricsQuery) WithNamedPackageMetrics(name string, opts ...func(*PackageMetricsQuery)) *PackageLoadMetricsQuery {
-	query := (&PackageMetricsClient{config: plmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if plmq.withNamedPackageMetrics == nil {
-		plmq.withNamedPackageMetrics = make(map[string]*PackageMetricsQuery)
-	}
-	plmq.withNamedPackageMetrics[name] = query
-	return plmq
 }
 
 // PackageLoadMetricsGroupBy is the group-by builder for PackageLoadMetrics entities.

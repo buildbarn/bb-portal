@@ -91,19 +91,23 @@ func (eic *ExectionInfoCreate) SetNillableHostname(s *string) *ExectionInfoCreat
 	return eic
 }
 
-// AddTestResultIDs adds the "test_result" edge to the TestResultBES entity by IDs.
-func (eic *ExectionInfoCreate) AddTestResultIDs(ids ...int) *ExectionInfoCreate {
-	eic.mutation.AddTestResultIDs(ids...)
+// SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
+func (eic *ExectionInfoCreate) SetTestResultID(id int) *ExectionInfoCreate {
+	eic.mutation.SetTestResultID(id)
 	return eic
 }
 
-// AddTestResult adds the "test_result" edges to the TestResultBES entity.
-func (eic *ExectionInfoCreate) AddTestResult(t ...*TestResultBES) *ExectionInfoCreate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
+func (eic *ExectionInfoCreate) SetNillableTestResultID(id *int) *ExectionInfoCreate {
+	if id != nil {
+		eic = eic.SetTestResultID(*id)
 	}
-	return eic.AddTestResultIDs(ids...)
+	return eic
+}
+
+// SetTestResult sets the "test_result" edge to the TestResultBES entity.
+func (eic *ExectionInfoCreate) SetTestResult(t *TestResultBES) *ExectionInfoCreate {
+	return eic.SetTestResultID(t.ID)
 }
 
 // SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
@@ -222,7 +226,7 @@ func (eic *ExectionInfoCreate) createSpec() (*ExectionInfo, *sqlgraph.CreateSpec
 	}
 	if nodes := eic.mutation.TestResultIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   exectioninfo.TestResultTable,
 			Columns: []string{exectioninfo.TestResultColumn},
@@ -234,11 +238,12 @@ func (eic *ExectionInfoCreate) createSpec() (*ExectionInfo, *sqlgraph.CreateSpec
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.test_result_bes_execution_info = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := eic.mutation.TimingBreakdownIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   exectioninfo.TimingBreakdownTable,
 			Columns: []string{exectioninfo.TimingBreakdownColumn},
@@ -250,15 +255,14 @@ func (eic *ExectionInfoCreate) createSpec() (*ExectionInfo, *sqlgraph.CreateSpec
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.exection_info_timing_breakdown = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := eic.mutation.ResourceUsageIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   exectioninfo.ResourceUsageTable,
-			Columns: exectioninfo.ResourceUsagePrimaryKey,
+			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),

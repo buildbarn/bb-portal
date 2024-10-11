@@ -35,6 +35,8 @@ func (TargetMetrics) Fields() []ent.Field {
 func (TargetMetrics) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the metrics object.
-		edge.From("metrics", Metrics.Type).Ref("target_metrics"),
+		edge.From("metrics", Metrics.Type).
+			Ref("target_metrics").
+			Unique(),
 	}
 }

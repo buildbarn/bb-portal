@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 )
 
 // TargetComplete is the model entity for the TargetComplete schema.
@@ -34,15 +35,15 @@ type TargetComplete struct {
 	TestSize targetcomplete.TestSize `json:"test_size,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetCompleteQuery when eager-loading is set.
-	Edges                        TargetCompleteEdges `json:"edges"`
-	target_complete_output_group *int
-	selectValues                 sql.SelectValues
+	Edges                  TargetCompleteEdges `json:"edges"`
+	target_pair_completion *int
+	selectValues           sql.SelectValues
 }
 
 // TargetCompleteEdges holds the relations/edges for other nodes in the graph.
 type TargetCompleteEdges struct {
 	// TargetPair holds the value of the target_pair edge.
-	TargetPair []*TargetPair `json:"target_pair,omitempty"`
+	TargetPair *TargetPair `json:"target_pair,omitempty"`
 	// ImportantOutput holds the value of the important_output edge.
 	ImportantOutput []*TestFile `json:"important_output,omitempty"`
 	// DirectoryOutput holds the value of the directory_output edge.
@@ -55,16 +56,17 @@ type TargetCompleteEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [4]map[string]int
 
-	namedTargetPair      map[string][]*TargetPair
 	namedImportantOutput map[string][]*TestFile
 	namedDirectoryOutput map[string][]*TestFile
 }
 
 // TargetPairOrErr returns the TargetPair value or an error if the edge
-// was not loaded in eager-loading.
-func (e TargetCompleteEdges) TargetPairOrErr() ([]*TargetPair, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TargetCompleteEdges) TargetPairOrErr() (*TargetPair, error) {
+	if e.TargetPair != nil {
 		return e.TargetPair, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: targetpair.Label}
 	}
 	return nil, &NotLoadedError{edge: "target_pair"}
 }
@@ -111,7 +113,7 @@ func (*TargetComplete) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case targetcomplete.FieldTargetKind, targetcomplete.FieldTestSize:
 			values[i] = new(sql.NullString)
-		case targetcomplete.ForeignKeys[0]: // target_complete_output_group
+		case targetcomplete.ForeignKeys[0]: // target_pair_completion
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -180,10 +182,10 @@ func (tc *TargetComplete) assignValues(columns []string, values []any) error {
 			}
 		case targetcomplete.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field target_complete_output_group", value)
+				return fmt.Errorf("unexpected type %T for edge-field target_pair_completion", value)
 			} else if value.Valid {
-				tc.target_complete_output_group = new(int)
-				*tc.target_complete_output_group = int(value.Int64)
+				tc.target_pair_completion = new(int)
+				*tc.target_pair_completion = int(value.Int64)
 			}
 		default:
 			tc.selectValues.Set(columns[i], values[i])
@@ -263,30 +265,6 @@ func (tc *TargetComplete) String() string {
 	builder.WriteString(fmt.Sprintf("%v", tc.TestSize))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedTargetPair returns the TargetPair named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (tc *TargetComplete) NamedTargetPair(name string) ([]*TargetPair, error) {
-	if tc.Edges.namedTargetPair == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := tc.Edges.namedTargetPair[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (tc *TargetComplete) appendNamedTargetPair(name string, edges ...*TargetPair) {
-	if tc.Edges.namedTargetPair == nil {
-		tc.Edges.namedTargetPair = make(map[string][]*TargetPair)
-	}
-	if len(edges) == 0 {
-		tc.Edges.namedTargetPair[name] = []*TargetPair{}
-	} else {
-		tc.Edges.namedTargetPair[name] = append(tc.Edges.namedTargetPair[name], edges...)
-	}
 }
 
 // NamedImportantOutput returns the ImportantOutput named value or an error if the edge was not

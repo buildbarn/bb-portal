@@ -7,7 +7,7 @@ import {
     QuestionCircleFilled,
     StopOutlined,
 } from '@ant-design/icons';
-import { Tag } from 'antd';
+import { Button, Tag } from 'antd';
 import themeStyles from '@/theme/theme.module.css';
 
 export const ALL_STATUS_VALUES = [
@@ -27,6 +27,7 @@ export type TestStatusEnum = StatusTuple[number];
 
 interface Props {
     status: TestStatusEnum;
+    displayText: boolean;
 }
 
 const STATUS_TAGS: { [key in TestStatusEnum]: React.ReactNode } = {
@@ -77,8 +78,46 @@ const STATUS_TAGS: { [key in TestStatusEnum]: React.ReactNode } = {
     ),
 };
 
-const TestStatusTag: React.FC<Props> = ({ status }) => {
-    const resultTag = STATUS_TAGS[status] || STATUS_TAGS.NO_STATUS;
+const ICON_TAGS: { [key in TestStatusEnum]: React.ReactNode } = {
+    NO_STATUS: (
+        <Tag icon={<QuestionCircleFilled />} className={themeStyles.tag} />
+
+    ),
+    PASSED: (
+        <Tag icon={<CheckCircleFilled size={100} />} color="green" />
+
+    ),
+    FLAKY: (
+        <Tag icon={<InfoCircleFilled />} color="orange" />
+
+    ),
+    FAILED: (
+        <Tag icon={<CloseCircleFilled />} color="red" />
+
+    ),
+    TIMEOUT: (
+        <Tag icon={<MinusCircleFilled />} color="red" />
+
+    ),
+    INCOMPLETE: (
+        <Tag icon={<StopOutlined />} color="blue" />
+
+    ),
+    REMOTE_FAILURE: (
+        <Tag icon={<CloseCircleFilled />} color="red" />
+
+    ),
+    FAILED_TO_BUILD: (
+        <Tag icon={<QuestionCircleFilled />} color="red" />
+
+    ),
+    TOOL_HALTED_BEFORE_TESTING: (
+        <Tag icon={<QuestionCircleFilled />} color="blue" />
+    ),
+};
+
+const TestStatusTag: React.FC<Props> = ({ status, displayText }) => {
+    const resultTag = displayText ? STATUS_TAGS[status] || STATUS_TAGS.NO_STATUS : ICON_TAGS[status] || ICON_TAGS.NO_STATUS;
     return <>{resultTag}</>;
 };
 

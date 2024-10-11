@@ -468,7 +468,7 @@ func HasActionSummary() predicate.ActionData {
 	return predicate.ActionData(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, ActionSummaryTable, ActionSummaryPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, ActionSummaryTable, ActionSummaryColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

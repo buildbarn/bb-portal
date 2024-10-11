@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 )
 
@@ -24,28 +25,29 @@ type TargetMetrics struct {
 	TargetsConfiguredNotIncludingAspects int64 `json:"targets_configured_not_including_aspects,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetMetricsQuery when eager-loading is set.
-	Edges        TargetMetricsEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                  TargetMetricsEdges `json:"edges"`
+	metrics_target_metrics *int
+	selectValues           sql.SelectValues
 }
 
 // TargetMetricsEdges holds the relations/edges for other nodes in the graph.
 type TargetMetricsEdges struct {
 	// Metrics holds the value of the metrics edge.
-	Metrics []*Metrics `json:"metrics,omitempty"`
+	Metrics *Metrics `json:"metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedMetrics map[string][]*Metrics
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e TargetMetricsEdges) MetricsOrErr() ([]*Metrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TargetMetricsEdges) MetricsOrErr() (*Metrics, error) {
+	if e.Metrics != nil {
 		return e.Metrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
 }
@@ -56,6 +58,8 @@ func (*TargetMetrics) scanValues(columns []string) ([]any, error) {
 	for i := range columns {
 		switch columns[i] {
 		case targetmetrics.FieldID, targetmetrics.FieldTargetsLoaded, targetmetrics.FieldTargetsConfigured, targetmetrics.FieldTargetsConfiguredNotIncludingAspects:
+			values[i] = new(sql.NullInt64)
+		case targetmetrics.ForeignKeys[0]: // metrics_target_metrics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -95,6 +99,13 @@ func (tm *TargetMetrics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field targets_configured_not_including_aspects", values[i])
 			} else if value.Valid {
 				tm.TargetsConfiguredNotIncludingAspects = value.Int64
+			}
+		case targetmetrics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field metrics_target_metrics", value)
+			} else if value.Valid {
+				tm.metrics_target_metrics = new(int)
+				*tm.metrics_target_metrics = int(value.Int64)
 			}
 		default:
 			tm.selectValues.Set(columns[i], values[i])
@@ -147,30 +158,6 @@ func (tm *TargetMetrics) String() string {
 	builder.WriteString(fmt.Sprintf("%v", tm.TargetsConfiguredNotIncludingAspects))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedMetrics returns the Metrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (tm *TargetMetrics) NamedMetrics(name string) ([]*Metrics, error) {
-	if tm.Edges.namedMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := tm.Edges.namedMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (tm *TargetMetrics) appendNamedMetrics(name string, edges ...*Metrics) {
-	if tm.Edges.namedMetrics == nil {
-		tm.Edges.namedMetrics = make(map[string][]*Metrics)
-	}
-	if len(edges) == 0 {
-		tm.Edges.namedMetrics[name] = []*Metrics{}
-	} else {
-		tm.Edges.namedMetrics[name] = append(tm.Edges.namedMetrics[name], edges...)
-	}
 }
 
 // TargetMetricsSlice is a parsable slice of TargetMetrics.

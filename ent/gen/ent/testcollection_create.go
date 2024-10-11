@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -91,6 +92,20 @@ func (tcc *TestCollectionCreate) SetNillableCachedRemotely(b *bool) *TestCollect
 	return tcc
 }
 
+// SetFirstSeen sets the "first_seen" field.
+func (tcc *TestCollectionCreate) SetFirstSeen(t time.Time) *TestCollectionCreate {
+	tcc.mutation.SetFirstSeen(t)
+	return tcc
+}
+
+// SetNillableFirstSeen sets the "first_seen" field if the given value is not nil.
+func (tcc *TestCollectionCreate) SetNillableFirstSeen(t *time.Time) *TestCollectionCreate {
+	if t != nil {
+		tcc.SetFirstSeen(*t)
+	}
+	return tcc
+}
+
 // SetDurationMs sets the "duration_ms" field.
 func (tcc *TestCollectionCreate) SetDurationMs(i int64) *TestCollectionCreate {
 	tcc.mutation.SetDurationMs(i)
@@ -105,19 +120,23 @@ func (tcc *TestCollectionCreate) SetNillableDurationMs(i *int64) *TestCollection
 	return tcc
 }
 
-// AddBazelInvocationIDs adds the "bazel_invocation" edge to the BazelInvocation entity by IDs.
-func (tcc *TestCollectionCreate) AddBazelInvocationIDs(ids ...int) *TestCollectionCreate {
-	tcc.mutation.AddBazelInvocationIDs(ids...)
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
+func (tcc *TestCollectionCreate) SetBazelInvocationID(id int) *TestCollectionCreate {
+	tcc.mutation.SetBazelInvocationID(id)
 	return tcc
 }
 
-// AddBazelInvocation adds the "bazel_invocation" edges to the BazelInvocation entity.
-func (tcc *TestCollectionCreate) AddBazelInvocation(b ...*BazelInvocation) *TestCollectionCreate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
+func (tcc *TestCollectionCreate) SetNillableBazelInvocationID(id *int) *TestCollectionCreate {
+	if id != nil {
+		tcc = tcc.SetBazelInvocationID(*id)
 	}
-	return tcc.AddBazelInvocationIDs(ids...)
+	return tcc
+}
+
+// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
+func (tcc *TestCollectionCreate) SetBazelInvocation(b *BazelInvocation) *TestCollectionCreate {
+	return tcc.SetBazelInvocationID(b.ID)
 }
 
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID.
@@ -248,16 +267,20 @@ func (tcc *TestCollectionCreate) createSpec() (*TestCollection, *sqlgraph.Create
 		_spec.SetField(testcollection.FieldCachedRemotely, field.TypeBool, value)
 		_node.CachedRemotely = value
 	}
+	if value, ok := tcc.mutation.FirstSeen(); ok {
+		_spec.SetField(testcollection.FieldFirstSeen, field.TypeTime, value)
+		_node.FirstSeen = &value
+	}
 	if value, ok := tcc.mutation.DurationMs(); ok {
 		_spec.SetField(testcollection.FieldDurationMs, field.TypeInt64, value)
 		_node.DurationMs = value
 	}
 	if nodes := tcc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   testcollection.BazelInvocationTable,
-			Columns: testcollection.BazelInvocationPrimaryKey,
+			Columns: []string{testcollection.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
@@ -266,11 +289,12 @@ func (tcc *TestCollectionCreate) createSpec() (*TestCollection, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.bazel_invocation_test_collection = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tcc.mutation.TestSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   testcollection.TestSummaryTable,
 			Columns: []string{testcollection.TestSummaryColumn},
@@ -282,7 +306,6 @@ func (tcc *TestCollectionCreate) createSpec() (*TestCollection, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.test_collection_test_summary = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tcc.mutation.TestResultsIDs(); len(nodes) > 0 {

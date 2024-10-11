@@ -31,7 +31,6 @@ type ExectionInfoQuery struct {
 	withFKs                bool
 	modifiers              []func(*sql.Selector)
 	loadTotal              []func(context.Context, []*ExectionInfo) error
-	withNamedTestResult    map[string]*TestResultBESQuery
 	withNamedResourceUsage map[string]*ResourceUsageQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -83,7 +82,7 @@ func (eiq *ExectionInfoQuery) QueryTestResult() *TestResultBESQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(exectioninfo.Table, exectioninfo.FieldID, selector),
 			sqlgraph.To(testresultbes.Table, testresultbes.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, exectioninfo.TestResultTable, exectioninfo.TestResultColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, exectioninfo.TestResultTable, exectioninfo.TestResultColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(eiq.driver.Dialect(), step)
 		return fromU, nil
@@ -105,7 +104,7 @@ func (eiq *ExectionInfoQuery) QueryTimingBreakdown() *TimingBreakdownQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(exectioninfo.Table, exectioninfo.FieldID, selector),
 			sqlgraph.To(timingbreakdown.Table, timingbreakdown.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, exectioninfo.TimingBreakdownTable, exectioninfo.TimingBreakdownColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, exectioninfo.TimingBreakdownTable, exectioninfo.TimingBreakdownColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(eiq.driver.Dialect(), step)
 		return fromU, nil
@@ -127,7 +126,7 @@ func (eiq *ExectionInfoQuery) QueryResourceUsage() *ResourceUsageQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(exectioninfo.Table, exectioninfo.FieldID, selector),
 			sqlgraph.To(resourceusage.Table, resourceusage.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, exectioninfo.ResourceUsageTable, exectioninfo.ResourceUsagePrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, exectioninfo.ResourceUsageTable, exectioninfo.ResourceUsageColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(eiq.driver.Dialect(), step)
 		return fromU, nil
@@ -454,7 +453,7 @@ func (eiq *ExectionInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 			eiq.withResourceUsage != nil,
 		}
 	)
-	if eiq.withTimingBreakdown != nil {
+	if eiq.withTestResult != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -482,9 +481,8 @@ func (eiq *ExectionInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 		return nodes, nil
 	}
 	if query := eiq.withTestResult; query != nil {
-		if err := eiq.loadTestResult(ctx, query, nodes,
-			func(n *ExectionInfo) { n.Edges.TestResult = []*TestResultBES{} },
-			func(n *ExectionInfo, e *TestResultBES) { n.Edges.TestResult = append(n.Edges.TestResult, e) }); err != nil {
+		if err := eiq.loadTestResult(ctx, query, nodes, nil,
+			func(n *ExectionInfo, e *TestResultBES) { n.Edges.TestResult = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -498,13 +496,6 @@ func (eiq *ExectionInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 		if err := eiq.loadResourceUsage(ctx, query, nodes,
 			func(n *ExectionInfo) { n.Edges.ResourceUsage = []*ResourceUsage{} },
 			func(n *ExectionInfo, e *ResourceUsage) { n.Edges.ResourceUsage = append(n.Edges.ResourceUsage, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range eiq.withNamedTestResult {
-		if err := eiq.loadTestResult(ctx, query, nodes,
-			func(n *ExectionInfo) { n.appendNamedTestResult(name) },
-			func(n *ExectionInfo, e *TestResultBES) { n.appendNamedTestResult(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -524,6 +515,66 @@ func (eiq *ExectionInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 }
 
 func (eiq *ExectionInfoQuery) loadTestResult(ctx context.Context, query *TestResultBESQuery, nodes []*ExectionInfo, init func(*ExectionInfo), assign func(*ExectionInfo, *TestResultBES)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*ExectionInfo)
+	for i := range nodes {
+		if nodes[i].test_result_bes_execution_info == nil {
+			continue
+		}
+		fk := *nodes[i].test_result_bes_execution_info
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(testresultbes.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "test_result_bes_execution_info" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (eiq *ExectionInfoQuery) loadTimingBreakdown(ctx context.Context, query *TimingBreakdownQuery, nodes []*ExectionInfo, init func(*ExectionInfo), assign func(*ExectionInfo, *TimingBreakdown)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*ExectionInfo)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	query.withFKs = true
+	query.Where(predicate.TimingBreakdown(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(exectioninfo.TimingBreakdownColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.exection_info_timing_breakdown
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "exection_info_timing_breakdown" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "exection_info_timing_breakdown" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (eiq *ExectionInfoQuery) loadResourceUsage(ctx context.Context, query *ResourceUsageQuery, nodes []*ExectionInfo, init func(*ExectionInfo), assign func(*ExectionInfo, *ResourceUsage)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*ExectionInfo)
 	for i := range nodes {
@@ -534,116 +585,23 @@ func (eiq *ExectionInfoQuery) loadTestResult(ctx context.Context, query *TestRes
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.TestResultBES(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(exectioninfo.TestResultColumn), fks...))
+	query.Where(predicate.ResourceUsage(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(exectioninfo.ResourceUsageColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.test_result_bes_execution_info
+		fk := n.exection_info_resource_usage
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "test_result_bes_execution_info" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "exection_info_resource_usage" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "test_result_bes_execution_info" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "exection_info_resource_usage" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
-	}
-	return nil
-}
-func (eiq *ExectionInfoQuery) loadTimingBreakdown(ctx context.Context, query *TimingBreakdownQuery, nodes []*ExectionInfo, init func(*ExectionInfo), assign func(*ExectionInfo, *TimingBreakdown)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*ExectionInfo)
-	for i := range nodes {
-		if nodes[i].exection_info_timing_breakdown == nil {
-			continue
-		}
-		fk := *nodes[i].exection_info_timing_breakdown
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(timingbreakdown.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "exection_info_timing_breakdown" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
-}
-func (eiq *ExectionInfoQuery) loadResourceUsage(ctx context.Context, query *ResourceUsageQuery, nodes []*ExectionInfo, init func(*ExectionInfo), assign func(*ExectionInfo, *ResourceUsage)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*ExectionInfo)
-	nids := make(map[int]map[*ExectionInfo]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(exectioninfo.ResourceUsageTable)
-		s.Join(joinT).On(s.C(resourceusage.FieldID), joinT.C(exectioninfo.ResourceUsagePrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(exectioninfo.ResourceUsagePrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(exectioninfo.ResourceUsagePrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*ExectionInfo]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*ResourceUsage](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "resource_usage" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
 	}
 	return nil
 }
@@ -730,20 +688,6 @@ func (eiq *ExectionInfoQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedTestResult tells the query-builder to eager-load the nodes that are connected to the "test_result"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (eiq *ExectionInfoQuery) WithNamedTestResult(name string, opts ...func(*TestResultBESQuery)) *ExectionInfoQuery {
-	query := (&TestResultBESClient{config: eiq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if eiq.withNamedTestResult == nil {
-		eiq.withNamedTestResult = make(map[string]*TestResultBESQuery)
-	}
-	eiq.withNamedTestResult[name] = query
-	return eiq
 }
 
 // WithNamedResourceUsage tells the query-builder to eager-load the nodes that are connected to the "resource_usage"

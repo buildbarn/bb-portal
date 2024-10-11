@@ -28,11 +28,13 @@ const (
 	EdgePackageMetrics = "package_metrics"
 	// Table holds the table name of the packageloadmetrics in the database.
 	Table = "package_load_metrics"
-	// PackageMetricsTable is the table that holds the package_metrics relation/edge. The primary key declared below.
-	PackageMetricsTable = "package_metrics_package_load_metrics"
+	// PackageMetricsTable is the table that holds the package_metrics relation/edge.
+	PackageMetricsTable = "package_load_metrics"
 	// PackageMetricsInverseTable is the table name for the PackageMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "packagemetrics" package.
 	PackageMetricsInverseTable = "package_metrics"
+	// PackageMetricsColumn is the table column denoting the package_metrics relation/edge.
+	PackageMetricsColumn = "package_metrics_package_load_metrics"
 )
 
 // Columns holds all SQL columns for packageloadmetrics fields.
@@ -46,16 +48,21 @@ var Columns = []string{
 	FieldPackageOverhead,
 }
 
-var (
-	// PackageMetricsPrimaryKey and PackageMetricsColumn2 are the table columns denoting the
-	// primary key for the package_metrics relation (M2M).
-	PackageMetricsPrimaryKey = []string{"package_metrics_id", "package_load_metrics_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "package_load_metrics"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"package_metrics_package_load_metrics",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -100,23 +107,16 @@ func ByPackageOverhead(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPackageOverhead, opts...).ToFunc()
 }
 
-// ByPackageMetricsCount orders the results by package_metrics count.
-func ByPackageMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByPackageMetricsField orders the results by package_metrics field.
+func ByPackageMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newPackageMetricsStep(), opts...)
-	}
-}
-
-// ByPackageMetrics orders the results by package_metrics terms.
-func ByPackageMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newPackageMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newPackageMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newPackageMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(PackageMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, PackageMetricsTable, PackageMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.M2O, true, PackageMetricsTable, PackageMetricsColumn),
 	)
 }

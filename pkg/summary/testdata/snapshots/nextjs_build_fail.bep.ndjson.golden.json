@@ -300,7 +300,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.655487441Z"
       },
       "//react/src:lint": {
         "TestSummary": {
@@ -360,7 +361,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.654707647Z"
       },
       "//react/src:src_typecheck_test": {
         "TestSummary": {
@@ -420,7 +422,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.653280255Z"
       },
       "//react/src:test": {
         "TestSummary": {
@@ -480,7 +483,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.654892565Z"
       },
       "//react/src:test_lib_typecheck_test": {
         "TestSummary": {
@@ -540,7 +544,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.653517645Z"
       },
       "//react:build_smoke_test": {
         "TestSummary": {
@@ -600,7 +605,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.653763947Z"
       },
       "//vue:build_test": {
         "TestSummary": {
@@ -660,7 +666,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.654131702Z"
       },
       "//vue:type-check": {
         "TestSummary": {
@@ -720,7 +727,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.654384523Z"
       }
     },
     "Targets": {

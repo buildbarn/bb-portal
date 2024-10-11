@@ -8,8 +8,18 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 )
 
 // Metrics is the model entity for the Metrics schema.
@@ -29,41 +39,30 @@ type MetricsEdges struct {
 	// BazelInvocation holds the value of the bazel_invocation edge.
 	BazelInvocation *BazelInvocation `json:"bazel_invocation,omitempty"`
 	// ActionSummary holds the value of the action_summary edge.
-	ActionSummary []*ActionSummary `json:"action_summary,omitempty"`
+	ActionSummary *ActionSummary `json:"action_summary,omitempty"`
 	// MemoryMetrics holds the value of the memory_metrics edge.
-	MemoryMetrics []*MemoryMetrics `json:"memory_metrics,omitempty"`
+	MemoryMetrics *MemoryMetrics `json:"memory_metrics,omitempty"`
 	// TargetMetrics holds the value of the target_metrics edge.
-	TargetMetrics []*TargetMetrics `json:"target_metrics,omitempty"`
+	TargetMetrics *TargetMetrics `json:"target_metrics,omitempty"`
 	// PackageMetrics holds the value of the package_metrics edge.
-	PackageMetrics []*PackageMetrics `json:"package_metrics,omitempty"`
+	PackageMetrics *PackageMetrics `json:"package_metrics,omitempty"`
 	// TimingMetrics holds the value of the timing_metrics edge.
-	TimingMetrics []*TimingMetrics `json:"timing_metrics,omitempty"`
+	TimingMetrics *TimingMetrics `json:"timing_metrics,omitempty"`
 	// CumulativeMetrics holds the value of the cumulative_metrics edge.
-	CumulativeMetrics []*CumulativeMetrics `json:"cumulative_metrics,omitempty"`
+	CumulativeMetrics *CumulativeMetrics `json:"cumulative_metrics,omitempty"`
 	// ArtifactMetrics holds the value of the artifact_metrics edge.
-	ArtifactMetrics []*ArtifactMetrics `json:"artifact_metrics,omitempty"`
+	ArtifactMetrics *ArtifactMetrics `json:"artifact_metrics,omitempty"`
 	// NetworkMetrics holds the value of the network_metrics edge.
-	NetworkMetrics []*NetworkMetrics `json:"network_metrics,omitempty"`
+	NetworkMetrics *NetworkMetrics `json:"network_metrics,omitempty"`
 	// DynamicExecutionMetrics holds the value of the dynamic_execution_metrics edge.
-	DynamicExecutionMetrics []*DynamicExecutionMetrics `json:"dynamic_execution_metrics,omitempty"`
+	DynamicExecutionMetrics *DynamicExecutionMetrics `json:"dynamic_execution_metrics,omitempty"`
 	// BuildGraphMetrics holds the value of the build_graph_metrics edge.
-	BuildGraphMetrics []*BuildGraphMetrics `json:"build_graph_metrics,omitempty"`
+	BuildGraphMetrics *BuildGraphMetrics `json:"build_graph_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [11]bool
 	// totalCount holds the count of the edges above.
 	totalCount [11]map[string]int
-
-	namedActionSummary           map[string][]*ActionSummary
-	namedMemoryMetrics           map[string][]*MemoryMetrics
-	namedTargetMetrics           map[string][]*TargetMetrics
-	namedPackageMetrics          map[string][]*PackageMetrics
-	namedTimingMetrics           map[string][]*TimingMetrics
-	namedCumulativeMetrics       map[string][]*CumulativeMetrics
-	namedArtifactMetrics         map[string][]*ArtifactMetrics
-	namedNetworkMetrics          map[string][]*NetworkMetrics
-	namedDynamicExecutionMetrics map[string][]*DynamicExecutionMetrics
-	namedBuildGraphMetrics       map[string][]*BuildGraphMetrics
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
@@ -78,91 +77,111 @@ func (e MetricsEdges) BazelInvocationOrErr() (*BazelInvocation, error) {
 }
 
 // ActionSummaryOrErr returns the ActionSummary value or an error if the edge
-// was not loaded in eager-loading.
-func (e MetricsEdges) ActionSummaryOrErr() ([]*ActionSummary, error) {
-	if e.loadedTypes[1] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) ActionSummaryOrErr() (*ActionSummary, error) {
+	if e.ActionSummary != nil {
 		return e.ActionSummary, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: actionsummary.Label}
 	}
 	return nil, &NotLoadedError{edge: "action_summary"}
 }
 
 // MemoryMetricsOrErr returns the MemoryMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e MetricsEdges) MemoryMetricsOrErr() ([]*MemoryMetrics, error) {
-	if e.loadedTypes[2] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) MemoryMetricsOrErr() (*MemoryMetrics, error) {
+	if e.MemoryMetrics != nil {
 		return e.MemoryMetrics, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: memorymetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "memory_metrics"}
 }
 
 // TargetMetricsOrErr returns the TargetMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e MetricsEdges) TargetMetricsOrErr() ([]*TargetMetrics, error) {
-	if e.loadedTypes[3] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) TargetMetricsOrErr() (*TargetMetrics, error) {
+	if e.TargetMetrics != nil {
 		return e.TargetMetrics, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: targetmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "target_metrics"}
 }
 
 // PackageMetricsOrErr returns the PackageMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e MetricsEdges) PackageMetricsOrErr() ([]*PackageMetrics, error) {
-	if e.loadedTypes[4] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) PackageMetricsOrErr() (*PackageMetrics, error) {
+	if e.PackageMetrics != nil {
 		return e.PackageMetrics, nil
+	} else if e.loadedTypes[4] {
+		return nil, &NotFoundError{label: packagemetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "package_metrics"}
 }
 
 // TimingMetricsOrErr returns the TimingMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e MetricsEdges) TimingMetricsOrErr() ([]*TimingMetrics, error) {
-	if e.loadedTypes[5] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) TimingMetricsOrErr() (*TimingMetrics, error) {
+	if e.TimingMetrics != nil {
 		return e.TimingMetrics, nil
+	} else if e.loadedTypes[5] {
+		return nil, &NotFoundError{label: timingmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "timing_metrics"}
 }
 
 // CumulativeMetricsOrErr returns the CumulativeMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e MetricsEdges) CumulativeMetricsOrErr() ([]*CumulativeMetrics, error) {
-	if e.loadedTypes[6] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) CumulativeMetricsOrErr() (*CumulativeMetrics, error) {
+	if e.CumulativeMetrics != nil {
 		return e.CumulativeMetrics, nil
+	} else if e.loadedTypes[6] {
+		return nil, &NotFoundError{label: cumulativemetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "cumulative_metrics"}
 }
 
 // ArtifactMetricsOrErr returns the ArtifactMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e MetricsEdges) ArtifactMetricsOrErr() ([]*ArtifactMetrics, error) {
-	if e.loadedTypes[7] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) ArtifactMetricsOrErr() (*ArtifactMetrics, error) {
+	if e.ArtifactMetrics != nil {
 		return e.ArtifactMetrics, nil
+	} else if e.loadedTypes[7] {
+		return nil, &NotFoundError{label: artifactmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "artifact_metrics"}
 }
 
 // NetworkMetricsOrErr returns the NetworkMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e MetricsEdges) NetworkMetricsOrErr() ([]*NetworkMetrics, error) {
-	if e.loadedTypes[8] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) NetworkMetricsOrErr() (*NetworkMetrics, error) {
+	if e.NetworkMetrics != nil {
 		return e.NetworkMetrics, nil
+	} else if e.loadedTypes[8] {
+		return nil, &NotFoundError{label: networkmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "network_metrics"}
 }
 
 // DynamicExecutionMetricsOrErr returns the DynamicExecutionMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e MetricsEdges) DynamicExecutionMetricsOrErr() ([]*DynamicExecutionMetrics, error) {
-	if e.loadedTypes[9] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) DynamicExecutionMetricsOrErr() (*DynamicExecutionMetrics, error) {
+	if e.DynamicExecutionMetrics != nil {
 		return e.DynamicExecutionMetrics, nil
+	} else if e.loadedTypes[9] {
+		return nil, &NotFoundError{label: dynamicexecutionmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "dynamic_execution_metrics"}
 }
 
 // BuildGraphMetricsOrErr returns the BuildGraphMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e MetricsEdges) BuildGraphMetricsOrErr() ([]*BuildGraphMetrics, error) {
-	if e.loadedTypes[10] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MetricsEdges) BuildGraphMetricsOrErr() (*BuildGraphMetrics, error) {
+	if e.BuildGraphMetrics != nil {
 		return e.BuildGraphMetrics, nil
+	} else if e.loadedTypes[10] {
+		return nil, &NotFoundError{label: buildgraphmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "build_graph_metrics"}
 }
@@ -297,246 +316,6 @@ func (m *Metrics) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", m.ID))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedActionSummary returns the ActionSummary named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (m *Metrics) NamedActionSummary(name string) ([]*ActionSummary, error) {
-	if m.Edges.namedActionSummary == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := m.Edges.namedActionSummary[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (m *Metrics) appendNamedActionSummary(name string, edges ...*ActionSummary) {
-	if m.Edges.namedActionSummary == nil {
-		m.Edges.namedActionSummary = make(map[string][]*ActionSummary)
-	}
-	if len(edges) == 0 {
-		m.Edges.namedActionSummary[name] = []*ActionSummary{}
-	} else {
-		m.Edges.namedActionSummary[name] = append(m.Edges.namedActionSummary[name], edges...)
-	}
-}
-
-// NamedMemoryMetrics returns the MemoryMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (m *Metrics) NamedMemoryMetrics(name string) ([]*MemoryMetrics, error) {
-	if m.Edges.namedMemoryMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := m.Edges.namedMemoryMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (m *Metrics) appendNamedMemoryMetrics(name string, edges ...*MemoryMetrics) {
-	if m.Edges.namedMemoryMetrics == nil {
-		m.Edges.namedMemoryMetrics = make(map[string][]*MemoryMetrics)
-	}
-	if len(edges) == 0 {
-		m.Edges.namedMemoryMetrics[name] = []*MemoryMetrics{}
-	} else {
-		m.Edges.namedMemoryMetrics[name] = append(m.Edges.namedMemoryMetrics[name], edges...)
-	}
-}
-
-// NamedTargetMetrics returns the TargetMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (m *Metrics) NamedTargetMetrics(name string) ([]*TargetMetrics, error) {
-	if m.Edges.namedTargetMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := m.Edges.namedTargetMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (m *Metrics) appendNamedTargetMetrics(name string, edges ...*TargetMetrics) {
-	if m.Edges.namedTargetMetrics == nil {
-		m.Edges.namedTargetMetrics = make(map[string][]*TargetMetrics)
-	}
-	if len(edges) == 0 {
-		m.Edges.namedTargetMetrics[name] = []*TargetMetrics{}
-	} else {
-		m.Edges.namedTargetMetrics[name] = append(m.Edges.namedTargetMetrics[name], edges...)
-	}
-}
-
-// NamedPackageMetrics returns the PackageMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (m *Metrics) NamedPackageMetrics(name string) ([]*PackageMetrics, error) {
-	if m.Edges.namedPackageMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := m.Edges.namedPackageMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (m *Metrics) appendNamedPackageMetrics(name string, edges ...*PackageMetrics) {
-	if m.Edges.namedPackageMetrics == nil {
-		m.Edges.namedPackageMetrics = make(map[string][]*PackageMetrics)
-	}
-	if len(edges) == 0 {
-		m.Edges.namedPackageMetrics[name] = []*PackageMetrics{}
-	} else {
-		m.Edges.namedPackageMetrics[name] = append(m.Edges.namedPackageMetrics[name], edges...)
-	}
-}
-
-// NamedTimingMetrics returns the TimingMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (m *Metrics) NamedTimingMetrics(name string) ([]*TimingMetrics, error) {
-	if m.Edges.namedTimingMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := m.Edges.namedTimingMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (m *Metrics) appendNamedTimingMetrics(name string, edges ...*TimingMetrics) {
-	if m.Edges.namedTimingMetrics == nil {
-		m.Edges.namedTimingMetrics = make(map[string][]*TimingMetrics)
-	}
-	if len(edges) == 0 {
-		m.Edges.namedTimingMetrics[name] = []*TimingMetrics{}
-	} else {
-		m.Edges.namedTimingMetrics[name] = append(m.Edges.namedTimingMetrics[name], edges...)
-	}
-}
-
-// NamedCumulativeMetrics returns the CumulativeMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (m *Metrics) NamedCumulativeMetrics(name string) ([]*CumulativeMetrics, error) {
-	if m.Edges.namedCumulativeMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := m.Edges.namedCumulativeMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (m *Metrics) appendNamedCumulativeMetrics(name string, edges ...*CumulativeMetrics) {
-	if m.Edges.namedCumulativeMetrics == nil {
-		m.Edges.namedCumulativeMetrics = make(map[string][]*CumulativeMetrics)
-	}
-	if len(edges) == 0 {
-		m.Edges.namedCumulativeMetrics[name] = []*CumulativeMetrics{}
-	} else {
-		m.Edges.namedCumulativeMetrics[name] = append(m.Edges.namedCumulativeMetrics[name], edges...)
-	}
-}
-
-// NamedArtifactMetrics returns the ArtifactMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (m *Metrics) NamedArtifactMetrics(name string) ([]*ArtifactMetrics, error) {
-	if m.Edges.namedArtifactMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := m.Edges.namedArtifactMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (m *Metrics) appendNamedArtifactMetrics(name string, edges ...*ArtifactMetrics) {
-	if m.Edges.namedArtifactMetrics == nil {
-		m.Edges.namedArtifactMetrics = make(map[string][]*ArtifactMetrics)
-	}
-	if len(edges) == 0 {
-		m.Edges.namedArtifactMetrics[name] = []*ArtifactMetrics{}
-	} else {
-		m.Edges.namedArtifactMetrics[name] = append(m.Edges.namedArtifactMetrics[name], edges...)
-	}
-}
-
-// NamedNetworkMetrics returns the NetworkMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (m *Metrics) NamedNetworkMetrics(name string) ([]*NetworkMetrics, error) {
-	if m.Edges.namedNetworkMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := m.Edges.namedNetworkMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (m *Metrics) appendNamedNetworkMetrics(name string, edges ...*NetworkMetrics) {
-	if m.Edges.namedNetworkMetrics == nil {
-		m.Edges.namedNetworkMetrics = make(map[string][]*NetworkMetrics)
-	}
-	if len(edges) == 0 {
-		m.Edges.namedNetworkMetrics[name] = []*NetworkMetrics{}
-	} else {
-		m.Edges.namedNetworkMetrics[name] = append(m.Edges.namedNetworkMetrics[name], edges...)
-	}
-}
-
-// NamedDynamicExecutionMetrics returns the DynamicExecutionMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (m *Metrics) NamedDynamicExecutionMetrics(name string) ([]*DynamicExecutionMetrics, error) {
-	if m.Edges.namedDynamicExecutionMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := m.Edges.namedDynamicExecutionMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (m *Metrics) appendNamedDynamicExecutionMetrics(name string, edges ...*DynamicExecutionMetrics) {
-	if m.Edges.namedDynamicExecutionMetrics == nil {
-		m.Edges.namedDynamicExecutionMetrics = make(map[string][]*DynamicExecutionMetrics)
-	}
-	if len(edges) == 0 {
-		m.Edges.namedDynamicExecutionMetrics[name] = []*DynamicExecutionMetrics{}
-	} else {
-		m.Edges.namedDynamicExecutionMetrics[name] = append(m.Edges.namedDynamicExecutionMetrics[name], edges...)
-	}
-}
-
-// NamedBuildGraphMetrics returns the BuildGraphMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (m *Metrics) NamedBuildGraphMetrics(name string) ([]*BuildGraphMetrics, error) {
-	if m.Edges.namedBuildGraphMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := m.Edges.namedBuildGraphMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (m *Metrics) appendNamedBuildGraphMetrics(name string, edges ...*BuildGraphMetrics) {
-	if m.Edges.namedBuildGraphMetrics == nil {
-		m.Edges.namedBuildGraphMetrics = make(map[string][]*BuildGraphMetrics)
-	}
-	if len(edges) == 0 {
-		m.Edges.namedBuildGraphMetrics[name] = []*BuildGraphMetrics{}
-	} else {
-		m.Edges.namedBuildGraphMetrics[name] = append(m.Edges.namedBuildGraphMetrics[name], edges...)
-	}
 }
 
 // MetricsSlice is a parsable slice of Metrics.

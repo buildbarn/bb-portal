@@ -95,19 +95,23 @@ func (rcu *RunnerCountUpdate) ClearActionsExecuted() *RunnerCountUpdate {
 	return rcu
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by IDs.
-func (rcu *RunnerCountUpdate) AddActionSummaryIDs(ids ...int) *RunnerCountUpdate {
-	rcu.mutation.AddActionSummaryIDs(ids...)
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
+func (rcu *RunnerCountUpdate) SetActionSummaryID(id int) *RunnerCountUpdate {
+	rcu.mutation.SetActionSummaryID(id)
 	return rcu
 }
 
-// AddActionSummary adds the "action_summary" edges to the ActionSummary entity.
-func (rcu *RunnerCountUpdate) AddActionSummary(a ...*ActionSummary) *RunnerCountUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
+func (rcu *RunnerCountUpdate) SetNillableActionSummaryID(id *int) *RunnerCountUpdate {
+	if id != nil {
+		rcu = rcu.SetActionSummaryID(*id)
 	}
-	return rcu.AddActionSummaryIDs(ids...)
+	return rcu
+}
+
+// SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
+func (rcu *RunnerCountUpdate) SetActionSummary(a *ActionSummary) *RunnerCountUpdate {
+	return rcu.SetActionSummaryID(a.ID)
 }
 
 // Mutation returns the RunnerCountMutation object of the builder.
@@ -115,25 +119,10 @@ func (rcu *RunnerCountUpdate) Mutation() *RunnerCountMutation {
 	return rcu.mutation
 }
 
-// ClearActionSummary clears all "action_summary" edges to the ActionSummary entity.
+// ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
 func (rcu *RunnerCountUpdate) ClearActionSummary() *RunnerCountUpdate {
 	rcu.mutation.ClearActionSummary()
 	return rcu
-}
-
-// RemoveActionSummaryIDs removes the "action_summary" edge to ActionSummary entities by IDs.
-func (rcu *RunnerCountUpdate) RemoveActionSummaryIDs(ids ...int) *RunnerCountUpdate {
-	rcu.mutation.RemoveActionSummaryIDs(ids...)
-	return rcu
-}
-
-// RemoveActionSummary removes "action_summary" edges to ActionSummary entities.
-func (rcu *RunnerCountUpdate) RemoveActionSummary(a ...*ActionSummary) *RunnerCountUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return rcu.RemoveActionSummaryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -195,39 +184,23 @@ func (rcu *RunnerCountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if rcu.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   runnercount.ActionSummaryTable,
-			Columns: runnercount.ActionSummaryPrimaryKey,
+			Columns: []string{runnercount.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := rcu.mutation.RemovedActionSummaryIDs(); len(nodes) > 0 && !rcu.mutation.ActionSummaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   runnercount.ActionSummaryTable,
-			Columns: runnercount.ActionSummaryPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := rcu.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   runnercount.ActionSummaryTable,
-			Columns: runnercount.ActionSummaryPrimaryKey,
+			Columns: []string{runnercount.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
@@ -325,19 +298,23 @@ func (rcuo *RunnerCountUpdateOne) ClearActionsExecuted() *RunnerCountUpdateOne {
 	return rcuo
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by IDs.
-func (rcuo *RunnerCountUpdateOne) AddActionSummaryIDs(ids ...int) *RunnerCountUpdateOne {
-	rcuo.mutation.AddActionSummaryIDs(ids...)
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
+func (rcuo *RunnerCountUpdateOne) SetActionSummaryID(id int) *RunnerCountUpdateOne {
+	rcuo.mutation.SetActionSummaryID(id)
 	return rcuo
 }
 
-// AddActionSummary adds the "action_summary" edges to the ActionSummary entity.
-func (rcuo *RunnerCountUpdateOne) AddActionSummary(a ...*ActionSummary) *RunnerCountUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
+func (rcuo *RunnerCountUpdateOne) SetNillableActionSummaryID(id *int) *RunnerCountUpdateOne {
+	if id != nil {
+		rcuo = rcuo.SetActionSummaryID(*id)
 	}
-	return rcuo.AddActionSummaryIDs(ids...)
+	return rcuo
+}
+
+// SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
+func (rcuo *RunnerCountUpdateOne) SetActionSummary(a *ActionSummary) *RunnerCountUpdateOne {
+	return rcuo.SetActionSummaryID(a.ID)
 }
 
 // Mutation returns the RunnerCountMutation object of the builder.
@@ -345,25 +322,10 @@ func (rcuo *RunnerCountUpdateOne) Mutation() *RunnerCountMutation {
 	return rcuo.mutation
 }
 
-// ClearActionSummary clears all "action_summary" edges to the ActionSummary entity.
+// ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
 func (rcuo *RunnerCountUpdateOne) ClearActionSummary() *RunnerCountUpdateOne {
 	rcuo.mutation.ClearActionSummary()
 	return rcuo
-}
-
-// RemoveActionSummaryIDs removes the "action_summary" edge to ActionSummary entities by IDs.
-func (rcuo *RunnerCountUpdateOne) RemoveActionSummaryIDs(ids ...int) *RunnerCountUpdateOne {
-	rcuo.mutation.RemoveActionSummaryIDs(ids...)
-	return rcuo
-}
-
-// RemoveActionSummary removes "action_summary" edges to ActionSummary entities.
-func (rcuo *RunnerCountUpdateOne) RemoveActionSummary(a ...*ActionSummary) *RunnerCountUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return rcuo.RemoveActionSummaryIDs(ids...)
 }
 
 // Where appends a list predicates to the RunnerCountUpdate builder.
@@ -455,39 +417,23 @@ func (rcuo *RunnerCountUpdateOne) sqlSave(ctx context.Context) (_node *RunnerCou
 	}
 	if rcuo.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   runnercount.ActionSummaryTable,
-			Columns: runnercount.ActionSummaryPrimaryKey,
+			Columns: []string{runnercount.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := rcuo.mutation.RemovedActionSummaryIDs(); len(nodes) > 0 && !rcuo.mutation.ActionSummaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   runnercount.ActionSummaryTable,
-			Columns: runnercount.ActionSummaryPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := rcuo.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   runnercount.ActionSummaryTable,
-			Columns: runnercount.ActionSummaryPrimaryKey,
+			Columns: []string{runnercount.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),

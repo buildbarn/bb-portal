@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -19,14 +18,14 @@ import (
 // TargetMetricsQuery is the builder for querying TargetMetrics entities.
 type TargetMetricsQuery struct {
 	config
-	ctx              *QueryContext
-	order            []targetmetrics.OrderOption
-	inters           []Interceptor
-	predicates       []predicate.TargetMetrics
-	withMetrics      *MetricsQuery
-	modifiers        []func(*sql.Selector)
-	loadTotal        []func(context.Context, []*TargetMetrics) error
-	withNamedMetrics map[string]*MetricsQuery
+	ctx         *QueryContext
+	order       []targetmetrics.OrderOption
+	inters      []Interceptor
+	predicates  []predicate.TargetMetrics
+	withMetrics *MetricsQuery
+	withFKs     bool
+	modifiers   []func(*sql.Selector)
+	loadTotal   []func(context.Context, []*TargetMetrics) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,7 +76,7 @@ func (tmq *TargetMetricsQuery) QueryMetrics() *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetmetrics.Table, targetmetrics.FieldID, selector),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, targetmetrics.MetricsTable, targetmetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, targetmetrics.MetricsTable, targetmetrics.MetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tmq.driver.Dialect(), step)
 		return fromU, nil
@@ -372,11 +371,18 @@ func (tmq *TargetMetricsQuery) prepareQuery(ctx context.Context) error {
 func (tmq *TargetMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TargetMetrics, error) {
 	var (
 		nodes       = []*TargetMetrics{}
+		withFKs     = tmq.withFKs
 		_spec       = tmq.querySpec()
 		loadedTypes = [1]bool{
 			tmq.withMetrics != nil,
 		}
 	)
+	if tmq.withMetrics != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, targetmetrics.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TargetMetrics).scanValues(nil, columns)
 	}
@@ -399,16 +405,8 @@ func (tmq *TargetMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 		return nodes, nil
 	}
 	if query := tmq.withMetrics; query != nil {
-		if err := tmq.loadMetrics(ctx, query, nodes,
-			func(n *TargetMetrics) { n.Edges.Metrics = []*Metrics{} },
-			func(n *TargetMetrics, e *Metrics) { n.Edges.Metrics = append(n.Edges.Metrics, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range tmq.withNamedMetrics {
-		if err := tmq.loadMetrics(ctx, query, nodes,
-			func(n *TargetMetrics) { n.appendNamedMetrics(name) },
-			func(n *TargetMetrics, e *Metrics) { n.appendNamedMetrics(name, e) }); err != nil {
+		if err := tmq.loadMetrics(ctx, query, nodes, nil,
+			func(n *TargetMetrics, e *Metrics) { n.Edges.Metrics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -421,62 +419,33 @@ func (tmq *TargetMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 }
 
 func (tmq *TargetMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQuery, nodes []*TargetMetrics, init func(*TargetMetrics), assign func(*TargetMetrics, *Metrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*TargetMetrics)
-	nids := make(map[int]map[*TargetMetrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*TargetMetrics)
+	for i := range nodes {
+		if nodes[i].metrics_target_metrics == nil {
+			continue
 		}
+		fk := *nodes[i].metrics_target_metrics
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(targetmetrics.MetricsTable)
-		s.Join(joinT).On(s.C(metrics.FieldID), joinT.C(targetmetrics.MetricsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(targetmetrics.MetricsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(targetmetrics.MetricsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*TargetMetrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*Metrics](ctx, query, qr, query.inters)
+	query.Where(metrics.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_target_metrics" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -564,20 +533,6 @@ func (tmq *TargetMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedMetrics tells the query-builder to eager-load the nodes that are connected to the "metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (tmq *TargetMetricsQuery) WithNamedMetrics(name string, opts ...func(*MetricsQuery)) *TargetMetricsQuery {
-	query := (&MetricsClient{config: tmq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if tmq.withNamedMetrics == nil {
-		tmq.withNamedMetrics = make(map[string]*MetricsQuery)
-	}
-	tmq.withNamedMetrics[name] = query
-	return tmq
 }
 
 // TargetMetricsGroupBy is the group-by builder for TargetMetrics entities.

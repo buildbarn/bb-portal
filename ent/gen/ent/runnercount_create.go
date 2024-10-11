@@ -61,19 +61,23 @@ func (rcc *RunnerCountCreate) SetNillableActionsExecuted(i *int64) *RunnerCountC
 	return rcc
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by IDs.
-func (rcc *RunnerCountCreate) AddActionSummaryIDs(ids ...int) *RunnerCountCreate {
-	rcc.mutation.AddActionSummaryIDs(ids...)
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
+func (rcc *RunnerCountCreate) SetActionSummaryID(id int) *RunnerCountCreate {
+	rcc.mutation.SetActionSummaryID(id)
 	return rcc
 }
 
-// AddActionSummary adds the "action_summary" edges to the ActionSummary entity.
-func (rcc *RunnerCountCreate) AddActionSummary(a ...*ActionSummary) *RunnerCountCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
+func (rcc *RunnerCountCreate) SetNillableActionSummaryID(id *int) *RunnerCountCreate {
+	if id != nil {
+		rcc = rcc.SetActionSummaryID(*id)
 	}
-	return rcc.AddActionSummaryIDs(ids...)
+	return rcc
+}
+
+// SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
+func (rcc *RunnerCountCreate) SetActionSummary(a *ActionSummary) *RunnerCountCreate {
+	return rcc.SetActionSummaryID(a.ID)
 }
 
 // Mutation returns the RunnerCountMutation object of the builder.
@@ -150,10 +154,10 @@ func (rcc *RunnerCountCreate) createSpec() (*RunnerCount, *sqlgraph.CreateSpec) 
 	}
 	if nodes := rcc.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   runnercount.ActionSummaryTable,
-			Columns: runnercount.ActionSummaryPrimaryKey,
+			Columns: []string{runnercount.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
@@ -162,6 +166,7 @@ func (rcc *RunnerCountCreate) createSpec() (*RunnerCount, *sqlgraph.CreateSpec) 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.action_summary_runner_count = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

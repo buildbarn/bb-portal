@@ -52,6 +52,7 @@ func (ActionSummary) Edges() []ent.Edge {
 		edge.To("runner_count", RunnerCount.Type),
 
 		// Information about the action cache behavior during a single invocation.
-		edge.To("action_cache_statistics", ActionCacheStatistics.Type),
+		edge.To("action_cache_statistics", ActionCacheStatistics.Type).
+			Unique(),
 	}
 }

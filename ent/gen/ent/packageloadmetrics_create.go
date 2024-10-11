@@ -103,19 +103,23 @@ func (plmc *PackageLoadMetricsCreate) SetNillablePackageOverhead(u *uint64) *Pac
 	return plmc
 }
 
-// AddPackageMetricIDs adds the "package_metrics" edge to the PackageMetrics entity by IDs.
-func (plmc *PackageLoadMetricsCreate) AddPackageMetricIDs(ids ...int) *PackageLoadMetricsCreate {
-	plmc.mutation.AddPackageMetricIDs(ids...)
+// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
+func (plmc *PackageLoadMetricsCreate) SetPackageMetricsID(id int) *PackageLoadMetricsCreate {
+	plmc.mutation.SetPackageMetricsID(id)
 	return plmc
 }
 
-// AddPackageMetrics adds the "package_metrics" edges to the PackageMetrics entity.
-func (plmc *PackageLoadMetricsCreate) AddPackageMetrics(p ...*PackageMetrics) *PackageLoadMetricsCreate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+// SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
+func (plmc *PackageLoadMetricsCreate) SetNillablePackageMetricsID(id *int) *PackageLoadMetricsCreate {
+	if id != nil {
+		plmc = plmc.SetPackageMetricsID(*id)
 	}
-	return plmc.AddPackageMetricIDs(ids...)
+	return plmc
+}
+
+// SetPackageMetrics sets the "package_metrics" edge to the PackageMetrics entity.
+func (plmc *PackageLoadMetricsCreate) SetPackageMetrics(p *PackageMetrics) *PackageLoadMetricsCreate {
+	return plmc.SetPackageMetricsID(p.ID)
 }
 
 // Mutation returns the PackageLoadMetricsMutation object of the builder.
@@ -204,10 +208,10 @@ func (plmc *PackageLoadMetricsCreate) createSpec() (*PackageLoadMetrics, *sqlgra
 	}
 	if nodes := plmc.mutation.PackageMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   packageloadmetrics.PackageMetricsTable,
-			Columns: packageloadmetrics.PackageMetricsPrimaryKey,
+			Columns: []string{packageloadmetrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
@@ -216,6 +220,7 @@ func (plmc *PackageLoadMetricsCreate) createSpec() (*PackageLoadMetrics, *sqlgra
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.package_metrics_package_load_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -368,7 +368,7 @@ func HasTargetPair() predicate.TargetComplete {
 	return predicate.TargetComplete(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, TargetPairTable, TargetPairColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, TargetPairTable, TargetPairColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -437,7 +437,7 @@ func HasOutputGroup() predicate.TargetComplete {
 	return predicate.TargetComplete(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, OutputGroupTable, OutputGroupColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, OutputGroupTable, OutputGroupColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

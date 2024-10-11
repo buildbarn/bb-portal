@@ -29,19 +29,23 @@ func (demu *DynamicExecutionMetricsUpdate) Where(ps ...predicate.DynamicExecutio
 	return demu
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (demu *DynamicExecutionMetricsUpdate) AddMetricIDs(ids ...int) *DynamicExecutionMetricsUpdate {
-	demu.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (demu *DynamicExecutionMetricsUpdate) SetMetricsID(id int) *DynamicExecutionMetricsUpdate {
+	demu.mutation.SetMetricsID(id)
 	return demu
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (demu *DynamicExecutionMetricsUpdate) AddMetrics(m ...*Metrics) *DynamicExecutionMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (demu *DynamicExecutionMetricsUpdate) SetNillableMetricsID(id *int) *DynamicExecutionMetricsUpdate {
+	if id != nil {
+		demu = demu.SetMetricsID(*id)
 	}
-	return demu.AddMetricIDs(ids...)
+	return demu
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (demu *DynamicExecutionMetricsUpdate) SetMetrics(m *Metrics) *DynamicExecutionMetricsUpdate {
+	return demu.SetMetricsID(m.ID)
 }
 
 // AddRaceStatisticIDs adds the "race_statistics" edge to the RaceStatistics entity by IDs.
@@ -64,25 +68,10 @@ func (demu *DynamicExecutionMetricsUpdate) Mutation() *DynamicExecutionMetricsMu
 	return demu.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (demu *DynamicExecutionMetricsUpdate) ClearMetrics() *DynamicExecutionMetricsUpdate {
 	demu.mutation.ClearMetrics()
 	return demu
-}
-
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (demu *DynamicExecutionMetricsUpdate) RemoveMetricIDs(ids ...int) *DynamicExecutionMetricsUpdate {
-	demu.mutation.RemoveMetricIDs(ids...)
-	return demu
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (demu *DynamicExecutionMetricsUpdate) RemoveMetrics(m ...*Metrics) *DynamicExecutionMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return demu.RemoveMetricIDs(ids...)
 }
 
 // ClearRaceStatistics clears all "race_statistics" edges to the RaceStatistics entity.
@@ -144,39 +133,23 @@ func (demu *DynamicExecutionMetricsUpdate) sqlSave(ctx context.Context) (n int, 
 	}
 	if demu.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   dynamicexecutionmetrics.MetricsTable,
-			Columns: dynamicexecutionmetrics.MetricsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := demu.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !demu.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   dynamicexecutionmetrics.MetricsTable,
-			Columns: dynamicexecutionmetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := demu.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   dynamicexecutionmetrics.MetricsTable,
-			Columns: dynamicexecutionmetrics.MetricsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -189,10 +162,10 @@ func (demu *DynamicExecutionMetricsUpdate) sqlSave(ctx context.Context) (n int, 
 	}
 	if demu.mutation.RaceStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   dynamicexecutionmetrics.RaceStatisticsTable,
-			Columns: dynamicexecutionmetrics.RaceStatisticsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.RaceStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(racestatistics.FieldID, field.TypeInt),
@@ -202,10 +175,10 @@ func (demu *DynamicExecutionMetricsUpdate) sqlSave(ctx context.Context) (n int, 
 	}
 	if nodes := demu.mutation.RemovedRaceStatisticsIDs(); len(nodes) > 0 && !demu.mutation.RaceStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   dynamicexecutionmetrics.RaceStatisticsTable,
-			Columns: dynamicexecutionmetrics.RaceStatisticsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.RaceStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(racestatistics.FieldID, field.TypeInt),
@@ -218,10 +191,10 @@ func (demu *DynamicExecutionMetricsUpdate) sqlSave(ctx context.Context) (n int, 
 	}
 	if nodes := demu.mutation.RaceStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   dynamicexecutionmetrics.RaceStatisticsTable,
-			Columns: dynamicexecutionmetrics.RaceStatisticsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.RaceStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(racestatistics.FieldID, field.TypeInt),
@@ -252,19 +225,23 @@ type DynamicExecutionMetricsUpdateOne struct {
 	mutation *DynamicExecutionMetricsMutation
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (demuo *DynamicExecutionMetricsUpdateOne) AddMetricIDs(ids ...int) *DynamicExecutionMetricsUpdateOne {
-	demuo.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (demuo *DynamicExecutionMetricsUpdateOne) SetMetricsID(id int) *DynamicExecutionMetricsUpdateOne {
+	demuo.mutation.SetMetricsID(id)
 	return demuo
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (demuo *DynamicExecutionMetricsUpdateOne) AddMetrics(m ...*Metrics) *DynamicExecutionMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (demuo *DynamicExecutionMetricsUpdateOne) SetNillableMetricsID(id *int) *DynamicExecutionMetricsUpdateOne {
+	if id != nil {
+		demuo = demuo.SetMetricsID(*id)
 	}
-	return demuo.AddMetricIDs(ids...)
+	return demuo
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (demuo *DynamicExecutionMetricsUpdateOne) SetMetrics(m *Metrics) *DynamicExecutionMetricsUpdateOne {
+	return demuo.SetMetricsID(m.ID)
 }
 
 // AddRaceStatisticIDs adds the "race_statistics" edge to the RaceStatistics entity by IDs.
@@ -287,25 +264,10 @@ func (demuo *DynamicExecutionMetricsUpdateOne) Mutation() *DynamicExecutionMetri
 	return demuo.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (demuo *DynamicExecutionMetricsUpdateOne) ClearMetrics() *DynamicExecutionMetricsUpdateOne {
 	demuo.mutation.ClearMetrics()
 	return demuo
-}
-
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (demuo *DynamicExecutionMetricsUpdateOne) RemoveMetricIDs(ids ...int) *DynamicExecutionMetricsUpdateOne {
-	demuo.mutation.RemoveMetricIDs(ids...)
-	return demuo
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (demuo *DynamicExecutionMetricsUpdateOne) RemoveMetrics(m ...*Metrics) *DynamicExecutionMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return demuo.RemoveMetricIDs(ids...)
 }
 
 // ClearRaceStatistics clears all "race_statistics" edges to the RaceStatistics entity.
@@ -397,39 +359,23 @@ func (demuo *DynamicExecutionMetricsUpdateOne) sqlSave(ctx context.Context) (_no
 	}
 	if demuo.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   dynamicexecutionmetrics.MetricsTable,
-			Columns: dynamicexecutionmetrics.MetricsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := demuo.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !demuo.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   dynamicexecutionmetrics.MetricsTable,
-			Columns: dynamicexecutionmetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := demuo.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   dynamicexecutionmetrics.MetricsTable,
-			Columns: dynamicexecutionmetrics.MetricsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -442,10 +388,10 @@ func (demuo *DynamicExecutionMetricsUpdateOne) sqlSave(ctx context.Context) (_no
 	}
 	if demuo.mutation.RaceStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   dynamicexecutionmetrics.RaceStatisticsTable,
-			Columns: dynamicexecutionmetrics.RaceStatisticsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.RaceStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(racestatistics.FieldID, field.TypeInt),
@@ -455,10 +401,10 @@ func (demuo *DynamicExecutionMetricsUpdateOne) sqlSave(ctx context.Context) (_no
 	}
 	if nodes := demuo.mutation.RemovedRaceStatisticsIDs(); len(nodes) > 0 && !demuo.mutation.RaceStatisticsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   dynamicexecutionmetrics.RaceStatisticsTable,
-			Columns: dynamicexecutionmetrics.RaceStatisticsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.RaceStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(racestatistics.FieldID, field.TypeInt),
@@ -471,10 +417,10 @@ func (demuo *DynamicExecutionMetricsUpdateOne) sqlSave(ctx context.Context) (_no
 	}
 	if nodes := demuo.mutation.RaceStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   dynamicexecutionmetrics.RaceStatisticsTable,
-			Columns: dynamicexecutionmetrics.RaceStatisticsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.RaceStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(racestatistics.FieldID, field.TypeInt),

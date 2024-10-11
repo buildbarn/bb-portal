@@ -210,19 +210,23 @@ func (adu *ActionDataUpdate) ClearUserTime() *ActionDataUpdate {
 	return adu
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by IDs.
-func (adu *ActionDataUpdate) AddActionSummaryIDs(ids ...int) *ActionDataUpdate {
-	adu.mutation.AddActionSummaryIDs(ids...)
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
+func (adu *ActionDataUpdate) SetActionSummaryID(id int) *ActionDataUpdate {
+	adu.mutation.SetActionSummaryID(id)
 	return adu
 }
 
-// AddActionSummary adds the "action_summary" edges to the ActionSummary entity.
-func (adu *ActionDataUpdate) AddActionSummary(a ...*ActionSummary) *ActionDataUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
+func (adu *ActionDataUpdate) SetNillableActionSummaryID(id *int) *ActionDataUpdate {
+	if id != nil {
+		adu = adu.SetActionSummaryID(*id)
 	}
-	return adu.AddActionSummaryIDs(ids...)
+	return adu
+}
+
+// SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
+func (adu *ActionDataUpdate) SetActionSummary(a *ActionSummary) *ActionDataUpdate {
+	return adu.SetActionSummaryID(a.ID)
 }
 
 // Mutation returns the ActionDataMutation object of the builder.
@@ -230,25 +234,10 @@ func (adu *ActionDataUpdate) Mutation() *ActionDataMutation {
 	return adu.mutation
 }
 
-// ClearActionSummary clears all "action_summary" edges to the ActionSummary entity.
+// ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
 func (adu *ActionDataUpdate) ClearActionSummary() *ActionDataUpdate {
 	adu.mutation.ClearActionSummary()
 	return adu
-}
-
-// RemoveActionSummaryIDs removes the "action_summary" edge to ActionSummary entities by IDs.
-func (adu *ActionDataUpdate) RemoveActionSummaryIDs(ids ...int) *ActionDataUpdate {
-	adu.mutation.RemoveActionSummaryIDs(ids...)
-	return adu
-}
-
-// RemoveActionSummary removes "action_summary" edges to ActionSummary entities.
-func (adu *ActionDataUpdate) RemoveActionSummary(a ...*ActionSummary) *ActionDataUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return adu.RemoveActionSummaryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -349,39 +338,23 @@ func (adu *ActionDataUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if adu.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   actiondata.ActionSummaryTable,
-			Columns: actiondata.ActionSummaryPrimaryKey,
+			Columns: []string{actiondata.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := adu.mutation.RemovedActionSummaryIDs(); len(nodes) > 0 && !adu.mutation.ActionSummaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   actiondata.ActionSummaryTable,
-			Columns: actiondata.ActionSummaryPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := adu.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   actiondata.ActionSummaryTable,
-			Columns: actiondata.ActionSummaryPrimaryKey,
+			Columns: []string{actiondata.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
@@ -594,19 +567,23 @@ func (aduo *ActionDataUpdateOne) ClearUserTime() *ActionDataUpdateOne {
 	return aduo
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by IDs.
-func (aduo *ActionDataUpdateOne) AddActionSummaryIDs(ids ...int) *ActionDataUpdateOne {
-	aduo.mutation.AddActionSummaryIDs(ids...)
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
+func (aduo *ActionDataUpdateOne) SetActionSummaryID(id int) *ActionDataUpdateOne {
+	aduo.mutation.SetActionSummaryID(id)
 	return aduo
 }
 
-// AddActionSummary adds the "action_summary" edges to the ActionSummary entity.
-func (aduo *ActionDataUpdateOne) AddActionSummary(a ...*ActionSummary) *ActionDataUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
+func (aduo *ActionDataUpdateOne) SetNillableActionSummaryID(id *int) *ActionDataUpdateOne {
+	if id != nil {
+		aduo = aduo.SetActionSummaryID(*id)
 	}
-	return aduo.AddActionSummaryIDs(ids...)
+	return aduo
+}
+
+// SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
+func (aduo *ActionDataUpdateOne) SetActionSummary(a *ActionSummary) *ActionDataUpdateOne {
+	return aduo.SetActionSummaryID(a.ID)
 }
 
 // Mutation returns the ActionDataMutation object of the builder.
@@ -614,25 +591,10 @@ func (aduo *ActionDataUpdateOne) Mutation() *ActionDataMutation {
 	return aduo.mutation
 }
 
-// ClearActionSummary clears all "action_summary" edges to the ActionSummary entity.
+// ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
 func (aduo *ActionDataUpdateOne) ClearActionSummary() *ActionDataUpdateOne {
 	aduo.mutation.ClearActionSummary()
 	return aduo
-}
-
-// RemoveActionSummaryIDs removes the "action_summary" edge to ActionSummary entities by IDs.
-func (aduo *ActionDataUpdateOne) RemoveActionSummaryIDs(ids ...int) *ActionDataUpdateOne {
-	aduo.mutation.RemoveActionSummaryIDs(ids...)
-	return aduo
-}
-
-// RemoveActionSummary removes "action_summary" edges to ActionSummary entities.
-func (aduo *ActionDataUpdateOne) RemoveActionSummary(a ...*ActionSummary) *ActionDataUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aduo.RemoveActionSummaryIDs(ids...)
 }
 
 // Where appends a list predicates to the ActionDataUpdate builder.
@@ -763,39 +725,23 @@ func (aduo *ActionDataUpdateOne) sqlSave(ctx context.Context) (_node *ActionData
 	}
 	if aduo.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   actiondata.ActionSummaryTable,
-			Columns: actiondata.ActionSummaryPrimaryKey,
+			Columns: []string{actiondata.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aduo.mutation.RemovedActionSummaryIDs(); len(nodes) > 0 && !aduo.mutation.ActionSummaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   actiondata.ActionSummaryTable,
-			Columns: actiondata.ActionSummaryPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := aduo.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   actiondata.ActionSummaryTable,
-			Columns: actiondata.ActionSummaryPrimaryKey,
+			Columns: []string{actiondata.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),

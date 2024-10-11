@@ -47,19 +47,23 @@ func (mdc *MissDetailCreate) SetNillableCount(i *int32) *MissDetailCreate {
 	return mdc
 }
 
-// AddActionCacheStatisticIDs adds the "action_cache_statistics" edge to the ActionCacheStatistics entity by IDs.
-func (mdc *MissDetailCreate) AddActionCacheStatisticIDs(ids ...int) *MissDetailCreate {
-	mdc.mutation.AddActionCacheStatisticIDs(ids...)
+// SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
+func (mdc *MissDetailCreate) SetActionCacheStatisticsID(id int) *MissDetailCreate {
+	mdc.mutation.SetActionCacheStatisticsID(id)
 	return mdc
 }
 
-// AddActionCacheStatistics adds the "action_cache_statistics" edges to the ActionCacheStatistics entity.
-func (mdc *MissDetailCreate) AddActionCacheStatistics(a ...*ActionCacheStatistics) *MissDetailCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
+func (mdc *MissDetailCreate) SetNillableActionCacheStatisticsID(id *int) *MissDetailCreate {
+	if id != nil {
+		mdc = mdc.SetActionCacheStatisticsID(*id)
 	}
-	return mdc.AddActionCacheStatisticIDs(ids...)
+	return mdc
+}
+
+// SetActionCacheStatistics sets the "action_cache_statistics" edge to the ActionCacheStatistics entity.
+func (mdc *MissDetailCreate) SetActionCacheStatistics(a *ActionCacheStatistics) *MissDetailCreate {
+	return mdc.SetActionCacheStatisticsID(a.ID)
 }
 
 // Mutation returns the MissDetailMutation object of the builder.
@@ -146,10 +150,10 @@ func (mdc *MissDetailCreate) createSpec() (*MissDetail, *sqlgraph.CreateSpec) {
 	}
 	if nodes := mdc.mutation.ActionCacheStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   missdetail.ActionCacheStatisticsTable,
-			Columns: missdetail.ActionCacheStatisticsPrimaryKey,
+			Columns: []string{missdetail.ActionCacheStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt),
@@ -158,6 +162,7 @@ func (mdc *MissDetailCreate) createSpec() (*MissDetail, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.action_cache_statistics_miss_details = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

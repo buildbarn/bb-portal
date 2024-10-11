@@ -272,94 +272,118 @@ func (bgmu *BuildGraphMetricsUpdate) ClearPostInvocationSkyframeNodeCount() *Bui
 	return bgmu
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (bgmu *BuildGraphMetricsUpdate) AddMetricIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (bgmu *BuildGraphMetricsUpdate) SetMetricsID(id int) *BuildGraphMetricsUpdate {
+	bgmu.mutation.SetMetricsID(id)
 	return bgmu
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (bgmu *BuildGraphMetricsUpdate) AddMetrics(m ...*Metrics) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (bgmu *BuildGraphMetricsUpdate) SetNillableMetricsID(id *int) *BuildGraphMetricsUpdate {
+	if id != nil {
+		bgmu = bgmu.SetMetricsID(*id)
 	}
-	return bgmu.AddMetricIDs(ids...)
-}
-
-// AddDirtiedValueIDs adds the "dirtied_values" edge to the EvaluationStat entity by IDs.
-func (bgmu *BuildGraphMetricsUpdate) AddDirtiedValueIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.AddDirtiedValueIDs(ids...)
 	return bgmu
 }
 
-// AddDirtiedValues adds the "dirtied_values" edges to the EvaluationStat entity.
-func (bgmu *BuildGraphMetricsUpdate) AddDirtiedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmu.AddDirtiedValueIDs(ids...)
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (bgmu *BuildGraphMetricsUpdate) SetMetrics(m *Metrics) *BuildGraphMetricsUpdate {
+	return bgmu.SetMetricsID(m.ID)
 }
 
-// AddChangedValueIDs adds the "changed_values" edge to the EvaluationStat entity by IDs.
-func (bgmu *BuildGraphMetricsUpdate) AddChangedValueIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.AddChangedValueIDs(ids...)
+// SetDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID.
+func (bgmu *BuildGraphMetricsUpdate) SetDirtiedValuesID(id int) *BuildGraphMetricsUpdate {
+	bgmu.mutation.SetDirtiedValuesID(id)
 	return bgmu
 }
 
-// AddChangedValues adds the "changed_values" edges to the EvaluationStat entity.
-func (bgmu *BuildGraphMetricsUpdate) AddChangedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID if the given value is not nil.
+func (bgmu *BuildGraphMetricsUpdate) SetNillableDirtiedValuesID(id *int) *BuildGraphMetricsUpdate {
+	if id != nil {
+		bgmu = bgmu.SetDirtiedValuesID(*id)
 	}
-	return bgmu.AddChangedValueIDs(ids...)
-}
-
-// AddBuiltValueIDs adds the "built_values" edge to the EvaluationStat entity by IDs.
-func (bgmu *BuildGraphMetricsUpdate) AddBuiltValueIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.AddBuiltValueIDs(ids...)
 	return bgmu
 }
 
-// AddBuiltValues adds the "built_values" edges to the EvaluationStat entity.
-func (bgmu *BuildGraphMetricsUpdate) AddBuiltValues(e ...*EvaluationStat) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmu.AddBuiltValueIDs(ids...)
+// SetDirtiedValues sets the "dirtied_values" edge to the EvaluationStat entity.
+func (bgmu *BuildGraphMetricsUpdate) SetDirtiedValues(e *EvaluationStat) *BuildGraphMetricsUpdate {
+	return bgmu.SetDirtiedValuesID(e.ID)
 }
 
-// AddCleanedValueIDs adds the "cleaned_values" edge to the EvaluationStat entity by IDs.
-func (bgmu *BuildGraphMetricsUpdate) AddCleanedValueIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.AddCleanedValueIDs(ids...)
+// SetChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID.
+func (bgmu *BuildGraphMetricsUpdate) SetChangedValuesID(id int) *BuildGraphMetricsUpdate {
+	bgmu.mutation.SetChangedValuesID(id)
 	return bgmu
 }
 
-// AddCleanedValues adds the "cleaned_values" edges to the EvaluationStat entity.
-func (bgmu *BuildGraphMetricsUpdate) AddCleanedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID if the given value is not nil.
+func (bgmu *BuildGraphMetricsUpdate) SetNillableChangedValuesID(id *int) *BuildGraphMetricsUpdate {
+	if id != nil {
+		bgmu = bgmu.SetChangedValuesID(*id)
 	}
-	return bgmu.AddCleanedValueIDs(ids...)
-}
-
-// AddEvaluatedValueIDs adds the "evaluated_values" edge to the EvaluationStat entity by IDs.
-func (bgmu *BuildGraphMetricsUpdate) AddEvaluatedValueIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.AddEvaluatedValueIDs(ids...)
 	return bgmu
 }
 
-// AddEvaluatedValues adds the "evaluated_values" edges to the EvaluationStat entity.
-func (bgmu *BuildGraphMetricsUpdate) AddEvaluatedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetChangedValues sets the "changed_values" edge to the EvaluationStat entity.
+func (bgmu *BuildGraphMetricsUpdate) SetChangedValues(e *EvaluationStat) *BuildGraphMetricsUpdate {
+	return bgmu.SetChangedValuesID(e.ID)
+}
+
+// SetBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID.
+func (bgmu *BuildGraphMetricsUpdate) SetBuiltValuesID(id int) *BuildGraphMetricsUpdate {
+	bgmu.mutation.SetBuiltValuesID(id)
+	return bgmu
+}
+
+// SetNillableBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID if the given value is not nil.
+func (bgmu *BuildGraphMetricsUpdate) SetNillableBuiltValuesID(id *int) *BuildGraphMetricsUpdate {
+	if id != nil {
+		bgmu = bgmu.SetBuiltValuesID(*id)
 	}
-	return bgmu.AddEvaluatedValueIDs(ids...)
+	return bgmu
+}
+
+// SetBuiltValues sets the "built_values" edge to the EvaluationStat entity.
+func (bgmu *BuildGraphMetricsUpdate) SetBuiltValues(e *EvaluationStat) *BuildGraphMetricsUpdate {
+	return bgmu.SetBuiltValuesID(e.ID)
+}
+
+// SetCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID.
+func (bgmu *BuildGraphMetricsUpdate) SetCleanedValuesID(id int) *BuildGraphMetricsUpdate {
+	bgmu.mutation.SetCleanedValuesID(id)
+	return bgmu
+}
+
+// SetNillableCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID if the given value is not nil.
+func (bgmu *BuildGraphMetricsUpdate) SetNillableCleanedValuesID(id *int) *BuildGraphMetricsUpdate {
+	if id != nil {
+		bgmu = bgmu.SetCleanedValuesID(*id)
+	}
+	return bgmu
+}
+
+// SetCleanedValues sets the "cleaned_values" edge to the EvaluationStat entity.
+func (bgmu *BuildGraphMetricsUpdate) SetCleanedValues(e *EvaluationStat) *BuildGraphMetricsUpdate {
+	return bgmu.SetCleanedValuesID(e.ID)
+}
+
+// SetEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID.
+func (bgmu *BuildGraphMetricsUpdate) SetEvaluatedValuesID(id int) *BuildGraphMetricsUpdate {
+	bgmu.mutation.SetEvaluatedValuesID(id)
+	return bgmu
+}
+
+// SetNillableEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID if the given value is not nil.
+func (bgmu *BuildGraphMetricsUpdate) SetNillableEvaluatedValuesID(id *int) *BuildGraphMetricsUpdate {
+	if id != nil {
+		bgmu = bgmu.SetEvaluatedValuesID(*id)
+	}
+	return bgmu
+}
+
+// SetEvaluatedValues sets the "evaluated_values" edge to the EvaluationStat entity.
+func (bgmu *BuildGraphMetricsUpdate) SetEvaluatedValues(e *EvaluationStat) *BuildGraphMetricsUpdate {
+	return bgmu.SetEvaluatedValuesID(e.ID)
 }
 
 // Mutation returns the BuildGraphMetricsMutation object of the builder.
@@ -367,130 +391,40 @@ func (bgmu *BuildGraphMetricsUpdate) Mutation() *BuildGraphMetricsMutation {
 	return bgmu.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (bgmu *BuildGraphMetricsUpdate) ClearMetrics() *BuildGraphMetricsUpdate {
 	bgmu.mutation.ClearMetrics()
 	return bgmu
 }
 
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (bgmu *BuildGraphMetricsUpdate) RemoveMetricIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.RemoveMetricIDs(ids...)
-	return bgmu
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (bgmu *BuildGraphMetricsUpdate) RemoveMetrics(m ...*Metrics) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return bgmu.RemoveMetricIDs(ids...)
-}
-
-// ClearDirtiedValues clears all "dirtied_values" edges to the EvaluationStat entity.
+// ClearDirtiedValues clears the "dirtied_values" edge to the EvaluationStat entity.
 func (bgmu *BuildGraphMetricsUpdate) ClearDirtiedValues() *BuildGraphMetricsUpdate {
 	bgmu.mutation.ClearDirtiedValues()
 	return bgmu
 }
 
-// RemoveDirtiedValueIDs removes the "dirtied_values" edge to EvaluationStat entities by IDs.
-func (bgmu *BuildGraphMetricsUpdate) RemoveDirtiedValueIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.RemoveDirtiedValueIDs(ids...)
-	return bgmu
-}
-
-// RemoveDirtiedValues removes "dirtied_values" edges to EvaluationStat entities.
-func (bgmu *BuildGraphMetricsUpdate) RemoveDirtiedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmu.RemoveDirtiedValueIDs(ids...)
-}
-
-// ClearChangedValues clears all "changed_values" edges to the EvaluationStat entity.
+// ClearChangedValues clears the "changed_values" edge to the EvaluationStat entity.
 func (bgmu *BuildGraphMetricsUpdate) ClearChangedValues() *BuildGraphMetricsUpdate {
 	bgmu.mutation.ClearChangedValues()
 	return bgmu
 }
 
-// RemoveChangedValueIDs removes the "changed_values" edge to EvaluationStat entities by IDs.
-func (bgmu *BuildGraphMetricsUpdate) RemoveChangedValueIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.RemoveChangedValueIDs(ids...)
-	return bgmu
-}
-
-// RemoveChangedValues removes "changed_values" edges to EvaluationStat entities.
-func (bgmu *BuildGraphMetricsUpdate) RemoveChangedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmu.RemoveChangedValueIDs(ids...)
-}
-
-// ClearBuiltValues clears all "built_values" edges to the EvaluationStat entity.
+// ClearBuiltValues clears the "built_values" edge to the EvaluationStat entity.
 func (bgmu *BuildGraphMetricsUpdate) ClearBuiltValues() *BuildGraphMetricsUpdate {
 	bgmu.mutation.ClearBuiltValues()
 	return bgmu
 }
 
-// RemoveBuiltValueIDs removes the "built_values" edge to EvaluationStat entities by IDs.
-func (bgmu *BuildGraphMetricsUpdate) RemoveBuiltValueIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.RemoveBuiltValueIDs(ids...)
-	return bgmu
-}
-
-// RemoveBuiltValues removes "built_values" edges to EvaluationStat entities.
-func (bgmu *BuildGraphMetricsUpdate) RemoveBuiltValues(e ...*EvaluationStat) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmu.RemoveBuiltValueIDs(ids...)
-}
-
-// ClearCleanedValues clears all "cleaned_values" edges to the EvaluationStat entity.
+// ClearCleanedValues clears the "cleaned_values" edge to the EvaluationStat entity.
 func (bgmu *BuildGraphMetricsUpdate) ClearCleanedValues() *BuildGraphMetricsUpdate {
 	bgmu.mutation.ClearCleanedValues()
 	return bgmu
 }
 
-// RemoveCleanedValueIDs removes the "cleaned_values" edge to EvaluationStat entities by IDs.
-func (bgmu *BuildGraphMetricsUpdate) RemoveCleanedValueIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.RemoveCleanedValueIDs(ids...)
-	return bgmu
-}
-
-// RemoveCleanedValues removes "cleaned_values" edges to EvaluationStat entities.
-func (bgmu *BuildGraphMetricsUpdate) RemoveCleanedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmu.RemoveCleanedValueIDs(ids...)
-}
-
-// ClearEvaluatedValues clears all "evaluated_values" edges to the EvaluationStat entity.
+// ClearEvaluatedValues clears the "evaluated_values" edge to the EvaluationStat entity.
 func (bgmu *BuildGraphMetricsUpdate) ClearEvaluatedValues() *BuildGraphMetricsUpdate {
 	bgmu.mutation.ClearEvaluatedValues()
 	return bgmu
-}
-
-// RemoveEvaluatedValueIDs removes the "evaluated_values" edge to EvaluationStat entities by IDs.
-func (bgmu *BuildGraphMetricsUpdate) RemoveEvaluatedValueIDs(ids ...int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.RemoveEvaluatedValueIDs(ids...)
-	return bgmu
-}
-
-// RemoveEvaluatedValues removes "evaluated_values" edges to EvaluationStat entities.
-func (bgmu *BuildGraphMetricsUpdate) RemoveEvaluatedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmu.RemoveEvaluatedValueIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -612,39 +546,23 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if bgmu.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   buildgraphmetrics.MetricsTable,
-			Columns: buildgraphmetrics.MetricsPrimaryKey,
+			Columns: []string{buildgraphmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmu.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !bgmu.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   buildgraphmetrics.MetricsTable,
-			Columns: buildgraphmetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmu.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   buildgraphmetrics.MetricsTable,
-			Columns: buildgraphmetrics.MetricsPrimaryKey,
+			Columns: []string{buildgraphmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -657,7 +575,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if bgmu.mutation.DirtiedValuesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.DirtiedValuesTable,
 			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
@@ -665,28 +583,12 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmu.mutation.RemovedDirtiedValuesIDs(); len(nodes) > 0 && !bgmu.mutation.DirtiedValuesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   buildgraphmetrics.DirtiedValuesTable,
-			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmu.mutation.DirtiedValuesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.DirtiedValuesTable,
 			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
@@ -702,7 +604,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if bgmu.mutation.ChangedValuesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.ChangedValuesTable,
 			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
@@ -710,28 +612,12 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmu.mutation.RemovedChangedValuesIDs(); len(nodes) > 0 && !bgmu.mutation.ChangedValuesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   buildgraphmetrics.ChangedValuesTable,
-			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmu.mutation.ChangedValuesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.ChangedValuesTable,
 			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
@@ -747,7 +633,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if bgmu.mutation.BuiltValuesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.BuiltValuesTable,
 			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
@@ -755,28 +641,12 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmu.mutation.RemovedBuiltValuesIDs(); len(nodes) > 0 && !bgmu.mutation.BuiltValuesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   buildgraphmetrics.BuiltValuesTable,
-			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmu.mutation.BuiltValuesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.BuiltValuesTable,
 			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
@@ -792,7 +662,7 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if bgmu.mutation.CleanedValuesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.CleanedValuesTable,
 			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
@@ -800,28 +670,12 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmu.mutation.RemovedCleanedValuesIDs(); len(nodes) > 0 && !bgmu.mutation.CleanedValuesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   buildgraphmetrics.CleanedValuesTable,
-			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmu.mutation.CleanedValuesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.CleanedValuesTable,
 			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
@@ -837,39 +691,23 @@ func (bgmu *BuildGraphMetricsUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if bgmu.mutation.EvaluatedValuesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.EvaluatedValuesTable,
-			Columns: buildgraphmetrics.EvaluatedValuesPrimaryKey,
+			Columns: []string{buildgraphmetrics.EvaluatedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmu.mutation.RemovedEvaluatedValuesIDs(); len(nodes) > 0 && !bgmu.mutation.EvaluatedValuesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   buildgraphmetrics.EvaluatedValuesTable,
-			Columns: buildgraphmetrics.EvaluatedValuesPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmu.mutation.EvaluatedValuesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.EvaluatedValuesTable,
-			Columns: buildgraphmetrics.EvaluatedValuesPrimaryKey,
+			Columns: []string{buildgraphmetrics.EvaluatedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
@@ -1143,94 +981,118 @@ func (bgmuo *BuildGraphMetricsUpdateOne) ClearPostInvocationSkyframeNodeCount() 
 	return bgmuo
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddMetricIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetMetricsID(id int) *BuildGraphMetricsUpdateOne {
+	bgmuo.mutation.SetMetricsID(id)
 	return bgmuo
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddMetrics(m ...*Metrics) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableMetricsID(id *int) *BuildGraphMetricsUpdateOne {
+	if id != nil {
+		bgmuo = bgmuo.SetMetricsID(*id)
 	}
-	return bgmuo.AddMetricIDs(ids...)
-}
-
-// AddDirtiedValueIDs adds the "dirtied_values" edge to the EvaluationStat entity by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddDirtiedValueIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.AddDirtiedValueIDs(ids...)
 	return bgmuo
 }
 
-// AddDirtiedValues adds the "dirtied_values" edges to the EvaluationStat entity.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddDirtiedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmuo.AddDirtiedValueIDs(ids...)
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetMetrics(m *Metrics) *BuildGraphMetricsUpdateOne {
+	return bgmuo.SetMetricsID(m.ID)
 }
 
-// AddChangedValueIDs adds the "changed_values" edge to the EvaluationStat entity by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddChangedValueIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.AddChangedValueIDs(ids...)
+// SetDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetDirtiedValuesID(id int) *BuildGraphMetricsUpdateOne {
+	bgmuo.mutation.SetDirtiedValuesID(id)
 	return bgmuo
 }
 
-// AddChangedValues adds the "changed_values" edges to the EvaluationStat entity.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddChangedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by ID if the given value is not nil.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableDirtiedValuesID(id *int) *BuildGraphMetricsUpdateOne {
+	if id != nil {
+		bgmuo = bgmuo.SetDirtiedValuesID(*id)
 	}
-	return bgmuo.AddChangedValueIDs(ids...)
-}
-
-// AddBuiltValueIDs adds the "built_values" edge to the EvaluationStat entity by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddBuiltValueIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.AddBuiltValueIDs(ids...)
 	return bgmuo
 }
 
-// AddBuiltValues adds the "built_values" edges to the EvaluationStat entity.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddBuiltValues(e ...*EvaluationStat) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmuo.AddBuiltValueIDs(ids...)
+// SetDirtiedValues sets the "dirtied_values" edge to the EvaluationStat entity.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetDirtiedValues(e *EvaluationStat) *BuildGraphMetricsUpdateOne {
+	return bgmuo.SetDirtiedValuesID(e.ID)
 }
 
-// AddCleanedValueIDs adds the "cleaned_values" edge to the EvaluationStat entity by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddCleanedValueIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.AddCleanedValueIDs(ids...)
+// SetChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetChangedValuesID(id int) *BuildGraphMetricsUpdateOne {
+	bgmuo.mutation.SetChangedValuesID(id)
 	return bgmuo
 }
 
-// AddCleanedValues adds the "cleaned_values" edges to the EvaluationStat entity.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddCleanedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by ID if the given value is not nil.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableChangedValuesID(id *int) *BuildGraphMetricsUpdateOne {
+	if id != nil {
+		bgmuo = bgmuo.SetChangedValuesID(*id)
 	}
-	return bgmuo.AddCleanedValueIDs(ids...)
-}
-
-// AddEvaluatedValueIDs adds the "evaluated_values" edge to the EvaluationStat entity by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddEvaluatedValueIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.AddEvaluatedValueIDs(ids...)
 	return bgmuo
 }
 
-// AddEvaluatedValues adds the "evaluated_values" edges to the EvaluationStat entity.
-func (bgmuo *BuildGraphMetricsUpdateOne) AddEvaluatedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetChangedValues sets the "changed_values" edge to the EvaluationStat entity.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetChangedValues(e *EvaluationStat) *BuildGraphMetricsUpdateOne {
+	return bgmuo.SetChangedValuesID(e.ID)
+}
+
+// SetBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetBuiltValuesID(id int) *BuildGraphMetricsUpdateOne {
+	bgmuo.mutation.SetBuiltValuesID(id)
+	return bgmuo
+}
+
+// SetNillableBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by ID if the given value is not nil.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableBuiltValuesID(id *int) *BuildGraphMetricsUpdateOne {
+	if id != nil {
+		bgmuo = bgmuo.SetBuiltValuesID(*id)
 	}
-	return bgmuo.AddEvaluatedValueIDs(ids...)
+	return bgmuo
+}
+
+// SetBuiltValues sets the "built_values" edge to the EvaluationStat entity.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetBuiltValues(e *EvaluationStat) *BuildGraphMetricsUpdateOne {
+	return bgmuo.SetBuiltValuesID(e.ID)
+}
+
+// SetCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetCleanedValuesID(id int) *BuildGraphMetricsUpdateOne {
+	bgmuo.mutation.SetCleanedValuesID(id)
+	return bgmuo
+}
+
+// SetNillableCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by ID if the given value is not nil.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableCleanedValuesID(id *int) *BuildGraphMetricsUpdateOne {
+	if id != nil {
+		bgmuo = bgmuo.SetCleanedValuesID(*id)
+	}
+	return bgmuo
+}
+
+// SetCleanedValues sets the "cleaned_values" edge to the EvaluationStat entity.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetCleanedValues(e *EvaluationStat) *BuildGraphMetricsUpdateOne {
+	return bgmuo.SetCleanedValuesID(e.ID)
+}
+
+// SetEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetEvaluatedValuesID(id int) *BuildGraphMetricsUpdateOne {
+	bgmuo.mutation.SetEvaluatedValuesID(id)
+	return bgmuo
+}
+
+// SetNillableEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by ID if the given value is not nil.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableEvaluatedValuesID(id *int) *BuildGraphMetricsUpdateOne {
+	if id != nil {
+		bgmuo = bgmuo.SetEvaluatedValuesID(*id)
+	}
+	return bgmuo
+}
+
+// SetEvaluatedValues sets the "evaluated_values" edge to the EvaluationStat entity.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetEvaluatedValues(e *EvaluationStat) *BuildGraphMetricsUpdateOne {
+	return bgmuo.SetEvaluatedValuesID(e.ID)
 }
 
 // Mutation returns the BuildGraphMetricsMutation object of the builder.
@@ -1238,130 +1100,40 @@ func (bgmuo *BuildGraphMetricsUpdateOne) Mutation() *BuildGraphMetricsMutation {
 	return bgmuo.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (bgmuo *BuildGraphMetricsUpdateOne) ClearMetrics() *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.ClearMetrics()
 	return bgmuo
 }
 
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveMetricIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.RemoveMetricIDs(ids...)
-	return bgmuo
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveMetrics(m ...*Metrics) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return bgmuo.RemoveMetricIDs(ids...)
-}
-
-// ClearDirtiedValues clears all "dirtied_values" edges to the EvaluationStat entity.
+// ClearDirtiedValues clears the "dirtied_values" edge to the EvaluationStat entity.
 func (bgmuo *BuildGraphMetricsUpdateOne) ClearDirtiedValues() *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.ClearDirtiedValues()
 	return bgmuo
 }
 
-// RemoveDirtiedValueIDs removes the "dirtied_values" edge to EvaluationStat entities by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveDirtiedValueIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.RemoveDirtiedValueIDs(ids...)
-	return bgmuo
-}
-
-// RemoveDirtiedValues removes "dirtied_values" edges to EvaluationStat entities.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveDirtiedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmuo.RemoveDirtiedValueIDs(ids...)
-}
-
-// ClearChangedValues clears all "changed_values" edges to the EvaluationStat entity.
+// ClearChangedValues clears the "changed_values" edge to the EvaluationStat entity.
 func (bgmuo *BuildGraphMetricsUpdateOne) ClearChangedValues() *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.ClearChangedValues()
 	return bgmuo
 }
 
-// RemoveChangedValueIDs removes the "changed_values" edge to EvaluationStat entities by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveChangedValueIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.RemoveChangedValueIDs(ids...)
-	return bgmuo
-}
-
-// RemoveChangedValues removes "changed_values" edges to EvaluationStat entities.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveChangedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmuo.RemoveChangedValueIDs(ids...)
-}
-
-// ClearBuiltValues clears all "built_values" edges to the EvaluationStat entity.
+// ClearBuiltValues clears the "built_values" edge to the EvaluationStat entity.
 func (bgmuo *BuildGraphMetricsUpdateOne) ClearBuiltValues() *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.ClearBuiltValues()
 	return bgmuo
 }
 
-// RemoveBuiltValueIDs removes the "built_values" edge to EvaluationStat entities by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveBuiltValueIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.RemoveBuiltValueIDs(ids...)
-	return bgmuo
-}
-
-// RemoveBuiltValues removes "built_values" edges to EvaluationStat entities.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveBuiltValues(e ...*EvaluationStat) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmuo.RemoveBuiltValueIDs(ids...)
-}
-
-// ClearCleanedValues clears all "cleaned_values" edges to the EvaluationStat entity.
+// ClearCleanedValues clears the "cleaned_values" edge to the EvaluationStat entity.
 func (bgmuo *BuildGraphMetricsUpdateOne) ClearCleanedValues() *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.ClearCleanedValues()
 	return bgmuo
 }
 
-// RemoveCleanedValueIDs removes the "cleaned_values" edge to EvaluationStat entities by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveCleanedValueIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.RemoveCleanedValueIDs(ids...)
-	return bgmuo
-}
-
-// RemoveCleanedValues removes "cleaned_values" edges to EvaluationStat entities.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveCleanedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmuo.RemoveCleanedValueIDs(ids...)
-}
-
-// ClearEvaluatedValues clears all "evaluated_values" edges to the EvaluationStat entity.
+// ClearEvaluatedValues clears the "evaluated_values" edge to the EvaluationStat entity.
 func (bgmuo *BuildGraphMetricsUpdateOne) ClearEvaluatedValues() *BuildGraphMetricsUpdateOne {
 	bgmuo.mutation.ClearEvaluatedValues()
 	return bgmuo
-}
-
-// RemoveEvaluatedValueIDs removes the "evaluated_values" edge to EvaluationStat entities by IDs.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveEvaluatedValueIDs(ids ...int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.RemoveEvaluatedValueIDs(ids...)
-	return bgmuo
-}
-
-// RemoveEvaluatedValues removes "evaluated_values" edges to EvaluationStat entities.
-func (bgmuo *BuildGraphMetricsUpdateOne) RemoveEvaluatedValues(e ...*EvaluationStat) *BuildGraphMetricsUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return bgmuo.RemoveEvaluatedValueIDs(ids...)
 }
 
 // Where appends a list predicates to the BuildGraphMetricsUpdate builder.
@@ -1513,39 +1285,23 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 	}
 	if bgmuo.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   buildgraphmetrics.MetricsTable,
-			Columns: buildgraphmetrics.MetricsPrimaryKey,
+			Columns: []string{buildgraphmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmuo.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !bgmuo.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   buildgraphmetrics.MetricsTable,
-			Columns: buildgraphmetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmuo.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   buildgraphmetrics.MetricsTable,
-			Columns: buildgraphmetrics.MetricsPrimaryKey,
+			Columns: []string{buildgraphmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -1558,7 +1314,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 	}
 	if bgmuo.mutation.DirtiedValuesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.DirtiedValuesTable,
 			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
@@ -1566,28 +1322,12 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmuo.mutation.RemovedDirtiedValuesIDs(); len(nodes) > 0 && !bgmuo.mutation.DirtiedValuesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   buildgraphmetrics.DirtiedValuesTable,
-			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmuo.mutation.DirtiedValuesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.DirtiedValuesTable,
 			Columns: []string{buildgraphmetrics.DirtiedValuesColumn},
@@ -1603,7 +1343,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 	}
 	if bgmuo.mutation.ChangedValuesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.ChangedValuesTable,
 			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
@@ -1611,28 +1351,12 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmuo.mutation.RemovedChangedValuesIDs(); len(nodes) > 0 && !bgmuo.mutation.ChangedValuesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   buildgraphmetrics.ChangedValuesTable,
-			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmuo.mutation.ChangedValuesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.ChangedValuesTable,
 			Columns: []string{buildgraphmetrics.ChangedValuesColumn},
@@ -1648,7 +1372,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 	}
 	if bgmuo.mutation.BuiltValuesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.BuiltValuesTable,
 			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
@@ -1656,28 +1380,12 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmuo.mutation.RemovedBuiltValuesIDs(); len(nodes) > 0 && !bgmuo.mutation.BuiltValuesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   buildgraphmetrics.BuiltValuesTable,
-			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmuo.mutation.BuiltValuesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.BuiltValuesTable,
 			Columns: []string{buildgraphmetrics.BuiltValuesColumn},
@@ -1693,7 +1401,7 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 	}
 	if bgmuo.mutation.CleanedValuesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.CleanedValuesTable,
 			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
@@ -1701,28 +1409,12 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmuo.mutation.RemovedCleanedValuesIDs(); len(nodes) > 0 && !bgmuo.mutation.CleanedValuesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   buildgraphmetrics.CleanedValuesTable,
-			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmuo.mutation.CleanedValuesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.CleanedValuesTable,
 			Columns: []string{buildgraphmetrics.CleanedValuesColumn},
@@ -1738,39 +1430,23 @@ func (bgmuo *BuildGraphMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Bu
 	}
 	if bgmuo.mutation.EvaluatedValuesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.EvaluatedValuesTable,
-			Columns: buildgraphmetrics.EvaluatedValuesPrimaryKey,
+			Columns: []string{buildgraphmetrics.EvaluatedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := bgmuo.mutation.RemovedEvaluatedValuesIDs(); len(nodes) > 0 && !bgmuo.mutation.EvaluatedValuesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   buildgraphmetrics.EvaluatedValuesTable,
-			Columns: buildgraphmetrics.EvaluatedValuesPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := bgmuo.mutation.EvaluatedValuesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   buildgraphmetrics.EvaluatedValuesTable,
-			Columns: buildgraphmetrics.EvaluatedValuesPrimaryKey,
+			Columns: []string{buildgraphmetrics.EvaluatedValuesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt),

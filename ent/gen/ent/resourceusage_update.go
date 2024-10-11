@@ -68,19 +68,23 @@ func (ruu *ResourceUsageUpdate) ClearValue() *ResourceUsageUpdate {
 	return ruu
 }
 
-// AddExecutionInfoIDs adds the "execution_info" edge to the ExectionInfo entity by IDs.
-func (ruu *ResourceUsageUpdate) AddExecutionInfoIDs(ids ...int) *ResourceUsageUpdate {
-	ruu.mutation.AddExecutionInfoIDs(ids...)
+// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
+func (ruu *ResourceUsageUpdate) SetExecutionInfoID(id int) *ResourceUsageUpdate {
+	ruu.mutation.SetExecutionInfoID(id)
 	return ruu
 }
 
-// AddExecutionInfo adds the "execution_info" edges to the ExectionInfo entity.
-func (ruu *ResourceUsageUpdate) AddExecutionInfo(e ...*ExectionInfo) *ResourceUsageUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
+func (ruu *ResourceUsageUpdate) SetNillableExecutionInfoID(id *int) *ResourceUsageUpdate {
+	if id != nil {
+		ruu = ruu.SetExecutionInfoID(*id)
 	}
-	return ruu.AddExecutionInfoIDs(ids...)
+	return ruu
+}
+
+// SetExecutionInfo sets the "execution_info" edge to the ExectionInfo entity.
+func (ruu *ResourceUsageUpdate) SetExecutionInfo(e *ExectionInfo) *ResourceUsageUpdate {
+	return ruu.SetExecutionInfoID(e.ID)
 }
 
 // Mutation returns the ResourceUsageMutation object of the builder.
@@ -88,25 +92,10 @@ func (ruu *ResourceUsageUpdate) Mutation() *ResourceUsageMutation {
 	return ruu.mutation
 }
 
-// ClearExecutionInfo clears all "execution_info" edges to the ExectionInfo entity.
+// ClearExecutionInfo clears the "execution_info" edge to the ExectionInfo entity.
 func (ruu *ResourceUsageUpdate) ClearExecutionInfo() *ResourceUsageUpdate {
 	ruu.mutation.ClearExecutionInfo()
 	return ruu
-}
-
-// RemoveExecutionInfoIDs removes the "execution_info" edge to ExectionInfo entities by IDs.
-func (ruu *ResourceUsageUpdate) RemoveExecutionInfoIDs(ids ...int) *ResourceUsageUpdate {
-	ruu.mutation.RemoveExecutionInfoIDs(ids...)
-	return ruu
-}
-
-// RemoveExecutionInfo removes "execution_info" edges to ExectionInfo entities.
-func (ruu *ResourceUsageUpdate) RemoveExecutionInfo(e ...*ExectionInfo) *ResourceUsageUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return ruu.RemoveExecutionInfoIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -159,39 +148,23 @@ func (ruu *ResourceUsageUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if ruu.mutation.ExecutionInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   resourceusage.ExecutionInfoTable,
-			Columns: resourceusage.ExecutionInfoPrimaryKey,
+			Columns: []string{resourceusage.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ruu.mutation.RemovedExecutionInfoIDs(); len(nodes) > 0 && !ruu.mutation.ExecutionInfoCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   resourceusage.ExecutionInfoTable,
-			Columns: resourceusage.ExecutionInfoPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := ruu.mutation.ExecutionInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   resourceusage.ExecutionInfoTable,
-			Columns: resourceusage.ExecutionInfoPrimaryKey,
+			Columns: []string{resourceusage.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
@@ -262,19 +235,23 @@ func (ruuo *ResourceUsageUpdateOne) ClearValue() *ResourceUsageUpdateOne {
 	return ruuo
 }
 
-// AddExecutionInfoIDs adds the "execution_info" edge to the ExectionInfo entity by IDs.
-func (ruuo *ResourceUsageUpdateOne) AddExecutionInfoIDs(ids ...int) *ResourceUsageUpdateOne {
-	ruuo.mutation.AddExecutionInfoIDs(ids...)
+// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
+func (ruuo *ResourceUsageUpdateOne) SetExecutionInfoID(id int) *ResourceUsageUpdateOne {
+	ruuo.mutation.SetExecutionInfoID(id)
 	return ruuo
 }
 
-// AddExecutionInfo adds the "execution_info" edges to the ExectionInfo entity.
-func (ruuo *ResourceUsageUpdateOne) AddExecutionInfo(e ...*ExectionInfo) *ResourceUsageUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
+func (ruuo *ResourceUsageUpdateOne) SetNillableExecutionInfoID(id *int) *ResourceUsageUpdateOne {
+	if id != nil {
+		ruuo = ruuo.SetExecutionInfoID(*id)
 	}
-	return ruuo.AddExecutionInfoIDs(ids...)
+	return ruuo
+}
+
+// SetExecutionInfo sets the "execution_info" edge to the ExectionInfo entity.
+func (ruuo *ResourceUsageUpdateOne) SetExecutionInfo(e *ExectionInfo) *ResourceUsageUpdateOne {
+	return ruuo.SetExecutionInfoID(e.ID)
 }
 
 // Mutation returns the ResourceUsageMutation object of the builder.
@@ -282,25 +259,10 @@ func (ruuo *ResourceUsageUpdateOne) Mutation() *ResourceUsageMutation {
 	return ruuo.mutation
 }
 
-// ClearExecutionInfo clears all "execution_info" edges to the ExectionInfo entity.
+// ClearExecutionInfo clears the "execution_info" edge to the ExectionInfo entity.
 func (ruuo *ResourceUsageUpdateOne) ClearExecutionInfo() *ResourceUsageUpdateOne {
 	ruuo.mutation.ClearExecutionInfo()
 	return ruuo
-}
-
-// RemoveExecutionInfoIDs removes the "execution_info" edge to ExectionInfo entities by IDs.
-func (ruuo *ResourceUsageUpdateOne) RemoveExecutionInfoIDs(ids ...int) *ResourceUsageUpdateOne {
-	ruuo.mutation.RemoveExecutionInfoIDs(ids...)
-	return ruuo
-}
-
-// RemoveExecutionInfo removes "execution_info" edges to ExectionInfo entities.
-func (ruuo *ResourceUsageUpdateOne) RemoveExecutionInfo(e ...*ExectionInfo) *ResourceUsageUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return ruuo.RemoveExecutionInfoIDs(ids...)
 }
 
 // Where appends a list predicates to the ResourceUsageUpdate builder.
@@ -383,39 +345,23 @@ func (ruuo *ResourceUsageUpdateOne) sqlSave(ctx context.Context) (_node *Resourc
 	}
 	if ruuo.mutation.ExecutionInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   resourceusage.ExecutionInfoTable,
-			Columns: resourceusage.ExecutionInfoPrimaryKey,
+			Columns: []string{resourceusage.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ruuo.mutation.RemovedExecutionInfoIDs(); len(nodes) > 0 && !ruuo.mutation.ExecutionInfoCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   resourceusage.ExecutionInfoTable,
-			Columns: resourceusage.ExecutionInfoPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := ruuo.mutation.ExecutionInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   resourceusage.ExecutionInfoTable,
-			Columns: resourceusage.ExecutionInfoPrimaryKey,
+			Columns: []string{resourceusage.ExecutionInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),

@@ -17,6 +17,8 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
 	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
@@ -208,6 +210,192 @@ func (r *queryResolver) GetBuild(ctx context.Context, buildURL *string, buildUUI
 		buildUUID = &calculatedBuildUUID
 	}
 	return r.client.Build.Query().Where(build.BuildUUID(*buildUUID)).First(ctx)
+}
+
+// GetUniqueTestLabels is the resolver for the getUniqueTestLabels field.
+func (r *queryResolver) GetUniqueTestLabels(ctx context.Context, param *string) ([]*string, error) {
+	if param == nil {
+		res, err := r.client.TestCollection.Query().
+			GroupBy(testcollection.FieldLabel).
+			Strings(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return helpers.StringSliceArrayToPointerArray(res), nil
+	}
+	res, err := r.client.TestCollection.Query().
+		Where(testcollection.LabelContains(*param)).
+		GroupBy(testcollection.FieldLabel).
+		Strings(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return helpers.StringSliceArrayToPointerArray(res), nil
+}
+
+// GetUniqueTargetLabels is the resolver for the getUniqueTargetLabels field.
+func (r *queryResolver) GetUniqueTargetLabels(ctx context.Context, param *string) ([]*string, error) {
+	if param == nil {
+		res, err := r.client.TargetPair.Query().
+			GroupBy(targetpair.FieldLabel).
+			Strings(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return helpers.StringSliceArrayToPointerArray(res), nil
+	}
+	res, err := r.client.TargetPair.Query().
+		Where(targetpair.LabelContains(*param)).
+		GroupBy(targetpair.FieldLabel).
+		Strings(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return helpers.StringSliceArrayToPointerArray(res), nil
+}
+
+// GetTestDurationAggregation is the resolver for the getTestDurationAggregation field.
+func (r *queryResolver) GetTestDurationAggregation(ctx context.Context, label *string) ([]*model.TargetAggregate, error) {
+	var result []*model.TargetAggregate
+	err := r.client.TestCollection.Query().
+		Where(testcollection.LabelContains(*label)).
+		GroupBy(testcollection.FieldLabel).
+		Aggregate(ent.Count(),
+			ent.Sum(testcollection.FieldDurationMs),
+			ent.Min(testcollection.FieldDurationMs),
+			ent.Max(testcollection.FieldDurationMs)).
+		Scan(ctx, &result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// GetTestPassAggregation is the resolver for the getTestPassAggregation field.
+func (r *queryResolver) GetTestPassAggregation(ctx context.Context, label *string) ([]*model.TargetAggregate, error) {
+	var result []*model.TargetAggregate
+	err := r.client.TestCollection.Query().
+		Where(testcollection.And(
+			testcollection.LabelContains(*label),
+			testcollection.OverallStatusEQ(testcollection.OverallStatusPASSED),
+		)).
+		GroupBy(testcollection.FieldLabel).
+		Aggregate(ent.Count()).
+		Scan(ctx, &result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// GetTargetDurationAggregation is the resolver for the getTargetDurationAggregation field.
+func (r *queryResolver) GetTargetDurationAggregation(ctx context.Context, label *string) ([]*model.TargetAggregate, error) {
+	panic(fmt.Errorf("not implemented: GetTargetDurationAggregation - getTargetDurationAggregation"))
+}
+
+// GetTargetPassAggregation is the resolver for the getTargetPassAggregation field.
+func (r *queryResolver) GetTargetPassAggregation(ctx context.Context, label *string) ([]*model.TargetAggregate, error) {
+	panic(fmt.Errorf("not implemented: GetTargetPassAggregation - getTargetPassAggregation"))
+}
+
+// GetTestsWithOffset is the resolver for the getTestsWithOffset field.
+func (r *queryResolver) GetTestsWithOffset(ctx context.Context, label *string, offset, limit *int, sortBy, direction *string) (*model.TestGridResult, error) {
+	maxLimit := 10000
+	take := 10
+	skip := 0
+	if limit != nil {
+		if *limit > maxLimit {
+			return nil, fmt.Errorf("limit cannot exceed %d", maxLimit)
+		}
+		take = *limit
+	}
+	if offset != nil {
+		skip = *offset
+	}
+	orderBy := "first_seen"
+	if sortBy != nil {
+		orderBy = *sortBy
+	}
+
+	var result []*model.TestGridRow
+	query := r.client.TestCollection.Query()
+
+	switch orderBy {
+	case "first_seen":
+		query = query.Order(testcollection.ByFirstSeen())
+	}
+
+	if label != nil && *label != "" {
+		query = query.Where(testcollection.LabelContains(*label))
+	}
+
+	err := query.
+		Limit(take).
+		Offset(skip).
+		GroupBy(testcollection.FieldLabel).
+		Aggregate(ent.Count(),
+			ent.As(ent.Mean(testcollection.FieldDurationMs), "avg"),
+			ent.Sum(testcollection.FieldDurationMs),
+			ent.Min(testcollection.FieldDurationMs),
+			ent.Max(testcollection.FieldDurationMs)).
+		Scan(ctx, &result)
+	if err != nil {
+		return nil, err
+	}
+	for _, item := range result {
+		lbl := *item.Label
+		cnt := *item.Count
+		passes, err := r.client.TestCollection.Query().
+			Where(testcollection.
+				And(testcollection.LabelEQ(lbl),
+					testcollection.OverallStatusEQ(testcollection.OverallStatusPASSED))).
+			Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		passRate := float64(passes / cnt)
+		item.PassRate = &passRate
+	}
+	l := r.client.TestCollection.Query()
+	if label != nil && *label != "" {
+		l = l.Where(testcollection.LabelContains(*label))
+	}
+	labels, err := l.GroupBy(testcollection.FieldLabel).Strings(ctx)
+	if err != nil {
+		return nil, err
+	}
+	totalCount := len(labels)
+	response := &model.TestGridResult{
+		Result: result,
+		Total:  &totalCount,
+	}
+	return response, nil
+}
+
+// GetAveragePassPercentageForLabel is the resolver for the getAveragePassPercentageForLabel field.
+func (r *queryResolver) GetAveragePassPercentageForLabel(ctx context.Context, label string) (*float64, error) {
+	// TODO: maybe there is a more elegant/faster way to do this with aggregaate
+	passCount, err := r.client.TestCollection.Query().
+		Where(testcollection.And(
+			testcollection.LabelEQ(label),
+			testcollection.OverallStatusEQ(testcollection.OverallStatusPASSED),
+		)).Count(ctx)
+	if err != nil {
+		return nil, err
+	}
+	totalCount, err := r.client.TestCollection.Query().
+		Where(testcollection.LabelEQ(label)).
+		Count(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if totalCount == 0 {
+		result := 0.0
+		return helpers.GetFloatPointer(&result), nil
+	}
+	result := float64(passCount/totalCount) * 100.0
+	return helpers.GetFloatPointer(&result), nil
 }
 
 // ActionLogOutput is the resolver for the actionLogOutput field.

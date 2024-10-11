@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 )
 
@@ -28,28 +29,29 @@ type RaceStatistics struct {
 	RenoteWins int64 `json:"renote_wins,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RaceStatisticsQuery when eager-loading is set.
-	Edges        RaceStatisticsEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                                     RaceStatisticsEdges `json:"edges"`
+	dynamic_execution_metrics_race_statistics *int
+	selectValues                              sql.SelectValues
 }
 
 // RaceStatisticsEdges holds the relations/edges for other nodes in the graph.
 type RaceStatisticsEdges struct {
 	// DynamicExecutionMetrics holds the value of the dynamic_execution_metrics edge.
-	DynamicExecutionMetrics []*DynamicExecutionMetrics `json:"dynamic_execution_metrics,omitempty"`
+	DynamicExecutionMetrics *DynamicExecutionMetrics `json:"dynamic_execution_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedDynamicExecutionMetrics map[string][]*DynamicExecutionMetrics
 }
 
 // DynamicExecutionMetricsOrErr returns the DynamicExecutionMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e RaceStatisticsEdges) DynamicExecutionMetricsOrErr() ([]*DynamicExecutionMetrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e RaceStatisticsEdges) DynamicExecutionMetricsOrErr() (*DynamicExecutionMetrics, error) {
+	if e.DynamicExecutionMetrics != nil {
 		return e.DynamicExecutionMetrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: dynamicexecutionmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "dynamic_execution_metrics"}
 }
@@ -63,6 +65,8 @@ func (*RaceStatistics) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case racestatistics.FieldMnemonic, racestatistics.FieldLocalRunner, racestatistics.FieldRemoteRunner:
 			values[i] = new(sql.NullString)
+		case racestatistics.ForeignKeys[0]: // dynamic_execution_metrics_race_statistics
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -113,6 +117,13 @@ func (rs *RaceStatistics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field renote_wins", values[i])
 			} else if value.Valid {
 				rs.RenoteWins = value.Int64
+			}
+		case racestatistics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field dynamic_execution_metrics_race_statistics", value)
+			} else if value.Valid {
+				rs.dynamic_execution_metrics_race_statistics = new(int)
+				*rs.dynamic_execution_metrics_race_statistics = int(value.Int64)
 			}
 		default:
 			rs.selectValues.Set(columns[i], values[i])
@@ -171,30 +182,6 @@ func (rs *RaceStatistics) String() string {
 	builder.WriteString(fmt.Sprintf("%v", rs.RenoteWins))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedDynamicExecutionMetrics returns the DynamicExecutionMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (rs *RaceStatistics) NamedDynamicExecutionMetrics(name string) ([]*DynamicExecutionMetrics, error) {
-	if rs.Edges.namedDynamicExecutionMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := rs.Edges.namedDynamicExecutionMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (rs *RaceStatistics) appendNamedDynamicExecutionMetrics(name string, edges ...*DynamicExecutionMetrics) {
-	if rs.Edges.namedDynamicExecutionMetrics == nil {
-		rs.Edges.namedDynamicExecutionMetrics = make(map[string][]*DynamicExecutionMetrics)
-	}
-	if len(edges) == 0 {
-		rs.Edges.namedDynamicExecutionMetrics[name] = []*DynamicExecutionMetrics{}
-	} else {
-		rs.Edges.namedDynamicExecutionMetrics[name] = append(rs.Edges.namedDynamicExecutionMetrics[name], edges...)
-	}
 }
 
 // RaceStatisticsSlice is a parsable slice of RaceStatistics.

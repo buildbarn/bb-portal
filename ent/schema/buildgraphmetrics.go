@@ -75,35 +75,41 @@ func (BuildGraphMetrics) Fields() []ent.Field {
 func (BuildGraphMetrics) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("metrics", Metrics.Type).
-			Ref("build_graph_metrics"),
+			Ref("build_graph_metrics").
+			Unique(),
 		// NOTE: these are all missing from the proto, but i'm including them here for now for completeness
 
 		// Dirtied Values.
 		// Number of SkyValues that were dirtied during the build. Dirtied nodes are
 		// those that transitively depend on a node that changed by itself (e.g. one
 		// representing a file in the file system)
-		edge.To("dirtied_values", EvaluationStat.Type),
+		edge.To("dirtied_values", EvaluationStat.Type).
+			Unique(),
 
 		// Changed Values.
 		// Number of SkyValues that changed by themselves. For example, when a file
 		// on the file system changes, the SkyValue representing it will change.
-		edge.To("changed_values", EvaluationStat.Type),
+		edge.To("changed_values", EvaluationStat.Type).
+			Unique(),
 
 		// Built Values.
 		// Number of SkyValues that were built. This means that they were evaluated
 		// and were found to have changed from their previous version.
-		edge.To("built_values", EvaluationStat.Type),
+		edge.To("built_values", EvaluationStat.Type).
+			Unique(),
 
 		// Cleaned Values.
 		// Number of SkyValues that were evaluated and found clean, i.e. equal to
 		// their previous version.
-		edge.To("cleaned_values", EvaluationStat.Type),
+		edge.To("cleaned_values", EvaluationStat.Type).
+			Unique(),
 
 		// Evaluated Values.
 		// Number of evaluations to build SkyValues. This includes restarted
 		// evaluations, which means there can be multiple evaluations per built
 		// SkyValue. Subtract built_values from this number to get the number of
 		// restarted evaluations.
-		edge.To("evaluated_values", EvaluationStat.Type),
+		edge.To("evaluated_values", EvaluationStat.Type).
+			Unique(),
 	}
 }

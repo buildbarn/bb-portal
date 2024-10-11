@@ -218,7 +218,7 @@ func HasExecutionInfo() predicate.ResourceUsage {
 	return predicate.ResourceUsage(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, ExecutionInfoTable, ExecutionInfoPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, ExecutionInfoTable, ExecutionInfoColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

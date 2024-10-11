@@ -29,34 +29,24 @@ import (
 // MetricsQuery is the builder for querying Metrics entities.
 type MetricsQuery struct {
 	config
-	ctx                              *QueryContext
-	order                            []metrics.OrderOption
-	inters                           []Interceptor
-	predicates                       []predicate.Metrics
-	withBazelInvocation              *BazelInvocationQuery
-	withActionSummary                *ActionSummaryQuery
-	withMemoryMetrics                *MemoryMetricsQuery
-	withTargetMetrics                *TargetMetricsQuery
-	withPackageMetrics               *PackageMetricsQuery
-	withTimingMetrics                *TimingMetricsQuery
-	withCumulativeMetrics            *CumulativeMetricsQuery
-	withArtifactMetrics              *ArtifactMetricsQuery
-	withNetworkMetrics               *NetworkMetricsQuery
-	withDynamicExecutionMetrics      *DynamicExecutionMetricsQuery
-	withBuildGraphMetrics            *BuildGraphMetricsQuery
-	withFKs                          bool
-	modifiers                        []func(*sql.Selector)
-	loadTotal                        []func(context.Context, []*Metrics) error
-	withNamedActionSummary           map[string]*ActionSummaryQuery
-	withNamedMemoryMetrics           map[string]*MemoryMetricsQuery
-	withNamedTargetMetrics           map[string]*TargetMetricsQuery
-	withNamedPackageMetrics          map[string]*PackageMetricsQuery
-	withNamedTimingMetrics           map[string]*TimingMetricsQuery
-	withNamedCumulativeMetrics       map[string]*CumulativeMetricsQuery
-	withNamedArtifactMetrics         map[string]*ArtifactMetricsQuery
-	withNamedNetworkMetrics          map[string]*NetworkMetricsQuery
-	withNamedDynamicExecutionMetrics map[string]*DynamicExecutionMetricsQuery
-	withNamedBuildGraphMetrics       map[string]*BuildGraphMetricsQuery
+	ctx                         *QueryContext
+	order                       []metrics.OrderOption
+	inters                      []Interceptor
+	predicates                  []predicate.Metrics
+	withBazelInvocation         *BazelInvocationQuery
+	withActionSummary           *ActionSummaryQuery
+	withMemoryMetrics           *MemoryMetricsQuery
+	withTargetMetrics           *TargetMetricsQuery
+	withPackageMetrics          *PackageMetricsQuery
+	withTimingMetrics           *TimingMetricsQuery
+	withCumulativeMetrics       *CumulativeMetricsQuery
+	withArtifactMetrics         *ArtifactMetricsQuery
+	withNetworkMetrics          *NetworkMetricsQuery
+	withDynamicExecutionMetrics *DynamicExecutionMetricsQuery
+	withBuildGraphMetrics       *BuildGraphMetricsQuery
+	withFKs                     bool
+	modifiers                   []func(*sql.Selector)
+	loadTotal                   []func(context.Context, []*Metrics) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -129,7 +119,7 @@ func (mq *MetricsQuery) QueryActionSummary() *ActionSummaryQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
 			sqlgraph.To(actionsummary.Table, actionsummary.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, metrics.ActionSummaryTable, metrics.ActionSummaryColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.ActionSummaryTable, metrics.ActionSummaryColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
 		return fromU, nil
@@ -151,7 +141,7 @@ func (mq *MetricsQuery) QueryMemoryMetrics() *MemoryMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
 			sqlgraph.To(memorymetrics.Table, memorymetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.MemoryMetricsTable, metrics.MemoryMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.MemoryMetricsTable, metrics.MemoryMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
 		return fromU, nil
@@ -173,7 +163,7 @@ func (mq *MetricsQuery) QueryTargetMetrics() *TargetMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
 			sqlgraph.To(targetmetrics.Table, targetmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.TargetMetricsTable, metrics.TargetMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.TargetMetricsTable, metrics.TargetMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
 		return fromU, nil
@@ -195,7 +185,7 @@ func (mq *MetricsQuery) QueryPackageMetrics() *PackageMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
 			sqlgraph.To(packagemetrics.Table, packagemetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.PackageMetricsTable, metrics.PackageMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.PackageMetricsTable, metrics.PackageMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
 		return fromU, nil
@@ -217,7 +207,7 @@ func (mq *MetricsQuery) QueryTimingMetrics() *TimingMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
 			sqlgraph.To(timingmetrics.Table, timingmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.TimingMetricsTable, metrics.TimingMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.TimingMetricsTable, metrics.TimingMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
 		return fromU, nil
@@ -239,7 +229,7 @@ func (mq *MetricsQuery) QueryCumulativeMetrics() *CumulativeMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
 			sqlgraph.To(cumulativemetrics.Table, cumulativemetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.CumulativeMetricsTable, metrics.CumulativeMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.CumulativeMetricsTable, metrics.CumulativeMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
 		return fromU, nil
@@ -261,7 +251,7 @@ func (mq *MetricsQuery) QueryArtifactMetrics() *ArtifactMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
 			sqlgraph.To(artifactmetrics.Table, artifactmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.ArtifactMetricsTable, metrics.ArtifactMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.ArtifactMetricsTable, metrics.ArtifactMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
 		return fromU, nil
@@ -283,7 +273,7 @@ func (mq *MetricsQuery) QueryNetworkMetrics() *NetworkMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
 			sqlgraph.To(networkmetrics.Table, networkmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.NetworkMetricsTable, metrics.NetworkMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.NetworkMetricsTable, metrics.NetworkMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
 		return fromU, nil
@@ -305,7 +295,7 @@ func (mq *MetricsQuery) QueryDynamicExecutionMetrics() *DynamicExecutionMetricsQ
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
 			sqlgraph.To(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.DynamicExecutionMetricsTable, metrics.DynamicExecutionMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.DynamicExecutionMetricsTable, metrics.DynamicExecutionMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
 		return fromU, nil
@@ -327,7 +317,7 @@ func (mq *MetricsQuery) QueryBuildGraphMetrics() *BuildGraphMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
 			sqlgraph.To(buildgraphmetrics.Table, buildgraphmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.BuildGraphMetricsTable, metrics.BuildGraphMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.BuildGraphMetricsTable, metrics.BuildGraphMetricsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
 		return fromU, nil
@@ -770,148 +760,62 @@ func (mq *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 		}
 	}
 	if query := mq.withActionSummary; query != nil {
-		if err := mq.loadActionSummary(ctx, query, nodes,
-			func(n *Metrics) { n.Edges.ActionSummary = []*ActionSummary{} },
-			func(n *Metrics, e *ActionSummary) { n.Edges.ActionSummary = append(n.Edges.ActionSummary, e) }); err != nil {
+		if err := mq.loadActionSummary(ctx, query, nodes, nil,
+			func(n *Metrics, e *ActionSummary) { n.Edges.ActionSummary = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := mq.withMemoryMetrics; query != nil {
-		if err := mq.loadMemoryMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.Edges.MemoryMetrics = []*MemoryMetrics{} },
-			func(n *Metrics, e *MemoryMetrics) { n.Edges.MemoryMetrics = append(n.Edges.MemoryMetrics, e) }); err != nil {
+		if err := mq.loadMemoryMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *MemoryMetrics) { n.Edges.MemoryMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := mq.withTargetMetrics; query != nil {
-		if err := mq.loadTargetMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.Edges.TargetMetrics = []*TargetMetrics{} },
-			func(n *Metrics, e *TargetMetrics) { n.Edges.TargetMetrics = append(n.Edges.TargetMetrics, e) }); err != nil {
+		if err := mq.loadTargetMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *TargetMetrics) { n.Edges.TargetMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := mq.withPackageMetrics; query != nil {
-		if err := mq.loadPackageMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.Edges.PackageMetrics = []*PackageMetrics{} },
-			func(n *Metrics, e *PackageMetrics) { n.Edges.PackageMetrics = append(n.Edges.PackageMetrics, e) }); err != nil {
+		if err := mq.loadPackageMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *PackageMetrics) { n.Edges.PackageMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := mq.withTimingMetrics; query != nil {
-		if err := mq.loadTimingMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.Edges.TimingMetrics = []*TimingMetrics{} },
-			func(n *Metrics, e *TimingMetrics) { n.Edges.TimingMetrics = append(n.Edges.TimingMetrics, e) }); err != nil {
+		if err := mq.loadTimingMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *TimingMetrics) { n.Edges.TimingMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := mq.withCumulativeMetrics; query != nil {
-		if err := mq.loadCumulativeMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.Edges.CumulativeMetrics = []*CumulativeMetrics{} },
-			func(n *Metrics, e *CumulativeMetrics) {
-				n.Edges.CumulativeMetrics = append(n.Edges.CumulativeMetrics, e)
-			}); err != nil {
+		if err := mq.loadCumulativeMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *CumulativeMetrics) { n.Edges.CumulativeMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := mq.withArtifactMetrics; query != nil {
-		if err := mq.loadArtifactMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.Edges.ArtifactMetrics = []*ArtifactMetrics{} },
-			func(n *Metrics, e *ArtifactMetrics) { n.Edges.ArtifactMetrics = append(n.Edges.ArtifactMetrics, e) }); err != nil {
+		if err := mq.loadArtifactMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *ArtifactMetrics) { n.Edges.ArtifactMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := mq.withNetworkMetrics; query != nil {
-		if err := mq.loadNetworkMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.Edges.NetworkMetrics = []*NetworkMetrics{} },
-			func(n *Metrics, e *NetworkMetrics) { n.Edges.NetworkMetrics = append(n.Edges.NetworkMetrics, e) }); err != nil {
+		if err := mq.loadNetworkMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *NetworkMetrics) { n.Edges.NetworkMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := mq.withDynamicExecutionMetrics; query != nil {
-		if err := mq.loadDynamicExecutionMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.Edges.DynamicExecutionMetrics = []*DynamicExecutionMetrics{} },
-			func(n *Metrics, e *DynamicExecutionMetrics) {
-				n.Edges.DynamicExecutionMetrics = append(n.Edges.DynamicExecutionMetrics, e)
-			}); err != nil {
+		if err := mq.loadDynamicExecutionMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *DynamicExecutionMetrics) { n.Edges.DynamicExecutionMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
 	if query := mq.withBuildGraphMetrics; query != nil {
-		if err := mq.loadBuildGraphMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.Edges.BuildGraphMetrics = []*BuildGraphMetrics{} },
-			func(n *Metrics, e *BuildGraphMetrics) {
-				n.Edges.BuildGraphMetrics = append(n.Edges.BuildGraphMetrics, e)
-			}); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range mq.withNamedActionSummary {
-		if err := mq.loadActionSummary(ctx, query, nodes,
-			func(n *Metrics) { n.appendNamedActionSummary(name) },
-			func(n *Metrics, e *ActionSummary) { n.appendNamedActionSummary(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range mq.withNamedMemoryMetrics {
-		if err := mq.loadMemoryMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.appendNamedMemoryMetrics(name) },
-			func(n *Metrics, e *MemoryMetrics) { n.appendNamedMemoryMetrics(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range mq.withNamedTargetMetrics {
-		if err := mq.loadTargetMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.appendNamedTargetMetrics(name) },
-			func(n *Metrics, e *TargetMetrics) { n.appendNamedTargetMetrics(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range mq.withNamedPackageMetrics {
-		if err := mq.loadPackageMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.appendNamedPackageMetrics(name) },
-			func(n *Metrics, e *PackageMetrics) { n.appendNamedPackageMetrics(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range mq.withNamedTimingMetrics {
-		if err := mq.loadTimingMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.appendNamedTimingMetrics(name) },
-			func(n *Metrics, e *TimingMetrics) { n.appendNamedTimingMetrics(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range mq.withNamedCumulativeMetrics {
-		if err := mq.loadCumulativeMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.appendNamedCumulativeMetrics(name) },
-			func(n *Metrics, e *CumulativeMetrics) { n.appendNamedCumulativeMetrics(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range mq.withNamedArtifactMetrics {
-		if err := mq.loadArtifactMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.appendNamedArtifactMetrics(name) },
-			func(n *Metrics, e *ArtifactMetrics) { n.appendNamedArtifactMetrics(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range mq.withNamedNetworkMetrics {
-		if err := mq.loadNetworkMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.appendNamedNetworkMetrics(name) },
-			func(n *Metrics, e *NetworkMetrics) { n.appendNamedNetworkMetrics(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range mq.withNamedDynamicExecutionMetrics {
-		if err := mq.loadDynamicExecutionMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.appendNamedDynamicExecutionMetrics(name) },
-			func(n *Metrics, e *DynamicExecutionMetrics) { n.appendNamedDynamicExecutionMetrics(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range mq.withNamedBuildGraphMetrics {
-		if err := mq.loadBuildGraphMetrics(ctx, query, nodes,
-			func(n *Metrics) { n.appendNamedBuildGraphMetrics(name) },
-			func(n *Metrics, e *BuildGraphMetrics) { n.appendNamedBuildGraphMetrics(name, e) }); err != nil {
+		if err := mq.loadBuildGraphMetrics(ctx, query, nodes, nil,
+			func(n *Metrics, e *BuildGraphMetrics) { n.Edges.BuildGraphMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -961,9 +865,6 @@ func (mq *MetricsQuery) loadActionSummary(ctx context.Context, query *ActionSumm
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
 	}
 	query.withFKs = true
 	query.Where(predicate.ActionSummary(func(s *sql.Selector) {
@@ -987,551 +888,254 @@ func (mq *MetricsQuery) loadActionSummary(ctx context.Context, query *ActionSumm
 	return nil
 }
 func (mq *MetricsQuery) loadMemoryMetrics(ctx context.Context, query *MemoryMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *MemoryMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*Metrics)
-	nids := make(map[int]map[*Metrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(metrics.MemoryMetricsTable)
-		s.Join(joinT).On(s.C(memorymetrics.FieldID), joinT.C(metrics.MemoryMetricsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(metrics.MemoryMetricsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(metrics.MemoryMetricsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Metrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*MemoryMetrics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.MemoryMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.MemoryMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.metrics_memory_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_memory_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "memory_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_memory_metrics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
 func (mq *MetricsQuery) loadTargetMetrics(ctx context.Context, query *TargetMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *TargetMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*Metrics)
-	nids := make(map[int]map[*Metrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(metrics.TargetMetricsTable)
-		s.Join(joinT).On(s.C(targetmetrics.FieldID), joinT.C(metrics.TargetMetricsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(metrics.TargetMetricsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(metrics.TargetMetricsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Metrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*TargetMetrics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.TargetMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.TargetMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.metrics_target_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_target_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "target_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_target_metrics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
 func (mq *MetricsQuery) loadPackageMetrics(ctx context.Context, query *PackageMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *PackageMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*Metrics)
-	nids := make(map[int]map[*Metrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(metrics.PackageMetricsTable)
-		s.Join(joinT).On(s.C(packagemetrics.FieldID), joinT.C(metrics.PackageMetricsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(metrics.PackageMetricsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(metrics.PackageMetricsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Metrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*PackageMetrics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.PackageMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.PackageMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.metrics_package_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_package_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "package_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_package_metrics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
 func (mq *MetricsQuery) loadTimingMetrics(ctx context.Context, query *TimingMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *TimingMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*Metrics)
-	nids := make(map[int]map[*Metrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(metrics.TimingMetricsTable)
-		s.Join(joinT).On(s.C(timingmetrics.FieldID), joinT.C(metrics.TimingMetricsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(metrics.TimingMetricsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(metrics.TimingMetricsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Metrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*TimingMetrics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.TimingMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.TimingMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.metrics_timing_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_timing_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "timing_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_timing_metrics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
 func (mq *MetricsQuery) loadCumulativeMetrics(ctx context.Context, query *CumulativeMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *CumulativeMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*Metrics)
-	nids := make(map[int]map[*Metrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(metrics.CumulativeMetricsTable)
-		s.Join(joinT).On(s.C(cumulativemetrics.FieldID), joinT.C(metrics.CumulativeMetricsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(metrics.CumulativeMetricsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(metrics.CumulativeMetricsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Metrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*CumulativeMetrics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.CumulativeMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.CumulativeMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.metrics_cumulative_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_cumulative_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "cumulative_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_cumulative_metrics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
 func (mq *MetricsQuery) loadArtifactMetrics(ctx context.Context, query *ArtifactMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *ArtifactMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*Metrics)
-	nids := make(map[int]map[*Metrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(metrics.ArtifactMetricsTable)
-		s.Join(joinT).On(s.C(artifactmetrics.FieldID), joinT.C(metrics.ArtifactMetricsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(metrics.ArtifactMetricsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(metrics.ArtifactMetricsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Metrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*ArtifactMetrics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.ArtifactMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.ArtifactMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.metrics_artifact_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_artifact_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "artifact_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_artifact_metrics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
 func (mq *MetricsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *NetworkMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*Metrics)
-	nids := make(map[int]map[*Metrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(metrics.NetworkMetricsTable)
-		s.Join(joinT).On(s.C(networkmetrics.FieldID), joinT.C(metrics.NetworkMetricsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(metrics.NetworkMetricsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(metrics.NetworkMetricsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Metrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*NetworkMetrics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.NetworkMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.NetworkMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.metrics_network_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_network_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "network_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_network_metrics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
 func (mq *MetricsQuery) loadDynamicExecutionMetrics(ctx context.Context, query *DynamicExecutionMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *DynamicExecutionMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*Metrics)
-	nids := make(map[int]map[*Metrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(metrics.DynamicExecutionMetricsTable)
-		s.Join(joinT).On(s.C(dynamicexecutionmetrics.FieldID), joinT.C(metrics.DynamicExecutionMetricsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(metrics.DynamicExecutionMetricsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(metrics.DynamicExecutionMetricsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Metrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*DynamicExecutionMetrics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.DynamicExecutionMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.DynamicExecutionMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.metrics_dynamic_execution_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_dynamic_execution_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "dynamic_execution_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_dynamic_execution_metrics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
 func (mq *MetricsQuery) loadBuildGraphMetrics(ctx context.Context, query *BuildGraphMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *BuildGraphMetrics)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*Metrics)
-	nids := make(map[int]map[*Metrics]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Metrics)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(metrics.BuildGraphMetricsTable)
-		s.Join(joinT).On(s.C(buildgraphmetrics.FieldID), joinT.C(metrics.BuildGraphMetricsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(metrics.BuildGraphMetricsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(metrics.BuildGraphMetricsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*Metrics]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*BuildGraphMetrics](ctx, query, qr, query.inters)
+	query.withFKs = true
+	query.Where(predicate.BuildGraphMetrics(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(metrics.BuildGraphMetricsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.metrics_build_graph_metrics
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "metrics_build_graph_metrics" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "build_graph_metrics" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_build_graph_metrics" returned %v for node %v`, *fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -1618,146 +1222,6 @@ func (mq *MetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedActionSummary tells the query-builder to eager-load the nodes that are connected to the "action_summary"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithNamedActionSummary(name string, opts ...func(*ActionSummaryQuery)) *MetricsQuery {
-	query := (&ActionSummaryClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if mq.withNamedActionSummary == nil {
-		mq.withNamedActionSummary = make(map[string]*ActionSummaryQuery)
-	}
-	mq.withNamedActionSummary[name] = query
-	return mq
-}
-
-// WithNamedMemoryMetrics tells the query-builder to eager-load the nodes that are connected to the "memory_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithNamedMemoryMetrics(name string, opts ...func(*MemoryMetricsQuery)) *MetricsQuery {
-	query := (&MemoryMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if mq.withNamedMemoryMetrics == nil {
-		mq.withNamedMemoryMetrics = make(map[string]*MemoryMetricsQuery)
-	}
-	mq.withNamedMemoryMetrics[name] = query
-	return mq
-}
-
-// WithNamedTargetMetrics tells the query-builder to eager-load the nodes that are connected to the "target_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithNamedTargetMetrics(name string, opts ...func(*TargetMetricsQuery)) *MetricsQuery {
-	query := (&TargetMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if mq.withNamedTargetMetrics == nil {
-		mq.withNamedTargetMetrics = make(map[string]*TargetMetricsQuery)
-	}
-	mq.withNamedTargetMetrics[name] = query
-	return mq
-}
-
-// WithNamedPackageMetrics tells the query-builder to eager-load the nodes that are connected to the "package_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithNamedPackageMetrics(name string, opts ...func(*PackageMetricsQuery)) *MetricsQuery {
-	query := (&PackageMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if mq.withNamedPackageMetrics == nil {
-		mq.withNamedPackageMetrics = make(map[string]*PackageMetricsQuery)
-	}
-	mq.withNamedPackageMetrics[name] = query
-	return mq
-}
-
-// WithNamedTimingMetrics tells the query-builder to eager-load the nodes that are connected to the "timing_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithNamedTimingMetrics(name string, opts ...func(*TimingMetricsQuery)) *MetricsQuery {
-	query := (&TimingMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if mq.withNamedTimingMetrics == nil {
-		mq.withNamedTimingMetrics = make(map[string]*TimingMetricsQuery)
-	}
-	mq.withNamedTimingMetrics[name] = query
-	return mq
-}
-
-// WithNamedCumulativeMetrics tells the query-builder to eager-load the nodes that are connected to the "cumulative_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithNamedCumulativeMetrics(name string, opts ...func(*CumulativeMetricsQuery)) *MetricsQuery {
-	query := (&CumulativeMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if mq.withNamedCumulativeMetrics == nil {
-		mq.withNamedCumulativeMetrics = make(map[string]*CumulativeMetricsQuery)
-	}
-	mq.withNamedCumulativeMetrics[name] = query
-	return mq
-}
-
-// WithNamedArtifactMetrics tells the query-builder to eager-load the nodes that are connected to the "artifact_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithNamedArtifactMetrics(name string, opts ...func(*ArtifactMetricsQuery)) *MetricsQuery {
-	query := (&ArtifactMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if mq.withNamedArtifactMetrics == nil {
-		mq.withNamedArtifactMetrics = make(map[string]*ArtifactMetricsQuery)
-	}
-	mq.withNamedArtifactMetrics[name] = query
-	return mq
-}
-
-// WithNamedNetworkMetrics tells the query-builder to eager-load the nodes that are connected to the "network_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithNamedNetworkMetrics(name string, opts ...func(*NetworkMetricsQuery)) *MetricsQuery {
-	query := (&NetworkMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if mq.withNamedNetworkMetrics == nil {
-		mq.withNamedNetworkMetrics = make(map[string]*NetworkMetricsQuery)
-	}
-	mq.withNamedNetworkMetrics[name] = query
-	return mq
-}
-
-// WithNamedDynamicExecutionMetrics tells the query-builder to eager-load the nodes that are connected to the "dynamic_execution_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithNamedDynamicExecutionMetrics(name string, opts ...func(*DynamicExecutionMetricsQuery)) *MetricsQuery {
-	query := (&DynamicExecutionMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if mq.withNamedDynamicExecutionMetrics == nil {
-		mq.withNamedDynamicExecutionMetrics = make(map[string]*DynamicExecutionMetricsQuery)
-	}
-	mq.withNamedDynamicExecutionMetrics[name] = query
-	return mq
-}
-
-// WithNamedBuildGraphMetrics tells the query-builder to eager-load the nodes that are connected to the "build_graph_metrics"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithNamedBuildGraphMetrics(name string, opts ...func(*BuildGraphMetricsQuery)) *MetricsQuery {
-	query := (&BuildGraphMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if mq.withNamedBuildGraphMetrics == nil {
-		mq.withNamedBuildGraphMetrics = make(map[string]*BuildGraphMetricsQuery)
-	}
-	mq.withNamedBuildGraphMetrics[name] = query
-	return mq
 }
 
 // MetricsGroupBy is the group-by builder for Metrics entities.

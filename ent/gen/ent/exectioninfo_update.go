@@ -144,19 +144,23 @@ func (eiu *ExectionInfoUpdate) ClearHostname() *ExectionInfoUpdate {
 	return eiu
 }
 
-// AddTestResultIDs adds the "test_result" edge to the TestResultBES entity by IDs.
-func (eiu *ExectionInfoUpdate) AddTestResultIDs(ids ...int) *ExectionInfoUpdate {
-	eiu.mutation.AddTestResultIDs(ids...)
+// SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
+func (eiu *ExectionInfoUpdate) SetTestResultID(id int) *ExectionInfoUpdate {
+	eiu.mutation.SetTestResultID(id)
 	return eiu
 }
 
-// AddTestResult adds the "test_result" edges to the TestResultBES entity.
-func (eiu *ExectionInfoUpdate) AddTestResult(t ...*TestResultBES) *ExectionInfoUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
+func (eiu *ExectionInfoUpdate) SetNillableTestResultID(id *int) *ExectionInfoUpdate {
+	if id != nil {
+		eiu = eiu.SetTestResultID(*id)
 	}
-	return eiu.AddTestResultIDs(ids...)
+	return eiu
+}
+
+// SetTestResult sets the "test_result" edge to the TestResultBES entity.
+func (eiu *ExectionInfoUpdate) SetTestResult(t *TestResultBES) *ExectionInfoUpdate {
+	return eiu.SetTestResultID(t.ID)
 }
 
 // SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
@@ -198,25 +202,10 @@ func (eiu *ExectionInfoUpdate) Mutation() *ExectionInfoMutation {
 	return eiu.mutation
 }
 
-// ClearTestResult clears all "test_result" edges to the TestResultBES entity.
+// ClearTestResult clears the "test_result" edge to the TestResultBES entity.
 func (eiu *ExectionInfoUpdate) ClearTestResult() *ExectionInfoUpdate {
 	eiu.mutation.ClearTestResult()
 	return eiu
-}
-
-// RemoveTestResultIDs removes the "test_result" edge to TestResultBES entities by IDs.
-func (eiu *ExectionInfoUpdate) RemoveTestResultIDs(ids ...int) *ExectionInfoUpdate {
-	eiu.mutation.RemoveTestResultIDs(ids...)
-	return eiu
-}
-
-// RemoveTestResult removes "test_result" edges to TestResultBES entities.
-func (eiu *ExectionInfoUpdate) RemoveTestResult(t ...*TestResultBES) *ExectionInfoUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return eiu.RemoveTestResultIDs(ids...)
 }
 
 // ClearTimingBreakdown clears the "timing_breakdown" edge to the TimingBreakdown entity.
@@ -320,7 +309,7 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if eiu.mutation.TestResultCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   exectioninfo.TestResultTable,
 			Columns: []string{exectioninfo.TestResultColumn},
@@ -328,28 +317,12 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := eiu.mutation.RemovedTestResultIDs(); len(nodes) > 0 && !eiu.mutation.TestResultCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   exectioninfo.TestResultTable,
-			Columns: []string{exectioninfo.TestResultColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := eiu.mutation.TestResultIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   exectioninfo.TestResultTable,
 			Columns: []string{exectioninfo.TestResultColumn},
@@ -365,7 +338,7 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if eiu.mutation.TimingBreakdownCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   exectioninfo.TimingBreakdownTable,
 			Columns: []string{exectioninfo.TimingBreakdownColumn},
@@ -378,7 +351,7 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := eiu.mutation.TimingBreakdownIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   exectioninfo.TimingBreakdownTable,
 			Columns: []string{exectioninfo.TimingBreakdownColumn},
@@ -394,10 +367,10 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if eiu.mutation.ResourceUsageCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   exectioninfo.ResourceUsageTable,
-			Columns: exectioninfo.ResourceUsagePrimaryKey,
+			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),
@@ -407,10 +380,10 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := eiu.mutation.RemovedResourceUsageIDs(); len(nodes) > 0 && !eiu.mutation.ResourceUsageCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   exectioninfo.ResourceUsageTable,
-			Columns: exectioninfo.ResourceUsagePrimaryKey,
+			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),
@@ -423,10 +396,10 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := eiu.mutation.ResourceUsageIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   exectioninfo.ResourceUsageTable,
-			Columns: exectioninfo.ResourceUsagePrimaryKey,
+			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),
@@ -571,19 +544,23 @@ func (eiuo *ExectionInfoUpdateOne) ClearHostname() *ExectionInfoUpdateOne {
 	return eiuo
 }
 
-// AddTestResultIDs adds the "test_result" edge to the TestResultBES entity by IDs.
-func (eiuo *ExectionInfoUpdateOne) AddTestResultIDs(ids ...int) *ExectionInfoUpdateOne {
-	eiuo.mutation.AddTestResultIDs(ids...)
+// SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
+func (eiuo *ExectionInfoUpdateOne) SetTestResultID(id int) *ExectionInfoUpdateOne {
+	eiuo.mutation.SetTestResultID(id)
 	return eiuo
 }
 
-// AddTestResult adds the "test_result" edges to the TestResultBES entity.
-func (eiuo *ExectionInfoUpdateOne) AddTestResult(t ...*TestResultBES) *ExectionInfoUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
+func (eiuo *ExectionInfoUpdateOne) SetNillableTestResultID(id *int) *ExectionInfoUpdateOne {
+	if id != nil {
+		eiuo = eiuo.SetTestResultID(*id)
 	}
-	return eiuo.AddTestResultIDs(ids...)
+	return eiuo
+}
+
+// SetTestResult sets the "test_result" edge to the TestResultBES entity.
+func (eiuo *ExectionInfoUpdateOne) SetTestResult(t *TestResultBES) *ExectionInfoUpdateOne {
+	return eiuo.SetTestResultID(t.ID)
 }
 
 // SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
@@ -625,25 +602,10 @@ func (eiuo *ExectionInfoUpdateOne) Mutation() *ExectionInfoMutation {
 	return eiuo.mutation
 }
 
-// ClearTestResult clears all "test_result" edges to the TestResultBES entity.
+// ClearTestResult clears the "test_result" edge to the TestResultBES entity.
 func (eiuo *ExectionInfoUpdateOne) ClearTestResult() *ExectionInfoUpdateOne {
 	eiuo.mutation.ClearTestResult()
 	return eiuo
-}
-
-// RemoveTestResultIDs removes the "test_result" edge to TestResultBES entities by IDs.
-func (eiuo *ExectionInfoUpdateOne) RemoveTestResultIDs(ids ...int) *ExectionInfoUpdateOne {
-	eiuo.mutation.RemoveTestResultIDs(ids...)
-	return eiuo
-}
-
-// RemoveTestResult removes "test_result" edges to TestResultBES entities.
-func (eiuo *ExectionInfoUpdateOne) RemoveTestResult(t ...*TestResultBES) *ExectionInfoUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return eiuo.RemoveTestResultIDs(ids...)
 }
 
 // ClearTimingBreakdown clears the "timing_breakdown" edge to the TimingBreakdown entity.
@@ -777,7 +739,7 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 	}
 	if eiuo.mutation.TestResultCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   exectioninfo.TestResultTable,
 			Columns: []string{exectioninfo.TestResultColumn},
@@ -785,28 +747,12 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := eiuo.mutation.RemovedTestResultIDs(); len(nodes) > 0 && !eiuo.mutation.TestResultCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   exectioninfo.TestResultTable,
-			Columns: []string{exectioninfo.TestResultColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := eiuo.mutation.TestResultIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   exectioninfo.TestResultTable,
 			Columns: []string{exectioninfo.TestResultColumn},
@@ -822,7 +768,7 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 	}
 	if eiuo.mutation.TimingBreakdownCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   exectioninfo.TimingBreakdownTable,
 			Columns: []string{exectioninfo.TimingBreakdownColumn},
@@ -835,7 +781,7 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 	}
 	if nodes := eiuo.mutation.TimingBreakdownIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   exectioninfo.TimingBreakdownTable,
 			Columns: []string{exectioninfo.TimingBreakdownColumn},
@@ -851,10 +797,10 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 	}
 	if eiuo.mutation.ResourceUsageCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   exectioninfo.ResourceUsageTable,
-			Columns: exectioninfo.ResourceUsagePrimaryKey,
+			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),
@@ -864,10 +810,10 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 	}
 	if nodes := eiuo.mutation.RemovedResourceUsageIDs(); len(nodes) > 0 && !eiuo.mutation.ResourceUsageCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   exectioninfo.ResourceUsageTable,
-			Columns: exectioninfo.ResourceUsagePrimaryKey,
+			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),
@@ -880,10 +826,10 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 	}
 	if nodes := eiuo.mutation.ResourceUsageIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   exectioninfo.ResourceUsageTable,
-			Columns: exectioninfo.ResourceUsagePrimaryKey,
+			Columns: []string{exectioninfo.ResourceUsageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt),

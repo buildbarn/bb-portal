@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 )
 
@@ -24,28 +25,29 @@ type RunnerCount struct {
 	ActionsExecuted int64 `json:"actions_executed,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RunnerCountQuery when eager-loading is set.
-	Edges        RunnerCountEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                       RunnerCountEdges `json:"edges"`
+	action_summary_runner_count *int
+	selectValues                sql.SelectValues
 }
 
 // RunnerCountEdges holds the relations/edges for other nodes in the graph.
 type RunnerCountEdges struct {
 	// ActionSummary holds the value of the action_summary edge.
-	ActionSummary []*ActionSummary `json:"action_summary,omitempty"`
+	ActionSummary *ActionSummary `json:"action_summary,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedActionSummary map[string][]*ActionSummary
 }
 
 // ActionSummaryOrErr returns the ActionSummary value or an error if the edge
-// was not loaded in eager-loading.
-func (e RunnerCountEdges) ActionSummaryOrErr() ([]*ActionSummary, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e RunnerCountEdges) ActionSummaryOrErr() (*ActionSummary, error) {
+	if e.ActionSummary != nil {
 		return e.ActionSummary, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: actionsummary.Label}
 	}
 	return nil, &NotLoadedError{edge: "action_summary"}
 }
@@ -59,6 +61,8 @@ func (*RunnerCount) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case runnercount.FieldName, runnercount.FieldExecKind:
 			values[i] = new(sql.NullString)
+		case runnercount.ForeignKeys[0]: // action_summary_runner_count
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -97,6 +101,13 @@ func (rc *RunnerCount) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field actions_executed", values[i])
 			} else if value.Valid {
 				rc.ActionsExecuted = value.Int64
+			}
+		case runnercount.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field action_summary_runner_count", value)
+			} else if value.Valid {
+				rc.action_summary_runner_count = new(int)
+				*rc.action_summary_runner_count = int(value.Int64)
 			}
 		default:
 			rc.selectValues.Set(columns[i], values[i])
@@ -149,30 +160,6 @@ func (rc *RunnerCount) String() string {
 	builder.WriteString(fmt.Sprintf("%v", rc.ActionsExecuted))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedActionSummary returns the ActionSummary named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (rc *RunnerCount) NamedActionSummary(name string) ([]*ActionSummary, error) {
-	if rc.Edges.namedActionSummary == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := rc.Edges.namedActionSummary[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (rc *RunnerCount) appendNamedActionSummary(name string, edges ...*ActionSummary) {
-	if rc.Edges.namedActionSummary == nil {
-		rc.Edges.namedActionSummary = make(map[string][]*ActionSummary)
-	}
-	if len(edges) == 0 {
-		rc.Edges.namedActionSummary[name] = []*ActionSummary{}
-	} else {
-		rc.Edges.namedActionSummary[name] = append(rc.Edges.namedActionSummary[name], edges...)
-	}
 }
 
 // RunnerCounts is a parsable slice of RunnerCount.

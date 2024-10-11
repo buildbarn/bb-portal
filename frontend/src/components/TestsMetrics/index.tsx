@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Row, Col, Statistic, Space } from 'antd';
+import { Table, Row, Statistic, Space } from 'antd';
 import type { StatisticProps, TableColumnsType } from "antd/lib";
 import CountUp from 'react-countup';
 import TestStatusTag from "../TestStatusTag";
@@ -9,7 +9,9 @@ import NullBooleanTag from "../NullableBooleanTag";
 import PortalCard from "../PortalCard";
 import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
 import { SearchOutlined, ExperimentOutlined, } from "@ant-design/icons";
-
+import Link from "next/link";
+import { millisecondsToTime } from "../Utilities/time";
+import styles from "../../theme/theme.module.css"
 interface TestDataType {
     key: React.Key;
     status: string;
@@ -25,11 +27,10 @@ const formatter: StatisticProps['formatter'] = (value) => (
 );
 
 const test_columns: TableColumnsType<TestDataType> = [
-
     {
         title: "Status",
         dataIndex: "status",
-        render: (x) => <TestStatusTag key="status" status={x as TestStatusEnum} />,
+        render: (x) => <TestStatusTag displayText={true} key="status" status={x as TestStatusEnum} />,
         showSorterTooltip: { target: 'full-header' },
         filters: [
             {
@@ -70,12 +71,11 @@ const test_columns: TableColumnsType<TestDataType> = [
             },
         ],
         onFilter: (value, record) => record.status == value,
-
     },
     {
-        title: "Mnemonic",
+        title: "Label",
         dataIndex: "name",
-
+        render: (_, record) => <Link href={"/tests/" + encodeURIComponent(record.name)}>{record.name}</Link>,
         filterSearch: true,
         filterDropdown: filterProps => (
             <SearchWidget placeholder="Target Pattern..." {...filterProps} />
@@ -83,7 +83,6 @@ const test_columns: TableColumnsType<TestDataType> = [
         filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
         onFilter: (value, record) => (record.name.includes(value.toString()) ? true : false)
     },
-
     {
         title: "Strategy",
         dataIndex: "strategy",
@@ -150,8 +149,10 @@ const test_columns: TableColumnsType<TestDataType> = [
         onFilter: (value, record) => record.cached_remote == value
     },
     {
-        title: "Duration(ms)",
+        title: "Duration",
         dataIndex: "value",
+        render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.duration)}</span>,
+        align: "right",
         sorter: (a, b) => a.value - b.value,
     },
 
@@ -192,7 +193,7 @@ const TestMetricsDisplay: React.FC<{
 
         return (
             <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
-                <PortalCard icon={<ExperimentOutlined />} titleBits={["Tests"]}>
+                <PortalCard type="inner" icon={<ExperimentOutlined />} titleBits={["Tests"]}>
                     <Row>
                         <Space size="large">
                             <Statistic title="Tests Completed" value={totalTests} formatter={formatter} />
@@ -205,15 +206,11 @@ const TestMetricsDisplay: React.FC<{
                         </Space>
                     </Row>
                     <Row justify="space-around" align="middle">
-                        <Col span="1" />
-                        <Col span="22">
-                            <Table
-                                columns={test_columns}
-                                dataSource={test_data}
-                                showSorterTooltip={{ target: 'sorter-icon' }}
-                            />
-                        </Col>
-                        <Col span="1" />
+                        <Table
+                            columns={test_columns}
+                            dataSource={test_data}
+                            showSorterTooltip={{ target: 'sorter-icon' }}
+                        />
                     </Row>
                 </PortalCard>
             </Space>

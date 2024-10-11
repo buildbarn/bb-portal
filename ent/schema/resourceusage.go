@@ -28,6 +28,7 @@ func (ResourceUsage) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the execution info.
 		edge.From("execution_info", ExectionInfo.Type).
-			Ref("resource_usage"),
+			Ref("resource_usage").
+			Unique(),
 	}
 }

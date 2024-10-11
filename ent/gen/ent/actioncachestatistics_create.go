@@ -90,19 +90,23 @@ func (acsc *ActionCacheStatisticsCreate) SetNillableMisses(i *int32) *ActionCach
 	return acsc
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by IDs.
-func (acsc *ActionCacheStatisticsCreate) AddActionSummaryIDs(ids ...int) *ActionCacheStatisticsCreate {
-	acsc.mutation.AddActionSummaryIDs(ids...)
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
+func (acsc *ActionCacheStatisticsCreate) SetActionSummaryID(id int) *ActionCacheStatisticsCreate {
+	acsc.mutation.SetActionSummaryID(id)
 	return acsc
 }
 
-// AddActionSummary adds the "action_summary" edges to the ActionSummary entity.
-func (acsc *ActionCacheStatisticsCreate) AddActionSummary(a ...*ActionSummary) *ActionCacheStatisticsCreate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
+func (acsc *ActionCacheStatisticsCreate) SetNillableActionSummaryID(id *int) *ActionCacheStatisticsCreate {
+	if id != nil {
+		acsc = acsc.SetActionSummaryID(*id)
 	}
-	return acsc.AddActionSummaryIDs(ids...)
+	return acsc
+}
+
+// SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
+func (acsc *ActionCacheStatisticsCreate) SetActionSummary(a *ActionSummary) *ActionCacheStatisticsCreate {
+	return acsc.SetActionSummaryID(a.ID)
 }
 
 // AddMissDetailIDs adds the "miss_details" edge to the MissDetail entity by IDs.
@@ -202,10 +206,10 @@ func (acsc *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *
 	}
 	if nodes := acsc.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   actioncachestatistics.ActionSummaryTable,
-			Columns: actioncachestatistics.ActionSummaryPrimaryKey,
+			Columns: []string{actioncachestatistics.ActionSummaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
@@ -214,14 +218,15 @@ func (acsc *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.action_summary_action_cache_statistics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := acsc.mutation.MissDetailsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   actioncachestatistics.MissDetailsTable,
-			Columns: actioncachestatistics.MissDetailsPrimaryKey,
+			Columns: []string{actioncachestatistics.MissDetailsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt),

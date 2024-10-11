@@ -8,7 +8,8 @@ import PortalCard from "../PortalCard";
 import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
 import NullBooleanTag from "../NullableBooleanTag";
 import TargetAbortReasonTag, { AbortReasonsEnum } from "./targetAbortReasonTag";
-
+import styles from "../../theme/theme.module.css"
+import { millisecondsToTime } from "../Utilities/time";
 interface TargetDataType {
     key: React.Key;
     name: string;           //label
@@ -21,7 +22,6 @@ interface TargetDataType {
 const formatter: StatisticProps['formatter'] = (value) => (
     <CountUp end={value as number} separator="," />
 );
-
 
 const TargetMetricsDisplay: React.FC<{
     targetMetrics: TargetMetrics | undefined | null,
@@ -36,6 +36,7 @@ const TargetMetricsDisplay: React.FC<{
         var all_types: string[] = []
         var targets_skipped: number = 0;
         var targets_built_successfully: number = 0;
+
         targetData?.map(x => {
             count++;
             var targetKind = x.targetKind ?? ""
@@ -78,8 +79,10 @@ const TargetMetricsDisplay: React.FC<{
                 onFilter: (value, record) => (record.name.includes(value.toString()) ? true : false)
             },
             {
-                title: "Duration(ms)",
+                title: "Duration",
                 dataIndex: "value",
+                align: "right",
+                render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.value)}</span>,
                 sorter: (a, b) => a.value - b.value,
             },
             {
@@ -166,34 +169,26 @@ const TargetMetricsDisplay: React.FC<{
             },
         ]
 
-
         return (
             <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
-                <PortalCard icon={<DeploymentUnitOutlined />} titleBits={["Targets"]}>
+                <PortalCard type="inner" icon={<DeploymentUnitOutlined />} titleBits={["Targets"]}>
                     <Row>
                         <Space size="large">
-
                             <Statistic title="Targets Analyzed" value={targets_analyzed} formatter={formatter} />
                             <Statistic title="Targets Built Successfully" value={targets_built_successfully} formatter={formatter} valueStyle={{ color: "green" }} />
                             <Statistic title="Targets Skipped" value={targets_skipped} formatter={formatter} valueStyle={{ color: "purple" }} />
                             <Statistic title="Targets Configured" value={targetMetrics?.targetsConfigured ?? 0} formatter={formatter} />
                             <Statistic title="Targets Configured Not Including Aspects" value={targetMetrics?.targetsConfiguredNotIncludingAspects ?? 0} formatter={formatter} />
-
                         </Space>
                     </Row>
                     <Row justify="space-around" align="middle">
-                        <Col span="1" />
-                        <Col span="22">
-                            <Table
-                                columns={target_columns}
-                                dataSource={target_data}
-                                showSorterTooltip={{ target: 'sorter-icon' }}
-                            />
-                        </Col>
-                        <Col span="1" />
+                        <Table
+                            columns={target_columns}
+                            dataSource={target_data}
+                            showSorterTooltip={{ target: 'sorter-icon' }}
+                        />
                     </Row>
                 </PortalCard>
-
             </Space>
         )
     }

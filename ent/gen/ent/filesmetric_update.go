@@ -82,19 +82,23 @@ func (fmu *FilesMetricUpdate) ClearCount() *FilesMetricUpdate {
 	return fmu
 }
 
-// AddArtifactMetricIDs adds the "artifact_metrics" edge to the ArtifactMetrics entity by IDs.
-func (fmu *FilesMetricUpdate) AddArtifactMetricIDs(ids ...int) *FilesMetricUpdate {
-	fmu.mutation.AddArtifactMetricIDs(ids...)
+// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
+func (fmu *FilesMetricUpdate) SetArtifactMetricsID(id int) *FilesMetricUpdate {
+	fmu.mutation.SetArtifactMetricsID(id)
 	return fmu
 }
 
-// AddArtifactMetrics adds the "artifact_metrics" edges to the ArtifactMetrics entity.
-func (fmu *FilesMetricUpdate) AddArtifactMetrics(a ...*ArtifactMetrics) *FilesMetricUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
+func (fmu *FilesMetricUpdate) SetNillableArtifactMetricsID(id *int) *FilesMetricUpdate {
+	if id != nil {
+		fmu = fmu.SetArtifactMetricsID(*id)
 	}
-	return fmu.AddArtifactMetricIDs(ids...)
+	return fmu
+}
+
+// SetArtifactMetrics sets the "artifact_metrics" edge to the ArtifactMetrics entity.
+func (fmu *FilesMetricUpdate) SetArtifactMetrics(a *ArtifactMetrics) *FilesMetricUpdate {
+	return fmu.SetArtifactMetricsID(a.ID)
 }
 
 // Mutation returns the FilesMetricMutation object of the builder.
@@ -102,25 +106,10 @@ func (fmu *FilesMetricUpdate) Mutation() *FilesMetricMutation {
 	return fmu.mutation
 }
 
-// ClearArtifactMetrics clears all "artifact_metrics" edges to the ArtifactMetrics entity.
+// ClearArtifactMetrics clears the "artifact_metrics" edge to the ArtifactMetrics entity.
 func (fmu *FilesMetricUpdate) ClearArtifactMetrics() *FilesMetricUpdate {
 	fmu.mutation.ClearArtifactMetrics()
 	return fmu
-}
-
-// RemoveArtifactMetricIDs removes the "artifact_metrics" edge to ArtifactMetrics entities by IDs.
-func (fmu *FilesMetricUpdate) RemoveArtifactMetricIDs(ids ...int) *FilesMetricUpdate {
-	fmu.mutation.RemoveArtifactMetricIDs(ids...)
-	return fmu
-}
-
-// RemoveArtifactMetrics removes "artifact_metrics" edges to ArtifactMetrics entities.
-func (fmu *FilesMetricUpdate) RemoveArtifactMetrics(a ...*ArtifactMetrics) *FilesMetricUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return fmu.RemoveArtifactMetricIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -179,39 +168,23 @@ func (fmu *FilesMetricUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if fmu.mutation.ArtifactMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   filesmetric.ArtifactMetricsTable,
-			Columns: filesmetric.ArtifactMetricsPrimaryKey,
+			Columns: []string{filesmetric.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fmu.mutation.RemovedArtifactMetricsIDs(); len(nodes) > 0 && !fmu.mutation.ArtifactMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   filesmetric.ArtifactMetricsTable,
-			Columns: filesmetric.ArtifactMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := fmu.mutation.ArtifactMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   filesmetric.ArtifactMetricsTable,
-			Columns: filesmetric.ArtifactMetricsPrimaryKey,
+			Columns: []string{filesmetric.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
@@ -296,19 +269,23 @@ func (fmuo *FilesMetricUpdateOne) ClearCount() *FilesMetricUpdateOne {
 	return fmuo
 }
 
-// AddArtifactMetricIDs adds the "artifact_metrics" edge to the ArtifactMetrics entity by IDs.
-func (fmuo *FilesMetricUpdateOne) AddArtifactMetricIDs(ids ...int) *FilesMetricUpdateOne {
-	fmuo.mutation.AddArtifactMetricIDs(ids...)
+// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
+func (fmuo *FilesMetricUpdateOne) SetArtifactMetricsID(id int) *FilesMetricUpdateOne {
+	fmuo.mutation.SetArtifactMetricsID(id)
 	return fmuo
 }
 
-// AddArtifactMetrics adds the "artifact_metrics" edges to the ArtifactMetrics entity.
-func (fmuo *FilesMetricUpdateOne) AddArtifactMetrics(a ...*ArtifactMetrics) *FilesMetricUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
+func (fmuo *FilesMetricUpdateOne) SetNillableArtifactMetricsID(id *int) *FilesMetricUpdateOne {
+	if id != nil {
+		fmuo = fmuo.SetArtifactMetricsID(*id)
 	}
-	return fmuo.AddArtifactMetricIDs(ids...)
+	return fmuo
+}
+
+// SetArtifactMetrics sets the "artifact_metrics" edge to the ArtifactMetrics entity.
+func (fmuo *FilesMetricUpdateOne) SetArtifactMetrics(a *ArtifactMetrics) *FilesMetricUpdateOne {
+	return fmuo.SetArtifactMetricsID(a.ID)
 }
 
 // Mutation returns the FilesMetricMutation object of the builder.
@@ -316,25 +293,10 @@ func (fmuo *FilesMetricUpdateOne) Mutation() *FilesMetricMutation {
 	return fmuo.mutation
 }
 
-// ClearArtifactMetrics clears all "artifact_metrics" edges to the ArtifactMetrics entity.
+// ClearArtifactMetrics clears the "artifact_metrics" edge to the ArtifactMetrics entity.
 func (fmuo *FilesMetricUpdateOne) ClearArtifactMetrics() *FilesMetricUpdateOne {
 	fmuo.mutation.ClearArtifactMetrics()
 	return fmuo
-}
-
-// RemoveArtifactMetricIDs removes the "artifact_metrics" edge to ArtifactMetrics entities by IDs.
-func (fmuo *FilesMetricUpdateOne) RemoveArtifactMetricIDs(ids ...int) *FilesMetricUpdateOne {
-	fmuo.mutation.RemoveArtifactMetricIDs(ids...)
-	return fmuo
-}
-
-// RemoveArtifactMetrics removes "artifact_metrics" edges to ArtifactMetrics entities.
-func (fmuo *FilesMetricUpdateOne) RemoveArtifactMetrics(a ...*ArtifactMetrics) *FilesMetricUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return fmuo.RemoveArtifactMetricIDs(ids...)
 }
 
 // Where appends a list predicates to the FilesMetricUpdate builder.
@@ -423,39 +385,23 @@ func (fmuo *FilesMetricUpdateOne) sqlSave(ctx context.Context) (_node *FilesMetr
 	}
 	if fmuo.mutation.ArtifactMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   filesmetric.ArtifactMetricsTable,
-			Columns: filesmetric.ArtifactMetricsPrimaryKey,
+			Columns: []string{filesmetric.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fmuo.mutation.RemovedArtifactMetricsIDs(); len(nodes) > 0 && !fmuo.mutation.ArtifactMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   filesmetric.ArtifactMetricsTable,
-			Columns: filesmetric.ArtifactMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := fmuo.mutation.ArtifactMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   filesmetric.ArtifactMetricsTable,
-			Columns: filesmetric.ArtifactMetricsPrimaryKey,
+			Columns: []string{filesmetric.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),

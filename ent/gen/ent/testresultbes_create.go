@@ -321,10 +321,10 @@ func (trbc *TestResultBESCreate) createSpec() (*TestResultBES, *sqlgraph.CreateS
 	}
 	if nodes := trbc.mutation.TestActionOutputIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   testresultbes.TestActionOutputTable,
-			Columns: testresultbes.TestActionOutputPrimaryKey,
+			Columns: []string{testresultbes.TestActionOutputColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt),
@@ -337,7 +337,7 @@ func (trbc *TestResultBESCreate) createSpec() (*TestResultBES, *sqlgraph.CreateS
 	}
 	if nodes := trbc.mutation.ExecutionInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   testresultbes.ExecutionInfoTable,
 			Columns: []string{testresultbes.ExecutionInfoColumn},
@@ -349,7 +349,6 @@ func (trbc *TestResultBESCreate) createSpec() (*TestResultBES, *sqlgraph.CreateS
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.test_result_bes_execution_info = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

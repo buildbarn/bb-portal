@@ -193,7 +193,7 @@ func HasBuildGraphMetrics() predicate.EvaluationStat {
 	return predicate.EvaluationStat(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, BuildGraphMetricsTable, BuildGraphMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, BuildGraphMetricsTable, BuildGraphMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

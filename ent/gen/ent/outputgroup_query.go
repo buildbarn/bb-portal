@@ -21,18 +21,17 @@ import (
 // OutputGroupQuery is the builder for querying OutputGroup entities.
 type OutputGroupQuery struct {
 	config
-	ctx                     *QueryContext
-	order                   []outputgroup.OrderOption
-	inters                  []Interceptor
-	predicates              []predicate.OutputGroup
-	withTargetComplete      *TargetCompleteQuery
-	withInlineFiles         *TestFileQuery
-	withFileSets            *NamedSetOfFilesQuery
-	withFKs                 bool
-	modifiers               []func(*sql.Selector)
-	loadTotal               []func(context.Context, []*OutputGroup) error
-	withNamedTargetComplete map[string]*TargetCompleteQuery
-	withNamedInlineFiles    map[string]*TestFileQuery
+	ctx                  *QueryContext
+	order                []outputgroup.OrderOption
+	inters               []Interceptor
+	predicates           []predicate.OutputGroup
+	withTargetComplete   *TargetCompleteQuery
+	withInlineFiles      *TestFileQuery
+	withFileSets         *NamedSetOfFilesQuery
+	withFKs              bool
+	modifiers            []func(*sql.Selector)
+	loadTotal            []func(context.Context, []*OutputGroup) error
+	withNamedInlineFiles map[string]*TestFileQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -83,7 +82,7 @@ func (ogq *OutputGroupQuery) QueryTargetComplete() *TargetCompleteQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(outputgroup.Table, outputgroup.FieldID, selector),
 			sqlgraph.To(targetcomplete.Table, targetcomplete.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, outputgroup.TargetCompleteTable, outputgroup.TargetCompleteColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, outputgroup.TargetCompleteTable, outputgroup.TargetCompleteColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(ogq.driver.Dialect(), step)
 		return fromU, nil
@@ -127,7 +126,7 @@ func (ogq *OutputGroupQuery) QueryFileSets() *NamedSetOfFilesQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(outputgroup.Table, outputgroup.FieldID, selector),
 			sqlgraph.To(namedsetoffiles.Table, namedsetoffiles.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, outputgroup.FileSetsTable, outputgroup.FileSetsColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, outputgroup.FileSetsTable, outputgroup.FileSetsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(ogq.driver.Dialect(), step)
 		return fromU, nil
@@ -454,7 +453,7 @@ func (ogq *OutputGroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 			ogq.withFileSets != nil,
 		}
 	)
-	if ogq.withFileSets != nil {
+	if ogq.withTargetComplete != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -482,9 +481,8 @@ func (ogq *OutputGroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 		return nodes, nil
 	}
 	if query := ogq.withTargetComplete; query != nil {
-		if err := ogq.loadTargetComplete(ctx, query, nodes,
-			func(n *OutputGroup) { n.Edges.TargetComplete = []*TargetComplete{} },
-			func(n *OutputGroup, e *TargetComplete) { n.Edges.TargetComplete = append(n.Edges.TargetComplete, e) }); err != nil {
+		if err := ogq.loadTargetComplete(ctx, query, nodes, nil,
+			func(n *OutputGroup, e *TargetComplete) { n.Edges.TargetComplete = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -498,13 +496,6 @@ func (ogq *OutputGroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	if query := ogq.withFileSets; query != nil {
 		if err := ogq.loadFileSets(ctx, query, nodes, nil,
 			func(n *OutputGroup, e *NamedSetOfFiles) { n.Edges.FileSets = e }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range ogq.withNamedTargetComplete {
-		if err := ogq.loadTargetComplete(ctx, query, nodes,
-			func(n *OutputGroup) { n.appendNamedTargetComplete(name) },
-			func(n *OutputGroup, e *TargetComplete) { n.appendNamedTargetComplete(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -524,33 +515,34 @@ func (ogq *OutputGroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 }
 
 func (ogq *OutputGroupQuery) loadTargetComplete(ctx context.Context, query *TargetCompleteQuery, nodes []*OutputGroup, init func(*OutputGroup), assign func(*OutputGroup, *TargetComplete)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*OutputGroup)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*OutputGroup)
 	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
+		if nodes[i].target_complete_output_group == nil {
+			continue
 		}
+		fk := *nodes[i].target_complete_output_group
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.withFKs = true
-	query.Where(predicate.TargetComplete(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(outputgroup.TargetCompleteColumn), fks...))
-	}))
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(targetcomplete.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.target_complete_output_group
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "target_complete_output_group" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "target_complete_output_group" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "target_complete_output_group" returned %v`, n.ID)
 		}
-		assign(node, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }
@@ -586,34 +578,30 @@ func (ogq *OutputGroupQuery) loadInlineFiles(ctx context.Context, query *TestFil
 	return nil
 }
 func (ogq *OutputGroupQuery) loadFileSets(ctx context.Context, query *NamedSetOfFilesQuery, nodes []*OutputGroup, init func(*OutputGroup), assign func(*OutputGroup, *NamedSetOfFiles)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*OutputGroup)
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*OutputGroup)
 	for i := range nodes {
-		if nodes[i].output_group_file_sets == nil {
-			continue
-		}
-		fk := *nodes[i].output_group_file_sets
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(namedsetoffiles.IDIn(ids...))
+	query.withFKs = true
+	query.Where(predicate.NamedSetOfFiles(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(outputgroup.FileSetsColumn), fks...))
+	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
+		fk := n.output_group_file_sets
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "output_group_file_sets" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "output_group_file_sets" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "output_group_file_sets" returned %v for node %v`, *fk, n.ID)
 		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -700,20 +688,6 @@ func (ogq *OutputGroupQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedTargetComplete tells the query-builder to eager-load the nodes that are connected to the "target_complete"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (ogq *OutputGroupQuery) WithNamedTargetComplete(name string, opts ...func(*TargetCompleteQuery)) *OutputGroupQuery {
-	query := (&TargetCompleteClient{config: ogq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if ogq.withNamedTargetComplete == nil {
-		ogq.withNamedTargetComplete = make(map[string]*TargetCompleteQuery)
-	}
-	ogq.withNamedTargetComplete[name] = query
-	return ogq
 }
 
 // WithNamedInlineFiles tells the query-builder to eager-load the nodes that are connected to the "inline_files"

@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 )
 
@@ -20,14 +21,15 @@ type PackageMetrics struct {
 	PackagesLoaded int64 `json:"packages_loaded,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PackageMetricsQuery when eager-loading is set.
-	Edges        PackageMetricsEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                   PackageMetricsEdges `json:"edges"`
+	metrics_package_metrics *int
+	selectValues            sql.SelectValues
 }
 
 // PackageMetricsEdges holds the relations/edges for other nodes in the graph.
 type PackageMetricsEdges struct {
 	// Metrics holds the value of the metrics edge.
-	Metrics []*Metrics `json:"metrics,omitempty"`
+	Metrics *Metrics `json:"metrics,omitempty"`
 	// PackageLoadMetrics holds the value of the package_load_metrics edge.
 	PackageLoadMetrics []*PackageLoadMetrics `json:"package_load_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -36,15 +38,16 @@ type PackageMetricsEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [2]map[string]int
 
-	namedMetrics            map[string][]*Metrics
 	namedPackageLoadMetrics map[string][]*PackageLoadMetrics
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e PackageMetricsEdges) MetricsOrErr() ([]*Metrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e PackageMetricsEdges) MetricsOrErr() (*Metrics, error) {
+	if e.Metrics != nil {
 		return e.Metrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
 }
@@ -64,6 +67,8 @@ func (*PackageMetrics) scanValues(columns []string) ([]any, error) {
 	for i := range columns {
 		switch columns[i] {
 		case packagemetrics.FieldID, packagemetrics.FieldPackagesLoaded:
+			values[i] = new(sql.NullInt64)
+		case packagemetrics.ForeignKeys[0]: // metrics_package_metrics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -91,6 +96,13 @@ func (pm *PackageMetrics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field packages_loaded", values[i])
 			} else if value.Valid {
 				pm.PackagesLoaded = value.Int64
+			}
+		case packagemetrics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field metrics_package_metrics", value)
+			} else if value.Valid {
+				pm.metrics_package_metrics = new(int)
+				*pm.metrics_package_metrics = int(value.Int64)
 			}
 		default:
 			pm.selectValues.Set(columns[i], values[i])
@@ -142,30 +154,6 @@ func (pm *PackageMetrics) String() string {
 	builder.WriteString(fmt.Sprintf("%v", pm.PackagesLoaded))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedMetrics returns the Metrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (pm *PackageMetrics) NamedMetrics(name string) ([]*Metrics, error) {
-	if pm.Edges.namedMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := pm.Edges.namedMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (pm *PackageMetrics) appendNamedMetrics(name string, edges ...*Metrics) {
-	if pm.Edges.namedMetrics == nil {
-		pm.Edges.namedMetrics = make(map[string][]*Metrics)
-	}
-	if len(edges) == 0 {
-		pm.Edges.namedMetrics[name] = []*Metrics{}
-	} else {
-		pm.Edges.namedMetrics[name] = append(pm.Edges.namedMetrics[name], edges...)
-	}
 }
 
 // NamedPackageLoadMetrics returns the PackageLoadMetrics named value or an error if the edge was not

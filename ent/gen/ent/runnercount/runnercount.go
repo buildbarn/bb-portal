@@ -22,11 +22,13 @@ const (
 	EdgeActionSummary = "action_summary"
 	// Table holds the table name of the runnercount in the database.
 	Table = "runner_counts"
-	// ActionSummaryTable is the table that holds the action_summary relation/edge. The primary key declared below.
-	ActionSummaryTable = "action_summary_runner_count"
+	// ActionSummaryTable is the table that holds the action_summary relation/edge.
+	ActionSummaryTable = "runner_counts"
 	// ActionSummaryInverseTable is the table name for the ActionSummary entity.
 	// It exists in this package in order to avoid circular dependency with the "actionsummary" package.
 	ActionSummaryInverseTable = "action_summaries"
+	// ActionSummaryColumn is the table column denoting the action_summary relation/edge.
+	ActionSummaryColumn = "action_summary_runner_count"
 )
 
 // Columns holds all SQL columns for runnercount fields.
@@ -37,16 +39,21 @@ var Columns = []string{
 	FieldActionsExecuted,
 }
 
-var (
-	// ActionSummaryPrimaryKey and ActionSummaryColumn2 are the table columns denoting the
-	// primary key for the action_summary relation (M2M).
-	ActionSummaryPrimaryKey = []string{"action_summary_id", "runner_count_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "runner_counts"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"action_summary_runner_count",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -76,23 +83,16 @@ func ByActionsExecuted(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldActionsExecuted, opts...).ToFunc()
 }
 
-// ByActionSummaryCount orders the results by action_summary count.
-func ByActionSummaryCount(opts ...sql.OrderTermOption) OrderOption {
+// ByActionSummaryField orders the results by action_summary field.
+func ByActionSummaryField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newActionSummaryStep(), opts...)
-	}
-}
-
-// ByActionSummary orders the results by action_summary terms.
-func ByActionSummary(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newActionSummaryStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newActionSummaryStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newActionSummaryStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ActionSummaryInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, ActionSummaryTable, ActionSummaryPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.M2O, true, ActionSummaryTable, ActionSummaryColumn),
 	)
 }

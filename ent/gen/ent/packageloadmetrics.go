@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 )
 
 // PackageLoadMetrics is the model entity for the PackageLoadMetrics schema.
@@ -30,28 +31,29 @@ type PackageLoadMetrics struct {
 	PackageOverhead uint64 `json:"package_overhead,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PackageLoadMetricsQuery when eager-loading is set.
-	Edges        PackageLoadMetricsEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                                PackageLoadMetricsEdges `json:"edges"`
+	package_metrics_package_load_metrics *int
+	selectValues                         sql.SelectValues
 }
 
 // PackageLoadMetricsEdges holds the relations/edges for other nodes in the graph.
 type PackageLoadMetricsEdges struct {
 	// PackageMetrics holds the value of the package_metrics edge.
-	PackageMetrics []*PackageMetrics `json:"package_metrics,omitempty"`
+	PackageMetrics *PackageMetrics `json:"package_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedPackageMetrics map[string][]*PackageMetrics
 }
 
 // PackageMetricsOrErr returns the PackageMetrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e PackageLoadMetricsEdges) PackageMetricsOrErr() ([]*PackageMetrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e PackageLoadMetricsEdges) PackageMetricsOrErr() (*PackageMetrics, error) {
+	if e.PackageMetrics != nil {
 		return e.PackageMetrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: packagemetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "package_metrics"}
 }
@@ -65,6 +67,8 @@ func (*PackageLoadMetrics) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case packageloadmetrics.FieldName:
 			values[i] = new(sql.NullString)
+		case packageloadmetrics.ForeignKeys[0]: // package_metrics_package_load_metrics
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -121,6 +125,13 @@ func (plm *PackageLoadMetrics) assignValues(columns []string, values []any) erro
 				return fmt.Errorf("unexpected type %T for field package_overhead", values[i])
 			} else if value.Valid {
 				plm.PackageOverhead = uint64(value.Int64)
+			}
+		case packageloadmetrics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field package_metrics_package_load_metrics", value)
+			} else if value.Valid {
+				plm.package_metrics_package_load_metrics = new(int)
+				*plm.package_metrics_package_load_metrics = int(value.Int64)
 			}
 		default:
 			plm.selectValues.Set(columns[i], values[i])
@@ -182,30 +193,6 @@ func (plm *PackageLoadMetrics) String() string {
 	builder.WriteString(fmt.Sprintf("%v", plm.PackageOverhead))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedPackageMetrics returns the PackageMetrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (plm *PackageLoadMetrics) NamedPackageMetrics(name string) ([]*PackageMetrics, error) {
-	if plm.Edges.namedPackageMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := plm.Edges.namedPackageMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (plm *PackageLoadMetrics) appendNamedPackageMetrics(name string, edges ...*PackageMetrics) {
-	if plm.Edges.namedPackageMetrics == nil {
-		plm.Edges.namedPackageMetrics = make(map[string][]*PackageMetrics)
-	}
-	if len(edges) == 0 {
-		plm.Edges.namedPackageMetrics[name] = []*PackageMetrics{}
-	} else {
-		plm.Edges.namedPackageMetrics[name] = append(plm.Edges.namedPackageMetrics[name], edges...)
-	}
 }
 
 // PackageLoadMetricsSlice is a parsable slice of PackageLoadMetrics.

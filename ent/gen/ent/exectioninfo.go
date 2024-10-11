@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingbreakdown"
 )
 
@@ -30,14 +31,14 @@ type ExectionInfo struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ExectionInfoQuery when eager-loading is set.
 	Edges                          ExectionInfoEdges `json:"edges"`
-	exection_info_timing_breakdown *int
+	test_result_bes_execution_info *int
 	selectValues                   sql.SelectValues
 }
 
 // ExectionInfoEdges holds the relations/edges for other nodes in the graph.
 type ExectionInfoEdges struct {
 	// TestResult holds the value of the test_result edge.
-	TestResult []*TestResultBES `json:"test_result,omitempty"`
+	TestResult *TestResultBES `json:"test_result,omitempty"`
 	// TimingBreakdown holds the value of the timing_breakdown edge.
 	TimingBreakdown *TimingBreakdown `json:"timing_breakdown,omitempty"`
 	// ResourceUsage holds the value of the resource_usage edge.
@@ -48,15 +49,16 @@ type ExectionInfoEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [3]map[string]int
 
-	namedTestResult    map[string][]*TestResultBES
 	namedResourceUsage map[string][]*ResourceUsage
 }
 
 // TestResultOrErr returns the TestResult value or an error if the edge
-// was not loaded in eager-loading.
-func (e ExectionInfoEdges) TestResultOrErr() ([]*TestResultBES, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ExectionInfoEdges) TestResultOrErr() (*TestResultBES, error) {
+	if e.TestResult != nil {
 		return e.TestResult, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: testresultbes.Label}
 	}
 	return nil, &NotLoadedError{edge: "test_result"}
 }
@@ -92,7 +94,7 @@ func (*ExectionInfo) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case exectioninfo.FieldStrategy, exectioninfo.FieldHostname:
 			values[i] = new(sql.NullString)
-		case exectioninfo.ForeignKeys[0]: // exection_info_timing_breakdown
+		case exectioninfo.ForeignKeys[0]: // test_result_bes_execution_info
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -147,10 +149,10 @@ func (ei *ExectionInfo) assignValues(columns []string, values []any) error {
 			}
 		case exectioninfo.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field exection_info_timing_breakdown", value)
+				return fmt.Errorf("unexpected type %T for edge-field test_result_bes_execution_info", value)
 			} else if value.Valid {
-				ei.exection_info_timing_breakdown = new(int)
-				*ei.exection_info_timing_breakdown = int(value.Int64)
+				ei.test_result_bes_execution_info = new(int)
+				*ei.test_result_bes_execution_info = int(value.Int64)
 			}
 		default:
 			ei.selectValues.Set(columns[i], values[i])
@@ -219,30 +221,6 @@ func (ei *ExectionInfo) String() string {
 	builder.WriteString(ei.Hostname)
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedTestResult returns the TestResult named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (ei *ExectionInfo) NamedTestResult(name string) ([]*TestResultBES, error) {
-	if ei.Edges.namedTestResult == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := ei.Edges.namedTestResult[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (ei *ExectionInfo) appendNamedTestResult(name string, edges ...*TestResultBES) {
-	if ei.Edges.namedTestResult == nil {
-		ei.Edges.namedTestResult = make(map[string][]*TestResultBES)
-	}
-	if len(edges) == 0 {
-		ei.Edges.namedTestResult[name] = []*TestResultBES{}
-	} else {
-		ei.Edges.namedTestResult[name] = append(ei.Edges.namedTestResult[name], edges...)
-	}
 }
 
 // NamedResourceUsage returns the ResourceUsage named value or an error if the edge was not

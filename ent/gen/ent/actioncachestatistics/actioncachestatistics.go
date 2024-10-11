@@ -28,16 +28,20 @@ const (
 	EdgeMissDetails = "miss_details"
 	// Table holds the table name of the actioncachestatistics in the database.
 	Table = "action_cache_statistics"
-	// ActionSummaryTable is the table that holds the action_summary relation/edge. The primary key declared below.
-	ActionSummaryTable = "action_summary_action_cache_statistics"
+	// ActionSummaryTable is the table that holds the action_summary relation/edge.
+	ActionSummaryTable = "action_cache_statistics"
 	// ActionSummaryInverseTable is the table name for the ActionSummary entity.
 	// It exists in this package in order to avoid circular dependency with the "actionsummary" package.
 	ActionSummaryInverseTable = "action_summaries"
-	// MissDetailsTable is the table that holds the miss_details relation/edge. The primary key declared below.
-	MissDetailsTable = "action_cache_statistics_miss_details"
+	// ActionSummaryColumn is the table column denoting the action_summary relation/edge.
+	ActionSummaryColumn = "action_summary_action_cache_statistics"
+	// MissDetailsTable is the table that holds the miss_details relation/edge.
+	MissDetailsTable = "miss_details"
 	// MissDetailsInverseTable is the table name for the MissDetail entity.
 	// It exists in this package in order to avoid circular dependency with the "missdetail" package.
 	MissDetailsInverseTable = "miss_details"
+	// MissDetailsColumn is the table column denoting the miss_details relation/edge.
+	MissDetailsColumn = "action_cache_statistics_miss_details"
 )
 
 // Columns holds all SQL columns for actioncachestatistics fields.
@@ -50,19 +54,21 @@ var Columns = []string{
 	FieldMisses,
 }
 
-var (
-	// ActionSummaryPrimaryKey and ActionSummaryColumn2 are the table columns denoting the
-	// primary key for the action_summary relation (M2M).
-	ActionSummaryPrimaryKey = []string{"action_summary_id", "action_cache_statistics_id"}
-	// MissDetailsPrimaryKey and MissDetailsColumn2 are the table columns denoting the
-	// primary key for the miss_details relation (M2M).
-	MissDetailsPrimaryKey = []string{"action_cache_statistics_id", "miss_detail_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "action_cache_statistics"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"action_summary_action_cache_statistics",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -102,17 +108,10 @@ func ByMisses(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMisses, opts...).ToFunc()
 }
 
-// ByActionSummaryCount orders the results by action_summary count.
-func ByActionSummaryCount(opts ...sql.OrderTermOption) OrderOption {
+// ByActionSummaryField orders the results by action_summary field.
+func ByActionSummaryField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newActionSummaryStep(), opts...)
-	}
-}
-
-// ByActionSummary orders the results by action_summary terms.
-func ByActionSummary(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newActionSummaryStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newActionSummaryStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -133,13 +132,13 @@ func newActionSummaryStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ActionSummaryInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, ActionSummaryTable, ActionSummaryPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, true, ActionSummaryTable, ActionSummaryColumn),
 	)
 }
 func newMissDetailsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MissDetailsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, MissDetailsTable, MissDetailsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, MissDetailsTable, MissDetailsColumn),
 	)
 }

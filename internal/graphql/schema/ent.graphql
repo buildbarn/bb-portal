@@ -7,7 +7,7 @@ type ActionCacheStatistics implements Node {
   loadTimeInMs: Int
   hits: Int
   misses: Int
-  actionSummary: [ActionSummary!]
+  actionSummary: ActionSummary
   missDetails: [MissDetail!]
 }
 """
@@ -114,7 +114,7 @@ type ActionData implements Node {
   lastEndedMs: Int
   systemTime: Int
   userTime: Int
-  actionSummary: [ActionSummary!]
+  actionSummary: ActionSummary
 }
 """
 ActionDataWhereInput is used for filtering ActionData objects.
@@ -246,7 +246,7 @@ type ActionSummary implements Node {
   metrics: Metrics
   actionData: [ActionData!]
   runnerCount: [RunnerCount!]
-  actionCacheStatistics: [ActionCacheStatistics!]
+  actionCacheStatistics: ActionCacheStatistics
 }
 """
 ActionSummaryWhereInput is used for filtering ActionSummary objects.
@@ -342,11 +342,11 @@ input ActionSummaryWhereInput {
 }
 type ArtifactMetrics implements Node {
   id: ID!
-  metrics: [Metrics!]
-  sourceArtifactsRead: [FilesMetric!]
-  outputArtifactsSeen: [FilesMetric!]
-  outputArtifactsFromActionCache: [FilesMetric!]
-  topLevelArtifacts: [FilesMetric!]
+  metrics: Metrics
+  sourceArtifactsRead: FilesMetric
+  outputArtifactsSeen: FilesMetric
+  outputArtifactsFromActionCache: FilesMetric
+  topLevelArtifacts: FilesMetric
 }
 """
 ArtifactMetricsWhereInput is used for filtering ArtifactMetrics objects.
@@ -444,6 +444,26 @@ type BazelInvocationEdge {
   A cursor for use in pagination.
   """
   cursor: Cursor!
+}
+"""
+Ordering options for BazelInvocation connections
+"""
+input BazelInvocationOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order BazelInvocations.
+  """
+  field: BazelInvocationOrderField!
+}
+"""
+Properties by which BazelInvocation connections can be ordered.
+"""
+enum BazelInvocationOrderField {
+  STARTED_AT
+  USER_LDAP
 }
 type BazelInvocationProblem implements Node {
   id: ID!
@@ -935,12 +955,12 @@ type BuildGraphMetrics implements Node {
   otherConfiguredTargetCount: Int
   outputArtifactCount: Int
   postInvocationSkyframeNodeCount: Int
-  metrics: [Metrics!]
-  dirtiedValues: [EvaluationStat!]
-  changedValues: [EvaluationStat!]
-  builtValues: [EvaluationStat!]
-  cleanedValues: [EvaluationStat!]
-  evaluatedValues: [EvaluationStat!]
+  metrics: Metrics
+  dirtiedValues: EvaluationStat
+  changedValues: EvaluationStat
+  builtValues: EvaluationStat
+  cleanedValues: EvaluationStat
+  evaluatedValues: EvaluationStat
 }
 """
 BuildGraphMetricsWhereInput is used for filtering BuildGraphMetrics objects.
@@ -1165,7 +1185,7 @@ type CumulativeMetrics implements Node {
   id: ID!
   numAnalyses: Int
   numBuilds: Int
-  metrics: [Metrics!]
+  metrics: Metrics
 }
 """
 CumulativeMetricsWhereInput is used for filtering CumulativeMetrics objects.
@@ -1225,7 +1245,7 @@ https://relay.dev/graphql/connections.htm#sec-Cursor
 scalar Cursor
 type DynamicExecutionMetrics implements Node {
   id: ID!
-  metrics: [Metrics!]
+  metrics: Metrics
   raceStatistics: [RaceStatistics!]
 }
 """
@@ -1262,7 +1282,7 @@ type EvaluationStat implements Node {
   id: ID!
   skyfunctionName: String
   count: Int
-  buildGraphMetrics: [BuildGraphMetrics!]
+  buildGraphMetrics: BuildGraphMetrics
 }
 """
 EvaluationStatWhereInput is used for filtering EvaluationStat objects.
@@ -1455,7 +1475,7 @@ type ExectionInfo implements Node {
   cachedRemotely: Boolean
   exitCode: Int
   hostname: String
-  testResult: [TestResultBES!]
+  testResult: TestResultBES
   timingBreakdown: TimingBreakdown
   resourceUsage: [ResourceUsage!]
 }
@@ -1567,7 +1587,7 @@ type FilesMetric implements Node {
   id: ID!
   sizeInBytes: Int
   count: Int
-  artifactMetrics: [ArtifactMetrics!]
+  artifactMetrics: ArtifactMetrics
 }
 """
 FilesMetricWhereInput is used for filtering FilesMetric objects.
@@ -1624,7 +1644,7 @@ type GarbageMetrics implements Node {
   id: ID!
   type: String
   garbageCollected: Int
-  memoryMetrics: [MemoryMetrics!]
+  memoryMetrics: MemoryMetrics
 }
 """
 GarbageMetricsWhereInput is used for filtering GarbageMetrics objects.
@@ -1687,7 +1707,7 @@ type MemoryMetrics implements Node {
   peakPostGcHeapSize: Int
   usedHeapSizePostBuild: Int
   peakPostGcTenuredSpaceHeapSize: Int
-  metrics: [Metrics!]
+  metrics: Metrics
   garbageMetrics: [GarbageMetrics!]
 }
 """
@@ -1762,16 +1782,16 @@ input MemoryMetricsWhereInput {
 type Metrics implements Node {
   id: ID!
   bazelInvocation: BazelInvocation
-  actionSummary: [ActionSummary!]
-  memoryMetrics: [MemoryMetrics!]
-  targetMetrics: [TargetMetrics!]
-  packageMetrics: [PackageMetrics!]
-  timingMetrics: [TimingMetrics!]
-  cumulativeMetrics: [CumulativeMetrics!]
-  artifactMetrics: [ArtifactMetrics!]
-  networkMetrics: [NetworkMetrics!]
-  dynamicExecutionMetrics: [DynamicExecutionMetrics!]
-  buildGraphMetrics: [BuildGraphMetrics!]
+  actionSummary: ActionSummary
+  memoryMetrics: MemoryMetrics
+  targetMetrics: TargetMetrics
+  packageMetrics: PackageMetrics
+  timingMetrics: TimingMetrics
+  cumulativeMetrics: CumulativeMetrics
+  artifactMetrics: ArtifactMetrics
+  networkMetrics: NetworkMetrics
+  dynamicExecutionMetrics: DynamicExecutionMetrics
+  buildGraphMetrics: BuildGraphMetrics
 }
 """
 A connection to a list of items.
@@ -1882,7 +1902,7 @@ type MissDetail implements Node {
   id: ID!
   reason: MissDetailReason
   count: Int
-  actionCacheStatistics: [ActionCacheStatistics!]
+  actionCacheStatistics: ActionCacheStatistics
 }
 """
 MissDetailReason is enum for the field reason
@@ -1946,7 +1966,7 @@ input MissDetailWhereInput {
 }
 type NamedSetOfFiles implements Node {
   id: ID!
-  outputGroup: [OutputGroup!]
+  outputGroup: OutputGroup
   files: [TestFile!]
   fileSets: NamedSetOfFiles
 }
@@ -1987,8 +2007,8 @@ input NamedSetOfFilesWhereInput {
 }
 type NetworkMetrics implements Node {
   id: ID!
-  metrics: [Metrics!]
-  systemNetworkStats: [SystemNetworkStats!]
+  metrics: Metrics
+  systemNetworkStats: SystemNetworkStats
 }
 """
 NetworkMetricsWhereInput is used for filtering NetworkMetrics objects.
@@ -2047,7 +2067,7 @@ type OutputGroup implements Node {
   id: ID!
   name: String
   incomplete: Boolean
-  targetComplete: [TargetComplete!]
+  targetComplete: TargetComplete
   inlineFiles: [TestFile!]
   fileSets: NamedSetOfFiles
 }
@@ -2119,7 +2139,7 @@ type PackageLoadMetrics implements Node {
   computationSteps: Int
   numTransitiveLoads: Int
   packageOverhead: Int
-  packageMetrics: [PackageMetrics!]
+  packageMetrics: PackageMetrics
 }
 """
 PackageLoadMetricsWhereInput is used for filtering PackageLoadMetrics objects.
@@ -2232,7 +2252,7 @@ input PackageLoadMetricsWhereInput {
 type PackageMetrics implements Node {
   id: ID!
   packagesLoaded: Int
-  metrics: [Metrics!]
+  metrics: Metrics
   packageLoadMetrics: [PackageLoadMetrics!]
 }
 """
@@ -2341,6 +2361,11 @@ type Query {
     last: Int
 
     """
+    Ordering options for BazelInvocations returned from the connection.
+    """
+    orderBy: BazelInvocationOrder
+
+    """
     Filtering options for BazelInvocations returned from the connection.
     """
     where: BazelInvocationWhereInput
@@ -2423,6 +2448,37 @@ type Query {
     """
     where: RunnerCountWhereInput
   ): RunnerCountConnection!
+  findTests(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for TestCollections returned from the connection.
+    """
+    orderBy: TestCollectionOrder
+
+    """
+    Filtering options for TestCollections returned from the connection.
+    """
+    where: TestCollectionWhereInput
+  ): TestCollectionConnection!
 }
 type RaceStatistics implements Node {
   id: ID!
@@ -2431,7 +2487,7 @@ type RaceStatistics implements Node {
   remoteRunner: String
   localWins: Int
   renoteWins: Int
-  dynamicExecutionMetrics: [DynamicExecutionMetrics!]
+  dynamicExecutionMetrics: DynamicExecutionMetrics
 }
 """
 RaceStatisticsWhereInput is used for filtering RaceStatistics objects.
@@ -2542,7 +2598,7 @@ type ResourceUsage implements Node {
   id: ID!
   name: String
   value: String
-  executionInfo: [ExectionInfo!]
+  executionInfo: ExectionInfo
 }
 """
 ResourceUsageWhereInput is used for filtering ResourceUsage objects.
@@ -2610,7 +2666,7 @@ type RunnerCount implements Node {
   name: String
   execKind: String
   actionsExecuted: Int
-  actionSummary: [ActionSummary!]
+  actionSummary: ActionSummary
 }
 """
 A connection to a list of items.
@@ -2866,7 +2922,7 @@ type TargetComplete implements Node {
   testTimeoutSeconds: Int
   testTimeout: Int
   testSize: TargetCompleteTestSize
-  targetPair: [TargetPair!]
+  targetPair: TargetPair
   importantOutput: [TestFile!]
   directoryOutput: [TestFile!]
   outputGroup: OutputGroup
@@ -3000,7 +3056,7 @@ type TargetConfigured implements Node {
   targetKind: String
   startTimeInMs: Int
   testSize: TargetConfiguredTestSize
-  targetPair: [TargetPair!]
+  targetPair: TargetPair
 }
 """
 TargetConfiguredTestSize is enum for the field test_size
@@ -3082,7 +3138,7 @@ type TargetMetrics implements Node {
   targetsLoaded: Int
   targetsConfigured: Int
   targetsConfiguredNotIncludingAspects: Int
-  metrics: [Metrics!]
+  metrics: Metrics
 }
 """
 TargetMetricsWhereInput is used for filtering TargetMetrics objects.
@@ -3156,7 +3212,7 @@ type TargetPair implements Node {
   targetKind: String
   testSize: TargetPairTestSize
   abortReason: TargetPairAbortReason
-  bazelInvocation: [BazelInvocation!]
+  bazelInvocation: BazelInvocation
   configuration: TargetConfigured
   completion: TargetComplete
 }
@@ -3303,10 +3359,61 @@ type TestCollection implements Node {
   strategy: String
   cachedLocally: Boolean
   cachedRemotely: Boolean
+  firstSeen: Time
   durationMs: Int
-  bazelInvocation: [BazelInvocation!]
+  bazelInvocation: BazelInvocation
   testSummary: TestSummary
   testResults: [TestResultBES!]
+}
+"""
+A connection to a list of items.
+"""
+type TestCollectionConnection {
+  """
+  A list of edges.
+  """
+  edges: [TestCollectionEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type TestCollectionEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: TestCollection
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for TestCollection connections
+"""
+input TestCollectionOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order TestCollections.
+  """
+  field: TestCollectionOrderField!
+}
+"""
+Properties by which TestCollection connections can be ordered.
+"""
+enum TestCollectionOrderField {
+  FIRST_SEEN
+  DURATION
 }
 """
 TestCollectionOverallStatus is enum for the field overall_status
@@ -3401,6 +3508,19 @@ input TestCollectionWhereInput {
   cachedRemotelyIsNil: Boolean
   cachedRemotelyNotNil: Boolean
   """
+  first_seen field predicates
+  """
+  firstSeen: Time
+  firstSeenNEQ: Time
+  firstSeenIn: [Time!]
+  firstSeenNotIn: [Time!]
+  firstSeenGT: Time
+  firstSeenGTE: Time
+  firstSeenLT: Time
+  firstSeenLTE: Time
+  firstSeenIsNil: Boolean
+  firstSeenNotNil: Boolean
+  """
   duration_ms field predicates
   """
   durationMs: Int
@@ -3436,7 +3556,7 @@ type TestFile implements Node {
   length: Int
   name: String
   prefix: [String!]
-  testResult: [TestResultBES!]
+  testResult: TestResultBES
 }
 """
 TestFileWhereInput is used for filtering TestFile objects.
@@ -3715,7 +3835,7 @@ type TestSummary implements Node {
   lastStopTime: Int
   totalRunDuration: Int
   label: String
-  testCollection: [TestCollection!]
+  testCollection: TestCollection
   passed: [TestFile!]
   failed: [TestFile!]
 }
@@ -3903,7 +4023,7 @@ type TimingBreakdown implements Node {
   id: ID!
   name: String
   time: String
-  executionInfo: [ExectionInfo!]
+  executionInfo: ExectionInfo
   child: [TimingChild!]
 }
 """
@@ -3976,7 +4096,7 @@ type TimingChild implements Node {
   id: ID!
   name: String
   time: String
-  timingBreakdown: [TimingBreakdown!]
+  timingBreakdown: TimingBreakdown
 }
 """
 TimingChildWhereInput is used for filtering TimingChild objects.
@@ -4046,7 +4166,7 @@ type TimingMetrics implements Node {
   analysisPhaseTimeInMs: Int
   executionPhaseTimeInMs: Int
   actionsExecutionStartInMs: Int
-  metrics: [Metrics!]
+  metrics: Metrics
 }
 """
 TimingMetricsWhereInput is used for filtering TimingMetrics objects.

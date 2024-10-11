@@ -32,26 +32,32 @@ type SaveActor struct {
 func (act SaveActor) SaveSummary(ctx context.Context, summary *summary.Summary) (*ent.BazelInvocation, error) {
 	eventFile, err := act.saveEventFile(ctx, summary)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to save event file", "id", summary.InvocationID, "err", err)
 		return nil, fmt.Errorf("could not save EventFile: %w", err)
 	}
 	buildRecord, err := act.findOrCreateBuild(ctx, summary)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to find or create build", "id", summary.InvocationID, "err", err)
 		return nil, err
 	}
 	metrics, err := act.saveMetrics(ctx, summary.Metrics)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to save metrics", "id", summary.InvocationID, "err", err)
 		return nil, fmt.Errorf("could not save Metrics: %w", err)
 	}
 	targets, err := act.saveTargets(ctx, summary)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to save targets", "id", summary.InvocationID, "err", err)
 		return nil, fmt.Errorf("could not save Targets: %w", err)
 	}
 	tests, err := act.saveTests(ctx, summary)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to save tests", "id", summary.InvocationID, "err", err)
 		return nil, fmt.Errorf("could not save test results: %w", err)
 	}
 	bazelInvocation, err := act.saveBazelInvocation(ctx, summary, eventFile, buildRecord, metrics, tests, targets)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to save bazel invocation", "id", summary.InvocationID, "err", err)
 		return nil, fmt.Errorf("could not save BazelInvocation: %w", err)
 	}
 	var detectedBlobs []detectors.BlobURI
@@ -65,10 +71,12 @@ func (act SaveActor) SaveSummary(ctx context.Context, summary *summary.Summary) 
 			SetBazelInvocation(bazelInvocation)
 	}).Exec(ctx)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to save bazel invocation problems ", "id", summary.InvocationID, "err", err)
 		return nil, fmt.Errorf("could not save BazelInvocationProblems: %w", err)
 	}
 	missingBlobs, err := act.determineMissingBlobs(ctx, detectedBlobs)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to determine missing blobs", "id", summary.InvocationID, "err", err)
 		return nil, err
 	}
 	err = act.db.Blob.MapCreateBulk(missingBlobs, func(create *ent.BlobCreate, i int) {
@@ -76,11 +84,13 @@ func (act SaveActor) SaveSummary(ctx context.Context, summary *summary.Summary) 
 		create.SetURI(string(b))
 	}).Exec(ctx)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to save blobs", "id", summary.InvocationID, "err", err)
 		return nil, fmt.Errorf("could not save Blobs: %w", err)
 	}
 	var archivedBlobs []ent.Blob
 	archivedBlobs, err = act.blobArchiver.ArchiveBlobs(ctx, missingBlobs)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to archive", "id", summary.InvocationID, "err", err)
 		return nil, fmt.Errorf("failed to archive blobs: %w", err)
 	}
 	for _, archivedBlob := range archivedBlobs {
@@ -97,6 +107,7 @@ func (act SaveActor) determineMissingBlobs(ctx context.Context, detectedBlobs []
 	}
 	foundInDB, err := act.db.Blob.Query().Where(blob.URIIn(detectedBlobURIs...)).All(ctx)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to query blobs", "err", err)
 		return nil, fmt.Errorf("could not query Blobs: %w", err)
 	}
 
@@ -188,6 +199,7 @@ func (act SaveActor) saveTestFiles(ctx context.Context, files []summary.TestFile
 func (act SaveActor) saveOutputGroup(ctx context.Context, ouputGroup summary.OutputGroup) (*ent.OutputGroup, error) {
 	inlineFiles, err := act.saveTestFiles(ctx, ouputGroup.InlineFiles)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to save output group", "id", "err", err)
 		return nil, err
 	}
 
@@ -303,6 +315,7 @@ func (act SaveActor) saveTimingChildren(ctx context.Context, children []summary.
 func (act SaveActor) saveTimingBreakdown(ctx context.Context, timingBreakdown summary.TimingBreakdown) (*ent.TimingBreakdown, error) {
 	timingChildren, err := act.saveTimingChildren(ctx, timingBreakdown.Child)
 	if err != nil {
+		slog.ErrorContext(ctx, "failed to save timing breakdown", "err", err)
 		return nil, err
 	}
 	return act.db.TimingBreakdown.Create().
@@ -345,6 +358,7 @@ func (act SaveActor) saveTestResults(ctx context.Context, testResults []summary.
 		testResult := testResults[i]
 		executionInfo, err := act.saveExecutionInfo(ctx, testResult.ExecutionInfo)
 		if err != nil {
+			slog.ErrorContext(ctx, "failed to save executioin info", "err", err)
 			slog.Error("problem saving execution info object to database", "err", err)
 			return
 		}
@@ -379,6 +393,7 @@ func (act SaveActor) saveTestCollection(ctx context.Context, testCollection summ
 		SetCachedLocally(testCollection.CachedLocally).
 		SetCachedRemotely(testCollection.CachedRemotely).
 		SetDurationMs(testCollection.DurationMs).
+		SetFirstSeen((testCollection.FirstSeen)).
 		Save(ctx)
 }
 
@@ -461,7 +476,7 @@ func (act SaveActor) saveActionSummary(ctx context.Context, actionSummary summar
 		SetActionsCreatedNotIncludingAspects(actionSummary.ActionsCreatedNotIncludingAspects).
 		SetActionsExecuted(actionSummary.ActionsExecuted).
 		SetRemoteCacheHits(actionSummary.RemoteCacheHits).
-		AddActionCacheStatistics(actionCacheStatistics).
+		SetActionCacheStatistics(actionCacheStatistics).
 		AddRunnerCount(runnerCounts...).
 		AddActionData(actionDatas...).
 		Save(ctx)
@@ -577,10 +592,10 @@ func (act SaveActor) saveArtifactMetrics(ctx context.Context, artifactMetrics su
 	}
 
 	return act.db.ArtifactMetrics.Create().
-		AddSourceArtifactsRead(soureArtifactsRead).
-		AddOutputArtifactsSeen(outputArtifactsSeen).
-		AddOutputArtifactsFromActionCache(outputArtifactsFromActionCache).
-		AddTopLevelArtifacts(topLevelArtifacts).
+		SetSourceArtifactsRead(soureArtifactsRead).
+		SetOutputArtifactsSeen(outputArtifactsSeen).
+		SetOutputArtifactsFromActionCache(outputArtifactsFromActionCache).
+		SetTopLevelArtifacts(topLevelArtifacts).
 		Save(ctx)
 }
 
@@ -590,7 +605,7 @@ func (act SaveActor) saveNetworkMetrics(ctx context.Context, networkMetrics summ
 		return nil, err
 	}
 	return act.db.NetworkMetrics.Create().
-		AddSystemNetworkStats(systemNetworkStats).
+		SetSystemNetworkStats(systemNetworkStats).
 		Save(ctx)
 }
 
@@ -641,21 +656,21 @@ func (act SaveActor) saveMetrics(ctx context.Context, metrics summary.Metrics) (
 		return nil, err
 	}
 	create := act.db.Metrics.Create().
-		AddActionSummary(actionSummary).
-		AddBuildGraphMetrics(buildGraphMetrics).
-		AddMemoryMetrics(memoryMetrics).
-		AddTargetMetrics(targetMetrics).
-		AddPackageMetrics(packageMetrics).
-		AddCumulativeMetrics(cumulativeMetrics).
-		AddTimingMetrics(timingMetrics).
-		AddArtifactMetrics(artifactMetrics)
+		SetActionSummary(actionSummary).
+		SetBuildGraphMetrics(buildGraphMetrics).
+		SetMemoryMetrics(memoryMetrics).
+		SetTargetMetrics(targetMetrics).
+		SetPackageMetrics(packageMetrics).
+		SetCumulativeMetrics(cumulativeMetrics).
+		SetTimingMetrics(timingMetrics).
+		SetArtifactMetrics(artifactMetrics)
 
 	if metrics.NetworkMetrics.SystemNetworkStats != nil {
 		networkMetrics, err := act.saveNetworkMetrics(ctx, metrics.NetworkMetrics)
 		if err != nil {
 			return nil, err
 		}
-		create = create.AddNetworkMetrics(networkMetrics)
+		create = create.SetNetworkMetrics(networkMetrics)
 	}
 
 	return create.Save(ctx)

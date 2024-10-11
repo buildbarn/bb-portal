@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 )
@@ -41,16 +42,15 @@ type ActionSummaryEdges struct {
 	// RunnerCount holds the value of the runner_count edge.
 	RunnerCount []*RunnerCount `json:"runner_count,omitempty"`
 	// ActionCacheStatistics holds the value of the action_cache_statistics edge.
-	ActionCacheStatistics []*ActionCacheStatistics `json:"action_cache_statistics,omitempty"`
+	ActionCacheStatistics *ActionCacheStatistics `json:"action_cache_statistics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
 	totalCount [4]map[string]int
 
-	namedActionData            map[string][]*ActionData
-	namedRunnerCount           map[string][]*RunnerCount
-	namedActionCacheStatistics map[string][]*ActionCacheStatistics
+	namedActionData  map[string][]*ActionData
+	namedRunnerCount map[string][]*RunnerCount
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
@@ -83,10 +83,12 @@ func (e ActionSummaryEdges) RunnerCountOrErr() ([]*RunnerCount, error) {
 }
 
 // ActionCacheStatisticsOrErr returns the ActionCacheStatistics value or an error if the edge
-// was not loaded in eager-loading.
-func (e ActionSummaryEdges) ActionCacheStatisticsOrErr() ([]*ActionCacheStatistics, error) {
-	if e.loadedTypes[3] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ActionSummaryEdges) ActionCacheStatisticsOrErr() (*ActionCacheStatistics, error) {
+	if e.ActionCacheStatistics != nil {
 		return e.ActionCacheStatistics, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: actioncachestatistics.Label}
 	}
 	return nil, &NotLoadedError{edge: "action_cache_statistics"}
 }
@@ -268,30 +270,6 @@ func (as *ActionSummary) appendNamedRunnerCount(name string, edges ...*RunnerCou
 		as.Edges.namedRunnerCount[name] = []*RunnerCount{}
 	} else {
 		as.Edges.namedRunnerCount[name] = append(as.Edges.namedRunnerCount[name], edges...)
-	}
-}
-
-// NamedActionCacheStatistics returns the ActionCacheStatistics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (as *ActionSummary) NamedActionCacheStatistics(name string) ([]*ActionCacheStatistics, error) {
-	if as.Edges.namedActionCacheStatistics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := as.Edges.namedActionCacheStatistics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (as *ActionSummary) appendNamedActionCacheStatistics(name string, edges ...*ActionCacheStatistics) {
-	if as.Edges.namedActionCacheStatistics == nil {
-		as.Edges.namedActionCacheStatistics = make(map[string][]*ActionCacheStatistics)
-	}
-	if len(edges) == 0 {
-		as.Edges.namedActionCacheStatistics[name] = []*ActionCacheStatistics{}
-	} else {
-		as.Edges.namedActionCacheStatistics[name] = append(as.Edges.namedActionCacheStatistics[name], edges...)
 	}
 }
 

@@ -193,7 +193,7 @@ func HasMemoryMetrics() predicate.GarbageMetrics {
 	return predicate.GarbageMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, MemoryMetricsTable, MemoryMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, MemoryMetricsTable, MemoryMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

@@ -413,7 +413,7 @@ func HasPackageMetrics() predicate.PackageLoadMetrics {
 	return predicate.PackageLoadMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, PackageMetricsTable, PackageMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, PackageMetricsTable, PackageMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

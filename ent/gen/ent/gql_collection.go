@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 
+	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
@@ -70,12 +71,10 @@ func (acs *ActionCacheStatisticsQuery) collectField(ctx context.Context, oneNode
 				path  = append(path, alias)
 				query = (&ActionSummaryClient{config: acs.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
 				return err
 			}
-			acs.WithNamedActionSummary(alias, func(wq *ActionSummaryQuery) {
-				*wq = *query
-			})
+			acs.withActionSummary = query
 
 		case "missDetails":
 			var (
@@ -183,12 +182,10 @@ func (ad *ActionDataQuery) collectField(ctx context.Context, oneNode bool, opCtx
 				path  = append(path, alias)
 				query = (&ActionSummaryClient{config: ad.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
 				return err
 			}
-			ad.WithNamedActionSummary(alias, func(wq *ActionSummaryQuery) {
-				*wq = *query
-			})
+			ad.withActionSummary = query
 		case "mnemonic":
 			if _, ok := fieldSeen[actiondata.FieldMnemonic]; !ok {
 				selectedFields = append(selectedFields, actiondata.FieldMnemonic)
@@ -330,12 +327,10 @@ func (as *ActionSummaryQuery) collectField(ctx context.Context, oneNode bool, op
 				path  = append(path, alias)
 				query = (&ActionCacheStatisticsClient{config: as.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actioncachestatisticsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actioncachestatisticsImplementors)...); err != nil {
 				return err
 			}
-			as.WithNamedActionCacheStatistics(alias, func(wq *ActionCacheStatisticsQuery) {
-				*wq = *query
-			})
+			as.withActionCacheStatistics = query
 		case "actionsCreated":
 			if _, ok := fieldSeen[actionsummary.FieldActionsCreated]; !ok {
 				selectedFields = append(selectedFields, actionsummary.FieldActionsCreated)
@@ -420,12 +415,10 @@ func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, 
 				path  = append(path, alias)
 				query = (&MetricsClient{config: am.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			am.WithNamedMetrics(alias, func(wq *MetricsQuery) {
-				*wq = *query
-			})
+			am.withMetrics = query
 
 		case "sourceArtifactsRead":
 			var (
@@ -433,12 +426,10 @@ func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, 
 				path  = append(path, alias)
 				query = (&FilesMetricClient{config: am.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
 				return err
 			}
-			am.WithNamedSourceArtifactsRead(alias, func(wq *FilesMetricQuery) {
-				*wq = *query
-			})
+			am.withSourceArtifactsRead = query
 
 		case "outputArtifactsSeen":
 			var (
@@ -446,12 +437,10 @@ func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, 
 				path  = append(path, alias)
 				query = (&FilesMetricClient{config: am.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
 				return err
 			}
-			am.WithNamedOutputArtifactsSeen(alias, func(wq *FilesMetricQuery) {
-				*wq = *query
-			})
+			am.withOutputArtifactsSeen = query
 
 		case "outputArtifactsFromActionCache":
 			var (
@@ -459,12 +448,10 @@ func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, 
 				path  = append(path, alias)
 				query = (&FilesMetricClient{config: am.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
 				return err
 			}
-			am.WithNamedOutputArtifactsFromActionCache(alias, func(wq *FilesMetricQuery) {
-				*wq = *query
-			})
+			am.withOutputArtifactsFromActionCache = query
 
 		case "topLevelArtifacts":
 			var (
@@ -472,12 +459,10 @@ func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, 
 				path  = append(path, alias)
 				query = (&FilesMetricClient{config: am.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
 				return err
 			}
-			am.WithNamedTopLevelArtifacts(alias, func(wq *FilesMetricQuery) {
-				*wq = *query
-			})
+			am.withTopLevelArtifacts = query
 		}
 	}
 	return nil
@@ -696,6 +681,28 @@ func newBazelInvocationPaginateArgs(rv map[string]any) *bazelinvocationPaginateA
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &BazelInvocationOrder{Field: &BazelInvocationOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithBazelInvocationOrder(order))
+			}
+		case *BazelInvocationOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithBazelInvocationOrder(v))
+			}
+		}
 	}
 	if v, ok := rv[whereField].(*BazelInvocationWhereInput); ok {
 		args.opts = append(args.opts, WithBazelInvocationFilter(v.Filter))
@@ -986,12 +993,10 @@ func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode boo
 				path  = append(path, alias)
 				query = (&MetricsClient{config: bgm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			bgm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
-				*wq = *query
-			})
+			bgm.withMetrics = query
 
 		case "dirtiedValues":
 			var (
@@ -999,12 +1004,10 @@ func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode boo
 				path  = append(path, alias)
 				query = (&EvaluationStatClient{config: bgm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
 				return err
 			}
-			bgm.WithNamedDirtiedValues(alias, func(wq *EvaluationStatQuery) {
-				*wq = *query
-			})
+			bgm.withDirtiedValues = query
 
 		case "changedValues":
 			var (
@@ -1012,12 +1015,10 @@ func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode boo
 				path  = append(path, alias)
 				query = (&EvaluationStatClient{config: bgm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
 				return err
 			}
-			bgm.WithNamedChangedValues(alias, func(wq *EvaluationStatQuery) {
-				*wq = *query
-			})
+			bgm.withChangedValues = query
 
 		case "builtValues":
 			var (
@@ -1025,12 +1026,10 @@ func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode boo
 				path  = append(path, alias)
 				query = (&EvaluationStatClient{config: bgm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
 				return err
 			}
-			bgm.WithNamedBuiltValues(alias, func(wq *EvaluationStatQuery) {
-				*wq = *query
-			})
+			bgm.withBuiltValues = query
 
 		case "cleanedValues":
 			var (
@@ -1038,12 +1037,10 @@ func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode boo
 				path  = append(path, alias)
 				query = (&EvaluationStatClient{config: bgm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
 				return err
 			}
-			bgm.WithNamedCleanedValues(alias, func(wq *EvaluationStatQuery) {
-				*wq = *query
-			})
+			bgm.withCleanedValues = query
 
 		case "evaluatedValues":
 			var (
@@ -1051,12 +1048,10 @@ func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode boo
 				path  = append(path, alias)
 				query = (&EvaluationStatClient{config: bgm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, evaluationstatImplementors)...); err != nil {
 				return err
 			}
-			bgm.WithNamedEvaluatedValues(alias, func(wq *EvaluationStatQuery) {
-				*wq = *query
-			})
+			bgm.withEvaluatedValues = query
 		case "actionLookupValueCount":
 			if _, ok := fieldSeen[buildgraphmetrics.FieldActionLookupValueCount]; !ok {
 				selectedFields = append(selectedFields, buildgraphmetrics.FieldActionLookupValueCount)
@@ -1171,12 +1166,10 @@ func (cm *CumulativeMetricsQuery) collectField(ctx context.Context, oneNode bool
 				path  = append(path, alias)
 				query = (&MetricsClient{config: cm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			cm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
-				*wq = *query
-			})
+			cm.withMetrics = query
 		case "numAnalyses":
 			if _, ok := fieldSeen[cumulativemetrics.FieldNumAnalyses]; !ok {
 				selectedFields = append(selectedFields, cumulativemetrics.FieldNumAnalyses)
@@ -1251,12 +1244,10 @@ func (dem *DynamicExecutionMetricsQuery) collectField(ctx context.Context, oneNo
 				path  = append(path, alias)
 				query = (&MetricsClient{config: dem.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			dem.WithNamedMetrics(alias, func(wq *MetricsQuery) {
-				*wq = *query
-			})
+			dem.withMetrics = query
 
 		case "raceStatistics":
 			var (
@@ -1332,12 +1323,10 @@ func (es *EvaluationStatQuery) collectField(ctx context.Context, oneNode bool, o
 				path  = append(path, alias)
 				query = (&BuildGraphMetricsClient{config: es.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, buildgraphmetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, buildgraphmetricsImplementors)...); err != nil {
 				return err
 			}
-			es.WithNamedBuildGraphMetrics(alias, func(wq *BuildGraphMetricsQuery) {
-				*wq = *query
-			})
+			es.withBuildGraphMetrics = query
 		case "skyfunctionName":
 			if _, ok := fieldSeen[evaluationstat.FieldSkyfunctionName]; !ok {
 				selectedFields = append(selectedFields, evaluationstat.FieldSkyfunctionName)
@@ -1520,12 +1509,10 @@ func (ei *ExectionInfoQuery) collectField(ctx context.Context, oneNode bool, opC
 				path  = append(path, alias)
 				query = (&TestResultBESClient{config: ei.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testresultbesImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, testresultbesImplementors)...); err != nil {
 				return err
 			}
-			ei.WithNamedTestResult(alias, func(wq *TestResultBESQuery) {
-				*wq = *query
-			})
+			ei.withTestResult = query
 
 		case "timingBreakdown":
 			var (
@@ -1644,12 +1631,10 @@ func (fm *FilesMetricQuery) collectField(ctx context.Context, oneNode bool, opCt
 				path  = append(path, alias)
 				query = (&ArtifactMetricsClient{config: fm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, artifactmetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, artifactmetricsImplementors)...); err != nil {
 				return err
 			}
-			fm.WithNamedArtifactMetrics(alias, func(wq *ArtifactMetricsQuery) {
-				*wq = *query
-			})
+			fm.withArtifactMetrics = query
 		case "sizeInBytes":
 			if _, ok := fieldSeen[filesmetric.FieldSizeInBytes]; !ok {
 				selectedFields = append(selectedFields, filesmetric.FieldSizeInBytes)
@@ -1729,12 +1714,10 @@ func (gm *GarbageMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 				path  = append(path, alias)
 				query = (&MemoryMetricsClient{config: gm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, memorymetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, memorymetricsImplementors)...); err != nil {
 				return err
 			}
-			gm.WithNamedMemoryMetrics(alias, func(wq *MemoryMetricsQuery) {
-				*wq = *query
-			})
+			gm.withMemoryMetrics = query
 		case "type":
 			if _, ok := fieldSeen[garbagemetrics.FieldType]; !ok {
 				selectedFields = append(selectedFields, garbagemetrics.FieldType)
@@ -1814,12 +1797,10 @@ func (mm *MemoryMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 				path  = append(path, alias)
 				query = (&MetricsClient{config: mm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			mm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
-				*wq = *query
-			})
+			mm.withMetrics = query
 
 		case "garbageMetrics":
 			var (
@@ -1923,12 +1904,10 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				path  = append(path, alias)
 				query = (&ActionSummaryClient{config: m.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
 				return err
 			}
-			m.WithNamedActionSummary(alias, func(wq *ActionSummaryQuery) {
-				*wq = *query
-			})
+			m.withActionSummary = query
 
 		case "memoryMetrics":
 			var (
@@ -1936,12 +1915,10 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				path  = append(path, alias)
 				query = (&MemoryMetricsClient{config: m.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, memorymetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, memorymetricsImplementors)...); err != nil {
 				return err
 			}
-			m.WithNamedMemoryMetrics(alias, func(wq *MemoryMetricsQuery) {
-				*wq = *query
-			})
+			m.withMemoryMetrics = query
 
 		case "targetMetrics":
 			var (
@@ -1949,12 +1926,10 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				path  = append(path, alias)
 				query = (&TargetMetricsClient{config: m.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetmetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, targetmetricsImplementors)...); err != nil {
 				return err
 			}
-			m.WithNamedTargetMetrics(alias, func(wq *TargetMetricsQuery) {
-				*wq = *query
-			})
+			m.withTargetMetrics = query
 
 		case "packageMetrics":
 			var (
@@ -1962,12 +1937,10 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				path  = append(path, alias)
 				query = (&PackageMetricsClient{config: m.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, packagemetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, packagemetricsImplementors)...); err != nil {
 				return err
 			}
-			m.WithNamedPackageMetrics(alias, func(wq *PackageMetricsQuery) {
-				*wq = *query
-			})
+			m.withPackageMetrics = query
 
 		case "timingMetrics":
 			var (
@@ -1975,12 +1948,10 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				path  = append(path, alias)
 				query = (&TimingMetricsClient{config: m.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, timingmetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, timingmetricsImplementors)...); err != nil {
 				return err
 			}
-			m.WithNamedTimingMetrics(alias, func(wq *TimingMetricsQuery) {
-				*wq = *query
-			})
+			m.withTimingMetrics = query
 
 		case "cumulativeMetrics":
 			var (
@@ -1988,12 +1959,10 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				path  = append(path, alias)
 				query = (&CumulativeMetricsClient{config: m.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, cumulativemetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, cumulativemetricsImplementors)...); err != nil {
 				return err
 			}
-			m.WithNamedCumulativeMetrics(alias, func(wq *CumulativeMetricsQuery) {
-				*wq = *query
-			})
+			m.withCumulativeMetrics = query
 
 		case "artifactMetrics":
 			var (
@@ -2001,12 +1970,10 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				path  = append(path, alias)
 				query = (&ArtifactMetricsClient{config: m.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, artifactmetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, artifactmetricsImplementors)...); err != nil {
 				return err
 			}
-			m.WithNamedArtifactMetrics(alias, func(wq *ArtifactMetricsQuery) {
-				*wq = *query
-			})
+			m.withArtifactMetrics = query
 
 		case "networkMetrics":
 			var (
@@ -2014,12 +1981,10 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				path  = append(path, alias)
 				query = (&NetworkMetricsClient{config: m.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, networkmetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, networkmetricsImplementors)...); err != nil {
 				return err
 			}
-			m.WithNamedNetworkMetrics(alias, func(wq *NetworkMetricsQuery) {
-				*wq = *query
-			})
+			m.withNetworkMetrics = query
 
 		case "dynamicExecutionMetrics":
 			var (
@@ -2027,12 +1992,10 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				path  = append(path, alias)
 				query = (&DynamicExecutionMetricsClient{config: m.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, dynamicexecutionmetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, dynamicexecutionmetricsImplementors)...); err != nil {
 				return err
 			}
-			m.WithNamedDynamicExecutionMetrics(alias, func(wq *DynamicExecutionMetricsQuery) {
-				*wq = *query
-			})
+			m.withDynamicExecutionMetrics = query
 
 		case "buildGraphMetrics":
 			var (
@@ -2040,12 +2003,10 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				path  = append(path, alias)
 				query = (&BuildGraphMetricsClient{config: m.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, buildgraphmetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, buildgraphmetricsImplementors)...); err != nil {
 				return err
 			}
-			m.WithNamedBuildGraphMetrics(alias, func(wq *BuildGraphMetricsQuery) {
-				*wq = *query
-			})
+			m.withBuildGraphMetrics = query
 		}
 	}
 	return nil
@@ -2108,12 +2069,10 @@ func (md *MissDetailQuery) collectField(ctx context.Context, oneNode bool, opCtx
 				path  = append(path, alias)
 				query = (&ActionCacheStatisticsClient{config: md.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actioncachestatisticsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actioncachestatisticsImplementors)...); err != nil {
 				return err
 			}
-			md.WithNamedActionCacheStatistics(alias, func(wq *ActionCacheStatisticsQuery) {
-				*wq = *query
-			})
+			md.withActionCacheStatistics = query
 		case "reason":
 			if _, ok := fieldSeen[missdetail.FieldReason]; !ok {
 				selectedFields = append(selectedFields, missdetail.FieldReason)
@@ -2188,12 +2147,10 @@ func (nsof *NamedSetOfFilesQuery) collectField(ctx context.Context, oneNode bool
 				path  = append(path, alias)
 				query = (&OutputGroupClient{config: nsof.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, outputgroupImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, outputgroupImplementors)...); err != nil {
 				return err
 			}
-			nsof.WithNamedOutputGroup(alias, func(wq *OutputGroupQuery) {
-				*wq = *query
-			})
+			nsof.withOutputGroup = query
 
 		case "files":
 			var (
@@ -2275,12 +2232,10 @@ func (nm *NetworkMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 				path  = append(path, alias)
 				query = (&MetricsClient{config: nm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			nm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
-				*wq = *query
-			})
+			nm.withMetrics = query
 
 		case "systemNetworkStats":
 			var (
@@ -2288,12 +2243,10 @@ func (nm *NetworkMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 				path  = append(path, alias)
 				query = (&SystemNetworkStatsClient{config: nm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, systemnetworkstatsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, systemnetworkstatsImplementors)...); err != nil {
 				return err
 			}
-			nm.WithNamedSystemNetworkStats(alias, func(wq *SystemNetworkStatsQuery) {
-				*wq = *query
-			})
+			nm.withSystemNetworkStats = query
 		}
 	}
 	return nil
@@ -2356,12 +2309,10 @@ func (og *OutputGroupQuery) collectField(ctx context.Context, oneNode bool, opCt
 				path  = append(path, alias)
 				query = (&TargetCompleteClient{config: og.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetcompleteImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, targetcompleteImplementors)...); err != nil {
 				return err
 			}
-			og.WithNamedTargetComplete(alias, func(wq *TargetCompleteQuery) {
-				*wq = *query
-			})
+			og.withTargetComplete = query
 
 		case "inlineFiles":
 			var (
@@ -2465,12 +2416,10 @@ func (plm *PackageLoadMetricsQuery) collectField(ctx context.Context, oneNode bo
 				path  = append(path, alias)
 				query = (&PackageMetricsClient{config: plm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, packagemetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, packagemetricsImplementors)...); err != nil {
 				return err
 			}
-			plm.WithNamedPackageMetrics(alias, func(wq *PackageMetricsQuery) {
-				*wq = *query
-			})
+			plm.withPackageMetrics = query
 		case "name":
 			if _, ok := fieldSeen[packageloadmetrics.FieldName]; !ok {
 				selectedFields = append(selectedFields, packageloadmetrics.FieldName)
@@ -2570,12 +2519,10 @@ func (pm *PackageMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 				path  = append(path, alias)
 				query = (&MetricsClient{config: pm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			pm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
-				*wq = *query
-			})
+			pm.withMetrics = query
 
 		case "packageLoadMetrics":
 			var (
@@ -2663,12 +2610,10 @@ func (rs *RaceStatisticsQuery) collectField(ctx context.Context, oneNode bool, o
 				path  = append(path, alias)
 				query = (&DynamicExecutionMetricsClient{config: rs.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, dynamicexecutionmetricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, dynamicexecutionmetricsImplementors)...); err != nil {
 				return err
 			}
-			rs.WithNamedDynamicExecutionMetrics(alias, func(wq *DynamicExecutionMetricsQuery) {
-				*wq = *query
-			})
+			rs.withDynamicExecutionMetrics = query
 		case "mnemonic":
 			if _, ok := fieldSeen[racestatistics.FieldMnemonic]; !ok {
 				selectedFields = append(selectedFields, racestatistics.FieldMnemonic)
@@ -2763,12 +2708,10 @@ func (ru *ResourceUsageQuery) collectField(ctx context.Context, oneNode bool, op
 				path  = append(path, alias)
 				query = (&ExectionInfoClient{config: ru.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, exectioninfoImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, exectioninfoImplementors)...); err != nil {
 				return err
 			}
-			ru.WithNamedExecutionInfo(alias, func(wq *ExectionInfoQuery) {
-				*wq = *query
-			})
+			ru.withExecutionInfo = query
 		case "name":
 			if _, ok := fieldSeen[resourceusage.FieldName]; !ok {
 				selectedFields = append(selectedFields, resourceusage.FieldName)
@@ -2848,12 +2791,10 @@ func (rc *RunnerCountQuery) collectField(ctx context.Context, oneNode bool, opCt
 				path  = append(path, alias)
 				query = (&ActionSummaryClient{config: rc.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, actionsummaryImplementors)...); err != nil {
 				return err
 			}
-			rc.WithNamedActionSummary(alias, func(wq *ActionSummaryQuery) {
-				*wq = *query
-			})
+			rc.withActionSummary = query
 		case "name":
 			if _, ok := fieldSeen[runnercount.FieldName]; !ok {
 				selectedFields = append(selectedFields, runnercount.FieldName)
@@ -3051,12 +2992,10 @@ func (tc *TargetCompleteQuery) collectField(ctx context.Context, oneNode bool, o
 				path  = append(path, alias)
 				query = (&TargetPairClient{config: tc.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetpairImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, targetpairImplementors)...); err != nil {
 				return err
 			}
-			tc.WithNamedTargetPair(alias, func(wq *TargetPairQuery) {
-				*wq = *query
-			})
+			tc.withTargetPair = query
 
 		case "importantOutput":
 			var (
@@ -3198,12 +3137,10 @@ func (tc *TargetConfiguredQuery) collectField(ctx context.Context, oneNode bool,
 				path  = append(path, alias)
 				query = (&TargetPairClient{config: tc.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetpairImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, targetpairImplementors)...); err != nil {
 				return err
 			}
-			tc.WithNamedTargetPair(alias, func(wq *TargetPairQuery) {
-				*wq = *query
-			})
+			tc.withTargetPair = query
 		case "tag":
 			if _, ok := fieldSeen[targetconfigured.FieldTag]; !ok {
 				selectedFields = append(selectedFields, targetconfigured.FieldTag)
@@ -3293,12 +3230,10 @@ func (tm *TargetMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 				path  = append(path, alias)
 				query = (&MetricsClient{config: tm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			tm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
-				*wq = *query
-			})
+			tm.withMetrics = query
 		case "targetsLoaded":
 			if _, ok := fieldSeen[targetmetrics.FieldTargetsLoaded]; !ok {
 				selectedFields = append(selectedFields, targetmetrics.FieldTargetsLoaded)
@@ -3383,12 +3318,10 @@ func (tp *TargetPairQuery) collectField(ctx context.Context, oneNode bool, opCtx
 				path  = append(path, alias)
 				query = (&BazelInvocationClient{config: tp.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
 				return err
 			}
-			tp.WithNamedBazelInvocation(alias, func(wq *BazelInvocationQuery) {
-				*wq = *query
-			})
+			tp.withBazelInvocation = query
 
 		case "configuration":
 			var (
@@ -3510,12 +3443,10 @@ func (tc *TestCollectionQuery) collectField(ctx context.Context, oneNode bool, o
 				path  = append(path, alias)
 				query = (&BazelInvocationClient{config: tc.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
 				return err
 			}
-			tc.WithNamedBazelInvocation(alias, func(wq *BazelInvocationQuery) {
-				*wq = *query
-			})
+			tc.withBazelInvocation = query
 
 		case "testSummary":
 			var (
@@ -3565,6 +3496,11 @@ func (tc *TestCollectionQuery) collectField(ctx context.Context, oneNode bool, o
 				selectedFields = append(selectedFields, testcollection.FieldCachedRemotely)
 				fieldSeen[testcollection.FieldCachedRemotely] = struct{}{}
 			}
+		case "firstSeen":
+			if _, ok := fieldSeen[testcollection.FieldFirstSeen]; !ok {
+				selectedFields = append(selectedFields, testcollection.FieldFirstSeen)
+				fieldSeen[testcollection.FieldFirstSeen] = struct{}{}
+			}
 		case "durationMs":
 			if _, ok := fieldSeen[testcollection.FieldDurationMs]; !ok {
 				selectedFields = append(selectedFields, testcollection.FieldDurationMs)
@@ -3605,6 +3541,28 @@ func newTestCollectionPaginateArgs(rv map[string]any) *testcollectionPaginateArg
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &TestCollectionOrder{Field: &TestCollectionOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithTestCollectionOrder(order))
+			}
+		case *TestCollectionOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithTestCollectionOrder(v))
+			}
+		}
+	}
 	if v, ok := rv[whereField].(*TestCollectionWhereInput); ok {
 		args.opts = append(args.opts, WithTestCollectionFilter(v.Filter))
 	}
@@ -3639,12 +3597,10 @@ func (tf *TestFileQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 				path  = append(path, alias)
 				query = (&TestResultBESClient{config: tf.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testresultbesImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, testresultbesImplementors)...); err != nil {
 				return err
 			}
-			tf.WithNamedTestResult(alias, func(wq *TestResultBESQuery) {
-				*wq = *query
-			})
+			tf.withTestResult = query
 		case "digest":
 			if _, ok := fieldSeen[testfile.FieldDigest]; !ok {
 				selectedFields = append(selectedFields, testfile.FieldDigest)
@@ -3881,12 +3837,10 @@ func (ts *TestSummaryQuery) collectField(ctx context.Context, oneNode bool, opCt
 				path  = append(path, alias)
 				query = (&TestCollectionClient{config: ts.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, testcollectionImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, testcollectionImplementors)...); err != nil {
 				return err
 			}
-			ts.WithNamedTestCollection(alias, func(wq *TestCollectionQuery) {
-				*wq = *query
-			})
+			ts.withTestCollection = query
 
 		case "passed":
 			var (
@@ -4032,12 +3986,10 @@ func (tb *TimingBreakdownQuery) collectField(ctx context.Context, oneNode bool, 
 				path  = append(path, alias)
 				query = (&ExectionInfoClient{config: tb.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, exectioninfoImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, exectioninfoImplementors)...); err != nil {
 				return err
 			}
-			tb.WithNamedExecutionInfo(alias, func(wq *ExectionInfoQuery) {
-				*wq = *query
-			})
+			tb.withExecutionInfo = query
 
 		case "child":
 			var (
@@ -4130,12 +4082,10 @@ func (tc *TimingChildQuery) collectField(ctx context.Context, oneNode bool, opCt
 				path  = append(path, alias)
 				query = (&TimingBreakdownClient{config: tc.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, timingbreakdownImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, timingbreakdownImplementors)...); err != nil {
 				return err
 			}
-			tc.WithNamedTimingBreakdown(alias, func(wq *TimingBreakdownQuery) {
-				*wq = *query
-			})
+			tc.withTimingBreakdown = query
 		case "name":
 			if _, ok := fieldSeen[timingchild.FieldName]; !ok {
 				selectedFields = append(selectedFields, timingchild.FieldName)
@@ -4215,12 +4165,10 @@ func (tm *TimingMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 				path  = append(path, alias)
 				query = (&MetricsClient{config: tm.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
 				return err
 			}
-			tm.WithNamedMetrics(alias, func(wq *MetricsQuery) {
-				*wq = *query
-			})
+			tm.withMetrics = query
 		case "cpuTimeInMs":
 			if _, ok := fieldSeen[timingmetrics.FieldCPUTimeInMs]; !ok {
 				selectedFields = append(selectedFields, timingmetrics.FieldCPUTimeInMs)

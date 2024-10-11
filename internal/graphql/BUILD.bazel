@@ -48,7 +48,6 @@ go_test(
         "graphql_helpers_test.go",
         "graphql_service_test.go",
     ],
-    cgo = True,  # keep
     data = glob(["testdata/**"]) + ["//frontend/src/graphql:__generated__"],
     deps = [
         ":graphql",

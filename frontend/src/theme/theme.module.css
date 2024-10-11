@@ -95,3 +95,9 @@
 .tooltipSecondaryContent {
   font-size: 80% !important;
 }
+
+.numberFormat {
+  font-family: var(--font-mono);
+  font-size: 90% !important;
+  display: inline-block !important;
+}

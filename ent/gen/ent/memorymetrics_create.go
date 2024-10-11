@@ -62,19 +62,23 @@ func (mmc *MemoryMetricsCreate) SetNillablePeakPostGcTenuredSpaceHeapSize(i *int
 	return mmc
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (mmc *MemoryMetricsCreate) AddMetricIDs(ids ...int) *MemoryMetricsCreate {
-	mmc.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (mmc *MemoryMetricsCreate) SetMetricsID(id int) *MemoryMetricsCreate {
+	mmc.mutation.SetMetricsID(id)
 	return mmc
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (mmc *MemoryMetricsCreate) AddMetrics(m ...*Metrics) *MemoryMetricsCreate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (mmc *MemoryMetricsCreate) SetNillableMetricsID(id *int) *MemoryMetricsCreate {
+	if id != nil {
+		mmc = mmc.SetMetricsID(*id)
 	}
-	return mmc.AddMetricIDs(ids...)
+	return mmc
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (mmc *MemoryMetricsCreate) SetMetrics(m *Metrics) *MemoryMetricsCreate {
+	return mmc.SetMetricsID(m.ID)
 }
 
 // AddGarbageMetricIDs adds the "garbage_metrics" edge to the GarbageMetrics entity by IDs.
@@ -166,10 +170,10 @@ func (mmc *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSp
 	}
 	if nodes := mmc.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   memorymetrics.MetricsTable,
-			Columns: memorymetrics.MetricsPrimaryKey,
+			Columns: []string{memorymetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -178,14 +182,15 @@ func (mmc *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSp
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.metrics_memory_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := mmc.mutation.GarbageMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   memorymetrics.GarbageMetricsTable,
-			Columns: memorymetrics.GarbageMetricsPrimaryKey,
+			Columns: []string{memorymetrics.GarbageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt),

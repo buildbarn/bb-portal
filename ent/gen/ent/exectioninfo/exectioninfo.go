@@ -31,24 +31,26 @@ const (
 	// Table holds the table name of the exectioninfo in the database.
 	Table = "exection_infos"
 	// TestResultTable is the table that holds the test_result relation/edge.
-	TestResultTable = "test_result_be_ss"
+	TestResultTable = "exection_infos"
 	// TestResultInverseTable is the table name for the TestResultBES entity.
 	// It exists in this package in order to avoid circular dependency with the "testresultbes" package.
 	TestResultInverseTable = "test_result_be_ss"
 	// TestResultColumn is the table column denoting the test_result relation/edge.
 	TestResultColumn = "test_result_bes_execution_info"
 	// TimingBreakdownTable is the table that holds the timing_breakdown relation/edge.
-	TimingBreakdownTable = "exection_infos"
+	TimingBreakdownTable = "timing_breakdowns"
 	// TimingBreakdownInverseTable is the table name for the TimingBreakdown entity.
 	// It exists in this package in order to avoid circular dependency with the "timingbreakdown" package.
 	TimingBreakdownInverseTable = "timing_breakdowns"
 	// TimingBreakdownColumn is the table column denoting the timing_breakdown relation/edge.
 	TimingBreakdownColumn = "exection_info_timing_breakdown"
-	// ResourceUsageTable is the table that holds the resource_usage relation/edge. The primary key declared below.
-	ResourceUsageTable = "exection_info_resource_usage"
+	// ResourceUsageTable is the table that holds the resource_usage relation/edge.
+	ResourceUsageTable = "resource_usages"
 	// ResourceUsageInverseTable is the table name for the ResourceUsage entity.
 	// It exists in this package in order to avoid circular dependency with the "resourceusage" package.
 	ResourceUsageInverseTable = "resource_usages"
+	// ResourceUsageColumn is the table column denoting the resource_usage relation/edge.
+	ResourceUsageColumn = "exection_info_resource_usage"
 )
 
 // Columns holds all SQL columns for exectioninfo fields.
@@ -64,14 +66,8 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "exection_infos"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"exection_info_timing_breakdown",
+	"test_result_bes_execution_info",
 }
-
-var (
-	// ResourceUsagePrimaryKey and ResourceUsageColumn2 are the table columns denoting the
-	// primary key for the resource_usage relation (M2M).
-	ResourceUsagePrimaryKey = []string{"exection_info_id", "resource_usage_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -121,17 +117,10 @@ func ByHostname(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldHostname, opts...).ToFunc()
 }
 
-// ByTestResultCount orders the results by test_result count.
-func ByTestResultCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTestResultField orders the results by test_result field.
+func ByTestResultField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTestResultStep(), opts...)
-	}
-}
-
-// ByTestResult orders the results by test_result terms.
-func ByTestResult(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTestResultStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newTestResultStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -159,20 +148,20 @@ func newTestResultStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TestResultInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, TestResultTable, TestResultColumn),
+		sqlgraph.Edge(sqlgraph.O2O, true, TestResultTable, TestResultColumn),
 	)
 }
 func newTimingBreakdownStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TimingBreakdownInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, TimingBreakdownTable, TimingBreakdownColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, TimingBreakdownTable, TimingBreakdownColumn),
 	)
 }
 func newResourceUsageStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ResourceUsageInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, ResourceUsageTable, ResourceUsagePrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, ResourceUsageTable, ResourceUsageColumn),
 	)
 }

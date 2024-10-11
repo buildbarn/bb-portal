@@ -5,6 +5,9 @@ package ent
 import (
 	"context"
 	"errors"
+	"fmt"
+	"io"
+	"strconv"
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
@@ -1335,6 +1338,71 @@ func (bi *BazelInvocationQuery) Paginate(
 	}
 	conn.build(nodes, pager, after, first, before, last)
 	return conn, nil
+}
+
+var (
+	// BazelInvocationOrderFieldStartedAt orders BazelInvocation by started_at.
+	BazelInvocationOrderFieldStartedAt = &BazelInvocationOrderField{
+		Value: func(bi *BazelInvocation) (ent.Value, error) {
+			return bi.StartedAt, nil
+		},
+		column: bazelinvocation.FieldStartedAt,
+		toTerm: bazelinvocation.ByStartedAt,
+		toCursor: func(bi *BazelInvocation) Cursor {
+			return Cursor{
+				ID:    bi.ID,
+				Value: bi.StartedAt,
+			}
+		},
+	}
+	// BazelInvocationOrderFieldUserLdap orders BazelInvocation by user_ldap.
+	BazelInvocationOrderFieldUserLdap = &BazelInvocationOrderField{
+		Value: func(bi *BazelInvocation) (ent.Value, error) {
+			return bi.UserLdap, nil
+		},
+		column: bazelinvocation.FieldUserLdap,
+		toTerm: bazelinvocation.ByUserLdap,
+		toCursor: func(bi *BazelInvocation) Cursor {
+			return Cursor{
+				ID:    bi.ID,
+				Value: bi.UserLdap,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f BazelInvocationOrderField) String() string {
+	var str string
+	switch f.column {
+	case BazelInvocationOrderFieldStartedAt.column:
+		str = "STARTED_AT"
+	case BazelInvocationOrderFieldUserLdap.column:
+		str = "USER_LDAP"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f BazelInvocationOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *BazelInvocationOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("BazelInvocationOrderField %T must be a string", v)
+	}
+	switch str {
+	case "STARTED_AT":
+		*f = *BazelInvocationOrderFieldStartedAt
+	case "USER_LDAP":
+		*f = *BazelInvocationOrderFieldUserLdap
+	default:
+		return fmt.Errorf("%s is not a valid BazelInvocationOrderField", str)
+	}
+	return nil
 }
 
 // BazelInvocationOrderField defines the ordering field of BazelInvocation.
@@ -8307,6 +8375,71 @@ func (tc *TestCollectionQuery) Paginate(
 	}
 	conn.build(nodes, pager, after, first, before, last)
 	return conn, nil
+}
+
+var (
+	// TestCollectionOrderFieldFirstSeen orders TestCollection by first_seen.
+	TestCollectionOrderFieldFirstSeen = &TestCollectionOrderField{
+		Value: func(tc *TestCollection) (ent.Value, error) {
+			return tc.FirstSeen, nil
+		},
+		column: testcollection.FieldFirstSeen,
+		toTerm: testcollection.ByFirstSeen,
+		toCursor: func(tc *TestCollection) Cursor {
+			return Cursor{
+				ID:    tc.ID,
+				Value: tc.FirstSeen,
+			}
+		},
+	}
+	// TestCollectionOrderFieldDurationMs orders TestCollection by duration_ms.
+	TestCollectionOrderFieldDurationMs = &TestCollectionOrderField{
+		Value: func(tc *TestCollection) (ent.Value, error) {
+			return tc.DurationMs, nil
+		},
+		column: testcollection.FieldDurationMs,
+		toTerm: testcollection.ByDurationMs,
+		toCursor: func(tc *TestCollection) Cursor {
+			return Cursor{
+				ID:    tc.ID,
+				Value: tc.DurationMs,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f TestCollectionOrderField) String() string {
+	var str string
+	switch f.column {
+	case TestCollectionOrderFieldFirstSeen.column:
+		str = "FIRST_SEEN"
+	case TestCollectionOrderFieldDurationMs.column:
+		str = "DURATION"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f TestCollectionOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *TestCollectionOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("TestCollectionOrderField %T must be a string", v)
+	}
+	switch str {
+	case "FIRST_SEEN":
+		*f = *TestCollectionOrderFieldFirstSeen
+	case "DURATION":
+		*f = *TestCollectionOrderFieldDurationMs
+	default:
+		return fmt.Errorf("%s is not a valid TestCollectionOrderField", str)
+	}
+	return nil
 }
 
 // TestCollectionOrderField defines the ordering field of TestCollection.

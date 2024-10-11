@@ -83,7 +83,9 @@ func (s Summarizer) summarize(it *events.BuildEventIterator) (*Summary, error) {
 // FinishProcessing function
 func (s Summarizer) FinishProcessing() (*Summary, error) {
 	// If problems are ignored for the exit code, return immediately.
+	slog.Debug("processing", "err", "none")
 	if !shouldIgnoreProblems(s.summary.ExitCode) {
+		slog.Debug("problems found", "err", "none")
 		// Add any detected test problems.
 		problems, problemsErr := s.problemDetector.Problems()
 		if problemsErr != nil {
@@ -91,6 +93,7 @@ func (s Summarizer) FinishProcessing() (*Summary, error) {
 		}
 		s.summary.Problems = append(s.summary.Problems, problems...)
 	}
+	slog.Debug("returning from FinishProcessing")
 
 	return s.summary, nil
 }
@@ -144,8 +147,6 @@ func (s Summarizer) ProcessEvent(buildEvent *events.BuildEvent) error {
 		if err != nil {
 			return err
 		}
-	case *bes.BuildEventId_Progress:
-		s.handleProgress(buildEvent.GetProgress())
 	}
 
 	s.summary.BEPCompleted = buildEvent.GetLastMessage()
@@ -259,10 +260,12 @@ func (s Summarizer) handleTargetCompleted(target *bes.TargetComplete, label stri
 // handleTestResult
 func (s Summarizer) handleTestResult(testResult *bes.TestResult, label string) {
 	if len(label) == 0 {
-		panic("missing label on TestResult event")
+		slog.Warn("missing label on TestResult event", "err", nil)
+		return
 	}
 	if testResult == nil {
-		panic(fmt.Sprintf("missing TestResult for label %s", label))
+		slog.Warn("Missing Test Result for label %s", label, nil)
+		return
 	}
 	var testResults []TestResult
 	if s.summary.Tests == nil {
@@ -278,6 +281,7 @@ func (s Summarizer) handleTestResult(testResult *bes.TestResult, label string) {
 			CachedLocally:  true,
 			CachedRemotely: true,
 			Strategy:       "INITIALIZED",
+			FirstSeen:      time.Now(), // this is primarly used for sorting
 		}
 		testResults = make([]TestResult, 0)
 	}
@@ -603,6 +607,9 @@ func readActionSummary(actionSummaryData *bes.BuildMetrics_ActionSummary) Action
 
 // readActionCacheStatistics
 func readActionCacheStatistics(actionCacheStatisticsData *bescore.ActionCacheStatistics) ActionCacheStatistics {
+	if actionCacheStatisticsData == nil {
+		return ActionCacheStatistics{}
+	}
 	missDetails := readMissDetails(actionCacheStatisticsData.MissDetails)
 	actionCacheStatistics := ActionCacheStatistics{
 		SizeInBytes:  actionCacheStatisticsData.SizeInBytes,
@@ -754,12 +761,6 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 // handleOptionsParsed
 func (s Summarizer) handleOptionsParsed(optionsParsed *bes.OptionsParsed) {
 	s.summary.InvocationSummary.BazelCommandLine.Options = optionsParsed.GetExplicitCmdLine()
-}
-
-// handleProgress
-func (s Summarizer) handleProgress(progressMsg *bes.Progress) {
-	s.summary.BuildLogs.WriteString(progressMsg.GetStderr())
-	s.summary.BuildLogs.WriteString(progressMsg.GetStdout())
 }
 
 // handleBuildToolLogs

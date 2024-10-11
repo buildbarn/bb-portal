@@ -645,7 +645,7 @@ func (c *ActionCacheStatisticsClient) QueryActionSummary(acs *ActionCacheStatist
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actioncachestatistics.Table, actioncachestatistics.FieldID, id),
 			sqlgraph.To(actionsummary.Table, actionsummary.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, actioncachestatistics.ActionSummaryTable, actioncachestatistics.ActionSummaryPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, actioncachestatistics.ActionSummaryTable, actioncachestatistics.ActionSummaryColumn),
 		)
 		fromV = sqlgraph.Neighbors(acs.driver.Dialect(), step)
 		return fromV, nil
@@ -661,7 +661,7 @@ func (c *ActionCacheStatisticsClient) QueryMissDetails(acs *ActionCacheStatistic
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actioncachestatistics.Table, actioncachestatistics.FieldID, id),
 			sqlgraph.To(missdetail.Table, missdetail.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, actioncachestatistics.MissDetailsTable, actioncachestatistics.MissDetailsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, actioncachestatistics.MissDetailsTable, actioncachestatistics.MissDetailsColumn),
 		)
 		fromV = sqlgraph.Neighbors(acs.driver.Dialect(), step)
 		return fromV, nil
@@ -810,7 +810,7 @@ func (c *ActionDataClient) QueryActionSummary(ad *ActionData) *ActionSummaryQuer
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actiondata.Table, actiondata.FieldID, id),
 			sqlgraph.To(actionsummary.Table, actionsummary.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, actiondata.ActionSummaryTable, actiondata.ActionSummaryPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, actiondata.ActionSummaryTable, actiondata.ActionSummaryColumn),
 		)
 		fromV = sqlgraph.Neighbors(ad.driver.Dialect(), step)
 		return fromV, nil
@@ -959,7 +959,7 @@ func (c *ActionSummaryClient) QueryMetrics(as *ActionSummary) *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actionsummary.Table, actionsummary.FieldID, id),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, actionsummary.MetricsTable, actionsummary.MetricsColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, actionsummary.MetricsTable, actionsummary.MetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(as.driver.Dialect(), step)
 		return fromV, nil
@@ -975,7 +975,7 @@ func (c *ActionSummaryClient) QueryActionData(as *ActionSummary) *ActionDataQuer
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actionsummary.Table, actionsummary.FieldID, id),
 			sqlgraph.To(actiondata.Table, actiondata.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, actionsummary.ActionDataTable, actionsummary.ActionDataPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, actionsummary.ActionDataTable, actionsummary.ActionDataColumn),
 		)
 		fromV = sqlgraph.Neighbors(as.driver.Dialect(), step)
 		return fromV, nil
@@ -991,7 +991,7 @@ func (c *ActionSummaryClient) QueryRunnerCount(as *ActionSummary) *RunnerCountQu
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actionsummary.Table, actionsummary.FieldID, id),
 			sqlgraph.To(runnercount.Table, runnercount.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, actionsummary.RunnerCountTable, actionsummary.RunnerCountPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, actionsummary.RunnerCountTable, actionsummary.RunnerCountColumn),
 		)
 		fromV = sqlgraph.Neighbors(as.driver.Dialect(), step)
 		return fromV, nil
@@ -1007,7 +1007,7 @@ func (c *ActionSummaryClient) QueryActionCacheStatistics(as *ActionSummary) *Act
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actionsummary.Table, actionsummary.FieldID, id),
 			sqlgraph.To(actioncachestatistics.Table, actioncachestatistics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, actionsummary.ActionCacheStatisticsTable, actionsummary.ActionCacheStatisticsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, actionsummary.ActionCacheStatisticsTable, actionsummary.ActionCacheStatisticsColumn),
 		)
 		fromV = sqlgraph.Neighbors(as.driver.Dialect(), step)
 		return fromV, nil
@@ -1156,7 +1156,7 @@ func (c *ArtifactMetricsClient) QueryMetrics(am *ArtifactMetrics) *MetricsQuery 
 		step := sqlgraph.NewStep(
 			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, id),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, artifactmetrics.MetricsTable, artifactmetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, artifactmetrics.MetricsTable, artifactmetrics.MetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
 		return fromV, nil
@@ -1172,7 +1172,7 @@ func (c *ArtifactMetricsClient) QuerySourceArtifactsRead(am *ArtifactMetrics) *F
 		step := sqlgraph.NewStep(
 			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, id),
 			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, artifactmetrics.SourceArtifactsReadTable, artifactmetrics.SourceArtifactsReadColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, artifactmetrics.SourceArtifactsReadTable, artifactmetrics.SourceArtifactsReadColumn),
 		)
 		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
 		return fromV, nil
@@ -1188,7 +1188,7 @@ func (c *ArtifactMetricsClient) QueryOutputArtifactsSeen(am *ArtifactMetrics) *F
 		step := sqlgraph.NewStep(
 			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, id),
 			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, artifactmetrics.OutputArtifactsSeenTable, artifactmetrics.OutputArtifactsSeenColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, artifactmetrics.OutputArtifactsSeenTable, artifactmetrics.OutputArtifactsSeenColumn),
 		)
 		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
 		return fromV, nil
@@ -1204,7 +1204,7 @@ func (c *ArtifactMetricsClient) QueryOutputArtifactsFromActionCache(am *Artifact
 		step := sqlgraph.NewStep(
 			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, id),
 			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, artifactmetrics.OutputArtifactsFromActionCacheTable, artifactmetrics.OutputArtifactsFromActionCacheColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, artifactmetrics.OutputArtifactsFromActionCacheTable, artifactmetrics.OutputArtifactsFromActionCacheColumn),
 		)
 		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
 		return fromV, nil
@@ -1220,7 +1220,7 @@ func (c *ArtifactMetricsClient) QueryTopLevelArtifacts(am *ArtifactMetrics) *Fil
 		step := sqlgraph.NewStep(
 			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, id),
 			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, artifactmetrics.TopLevelArtifactsTable, artifactmetrics.TopLevelArtifactsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, artifactmetrics.TopLevelArtifactsTable, artifactmetrics.TopLevelArtifactsColumn),
 		)
 		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
 		return fromV, nil
@@ -1433,7 +1433,7 @@ func (c *BazelInvocationClient) QueryTestCollection(bi *BazelInvocation) *TestCo
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(testcollection.Table, testcollection.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, bazelinvocation.TestCollectionTable, bazelinvocation.TestCollectionPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.TestCollectionTable, bazelinvocation.TestCollectionColumn),
 		)
 		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
 		return fromV, nil
@@ -1449,7 +1449,7 @@ func (c *BazelInvocationClient) QueryTargets(bi *BazelInvocation) *TargetPairQue
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(targetpair.Table, targetpair.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, bazelinvocation.TargetsTable, bazelinvocation.TargetsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.TargetsTable, bazelinvocation.TargetsColumn),
 		)
 		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
 		return fromV, nil
@@ -2029,7 +2029,7 @@ func (c *BuildGraphMetricsClient) QueryMetrics(bgm *BuildGraphMetrics) *MetricsQ
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, id),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, buildgraphmetrics.MetricsTable, buildgraphmetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, buildgraphmetrics.MetricsTable, buildgraphmetrics.MetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(bgm.driver.Dialect(), step)
 		return fromV, nil
@@ -2045,7 +2045,7 @@ func (c *BuildGraphMetricsClient) QueryDirtiedValues(bgm *BuildGraphMetrics) *Ev
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, id),
 			sqlgraph.To(evaluationstat.Table, evaluationstat.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.DirtiedValuesTable, buildgraphmetrics.DirtiedValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, buildgraphmetrics.DirtiedValuesTable, buildgraphmetrics.DirtiedValuesColumn),
 		)
 		fromV = sqlgraph.Neighbors(bgm.driver.Dialect(), step)
 		return fromV, nil
@@ -2061,7 +2061,7 @@ func (c *BuildGraphMetricsClient) QueryChangedValues(bgm *BuildGraphMetrics) *Ev
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, id),
 			sqlgraph.To(evaluationstat.Table, evaluationstat.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.ChangedValuesTable, buildgraphmetrics.ChangedValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, buildgraphmetrics.ChangedValuesTable, buildgraphmetrics.ChangedValuesColumn),
 		)
 		fromV = sqlgraph.Neighbors(bgm.driver.Dialect(), step)
 		return fromV, nil
@@ -2077,7 +2077,7 @@ func (c *BuildGraphMetricsClient) QueryBuiltValues(bgm *BuildGraphMetrics) *Eval
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, id),
 			sqlgraph.To(evaluationstat.Table, evaluationstat.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.BuiltValuesTable, buildgraphmetrics.BuiltValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, buildgraphmetrics.BuiltValuesTable, buildgraphmetrics.BuiltValuesColumn),
 		)
 		fromV = sqlgraph.Neighbors(bgm.driver.Dialect(), step)
 		return fromV, nil
@@ -2093,7 +2093,7 @@ func (c *BuildGraphMetricsClient) QueryCleanedValues(bgm *BuildGraphMetrics) *Ev
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, id),
 			sqlgraph.To(evaluationstat.Table, evaluationstat.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, buildgraphmetrics.CleanedValuesTable, buildgraphmetrics.CleanedValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, buildgraphmetrics.CleanedValuesTable, buildgraphmetrics.CleanedValuesColumn),
 		)
 		fromV = sqlgraph.Neighbors(bgm.driver.Dialect(), step)
 		return fromV, nil
@@ -2109,7 +2109,7 @@ func (c *BuildGraphMetricsClient) QueryEvaluatedValues(bgm *BuildGraphMetrics) *
 		step := sqlgraph.NewStep(
 			sqlgraph.From(buildgraphmetrics.Table, buildgraphmetrics.FieldID, id),
 			sqlgraph.To(evaluationstat.Table, evaluationstat.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, buildgraphmetrics.EvaluatedValuesTable, buildgraphmetrics.EvaluatedValuesPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, buildgraphmetrics.EvaluatedValuesTable, buildgraphmetrics.EvaluatedValuesColumn),
 		)
 		fromV = sqlgraph.Neighbors(bgm.driver.Dialect(), step)
 		return fromV, nil
@@ -2258,7 +2258,7 @@ func (c *CumulativeMetricsClient) QueryMetrics(cm *CumulativeMetrics) *MetricsQu
 		step := sqlgraph.NewStep(
 			sqlgraph.From(cumulativemetrics.Table, cumulativemetrics.FieldID, id),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, cumulativemetrics.MetricsTable, cumulativemetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, cumulativemetrics.MetricsTable, cumulativemetrics.MetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(cm.driver.Dialect(), step)
 		return fromV, nil
@@ -2407,7 +2407,7 @@ func (c *DynamicExecutionMetricsClient) QueryMetrics(dem *DynamicExecutionMetric
 		step := sqlgraph.NewStep(
 			sqlgraph.From(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID, id),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, dynamicexecutionmetrics.MetricsTable, dynamicexecutionmetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, dynamicexecutionmetrics.MetricsTable, dynamicexecutionmetrics.MetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(dem.driver.Dialect(), step)
 		return fromV, nil
@@ -2423,7 +2423,7 @@ func (c *DynamicExecutionMetricsClient) QueryRaceStatistics(dem *DynamicExecutio
 		step := sqlgraph.NewStep(
 			sqlgraph.From(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID, id),
 			sqlgraph.To(racestatistics.Table, racestatistics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, dynamicexecutionmetrics.RaceStatisticsTable, dynamicexecutionmetrics.RaceStatisticsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, dynamicexecutionmetrics.RaceStatisticsTable, dynamicexecutionmetrics.RaceStatisticsColumn),
 		)
 		fromV = sqlgraph.Neighbors(dem.driver.Dialect(), step)
 		return fromV, nil
@@ -2572,7 +2572,7 @@ func (c *EvaluationStatClient) QueryBuildGraphMetrics(es *EvaluationStat) *Build
 		step := sqlgraph.NewStep(
 			sqlgraph.From(evaluationstat.Table, evaluationstat.FieldID, id),
 			sqlgraph.To(buildgraphmetrics.Table, buildgraphmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, evaluationstat.BuildGraphMetricsTable, evaluationstat.BuildGraphMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, evaluationstat.BuildGraphMetricsTable, evaluationstat.BuildGraphMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(es.driver.Dialect(), step)
 		return fromV, nil
@@ -2870,7 +2870,7 @@ func (c *ExectionInfoClient) QueryTestResult(ei *ExectionInfo) *TestResultBESQue
 		step := sqlgraph.NewStep(
 			sqlgraph.From(exectioninfo.Table, exectioninfo.FieldID, id),
 			sqlgraph.To(testresultbes.Table, testresultbes.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, exectioninfo.TestResultTable, exectioninfo.TestResultColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, exectioninfo.TestResultTable, exectioninfo.TestResultColumn),
 		)
 		fromV = sqlgraph.Neighbors(ei.driver.Dialect(), step)
 		return fromV, nil
@@ -2886,7 +2886,7 @@ func (c *ExectionInfoClient) QueryTimingBreakdown(ei *ExectionInfo) *TimingBreak
 		step := sqlgraph.NewStep(
 			sqlgraph.From(exectioninfo.Table, exectioninfo.FieldID, id),
 			sqlgraph.To(timingbreakdown.Table, timingbreakdown.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, exectioninfo.TimingBreakdownTable, exectioninfo.TimingBreakdownColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, exectioninfo.TimingBreakdownTable, exectioninfo.TimingBreakdownColumn),
 		)
 		fromV = sqlgraph.Neighbors(ei.driver.Dialect(), step)
 		return fromV, nil
@@ -2902,7 +2902,7 @@ func (c *ExectionInfoClient) QueryResourceUsage(ei *ExectionInfo) *ResourceUsage
 		step := sqlgraph.NewStep(
 			sqlgraph.From(exectioninfo.Table, exectioninfo.FieldID, id),
 			sqlgraph.To(resourceusage.Table, resourceusage.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, exectioninfo.ResourceUsageTable, exectioninfo.ResourceUsagePrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, exectioninfo.ResourceUsageTable, exectioninfo.ResourceUsageColumn),
 		)
 		fromV = sqlgraph.Neighbors(ei.driver.Dialect(), step)
 		return fromV, nil
@@ -3051,7 +3051,7 @@ func (c *FilesMetricClient) QueryArtifactMetrics(fm *FilesMetric) *ArtifactMetri
 		step := sqlgraph.NewStep(
 			sqlgraph.From(filesmetric.Table, filesmetric.FieldID, id),
 			sqlgraph.To(artifactmetrics.Table, artifactmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, filesmetric.ArtifactMetricsTable, filesmetric.ArtifactMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, filesmetric.ArtifactMetricsTable, filesmetric.ArtifactMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(fm.driver.Dialect(), step)
 		return fromV, nil
@@ -3200,7 +3200,7 @@ func (c *GarbageMetricsClient) QueryMemoryMetrics(gm *GarbageMetrics) *MemoryMet
 		step := sqlgraph.NewStep(
 			sqlgraph.From(garbagemetrics.Table, garbagemetrics.FieldID, id),
 			sqlgraph.To(memorymetrics.Table, memorymetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, garbagemetrics.MemoryMetricsTable, garbagemetrics.MemoryMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, garbagemetrics.MemoryMetricsTable, garbagemetrics.MemoryMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(gm.driver.Dialect(), step)
 		return fromV, nil
@@ -3349,7 +3349,7 @@ func (c *MemoryMetricsClient) QueryMetrics(mm *MemoryMetrics) *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(memorymetrics.Table, memorymetrics.FieldID, id),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, memorymetrics.MetricsTable, memorymetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, memorymetrics.MetricsTable, memorymetrics.MetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(mm.driver.Dialect(), step)
 		return fromV, nil
@@ -3365,7 +3365,7 @@ func (c *MemoryMetricsClient) QueryGarbageMetrics(mm *MemoryMetrics) *GarbageMet
 		step := sqlgraph.NewStep(
 			sqlgraph.From(memorymetrics.Table, memorymetrics.FieldID, id),
 			sqlgraph.To(garbagemetrics.Table, garbagemetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, memorymetrics.GarbageMetricsTable, memorymetrics.GarbageMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, memorymetrics.GarbageMetricsTable, memorymetrics.GarbageMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(mm.driver.Dialect(), step)
 		return fromV, nil
@@ -3530,7 +3530,7 @@ func (c *MetricsClient) QueryActionSummary(m *Metrics) *ActionSummaryQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, id),
 			sqlgraph.To(actionsummary.Table, actionsummary.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, metrics.ActionSummaryTable, metrics.ActionSummaryColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.ActionSummaryTable, metrics.ActionSummaryColumn),
 		)
 		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
 		return fromV, nil
@@ -3546,7 +3546,7 @@ func (c *MetricsClient) QueryMemoryMetrics(m *Metrics) *MemoryMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, id),
 			sqlgraph.To(memorymetrics.Table, memorymetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.MemoryMetricsTable, metrics.MemoryMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.MemoryMetricsTable, metrics.MemoryMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
 		return fromV, nil
@@ -3562,7 +3562,7 @@ func (c *MetricsClient) QueryTargetMetrics(m *Metrics) *TargetMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, id),
 			sqlgraph.To(targetmetrics.Table, targetmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.TargetMetricsTable, metrics.TargetMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.TargetMetricsTable, metrics.TargetMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
 		return fromV, nil
@@ -3578,7 +3578,7 @@ func (c *MetricsClient) QueryPackageMetrics(m *Metrics) *PackageMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, id),
 			sqlgraph.To(packagemetrics.Table, packagemetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.PackageMetricsTable, metrics.PackageMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.PackageMetricsTable, metrics.PackageMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
 		return fromV, nil
@@ -3594,7 +3594,7 @@ func (c *MetricsClient) QueryTimingMetrics(m *Metrics) *TimingMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, id),
 			sqlgraph.To(timingmetrics.Table, timingmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.TimingMetricsTable, metrics.TimingMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.TimingMetricsTable, metrics.TimingMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
 		return fromV, nil
@@ -3610,7 +3610,7 @@ func (c *MetricsClient) QueryCumulativeMetrics(m *Metrics) *CumulativeMetricsQue
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, id),
 			sqlgraph.To(cumulativemetrics.Table, cumulativemetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.CumulativeMetricsTable, metrics.CumulativeMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.CumulativeMetricsTable, metrics.CumulativeMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
 		return fromV, nil
@@ -3626,7 +3626,7 @@ func (c *MetricsClient) QueryArtifactMetrics(m *Metrics) *ArtifactMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, id),
 			sqlgraph.To(artifactmetrics.Table, artifactmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.ArtifactMetricsTable, metrics.ArtifactMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.ArtifactMetricsTable, metrics.ArtifactMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
 		return fromV, nil
@@ -3642,7 +3642,7 @@ func (c *MetricsClient) QueryNetworkMetrics(m *Metrics) *NetworkMetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, id),
 			sqlgraph.To(networkmetrics.Table, networkmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.NetworkMetricsTable, metrics.NetworkMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.NetworkMetricsTable, metrics.NetworkMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
 		return fromV, nil
@@ -3658,7 +3658,7 @@ func (c *MetricsClient) QueryDynamicExecutionMetrics(m *Metrics) *DynamicExecuti
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, id),
 			sqlgraph.To(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.DynamicExecutionMetricsTable, metrics.DynamicExecutionMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.DynamicExecutionMetricsTable, metrics.DynamicExecutionMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
 		return fromV, nil
@@ -3674,7 +3674,7 @@ func (c *MetricsClient) QueryBuildGraphMetrics(m *Metrics) *BuildGraphMetricsQue
 		step := sqlgraph.NewStep(
 			sqlgraph.From(metrics.Table, metrics.FieldID, id),
 			sqlgraph.To(buildgraphmetrics.Table, buildgraphmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, metrics.BuildGraphMetricsTable, metrics.BuildGraphMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, metrics.BuildGraphMetricsTable, metrics.BuildGraphMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
 		return fromV, nil
@@ -3823,7 +3823,7 @@ func (c *MissDetailClient) QueryActionCacheStatistics(md *MissDetail) *ActionCac
 		step := sqlgraph.NewStep(
 			sqlgraph.From(missdetail.Table, missdetail.FieldID, id),
 			sqlgraph.To(actioncachestatistics.Table, actioncachestatistics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, missdetail.ActionCacheStatisticsTable, missdetail.ActionCacheStatisticsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, missdetail.ActionCacheStatisticsTable, missdetail.ActionCacheStatisticsColumn),
 		)
 		fromV = sqlgraph.Neighbors(md.driver.Dialect(), step)
 		return fromV, nil
@@ -3972,7 +3972,7 @@ func (c *NamedSetOfFilesClient) QueryOutputGroup(nsof *NamedSetOfFiles) *OutputG
 		step := sqlgraph.NewStep(
 			sqlgraph.From(namedsetoffiles.Table, namedsetoffiles.FieldID, id),
 			sqlgraph.To(outputgroup.Table, outputgroup.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, namedsetoffiles.OutputGroupTable, namedsetoffiles.OutputGroupColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, namedsetoffiles.OutputGroupTable, namedsetoffiles.OutputGroupColumn),
 		)
 		fromV = sqlgraph.Neighbors(nsof.driver.Dialect(), step)
 		return fromV, nil
@@ -4153,7 +4153,7 @@ func (c *NetworkMetricsClient) QueryMetrics(nm *NetworkMetrics) *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(networkmetrics.Table, networkmetrics.FieldID, id),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, networkmetrics.MetricsTable, networkmetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, networkmetrics.MetricsTable, networkmetrics.MetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(nm.driver.Dialect(), step)
 		return fromV, nil
@@ -4169,7 +4169,7 @@ func (c *NetworkMetricsClient) QuerySystemNetworkStats(nm *NetworkMetrics) *Syst
 		step := sqlgraph.NewStep(
 			sqlgraph.From(networkmetrics.Table, networkmetrics.FieldID, id),
 			sqlgraph.To(systemnetworkstats.Table, systemnetworkstats.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, networkmetrics.SystemNetworkStatsTable, networkmetrics.SystemNetworkStatsColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, networkmetrics.SystemNetworkStatsTable, networkmetrics.SystemNetworkStatsColumn),
 		)
 		fromV = sqlgraph.Neighbors(nm.driver.Dialect(), step)
 		return fromV, nil
@@ -4318,7 +4318,7 @@ func (c *OutputGroupClient) QueryTargetComplete(og *OutputGroup) *TargetComplete
 		step := sqlgraph.NewStep(
 			sqlgraph.From(outputgroup.Table, outputgroup.FieldID, id),
 			sqlgraph.To(targetcomplete.Table, targetcomplete.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, outputgroup.TargetCompleteTable, outputgroup.TargetCompleteColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, outputgroup.TargetCompleteTable, outputgroup.TargetCompleteColumn),
 		)
 		fromV = sqlgraph.Neighbors(og.driver.Dialect(), step)
 		return fromV, nil
@@ -4350,7 +4350,7 @@ func (c *OutputGroupClient) QueryFileSets(og *OutputGroup) *NamedSetOfFilesQuery
 		step := sqlgraph.NewStep(
 			sqlgraph.From(outputgroup.Table, outputgroup.FieldID, id),
 			sqlgraph.To(namedsetoffiles.Table, namedsetoffiles.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, outputgroup.FileSetsTable, outputgroup.FileSetsColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, outputgroup.FileSetsTable, outputgroup.FileSetsColumn),
 		)
 		fromV = sqlgraph.Neighbors(og.driver.Dialect(), step)
 		return fromV, nil
@@ -4499,7 +4499,7 @@ func (c *PackageLoadMetricsClient) QueryPackageMetrics(plm *PackageLoadMetrics) 
 		step := sqlgraph.NewStep(
 			sqlgraph.From(packageloadmetrics.Table, packageloadmetrics.FieldID, id),
 			sqlgraph.To(packagemetrics.Table, packagemetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, packageloadmetrics.PackageMetricsTable, packageloadmetrics.PackageMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, packageloadmetrics.PackageMetricsTable, packageloadmetrics.PackageMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(plm.driver.Dialect(), step)
 		return fromV, nil
@@ -4648,7 +4648,7 @@ func (c *PackageMetricsClient) QueryMetrics(pm *PackageMetrics) *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(packagemetrics.Table, packagemetrics.FieldID, id),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, packagemetrics.MetricsTable, packagemetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, packagemetrics.MetricsTable, packagemetrics.MetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(pm.driver.Dialect(), step)
 		return fromV, nil
@@ -4664,7 +4664,7 @@ func (c *PackageMetricsClient) QueryPackageLoadMetrics(pm *PackageMetrics) *Pack
 		step := sqlgraph.NewStep(
 			sqlgraph.From(packagemetrics.Table, packagemetrics.FieldID, id),
 			sqlgraph.To(packageloadmetrics.Table, packageloadmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, packagemetrics.PackageLoadMetricsTable, packagemetrics.PackageLoadMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, packagemetrics.PackageLoadMetricsTable, packagemetrics.PackageLoadMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(pm.driver.Dialect(), step)
 		return fromV, nil
@@ -4813,7 +4813,7 @@ func (c *RaceStatisticsClient) QueryDynamicExecutionMetrics(rs *RaceStatistics) 
 		step := sqlgraph.NewStep(
 			sqlgraph.From(racestatistics.Table, racestatistics.FieldID, id),
 			sqlgraph.To(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, racestatistics.DynamicExecutionMetricsTable, racestatistics.DynamicExecutionMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, racestatistics.DynamicExecutionMetricsTable, racestatistics.DynamicExecutionMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(rs.driver.Dialect(), step)
 		return fromV, nil
@@ -4962,7 +4962,7 @@ func (c *ResourceUsageClient) QueryExecutionInfo(ru *ResourceUsage) *ExectionInf
 		step := sqlgraph.NewStep(
 			sqlgraph.From(resourceusage.Table, resourceusage.FieldID, id),
 			sqlgraph.To(exectioninfo.Table, exectioninfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, resourceusage.ExecutionInfoTable, resourceusage.ExecutionInfoPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, resourceusage.ExecutionInfoTable, resourceusage.ExecutionInfoColumn),
 		)
 		fromV = sqlgraph.Neighbors(ru.driver.Dialect(), step)
 		return fromV, nil
@@ -5111,7 +5111,7 @@ func (c *RunnerCountClient) QueryActionSummary(rc *RunnerCount) *ActionSummaryQu
 		step := sqlgraph.NewStep(
 			sqlgraph.From(runnercount.Table, runnercount.FieldID, id),
 			sqlgraph.To(actionsummary.Table, actionsummary.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, runnercount.ActionSummaryTable, runnercount.ActionSummaryPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, runnercount.ActionSummaryTable, runnercount.ActionSummaryColumn),
 		)
 		fromV = sqlgraph.Neighbors(rc.driver.Dialect(), step)
 		return fromV, nil
@@ -5260,7 +5260,7 @@ func (c *SystemNetworkStatsClient) QueryNetworkMetrics(sns *SystemNetworkStats) 
 		step := sqlgraph.NewStep(
 			sqlgraph.From(systemnetworkstats.Table, systemnetworkstats.FieldID, id),
 			sqlgraph.To(networkmetrics.Table, networkmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, systemnetworkstats.NetworkMetricsTable, systemnetworkstats.NetworkMetricsColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, systemnetworkstats.NetworkMetricsTable, systemnetworkstats.NetworkMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(sns.driver.Dialect(), step)
 		return fromV, nil
@@ -5409,7 +5409,7 @@ func (c *TargetCompleteClient) QueryTargetPair(tc *TargetComplete) *TargetPairQu
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetcomplete.Table, targetcomplete.FieldID, id),
 			sqlgraph.To(targetpair.Table, targetpair.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, targetcomplete.TargetPairTable, targetcomplete.TargetPairColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, targetcomplete.TargetPairTable, targetcomplete.TargetPairColumn),
 		)
 		fromV = sqlgraph.Neighbors(tc.driver.Dialect(), step)
 		return fromV, nil
@@ -5457,7 +5457,7 @@ func (c *TargetCompleteClient) QueryOutputGroup(tc *TargetComplete) *OutputGroup
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetcomplete.Table, targetcomplete.FieldID, id),
 			sqlgraph.To(outputgroup.Table, outputgroup.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, targetcomplete.OutputGroupTable, targetcomplete.OutputGroupColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, targetcomplete.OutputGroupTable, targetcomplete.OutputGroupColumn),
 		)
 		fromV = sqlgraph.Neighbors(tc.driver.Dialect(), step)
 		return fromV, nil
@@ -5606,7 +5606,7 @@ func (c *TargetConfiguredClient) QueryTargetPair(tc *TargetConfigured) *TargetPa
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetconfigured.Table, targetconfigured.FieldID, id),
 			sqlgraph.To(targetpair.Table, targetpair.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, targetconfigured.TargetPairTable, targetconfigured.TargetPairColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, targetconfigured.TargetPairTable, targetconfigured.TargetPairColumn),
 		)
 		fromV = sqlgraph.Neighbors(tc.driver.Dialect(), step)
 		return fromV, nil
@@ -5755,7 +5755,7 @@ func (c *TargetMetricsClient) QueryMetrics(tm *TargetMetrics) *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetmetrics.Table, targetmetrics.FieldID, id),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, targetmetrics.MetricsTable, targetmetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, targetmetrics.MetricsTable, targetmetrics.MetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(tm.driver.Dialect(), step)
 		return fromV, nil
@@ -5904,7 +5904,7 @@ func (c *TargetPairClient) QueryBazelInvocation(tp *TargetPair) *BazelInvocation
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetpair.Table, targetpair.FieldID, id),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, targetpair.BazelInvocationTable, targetpair.BazelInvocationPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, targetpair.BazelInvocationTable, targetpair.BazelInvocationColumn),
 		)
 		fromV = sqlgraph.Neighbors(tp.driver.Dialect(), step)
 		return fromV, nil
@@ -5920,7 +5920,7 @@ func (c *TargetPairClient) QueryConfiguration(tp *TargetPair) *TargetConfiguredQ
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetpair.Table, targetpair.FieldID, id),
 			sqlgraph.To(targetconfigured.Table, targetconfigured.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, targetpair.ConfigurationTable, targetpair.ConfigurationColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, targetpair.ConfigurationTable, targetpair.ConfigurationColumn),
 		)
 		fromV = sqlgraph.Neighbors(tp.driver.Dialect(), step)
 		return fromV, nil
@@ -5936,7 +5936,7 @@ func (c *TargetPairClient) QueryCompletion(tp *TargetPair) *TargetCompleteQuery 
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetpair.Table, targetpair.FieldID, id),
 			sqlgraph.To(targetcomplete.Table, targetcomplete.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, targetpair.CompletionTable, targetpair.CompletionColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, targetpair.CompletionTable, targetpair.CompletionColumn),
 		)
 		fromV = sqlgraph.Neighbors(tp.driver.Dialect(), step)
 		return fromV, nil
@@ -6085,7 +6085,7 @@ func (c *TestCollectionClient) QueryBazelInvocation(tc *TestCollection) *BazelIn
 		step := sqlgraph.NewStep(
 			sqlgraph.From(testcollection.Table, testcollection.FieldID, id),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, testcollection.BazelInvocationTable, testcollection.BazelInvocationPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, testcollection.BazelInvocationTable, testcollection.BazelInvocationColumn),
 		)
 		fromV = sqlgraph.Neighbors(tc.driver.Dialect(), step)
 		return fromV, nil
@@ -6101,7 +6101,7 @@ func (c *TestCollectionClient) QueryTestSummary(tc *TestCollection) *TestSummary
 		step := sqlgraph.NewStep(
 			sqlgraph.From(testcollection.Table, testcollection.FieldID, id),
 			sqlgraph.To(testsummary.Table, testsummary.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, testcollection.TestSummaryTable, testcollection.TestSummaryColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, testcollection.TestSummaryTable, testcollection.TestSummaryColumn),
 		)
 		fromV = sqlgraph.Neighbors(tc.driver.Dialect(), step)
 		return fromV, nil
@@ -6266,7 +6266,7 @@ func (c *TestFileClient) QueryTestResult(tf *TestFile) *TestResultBESQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(testfile.Table, testfile.FieldID, id),
 			sqlgraph.To(testresultbes.Table, testresultbes.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, testfile.TestResultTable, testfile.TestResultPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, testfile.TestResultTable, testfile.TestResultColumn),
 		)
 		fromV = sqlgraph.Neighbors(tf.driver.Dialect(), step)
 		return fromV, nil
@@ -6431,7 +6431,7 @@ func (c *TestResultBESClient) QueryTestActionOutput(trb *TestResultBES) *TestFil
 		step := sqlgraph.NewStep(
 			sqlgraph.From(testresultbes.Table, testresultbes.FieldID, id),
 			sqlgraph.To(testfile.Table, testfile.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, testresultbes.TestActionOutputTable, testresultbes.TestActionOutputPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, testresultbes.TestActionOutputTable, testresultbes.TestActionOutputColumn),
 		)
 		fromV = sqlgraph.Neighbors(trb.driver.Dialect(), step)
 		return fromV, nil
@@ -6447,7 +6447,7 @@ func (c *TestResultBESClient) QueryExecutionInfo(trb *TestResultBES) *ExectionIn
 		step := sqlgraph.NewStep(
 			sqlgraph.From(testresultbes.Table, testresultbes.FieldID, id),
 			sqlgraph.To(exectioninfo.Table, exectioninfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, testresultbes.ExecutionInfoTable, testresultbes.ExecutionInfoColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, testresultbes.ExecutionInfoTable, testresultbes.ExecutionInfoColumn),
 		)
 		fromV = sqlgraph.Neighbors(trb.driver.Dialect(), step)
 		return fromV, nil
@@ -6596,7 +6596,7 @@ func (c *TestSummaryClient) QueryTestCollection(ts *TestSummary) *TestCollection
 		step := sqlgraph.NewStep(
 			sqlgraph.From(testsummary.Table, testsummary.FieldID, id),
 			sqlgraph.To(testcollection.Table, testcollection.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, testsummary.TestCollectionTable, testsummary.TestCollectionColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, testsummary.TestCollectionTable, testsummary.TestCollectionColumn),
 		)
 		fromV = sqlgraph.Neighbors(ts.driver.Dialect(), step)
 		return fromV, nil
@@ -6777,7 +6777,7 @@ func (c *TimingBreakdownClient) QueryExecutionInfo(tb *TimingBreakdown) *Exectio
 		step := sqlgraph.NewStep(
 			sqlgraph.From(timingbreakdown.Table, timingbreakdown.FieldID, id),
 			sqlgraph.To(exectioninfo.Table, exectioninfo.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, timingbreakdown.ExecutionInfoTable, timingbreakdown.ExecutionInfoColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, timingbreakdown.ExecutionInfoTable, timingbreakdown.ExecutionInfoColumn),
 		)
 		fromV = sqlgraph.Neighbors(tb.driver.Dialect(), step)
 		return fromV, nil
@@ -6793,7 +6793,7 @@ func (c *TimingBreakdownClient) QueryChild(tb *TimingBreakdown) *TimingChildQuer
 		step := sqlgraph.NewStep(
 			sqlgraph.From(timingbreakdown.Table, timingbreakdown.FieldID, id),
 			sqlgraph.To(timingchild.Table, timingchild.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, timingbreakdown.ChildTable, timingbreakdown.ChildPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, timingbreakdown.ChildTable, timingbreakdown.ChildColumn),
 		)
 		fromV = sqlgraph.Neighbors(tb.driver.Dialect(), step)
 		return fromV, nil
@@ -6942,7 +6942,7 @@ func (c *TimingChildClient) QueryTimingBreakdown(tc *TimingChild) *TimingBreakdo
 		step := sqlgraph.NewStep(
 			sqlgraph.From(timingchild.Table, timingchild.FieldID, id),
 			sqlgraph.To(timingbreakdown.Table, timingbreakdown.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, timingchild.TimingBreakdownTable, timingchild.TimingBreakdownPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, timingchild.TimingBreakdownTable, timingchild.TimingBreakdownColumn),
 		)
 		fromV = sqlgraph.Neighbors(tc.driver.Dialect(), step)
 		return fromV, nil
@@ -7091,7 +7091,7 @@ func (c *TimingMetricsClient) QueryMetrics(tm *TimingMetrics) *MetricsQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(timingmetrics.Table, timingmetrics.FieldID, id),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, timingmetrics.MetricsTable, timingmetrics.MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, timingmetrics.MetricsTable, timingmetrics.MetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(tm.driver.Dialect(), step)
 		return fromV, nil

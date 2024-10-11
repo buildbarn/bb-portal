@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { PieChart, Pie, Cell, Legend, BarChart, Bar, LabelList } from 'recharts';
-import { Table, Row, Col, Statistic, Tooltip, Space, Typography } from 'antd';
+import { Table, Row, Col, Statistic, Tooltip, Space } from 'antd';
 import type { StatisticProps, TableColumnsType } from "antd/lib";
 import CountUp from 'react-countup';
 import { ActionCacheStatistics, ActionSummary, MissDetail } from "@/graphql/__generated__/graphql";
@@ -10,6 +10,7 @@ import { renderActiveShape } from "../Utilities/renderShape"
 import { nullPercent } from "../Utilities/nullPercent";
 import "./index.module.css"
 import MissDetailTag, { MissDetailEnum } from "./ActionCacheMissTag";
+import styles from "../../theme/theme.module.css"
 interface MissDetailDisplayDataType {
     key: React.Key;
     name: string;
@@ -23,13 +24,13 @@ const formatter: StatisticProps['formatter'] = (value) => (
 
 var ac_colors =
     [
-        "grey", //unknown
-        "blue", //different action key
-        "pink", //different deps
-        "purple", //different env
-        "cyan", //diff files
-        "orange", //corrupted cache entry
-        "red"] //not cached
+        "grey",     //unknown
+        "blue",     //different action key
+        "pink",     //different deps
+        "purple",   //different env
+        "cyan",     //diff files
+        "orange",   //corrupted cache entry
+        "red"]      //not cached
 
 const ac_columns: TableColumnsType<MissDetailDisplayDataType> = [
     {
@@ -41,11 +42,16 @@ const ac_columns: TableColumnsType<MissDetailDisplayDataType> = [
     {
         title: "Count",
         dataIndex: "value",
+        align: "right",
+        defaultSortOrder: "descend",
+        render: (_, record) => <span className={styles.numberFormat}>{record.value}</span>,
         sorter: (a, b) => a.value - b.value,
     },
     {
         title: "Rate (%)",
         dataIndex: "rate",
+        align: "right",
+        render: (_, record) => <span className={styles.numberFormat}>{record.rate}</span>,
         sorter: (a, b) => parseFloat(a.rate) - parseFloat(b.rate),
     }
 ]
@@ -53,7 +59,7 @@ const ac_columns: TableColumnsType<MissDetailDisplayDataType> = [
 
 const AcMetrics: React.FC<{ acMetrics: ActionSummary | undefined; }> = ({ acMetrics }) => {
 
-    const acMetricsData: ActionCacheStatistics | undefined = acMetrics?.actionCacheStatistics?.at(0)
+    const acMetricsData: ActionCacheStatistics | undefined = acMetrics?.actionCacheStatistics ?? undefined
 
     var hitMissTotal: number = (acMetricsData?.misses ?? 0) + (acMetricsData?.hits ?? 0);
 
@@ -94,7 +100,7 @@ const AcMetrics: React.FC<{ acMetrics: ActionSummary | undefined; }> = ({ acMetr
 
     return (
         <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
-            <PortalCard icon={<DashboardOutlined />} titleBits={acTitle} >
+            <PortalCard type="inner" icon={<DashboardOutlined />} titleBits={acTitle} >
                 <Row>
                     <Space size="large">
                         <BarChart width={170} height={150} data={hits_data} margin={{ top: 0, left: 10, bottom: 10, right: 10 }}>
@@ -117,7 +123,7 @@ const AcMetrics: React.FC<{ acMetrics: ActionSummary | undefined; }> = ({ acMetr
                 </Row>
                 <Row justify="space-around" align="top" >
                     <Col span="12">
-                        <PortalCard icon={<PieChartOutlined />} titleBits={["Miss Detail Breakdown"]}>
+                        <PortalCard type="inner" icon={<PieChartOutlined />} titleBits={["Miss Detail Breakdown"]}>
                             <PieChart width={600} height={500}>
 
                                 <Pie
@@ -143,7 +149,7 @@ const AcMetrics: React.FC<{ acMetrics: ActionSummary | undefined; }> = ({ acMetr
 
                     </Col>
                     <Col span="12">
-                        <PortalCard icon={<HddOutlined />} titleBits={["Miss Detail Data"]}>
+                        <PortalCard type="inner" icon={<HddOutlined />} titleBits={["Miss Detail Data"]}>
                             <Table
                                 columns={ac_columns}
                                 dataSource={ac_data}

@@ -20,79 +20,99 @@ type ArtifactMetricsCreate struct {
 	hooks    []Hook
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (amc *ArtifactMetricsCreate) AddMetricIDs(ids ...int) *ArtifactMetricsCreate {
-	amc.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (amc *ArtifactMetricsCreate) SetMetricsID(id int) *ArtifactMetricsCreate {
+	amc.mutation.SetMetricsID(id)
 	return amc
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (amc *ArtifactMetricsCreate) AddMetrics(m ...*Metrics) *ArtifactMetricsCreate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableMetricsID(id *int) *ArtifactMetricsCreate {
+	if id != nil {
+		amc = amc.SetMetricsID(*id)
 	}
-	return amc.AddMetricIDs(ids...)
-}
-
-// AddSourceArtifactsReadIDs adds the "source_artifacts_read" edge to the FilesMetric entity by IDs.
-func (amc *ArtifactMetricsCreate) AddSourceArtifactsReadIDs(ids ...int) *ArtifactMetricsCreate {
-	amc.mutation.AddSourceArtifactsReadIDs(ids...)
 	return amc
 }
 
-// AddSourceArtifactsRead adds the "source_artifacts_read" edges to the FilesMetric entity.
-func (amc *ArtifactMetricsCreate) AddSourceArtifactsRead(f ...*FilesMetric) *ArtifactMetricsCreate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amc.AddSourceArtifactsReadIDs(ids...)
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (amc *ArtifactMetricsCreate) SetMetrics(m *Metrics) *ArtifactMetricsCreate {
+	return amc.SetMetricsID(m.ID)
 }
 
-// AddOutputArtifactsSeenIDs adds the "output_artifacts_seen" edge to the FilesMetric entity by IDs.
-func (amc *ArtifactMetricsCreate) AddOutputArtifactsSeenIDs(ids ...int) *ArtifactMetricsCreate {
-	amc.mutation.AddOutputArtifactsSeenIDs(ids...)
+// SetSourceArtifactsReadID sets the "source_artifacts_read" edge to the FilesMetric entity by ID.
+func (amc *ArtifactMetricsCreate) SetSourceArtifactsReadID(id int) *ArtifactMetricsCreate {
+	amc.mutation.SetSourceArtifactsReadID(id)
 	return amc
 }
 
-// AddOutputArtifactsSeen adds the "output_artifacts_seen" edges to the FilesMetric entity.
-func (amc *ArtifactMetricsCreate) AddOutputArtifactsSeen(f ...*FilesMetric) *ArtifactMetricsCreate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+// SetNillableSourceArtifactsReadID sets the "source_artifacts_read" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableSourceArtifactsReadID(id *int) *ArtifactMetricsCreate {
+	if id != nil {
+		amc = amc.SetSourceArtifactsReadID(*id)
 	}
-	return amc.AddOutputArtifactsSeenIDs(ids...)
-}
-
-// AddOutputArtifactsFromActionCacheIDs adds the "output_artifacts_from_action_cache" edge to the FilesMetric entity by IDs.
-func (amc *ArtifactMetricsCreate) AddOutputArtifactsFromActionCacheIDs(ids ...int) *ArtifactMetricsCreate {
-	amc.mutation.AddOutputArtifactsFromActionCacheIDs(ids...)
 	return amc
 }
 
-// AddOutputArtifactsFromActionCache adds the "output_artifacts_from_action_cache" edges to the FilesMetric entity.
-func (amc *ArtifactMetricsCreate) AddOutputArtifactsFromActionCache(f ...*FilesMetric) *ArtifactMetricsCreate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return amc.AddOutputArtifactsFromActionCacheIDs(ids...)
+// SetSourceArtifactsRead sets the "source_artifacts_read" edge to the FilesMetric entity.
+func (amc *ArtifactMetricsCreate) SetSourceArtifactsRead(f *FilesMetric) *ArtifactMetricsCreate {
+	return amc.SetSourceArtifactsReadID(f.ID)
 }
 
-// AddTopLevelArtifactIDs adds the "top_level_artifacts" edge to the FilesMetric entity by IDs.
-func (amc *ArtifactMetricsCreate) AddTopLevelArtifactIDs(ids ...int) *ArtifactMetricsCreate {
-	amc.mutation.AddTopLevelArtifactIDs(ids...)
+// SetOutputArtifactsSeenID sets the "output_artifacts_seen" edge to the FilesMetric entity by ID.
+func (amc *ArtifactMetricsCreate) SetOutputArtifactsSeenID(id int) *ArtifactMetricsCreate {
+	amc.mutation.SetOutputArtifactsSeenID(id)
 	return amc
 }
 
-// AddTopLevelArtifacts adds the "top_level_artifacts" edges to the FilesMetric entity.
-func (amc *ArtifactMetricsCreate) AddTopLevelArtifacts(f ...*FilesMetric) *ArtifactMetricsCreate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+// SetNillableOutputArtifactsSeenID sets the "output_artifacts_seen" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsSeenID(id *int) *ArtifactMetricsCreate {
+	if id != nil {
+		amc = amc.SetOutputArtifactsSeenID(*id)
 	}
-	return amc.AddTopLevelArtifactIDs(ids...)
+	return amc
+}
+
+// SetOutputArtifactsSeen sets the "output_artifacts_seen" edge to the FilesMetric entity.
+func (amc *ArtifactMetricsCreate) SetOutputArtifactsSeen(f *FilesMetric) *ArtifactMetricsCreate {
+	return amc.SetOutputArtifactsSeenID(f.ID)
+}
+
+// SetOutputArtifactsFromActionCacheID sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity by ID.
+func (amc *ArtifactMetricsCreate) SetOutputArtifactsFromActionCacheID(id int) *ArtifactMetricsCreate {
+	amc.mutation.SetOutputArtifactsFromActionCacheID(id)
+	return amc
+}
+
+// SetNillableOutputArtifactsFromActionCacheID sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsFromActionCacheID(id *int) *ArtifactMetricsCreate {
+	if id != nil {
+		amc = amc.SetOutputArtifactsFromActionCacheID(*id)
+	}
+	return amc
+}
+
+// SetOutputArtifactsFromActionCache sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity.
+func (amc *ArtifactMetricsCreate) SetOutputArtifactsFromActionCache(f *FilesMetric) *ArtifactMetricsCreate {
+	return amc.SetOutputArtifactsFromActionCacheID(f.ID)
+}
+
+// SetTopLevelArtifactsID sets the "top_level_artifacts" edge to the FilesMetric entity by ID.
+func (amc *ArtifactMetricsCreate) SetTopLevelArtifactsID(id int) *ArtifactMetricsCreate {
+	amc.mutation.SetTopLevelArtifactsID(id)
+	return amc
+}
+
+// SetNillableTopLevelArtifactsID sets the "top_level_artifacts" edge to the FilesMetric entity by ID if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableTopLevelArtifactsID(id *int) *ArtifactMetricsCreate {
+	if id != nil {
+		amc = amc.SetTopLevelArtifactsID(*id)
+	}
+	return amc
+}
+
+// SetTopLevelArtifacts sets the "top_level_artifacts" edge to the FilesMetric entity.
+func (amc *ArtifactMetricsCreate) SetTopLevelArtifacts(f *FilesMetric) *ArtifactMetricsCreate {
+	return amc.SetTopLevelArtifactsID(f.ID)
 }
 
 // Mutation returns the ArtifactMetricsMutation object of the builder.
@@ -157,10 +177,10 @@ func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.Crea
 	)
 	if nodes := amc.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   artifactmetrics.MetricsTable,
-			Columns: artifactmetrics.MetricsPrimaryKey,
+			Columns: []string{artifactmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -169,11 +189,12 @@ func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.Crea
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.metrics_artifact_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := amc.mutation.SourceArtifactsReadIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.SourceArtifactsReadTable,
 			Columns: []string{artifactmetrics.SourceArtifactsReadColumn},
@@ -185,11 +206,12 @@ func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.Crea
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.artifact_metrics_source_artifacts_read = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := amc.mutation.OutputArtifactsSeenIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.OutputArtifactsSeenTable,
 			Columns: []string{artifactmetrics.OutputArtifactsSeenColumn},
@@ -201,11 +223,12 @@ func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.Crea
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.artifact_metrics_output_artifacts_seen = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := amc.mutation.OutputArtifactsFromActionCacheIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   artifactmetrics.OutputArtifactsFromActionCacheTable,
 			Columns: []string{artifactmetrics.OutputArtifactsFromActionCacheColumn},
@@ -217,14 +240,15 @@ func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.Crea
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.artifact_metrics_output_artifacts_from_action_cache = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := amc.mutation.TopLevelArtifactsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   artifactmetrics.TopLevelArtifactsTable,
-			Columns: artifactmetrics.TopLevelArtifactsPrimaryKey,
+			Columns: []string{artifactmetrics.TopLevelArtifactsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),

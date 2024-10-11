@@ -553,7 +553,7 @@ func HasMetrics() predicate.BuildGraphMetrics {
 	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, MetricsTable, MetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -576,7 +576,7 @@ func HasDirtiedValues() predicate.BuildGraphMetrics {
 	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, DirtiedValuesTable, DirtiedValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, DirtiedValuesTable, DirtiedValuesColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -599,7 +599,7 @@ func HasChangedValues() predicate.BuildGraphMetrics {
 	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ChangedValuesTable, ChangedValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, ChangedValuesTable, ChangedValuesColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -622,7 +622,7 @@ func HasBuiltValues() predicate.BuildGraphMetrics {
 	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, BuiltValuesTable, BuiltValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, BuiltValuesTable, BuiltValuesColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -645,7 +645,7 @@ func HasCleanedValues() predicate.BuildGraphMetrics {
 	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, CleanedValuesTable, CleanedValuesColumn),
+			sqlgraph.Edge(sqlgraph.M2O, false, CleanedValuesTable, CleanedValuesColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -668,7 +668,7 @@ func HasEvaluatedValues() predicate.BuildGraphMetrics {
 	return predicate.BuildGraphMetrics(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, EvaluatedValuesTable, EvaluatedValuesPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, EvaluatedValuesTable, EvaluatedValuesColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

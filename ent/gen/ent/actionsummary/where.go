@@ -278,7 +278,7 @@ func HasMetrics() predicate.ActionSummary {
 	return predicate.ActionSummary(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, MetricsTable, MetricsColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -301,7 +301,7 @@ func HasActionData() predicate.ActionSummary {
 	return predicate.ActionSummary(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, ActionDataTable, ActionDataPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, ActionDataTable, ActionDataColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -324,7 +324,7 @@ func HasRunnerCount() predicate.ActionSummary {
 	return predicate.ActionSummary(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, RunnerCountTable, RunnerCountPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, RunnerCountTable, RunnerCountColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -347,7 +347,7 @@ func HasActionCacheStatistics() predicate.ActionSummary {
 	return predicate.ActionSummary(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, ActionCacheStatisticsTable, ActionCacheStatisticsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, false, ActionCacheStatisticsTable, ActionCacheStatisticsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

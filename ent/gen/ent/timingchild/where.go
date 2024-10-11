@@ -218,7 +218,7 @@ func HasTimingBreakdown() predicate.TimingChild {
 	return predicate.TimingChild(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, TimingBreakdownTable, TimingBreakdownPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, TimingBreakdownTable, TimingBreakdownColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

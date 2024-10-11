@@ -363,7 +363,7 @@ func HasTestResult() predicate.TestFile {
 	return predicate.TestFile(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, TestResultTable, TestResultPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, TestResultTable, TestResultColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

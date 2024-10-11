@@ -8,6 +8,7 @@ import { renderActiveShape } from "../Utilities/renderShape";
 import { nullPercent } from "../Utilities/nullPercent";
 import PortalCard from "../PortalCard";
 import { BaseType } from "antd/es/typography/Base";
+import styles from "../../theme/theme.module.css"
 
 interface RunnerDataType {
     key: React.Key;
@@ -45,11 +46,15 @@ const runner_columns: TableColumnsType<RunnerDataType> = [
     {
         title: 'Count',
         dataIndex: 'value',
+        align: "right",
+        render: (_, record) => <span className={styles.numberFormat} >{record.value}</span>,
         sorter: (a, b) => a.value - b.value,
     },
     {
         title: 'Rate (%)',
         dataIndex: 'rate',
+        align: "right",
+        render: (_, record) => <span className={styles.numberFormat} >{record.rate}</span>,
         sorter: (a, b) => parseFloat(a.rate) - parseFloat(b.rate),
     },
 ];
@@ -116,7 +121,7 @@ const RunnerMetrics: React.FC<{ runnerMetrics: RunnerCount[]; }> = ({ runnerMetr
 
         <Row justify="space-around" align="top">
             <Col span="10">
-                <PortalCard icon={<PieChartOutlined />} titleBits={["Action Runners Breakdown"]}>
+                <PortalCard type="inner" icon={<PieChartOutlined />} titleBits={["Action Runners Breakdown"]}>
                     <PieChart width={500} height={500}>
                         <Pie
                             activeIndex={activeIndexRunner}
@@ -140,7 +145,7 @@ const RunnerMetrics: React.FC<{ runnerMetrics: RunnerCount[]; }> = ({ runnerMetr
                 </PortalCard>
             </Col>
             <Col span="12">
-                <PortalCard icon={<PlayCircleOutlined />} titleBits={["Action Runner Data"]}>
+                <PortalCard type="inner" icon={<PlayCircleOutlined />} titleBits={["Action Runner Data"]}>
                     <Table
                         columns={runner_columns}
                         dataSource={runner_data}

@@ -105,19 +105,23 @@ func (tpc *TargetPairCreate) SetNillableAbortReason(tr *targetpair.AbortReason) 
 	return tpc
 }
 
-// AddBazelInvocationIDs adds the "bazel_invocation" edge to the BazelInvocation entity by IDs.
-func (tpc *TargetPairCreate) AddBazelInvocationIDs(ids ...int) *TargetPairCreate {
-	tpc.mutation.AddBazelInvocationIDs(ids...)
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
+func (tpc *TargetPairCreate) SetBazelInvocationID(id int) *TargetPairCreate {
+	tpc.mutation.SetBazelInvocationID(id)
 	return tpc
 }
 
-// AddBazelInvocation adds the "bazel_invocation" edges to the BazelInvocation entity.
-func (tpc *TargetPairCreate) AddBazelInvocation(b ...*BazelInvocation) *TargetPairCreate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
+func (tpc *TargetPairCreate) SetNillableBazelInvocationID(id *int) *TargetPairCreate {
+	if id != nil {
+		tpc = tpc.SetBazelInvocationID(*id)
 	}
-	return tpc.AddBazelInvocationIDs(ids...)
+	return tpc
+}
+
+// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
+func (tpc *TargetPairCreate) SetBazelInvocation(b *BazelInvocation) *TargetPairCreate {
+	return tpc.SetBazelInvocationID(b.ID)
 }
 
 // SetConfigurationID sets the "configuration" edge to the TargetConfigured entity by ID.
@@ -267,10 +271,10 @@ func (tpc *TargetPairCreate) createSpec() (*TargetPair, *sqlgraph.CreateSpec) {
 	}
 	if nodes := tpc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   targetpair.BazelInvocationTable,
-			Columns: targetpair.BazelInvocationPrimaryKey,
+			Columns: []string{targetpair.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
@@ -279,11 +283,12 @@ func (tpc *TargetPairCreate) createSpec() (*TargetPair, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.bazel_invocation_targets = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tpc.mutation.ConfigurationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetpair.ConfigurationTable,
 			Columns: []string{targetpair.ConfigurationColumn},
@@ -295,12 +300,11 @@ func (tpc *TargetPairCreate) createSpec() (*TargetPair, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.target_pair_configuration = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tpc.mutation.CompletionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   targetpair.CompletionTable,
 			Columns: []string{targetpair.CompletionColumn},
@@ -312,7 +316,6 @@ func (tpc *TargetPairCreate) createSpec() (*TargetPair, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.target_pair_completion = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

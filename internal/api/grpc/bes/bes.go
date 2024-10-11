@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"time"
 
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -57,14 +58,13 @@ func (b BES) PublishBuildToolEventStream(stream build.PublishBuildEvent_PublishB
 	for {
 		req, err := stream.Recv()
 		if err == io.EOF {
-			slog.InfoContext(stream.Context(), "stream finished")
+			slog.InfoContext(stream.Context(), "Stream finished", "event", stream.Context())
 			break
 		}
 		if err != nil {
 			slog.ErrorContext(stream.Context(), "Recv failed", "err", err)
 			return err
 		}
-		// slog.InfoContext(stream.Context(), "Received ordered build event", "event", protojson.Format(req))
 
 		if streamID == nil {
 			streamID = req.GetOrderedBuildEvent().GetStreamId()
@@ -89,13 +89,18 @@ func (b BES) PublishBuildToolEventStream(stream build.PublishBuildEvent_PublishB
 		"grpc://localhost:8082/google.devtools.build.v1/PublishLifecycleEvent?streamID=%s",
 		streamID.String(),
 	)
+
 	workflow := processing.New(b.db, b.blobArchiver)
+	slog.InfoContext(stream.Context(), "Saving invocation", "id", streamID.String())
+	startTime := time.Now()
 	invocation, err := workflow.SaveSummary(stream.Context(), summaryReport)
 	if err != nil {
 		slog.ErrorContext(stream.Context(), "SaveSummary failed", "err", err)
 		return err
 	}
-	slog.InfoContext(stream.Context(), "saved invocation", "id", invocation.InvocationID)
+	endTime := time.Now()
+	elapsedTime := endTime.Sub(startTime)
+	slog.InfoContext(stream.Context(), fmt.Sprintf("Saved invocation in %v", elapsedTime.String()), "id", invocation.InvocationID)
 	return nil
 }
 

@@ -23,17 +23,19 @@ const (
 	// Table holds the table name of the timingbreakdown in the database.
 	Table = "timing_breakdowns"
 	// ExecutionInfoTable is the table that holds the execution_info relation/edge.
-	ExecutionInfoTable = "exection_infos"
+	ExecutionInfoTable = "timing_breakdowns"
 	// ExecutionInfoInverseTable is the table name for the ExectionInfo entity.
 	// It exists in this package in order to avoid circular dependency with the "exectioninfo" package.
 	ExecutionInfoInverseTable = "exection_infos"
 	// ExecutionInfoColumn is the table column denoting the execution_info relation/edge.
 	ExecutionInfoColumn = "exection_info_timing_breakdown"
-	// ChildTable is the table that holds the child relation/edge. The primary key declared below.
-	ChildTable = "timing_breakdown_child"
+	// ChildTable is the table that holds the child relation/edge.
+	ChildTable = "timing_childs"
 	// ChildInverseTable is the table name for the TimingChild entity.
 	// It exists in this package in order to avoid circular dependency with the "timingchild" package.
 	ChildInverseTable = "timing_childs"
+	// ChildColumn is the table column denoting the child relation/edge.
+	ChildColumn = "timing_breakdown_child"
 )
 
 // Columns holds all SQL columns for timingbreakdown fields.
@@ -43,16 +45,21 @@ var Columns = []string{
 	FieldTime,
 }
 
-var (
-	// ChildPrimaryKey and ChildColumn2 are the table columns denoting the
-	// primary key for the child relation (M2M).
-	ChildPrimaryKey = []string{"timing_breakdown_id", "timing_child_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "timing_breakdowns"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"exection_info_timing_breakdown",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -77,17 +84,10 @@ func ByTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTime, opts...).ToFunc()
 }
 
-// ByExecutionInfoCount orders the results by execution_info count.
-func ByExecutionInfoCount(opts ...sql.OrderTermOption) OrderOption {
+// ByExecutionInfoField orders the results by execution_info field.
+func ByExecutionInfoField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newExecutionInfoStep(), opts...)
-	}
-}
-
-// ByExecutionInfo orders the results by execution_info terms.
-func ByExecutionInfo(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newExecutionInfoStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newExecutionInfoStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -108,13 +108,13 @@ func newExecutionInfoStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ExecutionInfoInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, ExecutionInfoTable, ExecutionInfoColumn),
+		sqlgraph.Edge(sqlgraph.O2O, true, ExecutionInfoTable, ExecutionInfoColumn),
 	)
 }
 func newChildStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ChildInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, ChildTable, ChildPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, ChildTable, ChildColumn),
 	)
 }

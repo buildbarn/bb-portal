@@ -36,7 +36,9 @@ func (PackageMetrics) Fields() []ent.Field {
 func (PackageMetrics) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the metrics object.
-		edge.From("metrics", Metrics.Type).Ref("package_metrics"),
+		edge.From("metrics", Metrics.Type).
+			Ref("package_metrics").
+			Unique(),
 
 		// Loading time metrics per package.
 		edge.To("package_load_metrics", PackageLoadMetrics.Type),

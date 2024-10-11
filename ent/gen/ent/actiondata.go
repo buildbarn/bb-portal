@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 )
 
 // ActionData is the model entity for the ActionData schema.
@@ -32,28 +33,29 @@ type ActionData struct {
 	UserTime int64 `json:"user_time,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActionDataQuery when eager-loading is set.
-	Edges        ActionDataEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                      ActionDataEdges `json:"edges"`
+	action_summary_action_data *int
+	selectValues               sql.SelectValues
 }
 
 // ActionDataEdges holds the relations/edges for other nodes in the graph.
 type ActionDataEdges struct {
 	// ActionSummary holds the value of the action_summary edge.
-	ActionSummary []*ActionSummary `json:"action_summary,omitempty"`
+	ActionSummary *ActionSummary `json:"action_summary,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedActionSummary map[string][]*ActionSummary
 }
 
 // ActionSummaryOrErr returns the ActionSummary value or an error if the edge
-// was not loaded in eager-loading.
-func (e ActionDataEdges) ActionSummaryOrErr() ([]*ActionSummary, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ActionDataEdges) ActionSummaryOrErr() (*ActionSummary, error) {
+	if e.ActionSummary != nil {
 		return e.ActionSummary, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: actionsummary.Label}
 	}
 	return nil, &NotLoadedError{edge: "action_summary"}
 }
@@ -67,6 +69,8 @@ func (*ActionData) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case actiondata.FieldMnemonic:
 			values[i] = new(sql.NullString)
+		case actiondata.ForeignKeys[0]: // action_summary_action_data
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -129,6 +133,13 @@ func (ad *ActionData) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field user_time", values[i])
 			} else if value.Valid {
 				ad.UserTime = value.Int64
+			}
+		case actiondata.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field action_summary_action_data", value)
+			} else if value.Valid {
+				ad.action_summary_action_data = new(int)
+				*ad.action_summary_action_data = int(value.Int64)
 			}
 		default:
 			ad.selectValues.Set(columns[i], values[i])
@@ -193,30 +204,6 @@ func (ad *ActionData) String() string {
 	builder.WriteString(fmt.Sprintf("%v", ad.UserTime))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedActionSummary returns the ActionSummary named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (ad *ActionData) NamedActionSummary(name string) ([]*ActionSummary, error) {
-	if ad.Edges.namedActionSummary == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := ad.Edges.namedActionSummary[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (ad *ActionData) appendNamedActionSummary(name string, edges ...*ActionSummary) {
-	if ad.Edges.namedActionSummary == nil {
-		ad.Edges.namedActionSummary = make(map[string][]*ActionSummary)
-	}
-	if len(edges) == 0 {
-		ad.Edges.namedActionSummary[name] = []*ActionSummary{}
-	} else {
-		ad.Edges.namedActionSummary[name] = append(ad.Edges.namedActionSummary[name], edges...)
-	}
 }
 
 // ActionDataSlice is a parsable slice of ActionData.

@@ -25,7 +25,7 @@ const (
 	// Table holds the table name of the outputgroup in the database.
 	Table = "output_groups"
 	// TargetCompleteTable is the table that holds the target_complete relation/edge.
-	TargetCompleteTable = "target_completes"
+	TargetCompleteTable = "output_groups"
 	// TargetCompleteInverseTable is the table name for the TargetComplete entity.
 	// It exists in this package in order to avoid circular dependency with the "targetcomplete" package.
 	TargetCompleteInverseTable = "target_completes"
@@ -39,7 +39,7 @@ const (
 	// InlineFilesColumn is the table column denoting the inline_files relation/edge.
 	InlineFilesColumn = "output_group_inline_files"
 	// FileSetsTable is the table that holds the file_sets relation/edge.
-	FileSetsTable = "output_groups"
+	FileSetsTable = "named_set_of_files"
 	// FileSetsInverseTable is the table name for the NamedSetOfFiles entity.
 	// It exists in this package in order to avoid circular dependency with the "namedsetoffiles" package.
 	FileSetsInverseTable = "named_set_of_files"
@@ -57,7 +57,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "output_groups"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"output_group_file_sets",
+	"target_complete_output_group",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -93,17 +93,10 @@ func ByIncomplete(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldIncomplete, opts...).ToFunc()
 }
 
-// ByTargetCompleteCount orders the results by target_complete count.
-func ByTargetCompleteCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTargetCompleteField orders the results by target_complete field.
+func ByTargetCompleteField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTargetCompleteStep(), opts...)
-	}
-}
-
-// ByTargetComplete orders the results by target_complete terms.
-func ByTargetComplete(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTargetCompleteStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newTargetCompleteStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -131,7 +124,7 @@ func newTargetCompleteStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TargetCompleteInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, TargetCompleteTable, TargetCompleteColumn),
+		sqlgraph.Edge(sqlgraph.O2O, true, TargetCompleteTable, TargetCompleteColumn),
 	)
 }
 func newInlineFilesStep() *sqlgraph.Step {
@@ -145,6 +138,6 @@ func newFileSetsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(FileSetsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, FileSetsTable, FileSetsColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, FileSetsTable, FileSetsColumn),
 	)
 }

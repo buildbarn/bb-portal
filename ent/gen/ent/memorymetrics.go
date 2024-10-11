@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 )
 
 // MemoryMetrics is the model entity for the MemoryMetrics schema.
@@ -24,14 +25,15 @@ type MemoryMetrics struct {
 	PeakPostGcTenuredSpaceHeapSize int64 `json:"peak_post_gc_tenured_space_heap_size,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MemoryMetricsQuery when eager-loading is set.
-	Edges        MemoryMetricsEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                  MemoryMetricsEdges `json:"edges"`
+	metrics_memory_metrics *int
+	selectValues           sql.SelectValues
 }
 
 // MemoryMetricsEdges holds the relations/edges for other nodes in the graph.
 type MemoryMetricsEdges struct {
 	// Metrics holds the value of the metrics edge.
-	Metrics []*Metrics `json:"metrics,omitempty"`
+	Metrics *Metrics `json:"metrics,omitempty"`
 	// GarbageMetrics holds the value of the garbage_metrics edge.
 	GarbageMetrics []*GarbageMetrics `json:"garbage_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -40,15 +42,16 @@ type MemoryMetricsEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [2]map[string]int
 
-	namedMetrics        map[string][]*Metrics
 	namedGarbageMetrics map[string][]*GarbageMetrics
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e MemoryMetricsEdges) MetricsOrErr() ([]*Metrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MemoryMetricsEdges) MetricsOrErr() (*Metrics, error) {
+	if e.Metrics != nil {
 		return e.Metrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
 }
@@ -68,6 +71,8 @@ func (*MemoryMetrics) scanValues(columns []string) ([]any, error) {
 	for i := range columns {
 		switch columns[i] {
 		case memorymetrics.FieldID, memorymetrics.FieldPeakPostGcHeapSize, memorymetrics.FieldUsedHeapSizePostBuild, memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize:
+			values[i] = new(sql.NullInt64)
+		case memorymetrics.ForeignKeys[0]: // metrics_memory_metrics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -107,6 +112,13 @@ func (mm *MemoryMetrics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field peak_post_gc_tenured_space_heap_size", values[i])
 			} else if value.Valid {
 				mm.PeakPostGcTenuredSpaceHeapSize = value.Int64
+			}
+		case memorymetrics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field metrics_memory_metrics", value)
+			} else if value.Valid {
+				mm.metrics_memory_metrics = new(int)
+				*mm.metrics_memory_metrics = int(value.Int64)
 			}
 		default:
 			mm.selectValues.Set(columns[i], values[i])
@@ -164,30 +176,6 @@ func (mm *MemoryMetrics) String() string {
 	builder.WriteString(fmt.Sprintf("%v", mm.PeakPostGcTenuredSpaceHeapSize))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedMetrics returns the Metrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (mm *MemoryMetrics) NamedMetrics(name string) ([]*Metrics, error) {
-	if mm.Edges.namedMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := mm.Edges.namedMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (mm *MemoryMetrics) appendNamedMetrics(name string, edges ...*Metrics) {
-	if mm.Edges.namedMetrics == nil {
-		mm.Edges.namedMetrics = make(map[string][]*Metrics)
-	}
-	if len(edges) == 0 {
-		mm.Edges.namedMetrics[name] = []*Metrics{}
-	} else {
-		mm.Edges.namedMetrics[name] = append(mm.Edges.namedMetrics[name], edges...)
-	}
 }
 
 // NamedGarbageMetrics returns the GarbageMetrics named value or an error if the edge was not

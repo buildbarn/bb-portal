@@ -253,7 +253,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.579117733Z"
       },
       "//next.js:build_smoke_test": {
         "TestSummary": {
@@ -313,7 +314,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.578731697Z"
       },
       "//next.js:build_test": {
         "TestSummary": {
@@ -373,7 +375,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.578686265Z"
       },
       "//react-webpack:build_smoke_test": {
         "TestSummary": {
@@ -433,7 +436,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.575992687Z"
       },
       "//react/src:lint": {
         "TestSummary": {
@@ -493,7 +497,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.575237584Z"
       },
       "//react/src:src_typecheck_test": {
         "TestSummary": {
@@ -553,7 +558,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.573621233Z"
       },
       "//react/src:test": {
         "TestSummary": {
@@ -613,7 +619,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.575515986Z"
       },
       "//react/src:test_lib_typecheck_test": {
         "TestSummary": {
@@ -673,7 +680,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.574122685Z"
       },
       "//react:build_smoke_test": {
         "TestSummary": {
@@ -733,7 +741,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.57446967Z"
       },
       "//vue:build_test": {
         "TestSummary": {
@@ -793,7 +802,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.574615247Z"
       },
       "//vue:type-check": {
         "TestSummary": {
@@ -853,7 +863,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.575000133Z"
       }
     },
     "Targets": {

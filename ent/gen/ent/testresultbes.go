@@ -39,10 +39,9 @@ type TestResultBES struct {
 	TestAttemptDuration int64 `json:"test_attempt_duration,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestResultBESQuery when eager-loading is set.
-	Edges                          TestResultBESEdges `json:"edges"`
-	test_collection_test_results   *int
-	test_result_bes_execution_info *int
-	selectValues                   sql.SelectValues
+	Edges                        TestResultBESEdges `json:"edges"`
+	test_collection_test_results *int
+	selectValues                 sql.SelectValues
 }
 
 // TestResultBESEdges holds the relations/edges for other nodes in the graph.
@@ -107,8 +106,6 @@ func (*TestResultBES) scanValues(columns []string) ([]any, error) {
 		case testresultbes.FieldTestStatus, testresultbes.FieldStatusDetails, testresultbes.FieldLabel, testresultbes.FieldTestAttemptStart:
 			values[i] = new(sql.NullString)
 		case testresultbes.ForeignKeys[0]: // test_collection_test_results
-			values[i] = new(sql.NullInt64)
-		case testresultbes.ForeignKeys[1]: // test_result_bes_execution_info
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -193,13 +190,6 @@ func (trb *TestResultBES) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				trb.test_collection_test_results = new(int)
 				*trb.test_collection_test_results = int(value.Int64)
-			}
-		case testresultbes.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field test_result_bes_execution_info", value)
-			} else if value.Valid {
-				trb.test_result_bes_execution_info = new(int)
-				*trb.test_result_bes_execution_info = int(value.Int64)
 			}
 		default:
 			trb.selectValues.Set(columns[i], values[i])
