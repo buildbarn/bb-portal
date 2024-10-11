@@ -36,20 +36,22 @@ const (
 	EdgeCompletion = "completion"
 	// Table holds the table name of the targetpair in the database.
 	Table = "target_pairs"
-	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge. The primary key declared below.
-	BazelInvocationTable = "bazel_invocation_targets"
+	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
+	BazelInvocationTable = "target_pairs"
 	// BazelInvocationInverseTable is the table name for the BazelInvocation entity.
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
 	BazelInvocationInverseTable = "bazel_invocations"
+	// BazelInvocationColumn is the table column denoting the bazel_invocation relation/edge.
+	BazelInvocationColumn = "bazel_invocation_targets"
 	// ConfigurationTable is the table that holds the configuration relation/edge.
-	ConfigurationTable = "target_pairs"
+	ConfigurationTable = "target_configureds"
 	// ConfigurationInverseTable is the table name for the TargetConfigured entity.
 	// It exists in this package in order to avoid circular dependency with the "targetconfigured" package.
 	ConfigurationInverseTable = "target_configureds"
 	// ConfigurationColumn is the table column denoting the configuration relation/edge.
 	ConfigurationColumn = "target_pair_configuration"
 	// CompletionTable is the table that holds the completion relation/edge.
-	CompletionTable = "target_pairs"
+	CompletionTable = "target_completes"
 	// CompletionInverseTable is the table name for the TargetComplete entity.
 	// It exists in this package in order to avoid circular dependency with the "targetcomplete" package.
 	CompletionInverseTable = "target_completes"
@@ -71,15 +73,8 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "target_pairs"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"target_pair_configuration",
-	"target_pair_completion",
+	"bazel_invocation_targets",
 }
-
-var (
-	// BazelInvocationPrimaryKey and BazelInvocationColumn2 are the table columns denoting the
-	// primary key for the bazel_invocation relation (M2M).
-	BazelInvocationPrimaryKey = []string{"bazel_invocation_id", "target_pair_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -201,17 +196,10 @@ func ByAbortReason(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAbortReason, opts...).ToFunc()
 }
 
-// ByBazelInvocationCount orders the results by bazel_invocation count.
-func ByBazelInvocationCount(opts ...sql.OrderTermOption) OrderOption {
+// ByBazelInvocationField orders the results by bazel_invocation field.
+func ByBazelInvocationField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newBazelInvocationStep(), opts...)
-	}
-}
-
-// ByBazelInvocation orders the results by bazel_invocation terms.
-func ByBazelInvocation(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBazelInvocationStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newBazelInvocationStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -232,21 +220,21 @@ func newBazelInvocationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(BazelInvocationInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, BazelInvocationTable, BazelInvocationPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.M2O, true, BazelInvocationTable, BazelInvocationColumn),
 	)
 }
 func newConfigurationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ConfigurationInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, ConfigurationTable, ConfigurationColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, ConfigurationTable, ConfigurationColumn),
 	)
 }
 func newCompletionStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(CompletionInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, CompletionTable, CompletionColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, CompletionTable, CompletionColumn),
 	)
 }
 

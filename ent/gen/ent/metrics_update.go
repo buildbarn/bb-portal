@@ -57,154 +57,194 @@ func (mu *MetricsUpdate) SetBazelInvocation(b *BazelInvocation) *MetricsUpdate {
 	return mu.SetBazelInvocationID(b.ID)
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by IDs.
-func (mu *MetricsUpdate) AddActionSummaryIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.AddActionSummaryIDs(ids...)
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
+func (mu *MetricsUpdate) SetActionSummaryID(id int) *MetricsUpdate {
+	mu.mutation.SetActionSummaryID(id)
 	return mu
 }
 
-// AddActionSummary adds the "action_summary" edges to the ActionSummary entity.
-func (mu *MetricsUpdate) AddActionSummary(a ...*ActionSummary) *MetricsUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
+func (mu *MetricsUpdate) SetNillableActionSummaryID(id *int) *MetricsUpdate {
+	if id != nil {
+		mu = mu.SetActionSummaryID(*id)
 	}
-	return mu.AddActionSummaryIDs(ids...)
-}
-
-// AddMemoryMetricIDs adds the "memory_metrics" edge to the MemoryMetrics entity by IDs.
-func (mu *MetricsUpdate) AddMemoryMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.AddMemoryMetricIDs(ids...)
 	return mu
 }
 
-// AddMemoryMetrics adds the "memory_metrics" edges to the MemoryMetrics entity.
-func (mu *MetricsUpdate) AddMemoryMetrics(m ...*MemoryMetrics) *MetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return mu.AddMemoryMetricIDs(ids...)
+// SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
+func (mu *MetricsUpdate) SetActionSummary(a *ActionSummary) *MetricsUpdate {
+	return mu.SetActionSummaryID(a.ID)
 }
 
-// AddTargetMetricIDs adds the "target_metrics" edge to the TargetMetrics entity by IDs.
-func (mu *MetricsUpdate) AddTargetMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.AddTargetMetricIDs(ids...)
+// SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
+func (mu *MetricsUpdate) SetMemoryMetricsID(id int) *MetricsUpdate {
+	mu.mutation.SetMemoryMetricsID(id)
 	return mu
 }
 
-// AddTargetMetrics adds the "target_metrics" edges to the TargetMetrics entity.
-func (mu *MetricsUpdate) AddTargetMetrics(t ...*TargetMetrics) *MetricsUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
+func (mu *MetricsUpdate) SetNillableMemoryMetricsID(id *int) *MetricsUpdate {
+	if id != nil {
+		mu = mu.SetMemoryMetricsID(*id)
 	}
-	return mu.AddTargetMetricIDs(ids...)
-}
-
-// AddPackageMetricIDs adds the "package_metrics" edge to the PackageMetrics entity by IDs.
-func (mu *MetricsUpdate) AddPackageMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.AddPackageMetricIDs(ids...)
 	return mu
 }
 
-// AddPackageMetrics adds the "package_metrics" edges to the PackageMetrics entity.
-func (mu *MetricsUpdate) AddPackageMetrics(p ...*PackageMetrics) *MetricsUpdate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
-	}
-	return mu.AddPackageMetricIDs(ids...)
+// SetMemoryMetrics sets the "memory_metrics" edge to the MemoryMetrics entity.
+func (mu *MetricsUpdate) SetMemoryMetrics(m *MemoryMetrics) *MetricsUpdate {
+	return mu.SetMemoryMetricsID(m.ID)
 }
 
-// AddTimingMetricIDs adds the "timing_metrics" edge to the TimingMetrics entity by IDs.
-func (mu *MetricsUpdate) AddTimingMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.AddTimingMetricIDs(ids...)
+// SetTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID.
+func (mu *MetricsUpdate) SetTargetMetricsID(id int) *MetricsUpdate {
+	mu.mutation.SetTargetMetricsID(id)
 	return mu
 }
 
-// AddTimingMetrics adds the "timing_metrics" edges to the TimingMetrics entity.
-func (mu *MetricsUpdate) AddTimingMetrics(t ...*TimingMetrics) *MetricsUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID if the given value is not nil.
+func (mu *MetricsUpdate) SetNillableTargetMetricsID(id *int) *MetricsUpdate {
+	if id != nil {
+		mu = mu.SetTargetMetricsID(*id)
 	}
-	return mu.AddTimingMetricIDs(ids...)
-}
-
-// AddCumulativeMetricIDs adds the "cumulative_metrics" edge to the CumulativeMetrics entity by IDs.
-func (mu *MetricsUpdate) AddCumulativeMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.AddCumulativeMetricIDs(ids...)
 	return mu
 }
 
-// AddCumulativeMetrics adds the "cumulative_metrics" edges to the CumulativeMetrics entity.
-func (mu *MetricsUpdate) AddCumulativeMetrics(c ...*CumulativeMetrics) *MetricsUpdate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
-	}
-	return mu.AddCumulativeMetricIDs(ids...)
+// SetTargetMetrics sets the "target_metrics" edge to the TargetMetrics entity.
+func (mu *MetricsUpdate) SetTargetMetrics(t *TargetMetrics) *MetricsUpdate {
+	return mu.SetTargetMetricsID(t.ID)
 }
 
-// AddArtifactMetricIDs adds the "artifact_metrics" edge to the ArtifactMetrics entity by IDs.
-func (mu *MetricsUpdate) AddArtifactMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.AddArtifactMetricIDs(ids...)
+// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
+func (mu *MetricsUpdate) SetPackageMetricsID(id int) *MetricsUpdate {
+	mu.mutation.SetPackageMetricsID(id)
 	return mu
 }
 
-// AddArtifactMetrics adds the "artifact_metrics" edges to the ArtifactMetrics entity.
-func (mu *MetricsUpdate) AddArtifactMetrics(a ...*ArtifactMetrics) *MetricsUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
+func (mu *MetricsUpdate) SetNillablePackageMetricsID(id *int) *MetricsUpdate {
+	if id != nil {
+		mu = mu.SetPackageMetricsID(*id)
 	}
-	return mu.AddArtifactMetricIDs(ids...)
-}
-
-// AddNetworkMetricIDs adds the "network_metrics" edge to the NetworkMetrics entity by IDs.
-func (mu *MetricsUpdate) AddNetworkMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.AddNetworkMetricIDs(ids...)
 	return mu
 }
 
-// AddNetworkMetrics adds the "network_metrics" edges to the NetworkMetrics entity.
-func (mu *MetricsUpdate) AddNetworkMetrics(n ...*NetworkMetrics) *MetricsUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
-	}
-	return mu.AddNetworkMetricIDs(ids...)
+// SetPackageMetrics sets the "package_metrics" edge to the PackageMetrics entity.
+func (mu *MetricsUpdate) SetPackageMetrics(p *PackageMetrics) *MetricsUpdate {
+	return mu.SetPackageMetricsID(p.ID)
 }
 
-// AddDynamicExecutionMetricIDs adds the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by IDs.
-func (mu *MetricsUpdate) AddDynamicExecutionMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.AddDynamicExecutionMetricIDs(ids...)
+// SetTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID.
+func (mu *MetricsUpdate) SetTimingMetricsID(id int) *MetricsUpdate {
+	mu.mutation.SetTimingMetricsID(id)
 	return mu
 }
 
-// AddDynamicExecutionMetrics adds the "dynamic_execution_metrics" edges to the DynamicExecutionMetrics entity.
-func (mu *MetricsUpdate) AddDynamicExecutionMetrics(d ...*DynamicExecutionMetrics) *MetricsUpdate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// SetNillableTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID if the given value is not nil.
+func (mu *MetricsUpdate) SetNillableTimingMetricsID(id *int) *MetricsUpdate {
+	if id != nil {
+		mu = mu.SetTimingMetricsID(*id)
 	}
-	return mu.AddDynamicExecutionMetricIDs(ids...)
-}
-
-// AddBuildGraphMetricIDs adds the "build_graph_metrics" edge to the BuildGraphMetrics entity by IDs.
-func (mu *MetricsUpdate) AddBuildGraphMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.AddBuildGraphMetricIDs(ids...)
 	return mu
 }
 
-// AddBuildGraphMetrics adds the "build_graph_metrics" edges to the BuildGraphMetrics entity.
-func (mu *MetricsUpdate) AddBuildGraphMetrics(b ...*BuildGraphMetrics) *MetricsUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetTimingMetrics sets the "timing_metrics" edge to the TimingMetrics entity.
+func (mu *MetricsUpdate) SetTimingMetrics(t *TimingMetrics) *MetricsUpdate {
+	return mu.SetTimingMetricsID(t.ID)
+}
+
+// SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID.
+func (mu *MetricsUpdate) SetCumulativeMetricsID(id int) *MetricsUpdate {
+	mu.mutation.SetCumulativeMetricsID(id)
+	return mu
+}
+
+// SetNillableCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID if the given value is not nil.
+func (mu *MetricsUpdate) SetNillableCumulativeMetricsID(id *int) *MetricsUpdate {
+	if id != nil {
+		mu = mu.SetCumulativeMetricsID(*id)
 	}
-	return mu.AddBuildGraphMetricIDs(ids...)
+	return mu
+}
+
+// SetCumulativeMetrics sets the "cumulative_metrics" edge to the CumulativeMetrics entity.
+func (mu *MetricsUpdate) SetCumulativeMetrics(c *CumulativeMetrics) *MetricsUpdate {
+	return mu.SetCumulativeMetricsID(c.ID)
+}
+
+// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
+func (mu *MetricsUpdate) SetArtifactMetricsID(id int) *MetricsUpdate {
+	mu.mutation.SetArtifactMetricsID(id)
+	return mu
+}
+
+// SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
+func (mu *MetricsUpdate) SetNillableArtifactMetricsID(id *int) *MetricsUpdate {
+	if id != nil {
+		mu = mu.SetArtifactMetricsID(*id)
+	}
+	return mu
+}
+
+// SetArtifactMetrics sets the "artifact_metrics" edge to the ArtifactMetrics entity.
+func (mu *MetricsUpdate) SetArtifactMetrics(a *ArtifactMetrics) *MetricsUpdate {
+	return mu.SetArtifactMetricsID(a.ID)
+}
+
+// SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
+func (mu *MetricsUpdate) SetNetworkMetricsID(id int) *MetricsUpdate {
+	mu.mutation.SetNetworkMetricsID(id)
+	return mu
+}
+
+// SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
+func (mu *MetricsUpdate) SetNillableNetworkMetricsID(id *int) *MetricsUpdate {
+	if id != nil {
+		mu = mu.SetNetworkMetricsID(*id)
+	}
+	return mu
+}
+
+// SetNetworkMetrics sets the "network_metrics" edge to the NetworkMetrics entity.
+func (mu *MetricsUpdate) SetNetworkMetrics(n *NetworkMetrics) *MetricsUpdate {
+	return mu.SetNetworkMetricsID(n.ID)
+}
+
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
+func (mu *MetricsUpdate) SetDynamicExecutionMetricsID(id int) *MetricsUpdate {
+	mu.mutation.SetDynamicExecutionMetricsID(id)
+	return mu
+}
+
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
+func (mu *MetricsUpdate) SetNillableDynamicExecutionMetricsID(id *int) *MetricsUpdate {
+	if id != nil {
+		mu = mu.SetDynamicExecutionMetricsID(*id)
+	}
+	return mu
+}
+
+// SetDynamicExecutionMetrics sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
+func (mu *MetricsUpdate) SetDynamicExecutionMetrics(d *DynamicExecutionMetrics) *MetricsUpdate {
+	return mu.SetDynamicExecutionMetricsID(d.ID)
+}
+
+// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
+func (mu *MetricsUpdate) SetBuildGraphMetricsID(id int) *MetricsUpdate {
+	mu.mutation.SetBuildGraphMetricsID(id)
+	return mu
+}
+
+// SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
+func (mu *MetricsUpdate) SetNillableBuildGraphMetricsID(id *int) *MetricsUpdate {
+	if id != nil {
+		mu = mu.SetBuildGraphMetricsID(*id)
+	}
+	return mu
+}
+
+// SetBuildGraphMetrics sets the "build_graph_metrics" edge to the BuildGraphMetrics entity.
+func (mu *MetricsUpdate) SetBuildGraphMetrics(b *BuildGraphMetrics) *MetricsUpdate {
+	return mu.SetBuildGraphMetricsID(b.ID)
 }
 
 // Mutation returns the MetricsMutation object of the builder.
@@ -218,214 +258,64 @@ func (mu *MetricsUpdate) ClearBazelInvocation() *MetricsUpdate {
 	return mu
 }
 
-// ClearActionSummary clears all "action_summary" edges to the ActionSummary entity.
+// ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
 func (mu *MetricsUpdate) ClearActionSummary() *MetricsUpdate {
 	mu.mutation.ClearActionSummary()
 	return mu
 }
 
-// RemoveActionSummaryIDs removes the "action_summary" edge to ActionSummary entities by IDs.
-func (mu *MetricsUpdate) RemoveActionSummaryIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.RemoveActionSummaryIDs(ids...)
-	return mu
-}
-
-// RemoveActionSummary removes "action_summary" edges to ActionSummary entities.
-func (mu *MetricsUpdate) RemoveActionSummary(a ...*ActionSummary) *MetricsUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return mu.RemoveActionSummaryIDs(ids...)
-}
-
-// ClearMemoryMetrics clears all "memory_metrics" edges to the MemoryMetrics entity.
+// ClearMemoryMetrics clears the "memory_metrics" edge to the MemoryMetrics entity.
 func (mu *MetricsUpdate) ClearMemoryMetrics() *MetricsUpdate {
 	mu.mutation.ClearMemoryMetrics()
 	return mu
 }
 
-// RemoveMemoryMetricIDs removes the "memory_metrics" edge to MemoryMetrics entities by IDs.
-func (mu *MetricsUpdate) RemoveMemoryMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.RemoveMemoryMetricIDs(ids...)
-	return mu
-}
-
-// RemoveMemoryMetrics removes "memory_metrics" edges to MemoryMetrics entities.
-func (mu *MetricsUpdate) RemoveMemoryMetrics(m ...*MemoryMetrics) *MetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return mu.RemoveMemoryMetricIDs(ids...)
-}
-
-// ClearTargetMetrics clears all "target_metrics" edges to the TargetMetrics entity.
+// ClearTargetMetrics clears the "target_metrics" edge to the TargetMetrics entity.
 func (mu *MetricsUpdate) ClearTargetMetrics() *MetricsUpdate {
 	mu.mutation.ClearTargetMetrics()
 	return mu
 }
 
-// RemoveTargetMetricIDs removes the "target_metrics" edge to TargetMetrics entities by IDs.
-func (mu *MetricsUpdate) RemoveTargetMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.RemoveTargetMetricIDs(ids...)
-	return mu
-}
-
-// RemoveTargetMetrics removes "target_metrics" edges to TargetMetrics entities.
-func (mu *MetricsUpdate) RemoveTargetMetrics(t ...*TargetMetrics) *MetricsUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return mu.RemoveTargetMetricIDs(ids...)
-}
-
-// ClearPackageMetrics clears all "package_metrics" edges to the PackageMetrics entity.
+// ClearPackageMetrics clears the "package_metrics" edge to the PackageMetrics entity.
 func (mu *MetricsUpdate) ClearPackageMetrics() *MetricsUpdate {
 	mu.mutation.ClearPackageMetrics()
 	return mu
 }
 
-// RemovePackageMetricIDs removes the "package_metrics" edge to PackageMetrics entities by IDs.
-func (mu *MetricsUpdate) RemovePackageMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.RemovePackageMetricIDs(ids...)
-	return mu
-}
-
-// RemovePackageMetrics removes "package_metrics" edges to PackageMetrics entities.
-func (mu *MetricsUpdate) RemovePackageMetrics(p ...*PackageMetrics) *MetricsUpdate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
-	}
-	return mu.RemovePackageMetricIDs(ids...)
-}
-
-// ClearTimingMetrics clears all "timing_metrics" edges to the TimingMetrics entity.
+// ClearTimingMetrics clears the "timing_metrics" edge to the TimingMetrics entity.
 func (mu *MetricsUpdate) ClearTimingMetrics() *MetricsUpdate {
 	mu.mutation.ClearTimingMetrics()
 	return mu
 }
 
-// RemoveTimingMetricIDs removes the "timing_metrics" edge to TimingMetrics entities by IDs.
-func (mu *MetricsUpdate) RemoveTimingMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.RemoveTimingMetricIDs(ids...)
-	return mu
-}
-
-// RemoveTimingMetrics removes "timing_metrics" edges to TimingMetrics entities.
-func (mu *MetricsUpdate) RemoveTimingMetrics(t ...*TimingMetrics) *MetricsUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return mu.RemoveTimingMetricIDs(ids...)
-}
-
-// ClearCumulativeMetrics clears all "cumulative_metrics" edges to the CumulativeMetrics entity.
+// ClearCumulativeMetrics clears the "cumulative_metrics" edge to the CumulativeMetrics entity.
 func (mu *MetricsUpdate) ClearCumulativeMetrics() *MetricsUpdate {
 	mu.mutation.ClearCumulativeMetrics()
 	return mu
 }
 
-// RemoveCumulativeMetricIDs removes the "cumulative_metrics" edge to CumulativeMetrics entities by IDs.
-func (mu *MetricsUpdate) RemoveCumulativeMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.RemoveCumulativeMetricIDs(ids...)
-	return mu
-}
-
-// RemoveCumulativeMetrics removes "cumulative_metrics" edges to CumulativeMetrics entities.
-func (mu *MetricsUpdate) RemoveCumulativeMetrics(c ...*CumulativeMetrics) *MetricsUpdate {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
-	}
-	return mu.RemoveCumulativeMetricIDs(ids...)
-}
-
-// ClearArtifactMetrics clears all "artifact_metrics" edges to the ArtifactMetrics entity.
+// ClearArtifactMetrics clears the "artifact_metrics" edge to the ArtifactMetrics entity.
 func (mu *MetricsUpdate) ClearArtifactMetrics() *MetricsUpdate {
 	mu.mutation.ClearArtifactMetrics()
 	return mu
 }
 
-// RemoveArtifactMetricIDs removes the "artifact_metrics" edge to ArtifactMetrics entities by IDs.
-func (mu *MetricsUpdate) RemoveArtifactMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.RemoveArtifactMetricIDs(ids...)
-	return mu
-}
-
-// RemoveArtifactMetrics removes "artifact_metrics" edges to ArtifactMetrics entities.
-func (mu *MetricsUpdate) RemoveArtifactMetrics(a ...*ArtifactMetrics) *MetricsUpdate {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return mu.RemoveArtifactMetricIDs(ids...)
-}
-
-// ClearNetworkMetrics clears all "network_metrics" edges to the NetworkMetrics entity.
+// ClearNetworkMetrics clears the "network_metrics" edge to the NetworkMetrics entity.
 func (mu *MetricsUpdate) ClearNetworkMetrics() *MetricsUpdate {
 	mu.mutation.ClearNetworkMetrics()
 	return mu
 }
 
-// RemoveNetworkMetricIDs removes the "network_metrics" edge to NetworkMetrics entities by IDs.
-func (mu *MetricsUpdate) RemoveNetworkMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.RemoveNetworkMetricIDs(ids...)
-	return mu
-}
-
-// RemoveNetworkMetrics removes "network_metrics" edges to NetworkMetrics entities.
-func (mu *MetricsUpdate) RemoveNetworkMetrics(n ...*NetworkMetrics) *MetricsUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
-	}
-	return mu.RemoveNetworkMetricIDs(ids...)
-}
-
-// ClearDynamicExecutionMetrics clears all "dynamic_execution_metrics" edges to the DynamicExecutionMetrics entity.
+// ClearDynamicExecutionMetrics clears the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
 func (mu *MetricsUpdate) ClearDynamicExecutionMetrics() *MetricsUpdate {
 	mu.mutation.ClearDynamicExecutionMetrics()
 	return mu
 }
 
-// RemoveDynamicExecutionMetricIDs removes the "dynamic_execution_metrics" edge to DynamicExecutionMetrics entities by IDs.
-func (mu *MetricsUpdate) RemoveDynamicExecutionMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.RemoveDynamicExecutionMetricIDs(ids...)
-	return mu
-}
-
-// RemoveDynamicExecutionMetrics removes "dynamic_execution_metrics" edges to DynamicExecutionMetrics entities.
-func (mu *MetricsUpdate) RemoveDynamicExecutionMetrics(d ...*DynamicExecutionMetrics) *MetricsUpdate {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
-	}
-	return mu.RemoveDynamicExecutionMetricIDs(ids...)
-}
-
-// ClearBuildGraphMetrics clears all "build_graph_metrics" edges to the BuildGraphMetrics entity.
+// ClearBuildGraphMetrics clears the "build_graph_metrics" edge to the BuildGraphMetrics entity.
 func (mu *MetricsUpdate) ClearBuildGraphMetrics() *MetricsUpdate {
 	mu.mutation.ClearBuildGraphMetrics()
 	return mu
-}
-
-// RemoveBuildGraphMetricIDs removes the "build_graph_metrics" edge to BuildGraphMetrics entities by IDs.
-func (mu *MetricsUpdate) RemoveBuildGraphMetricIDs(ids ...int) *MetricsUpdate {
-	mu.mutation.RemoveBuildGraphMetricIDs(ids...)
-	return mu
-}
-
-// RemoveBuildGraphMetrics removes "build_graph_metrics" edges to BuildGraphMetrics entities.
-func (mu *MetricsUpdate) RemoveBuildGraphMetrics(b ...*BuildGraphMetrics) *MetricsUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return mu.RemoveBuildGraphMetricIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -495,7 +385,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if mu.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.ActionSummaryTable,
 			Columns: []string{metrics.ActionSummaryColumn},
@@ -503,28 +393,12 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mu.mutation.RemovedActionSummaryIDs(); len(nodes) > 0 && !mu.mutation.ActionSummaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   metrics.ActionSummaryTable,
-			Columns: []string{metrics.ActionSummaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mu.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.ActionSummaryTable,
 			Columns: []string{metrics.ActionSummaryColumn},
@@ -540,39 +414,23 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if mu.mutation.MemoryMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.MemoryMetricsTable,
-			Columns: metrics.MemoryMetricsPrimaryKey,
+			Columns: []string{metrics.MemoryMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mu.mutation.RemovedMemoryMetricsIDs(); len(nodes) > 0 && !mu.mutation.MemoryMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.MemoryMetricsTable,
-			Columns: metrics.MemoryMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mu.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.MemoryMetricsTable,
-			Columns: metrics.MemoryMetricsPrimaryKey,
+			Columns: []string{metrics.MemoryMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
@@ -585,39 +443,23 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if mu.mutation.TargetMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.TargetMetricsTable,
-			Columns: metrics.TargetMetricsPrimaryKey,
+			Columns: []string{metrics.TargetMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mu.mutation.RemovedTargetMetricsIDs(); len(nodes) > 0 && !mu.mutation.TargetMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.TargetMetricsTable,
-			Columns: metrics.TargetMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mu.mutation.TargetMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.TargetMetricsTable,
-			Columns: metrics.TargetMetricsPrimaryKey,
+			Columns: []string{metrics.TargetMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt),
@@ -630,39 +472,23 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if mu.mutation.PackageMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.PackageMetricsTable,
-			Columns: metrics.PackageMetricsPrimaryKey,
+			Columns: []string{metrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mu.mutation.RemovedPackageMetricsIDs(); len(nodes) > 0 && !mu.mutation.PackageMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.PackageMetricsTable,
-			Columns: metrics.PackageMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mu.mutation.PackageMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.PackageMetricsTable,
-			Columns: metrics.PackageMetricsPrimaryKey,
+			Columns: []string{metrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
@@ -675,39 +501,23 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if mu.mutation.TimingMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.TimingMetricsTable,
-			Columns: metrics.TimingMetricsPrimaryKey,
+			Columns: []string{metrics.TimingMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mu.mutation.RemovedTimingMetricsIDs(); len(nodes) > 0 && !mu.mutation.TimingMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.TimingMetricsTable,
-			Columns: metrics.TimingMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mu.mutation.TimingMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.TimingMetricsTable,
-			Columns: metrics.TimingMetricsPrimaryKey,
+			Columns: []string{metrics.TimingMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt),
@@ -720,39 +530,23 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if mu.mutation.CumulativeMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.CumulativeMetricsTable,
-			Columns: metrics.CumulativeMetricsPrimaryKey,
+			Columns: []string{metrics.CumulativeMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mu.mutation.RemovedCumulativeMetricsIDs(); len(nodes) > 0 && !mu.mutation.CumulativeMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.CumulativeMetricsTable,
-			Columns: metrics.CumulativeMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mu.mutation.CumulativeMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.CumulativeMetricsTable,
-			Columns: metrics.CumulativeMetricsPrimaryKey,
+			Columns: []string{metrics.CumulativeMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt),
@@ -765,39 +559,23 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if mu.mutation.ArtifactMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.ArtifactMetricsTable,
-			Columns: metrics.ArtifactMetricsPrimaryKey,
+			Columns: []string{metrics.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mu.mutation.RemovedArtifactMetricsIDs(); len(nodes) > 0 && !mu.mutation.ArtifactMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.ArtifactMetricsTable,
-			Columns: metrics.ArtifactMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mu.mutation.ArtifactMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.ArtifactMetricsTable,
-			Columns: metrics.ArtifactMetricsPrimaryKey,
+			Columns: []string{metrics.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
@@ -810,39 +588,23 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if mu.mutation.NetworkMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.NetworkMetricsTable,
-			Columns: metrics.NetworkMetricsPrimaryKey,
+			Columns: []string{metrics.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mu.mutation.RemovedNetworkMetricsIDs(); len(nodes) > 0 && !mu.mutation.NetworkMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.NetworkMetricsTable,
-			Columns: metrics.NetworkMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mu.mutation.NetworkMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.NetworkMetricsTable,
-			Columns: metrics.NetworkMetricsPrimaryKey,
+			Columns: []string{metrics.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
@@ -855,39 +617,23 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if mu.mutation.DynamicExecutionMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.DynamicExecutionMetricsTable,
-			Columns: metrics.DynamicExecutionMetricsPrimaryKey,
+			Columns: []string{metrics.DynamicExecutionMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mu.mutation.RemovedDynamicExecutionMetricsIDs(); len(nodes) > 0 && !mu.mutation.DynamicExecutionMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.DynamicExecutionMetricsTable,
-			Columns: metrics.DynamicExecutionMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mu.mutation.DynamicExecutionMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.DynamicExecutionMetricsTable,
-			Columns: metrics.DynamicExecutionMetricsPrimaryKey,
+			Columns: []string{metrics.DynamicExecutionMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
@@ -900,39 +646,23 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if mu.mutation.BuildGraphMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.BuildGraphMetricsTable,
-			Columns: metrics.BuildGraphMetricsPrimaryKey,
+			Columns: []string{metrics.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := mu.mutation.RemovedBuildGraphMetricsIDs(); len(nodes) > 0 && !mu.mutation.BuildGraphMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.BuildGraphMetricsTable,
-			Columns: metrics.BuildGraphMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := mu.mutation.BuildGraphMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.BuildGraphMetricsTable,
-			Columns: metrics.BuildGraphMetricsPrimaryKey,
+			Columns: []string{metrics.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
@@ -982,154 +712,194 @@ func (muo *MetricsUpdateOne) SetBazelInvocation(b *BazelInvocation) *MetricsUpda
 	return muo.SetBazelInvocationID(b.ID)
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by IDs.
-func (muo *MetricsUpdateOne) AddActionSummaryIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.AddActionSummaryIDs(ids...)
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
+func (muo *MetricsUpdateOne) SetActionSummaryID(id int) *MetricsUpdateOne {
+	muo.mutation.SetActionSummaryID(id)
 	return muo
 }
 
-// AddActionSummary adds the "action_summary" edges to the ActionSummary entity.
-func (muo *MetricsUpdateOne) AddActionSummary(a ...*ActionSummary) *MetricsUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
+func (muo *MetricsUpdateOne) SetNillableActionSummaryID(id *int) *MetricsUpdateOne {
+	if id != nil {
+		muo = muo.SetActionSummaryID(*id)
 	}
-	return muo.AddActionSummaryIDs(ids...)
-}
-
-// AddMemoryMetricIDs adds the "memory_metrics" edge to the MemoryMetrics entity by IDs.
-func (muo *MetricsUpdateOne) AddMemoryMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.AddMemoryMetricIDs(ids...)
 	return muo
 }
 
-// AddMemoryMetrics adds the "memory_metrics" edges to the MemoryMetrics entity.
-func (muo *MetricsUpdateOne) AddMemoryMetrics(m ...*MemoryMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return muo.AddMemoryMetricIDs(ids...)
+// SetActionSummary sets the "action_summary" edge to the ActionSummary entity.
+func (muo *MetricsUpdateOne) SetActionSummary(a *ActionSummary) *MetricsUpdateOne {
+	return muo.SetActionSummaryID(a.ID)
 }
 
-// AddTargetMetricIDs adds the "target_metrics" edge to the TargetMetrics entity by IDs.
-func (muo *MetricsUpdateOne) AddTargetMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.AddTargetMetricIDs(ids...)
+// SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
+func (muo *MetricsUpdateOne) SetMemoryMetricsID(id int) *MetricsUpdateOne {
+	muo.mutation.SetMemoryMetricsID(id)
 	return muo
 }
 
-// AddTargetMetrics adds the "target_metrics" edges to the TargetMetrics entity.
-func (muo *MetricsUpdateOne) AddTargetMetrics(t ...*TargetMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
+func (muo *MetricsUpdateOne) SetNillableMemoryMetricsID(id *int) *MetricsUpdateOne {
+	if id != nil {
+		muo = muo.SetMemoryMetricsID(*id)
 	}
-	return muo.AddTargetMetricIDs(ids...)
-}
-
-// AddPackageMetricIDs adds the "package_metrics" edge to the PackageMetrics entity by IDs.
-func (muo *MetricsUpdateOne) AddPackageMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.AddPackageMetricIDs(ids...)
 	return muo
 }
 
-// AddPackageMetrics adds the "package_metrics" edges to the PackageMetrics entity.
-func (muo *MetricsUpdateOne) AddPackageMetrics(p ...*PackageMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
-	}
-	return muo.AddPackageMetricIDs(ids...)
+// SetMemoryMetrics sets the "memory_metrics" edge to the MemoryMetrics entity.
+func (muo *MetricsUpdateOne) SetMemoryMetrics(m *MemoryMetrics) *MetricsUpdateOne {
+	return muo.SetMemoryMetricsID(m.ID)
 }
 
-// AddTimingMetricIDs adds the "timing_metrics" edge to the TimingMetrics entity by IDs.
-func (muo *MetricsUpdateOne) AddTimingMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.AddTimingMetricIDs(ids...)
+// SetTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID.
+func (muo *MetricsUpdateOne) SetTargetMetricsID(id int) *MetricsUpdateOne {
+	muo.mutation.SetTargetMetricsID(id)
 	return muo
 }
 
-// AddTimingMetrics adds the "timing_metrics" edges to the TimingMetrics entity.
-func (muo *MetricsUpdateOne) AddTimingMetrics(t ...*TimingMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by ID if the given value is not nil.
+func (muo *MetricsUpdateOne) SetNillableTargetMetricsID(id *int) *MetricsUpdateOne {
+	if id != nil {
+		muo = muo.SetTargetMetricsID(*id)
 	}
-	return muo.AddTimingMetricIDs(ids...)
-}
-
-// AddCumulativeMetricIDs adds the "cumulative_metrics" edge to the CumulativeMetrics entity by IDs.
-func (muo *MetricsUpdateOne) AddCumulativeMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.AddCumulativeMetricIDs(ids...)
 	return muo
 }
 
-// AddCumulativeMetrics adds the "cumulative_metrics" edges to the CumulativeMetrics entity.
-func (muo *MetricsUpdateOne) AddCumulativeMetrics(c ...*CumulativeMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
-	}
-	return muo.AddCumulativeMetricIDs(ids...)
+// SetTargetMetrics sets the "target_metrics" edge to the TargetMetrics entity.
+func (muo *MetricsUpdateOne) SetTargetMetrics(t *TargetMetrics) *MetricsUpdateOne {
+	return muo.SetTargetMetricsID(t.ID)
 }
 
-// AddArtifactMetricIDs adds the "artifact_metrics" edge to the ArtifactMetrics entity by IDs.
-func (muo *MetricsUpdateOne) AddArtifactMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.AddArtifactMetricIDs(ids...)
+// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
+func (muo *MetricsUpdateOne) SetPackageMetricsID(id int) *MetricsUpdateOne {
+	muo.mutation.SetPackageMetricsID(id)
 	return muo
 }
 
-// AddArtifactMetrics adds the "artifact_metrics" edges to the ArtifactMetrics entity.
-func (muo *MetricsUpdateOne) AddArtifactMetrics(a ...*ArtifactMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
+// SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
+func (muo *MetricsUpdateOne) SetNillablePackageMetricsID(id *int) *MetricsUpdateOne {
+	if id != nil {
+		muo = muo.SetPackageMetricsID(*id)
 	}
-	return muo.AddArtifactMetricIDs(ids...)
-}
-
-// AddNetworkMetricIDs adds the "network_metrics" edge to the NetworkMetrics entity by IDs.
-func (muo *MetricsUpdateOne) AddNetworkMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.AddNetworkMetricIDs(ids...)
 	return muo
 }
 
-// AddNetworkMetrics adds the "network_metrics" edges to the NetworkMetrics entity.
-func (muo *MetricsUpdateOne) AddNetworkMetrics(n ...*NetworkMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
-	}
-	return muo.AddNetworkMetricIDs(ids...)
+// SetPackageMetrics sets the "package_metrics" edge to the PackageMetrics entity.
+func (muo *MetricsUpdateOne) SetPackageMetrics(p *PackageMetrics) *MetricsUpdateOne {
+	return muo.SetPackageMetricsID(p.ID)
 }
 
-// AddDynamicExecutionMetricIDs adds the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by IDs.
-func (muo *MetricsUpdateOne) AddDynamicExecutionMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.AddDynamicExecutionMetricIDs(ids...)
+// SetTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID.
+func (muo *MetricsUpdateOne) SetTimingMetricsID(id int) *MetricsUpdateOne {
+	muo.mutation.SetTimingMetricsID(id)
 	return muo
 }
 
-// AddDynamicExecutionMetrics adds the "dynamic_execution_metrics" edges to the DynamicExecutionMetrics entity.
-func (muo *MetricsUpdateOne) AddDynamicExecutionMetrics(d ...*DynamicExecutionMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
+// SetNillableTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by ID if the given value is not nil.
+func (muo *MetricsUpdateOne) SetNillableTimingMetricsID(id *int) *MetricsUpdateOne {
+	if id != nil {
+		muo = muo.SetTimingMetricsID(*id)
 	}
-	return muo.AddDynamicExecutionMetricIDs(ids...)
-}
-
-// AddBuildGraphMetricIDs adds the "build_graph_metrics" edge to the BuildGraphMetrics entity by IDs.
-func (muo *MetricsUpdateOne) AddBuildGraphMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.AddBuildGraphMetricIDs(ids...)
 	return muo
 }
 
-// AddBuildGraphMetrics adds the "build_graph_metrics" edges to the BuildGraphMetrics entity.
-func (muo *MetricsUpdateOne) AddBuildGraphMetrics(b ...*BuildGraphMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetTimingMetrics sets the "timing_metrics" edge to the TimingMetrics entity.
+func (muo *MetricsUpdateOne) SetTimingMetrics(t *TimingMetrics) *MetricsUpdateOne {
+	return muo.SetTimingMetricsID(t.ID)
+}
+
+// SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID.
+func (muo *MetricsUpdateOne) SetCumulativeMetricsID(id int) *MetricsUpdateOne {
+	muo.mutation.SetCumulativeMetricsID(id)
+	return muo
+}
+
+// SetNillableCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by ID if the given value is not nil.
+func (muo *MetricsUpdateOne) SetNillableCumulativeMetricsID(id *int) *MetricsUpdateOne {
+	if id != nil {
+		muo = muo.SetCumulativeMetricsID(*id)
 	}
-	return muo.AddBuildGraphMetricIDs(ids...)
+	return muo
+}
+
+// SetCumulativeMetrics sets the "cumulative_metrics" edge to the CumulativeMetrics entity.
+func (muo *MetricsUpdateOne) SetCumulativeMetrics(c *CumulativeMetrics) *MetricsUpdateOne {
+	return muo.SetCumulativeMetricsID(c.ID)
+}
+
+// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
+func (muo *MetricsUpdateOne) SetArtifactMetricsID(id int) *MetricsUpdateOne {
+	muo.mutation.SetArtifactMetricsID(id)
+	return muo
+}
+
+// SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
+func (muo *MetricsUpdateOne) SetNillableArtifactMetricsID(id *int) *MetricsUpdateOne {
+	if id != nil {
+		muo = muo.SetArtifactMetricsID(*id)
+	}
+	return muo
+}
+
+// SetArtifactMetrics sets the "artifact_metrics" edge to the ArtifactMetrics entity.
+func (muo *MetricsUpdateOne) SetArtifactMetrics(a *ArtifactMetrics) *MetricsUpdateOne {
+	return muo.SetArtifactMetricsID(a.ID)
+}
+
+// SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
+func (muo *MetricsUpdateOne) SetNetworkMetricsID(id int) *MetricsUpdateOne {
+	muo.mutation.SetNetworkMetricsID(id)
+	return muo
+}
+
+// SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
+func (muo *MetricsUpdateOne) SetNillableNetworkMetricsID(id *int) *MetricsUpdateOne {
+	if id != nil {
+		muo = muo.SetNetworkMetricsID(*id)
+	}
+	return muo
+}
+
+// SetNetworkMetrics sets the "network_metrics" edge to the NetworkMetrics entity.
+func (muo *MetricsUpdateOne) SetNetworkMetrics(n *NetworkMetrics) *MetricsUpdateOne {
+	return muo.SetNetworkMetricsID(n.ID)
+}
+
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
+func (muo *MetricsUpdateOne) SetDynamicExecutionMetricsID(id int) *MetricsUpdateOne {
+	muo.mutation.SetDynamicExecutionMetricsID(id)
+	return muo
+}
+
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
+func (muo *MetricsUpdateOne) SetNillableDynamicExecutionMetricsID(id *int) *MetricsUpdateOne {
+	if id != nil {
+		muo = muo.SetDynamicExecutionMetricsID(*id)
+	}
+	return muo
+}
+
+// SetDynamicExecutionMetrics sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
+func (muo *MetricsUpdateOne) SetDynamicExecutionMetrics(d *DynamicExecutionMetrics) *MetricsUpdateOne {
+	return muo.SetDynamicExecutionMetricsID(d.ID)
+}
+
+// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
+func (muo *MetricsUpdateOne) SetBuildGraphMetricsID(id int) *MetricsUpdateOne {
+	muo.mutation.SetBuildGraphMetricsID(id)
+	return muo
+}
+
+// SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
+func (muo *MetricsUpdateOne) SetNillableBuildGraphMetricsID(id *int) *MetricsUpdateOne {
+	if id != nil {
+		muo = muo.SetBuildGraphMetricsID(*id)
+	}
+	return muo
+}
+
+// SetBuildGraphMetrics sets the "build_graph_metrics" edge to the BuildGraphMetrics entity.
+func (muo *MetricsUpdateOne) SetBuildGraphMetrics(b *BuildGraphMetrics) *MetricsUpdateOne {
+	return muo.SetBuildGraphMetricsID(b.ID)
 }
 
 // Mutation returns the MetricsMutation object of the builder.
@@ -1143,214 +913,64 @@ func (muo *MetricsUpdateOne) ClearBazelInvocation() *MetricsUpdateOne {
 	return muo
 }
 
-// ClearActionSummary clears all "action_summary" edges to the ActionSummary entity.
+// ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
 func (muo *MetricsUpdateOne) ClearActionSummary() *MetricsUpdateOne {
 	muo.mutation.ClearActionSummary()
 	return muo
 }
 
-// RemoveActionSummaryIDs removes the "action_summary" edge to ActionSummary entities by IDs.
-func (muo *MetricsUpdateOne) RemoveActionSummaryIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.RemoveActionSummaryIDs(ids...)
-	return muo
-}
-
-// RemoveActionSummary removes "action_summary" edges to ActionSummary entities.
-func (muo *MetricsUpdateOne) RemoveActionSummary(a ...*ActionSummary) *MetricsUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return muo.RemoveActionSummaryIDs(ids...)
-}
-
-// ClearMemoryMetrics clears all "memory_metrics" edges to the MemoryMetrics entity.
+// ClearMemoryMetrics clears the "memory_metrics" edge to the MemoryMetrics entity.
 func (muo *MetricsUpdateOne) ClearMemoryMetrics() *MetricsUpdateOne {
 	muo.mutation.ClearMemoryMetrics()
 	return muo
 }
 
-// RemoveMemoryMetricIDs removes the "memory_metrics" edge to MemoryMetrics entities by IDs.
-func (muo *MetricsUpdateOne) RemoveMemoryMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.RemoveMemoryMetricIDs(ids...)
-	return muo
-}
-
-// RemoveMemoryMetrics removes "memory_metrics" edges to MemoryMetrics entities.
-func (muo *MetricsUpdateOne) RemoveMemoryMetrics(m ...*MemoryMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return muo.RemoveMemoryMetricIDs(ids...)
-}
-
-// ClearTargetMetrics clears all "target_metrics" edges to the TargetMetrics entity.
+// ClearTargetMetrics clears the "target_metrics" edge to the TargetMetrics entity.
 func (muo *MetricsUpdateOne) ClearTargetMetrics() *MetricsUpdateOne {
 	muo.mutation.ClearTargetMetrics()
 	return muo
 }
 
-// RemoveTargetMetricIDs removes the "target_metrics" edge to TargetMetrics entities by IDs.
-func (muo *MetricsUpdateOne) RemoveTargetMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.RemoveTargetMetricIDs(ids...)
-	return muo
-}
-
-// RemoveTargetMetrics removes "target_metrics" edges to TargetMetrics entities.
-func (muo *MetricsUpdateOne) RemoveTargetMetrics(t ...*TargetMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return muo.RemoveTargetMetricIDs(ids...)
-}
-
-// ClearPackageMetrics clears all "package_metrics" edges to the PackageMetrics entity.
+// ClearPackageMetrics clears the "package_metrics" edge to the PackageMetrics entity.
 func (muo *MetricsUpdateOne) ClearPackageMetrics() *MetricsUpdateOne {
 	muo.mutation.ClearPackageMetrics()
 	return muo
 }
 
-// RemovePackageMetricIDs removes the "package_metrics" edge to PackageMetrics entities by IDs.
-func (muo *MetricsUpdateOne) RemovePackageMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.RemovePackageMetricIDs(ids...)
-	return muo
-}
-
-// RemovePackageMetrics removes "package_metrics" edges to PackageMetrics entities.
-func (muo *MetricsUpdateOne) RemovePackageMetrics(p ...*PackageMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
-	}
-	return muo.RemovePackageMetricIDs(ids...)
-}
-
-// ClearTimingMetrics clears all "timing_metrics" edges to the TimingMetrics entity.
+// ClearTimingMetrics clears the "timing_metrics" edge to the TimingMetrics entity.
 func (muo *MetricsUpdateOne) ClearTimingMetrics() *MetricsUpdateOne {
 	muo.mutation.ClearTimingMetrics()
 	return muo
 }
 
-// RemoveTimingMetricIDs removes the "timing_metrics" edge to TimingMetrics entities by IDs.
-func (muo *MetricsUpdateOne) RemoveTimingMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.RemoveTimingMetricIDs(ids...)
-	return muo
-}
-
-// RemoveTimingMetrics removes "timing_metrics" edges to TimingMetrics entities.
-func (muo *MetricsUpdateOne) RemoveTimingMetrics(t ...*TimingMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return muo.RemoveTimingMetricIDs(ids...)
-}
-
-// ClearCumulativeMetrics clears all "cumulative_metrics" edges to the CumulativeMetrics entity.
+// ClearCumulativeMetrics clears the "cumulative_metrics" edge to the CumulativeMetrics entity.
 func (muo *MetricsUpdateOne) ClearCumulativeMetrics() *MetricsUpdateOne {
 	muo.mutation.ClearCumulativeMetrics()
 	return muo
 }
 
-// RemoveCumulativeMetricIDs removes the "cumulative_metrics" edge to CumulativeMetrics entities by IDs.
-func (muo *MetricsUpdateOne) RemoveCumulativeMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.RemoveCumulativeMetricIDs(ids...)
-	return muo
-}
-
-// RemoveCumulativeMetrics removes "cumulative_metrics" edges to CumulativeMetrics entities.
-func (muo *MetricsUpdateOne) RemoveCumulativeMetrics(c ...*CumulativeMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(c))
-	for i := range c {
-		ids[i] = c[i].ID
-	}
-	return muo.RemoveCumulativeMetricIDs(ids...)
-}
-
-// ClearArtifactMetrics clears all "artifact_metrics" edges to the ArtifactMetrics entity.
+// ClearArtifactMetrics clears the "artifact_metrics" edge to the ArtifactMetrics entity.
 func (muo *MetricsUpdateOne) ClearArtifactMetrics() *MetricsUpdateOne {
 	muo.mutation.ClearArtifactMetrics()
 	return muo
 }
 
-// RemoveArtifactMetricIDs removes the "artifact_metrics" edge to ArtifactMetrics entities by IDs.
-func (muo *MetricsUpdateOne) RemoveArtifactMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.RemoveArtifactMetricIDs(ids...)
-	return muo
-}
-
-// RemoveArtifactMetrics removes "artifact_metrics" edges to ArtifactMetrics entities.
-func (muo *MetricsUpdateOne) RemoveArtifactMetrics(a ...*ArtifactMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return muo.RemoveArtifactMetricIDs(ids...)
-}
-
-// ClearNetworkMetrics clears all "network_metrics" edges to the NetworkMetrics entity.
+// ClearNetworkMetrics clears the "network_metrics" edge to the NetworkMetrics entity.
 func (muo *MetricsUpdateOne) ClearNetworkMetrics() *MetricsUpdateOne {
 	muo.mutation.ClearNetworkMetrics()
 	return muo
 }
 
-// RemoveNetworkMetricIDs removes the "network_metrics" edge to NetworkMetrics entities by IDs.
-func (muo *MetricsUpdateOne) RemoveNetworkMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.RemoveNetworkMetricIDs(ids...)
-	return muo
-}
-
-// RemoveNetworkMetrics removes "network_metrics" edges to NetworkMetrics entities.
-func (muo *MetricsUpdateOne) RemoveNetworkMetrics(n ...*NetworkMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
-	}
-	return muo.RemoveNetworkMetricIDs(ids...)
-}
-
-// ClearDynamicExecutionMetrics clears all "dynamic_execution_metrics" edges to the DynamicExecutionMetrics entity.
+// ClearDynamicExecutionMetrics clears the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
 func (muo *MetricsUpdateOne) ClearDynamicExecutionMetrics() *MetricsUpdateOne {
 	muo.mutation.ClearDynamicExecutionMetrics()
 	return muo
 }
 
-// RemoveDynamicExecutionMetricIDs removes the "dynamic_execution_metrics" edge to DynamicExecutionMetrics entities by IDs.
-func (muo *MetricsUpdateOne) RemoveDynamicExecutionMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.RemoveDynamicExecutionMetricIDs(ids...)
-	return muo
-}
-
-// RemoveDynamicExecutionMetrics removes "dynamic_execution_metrics" edges to DynamicExecutionMetrics entities.
-func (muo *MetricsUpdateOne) RemoveDynamicExecutionMetrics(d ...*DynamicExecutionMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
-	}
-	return muo.RemoveDynamicExecutionMetricIDs(ids...)
-}
-
-// ClearBuildGraphMetrics clears all "build_graph_metrics" edges to the BuildGraphMetrics entity.
+// ClearBuildGraphMetrics clears the "build_graph_metrics" edge to the BuildGraphMetrics entity.
 func (muo *MetricsUpdateOne) ClearBuildGraphMetrics() *MetricsUpdateOne {
 	muo.mutation.ClearBuildGraphMetrics()
 	return muo
-}
-
-// RemoveBuildGraphMetricIDs removes the "build_graph_metrics" edge to BuildGraphMetrics entities by IDs.
-func (muo *MetricsUpdateOne) RemoveBuildGraphMetricIDs(ids ...int) *MetricsUpdateOne {
-	muo.mutation.RemoveBuildGraphMetricIDs(ids...)
-	return muo
-}
-
-// RemoveBuildGraphMetrics removes "build_graph_metrics" edges to BuildGraphMetrics entities.
-func (muo *MetricsUpdateOne) RemoveBuildGraphMetrics(b ...*BuildGraphMetrics) *MetricsUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return muo.RemoveBuildGraphMetricIDs(ids...)
 }
 
 // Where appends a list predicates to the MetricsUpdate builder.
@@ -1450,7 +1070,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 	}
 	if muo.mutation.ActionSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.ActionSummaryTable,
 			Columns: []string{metrics.ActionSummaryColumn},
@@ -1458,28 +1078,12 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := muo.mutation.RemovedActionSummaryIDs(); len(nodes) > 0 && !muo.mutation.ActionSummaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   metrics.ActionSummaryTable,
-			Columns: []string{metrics.ActionSummaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := muo.mutation.ActionSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.ActionSummaryTable,
 			Columns: []string{metrics.ActionSummaryColumn},
@@ -1495,39 +1099,23 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 	}
 	if muo.mutation.MemoryMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.MemoryMetricsTable,
-			Columns: metrics.MemoryMetricsPrimaryKey,
+			Columns: []string{metrics.MemoryMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := muo.mutation.RemovedMemoryMetricsIDs(); len(nodes) > 0 && !muo.mutation.MemoryMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.MemoryMetricsTable,
-			Columns: metrics.MemoryMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := muo.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.MemoryMetricsTable,
-			Columns: metrics.MemoryMetricsPrimaryKey,
+			Columns: []string{metrics.MemoryMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
@@ -1540,39 +1128,23 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 	}
 	if muo.mutation.TargetMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.TargetMetricsTable,
-			Columns: metrics.TargetMetricsPrimaryKey,
+			Columns: []string{metrics.TargetMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := muo.mutation.RemovedTargetMetricsIDs(); len(nodes) > 0 && !muo.mutation.TargetMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.TargetMetricsTable,
-			Columns: metrics.TargetMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := muo.mutation.TargetMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.TargetMetricsTable,
-			Columns: metrics.TargetMetricsPrimaryKey,
+			Columns: []string{metrics.TargetMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt),
@@ -1585,39 +1157,23 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 	}
 	if muo.mutation.PackageMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.PackageMetricsTable,
-			Columns: metrics.PackageMetricsPrimaryKey,
+			Columns: []string{metrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := muo.mutation.RemovedPackageMetricsIDs(); len(nodes) > 0 && !muo.mutation.PackageMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.PackageMetricsTable,
-			Columns: metrics.PackageMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := muo.mutation.PackageMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.PackageMetricsTable,
-			Columns: metrics.PackageMetricsPrimaryKey,
+			Columns: []string{metrics.PackageMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt),
@@ -1630,39 +1186,23 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 	}
 	if muo.mutation.TimingMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.TimingMetricsTable,
-			Columns: metrics.TimingMetricsPrimaryKey,
+			Columns: []string{metrics.TimingMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := muo.mutation.RemovedTimingMetricsIDs(); len(nodes) > 0 && !muo.mutation.TimingMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.TimingMetricsTable,
-			Columns: metrics.TimingMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := muo.mutation.TimingMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.TimingMetricsTable,
-			Columns: metrics.TimingMetricsPrimaryKey,
+			Columns: []string{metrics.TimingMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt),
@@ -1675,39 +1215,23 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 	}
 	if muo.mutation.CumulativeMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.CumulativeMetricsTable,
-			Columns: metrics.CumulativeMetricsPrimaryKey,
+			Columns: []string{metrics.CumulativeMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := muo.mutation.RemovedCumulativeMetricsIDs(); len(nodes) > 0 && !muo.mutation.CumulativeMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.CumulativeMetricsTable,
-			Columns: metrics.CumulativeMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := muo.mutation.CumulativeMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.CumulativeMetricsTable,
-			Columns: metrics.CumulativeMetricsPrimaryKey,
+			Columns: []string{metrics.CumulativeMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt),
@@ -1720,39 +1244,23 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 	}
 	if muo.mutation.ArtifactMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.ArtifactMetricsTable,
-			Columns: metrics.ArtifactMetricsPrimaryKey,
+			Columns: []string{metrics.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := muo.mutation.RemovedArtifactMetricsIDs(); len(nodes) > 0 && !muo.mutation.ArtifactMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.ArtifactMetricsTable,
-			Columns: metrics.ArtifactMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := muo.mutation.ArtifactMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.ArtifactMetricsTable,
-			Columns: metrics.ArtifactMetricsPrimaryKey,
+			Columns: []string{metrics.ArtifactMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt),
@@ -1765,39 +1273,23 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 	}
 	if muo.mutation.NetworkMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.NetworkMetricsTable,
-			Columns: metrics.NetworkMetricsPrimaryKey,
+			Columns: []string{metrics.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := muo.mutation.RemovedNetworkMetricsIDs(); len(nodes) > 0 && !muo.mutation.NetworkMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.NetworkMetricsTable,
-			Columns: metrics.NetworkMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := muo.mutation.NetworkMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.NetworkMetricsTable,
-			Columns: metrics.NetworkMetricsPrimaryKey,
+			Columns: []string{metrics.NetworkMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
@@ -1810,39 +1302,23 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 	}
 	if muo.mutation.DynamicExecutionMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.DynamicExecutionMetricsTable,
-			Columns: metrics.DynamicExecutionMetricsPrimaryKey,
+			Columns: []string{metrics.DynamicExecutionMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := muo.mutation.RemovedDynamicExecutionMetricsIDs(); len(nodes) > 0 && !muo.mutation.DynamicExecutionMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.DynamicExecutionMetricsTable,
-			Columns: metrics.DynamicExecutionMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := muo.mutation.DynamicExecutionMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.DynamicExecutionMetricsTable,
-			Columns: metrics.DynamicExecutionMetricsPrimaryKey,
+			Columns: []string{metrics.DynamicExecutionMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
@@ -1855,39 +1331,23 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 	}
 	if muo.mutation.BuildGraphMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.BuildGraphMetricsTable,
-			Columns: metrics.BuildGraphMetricsPrimaryKey,
+			Columns: []string{metrics.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := muo.mutation.RemovedBuildGraphMetricsIDs(); len(nodes) > 0 && !muo.mutation.BuildGraphMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   metrics.BuildGraphMetricsTable,
-			Columns: metrics.BuildGraphMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := muo.mutation.BuildGraphMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   metrics.BuildGraphMetricsTable,
-			Columns: metrics.BuildGraphMetricsPrimaryKey,
+			Columns: []string{metrics.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),

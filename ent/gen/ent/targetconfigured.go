@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 )
 
 // TargetConfigured is the model entity for the TargetConfigured schema.
@@ -27,28 +28,29 @@ type TargetConfigured struct {
 	TestSize targetconfigured.TestSize `json:"test_size,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetConfiguredQuery when eager-loading is set.
-	Edges        TargetConfiguredEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                     TargetConfiguredEdges `json:"edges"`
+	target_pair_configuration *int
+	selectValues              sql.SelectValues
 }
 
 // TargetConfiguredEdges holds the relations/edges for other nodes in the graph.
 type TargetConfiguredEdges struct {
 	// TargetPair holds the value of the target_pair edge.
-	TargetPair []*TargetPair `json:"target_pair,omitempty"`
+	TargetPair *TargetPair `json:"target_pair,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedTargetPair map[string][]*TargetPair
 }
 
 // TargetPairOrErr returns the TargetPair value or an error if the edge
-// was not loaded in eager-loading.
-func (e TargetConfiguredEdges) TargetPairOrErr() ([]*TargetPair, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TargetConfiguredEdges) TargetPairOrErr() (*TargetPair, error) {
+	if e.TargetPair != nil {
 		return e.TargetPair, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: targetpair.Label}
 	}
 	return nil, &NotLoadedError{edge: "target_pair"}
 }
@@ -64,6 +66,8 @@ func (*TargetConfigured) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case targetconfigured.FieldTargetKind, targetconfigured.FieldTestSize:
 			values[i] = new(sql.NullString)
+		case targetconfigured.ForeignKeys[0]: // target_pair_configuration
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -110,6 +114,13 @@ func (tc *TargetConfigured) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field test_size", values[i])
 			} else if value.Valid {
 				tc.TestSize = targetconfigured.TestSize(value.String)
+			}
+		case targetconfigured.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field target_pair_configuration", value)
+			} else if value.Valid {
+				tc.target_pair_configuration = new(int)
+				*tc.target_pair_configuration = int(value.Int64)
 			}
 		default:
 			tc.selectValues.Set(columns[i], values[i])
@@ -165,30 +176,6 @@ func (tc *TargetConfigured) String() string {
 	builder.WriteString(fmt.Sprintf("%v", tc.TestSize))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedTargetPair returns the TargetPair named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (tc *TargetConfigured) NamedTargetPair(name string) ([]*TargetPair, error) {
-	if tc.Edges.namedTargetPair == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := tc.Edges.namedTargetPair[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (tc *TargetConfigured) appendNamedTargetPair(name string, edges ...*TargetPair) {
-	if tc.Edges.namedTargetPair == nil {
-		tc.Edges.namedTargetPair = make(map[string][]*TargetPair)
-	}
-	if len(edges) == 0 {
-		tc.Edges.namedTargetPair[name] = []*TargetPair{}
-	} else {
-		tc.Edges.namedTargetPair[name] = append(tc.Edges.namedTargetPair[name], edges...)
-	}
 }
 
 // TargetConfigureds is a parsable slice of TargetConfigured.

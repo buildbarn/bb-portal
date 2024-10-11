@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -19,14 +18,14 @@ import (
 // ResourceUsageQuery is the builder for querying ResourceUsage entities.
 type ResourceUsageQuery struct {
 	config
-	ctx                    *QueryContext
-	order                  []resourceusage.OrderOption
-	inters                 []Interceptor
-	predicates             []predicate.ResourceUsage
-	withExecutionInfo      *ExectionInfoQuery
-	modifiers              []func(*sql.Selector)
-	loadTotal              []func(context.Context, []*ResourceUsage) error
-	withNamedExecutionInfo map[string]*ExectionInfoQuery
+	ctx               *QueryContext
+	order             []resourceusage.OrderOption
+	inters            []Interceptor
+	predicates        []predicate.ResourceUsage
+	withExecutionInfo *ExectionInfoQuery
+	withFKs           bool
+	modifiers         []func(*sql.Selector)
+	loadTotal         []func(context.Context, []*ResourceUsage) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,7 +76,7 @@ func (ruq *ResourceUsageQuery) QueryExecutionInfo() *ExectionInfoQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(resourceusage.Table, resourceusage.FieldID, selector),
 			sqlgraph.To(exectioninfo.Table, exectioninfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, resourceusage.ExecutionInfoTable, resourceusage.ExecutionInfoPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, resourceusage.ExecutionInfoTable, resourceusage.ExecutionInfoColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(ruq.driver.Dialect(), step)
 		return fromU, nil
@@ -372,11 +371,18 @@ func (ruq *ResourceUsageQuery) prepareQuery(ctx context.Context) error {
 func (ruq *ResourceUsageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ResourceUsage, error) {
 	var (
 		nodes       = []*ResourceUsage{}
+		withFKs     = ruq.withFKs
 		_spec       = ruq.querySpec()
 		loadedTypes = [1]bool{
 			ruq.withExecutionInfo != nil,
 		}
 	)
+	if ruq.withExecutionInfo != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, resourceusage.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ResourceUsage).scanValues(nil, columns)
 	}
@@ -399,16 +405,8 @@ func (ruq *ResourceUsageQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 		return nodes, nil
 	}
 	if query := ruq.withExecutionInfo; query != nil {
-		if err := ruq.loadExecutionInfo(ctx, query, nodes,
-			func(n *ResourceUsage) { n.Edges.ExecutionInfo = []*ExectionInfo{} },
-			func(n *ResourceUsage, e *ExectionInfo) { n.Edges.ExecutionInfo = append(n.Edges.ExecutionInfo, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range ruq.withNamedExecutionInfo {
-		if err := ruq.loadExecutionInfo(ctx, query, nodes,
-			func(n *ResourceUsage) { n.appendNamedExecutionInfo(name) },
-			func(n *ResourceUsage, e *ExectionInfo) { n.appendNamedExecutionInfo(name, e) }); err != nil {
+		if err := ruq.loadExecutionInfo(ctx, query, nodes, nil,
+			func(n *ResourceUsage, e *ExectionInfo) { n.Edges.ExecutionInfo = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -421,62 +419,33 @@ func (ruq *ResourceUsageQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 }
 
 func (ruq *ResourceUsageQuery) loadExecutionInfo(ctx context.Context, query *ExectionInfoQuery, nodes []*ResourceUsage, init func(*ResourceUsage), assign func(*ResourceUsage, *ExectionInfo)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*ResourceUsage)
-	nids := make(map[int]map[*ResourceUsage]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*ResourceUsage)
+	for i := range nodes {
+		if nodes[i].exection_info_resource_usage == nil {
+			continue
 		}
+		fk := *nodes[i].exection_info_resource_usage
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(resourceusage.ExecutionInfoTable)
-		s.Join(joinT).On(s.C(exectioninfo.FieldID), joinT.C(resourceusage.ExecutionInfoPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(resourceusage.ExecutionInfoPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(resourceusage.ExecutionInfoPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*ResourceUsage]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*ExectionInfo](ctx, query, qr, query.inters)
+	query.Where(exectioninfo.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "execution_info" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "exection_info_resource_usage" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -564,20 +533,6 @@ func (ruq *ResourceUsageQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedExecutionInfo tells the query-builder to eager-load the nodes that are connected to the "execution_info"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (ruq *ResourceUsageQuery) WithNamedExecutionInfo(name string, opts ...func(*ExectionInfoQuery)) *ResourceUsageQuery {
-	query := (&ExectionInfoClient{config: ruq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if ruq.withNamedExecutionInfo == nil {
-		ruq.withNamedExecutionInfo = make(map[string]*ExectionInfoQuery)
-	}
-	ruq.withNamedExecutionInfo[name] = query
-	return ruq
 }
 
 // ResourceUsageGroupBy is the group-by builder for ResourceUsage entities.

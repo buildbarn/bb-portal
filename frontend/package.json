@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "generate": "graphql-codegen --config ./src/graphql/codegen.ts",
-    "predev": "npm run generate"
+    "predev": "npm run generate",
+    "build:test": "NODE_ENV=test next build"
   },
   "dependencies": {
     "@ant-design/colors": "^7.0.2",
@@ -26,7 +27,6 @@
     "next": "14.2.3",
     "rc-menu": "^9.13.0",
     "react": "^18",
-    "react-collapsible": "^2.10.0",
     "react-countup": "^6.5.3",
     "react-dom": "^18",
     "recharts": "^2.12.7",
@@ -42,6 +42,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/uuid": "^9.0.8",
+    "env-cmd": "^10.1.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "typescript": "^5"

@@ -168,7 +168,7 @@ func HasArtifactMetrics() predicate.FilesMetric {
 	return predicate.FilesMetric(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, ArtifactMetricsTable, ArtifactMetricsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2O, true, ArtifactMetricsTable, ArtifactMetricsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

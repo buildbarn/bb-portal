@@ -353,7 +353,7 @@ func HasBazelInvocation() predicate.TargetPair {
 	return predicate.TargetPair(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, BazelInvocationTable, BazelInvocationPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, BazelInvocationTable, BazelInvocationColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -376,7 +376,7 @@ func HasConfiguration() predicate.TargetPair {
 	return predicate.TargetPair(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, ConfigurationTable, ConfigurationColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, ConfigurationTable, ConfigurationColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -399,7 +399,7 @@ func HasCompletion() predicate.TargetPair {
 	return predicate.TargetPair(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, CompletionTable, CompletionColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, CompletionTable, CompletionColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

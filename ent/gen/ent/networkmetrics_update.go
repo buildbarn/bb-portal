@@ -29,34 +29,42 @@ func (nmu *NetworkMetricsUpdate) Where(ps ...predicate.NetworkMetrics) *NetworkM
 	return nmu
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (nmu *NetworkMetricsUpdate) AddMetricIDs(ids ...int) *NetworkMetricsUpdate {
-	nmu.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (nmu *NetworkMetricsUpdate) SetMetricsID(id int) *NetworkMetricsUpdate {
+	nmu.mutation.SetMetricsID(id)
 	return nmu
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (nmu *NetworkMetricsUpdate) AddMetrics(m ...*Metrics) *NetworkMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (nmu *NetworkMetricsUpdate) SetNillableMetricsID(id *int) *NetworkMetricsUpdate {
+	if id != nil {
+		nmu = nmu.SetMetricsID(*id)
 	}
-	return nmu.AddMetricIDs(ids...)
-}
-
-// AddSystemNetworkStatIDs adds the "system_network_stats" edge to the SystemNetworkStats entity by IDs.
-func (nmu *NetworkMetricsUpdate) AddSystemNetworkStatIDs(ids ...int) *NetworkMetricsUpdate {
-	nmu.mutation.AddSystemNetworkStatIDs(ids...)
 	return nmu
 }
 
-// AddSystemNetworkStats adds the "system_network_stats" edges to the SystemNetworkStats entity.
-func (nmu *NetworkMetricsUpdate) AddSystemNetworkStats(s ...*SystemNetworkStats) *NetworkMetricsUpdate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (nmu *NetworkMetricsUpdate) SetMetrics(m *Metrics) *NetworkMetricsUpdate {
+	return nmu.SetMetricsID(m.ID)
+}
+
+// SetSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID.
+func (nmu *NetworkMetricsUpdate) SetSystemNetworkStatsID(id int) *NetworkMetricsUpdate {
+	nmu.mutation.SetSystemNetworkStatsID(id)
+	return nmu
+}
+
+// SetNillableSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID if the given value is not nil.
+func (nmu *NetworkMetricsUpdate) SetNillableSystemNetworkStatsID(id *int) *NetworkMetricsUpdate {
+	if id != nil {
+		nmu = nmu.SetSystemNetworkStatsID(*id)
 	}
-	return nmu.AddSystemNetworkStatIDs(ids...)
+	return nmu
+}
+
+// SetSystemNetworkStats sets the "system_network_stats" edge to the SystemNetworkStats entity.
+func (nmu *NetworkMetricsUpdate) SetSystemNetworkStats(s *SystemNetworkStats) *NetworkMetricsUpdate {
+	return nmu.SetSystemNetworkStatsID(s.ID)
 }
 
 // Mutation returns the NetworkMetricsMutation object of the builder.
@@ -64,46 +72,16 @@ func (nmu *NetworkMetricsUpdate) Mutation() *NetworkMetricsMutation {
 	return nmu.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (nmu *NetworkMetricsUpdate) ClearMetrics() *NetworkMetricsUpdate {
 	nmu.mutation.ClearMetrics()
 	return nmu
 }
 
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (nmu *NetworkMetricsUpdate) RemoveMetricIDs(ids ...int) *NetworkMetricsUpdate {
-	nmu.mutation.RemoveMetricIDs(ids...)
-	return nmu
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (nmu *NetworkMetricsUpdate) RemoveMetrics(m ...*Metrics) *NetworkMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return nmu.RemoveMetricIDs(ids...)
-}
-
-// ClearSystemNetworkStats clears all "system_network_stats" edges to the SystemNetworkStats entity.
+// ClearSystemNetworkStats clears the "system_network_stats" edge to the SystemNetworkStats entity.
 func (nmu *NetworkMetricsUpdate) ClearSystemNetworkStats() *NetworkMetricsUpdate {
 	nmu.mutation.ClearSystemNetworkStats()
 	return nmu
-}
-
-// RemoveSystemNetworkStatIDs removes the "system_network_stats" edge to SystemNetworkStats entities by IDs.
-func (nmu *NetworkMetricsUpdate) RemoveSystemNetworkStatIDs(ids ...int) *NetworkMetricsUpdate {
-	nmu.mutation.RemoveSystemNetworkStatIDs(ids...)
-	return nmu
-}
-
-// RemoveSystemNetworkStats removes "system_network_stats" edges to SystemNetworkStats entities.
-func (nmu *NetworkMetricsUpdate) RemoveSystemNetworkStats(s ...*SystemNetworkStats) *NetworkMetricsUpdate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return nmu.RemoveSystemNetworkStatIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -144,39 +122,23 @@ func (nmu *NetworkMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if nmu.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   networkmetrics.MetricsTable,
-			Columns: networkmetrics.MetricsPrimaryKey,
+			Columns: []string{networkmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := nmu.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !nmu.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   networkmetrics.MetricsTable,
-			Columns: networkmetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := nmu.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   networkmetrics.MetricsTable,
-			Columns: networkmetrics.MetricsPrimaryKey,
+			Columns: []string{networkmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -189,7 +151,7 @@ func (nmu *NetworkMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if nmu.mutation.SystemNetworkStatsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   networkmetrics.SystemNetworkStatsTable,
 			Columns: []string{networkmetrics.SystemNetworkStatsColumn},
@@ -197,28 +159,12 @@ func (nmu *NetworkMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := nmu.mutation.RemovedSystemNetworkStatsIDs(); len(nodes) > 0 && !nmu.mutation.SystemNetworkStatsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   networkmetrics.SystemNetworkStatsTable,
-			Columns: []string{networkmetrics.SystemNetworkStatsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := nmu.mutation.SystemNetworkStatsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   networkmetrics.SystemNetworkStatsTable,
 			Columns: []string{networkmetrics.SystemNetworkStatsColumn},
@@ -252,34 +198,42 @@ type NetworkMetricsUpdateOne struct {
 	mutation *NetworkMetricsMutation
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (nmuo *NetworkMetricsUpdateOne) AddMetricIDs(ids ...int) *NetworkMetricsUpdateOne {
-	nmuo.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (nmuo *NetworkMetricsUpdateOne) SetMetricsID(id int) *NetworkMetricsUpdateOne {
+	nmuo.mutation.SetMetricsID(id)
 	return nmuo
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (nmuo *NetworkMetricsUpdateOne) AddMetrics(m ...*Metrics) *NetworkMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (nmuo *NetworkMetricsUpdateOne) SetNillableMetricsID(id *int) *NetworkMetricsUpdateOne {
+	if id != nil {
+		nmuo = nmuo.SetMetricsID(*id)
 	}
-	return nmuo.AddMetricIDs(ids...)
-}
-
-// AddSystemNetworkStatIDs adds the "system_network_stats" edge to the SystemNetworkStats entity by IDs.
-func (nmuo *NetworkMetricsUpdateOne) AddSystemNetworkStatIDs(ids ...int) *NetworkMetricsUpdateOne {
-	nmuo.mutation.AddSystemNetworkStatIDs(ids...)
 	return nmuo
 }
 
-// AddSystemNetworkStats adds the "system_network_stats" edges to the SystemNetworkStats entity.
-func (nmuo *NetworkMetricsUpdateOne) AddSystemNetworkStats(s ...*SystemNetworkStats) *NetworkMetricsUpdateOne {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (nmuo *NetworkMetricsUpdateOne) SetMetrics(m *Metrics) *NetworkMetricsUpdateOne {
+	return nmuo.SetMetricsID(m.ID)
+}
+
+// SetSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID.
+func (nmuo *NetworkMetricsUpdateOne) SetSystemNetworkStatsID(id int) *NetworkMetricsUpdateOne {
+	nmuo.mutation.SetSystemNetworkStatsID(id)
+	return nmuo
+}
+
+// SetNillableSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by ID if the given value is not nil.
+func (nmuo *NetworkMetricsUpdateOne) SetNillableSystemNetworkStatsID(id *int) *NetworkMetricsUpdateOne {
+	if id != nil {
+		nmuo = nmuo.SetSystemNetworkStatsID(*id)
 	}
-	return nmuo.AddSystemNetworkStatIDs(ids...)
+	return nmuo
+}
+
+// SetSystemNetworkStats sets the "system_network_stats" edge to the SystemNetworkStats entity.
+func (nmuo *NetworkMetricsUpdateOne) SetSystemNetworkStats(s *SystemNetworkStats) *NetworkMetricsUpdateOne {
+	return nmuo.SetSystemNetworkStatsID(s.ID)
 }
 
 // Mutation returns the NetworkMetricsMutation object of the builder.
@@ -287,46 +241,16 @@ func (nmuo *NetworkMetricsUpdateOne) Mutation() *NetworkMetricsMutation {
 	return nmuo.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (nmuo *NetworkMetricsUpdateOne) ClearMetrics() *NetworkMetricsUpdateOne {
 	nmuo.mutation.ClearMetrics()
 	return nmuo
 }
 
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (nmuo *NetworkMetricsUpdateOne) RemoveMetricIDs(ids ...int) *NetworkMetricsUpdateOne {
-	nmuo.mutation.RemoveMetricIDs(ids...)
-	return nmuo
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (nmuo *NetworkMetricsUpdateOne) RemoveMetrics(m ...*Metrics) *NetworkMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return nmuo.RemoveMetricIDs(ids...)
-}
-
-// ClearSystemNetworkStats clears all "system_network_stats" edges to the SystemNetworkStats entity.
+// ClearSystemNetworkStats clears the "system_network_stats" edge to the SystemNetworkStats entity.
 func (nmuo *NetworkMetricsUpdateOne) ClearSystemNetworkStats() *NetworkMetricsUpdateOne {
 	nmuo.mutation.ClearSystemNetworkStats()
 	return nmuo
-}
-
-// RemoveSystemNetworkStatIDs removes the "system_network_stats" edge to SystemNetworkStats entities by IDs.
-func (nmuo *NetworkMetricsUpdateOne) RemoveSystemNetworkStatIDs(ids ...int) *NetworkMetricsUpdateOne {
-	nmuo.mutation.RemoveSystemNetworkStatIDs(ids...)
-	return nmuo
-}
-
-// RemoveSystemNetworkStats removes "system_network_stats" edges to SystemNetworkStats entities.
-func (nmuo *NetworkMetricsUpdateOne) RemoveSystemNetworkStats(s ...*SystemNetworkStats) *NetworkMetricsUpdateOne {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return nmuo.RemoveSystemNetworkStatIDs(ids...)
 }
 
 // Where appends a list predicates to the NetworkMetricsUpdate builder.
@@ -397,39 +321,23 @@ func (nmuo *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Networ
 	}
 	if nmuo.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   networkmetrics.MetricsTable,
-			Columns: networkmetrics.MetricsPrimaryKey,
+			Columns: []string{networkmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := nmuo.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !nmuo.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   networkmetrics.MetricsTable,
-			Columns: networkmetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := nmuo.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   networkmetrics.MetricsTable,
-			Columns: networkmetrics.MetricsPrimaryKey,
+			Columns: []string{networkmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -442,7 +350,7 @@ func (nmuo *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Networ
 	}
 	if nmuo.mutation.SystemNetworkStatsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   networkmetrics.SystemNetworkStatsTable,
 			Columns: []string{networkmetrics.SystemNetworkStatsColumn},
@@ -450,28 +358,12 @@ func (nmuo *NetworkMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Networ
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := nmuo.mutation.RemovedSystemNetworkStatsIDs(); len(nodes) > 0 && !nmuo.mutation.SystemNetworkStatsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   networkmetrics.SystemNetworkStatsTable,
-			Columns: []string{networkmetrics.SystemNetworkStatsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := nmuo.mutation.SystemNetworkStatsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   networkmetrics.SystemNetworkStatsTable,
 			Columns: []string{networkmetrics.SystemNetworkStatsColumn},

@@ -48,19 +48,23 @@ func (tbc *TimingBreakdownCreate) SetNillableTime(s *string) *TimingBreakdownCre
 	return tbc
 }
 
-// AddExecutionInfoIDs adds the "execution_info" edge to the ExectionInfo entity by IDs.
-func (tbc *TimingBreakdownCreate) AddExecutionInfoIDs(ids ...int) *TimingBreakdownCreate {
-	tbc.mutation.AddExecutionInfoIDs(ids...)
+// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
+func (tbc *TimingBreakdownCreate) SetExecutionInfoID(id int) *TimingBreakdownCreate {
+	tbc.mutation.SetExecutionInfoID(id)
 	return tbc
 }
 
-// AddExecutionInfo adds the "execution_info" edges to the ExectionInfo entity.
-func (tbc *TimingBreakdownCreate) AddExecutionInfo(e ...*ExectionInfo) *TimingBreakdownCreate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
+func (tbc *TimingBreakdownCreate) SetNillableExecutionInfoID(id *int) *TimingBreakdownCreate {
+	if id != nil {
+		tbc = tbc.SetExecutionInfoID(*id)
 	}
-	return tbc.AddExecutionInfoIDs(ids...)
+	return tbc
+}
+
+// SetExecutionInfo sets the "execution_info" edge to the ExectionInfo entity.
+func (tbc *TimingBreakdownCreate) SetExecutionInfo(e *ExectionInfo) *TimingBreakdownCreate {
+	return tbc.SetExecutionInfoID(e.ID)
 }
 
 // AddChildIDs adds the "child" edge to the TimingChild entity by IDs.
@@ -148,7 +152,7 @@ func (tbc *TimingBreakdownCreate) createSpec() (*TimingBreakdown, *sqlgraph.Crea
 	}
 	if nodes := tbc.mutation.ExecutionInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   timingbreakdown.ExecutionInfoTable,
 			Columns: []string{timingbreakdown.ExecutionInfoColumn},
@@ -160,14 +164,15 @@ func (tbc *TimingBreakdownCreate) createSpec() (*TimingBreakdown, *sqlgraph.Crea
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.exection_info_timing_breakdown = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tbc.mutation.ChildIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   timingbreakdown.ChildTable,
-			Columns: timingbreakdown.ChildPrimaryKey,
+			Columns: []string{timingbreakdown.ChildColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt),

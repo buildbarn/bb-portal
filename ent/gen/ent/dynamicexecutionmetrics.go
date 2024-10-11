@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 )
 
 // DynamicExecutionMetrics is the model entity for the DynamicExecutionMetrics schema.
@@ -18,14 +19,15 @@ type DynamicExecutionMetrics struct {
 	ID int `json:"id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DynamicExecutionMetricsQuery when eager-loading is set.
-	Edges        DynamicExecutionMetricsEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                             DynamicExecutionMetricsEdges `json:"edges"`
+	metrics_dynamic_execution_metrics *int
+	selectValues                      sql.SelectValues
 }
 
 // DynamicExecutionMetricsEdges holds the relations/edges for other nodes in the graph.
 type DynamicExecutionMetricsEdges struct {
 	// Metrics holds the value of the metrics edge.
-	Metrics []*Metrics `json:"metrics,omitempty"`
+	Metrics *Metrics `json:"metrics,omitempty"`
 	// RaceStatistics holds the value of the race_statistics edge.
 	RaceStatistics []*RaceStatistics `json:"race_statistics,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -34,15 +36,16 @@ type DynamicExecutionMetricsEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [2]map[string]int
 
-	namedMetrics        map[string][]*Metrics
 	namedRaceStatistics map[string][]*RaceStatistics
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
-// was not loaded in eager-loading.
-func (e DynamicExecutionMetricsEdges) MetricsOrErr() ([]*Metrics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e DynamicExecutionMetricsEdges) MetricsOrErr() (*Metrics, error) {
+	if e.Metrics != nil {
 		return e.Metrics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
 }
@@ -62,6 +65,8 @@ func (*DynamicExecutionMetrics) scanValues(columns []string) ([]any, error) {
 	for i := range columns {
 		switch columns[i] {
 		case dynamicexecutionmetrics.FieldID:
+			values[i] = new(sql.NullInt64)
+		case dynamicexecutionmetrics.ForeignKeys[0]: // metrics_dynamic_execution_metrics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -84,6 +89,13 @@ func (dem *DynamicExecutionMetrics) assignValues(columns []string, values []any)
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			dem.ID = int(value.Int64)
+		case dynamicexecutionmetrics.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field metrics_dynamic_execution_metrics", value)
+			} else if value.Valid {
+				dem.metrics_dynamic_execution_metrics = new(int)
+				*dem.metrics_dynamic_execution_metrics = int(value.Int64)
+			}
 		default:
 			dem.selectValues.Set(columns[i], values[i])
 		}
@@ -132,30 +144,6 @@ func (dem *DynamicExecutionMetrics) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", dem.ID))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedMetrics returns the Metrics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (dem *DynamicExecutionMetrics) NamedMetrics(name string) ([]*Metrics, error) {
-	if dem.Edges.namedMetrics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := dem.Edges.namedMetrics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (dem *DynamicExecutionMetrics) appendNamedMetrics(name string, edges ...*Metrics) {
-	if dem.Edges.namedMetrics == nil {
-		dem.Edges.namedMetrics = make(map[string][]*Metrics)
-	}
-	if len(edges) == 0 {
-		dem.Edges.namedMetrics[name] = []*Metrics{}
-	} else {
-		dem.Edges.namedMetrics[name] = append(dem.Edges.namedMetrics[name], edges...)
-	}
 }
 
 // NamedRaceStatistics returns the RaceStatistics named value or an error if the edge was not

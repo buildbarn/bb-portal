@@ -11077,6 +11077,18 @@ type TestCollectionWhereInput struct {
 	CachedRemotelyIsNil  bool  `json:"cachedRemotelyIsNil,omitempty"`
 	CachedRemotelyNotNil bool  `json:"cachedRemotelyNotNil,omitempty"`
 
+	// "first_seen" field predicates.
+	FirstSeen       *time.Time  `json:"firstSeen,omitempty"`
+	FirstSeenNEQ    *time.Time  `json:"firstSeenNEQ,omitempty"`
+	FirstSeenIn     []time.Time `json:"firstSeenIn,omitempty"`
+	FirstSeenNotIn  []time.Time `json:"firstSeenNotIn,omitempty"`
+	FirstSeenGT     *time.Time  `json:"firstSeenGT,omitempty"`
+	FirstSeenGTE    *time.Time  `json:"firstSeenGTE,omitempty"`
+	FirstSeenLT     *time.Time  `json:"firstSeenLT,omitempty"`
+	FirstSeenLTE    *time.Time  `json:"firstSeenLTE,omitempty"`
+	FirstSeenIsNil  bool        `json:"firstSeenIsNil,omitempty"`
+	FirstSeenNotNil bool        `json:"firstSeenNotNil,omitempty"`
+
 	// "duration_ms" field predicates.
 	DurationMs       *int64  `json:"durationMs,omitempty"`
 	DurationMsNEQ    *int64  `json:"durationMsNEQ,omitempty"`
@@ -11328,6 +11340,36 @@ func (i *TestCollectionWhereInput) P() (predicate.TestCollection, error) {
 	}
 	if i.CachedRemotelyNotNil {
 		predicates = append(predicates, testcollection.CachedRemotelyNotNil())
+	}
+	if i.FirstSeen != nil {
+		predicates = append(predicates, testcollection.FirstSeenEQ(*i.FirstSeen))
+	}
+	if i.FirstSeenNEQ != nil {
+		predicates = append(predicates, testcollection.FirstSeenNEQ(*i.FirstSeenNEQ))
+	}
+	if len(i.FirstSeenIn) > 0 {
+		predicates = append(predicates, testcollection.FirstSeenIn(i.FirstSeenIn...))
+	}
+	if len(i.FirstSeenNotIn) > 0 {
+		predicates = append(predicates, testcollection.FirstSeenNotIn(i.FirstSeenNotIn...))
+	}
+	if i.FirstSeenGT != nil {
+		predicates = append(predicates, testcollection.FirstSeenGT(*i.FirstSeenGT))
+	}
+	if i.FirstSeenGTE != nil {
+		predicates = append(predicates, testcollection.FirstSeenGTE(*i.FirstSeenGTE))
+	}
+	if i.FirstSeenLT != nil {
+		predicates = append(predicates, testcollection.FirstSeenLT(*i.FirstSeenLT))
+	}
+	if i.FirstSeenLTE != nil {
+		predicates = append(predicates, testcollection.FirstSeenLTE(*i.FirstSeenLTE))
+	}
+	if i.FirstSeenIsNil {
+		predicates = append(predicates, testcollection.FirstSeenIsNil())
+	}
+	if i.FirstSeenNotNil {
+		predicates = append(predicates, testcollection.FirstSeenNotNil())
 	}
 	if i.DurationMs != nil {
 		predicates = append(predicates, testcollection.DurationMsEQ(*i.DurationMs))

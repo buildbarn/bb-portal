@@ -21,7 +21,7 @@ const (
 	// Table holds the table name of the namedsetoffiles in the database.
 	Table = "named_set_of_files"
 	// OutputGroupTable is the table that holds the output_group relation/edge.
-	OutputGroupTable = "output_groups"
+	OutputGroupTable = "named_set_of_files"
 	// OutputGroupInverseTable is the table name for the OutputGroup entity.
 	// It exists in this package in order to avoid circular dependency with the "outputgroup" package.
 	OutputGroupInverseTable = "output_groups"
@@ -49,6 +49,7 @@ var Columns = []string{
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"named_set_of_files_file_sets",
+	"output_group_file_sets",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -74,17 +75,10 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByOutputGroupCount orders the results by output_group count.
-func ByOutputGroupCount(opts ...sql.OrderTermOption) OrderOption {
+// ByOutputGroupField orders the results by output_group field.
+func ByOutputGroupField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newOutputGroupStep(), opts...)
-	}
-}
-
-// ByOutputGroup orders the results by output_group terms.
-func ByOutputGroup(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newOutputGroupStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newOutputGroupStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -112,7 +106,7 @@ func newOutputGroupStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(OutputGroupInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, OutputGroupTable, OutputGroupColumn),
+		sqlgraph.Edge(sqlgraph.O2O, true, OutputGroupTable, OutputGroupColumn),
 	)
 }
 func newFilesStep() *sqlgraph.Step {

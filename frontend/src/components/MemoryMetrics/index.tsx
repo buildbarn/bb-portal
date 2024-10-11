@@ -7,6 +7,7 @@ import { MemoryMetrics, GarbageMetrics } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { PieChartOutlined, HddOutlined } from "@ant-design/icons";
 import { renderActiveShape, newColorFind } from "../Utilities/renderShape";
+import styles from "../../theme/theme.module.css"
 
 interface GarbageMetricDetailDisplayType {
     key: React.Key;
@@ -29,6 +30,8 @@ const garbage_columns: TableColumnsType<GarbageMetricDetailDisplayType> = [
         title: "Garbage Collected",
         dataIndex: "value",
         sorter: (a, b) => a.value - b.value,
+        align: "right",
+        render: (_, record) => <span className={styles.numberFormat}>{record.value}</span>
     },
 ]
 
@@ -55,7 +58,7 @@ const MemoryMetricsDisplay: React.FC<{ memoryMetrics: MemoryMetrics | undefined;
 
     return (
         <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
-            <PortalCard icon={<PieChartOutlined />} titleBits={["Memory Metrics"]} >
+            <PortalCard type="inner" icon={<PieChartOutlined />} titleBits={["Memory Metrics"]} >
                 <Row>
                     <Space size="large">
                         <Statistic title="Peak Post GC Heap Size" value={memoryMetrics?.peakPostGcHeapSize ?? 0} formatter={formatter} />
@@ -65,7 +68,7 @@ const MemoryMetricsDisplay: React.FC<{ memoryMetrics: MemoryMetrics | undefined;
                 </Row>
                 <Row justify="space-around" align="top">
                     <Col span="12">
-                        <PortalCard icon={<PieChartOutlined />} titleBits={["Garbage Collection Breakdown"]}>
+                        <PortalCard type="inner" icon={<PieChartOutlined />} titleBits={["Garbage Collection Breakdown"]}>
                             <PieChart width={500} height={500}>
 
                                 <Pie
@@ -90,7 +93,7 @@ const MemoryMetricsDisplay: React.FC<{ memoryMetrics: MemoryMetrics | undefined;
                         </PortalCard>
                     </Col>
                     <Col span="12">
-                        <PortalCard icon={<HddOutlined />} titleBits={["Gargage Collection Data"]}>
+                        <PortalCard type="inner" icon={<HddOutlined />} titleBits={["Gargage Collection Data"]}>
                             <Table
                                 columns={garbage_columns}
                                 dataSource={garbage_data}

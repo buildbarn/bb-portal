@@ -70,19 +70,23 @@ func (ogu *OutputGroupUpdate) ClearIncomplete() *OutputGroupUpdate {
 	return ogu
 }
 
-// AddTargetCompleteIDs adds the "target_complete" edge to the TargetComplete entity by IDs.
-func (ogu *OutputGroupUpdate) AddTargetCompleteIDs(ids ...int) *OutputGroupUpdate {
-	ogu.mutation.AddTargetCompleteIDs(ids...)
+// SetTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID.
+func (ogu *OutputGroupUpdate) SetTargetCompleteID(id int) *OutputGroupUpdate {
+	ogu.mutation.SetTargetCompleteID(id)
 	return ogu
 }
 
-// AddTargetComplete adds the "target_complete" edges to the TargetComplete entity.
-func (ogu *OutputGroupUpdate) AddTargetComplete(t ...*TargetComplete) *OutputGroupUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID if the given value is not nil.
+func (ogu *OutputGroupUpdate) SetNillableTargetCompleteID(id *int) *OutputGroupUpdate {
+	if id != nil {
+		ogu = ogu.SetTargetCompleteID(*id)
 	}
-	return ogu.AddTargetCompleteIDs(ids...)
+	return ogu
+}
+
+// SetTargetComplete sets the "target_complete" edge to the TargetComplete entity.
+func (ogu *OutputGroupUpdate) SetTargetComplete(t *TargetComplete) *OutputGroupUpdate {
+	return ogu.SetTargetCompleteID(t.ID)
 }
 
 // AddInlineFileIDs adds the "inline_files" edge to the TestFile entity by IDs.
@@ -124,25 +128,10 @@ func (ogu *OutputGroupUpdate) Mutation() *OutputGroupMutation {
 	return ogu.mutation
 }
 
-// ClearTargetComplete clears all "target_complete" edges to the TargetComplete entity.
+// ClearTargetComplete clears the "target_complete" edge to the TargetComplete entity.
 func (ogu *OutputGroupUpdate) ClearTargetComplete() *OutputGroupUpdate {
 	ogu.mutation.ClearTargetComplete()
 	return ogu
-}
-
-// RemoveTargetCompleteIDs removes the "target_complete" edge to TargetComplete entities by IDs.
-func (ogu *OutputGroupUpdate) RemoveTargetCompleteIDs(ids ...int) *OutputGroupUpdate {
-	ogu.mutation.RemoveTargetCompleteIDs(ids...)
-	return ogu
-}
-
-// RemoveTargetComplete removes "target_complete" edges to TargetComplete entities.
-func (ogu *OutputGroupUpdate) RemoveTargetComplete(t ...*TargetComplete) *OutputGroupUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return ogu.RemoveTargetCompleteIDs(ids...)
 }
 
 // ClearInlineFiles clears all "inline_files" edges to the TestFile entity.
@@ -222,7 +211,7 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if ogu.mutation.TargetCompleteCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   outputgroup.TargetCompleteTable,
 			Columns: []string{outputgroup.TargetCompleteColumn},
@@ -230,28 +219,12 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetcomplete.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ogu.mutation.RemovedTargetCompleteIDs(); len(nodes) > 0 && !ogu.mutation.TargetCompleteCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   outputgroup.TargetCompleteTable,
-			Columns: []string{outputgroup.TargetCompleteColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetcomplete.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := ogu.mutation.TargetCompleteIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   outputgroup.TargetCompleteTable,
 			Columns: []string{outputgroup.TargetCompleteColumn},
@@ -312,7 +285,7 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if ogu.mutation.FileSetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   outputgroup.FileSetsTable,
 			Columns: []string{outputgroup.FileSetsColumn},
@@ -325,7 +298,7 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if nodes := ogu.mutation.FileSetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   outputgroup.FileSetsTable,
 			Columns: []string{outputgroup.FileSetsColumn},
@@ -399,19 +372,23 @@ func (oguo *OutputGroupUpdateOne) ClearIncomplete() *OutputGroupUpdateOne {
 	return oguo
 }
 
-// AddTargetCompleteIDs adds the "target_complete" edge to the TargetComplete entity by IDs.
-func (oguo *OutputGroupUpdateOne) AddTargetCompleteIDs(ids ...int) *OutputGroupUpdateOne {
-	oguo.mutation.AddTargetCompleteIDs(ids...)
+// SetTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID.
+func (oguo *OutputGroupUpdateOne) SetTargetCompleteID(id int) *OutputGroupUpdateOne {
+	oguo.mutation.SetTargetCompleteID(id)
 	return oguo
 }
 
-// AddTargetComplete adds the "target_complete" edges to the TargetComplete entity.
-func (oguo *OutputGroupUpdateOne) AddTargetComplete(t ...*TargetComplete) *OutputGroupUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID if the given value is not nil.
+func (oguo *OutputGroupUpdateOne) SetNillableTargetCompleteID(id *int) *OutputGroupUpdateOne {
+	if id != nil {
+		oguo = oguo.SetTargetCompleteID(*id)
 	}
-	return oguo.AddTargetCompleteIDs(ids...)
+	return oguo
+}
+
+// SetTargetComplete sets the "target_complete" edge to the TargetComplete entity.
+func (oguo *OutputGroupUpdateOne) SetTargetComplete(t *TargetComplete) *OutputGroupUpdateOne {
+	return oguo.SetTargetCompleteID(t.ID)
 }
 
 // AddInlineFileIDs adds the "inline_files" edge to the TestFile entity by IDs.
@@ -453,25 +430,10 @@ func (oguo *OutputGroupUpdateOne) Mutation() *OutputGroupMutation {
 	return oguo.mutation
 }
 
-// ClearTargetComplete clears all "target_complete" edges to the TargetComplete entity.
+// ClearTargetComplete clears the "target_complete" edge to the TargetComplete entity.
 func (oguo *OutputGroupUpdateOne) ClearTargetComplete() *OutputGroupUpdateOne {
 	oguo.mutation.ClearTargetComplete()
 	return oguo
-}
-
-// RemoveTargetCompleteIDs removes the "target_complete" edge to TargetComplete entities by IDs.
-func (oguo *OutputGroupUpdateOne) RemoveTargetCompleteIDs(ids ...int) *OutputGroupUpdateOne {
-	oguo.mutation.RemoveTargetCompleteIDs(ids...)
-	return oguo
-}
-
-// RemoveTargetComplete removes "target_complete" edges to TargetComplete entities.
-func (oguo *OutputGroupUpdateOne) RemoveTargetComplete(t ...*TargetComplete) *OutputGroupUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return oguo.RemoveTargetCompleteIDs(ids...)
 }
 
 // ClearInlineFiles clears all "inline_files" edges to the TestFile entity.
@@ -581,7 +543,7 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 	}
 	if oguo.mutation.TargetCompleteCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   outputgroup.TargetCompleteTable,
 			Columns: []string{outputgroup.TargetCompleteColumn},
@@ -589,28 +551,12 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetcomplete.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := oguo.mutation.RemovedTargetCompleteIDs(); len(nodes) > 0 && !oguo.mutation.TargetCompleteCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   outputgroup.TargetCompleteTable,
-			Columns: []string{outputgroup.TargetCompleteColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetcomplete.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := oguo.mutation.TargetCompleteIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   outputgroup.TargetCompleteTable,
 			Columns: []string{outputgroup.TargetCompleteColumn},
@@ -671,7 +617,7 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 	}
 	if oguo.mutation.FileSetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   outputgroup.FileSetsTable,
 			Columns: []string{outputgroup.FileSetsColumn},
@@ -684,7 +630,7 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 	}
 	if nodes := oguo.mutation.FileSetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   outputgroup.FileSetsTable,
 			Columns: []string{outputgroup.FileSetsColumn},

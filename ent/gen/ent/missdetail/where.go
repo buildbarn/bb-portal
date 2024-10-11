@@ -143,7 +143,7 @@ func HasActionCacheStatistics() predicate.MissDetail {
 	return predicate.MissDetail(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, ActionCacheStatisticsTable, ActionCacheStatisticsPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, ActionCacheStatisticsTable, ActionCacheStatisticsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

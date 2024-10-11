@@ -134,19 +134,23 @@ func (tfu *TestFileUpdate) ClearPrefix() *TestFileUpdate {
 	return tfu
 }
 
-// AddTestResultIDs adds the "test_result" edge to the TestResultBES entity by IDs.
-func (tfu *TestFileUpdate) AddTestResultIDs(ids ...int) *TestFileUpdate {
-	tfu.mutation.AddTestResultIDs(ids...)
+// SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
+func (tfu *TestFileUpdate) SetTestResultID(id int) *TestFileUpdate {
+	tfu.mutation.SetTestResultID(id)
 	return tfu
 }
 
-// AddTestResult adds the "test_result" edges to the TestResultBES entity.
-func (tfu *TestFileUpdate) AddTestResult(t ...*TestResultBES) *TestFileUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
+func (tfu *TestFileUpdate) SetNillableTestResultID(id *int) *TestFileUpdate {
+	if id != nil {
+		tfu = tfu.SetTestResultID(*id)
 	}
-	return tfu.AddTestResultIDs(ids...)
+	return tfu
+}
+
+// SetTestResult sets the "test_result" edge to the TestResultBES entity.
+func (tfu *TestFileUpdate) SetTestResult(t *TestResultBES) *TestFileUpdate {
+	return tfu.SetTestResultID(t.ID)
 }
 
 // Mutation returns the TestFileMutation object of the builder.
@@ -154,25 +158,10 @@ func (tfu *TestFileUpdate) Mutation() *TestFileMutation {
 	return tfu.mutation
 }
 
-// ClearTestResult clears all "test_result" edges to the TestResultBES entity.
+// ClearTestResult clears the "test_result" edge to the TestResultBES entity.
 func (tfu *TestFileUpdate) ClearTestResult() *TestFileUpdate {
 	tfu.mutation.ClearTestResult()
 	return tfu
-}
-
-// RemoveTestResultIDs removes the "test_result" edge to TestResultBES entities by IDs.
-func (tfu *TestFileUpdate) RemoveTestResultIDs(ids ...int) *TestFileUpdate {
-	tfu.mutation.RemoveTestResultIDs(ids...)
-	return tfu
-}
-
-// RemoveTestResult removes "test_result" edges to TestResultBES entities.
-func (tfu *TestFileUpdate) RemoveTestResult(t ...*TestResultBES) *TestFileUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tfu.RemoveTestResultIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -251,39 +240,23 @@ func (tfu *TestFileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if tfu.mutation.TestResultCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   testfile.TestResultTable,
-			Columns: testfile.TestResultPrimaryKey,
+			Columns: []string{testfile.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tfu.mutation.RemovedTestResultIDs(); len(nodes) > 0 && !tfu.mutation.TestResultCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   testfile.TestResultTable,
-			Columns: testfile.TestResultPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tfu.mutation.TestResultIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   testfile.TestResultTable,
-			Columns: testfile.TestResultPrimaryKey,
+			Columns: []string{testfile.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
@@ -419,19 +392,23 @@ func (tfuo *TestFileUpdateOne) ClearPrefix() *TestFileUpdateOne {
 	return tfuo
 }
 
-// AddTestResultIDs adds the "test_result" edge to the TestResultBES entity by IDs.
-func (tfuo *TestFileUpdateOne) AddTestResultIDs(ids ...int) *TestFileUpdateOne {
-	tfuo.mutation.AddTestResultIDs(ids...)
+// SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
+func (tfuo *TestFileUpdateOne) SetTestResultID(id int) *TestFileUpdateOne {
+	tfuo.mutation.SetTestResultID(id)
 	return tfuo
 }
 
-// AddTestResult adds the "test_result" edges to the TestResultBES entity.
-func (tfuo *TestFileUpdateOne) AddTestResult(t ...*TestResultBES) *TestFileUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
+func (tfuo *TestFileUpdateOne) SetNillableTestResultID(id *int) *TestFileUpdateOne {
+	if id != nil {
+		tfuo = tfuo.SetTestResultID(*id)
 	}
-	return tfuo.AddTestResultIDs(ids...)
+	return tfuo
+}
+
+// SetTestResult sets the "test_result" edge to the TestResultBES entity.
+func (tfuo *TestFileUpdateOne) SetTestResult(t *TestResultBES) *TestFileUpdateOne {
+	return tfuo.SetTestResultID(t.ID)
 }
 
 // Mutation returns the TestFileMutation object of the builder.
@@ -439,25 +416,10 @@ func (tfuo *TestFileUpdateOne) Mutation() *TestFileMutation {
 	return tfuo.mutation
 }
 
-// ClearTestResult clears all "test_result" edges to the TestResultBES entity.
+// ClearTestResult clears the "test_result" edge to the TestResultBES entity.
 func (tfuo *TestFileUpdateOne) ClearTestResult() *TestFileUpdateOne {
 	tfuo.mutation.ClearTestResult()
 	return tfuo
-}
-
-// RemoveTestResultIDs removes the "test_result" edge to TestResultBES entities by IDs.
-func (tfuo *TestFileUpdateOne) RemoveTestResultIDs(ids ...int) *TestFileUpdateOne {
-	tfuo.mutation.RemoveTestResultIDs(ids...)
-	return tfuo
-}
-
-// RemoveTestResult removes "test_result" edges to TestResultBES entities.
-func (tfuo *TestFileUpdateOne) RemoveTestResult(t ...*TestResultBES) *TestFileUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tfuo.RemoveTestResultIDs(ids...)
 }
 
 // Where appends a list predicates to the TestFileUpdate builder.
@@ -566,39 +528,23 @@ func (tfuo *TestFileUpdateOne) sqlSave(ctx context.Context) (_node *TestFile, er
 	}
 	if tfuo.mutation.TestResultCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   testfile.TestResultTable,
-			Columns: testfile.TestResultPrimaryKey,
+			Columns: []string{testfile.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tfuo.mutation.RemovedTestResultIDs(); len(nodes) > 0 && !tfuo.mutation.TestResultCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   testfile.TestResultTable,
-			Columns: testfile.TestResultPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tfuo.mutation.TestResultIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   testfile.TestResultTable,
-			Columns: testfile.TestResultPrimaryKey,
+			Columns: []string{testfile.TestResultColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt),

@@ -20,11 +20,13 @@ const (
 	EdgeTimingBreakdown = "timing_breakdown"
 	// Table holds the table name of the timingchild in the database.
 	Table = "timing_childs"
-	// TimingBreakdownTable is the table that holds the timing_breakdown relation/edge. The primary key declared below.
-	TimingBreakdownTable = "timing_breakdown_child"
+	// TimingBreakdownTable is the table that holds the timing_breakdown relation/edge.
+	TimingBreakdownTable = "timing_childs"
 	// TimingBreakdownInverseTable is the table name for the TimingBreakdown entity.
 	// It exists in this package in order to avoid circular dependency with the "timingbreakdown" package.
 	TimingBreakdownInverseTable = "timing_breakdowns"
+	// TimingBreakdownColumn is the table column denoting the timing_breakdown relation/edge.
+	TimingBreakdownColumn = "timing_breakdown_child"
 )
 
 // Columns holds all SQL columns for timingchild fields.
@@ -34,16 +36,21 @@ var Columns = []string{
 	FieldTime,
 }
 
-var (
-	// TimingBreakdownPrimaryKey and TimingBreakdownColumn2 are the table columns denoting the
-	// primary key for the timing_breakdown relation (M2M).
-	TimingBreakdownPrimaryKey = []string{"timing_breakdown_id", "timing_child_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "timing_childs"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"timing_breakdown_child",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -68,23 +75,16 @@ func ByTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTime, opts...).ToFunc()
 }
 
-// ByTimingBreakdownCount orders the results by timing_breakdown count.
-func ByTimingBreakdownCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTimingBreakdownField orders the results by timing_breakdown field.
+func ByTimingBreakdownField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTimingBreakdownStep(), opts...)
-	}
-}
-
-// ByTimingBreakdown orders the results by timing_breakdown terms.
-func ByTimingBreakdown(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTimingBreakdownStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newTimingBreakdownStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newTimingBreakdownStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TimingBreakdownInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, TimingBreakdownTable, TimingBreakdownPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.M2O, true, TimingBreakdownTable, TimingBreakdownColumn),
 	)
 }

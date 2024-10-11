@@ -20,7 +20,8 @@ func (NamedSetOfFiles) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to output group.
 		edge.From("output_group", OutputGroup.Type).
-			Ref("file_sets"),
+			Ref("file_sets").
+			Unique(),
 
 		// Files that belong to this named set of files.
 		edge.To("files", TestFile.Type),

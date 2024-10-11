@@ -29,19 +29,23 @@ func (nsofu *NamedSetOfFilesUpdate) Where(ps ...predicate.NamedSetOfFiles) *Name
 	return nsofu
 }
 
-// AddOutputGroupIDs adds the "output_group" edge to the OutputGroup entity by IDs.
-func (nsofu *NamedSetOfFilesUpdate) AddOutputGroupIDs(ids ...int) *NamedSetOfFilesUpdate {
-	nsofu.mutation.AddOutputGroupIDs(ids...)
+// SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID.
+func (nsofu *NamedSetOfFilesUpdate) SetOutputGroupID(id int) *NamedSetOfFilesUpdate {
+	nsofu.mutation.SetOutputGroupID(id)
 	return nsofu
 }
 
-// AddOutputGroup adds the "output_group" edges to the OutputGroup entity.
-func (nsofu *NamedSetOfFilesUpdate) AddOutputGroup(o ...*OutputGroup) *NamedSetOfFilesUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+// SetNillableOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID if the given value is not nil.
+func (nsofu *NamedSetOfFilesUpdate) SetNillableOutputGroupID(id *int) *NamedSetOfFilesUpdate {
+	if id != nil {
+		nsofu = nsofu.SetOutputGroupID(*id)
 	}
-	return nsofu.AddOutputGroupIDs(ids...)
+	return nsofu
+}
+
+// SetOutputGroup sets the "output_group" edge to the OutputGroup entity.
+func (nsofu *NamedSetOfFilesUpdate) SetOutputGroup(o *OutputGroup) *NamedSetOfFilesUpdate {
+	return nsofu.SetOutputGroupID(o.ID)
 }
 
 // AddFileIDs adds the "files" edge to the TestFile entity by IDs.
@@ -83,25 +87,10 @@ func (nsofu *NamedSetOfFilesUpdate) Mutation() *NamedSetOfFilesMutation {
 	return nsofu.mutation
 }
 
-// ClearOutputGroup clears all "output_group" edges to the OutputGroup entity.
+// ClearOutputGroup clears the "output_group" edge to the OutputGroup entity.
 func (nsofu *NamedSetOfFilesUpdate) ClearOutputGroup() *NamedSetOfFilesUpdate {
 	nsofu.mutation.ClearOutputGroup()
 	return nsofu
-}
-
-// RemoveOutputGroupIDs removes the "output_group" edge to OutputGroup entities by IDs.
-func (nsofu *NamedSetOfFilesUpdate) RemoveOutputGroupIDs(ids ...int) *NamedSetOfFilesUpdate {
-	nsofu.mutation.RemoveOutputGroupIDs(ids...)
-	return nsofu
-}
-
-// RemoveOutputGroup removes "output_group" edges to OutputGroup entities.
-func (nsofu *NamedSetOfFilesUpdate) RemoveOutputGroup(o ...*OutputGroup) *NamedSetOfFilesUpdate {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
-	}
-	return nsofu.RemoveOutputGroupIDs(ids...)
 }
 
 // ClearFiles clears all "files" edges to the TestFile entity.
@@ -169,7 +158,7 @@ func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err err
 	}
 	if nsofu.mutation.OutputGroupCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   namedsetoffiles.OutputGroupTable,
 			Columns: []string{namedsetoffiles.OutputGroupColumn},
@@ -177,28 +166,12 @@ func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err err
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := nsofu.mutation.RemovedOutputGroupIDs(); len(nodes) > 0 && !nsofu.mutation.OutputGroupCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   namedsetoffiles.OutputGroupTable,
-			Columns: []string{namedsetoffiles.OutputGroupColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := nsofu.mutation.OutputGroupIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   namedsetoffiles.OutputGroupTable,
 			Columns: []string{namedsetoffiles.OutputGroupColumn},
@@ -306,19 +279,23 @@ type NamedSetOfFilesUpdateOne struct {
 	mutation *NamedSetOfFilesMutation
 }
 
-// AddOutputGroupIDs adds the "output_group" edge to the OutputGroup entity by IDs.
-func (nsofuo *NamedSetOfFilesUpdateOne) AddOutputGroupIDs(ids ...int) *NamedSetOfFilesUpdateOne {
-	nsofuo.mutation.AddOutputGroupIDs(ids...)
+// SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID.
+func (nsofuo *NamedSetOfFilesUpdateOne) SetOutputGroupID(id int) *NamedSetOfFilesUpdateOne {
+	nsofuo.mutation.SetOutputGroupID(id)
 	return nsofuo
 }
 
-// AddOutputGroup adds the "output_group" edges to the OutputGroup entity.
-func (nsofuo *NamedSetOfFilesUpdateOne) AddOutputGroup(o ...*OutputGroup) *NamedSetOfFilesUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
+// SetNillableOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID if the given value is not nil.
+func (nsofuo *NamedSetOfFilesUpdateOne) SetNillableOutputGroupID(id *int) *NamedSetOfFilesUpdateOne {
+	if id != nil {
+		nsofuo = nsofuo.SetOutputGroupID(*id)
 	}
-	return nsofuo.AddOutputGroupIDs(ids...)
+	return nsofuo
+}
+
+// SetOutputGroup sets the "output_group" edge to the OutputGroup entity.
+func (nsofuo *NamedSetOfFilesUpdateOne) SetOutputGroup(o *OutputGroup) *NamedSetOfFilesUpdateOne {
+	return nsofuo.SetOutputGroupID(o.ID)
 }
 
 // AddFileIDs adds the "files" edge to the TestFile entity by IDs.
@@ -360,25 +337,10 @@ func (nsofuo *NamedSetOfFilesUpdateOne) Mutation() *NamedSetOfFilesMutation {
 	return nsofuo.mutation
 }
 
-// ClearOutputGroup clears all "output_group" edges to the OutputGroup entity.
+// ClearOutputGroup clears the "output_group" edge to the OutputGroup entity.
 func (nsofuo *NamedSetOfFilesUpdateOne) ClearOutputGroup() *NamedSetOfFilesUpdateOne {
 	nsofuo.mutation.ClearOutputGroup()
 	return nsofuo
-}
-
-// RemoveOutputGroupIDs removes the "output_group" edge to OutputGroup entities by IDs.
-func (nsofuo *NamedSetOfFilesUpdateOne) RemoveOutputGroupIDs(ids ...int) *NamedSetOfFilesUpdateOne {
-	nsofuo.mutation.RemoveOutputGroupIDs(ids...)
-	return nsofuo
-}
-
-// RemoveOutputGroup removes "output_group" edges to OutputGroup entities.
-func (nsofuo *NamedSetOfFilesUpdateOne) RemoveOutputGroup(o ...*OutputGroup) *NamedSetOfFilesUpdateOne {
-	ids := make([]int, len(o))
-	for i := range o {
-		ids[i] = o[i].ID
-	}
-	return nsofuo.RemoveOutputGroupIDs(ids...)
 }
 
 // ClearFiles clears all "files" edges to the TestFile entity.
@@ -476,7 +438,7 @@ func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *Nam
 	}
 	if nsofuo.mutation.OutputGroupCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   namedsetoffiles.OutputGroupTable,
 			Columns: []string{namedsetoffiles.OutputGroupColumn},
@@ -484,28 +446,12 @@ func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *Nam
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := nsofuo.mutation.RemovedOutputGroupIDs(); len(nodes) > 0 && !nsofuo.mutation.OutputGroupCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   namedsetoffiles.OutputGroupTable,
-			Columns: []string{namedsetoffiles.OutputGroupColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := nsofuo.mutation.OutputGroupIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   namedsetoffiles.OutputGroupTable,
 			Columns: []string{namedsetoffiles.OutputGroupColumn},

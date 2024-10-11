@@ -38,7 +38,8 @@ func (ActionCacheStatistics) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the associated action summary.
 		edge.From("action_summary", ActionSummary.Type).
-			Ref("action_cache_statistics"),
+			Ref("action_cache_statistics").
+			Unique(),
 
 		// Breakdown of the cache misses based on the reasons behind them.
 		edge.To("miss_details", MissDetail.Type),

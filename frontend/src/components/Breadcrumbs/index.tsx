@@ -52,7 +52,7 @@ const Breadcrumbs: React.FC<Props> = ({ segmentTitles }) => {
 
         // Use the segment as the title to be displayed in the browser
         // Convert to upper case to avoid implementing a title case converter
-        const title = segmentTitles && segmentTitles.length > index ? segmentTitles[index] : segment.toUpperCase();
+        const title = segmentTitles && segmentTitles.length > index ? segmentTitles[index] : decodeURIComponent(segment.toUpperCase());
 
         // Return the path and title for the breadcrumb item
         return { path, title };

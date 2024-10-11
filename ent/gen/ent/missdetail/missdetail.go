@@ -24,11 +24,13 @@ const (
 	EdgeActionCacheStatistics = "action_cache_statistics"
 	// Table holds the table name of the missdetail in the database.
 	Table = "miss_details"
-	// ActionCacheStatisticsTable is the table that holds the action_cache_statistics relation/edge. The primary key declared below.
-	ActionCacheStatisticsTable = "action_cache_statistics_miss_details"
+	// ActionCacheStatisticsTable is the table that holds the action_cache_statistics relation/edge.
+	ActionCacheStatisticsTable = "miss_details"
 	// ActionCacheStatisticsInverseTable is the table name for the ActionCacheStatistics entity.
 	// It exists in this package in order to avoid circular dependency with the "actioncachestatistics" package.
 	ActionCacheStatisticsInverseTable = "action_cache_statistics"
+	// ActionCacheStatisticsColumn is the table column denoting the action_cache_statistics relation/edge.
+	ActionCacheStatisticsColumn = "action_cache_statistics_miss_details"
 )
 
 // Columns holds all SQL columns for missdetail fields.
@@ -38,16 +40,21 @@ var Columns = []string{
 	FieldCount,
 }
 
-var (
-	// ActionCacheStatisticsPrimaryKey and ActionCacheStatisticsColumn2 are the table columns denoting the
-	// primary key for the action_cache_statistics relation (M2M).
-	ActionCacheStatisticsPrimaryKey = []string{"action_cache_statistics_id", "miss_detail_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "miss_details"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"action_cache_statistics_miss_details",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -104,24 +111,17 @@ func ByCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCount, opts...).ToFunc()
 }
 
-// ByActionCacheStatisticsCount orders the results by action_cache_statistics count.
-func ByActionCacheStatisticsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByActionCacheStatisticsField orders the results by action_cache_statistics field.
+func ByActionCacheStatisticsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newActionCacheStatisticsStep(), opts...)
-	}
-}
-
-// ByActionCacheStatistics orders the results by action_cache_statistics terms.
-func ByActionCacheStatistics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newActionCacheStatisticsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newActionCacheStatisticsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newActionCacheStatisticsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ActionCacheStatisticsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, ActionCacheStatisticsTable, ActionCacheStatisticsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.M2O, true, ActionCacheStatisticsTable, ActionCacheStatisticsColumn),
 	)
 }
 

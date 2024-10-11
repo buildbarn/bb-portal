@@ -26,34 +26,44 @@ func (Metrics) Edges() []ent.Edge {
 			Unique(),
 
 		// The action summmary with details about actions executed.
-		edge.To("action_summary", ActionSummary.Type),
+		edge.To("action_summary", ActionSummary.Type).
+			Unique(),
 
 		// Details about memory usage and garbage collections.
-		edge.To("memory_metrics", MemoryMetrics.Type),
+		edge.To("memory_metrics", MemoryMetrics.Type).
+			Unique(),
 
 		// Target metrics.
-		edge.To("target_metrics", TargetMetrics.Type),
+		edge.To("target_metrics", TargetMetrics.Type).
+			Unique(),
 
 		// Package metrics.
-		edge.To("package_metrics", PackageMetrics.Type),
+		edge.To("package_metrics", PackageMetrics.Type).
+			Unique(),
 
 		// Timing metrics.
-		edge.To("timing_metrics", TimingMetrics.Type),
+		edge.To("timing_metrics", TimingMetrics.Type).
+			Unique(),
 
 		// Cumulative metrics.
-		edge.To("cumulative_metrics", CumulativeMetrics.Type),
+		edge.To("cumulative_metrics", CumulativeMetrics.Type).
+			Unique(),
 
 		// Artifact metrics.
-		edge.To("artifact_metrics", ArtifactMetrics.Type),
+		edge.To("artifact_metrics", ArtifactMetrics.Type).
+			Unique(),
 
 		// Network metrics if available.
-		edge.To("network_metrics", NetworkMetrics.Type),
+		edge.To("network_metrics", NetworkMetrics.Type).
+			Unique(),
 
 		// Dynamic execution metrics if available.
-		edge.To("dynamic_execution_metrics", DynamicExecutionMetrics.Type),
+		edge.To("dynamic_execution_metrics", DynamicExecutionMetrics.Type).
+			Unique(),
 
 		// Build graph metrics.
-		edge.To("build_graph_metrics", BuildGraphMetrics.Type),
+		edge.To("build_graph_metrics", BuildGraphMetrics.Type).
+			Unique(),
 	}
 }
 

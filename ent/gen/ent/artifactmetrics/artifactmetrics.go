@@ -24,37 +24,41 @@ const (
 	EdgeTopLevelArtifacts = "top_level_artifacts"
 	// Table holds the table name of the artifactmetrics in the database.
 	Table = "artifact_metrics"
-	// MetricsTable is the table that holds the metrics relation/edge. The primary key declared below.
-	MetricsTable = "metrics_artifact_metrics"
+	// MetricsTable is the table that holds the metrics relation/edge.
+	MetricsTable = "artifact_metrics"
 	// MetricsInverseTable is the table name for the Metrics entity.
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
+	// MetricsColumn is the table column denoting the metrics relation/edge.
+	MetricsColumn = "metrics_artifact_metrics"
 	// SourceArtifactsReadTable is the table that holds the source_artifacts_read relation/edge.
-	SourceArtifactsReadTable = "files_metrics"
+	SourceArtifactsReadTable = "artifact_metrics"
 	// SourceArtifactsReadInverseTable is the table name for the FilesMetric entity.
 	// It exists in this package in order to avoid circular dependency with the "filesmetric" package.
 	SourceArtifactsReadInverseTable = "files_metrics"
 	// SourceArtifactsReadColumn is the table column denoting the source_artifacts_read relation/edge.
 	SourceArtifactsReadColumn = "artifact_metrics_source_artifacts_read"
 	// OutputArtifactsSeenTable is the table that holds the output_artifacts_seen relation/edge.
-	OutputArtifactsSeenTable = "files_metrics"
+	OutputArtifactsSeenTable = "artifact_metrics"
 	// OutputArtifactsSeenInverseTable is the table name for the FilesMetric entity.
 	// It exists in this package in order to avoid circular dependency with the "filesmetric" package.
 	OutputArtifactsSeenInverseTable = "files_metrics"
 	// OutputArtifactsSeenColumn is the table column denoting the output_artifacts_seen relation/edge.
 	OutputArtifactsSeenColumn = "artifact_metrics_output_artifacts_seen"
 	// OutputArtifactsFromActionCacheTable is the table that holds the output_artifacts_from_action_cache relation/edge.
-	OutputArtifactsFromActionCacheTable = "files_metrics"
+	OutputArtifactsFromActionCacheTable = "artifact_metrics"
 	// OutputArtifactsFromActionCacheInverseTable is the table name for the FilesMetric entity.
 	// It exists in this package in order to avoid circular dependency with the "filesmetric" package.
 	OutputArtifactsFromActionCacheInverseTable = "files_metrics"
 	// OutputArtifactsFromActionCacheColumn is the table column denoting the output_artifacts_from_action_cache relation/edge.
 	OutputArtifactsFromActionCacheColumn = "artifact_metrics_output_artifacts_from_action_cache"
-	// TopLevelArtifactsTable is the table that holds the top_level_artifacts relation/edge. The primary key declared below.
-	TopLevelArtifactsTable = "artifact_metrics_top_level_artifacts"
+	// TopLevelArtifactsTable is the table that holds the top_level_artifacts relation/edge.
+	TopLevelArtifactsTable = "files_metrics"
 	// TopLevelArtifactsInverseTable is the table name for the FilesMetric entity.
 	// It exists in this package in order to avoid circular dependency with the "filesmetric" package.
 	TopLevelArtifactsInverseTable = "files_metrics"
+	// TopLevelArtifactsColumn is the table column denoting the top_level_artifacts relation/edge.
+	TopLevelArtifactsColumn = "artifact_metrics_top_level_artifacts"
 )
 
 // Columns holds all SQL columns for artifactmetrics fields.
@@ -62,19 +66,24 @@ var Columns = []string{
 	FieldID,
 }
 
-var (
-	// MetricsPrimaryKey and MetricsColumn2 are the table columns denoting the
-	// primary key for the metrics relation (M2M).
-	MetricsPrimaryKey = []string{"metrics_id", "artifact_metrics_id"}
-	// TopLevelArtifactsPrimaryKey and TopLevelArtifactsColumn2 are the table columns denoting the
-	// primary key for the top_level_artifacts relation (M2M).
-	TopLevelArtifactsPrimaryKey = []string{"artifact_metrics_id", "files_metric_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "artifact_metrics"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"artifact_metrics_source_artifacts_read",
+	"artifact_metrics_output_artifacts_seen",
+	"artifact_metrics_output_artifacts_from_action_cache",
+	"metrics_artifact_metrics",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -89,107 +98,72 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByMetricsCount orders the results by metrics count.
-func ByMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByMetricsField orders the results by metrics field.
+func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newMetricsStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByMetrics orders the results by metrics terms.
-func ByMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// BySourceArtifactsReadField orders the results by source_artifacts_read field.
+func BySourceArtifactsReadField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newSourceArtifactsReadStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// BySourceArtifactsReadCount orders the results by source_artifacts_read count.
-func BySourceArtifactsReadCount(opts ...sql.OrderTermOption) OrderOption {
+// ByOutputArtifactsSeenField orders the results by output_artifacts_seen field.
+func ByOutputArtifactsSeenField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newSourceArtifactsReadStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newOutputArtifactsSeenStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// BySourceArtifactsRead orders the results by source_artifacts_read terms.
-func BySourceArtifactsRead(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByOutputArtifactsFromActionCacheField orders the results by output_artifacts_from_action_cache field.
+func ByOutputArtifactsFromActionCacheField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newSourceArtifactsReadStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newOutputArtifactsFromActionCacheStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByOutputArtifactsSeenCount orders the results by output_artifacts_seen count.
-func ByOutputArtifactsSeenCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTopLevelArtifactsField orders the results by top_level_artifacts field.
+func ByTopLevelArtifactsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newOutputArtifactsSeenStep(), opts...)
-	}
-}
-
-// ByOutputArtifactsSeen orders the results by output_artifacts_seen terms.
-func ByOutputArtifactsSeen(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newOutputArtifactsSeenStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByOutputArtifactsFromActionCacheCount orders the results by output_artifacts_from_action_cache count.
-func ByOutputArtifactsFromActionCacheCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newOutputArtifactsFromActionCacheStep(), opts...)
-	}
-}
-
-// ByOutputArtifactsFromActionCache orders the results by output_artifacts_from_action_cache terms.
-func ByOutputArtifactsFromActionCache(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newOutputArtifactsFromActionCacheStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByTopLevelArtifactsCount orders the results by top_level_artifacts count.
-func ByTopLevelArtifactsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTopLevelArtifactsStep(), opts...)
-	}
-}
-
-// ByTopLevelArtifacts orders the results by top_level_artifacts terms.
-func ByTopLevelArtifacts(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTopLevelArtifactsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newTopLevelArtifactsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, MetricsTable, MetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
 	)
 }
 func newSourceArtifactsReadStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(SourceArtifactsReadInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, SourceArtifactsReadTable, SourceArtifactsReadColumn),
+		sqlgraph.Edge(sqlgraph.M2O, false, SourceArtifactsReadTable, SourceArtifactsReadColumn),
 	)
 }
 func newOutputArtifactsSeenStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(OutputArtifactsSeenInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, OutputArtifactsSeenTable, OutputArtifactsSeenColumn),
+		sqlgraph.Edge(sqlgraph.M2O, false, OutputArtifactsSeenTable, OutputArtifactsSeenColumn),
 	)
 }
 func newOutputArtifactsFromActionCacheStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(OutputArtifactsFromActionCacheInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, OutputArtifactsFromActionCacheTable, OutputArtifactsFromActionCacheColumn),
+		sqlgraph.Edge(sqlgraph.M2O, false, OutputArtifactsFromActionCacheTable, OutputArtifactsFromActionCacheColumn),
 	)
 }
 func newTopLevelArtifactsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TopLevelArtifactsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, TopLevelArtifactsTable, TopLevelArtifactsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, TopLevelArtifactsTable, TopLevelArtifactsColumn),
 	)
 }

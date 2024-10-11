@@ -75,19 +75,23 @@ func (esu *EvaluationStatUpdate) ClearCount() *EvaluationStatUpdate {
 	return esu
 }
 
-// AddBuildGraphMetricIDs adds the "build_graph_metrics" edge to the BuildGraphMetrics entity by IDs.
-func (esu *EvaluationStatUpdate) AddBuildGraphMetricIDs(ids ...int) *EvaluationStatUpdate {
-	esu.mutation.AddBuildGraphMetricIDs(ids...)
+// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
+func (esu *EvaluationStatUpdate) SetBuildGraphMetricsID(id int) *EvaluationStatUpdate {
+	esu.mutation.SetBuildGraphMetricsID(id)
 	return esu
 }
 
-// AddBuildGraphMetrics adds the "build_graph_metrics" edges to the BuildGraphMetrics entity.
-func (esu *EvaluationStatUpdate) AddBuildGraphMetrics(b ...*BuildGraphMetrics) *EvaluationStatUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
+func (esu *EvaluationStatUpdate) SetNillableBuildGraphMetricsID(id *int) *EvaluationStatUpdate {
+	if id != nil {
+		esu = esu.SetBuildGraphMetricsID(*id)
 	}
-	return esu.AddBuildGraphMetricIDs(ids...)
+	return esu
+}
+
+// SetBuildGraphMetrics sets the "build_graph_metrics" edge to the BuildGraphMetrics entity.
+func (esu *EvaluationStatUpdate) SetBuildGraphMetrics(b *BuildGraphMetrics) *EvaluationStatUpdate {
+	return esu.SetBuildGraphMetricsID(b.ID)
 }
 
 // Mutation returns the EvaluationStatMutation object of the builder.
@@ -95,25 +99,10 @@ func (esu *EvaluationStatUpdate) Mutation() *EvaluationStatMutation {
 	return esu.mutation
 }
 
-// ClearBuildGraphMetrics clears all "build_graph_metrics" edges to the BuildGraphMetrics entity.
+// ClearBuildGraphMetrics clears the "build_graph_metrics" edge to the BuildGraphMetrics entity.
 func (esu *EvaluationStatUpdate) ClearBuildGraphMetrics() *EvaluationStatUpdate {
 	esu.mutation.ClearBuildGraphMetrics()
 	return esu
-}
-
-// RemoveBuildGraphMetricIDs removes the "build_graph_metrics" edge to BuildGraphMetrics entities by IDs.
-func (esu *EvaluationStatUpdate) RemoveBuildGraphMetricIDs(ids ...int) *EvaluationStatUpdate {
-	esu.mutation.RemoveBuildGraphMetricIDs(ids...)
-	return esu
-}
-
-// RemoveBuildGraphMetrics removes "build_graph_metrics" edges to BuildGraphMetrics entities.
-func (esu *EvaluationStatUpdate) RemoveBuildGraphMetrics(b ...*BuildGraphMetrics) *EvaluationStatUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return esu.RemoveBuildGraphMetricIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -169,39 +158,23 @@ func (esu *EvaluationStatUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if esu.mutation.BuildGraphMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   evaluationstat.BuildGraphMetricsTable,
-			Columns: evaluationstat.BuildGraphMetricsPrimaryKey,
+			Columns: []string{evaluationstat.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := esu.mutation.RemovedBuildGraphMetricsIDs(); len(nodes) > 0 && !esu.mutation.BuildGraphMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   evaluationstat.BuildGraphMetricsTable,
-			Columns: evaluationstat.BuildGraphMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := esu.mutation.BuildGraphMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   evaluationstat.BuildGraphMetricsTable,
-			Columns: evaluationstat.BuildGraphMetricsPrimaryKey,
+			Columns: []string{evaluationstat.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
@@ -279,19 +252,23 @@ func (esuo *EvaluationStatUpdateOne) ClearCount() *EvaluationStatUpdateOne {
 	return esuo
 }
 
-// AddBuildGraphMetricIDs adds the "build_graph_metrics" edge to the BuildGraphMetrics entity by IDs.
-func (esuo *EvaluationStatUpdateOne) AddBuildGraphMetricIDs(ids ...int) *EvaluationStatUpdateOne {
-	esuo.mutation.AddBuildGraphMetricIDs(ids...)
+// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
+func (esuo *EvaluationStatUpdateOne) SetBuildGraphMetricsID(id int) *EvaluationStatUpdateOne {
+	esuo.mutation.SetBuildGraphMetricsID(id)
 	return esuo
 }
 
-// AddBuildGraphMetrics adds the "build_graph_metrics" edges to the BuildGraphMetrics entity.
-func (esuo *EvaluationStatUpdateOne) AddBuildGraphMetrics(b ...*BuildGraphMetrics) *EvaluationStatUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
+func (esuo *EvaluationStatUpdateOne) SetNillableBuildGraphMetricsID(id *int) *EvaluationStatUpdateOne {
+	if id != nil {
+		esuo = esuo.SetBuildGraphMetricsID(*id)
 	}
-	return esuo.AddBuildGraphMetricIDs(ids...)
+	return esuo
+}
+
+// SetBuildGraphMetrics sets the "build_graph_metrics" edge to the BuildGraphMetrics entity.
+func (esuo *EvaluationStatUpdateOne) SetBuildGraphMetrics(b *BuildGraphMetrics) *EvaluationStatUpdateOne {
+	return esuo.SetBuildGraphMetricsID(b.ID)
 }
 
 // Mutation returns the EvaluationStatMutation object of the builder.
@@ -299,25 +276,10 @@ func (esuo *EvaluationStatUpdateOne) Mutation() *EvaluationStatMutation {
 	return esuo.mutation
 }
 
-// ClearBuildGraphMetrics clears all "build_graph_metrics" edges to the BuildGraphMetrics entity.
+// ClearBuildGraphMetrics clears the "build_graph_metrics" edge to the BuildGraphMetrics entity.
 func (esuo *EvaluationStatUpdateOne) ClearBuildGraphMetrics() *EvaluationStatUpdateOne {
 	esuo.mutation.ClearBuildGraphMetrics()
 	return esuo
-}
-
-// RemoveBuildGraphMetricIDs removes the "build_graph_metrics" edge to BuildGraphMetrics entities by IDs.
-func (esuo *EvaluationStatUpdateOne) RemoveBuildGraphMetricIDs(ids ...int) *EvaluationStatUpdateOne {
-	esuo.mutation.RemoveBuildGraphMetricIDs(ids...)
-	return esuo
-}
-
-// RemoveBuildGraphMetrics removes "build_graph_metrics" edges to BuildGraphMetrics entities.
-func (esuo *EvaluationStatUpdateOne) RemoveBuildGraphMetrics(b ...*BuildGraphMetrics) *EvaluationStatUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return esuo.RemoveBuildGraphMetricIDs(ids...)
 }
 
 // Where appends a list predicates to the EvaluationStatUpdate builder.
@@ -403,39 +365,23 @@ func (esuo *EvaluationStatUpdateOne) sqlSave(ctx context.Context) (_node *Evalua
 	}
 	if esuo.mutation.BuildGraphMetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   evaluationstat.BuildGraphMetricsTable,
-			Columns: evaluationstat.BuildGraphMetricsPrimaryKey,
+			Columns: []string{evaluationstat.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := esuo.mutation.RemovedBuildGraphMetricsIDs(); len(nodes) > 0 && !esuo.mutation.BuildGraphMetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   evaluationstat.BuildGraphMetricsTable,
-			Columns: evaluationstat.BuildGraphMetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := esuo.mutation.BuildGraphMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   evaluationstat.BuildGraphMetricsTable,
-			Columns: evaluationstat.BuildGraphMetricsPrimaryKey,
+			Columns: []string{evaluationstat.BuildGraphMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt),

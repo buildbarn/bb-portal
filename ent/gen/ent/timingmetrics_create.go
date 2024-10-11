@@ -89,19 +89,23 @@ func (tmc *TimingMetricsCreate) SetNillableActionsExecutionStartInMs(i *int64) *
 	return tmc
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (tmc *TimingMetricsCreate) AddMetricIDs(ids ...int) *TimingMetricsCreate {
-	tmc.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (tmc *TimingMetricsCreate) SetMetricsID(id int) *TimingMetricsCreate {
+	tmc.mutation.SetMetricsID(id)
 	return tmc
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (tmc *TimingMetricsCreate) AddMetrics(m ...*Metrics) *TimingMetricsCreate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (tmc *TimingMetricsCreate) SetNillableMetricsID(id *int) *TimingMetricsCreate {
+	if id != nil {
+		tmc = tmc.SetMetricsID(*id)
 	}
-	return tmc.AddMetricIDs(ids...)
+	return tmc
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (tmc *TimingMetricsCreate) SetMetrics(m *Metrics) *TimingMetricsCreate {
+	return tmc.SetMetricsID(m.ID)
 }
 
 // Mutation returns the TimingMetricsMutation object of the builder.
@@ -186,10 +190,10 @@ func (tmc *TimingMetricsCreate) createSpec() (*TimingMetrics, *sqlgraph.CreateSp
 	}
 	if nodes := tmc.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   timingmetrics.MetricsTable,
-			Columns: timingmetrics.MetricsPrimaryKey,
+			Columns: []string{timingmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -198,6 +202,7 @@ func (tmc *TimingMetricsCreate) createSpec() (*TimingMetrics, *sqlgraph.CreateSp
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.metrics_timing_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

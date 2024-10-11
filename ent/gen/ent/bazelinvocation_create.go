@@ -529,10 +529,10 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	}
 	if nodes := bic.mutation.TestCollectionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TestCollectionTable,
-			Columns: bazelinvocation.TestCollectionPrimaryKey,
+			Columns: []string{bazelinvocation.TestCollectionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
@@ -545,10 +545,10 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	}
 	if nodes := bic.mutation.TargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   bazelinvocation.TargetsTable,
-			Columns: bazelinvocation.TargetsPrimaryKey,
+			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),

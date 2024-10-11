@@ -3,10 +3,9 @@ import { Table, Row, Col, Space } from 'antd';
 import type { TableColumnsType } from "antd/lib";
 import { ArtifactMetrics } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
-import {
-    RadiusUprightOutlined
-
-} from "@ant-design/icons";
+import { RadiusUprightOutlined } from "@ant-design/icons";
+import styles from "../../theme/theme.module.css"
+import { record } from "zod";
 
 
 const artifacts_columns: TableColumnsType<ArtifactMetricsTableData> = [
@@ -17,11 +16,15 @@ const artifacts_columns: TableColumnsType<ArtifactMetricsTableData> = [
     {
         title: "Size (bytes)",
         dataIndex: "sizeInBytes",
+        align: "right",
+        render: (_, record) => <span className={styles.numberFormat} >{record.sizeInBytes}</span>,
         sorter: (a, b) => (a.sizeInBytes ?? 0) - (b.sizeInBytes ?? 0),
     },
     {
         title: "Count",
         dataIndex: "count",
+        align: "right",
+        render: (_, record) => <span className={styles.numberFormat} >{record.count}</span>,
         sorter: (a, b) => (a.count ?? 0) - (b.count ?? 0),
     },
 ]
@@ -39,23 +42,23 @@ const ArtifactsDataMetrics: React.FC<{ artifactMetrics: ArtifactMetrics | undefi
     artifacts_data.push(
         {
             name: "Source Artifacts Read",
-            sizeInBytes: artifactMetrics?.sourceArtifactsRead?.at(0)?.sizeInBytes ?? 0,
-            count: artifactMetrics?.sourceArtifactsRead?.at(0)?.count ?? 0
+            sizeInBytes: artifactMetrics?.sourceArtifactsRead?.sizeInBytes ?? 0,
+            count: artifactMetrics?.sourceArtifactsRead?.count ?? 0
         },
         {
             name: "Output Artifacts From Action Cache",
-            sizeInBytes: artifactMetrics?.outputArtifactsFromActionCache?.at(0)?.sizeInBytes ?? 0,
-            count: artifactMetrics?.outputArtifactsFromActionCache?.at(0)?.count ?? 0
+            sizeInBytes: artifactMetrics?.outputArtifactsFromActionCache?.sizeInBytes ?? 0,
+            count: artifactMetrics?.outputArtifactsFromActionCache?.count ?? 0
         },
         {
             name: "Output Artifacts Seen",
-            sizeInBytes: artifactMetrics?.outputArtifactsSeen?.at(0)?.sizeInBytes ?? 0,
-            count: artifactMetrics?.outputArtifactsSeen?.at(0)?.count ?? 0
+            sizeInBytes: artifactMetrics?.outputArtifactsSeen?.sizeInBytes ?? 0,
+            count: artifactMetrics?.outputArtifactsSeen?.count ?? 0
         },
         {
             name: "Top Level Artifacts",
-            sizeInBytes: artifactMetrics?.topLevelArtifacts?.at(0)?.sizeInBytes ?? 0,
-            count: artifactMetrics?.topLevelArtifacts?.at(0)?.count ?? 0
+            sizeInBytes: artifactMetrics?.topLevelArtifacts?.sizeInBytes ?? 0,
+            count: artifactMetrics?.topLevelArtifacts?.count ?? 0
         },
     )
 
@@ -64,7 +67,7 @@ const ArtifactsDataMetrics: React.FC<{ artifactMetrics: ArtifactMetrics | undefi
 
     return (
         <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
-            <PortalCard icon={<RadiusUprightOutlined />} titleBits={actionsTitle}>
+            <PortalCard type="inner" icon={<RadiusUprightOutlined />} titleBits={actionsTitle}>
                 <Row justify="space-around" align="middle">
                     <Col span="18">
                         <Table

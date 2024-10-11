@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -19,14 +18,14 @@ import (
 // TargetConfiguredQuery is the builder for querying TargetConfigured entities.
 type TargetConfiguredQuery struct {
 	config
-	ctx                 *QueryContext
-	order               []targetconfigured.OrderOption
-	inters              []Interceptor
-	predicates          []predicate.TargetConfigured
-	withTargetPair      *TargetPairQuery
-	modifiers           []func(*sql.Selector)
-	loadTotal           []func(context.Context, []*TargetConfigured) error
-	withNamedTargetPair map[string]*TargetPairQuery
+	ctx            *QueryContext
+	order          []targetconfigured.OrderOption
+	inters         []Interceptor
+	predicates     []predicate.TargetConfigured
+	withTargetPair *TargetPairQuery
+	withFKs        bool
+	modifiers      []func(*sql.Selector)
+	loadTotal      []func(context.Context, []*TargetConfigured) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,7 +76,7 @@ func (tcq *TargetConfiguredQuery) QueryTargetPair() *TargetPairQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(targetconfigured.Table, targetconfigured.FieldID, selector),
 			sqlgraph.To(targetpair.Table, targetpair.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, targetconfigured.TargetPairTable, targetconfigured.TargetPairColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, targetconfigured.TargetPairTable, targetconfigured.TargetPairColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tcq.driver.Dialect(), step)
 		return fromU, nil
@@ -372,11 +371,18 @@ func (tcq *TargetConfiguredQuery) prepareQuery(ctx context.Context) error {
 func (tcq *TargetConfiguredQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TargetConfigured, error) {
 	var (
 		nodes       = []*TargetConfigured{}
+		withFKs     = tcq.withFKs
 		_spec       = tcq.querySpec()
 		loadedTypes = [1]bool{
 			tcq.withTargetPair != nil,
 		}
 	)
+	if tcq.withTargetPair != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, targetconfigured.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TargetConfigured).scanValues(nil, columns)
 	}
@@ -399,16 +405,8 @@ func (tcq *TargetConfiguredQuery) sqlAll(ctx context.Context, hooks ...queryHook
 		return nodes, nil
 	}
 	if query := tcq.withTargetPair; query != nil {
-		if err := tcq.loadTargetPair(ctx, query, nodes,
-			func(n *TargetConfigured) { n.Edges.TargetPair = []*TargetPair{} },
-			func(n *TargetConfigured, e *TargetPair) { n.Edges.TargetPair = append(n.Edges.TargetPair, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range tcq.withNamedTargetPair {
-		if err := tcq.loadTargetPair(ctx, query, nodes,
-			func(n *TargetConfigured) { n.appendNamedTargetPair(name) },
-			func(n *TargetConfigured, e *TargetPair) { n.appendNamedTargetPair(name, e) }); err != nil {
+		if err := tcq.loadTargetPair(ctx, query, nodes, nil,
+			func(n *TargetConfigured, e *TargetPair) { n.Edges.TargetPair = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -421,33 +419,34 @@ func (tcq *TargetConfiguredQuery) sqlAll(ctx context.Context, hooks ...queryHook
 }
 
 func (tcq *TargetConfiguredQuery) loadTargetPair(ctx context.Context, query *TargetPairQuery, nodes []*TargetConfigured, init func(*TargetConfigured), assign func(*TargetConfigured, *TargetPair)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*TargetConfigured)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*TargetConfigured)
 	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
+		if nodes[i].target_pair_configuration == nil {
+			continue
 		}
+		fk := *nodes[i].target_pair_configuration
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.withFKs = true
-	query.Where(predicate.TargetPair(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(targetconfigured.TargetPairColumn), fks...))
-	}))
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(targetpair.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.target_pair_configuration
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "target_pair_configuration" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "target_pair_configuration" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "target_pair_configuration" returned %v`, n.ID)
 		}
-		assign(node, n)
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
 	}
 	return nil
 }
@@ -534,20 +533,6 @@ func (tcq *TargetConfiguredQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedTargetPair tells the query-builder to eager-load the nodes that are connected to the "target_pair"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (tcq *TargetConfiguredQuery) WithNamedTargetPair(name string, opts ...func(*TargetPairQuery)) *TargetConfiguredQuery {
-	query := (&TargetPairClient{config: tcq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if tcq.withNamedTargetPair == nil {
-		tcq.withNamedTargetPair = make(map[string]*TargetPairQuery)
-	}
-	tcq.withNamedTargetPair[name] = query
-	return tcq
 }
 
 // TargetConfiguredGroupBy is the group-by builder for TargetConfigured entities.

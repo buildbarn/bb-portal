@@ -37,21 +37,27 @@ const (
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
 	MetricsColumn = "metrics_action_summary"
-	// ActionDataTable is the table that holds the action_data relation/edge. The primary key declared below.
-	ActionDataTable = "action_summary_action_data"
+	// ActionDataTable is the table that holds the action_data relation/edge.
+	ActionDataTable = "action_data"
 	// ActionDataInverseTable is the table name for the ActionData entity.
 	// It exists in this package in order to avoid circular dependency with the "actiondata" package.
 	ActionDataInverseTable = "action_data"
-	// RunnerCountTable is the table that holds the runner_count relation/edge. The primary key declared below.
-	RunnerCountTable = "action_summary_runner_count"
+	// ActionDataColumn is the table column denoting the action_data relation/edge.
+	ActionDataColumn = "action_summary_action_data"
+	// RunnerCountTable is the table that holds the runner_count relation/edge.
+	RunnerCountTable = "runner_counts"
 	// RunnerCountInverseTable is the table name for the RunnerCount entity.
 	// It exists in this package in order to avoid circular dependency with the "runnercount" package.
 	RunnerCountInverseTable = "runner_counts"
-	// ActionCacheStatisticsTable is the table that holds the action_cache_statistics relation/edge. The primary key declared below.
-	ActionCacheStatisticsTable = "action_summary_action_cache_statistics"
+	// RunnerCountColumn is the table column denoting the runner_count relation/edge.
+	RunnerCountColumn = "action_summary_runner_count"
+	// ActionCacheStatisticsTable is the table that holds the action_cache_statistics relation/edge.
+	ActionCacheStatisticsTable = "action_cache_statistics"
 	// ActionCacheStatisticsInverseTable is the table name for the ActionCacheStatistics entity.
 	// It exists in this package in order to avoid circular dependency with the "actioncachestatistics" package.
 	ActionCacheStatisticsInverseTable = "action_cache_statistics"
+	// ActionCacheStatisticsColumn is the table column denoting the action_cache_statistics relation/edge.
+	ActionCacheStatisticsColumn = "action_summary_action_cache_statistics"
 )
 
 // Columns holds all SQL columns for actionsummary fields.
@@ -68,18 +74,6 @@ var Columns = []string{
 var ForeignKeys = []string{
 	"metrics_action_summary",
 }
-
-var (
-	// ActionDataPrimaryKey and ActionDataColumn2 are the table columns denoting the
-	// primary key for the action_data relation (M2M).
-	ActionDataPrimaryKey = []string{"action_summary_id", "action_data_id"}
-	// RunnerCountPrimaryKey and RunnerCountColumn2 are the table columns denoting the
-	// primary key for the runner_count relation (M2M).
-	RunnerCountPrimaryKey = []string{"action_summary_id", "runner_count_id"}
-	// ActionCacheStatisticsPrimaryKey and ActionCacheStatisticsColumn2 are the table columns denoting the
-	// primary key for the action_cache_statistics relation (M2M).
-	ActionCacheStatisticsPrimaryKey = []string{"action_summary_id", "action_cache_statistics_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -159,44 +153,37 @@ func ByRunnerCount(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByActionCacheStatisticsCount orders the results by action_cache_statistics count.
-func ByActionCacheStatisticsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByActionCacheStatisticsField orders the results by action_cache_statistics field.
+func ByActionCacheStatisticsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newActionCacheStatisticsStep(), opts...)
-	}
-}
-
-// ByActionCacheStatistics orders the results by action_cache_statistics terms.
-func ByActionCacheStatistics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newActionCacheStatisticsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newActionCacheStatisticsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, MetricsTable, MetricsColumn),
+		sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
 	)
 }
 func newActionDataStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ActionDataInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, ActionDataTable, ActionDataPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, ActionDataTable, ActionDataColumn),
 	)
 }
 func newRunnerCountStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(RunnerCountInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, RunnerCountTable, RunnerCountPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, RunnerCountTable, RunnerCountColumn),
 	)
 }
 func newActionCacheStatisticsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ActionCacheStatisticsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, ActionCacheStatisticsTable, ActionCacheStatisticsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, ActionCacheStatisticsTable, ActionCacheStatisticsColumn),
 	)
 }

@@ -32,7 +32,8 @@ func (RunnerCount) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the action summary.
 		edge.From("action_summary", ActionSummary.Type).
-			Ref("runner_count"),
+			Ref("runner_count").
+			Unique(),
 	}
 }
 

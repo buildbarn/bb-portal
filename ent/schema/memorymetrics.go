@@ -33,7 +33,8 @@ func (MemoryMetrics) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the memory metrics object
 		edge.From("metrics", Metrics.Type).
-			Ref("memory_metrics"),
+			Ref("memory_metrics").
+			Unique(),
 
 		// Metrics about garbage collection
 		edge.To("garbage_metrics", GarbageMetrics.Type),

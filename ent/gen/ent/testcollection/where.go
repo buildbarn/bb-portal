@@ -3,6 +3,8 @@
 package testcollection
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -66,6 +68,11 @@ func CachedLocally(v bool) predicate.TestCollection {
 // CachedRemotely applies equality check predicate on the "cached_remotely" field. It's identical to CachedRemotelyEQ.
 func CachedRemotely(v bool) predicate.TestCollection {
 	return predicate.TestCollection(sql.FieldEQ(FieldCachedRemotely, v))
+}
+
+// FirstSeen applies equality check predicate on the "first_seen" field. It's identical to FirstSeenEQ.
+func FirstSeen(v time.Time) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldEQ(FieldFirstSeen, v))
 }
 
 // DurationMs applies equality check predicate on the "duration_ms" field. It's identical to DurationMsEQ.
@@ -293,6 +300,56 @@ func CachedRemotelyNotNil() predicate.TestCollection {
 	return predicate.TestCollection(sql.FieldNotNull(FieldCachedRemotely))
 }
 
+// FirstSeenEQ applies the EQ predicate on the "first_seen" field.
+func FirstSeenEQ(v time.Time) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldEQ(FieldFirstSeen, v))
+}
+
+// FirstSeenNEQ applies the NEQ predicate on the "first_seen" field.
+func FirstSeenNEQ(v time.Time) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldNEQ(FieldFirstSeen, v))
+}
+
+// FirstSeenIn applies the In predicate on the "first_seen" field.
+func FirstSeenIn(vs ...time.Time) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldIn(FieldFirstSeen, vs...))
+}
+
+// FirstSeenNotIn applies the NotIn predicate on the "first_seen" field.
+func FirstSeenNotIn(vs ...time.Time) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldNotIn(FieldFirstSeen, vs...))
+}
+
+// FirstSeenGT applies the GT predicate on the "first_seen" field.
+func FirstSeenGT(v time.Time) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldGT(FieldFirstSeen, v))
+}
+
+// FirstSeenGTE applies the GTE predicate on the "first_seen" field.
+func FirstSeenGTE(v time.Time) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldGTE(FieldFirstSeen, v))
+}
+
+// FirstSeenLT applies the LT predicate on the "first_seen" field.
+func FirstSeenLT(v time.Time) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldLT(FieldFirstSeen, v))
+}
+
+// FirstSeenLTE applies the LTE predicate on the "first_seen" field.
+func FirstSeenLTE(v time.Time) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldLTE(FieldFirstSeen, v))
+}
+
+// FirstSeenIsNil applies the IsNil predicate on the "first_seen" field.
+func FirstSeenIsNil() predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldIsNull(FieldFirstSeen))
+}
+
+// FirstSeenNotNil applies the NotNil predicate on the "first_seen" field.
+func FirstSeenNotNil() predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldNotNull(FieldFirstSeen))
+}
+
 // DurationMsEQ applies the EQ predicate on the "duration_ms" field.
 func DurationMsEQ(v int64) predicate.TestCollection {
 	return predicate.TestCollection(sql.FieldEQ(FieldDurationMs, v))
@@ -348,7 +405,7 @@ func HasBazelInvocation() predicate.TestCollection {
 	return predicate.TestCollection(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, BazelInvocationTable, BazelInvocationPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, BazelInvocationTable, BazelInvocationColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -371,7 +428,7 @@ func HasTestSummary() predicate.TestCollection {
 	return predicate.TestCollection(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, TestSummaryTable, TestSummaryColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, TestSummaryTable, TestSummaryColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

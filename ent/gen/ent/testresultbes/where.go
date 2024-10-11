@@ -546,7 +546,7 @@ func HasTestActionOutput() predicate.TestResultBES {
 	return predicate.TestResultBES(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, TestActionOutputTable, TestActionOutputPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, TestActionOutputTable, TestActionOutputColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -569,7 +569,7 @@ func HasExecutionInfo() predicate.TestResultBES {
 	return predicate.TestResultBES(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, ExecutionInfoTable, ExecutionInfoColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, ExecutionInfoTable, ExecutionInfoColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

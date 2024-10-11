@@ -44,44 +44,48 @@ const (
 	EdgeEvaluatedValues = "evaluated_values"
 	// Table holds the table name of the buildgraphmetrics in the database.
 	Table = "build_graph_metrics"
-	// MetricsTable is the table that holds the metrics relation/edge. The primary key declared below.
-	MetricsTable = "metrics_build_graph_metrics"
+	// MetricsTable is the table that holds the metrics relation/edge.
+	MetricsTable = "build_graph_metrics"
 	// MetricsInverseTable is the table name for the Metrics entity.
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
+	// MetricsColumn is the table column denoting the metrics relation/edge.
+	MetricsColumn = "metrics_build_graph_metrics"
 	// DirtiedValuesTable is the table that holds the dirtied_values relation/edge.
-	DirtiedValuesTable = "evaluation_stats"
+	DirtiedValuesTable = "build_graph_metrics"
 	// DirtiedValuesInverseTable is the table name for the EvaluationStat entity.
 	// It exists in this package in order to avoid circular dependency with the "evaluationstat" package.
 	DirtiedValuesInverseTable = "evaluation_stats"
 	// DirtiedValuesColumn is the table column denoting the dirtied_values relation/edge.
 	DirtiedValuesColumn = "build_graph_metrics_dirtied_values"
 	// ChangedValuesTable is the table that holds the changed_values relation/edge.
-	ChangedValuesTable = "evaluation_stats"
+	ChangedValuesTable = "build_graph_metrics"
 	// ChangedValuesInverseTable is the table name for the EvaluationStat entity.
 	// It exists in this package in order to avoid circular dependency with the "evaluationstat" package.
 	ChangedValuesInverseTable = "evaluation_stats"
 	// ChangedValuesColumn is the table column denoting the changed_values relation/edge.
 	ChangedValuesColumn = "build_graph_metrics_changed_values"
 	// BuiltValuesTable is the table that holds the built_values relation/edge.
-	BuiltValuesTable = "evaluation_stats"
+	BuiltValuesTable = "build_graph_metrics"
 	// BuiltValuesInverseTable is the table name for the EvaluationStat entity.
 	// It exists in this package in order to avoid circular dependency with the "evaluationstat" package.
 	BuiltValuesInverseTable = "evaluation_stats"
 	// BuiltValuesColumn is the table column denoting the built_values relation/edge.
 	BuiltValuesColumn = "build_graph_metrics_built_values"
 	// CleanedValuesTable is the table that holds the cleaned_values relation/edge.
-	CleanedValuesTable = "evaluation_stats"
+	CleanedValuesTable = "build_graph_metrics"
 	// CleanedValuesInverseTable is the table name for the EvaluationStat entity.
 	// It exists in this package in order to avoid circular dependency with the "evaluationstat" package.
 	CleanedValuesInverseTable = "evaluation_stats"
 	// CleanedValuesColumn is the table column denoting the cleaned_values relation/edge.
 	CleanedValuesColumn = "build_graph_metrics_cleaned_values"
-	// EvaluatedValuesTable is the table that holds the evaluated_values relation/edge. The primary key declared below.
-	EvaluatedValuesTable = "build_graph_metrics_evaluated_values"
+	// EvaluatedValuesTable is the table that holds the evaluated_values relation/edge.
+	EvaluatedValuesTable = "evaluation_stats"
 	// EvaluatedValuesInverseTable is the table name for the EvaluationStat entity.
 	// It exists in this package in order to avoid circular dependency with the "evaluationstat" package.
 	EvaluatedValuesInverseTable = "evaluation_stats"
+	// EvaluatedValuesColumn is the table column denoting the evaluated_values relation/edge.
+	EvaluatedValuesColumn = "build_graph_metrics_evaluated_values"
 )
 
 // Columns holds all SQL columns for buildgraphmetrics fields.
@@ -98,19 +102,25 @@ var Columns = []string{
 	FieldPostInvocationSkyframeNodeCount,
 }
 
-var (
-	// MetricsPrimaryKey and MetricsColumn2 are the table columns denoting the
-	// primary key for the metrics relation (M2M).
-	MetricsPrimaryKey = []string{"metrics_id", "build_graph_metrics_id"}
-	// EvaluatedValuesPrimaryKey and EvaluatedValuesColumn2 are the table columns denoting the
-	// primary key for the evaluated_values relation (M2M).
-	EvaluatedValuesPrimaryKey = []string{"build_graph_metrics_id", "evaluation_stat_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "build_graph_metrics"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"build_graph_metrics_dirtied_values",
+	"build_graph_metrics_changed_values",
+	"build_graph_metrics_built_values",
+	"build_graph_metrics_cleaned_values",
+	"metrics_build_graph_metrics",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -170,128 +180,86 @@ func ByPostInvocationSkyframeNodeCount(opts ...sql.OrderTermOption) OrderOption 
 	return sql.OrderByField(FieldPostInvocationSkyframeNodeCount, opts...).ToFunc()
 }
 
-// ByMetricsCount orders the results by metrics count.
-func ByMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByMetricsField orders the results by metrics field.
+func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newMetricsStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByMetrics orders the results by metrics terms.
-func ByMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByDirtiedValuesField orders the results by dirtied_values field.
+func ByDirtiedValuesField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newDirtiedValuesStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByDirtiedValuesCount orders the results by dirtied_values count.
-func ByDirtiedValuesCount(opts ...sql.OrderTermOption) OrderOption {
+// ByChangedValuesField orders the results by changed_values field.
+func ByChangedValuesField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newDirtiedValuesStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newChangedValuesStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByDirtiedValues orders the results by dirtied_values terms.
-func ByDirtiedValues(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByBuiltValuesField orders the results by built_values field.
+func ByBuiltValuesField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newDirtiedValuesStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newBuiltValuesStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByChangedValuesCount orders the results by changed_values count.
-func ByChangedValuesCount(opts ...sql.OrderTermOption) OrderOption {
+// ByCleanedValuesField orders the results by cleaned_values field.
+func ByCleanedValuesField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newChangedValuesStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newCleanedValuesStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByChangedValues orders the results by changed_values terms.
-func ByChangedValues(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByEvaluatedValuesField orders the results by evaluated_values field.
+func ByEvaluatedValuesField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newChangedValuesStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByBuiltValuesCount orders the results by built_values count.
-func ByBuiltValuesCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newBuiltValuesStep(), opts...)
-	}
-}
-
-// ByBuiltValues orders the results by built_values terms.
-func ByBuiltValues(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBuiltValuesStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByCleanedValuesCount orders the results by cleaned_values count.
-func ByCleanedValuesCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newCleanedValuesStep(), opts...)
-	}
-}
-
-// ByCleanedValues orders the results by cleaned_values terms.
-func ByCleanedValues(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newCleanedValuesStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByEvaluatedValuesCount orders the results by evaluated_values count.
-func ByEvaluatedValuesCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newEvaluatedValuesStep(), opts...)
-	}
-}
-
-// ByEvaluatedValues orders the results by evaluated_values terms.
-func ByEvaluatedValues(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newEvaluatedValuesStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newEvaluatedValuesStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, MetricsTable, MetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
 	)
 }
 func newDirtiedValuesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DirtiedValuesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, DirtiedValuesTable, DirtiedValuesColumn),
+		sqlgraph.Edge(sqlgraph.M2O, false, DirtiedValuesTable, DirtiedValuesColumn),
 	)
 }
 func newChangedValuesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ChangedValuesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, ChangedValuesTable, ChangedValuesColumn),
+		sqlgraph.Edge(sqlgraph.M2O, false, ChangedValuesTable, ChangedValuesColumn),
 	)
 }
 func newBuiltValuesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(BuiltValuesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, BuiltValuesTable, BuiltValuesColumn),
+		sqlgraph.Edge(sqlgraph.M2O, false, BuiltValuesTable, BuiltValuesColumn),
 	)
 }
 func newCleanedValuesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(CleanedValuesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, CleanedValuesTable, CleanedValuesColumn),
+		sqlgraph.Edge(sqlgraph.M2O, false, CleanedValuesTable, CleanedValuesColumn),
 	)
 }
 func newEvaluatedValuesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(EvaluatedValuesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, EvaluatedValuesTable, EvaluatedValuesPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, false, EvaluatedValuesTable, EvaluatedValuesColumn),
 	)
 }

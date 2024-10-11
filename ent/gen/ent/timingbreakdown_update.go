@@ -69,19 +69,23 @@ func (tbu *TimingBreakdownUpdate) ClearTime() *TimingBreakdownUpdate {
 	return tbu
 }
 
-// AddExecutionInfoIDs adds the "execution_info" edge to the ExectionInfo entity by IDs.
-func (tbu *TimingBreakdownUpdate) AddExecutionInfoIDs(ids ...int) *TimingBreakdownUpdate {
-	tbu.mutation.AddExecutionInfoIDs(ids...)
+// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
+func (tbu *TimingBreakdownUpdate) SetExecutionInfoID(id int) *TimingBreakdownUpdate {
+	tbu.mutation.SetExecutionInfoID(id)
 	return tbu
 }
 
-// AddExecutionInfo adds the "execution_info" edges to the ExectionInfo entity.
-func (tbu *TimingBreakdownUpdate) AddExecutionInfo(e ...*ExectionInfo) *TimingBreakdownUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
+func (tbu *TimingBreakdownUpdate) SetNillableExecutionInfoID(id *int) *TimingBreakdownUpdate {
+	if id != nil {
+		tbu = tbu.SetExecutionInfoID(*id)
 	}
-	return tbu.AddExecutionInfoIDs(ids...)
+	return tbu
+}
+
+// SetExecutionInfo sets the "execution_info" edge to the ExectionInfo entity.
+func (tbu *TimingBreakdownUpdate) SetExecutionInfo(e *ExectionInfo) *TimingBreakdownUpdate {
+	return tbu.SetExecutionInfoID(e.ID)
 }
 
 // AddChildIDs adds the "child" edge to the TimingChild entity by IDs.
@@ -104,25 +108,10 @@ func (tbu *TimingBreakdownUpdate) Mutation() *TimingBreakdownMutation {
 	return tbu.mutation
 }
 
-// ClearExecutionInfo clears all "execution_info" edges to the ExectionInfo entity.
+// ClearExecutionInfo clears the "execution_info" edge to the ExectionInfo entity.
 func (tbu *TimingBreakdownUpdate) ClearExecutionInfo() *TimingBreakdownUpdate {
 	tbu.mutation.ClearExecutionInfo()
 	return tbu
-}
-
-// RemoveExecutionInfoIDs removes the "execution_info" edge to ExectionInfo entities by IDs.
-func (tbu *TimingBreakdownUpdate) RemoveExecutionInfoIDs(ids ...int) *TimingBreakdownUpdate {
-	tbu.mutation.RemoveExecutionInfoIDs(ids...)
-	return tbu
-}
-
-// RemoveExecutionInfo removes "execution_info" edges to ExectionInfo entities.
-func (tbu *TimingBreakdownUpdate) RemoveExecutionInfo(e ...*ExectionInfo) *TimingBreakdownUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return tbu.RemoveExecutionInfoIDs(ids...)
 }
 
 // ClearChild clears all "child" edges to the TimingChild entity.
@@ -196,7 +185,7 @@ func (tbu *TimingBreakdownUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if tbu.mutation.ExecutionInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   timingbreakdown.ExecutionInfoTable,
 			Columns: []string{timingbreakdown.ExecutionInfoColumn},
@@ -204,28 +193,12 @@ func (tbu *TimingBreakdownUpdate) sqlSave(ctx context.Context) (n int, err error
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tbu.mutation.RemovedExecutionInfoIDs(); len(nodes) > 0 && !tbu.mutation.ExecutionInfoCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   timingbreakdown.ExecutionInfoTable,
-			Columns: []string{timingbreakdown.ExecutionInfoColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tbu.mutation.ExecutionInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   timingbreakdown.ExecutionInfoTable,
 			Columns: []string{timingbreakdown.ExecutionInfoColumn},
@@ -241,10 +214,10 @@ func (tbu *TimingBreakdownUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if tbu.mutation.ChildCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   timingbreakdown.ChildTable,
-			Columns: timingbreakdown.ChildPrimaryKey,
+			Columns: []string{timingbreakdown.ChildColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt),
@@ -254,10 +227,10 @@ func (tbu *TimingBreakdownUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if nodes := tbu.mutation.RemovedChildIDs(); len(nodes) > 0 && !tbu.mutation.ChildCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   timingbreakdown.ChildTable,
-			Columns: timingbreakdown.ChildPrimaryKey,
+			Columns: []string{timingbreakdown.ChildColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt),
@@ -270,10 +243,10 @@ func (tbu *TimingBreakdownUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if nodes := tbu.mutation.ChildIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   timingbreakdown.ChildTable,
-			Columns: timingbreakdown.ChildPrimaryKey,
+			Columns: []string{timingbreakdown.ChildColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt),
@@ -344,19 +317,23 @@ func (tbuo *TimingBreakdownUpdateOne) ClearTime() *TimingBreakdownUpdateOne {
 	return tbuo
 }
 
-// AddExecutionInfoIDs adds the "execution_info" edge to the ExectionInfo entity by IDs.
-func (tbuo *TimingBreakdownUpdateOne) AddExecutionInfoIDs(ids ...int) *TimingBreakdownUpdateOne {
-	tbuo.mutation.AddExecutionInfoIDs(ids...)
+// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
+func (tbuo *TimingBreakdownUpdateOne) SetExecutionInfoID(id int) *TimingBreakdownUpdateOne {
+	tbuo.mutation.SetExecutionInfoID(id)
 	return tbuo
 }
 
-// AddExecutionInfo adds the "execution_info" edges to the ExectionInfo entity.
-func (tbuo *TimingBreakdownUpdateOne) AddExecutionInfo(e ...*ExectionInfo) *TimingBreakdownUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
+func (tbuo *TimingBreakdownUpdateOne) SetNillableExecutionInfoID(id *int) *TimingBreakdownUpdateOne {
+	if id != nil {
+		tbuo = tbuo.SetExecutionInfoID(*id)
 	}
-	return tbuo.AddExecutionInfoIDs(ids...)
+	return tbuo
+}
+
+// SetExecutionInfo sets the "execution_info" edge to the ExectionInfo entity.
+func (tbuo *TimingBreakdownUpdateOne) SetExecutionInfo(e *ExectionInfo) *TimingBreakdownUpdateOne {
+	return tbuo.SetExecutionInfoID(e.ID)
 }
 
 // AddChildIDs adds the "child" edge to the TimingChild entity by IDs.
@@ -379,25 +356,10 @@ func (tbuo *TimingBreakdownUpdateOne) Mutation() *TimingBreakdownMutation {
 	return tbuo.mutation
 }
 
-// ClearExecutionInfo clears all "execution_info" edges to the ExectionInfo entity.
+// ClearExecutionInfo clears the "execution_info" edge to the ExectionInfo entity.
 func (tbuo *TimingBreakdownUpdateOne) ClearExecutionInfo() *TimingBreakdownUpdateOne {
 	tbuo.mutation.ClearExecutionInfo()
 	return tbuo
-}
-
-// RemoveExecutionInfoIDs removes the "execution_info" edge to ExectionInfo entities by IDs.
-func (tbuo *TimingBreakdownUpdateOne) RemoveExecutionInfoIDs(ids ...int) *TimingBreakdownUpdateOne {
-	tbuo.mutation.RemoveExecutionInfoIDs(ids...)
-	return tbuo
-}
-
-// RemoveExecutionInfo removes "execution_info" edges to ExectionInfo entities.
-func (tbuo *TimingBreakdownUpdateOne) RemoveExecutionInfo(e ...*ExectionInfo) *TimingBreakdownUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return tbuo.RemoveExecutionInfoIDs(ids...)
 }
 
 // ClearChild clears all "child" edges to the TimingChild entity.
@@ -501,7 +463,7 @@ func (tbuo *TimingBreakdownUpdateOne) sqlSave(ctx context.Context) (_node *Timin
 	}
 	if tbuo.mutation.ExecutionInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   timingbreakdown.ExecutionInfoTable,
 			Columns: []string{timingbreakdown.ExecutionInfoColumn},
@@ -509,28 +471,12 @@ func (tbuo *TimingBreakdownUpdateOne) sqlSave(ctx context.Context) (_node *Timin
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tbuo.mutation.RemovedExecutionInfoIDs(); len(nodes) > 0 && !tbuo.mutation.ExecutionInfoCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   timingbreakdown.ExecutionInfoTable,
-			Columns: []string{timingbreakdown.ExecutionInfoColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tbuo.mutation.ExecutionInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   timingbreakdown.ExecutionInfoTable,
 			Columns: []string{timingbreakdown.ExecutionInfoColumn},
@@ -546,10 +492,10 @@ func (tbuo *TimingBreakdownUpdateOne) sqlSave(ctx context.Context) (_node *Timin
 	}
 	if tbuo.mutation.ChildCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   timingbreakdown.ChildTable,
-			Columns: timingbreakdown.ChildPrimaryKey,
+			Columns: []string{timingbreakdown.ChildColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt),
@@ -559,10 +505,10 @@ func (tbuo *TimingBreakdownUpdateOne) sqlSave(ctx context.Context) (_node *Timin
 	}
 	if nodes := tbuo.mutation.RemovedChildIDs(); len(nodes) > 0 && !tbuo.mutation.ChildCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   timingbreakdown.ChildTable,
-			Columns: timingbreakdown.ChildPrimaryKey,
+			Columns: []string{timingbreakdown.ChildColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt),
@@ -575,10 +521,10 @@ func (tbuo *TimingBreakdownUpdateOne) sqlSave(ctx context.Context) (_node *Timin
 	}
 	if nodes := tbuo.mutation.ChildIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   timingbreakdown.ChildTable,
-			Columns: timingbreakdown.ChildPrimaryKey,
+			Columns: []string{timingbreakdown.ChildColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt),

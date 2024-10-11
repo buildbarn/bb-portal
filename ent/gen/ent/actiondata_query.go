@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -19,14 +18,14 @@ import (
 // ActionDataQuery is the builder for querying ActionData entities.
 type ActionDataQuery struct {
 	config
-	ctx                    *QueryContext
-	order                  []actiondata.OrderOption
-	inters                 []Interceptor
-	predicates             []predicate.ActionData
-	withActionSummary      *ActionSummaryQuery
-	modifiers              []func(*sql.Selector)
-	loadTotal              []func(context.Context, []*ActionData) error
-	withNamedActionSummary map[string]*ActionSummaryQuery
+	ctx               *QueryContext
+	order             []actiondata.OrderOption
+	inters            []Interceptor
+	predicates        []predicate.ActionData
+	withActionSummary *ActionSummaryQuery
+	withFKs           bool
+	modifiers         []func(*sql.Selector)
+	loadTotal         []func(context.Context, []*ActionData) error
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,7 +76,7 @@ func (adq *ActionDataQuery) QueryActionSummary() *ActionSummaryQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(actiondata.Table, actiondata.FieldID, selector),
 			sqlgraph.To(actionsummary.Table, actionsummary.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, actiondata.ActionSummaryTable, actiondata.ActionSummaryPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, actiondata.ActionSummaryTable, actiondata.ActionSummaryColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(adq.driver.Dialect(), step)
 		return fromU, nil
@@ -372,11 +371,18 @@ func (adq *ActionDataQuery) prepareQuery(ctx context.Context) error {
 func (adq *ActionDataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ActionData, error) {
 	var (
 		nodes       = []*ActionData{}
+		withFKs     = adq.withFKs
 		_spec       = adq.querySpec()
 		loadedTypes = [1]bool{
 			adq.withActionSummary != nil,
 		}
 	)
+	if adq.withActionSummary != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, actiondata.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ActionData).scanValues(nil, columns)
 	}
@@ -399,16 +405,8 @@ func (adq *ActionDataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		return nodes, nil
 	}
 	if query := adq.withActionSummary; query != nil {
-		if err := adq.loadActionSummary(ctx, query, nodes,
-			func(n *ActionData) { n.Edges.ActionSummary = []*ActionSummary{} },
-			func(n *ActionData, e *ActionSummary) { n.Edges.ActionSummary = append(n.Edges.ActionSummary, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range adq.withNamedActionSummary {
-		if err := adq.loadActionSummary(ctx, query, nodes,
-			func(n *ActionData) { n.appendNamedActionSummary(name) },
-			func(n *ActionData, e *ActionSummary) { n.appendNamedActionSummary(name, e) }); err != nil {
+		if err := adq.loadActionSummary(ctx, query, nodes, nil,
+			func(n *ActionData, e *ActionSummary) { n.Edges.ActionSummary = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -421,62 +419,33 @@ func (adq *ActionDataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 }
 
 func (adq *ActionDataQuery) loadActionSummary(ctx context.Context, query *ActionSummaryQuery, nodes []*ActionData, init func(*ActionData), assign func(*ActionData, *ActionSummary)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*ActionData)
-	nids := make(map[int]map[*ActionData]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*ActionData)
+	for i := range nodes {
+		if nodes[i].action_summary_action_data == nil {
+			continue
 		}
+		fk := *nodes[i].action_summary_action_data
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(actiondata.ActionSummaryTable)
-		s.Join(joinT).On(s.C(actionsummary.FieldID), joinT.C(actiondata.ActionSummaryPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(actiondata.ActionSummaryPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(actiondata.ActionSummaryPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(ids) == 0 {
+		return nil
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*ActionData]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*ActionSummary](ctx, query, qr, query.inters)
+	query.Where(actionsummary.IDIn(ids...))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "action_summary" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "action_summary_action_data" returned %v`, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
+		for i := range nodes {
+			assign(nodes[i], n)
 		}
 	}
 	return nil
@@ -564,20 +533,6 @@ func (adq *ActionDataQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
-}
-
-// WithNamedActionSummary tells the query-builder to eager-load the nodes that are connected to the "action_summary"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (adq *ActionDataQuery) WithNamedActionSummary(name string, opts ...func(*ActionSummaryQuery)) *ActionDataQuery {
-	query := (&ActionSummaryClient{config: adq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if adq.withNamedActionSummary == nil {
-		adq.withNamedActionSummary = make(map[string]*ActionSummaryQuery)
-	}
-	adq.withNamedActionSummary[name] = query
-	return adq
 }
 
 // ActionDataGroupBy is the group-by builder for ActionData entities.

@@ -20,11 +20,13 @@ const (
 	EdgeBuildGraphMetrics = "build_graph_metrics"
 	// Table holds the table name of the evaluationstat in the database.
 	Table = "evaluation_stats"
-	// BuildGraphMetricsTable is the table that holds the build_graph_metrics relation/edge. The primary key declared below.
-	BuildGraphMetricsTable = "build_graph_metrics_evaluated_values"
+	// BuildGraphMetricsTable is the table that holds the build_graph_metrics relation/edge.
+	BuildGraphMetricsTable = "evaluation_stats"
 	// BuildGraphMetricsInverseTable is the table name for the BuildGraphMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "buildgraphmetrics" package.
 	BuildGraphMetricsInverseTable = "build_graph_metrics"
+	// BuildGraphMetricsColumn is the table column denoting the build_graph_metrics relation/edge.
+	BuildGraphMetricsColumn = "build_graph_metrics_evaluated_values"
 )
 
 // Columns holds all SQL columns for evaluationstat fields.
@@ -37,17 +39,8 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "evaluation_stats"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"build_graph_metrics_dirtied_values",
-	"build_graph_metrics_changed_values",
-	"build_graph_metrics_built_values",
-	"build_graph_metrics_cleaned_values",
+	"build_graph_metrics_evaluated_values",
 }
-
-var (
-	// BuildGraphMetricsPrimaryKey and BuildGraphMetricsColumn2 are the table columns denoting the
-	// primary key for the build_graph_metrics relation (M2M).
-	BuildGraphMetricsPrimaryKey = []string{"build_graph_metrics_id", "evaluation_stat_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -82,23 +75,16 @@ func ByCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCount, opts...).ToFunc()
 }
 
-// ByBuildGraphMetricsCount orders the results by build_graph_metrics count.
-func ByBuildGraphMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByBuildGraphMetricsField orders the results by build_graph_metrics field.
+func ByBuildGraphMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newBuildGraphMetricsStep(), opts...)
-	}
-}
-
-// ByBuildGraphMetrics orders the results by build_graph_metrics terms.
-func ByBuildGraphMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBuildGraphMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newBuildGraphMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newBuildGraphMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(BuildGraphMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, BuildGraphMetricsTable, BuildGraphMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, true, BuildGraphMetricsTable, BuildGraphMetricsColumn),
 	)
 }

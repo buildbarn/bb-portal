@@ -20,19 +20,23 @@ type DynamicExecutionMetricsCreate struct {
 	hooks    []Hook
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (demc *DynamicExecutionMetricsCreate) AddMetricIDs(ids ...int) *DynamicExecutionMetricsCreate {
-	demc.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (demc *DynamicExecutionMetricsCreate) SetMetricsID(id int) *DynamicExecutionMetricsCreate {
+	demc.mutation.SetMetricsID(id)
 	return demc
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (demc *DynamicExecutionMetricsCreate) AddMetrics(m ...*Metrics) *DynamicExecutionMetricsCreate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (demc *DynamicExecutionMetricsCreate) SetNillableMetricsID(id *int) *DynamicExecutionMetricsCreate {
+	if id != nil {
+		demc = demc.SetMetricsID(*id)
 	}
-	return demc.AddMetricIDs(ids...)
+	return demc
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (demc *DynamicExecutionMetricsCreate) SetMetrics(m *Metrics) *DynamicExecutionMetricsCreate {
+	return demc.SetMetricsID(m.ID)
 }
 
 // AddRaceStatisticIDs adds the "race_statistics" edge to the RaceStatistics entity by IDs.
@@ -112,10 +116,10 @@ func (demc *DynamicExecutionMetricsCreate) createSpec() (*DynamicExecutionMetric
 	)
 	if nodes := demc.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   dynamicexecutionmetrics.MetricsTable,
-			Columns: dynamicexecutionmetrics.MetricsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -124,14 +128,15 @@ func (demc *DynamicExecutionMetricsCreate) createSpec() (*DynamicExecutionMetric
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.metrics_dynamic_execution_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := demc.mutation.RaceStatisticsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
 			Table:   dynamicexecutionmetrics.RaceStatisticsTable,
-			Columns: dynamicexecutionmetrics.RaceStatisticsPrimaryKey,
+			Columns: []string{dynamicexecutionmetrics.RaceStatisticsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(racestatistics.FieldID, field.TypeInt),

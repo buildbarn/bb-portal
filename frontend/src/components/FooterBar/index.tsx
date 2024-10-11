@@ -11,18 +11,29 @@ interface Props {
   linkItemClassName?: string;
 }
 
+
 const FooterBar: React.FC<Props> = ({ className, linkItemClassName }) => {
   const linkClassName = linkItemClassName ? linkItemClassName : styles.footerLink;
   return (
     <Layout.Footer className={`${className} ${styles.footerBar}`}>
-      <Popover content="#buildbarn @ buildteamworld.slack.com" className={linkClassName}>
-        <Link href="https://bit.ly/2SG1amT" target="_blank">
-          <Space>
-            <SlackOutlined />
-            Buildbarn Slack Channel
-          </Space>
-        </Link>
-      </Popover>
+      <Space size="large">
+        <Popover content={"#" + process.env.NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME} className={linkClassName}>
+          <Link href={process.env.NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_URL ?? ""} target="_blank" hidden={process.env.NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME == undefined}>
+            <Space>
+              <SlackOutlined />
+              {process.env.NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME}
+            </Space>
+          </Link>
+        </Popover>
+        <Popover content="#buildteam" className={linkClassName}>
+          <Link href="https://buildteamworld.slack.com/archives/CD6HZC750" target="_blank">
+            <Space>
+              <SlackOutlined />
+              Buildteam
+            </Space>
+          </Link>
+        </Popover>
+      </Space>
     </Layout.Footer>
   );
 };

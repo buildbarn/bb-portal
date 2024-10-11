@@ -285,19 +285,23 @@ func (tsu *TestSummaryUpdate) ClearLabel() *TestSummaryUpdate {
 	return tsu
 }
 
-// AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by IDs.
-func (tsu *TestSummaryUpdate) AddTestCollectionIDs(ids ...int) *TestSummaryUpdate {
-	tsu.mutation.AddTestCollectionIDs(ids...)
+// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
+func (tsu *TestSummaryUpdate) SetTestCollectionID(id int) *TestSummaryUpdate {
+	tsu.mutation.SetTestCollectionID(id)
 	return tsu
 }
 
-// AddTestCollection adds the "test_collection" edges to the TestCollection entity.
-func (tsu *TestSummaryUpdate) AddTestCollection(t ...*TestCollection) *TestSummaryUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
+func (tsu *TestSummaryUpdate) SetNillableTestCollectionID(id *int) *TestSummaryUpdate {
+	if id != nil {
+		tsu = tsu.SetTestCollectionID(*id)
 	}
-	return tsu.AddTestCollectionIDs(ids...)
+	return tsu
+}
+
+// SetTestCollection sets the "test_collection" edge to the TestCollection entity.
+func (tsu *TestSummaryUpdate) SetTestCollection(t *TestCollection) *TestSummaryUpdate {
+	return tsu.SetTestCollectionID(t.ID)
 }
 
 // AddPassedIDs adds the "passed" edge to the TestFile entity by IDs.
@@ -335,25 +339,10 @@ func (tsu *TestSummaryUpdate) Mutation() *TestSummaryMutation {
 	return tsu.mutation
 }
 
-// ClearTestCollection clears all "test_collection" edges to the TestCollection entity.
+// ClearTestCollection clears the "test_collection" edge to the TestCollection entity.
 func (tsu *TestSummaryUpdate) ClearTestCollection() *TestSummaryUpdate {
 	tsu.mutation.ClearTestCollection()
 	return tsu
-}
-
-// RemoveTestCollectionIDs removes the "test_collection" edge to TestCollection entities by IDs.
-func (tsu *TestSummaryUpdate) RemoveTestCollectionIDs(ids ...int) *TestSummaryUpdate {
-	tsu.mutation.RemoveTestCollectionIDs(ids...)
-	return tsu
-}
-
-// RemoveTestCollection removes "test_collection" edges to TestCollection entities.
-func (tsu *TestSummaryUpdate) RemoveTestCollection(t ...*TestCollection) *TestSummaryUpdate {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tsu.RemoveTestCollectionIDs(ids...)
 }
 
 // ClearPassed clears all "passed" edges to the TestFile entity.
@@ -533,7 +522,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if tsu.mutation.TestCollectionCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   testsummary.TestCollectionTable,
 			Columns: []string{testsummary.TestCollectionColumn},
@@ -541,28 +530,12 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tsu.mutation.RemovedTestCollectionIDs(); len(nodes) > 0 && !tsu.mutation.TestCollectionCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   testsummary.TestCollectionTable,
-			Columns: []string{testsummary.TestCollectionColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tsu.mutation.TestCollectionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   testsummary.TestCollectionTable,
 			Columns: []string{testsummary.TestCollectionColumn},
@@ -942,19 +915,23 @@ func (tsuo *TestSummaryUpdateOne) ClearLabel() *TestSummaryUpdateOne {
 	return tsuo
 }
 
-// AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by IDs.
-func (tsuo *TestSummaryUpdateOne) AddTestCollectionIDs(ids ...int) *TestSummaryUpdateOne {
-	tsuo.mutation.AddTestCollectionIDs(ids...)
+// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
+func (tsuo *TestSummaryUpdateOne) SetTestCollectionID(id int) *TestSummaryUpdateOne {
+	tsuo.mutation.SetTestCollectionID(id)
 	return tsuo
 }
 
-// AddTestCollection adds the "test_collection" edges to the TestCollection entity.
-func (tsuo *TestSummaryUpdateOne) AddTestCollection(t ...*TestCollection) *TestSummaryUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
+// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
+func (tsuo *TestSummaryUpdateOne) SetNillableTestCollectionID(id *int) *TestSummaryUpdateOne {
+	if id != nil {
+		tsuo = tsuo.SetTestCollectionID(*id)
 	}
-	return tsuo.AddTestCollectionIDs(ids...)
+	return tsuo
+}
+
+// SetTestCollection sets the "test_collection" edge to the TestCollection entity.
+func (tsuo *TestSummaryUpdateOne) SetTestCollection(t *TestCollection) *TestSummaryUpdateOne {
+	return tsuo.SetTestCollectionID(t.ID)
 }
 
 // AddPassedIDs adds the "passed" edge to the TestFile entity by IDs.
@@ -992,25 +969,10 @@ func (tsuo *TestSummaryUpdateOne) Mutation() *TestSummaryMutation {
 	return tsuo.mutation
 }
 
-// ClearTestCollection clears all "test_collection" edges to the TestCollection entity.
+// ClearTestCollection clears the "test_collection" edge to the TestCollection entity.
 func (tsuo *TestSummaryUpdateOne) ClearTestCollection() *TestSummaryUpdateOne {
 	tsuo.mutation.ClearTestCollection()
 	return tsuo
-}
-
-// RemoveTestCollectionIDs removes the "test_collection" edge to TestCollection entities by IDs.
-func (tsuo *TestSummaryUpdateOne) RemoveTestCollectionIDs(ids ...int) *TestSummaryUpdateOne {
-	tsuo.mutation.RemoveTestCollectionIDs(ids...)
-	return tsuo
-}
-
-// RemoveTestCollection removes "test_collection" edges to TestCollection entities.
-func (tsuo *TestSummaryUpdateOne) RemoveTestCollection(t ...*TestCollection) *TestSummaryUpdateOne {
-	ids := make([]int, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tsuo.RemoveTestCollectionIDs(ids...)
 }
 
 // ClearPassed clears all "passed" edges to the TestFile entity.
@@ -1220,7 +1182,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 	}
 	if tsuo.mutation.TestCollectionCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   testsummary.TestCollectionTable,
 			Columns: []string{testsummary.TestCollectionColumn},
@@ -1228,28 +1190,12 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tsuo.mutation.RemovedTestCollectionIDs(); len(nodes) > 0 && !tsuo.mutation.TestCollectionCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   testsummary.TestCollectionTable,
-			Columns: []string{testsummary.TestCollectionColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tsuo.mutation.TestCollectionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   testsummary.TestCollectionTable,
 			Columns: []string{testsummary.TestCollectionColumn},

@@ -123,8 +123,7 @@ type ActionCacheStatisticsMutation struct {
 	misses                *int32
 	addmisses             *int32
 	clearedFields         map[string]struct{}
-	action_summary        map[int]struct{}
-	removedaction_summary map[int]struct{}
+	action_summary        *int
 	clearedaction_summary bool
 	miss_details          map[int]struct{}
 	removedmiss_details   map[int]struct{}
@@ -582,14 +581,9 @@ func (m *ActionCacheStatisticsMutation) ResetMisses() {
 	delete(m.clearedFields, actioncachestatistics.FieldMisses)
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by ids.
-func (m *ActionCacheStatisticsMutation) AddActionSummaryIDs(ids ...int) {
-	if m.action_summary == nil {
-		m.action_summary = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.action_summary[ids[i]] = struct{}{}
-	}
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by id.
+func (m *ActionCacheStatisticsMutation) SetActionSummaryID(id int) {
+	m.action_summary = &id
 }
 
 // ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
@@ -602,29 +596,20 @@ func (m *ActionCacheStatisticsMutation) ActionSummaryCleared() bool {
 	return m.clearedaction_summary
 }
 
-// RemoveActionSummaryIDs removes the "action_summary" edge to the ActionSummary entity by IDs.
-func (m *ActionCacheStatisticsMutation) RemoveActionSummaryIDs(ids ...int) {
-	if m.removedaction_summary == nil {
-		m.removedaction_summary = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.action_summary, ids[i])
-		m.removedaction_summary[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedActionSummary returns the removed IDs of the "action_summary" edge to the ActionSummary entity.
-func (m *ActionCacheStatisticsMutation) RemovedActionSummaryIDs() (ids []int) {
-	for id := range m.removedaction_summary {
-		ids = append(ids, id)
+// ActionSummaryID returns the "action_summary" edge ID in the mutation.
+func (m *ActionCacheStatisticsMutation) ActionSummaryID() (id int, exists bool) {
+	if m.action_summary != nil {
+		return *m.action_summary, true
 	}
 	return
 }
 
 // ActionSummaryIDs returns the "action_summary" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ActionSummaryID instead. It exists only for internal usage by the builders.
 func (m *ActionCacheStatisticsMutation) ActionSummaryIDs() (ids []int) {
-	for id := range m.action_summary {
-		ids = append(ids, id)
+	if id := m.action_summary; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -633,7 +618,6 @@ func (m *ActionCacheStatisticsMutation) ActionSummaryIDs() (ids []int) {
 func (m *ActionCacheStatisticsMutation) ResetActionSummary() {
 	m.action_summary = nil
 	m.clearedaction_summary = false
-	m.removedaction_summary = nil
 }
 
 // AddMissDetailIDs adds the "miss_details" edge to the MissDetail entity by ids.
@@ -1002,11 +986,9 @@ func (m *ActionCacheStatisticsMutation) AddedEdges() []string {
 func (m *ActionCacheStatisticsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case actioncachestatistics.EdgeActionSummary:
-		ids := make([]ent.Value, 0, len(m.action_summary))
-		for id := range m.action_summary {
-			ids = append(ids, id)
+		if id := m.action_summary; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case actioncachestatistics.EdgeMissDetails:
 		ids := make([]ent.Value, 0, len(m.miss_details))
 		for id := range m.miss_details {
@@ -1020,9 +1002,6 @@ func (m *ActionCacheStatisticsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ActionCacheStatisticsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.removedaction_summary != nil {
-		edges = append(edges, actioncachestatistics.EdgeActionSummary)
-	}
 	if m.removedmiss_details != nil {
 		edges = append(edges, actioncachestatistics.EdgeMissDetails)
 	}
@@ -1033,12 +1012,6 @@ func (m *ActionCacheStatisticsMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *ActionCacheStatisticsMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case actioncachestatistics.EdgeActionSummary:
-		ids := make([]ent.Value, 0, len(m.removedaction_summary))
-		for id := range m.removedaction_summary {
-			ids = append(ids, id)
-		}
-		return ids
 	case actioncachestatistics.EdgeMissDetails:
 		ids := make([]ent.Value, 0, len(m.removedmiss_details))
 		for id := range m.removedmiss_details {
@@ -1077,6 +1050,9 @@ func (m *ActionCacheStatisticsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *ActionCacheStatisticsMutation) ClearEdge(name string) error {
 	switch name {
+	case actioncachestatistics.EdgeActionSummary:
+		m.ClearActionSummary()
+		return nil
 	}
 	return fmt.Errorf("unknown ActionCacheStatistics unique edge %s", name)
 }
@@ -1115,8 +1091,7 @@ type ActionDataMutation struct {
 	user_time             *int64
 	adduser_time          *int64
 	clearedFields         map[string]struct{}
-	action_summary        map[int]struct{}
-	removedaction_summary map[int]struct{}
+	action_summary        *int
 	clearedaction_summary bool
 	done                  bool
 	oldValue              func(context.Context) (*ActionData, error)
@@ -1690,14 +1665,9 @@ func (m *ActionDataMutation) ResetUserTime() {
 	delete(m.clearedFields, actiondata.FieldUserTime)
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by ids.
-func (m *ActionDataMutation) AddActionSummaryIDs(ids ...int) {
-	if m.action_summary == nil {
-		m.action_summary = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.action_summary[ids[i]] = struct{}{}
-	}
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by id.
+func (m *ActionDataMutation) SetActionSummaryID(id int) {
+	m.action_summary = &id
 }
 
 // ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
@@ -1710,29 +1680,20 @@ func (m *ActionDataMutation) ActionSummaryCleared() bool {
 	return m.clearedaction_summary
 }
 
-// RemoveActionSummaryIDs removes the "action_summary" edge to the ActionSummary entity by IDs.
-func (m *ActionDataMutation) RemoveActionSummaryIDs(ids ...int) {
-	if m.removedaction_summary == nil {
-		m.removedaction_summary = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.action_summary, ids[i])
-		m.removedaction_summary[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedActionSummary returns the removed IDs of the "action_summary" edge to the ActionSummary entity.
-func (m *ActionDataMutation) RemovedActionSummaryIDs() (ids []int) {
-	for id := range m.removedaction_summary {
-		ids = append(ids, id)
+// ActionSummaryID returns the "action_summary" edge ID in the mutation.
+func (m *ActionDataMutation) ActionSummaryID() (id int, exists bool) {
+	if m.action_summary != nil {
+		return *m.action_summary, true
 	}
 	return
 }
 
 // ActionSummaryIDs returns the "action_summary" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ActionSummaryID instead. It exists only for internal usage by the builders.
 func (m *ActionDataMutation) ActionSummaryIDs() (ids []int) {
-	for id := range m.action_summary {
-		ids = append(ids, id)
+	if id := m.action_summary; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -1741,7 +1702,6 @@ func (m *ActionDataMutation) ActionSummaryIDs() (ids []int) {
 func (m *ActionDataMutation) ResetActionSummary() {
 	m.action_summary = nil
 	m.clearedaction_summary = false
-	m.removedaction_summary = nil
 }
 
 // Where appends a list predicates to the ActionDataMutation builder.
@@ -2111,11 +2071,9 @@ func (m *ActionDataMutation) AddedEdges() []string {
 func (m *ActionDataMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case actiondata.EdgeActionSummary:
-		ids := make([]ent.Value, 0, len(m.action_summary))
-		for id := range m.action_summary {
-			ids = append(ids, id)
+		if id := m.action_summary; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -2123,23 +2081,12 @@ func (m *ActionDataMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ActionDataMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedaction_summary != nil {
-		edges = append(edges, actiondata.EdgeActionSummary)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ActionDataMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case actiondata.EdgeActionSummary:
-		ids := make([]ent.Value, 0, len(m.removedaction_summary))
-		for id := range m.removedaction_summary {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -2166,6 +2113,9 @@ func (m *ActionDataMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *ActionDataMutation) ClearEdge(name string) error {
 	switch name {
+	case actiondata.EdgeActionSummary:
+		m.ClearActionSummary()
+		return nil
 	}
 	return fmt.Errorf("unknown ActionData unique edge %s", name)
 }
@@ -2204,8 +2154,7 @@ type ActionSummaryMutation struct {
 	runner_count                             map[int]struct{}
 	removedrunner_count                      map[int]struct{}
 	clearedrunner_count                      bool
-	action_cache_statistics                  map[int]struct{}
-	removedaction_cache_statistics           map[int]struct{}
+	action_cache_statistics                  *int
 	clearedaction_cache_statistics           bool
 	done                                     bool
 	oldValue                                 func(context.Context) (*ActionSummary, error)
@@ -2737,14 +2686,9 @@ func (m *ActionSummaryMutation) ResetRunnerCount() {
 	m.removedrunner_count = nil
 }
 
-// AddActionCacheStatisticIDs adds the "action_cache_statistics" edge to the ActionCacheStatistics entity by ids.
-func (m *ActionSummaryMutation) AddActionCacheStatisticIDs(ids ...int) {
-	if m.action_cache_statistics == nil {
-		m.action_cache_statistics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.action_cache_statistics[ids[i]] = struct{}{}
-	}
+// SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by id.
+func (m *ActionSummaryMutation) SetActionCacheStatisticsID(id int) {
+	m.action_cache_statistics = &id
 }
 
 // ClearActionCacheStatistics clears the "action_cache_statistics" edge to the ActionCacheStatistics entity.
@@ -2757,29 +2701,20 @@ func (m *ActionSummaryMutation) ActionCacheStatisticsCleared() bool {
 	return m.clearedaction_cache_statistics
 }
 
-// RemoveActionCacheStatisticIDs removes the "action_cache_statistics" edge to the ActionCacheStatistics entity by IDs.
-func (m *ActionSummaryMutation) RemoveActionCacheStatisticIDs(ids ...int) {
-	if m.removedaction_cache_statistics == nil {
-		m.removedaction_cache_statistics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.action_cache_statistics, ids[i])
-		m.removedaction_cache_statistics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedActionCacheStatistics returns the removed IDs of the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (m *ActionSummaryMutation) RemovedActionCacheStatisticsIDs() (ids []int) {
-	for id := range m.removedaction_cache_statistics {
-		ids = append(ids, id)
+// ActionCacheStatisticsID returns the "action_cache_statistics" edge ID in the mutation.
+func (m *ActionSummaryMutation) ActionCacheStatisticsID() (id int, exists bool) {
+	if m.action_cache_statistics != nil {
+		return *m.action_cache_statistics, true
 	}
 	return
 }
 
 // ActionCacheStatisticsIDs returns the "action_cache_statistics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ActionCacheStatisticsID instead. It exists only for internal usage by the builders.
 func (m *ActionSummaryMutation) ActionCacheStatisticsIDs() (ids []int) {
-	for id := range m.action_cache_statistics {
-		ids = append(ids, id)
+	if id := m.action_cache_statistics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -2788,7 +2723,6 @@ func (m *ActionSummaryMutation) ActionCacheStatisticsIDs() (ids []int) {
 func (m *ActionSummaryMutation) ResetActionCacheStatistics() {
 	m.action_cache_statistics = nil
 	m.clearedaction_cache_statistics = false
-	m.removedaction_cache_statistics = nil
 }
 
 // Where appends a list predicates to the ActionSummaryMutation builder.
@@ -3090,11 +3024,9 @@ func (m *ActionSummaryMutation) AddedIDs(name string) []ent.Value {
 		}
 		return ids
 	case actionsummary.EdgeActionCacheStatistics:
-		ids := make([]ent.Value, 0, len(m.action_cache_statistics))
-		for id := range m.action_cache_statistics {
-			ids = append(ids, id)
+		if id := m.action_cache_statistics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -3107,9 +3039,6 @@ func (m *ActionSummaryMutation) RemovedEdges() []string {
 	}
 	if m.removedrunner_count != nil {
 		edges = append(edges, actionsummary.EdgeRunnerCount)
-	}
-	if m.removedaction_cache_statistics != nil {
-		edges = append(edges, actionsummary.EdgeActionCacheStatistics)
 	}
 	return edges
 }
@@ -3127,12 +3056,6 @@ func (m *ActionSummaryMutation) RemovedIDs(name string) []ent.Value {
 	case actionsummary.EdgeRunnerCount:
 		ids := make([]ent.Value, 0, len(m.removedrunner_count))
 		for id := range m.removedrunner_count {
-			ids = append(ids, id)
-		}
-		return ids
-	case actionsummary.EdgeActionCacheStatistics:
-		ids := make([]ent.Value, 0, len(m.removedaction_cache_statistics))
-		for id := range m.removedaction_cache_statistics {
 			ids = append(ids, id)
 		}
 		return ids
@@ -3181,6 +3104,9 @@ func (m *ActionSummaryMutation) ClearEdge(name string) error {
 	case actionsummary.EdgeMetrics:
 		m.ClearMetrics()
 		return nil
+	case actionsummary.EdgeActionCacheStatistics:
+		m.ClearActionCacheStatistics()
+		return nil
 	}
 	return fmt.Errorf("unknown ActionSummary unique edge %s", name)
 }
@@ -3212,20 +3138,15 @@ type ArtifactMetricsMutation struct {
 	typ                                       string
 	id                                        *int
 	clearedFields                             map[string]struct{}
-	metrics                                   map[int]struct{}
-	removedmetrics                            map[int]struct{}
+	metrics                                   *int
 	clearedmetrics                            bool
-	source_artifacts_read                     map[int]struct{}
-	removedsource_artifacts_read              map[int]struct{}
+	source_artifacts_read                     *int
 	clearedsource_artifacts_read              bool
-	output_artifacts_seen                     map[int]struct{}
-	removedoutput_artifacts_seen              map[int]struct{}
+	output_artifacts_seen                     *int
 	clearedoutput_artifacts_seen              bool
-	output_artifacts_from_action_cache        map[int]struct{}
-	removedoutput_artifacts_from_action_cache map[int]struct{}
+	output_artifacts_from_action_cache        *int
 	clearedoutput_artifacts_from_action_cache bool
-	top_level_artifacts                       map[int]struct{}
-	removedtop_level_artifacts                map[int]struct{}
+	top_level_artifacts                       *int
 	clearedtop_level_artifacts                bool
 	done                                      bool
 	oldValue                                  func(context.Context) (*ArtifactMetrics, error)
@@ -3330,14 +3251,9 @@ func (m *ArtifactMetricsMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by ids.
-func (m *ArtifactMetricsMutation) AddMetricIDs(ids ...int) {
-	if m.metrics == nil {
-		m.metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.metrics[ids[i]] = struct{}{}
-	}
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *ArtifactMetricsMutation) SetMetricsID(id int) {
+	m.metrics = &id
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -3350,29 +3266,20 @@ func (m *ArtifactMetricsMutation) MetricsCleared() bool {
 	return m.clearedmetrics
 }
 
-// RemoveMetricIDs removes the "metrics" edge to the Metrics entity by IDs.
-func (m *ArtifactMetricsMutation) RemoveMetricIDs(ids ...int) {
-	if m.removedmetrics == nil {
-		m.removedmetrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.metrics, ids[i])
-		m.removedmetrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMetrics returns the removed IDs of the "metrics" edge to the Metrics entity.
-func (m *ArtifactMetricsMutation) RemovedMetricsIDs() (ids []int) {
-	for id := range m.removedmetrics {
-		ids = append(ids, id)
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *ArtifactMetricsMutation) MetricsID() (id int, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
 	}
 	return
 }
 
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
 func (m *ArtifactMetricsMutation) MetricsIDs() (ids []int) {
-	for id := range m.metrics {
-		ids = append(ids, id)
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -3381,17 +3288,11 @@ func (m *ArtifactMetricsMutation) MetricsIDs() (ids []int) {
 func (m *ArtifactMetricsMutation) ResetMetrics() {
 	m.metrics = nil
 	m.clearedmetrics = false
-	m.removedmetrics = nil
 }
 
-// AddSourceArtifactsReadIDs adds the "source_artifacts_read" edge to the FilesMetric entity by ids.
-func (m *ArtifactMetricsMutation) AddSourceArtifactsReadIDs(ids ...int) {
-	if m.source_artifacts_read == nil {
-		m.source_artifacts_read = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.source_artifacts_read[ids[i]] = struct{}{}
-	}
+// SetSourceArtifactsReadID sets the "source_artifacts_read" edge to the FilesMetric entity by id.
+func (m *ArtifactMetricsMutation) SetSourceArtifactsReadID(id int) {
+	m.source_artifacts_read = &id
 }
 
 // ClearSourceArtifactsRead clears the "source_artifacts_read" edge to the FilesMetric entity.
@@ -3404,29 +3305,20 @@ func (m *ArtifactMetricsMutation) SourceArtifactsReadCleared() bool {
 	return m.clearedsource_artifacts_read
 }
 
-// RemoveSourceArtifactsReadIDs removes the "source_artifacts_read" edge to the FilesMetric entity by IDs.
-func (m *ArtifactMetricsMutation) RemoveSourceArtifactsReadIDs(ids ...int) {
-	if m.removedsource_artifacts_read == nil {
-		m.removedsource_artifacts_read = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.source_artifacts_read, ids[i])
-		m.removedsource_artifacts_read[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedSourceArtifactsRead returns the removed IDs of the "source_artifacts_read" edge to the FilesMetric entity.
-func (m *ArtifactMetricsMutation) RemovedSourceArtifactsReadIDs() (ids []int) {
-	for id := range m.removedsource_artifacts_read {
-		ids = append(ids, id)
+// SourceArtifactsReadID returns the "source_artifacts_read" edge ID in the mutation.
+func (m *ArtifactMetricsMutation) SourceArtifactsReadID() (id int, exists bool) {
+	if m.source_artifacts_read != nil {
+		return *m.source_artifacts_read, true
 	}
 	return
 }
 
 // SourceArtifactsReadIDs returns the "source_artifacts_read" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// SourceArtifactsReadID instead. It exists only for internal usage by the builders.
 func (m *ArtifactMetricsMutation) SourceArtifactsReadIDs() (ids []int) {
-	for id := range m.source_artifacts_read {
-		ids = append(ids, id)
+	if id := m.source_artifacts_read; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -3435,17 +3327,11 @@ func (m *ArtifactMetricsMutation) SourceArtifactsReadIDs() (ids []int) {
 func (m *ArtifactMetricsMutation) ResetSourceArtifactsRead() {
 	m.source_artifacts_read = nil
 	m.clearedsource_artifacts_read = false
-	m.removedsource_artifacts_read = nil
 }
 
-// AddOutputArtifactsSeenIDs adds the "output_artifacts_seen" edge to the FilesMetric entity by ids.
-func (m *ArtifactMetricsMutation) AddOutputArtifactsSeenIDs(ids ...int) {
-	if m.output_artifacts_seen == nil {
-		m.output_artifacts_seen = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.output_artifacts_seen[ids[i]] = struct{}{}
-	}
+// SetOutputArtifactsSeenID sets the "output_artifacts_seen" edge to the FilesMetric entity by id.
+func (m *ArtifactMetricsMutation) SetOutputArtifactsSeenID(id int) {
+	m.output_artifacts_seen = &id
 }
 
 // ClearOutputArtifactsSeen clears the "output_artifacts_seen" edge to the FilesMetric entity.
@@ -3458,29 +3344,20 @@ func (m *ArtifactMetricsMutation) OutputArtifactsSeenCleared() bool {
 	return m.clearedoutput_artifacts_seen
 }
 
-// RemoveOutputArtifactsSeenIDs removes the "output_artifacts_seen" edge to the FilesMetric entity by IDs.
-func (m *ArtifactMetricsMutation) RemoveOutputArtifactsSeenIDs(ids ...int) {
-	if m.removedoutput_artifacts_seen == nil {
-		m.removedoutput_artifacts_seen = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.output_artifacts_seen, ids[i])
-		m.removedoutput_artifacts_seen[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedOutputArtifactsSeen returns the removed IDs of the "output_artifacts_seen" edge to the FilesMetric entity.
-func (m *ArtifactMetricsMutation) RemovedOutputArtifactsSeenIDs() (ids []int) {
-	for id := range m.removedoutput_artifacts_seen {
-		ids = append(ids, id)
+// OutputArtifactsSeenID returns the "output_artifacts_seen" edge ID in the mutation.
+func (m *ArtifactMetricsMutation) OutputArtifactsSeenID() (id int, exists bool) {
+	if m.output_artifacts_seen != nil {
+		return *m.output_artifacts_seen, true
 	}
 	return
 }
 
 // OutputArtifactsSeenIDs returns the "output_artifacts_seen" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OutputArtifactsSeenID instead. It exists only for internal usage by the builders.
 func (m *ArtifactMetricsMutation) OutputArtifactsSeenIDs() (ids []int) {
-	for id := range m.output_artifacts_seen {
-		ids = append(ids, id)
+	if id := m.output_artifacts_seen; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -3489,17 +3366,11 @@ func (m *ArtifactMetricsMutation) OutputArtifactsSeenIDs() (ids []int) {
 func (m *ArtifactMetricsMutation) ResetOutputArtifactsSeen() {
 	m.output_artifacts_seen = nil
 	m.clearedoutput_artifacts_seen = false
-	m.removedoutput_artifacts_seen = nil
 }
 
-// AddOutputArtifactsFromActionCacheIDs adds the "output_artifacts_from_action_cache" edge to the FilesMetric entity by ids.
-func (m *ArtifactMetricsMutation) AddOutputArtifactsFromActionCacheIDs(ids ...int) {
-	if m.output_artifacts_from_action_cache == nil {
-		m.output_artifacts_from_action_cache = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.output_artifacts_from_action_cache[ids[i]] = struct{}{}
-	}
+// SetOutputArtifactsFromActionCacheID sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity by id.
+func (m *ArtifactMetricsMutation) SetOutputArtifactsFromActionCacheID(id int) {
+	m.output_artifacts_from_action_cache = &id
 }
 
 // ClearOutputArtifactsFromActionCache clears the "output_artifacts_from_action_cache" edge to the FilesMetric entity.
@@ -3512,29 +3383,20 @@ func (m *ArtifactMetricsMutation) OutputArtifactsFromActionCacheCleared() bool {
 	return m.clearedoutput_artifacts_from_action_cache
 }
 
-// RemoveOutputArtifactsFromActionCacheIDs removes the "output_artifacts_from_action_cache" edge to the FilesMetric entity by IDs.
-func (m *ArtifactMetricsMutation) RemoveOutputArtifactsFromActionCacheIDs(ids ...int) {
-	if m.removedoutput_artifacts_from_action_cache == nil {
-		m.removedoutput_artifacts_from_action_cache = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.output_artifacts_from_action_cache, ids[i])
-		m.removedoutput_artifacts_from_action_cache[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedOutputArtifactsFromActionCache returns the removed IDs of the "output_artifacts_from_action_cache" edge to the FilesMetric entity.
-func (m *ArtifactMetricsMutation) RemovedOutputArtifactsFromActionCacheIDs() (ids []int) {
-	for id := range m.removedoutput_artifacts_from_action_cache {
-		ids = append(ids, id)
+// OutputArtifactsFromActionCacheID returns the "output_artifacts_from_action_cache" edge ID in the mutation.
+func (m *ArtifactMetricsMutation) OutputArtifactsFromActionCacheID() (id int, exists bool) {
+	if m.output_artifacts_from_action_cache != nil {
+		return *m.output_artifacts_from_action_cache, true
 	}
 	return
 }
 
 // OutputArtifactsFromActionCacheIDs returns the "output_artifacts_from_action_cache" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OutputArtifactsFromActionCacheID instead. It exists only for internal usage by the builders.
 func (m *ArtifactMetricsMutation) OutputArtifactsFromActionCacheIDs() (ids []int) {
-	for id := range m.output_artifacts_from_action_cache {
-		ids = append(ids, id)
+	if id := m.output_artifacts_from_action_cache; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -3543,17 +3405,11 @@ func (m *ArtifactMetricsMutation) OutputArtifactsFromActionCacheIDs() (ids []int
 func (m *ArtifactMetricsMutation) ResetOutputArtifactsFromActionCache() {
 	m.output_artifacts_from_action_cache = nil
 	m.clearedoutput_artifacts_from_action_cache = false
-	m.removedoutput_artifacts_from_action_cache = nil
 }
 
-// AddTopLevelArtifactIDs adds the "top_level_artifacts" edge to the FilesMetric entity by ids.
-func (m *ArtifactMetricsMutation) AddTopLevelArtifactIDs(ids ...int) {
-	if m.top_level_artifacts == nil {
-		m.top_level_artifacts = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.top_level_artifacts[ids[i]] = struct{}{}
-	}
+// SetTopLevelArtifactsID sets the "top_level_artifacts" edge to the FilesMetric entity by id.
+func (m *ArtifactMetricsMutation) SetTopLevelArtifactsID(id int) {
+	m.top_level_artifacts = &id
 }
 
 // ClearTopLevelArtifacts clears the "top_level_artifacts" edge to the FilesMetric entity.
@@ -3566,29 +3422,20 @@ func (m *ArtifactMetricsMutation) TopLevelArtifactsCleared() bool {
 	return m.clearedtop_level_artifacts
 }
 
-// RemoveTopLevelArtifactIDs removes the "top_level_artifacts" edge to the FilesMetric entity by IDs.
-func (m *ArtifactMetricsMutation) RemoveTopLevelArtifactIDs(ids ...int) {
-	if m.removedtop_level_artifacts == nil {
-		m.removedtop_level_artifacts = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.top_level_artifacts, ids[i])
-		m.removedtop_level_artifacts[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTopLevelArtifacts returns the removed IDs of the "top_level_artifacts" edge to the FilesMetric entity.
-func (m *ArtifactMetricsMutation) RemovedTopLevelArtifactsIDs() (ids []int) {
-	for id := range m.removedtop_level_artifacts {
-		ids = append(ids, id)
+// TopLevelArtifactsID returns the "top_level_artifacts" edge ID in the mutation.
+func (m *ArtifactMetricsMutation) TopLevelArtifactsID() (id int, exists bool) {
+	if m.top_level_artifacts != nil {
+		return *m.top_level_artifacts, true
 	}
 	return
 }
 
 // TopLevelArtifactsIDs returns the "top_level_artifacts" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TopLevelArtifactsID instead. It exists only for internal usage by the builders.
 func (m *ArtifactMetricsMutation) TopLevelArtifactsIDs() (ids []int) {
-	for id := range m.top_level_artifacts {
-		ids = append(ids, id)
+	if id := m.top_level_artifacts; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -3597,7 +3444,6 @@ func (m *ArtifactMetricsMutation) TopLevelArtifactsIDs() (ids []int) {
 func (m *ArtifactMetricsMutation) ResetTopLevelArtifacts() {
 	m.top_level_artifacts = nil
 	m.clearedtop_level_artifacts = false
-	m.removedtop_level_artifacts = nil
 }
 
 // Where appends a list predicates to the ArtifactMetricsMutation builder.
@@ -3732,35 +3578,25 @@ func (m *ArtifactMetricsMutation) AddedEdges() []string {
 func (m *ArtifactMetricsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case artifactmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.metrics))
-		for id := range m.metrics {
-			ids = append(ids, id)
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case artifactmetrics.EdgeSourceArtifactsRead:
-		ids := make([]ent.Value, 0, len(m.source_artifacts_read))
-		for id := range m.source_artifacts_read {
-			ids = append(ids, id)
+		if id := m.source_artifacts_read; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case artifactmetrics.EdgeOutputArtifactsSeen:
-		ids := make([]ent.Value, 0, len(m.output_artifacts_seen))
-		for id := range m.output_artifacts_seen {
-			ids = append(ids, id)
+		if id := m.output_artifacts_seen; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case artifactmetrics.EdgeOutputArtifactsFromActionCache:
-		ids := make([]ent.Value, 0, len(m.output_artifacts_from_action_cache))
-		for id := range m.output_artifacts_from_action_cache {
-			ids = append(ids, id)
+		if id := m.output_artifacts_from_action_cache; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case artifactmetrics.EdgeTopLevelArtifacts:
-		ids := make([]ent.Value, 0, len(m.top_level_artifacts))
-		for id := range m.top_level_artifacts {
-			ids = append(ids, id)
+		if id := m.top_level_artifacts; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -3768,59 +3604,12 @@ func (m *ArtifactMetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ArtifactMetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 5)
-	if m.removedmetrics != nil {
-		edges = append(edges, artifactmetrics.EdgeMetrics)
-	}
-	if m.removedsource_artifacts_read != nil {
-		edges = append(edges, artifactmetrics.EdgeSourceArtifactsRead)
-	}
-	if m.removedoutput_artifacts_seen != nil {
-		edges = append(edges, artifactmetrics.EdgeOutputArtifactsSeen)
-	}
-	if m.removedoutput_artifacts_from_action_cache != nil {
-		edges = append(edges, artifactmetrics.EdgeOutputArtifactsFromActionCache)
-	}
-	if m.removedtop_level_artifacts != nil {
-		edges = append(edges, artifactmetrics.EdgeTopLevelArtifacts)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ArtifactMetricsMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case artifactmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.removedmetrics))
-		for id := range m.removedmetrics {
-			ids = append(ids, id)
-		}
-		return ids
-	case artifactmetrics.EdgeSourceArtifactsRead:
-		ids := make([]ent.Value, 0, len(m.removedsource_artifacts_read))
-		for id := range m.removedsource_artifacts_read {
-			ids = append(ids, id)
-		}
-		return ids
-	case artifactmetrics.EdgeOutputArtifactsSeen:
-		ids := make([]ent.Value, 0, len(m.removedoutput_artifacts_seen))
-		for id := range m.removedoutput_artifacts_seen {
-			ids = append(ids, id)
-		}
-		return ids
-	case artifactmetrics.EdgeOutputArtifactsFromActionCache:
-		ids := make([]ent.Value, 0, len(m.removedoutput_artifacts_from_action_cache))
-		for id := range m.removedoutput_artifacts_from_action_cache {
-			ids = append(ids, id)
-		}
-		return ids
-	case artifactmetrics.EdgeTopLevelArtifacts:
-		ids := make([]ent.Value, 0, len(m.removedtop_level_artifacts))
-		for id := range m.removedtop_level_artifacts {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -3867,6 +3656,21 @@ func (m *ArtifactMetricsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *ArtifactMetricsMutation) ClearEdge(name string) error {
 	switch name {
+	case artifactmetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
+	case artifactmetrics.EdgeSourceArtifactsRead:
+		m.ClearSourceArtifactsRead()
+		return nil
+	case artifactmetrics.EdgeOutputArtifactsSeen:
+		m.ClearOutputArtifactsSeen()
+		return nil
+	case artifactmetrics.EdgeOutputArtifactsFromActionCache:
+		m.ClearOutputArtifactsFromActionCache()
+		return nil
+	case artifactmetrics.EdgeTopLevelArtifacts:
+		m.ClearTopLevelArtifacts()
+		return nil
 	}
 	return fmt.Errorf("unknown ArtifactMetrics unique edge %s", name)
 }
@@ -7545,23 +7349,17 @@ type BuildGraphMetricsMutation struct {
 	post_invocation_skyframe_node_count                *int32
 	addpost_invocation_skyframe_node_count             *int32
 	clearedFields                                      map[string]struct{}
-	metrics                                            map[int]struct{}
-	removedmetrics                                     map[int]struct{}
+	metrics                                            *int
 	clearedmetrics                                     bool
-	dirtied_values                                     map[int]struct{}
-	removeddirtied_values                              map[int]struct{}
+	dirtied_values                                     *int
 	cleareddirtied_values                              bool
-	changed_values                                     map[int]struct{}
-	removedchanged_values                              map[int]struct{}
+	changed_values                                     *int
 	clearedchanged_values                              bool
-	built_values                                       map[int]struct{}
-	removedbuilt_values                                map[int]struct{}
+	built_values                                       *int
 	clearedbuilt_values                                bool
-	cleaned_values                                     map[int]struct{}
-	removedcleaned_values                              map[int]struct{}
+	cleaned_values                                     *int
 	clearedcleaned_values                              bool
-	evaluated_values                                   map[int]struct{}
-	removedevaluated_values                            map[int]struct{}
+	evaluated_values                                   *int
 	clearedevaluated_values                            bool
 	done                                               bool
 	oldValue                                           func(context.Context) (*BuildGraphMetrics, error)
@@ -8296,14 +8094,9 @@ func (m *BuildGraphMetricsMutation) ResetPostInvocationSkyframeNodeCount() {
 	delete(m.clearedFields, buildgraphmetrics.FieldPostInvocationSkyframeNodeCount)
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by ids.
-func (m *BuildGraphMetricsMutation) AddMetricIDs(ids ...int) {
-	if m.metrics == nil {
-		m.metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.metrics[ids[i]] = struct{}{}
-	}
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *BuildGraphMetricsMutation) SetMetricsID(id int) {
+	m.metrics = &id
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -8316,29 +8109,20 @@ func (m *BuildGraphMetricsMutation) MetricsCleared() bool {
 	return m.clearedmetrics
 }
 
-// RemoveMetricIDs removes the "metrics" edge to the Metrics entity by IDs.
-func (m *BuildGraphMetricsMutation) RemoveMetricIDs(ids ...int) {
-	if m.removedmetrics == nil {
-		m.removedmetrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.metrics, ids[i])
-		m.removedmetrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMetrics returns the removed IDs of the "metrics" edge to the Metrics entity.
-func (m *BuildGraphMetricsMutation) RemovedMetricsIDs() (ids []int) {
-	for id := range m.removedmetrics {
-		ids = append(ids, id)
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *BuildGraphMetricsMutation) MetricsID() (id int, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
 	}
 	return
 }
 
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
 func (m *BuildGraphMetricsMutation) MetricsIDs() (ids []int) {
-	for id := range m.metrics {
-		ids = append(ids, id)
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -8347,17 +8131,11 @@ func (m *BuildGraphMetricsMutation) MetricsIDs() (ids []int) {
 func (m *BuildGraphMetricsMutation) ResetMetrics() {
 	m.metrics = nil
 	m.clearedmetrics = false
-	m.removedmetrics = nil
 }
 
-// AddDirtiedValueIDs adds the "dirtied_values" edge to the EvaluationStat entity by ids.
-func (m *BuildGraphMetricsMutation) AddDirtiedValueIDs(ids ...int) {
-	if m.dirtied_values == nil {
-		m.dirtied_values = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.dirtied_values[ids[i]] = struct{}{}
-	}
+// SetDirtiedValuesID sets the "dirtied_values" edge to the EvaluationStat entity by id.
+func (m *BuildGraphMetricsMutation) SetDirtiedValuesID(id int) {
+	m.dirtied_values = &id
 }
 
 // ClearDirtiedValues clears the "dirtied_values" edge to the EvaluationStat entity.
@@ -8370,29 +8148,20 @@ func (m *BuildGraphMetricsMutation) DirtiedValuesCleared() bool {
 	return m.cleareddirtied_values
 }
 
-// RemoveDirtiedValueIDs removes the "dirtied_values" edge to the EvaluationStat entity by IDs.
-func (m *BuildGraphMetricsMutation) RemoveDirtiedValueIDs(ids ...int) {
-	if m.removeddirtied_values == nil {
-		m.removeddirtied_values = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.dirtied_values, ids[i])
-		m.removeddirtied_values[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedDirtiedValues returns the removed IDs of the "dirtied_values" edge to the EvaluationStat entity.
-func (m *BuildGraphMetricsMutation) RemovedDirtiedValuesIDs() (ids []int) {
-	for id := range m.removeddirtied_values {
-		ids = append(ids, id)
+// DirtiedValuesID returns the "dirtied_values" edge ID in the mutation.
+func (m *BuildGraphMetricsMutation) DirtiedValuesID() (id int, exists bool) {
+	if m.dirtied_values != nil {
+		return *m.dirtied_values, true
 	}
 	return
 }
 
 // DirtiedValuesIDs returns the "dirtied_values" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DirtiedValuesID instead. It exists only for internal usage by the builders.
 func (m *BuildGraphMetricsMutation) DirtiedValuesIDs() (ids []int) {
-	for id := range m.dirtied_values {
-		ids = append(ids, id)
+	if id := m.dirtied_values; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -8401,17 +8170,11 @@ func (m *BuildGraphMetricsMutation) DirtiedValuesIDs() (ids []int) {
 func (m *BuildGraphMetricsMutation) ResetDirtiedValues() {
 	m.dirtied_values = nil
 	m.cleareddirtied_values = false
-	m.removeddirtied_values = nil
 }
 
-// AddChangedValueIDs adds the "changed_values" edge to the EvaluationStat entity by ids.
-func (m *BuildGraphMetricsMutation) AddChangedValueIDs(ids ...int) {
-	if m.changed_values == nil {
-		m.changed_values = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.changed_values[ids[i]] = struct{}{}
-	}
+// SetChangedValuesID sets the "changed_values" edge to the EvaluationStat entity by id.
+func (m *BuildGraphMetricsMutation) SetChangedValuesID(id int) {
+	m.changed_values = &id
 }
 
 // ClearChangedValues clears the "changed_values" edge to the EvaluationStat entity.
@@ -8424,29 +8187,20 @@ func (m *BuildGraphMetricsMutation) ChangedValuesCleared() bool {
 	return m.clearedchanged_values
 }
 
-// RemoveChangedValueIDs removes the "changed_values" edge to the EvaluationStat entity by IDs.
-func (m *BuildGraphMetricsMutation) RemoveChangedValueIDs(ids ...int) {
-	if m.removedchanged_values == nil {
-		m.removedchanged_values = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.changed_values, ids[i])
-		m.removedchanged_values[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedChangedValues returns the removed IDs of the "changed_values" edge to the EvaluationStat entity.
-func (m *BuildGraphMetricsMutation) RemovedChangedValuesIDs() (ids []int) {
-	for id := range m.removedchanged_values {
-		ids = append(ids, id)
+// ChangedValuesID returns the "changed_values" edge ID in the mutation.
+func (m *BuildGraphMetricsMutation) ChangedValuesID() (id int, exists bool) {
+	if m.changed_values != nil {
+		return *m.changed_values, true
 	}
 	return
 }
 
 // ChangedValuesIDs returns the "changed_values" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ChangedValuesID instead. It exists only for internal usage by the builders.
 func (m *BuildGraphMetricsMutation) ChangedValuesIDs() (ids []int) {
-	for id := range m.changed_values {
-		ids = append(ids, id)
+	if id := m.changed_values; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -8455,17 +8209,11 @@ func (m *BuildGraphMetricsMutation) ChangedValuesIDs() (ids []int) {
 func (m *BuildGraphMetricsMutation) ResetChangedValues() {
 	m.changed_values = nil
 	m.clearedchanged_values = false
-	m.removedchanged_values = nil
 }
 
-// AddBuiltValueIDs adds the "built_values" edge to the EvaluationStat entity by ids.
-func (m *BuildGraphMetricsMutation) AddBuiltValueIDs(ids ...int) {
-	if m.built_values == nil {
-		m.built_values = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.built_values[ids[i]] = struct{}{}
-	}
+// SetBuiltValuesID sets the "built_values" edge to the EvaluationStat entity by id.
+func (m *BuildGraphMetricsMutation) SetBuiltValuesID(id int) {
+	m.built_values = &id
 }
 
 // ClearBuiltValues clears the "built_values" edge to the EvaluationStat entity.
@@ -8478,29 +8226,20 @@ func (m *BuildGraphMetricsMutation) BuiltValuesCleared() bool {
 	return m.clearedbuilt_values
 }
 
-// RemoveBuiltValueIDs removes the "built_values" edge to the EvaluationStat entity by IDs.
-func (m *BuildGraphMetricsMutation) RemoveBuiltValueIDs(ids ...int) {
-	if m.removedbuilt_values == nil {
-		m.removedbuilt_values = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.built_values, ids[i])
-		m.removedbuilt_values[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedBuiltValues returns the removed IDs of the "built_values" edge to the EvaluationStat entity.
-func (m *BuildGraphMetricsMutation) RemovedBuiltValuesIDs() (ids []int) {
-	for id := range m.removedbuilt_values {
-		ids = append(ids, id)
+// BuiltValuesID returns the "built_values" edge ID in the mutation.
+func (m *BuildGraphMetricsMutation) BuiltValuesID() (id int, exists bool) {
+	if m.built_values != nil {
+		return *m.built_values, true
 	}
 	return
 }
 
 // BuiltValuesIDs returns the "built_values" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BuiltValuesID instead. It exists only for internal usage by the builders.
 func (m *BuildGraphMetricsMutation) BuiltValuesIDs() (ids []int) {
-	for id := range m.built_values {
-		ids = append(ids, id)
+	if id := m.built_values; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -8509,17 +8248,11 @@ func (m *BuildGraphMetricsMutation) BuiltValuesIDs() (ids []int) {
 func (m *BuildGraphMetricsMutation) ResetBuiltValues() {
 	m.built_values = nil
 	m.clearedbuilt_values = false
-	m.removedbuilt_values = nil
 }
 
-// AddCleanedValueIDs adds the "cleaned_values" edge to the EvaluationStat entity by ids.
-func (m *BuildGraphMetricsMutation) AddCleanedValueIDs(ids ...int) {
-	if m.cleaned_values == nil {
-		m.cleaned_values = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.cleaned_values[ids[i]] = struct{}{}
-	}
+// SetCleanedValuesID sets the "cleaned_values" edge to the EvaluationStat entity by id.
+func (m *BuildGraphMetricsMutation) SetCleanedValuesID(id int) {
+	m.cleaned_values = &id
 }
 
 // ClearCleanedValues clears the "cleaned_values" edge to the EvaluationStat entity.
@@ -8532,29 +8265,20 @@ func (m *BuildGraphMetricsMutation) CleanedValuesCleared() bool {
 	return m.clearedcleaned_values
 }
 
-// RemoveCleanedValueIDs removes the "cleaned_values" edge to the EvaluationStat entity by IDs.
-func (m *BuildGraphMetricsMutation) RemoveCleanedValueIDs(ids ...int) {
-	if m.removedcleaned_values == nil {
-		m.removedcleaned_values = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.cleaned_values, ids[i])
-		m.removedcleaned_values[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedCleanedValues returns the removed IDs of the "cleaned_values" edge to the EvaluationStat entity.
-func (m *BuildGraphMetricsMutation) RemovedCleanedValuesIDs() (ids []int) {
-	for id := range m.removedcleaned_values {
-		ids = append(ids, id)
+// CleanedValuesID returns the "cleaned_values" edge ID in the mutation.
+func (m *BuildGraphMetricsMutation) CleanedValuesID() (id int, exists bool) {
+	if m.cleaned_values != nil {
+		return *m.cleaned_values, true
 	}
 	return
 }
 
 // CleanedValuesIDs returns the "cleaned_values" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CleanedValuesID instead. It exists only for internal usage by the builders.
 func (m *BuildGraphMetricsMutation) CleanedValuesIDs() (ids []int) {
-	for id := range m.cleaned_values {
-		ids = append(ids, id)
+	if id := m.cleaned_values; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -8563,17 +8287,11 @@ func (m *BuildGraphMetricsMutation) CleanedValuesIDs() (ids []int) {
 func (m *BuildGraphMetricsMutation) ResetCleanedValues() {
 	m.cleaned_values = nil
 	m.clearedcleaned_values = false
-	m.removedcleaned_values = nil
 }
 
-// AddEvaluatedValueIDs adds the "evaluated_values" edge to the EvaluationStat entity by ids.
-func (m *BuildGraphMetricsMutation) AddEvaluatedValueIDs(ids ...int) {
-	if m.evaluated_values == nil {
-		m.evaluated_values = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.evaluated_values[ids[i]] = struct{}{}
-	}
+// SetEvaluatedValuesID sets the "evaluated_values" edge to the EvaluationStat entity by id.
+func (m *BuildGraphMetricsMutation) SetEvaluatedValuesID(id int) {
+	m.evaluated_values = &id
 }
 
 // ClearEvaluatedValues clears the "evaluated_values" edge to the EvaluationStat entity.
@@ -8586,29 +8304,20 @@ func (m *BuildGraphMetricsMutation) EvaluatedValuesCleared() bool {
 	return m.clearedevaluated_values
 }
 
-// RemoveEvaluatedValueIDs removes the "evaluated_values" edge to the EvaluationStat entity by IDs.
-func (m *BuildGraphMetricsMutation) RemoveEvaluatedValueIDs(ids ...int) {
-	if m.removedevaluated_values == nil {
-		m.removedevaluated_values = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.evaluated_values, ids[i])
-		m.removedevaluated_values[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedEvaluatedValues returns the removed IDs of the "evaluated_values" edge to the EvaluationStat entity.
-func (m *BuildGraphMetricsMutation) RemovedEvaluatedValuesIDs() (ids []int) {
-	for id := range m.removedevaluated_values {
-		ids = append(ids, id)
+// EvaluatedValuesID returns the "evaluated_values" edge ID in the mutation.
+func (m *BuildGraphMetricsMutation) EvaluatedValuesID() (id int, exists bool) {
+	if m.evaluated_values != nil {
+		return *m.evaluated_values, true
 	}
 	return
 }
 
 // EvaluatedValuesIDs returns the "evaluated_values" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// EvaluatedValuesID instead. It exists only for internal usage by the builders.
 func (m *BuildGraphMetricsMutation) EvaluatedValuesIDs() (ids []int) {
-	for id := range m.evaluated_values {
-		ids = append(ids, id)
+	if id := m.evaluated_values; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -8617,7 +8326,6 @@ func (m *BuildGraphMetricsMutation) EvaluatedValuesIDs() (ids []int) {
 func (m *BuildGraphMetricsMutation) ResetEvaluatedValues() {
 	m.evaluated_values = nil
 	m.clearedevaluated_values = false
-	m.removedevaluated_values = nil
 }
 
 // Where appends a list predicates to the BuildGraphMetricsMutation builder.
@@ -9084,41 +8792,29 @@ func (m *BuildGraphMetricsMutation) AddedEdges() []string {
 func (m *BuildGraphMetricsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case buildgraphmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.metrics))
-		for id := range m.metrics {
-			ids = append(ids, id)
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case buildgraphmetrics.EdgeDirtiedValues:
-		ids := make([]ent.Value, 0, len(m.dirtied_values))
-		for id := range m.dirtied_values {
-			ids = append(ids, id)
+		if id := m.dirtied_values; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case buildgraphmetrics.EdgeChangedValues:
-		ids := make([]ent.Value, 0, len(m.changed_values))
-		for id := range m.changed_values {
-			ids = append(ids, id)
+		if id := m.changed_values; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case buildgraphmetrics.EdgeBuiltValues:
-		ids := make([]ent.Value, 0, len(m.built_values))
-		for id := range m.built_values {
-			ids = append(ids, id)
+		if id := m.built_values; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case buildgraphmetrics.EdgeCleanedValues:
-		ids := make([]ent.Value, 0, len(m.cleaned_values))
-		for id := range m.cleaned_values {
-			ids = append(ids, id)
+		if id := m.cleaned_values; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case buildgraphmetrics.EdgeEvaluatedValues:
-		ids := make([]ent.Value, 0, len(m.evaluated_values))
-		for id := range m.evaluated_values {
-			ids = append(ids, id)
+		if id := m.evaluated_values; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -9126,68 +8822,12 @@ func (m *BuildGraphMetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BuildGraphMetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 6)
-	if m.removedmetrics != nil {
-		edges = append(edges, buildgraphmetrics.EdgeMetrics)
-	}
-	if m.removeddirtied_values != nil {
-		edges = append(edges, buildgraphmetrics.EdgeDirtiedValues)
-	}
-	if m.removedchanged_values != nil {
-		edges = append(edges, buildgraphmetrics.EdgeChangedValues)
-	}
-	if m.removedbuilt_values != nil {
-		edges = append(edges, buildgraphmetrics.EdgeBuiltValues)
-	}
-	if m.removedcleaned_values != nil {
-		edges = append(edges, buildgraphmetrics.EdgeCleanedValues)
-	}
-	if m.removedevaluated_values != nil {
-		edges = append(edges, buildgraphmetrics.EdgeEvaluatedValues)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *BuildGraphMetricsMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case buildgraphmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.removedmetrics))
-		for id := range m.removedmetrics {
-			ids = append(ids, id)
-		}
-		return ids
-	case buildgraphmetrics.EdgeDirtiedValues:
-		ids := make([]ent.Value, 0, len(m.removeddirtied_values))
-		for id := range m.removeddirtied_values {
-			ids = append(ids, id)
-		}
-		return ids
-	case buildgraphmetrics.EdgeChangedValues:
-		ids := make([]ent.Value, 0, len(m.removedchanged_values))
-		for id := range m.removedchanged_values {
-			ids = append(ids, id)
-		}
-		return ids
-	case buildgraphmetrics.EdgeBuiltValues:
-		ids := make([]ent.Value, 0, len(m.removedbuilt_values))
-		for id := range m.removedbuilt_values {
-			ids = append(ids, id)
-		}
-		return ids
-	case buildgraphmetrics.EdgeCleanedValues:
-		ids := make([]ent.Value, 0, len(m.removedcleaned_values))
-		for id := range m.removedcleaned_values {
-			ids = append(ids, id)
-		}
-		return ids
-	case buildgraphmetrics.EdgeEvaluatedValues:
-		ids := make([]ent.Value, 0, len(m.removedevaluated_values))
-		for id := range m.removedevaluated_values {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -9239,6 +8879,24 @@ func (m *BuildGraphMetricsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *BuildGraphMetricsMutation) ClearEdge(name string) error {
 	switch name {
+	case buildgraphmetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
+	case buildgraphmetrics.EdgeDirtiedValues:
+		m.ClearDirtiedValues()
+		return nil
+	case buildgraphmetrics.EdgeChangedValues:
+		m.ClearChangedValues()
+		return nil
+	case buildgraphmetrics.EdgeBuiltValues:
+		m.ClearBuiltValues()
+		return nil
+	case buildgraphmetrics.EdgeCleanedValues:
+		m.ClearCleanedValues()
+		return nil
+	case buildgraphmetrics.EdgeEvaluatedValues:
+		m.ClearEvaluatedValues()
+		return nil
 	}
 	return fmt.Errorf("unknown BuildGraphMetrics unique edge %s", name)
 }
@@ -9280,8 +8938,7 @@ type CumulativeMetricsMutation struct {
 	num_builds      *int32
 	addnum_builds   *int32
 	clearedFields   map[string]struct{}
-	metrics         map[int]struct{}
-	removedmetrics  map[int]struct{}
+	metrics         *int
 	clearedmetrics  bool
 	done            bool
 	oldValue        func(context.Context) (*CumulativeMetrics, error)
@@ -9526,14 +9183,9 @@ func (m *CumulativeMetricsMutation) ResetNumBuilds() {
 	delete(m.clearedFields, cumulativemetrics.FieldNumBuilds)
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by ids.
-func (m *CumulativeMetricsMutation) AddMetricIDs(ids ...int) {
-	if m.metrics == nil {
-		m.metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.metrics[ids[i]] = struct{}{}
-	}
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *CumulativeMetricsMutation) SetMetricsID(id int) {
+	m.metrics = &id
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -9546,29 +9198,20 @@ func (m *CumulativeMetricsMutation) MetricsCleared() bool {
 	return m.clearedmetrics
 }
 
-// RemoveMetricIDs removes the "metrics" edge to the Metrics entity by IDs.
-func (m *CumulativeMetricsMutation) RemoveMetricIDs(ids ...int) {
-	if m.removedmetrics == nil {
-		m.removedmetrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.metrics, ids[i])
-		m.removedmetrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMetrics returns the removed IDs of the "metrics" edge to the Metrics entity.
-func (m *CumulativeMetricsMutation) RemovedMetricsIDs() (ids []int) {
-	for id := range m.removedmetrics {
-		ids = append(ids, id)
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *CumulativeMetricsMutation) MetricsID() (id int, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
 	}
 	return
 }
 
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
 func (m *CumulativeMetricsMutation) MetricsIDs() (ids []int) {
-	for id := range m.metrics {
-		ids = append(ids, id)
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -9577,7 +9220,6 @@ func (m *CumulativeMetricsMutation) MetricsIDs() (ids []int) {
 func (m *CumulativeMetricsMutation) ResetMetrics() {
 	m.metrics = nil
 	m.clearedmetrics = false
-	m.removedmetrics = nil
 }
 
 // Where appends a list predicates to the CumulativeMetricsMutation builder.
@@ -9784,11 +9426,9 @@ func (m *CumulativeMetricsMutation) AddedEdges() []string {
 func (m *CumulativeMetricsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case cumulativemetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.metrics))
-		for id := range m.metrics {
-			ids = append(ids, id)
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -9796,23 +9436,12 @@ func (m *CumulativeMetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *CumulativeMetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedmetrics != nil {
-		edges = append(edges, cumulativemetrics.EdgeMetrics)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *CumulativeMetricsMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case cumulativemetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.removedmetrics))
-		for id := range m.removedmetrics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -9839,6 +9468,9 @@ func (m *CumulativeMetricsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *CumulativeMetricsMutation) ClearEdge(name string) error {
 	switch name {
+	case cumulativemetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown CumulativeMetrics unique edge %s", name)
 }
@@ -9861,8 +9493,7 @@ type DynamicExecutionMetricsMutation struct {
 	typ                    string
 	id                     *int
 	clearedFields          map[string]struct{}
-	metrics                map[int]struct{}
-	removedmetrics         map[int]struct{}
+	metrics                *int
 	clearedmetrics         bool
 	race_statistics        map[int]struct{}
 	removedrace_statistics map[int]struct{}
@@ -9970,14 +9601,9 @@ func (m *DynamicExecutionMetricsMutation) IDs(ctx context.Context) ([]int, error
 	}
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by ids.
-func (m *DynamicExecutionMetricsMutation) AddMetricIDs(ids ...int) {
-	if m.metrics == nil {
-		m.metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.metrics[ids[i]] = struct{}{}
-	}
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *DynamicExecutionMetricsMutation) SetMetricsID(id int) {
+	m.metrics = &id
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -9990,29 +9616,20 @@ func (m *DynamicExecutionMetricsMutation) MetricsCleared() bool {
 	return m.clearedmetrics
 }
 
-// RemoveMetricIDs removes the "metrics" edge to the Metrics entity by IDs.
-func (m *DynamicExecutionMetricsMutation) RemoveMetricIDs(ids ...int) {
-	if m.removedmetrics == nil {
-		m.removedmetrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.metrics, ids[i])
-		m.removedmetrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMetrics returns the removed IDs of the "metrics" edge to the Metrics entity.
-func (m *DynamicExecutionMetricsMutation) RemovedMetricsIDs() (ids []int) {
-	for id := range m.removedmetrics {
-		ids = append(ids, id)
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *DynamicExecutionMetricsMutation) MetricsID() (id int, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
 	}
 	return
 }
 
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
 func (m *DynamicExecutionMetricsMutation) MetricsIDs() (ids []int) {
-	for id := range m.metrics {
-		ids = append(ids, id)
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -10021,7 +9638,6 @@ func (m *DynamicExecutionMetricsMutation) MetricsIDs() (ids []int) {
 func (m *DynamicExecutionMetricsMutation) ResetMetrics() {
 	m.metrics = nil
 	m.clearedmetrics = false
-	m.removedmetrics = nil
 }
 
 // AddRaceStatisticIDs adds the "race_statistics" edge to the RaceStatistics entity by ids.
@@ -10201,11 +9817,9 @@ func (m *DynamicExecutionMetricsMutation) AddedEdges() []string {
 func (m *DynamicExecutionMetricsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case dynamicexecutionmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.metrics))
-		for id := range m.metrics {
-			ids = append(ids, id)
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case dynamicexecutionmetrics.EdgeRaceStatistics:
 		ids := make([]ent.Value, 0, len(m.race_statistics))
 		for id := range m.race_statistics {
@@ -10219,9 +9833,6 @@ func (m *DynamicExecutionMetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DynamicExecutionMetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.removedmetrics != nil {
-		edges = append(edges, dynamicexecutionmetrics.EdgeMetrics)
-	}
 	if m.removedrace_statistics != nil {
 		edges = append(edges, dynamicexecutionmetrics.EdgeRaceStatistics)
 	}
@@ -10232,12 +9843,6 @@ func (m *DynamicExecutionMetricsMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *DynamicExecutionMetricsMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case dynamicexecutionmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.removedmetrics))
-		for id := range m.removedmetrics {
-			ids = append(ids, id)
-		}
-		return ids
 	case dynamicexecutionmetrics.EdgeRaceStatistics:
 		ids := make([]ent.Value, 0, len(m.removedrace_statistics))
 		for id := range m.removedrace_statistics {
@@ -10276,6 +9881,9 @@ func (m *DynamicExecutionMetricsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *DynamicExecutionMetricsMutation) ClearEdge(name string) error {
 	switch name {
+	case dynamicexecutionmetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown DynamicExecutionMetrics unique edge %s", name)
 }
@@ -10304,8 +9912,7 @@ type EvaluationStatMutation struct {
 	count                      *int64
 	addcount                   *int64
 	clearedFields              map[string]struct{}
-	build_graph_metrics        map[int]struct{}
-	removedbuild_graph_metrics map[int]struct{}
+	build_graph_metrics        *int
 	clearedbuild_graph_metrics bool
 	done                       bool
 	oldValue                   func(context.Context) (*EvaluationStat, error)
@@ -10529,14 +10136,9 @@ func (m *EvaluationStatMutation) ResetCount() {
 	delete(m.clearedFields, evaluationstat.FieldCount)
 }
 
-// AddBuildGraphMetricIDs adds the "build_graph_metrics" edge to the BuildGraphMetrics entity by ids.
-func (m *EvaluationStatMutation) AddBuildGraphMetricIDs(ids ...int) {
-	if m.build_graph_metrics == nil {
-		m.build_graph_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.build_graph_metrics[ids[i]] = struct{}{}
-	}
+// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by id.
+func (m *EvaluationStatMutation) SetBuildGraphMetricsID(id int) {
+	m.build_graph_metrics = &id
 }
 
 // ClearBuildGraphMetrics clears the "build_graph_metrics" edge to the BuildGraphMetrics entity.
@@ -10549,29 +10151,20 @@ func (m *EvaluationStatMutation) BuildGraphMetricsCleared() bool {
 	return m.clearedbuild_graph_metrics
 }
 
-// RemoveBuildGraphMetricIDs removes the "build_graph_metrics" edge to the BuildGraphMetrics entity by IDs.
-func (m *EvaluationStatMutation) RemoveBuildGraphMetricIDs(ids ...int) {
-	if m.removedbuild_graph_metrics == nil {
-		m.removedbuild_graph_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.build_graph_metrics, ids[i])
-		m.removedbuild_graph_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedBuildGraphMetrics returns the removed IDs of the "build_graph_metrics" edge to the BuildGraphMetrics entity.
-func (m *EvaluationStatMutation) RemovedBuildGraphMetricsIDs() (ids []int) {
-	for id := range m.removedbuild_graph_metrics {
-		ids = append(ids, id)
+// BuildGraphMetricsID returns the "build_graph_metrics" edge ID in the mutation.
+func (m *EvaluationStatMutation) BuildGraphMetricsID() (id int, exists bool) {
+	if m.build_graph_metrics != nil {
+		return *m.build_graph_metrics, true
 	}
 	return
 }
 
 // BuildGraphMetricsIDs returns the "build_graph_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BuildGraphMetricsID instead. It exists only for internal usage by the builders.
 func (m *EvaluationStatMutation) BuildGraphMetricsIDs() (ids []int) {
-	for id := range m.build_graph_metrics {
-		ids = append(ids, id)
+	if id := m.build_graph_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -10580,7 +10173,6 @@ func (m *EvaluationStatMutation) BuildGraphMetricsIDs() (ids []int) {
 func (m *EvaluationStatMutation) ResetBuildGraphMetrics() {
 	m.build_graph_metrics = nil
 	m.clearedbuild_graph_metrics = false
-	m.removedbuild_graph_metrics = nil
 }
 
 // Where appends a list predicates to the EvaluationStatMutation builder.
@@ -10775,11 +10367,9 @@ func (m *EvaluationStatMutation) AddedEdges() []string {
 func (m *EvaluationStatMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case evaluationstat.EdgeBuildGraphMetrics:
-		ids := make([]ent.Value, 0, len(m.build_graph_metrics))
-		for id := range m.build_graph_metrics {
-			ids = append(ids, id)
+		if id := m.build_graph_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -10787,23 +10377,12 @@ func (m *EvaluationStatMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *EvaluationStatMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedbuild_graph_metrics != nil {
-		edges = append(edges, evaluationstat.EdgeBuildGraphMetrics)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *EvaluationStatMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case evaluationstat.EdgeBuildGraphMetrics:
-		ids := make([]ent.Value, 0, len(m.removedbuild_graph_metrics))
-		for id := range m.removedbuild_graph_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -10830,6 +10409,9 @@ func (m *EvaluationStatMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *EvaluationStatMutation) ClearEdge(name string) error {
 	switch name {
+	case evaluationstat.EdgeBuildGraphMetrics:
+		m.ClearBuildGraphMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown EvaluationStat unique edge %s", name)
 }
@@ -11544,8 +11126,7 @@ type ExectionInfoMutation struct {
 	addexit_code            *int32
 	hostname                *string
 	clearedFields           map[string]struct{}
-	test_result             map[int]struct{}
-	removedtest_result      map[int]struct{}
+	test_result             *int
 	clearedtest_result      bool
 	timing_breakdown        *int
 	clearedtiming_breakdown bool
@@ -11942,14 +11523,9 @@ func (m *ExectionInfoMutation) ResetHostname() {
 	delete(m.clearedFields, exectioninfo.FieldHostname)
 }
 
-// AddTestResultIDs adds the "test_result" edge to the TestResultBES entity by ids.
-func (m *ExectionInfoMutation) AddTestResultIDs(ids ...int) {
-	if m.test_result == nil {
-		m.test_result = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.test_result[ids[i]] = struct{}{}
-	}
+// SetTestResultID sets the "test_result" edge to the TestResultBES entity by id.
+func (m *ExectionInfoMutation) SetTestResultID(id int) {
+	m.test_result = &id
 }
 
 // ClearTestResult clears the "test_result" edge to the TestResultBES entity.
@@ -11962,29 +11538,20 @@ func (m *ExectionInfoMutation) TestResultCleared() bool {
 	return m.clearedtest_result
 }
 
-// RemoveTestResultIDs removes the "test_result" edge to the TestResultBES entity by IDs.
-func (m *ExectionInfoMutation) RemoveTestResultIDs(ids ...int) {
-	if m.removedtest_result == nil {
-		m.removedtest_result = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.test_result, ids[i])
-		m.removedtest_result[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTestResult returns the removed IDs of the "test_result" edge to the TestResultBES entity.
-func (m *ExectionInfoMutation) RemovedTestResultIDs() (ids []int) {
-	for id := range m.removedtest_result {
-		ids = append(ids, id)
+// TestResultID returns the "test_result" edge ID in the mutation.
+func (m *ExectionInfoMutation) TestResultID() (id int, exists bool) {
+	if m.test_result != nil {
+		return *m.test_result, true
 	}
 	return
 }
 
 // TestResultIDs returns the "test_result" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TestResultID instead. It exists only for internal usage by the builders.
 func (m *ExectionInfoMutation) TestResultIDs() (ids []int) {
-	for id := range m.test_result {
-		ids = append(ids, id)
+	if id := m.test_result; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -11993,7 +11560,6 @@ func (m *ExectionInfoMutation) TestResultIDs() (ids []int) {
 func (m *ExectionInfoMutation) ResetTestResult() {
 	m.test_result = nil
 	m.clearedtest_result = false
-	m.removedtest_result = nil
 }
 
 // SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by id.
@@ -12368,11 +11934,9 @@ func (m *ExectionInfoMutation) AddedEdges() []string {
 func (m *ExectionInfoMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case exectioninfo.EdgeTestResult:
-		ids := make([]ent.Value, 0, len(m.test_result))
-		for id := range m.test_result {
-			ids = append(ids, id)
+		if id := m.test_result; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case exectioninfo.EdgeTimingBreakdown:
 		if id := m.timing_breakdown; id != nil {
 			return []ent.Value{*id}
@@ -12390,9 +11954,6 @@ func (m *ExectionInfoMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ExectionInfoMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.removedtest_result != nil {
-		edges = append(edges, exectioninfo.EdgeTestResult)
-	}
 	if m.removedresource_usage != nil {
 		edges = append(edges, exectioninfo.EdgeResourceUsage)
 	}
@@ -12403,12 +11964,6 @@ func (m *ExectionInfoMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *ExectionInfoMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case exectioninfo.EdgeTestResult:
-		ids := make([]ent.Value, 0, len(m.removedtest_result))
-		for id := range m.removedtest_result {
-			ids = append(ids, id)
-		}
-		return ids
 	case exectioninfo.EdgeResourceUsage:
 		ids := make([]ent.Value, 0, len(m.removedresource_usage))
 		for id := range m.removedresource_usage {
@@ -12452,6 +12007,9 @@ func (m *ExectionInfoMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *ExectionInfoMutation) ClearEdge(name string) error {
 	switch name {
+	case exectioninfo.EdgeTestResult:
+		m.ClearTestResult()
+		return nil
 	case exectioninfo.EdgeTimingBreakdown:
 		m.ClearTimingBreakdown()
 		return nil
@@ -12487,8 +12045,7 @@ type FilesMetricMutation struct {
 	count                   *int32
 	addcount                *int32
 	clearedFields           map[string]struct{}
-	artifact_metrics        map[int]struct{}
-	removedartifact_metrics map[int]struct{}
+	artifact_metrics        *int
 	clearedartifact_metrics bool
 	done                    bool
 	oldValue                func(context.Context) (*FilesMetric, error)
@@ -12733,14 +12290,9 @@ func (m *FilesMetricMutation) ResetCount() {
 	delete(m.clearedFields, filesmetric.FieldCount)
 }
 
-// AddArtifactMetricIDs adds the "artifact_metrics" edge to the ArtifactMetrics entity by ids.
-func (m *FilesMetricMutation) AddArtifactMetricIDs(ids ...int) {
-	if m.artifact_metrics == nil {
-		m.artifact_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.artifact_metrics[ids[i]] = struct{}{}
-	}
+// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by id.
+func (m *FilesMetricMutation) SetArtifactMetricsID(id int) {
+	m.artifact_metrics = &id
 }
 
 // ClearArtifactMetrics clears the "artifact_metrics" edge to the ArtifactMetrics entity.
@@ -12753,29 +12305,20 @@ func (m *FilesMetricMutation) ArtifactMetricsCleared() bool {
 	return m.clearedartifact_metrics
 }
 
-// RemoveArtifactMetricIDs removes the "artifact_metrics" edge to the ArtifactMetrics entity by IDs.
-func (m *FilesMetricMutation) RemoveArtifactMetricIDs(ids ...int) {
-	if m.removedartifact_metrics == nil {
-		m.removedartifact_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.artifact_metrics, ids[i])
-		m.removedartifact_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedArtifactMetrics returns the removed IDs of the "artifact_metrics" edge to the ArtifactMetrics entity.
-func (m *FilesMetricMutation) RemovedArtifactMetricsIDs() (ids []int) {
-	for id := range m.removedartifact_metrics {
-		ids = append(ids, id)
+// ArtifactMetricsID returns the "artifact_metrics" edge ID in the mutation.
+func (m *FilesMetricMutation) ArtifactMetricsID() (id int, exists bool) {
+	if m.artifact_metrics != nil {
+		return *m.artifact_metrics, true
 	}
 	return
 }
 
 // ArtifactMetricsIDs returns the "artifact_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ArtifactMetricsID instead. It exists only for internal usage by the builders.
 func (m *FilesMetricMutation) ArtifactMetricsIDs() (ids []int) {
-	for id := range m.artifact_metrics {
-		ids = append(ids, id)
+	if id := m.artifact_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -12784,7 +12327,6 @@ func (m *FilesMetricMutation) ArtifactMetricsIDs() (ids []int) {
 func (m *FilesMetricMutation) ResetArtifactMetrics() {
 	m.artifact_metrics = nil
 	m.clearedartifact_metrics = false
-	m.removedartifact_metrics = nil
 }
 
 // Where appends a list predicates to the FilesMetricMutation builder.
@@ -12991,11 +12533,9 @@ func (m *FilesMetricMutation) AddedEdges() []string {
 func (m *FilesMetricMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case filesmetric.EdgeArtifactMetrics:
-		ids := make([]ent.Value, 0, len(m.artifact_metrics))
-		for id := range m.artifact_metrics {
-			ids = append(ids, id)
+		if id := m.artifact_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -13003,23 +12543,12 @@ func (m *FilesMetricMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FilesMetricMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedartifact_metrics != nil {
-		edges = append(edges, filesmetric.EdgeArtifactMetrics)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *FilesMetricMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case filesmetric.EdgeArtifactMetrics:
-		ids := make([]ent.Value, 0, len(m.removedartifact_metrics))
-		for id := range m.removedartifact_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -13046,6 +12575,9 @@ func (m *FilesMetricMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *FilesMetricMutation) ClearEdge(name string) error {
 	switch name {
+	case filesmetric.EdgeArtifactMetrics:
+		m.ClearArtifactMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown FilesMetric unique edge %s", name)
 }
@@ -13071,8 +12603,7 @@ type GarbageMetricsMutation struct {
 	garbage_collected     *int64
 	addgarbage_collected  *int64
 	clearedFields         map[string]struct{}
-	memory_metrics        map[int]struct{}
-	removedmemory_metrics map[int]struct{}
+	memory_metrics        *int
 	clearedmemory_metrics bool
 	done                  bool
 	oldValue              func(context.Context) (*GarbageMetrics, error)
@@ -13296,14 +12827,9 @@ func (m *GarbageMetricsMutation) ResetGarbageCollected() {
 	delete(m.clearedFields, garbagemetrics.FieldGarbageCollected)
 }
 
-// AddMemoryMetricIDs adds the "memory_metrics" edge to the MemoryMetrics entity by ids.
-func (m *GarbageMetricsMutation) AddMemoryMetricIDs(ids ...int) {
-	if m.memory_metrics == nil {
-		m.memory_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.memory_metrics[ids[i]] = struct{}{}
-	}
+// SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by id.
+func (m *GarbageMetricsMutation) SetMemoryMetricsID(id int) {
+	m.memory_metrics = &id
 }
 
 // ClearMemoryMetrics clears the "memory_metrics" edge to the MemoryMetrics entity.
@@ -13316,29 +12842,20 @@ func (m *GarbageMetricsMutation) MemoryMetricsCleared() bool {
 	return m.clearedmemory_metrics
 }
 
-// RemoveMemoryMetricIDs removes the "memory_metrics" edge to the MemoryMetrics entity by IDs.
-func (m *GarbageMetricsMutation) RemoveMemoryMetricIDs(ids ...int) {
-	if m.removedmemory_metrics == nil {
-		m.removedmemory_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.memory_metrics, ids[i])
-		m.removedmemory_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMemoryMetrics returns the removed IDs of the "memory_metrics" edge to the MemoryMetrics entity.
-func (m *GarbageMetricsMutation) RemovedMemoryMetricsIDs() (ids []int) {
-	for id := range m.removedmemory_metrics {
-		ids = append(ids, id)
+// MemoryMetricsID returns the "memory_metrics" edge ID in the mutation.
+func (m *GarbageMetricsMutation) MemoryMetricsID() (id int, exists bool) {
+	if m.memory_metrics != nil {
+		return *m.memory_metrics, true
 	}
 	return
 }
 
 // MemoryMetricsIDs returns the "memory_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MemoryMetricsID instead. It exists only for internal usage by the builders.
 func (m *GarbageMetricsMutation) MemoryMetricsIDs() (ids []int) {
-	for id := range m.memory_metrics {
-		ids = append(ids, id)
+	if id := m.memory_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -13347,7 +12864,6 @@ func (m *GarbageMetricsMutation) MemoryMetricsIDs() (ids []int) {
 func (m *GarbageMetricsMutation) ResetMemoryMetrics() {
 	m.memory_metrics = nil
 	m.clearedmemory_metrics = false
-	m.removedmemory_metrics = nil
 }
 
 // Where appends a list predicates to the GarbageMetricsMutation builder.
@@ -13542,11 +13058,9 @@ func (m *GarbageMetricsMutation) AddedEdges() []string {
 func (m *GarbageMetricsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case garbagemetrics.EdgeMemoryMetrics:
-		ids := make([]ent.Value, 0, len(m.memory_metrics))
-		for id := range m.memory_metrics {
-			ids = append(ids, id)
+		if id := m.memory_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -13554,23 +13068,12 @@ func (m *GarbageMetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *GarbageMetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedmemory_metrics != nil {
-		edges = append(edges, garbagemetrics.EdgeMemoryMetrics)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *GarbageMetricsMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case garbagemetrics.EdgeMemoryMetrics:
-		ids := make([]ent.Value, 0, len(m.removedmemory_metrics))
-		for id := range m.removedmemory_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -13597,6 +13100,9 @@ func (m *GarbageMetricsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *GarbageMetricsMutation) ClearEdge(name string) error {
 	switch name {
+	case garbagemetrics.EdgeMemoryMetrics:
+		m.ClearMemoryMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown GarbageMetrics unique edge %s", name)
 }
@@ -13625,8 +13131,7 @@ type MemoryMetricsMutation struct {
 	peak_post_gc_tenured_space_heap_size    *int64
 	addpeak_post_gc_tenured_space_heap_size *int64
 	clearedFields                           map[string]struct{}
-	metrics                                 map[int]struct{}
-	removedmetrics                          map[int]struct{}
+	metrics                                 *int
 	clearedmetrics                          bool
 	garbage_metrics                         map[int]struct{}
 	removedgarbage_metrics                  map[int]struct{}
@@ -13944,14 +13449,9 @@ func (m *MemoryMetricsMutation) ResetPeakPostGcTenuredSpaceHeapSize() {
 	delete(m.clearedFields, memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize)
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by ids.
-func (m *MemoryMetricsMutation) AddMetricIDs(ids ...int) {
-	if m.metrics == nil {
-		m.metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.metrics[ids[i]] = struct{}{}
-	}
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *MemoryMetricsMutation) SetMetricsID(id int) {
+	m.metrics = &id
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -13964,29 +13464,20 @@ func (m *MemoryMetricsMutation) MetricsCleared() bool {
 	return m.clearedmetrics
 }
 
-// RemoveMetricIDs removes the "metrics" edge to the Metrics entity by IDs.
-func (m *MemoryMetricsMutation) RemoveMetricIDs(ids ...int) {
-	if m.removedmetrics == nil {
-		m.removedmetrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.metrics, ids[i])
-		m.removedmetrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMetrics returns the removed IDs of the "metrics" edge to the Metrics entity.
-func (m *MemoryMetricsMutation) RemovedMetricsIDs() (ids []int) {
-	for id := range m.removedmetrics {
-		ids = append(ids, id)
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *MemoryMetricsMutation) MetricsID() (id int, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
 	}
 	return
 }
 
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
 func (m *MemoryMetricsMutation) MetricsIDs() (ids []int) {
-	for id := range m.metrics {
-		ids = append(ids, id)
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -13995,7 +13486,6 @@ func (m *MemoryMetricsMutation) MetricsIDs() (ids []int) {
 func (m *MemoryMetricsMutation) ResetMetrics() {
 	m.metrics = nil
 	m.clearedmetrics = false
-	m.removedmetrics = nil
 }
 
 // AddGarbageMetricIDs adds the "garbage_metrics" edge to the GarbageMetrics entity by ids.
@@ -14294,11 +13784,9 @@ func (m *MemoryMetricsMutation) AddedEdges() []string {
 func (m *MemoryMetricsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case memorymetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.metrics))
-		for id := range m.metrics {
-			ids = append(ids, id)
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case memorymetrics.EdgeGarbageMetrics:
 		ids := make([]ent.Value, 0, len(m.garbage_metrics))
 		for id := range m.garbage_metrics {
@@ -14312,9 +13800,6 @@ func (m *MemoryMetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *MemoryMetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.removedmetrics != nil {
-		edges = append(edges, memorymetrics.EdgeMetrics)
-	}
 	if m.removedgarbage_metrics != nil {
 		edges = append(edges, memorymetrics.EdgeGarbageMetrics)
 	}
@@ -14325,12 +13810,6 @@ func (m *MemoryMetricsMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *MemoryMetricsMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case memorymetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.removedmetrics))
-		for id := range m.removedmetrics {
-			ids = append(ids, id)
-		}
-		return ids
 	case memorymetrics.EdgeGarbageMetrics:
 		ids := make([]ent.Value, 0, len(m.removedgarbage_metrics))
 		for id := range m.removedgarbage_metrics {
@@ -14369,6 +13848,9 @@ func (m *MemoryMetricsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *MemoryMetricsMutation) ClearEdge(name string) error {
 	switch name {
+	case memorymetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown MemoryMetrics unique edge %s", name)
 }
@@ -14396,35 +13878,25 @@ type MetricsMutation struct {
 	clearedFields                    map[string]struct{}
 	bazel_invocation                 *int
 	clearedbazel_invocation          bool
-	action_summary                   map[int]struct{}
-	removedaction_summary            map[int]struct{}
+	action_summary                   *int
 	clearedaction_summary            bool
-	memory_metrics                   map[int]struct{}
-	removedmemory_metrics            map[int]struct{}
+	memory_metrics                   *int
 	clearedmemory_metrics            bool
-	target_metrics                   map[int]struct{}
-	removedtarget_metrics            map[int]struct{}
+	target_metrics                   *int
 	clearedtarget_metrics            bool
-	package_metrics                  map[int]struct{}
-	removedpackage_metrics           map[int]struct{}
+	package_metrics                  *int
 	clearedpackage_metrics           bool
-	timing_metrics                   map[int]struct{}
-	removedtiming_metrics            map[int]struct{}
+	timing_metrics                   *int
 	clearedtiming_metrics            bool
-	cumulative_metrics               map[int]struct{}
-	removedcumulative_metrics        map[int]struct{}
+	cumulative_metrics               *int
 	clearedcumulative_metrics        bool
-	artifact_metrics                 map[int]struct{}
-	removedartifact_metrics          map[int]struct{}
+	artifact_metrics                 *int
 	clearedartifact_metrics          bool
-	network_metrics                  map[int]struct{}
-	removednetwork_metrics           map[int]struct{}
+	network_metrics                  *int
 	clearednetwork_metrics           bool
-	dynamic_execution_metrics        map[int]struct{}
-	removeddynamic_execution_metrics map[int]struct{}
+	dynamic_execution_metrics        *int
 	cleareddynamic_execution_metrics bool
-	build_graph_metrics              map[int]struct{}
-	removedbuild_graph_metrics       map[int]struct{}
+	build_graph_metrics              *int
 	clearedbuild_graph_metrics       bool
 	done                             bool
 	oldValue                         func(context.Context) (*Metrics, error)
@@ -14568,14 +14040,9 @@ func (m *MetricsMutation) ResetBazelInvocation() {
 	m.clearedbazel_invocation = false
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by ids.
-func (m *MetricsMutation) AddActionSummaryIDs(ids ...int) {
-	if m.action_summary == nil {
-		m.action_summary = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.action_summary[ids[i]] = struct{}{}
-	}
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by id.
+func (m *MetricsMutation) SetActionSummaryID(id int) {
+	m.action_summary = &id
 }
 
 // ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
@@ -14588,29 +14055,20 @@ func (m *MetricsMutation) ActionSummaryCleared() bool {
 	return m.clearedaction_summary
 }
 
-// RemoveActionSummaryIDs removes the "action_summary" edge to the ActionSummary entity by IDs.
-func (m *MetricsMutation) RemoveActionSummaryIDs(ids ...int) {
-	if m.removedaction_summary == nil {
-		m.removedaction_summary = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.action_summary, ids[i])
-		m.removedaction_summary[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedActionSummary returns the removed IDs of the "action_summary" edge to the ActionSummary entity.
-func (m *MetricsMutation) RemovedActionSummaryIDs() (ids []int) {
-	for id := range m.removedaction_summary {
-		ids = append(ids, id)
+// ActionSummaryID returns the "action_summary" edge ID in the mutation.
+func (m *MetricsMutation) ActionSummaryID() (id int, exists bool) {
+	if m.action_summary != nil {
+		return *m.action_summary, true
 	}
 	return
 }
 
 // ActionSummaryIDs returns the "action_summary" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ActionSummaryID instead. It exists only for internal usage by the builders.
 func (m *MetricsMutation) ActionSummaryIDs() (ids []int) {
-	for id := range m.action_summary {
-		ids = append(ids, id)
+	if id := m.action_summary; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -14619,17 +14077,11 @@ func (m *MetricsMutation) ActionSummaryIDs() (ids []int) {
 func (m *MetricsMutation) ResetActionSummary() {
 	m.action_summary = nil
 	m.clearedaction_summary = false
-	m.removedaction_summary = nil
 }
 
-// AddMemoryMetricIDs adds the "memory_metrics" edge to the MemoryMetrics entity by ids.
-func (m *MetricsMutation) AddMemoryMetricIDs(ids ...int) {
-	if m.memory_metrics == nil {
-		m.memory_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.memory_metrics[ids[i]] = struct{}{}
-	}
+// SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by id.
+func (m *MetricsMutation) SetMemoryMetricsID(id int) {
+	m.memory_metrics = &id
 }
 
 // ClearMemoryMetrics clears the "memory_metrics" edge to the MemoryMetrics entity.
@@ -14642,29 +14094,20 @@ func (m *MetricsMutation) MemoryMetricsCleared() bool {
 	return m.clearedmemory_metrics
 }
 
-// RemoveMemoryMetricIDs removes the "memory_metrics" edge to the MemoryMetrics entity by IDs.
-func (m *MetricsMutation) RemoveMemoryMetricIDs(ids ...int) {
-	if m.removedmemory_metrics == nil {
-		m.removedmemory_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.memory_metrics, ids[i])
-		m.removedmemory_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMemoryMetrics returns the removed IDs of the "memory_metrics" edge to the MemoryMetrics entity.
-func (m *MetricsMutation) RemovedMemoryMetricsIDs() (ids []int) {
-	for id := range m.removedmemory_metrics {
-		ids = append(ids, id)
+// MemoryMetricsID returns the "memory_metrics" edge ID in the mutation.
+func (m *MetricsMutation) MemoryMetricsID() (id int, exists bool) {
+	if m.memory_metrics != nil {
+		return *m.memory_metrics, true
 	}
 	return
 }
 
 // MemoryMetricsIDs returns the "memory_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MemoryMetricsID instead. It exists only for internal usage by the builders.
 func (m *MetricsMutation) MemoryMetricsIDs() (ids []int) {
-	for id := range m.memory_metrics {
-		ids = append(ids, id)
+	if id := m.memory_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -14673,17 +14116,11 @@ func (m *MetricsMutation) MemoryMetricsIDs() (ids []int) {
 func (m *MetricsMutation) ResetMemoryMetrics() {
 	m.memory_metrics = nil
 	m.clearedmemory_metrics = false
-	m.removedmemory_metrics = nil
 }
 
-// AddTargetMetricIDs adds the "target_metrics" edge to the TargetMetrics entity by ids.
-func (m *MetricsMutation) AddTargetMetricIDs(ids ...int) {
-	if m.target_metrics == nil {
-		m.target_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.target_metrics[ids[i]] = struct{}{}
-	}
+// SetTargetMetricsID sets the "target_metrics" edge to the TargetMetrics entity by id.
+func (m *MetricsMutation) SetTargetMetricsID(id int) {
+	m.target_metrics = &id
 }
 
 // ClearTargetMetrics clears the "target_metrics" edge to the TargetMetrics entity.
@@ -14696,29 +14133,20 @@ func (m *MetricsMutation) TargetMetricsCleared() bool {
 	return m.clearedtarget_metrics
 }
 
-// RemoveTargetMetricIDs removes the "target_metrics" edge to the TargetMetrics entity by IDs.
-func (m *MetricsMutation) RemoveTargetMetricIDs(ids ...int) {
-	if m.removedtarget_metrics == nil {
-		m.removedtarget_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.target_metrics, ids[i])
-		m.removedtarget_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTargetMetrics returns the removed IDs of the "target_metrics" edge to the TargetMetrics entity.
-func (m *MetricsMutation) RemovedTargetMetricsIDs() (ids []int) {
-	for id := range m.removedtarget_metrics {
-		ids = append(ids, id)
+// TargetMetricsID returns the "target_metrics" edge ID in the mutation.
+func (m *MetricsMutation) TargetMetricsID() (id int, exists bool) {
+	if m.target_metrics != nil {
+		return *m.target_metrics, true
 	}
 	return
 }
 
 // TargetMetricsIDs returns the "target_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TargetMetricsID instead. It exists only for internal usage by the builders.
 func (m *MetricsMutation) TargetMetricsIDs() (ids []int) {
-	for id := range m.target_metrics {
-		ids = append(ids, id)
+	if id := m.target_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -14727,17 +14155,11 @@ func (m *MetricsMutation) TargetMetricsIDs() (ids []int) {
 func (m *MetricsMutation) ResetTargetMetrics() {
 	m.target_metrics = nil
 	m.clearedtarget_metrics = false
-	m.removedtarget_metrics = nil
 }
 
-// AddPackageMetricIDs adds the "package_metrics" edge to the PackageMetrics entity by ids.
-func (m *MetricsMutation) AddPackageMetricIDs(ids ...int) {
-	if m.package_metrics == nil {
-		m.package_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.package_metrics[ids[i]] = struct{}{}
-	}
+// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by id.
+func (m *MetricsMutation) SetPackageMetricsID(id int) {
+	m.package_metrics = &id
 }
 
 // ClearPackageMetrics clears the "package_metrics" edge to the PackageMetrics entity.
@@ -14750,29 +14172,20 @@ func (m *MetricsMutation) PackageMetricsCleared() bool {
 	return m.clearedpackage_metrics
 }
 
-// RemovePackageMetricIDs removes the "package_metrics" edge to the PackageMetrics entity by IDs.
-func (m *MetricsMutation) RemovePackageMetricIDs(ids ...int) {
-	if m.removedpackage_metrics == nil {
-		m.removedpackage_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.package_metrics, ids[i])
-		m.removedpackage_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedPackageMetrics returns the removed IDs of the "package_metrics" edge to the PackageMetrics entity.
-func (m *MetricsMutation) RemovedPackageMetricsIDs() (ids []int) {
-	for id := range m.removedpackage_metrics {
-		ids = append(ids, id)
+// PackageMetricsID returns the "package_metrics" edge ID in the mutation.
+func (m *MetricsMutation) PackageMetricsID() (id int, exists bool) {
+	if m.package_metrics != nil {
+		return *m.package_metrics, true
 	}
 	return
 }
 
 // PackageMetricsIDs returns the "package_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// PackageMetricsID instead. It exists only for internal usage by the builders.
 func (m *MetricsMutation) PackageMetricsIDs() (ids []int) {
-	for id := range m.package_metrics {
-		ids = append(ids, id)
+	if id := m.package_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -14781,17 +14194,11 @@ func (m *MetricsMutation) PackageMetricsIDs() (ids []int) {
 func (m *MetricsMutation) ResetPackageMetrics() {
 	m.package_metrics = nil
 	m.clearedpackage_metrics = false
-	m.removedpackage_metrics = nil
 }
 
-// AddTimingMetricIDs adds the "timing_metrics" edge to the TimingMetrics entity by ids.
-func (m *MetricsMutation) AddTimingMetricIDs(ids ...int) {
-	if m.timing_metrics == nil {
-		m.timing_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.timing_metrics[ids[i]] = struct{}{}
-	}
+// SetTimingMetricsID sets the "timing_metrics" edge to the TimingMetrics entity by id.
+func (m *MetricsMutation) SetTimingMetricsID(id int) {
+	m.timing_metrics = &id
 }
 
 // ClearTimingMetrics clears the "timing_metrics" edge to the TimingMetrics entity.
@@ -14804,29 +14211,20 @@ func (m *MetricsMutation) TimingMetricsCleared() bool {
 	return m.clearedtiming_metrics
 }
 
-// RemoveTimingMetricIDs removes the "timing_metrics" edge to the TimingMetrics entity by IDs.
-func (m *MetricsMutation) RemoveTimingMetricIDs(ids ...int) {
-	if m.removedtiming_metrics == nil {
-		m.removedtiming_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.timing_metrics, ids[i])
-		m.removedtiming_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTimingMetrics returns the removed IDs of the "timing_metrics" edge to the TimingMetrics entity.
-func (m *MetricsMutation) RemovedTimingMetricsIDs() (ids []int) {
-	for id := range m.removedtiming_metrics {
-		ids = append(ids, id)
+// TimingMetricsID returns the "timing_metrics" edge ID in the mutation.
+func (m *MetricsMutation) TimingMetricsID() (id int, exists bool) {
+	if m.timing_metrics != nil {
+		return *m.timing_metrics, true
 	}
 	return
 }
 
 // TimingMetricsIDs returns the "timing_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TimingMetricsID instead. It exists only for internal usage by the builders.
 func (m *MetricsMutation) TimingMetricsIDs() (ids []int) {
-	for id := range m.timing_metrics {
-		ids = append(ids, id)
+	if id := m.timing_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -14835,17 +14233,11 @@ func (m *MetricsMutation) TimingMetricsIDs() (ids []int) {
 func (m *MetricsMutation) ResetTimingMetrics() {
 	m.timing_metrics = nil
 	m.clearedtiming_metrics = false
-	m.removedtiming_metrics = nil
 }
 
-// AddCumulativeMetricIDs adds the "cumulative_metrics" edge to the CumulativeMetrics entity by ids.
-func (m *MetricsMutation) AddCumulativeMetricIDs(ids ...int) {
-	if m.cumulative_metrics == nil {
-		m.cumulative_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.cumulative_metrics[ids[i]] = struct{}{}
-	}
+// SetCumulativeMetricsID sets the "cumulative_metrics" edge to the CumulativeMetrics entity by id.
+func (m *MetricsMutation) SetCumulativeMetricsID(id int) {
+	m.cumulative_metrics = &id
 }
 
 // ClearCumulativeMetrics clears the "cumulative_metrics" edge to the CumulativeMetrics entity.
@@ -14858,29 +14250,20 @@ func (m *MetricsMutation) CumulativeMetricsCleared() bool {
 	return m.clearedcumulative_metrics
 }
 
-// RemoveCumulativeMetricIDs removes the "cumulative_metrics" edge to the CumulativeMetrics entity by IDs.
-func (m *MetricsMutation) RemoveCumulativeMetricIDs(ids ...int) {
-	if m.removedcumulative_metrics == nil {
-		m.removedcumulative_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.cumulative_metrics, ids[i])
-		m.removedcumulative_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedCumulativeMetrics returns the removed IDs of the "cumulative_metrics" edge to the CumulativeMetrics entity.
-func (m *MetricsMutation) RemovedCumulativeMetricsIDs() (ids []int) {
-	for id := range m.removedcumulative_metrics {
-		ids = append(ids, id)
+// CumulativeMetricsID returns the "cumulative_metrics" edge ID in the mutation.
+func (m *MetricsMutation) CumulativeMetricsID() (id int, exists bool) {
+	if m.cumulative_metrics != nil {
+		return *m.cumulative_metrics, true
 	}
 	return
 }
 
 // CumulativeMetricsIDs returns the "cumulative_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CumulativeMetricsID instead. It exists only for internal usage by the builders.
 func (m *MetricsMutation) CumulativeMetricsIDs() (ids []int) {
-	for id := range m.cumulative_metrics {
-		ids = append(ids, id)
+	if id := m.cumulative_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -14889,17 +14272,11 @@ func (m *MetricsMutation) CumulativeMetricsIDs() (ids []int) {
 func (m *MetricsMutation) ResetCumulativeMetrics() {
 	m.cumulative_metrics = nil
 	m.clearedcumulative_metrics = false
-	m.removedcumulative_metrics = nil
 }
 
-// AddArtifactMetricIDs adds the "artifact_metrics" edge to the ArtifactMetrics entity by ids.
-func (m *MetricsMutation) AddArtifactMetricIDs(ids ...int) {
-	if m.artifact_metrics == nil {
-		m.artifact_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.artifact_metrics[ids[i]] = struct{}{}
-	}
+// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by id.
+func (m *MetricsMutation) SetArtifactMetricsID(id int) {
+	m.artifact_metrics = &id
 }
 
 // ClearArtifactMetrics clears the "artifact_metrics" edge to the ArtifactMetrics entity.
@@ -14912,29 +14289,20 @@ func (m *MetricsMutation) ArtifactMetricsCleared() bool {
 	return m.clearedartifact_metrics
 }
 
-// RemoveArtifactMetricIDs removes the "artifact_metrics" edge to the ArtifactMetrics entity by IDs.
-func (m *MetricsMutation) RemoveArtifactMetricIDs(ids ...int) {
-	if m.removedartifact_metrics == nil {
-		m.removedartifact_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.artifact_metrics, ids[i])
-		m.removedartifact_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedArtifactMetrics returns the removed IDs of the "artifact_metrics" edge to the ArtifactMetrics entity.
-func (m *MetricsMutation) RemovedArtifactMetricsIDs() (ids []int) {
-	for id := range m.removedartifact_metrics {
-		ids = append(ids, id)
+// ArtifactMetricsID returns the "artifact_metrics" edge ID in the mutation.
+func (m *MetricsMutation) ArtifactMetricsID() (id int, exists bool) {
+	if m.artifact_metrics != nil {
+		return *m.artifact_metrics, true
 	}
 	return
 }
 
 // ArtifactMetricsIDs returns the "artifact_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ArtifactMetricsID instead. It exists only for internal usage by the builders.
 func (m *MetricsMutation) ArtifactMetricsIDs() (ids []int) {
-	for id := range m.artifact_metrics {
-		ids = append(ids, id)
+	if id := m.artifact_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -14943,17 +14311,11 @@ func (m *MetricsMutation) ArtifactMetricsIDs() (ids []int) {
 func (m *MetricsMutation) ResetArtifactMetrics() {
 	m.artifact_metrics = nil
 	m.clearedartifact_metrics = false
-	m.removedartifact_metrics = nil
 }
 
-// AddNetworkMetricIDs adds the "network_metrics" edge to the NetworkMetrics entity by ids.
-func (m *MetricsMutation) AddNetworkMetricIDs(ids ...int) {
-	if m.network_metrics == nil {
-		m.network_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.network_metrics[ids[i]] = struct{}{}
-	}
+// SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by id.
+func (m *MetricsMutation) SetNetworkMetricsID(id int) {
+	m.network_metrics = &id
 }
 
 // ClearNetworkMetrics clears the "network_metrics" edge to the NetworkMetrics entity.
@@ -14966,29 +14328,20 @@ func (m *MetricsMutation) NetworkMetricsCleared() bool {
 	return m.clearednetwork_metrics
 }
 
-// RemoveNetworkMetricIDs removes the "network_metrics" edge to the NetworkMetrics entity by IDs.
-func (m *MetricsMutation) RemoveNetworkMetricIDs(ids ...int) {
-	if m.removednetwork_metrics == nil {
-		m.removednetwork_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.network_metrics, ids[i])
-		m.removednetwork_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedNetworkMetrics returns the removed IDs of the "network_metrics" edge to the NetworkMetrics entity.
-func (m *MetricsMutation) RemovedNetworkMetricsIDs() (ids []int) {
-	for id := range m.removednetwork_metrics {
-		ids = append(ids, id)
+// NetworkMetricsID returns the "network_metrics" edge ID in the mutation.
+func (m *MetricsMutation) NetworkMetricsID() (id int, exists bool) {
+	if m.network_metrics != nil {
+		return *m.network_metrics, true
 	}
 	return
 }
 
 // NetworkMetricsIDs returns the "network_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// NetworkMetricsID instead. It exists only for internal usage by the builders.
 func (m *MetricsMutation) NetworkMetricsIDs() (ids []int) {
-	for id := range m.network_metrics {
-		ids = append(ids, id)
+	if id := m.network_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -14997,17 +14350,11 @@ func (m *MetricsMutation) NetworkMetricsIDs() (ids []int) {
 func (m *MetricsMutation) ResetNetworkMetrics() {
 	m.network_metrics = nil
 	m.clearednetwork_metrics = false
-	m.removednetwork_metrics = nil
 }
 
-// AddDynamicExecutionMetricIDs adds the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ids.
-func (m *MetricsMutation) AddDynamicExecutionMetricIDs(ids ...int) {
-	if m.dynamic_execution_metrics == nil {
-		m.dynamic_execution_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.dynamic_execution_metrics[ids[i]] = struct{}{}
-	}
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by id.
+func (m *MetricsMutation) SetDynamicExecutionMetricsID(id int) {
+	m.dynamic_execution_metrics = &id
 }
 
 // ClearDynamicExecutionMetrics clears the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
@@ -15020,29 +14367,20 @@ func (m *MetricsMutation) DynamicExecutionMetricsCleared() bool {
 	return m.cleareddynamic_execution_metrics
 }
 
-// RemoveDynamicExecutionMetricIDs removes the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by IDs.
-func (m *MetricsMutation) RemoveDynamicExecutionMetricIDs(ids ...int) {
-	if m.removeddynamic_execution_metrics == nil {
-		m.removeddynamic_execution_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.dynamic_execution_metrics, ids[i])
-		m.removeddynamic_execution_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedDynamicExecutionMetrics returns the removed IDs of the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
-func (m *MetricsMutation) RemovedDynamicExecutionMetricsIDs() (ids []int) {
-	for id := range m.removeddynamic_execution_metrics {
-		ids = append(ids, id)
+// DynamicExecutionMetricsID returns the "dynamic_execution_metrics" edge ID in the mutation.
+func (m *MetricsMutation) DynamicExecutionMetricsID() (id int, exists bool) {
+	if m.dynamic_execution_metrics != nil {
+		return *m.dynamic_execution_metrics, true
 	}
 	return
 }
 
 // DynamicExecutionMetricsIDs returns the "dynamic_execution_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DynamicExecutionMetricsID instead. It exists only for internal usage by the builders.
 func (m *MetricsMutation) DynamicExecutionMetricsIDs() (ids []int) {
-	for id := range m.dynamic_execution_metrics {
-		ids = append(ids, id)
+	if id := m.dynamic_execution_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -15051,17 +14389,11 @@ func (m *MetricsMutation) DynamicExecutionMetricsIDs() (ids []int) {
 func (m *MetricsMutation) ResetDynamicExecutionMetrics() {
 	m.dynamic_execution_metrics = nil
 	m.cleareddynamic_execution_metrics = false
-	m.removeddynamic_execution_metrics = nil
 }
 
-// AddBuildGraphMetricIDs adds the "build_graph_metrics" edge to the BuildGraphMetrics entity by ids.
-func (m *MetricsMutation) AddBuildGraphMetricIDs(ids ...int) {
-	if m.build_graph_metrics == nil {
-		m.build_graph_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.build_graph_metrics[ids[i]] = struct{}{}
-	}
+// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by id.
+func (m *MetricsMutation) SetBuildGraphMetricsID(id int) {
+	m.build_graph_metrics = &id
 }
 
 // ClearBuildGraphMetrics clears the "build_graph_metrics" edge to the BuildGraphMetrics entity.
@@ -15074,29 +14406,20 @@ func (m *MetricsMutation) BuildGraphMetricsCleared() bool {
 	return m.clearedbuild_graph_metrics
 }
 
-// RemoveBuildGraphMetricIDs removes the "build_graph_metrics" edge to the BuildGraphMetrics entity by IDs.
-func (m *MetricsMutation) RemoveBuildGraphMetricIDs(ids ...int) {
-	if m.removedbuild_graph_metrics == nil {
-		m.removedbuild_graph_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.build_graph_metrics, ids[i])
-		m.removedbuild_graph_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedBuildGraphMetrics returns the removed IDs of the "build_graph_metrics" edge to the BuildGraphMetrics entity.
-func (m *MetricsMutation) RemovedBuildGraphMetricsIDs() (ids []int) {
-	for id := range m.removedbuild_graph_metrics {
-		ids = append(ids, id)
+// BuildGraphMetricsID returns the "build_graph_metrics" edge ID in the mutation.
+func (m *MetricsMutation) BuildGraphMetricsID() (id int, exists bool) {
+	if m.build_graph_metrics != nil {
+		return *m.build_graph_metrics, true
 	}
 	return
 }
 
 // BuildGraphMetricsIDs returns the "build_graph_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BuildGraphMetricsID instead. It exists only for internal usage by the builders.
 func (m *MetricsMutation) BuildGraphMetricsIDs() (ids []int) {
-	for id := range m.build_graph_metrics {
-		ids = append(ids, id)
+	if id := m.build_graph_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -15105,7 +14428,6 @@ func (m *MetricsMutation) BuildGraphMetricsIDs() (ids []int) {
 func (m *MetricsMutation) ResetBuildGraphMetrics() {
 	m.build_graph_metrics = nil
 	m.clearedbuild_graph_metrics = false
-	m.removedbuild_graph_metrics = nil
 }
 
 // Where appends a list predicates to the MetricsMutation builder.
@@ -15262,65 +14584,45 @@ func (m *MetricsMutation) AddedIDs(name string) []ent.Value {
 			return []ent.Value{*id}
 		}
 	case metrics.EdgeActionSummary:
-		ids := make([]ent.Value, 0, len(m.action_summary))
-		for id := range m.action_summary {
-			ids = append(ids, id)
+		if id := m.action_summary; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case metrics.EdgeMemoryMetrics:
-		ids := make([]ent.Value, 0, len(m.memory_metrics))
-		for id := range m.memory_metrics {
-			ids = append(ids, id)
+		if id := m.memory_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case metrics.EdgeTargetMetrics:
-		ids := make([]ent.Value, 0, len(m.target_metrics))
-		for id := range m.target_metrics {
-			ids = append(ids, id)
+		if id := m.target_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case metrics.EdgePackageMetrics:
-		ids := make([]ent.Value, 0, len(m.package_metrics))
-		for id := range m.package_metrics {
-			ids = append(ids, id)
+		if id := m.package_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case metrics.EdgeTimingMetrics:
-		ids := make([]ent.Value, 0, len(m.timing_metrics))
-		for id := range m.timing_metrics {
-			ids = append(ids, id)
+		if id := m.timing_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case metrics.EdgeCumulativeMetrics:
-		ids := make([]ent.Value, 0, len(m.cumulative_metrics))
-		for id := range m.cumulative_metrics {
-			ids = append(ids, id)
+		if id := m.cumulative_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case metrics.EdgeArtifactMetrics:
-		ids := make([]ent.Value, 0, len(m.artifact_metrics))
-		for id := range m.artifact_metrics {
-			ids = append(ids, id)
+		if id := m.artifact_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case metrics.EdgeNetworkMetrics:
-		ids := make([]ent.Value, 0, len(m.network_metrics))
-		for id := range m.network_metrics {
-			ids = append(ids, id)
+		if id := m.network_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case metrics.EdgeDynamicExecutionMetrics:
-		ids := make([]ent.Value, 0, len(m.dynamic_execution_metrics))
-		for id := range m.dynamic_execution_metrics {
-			ids = append(ids, id)
+		if id := m.dynamic_execution_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case metrics.EdgeBuildGraphMetrics:
-		ids := make([]ent.Value, 0, len(m.build_graph_metrics))
-		for id := range m.build_graph_metrics {
-			ids = append(ids, id)
+		if id := m.build_graph_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -15328,104 +14630,12 @@ func (m *MetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *MetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 11)
-	if m.removedaction_summary != nil {
-		edges = append(edges, metrics.EdgeActionSummary)
-	}
-	if m.removedmemory_metrics != nil {
-		edges = append(edges, metrics.EdgeMemoryMetrics)
-	}
-	if m.removedtarget_metrics != nil {
-		edges = append(edges, metrics.EdgeTargetMetrics)
-	}
-	if m.removedpackage_metrics != nil {
-		edges = append(edges, metrics.EdgePackageMetrics)
-	}
-	if m.removedtiming_metrics != nil {
-		edges = append(edges, metrics.EdgeTimingMetrics)
-	}
-	if m.removedcumulative_metrics != nil {
-		edges = append(edges, metrics.EdgeCumulativeMetrics)
-	}
-	if m.removedartifact_metrics != nil {
-		edges = append(edges, metrics.EdgeArtifactMetrics)
-	}
-	if m.removednetwork_metrics != nil {
-		edges = append(edges, metrics.EdgeNetworkMetrics)
-	}
-	if m.removeddynamic_execution_metrics != nil {
-		edges = append(edges, metrics.EdgeDynamicExecutionMetrics)
-	}
-	if m.removedbuild_graph_metrics != nil {
-		edges = append(edges, metrics.EdgeBuildGraphMetrics)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *MetricsMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case metrics.EdgeActionSummary:
-		ids := make([]ent.Value, 0, len(m.removedaction_summary))
-		for id := range m.removedaction_summary {
-			ids = append(ids, id)
-		}
-		return ids
-	case metrics.EdgeMemoryMetrics:
-		ids := make([]ent.Value, 0, len(m.removedmemory_metrics))
-		for id := range m.removedmemory_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	case metrics.EdgeTargetMetrics:
-		ids := make([]ent.Value, 0, len(m.removedtarget_metrics))
-		for id := range m.removedtarget_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	case metrics.EdgePackageMetrics:
-		ids := make([]ent.Value, 0, len(m.removedpackage_metrics))
-		for id := range m.removedpackage_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	case metrics.EdgeTimingMetrics:
-		ids := make([]ent.Value, 0, len(m.removedtiming_metrics))
-		for id := range m.removedtiming_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	case metrics.EdgeCumulativeMetrics:
-		ids := make([]ent.Value, 0, len(m.removedcumulative_metrics))
-		for id := range m.removedcumulative_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	case metrics.EdgeArtifactMetrics:
-		ids := make([]ent.Value, 0, len(m.removedartifact_metrics))
-		for id := range m.removedartifact_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	case metrics.EdgeNetworkMetrics:
-		ids := make([]ent.Value, 0, len(m.removednetwork_metrics))
-		for id := range m.removednetwork_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	case metrics.EdgeDynamicExecutionMetrics:
-		ids := make([]ent.Value, 0, len(m.removeddynamic_execution_metrics))
-		for id := range m.removeddynamic_execution_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	case metrics.EdgeBuildGraphMetrics:
-		ids := make([]ent.Value, 0, len(m.removedbuild_graph_metrics))
-		for id := range m.removedbuild_graph_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -15505,6 +14715,36 @@ func (m *MetricsMutation) ClearEdge(name string) error {
 	case metrics.EdgeBazelInvocation:
 		m.ClearBazelInvocation()
 		return nil
+	case metrics.EdgeActionSummary:
+		m.ClearActionSummary()
+		return nil
+	case metrics.EdgeMemoryMetrics:
+		m.ClearMemoryMetrics()
+		return nil
+	case metrics.EdgeTargetMetrics:
+		m.ClearTargetMetrics()
+		return nil
+	case metrics.EdgePackageMetrics:
+		m.ClearPackageMetrics()
+		return nil
+	case metrics.EdgeTimingMetrics:
+		m.ClearTimingMetrics()
+		return nil
+	case metrics.EdgeCumulativeMetrics:
+		m.ClearCumulativeMetrics()
+		return nil
+	case metrics.EdgeArtifactMetrics:
+		m.ClearArtifactMetrics()
+		return nil
+	case metrics.EdgeNetworkMetrics:
+		m.ClearNetworkMetrics()
+		return nil
+	case metrics.EdgeDynamicExecutionMetrics:
+		m.ClearDynamicExecutionMetrics()
+		return nil
+	case metrics.EdgeBuildGraphMetrics:
+		m.ClearBuildGraphMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown Metrics unique edge %s", name)
 }
@@ -15560,8 +14800,7 @@ type MissDetailMutation struct {
 	count                          *int32
 	addcount                       *int32
 	clearedFields                  map[string]struct{}
-	action_cache_statistics        map[int]struct{}
-	removedaction_cache_statistics map[int]struct{}
+	action_cache_statistics        *int
 	clearedaction_cache_statistics bool
 	done                           bool
 	oldValue                       func(context.Context) (*MissDetail, error)
@@ -15785,14 +15024,9 @@ func (m *MissDetailMutation) ResetCount() {
 	delete(m.clearedFields, missdetail.FieldCount)
 }
 
-// AddActionCacheStatisticIDs adds the "action_cache_statistics" edge to the ActionCacheStatistics entity by ids.
-func (m *MissDetailMutation) AddActionCacheStatisticIDs(ids ...int) {
-	if m.action_cache_statistics == nil {
-		m.action_cache_statistics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.action_cache_statistics[ids[i]] = struct{}{}
-	}
+// SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by id.
+func (m *MissDetailMutation) SetActionCacheStatisticsID(id int) {
+	m.action_cache_statistics = &id
 }
 
 // ClearActionCacheStatistics clears the "action_cache_statistics" edge to the ActionCacheStatistics entity.
@@ -15805,29 +15039,20 @@ func (m *MissDetailMutation) ActionCacheStatisticsCleared() bool {
 	return m.clearedaction_cache_statistics
 }
 
-// RemoveActionCacheStatisticIDs removes the "action_cache_statistics" edge to the ActionCacheStatistics entity by IDs.
-func (m *MissDetailMutation) RemoveActionCacheStatisticIDs(ids ...int) {
-	if m.removedaction_cache_statistics == nil {
-		m.removedaction_cache_statistics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.action_cache_statistics, ids[i])
-		m.removedaction_cache_statistics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedActionCacheStatistics returns the removed IDs of the "action_cache_statistics" edge to the ActionCacheStatistics entity.
-func (m *MissDetailMutation) RemovedActionCacheStatisticsIDs() (ids []int) {
-	for id := range m.removedaction_cache_statistics {
-		ids = append(ids, id)
+// ActionCacheStatisticsID returns the "action_cache_statistics" edge ID in the mutation.
+func (m *MissDetailMutation) ActionCacheStatisticsID() (id int, exists bool) {
+	if m.action_cache_statistics != nil {
+		return *m.action_cache_statistics, true
 	}
 	return
 }
 
 // ActionCacheStatisticsIDs returns the "action_cache_statistics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ActionCacheStatisticsID instead. It exists only for internal usage by the builders.
 func (m *MissDetailMutation) ActionCacheStatisticsIDs() (ids []int) {
-	for id := range m.action_cache_statistics {
-		ids = append(ids, id)
+	if id := m.action_cache_statistics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -15836,7 +15061,6 @@ func (m *MissDetailMutation) ActionCacheStatisticsIDs() (ids []int) {
 func (m *MissDetailMutation) ResetActionCacheStatistics() {
 	m.action_cache_statistics = nil
 	m.clearedaction_cache_statistics = false
-	m.removedaction_cache_statistics = nil
 }
 
 // Where appends a list predicates to the MissDetailMutation builder.
@@ -16031,11 +15255,9 @@ func (m *MissDetailMutation) AddedEdges() []string {
 func (m *MissDetailMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case missdetail.EdgeActionCacheStatistics:
-		ids := make([]ent.Value, 0, len(m.action_cache_statistics))
-		for id := range m.action_cache_statistics {
-			ids = append(ids, id)
+		if id := m.action_cache_statistics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -16043,23 +15265,12 @@ func (m *MissDetailMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *MissDetailMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedaction_cache_statistics != nil {
-		edges = append(edges, missdetail.EdgeActionCacheStatistics)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *MissDetailMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case missdetail.EdgeActionCacheStatistics:
-		ids := make([]ent.Value, 0, len(m.removedaction_cache_statistics))
-		for id := range m.removedaction_cache_statistics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -16086,6 +15297,9 @@ func (m *MissDetailMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *MissDetailMutation) ClearEdge(name string) error {
 	switch name {
+	case missdetail.EdgeActionCacheStatistics:
+		m.ClearActionCacheStatistics()
+		return nil
 	}
 	return fmt.Errorf("unknown MissDetail unique edge %s", name)
 }
@@ -16108,8 +15322,7 @@ type NamedSetOfFilesMutation struct {
 	typ                 string
 	id                  *int
 	clearedFields       map[string]struct{}
-	output_group        map[int]struct{}
-	removedoutput_group map[int]struct{}
+	output_group        *int
 	clearedoutput_group bool
 	files               map[int]struct{}
 	removedfiles        map[int]struct{}
@@ -16219,14 +15432,9 @@ func (m *NamedSetOfFilesMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// AddOutputGroupIDs adds the "output_group" edge to the OutputGroup entity by ids.
-func (m *NamedSetOfFilesMutation) AddOutputGroupIDs(ids ...int) {
-	if m.output_group == nil {
-		m.output_group = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.output_group[ids[i]] = struct{}{}
-	}
+// SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by id.
+func (m *NamedSetOfFilesMutation) SetOutputGroupID(id int) {
+	m.output_group = &id
 }
 
 // ClearOutputGroup clears the "output_group" edge to the OutputGroup entity.
@@ -16239,29 +15447,20 @@ func (m *NamedSetOfFilesMutation) OutputGroupCleared() bool {
 	return m.clearedoutput_group
 }
 
-// RemoveOutputGroupIDs removes the "output_group" edge to the OutputGroup entity by IDs.
-func (m *NamedSetOfFilesMutation) RemoveOutputGroupIDs(ids ...int) {
-	if m.removedoutput_group == nil {
-		m.removedoutput_group = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.output_group, ids[i])
-		m.removedoutput_group[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedOutputGroup returns the removed IDs of the "output_group" edge to the OutputGroup entity.
-func (m *NamedSetOfFilesMutation) RemovedOutputGroupIDs() (ids []int) {
-	for id := range m.removedoutput_group {
-		ids = append(ids, id)
+// OutputGroupID returns the "output_group" edge ID in the mutation.
+func (m *NamedSetOfFilesMutation) OutputGroupID() (id int, exists bool) {
+	if m.output_group != nil {
+		return *m.output_group, true
 	}
 	return
 }
 
 // OutputGroupIDs returns the "output_group" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OutputGroupID instead. It exists only for internal usage by the builders.
 func (m *NamedSetOfFilesMutation) OutputGroupIDs() (ids []int) {
-	for id := range m.output_group {
-		ids = append(ids, id)
+	if id := m.output_group; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -16270,7 +15469,6 @@ func (m *NamedSetOfFilesMutation) OutputGroupIDs() (ids []int) {
 func (m *NamedSetOfFilesMutation) ResetOutputGroup() {
 	m.output_group = nil
 	m.clearedoutput_group = false
-	m.removedoutput_group = nil
 }
 
 // AddFileIDs adds the "files" edge to the TestFile entity by ids.
@@ -16492,11 +15690,9 @@ func (m *NamedSetOfFilesMutation) AddedEdges() []string {
 func (m *NamedSetOfFilesMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case namedsetoffiles.EdgeOutputGroup:
-		ids := make([]ent.Value, 0, len(m.output_group))
-		for id := range m.output_group {
-			ids = append(ids, id)
+		if id := m.output_group; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case namedsetoffiles.EdgeFiles:
 		ids := make([]ent.Value, 0, len(m.files))
 		for id := range m.files {
@@ -16514,9 +15710,6 @@ func (m *NamedSetOfFilesMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *NamedSetOfFilesMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.removedoutput_group != nil {
-		edges = append(edges, namedsetoffiles.EdgeOutputGroup)
-	}
 	if m.removedfiles != nil {
 		edges = append(edges, namedsetoffiles.EdgeFiles)
 	}
@@ -16527,12 +15720,6 @@ func (m *NamedSetOfFilesMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *NamedSetOfFilesMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case namedsetoffiles.EdgeOutputGroup:
-		ids := make([]ent.Value, 0, len(m.removedoutput_group))
-		for id := range m.removedoutput_group {
-			ids = append(ids, id)
-		}
-		return ids
 	case namedsetoffiles.EdgeFiles:
 		ids := make([]ent.Value, 0, len(m.removedfiles))
 		for id := range m.removedfiles {
@@ -16576,6 +15763,9 @@ func (m *NamedSetOfFilesMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *NamedSetOfFilesMutation) ClearEdge(name string) error {
 	switch name {
+	case namedsetoffiles.EdgeOutputGroup:
+		m.ClearOutputGroup()
+		return nil
 	case namedsetoffiles.EdgeFileSets:
 		m.ClearFileSets()
 		return nil
@@ -16607,11 +15797,9 @@ type NetworkMetricsMutation struct {
 	typ                         string
 	id                          *int
 	clearedFields               map[string]struct{}
-	metrics                     map[int]struct{}
-	removedmetrics              map[int]struct{}
+	metrics                     *int
 	clearedmetrics              bool
-	system_network_stats        map[int]struct{}
-	removedsystem_network_stats map[int]struct{}
+	system_network_stats        *int
 	clearedsystem_network_stats bool
 	done                        bool
 	oldValue                    func(context.Context) (*NetworkMetrics, error)
@@ -16716,14 +15904,9 @@ func (m *NetworkMetricsMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by ids.
-func (m *NetworkMetricsMutation) AddMetricIDs(ids ...int) {
-	if m.metrics == nil {
-		m.metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.metrics[ids[i]] = struct{}{}
-	}
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *NetworkMetricsMutation) SetMetricsID(id int) {
+	m.metrics = &id
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -16736,29 +15919,20 @@ func (m *NetworkMetricsMutation) MetricsCleared() bool {
 	return m.clearedmetrics
 }
 
-// RemoveMetricIDs removes the "metrics" edge to the Metrics entity by IDs.
-func (m *NetworkMetricsMutation) RemoveMetricIDs(ids ...int) {
-	if m.removedmetrics == nil {
-		m.removedmetrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.metrics, ids[i])
-		m.removedmetrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMetrics returns the removed IDs of the "metrics" edge to the Metrics entity.
-func (m *NetworkMetricsMutation) RemovedMetricsIDs() (ids []int) {
-	for id := range m.removedmetrics {
-		ids = append(ids, id)
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *NetworkMetricsMutation) MetricsID() (id int, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
 	}
 	return
 }
 
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
 func (m *NetworkMetricsMutation) MetricsIDs() (ids []int) {
-	for id := range m.metrics {
-		ids = append(ids, id)
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -16767,17 +15941,11 @@ func (m *NetworkMetricsMutation) MetricsIDs() (ids []int) {
 func (m *NetworkMetricsMutation) ResetMetrics() {
 	m.metrics = nil
 	m.clearedmetrics = false
-	m.removedmetrics = nil
 }
 
-// AddSystemNetworkStatIDs adds the "system_network_stats" edge to the SystemNetworkStats entity by ids.
-func (m *NetworkMetricsMutation) AddSystemNetworkStatIDs(ids ...int) {
-	if m.system_network_stats == nil {
-		m.system_network_stats = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.system_network_stats[ids[i]] = struct{}{}
-	}
+// SetSystemNetworkStatsID sets the "system_network_stats" edge to the SystemNetworkStats entity by id.
+func (m *NetworkMetricsMutation) SetSystemNetworkStatsID(id int) {
+	m.system_network_stats = &id
 }
 
 // ClearSystemNetworkStats clears the "system_network_stats" edge to the SystemNetworkStats entity.
@@ -16790,29 +15958,20 @@ func (m *NetworkMetricsMutation) SystemNetworkStatsCleared() bool {
 	return m.clearedsystem_network_stats
 }
 
-// RemoveSystemNetworkStatIDs removes the "system_network_stats" edge to the SystemNetworkStats entity by IDs.
-func (m *NetworkMetricsMutation) RemoveSystemNetworkStatIDs(ids ...int) {
-	if m.removedsystem_network_stats == nil {
-		m.removedsystem_network_stats = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.system_network_stats, ids[i])
-		m.removedsystem_network_stats[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedSystemNetworkStats returns the removed IDs of the "system_network_stats" edge to the SystemNetworkStats entity.
-func (m *NetworkMetricsMutation) RemovedSystemNetworkStatsIDs() (ids []int) {
-	for id := range m.removedsystem_network_stats {
-		ids = append(ids, id)
+// SystemNetworkStatsID returns the "system_network_stats" edge ID in the mutation.
+func (m *NetworkMetricsMutation) SystemNetworkStatsID() (id int, exists bool) {
+	if m.system_network_stats != nil {
+		return *m.system_network_stats, true
 	}
 	return
 }
 
 // SystemNetworkStatsIDs returns the "system_network_stats" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// SystemNetworkStatsID instead. It exists only for internal usage by the builders.
 func (m *NetworkMetricsMutation) SystemNetworkStatsIDs() (ids []int) {
-	for id := range m.system_network_stats {
-		ids = append(ids, id)
+	if id := m.system_network_stats; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -16821,7 +15980,6 @@ func (m *NetworkMetricsMutation) SystemNetworkStatsIDs() (ids []int) {
 func (m *NetworkMetricsMutation) ResetSystemNetworkStats() {
 	m.system_network_stats = nil
 	m.clearedsystem_network_stats = false
-	m.removedsystem_network_stats = nil
 }
 
 // Where appends a list predicates to the NetworkMetricsMutation builder.
@@ -16947,17 +16105,13 @@ func (m *NetworkMetricsMutation) AddedEdges() []string {
 func (m *NetworkMetricsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case networkmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.metrics))
-		for id := range m.metrics {
-			ids = append(ids, id)
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case networkmetrics.EdgeSystemNetworkStats:
-		ids := make([]ent.Value, 0, len(m.system_network_stats))
-		for id := range m.system_network_stats {
-			ids = append(ids, id)
+		if id := m.system_network_stats; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -16965,32 +16119,12 @@ func (m *NetworkMetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *NetworkMetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.removedmetrics != nil {
-		edges = append(edges, networkmetrics.EdgeMetrics)
-	}
-	if m.removedsystem_network_stats != nil {
-		edges = append(edges, networkmetrics.EdgeSystemNetworkStats)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *NetworkMetricsMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case networkmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.removedmetrics))
-		for id := range m.removedmetrics {
-			ids = append(ids, id)
-		}
-		return ids
-	case networkmetrics.EdgeSystemNetworkStats:
-		ids := make([]ent.Value, 0, len(m.removedsystem_network_stats))
-		for id := range m.removedsystem_network_stats {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -17022,6 +16156,12 @@ func (m *NetworkMetricsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *NetworkMetricsMutation) ClearEdge(name string) error {
 	switch name {
+	case networkmetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
+	case networkmetrics.EdgeSystemNetworkStats:
+		m.ClearSystemNetworkStats()
+		return nil
 	}
 	return fmt.Errorf("unknown NetworkMetrics unique edge %s", name)
 }
@@ -17049,8 +16189,7 @@ type OutputGroupMutation struct {
 	name                   *string
 	incomplete             *bool
 	clearedFields          map[string]struct{}
-	target_complete        map[int]struct{}
-	removedtarget_complete map[int]struct{}
+	target_complete        *int
 	clearedtarget_complete bool
 	inline_files           map[int]struct{}
 	removedinline_files    map[int]struct{}
@@ -17258,14 +16397,9 @@ func (m *OutputGroupMutation) ResetIncomplete() {
 	delete(m.clearedFields, outputgroup.FieldIncomplete)
 }
 
-// AddTargetCompleteIDs adds the "target_complete" edge to the TargetComplete entity by ids.
-func (m *OutputGroupMutation) AddTargetCompleteIDs(ids ...int) {
-	if m.target_complete == nil {
-		m.target_complete = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.target_complete[ids[i]] = struct{}{}
-	}
+// SetTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by id.
+func (m *OutputGroupMutation) SetTargetCompleteID(id int) {
+	m.target_complete = &id
 }
 
 // ClearTargetComplete clears the "target_complete" edge to the TargetComplete entity.
@@ -17278,29 +16412,20 @@ func (m *OutputGroupMutation) TargetCompleteCleared() bool {
 	return m.clearedtarget_complete
 }
 
-// RemoveTargetCompleteIDs removes the "target_complete" edge to the TargetComplete entity by IDs.
-func (m *OutputGroupMutation) RemoveTargetCompleteIDs(ids ...int) {
-	if m.removedtarget_complete == nil {
-		m.removedtarget_complete = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.target_complete, ids[i])
-		m.removedtarget_complete[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTargetComplete returns the removed IDs of the "target_complete" edge to the TargetComplete entity.
-func (m *OutputGroupMutation) RemovedTargetCompleteIDs() (ids []int) {
-	for id := range m.removedtarget_complete {
-		ids = append(ids, id)
+// TargetCompleteID returns the "target_complete" edge ID in the mutation.
+func (m *OutputGroupMutation) TargetCompleteID() (id int, exists bool) {
+	if m.target_complete != nil {
+		return *m.target_complete, true
 	}
 	return
 }
 
 // TargetCompleteIDs returns the "target_complete" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TargetCompleteID instead. It exists only for internal usage by the builders.
 func (m *OutputGroupMutation) TargetCompleteIDs() (ids []int) {
-	for id := range m.target_complete {
-		ids = append(ids, id)
+	if id := m.target_complete; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -17309,7 +16434,6 @@ func (m *OutputGroupMutation) TargetCompleteIDs() (ids []int) {
 func (m *OutputGroupMutation) ResetTargetComplete() {
 	m.target_complete = nil
 	m.clearedtarget_complete = false
-	m.removedtarget_complete = nil
 }
 
 // AddInlineFileIDs adds the "inline_files" edge to the TestFile entity by ids.
@@ -17588,11 +16712,9 @@ func (m *OutputGroupMutation) AddedEdges() []string {
 func (m *OutputGroupMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case outputgroup.EdgeTargetComplete:
-		ids := make([]ent.Value, 0, len(m.target_complete))
-		for id := range m.target_complete {
-			ids = append(ids, id)
+		if id := m.target_complete; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case outputgroup.EdgeInlineFiles:
 		ids := make([]ent.Value, 0, len(m.inline_files))
 		for id := range m.inline_files {
@@ -17610,9 +16732,6 @@ func (m *OutputGroupMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *OutputGroupMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.removedtarget_complete != nil {
-		edges = append(edges, outputgroup.EdgeTargetComplete)
-	}
 	if m.removedinline_files != nil {
 		edges = append(edges, outputgroup.EdgeInlineFiles)
 	}
@@ -17623,12 +16742,6 @@ func (m *OutputGroupMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *OutputGroupMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case outputgroup.EdgeTargetComplete:
-		ids := make([]ent.Value, 0, len(m.removedtarget_complete))
-		for id := range m.removedtarget_complete {
-			ids = append(ids, id)
-		}
-		return ids
 	case outputgroup.EdgeInlineFiles:
 		ids := make([]ent.Value, 0, len(m.removedinline_files))
 		for id := range m.removedinline_files {
@@ -17672,6 +16785,9 @@ func (m *OutputGroupMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *OutputGroupMutation) ClearEdge(name string) error {
 	switch name {
+	case outputgroup.EdgeTargetComplete:
+		m.ClearTargetComplete()
+		return nil
 	case outputgroup.EdgeFileSets:
 		m.ClearFileSets()
 		return nil
@@ -17714,8 +16830,7 @@ type PackageLoadMetricsMutation struct {
 	package_overhead        *uint64
 	addpackage_overhead     *int64
 	clearedFields           map[string]struct{}
-	package_metrics         map[int]struct{}
-	removedpackage_metrics  map[int]struct{}
+	package_metrics         *int
 	clearedpackage_metrics  bool
 	done                    bool
 	oldValue                func(context.Context) (*PackageLoadMetrics, error)
@@ -18219,14 +17334,9 @@ func (m *PackageLoadMetricsMutation) ResetPackageOverhead() {
 	delete(m.clearedFields, packageloadmetrics.FieldPackageOverhead)
 }
 
-// AddPackageMetricIDs adds the "package_metrics" edge to the PackageMetrics entity by ids.
-func (m *PackageLoadMetricsMutation) AddPackageMetricIDs(ids ...int) {
-	if m.package_metrics == nil {
-		m.package_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.package_metrics[ids[i]] = struct{}{}
-	}
+// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by id.
+func (m *PackageLoadMetricsMutation) SetPackageMetricsID(id int) {
+	m.package_metrics = &id
 }
 
 // ClearPackageMetrics clears the "package_metrics" edge to the PackageMetrics entity.
@@ -18239,29 +17349,20 @@ func (m *PackageLoadMetricsMutation) PackageMetricsCleared() bool {
 	return m.clearedpackage_metrics
 }
 
-// RemovePackageMetricIDs removes the "package_metrics" edge to the PackageMetrics entity by IDs.
-func (m *PackageLoadMetricsMutation) RemovePackageMetricIDs(ids ...int) {
-	if m.removedpackage_metrics == nil {
-		m.removedpackage_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.package_metrics, ids[i])
-		m.removedpackage_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedPackageMetrics returns the removed IDs of the "package_metrics" edge to the PackageMetrics entity.
-func (m *PackageLoadMetricsMutation) RemovedPackageMetricsIDs() (ids []int) {
-	for id := range m.removedpackage_metrics {
-		ids = append(ids, id)
+// PackageMetricsID returns the "package_metrics" edge ID in the mutation.
+func (m *PackageLoadMetricsMutation) PackageMetricsID() (id int, exists bool) {
+	if m.package_metrics != nil {
+		return *m.package_metrics, true
 	}
 	return
 }
 
 // PackageMetricsIDs returns the "package_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// PackageMetricsID instead. It exists only for internal usage by the builders.
 func (m *PackageLoadMetricsMutation) PackageMetricsIDs() (ids []int) {
-	for id := range m.package_metrics {
-		ids = append(ids, id)
+	if id := m.package_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -18270,7 +17371,6 @@ func (m *PackageLoadMetricsMutation) PackageMetricsIDs() (ids []int) {
 func (m *PackageLoadMetricsMutation) ResetPackageMetrics() {
 	m.package_metrics = nil
 	m.clearedpackage_metrics = false
-	m.removedpackage_metrics = nil
 }
 
 // Where appends a list predicates to the PackageLoadMetricsMutation builder.
@@ -18605,11 +17705,9 @@ func (m *PackageLoadMetricsMutation) AddedEdges() []string {
 func (m *PackageLoadMetricsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case packageloadmetrics.EdgePackageMetrics:
-		ids := make([]ent.Value, 0, len(m.package_metrics))
-		for id := range m.package_metrics {
-			ids = append(ids, id)
+		if id := m.package_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -18617,23 +17715,12 @@ func (m *PackageLoadMetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *PackageLoadMetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedpackage_metrics != nil {
-		edges = append(edges, packageloadmetrics.EdgePackageMetrics)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *PackageLoadMetricsMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case packageloadmetrics.EdgePackageMetrics:
-		ids := make([]ent.Value, 0, len(m.removedpackage_metrics))
-		for id := range m.removedpackage_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -18660,6 +17747,9 @@ func (m *PackageLoadMetricsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *PackageLoadMetricsMutation) ClearEdge(name string) error {
 	switch name {
+	case packageloadmetrics.EdgePackageMetrics:
+		m.ClearPackageMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown PackageLoadMetrics unique edge %s", name)
 }
@@ -18684,8 +17774,7 @@ type PackageMetricsMutation struct {
 	packages_loaded             *int64
 	addpackages_loaded          *int64
 	clearedFields               map[string]struct{}
-	metrics                     map[int]struct{}
-	removedmetrics              map[int]struct{}
+	metrics                     *int
 	clearedmetrics              bool
 	package_load_metrics        map[int]struct{}
 	removedpackage_load_metrics map[int]struct{}
@@ -18863,14 +17952,9 @@ func (m *PackageMetricsMutation) ResetPackagesLoaded() {
 	delete(m.clearedFields, packagemetrics.FieldPackagesLoaded)
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by ids.
-func (m *PackageMetricsMutation) AddMetricIDs(ids ...int) {
-	if m.metrics == nil {
-		m.metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.metrics[ids[i]] = struct{}{}
-	}
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *PackageMetricsMutation) SetMetricsID(id int) {
+	m.metrics = &id
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -18883,29 +17967,20 @@ func (m *PackageMetricsMutation) MetricsCleared() bool {
 	return m.clearedmetrics
 }
 
-// RemoveMetricIDs removes the "metrics" edge to the Metrics entity by IDs.
-func (m *PackageMetricsMutation) RemoveMetricIDs(ids ...int) {
-	if m.removedmetrics == nil {
-		m.removedmetrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.metrics, ids[i])
-		m.removedmetrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMetrics returns the removed IDs of the "metrics" edge to the Metrics entity.
-func (m *PackageMetricsMutation) RemovedMetricsIDs() (ids []int) {
-	for id := range m.removedmetrics {
-		ids = append(ids, id)
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *PackageMetricsMutation) MetricsID() (id int, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
 	}
 	return
 }
 
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
 func (m *PackageMetricsMutation) MetricsIDs() (ids []int) {
-	for id := range m.metrics {
-		ids = append(ids, id)
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -18914,7 +17989,6 @@ func (m *PackageMetricsMutation) MetricsIDs() (ids []int) {
 func (m *PackageMetricsMutation) ResetMetrics() {
 	m.metrics = nil
 	m.clearedmetrics = false
-	m.removedmetrics = nil
 }
 
 // AddPackageLoadMetricIDs adds the "package_load_metrics" edge to the PackageLoadMetrics entity by ids.
@@ -19143,11 +18217,9 @@ func (m *PackageMetricsMutation) AddedEdges() []string {
 func (m *PackageMetricsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case packagemetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.metrics))
-		for id := range m.metrics {
-			ids = append(ids, id)
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case packagemetrics.EdgePackageLoadMetrics:
 		ids := make([]ent.Value, 0, len(m.package_load_metrics))
 		for id := range m.package_load_metrics {
@@ -19161,9 +18233,6 @@ func (m *PackageMetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *PackageMetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.removedmetrics != nil {
-		edges = append(edges, packagemetrics.EdgeMetrics)
-	}
 	if m.removedpackage_load_metrics != nil {
 		edges = append(edges, packagemetrics.EdgePackageLoadMetrics)
 	}
@@ -19174,12 +18243,6 @@ func (m *PackageMetricsMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *PackageMetricsMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case packagemetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.removedmetrics))
-		for id := range m.removedmetrics {
-			ids = append(ids, id)
-		}
-		return ids
 	case packagemetrics.EdgePackageLoadMetrics:
 		ids := make([]ent.Value, 0, len(m.removedpackage_load_metrics))
 		for id := range m.removedpackage_load_metrics {
@@ -19218,6 +18281,9 @@ func (m *PackageMetricsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *PackageMetricsMutation) ClearEdge(name string) error {
 	switch name {
+	case packagemetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown PackageMetrics unique edge %s", name)
 }
@@ -19250,8 +18316,7 @@ type RaceStatisticsMutation struct {
 	renote_wins                      *int64
 	addrenote_wins                   *int64
 	clearedFields                    map[string]struct{}
-	dynamic_execution_metrics        map[int]struct{}
-	removeddynamic_execution_metrics map[int]struct{}
+	dynamic_execution_metrics        *int
 	cleareddynamic_execution_metrics bool
 	done                             bool
 	oldValue                         func(context.Context) (*RaceStatistics, error)
@@ -19643,14 +18708,9 @@ func (m *RaceStatisticsMutation) ResetRenoteWins() {
 	delete(m.clearedFields, racestatistics.FieldRenoteWins)
 }
 
-// AddDynamicExecutionMetricIDs adds the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ids.
-func (m *RaceStatisticsMutation) AddDynamicExecutionMetricIDs(ids ...int) {
-	if m.dynamic_execution_metrics == nil {
-		m.dynamic_execution_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.dynamic_execution_metrics[ids[i]] = struct{}{}
-	}
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by id.
+func (m *RaceStatisticsMutation) SetDynamicExecutionMetricsID(id int) {
+	m.dynamic_execution_metrics = &id
 }
 
 // ClearDynamicExecutionMetrics clears the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
@@ -19663,29 +18723,20 @@ func (m *RaceStatisticsMutation) DynamicExecutionMetricsCleared() bool {
 	return m.cleareddynamic_execution_metrics
 }
 
-// RemoveDynamicExecutionMetricIDs removes the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by IDs.
-func (m *RaceStatisticsMutation) RemoveDynamicExecutionMetricIDs(ids ...int) {
-	if m.removeddynamic_execution_metrics == nil {
-		m.removeddynamic_execution_metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.dynamic_execution_metrics, ids[i])
-		m.removeddynamic_execution_metrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedDynamicExecutionMetrics returns the removed IDs of the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
-func (m *RaceStatisticsMutation) RemovedDynamicExecutionMetricsIDs() (ids []int) {
-	for id := range m.removeddynamic_execution_metrics {
-		ids = append(ids, id)
+// DynamicExecutionMetricsID returns the "dynamic_execution_metrics" edge ID in the mutation.
+func (m *RaceStatisticsMutation) DynamicExecutionMetricsID() (id int, exists bool) {
+	if m.dynamic_execution_metrics != nil {
+		return *m.dynamic_execution_metrics, true
 	}
 	return
 }
 
 // DynamicExecutionMetricsIDs returns the "dynamic_execution_metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DynamicExecutionMetricsID instead. It exists only for internal usage by the builders.
 func (m *RaceStatisticsMutation) DynamicExecutionMetricsIDs() (ids []int) {
-	for id := range m.dynamic_execution_metrics {
-		ids = append(ids, id)
+	if id := m.dynamic_execution_metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -19694,7 +18745,6 @@ func (m *RaceStatisticsMutation) DynamicExecutionMetricsIDs() (ids []int) {
 func (m *RaceStatisticsMutation) ResetDynamicExecutionMetrics() {
 	m.dynamic_execution_metrics = nil
 	m.cleareddynamic_execution_metrics = false
-	m.removeddynamic_execution_metrics = nil
 }
 
 // Where appends a list predicates to the RaceStatisticsMutation builder.
@@ -19970,11 +19020,9 @@ func (m *RaceStatisticsMutation) AddedEdges() []string {
 func (m *RaceStatisticsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case racestatistics.EdgeDynamicExecutionMetrics:
-		ids := make([]ent.Value, 0, len(m.dynamic_execution_metrics))
-		for id := range m.dynamic_execution_metrics {
-			ids = append(ids, id)
+		if id := m.dynamic_execution_metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -19982,23 +19030,12 @@ func (m *RaceStatisticsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *RaceStatisticsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removeddynamic_execution_metrics != nil {
-		edges = append(edges, racestatistics.EdgeDynamicExecutionMetrics)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *RaceStatisticsMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case racestatistics.EdgeDynamicExecutionMetrics:
-		ids := make([]ent.Value, 0, len(m.removeddynamic_execution_metrics))
-		for id := range m.removeddynamic_execution_metrics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -20025,6 +19062,9 @@ func (m *RaceStatisticsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *RaceStatisticsMutation) ClearEdge(name string) error {
 	switch name {
+	case racestatistics.EdgeDynamicExecutionMetrics:
+		m.ClearDynamicExecutionMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown RaceStatistics unique edge %s", name)
 }
@@ -20049,8 +19089,7 @@ type ResourceUsageMutation struct {
 	name                  *string
 	value                 *string
 	clearedFields         map[string]struct{}
-	execution_info        map[int]struct{}
-	removedexecution_info map[int]struct{}
+	execution_info        *int
 	clearedexecution_info bool
 	done                  bool
 	oldValue              func(context.Context) (*ResourceUsage, error)
@@ -20253,14 +19292,9 @@ func (m *ResourceUsageMutation) ResetValue() {
 	delete(m.clearedFields, resourceusage.FieldValue)
 }
 
-// AddExecutionInfoIDs adds the "execution_info" edge to the ExectionInfo entity by ids.
-func (m *ResourceUsageMutation) AddExecutionInfoIDs(ids ...int) {
-	if m.execution_info == nil {
-		m.execution_info = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.execution_info[ids[i]] = struct{}{}
-	}
+// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by id.
+func (m *ResourceUsageMutation) SetExecutionInfoID(id int) {
+	m.execution_info = &id
 }
 
 // ClearExecutionInfo clears the "execution_info" edge to the ExectionInfo entity.
@@ -20273,29 +19307,20 @@ func (m *ResourceUsageMutation) ExecutionInfoCleared() bool {
 	return m.clearedexecution_info
 }
 
-// RemoveExecutionInfoIDs removes the "execution_info" edge to the ExectionInfo entity by IDs.
-func (m *ResourceUsageMutation) RemoveExecutionInfoIDs(ids ...int) {
-	if m.removedexecution_info == nil {
-		m.removedexecution_info = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.execution_info, ids[i])
-		m.removedexecution_info[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedExecutionInfo returns the removed IDs of the "execution_info" edge to the ExectionInfo entity.
-func (m *ResourceUsageMutation) RemovedExecutionInfoIDs() (ids []int) {
-	for id := range m.removedexecution_info {
-		ids = append(ids, id)
+// ExecutionInfoID returns the "execution_info" edge ID in the mutation.
+func (m *ResourceUsageMutation) ExecutionInfoID() (id int, exists bool) {
+	if m.execution_info != nil {
+		return *m.execution_info, true
 	}
 	return
 }
 
 // ExecutionInfoIDs returns the "execution_info" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ExecutionInfoID instead. It exists only for internal usage by the builders.
 func (m *ResourceUsageMutation) ExecutionInfoIDs() (ids []int) {
-	for id := range m.execution_info {
-		ids = append(ids, id)
+	if id := m.execution_info; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -20304,7 +19329,6 @@ func (m *ResourceUsageMutation) ExecutionInfoIDs() (ids []int) {
 func (m *ResourceUsageMutation) ResetExecutionInfo() {
 	m.execution_info = nil
 	m.clearedexecution_info = false
-	m.removedexecution_info = nil
 }
 
 // Where appends a list predicates to the ResourceUsageMutation builder.
@@ -20484,11 +19508,9 @@ func (m *ResourceUsageMutation) AddedEdges() []string {
 func (m *ResourceUsageMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case resourceusage.EdgeExecutionInfo:
-		ids := make([]ent.Value, 0, len(m.execution_info))
-		for id := range m.execution_info {
-			ids = append(ids, id)
+		if id := m.execution_info; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -20496,23 +19518,12 @@ func (m *ResourceUsageMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ResourceUsageMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedexecution_info != nil {
-		edges = append(edges, resourceusage.EdgeExecutionInfo)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ResourceUsageMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case resourceusage.EdgeExecutionInfo:
-		ids := make([]ent.Value, 0, len(m.removedexecution_info))
-		for id := range m.removedexecution_info {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -20539,6 +19550,9 @@ func (m *ResourceUsageMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *ResourceUsageMutation) ClearEdge(name string) error {
 	switch name {
+	case resourceusage.EdgeExecutionInfo:
+		m.ClearExecutionInfo()
+		return nil
 	}
 	return fmt.Errorf("unknown ResourceUsage unique edge %s", name)
 }
@@ -20565,8 +19579,7 @@ type RunnerCountMutation struct {
 	actions_executed      *int64
 	addactions_executed   *int64
 	clearedFields         map[string]struct{}
-	action_summary        map[int]struct{}
-	removedaction_summary map[int]struct{}
+	action_summary        *int
 	clearedaction_summary bool
 	done                  bool
 	oldValue              func(context.Context) (*RunnerCount, error)
@@ -20839,14 +19852,9 @@ func (m *RunnerCountMutation) ResetActionsExecuted() {
 	delete(m.clearedFields, runnercount.FieldActionsExecuted)
 }
 
-// AddActionSummaryIDs adds the "action_summary" edge to the ActionSummary entity by ids.
-func (m *RunnerCountMutation) AddActionSummaryIDs(ids ...int) {
-	if m.action_summary == nil {
-		m.action_summary = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.action_summary[ids[i]] = struct{}{}
-	}
+// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by id.
+func (m *RunnerCountMutation) SetActionSummaryID(id int) {
+	m.action_summary = &id
 }
 
 // ClearActionSummary clears the "action_summary" edge to the ActionSummary entity.
@@ -20859,29 +19867,20 @@ func (m *RunnerCountMutation) ActionSummaryCleared() bool {
 	return m.clearedaction_summary
 }
 
-// RemoveActionSummaryIDs removes the "action_summary" edge to the ActionSummary entity by IDs.
-func (m *RunnerCountMutation) RemoveActionSummaryIDs(ids ...int) {
-	if m.removedaction_summary == nil {
-		m.removedaction_summary = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.action_summary, ids[i])
-		m.removedaction_summary[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedActionSummary returns the removed IDs of the "action_summary" edge to the ActionSummary entity.
-func (m *RunnerCountMutation) RemovedActionSummaryIDs() (ids []int) {
-	for id := range m.removedaction_summary {
-		ids = append(ids, id)
+// ActionSummaryID returns the "action_summary" edge ID in the mutation.
+func (m *RunnerCountMutation) ActionSummaryID() (id int, exists bool) {
+	if m.action_summary != nil {
+		return *m.action_summary, true
 	}
 	return
 }
 
 // ActionSummaryIDs returns the "action_summary" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ActionSummaryID instead. It exists only for internal usage by the builders.
 func (m *RunnerCountMutation) ActionSummaryIDs() (ids []int) {
-	for id := range m.action_summary {
-		ids = append(ids, id)
+	if id := m.action_summary; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -20890,7 +19889,6 @@ func (m *RunnerCountMutation) ActionSummaryIDs() (ids []int) {
 func (m *RunnerCountMutation) ResetActionSummary() {
 	m.action_summary = nil
 	m.clearedaction_summary = false
-	m.removedaction_summary = nil
 }
 
 // Where appends a list predicates to the RunnerCountMutation builder.
@@ -21108,11 +20106,9 @@ func (m *RunnerCountMutation) AddedEdges() []string {
 func (m *RunnerCountMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case runnercount.EdgeActionSummary:
-		ids := make([]ent.Value, 0, len(m.action_summary))
-		for id := range m.action_summary {
-			ids = append(ids, id)
+		if id := m.action_summary; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -21120,23 +20116,12 @@ func (m *RunnerCountMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *RunnerCountMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedaction_summary != nil {
-		edges = append(edges, runnercount.EdgeActionSummary)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *RunnerCountMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case runnercount.EdgeActionSummary:
-		ids := make([]ent.Value, 0, len(m.removedaction_summary))
-		for id := range m.removedaction_summary {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -21163,6 +20148,9 @@ func (m *RunnerCountMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *RunnerCountMutation) ClearEdge(name string) error {
 	switch name {
+	case runnercount.EdgeActionSummary:
+		m.ClearActionSummary()
+		return nil
 	}
 	return fmt.Errorf("unknown RunnerCount unique edge %s", name)
 }
@@ -22397,8 +21385,7 @@ type TargetCompleteMutation struct {
 	addtest_timeout         *int64
 	test_size               *targetcomplete.TestSize
 	clearedFields           map[string]struct{}
-	target_pair             map[int]struct{}
-	removedtarget_pair      map[int]struct{}
+	target_pair             *int
 	clearedtarget_pair      bool
 	important_output        map[int]struct{}
 	removedimportant_output map[int]struct{}
@@ -22933,14 +21920,9 @@ func (m *TargetCompleteMutation) ResetTestSize() {
 	delete(m.clearedFields, targetcomplete.FieldTestSize)
 }
 
-// AddTargetPairIDs adds the "target_pair" edge to the TargetPair entity by ids.
-func (m *TargetCompleteMutation) AddTargetPairIDs(ids ...int) {
-	if m.target_pair == nil {
-		m.target_pair = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.target_pair[ids[i]] = struct{}{}
-	}
+// SetTargetPairID sets the "target_pair" edge to the TargetPair entity by id.
+func (m *TargetCompleteMutation) SetTargetPairID(id int) {
+	m.target_pair = &id
 }
 
 // ClearTargetPair clears the "target_pair" edge to the TargetPair entity.
@@ -22953,29 +21935,20 @@ func (m *TargetCompleteMutation) TargetPairCleared() bool {
 	return m.clearedtarget_pair
 }
 
-// RemoveTargetPairIDs removes the "target_pair" edge to the TargetPair entity by IDs.
-func (m *TargetCompleteMutation) RemoveTargetPairIDs(ids ...int) {
-	if m.removedtarget_pair == nil {
-		m.removedtarget_pair = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.target_pair, ids[i])
-		m.removedtarget_pair[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTargetPair returns the removed IDs of the "target_pair" edge to the TargetPair entity.
-func (m *TargetCompleteMutation) RemovedTargetPairIDs() (ids []int) {
-	for id := range m.removedtarget_pair {
-		ids = append(ids, id)
+// TargetPairID returns the "target_pair" edge ID in the mutation.
+func (m *TargetCompleteMutation) TargetPairID() (id int, exists bool) {
+	if m.target_pair != nil {
+		return *m.target_pair, true
 	}
 	return
 }
 
 // TargetPairIDs returns the "target_pair" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TargetPairID instead. It exists only for internal usage by the builders.
 func (m *TargetCompleteMutation) TargetPairIDs() (ids []int) {
-	for id := range m.target_pair {
-		ids = append(ids, id)
+	if id := m.target_pair; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -22984,7 +21957,6 @@ func (m *TargetCompleteMutation) TargetPairIDs() (ids []int) {
 func (m *TargetCompleteMutation) ResetTargetPair() {
 	m.target_pair = nil
 	m.clearedtarget_pair = false
-	m.removedtarget_pair = nil
 }
 
 // AddImportantOutputIDs adds the "important_output" edge to the TestFile entity by ids.
@@ -23474,11 +22446,9 @@ func (m *TargetCompleteMutation) AddedEdges() []string {
 func (m *TargetCompleteMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case targetcomplete.EdgeTargetPair:
-		ids := make([]ent.Value, 0, len(m.target_pair))
-		for id := range m.target_pair {
-			ids = append(ids, id)
+		if id := m.target_pair; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case targetcomplete.EdgeImportantOutput:
 		ids := make([]ent.Value, 0, len(m.important_output))
 		for id := range m.important_output {
@@ -23502,9 +22472,6 @@ func (m *TargetCompleteMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TargetCompleteMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 4)
-	if m.removedtarget_pair != nil {
-		edges = append(edges, targetcomplete.EdgeTargetPair)
-	}
 	if m.removedimportant_output != nil {
 		edges = append(edges, targetcomplete.EdgeImportantOutput)
 	}
@@ -23518,12 +22485,6 @@ func (m *TargetCompleteMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *TargetCompleteMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case targetcomplete.EdgeTargetPair:
-		ids := make([]ent.Value, 0, len(m.removedtarget_pair))
-		for id := range m.removedtarget_pair {
-			ids = append(ids, id)
-		}
-		return ids
 	case targetcomplete.EdgeImportantOutput:
 		ids := make([]ent.Value, 0, len(m.removedimportant_output))
 		for id := range m.removedimportant_output {
@@ -23578,6 +22539,9 @@ func (m *TargetCompleteMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TargetCompleteMutation) ClearEdge(name string) error {
 	switch name {
+	case targetcomplete.EdgeTargetPair:
+		m.ClearTargetPair()
+		return nil
 	case targetcomplete.EdgeOutputGroup:
 		m.ClearOutputGroup()
 		return nil
@@ -23618,8 +22582,7 @@ type TargetConfiguredMutation struct {
 	addstart_time_in_ms *int64
 	test_size           *targetconfigured.TestSize
 	clearedFields       map[string]struct{}
-	target_pair         map[int]struct{}
-	removedtarget_pair  map[int]struct{}
+	target_pair         *int
 	clearedtarget_pair  bool
 	done                bool
 	oldValue            func(context.Context) (*TargetConfigured, error)
@@ -23957,14 +22920,9 @@ func (m *TargetConfiguredMutation) ResetTestSize() {
 	delete(m.clearedFields, targetconfigured.FieldTestSize)
 }
 
-// AddTargetPairIDs adds the "target_pair" edge to the TargetPair entity by ids.
-func (m *TargetConfiguredMutation) AddTargetPairIDs(ids ...int) {
-	if m.target_pair == nil {
-		m.target_pair = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.target_pair[ids[i]] = struct{}{}
-	}
+// SetTargetPairID sets the "target_pair" edge to the TargetPair entity by id.
+func (m *TargetConfiguredMutation) SetTargetPairID(id int) {
+	m.target_pair = &id
 }
 
 // ClearTargetPair clears the "target_pair" edge to the TargetPair entity.
@@ -23977,29 +22935,20 @@ func (m *TargetConfiguredMutation) TargetPairCleared() bool {
 	return m.clearedtarget_pair
 }
 
-// RemoveTargetPairIDs removes the "target_pair" edge to the TargetPair entity by IDs.
-func (m *TargetConfiguredMutation) RemoveTargetPairIDs(ids ...int) {
-	if m.removedtarget_pair == nil {
-		m.removedtarget_pair = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.target_pair, ids[i])
-		m.removedtarget_pair[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTargetPair returns the removed IDs of the "target_pair" edge to the TargetPair entity.
-func (m *TargetConfiguredMutation) RemovedTargetPairIDs() (ids []int) {
-	for id := range m.removedtarget_pair {
-		ids = append(ids, id)
+// TargetPairID returns the "target_pair" edge ID in the mutation.
+func (m *TargetConfiguredMutation) TargetPairID() (id int, exists bool) {
+	if m.target_pair != nil {
+		return *m.target_pair, true
 	}
 	return
 }
 
 // TargetPairIDs returns the "target_pair" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TargetPairID instead. It exists only for internal usage by the builders.
 func (m *TargetConfiguredMutation) TargetPairIDs() (ids []int) {
-	for id := range m.target_pair {
-		ids = append(ids, id)
+	if id := m.target_pair; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -24008,7 +22957,6 @@ func (m *TargetConfiguredMutation) TargetPairIDs() (ids []int) {
 func (m *TargetConfiguredMutation) ResetTargetPair() {
 	m.target_pair = nil
 	m.clearedtarget_pair = false
-	m.removedtarget_pair = nil
 }
 
 // Where appends a list predicates to the TargetConfiguredMutation builder.
@@ -24249,11 +23197,9 @@ func (m *TargetConfiguredMutation) AddedEdges() []string {
 func (m *TargetConfiguredMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case targetconfigured.EdgeTargetPair:
-		ids := make([]ent.Value, 0, len(m.target_pair))
-		for id := range m.target_pair {
-			ids = append(ids, id)
+		if id := m.target_pair; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -24261,23 +23207,12 @@ func (m *TargetConfiguredMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TargetConfiguredMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedtarget_pair != nil {
-		edges = append(edges, targetconfigured.EdgeTargetPair)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *TargetConfiguredMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case targetconfigured.EdgeTargetPair:
-		ids := make([]ent.Value, 0, len(m.removedtarget_pair))
-		for id := range m.removedtarget_pair {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -24304,6 +23239,9 @@ func (m *TargetConfiguredMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TargetConfiguredMutation) ClearEdge(name string) error {
 	switch name {
+	case targetconfigured.EdgeTargetPair:
+		m.ClearTargetPair()
+		return nil
 	}
 	return fmt.Errorf("unknown TargetConfigured unique edge %s", name)
 }
@@ -24332,8 +23270,7 @@ type TargetMetricsMutation struct {
 	targets_configured_not_including_aspects    *int64
 	addtargets_configured_not_including_aspects *int64
 	clearedFields                               map[string]struct{}
-	metrics                                     map[int]struct{}
-	removedmetrics                              map[int]struct{}
+	metrics                                     *int
 	clearedmetrics                              bool
 	done                                        bool
 	oldValue                                    func(context.Context) (*TargetMetrics, error)
@@ -24648,14 +23585,9 @@ func (m *TargetMetricsMutation) ResetTargetsConfiguredNotIncludingAspects() {
 	delete(m.clearedFields, targetmetrics.FieldTargetsConfiguredNotIncludingAspects)
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by ids.
-func (m *TargetMetricsMutation) AddMetricIDs(ids ...int) {
-	if m.metrics == nil {
-		m.metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.metrics[ids[i]] = struct{}{}
-	}
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *TargetMetricsMutation) SetMetricsID(id int) {
+	m.metrics = &id
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -24668,29 +23600,20 @@ func (m *TargetMetricsMutation) MetricsCleared() bool {
 	return m.clearedmetrics
 }
 
-// RemoveMetricIDs removes the "metrics" edge to the Metrics entity by IDs.
-func (m *TargetMetricsMutation) RemoveMetricIDs(ids ...int) {
-	if m.removedmetrics == nil {
-		m.removedmetrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.metrics, ids[i])
-		m.removedmetrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMetrics returns the removed IDs of the "metrics" edge to the Metrics entity.
-func (m *TargetMetricsMutation) RemovedMetricsIDs() (ids []int) {
-	for id := range m.removedmetrics {
-		ids = append(ids, id)
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *TargetMetricsMutation) MetricsID() (id int, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
 	}
 	return
 }
 
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
 func (m *TargetMetricsMutation) MetricsIDs() (ids []int) {
-	for id := range m.metrics {
-		ids = append(ids, id)
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -24699,7 +23622,6 @@ func (m *TargetMetricsMutation) MetricsIDs() (ids []int) {
 func (m *TargetMetricsMutation) ResetMetrics() {
 	m.metrics = nil
 	m.clearedmetrics = false
-	m.removedmetrics = nil
 }
 
 // Where appends a list predicates to the TargetMetricsMutation builder.
@@ -24941,11 +23863,9 @@ func (m *TargetMetricsMutation) AddedEdges() []string {
 func (m *TargetMetricsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case targetmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.metrics))
-		for id := range m.metrics {
-			ids = append(ids, id)
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -24953,23 +23873,12 @@ func (m *TargetMetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TargetMetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedmetrics != nil {
-		edges = append(edges, targetmetrics.EdgeMetrics)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *TargetMetricsMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case targetmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.removedmetrics))
-		for id := range m.removedmetrics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -24996,6 +23905,9 @@ func (m *TargetMetricsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TargetMetricsMutation) ClearEdge(name string) error {
 	switch name {
+	case targetmetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown TargetMetrics unique edge %s", name)
 }
@@ -25025,8 +23937,7 @@ type TargetPairMutation struct {
 	test_size               *targetpair.TestSize
 	abort_reason            *targetpair.AbortReason
 	clearedFields           map[string]struct{}
-	bazel_invocation        map[int]struct{}
-	removedbazel_invocation map[int]struct{}
+	bazel_invocation        *int
 	clearedbazel_invocation bool
 	configuration           *int
 	clearedconfiguration    bool
@@ -25450,14 +24361,9 @@ func (m *TargetPairMutation) ResetAbortReason() {
 	delete(m.clearedFields, targetpair.FieldAbortReason)
 }
 
-// AddBazelInvocationIDs adds the "bazel_invocation" edge to the BazelInvocation entity by ids.
-func (m *TargetPairMutation) AddBazelInvocationIDs(ids ...int) {
-	if m.bazel_invocation == nil {
-		m.bazel_invocation = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.bazel_invocation[ids[i]] = struct{}{}
-	}
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
+func (m *TargetPairMutation) SetBazelInvocationID(id int) {
+	m.bazel_invocation = &id
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
@@ -25470,29 +24376,20 @@ func (m *TargetPairMutation) BazelInvocationCleared() bool {
 	return m.clearedbazel_invocation
 }
 
-// RemoveBazelInvocationIDs removes the "bazel_invocation" edge to the BazelInvocation entity by IDs.
-func (m *TargetPairMutation) RemoveBazelInvocationIDs(ids ...int) {
-	if m.removedbazel_invocation == nil {
-		m.removedbazel_invocation = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.bazel_invocation, ids[i])
-		m.removedbazel_invocation[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedBazelInvocation returns the removed IDs of the "bazel_invocation" edge to the BazelInvocation entity.
-func (m *TargetPairMutation) RemovedBazelInvocationIDs() (ids []int) {
-	for id := range m.removedbazel_invocation {
-		ids = append(ids, id)
+// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
+func (m *TargetPairMutation) BazelInvocationID() (id int, exists bool) {
+	if m.bazel_invocation != nil {
+		return *m.bazel_invocation, true
 	}
 	return
 }
 
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BazelInvocationID instead. It exists only for internal usage by the builders.
 func (m *TargetPairMutation) BazelInvocationIDs() (ids []int) {
-	for id := range m.bazel_invocation {
-		ids = append(ids, id)
+	if id := m.bazel_invocation; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -25501,7 +24398,6 @@ func (m *TargetPairMutation) BazelInvocationIDs() (ids []int) {
 func (m *TargetPairMutation) ResetBazelInvocation() {
 	m.bazel_invocation = nil
 	m.clearedbazel_invocation = false
-	m.removedbazel_invocation = nil
 }
 
 // SetConfigurationID sets the "configuration" edge to the TargetConfigured entity by id.
@@ -25872,11 +24768,9 @@ func (m *TargetPairMutation) AddedEdges() []string {
 func (m *TargetPairMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case targetpair.EdgeBazelInvocation:
-		ids := make([]ent.Value, 0, len(m.bazel_invocation))
-		for id := range m.bazel_invocation {
-			ids = append(ids, id)
+		if id := m.bazel_invocation; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case targetpair.EdgeConfiguration:
 		if id := m.configuration; id != nil {
 			return []ent.Value{*id}
@@ -25892,23 +24786,12 @@ func (m *TargetPairMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TargetPairMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.removedbazel_invocation != nil {
-		edges = append(edges, targetpair.EdgeBazelInvocation)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *TargetPairMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case targetpair.EdgeBazelInvocation:
-		ids := make([]ent.Value, 0, len(m.removedbazel_invocation))
-		for id := range m.removedbazel_invocation {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -25945,6 +24828,9 @@ func (m *TargetPairMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TargetPairMutation) ClearEdge(name string) error {
 	switch name {
+	case targetpair.EdgeBazelInvocation:
+		m.ClearBazelInvocation()
+		return nil
 	case targetpair.EdgeConfiguration:
 		m.ClearConfiguration()
 		return nil
@@ -25983,11 +24869,11 @@ type TestCollectionMutation struct {
 	strategy                *string
 	cached_locally          *bool
 	cached_remotely         *bool
+	first_seen              *time.Time
 	duration_ms             *int64
 	addduration_ms          *int64
 	clearedFields           map[string]struct{}
-	bazel_invocation        map[int]struct{}
-	removedbazel_invocation map[int]struct{}
+	bazel_invocation        *int
 	clearedbazel_invocation bool
 	test_summary            *int
 	clearedtest_summary     bool
@@ -26342,6 +25228,55 @@ func (m *TestCollectionMutation) ResetCachedRemotely() {
 	delete(m.clearedFields, testcollection.FieldCachedRemotely)
 }
 
+// SetFirstSeen sets the "first_seen" field.
+func (m *TestCollectionMutation) SetFirstSeen(t time.Time) {
+	m.first_seen = &t
+}
+
+// FirstSeen returns the value of the "first_seen" field in the mutation.
+func (m *TestCollectionMutation) FirstSeen() (r time.Time, exists bool) {
+	v := m.first_seen
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFirstSeen returns the old "first_seen" field's value of the TestCollection entity.
+// If the TestCollection object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TestCollectionMutation) OldFirstSeen(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFirstSeen is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFirstSeen requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFirstSeen: %w", err)
+	}
+	return oldValue.FirstSeen, nil
+}
+
+// ClearFirstSeen clears the value of the "first_seen" field.
+func (m *TestCollectionMutation) ClearFirstSeen() {
+	m.first_seen = nil
+	m.clearedFields[testcollection.FieldFirstSeen] = struct{}{}
+}
+
+// FirstSeenCleared returns if the "first_seen" field was cleared in this mutation.
+func (m *TestCollectionMutation) FirstSeenCleared() bool {
+	_, ok := m.clearedFields[testcollection.FieldFirstSeen]
+	return ok
+}
+
+// ResetFirstSeen resets all changes to the "first_seen" field.
+func (m *TestCollectionMutation) ResetFirstSeen() {
+	m.first_seen = nil
+	delete(m.clearedFields, testcollection.FieldFirstSeen)
+}
+
 // SetDurationMs sets the "duration_ms" field.
 func (m *TestCollectionMutation) SetDurationMs(i int64) {
 	m.duration_ms = &i
@@ -26412,14 +25347,9 @@ func (m *TestCollectionMutation) ResetDurationMs() {
 	delete(m.clearedFields, testcollection.FieldDurationMs)
 }
 
-// AddBazelInvocationIDs adds the "bazel_invocation" edge to the BazelInvocation entity by ids.
-func (m *TestCollectionMutation) AddBazelInvocationIDs(ids ...int) {
-	if m.bazel_invocation == nil {
-		m.bazel_invocation = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.bazel_invocation[ids[i]] = struct{}{}
-	}
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
+func (m *TestCollectionMutation) SetBazelInvocationID(id int) {
+	m.bazel_invocation = &id
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
@@ -26432,29 +25362,20 @@ func (m *TestCollectionMutation) BazelInvocationCleared() bool {
 	return m.clearedbazel_invocation
 }
 
-// RemoveBazelInvocationIDs removes the "bazel_invocation" edge to the BazelInvocation entity by IDs.
-func (m *TestCollectionMutation) RemoveBazelInvocationIDs(ids ...int) {
-	if m.removedbazel_invocation == nil {
-		m.removedbazel_invocation = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.bazel_invocation, ids[i])
-		m.removedbazel_invocation[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedBazelInvocation returns the removed IDs of the "bazel_invocation" edge to the BazelInvocation entity.
-func (m *TestCollectionMutation) RemovedBazelInvocationIDs() (ids []int) {
-	for id := range m.removedbazel_invocation {
-		ids = append(ids, id)
+// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
+func (m *TestCollectionMutation) BazelInvocationID() (id int, exists bool) {
+	if m.bazel_invocation != nil {
+		return *m.bazel_invocation, true
 	}
 	return
 }
 
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BazelInvocationID instead. It exists only for internal usage by the builders.
 func (m *TestCollectionMutation) BazelInvocationIDs() (ids []int) {
-	for id := range m.bazel_invocation {
-		ids = append(ids, id)
+	if id := m.bazel_invocation; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -26463,7 +25384,6 @@ func (m *TestCollectionMutation) BazelInvocationIDs() (ids []int) {
 func (m *TestCollectionMutation) ResetBazelInvocation() {
 	m.bazel_invocation = nil
 	m.clearedbazel_invocation = false
-	m.removedbazel_invocation = nil
 }
 
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by id.
@@ -26593,7 +25513,7 @@ func (m *TestCollectionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TestCollectionMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
 	if m.label != nil {
 		fields = append(fields, testcollection.FieldLabel)
 	}
@@ -26608,6 +25528,9 @@ func (m *TestCollectionMutation) Fields() []string {
 	}
 	if m.cached_remotely != nil {
 		fields = append(fields, testcollection.FieldCachedRemotely)
+	}
+	if m.first_seen != nil {
+		fields = append(fields, testcollection.FieldFirstSeen)
 	}
 	if m.duration_ms != nil {
 		fields = append(fields, testcollection.FieldDurationMs)
@@ -26630,6 +25553,8 @@ func (m *TestCollectionMutation) Field(name string) (ent.Value, bool) {
 		return m.CachedLocally()
 	case testcollection.FieldCachedRemotely:
 		return m.CachedRemotely()
+	case testcollection.FieldFirstSeen:
+		return m.FirstSeen()
 	case testcollection.FieldDurationMs:
 		return m.DurationMs()
 	}
@@ -26651,6 +25576,8 @@ func (m *TestCollectionMutation) OldField(ctx context.Context, name string) (ent
 		return m.OldCachedLocally(ctx)
 	case testcollection.FieldCachedRemotely:
 		return m.OldCachedRemotely(ctx)
+	case testcollection.FieldFirstSeen:
+		return m.OldFirstSeen(ctx)
 	case testcollection.FieldDurationMs:
 		return m.OldDurationMs(ctx)
 	}
@@ -26696,6 +25623,13 @@ func (m *TestCollectionMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCachedRemotely(v)
+		return nil
+	case testcollection.FieldFirstSeen:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFirstSeen(v)
 		return nil
 	case testcollection.FieldDurationMs:
 		v, ok := value.(int64)
@@ -26764,6 +25698,9 @@ func (m *TestCollectionMutation) ClearedFields() []string {
 	if m.FieldCleared(testcollection.FieldCachedRemotely) {
 		fields = append(fields, testcollection.FieldCachedRemotely)
 	}
+	if m.FieldCleared(testcollection.FieldFirstSeen) {
+		fields = append(fields, testcollection.FieldFirstSeen)
+	}
 	if m.FieldCleared(testcollection.FieldDurationMs) {
 		fields = append(fields, testcollection.FieldDurationMs)
 	}
@@ -26796,6 +25733,9 @@ func (m *TestCollectionMutation) ClearField(name string) error {
 	case testcollection.FieldCachedRemotely:
 		m.ClearCachedRemotely()
 		return nil
+	case testcollection.FieldFirstSeen:
+		m.ClearFirstSeen()
+		return nil
 	case testcollection.FieldDurationMs:
 		m.ClearDurationMs()
 		return nil
@@ -26821,6 +25761,9 @@ func (m *TestCollectionMutation) ResetField(name string) error {
 		return nil
 	case testcollection.FieldCachedRemotely:
 		m.ResetCachedRemotely()
+		return nil
+	case testcollection.FieldFirstSeen:
+		m.ResetFirstSeen()
 		return nil
 	case testcollection.FieldDurationMs:
 		m.ResetDurationMs()
@@ -26849,11 +25792,9 @@ func (m *TestCollectionMutation) AddedEdges() []string {
 func (m *TestCollectionMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case testcollection.EdgeBazelInvocation:
-		ids := make([]ent.Value, 0, len(m.bazel_invocation))
-		for id := range m.bazel_invocation {
-			ids = append(ids, id)
+		if id := m.bazel_invocation; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case testcollection.EdgeTestSummary:
 		if id := m.test_summary; id != nil {
 			return []ent.Value{*id}
@@ -26871,9 +25812,6 @@ func (m *TestCollectionMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TestCollectionMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.removedbazel_invocation != nil {
-		edges = append(edges, testcollection.EdgeBazelInvocation)
-	}
 	if m.removedtest_results != nil {
 		edges = append(edges, testcollection.EdgeTestResults)
 	}
@@ -26884,12 +25822,6 @@ func (m *TestCollectionMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *TestCollectionMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case testcollection.EdgeBazelInvocation:
-		ids := make([]ent.Value, 0, len(m.removedbazel_invocation))
-		for id := range m.removedbazel_invocation {
-			ids = append(ids, id)
-		}
-		return ids
 	case testcollection.EdgeTestResults:
 		ids := make([]ent.Value, 0, len(m.removedtest_results))
 		for id := range m.removedtest_results {
@@ -26933,6 +25865,9 @@ func (m *TestCollectionMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TestCollectionMutation) ClearEdge(name string) error {
 	switch name {
+	case testcollection.EdgeBazelInvocation:
+		m.ClearBazelInvocation()
+		return nil
 	case testcollection.EdgeTestSummary:
 		m.ClearTestSummary()
 		return nil
@@ -26971,8 +25906,7 @@ type TestFileMutation struct {
 	prefix             *[]string
 	appendprefix       []string
 	clearedFields      map[string]struct{}
-	test_result        map[int]struct{}
-	removedtest_result map[int]struct{}
+	test_result        *int
 	clearedtest_result bool
 	done               bool
 	oldValue           func(context.Context) (*TestFile, error)
@@ -27359,14 +26293,9 @@ func (m *TestFileMutation) ResetPrefix() {
 	delete(m.clearedFields, testfile.FieldPrefix)
 }
 
-// AddTestResultIDs adds the "test_result" edge to the TestResultBES entity by ids.
-func (m *TestFileMutation) AddTestResultIDs(ids ...int) {
-	if m.test_result == nil {
-		m.test_result = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.test_result[ids[i]] = struct{}{}
-	}
+// SetTestResultID sets the "test_result" edge to the TestResultBES entity by id.
+func (m *TestFileMutation) SetTestResultID(id int) {
+	m.test_result = &id
 }
 
 // ClearTestResult clears the "test_result" edge to the TestResultBES entity.
@@ -27379,29 +26308,20 @@ func (m *TestFileMutation) TestResultCleared() bool {
 	return m.clearedtest_result
 }
 
-// RemoveTestResultIDs removes the "test_result" edge to the TestResultBES entity by IDs.
-func (m *TestFileMutation) RemoveTestResultIDs(ids ...int) {
-	if m.removedtest_result == nil {
-		m.removedtest_result = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.test_result, ids[i])
-		m.removedtest_result[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTestResult returns the removed IDs of the "test_result" edge to the TestResultBES entity.
-func (m *TestFileMutation) RemovedTestResultIDs() (ids []int) {
-	for id := range m.removedtest_result {
-		ids = append(ids, id)
+// TestResultID returns the "test_result" edge ID in the mutation.
+func (m *TestFileMutation) TestResultID() (id int, exists bool) {
+	if m.test_result != nil {
+		return *m.test_result, true
 	}
 	return
 }
 
 // TestResultIDs returns the "test_result" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TestResultID instead. It exists only for internal usage by the builders.
 func (m *TestFileMutation) TestResultIDs() (ids []int) {
-	for id := range m.test_result {
-		ids = append(ids, id)
+	if id := m.test_result; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -27410,7 +26330,6 @@ func (m *TestFileMutation) TestResultIDs() (ids []int) {
 func (m *TestFileMutation) ResetTestResult() {
 	m.test_result = nil
 	m.clearedtest_result = false
-	m.removedtest_result = nil
 }
 
 // Where appends a list predicates to the TestFileMutation builder.
@@ -27674,11 +26593,9 @@ func (m *TestFileMutation) AddedEdges() []string {
 func (m *TestFileMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case testfile.EdgeTestResult:
-		ids := make([]ent.Value, 0, len(m.test_result))
-		for id := range m.test_result {
-			ids = append(ids, id)
+		if id := m.test_result; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -27686,23 +26603,12 @@ func (m *TestFileMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TestFileMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedtest_result != nil {
-		edges = append(edges, testfile.EdgeTestResult)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *TestFileMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case testfile.EdgeTestResult:
-		ids := make([]ent.Value, 0, len(m.removedtest_result))
-		for id := range m.removedtest_result {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -27729,6 +26635,9 @@ func (m *TestFileMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TestFileMutation) ClearEdge(name string) error {
 	switch name {
+	case testfile.EdgeTestResult:
+		m.ClearTestResult()
+		return nil
 	}
 	return fmt.Errorf("unknown TestFile unique edge %s", name)
 }
@@ -29034,8 +27943,7 @@ type TestSummaryMutation struct {
 	addtotal_run_duration  *int64
 	label                  *string
 	clearedFields          map[string]struct{}
-	test_collection        map[int]struct{}
-	removedtest_collection map[int]struct{}
+	test_collection        *int
 	clearedtest_collection bool
 	passed                 map[int]struct{}
 	removedpassed          map[int]struct{}
@@ -29804,14 +28712,9 @@ func (m *TestSummaryMutation) ResetLabel() {
 	delete(m.clearedFields, testsummary.FieldLabel)
 }
 
-// AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by ids.
-func (m *TestSummaryMutation) AddTestCollectionIDs(ids ...int) {
-	if m.test_collection == nil {
-		m.test_collection = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.test_collection[ids[i]] = struct{}{}
-	}
+// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by id.
+func (m *TestSummaryMutation) SetTestCollectionID(id int) {
+	m.test_collection = &id
 }
 
 // ClearTestCollection clears the "test_collection" edge to the TestCollection entity.
@@ -29824,29 +28727,20 @@ func (m *TestSummaryMutation) TestCollectionCleared() bool {
 	return m.clearedtest_collection
 }
 
-// RemoveTestCollectionIDs removes the "test_collection" edge to the TestCollection entity by IDs.
-func (m *TestSummaryMutation) RemoveTestCollectionIDs(ids ...int) {
-	if m.removedtest_collection == nil {
-		m.removedtest_collection = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.test_collection, ids[i])
-		m.removedtest_collection[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTestCollection returns the removed IDs of the "test_collection" edge to the TestCollection entity.
-func (m *TestSummaryMutation) RemovedTestCollectionIDs() (ids []int) {
-	for id := range m.removedtest_collection {
-		ids = append(ids, id)
+// TestCollectionID returns the "test_collection" edge ID in the mutation.
+func (m *TestSummaryMutation) TestCollectionID() (id int, exists bool) {
+	if m.test_collection != nil {
+		return *m.test_collection, true
 	}
 	return
 }
 
 // TestCollectionIDs returns the "test_collection" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TestCollectionID instead. It exists only for internal usage by the builders.
 func (m *TestSummaryMutation) TestCollectionIDs() (ids []int) {
-	for id := range m.test_collection {
-		ids = append(ids, id)
+	if id := m.test_collection; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -29855,7 +28749,6 @@ func (m *TestSummaryMutation) TestCollectionIDs() (ids []int) {
 func (m *TestSummaryMutation) ResetTestCollection() {
 	m.test_collection = nil
 	m.clearedtest_collection = false
-	m.removedtest_collection = nil
 }
 
 // AddPassedIDs adds the "passed" edge to the TestFile entity by ids.
@@ -30432,11 +29325,9 @@ func (m *TestSummaryMutation) AddedEdges() []string {
 func (m *TestSummaryMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case testsummary.EdgeTestCollection:
-		ids := make([]ent.Value, 0, len(m.test_collection))
-		for id := range m.test_collection {
-			ids = append(ids, id)
+		if id := m.test_collection; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case testsummary.EdgePassed:
 		ids := make([]ent.Value, 0, len(m.passed))
 		for id := range m.passed {
@@ -30456,9 +29347,6 @@ func (m *TestSummaryMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TestSummaryMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 3)
-	if m.removedtest_collection != nil {
-		edges = append(edges, testsummary.EdgeTestCollection)
-	}
 	if m.removedpassed != nil {
 		edges = append(edges, testsummary.EdgePassed)
 	}
@@ -30472,12 +29360,6 @@ func (m *TestSummaryMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *TestSummaryMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case testsummary.EdgeTestCollection:
-		ids := make([]ent.Value, 0, len(m.removedtest_collection))
-		for id := range m.removedtest_collection {
-			ids = append(ids, id)
-		}
-		return ids
 	case testsummary.EdgePassed:
 		ids := make([]ent.Value, 0, len(m.removedpassed))
 		for id := range m.removedpassed {
@@ -30527,6 +29409,9 @@ func (m *TestSummaryMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TestSummaryMutation) ClearEdge(name string) error {
 	switch name {
+	case testsummary.EdgeTestCollection:
+		m.ClearTestCollection()
+		return nil
 	}
 	return fmt.Errorf("unknown TestSummary unique edge %s", name)
 }
@@ -30557,8 +29442,7 @@ type TimingBreakdownMutation struct {
 	name                  *string
 	time                  *string
 	clearedFields         map[string]struct{}
-	execution_info        map[int]struct{}
-	removedexecution_info map[int]struct{}
+	execution_info        *int
 	clearedexecution_info bool
 	child                 map[int]struct{}
 	removedchild          map[int]struct{}
@@ -30764,14 +29648,9 @@ func (m *TimingBreakdownMutation) ResetTime() {
 	delete(m.clearedFields, timingbreakdown.FieldTime)
 }
 
-// AddExecutionInfoIDs adds the "execution_info" edge to the ExectionInfo entity by ids.
-func (m *TimingBreakdownMutation) AddExecutionInfoIDs(ids ...int) {
-	if m.execution_info == nil {
-		m.execution_info = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.execution_info[ids[i]] = struct{}{}
-	}
+// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by id.
+func (m *TimingBreakdownMutation) SetExecutionInfoID(id int) {
+	m.execution_info = &id
 }
 
 // ClearExecutionInfo clears the "execution_info" edge to the ExectionInfo entity.
@@ -30784,29 +29663,20 @@ func (m *TimingBreakdownMutation) ExecutionInfoCleared() bool {
 	return m.clearedexecution_info
 }
 
-// RemoveExecutionInfoIDs removes the "execution_info" edge to the ExectionInfo entity by IDs.
-func (m *TimingBreakdownMutation) RemoveExecutionInfoIDs(ids ...int) {
-	if m.removedexecution_info == nil {
-		m.removedexecution_info = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.execution_info, ids[i])
-		m.removedexecution_info[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedExecutionInfo returns the removed IDs of the "execution_info" edge to the ExectionInfo entity.
-func (m *TimingBreakdownMutation) RemovedExecutionInfoIDs() (ids []int) {
-	for id := range m.removedexecution_info {
-		ids = append(ids, id)
+// ExecutionInfoID returns the "execution_info" edge ID in the mutation.
+func (m *TimingBreakdownMutation) ExecutionInfoID() (id int, exists bool) {
+	if m.execution_info != nil {
+		return *m.execution_info, true
 	}
 	return
 }
 
 // ExecutionInfoIDs returns the "execution_info" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ExecutionInfoID instead. It exists only for internal usage by the builders.
 func (m *TimingBreakdownMutation) ExecutionInfoIDs() (ids []int) {
-	for id := range m.execution_info {
-		ids = append(ids, id)
+	if id := m.execution_info; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -30815,7 +29685,6 @@ func (m *TimingBreakdownMutation) ExecutionInfoIDs() (ids []int) {
 func (m *TimingBreakdownMutation) ResetExecutionInfo() {
 	m.execution_info = nil
 	m.clearedexecution_info = false
-	m.removedexecution_info = nil
 }
 
 // AddChildIDs adds the "child" edge to the TimingChild entity by ids.
@@ -31052,11 +29921,9 @@ func (m *TimingBreakdownMutation) AddedEdges() []string {
 func (m *TimingBreakdownMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case timingbreakdown.EdgeExecutionInfo:
-		ids := make([]ent.Value, 0, len(m.execution_info))
-		for id := range m.execution_info {
-			ids = append(ids, id)
+		if id := m.execution_info; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case timingbreakdown.EdgeChild:
 		ids := make([]ent.Value, 0, len(m.child))
 		for id := range m.child {
@@ -31070,9 +29937,6 @@ func (m *TimingBreakdownMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TimingBreakdownMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 2)
-	if m.removedexecution_info != nil {
-		edges = append(edges, timingbreakdown.EdgeExecutionInfo)
-	}
 	if m.removedchild != nil {
 		edges = append(edges, timingbreakdown.EdgeChild)
 	}
@@ -31083,12 +29947,6 @@ func (m *TimingBreakdownMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *TimingBreakdownMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case timingbreakdown.EdgeExecutionInfo:
-		ids := make([]ent.Value, 0, len(m.removedexecution_info))
-		for id := range m.removedexecution_info {
-			ids = append(ids, id)
-		}
-		return ids
 	case timingbreakdown.EdgeChild:
 		ids := make([]ent.Value, 0, len(m.removedchild))
 		for id := range m.removedchild {
@@ -31127,6 +29985,9 @@ func (m *TimingBreakdownMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TimingBreakdownMutation) ClearEdge(name string) error {
 	switch name {
+	case timingbreakdown.EdgeExecutionInfo:
+		m.ClearExecutionInfo()
+		return nil
 	}
 	return fmt.Errorf("unknown TimingBreakdown unique edge %s", name)
 }
@@ -31154,8 +30015,7 @@ type TimingChildMutation struct {
 	name                    *string
 	time                    *string
 	clearedFields           map[string]struct{}
-	timing_breakdown        map[int]struct{}
-	removedtiming_breakdown map[int]struct{}
+	timing_breakdown        *int
 	clearedtiming_breakdown bool
 	done                    bool
 	oldValue                func(context.Context) (*TimingChild, error)
@@ -31358,14 +30218,9 @@ func (m *TimingChildMutation) ResetTime() {
 	delete(m.clearedFields, timingchild.FieldTime)
 }
 
-// AddTimingBreakdownIDs adds the "timing_breakdown" edge to the TimingBreakdown entity by ids.
-func (m *TimingChildMutation) AddTimingBreakdownIDs(ids ...int) {
-	if m.timing_breakdown == nil {
-		m.timing_breakdown = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.timing_breakdown[ids[i]] = struct{}{}
-	}
+// SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by id.
+func (m *TimingChildMutation) SetTimingBreakdownID(id int) {
+	m.timing_breakdown = &id
 }
 
 // ClearTimingBreakdown clears the "timing_breakdown" edge to the TimingBreakdown entity.
@@ -31378,29 +30233,20 @@ func (m *TimingChildMutation) TimingBreakdownCleared() bool {
 	return m.clearedtiming_breakdown
 }
 
-// RemoveTimingBreakdownIDs removes the "timing_breakdown" edge to the TimingBreakdown entity by IDs.
-func (m *TimingChildMutation) RemoveTimingBreakdownIDs(ids ...int) {
-	if m.removedtiming_breakdown == nil {
-		m.removedtiming_breakdown = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.timing_breakdown, ids[i])
-		m.removedtiming_breakdown[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTimingBreakdown returns the removed IDs of the "timing_breakdown" edge to the TimingBreakdown entity.
-func (m *TimingChildMutation) RemovedTimingBreakdownIDs() (ids []int) {
-	for id := range m.removedtiming_breakdown {
-		ids = append(ids, id)
+// TimingBreakdownID returns the "timing_breakdown" edge ID in the mutation.
+func (m *TimingChildMutation) TimingBreakdownID() (id int, exists bool) {
+	if m.timing_breakdown != nil {
+		return *m.timing_breakdown, true
 	}
 	return
 }
 
 // TimingBreakdownIDs returns the "timing_breakdown" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TimingBreakdownID instead. It exists only for internal usage by the builders.
 func (m *TimingChildMutation) TimingBreakdownIDs() (ids []int) {
-	for id := range m.timing_breakdown {
-		ids = append(ids, id)
+	if id := m.timing_breakdown; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -31409,7 +30255,6 @@ func (m *TimingChildMutation) TimingBreakdownIDs() (ids []int) {
 func (m *TimingChildMutation) ResetTimingBreakdown() {
 	m.timing_breakdown = nil
 	m.clearedtiming_breakdown = false
-	m.removedtiming_breakdown = nil
 }
 
 // Where appends a list predicates to the TimingChildMutation builder.
@@ -31589,11 +30434,9 @@ func (m *TimingChildMutation) AddedEdges() []string {
 func (m *TimingChildMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case timingchild.EdgeTimingBreakdown:
-		ids := make([]ent.Value, 0, len(m.timing_breakdown))
-		for id := range m.timing_breakdown {
-			ids = append(ids, id)
+		if id := m.timing_breakdown; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -31601,23 +30444,12 @@ func (m *TimingChildMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TimingChildMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedtiming_breakdown != nil {
-		edges = append(edges, timingchild.EdgeTimingBreakdown)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *TimingChildMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case timingchild.EdgeTimingBreakdown:
-		ids := make([]ent.Value, 0, len(m.removedtiming_breakdown))
-		for id := range m.removedtiming_breakdown {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -31644,6 +30476,9 @@ func (m *TimingChildMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TimingChildMutation) ClearEdge(name string) error {
 	switch name {
+	case timingchild.EdgeTimingBreakdown:
+		m.ClearTimingBreakdown()
+		return nil
 	}
 	return fmt.Errorf("unknown TimingChild unique edge %s", name)
 }
@@ -31676,8 +30511,7 @@ type TimingMetricsMutation struct {
 	actions_execution_start_in_ms    *int64
 	addactions_execution_start_in_ms *int64
 	clearedFields                    map[string]struct{}
-	metrics                          map[int]struct{}
-	removedmetrics                   map[int]struct{}
+	metrics                          *int
 	clearedmetrics                   bool
 	done                             bool
 	oldValue                         func(context.Context) (*TimingMetrics, error)
@@ -32132,14 +30966,9 @@ func (m *TimingMetricsMutation) ResetActionsExecutionStartInMs() {
 	delete(m.clearedFields, timingmetrics.FieldActionsExecutionStartInMs)
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by ids.
-func (m *TimingMetricsMutation) AddMetricIDs(ids ...int) {
-	if m.metrics == nil {
-		m.metrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.metrics[ids[i]] = struct{}{}
-	}
+// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
+func (m *TimingMetricsMutation) SetMetricsID(id int) {
+	m.metrics = &id
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -32152,29 +30981,20 @@ func (m *TimingMetricsMutation) MetricsCleared() bool {
 	return m.clearedmetrics
 }
 
-// RemoveMetricIDs removes the "metrics" edge to the Metrics entity by IDs.
-func (m *TimingMetricsMutation) RemoveMetricIDs(ids ...int) {
-	if m.removedmetrics == nil {
-		m.removedmetrics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.metrics, ids[i])
-		m.removedmetrics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedMetrics returns the removed IDs of the "metrics" edge to the Metrics entity.
-func (m *TimingMetricsMutation) RemovedMetricsIDs() (ids []int) {
-	for id := range m.removedmetrics {
-		ids = append(ids, id)
+// MetricsID returns the "metrics" edge ID in the mutation.
+func (m *TimingMetricsMutation) MetricsID() (id int, exists bool) {
+	if m.metrics != nil {
+		return *m.metrics, true
 	}
 	return
 }
 
 // MetricsIDs returns the "metrics" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// MetricsID instead. It exists only for internal usage by the builders.
 func (m *TimingMetricsMutation) MetricsIDs() (ids []int) {
-	for id := range m.metrics {
-		ids = append(ids, id)
+	if id := m.metrics; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -32183,7 +31003,6 @@ func (m *TimingMetricsMutation) MetricsIDs() (ids []int) {
 func (m *TimingMetricsMutation) ResetMetrics() {
 	m.metrics = nil
 	m.clearedmetrics = false
-	m.removedmetrics = nil
 }
 
 // Where appends a list predicates to the TimingMetricsMutation builder.
@@ -32495,11 +31314,9 @@ func (m *TimingMetricsMutation) AddedEdges() []string {
 func (m *TimingMetricsMutation) AddedIDs(name string) []ent.Value {
 	switch name {
 	case timingmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.metrics))
-		for id := range m.metrics {
-			ids = append(ids, id)
+		if id := m.metrics; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
@@ -32507,23 +31324,12 @@ func (m *TimingMetricsMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TimingMetricsMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 1)
-	if m.removedmetrics != nil {
-		edges = append(edges, timingmetrics.EdgeMetrics)
-	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *TimingMetricsMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case timingmetrics.EdgeMetrics:
-		ids := make([]ent.Value, 0, len(m.removedmetrics))
-		for id := range m.removedmetrics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
@@ -32550,6 +31356,9 @@ func (m *TimingMetricsMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TimingMetricsMutation) ClearEdge(name string) error {
 	switch name {
+	case timingmetrics.EdgeMetrics:
+		m.ClearMetrics()
+		return nil
 	}
 	return fmt.Errorf("unknown TimingMetrics unique edge %s", name)
 }

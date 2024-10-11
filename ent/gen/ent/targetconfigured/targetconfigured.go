@@ -29,7 +29,7 @@ const (
 	// Table holds the table name of the targetconfigured in the database.
 	Table = "target_configureds"
 	// TargetPairTable is the table that holds the target_pair relation/edge.
-	TargetPairTable = "target_pairs"
+	TargetPairTable = "target_configureds"
 	// TargetPairInverseTable is the table name for the TargetPair entity.
 	// It exists in this package in order to avoid circular dependency with the "targetpair" package.
 	TargetPairInverseTable = "target_pairs"
@@ -46,10 +46,21 @@ var Columns = []string{
 	FieldTestSize,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "target_configureds"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"target_pair_configuration",
+}
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -105,24 +116,17 @@ func ByTestSize(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTestSize, opts...).ToFunc()
 }
 
-// ByTargetPairCount orders the results by target_pair count.
-func ByTargetPairCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTargetPairField orders the results by target_pair field.
+func ByTargetPairField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTargetPairStep(), opts...)
-	}
-}
-
-// ByTargetPair orders the results by target_pair terms.
-func ByTargetPair(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTargetPairStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newTargetPairStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newTargetPairStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TargetPairInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, TargetPairTable, TargetPairColumn),
+		sqlgraph.Edge(sqlgraph.O2O, true, TargetPairTable, TargetPairColumn),
 	)
 }
 

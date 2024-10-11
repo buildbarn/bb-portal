@@ -48,6 +48,7 @@ func (FilesMetric) Edges() []ent.Edge {
 			// Measures all artifacts that belong to a top-level output group. Does not
 			// deduplicate, so if there are two top-level targets in this build that
 			// share an artifact, it will be counted twice.
-			Ref("top_level_artifacts"),
+			Ref("top_level_artifacts").
+			Unique(),
 	}
 }

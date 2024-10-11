@@ -104,7 +104,7 @@ func (trbq *TestResultBESQuery) QueryTestActionOutput() *TestFileQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(testresultbes.Table, testresultbes.FieldID, selector),
 			sqlgraph.To(testfile.Table, testfile.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, testresultbes.TestActionOutputTable, testresultbes.TestActionOutputPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, testresultbes.TestActionOutputTable, testresultbes.TestActionOutputColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(trbq.driver.Dialect(), step)
 		return fromU, nil
@@ -126,7 +126,7 @@ func (trbq *TestResultBESQuery) QueryExecutionInfo() *ExectionInfoQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(testresultbes.Table, testresultbes.FieldID, selector),
 			sqlgraph.To(exectioninfo.Table, exectioninfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, testresultbes.ExecutionInfoTable, testresultbes.ExecutionInfoColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, testresultbes.ExecutionInfoTable, testresultbes.ExecutionInfoColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(trbq.driver.Dialect(), step)
 		return fromU, nil
@@ -453,7 +453,7 @@ func (trbq *TestResultBESQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			trbq.withExecutionInfo != nil,
 		}
 	)
-	if trbq.withTestCollection != nil || trbq.withExecutionInfo != nil {
+	if trbq.withTestCollection != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -547,95 +547,61 @@ func (trbq *TestResultBESQuery) loadTestCollection(ctx context.Context, query *T
 	return nil
 }
 func (trbq *TestResultBESQuery) loadTestActionOutput(ctx context.Context, query *TestFileQuery, nodes []*TestResultBES, init func(*TestResultBES), assign func(*TestResultBES, *TestFile)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*TestResultBES)
-	nids := make(map[int]map[*TestResultBES]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(testresultbes.TestActionOutputTable)
-		s.Join(joinT).On(s.C(testfile.FieldID), joinT.C(testresultbes.TestActionOutputPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(testresultbes.TestActionOutputPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(testresultbes.TestActionOutputPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*TestResultBES]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*TestFile](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "test_action_output" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
-	}
-	return nil
-}
-func (trbq *TestResultBESQuery) loadExecutionInfo(ctx context.Context, query *ExectionInfoQuery, nodes []*TestResultBES, init func(*TestResultBES), assign func(*TestResultBES, *ExectionInfo)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*TestResultBES)
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*TestResultBES)
 	for i := range nodes {
-		if nodes[i].test_result_bes_execution_info == nil {
-			continue
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
 		}
-		fk := *nodes[i].test_result_bes_execution_info
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(exectioninfo.IDIn(ids...))
+	query.withFKs = true
+	query.Where(predicate.TestFile(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(testresultbes.TestActionOutputColumn), fks...))
+	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
+		fk := n.test_result_bes_test_action_output
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "test_result_bes_test_action_output" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "test_result_bes_execution_info" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "test_result_bes_test_action_output" returned %v for node %v`, *fk, n.ID)
 		}
-		for i := range nodes {
-			assign(nodes[i], n)
+		assign(node, n)
+	}
+	return nil
+}
+func (trbq *TestResultBESQuery) loadExecutionInfo(ctx context.Context, query *ExectionInfoQuery, nodes []*TestResultBES, init func(*TestResultBES), assign func(*TestResultBES, *ExectionInfo)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*TestResultBES)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	query.withFKs = true
+	query.Where(predicate.ExectionInfo(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(testresultbes.ExecutionInfoColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.test_result_bes_execution_info
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "test_result_bes_execution_info" is nil for node %v`, n.ID)
 		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "test_result_bes_execution_info" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }

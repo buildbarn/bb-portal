@@ -45,7 +45,7 @@ const (
 	// Table holds the table name of the testsummary in the database.
 	Table = "test_summaries"
 	// TestCollectionTable is the table that holds the test_collection relation/edge.
-	TestCollectionTable = "test_collections"
+	TestCollectionTable = "test_summaries"
 	// TestCollectionInverseTable is the table name for the TestCollection entity.
 	// It exists in this package in order to avoid circular dependency with the "testcollection" package.
 	TestCollectionInverseTable = "test_collections"
@@ -82,10 +82,21 @@ var Columns = []string{
 	FieldLabel,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "test_summaries"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"test_collection_test_summary",
+}
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -183,17 +194,10 @@ func ByLabel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLabel, opts...).ToFunc()
 }
 
-// ByTestCollectionCount orders the results by test_collection count.
-func ByTestCollectionCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTestCollectionField orders the results by test_collection field.
+func ByTestCollectionField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTestCollectionStep(), opts...)
-	}
-}
-
-// ByTestCollection orders the results by test_collection terms.
-func ByTestCollection(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTestCollectionStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newTestCollectionStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -228,7 +232,7 @@ func newTestCollectionStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TestCollectionInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, TestCollectionTable, TestCollectionColumn),
+		sqlgraph.Edge(sqlgraph.O2O, true, TestCollectionTable, TestCollectionColumn),
 	)
 }
 func newPassedStep() *sqlgraph.Step {

@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 )
 
@@ -22,28 +23,29 @@ type ResourceUsage struct {
 	Value string `json:"value,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ResourceUsageQuery when eager-loading is set.
-	Edges        ResourceUsageEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                        ResourceUsageEdges `json:"edges"`
+	exection_info_resource_usage *int
+	selectValues                 sql.SelectValues
 }
 
 // ResourceUsageEdges holds the relations/edges for other nodes in the graph.
 type ResourceUsageEdges struct {
 	// ExecutionInfo holds the value of the execution_info edge.
-	ExecutionInfo []*ExectionInfo `json:"execution_info,omitempty"`
+	ExecutionInfo *ExectionInfo `json:"execution_info,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedExecutionInfo map[string][]*ExectionInfo
 }
 
 // ExecutionInfoOrErr returns the ExecutionInfo value or an error if the edge
-// was not loaded in eager-loading.
-func (e ResourceUsageEdges) ExecutionInfoOrErr() ([]*ExectionInfo, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ResourceUsageEdges) ExecutionInfoOrErr() (*ExectionInfo, error) {
+	if e.ExecutionInfo != nil {
 		return e.ExecutionInfo, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: exectioninfo.Label}
 	}
 	return nil, &NotLoadedError{edge: "execution_info"}
 }
@@ -57,6 +59,8 @@ func (*ResourceUsage) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case resourceusage.FieldName, resourceusage.FieldValue:
 			values[i] = new(sql.NullString)
+		case resourceusage.ForeignKeys[0]: // exection_info_resource_usage
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -89,6 +93,13 @@ func (ru *ResourceUsage) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field value", values[i])
 			} else if value.Valid {
 				ru.Value = value.String
+			}
+		case resourceusage.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field exection_info_resource_usage", value)
+			} else if value.Valid {
+				ru.exection_info_resource_usage = new(int)
+				*ru.exection_info_resource_usage = int(value.Int64)
 			}
 		default:
 			ru.selectValues.Set(columns[i], values[i])
@@ -138,30 +149,6 @@ func (ru *ResourceUsage) String() string {
 	builder.WriteString(ru.Value)
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedExecutionInfo returns the ExecutionInfo named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (ru *ResourceUsage) NamedExecutionInfo(name string) ([]*ExectionInfo, error) {
-	if ru.Edges.namedExecutionInfo == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := ru.Edges.namedExecutionInfo[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (ru *ResourceUsage) appendNamedExecutionInfo(name string, edges ...*ExectionInfo) {
-	if ru.Edges.namedExecutionInfo == nil {
-		ru.Edges.namedExecutionInfo = make(map[string][]*ExectionInfo)
-	}
-	if len(edges) == 0 {
-		ru.Edges.namedExecutionInfo[name] = []*ExectionInfo{}
-	} else {
-		ru.Edges.namedExecutionInfo[name] = append(ru.Edges.namedExecutionInfo[name], edges...)
-	}
 }
 
 // ResourceUsages is a parsable slice of ResourceUsage.

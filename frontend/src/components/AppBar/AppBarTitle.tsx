@@ -9,7 +9,7 @@ const AppBarTitle = () => {
   return (
     <div className={styles.title}>
       <Link href="/">
-        <Typography.Title level={3}>Buildbarn Portal</Typography.Title>
+        <Typography.Title level={3}>{process.env.NEXT_PUBLIC_COMPANY_NAME} Buildbarn Portal</Typography.Title>
       </Link>
     </div>
   );

@@ -1,7 +1,9 @@
 package schema
 
 import (
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -15,7 +17,8 @@ type TestCollection struct {
 func (TestCollection) Fields() []ent.Field {
 	return []ent.Field{
 		// The label associated with this test.
-		field.String("label").Optional(),
+		field.String("label").
+			Optional(),
 
 		// The overall status of the test.
 		field.Enum("overall_status").
@@ -32,16 +35,26 @@ func (TestCollection) Fields() []ent.Field {
 			Default("NO_STATUS"),
 
 		// The strategy of the test.
-		field.String("strategy").Optional(),
+		field.String("strategy").
+			Optional(),
 
 		// If the test was cached locally.
-		field.Bool("cached_locally").Optional(),
+		field.Bool("cached_locally").
+			Optional(),
 
 		// If the test was cached remotely.
-		field.Bool("cached_remotely").Optional(),
+		field.Bool("cached_remotely").
+			Optional(),
+
+		field.Time("first_seen").
+			Optional().
+			Nillable().
+			Annotations(entgql.OrderField("FIRST_SEEN")),
 
 		// The test duration in milliseconds.
-		field.Int64("duration_ms").Optional(),
+		field.Int64("duration_ms").
+			Optional().
+			Annotations(entgql.OrderField("DURATION")),
 	}
 }
 
@@ -50,12 +63,20 @@ func (TestCollection) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the bazel invocaiton.
 		edge.From("bazel_invocation", BazelInvocation.Type).
-			Ref("test_collection"),
+			Ref("test_collection").Unique(),
 
 		// The test summary aossicated with the test.
 		edge.To("test_summary", TestSummary.Type).Unique(),
 
-		// A collection of test results associated.
+		// A collection of test results associated with this collection
 		edge.To("test_results", TestResultBES.Type),
+	}
+}
+
+// Annotations of the Test Collection
+func (TestCollection) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entgql.RelayConnection(),
+		entgql.QueryField("findTests"),
 	}
 }

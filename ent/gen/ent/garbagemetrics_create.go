@@ -47,19 +47,23 @@ func (gmc *GarbageMetricsCreate) SetNillableGarbageCollected(i *int64) *GarbageM
 	return gmc
 }
 
-// AddMemoryMetricIDs adds the "memory_metrics" edge to the MemoryMetrics entity by IDs.
-func (gmc *GarbageMetricsCreate) AddMemoryMetricIDs(ids ...int) *GarbageMetricsCreate {
-	gmc.mutation.AddMemoryMetricIDs(ids...)
+// SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
+func (gmc *GarbageMetricsCreate) SetMemoryMetricsID(id int) *GarbageMetricsCreate {
+	gmc.mutation.SetMemoryMetricsID(id)
 	return gmc
 }
 
-// AddMemoryMetrics adds the "memory_metrics" edges to the MemoryMetrics entity.
-func (gmc *GarbageMetricsCreate) AddMemoryMetrics(m ...*MemoryMetrics) *GarbageMetricsCreate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
+func (gmc *GarbageMetricsCreate) SetNillableMemoryMetricsID(id *int) *GarbageMetricsCreate {
+	if id != nil {
+		gmc = gmc.SetMemoryMetricsID(*id)
 	}
-	return gmc.AddMemoryMetricIDs(ids...)
+	return gmc
+}
+
+// SetMemoryMetrics sets the "memory_metrics" edge to the MemoryMetrics entity.
+func (gmc *GarbageMetricsCreate) SetMemoryMetrics(m *MemoryMetrics) *GarbageMetricsCreate {
+	return gmc.SetMemoryMetricsID(m.ID)
 }
 
 // Mutation returns the GarbageMetricsMutation object of the builder.
@@ -132,10 +136,10 @@ func (gmc *GarbageMetricsCreate) createSpec() (*GarbageMetrics, *sqlgraph.Create
 	}
 	if nodes := gmc.mutation.MemoryMetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   garbagemetrics.MemoryMetricsTable,
-			Columns: garbagemetrics.MemoryMetricsPrimaryKey,
+			Columns: []string{garbagemetrics.MemoryMetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt),
@@ -144,6 +148,7 @@ func (gmc *GarbageMetricsCreate) createSpec() (*GarbageMetrics, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.memory_metrics_garbage_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

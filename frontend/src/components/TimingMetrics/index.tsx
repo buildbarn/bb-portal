@@ -21,7 +21,7 @@ const TimingMetricsDisplay: React.FC<{
         return (
 
             <Space size={"large"} direction="vertical" style={{ display: 'flex' }}>
-                <PortalCard titleBits={["Timing Metrics"]} icon={<FieldTimeOutlined />}>
+                <PortalCard type="inner" titleBits={["Timing Metrics"]} icon={<FieldTimeOutlined />}>
                     <Row>
                         <Space size={"large"}>
                             <Statistic title="Wall Time(ms)" value={timingMetrics?.wallTimeInMs ?? 0} formatter={formatter} />
@@ -29,11 +29,10 @@ const TimingMetricsDisplay: React.FC<{
                             <Statistic title="CPU Time(ms)" value={timingMetrics?.cpuTimeInMs ?? 0} formatter={formatter} />
                             <Statistic title="Execuction(ms)" value={timingMetrics?.executionPhaseTimeInMs ?? 0} formatter={formatter} />
                             <Statistic title="Actions Execution Start" value={timingMetrics?.actionsExecutionStartInMs ?? 0} formatter={formatter} />
-
                         </Space>
                     </Row>
                 </PortalCard>
-                <PortalCard titleBits={["Build Graph Metrics"]} icon={<BuildOutlined />}>
+                <PortalCard type="inner" titleBits={["Build Graph Metrics"]} icon={<BuildOutlined />}>
                     <Row>
                         <Space size={"large"}>
                             <Statistic title="Action Count" value={buildGraphMetrics?.actionCount ?? 0} formatter={formatter} />
@@ -47,7 +46,6 @@ const TimingMetricsDisplay: React.FC<{
                     </Row>
                 </PortalCard>
             </Space>
-
         )
     }
 

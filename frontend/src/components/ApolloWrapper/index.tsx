@@ -17,17 +17,17 @@ export const makeClient = () => {
 
   return new NextSSRApolloClient({
     cache: new NextSSRInMemoryCache({
-        possibleTypes
+      possibleTypes
     }),
     connectToDevTools: true,
     link:
       typeof window === 'undefined'
         ? ApolloLink.from([
-            new SSRMultipartLink({
-              stripDefer: true,
-            }),
-            httpLink,
-          ])
+          new SSRMultipartLink({
+            stripDefer: true,
+          }),
+          httpLink,
+        ])
         : httpLink,
   });
 }

@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
 )
 
@@ -22,28 +23,29 @@ type MissDetail struct {
 	Count int32 `json:"count,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MissDetailQuery when eager-loading is set.
-	Edges        MissDetailEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                                MissDetailEdges `json:"edges"`
+	action_cache_statistics_miss_details *int
+	selectValues                         sql.SelectValues
 }
 
 // MissDetailEdges holds the relations/edges for other nodes in the graph.
 type MissDetailEdges struct {
 	// ActionCacheStatistics holds the value of the action_cache_statistics edge.
-	ActionCacheStatistics []*ActionCacheStatistics `json:"action_cache_statistics,omitempty"`
+	ActionCacheStatistics *ActionCacheStatistics `json:"action_cache_statistics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
 	totalCount [1]map[string]int
-
-	namedActionCacheStatistics map[string][]*ActionCacheStatistics
 }
 
 // ActionCacheStatisticsOrErr returns the ActionCacheStatistics value or an error if the edge
-// was not loaded in eager-loading.
-func (e MissDetailEdges) ActionCacheStatisticsOrErr() ([]*ActionCacheStatistics, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e MissDetailEdges) ActionCacheStatisticsOrErr() (*ActionCacheStatistics, error) {
+	if e.ActionCacheStatistics != nil {
 		return e.ActionCacheStatistics, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: actioncachestatistics.Label}
 	}
 	return nil, &NotLoadedError{edge: "action_cache_statistics"}
 }
@@ -57,6 +59,8 @@ func (*MissDetail) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case missdetail.FieldReason:
 			values[i] = new(sql.NullString)
+		case missdetail.ForeignKeys[0]: // action_cache_statistics_miss_details
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -89,6 +93,13 @@ func (md *MissDetail) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field count", values[i])
 			} else if value.Valid {
 				md.Count = int32(value.Int64)
+			}
+		case missdetail.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field action_cache_statistics_miss_details", value)
+			} else if value.Valid {
+				md.action_cache_statistics_miss_details = new(int)
+				*md.action_cache_statistics_miss_details = int(value.Int64)
 			}
 		default:
 			md.selectValues.Set(columns[i], values[i])
@@ -138,30 +149,6 @@ func (md *MissDetail) String() string {
 	builder.WriteString(fmt.Sprintf("%v", md.Count))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedActionCacheStatistics returns the ActionCacheStatistics named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (md *MissDetail) NamedActionCacheStatistics(name string) ([]*ActionCacheStatistics, error) {
-	if md.Edges.namedActionCacheStatistics == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := md.Edges.namedActionCacheStatistics[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (md *MissDetail) appendNamedActionCacheStatistics(name string, edges ...*ActionCacheStatistics) {
-	if md.Edges.namedActionCacheStatistics == nil {
-		md.Edges.namedActionCacheStatistics = make(map[string][]*ActionCacheStatistics)
-	}
-	if len(edges) == 0 {
-		md.Edges.namedActionCacheStatistics[name] = []*ActionCacheStatistics{}
-	} else {
-		md.Edges.namedActionCacheStatistics[name] = append(md.Edges.namedActionCacheStatistics[name], edges...)
-	}
 }
 
 // MissDetails is a parsable slice of MissDetail.

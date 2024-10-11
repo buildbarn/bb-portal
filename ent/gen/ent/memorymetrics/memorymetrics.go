@@ -24,16 +24,20 @@ const (
 	EdgeGarbageMetrics = "garbage_metrics"
 	// Table holds the table name of the memorymetrics in the database.
 	Table = "memory_metrics"
-	// MetricsTable is the table that holds the metrics relation/edge. The primary key declared below.
-	MetricsTable = "metrics_memory_metrics"
+	// MetricsTable is the table that holds the metrics relation/edge.
+	MetricsTable = "memory_metrics"
 	// MetricsInverseTable is the table name for the Metrics entity.
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
-	// GarbageMetricsTable is the table that holds the garbage_metrics relation/edge. The primary key declared below.
-	GarbageMetricsTable = "memory_metrics_garbage_metrics"
+	// MetricsColumn is the table column denoting the metrics relation/edge.
+	MetricsColumn = "metrics_memory_metrics"
+	// GarbageMetricsTable is the table that holds the garbage_metrics relation/edge.
+	GarbageMetricsTable = "garbage_metrics"
 	// GarbageMetricsInverseTable is the table name for the GarbageMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "garbagemetrics" package.
 	GarbageMetricsInverseTable = "garbage_metrics"
+	// GarbageMetricsColumn is the table column denoting the garbage_metrics relation/edge.
+	GarbageMetricsColumn = "memory_metrics_garbage_metrics"
 )
 
 // Columns holds all SQL columns for memorymetrics fields.
@@ -44,19 +48,21 @@ var Columns = []string{
 	FieldPeakPostGcTenuredSpaceHeapSize,
 }
 
-var (
-	// MetricsPrimaryKey and MetricsColumn2 are the table columns denoting the
-	// primary key for the metrics relation (M2M).
-	MetricsPrimaryKey = []string{"metrics_id", "memory_metrics_id"}
-	// GarbageMetricsPrimaryKey and GarbageMetricsColumn2 are the table columns denoting the
-	// primary key for the garbage_metrics relation (M2M).
-	GarbageMetricsPrimaryKey = []string{"memory_metrics_id", "garbage_metrics_id"}
-)
+// ForeignKeys holds the SQL foreign-keys that are owned by the "memory_metrics"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"metrics_memory_metrics",
+}
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -86,17 +92,10 @@ func ByPeakPostGcTenuredSpaceHeapSize(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPeakPostGcTenuredSpaceHeapSize, opts...).ToFunc()
 }
 
-// ByMetricsCount orders the results by metrics count.
-func ByMetricsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByMetricsField orders the results by metrics field.
+func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newMetricsStep(), opts...)
-	}
-}
-
-// ByMetrics orders the results by metrics terms.
-func ByMetrics(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -117,13 +116,13 @@ func newMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, MetricsTable, MetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
 	)
 }
 func newGarbageMetricsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(GarbageMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, GarbageMetricsTable, GarbageMetricsPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.O2M, false, GarbageMetricsTable, GarbageMetricsColumn),
 	)
 }

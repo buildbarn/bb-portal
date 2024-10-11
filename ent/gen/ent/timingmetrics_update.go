@@ -163,19 +163,23 @@ func (tmu *TimingMetricsUpdate) ClearActionsExecutionStartInMs() *TimingMetricsU
 	return tmu
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (tmu *TimingMetricsUpdate) AddMetricIDs(ids ...int) *TimingMetricsUpdate {
-	tmu.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (tmu *TimingMetricsUpdate) SetMetricsID(id int) *TimingMetricsUpdate {
+	tmu.mutation.SetMetricsID(id)
 	return tmu
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (tmu *TimingMetricsUpdate) AddMetrics(m ...*Metrics) *TimingMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (tmu *TimingMetricsUpdate) SetNillableMetricsID(id *int) *TimingMetricsUpdate {
+	if id != nil {
+		tmu = tmu.SetMetricsID(*id)
 	}
-	return tmu.AddMetricIDs(ids...)
+	return tmu
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (tmu *TimingMetricsUpdate) SetMetrics(m *Metrics) *TimingMetricsUpdate {
+	return tmu.SetMetricsID(m.ID)
 }
 
 // Mutation returns the TimingMetricsMutation object of the builder.
@@ -183,25 +187,10 @@ func (tmu *TimingMetricsUpdate) Mutation() *TimingMetricsMutation {
 	return tmu.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (tmu *TimingMetricsUpdate) ClearMetrics() *TimingMetricsUpdate {
 	tmu.mutation.ClearMetrics()
 	return tmu
-}
-
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (tmu *TimingMetricsUpdate) RemoveMetricIDs(ids ...int) *TimingMetricsUpdate {
-	tmu.mutation.RemoveMetricIDs(ids...)
-	return tmu
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (tmu *TimingMetricsUpdate) RemoveMetrics(m ...*Metrics) *TimingMetricsUpdate {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return tmu.RemoveMetricIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -287,39 +276,23 @@ func (tmu *TimingMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if tmu.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   timingmetrics.MetricsTable,
-			Columns: timingmetrics.MetricsPrimaryKey,
+			Columns: []string{timingmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tmu.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !tmu.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   timingmetrics.MetricsTable,
-			Columns: timingmetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tmu.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   timingmetrics.MetricsTable,
-			Columns: timingmetrics.MetricsPrimaryKey,
+			Columns: []string{timingmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
@@ -485,19 +458,23 @@ func (tmuo *TimingMetricsUpdateOne) ClearActionsExecutionStartInMs() *TimingMetr
 	return tmuo
 }
 
-// AddMetricIDs adds the "metrics" edge to the Metrics entity by IDs.
-func (tmuo *TimingMetricsUpdateOne) AddMetricIDs(ids ...int) *TimingMetricsUpdateOne {
-	tmuo.mutation.AddMetricIDs(ids...)
+// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
+func (tmuo *TimingMetricsUpdateOne) SetMetricsID(id int) *TimingMetricsUpdateOne {
+	tmuo.mutation.SetMetricsID(id)
 	return tmuo
 }
 
-// AddMetrics adds the "metrics" edges to the Metrics entity.
-func (tmuo *TimingMetricsUpdateOne) AddMetrics(m ...*Metrics) *TimingMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
+// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
+func (tmuo *TimingMetricsUpdateOne) SetNillableMetricsID(id *int) *TimingMetricsUpdateOne {
+	if id != nil {
+		tmuo = tmuo.SetMetricsID(*id)
 	}
-	return tmuo.AddMetricIDs(ids...)
+	return tmuo
+}
+
+// SetMetrics sets the "metrics" edge to the Metrics entity.
+func (tmuo *TimingMetricsUpdateOne) SetMetrics(m *Metrics) *TimingMetricsUpdateOne {
+	return tmuo.SetMetricsID(m.ID)
 }
 
 // Mutation returns the TimingMetricsMutation object of the builder.
@@ -505,25 +482,10 @@ func (tmuo *TimingMetricsUpdateOne) Mutation() *TimingMetricsMutation {
 	return tmuo.mutation
 }
 
-// ClearMetrics clears all "metrics" edges to the Metrics entity.
+// ClearMetrics clears the "metrics" edge to the Metrics entity.
 func (tmuo *TimingMetricsUpdateOne) ClearMetrics() *TimingMetricsUpdateOne {
 	tmuo.mutation.ClearMetrics()
 	return tmuo
-}
-
-// RemoveMetricIDs removes the "metrics" edge to Metrics entities by IDs.
-func (tmuo *TimingMetricsUpdateOne) RemoveMetricIDs(ids ...int) *TimingMetricsUpdateOne {
-	tmuo.mutation.RemoveMetricIDs(ids...)
-	return tmuo
-}
-
-// RemoveMetrics removes "metrics" edges to Metrics entities.
-func (tmuo *TimingMetricsUpdateOne) RemoveMetrics(m ...*Metrics) *TimingMetricsUpdateOne {
-	ids := make([]int, len(m))
-	for i := range m {
-		ids[i] = m[i].ID
-	}
-	return tmuo.RemoveMetricIDs(ids...)
 }
 
 // Where appends a list predicates to the TimingMetricsUpdate builder.
@@ -639,39 +601,23 @@ func (tmuo *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingM
 	}
 	if tmuo.mutation.MetricsCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   timingmetrics.MetricsTable,
-			Columns: timingmetrics.MetricsPrimaryKey,
+			Columns: []string{timingmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tmuo.mutation.RemovedMetricsIDs(); len(nodes) > 0 && !tmuo.mutation.MetricsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   timingmetrics.MetricsTable,
-			Columns: timingmetrics.MetricsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tmuo.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   timingmetrics.MetricsTable,
-			Columns: timingmetrics.MetricsPrimaryKey,
+			Columns: []string{timingmetrics.MetricsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(metrics.FieldID, field.TypeInt),

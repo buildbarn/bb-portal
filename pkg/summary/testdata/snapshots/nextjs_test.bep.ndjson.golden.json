@@ -294,7 +294,8 @@
         "Strategy": "darwin-sandbox",
         "CachedLocally": false,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.79980903Z"
       },
       "//next.js:build_smoke_test": {
         "TestSummary": {
@@ -354,7 +355,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.796408671Z"
       },
       "//next.js:build_test": {
         "TestSummary": {
@@ -414,7 +416,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.797348962Z"
       },
       "//react-webpack:build_smoke_test": {
         "TestSummary": {
@@ -474,7 +477,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.79754056Z"
       },
       "//react/src:lint": {
         "TestSummary": {
@@ -534,7 +538,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.798837177Z"
       },
       "//react/src:src_typecheck_test": {
         "TestSummary": {
@@ -594,7 +599,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.796676013Z"
       },
       "//react/src:test": {
         "TestSummary": {
@@ -654,7 +660,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.798601257Z"
       },
       "//react/src:test_lib_typecheck_test": {
         "TestSummary": {
@@ -714,7 +721,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.797164244Z"
       },
       "//react:build_smoke_test": {
         "TestSummary": {
@@ -774,7 +782,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.797812403Z"
       },
       "//vue:build_test": {
         "TestSummary": {
@@ -834,7 +843,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.797956609Z"
       },
       "//vue:type-check": {
         "TestSummary": {
@@ -894,7 +904,8 @@
         "Strategy": "",
         "CachedLocally": true,
         "CachedRemotely": false,
-        "DurationMs": 0
+        "DurationMs": 0,
+        "FirstSeen": "2024-10-10T18:40:35.798160038Z"
       }
     },
     "Targets": {

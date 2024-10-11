@@ -32,6 +32,8 @@ func (CumulativeMetrics) Fields() []ent.Field {
 func (CumulativeMetrics) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the metircs object.
-		edge.From("metrics", Metrics.Type).Ref("cumulative_metrics"),
+		edge.From("metrics", Metrics.Type).
+			Ref("cumulative_metrics").
+			Unique(),
 	}
 }

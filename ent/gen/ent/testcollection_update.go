@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -130,6 +131,26 @@ func (tcu *TestCollectionUpdate) ClearCachedRemotely() *TestCollectionUpdate {
 	return tcu
 }
 
+// SetFirstSeen sets the "first_seen" field.
+func (tcu *TestCollectionUpdate) SetFirstSeen(t time.Time) *TestCollectionUpdate {
+	tcu.mutation.SetFirstSeen(t)
+	return tcu
+}
+
+// SetNillableFirstSeen sets the "first_seen" field if the given value is not nil.
+func (tcu *TestCollectionUpdate) SetNillableFirstSeen(t *time.Time) *TestCollectionUpdate {
+	if t != nil {
+		tcu.SetFirstSeen(*t)
+	}
+	return tcu
+}
+
+// ClearFirstSeen clears the value of the "first_seen" field.
+func (tcu *TestCollectionUpdate) ClearFirstSeen() *TestCollectionUpdate {
+	tcu.mutation.ClearFirstSeen()
+	return tcu
+}
+
 // SetDurationMs sets the "duration_ms" field.
 func (tcu *TestCollectionUpdate) SetDurationMs(i int64) *TestCollectionUpdate {
 	tcu.mutation.ResetDurationMs()
@@ -157,19 +178,23 @@ func (tcu *TestCollectionUpdate) ClearDurationMs() *TestCollectionUpdate {
 	return tcu
 }
 
-// AddBazelInvocationIDs adds the "bazel_invocation" edge to the BazelInvocation entity by IDs.
-func (tcu *TestCollectionUpdate) AddBazelInvocationIDs(ids ...int) *TestCollectionUpdate {
-	tcu.mutation.AddBazelInvocationIDs(ids...)
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
+func (tcu *TestCollectionUpdate) SetBazelInvocationID(id int) *TestCollectionUpdate {
+	tcu.mutation.SetBazelInvocationID(id)
 	return tcu
 }
 
-// AddBazelInvocation adds the "bazel_invocation" edges to the BazelInvocation entity.
-func (tcu *TestCollectionUpdate) AddBazelInvocation(b ...*BazelInvocation) *TestCollectionUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
+func (tcu *TestCollectionUpdate) SetNillableBazelInvocationID(id *int) *TestCollectionUpdate {
+	if id != nil {
+		tcu = tcu.SetBazelInvocationID(*id)
 	}
-	return tcu.AddBazelInvocationIDs(ids...)
+	return tcu
+}
+
+// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
+func (tcu *TestCollectionUpdate) SetBazelInvocation(b *BazelInvocation) *TestCollectionUpdate {
+	return tcu.SetBazelInvocationID(b.ID)
 }
 
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID.
@@ -211,25 +236,10 @@ func (tcu *TestCollectionUpdate) Mutation() *TestCollectionMutation {
 	return tcu.mutation
 }
 
-// ClearBazelInvocation clears all "bazel_invocation" edges to the BazelInvocation entity.
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
 func (tcu *TestCollectionUpdate) ClearBazelInvocation() *TestCollectionUpdate {
 	tcu.mutation.ClearBazelInvocation()
 	return tcu
-}
-
-// RemoveBazelInvocationIDs removes the "bazel_invocation" edge to BazelInvocation entities by IDs.
-func (tcu *TestCollectionUpdate) RemoveBazelInvocationIDs(ids ...int) *TestCollectionUpdate {
-	tcu.mutation.RemoveBazelInvocationIDs(ids...)
-	return tcu
-}
-
-// RemoveBazelInvocation removes "bazel_invocation" edges to BazelInvocation entities.
-func (tcu *TestCollectionUpdate) RemoveBazelInvocation(b ...*BazelInvocation) *TestCollectionUpdate {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return tcu.RemoveBazelInvocationIDs(ids...)
 }
 
 // ClearTestSummary clears the "test_summary" edge to the TestSummary entity.
@@ -338,6 +348,12 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 	if tcu.mutation.CachedRemotelyCleared() {
 		_spec.ClearField(testcollection.FieldCachedRemotely, field.TypeBool)
 	}
+	if value, ok := tcu.mutation.FirstSeen(); ok {
+		_spec.SetField(testcollection.FieldFirstSeen, field.TypeTime, value)
+	}
+	if tcu.mutation.FirstSeenCleared() {
+		_spec.ClearField(testcollection.FieldFirstSeen, field.TypeTime)
+	}
 	if value, ok := tcu.mutation.DurationMs(); ok {
 		_spec.SetField(testcollection.FieldDurationMs, field.TypeInt64, value)
 	}
@@ -349,39 +365,23 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if tcu.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   testcollection.BazelInvocationTable,
-			Columns: testcollection.BazelInvocationPrimaryKey,
+			Columns: []string{testcollection.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tcu.mutation.RemovedBazelInvocationIDs(); len(nodes) > 0 && !tcu.mutation.BazelInvocationCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   testcollection.BazelInvocationTable,
-			Columns: testcollection.BazelInvocationPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tcu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   testcollection.BazelInvocationTable,
-			Columns: testcollection.BazelInvocationPrimaryKey,
+			Columns: []string{testcollection.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
@@ -394,7 +394,7 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if tcu.mutation.TestSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   testcollection.TestSummaryTable,
 			Columns: []string{testcollection.TestSummaryColumn},
@@ -407,7 +407,7 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if nodes := tcu.mutation.TestSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   testcollection.TestSummaryTable,
 			Columns: []string{testcollection.TestSummaryColumn},
@@ -586,6 +586,26 @@ func (tcuo *TestCollectionUpdateOne) ClearCachedRemotely() *TestCollectionUpdate
 	return tcuo
 }
 
+// SetFirstSeen sets the "first_seen" field.
+func (tcuo *TestCollectionUpdateOne) SetFirstSeen(t time.Time) *TestCollectionUpdateOne {
+	tcuo.mutation.SetFirstSeen(t)
+	return tcuo
+}
+
+// SetNillableFirstSeen sets the "first_seen" field if the given value is not nil.
+func (tcuo *TestCollectionUpdateOne) SetNillableFirstSeen(t *time.Time) *TestCollectionUpdateOne {
+	if t != nil {
+		tcuo.SetFirstSeen(*t)
+	}
+	return tcuo
+}
+
+// ClearFirstSeen clears the value of the "first_seen" field.
+func (tcuo *TestCollectionUpdateOne) ClearFirstSeen() *TestCollectionUpdateOne {
+	tcuo.mutation.ClearFirstSeen()
+	return tcuo
+}
+
 // SetDurationMs sets the "duration_ms" field.
 func (tcuo *TestCollectionUpdateOne) SetDurationMs(i int64) *TestCollectionUpdateOne {
 	tcuo.mutation.ResetDurationMs()
@@ -613,19 +633,23 @@ func (tcuo *TestCollectionUpdateOne) ClearDurationMs() *TestCollectionUpdateOne 
 	return tcuo
 }
 
-// AddBazelInvocationIDs adds the "bazel_invocation" edge to the BazelInvocation entity by IDs.
-func (tcuo *TestCollectionUpdateOne) AddBazelInvocationIDs(ids ...int) *TestCollectionUpdateOne {
-	tcuo.mutation.AddBazelInvocationIDs(ids...)
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
+func (tcuo *TestCollectionUpdateOne) SetBazelInvocationID(id int) *TestCollectionUpdateOne {
+	tcuo.mutation.SetBazelInvocationID(id)
 	return tcuo
 }
 
-// AddBazelInvocation adds the "bazel_invocation" edges to the BazelInvocation entity.
-func (tcuo *TestCollectionUpdateOne) AddBazelInvocation(b ...*BazelInvocation) *TestCollectionUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
+// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
+func (tcuo *TestCollectionUpdateOne) SetNillableBazelInvocationID(id *int) *TestCollectionUpdateOne {
+	if id != nil {
+		tcuo = tcuo.SetBazelInvocationID(*id)
 	}
-	return tcuo.AddBazelInvocationIDs(ids...)
+	return tcuo
+}
+
+// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
+func (tcuo *TestCollectionUpdateOne) SetBazelInvocation(b *BazelInvocation) *TestCollectionUpdateOne {
+	return tcuo.SetBazelInvocationID(b.ID)
 }
 
 // SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by ID.
@@ -667,25 +691,10 @@ func (tcuo *TestCollectionUpdateOne) Mutation() *TestCollectionMutation {
 	return tcuo.mutation
 }
 
-// ClearBazelInvocation clears all "bazel_invocation" edges to the BazelInvocation entity.
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
 func (tcuo *TestCollectionUpdateOne) ClearBazelInvocation() *TestCollectionUpdateOne {
 	tcuo.mutation.ClearBazelInvocation()
 	return tcuo
-}
-
-// RemoveBazelInvocationIDs removes the "bazel_invocation" edge to BazelInvocation entities by IDs.
-func (tcuo *TestCollectionUpdateOne) RemoveBazelInvocationIDs(ids ...int) *TestCollectionUpdateOne {
-	tcuo.mutation.RemoveBazelInvocationIDs(ids...)
-	return tcuo
-}
-
-// RemoveBazelInvocation removes "bazel_invocation" edges to BazelInvocation entities.
-func (tcuo *TestCollectionUpdateOne) RemoveBazelInvocation(b ...*BazelInvocation) *TestCollectionUpdateOne {
-	ids := make([]int, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return tcuo.RemoveBazelInvocationIDs(ids...)
 }
 
 // ClearTestSummary clears the "test_summary" edge to the TestSummary entity.
@@ -824,6 +833,12 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 	if tcuo.mutation.CachedRemotelyCleared() {
 		_spec.ClearField(testcollection.FieldCachedRemotely, field.TypeBool)
 	}
+	if value, ok := tcuo.mutation.FirstSeen(); ok {
+		_spec.SetField(testcollection.FieldFirstSeen, field.TypeTime, value)
+	}
+	if tcuo.mutation.FirstSeenCleared() {
+		_spec.ClearField(testcollection.FieldFirstSeen, field.TypeTime)
+	}
 	if value, ok := tcuo.mutation.DurationMs(); ok {
 		_spec.SetField(testcollection.FieldDurationMs, field.TypeInt64, value)
 	}
@@ -835,39 +850,23 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 	}
 	if tcuo.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   testcollection.BazelInvocationTable,
-			Columns: testcollection.BazelInvocationPrimaryKey,
+			Columns: []string{testcollection.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tcuo.mutation.RemovedBazelInvocationIDs(); len(nodes) > 0 && !tcuo.mutation.BazelInvocationCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   testcollection.BazelInvocationTable,
-			Columns: testcollection.BazelInvocationPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := tcuo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
 			Table:   testcollection.BazelInvocationTable,
-			Columns: testcollection.BazelInvocationPrimaryKey,
+			Columns: []string{testcollection.BazelInvocationColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
@@ -880,7 +879,7 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 	}
 	if tcuo.mutation.TestSummaryCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   testcollection.TestSummaryTable,
 			Columns: []string{testcollection.TestSummaryColumn},
@@ -893,7 +892,7 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 	}
 	if nodes := tcuo.mutation.TestSummaryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   testcollection.TestSummaryTable,
 			Columns: []string{testcollection.TestSummaryColumn},

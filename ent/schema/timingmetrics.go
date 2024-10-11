@@ -43,6 +43,8 @@ func (TimingMetrics) Fields() []ent.Field {
 func (TimingMetrics) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the metrics object.
-		edge.From("metrics", Metrics.Type).Ref("timing_metrics"),
+		edge.From("metrics", Metrics.Type).
+			Ref("timing_metrics").
+			Unique(),
 	}
 }

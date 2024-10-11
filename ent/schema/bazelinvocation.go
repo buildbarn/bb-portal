@@ -24,7 +24,7 @@ func (BazelInvocation) Fields() []ent.Field {
 		field.UUID("invocation_id", uuid.UUID{}).Unique().Immutable(),
 
 		// Time the event started.
-		field.Time("started_at"),
+		field.Time("started_at").Annotations(entgql.OrderField("STARTED_AT")),
 
 		// Time the event ended
 		field.Time("ended_at").Optional(),
@@ -54,7 +54,7 @@ func (BazelInvocation) Fields() []ent.Field {
 		field.String("user_email").Optional(),
 
 		// Ldap (username) of the user who launched the invocation if provided.
-		field.String("user_ldap").Optional(),
+		field.String("user_ldap").Optional().Annotations(entgql.OrderField("USER_LDAP")),
 
 		// The full logs from the build..
 		field.String("build_logs").Optional(),
