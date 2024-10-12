@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package buildbarn.configuration.bb_portal;
+
+import "pkg/proto/configuration/auth/auth.proto";
+import "pkg/proto/configuration/global/global.proto";
+import "pkg/proto/configuration/grpc/grpc.proto";
+import "pkg/proto/configuration/http/http.proto";
+
+option go_package = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal";
+
+message ApplicationConfiguration {
+  // Configuration for HTTP servers that expose the web UI.
+  repeated buildbarn.configuration.http.ServerConfiguration http_servers = 1;
+
+  // gRPC servers to spawn to listen for requests from clients.
+  repeated buildbarn.configuration.grpc.ServerConfiguration grpc_servers = 2;
+
+  // Common configuration options that apply to all Buildbarn binaries.
+  buildbarn.configuration.global.Configuration global = 3;
+}
