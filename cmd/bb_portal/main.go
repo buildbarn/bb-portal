@@ -3,9 +3,7 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
 	"log/slog"
-	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -17,15 +15,26 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/debug"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/fsnotify/fsnotify"
+	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
+	build "google.golang.org/genproto/googleapis/devtools/build/v1"
+	go_grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
 	"github.com/buildbarn/bb-portal/internal/api"
-	"github.com/buildbarn/bb-portal/internal/api/grpc"
+	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/pkg/cas"
 	"github.com/buildbarn/bb-portal/pkg/processing"
+	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
+	"github.com/buildbarn/bb-storage/pkg/global"
+	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
+	bb_http "github.com/buildbarn/bb-storage/pkg/http"
+	"github.com/buildbarn/bb-storage/pkg/program"
+	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
 const (
@@ -34,8 +43,6 @@ const (
 )
 
 var (
-	httpBindAddr             = flag.String("bind-http", ":8081", "Bind address for the HTTP server.")
-	grpcBindAddr             = flag.String("bind-grpc", ":8082", "Bind address for the gRPC server.")
 	enableDebug              = flag.Bool("debug", false, "Enable debugging mode.")
 	dsDriver                 = flag.String("datasource-driver", "sqlite3", "Data source driver to use")
 	dsURL                    = flag.String("datasource-url", "file:buildportal.db?_journal=WAL&_fk=1", "Data source URL for the DB")
@@ -47,62 +54,82 @@ var (
 )
 
 func main() {
-	flag.Parse()
+	program.RunMain(func(ctx context.Context, siblingsGroup, dependenciesGroup program.Group) error {
+		flag.Parse()
 
-	client, err := ent.Open(
-		*dsDriver,
-		*dsURL,
-	)
-	if err != nil {
-		fatal("opening ent client", "err", err)
-	}
-	if err = client.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
-		fatal("running schema migration", "err", err)
-	}
+		if len(os.Args) != 2 {
+			return status.Error(codes.InvalidArgument, "Usage: bb_portal bb_portal.jsonnet")
+		}
 
-	blobArchiver := processing.NewBlobMultiArchiver()
-	configureBlobArchiving(blobArchiver, *blobArchiveFolder)
+		var configuration bb_portal.ApplicationConfiguration
+		if err := util.UnmarshalConfigurationFromFile(os.Args[1], &configuration); err != nil {
+			return util.StatusWrapf(err, "Failed to read configuration from %s", os.Args[1])
+		}
 
-	// Create new watcher.
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		fatal("failed to create fsnotify.Watcher", "err", err)
-	}
-	defer watcher.Close()
-	runWatcher(watcher, client, *bepFolder, blobArchiver)
+		lifecycleState, _, err := global.ApplyConfiguration(configuration.Global)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to apply global configuration options")
+		}
 
-	srv := handler.NewDefaultServer(graphql.NewSchema(client))
-	srv.Use(entgql.Transactioner{TxOpener: client})
-	if *enableDebug {
-		srv.Use(&debug.Tracer{})
-	}
+		client, err := ent.Open(
+			*dsDriver,
+			*dsURL,
+		)
+		if err != nil {
+			return util.StatusWrapf(err, "Failed to open ent client")
+		}
+		if err = client.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
+			return util.StatusWrapf(err, "Failed to run schema migration")
+		}
 
-	fs := frontendServer()
-	http.Handle("/graphql", srv)
-	http.Handle("/graphiql",
-		playground.Handler("GraphQL Playground", "/graphql"),
-	)
-	casManager := cas.NewConnectionManager(cas.ManagerParams{
-		TLSCACertFile:            *caFile,
-		CredentialsHelperCommand: *credentialsHelperCommand,
+		blobArchiver := processing.NewBlobMultiArchiver()
+		configureBlobArchiving(blobArchiver, *blobArchiveFolder)
+
+		// Create new watcher.
+		watcher, err := fsnotify.NewWatcher()
+		if err != nil {
+			return util.StatusWrapf(err, "Failed to create fsnotify.Watcher")
+		}
+		defer watcher.Close()
+		runWatcher(watcher, client, *bepFolder, blobArchiver)
+
+		srv := handler.NewDefaultServer(graphql.NewSchema(client))
+		srv.Use(entgql.Transactioner{TxOpener: client})
+		if *enableDebug {
+			srv.Use(&debug.Tracer{})
+		}
+
+		router := mux.NewRouter()
+		router.PathPrefix("/graphql").Handler(srv)
+		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
+		casManager := cas.NewConnectionManager(cas.ManagerParams{
+			TLSCACertFile:            *caFile,
+			CredentialsHelperCommand: *credentialsHelperCommand,
+		})
+
+		router.Handle("/api/v1/blobs/{blobID}/{name}", api.NewBlobHandler(client, casManager))
+		router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(client, blobArchiver)).Methods("POST")
+		router.PathPrefix("/").Handler(frontendServer())
+
+		bb_http.NewServersFromConfigurationAndServe(
+			configuration.HttpServers,
+			bb_http.NewMetricsHandler(router, "PortalUI"),
+			siblingsGroup,
+		)
+
+		if err := bb_grpc.NewServersFromConfigurationAndServe(
+			configuration.GrpcServers,
+			func(s go_grpc.ServiceRegistrar) {
+				build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), bes.New(client, blobArchiver))
+			},
+			siblingsGroup,
+		); err != nil {
+			return util.StatusWrap(err, "gRPC server failure")
+		}
+
+		lifecycleState.MarkReadyAndWait(siblingsGroup)
+		return nil
 	})
-
-	http.Handle("/api/v1/blobs/{blobID}/{name}", api.NewBlobHandler(client, casManager))
-	http.Handle("POST /api/v1/bep/upload", api.NewBEPUploadHandler(client, blobArchiver))
-	http.Handle("/", fs)
-	slog.Info("HTTP listening on", "address", *httpBindAddr)
-
-	grpcServer := runGRPCServer(client, *grpcBindAddr, blobArchiver)
-	defer grpcServer.GracefulStop()
-	slog.Info("gRPC listening on", "address", *grpcBindAddr)
-
-	server := &http.Server{
-		Addr:              *httpBindAddr,
-		ReadHeaderTimeout: readHeaderTimeout,
-	}
-	if err = server.ListenAndServe(); err != nil {
-		slog.Error("http server terminated", "err", err)
-	}
 }
 
 func configureBlobArchiving(blobArchiver processing.BlobMultiArchiver, archiveFolder string) {
@@ -112,20 +139,6 @@ func configureBlobArchiving(blobArchiver processing.BlobMultiArchiver, archiveFo
 	}
 	localBlobArchiver := processing.NewLocalFileArchiver(archiveFolder)
 	blobArchiver.RegisterArchiver("file", localBlobArchiver)
-}
-
-func runGRPCServer(db *ent.Client, bindAddr string, blobArchiver processing.BlobMultiArchiver) *grpc.Server {
-	lis, err := net.Listen("tcp", bindAddr)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	srv := grpc.NewServer(db, blobArchiver)
-	go func() {
-		if err := srv.Serve(lis); err != nil {
-			slog.Error("error from gRPC server", "err", err)
-		}
-	}()
-	return srv
 }
 
 func runWatcher(watcher *fsnotify.Watcher, client *ent.Client, bepFolder string, blobArchiver processing.BlobMultiArchiver) {
