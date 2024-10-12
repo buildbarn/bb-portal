@@ -1,8 +1,7 @@
-.portalCardHeader {
+.header {
   align-items: center;
   white-space: nowrap;
   line-height: 32px;
-
 }
 
 .title a:not(:hover) {
