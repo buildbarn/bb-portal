@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent/enttest"
+	"github.com/buildbarn/bb-portal/pkg/archive"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 )
 
@@ -42,7 +43,7 @@ func TestWorkflow_ProcessFile(t *testing.T) {
 		require.NoError(t, db.Close())
 	}()
 
-	worker := processing.New(db, processing.BlobMultiArchiver{})
+	worker := processing.New(db, archive.BlobMultiArchiver{})
 	ctx := context.Background()
 
 	dirEntries, err := os.ReadDir(inputFixtureBaseDir)

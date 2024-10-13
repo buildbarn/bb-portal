@@ -11,6 +11,7 @@ go_library(
     deps = [
         "//ent/gen/ent",
         "//ent/gen/ent/blob",
+        "//pkg/archive",
         "//pkg/cas",
         "//pkg/processing",
     ],

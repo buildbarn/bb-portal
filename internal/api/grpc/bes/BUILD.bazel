@@ -7,6 +7,7 @@ go_library(
     visibility = ["//:__subpackages__"],
     deps = [
         "//ent/gen/ent",
+        "//pkg/archive",
         "//pkg/events",
         "//pkg/processing",
         "//pkg/summary",

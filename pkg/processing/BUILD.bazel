@@ -3,7 +3,6 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "processing",
     srcs = [
-        "archive.go",
         "doc.go",
         "save.go",
         "summarize.go",
@@ -22,9 +21,9 @@ go_library(
         "//ent/gen/ent/testcollection",
         "//ent/gen/ent/testresultbes",
         "//ent/gen/ent/testsummary",
+        "//pkg/archive",
         "//pkg/summary",
         "//pkg/summary/detectors",
-        "@com_github_bazelbuild_remote_apis_sdks//go/pkg/digest",
         "@com_github_google_uuid//:uuid",
     ],
 )
@@ -36,6 +35,7 @@ go_test(
     deps = [
         ":processing",
         "//ent/gen/ent/enttest",
+        "//pkg/archive",
         "@com_github_mattn_go_sqlite3//:go-sqlite3",
         "@com_github_stretchr_testify//require",
     ],

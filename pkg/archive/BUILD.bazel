@@ -1,0 +1,22 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "archive",
+    srcs = [
+        "blob_multi_archiver.go",
+        "configuration.go",
+        "local_file_archiver.go",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/pkg/archive",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//ent/gen/ent",
+        "//ent/gen/ent/blob",
+        "//pkg/proto/configuration/archive",
+        "//pkg/summary/detectors",
+        "@com_github_bazelbuild_remote_apis_sdks//go/pkg/digest",
+        "@com_github_buildbarn_bb_storage//pkg/util",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)

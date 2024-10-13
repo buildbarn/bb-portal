@@ -18,6 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	"github.com/buildbarn/bb-portal/pkg/archive"
 	"github.com/buildbarn/bb-portal/pkg/summary"
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
 )
@@ -25,7 +26,7 @@ import (
 // SaveActor ...SaveActor The save actor struct with the db client and a blob archiver.
 type SaveActor struct {
 	db           *ent.Client
-	blobArchiver BlobMultiArchiver
+	blobArchiver archive.BlobMultiArchiver
 }
 
 // SaveSummary saves an invocation summary to the database.
