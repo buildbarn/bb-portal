@@ -136,11 +136,11 @@ func runWatcher(watcher *fsnotify.Watcher, client *ent.Client, bepFolder string,
 	// Add a path.
 	err := os.MkdirAll(bepFolder, folderPermission)
 	if err != nil {
-		fatal("failed to create BEP folder", "folder", bepFolder, "err", err)
+		util.StatusWrapf(err, "Error creating BEP folder %s", bepFolder)
 	}
 	err = watcher.Add(bepFolder)
 	if err != nil {
-		fatal("watched register BEP folder with fsnotify.Watcher", "folder", bepFolder, "err", err)
+		util.StatusWrapf(err, "Error watching BEP folder %s", bepFolder)
 	}
 }
 
