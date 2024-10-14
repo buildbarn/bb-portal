@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package buildbarn.configuration.bb_portal;
 
+import "pkg/proto/configuration/archive/archive.proto";
 import "pkg/proto/configuration/global/global.proto";
 import "pkg/proto/configuration/grpc/grpc.proto";
 import "pkg/proto/configuration/http/http.proto";
@@ -17,4 +18,6 @@ message ApplicationConfiguration {
 
   // Common configuration options that apply to all Buildbarn binaries.
   buildbarn.configuration.global.Configuration global = 3;
+
+  repeated archive.BlobArchiverConfiguration blob_archivers = 4;
 }
