@@ -8,10 +8,9 @@ import (
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
-
-// errNoArchiver An error helper.
-var errNoArchiver = errors.New("no archiver registered")
 
 // BlobArchiver A blob arhiver interace.
 type BlobArchiver interface {
@@ -45,11 +44,11 @@ func (ma *BlobMultiArchiver) ArchiveBlobs(ctx context.Context, blobURIs []detect
 	}
 	uri, err := url.Parse(string(blobURIs[0]))
 	if err != nil {
-		return nil, fmt.Errorf("invalid blob URI: %s: %w", blobURIs[0], err)
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid blob URI: %s", uri)
 	}
 	archiver, ok := ma.archivers[uri.Scheme]
 	if !ok {
-		return nil, fmt.Errorf("scheme %s: %w", uri.Scheme, errNoArchiver)
+		return nil, status.Errorf(codes.Unavailable, "No archiver for scheme %s", uri.Scheme)
 	}
 	blobs := make([]ent.Blob, 0, len(blobURIs))
 	for _, blobURI := range blobURIs {
