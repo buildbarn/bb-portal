@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
+	"github.com/buildbarn/bb-portal/pkg/archive"
 	"github.com/buildbarn/bb-portal/pkg/cas"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
@@ -27,8 +28,8 @@ import (
 )
 
 const (
-	readHeaderTimeout = 3 * time.Second
 	folderPermission  = 0o750
+	readHeaderTimeout = 3 * time.Second
 )
 
 var (
@@ -38,8 +39,6 @@ var (
 	bepFolder                = flag.String("bep-folder", "./bep-files/", "Folder to watch for new BEP files")
 	caFile                   = flag.String("ca-file", "", "Custom CA certificate file")
 	credentialsHelperCommand = flag.String("credential_helper", "", "Path to a credential helper. Compatible with Bazel's --credential_helper")
-	blobArchiveFolder        = flag.String("blob-archive-folder", "./blob-archive/",
-		"Folder where blobs (log outputs, stdout, stderr, undeclared test outputs) referenced from failures are archived")
 )
 
 func main() {
@@ -67,8 +66,10 @@ func main() {
 			return util.StatusWrapf(err, "Failed to run schema migration")
 		}
 
-		blobArchiver := processing.NewBlobMultiArchiver()
-		configureBlobArchiving(blobArchiver, *blobArchiveFolder)
+		blobArchiver, err := archive.NewBlobArchiverFromConfiguration(configuration.BlobArchivers)
+		if err != nil {
+			return util.StatusWrapf(err, "Failed to configure blob archiver")
+		}
 
 		// Create new watcher.
 		watcher, err := fsnotify.NewWatcher()
@@ -105,16 +106,7 @@ func main() {
 	})
 }
 
-func configureBlobArchiving(blobArchiver processing.BlobMultiArchiver, archiveFolder string) {
-	err := os.MkdirAll(archiveFolder, folderPermission)
-	if err != nil {
-		fatal("failed to create blob archive folder", "folder", archiveFolder, "err", err)
-	}
-	localBlobArchiver := processing.NewLocalFileArchiver(archiveFolder)
-	blobArchiver.RegisterArchiver("file", localBlobArchiver)
-}
-
-func runWatcher(watcher *fsnotify.Watcher, client *ent.Client, bepFolder string, blobArchiver processing.BlobMultiArchiver) {
+func runWatcher(watcher *fsnotify.Watcher, client *ent.Client, bepFolder string, blobArchiver archive.BlobMultiArchiver) {
 	ctx := context.Background()
 	worker := processing.New(client, blobArchiver)
 	// Start listening for events.

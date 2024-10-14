@@ -16,6 +16,7 @@ go_library(
         "//internal/api",
         "//internal/api/grpc/bes",
         "//internal/graphql",
+        "//pkg/archive",
         "//pkg/cas",
         "//pkg/processing",
         "//pkg/proto/configuration/bb_portal",
