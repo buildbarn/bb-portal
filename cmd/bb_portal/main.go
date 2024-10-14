@@ -4,16 +4,9 @@ import (
 	"context"
 	"flag"
 	"log/slog"
-	"net/http"
-	"net/http/httputil"
-	"net/url"
 	"os"
 	"time"
 
-	"entgo.io/contrib/entgql"
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/handler/debug"
-	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
@@ -24,9 +17,7 @@ import (
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
-	"github.com/buildbarn/bb-portal/internal/api"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
-	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/pkg/cas"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
@@ -43,7 +34,6 @@ const (
 )
 
 var (
-	enableDebug              = flag.Bool("debug", false, "Enable debugging mode.")
 	dsDriver                 = flag.String("datasource-driver", "sqlite3", "Data source driver to use")
 	dsURL                    = flag.String("datasource-url", "file:buildportal.db?_journal=WAL&_fk=1", "Data source URL for the DB")
 	bepFolder                = flag.String("bep-folder", "./bep-files/", "Folder to watch for new BEP files")
@@ -71,14 +61,14 @@ func main() {
 			return util.StatusWrap(err, "Failed to apply global configuration options")
 		}
 
-		client, err := ent.Open(
+		dbClient, err := ent.Open(
 			*dsDriver,
 			*dsURL,
 		)
 		if err != nil {
 			return util.StatusWrapf(err, "Failed to open ent client")
 		}
-		if err = client.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
+		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
 			return util.StatusWrapf(err, "Failed to run schema migration")
 		}
 
@@ -91,26 +81,14 @@ func main() {
 			return util.StatusWrapf(err, "Failed to create fsnotify.Watcher")
 		}
 		defer watcher.Close()
-		runWatcher(watcher, client, *bepFolder, blobArchiver)
-
-		srv := handler.NewDefaultServer(graphql.NewSchema(client))
-		srv.Use(entgql.Transactioner{TxOpener: client})
-		if *enableDebug {
-			srv.Use(&debug.Tracer{})
-		}
+		runWatcher(watcher, dbClient, *bepFolder, blobArchiver)
 
 		router := mux.NewRouter()
-		router.PathPrefix("/graphql").Handler(srv)
-		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
 		casManager := cas.NewConnectionManager(cas.ManagerParams{
 			TLSCACertFile:            *caFile,
 			CredentialsHelperCommand: *credentialsHelperCommand,
 		})
-
-		router.Handle("/api/v1/blobs/{blobID}/{name}", api.NewBlobHandler(client, casManager))
-		router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(client, blobArchiver)).Methods("POST")
-		router.PathPrefix("/").Handler(frontendServer())
-
+		newPortalService(blobArchiver, casManager, dbClient, router)
 		bb_http.NewServersFromConfigurationAndServe(
 			configuration.HttpServers,
 			bb_http.NewMetricsHandler(router, "PortalUI"),
@@ -120,7 +98,7 @@ func main() {
 		if err := bb_grpc.NewServersFromConfigurationAndServe(
 			configuration.GrpcServers,
 			func(s go_grpc.ServiceRegistrar) {
-				build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), bes.New(client, blobArchiver))
+				build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), bes.New(dbClient, blobArchiver))
 			},
 			siblingsGroup,
 		); err != nil {
@@ -177,14 +155,6 @@ func runWatcher(watcher *fsnotify.Watcher, client *ent.Client, bepFolder string,
 	if err != nil {
 		fatal("watched register BEP folder with fsnotify.Watcher", "folder", bepFolder, "err", err)
 	}
-}
-
-func frontendServer() http.Handler {
-	targetURL := &url.URL{
-		Scheme: "http",
-		Host:   "localhost:3000",
-	}
-	return httputil.NewSingleHostReverseProxy(targetURL)
 }
 
 func fatal(msg string, args ...any) {
