@@ -5,6 +5,7 @@ import { Layout, Popover, Space } from 'antd';
 import { SlackOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import styles from '@/components/FooterBar/index.module.css';
+import { env } from 'next-runtime-env';
 
 interface Props {
   className?: string;
@@ -17,11 +18,11 @@ const FooterBar: React.FC<Props> = ({ className, linkItemClassName }) => {
   return (
     <Layout.Footer className={`${className} ${styles.footerBar}`}>
       <Space size="large">
-        <Popover content={"#" + process.env.NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME} className={linkClassName}>
-          <Link href={process.env.NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_URL ?? ""} target="_blank" hidden={process.env.NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME == undefined}>
+        <Popover content={"#" + env('NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME')} className={linkClassName}>
+          <Link href={env('NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_URL') ?? ""} target="_blank" hidden={env('NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME') == undefined}>
             <Space>
               <SlackOutlined />
-              {process.env.NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME}
+              {env('NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME')}
             </Space>
           </Link>
         </Popover>

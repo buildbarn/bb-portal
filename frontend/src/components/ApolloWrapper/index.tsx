@@ -8,10 +8,12 @@ import {
   SSRMultipartLink,
 } from '@apollo/experimental-nextjs-app-support/ssr';
 import possibleTypes from './possibleTypes.json';
+import { env } from 'next-runtime-env';
+
 
 export const makeClient = () => {
   const httpLink = new HttpLink({
-    uri: `${process.env.NEXT_PUBLIC_BES_BACKEND_URL}/graphql`,
+    uri: `${env('NEXT_PUBLIC_BES_BACKEND_URL')}/graphql`,
     fetchOptions: { cache: "no-store" },
   });
 

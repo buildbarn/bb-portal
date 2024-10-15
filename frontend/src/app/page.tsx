@@ -5,8 +5,9 @@ import { Divider, Space, Typography } from 'antd';
 import styles from './page.module.css';
 import Content from '@/components/Content';
 import Uploader from '@/components/Uploader';
+import { env } from 'next-runtime-env';
 
-const bazelrcLines = `build --bes_backend=${process.env.NEXT_PUBLIC_BES_GRPC_BACKEND_URL}\nbuild --bes_results_url=${process.env.NEXT_PUBLIC_BES_BACKEND_URL}/bazel-invocations/`;
+const bazelrcLines = `build --bes_backend=${env('NEXT_PUBLIC_BES_GRPC_BACKEND_URL')}\nbuild --bes_results_url=${env('NEXT_PUBLIC_BES_BACKEND_URL')}/bazel-invocations/`;
 
 export default function Home() {
   return (
@@ -15,7 +16,7 @@ export default function Home() {
         <div className={styles.container}>
           <Space direction="vertical" size="large">
             <Typography.Title level={1} className={styles.item}>
-              Welcome to the {process.env.NEXT_PUBLIC_COMPANY_NAME} Buildbarn Portal
+              Welcome to the {env('NEXT_PUBLIC_COMPANY_NAME')} Buildbarn Portal
             </Typography.Title>
             <Typography.Title level={5} className={styles.item}>
               Providing insights into Bazel build outputs
