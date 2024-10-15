@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/pkg/archive"
 )
 
 // Workflow struct.
@@ -14,7 +15,7 @@ type Workflow struct {
 }
 
 // New Worflow constructor
-func New(db *ent.Client, blobArchiver BlobMultiArchiver) *Workflow {
+func New(db *ent.Client, blobArchiver archive.BlobMultiArchiver) *Workflow {
 	return &Workflow{
 		SummarizeActor: SummarizeActor{},
 		SaveActor: SaveActor{

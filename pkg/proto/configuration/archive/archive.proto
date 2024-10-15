@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package buildbarn.configuration.archive;
+
+message BlobArchiverConfiguration {
+  oneof backend {
+    // An archiver which stores blobs locally as files
+    LocalFileArchiverConfiguration local = 1;
+  }
+}
+
+message LocalFileArchiverConfiguration {
+  // Directory where blobs will be archived
+  string directory = 1;
+}

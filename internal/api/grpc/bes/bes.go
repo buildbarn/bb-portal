@@ -13,6 +13,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/pkg/archive"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/summary"
@@ -22,11 +23,11 @@ import (
 // BES A type for the Build Event Service.
 type BES struct {
 	db           *ent.Client
-	blobArchiver processing.BlobMultiArchiver
+	blobArchiver archive.BlobMultiArchiver
 }
 
 // New BES initializer function.
-func New(db *ent.Client, blobArchiver processing.BlobMultiArchiver) build.PublishBuildEventServer {
+func New(db *ent.Client, blobArchiver archive.BlobMultiArchiver) build.PublishBuildEventServer {
 	return &BES{
 		db:           db,
 		blobArchiver: blobArchiver,

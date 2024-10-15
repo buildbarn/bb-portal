@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/pkg/archive"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 )
 
@@ -21,11 +22,11 @@ const (
 // Bep upload handler struct.
 type bepUploadHandler struct {
 	client       *ent.Client
-	blobArchiver processing.BlobMultiArchiver
+	blobArchiver archive.BlobMultiArchiver
 }
 
 // NewBEPUploadHandler Constructor function for BEP upload handler.
-func NewBEPUploadHandler(client *ent.Client, blobArchiver processing.BlobMultiArchiver) http.Handler {
+func NewBEPUploadHandler(client *ent.Client, blobArchiver archive.BlobMultiArchiver) http.Handler {
 	return &bepUploadHandler{
 		client:       client,
 		blobArchiver: blobArchiver,
