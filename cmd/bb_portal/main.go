@@ -32,7 +32,7 @@ const (
 )
 
 var (
-	configFile               = flag.String("config-file", "bb_portal.jsonnet", "bb_portal config file")
+	configFile               = flag.String("config-file", "", "bb_portal config file")
 	dsDriver                 = flag.String("datasource-driver", "sqlite3", "Data source driver to use")
 	dsURL                    = flag.String("datasource-url", "file:buildportal.db?_journal=WAL&_fk=1", "Data source URL for the DB")
 	bepFolder                = flag.String("bep-folder", "./bep-files/", "Folder to watch for new BEP files")
@@ -45,6 +45,10 @@ var (
 func main() {
 	program.RunMain(func(ctx context.Context, siblingsGroup, dependenciesGroup program.Group) error {
 		flag.Parse()
+
+		if *configFile == "" {
+			flag.Usage()
+		}
 
 		var configuration bb_portal.ApplicationConfiguration
 		if err := util.UnmarshalConfigurationFromFile(*configFile, &configuration); err != nil {
