@@ -12,6 +12,7 @@ import light from '@/theme/light';
 import Dynamic from '@/components/Dynamic';
 import { ApolloWrapper } from '@/components/ApolloWrapper';
 import parseStringBoolean from '@/utils/storage';
+import { PublicEnvScript } from 'next-runtime-env';
 
 const PREFERS_DARK_KEY = 'prefers-dark';
 
@@ -64,6 +65,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <>
       <title>Buildbarn Portal</title>
       <html lang="en" className={styles.html}>
+        <head>
+          <PublicEnvScript />
+        </head>
         <body className={styles.body}>
           <div style={{ display: "flex" }}>
             <ApolloWrapper>

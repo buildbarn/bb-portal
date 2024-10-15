@@ -50,6 +50,8 @@ import MemoryMetricsDisplay from "../MemoryMetrics";
 import TimingMetricsDisplay from "../TimingMetrics";
 import NetworkMetricsDisplay from "../NetworkMetrics";
 import TestMetricsDisplay from "../TestsMetrics";
+import { env } from 'next-runtime-env';
+
 
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
@@ -256,8 +258,8 @@ const BazelInvocation: React.FC<{
     <PortalDuration key="duration" from={invocationOverview.startedAt} to={invocationOverview.endedAt} includeIcon includePopover />,
   ];
 
-  if (process.env.NEXT_PUBLIC_BROWSER_URL && profile) {
-    var url = new URL(`blobs/sha256/file/${profile.digest}-${profile.sizeInBytes}/${profile.name}`, process.env.NEXT_PUBLIC_BROWSER_URL)
+  if (env('NEXT_PUBLIC_BROWSER_URL') && profile) {
+    var url = new URL(`blobs/sha256/file/${profile.digest}-${profile.sizeInBytes}/${profile.name}`, env('NEXT_PUBLIC_BROWSER_URL'))
     extraBits.push(
       <DownloadButton url={url.toString()} fileName="profile" buttonLabel="Profile" enabled={true} />
     );
