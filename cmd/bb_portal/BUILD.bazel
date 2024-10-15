@@ -4,31 +4,35 @@ load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index")
 
 go_library(
     name = "bb_portal_lib",
-    srcs = ["main.go"],
+    srcs = [
+        "main.go",
+        "portal_service.go",
+    ],
     importpath = "github.com/buildbarn/bb-portal/cmd/bb_portal",
     visibility = ["//visibility:private"],
     deps = [
         "//ent/gen/ent",
         "//ent/gen/ent/migrate",
         "//internal/api",
-        "//internal/api/grpc",
+        "//internal/api/grpc/bes",
         "//internal/graphql",
         "//pkg/cas",
         "//pkg/processing",
+        "//pkg/proto/configuration/bb_portal",
         "@com_github_99designs_gqlgen//graphql/handler",
-        "@com_github_99designs_gqlgen//graphql/handler/debug",
         "@com_github_99designs_gqlgen//graphql/playground",
+        "@com_github_buildbarn_bb_storage//pkg/global",
+        "@com_github_buildbarn_bb_storage//pkg/grpc",
+        "@com_github_buildbarn_bb_storage//pkg/http",
+        "@com_github_buildbarn_bb_storage//pkg/program",
+        "@com_github_buildbarn_bb_storage//pkg/util",
         "@com_github_fsnotify_fsnotify//:fsnotify",
+        "@com_github_gorilla_mux//:mux",
         "@com_github_mattn_go_sqlite3//:go-sqlite3",
         "@io_entgo_contrib//entgql",
+        "@org_golang_google_genproto//googleapis/devtools/build/v1:build",
+        "@org_golang_google_grpc//:grpc",
     ],
-)
-
-go_binary(
-    name = "bb_portal",
-    cgo = True,  # keep
-    embed = [":bb_portal_lib"],
-    visibility = ["//visibility:public"],
 )
 
 multiarch_go_image(
@@ -40,4 +44,10 @@ container_push_official(
     name = "bb_portal_container_push",
     component = "bb-portal",
     image = ":bb_portal_container",
+)
+
+go_binary(
+    name = "bb_portal",
+    embed = [":bb_portal_lib"],
+    visibility = ["//visibility:public"],
 )

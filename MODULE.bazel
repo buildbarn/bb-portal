@@ -5,6 +5,7 @@ bazel_dep(name = "com_github_buildbarn_bb_storage")
 bazel_dep(name = "gazelle", version = "0.38.0")
 bazel_dep(name = "googleapis", version = "0.0.0-20240819-fe8ba054a")
 bazel_dep(name = "googletest", version = "1.15.2")
+bazel_dep(name = "protobuf", version = "27.3")
 bazel_dep(name = "rules_go", version = "0.50.1")
 bazel_dep(name = "rules_jsonnet", version = "0.6.0")
 bazel_dep(name = "rules_oci", version = "1.8.0")
@@ -58,6 +59,7 @@ use_repo(
     "com_github_fsnotify_fsnotify",
     "com_github_google_shlex",
     "com_github_google_uuid",
+    "com_github_gorilla_mux",
     "com_github_hashicorp_go_multierror",
     "com_github_hedwigz_entviz",
     "com_github_machinebox_graphql",
