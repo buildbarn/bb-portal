@@ -16,7 +16,6 @@ go_library(
         "//internal/api",
         "//internal/api/grpc/bes",
         "//internal/graphql",
-        "//pkg/cas",
         "//pkg/processing",
         "//pkg/proto/configuration/bb_portal",
         "@com_github_99designs_gqlgen//graphql/handler",

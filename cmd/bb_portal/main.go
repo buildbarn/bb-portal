@@ -16,7 +16,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
-	"github.com/buildbarn/bb-portal/pkg/cas"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/global"
@@ -32,13 +31,11 @@ const (
 )
 
 var (
-	configFile               = flag.String("config-file", "", "bb_portal config file")
-	dsDriver                 = flag.String("datasource-driver", "sqlite3", "Data source driver to use")
-	dsURL                    = flag.String("datasource-url", "file:buildportal.db?_journal=WAL&_fk=1", "Data source URL for the DB")
-	bepFolder                = flag.String("bep-folder", "./bep-files/", "Folder to watch for new BEP files")
-	caFile                   = flag.String("ca-file", "", "Custom CA certificate file")
-	credentialsHelperCommand = flag.String("credential_helper", "", "Path to a credential helper. Compatible with Bazel's --credential_helper")
-	blobArchiveFolder        = flag.String("blob-archive-folder", "./blob-archive/",
+	configFile        = flag.String("config-file", "", "bb_portal config file")
+	dsDriver          = flag.String("datasource-driver", "sqlite3", "Data source driver to use")
+	dsURL             = flag.String("datasource-url", "file:buildportal.db?_journal=WAL&_fk=1", "Data source URL for the DB")
+	bepFolder         = flag.String("bep-folder", "./bep-files/", "Folder to watch for new BEP files")
+	blobArchiveFolder = flag.String("blob-archive-folder", "./blob-archive/",
 		"Folder where blobs (log outputs, stdout, stderr, undeclared test outputs) referenced from failures are archived")
 )
 
@@ -83,11 +80,7 @@ func main() {
 		runWatcher(watcher, dbClient, *bepFolder, blobArchiver)
 
 		router := mux.NewRouter()
-		casManager := cas.NewConnectionManager(cas.ManagerParams{
-			TLSCACertFile:            *caFile,
-			CredentialsHelperCommand: *credentialsHelperCommand,
-		})
-		newPortalService(blobArchiver, casManager, dbClient, router)
+		newPortalService(blobArchiver, dbClient, router)
 		bb_http.NewServersFromConfigurationAndServe(
 			configuration.HttpServers,
 			bb_http.NewMetricsHandler(router, "PortalUI"),
