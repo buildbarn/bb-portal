@@ -115,8 +115,12 @@ func configureBlobArchiving(blobArchiver processing.BlobMultiArchiver, archiveFo
 	if err != nil {
 		fatal("failed to create blob archive folder", "folder", archiveFolder, "err", err)
 	}
+
 	localBlobArchiver := processing.NewLocalFileArchiver(archiveFolder)
 	blobArchiver.RegisterArchiver("file", localBlobArchiver)
+
+	noopArchiver := processing.NewNoopArchiver()
+	blobArchiver.RegisterArchiver("bytestream", noopArchiver)
 }
 
 func runWatcher(watcher *fsnotify.Watcher, client *ent.Client, bepFolder string, blobArchiver processing.BlobMultiArchiver) {
