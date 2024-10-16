@@ -503,6 +503,10 @@ func readSystemNetworkStats(systemNetworkStatsData *bes.BuildMetrics_NetworkMetr
 
 // readCumulativeMetrics
 func readCumulativeMetrics(cumulativeMetricsData *bes.BuildMetrics_CumulativeMetrics) CumulativeMetrics {
+	if cumulativeMetricsData == nil {
+		return CumulativeMetrics{}
+	}
+
 	cumulativeMetrics := CumulativeMetrics{
 		NumAnalyses: cumulativeMetricsData.NumAnalyses,
 		NumBuilds:   cumulativeMetricsData.NumBuilds,
@@ -512,24 +516,32 @@ func readCumulativeMetrics(cumulativeMetricsData *bes.BuildMetrics_CumulativeMet
 
 // readArtifactMetrics
 func readArtifactMetrics(artifactMetricsData *bes.BuildMetrics_ArtifactMetrics) ArtifactMetrics {
-	sourceArtifactsRead := FilesMetric{
-		SizeInBytes: artifactMetricsData.SourceArtifactsRead.SizeInBytes,
-		Count:       artifactMetricsData.SourceArtifactsRead.Count,
+	if artifactMetricsData == nil {
+		return ArtifactMetrics{}
 	}
 
-	outputArtifactsSeen := FilesMetric{
-		SizeInBytes: artifactMetricsData.OutputArtifactsSeen.SizeInBytes,
-		Count:       artifactMetricsData.OutputArtifactsSeen.Count,
+	sourceArtifactsRead := FilesMetric{}
+	if artifactMetricsData.SourceArtifactsRead != nil {
+		sourceArtifactsRead.SizeInBytes = artifactMetricsData.SourceArtifactsRead.SizeInBytes
+		sourceArtifactsRead.Count = artifactMetricsData.SourceArtifactsRead.Count
 	}
 
-	outputArtifactsFromActionCache := FilesMetric{
-		SizeInBytes: artifactMetricsData.OutputArtifactsFromActionCache.SizeInBytes,
-		Count:       artifactMetricsData.OutputArtifactsFromActionCache.Count,
+	outputArtifactsSeen := FilesMetric{}
+	if artifactMetricsData.OutputArtifactsSeen != nil {
+		outputArtifactsSeen.SizeInBytes = artifactMetricsData.OutputArtifactsSeen.SizeInBytes
+		outputArtifactsSeen.Count = artifactMetricsData.OutputArtifactsSeen.Count
 	}
 
-	topLevelArtifacts := FilesMetric{
-		SizeInBytes: artifactMetricsData.TopLevelArtifacts.SizeInBytes,
-		Count:       artifactMetricsData.TopLevelArtifacts.Count,
+	outputArtifactsFromActionCache := FilesMetric{}
+	if artifactMetricsData.OutputArtifactsFromActionCache != nil {
+		outputArtifactsFromActionCache.SizeInBytes = artifactMetricsData.OutputArtifactsFromActionCache.SizeInBytes
+		outputArtifactsFromActionCache.Count = artifactMetricsData.OutputArtifactsFromActionCache.Count
+	}
+
+	topLevelArtifacts := FilesMetric{}
+	if artifactMetricsData.TopLevelArtifacts != nil {
+		topLevelArtifacts.SizeInBytes = artifactMetricsData.TopLevelArtifacts.SizeInBytes
+		topLevelArtifacts.Count = artifactMetricsData.TopLevelArtifacts.Count
 	}
 
 	artifactMetrics := ArtifactMetrics{
@@ -543,6 +555,10 @@ func readArtifactMetrics(artifactMetricsData *bes.BuildMetrics_ArtifactMetrics) 
 
 // readTimingMetrics
 func readTimingMetrics(timingMetricsData *bes.BuildMetrics_TimingMetrics) TimingMetrics {
+	if timingMetricsData == nil {
+		return TimingMetrics{}
+	}
+
 	timingMetrics := TimingMetrics{
 		CPUTimeInMs:            timingMetricsData.CpuTimeInMs,
 		WallTimeInMs:           timingMetricsData.WallTimeInMs,
@@ -553,11 +569,15 @@ func readTimingMetrics(timingMetricsData *bes.BuildMetrics_TimingMetrics) Timing
 }
 
 // readPackageMetrics
-func readPackageMetrics(packagMetricsData *bes.BuildMetrics_PackageMetrics) PackageMetrics {
-	packageLoadMetrics := readPackageLoadMetrics(packagMetricsData.PackageLoadMetrics)
+func readPackageMetrics(packageMetricsData *bes.BuildMetrics_PackageMetrics) PackageMetrics {
+	if packageMetricsData == nil {
+		return PackageMetrics{}
+	}
+
+	packageLoadMetrics := readPackageLoadMetrics(packageMetricsData.PackageLoadMetrics)
 
 	packageMetrics := PackageMetrics{
-		PackagesLoaded:     packagMetricsData.PackagesLoaded,
+		PackagesLoaded:     packageMetricsData.PackagesLoaded,
 		PackageLoadMetrics: packageLoadMetrics,
 	}
 	return packageMetrics
@@ -565,6 +585,10 @@ func readPackageMetrics(packagMetricsData *bes.BuildMetrics_PackageMetrics) Pack
 
 // readTargetMetrics
 func readTargetMetrics(targetMetricsData *bes.BuildMetrics_TargetMetrics) TargetMetrics {
+	if targetMetricsData == nil {
+		return TargetMetrics{}
+	}
+
 	targetMetrics := TargetMetrics{
 		TargetsConfigured:                    targetMetricsData.TargetsConfigured,
 		TargetsConfiguredNotIncludingAspects: targetMetricsData.TargetsConfiguredNotIncludingAspects,
@@ -575,6 +599,10 @@ func readTargetMetrics(targetMetricsData *bes.BuildMetrics_TargetMetrics) Target
 
 // readMemoryMetrics
 func readMemoryMetrics(memoryMetricsData *bes.BuildMetrics_MemoryMetrics) MemoryMetrics {
+	if memoryMetricsData == nil {
+		return MemoryMetrics{}
+	}
+
 	garbageMetrics := readGarbageMetrics(memoryMetricsData.GarbageMetrics)
 
 	memoryMetrics := MemoryMetrics{
@@ -588,6 +616,10 @@ func readMemoryMetrics(memoryMetricsData *bes.BuildMetrics_MemoryMetrics) Memory
 
 // readActionSummary
 func readActionSummary(actionSummaryData *bes.BuildMetrics_ActionSummary) ActionSummary {
+	if actionSummaryData == nil {
+		return ActionSummary{}
+	}
+
 	actionCacheStatistics := readActionCacheStatistics(actionSummaryData.ActionCacheStatistics)
 
 	runnerCounts := readRunnerCounts(actionSummaryData.RunnerCount)
