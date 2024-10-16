@@ -4,10 +4,7 @@ load("@rules_oci//oci:defs.bzl", "oci_image", "oci_image_index")
 
 go_library(
     name = "bb_portal_lib",
-    srcs = [
-        "main.go",
-        "portal_service.go",
-    ],
+    srcs = ["main.go"],
     importpath = "github.com/buildbarn/bb-portal/cmd/bb_portal",
     visibility = ["//visibility:private"],
     deps = [
