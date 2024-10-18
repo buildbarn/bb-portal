@@ -189,6 +189,8 @@ type Summary struct {
 	PlatformName         string
 	ProfileName          string
 	ConfigrationMnemonic string
+	SkipTargetData       bool
+	EnrichTargetData     bool
 }
 
 // Metrics holds Build metrics details
