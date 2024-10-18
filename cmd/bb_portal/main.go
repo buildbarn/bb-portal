@@ -98,7 +98,7 @@ func main() {
 		if err := bb_grpc.NewServersFromConfigurationAndServe(
 			configuration.GrpcServers,
 			func(s go_grpc.ServiceRegistrar) {
-				build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), bes.New(dbClient, blobArchiver))
+				build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), bes.NewBuildEventServer(dbClient, blobArchiver))
 			},
 			siblingsGroup,
 		); err != nil {
