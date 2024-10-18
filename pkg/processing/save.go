@@ -239,23 +239,9 @@ func (act SaveActor) saveTargetCompletion(ctx context.Context, targetCompletion 
 		Save(ctx)
 }
 
-func (act SaveActor) saveTargetPair(ctx context.Context, targetPair summary.TargetPair, label string) (*ent.TargetPair, error) {
-	configuration := targetPair.Configuration
-	completion := targetPair.Completion
-
-	targetConfiguration, err := act.saveTargetConfiguration(ctx, configuration)
-	if err != nil {
-		return nil, err
-	}
-
-	targetCompletion, err := act.saveTargetCompletion(ctx, completion)
-	if err != nil {
-		return nil, err
-	}
+func (act SaveActor) saveTargetPair(ctx context.Context, targetPair summary.TargetPair, label string, enrich bool) (*ent.TargetPair, error) {
 
 	create := act.db.TargetPair.Create().
-		SetCompletion(targetCompletion).
-		SetConfiguration(targetConfiguration).
 		SetLabel(label).
 		SetDurationInMs(targetPair.DurationInMs).
 		SetSuccess(targetPair.Success).
@@ -267,16 +253,35 @@ func (act SaveActor) saveTargetPair(ctx context.Context, targetPair summary.Targ
 		create = create.SetAbortReason(reason)
 	}
 
+	if enrich {
+		configuration := targetPair.Configuration
+		completion := targetPair.Completion
+
+		targetConfiguration, err := act.saveTargetConfiguration(ctx, configuration)
+		if err != nil {
+			return nil, err
+		}
+
+		targetCompletion, err := act.saveTargetCompletion(ctx, completion)
+		if err != nil {
+			return nil, err
+		}
+		create.SetCompletion(targetCompletion).SetConfiguration(targetConfiguration)
+	}
+
 	return create.Save(ctx)
 }
 
 // TODO: is there a more effiient way to do bulk updates instead of sequentially adding everything to the database one object at a time?
 // ironically, MapBulkCreate doesn't work for the map(string)TargetPair.  Its expecting an int index, not a label.
 func (act SaveActor) saveTargets(ctx context.Context, summary *summary.Summary) ([]*ent.TargetPair, error) {
+	if summary.SkipTargetData {
+		return []*ent.TargetPair{}, nil
+	}
 	var result []*ent.TargetPair = make([]*ent.TargetPair, len(summary.Targets))
 	i := 0
 	for label, pair := range summary.Targets {
-		targetPair, err := act.saveTargetPair(ctx, pair, label)
+		targetPair, err := act.saveTargetPair(ctx, pair, label, summary.EnrichTargetData)
 		if err != nil {
 			return nil, err
 		}
@@ -375,33 +380,37 @@ func (act SaveActor) saveTestResults(ctx context.Context, testResults []summary.
 	}).Save(ctx)
 }
 
-func (act SaveActor) saveTestCollection(ctx context.Context, testCollection summary.TestsCollection, label string) (*ent.TestCollection, error) {
-	testSummary, err := act.saveTestSummary(ctx, testCollection.TestSummary, label)
-	if err != nil {
-		return nil, err
-	}
-	testResults, err := act.saveTestResults(ctx, testCollection.TestResults)
-	if err != nil {
-		return nil, err
-	}
-	return act.db.TestCollection.Create().
+func (act SaveActor) saveTestCollection(ctx context.Context, testCollection summary.TestsCollection, label string, encrich bool) (*ent.TestCollection, error) {
+	var create = act.db.TestCollection.Create().
 		SetLabel(label).
-		SetTestSummary(testSummary).
-		AddTestResults(testResults...).
 		SetOverallStatus(testcollection.OverallStatus(testCollection.OverallStatus.String())).
 		SetStrategy(testCollection.Strategy).
 		SetCachedLocally(testCollection.CachedLocally).
 		SetCachedRemotely(testCollection.CachedRemotely).
 		SetDurationMs(testCollection.DurationMs).
-		SetFirstSeen((testCollection.FirstSeen)).
-		Save(ctx)
+		SetFirstSeen((testCollection.FirstSeen))
+
+	if encrich {
+
+		testSummary, err := act.saveTestSummary(ctx, testCollection.TestSummary, label)
+		if err != nil {
+			return nil, err
+		}
+		testResults, err := act.saveTestResults(ctx, testCollection.TestResults)
+		if err != nil {
+			return nil, err
+		}
+		create.SetTestSummary(testSummary).AddTestResults(testResults...)
+	}
+
+	return create.Save(ctx)
 }
 
 func (act SaveActor) saveTests(ctx context.Context, summary *summary.Summary) ([]*ent.TestCollection, error) {
 	var result []*ent.TestCollection = make([]*ent.TestCollection, len(summary.Tests))
 	i := 0
 	for label, collection := range summary.Tests {
-		testCollection, err := act.saveTestCollection(ctx, collection, label)
+		testCollection, err := act.saveTestCollection(ctx, collection, label, summary.EnrichTargetData)
 		if err != nil {
 			return nil, err
 		}

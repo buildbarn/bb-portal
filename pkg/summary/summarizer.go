@@ -184,10 +184,11 @@ func (s Summarizer) handleBuildConfiguration(configuration *bes.Configuration) {
 // handleTargetConfigured
 func (s Summarizer) handleTargetConfigured(target *bes.TargetConfigured, label string, timestamp time.Time) {
 	if len(label) == 0 {
-		panic("missing a target label for target configured event!")
+		slog.Warn("missing a target label for target configured event!")
+		return
 	}
 	if target == nil {
-		slog.Debug(fmt.Sprintf("missing target for label %s on targetConfigured", label))
+		slog.Warn(fmt.Sprintf("missing target for label %s on targetConfigured", label))
 		return
 	}
 
@@ -213,18 +214,21 @@ func (s Summarizer) handleTargetConfigured(target *bes.TargetConfigured, label s
 // handleTargetCompleted
 func (s Summarizer) handleTargetCompleted(target *bes.TargetComplete, label string, aborted *bes.Aborted, timestamp time.Time) {
 	if len(label) == 0 {
-		panic("label is empty for a target completed event")
+		slog.Error("label is empty for a target completed event")
+		return
 	}
 
 	if s.summary.Targets == nil {
-		panic(fmt.Sprintf("target completed event received before any target configured messages for label %s,", label))
+		slog.Warn(fmt.Sprintf("target completed event received before any target configured messages for label %s,", label))
+		return
 	}
 
 	var targetPair TargetPair
 	targetPair, ok := s.summary.Targets[label]
 
 	if !ok {
-		panic(fmt.Sprintf("target completed event received for label %s before target configured message received", label))
+		slog.Warn(fmt.Sprintf("target completed event received for label %s before target configured message received", label))
+		return
 	}
 
 	var targetCompletion TargetComplete
@@ -359,17 +363,20 @@ func processExecutionInfo(testResult *bes.TestResult) ExecutionInfo {
 // handleTestSummary
 func (s Summarizer) handleTestSummary(testSummary *bes.TestSummary, label string) {
 	if len(label) == 0 {
-		panic("missing label on handleTestSummary event")
+		slog.Error("missing label on handleTestSummary event")
+		return
 	}
 
 	if testSummary == nil {
-		panic(fmt.Sprintf("missing test summary object for handleTestSummary event for label %s", label))
+		slog.Warn("missing test summary object for handleTestSummary event for label %s", label, nil)
+		return
 	}
 
 	testCollection, ok := s.summary.Tests[label]
 
 	if !ok {
-		panic(fmt.Sprintf("received a test summary event but never first saw a test result for label %s", label))
+		slog.Warn("received a test summary event but never first saw a test result for label %s", label, nil)
+		return
 	}
 
 	tSummary := testCollection.TestSummary
@@ -786,6 +793,20 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 	// Set build URL and UUID
 	s.summary.BuildURL = s.summary.InvocationSummary.EnvVars["BUILD_URL"]
 	s.summary.BuildUUID = uuid.NewSHA1(uuid.NameSpaceURL, []byte(s.summary.BuildURL))
+
+	//Set SkipTargetData
+	if skipTargetSaveEnvVarVal, ok := s.summary.EnvVars["BB_PORTAL_SKIP_SAVE_TARGETS"]; ok {
+		if skipTargetSaveEnvVarVal == "TRUE" {
+			s.summary.SkipTargetData = true
+		}
+	}
+
+	//Set EnrichTargetData
+	if enrichTargetDataVal, ok := s.summary.EnvVars["BB_PORTAL_ENRICH_TARGET_DATA"]; ok {
+		if enrichTargetDataVal == "TRUE" {
+			s.summary.EnrichTargetData = true
+		}
+	}
 
 	return nil
 }
