@@ -2,7 +2,11 @@ load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "bes",
-    srcs = ["bes.go"],
+    srcs = [
+        "channel.go",
+        "handler.go",
+        "server.go",
+    ],
     importpath = "github.com/buildbarn/bb-portal/internal/api/grpc/bes",
     visibility = ["//:__subpackages__"],
     deps = [
