@@ -380,7 +380,7 @@ func (act SaveActor) saveTestResults(ctx context.Context, testResults []summary.
 }
 
 func (act SaveActor) saveTestCollection(ctx context.Context, testCollection summary.TestsCollection, label string, encrich bool) (*ent.TestCollection, error) {
-	var create = act.db.TestCollection.Create().
+	create := act.db.TestCollection.Create().
 		SetLabel(label).
 		SetOverallStatus(testcollection.OverallStatus(testCollection.OverallStatus.String())).
 		SetStrategy(testCollection.Strategy).
