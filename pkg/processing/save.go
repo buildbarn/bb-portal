@@ -240,7 +240,6 @@ func (act SaveActor) saveTargetCompletion(ctx context.Context, targetCompletion 
 }
 
 func (act SaveActor) saveTargetPair(ctx context.Context, targetPair summary.TargetPair, label string, enrich bool) (*ent.TargetPair, error) {
-
 	create := act.db.TargetPair.Create().
 		SetLabel(label).
 		SetDurationInMs(targetPair.DurationInMs).

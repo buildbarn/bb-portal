@@ -794,14 +794,14 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 	s.summary.BuildURL = s.summary.InvocationSummary.EnvVars["BUILD_URL"]
 	s.summary.BuildUUID = uuid.NewSHA1(uuid.NameSpaceURL, []byte(s.summary.BuildURL))
 
-	//Set SkipTargetData
+	// Set SkipTargetData
 	if skipTargetSaveEnvVarVal, ok := s.summary.EnvVars["BB_PORTAL_SKIP_SAVE_TARGETS"]; ok {
 		if skipTargetSaveEnvVarVal == "TRUE" {
 			s.summary.SkipTargetData = true
 		}
 	}
 
-	//Set EnrichTargetData
+	// Set EnrichTargetData
 	if enrichTargetDataVal, ok := s.summary.EnvVars["BB_PORTAL_ENRICH_TARGET_DATA"]; ok {
 		if enrichTargetDataVal == "TRUE" {
 			s.summary.EnrichTargetData = true
