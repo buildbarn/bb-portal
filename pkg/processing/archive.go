@@ -125,3 +125,21 @@ func (lfa LocalFileArchiver) archiveBlob(blobURI detectors.BlobURI) (*ent.Blob, 
 		ArchiveURL: destPath,
 	}, nil
 }
+
+// NoopArchiver is an archiver which does not archive blobs. This is useful in situations where
+// it is desirable to register an archiver for some URI scheme, without archiving those blobs.
+type NoopArchiver struct{}
+
+// NewNoopArchiver creates a new NoopArchiver
+func NewNoopArchiver() NoopArchiver {
+	return NoopArchiver{}
+}
+
+// ArchiveBlob Archive Blob function.
+func (na NoopArchiver) ArchiveBlob(_ context.Context, blobURI detectors.BlobURI) ent.Blob {
+	return ent.Blob{
+		URI:        string(blobURI),
+		SizeBytes:  0,
+		ArchiveURL: "",
+	}
+}
