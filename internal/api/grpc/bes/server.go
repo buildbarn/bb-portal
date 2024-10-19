@@ -59,7 +59,7 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 	var streamID *build.StreamId
 	reqCh := make(chan *build.PublishBuildToolEventStreamRequest)
 	errCh := make(chan error)
-	var eventCh *BuildEventChannel
+	var eventCh BuildEventChannel
 
 	go func() {
 		for {
@@ -110,10 +110,10 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 			return err
 
 		case req := <-reqCh:
-			// First request
+			// First event
 			if streamID == nil {
 				streamID = req.OrderedBuildEvent.GetStreamId()
-				eventCh = s.handler.CreateEventChannel(stream.Context(), streamID)
+				eventCh = s.handler.CreateEventChannel(stream.Context(), req.OrderedBuildEvent)
 			}
 
 			seqNrs = append(seqNrs, req.OrderedBuildEvent.GetSequenceNumber())

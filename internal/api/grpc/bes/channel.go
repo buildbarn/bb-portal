@@ -16,8 +16,13 @@ import (
 	"google.golang.org/genproto/googleapis/devtools/build/v1"
 )
 
+type BuildEventChannel interface {
+	HandleBuildEvent(event *build.BuildEvent) error
+	Finalize() error
+}
+
 // BuildEventChannel handles a single BuildEvent stream
-type BuildEventChannel struct {
+type buildEventChannel struct {
 	ctx        context.Context
 	streamID   *build.StreamId
 	summarizer *summary.Summarizer
@@ -25,7 +30,7 @@ type BuildEventChannel struct {
 }
 
 // HandleBuildEvent processes a single BuildEvent
-func (c *BuildEventChannel) HandleBuildEvent(event *build.BuildEvent) error {
+func (c *buildEventChannel) HandleBuildEvent(event *build.BuildEvent) error {
 	if event.GetBazelEvent() == nil {
 		return nil
 	}
@@ -45,7 +50,7 @@ func (c *BuildEventChannel) HandleBuildEvent(event *build.BuildEvent) error {
 }
 
 // Finalize wraps up processing of a stream of BuildEvent
-func (c *BuildEventChannel) Finalize() error {
+func (c *buildEventChannel) Finalize() error {
 	summaryReport, err := c.summarizer.FinishProcessing()
 	if err != nil {
 		slog.ErrorContext(c.ctx, "FinishProcessing failed", "err", err)
@@ -68,5 +73,15 @@ func (c *BuildEventChannel) Finalize() error {
 	endTime := time.Now()
 	elapsedTime := endTime.Sub(startTime)
 	slog.InfoContext(c.ctx, fmt.Sprintf("Saved invocation in %v", elapsedTime.String()), "id", invocation.InvocationID)
+	return nil
+}
+
+type noOpBuildEventChannel struct{}
+
+func (c *noOpBuildEventChannel) HandleBuildEvent(event *build.BuildEvent) error {
+	return nil
+}
+
+func (c *noOpBuildEventChannel) Finalize() error {
 	return nil
 }
