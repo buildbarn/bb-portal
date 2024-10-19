@@ -2,10 +2,14 @@ package bes
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log/slog"
+	"sort"
 
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -39,10 +43,14 @@ func (s BuildEventServer) PublishLifecycleEvent(ctx context.Context, request *bu
 func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildEvent_PublishBuildToolEventStreamServer) error {
 	slog.InfoContext(stream.Context(), "Stream started", "event", stream.Context())
 
-	ack := func(req *build.PublishBuildToolEventStreamRequest) {
+	// List of SequenceIds we've received.
+	// We'll want to ack these once all events are received, as we don't support resumption.
+	seqNrs := make([]int64, 0)
+
+	ack := func(streamID *build.StreamId, sequenceNumber int64) {
 		if err := stream.Send(&build.PublishBuildToolEventStreamResponse{
-			StreamId:       req.OrderedBuildEvent.StreamId,
-			SequenceNumber: req.OrderedBuildEvent.SequenceNumber,
+			StreamId:       streamID,
+			SequenceNumber: sequenceNumber,
 		}); err != nil {
 			slog.ErrorContext(stream.Context(), "Send failed", "err", err)
 		}
@@ -73,7 +81,29 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 					return nil
 				}
 
-				return eventCh.Finalize()
+				// Validate that all events were received
+				sort.Slice(seqNrs, func(i, j int) bool { return seqNrs[i] < seqNrs[j] })
+
+				// TODO: Find out if initial sequence number can be != 1
+				expected := int64(1)
+				for _, seqNr := range seqNrs {
+					if seqNr != expected {
+						return status.Error(codes.Unknown, fmt.Sprintf("received unexpected sequence number %d, expected %d", seqNr, expected))
+					}
+					expected++
+				}
+
+				err := eventCh.Finalize()
+				if err != nil {
+					return err
+				}
+
+				// Ack all events
+				for _, seqNr := range seqNrs {
+					ack(streamID, seqNr)
+				}
+
+				return nil
 			}
 
 			slog.ErrorContext(stream.Context(), "Recv failed", "err", err)
@@ -86,12 +116,12 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 				eventCh = s.handler.CreateEventChannel(stream.Context(), streamID)
 			}
 
+			seqNrs = append(seqNrs, req.OrderedBuildEvent.GetSequenceNumber())
+
 			if err := eventCh.HandleBuildEvent(req.OrderedBuildEvent.Event); err != nil {
 				slog.ErrorContext(stream.Context(), "HandleBuildEvent failed", "err", err)
 				return err
 			}
-
-			ack(req)
 		}
 	}
 }
