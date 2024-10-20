@@ -16,12 +16,17 @@ import (
 	"google.golang.org/genproto/googleapis/devtools/build/v1"
 )
 
+// BuildEventChannel handles a single BuildEvent stream
 type BuildEventChannel interface {
+	// HandleBuildEvent processes a single BuildEvent
+	// This method should be called for each received event.
 	HandleBuildEvent(event *build.BuildEvent) error
+
+	// Finalize does post-processing of a stream of BuildEvents.
+	// This method should be called after receiving the EOF event.
 	Finalize() error
 }
 
-// BuildEventChannel handles a single BuildEvent stream
 type buildEventChannel struct {
 	ctx        context.Context
 	streamID   *build.StreamId
@@ -29,7 +34,7 @@ type buildEventChannel struct {
 	workflow   *processing.Workflow
 }
 
-// HandleBuildEvent processes a single BuildEvent
+// HandleBuildEvent implements BuildEventChannel.HandleBuildEvent.
 func (c *buildEventChannel) HandleBuildEvent(event *build.BuildEvent) error {
 	if event.GetBazelEvent() == nil {
 		return nil
@@ -49,7 +54,7 @@ func (c *buildEventChannel) HandleBuildEvent(event *build.BuildEvent) error {
 	return nil
 }
 
-// Finalize wraps up processing of a stream of BuildEvent
+// Finalize implements BuildEventChannel.Finalize.
 func (c *buildEventChannel) Finalize() error {
 	summaryReport, err := c.summarizer.FinishProcessing()
 	if err != nil {
@@ -76,12 +81,16 @@ func (c *buildEventChannel) Finalize() error {
 	return nil
 }
 
+// noOpBuildEventChannel is an implementation of BuildEventChannel which does no processing of events.
+// It is used when receiving a stream of events that we wish to ack without processing.
 type noOpBuildEventChannel struct{}
 
+// HandleBuildEvent implements BuildEventChannel.HandleBuildEvent.
 func (c *noOpBuildEventChannel) HandleBuildEvent(event *build.BuildEvent) error {
 	return nil
 }
 
+// Finalize implements BuildEventChannel.Finalize.
 func (c *noOpBuildEventChannel) Finalize() error {
 	return nil
 }
