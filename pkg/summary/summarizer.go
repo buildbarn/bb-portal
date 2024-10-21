@@ -756,7 +756,8 @@ func (s Summarizer) handleBuildFinished(finished *bes.BuildFinished) {
 // handleStructuredCommandLine
 func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.CommandLine) error {
 	if structuredCommandLine.GetCommandLineLabel() == "canonical" {
-		slog.Debug("here")
+		s.readCommandLine(structuredCommandLine)
+		return nil
 	}
 	if structuredCommandLine.GetCommandLineLabel() != "original" {
 		return nil
@@ -836,6 +837,24 @@ func (s Summarizer) handleBuildToolLogs(buildToolLogs *bes.BuildToolLogs) error 
 		}
 	}
 	return nil
+}
+
+func (s Summarizer) readCommandLine(cmdLine *bescore.CommandLine) {
+	sections := cmdLine.GetSections()
+	for _, section := range sections {
+		label := section.GetSectionLabel()
+		if section.GetChunkList() != nil {
+			sectionChunksStr := strings.Join(section.GetChunkList().GetChunk(), " ")
+			switch label {
+			case "executable":
+				s.summary.InvocationSummary.BazelCommandLine.Executable = sectionChunksStr
+			case "command":
+				s.summary.InvocationSummary.BazelCommandLine.Command = sectionChunksStr
+			case "residual":
+				s.summary.InvocationSummary.BazelCommandLine.Residual = sectionChunksStr
+			}
+		}
+	}
 }
 
 // updateSummaryFromStructuredCommandLine

@@ -154,9 +154,11 @@ fragment BazelInvocationInfo on BazelInvocation {
   bazelCommand {
     command
     executable
-    id
-    options
     residual
+    explicitCmdLine
+    cmdLine
+    startupOptions
+    explicitStartupOptions
   }
   id
   invocationID

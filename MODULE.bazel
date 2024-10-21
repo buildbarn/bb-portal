@@ -1,3 +1,6 @@
+"""
+    Build rules for buildbarn portal
+"""
 module(name = "com_github_buildbarn_bb_portal")
 
 bazel_dep(name = "bazel_remote_apis", version = "0.0.0")
@@ -57,7 +60,6 @@ use_repo(
     "com_github_bazelbuild_buildtools",
     "com_github_bazelbuild_remote_apis_sdks",
     "com_github_fsnotify_fsnotify",
-    "com_github_google_shlex",
     "com_github_google_uuid",
     "com_github_gorilla_mux",
     "com_github_hashicorp_go_multierror",

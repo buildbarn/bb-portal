@@ -12,11 +12,13 @@
     "invocations": [
       {
         "bazelCommand": {
-          "buildOptions": "--build_metadata=BUILD_STEP_LABEL=nextjs_test --build_event_json_file=./pkg/summary/testdata/nextjs_test_fail.bep.ndjson",
+          "cmdLine": [],
           "command": "test",
           "executable": "bazel",
-          "id": "",
-          "residual": "//next.js/..."
+          "explicitCmdLine": "",
+          "explicitStartupOptions": [],
+          "residual": "//next.js/...",
+          "startupOptions": []
         },
         "build": {
           "buildUUID": "16276f4b-81e2-5b48-a09a-7c7c7b8b692f",

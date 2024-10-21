@@ -12,11 +12,34 @@
     },
     "BazelVersion": "7.1.0",
     "BazelCommandLine": {
-      "Executable": "bazel",
       "Command": "build",
+      "Executable": "bazel",
       "Residual": "//...",
-      "Options": [
+      "ExplicitCmdLine": [
         "--build_event_json_file=./pkg/summary/testdata/nextjs_target_failed.bep.ndjson"
+      ],
+      "CmdLine": [
+        "--enable_runfiles=1",
+        "--build_event_json_file=./pkg/summary/testdata/nextjs_target_failed.bep.ndjson"
+      ],
+      "StartUpOptions": [
+        "--max_idle_secs=10800",
+        "--noshutdown_on_low_sys_mem",
+        "--connect_timeout_secs=30",
+        "--output_user_root=/var/tmp/_bazel_nameless",
+        "--output_base=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096",
+        "--failure_detail_out=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/failure_detail.rawproto",
+        "--expand_configs_in_place",
+        "--idle_server_tasks",
+        "--write_command_log",
+        "--nowatchfs",
+        "--nofatal_event_bus_exceptions",
+        "--nowindows_enable_symlinks",
+        "--noclient_debug",
+        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
+      ],
+      "ExplicitStartupOptions": [
+        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
       ]
     },
     "Problems": [

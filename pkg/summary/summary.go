@@ -225,8 +225,8 @@ type ExitCode struct {
 
 // BazelCommandLine struct.
 type BazelCommandLine struct {
-	Executable             string
 	Command                string
+	Executable             string
 	Residual               string
 	ExplicitCmdLine        []string
 	CmdLine                []string
