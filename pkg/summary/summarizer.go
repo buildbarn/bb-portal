@@ -755,6 +755,9 @@ func (s Summarizer) handleBuildFinished(finished *bes.BuildFinished) {
 
 // handleStructuredCommandLine
 func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.CommandLine) error {
+	if structuredCommandLine.GetCommandLineLabel() == "canonical" {
+		slog.Debug("here")
+	}
 	if structuredCommandLine.GetCommandLineLabel() != "original" {
 		return nil
 	}
@@ -813,7 +816,10 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 
 // handleOptionsParsed
 func (s Summarizer) handleOptionsParsed(optionsParsed *bes.OptionsParsed) {
-	s.summary.InvocationSummary.BazelCommandLine.Options = optionsParsed.GetExplicitCmdLine()
+	s.summary.InvocationSummary.BazelCommandLine.ExplicitCmdLine = optionsParsed.GetExplicitCmdLine()
+	s.summary.InvocationSummary.BazelCommandLine.CmdLine = optionsParsed.GetCmdLine()
+	s.summary.InvocationSummary.BazelCommandLine.ExplicitStartupOptions = optionsParsed.GetExplicitStartupOptions()
+	s.summary.InvocationSummary.BazelCommandLine.StartUpOptions = optionsParsed.GetStartupOptions()
 }
 
 // handleBuildToolLogs
