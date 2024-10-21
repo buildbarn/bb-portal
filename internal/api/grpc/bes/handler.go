@@ -26,12 +26,18 @@ func NewBuildEventHandler(workflow *processing.Workflow) *BuildEventHandler {
 }
 
 // CreateEventChannel creates a new BuildEventChannel
-func (h *BuildEventHandler) CreateEventChannel(ctx context.Context, streamID *build.StreamId) *BuildEventChannel {
+func (h *BuildEventHandler) CreateEventChannel(ctx context.Context, initialEvent *build.OrderedBuildEvent) BuildEventChannel {
 	summarizer := summary.NewSummarizer()
 
-	return &BuildEventChannel{
+	// If the first event does not have sequence number 1, we have processed this
+	// invocation previously, and should skip all processing.
+	if initialEvent.SequenceNumber != 1 {
+		return &noOpBuildEventChannel{}
+	}
+
+	return &buildEventChannel{
 		ctx:        ctx,
-		streamID:   streamID,
+		streamID:   initialEvent.StreamId,
 		summarizer: summarizer,
 		workflow:   h.workflow,
 	}
