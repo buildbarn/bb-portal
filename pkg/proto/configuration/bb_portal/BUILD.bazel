@@ -27,7 +27,7 @@ go_proto_library(
 
 go_library(
     name = "bb_portal",
-    srcs = ["bb_portal.pb.go"],
+    embed = [":bb_portal_go_proto"],
     importpath = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal",
     visibility = ["//visibility:public"],
     deps = [
