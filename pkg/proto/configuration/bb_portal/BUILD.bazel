@@ -30,11 +30,4 @@ go_library(
     embed = [":bb_portal_go_proto"],
     importpath = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal",
     visibility = ["//visibility:public"],
-    deps = [
-        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/global",
-        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc",
-        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/http",
-        "@org_golang_google_protobuf//reflect/protoreflect",
-        "@org_golang_google_protobuf//runtime/protoimpl",
-    ],
 )
