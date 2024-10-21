@@ -11,6 +11,7 @@ import {
   TestCollection,
   TargetPair,
   BuildGraphMetrics,
+  BazelCommand,
 } from "@/graphql/__generated__/graphql";
 import styles from "../AppBar/index.module.css"
 import React from "react";
@@ -33,6 +34,7 @@ import {
   FieldTimeOutlined,
   WifiOutlined,
   HddOutlined,
+  CodeOutlined,
 } from "@ant-design/icons";
 import themeStyles from '@/theme/theme.module.css';
 import { debugMode } from "@/components/Utilities/debugMode";
@@ -51,6 +53,7 @@ import TimingMetricsDisplay from "../TimingMetrics";
 import NetworkMetricsDisplay from "../NetworkMetrics";
 import TestMetricsDisplay from "../TestsMetrics";
 import { env } from 'next-runtime-env';
+import CommandLineDisplay from "../CommandLine";
 
 
 const BazelInvocation: React.FC<{
@@ -228,6 +231,14 @@ const BazelInvocation: React.FC<{
       icon: <WifiOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
         <NetworkMetricsDisplay networkMetrics={networkMetrics} />
+      </Space>,
+    },
+    {
+      key: 'BazelInvocationTabs-CommandLine',
+      label: 'Command Line',
+      icon: <CodeOutlined />,
+      children: <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <CommandLineDisplay commandLineData={bazelCommand ?? undefined} />
       </Space>,
     },
   ];

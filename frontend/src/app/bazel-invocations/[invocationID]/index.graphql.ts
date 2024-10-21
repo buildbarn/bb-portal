@@ -155,7 +155,7 @@ fragment BazelInvocationInfo on BazelInvocation {
     command
     executable
     id
-    buildOptions: options
+    options
     residual
   }
   id
