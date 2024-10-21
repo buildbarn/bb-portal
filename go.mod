@@ -7,7 +7,7 @@ toolchain go1.23.1
 require (
 	entgo.io/contrib v0.5.0
 	entgo.io/ent v0.13.1
-	github.com/99designs/gqlgen v0.17.43
+	github.com/99designs/gqlgen v0.17.55
 	github.com/bazelbuild/buildtools v0.0.0-20240918101019-be1c24cc9a44
 	github.com/bazelbuild/remote-apis-sdks v0.0.0-20240522145720-89b6d6b399ad
 	github.com/buildbarn/bb-storage v0.0.0-20241007042721-0941111f29e3
@@ -21,7 +21,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.9.0
-	github.com/vektah/gqlparser/v2 v2.5.11
+	github.com/vektah/gqlparser/v2 v2.5.17
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 	golang.org/x/sync v0.8.0
 	google.golang.org/api v0.196.0
@@ -42,6 +42,7 @@ require (
 	github.com/bazelbuild/remote-apis v0.0.0-20240910125346-9a250a0f817f // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.3 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
@@ -73,10 +74,13 @@ require (
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.59.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
+	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sercand/kuberesolver/v5 v5.1.1 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
+	github.com/urfave/cli/v2 v2.27.4 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9 // indirect
 	github.com/vmihailenco/tagparser v0.1.2 // indirect
+	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.54.0 // indirect
 	go.opentelemetry.io/contrib/propagators/b3 v1.29.0 // indirect
