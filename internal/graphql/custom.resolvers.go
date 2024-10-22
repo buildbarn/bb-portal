@@ -436,8 +436,6 @@ func (r *Resolver) BlobReference() BlobReferenceResolver { return &blobReference
 // TestResult returns TestResultResolver implementation.
 func (r *Resolver) TestResult() TestResultResolver { return &testResultResolver{r} }
 
-type (
-	actionProblemResolver struct{ *Resolver }
-	blobReferenceResolver struct{ *Resolver }
-	testResultResolver    struct{ *Resolver }
-)
+type actionProblemResolver struct{ *Resolver }
+type blobReferenceResolver struct{ *Resolver }
+type testResultResolver struct{ *Resolver }
