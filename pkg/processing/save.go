@@ -133,12 +133,12 @@ func (act SaveActor) saveBazelInvocation(
 	tests []*ent.TestCollection,
 	targets []*ent.TargetPair,
 ) (*ent.BazelInvocation, error) {
-	uniqueId, err := uuid.Parse(summary.InvocationID)
+	uniqueID, err := uuid.Parse(summary.InvocationID)
 	if err != nil {
 		return nil, err
 	}
 	create := act.db.BazelInvocation.Create().
-		SetInvocationID(uniqueId).
+		SetInvocationID(uniqueID).
 		SetProfileName(summary.ProfileName).
 		SetStartedAt(summary.StartedAt).
 		SetNillableEndedAt(summary.EndedAt).
