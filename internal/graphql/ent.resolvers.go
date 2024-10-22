@@ -232,7 +232,7 @@ func (r *runnerCountResolver) ID(ctx context.Context, obj *ent.RunnerCount) (str
 
 // ID is the resolver for the id field.
 func (r *sourceControlResolver) ID(ctx context.Context, obj *ent.SourceControl) (string, error) {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	return helpers.GraphQLIDFromTypeAndID("SourceControl", obj.ID), nil
 }
 
 // ID is the resolver for the id field.

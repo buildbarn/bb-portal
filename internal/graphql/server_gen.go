@@ -552,7 +552,9 @@ type ComplexityRoot struct {
 		Branch          func(childComplexity int) int
 		CommitSha       func(childComplexity int) int
 		ID              func(childComplexity int) int
+		Refs            func(childComplexity int) int
 		RepoURL         func(childComplexity int) int
+		RunID           func(childComplexity int) int
 	}
 
 	SystemNetworkStats struct {
@@ -3330,12 +3332,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.SourceControl.ID(childComplexity), true
 
+	case "SourceControl.refs":
+		if e.complexity.SourceControl.Refs == nil {
+			break
+		}
+
+		return e.complexity.SourceControl.Refs(childComplexity), true
+
 	case "SourceControl.repoURL":
 		if e.complexity.SourceControl.RepoURL == nil {
 			break
 		}
 
 		return e.complexity.SourceControl.RepoURL(childComplexity), true
+
+	case "SourceControl.runID":
+		if e.complexity.SourceControl.RunID == nil {
+			break
+		}
+
+		return e.complexity.SourceControl.RunID(childComplexity), true
 
 	case "SystemNetworkStats.bytesRecv":
 		if e.complexity.SystemNetworkStats.BytesRecv == nil {
@@ -8951,6 +8967,10 @@ func (ec *executionContext) fieldContext_BazelInvocation_sourceControl(_ context
 				return ec.fieldContext_SourceControl_commitSha(ctx, field)
 			case "actor":
 				return ec.fieldContext_SourceControl_actor(ctx, field)
+			case "refs":
+				return ec.fieldContext_SourceControl_refs(ctx, field)
+			case "runID":
+				return ec.fieldContext_SourceControl_runID(ctx, field)
 			case "bazelInvocation":
 				return ec.fieldContext_SourceControl_bazelInvocation(ctx, field)
 			}
@@ -19250,6 +19270,88 @@ func (ec *executionContext) _SourceControl_actor(ctx context.Context, field grap
 }
 
 func (ec *executionContext) fieldContext_SourceControl_actor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SourceControl",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SourceControl_refs(ctx context.Context, field graphql.CollectedField, obj *ent.SourceControl) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SourceControl_refs(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Refs, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SourceControl_refs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SourceControl",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SourceControl_runID(ctx context.Context, field graphql.CollectedField, obj *ent.SourceControl) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SourceControl_runID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RunID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SourceControl_runID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "SourceControl",
 		Field:      field,
@@ -38981,7 +39083,7 @@ func (ec *executionContext) unmarshalInputSourceControlWhereInput(ctx context.Co
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "repoURL", "repoURLNEQ", "repoURLIn", "repoURLNotIn", "repoURLGT", "repoURLGTE", "repoURLLT", "repoURLLTE", "repoURLContains", "repoURLHasPrefix", "repoURLHasSuffix", "repoURLIsNil", "repoURLNotNil", "repoURLEqualFold", "repoURLContainsFold", "branch", "branchNEQ", "branchIn", "branchNotIn", "branchGT", "branchGTE", "branchLT", "branchLTE", "branchContains", "branchHasPrefix", "branchHasSuffix", "branchIsNil", "branchNotNil", "branchEqualFold", "branchContainsFold", "commitSha", "commitShaNEQ", "commitShaIn", "commitShaNotIn", "commitShaGT", "commitShaGTE", "commitShaLT", "commitShaLTE", "commitShaContains", "commitShaHasPrefix", "commitShaHasSuffix", "commitShaIsNil", "commitShaNotNil", "commitShaEqualFold", "commitShaContainsFold", "actor", "actorNEQ", "actorIn", "actorNotIn", "actorGT", "actorGTE", "actorLT", "actorLTE", "actorContains", "actorHasPrefix", "actorHasSuffix", "actorIsNil", "actorNotNil", "actorEqualFold", "actorContainsFold", "hasBazelInvocation", "hasBazelInvocationWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "repoURL", "repoURLNEQ", "repoURLIn", "repoURLNotIn", "repoURLGT", "repoURLGTE", "repoURLLT", "repoURLLTE", "repoURLContains", "repoURLHasPrefix", "repoURLHasSuffix", "repoURLIsNil", "repoURLNotNil", "repoURLEqualFold", "repoURLContainsFold", "branch", "branchNEQ", "branchIn", "branchNotIn", "branchGT", "branchGTE", "branchLT", "branchLTE", "branchContains", "branchHasPrefix", "branchHasSuffix", "branchIsNil", "branchNotNil", "branchEqualFold", "branchContainsFold", "commitSha", "commitShaNEQ", "commitShaIn", "commitShaNotIn", "commitShaGT", "commitShaGTE", "commitShaLT", "commitShaLTE", "commitShaContains", "commitShaHasPrefix", "commitShaHasSuffix", "commitShaIsNil", "commitShaNotNil", "commitShaEqualFold", "commitShaContainsFold", "actor", "actorNEQ", "actorIn", "actorNotIn", "actorGT", "actorGTE", "actorLT", "actorLTE", "actorContains", "actorHasPrefix", "actorHasSuffix", "actorIsNil", "actorNotNil", "actorEqualFold", "actorContainsFold", "refs", "refsNEQ", "refsIn", "refsNotIn", "refsGT", "refsGTE", "refsLT", "refsLTE", "refsContains", "refsHasPrefix", "refsHasSuffix", "refsIsNil", "refsNotNil", "refsEqualFold", "refsContainsFold", "runID", "runIDNEQ", "runIDIn", "runIDNotIn", "runIDGT", "runIDGTE", "runIDLT", "runIDLTE", "runIDContains", "runIDHasPrefix", "runIDHasSuffix", "runIDIsNil", "runIDNotNil", "runIDEqualFold", "runIDContainsFold", "hasBazelInvocation", "hasBazelInvocationWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -39501,6 +39603,216 @@ func (ec *executionContext) unmarshalInputSourceControlWhereInput(ctx context.Co
 				return it, err
 			}
 			it.ActorContainsFold = data
+		case "refs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refs"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Refs = data
+		case "refsNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsNEQ = data
+		case "refsIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsIn = data
+		case "refsNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsNotIn = data
+		case "refsGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsGT = data
+		case "refsGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsGTE = data
+		case "refsLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsLT = data
+		case "refsLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsLTE = data
+		case "refsContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsContains = data
+		case "refsHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsHasPrefix = data
+		case "refsHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsHasSuffix = data
+		case "refsIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsIsNil = data
+		case "refsNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsNotNil = data
+		case "refsEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsEqualFold = data
+		case "refsContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("refsContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RefsContainsFold = data
+		case "runID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runID"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunID = data
+		case "runIDNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDNEQ = data
+		case "runIDIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDIn = data
+		case "runIDNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDNotIn = data
+		case "runIDGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDGT = data
+		case "runIDGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDGTE = data
+		case "runIDLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDLT = data
+		case "runIDLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDLTE = data
+		case "runIDContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDContains = data
+		case "runIDHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDHasPrefix = data
+		case "runIDHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDHasSuffix = data
+		case "runIDIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDIsNil = data
+		case "runIDNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDNotNil = data
+		case "runIDEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDEqualFold = data
+		case "runIDContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("runIDContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RunIDContainsFold = data
 		case "hasBazelInvocation":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBazelInvocation"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -52163,6 +52475,10 @@ func (ec *executionContext) _SourceControl(ctx context.Context, sel ast.Selectio
 			out.Values[i] = ec._SourceControl_commitSha(ctx, field, obj)
 		case "actor":
 			out.Values[i] = ec._SourceControl_actor(ctx, field, obj)
+		case "refs":
+			out.Values[i] = ec._SourceControl_refs(ctx, field, obj)
+		case "runID":
+			out.Values[i] = ec._SourceControl_runID(ctx, field, obj)
 		case "bazelInvocation":
 			field := field
 

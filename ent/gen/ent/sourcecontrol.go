@@ -25,6 +25,10 @@ type SourceControl struct {
 	CommitSha string `json:"commit_sha,omitempty"`
 	// Actor holds the value of the "actor" field.
 	Actor string `json:"actor,omitempty"`
+	// Refs holds the value of the "refs" field.
+	Refs string `json:"refs,omitempty"`
+	// RunID holds the value of the "run_id" field.
+	RunID string `json:"run_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SourceControlQuery when eager-loading is set.
 	Edges                           SourceControlEdges `json:"edges"`
@@ -61,7 +65,7 @@ func (*SourceControl) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sourcecontrol.FieldID:
 			values[i] = new(sql.NullInt64)
-		case sourcecontrol.FieldRepoURL, sourcecontrol.FieldBranch, sourcecontrol.FieldCommitSha, sourcecontrol.FieldActor:
+		case sourcecontrol.FieldRepoURL, sourcecontrol.FieldBranch, sourcecontrol.FieldCommitSha, sourcecontrol.FieldActor, sourcecontrol.FieldRefs, sourcecontrol.FieldRunID:
 			values[i] = new(sql.NullString)
 		case sourcecontrol.ForeignKeys[0]: // bazel_invocation_source_control
 			values[i] = new(sql.NullInt64)
@@ -109,6 +113,18 @@ func (sc *SourceControl) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field actor", values[i])
 			} else if value.Valid {
 				sc.Actor = value.String
+			}
+		case sourcecontrol.FieldRefs:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field refs", values[i])
+			} else if value.Valid {
+				sc.Refs = value.String
+			}
+		case sourcecontrol.FieldRunID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field run_id", values[i])
+			} else if value.Valid {
+				sc.RunID = value.String
 			}
 		case sourcecontrol.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -169,6 +185,12 @@ func (sc *SourceControl) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("actor=")
 	builder.WriteString(sc.Actor)
+	builder.WriteString(", ")
+	builder.WriteString("refs=")
+	builder.WriteString(sc.Refs)
+	builder.WriteString(", ")
+	builder.WriteString("run_id=")
+	builder.WriteString(sc.RunID)
 	builder.WriteByte(')')
 	return builder.String()
 }

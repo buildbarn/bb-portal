@@ -2784,6 +2784,8 @@ type SourceControl implements Node {
   branch: String
   commitSha: String
   actor: String
+  refs: String
+  runID: String
   bazelInvocation: BazelInvocation
 }
 """
@@ -2877,6 +2879,42 @@ input SourceControlWhereInput {
   actorNotNil: Boolean
   actorEqualFold: String
   actorContainsFold: String
+  """
+  refs field predicates
+  """
+  refs: String
+  refsNEQ: String
+  refsIn: [String!]
+  refsNotIn: [String!]
+  refsGT: String
+  refsGTE: String
+  refsLT: String
+  refsLTE: String
+  refsContains: String
+  refsHasPrefix: String
+  refsHasSuffix: String
+  refsIsNil: Boolean
+  refsNotNil: Boolean
+  refsEqualFold: String
+  refsContainsFold: String
+  """
+  run_id field predicates
+  """
+  runID: String
+  runIDNEQ: String
+  runIDIn: [String!]
+  runIDNotIn: [String!]
+  runIDGT: String
+  runIDGTE: String
+  runIDLT: String
+  runIDLTE: String
+  runIDContains: String
+  runIDHasPrefix: String
+  runIDHasSuffix: String
+  runIDIsNil: Boolean
+  runIDNotNil: Boolean
+  runIDEqualFold: String
+  runIDContainsFold: String
   """
   bazel_invocation edge predicates
   """

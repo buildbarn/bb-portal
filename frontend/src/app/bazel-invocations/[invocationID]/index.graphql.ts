@@ -152,6 +152,7 @@ fragment BazelInvocationInfo on BazelInvocation {
     }
   }
   bazelCommand {
+    id
     command
     executable
     residual
@@ -212,6 +213,13 @@ fragment BazelInvocationInfo on BazelInvocation {
     id
   }
   stepLabel
+  sourceControl {
+    id
+    commitSha
+    actor
+    branch
+    repoURL
+  }
 }
 `);
 export const PROBLEM_INFO_FRAGMENT = gql(/* GraphQL */ `

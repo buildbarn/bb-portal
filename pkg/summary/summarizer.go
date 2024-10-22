@@ -831,6 +831,16 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		}
 	}
 
+	// refs
+	if ghRefs, ok := s.summary.EnvVars["GITHB_REF"]; ok {
+		s.summary.SourceControlData.Refs = ghRefs
+	}
+
+	// run id
+	if ghRunId, ok := s.summary.EnvVars["GITHUB_RUN_ID"]; ok {
+		s.summary.SourceControlData.Refs = ghRunId
+	}
+
 	return nil
 }
 

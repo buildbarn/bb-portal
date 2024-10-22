@@ -681,6 +681,8 @@ var (
 		{Name: "branch", Type: field.TypeString, Nullable: true},
 		{Name: "commit_sha", Type: field.TypeString, Nullable: true},
 		{Name: "actor", Type: field.TypeString, Nullable: true},
+		{Name: "refs", Type: field.TypeString, Nullable: true},
+		{Name: "run_id", Type: field.TypeString, Nullable: true},
 		{Name: "bazel_invocation_source_control", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// SourceControlsTable holds the schema information for the "source_controls" table.
@@ -691,7 +693,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "source_controls_bazel_invocations_source_control",
-				Columns:    []*schema.Column{SourceControlsColumns[5]},
+				Columns:    []*schema.Column{SourceControlsColumns[7]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

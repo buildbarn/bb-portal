@@ -9214,6 +9214,40 @@ type SourceControlWhereInput struct {
 	ActorEqualFold    *string  `json:"actorEqualFold,omitempty"`
 	ActorContainsFold *string  `json:"actorContainsFold,omitempty"`
 
+	// "refs" field predicates.
+	Refs             *string  `json:"refs,omitempty"`
+	RefsNEQ          *string  `json:"refsNEQ,omitempty"`
+	RefsIn           []string `json:"refsIn,omitempty"`
+	RefsNotIn        []string `json:"refsNotIn,omitempty"`
+	RefsGT           *string  `json:"refsGT,omitempty"`
+	RefsGTE          *string  `json:"refsGTE,omitempty"`
+	RefsLT           *string  `json:"refsLT,omitempty"`
+	RefsLTE          *string  `json:"refsLTE,omitempty"`
+	RefsContains     *string  `json:"refsContains,omitempty"`
+	RefsHasPrefix    *string  `json:"refsHasPrefix,omitempty"`
+	RefsHasSuffix    *string  `json:"refsHasSuffix,omitempty"`
+	RefsIsNil        bool     `json:"refsIsNil,omitempty"`
+	RefsNotNil       bool     `json:"refsNotNil,omitempty"`
+	RefsEqualFold    *string  `json:"refsEqualFold,omitempty"`
+	RefsContainsFold *string  `json:"refsContainsFold,omitempty"`
+
+	// "run_id" field predicates.
+	RunID             *string  `json:"runID,omitempty"`
+	RunIDNEQ          *string  `json:"runIDNEQ,omitempty"`
+	RunIDIn           []string `json:"runIDIn,omitempty"`
+	RunIDNotIn        []string `json:"runIDNotIn,omitempty"`
+	RunIDGT           *string  `json:"runIDGT,omitempty"`
+	RunIDGTE          *string  `json:"runIDGTE,omitempty"`
+	RunIDLT           *string  `json:"runIDLT,omitempty"`
+	RunIDLTE          *string  `json:"runIDLTE,omitempty"`
+	RunIDContains     *string  `json:"runIDContains,omitempty"`
+	RunIDHasPrefix    *string  `json:"runIDHasPrefix,omitempty"`
+	RunIDHasSuffix    *string  `json:"runIDHasSuffix,omitempty"`
+	RunIDIsNil        bool     `json:"runIDIsNil,omitempty"`
+	RunIDNotNil       bool     `json:"runIDNotNil,omitempty"`
+	RunIDEqualFold    *string  `json:"runIDEqualFold,omitempty"`
+	RunIDContainsFold *string  `json:"runIDContainsFold,omitempty"`
+
 	// "bazel_invocation" edge predicates.
 	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
 	HasBazelInvocationWith []*BazelInvocationWhereInput `json:"hasBazelInvocationWith,omitempty"`
@@ -9493,6 +9527,96 @@ func (i *SourceControlWhereInput) P() (predicate.SourceControl, error) {
 	}
 	if i.ActorContainsFold != nil {
 		predicates = append(predicates, sourcecontrol.ActorContainsFold(*i.ActorContainsFold))
+	}
+	if i.Refs != nil {
+		predicates = append(predicates, sourcecontrol.RefsEQ(*i.Refs))
+	}
+	if i.RefsNEQ != nil {
+		predicates = append(predicates, sourcecontrol.RefsNEQ(*i.RefsNEQ))
+	}
+	if len(i.RefsIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RefsIn(i.RefsIn...))
+	}
+	if len(i.RefsNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RefsNotIn(i.RefsNotIn...))
+	}
+	if i.RefsGT != nil {
+		predicates = append(predicates, sourcecontrol.RefsGT(*i.RefsGT))
+	}
+	if i.RefsGTE != nil {
+		predicates = append(predicates, sourcecontrol.RefsGTE(*i.RefsGTE))
+	}
+	if i.RefsLT != nil {
+		predicates = append(predicates, sourcecontrol.RefsLT(*i.RefsLT))
+	}
+	if i.RefsLTE != nil {
+		predicates = append(predicates, sourcecontrol.RefsLTE(*i.RefsLTE))
+	}
+	if i.RefsContains != nil {
+		predicates = append(predicates, sourcecontrol.RefsContains(*i.RefsContains))
+	}
+	if i.RefsHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.RefsHasPrefix(*i.RefsHasPrefix))
+	}
+	if i.RefsHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.RefsHasSuffix(*i.RefsHasSuffix))
+	}
+	if i.RefsIsNil {
+		predicates = append(predicates, sourcecontrol.RefsIsNil())
+	}
+	if i.RefsNotNil {
+		predicates = append(predicates, sourcecontrol.RefsNotNil())
+	}
+	if i.RefsEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.RefsEqualFold(*i.RefsEqualFold))
+	}
+	if i.RefsContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.RefsContainsFold(*i.RefsContainsFold))
+	}
+	if i.RunID != nil {
+		predicates = append(predicates, sourcecontrol.RunIDEQ(*i.RunID))
+	}
+	if i.RunIDNEQ != nil {
+		predicates = append(predicates, sourcecontrol.RunIDNEQ(*i.RunIDNEQ))
+	}
+	if len(i.RunIDIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RunIDIn(i.RunIDIn...))
+	}
+	if len(i.RunIDNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RunIDNotIn(i.RunIDNotIn...))
+	}
+	if i.RunIDGT != nil {
+		predicates = append(predicates, sourcecontrol.RunIDGT(*i.RunIDGT))
+	}
+	if i.RunIDGTE != nil {
+		predicates = append(predicates, sourcecontrol.RunIDGTE(*i.RunIDGTE))
+	}
+	if i.RunIDLT != nil {
+		predicates = append(predicates, sourcecontrol.RunIDLT(*i.RunIDLT))
+	}
+	if i.RunIDLTE != nil {
+		predicates = append(predicates, sourcecontrol.RunIDLTE(*i.RunIDLTE))
+	}
+	if i.RunIDContains != nil {
+		predicates = append(predicates, sourcecontrol.RunIDContains(*i.RunIDContains))
+	}
+	if i.RunIDHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.RunIDHasPrefix(*i.RunIDHasPrefix))
+	}
+	if i.RunIDHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.RunIDHasSuffix(*i.RunIDHasSuffix))
+	}
+	if i.RunIDIsNil {
+		predicates = append(predicates, sourcecontrol.RunIDIsNil())
+	}
+	if i.RunIDNotNil {
+		predicates = append(predicates, sourcecontrol.RunIDNotNil())
+	}
+	if i.RunIDEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.RunIDEqualFold(*i.RunIDEqualFold))
+	}
+	if i.RunIDContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.RunIDContainsFold(*i.RunIDContainsFold))
 	}
 
 	if i.HasBazelInvocation != nil {

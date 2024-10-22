@@ -75,6 +75,34 @@ func (scc *SourceControlCreate) SetNillableActor(s *string) *SourceControlCreate
 	return scc
 }
 
+// SetRefs sets the "refs" field.
+func (scc *SourceControlCreate) SetRefs(s string) *SourceControlCreate {
+	scc.mutation.SetRefs(s)
+	return scc
+}
+
+// SetNillableRefs sets the "refs" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRefs(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetRefs(*s)
+	}
+	return scc
+}
+
+// SetRunID sets the "run_id" field.
+func (scc *SourceControlCreate) SetRunID(s string) *SourceControlCreate {
+	scc.mutation.SetRunID(s)
+	return scc
+}
+
+// SetNillableRunID sets the "run_id" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRunID(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetRunID(*s)
+	}
+	return scc
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
 func (scc *SourceControlCreate) SetBazelInvocationID(id int) *SourceControlCreate {
 	scc.mutation.SetBazelInvocationID(id)
@@ -169,6 +197,14 @@ func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSp
 	if value, ok := scc.mutation.Actor(); ok {
 		_spec.SetField(sourcecontrol.FieldActor, field.TypeString, value)
 		_node.Actor = value
+	}
+	if value, ok := scc.mutation.Refs(); ok {
+		_spec.SetField(sourcecontrol.FieldRefs, field.TypeString, value)
+		_node.Refs = value
+	}
+	if value, ok := scc.mutation.RunID(); ok {
+		_spec.SetField(sourcecontrol.FieldRunID, field.TypeString, value)
+		_node.RunID = value
 	}
 	if nodes := scc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

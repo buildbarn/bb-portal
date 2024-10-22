@@ -20237,6 +20237,8 @@ type SourceControlMutation struct {
 	branch                  *string
 	commit_sha              *string
 	actor                   *string
+	refs                    *string
+	run_id                  *string
 	clearedFields           map[string]struct{}
 	bazel_invocation        *int
 	clearedbazel_invocation bool
@@ -20539,6 +20541,104 @@ func (m *SourceControlMutation) ResetActor() {
 	delete(m.clearedFields, sourcecontrol.FieldActor)
 }
 
+// SetRefs sets the "refs" field.
+func (m *SourceControlMutation) SetRefs(s string) {
+	m.refs = &s
+}
+
+// Refs returns the value of the "refs" field in the mutation.
+func (m *SourceControlMutation) Refs() (r string, exists bool) {
+	v := m.refs
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRefs returns the old "refs" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldRefs(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRefs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRefs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRefs: %w", err)
+	}
+	return oldValue.Refs, nil
+}
+
+// ClearRefs clears the value of the "refs" field.
+func (m *SourceControlMutation) ClearRefs() {
+	m.refs = nil
+	m.clearedFields[sourcecontrol.FieldRefs] = struct{}{}
+}
+
+// RefsCleared returns if the "refs" field was cleared in this mutation.
+func (m *SourceControlMutation) RefsCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldRefs]
+	return ok
+}
+
+// ResetRefs resets all changes to the "refs" field.
+func (m *SourceControlMutation) ResetRefs() {
+	m.refs = nil
+	delete(m.clearedFields, sourcecontrol.FieldRefs)
+}
+
+// SetRunID sets the "run_id" field.
+func (m *SourceControlMutation) SetRunID(s string) {
+	m.run_id = &s
+}
+
+// RunID returns the value of the "run_id" field in the mutation.
+func (m *SourceControlMutation) RunID() (r string, exists bool) {
+	v := m.run_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRunID returns the old "run_id" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldRunID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRunID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRunID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRunID: %w", err)
+	}
+	return oldValue.RunID, nil
+}
+
+// ClearRunID clears the value of the "run_id" field.
+func (m *SourceControlMutation) ClearRunID() {
+	m.run_id = nil
+	m.clearedFields[sourcecontrol.FieldRunID] = struct{}{}
+}
+
+// RunIDCleared returns if the "run_id" field was cleared in this mutation.
+func (m *SourceControlMutation) RunIDCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldRunID]
+	return ok
+}
+
+// ResetRunID resets all changes to the "run_id" field.
+func (m *SourceControlMutation) ResetRunID() {
+	m.run_id = nil
+	delete(m.clearedFields, sourcecontrol.FieldRunID)
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
 func (m *SourceControlMutation) SetBazelInvocationID(id int) {
 	m.bazel_invocation = &id
@@ -20612,7 +20712,7 @@ func (m *SourceControlMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SourceControlMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 6)
 	if m.repo_url != nil {
 		fields = append(fields, sourcecontrol.FieldRepoURL)
 	}
@@ -20624,6 +20724,12 @@ func (m *SourceControlMutation) Fields() []string {
 	}
 	if m.actor != nil {
 		fields = append(fields, sourcecontrol.FieldActor)
+	}
+	if m.refs != nil {
+		fields = append(fields, sourcecontrol.FieldRefs)
+	}
+	if m.run_id != nil {
+		fields = append(fields, sourcecontrol.FieldRunID)
 	}
 	return fields
 }
@@ -20641,6 +20747,10 @@ func (m *SourceControlMutation) Field(name string) (ent.Value, bool) {
 		return m.CommitSha()
 	case sourcecontrol.FieldActor:
 		return m.Actor()
+	case sourcecontrol.FieldRefs:
+		return m.Refs()
+	case sourcecontrol.FieldRunID:
+		return m.RunID()
 	}
 	return nil, false
 }
@@ -20658,6 +20768,10 @@ func (m *SourceControlMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldCommitSha(ctx)
 	case sourcecontrol.FieldActor:
 		return m.OldActor(ctx)
+	case sourcecontrol.FieldRefs:
+		return m.OldRefs(ctx)
+	case sourcecontrol.FieldRunID:
+		return m.OldRunID(ctx)
 	}
 	return nil, fmt.Errorf("unknown SourceControl field %s", name)
 }
@@ -20694,6 +20808,20 @@ func (m *SourceControlMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetActor(v)
+		return nil
+	case sourcecontrol.FieldRefs:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRefs(v)
+		return nil
+	case sourcecontrol.FieldRunID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRunID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown SourceControl field %s", name)
@@ -20737,6 +20865,12 @@ func (m *SourceControlMutation) ClearedFields() []string {
 	if m.FieldCleared(sourcecontrol.FieldActor) {
 		fields = append(fields, sourcecontrol.FieldActor)
 	}
+	if m.FieldCleared(sourcecontrol.FieldRefs) {
+		fields = append(fields, sourcecontrol.FieldRefs)
+	}
+	if m.FieldCleared(sourcecontrol.FieldRunID) {
+		fields = append(fields, sourcecontrol.FieldRunID)
+	}
 	return fields
 }
 
@@ -20763,6 +20897,12 @@ func (m *SourceControlMutation) ClearField(name string) error {
 	case sourcecontrol.FieldActor:
 		m.ClearActor()
 		return nil
+	case sourcecontrol.FieldRefs:
+		m.ClearRefs()
+		return nil
+	case sourcecontrol.FieldRunID:
+		m.ClearRunID()
+		return nil
 	}
 	return fmt.Errorf("unknown SourceControl nullable field %s", name)
 }
@@ -20782,6 +20922,12 @@ func (m *SourceControlMutation) ResetField(name string) error {
 		return nil
 	case sourcecontrol.FieldActor:
 		m.ResetActor()
+		return nil
+	case sourcecontrol.FieldRefs:
+		m.ResetRefs()
+		return nil
+	case sourcecontrol.FieldRunID:
+		m.ResetRunID()
 		return nil
 	}
 	return fmt.Errorf("unknown SourceControl field %s", name)

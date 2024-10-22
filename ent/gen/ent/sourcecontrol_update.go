@@ -108,6 +108,46 @@ func (scu *SourceControlUpdate) ClearActor() *SourceControlUpdate {
 	return scu
 }
 
+// SetRefs sets the "refs" field.
+func (scu *SourceControlUpdate) SetRefs(s string) *SourceControlUpdate {
+	scu.mutation.SetRefs(s)
+	return scu
+}
+
+// SetNillableRefs sets the "refs" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableRefs(s *string) *SourceControlUpdate {
+	if s != nil {
+		scu.SetRefs(*s)
+	}
+	return scu
+}
+
+// ClearRefs clears the value of the "refs" field.
+func (scu *SourceControlUpdate) ClearRefs() *SourceControlUpdate {
+	scu.mutation.ClearRefs()
+	return scu
+}
+
+// SetRunID sets the "run_id" field.
+func (scu *SourceControlUpdate) SetRunID(s string) *SourceControlUpdate {
+	scu.mutation.SetRunID(s)
+	return scu
+}
+
+// SetNillableRunID sets the "run_id" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableRunID(s *string) *SourceControlUpdate {
+	if s != nil {
+		scu.SetRunID(*s)
+	}
+	return scu
+}
+
+// ClearRunID clears the value of the "run_id" field.
+func (scu *SourceControlUpdate) ClearRunID() *SourceControlUpdate {
+	scu.mutation.ClearRunID()
+	return scu
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
 func (scu *SourceControlUpdate) SetBazelInvocationID(id int) *SourceControlUpdate {
 	scu.mutation.SetBazelInvocationID(id)
@@ -197,6 +237,18 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if scu.mutation.ActorCleared() {
 		_spec.ClearField(sourcecontrol.FieldActor, field.TypeString)
+	}
+	if value, ok := scu.mutation.Refs(); ok {
+		_spec.SetField(sourcecontrol.FieldRefs, field.TypeString, value)
+	}
+	if scu.mutation.RefsCleared() {
+		_spec.ClearField(sourcecontrol.FieldRefs, field.TypeString)
+	}
+	if value, ok := scu.mutation.RunID(); ok {
+		_spec.SetField(sourcecontrol.FieldRunID, field.TypeString, value)
+	}
+	if scu.mutation.RunIDCleared() {
+		_spec.ClearField(sourcecontrol.FieldRunID, field.TypeString)
 	}
 	if scu.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -327,6 +379,46 @@ func (scuo *SourceControlUpdateOne) ClearActor() *SourceControlUpdateOne {
 	return scuo
 }
 
+// SetRefs sets the "refs" field.
+func (scuo *SourceControlUpdateOne) SetRefs(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetRefs(s)
+	return scuo
+}
+
+// SetNillableRefs sets the "refs" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableRefs(s *string) *SourceControlUpdateOne {
+	if s != nil {
+		scuo.SetRefs(*s)
+	}
+	return scuo
+}
+
+// ClearRefs clears the value of the "refs" field.
+func (scuo *SourceControlUpdateOne) ClearRefs() *SourceControlUpdateOne {
+	scuo.mutation.ClearRefs()
+	return scuo
+}
+
+// SetRunID sets the "run_id" field.
+func (scuo *SourceControlUpdateOne) SetRunID(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetRunID(s)
+	return scuo
+}
+
+// SetNillableRunID sets the "run_id" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableRunID(s *string) *SourceControlUpdateOne {
+	if s != nil {
+		scuo.SetRunID(*s)
+	}
+	return scuo
+}
+
+// ClearRunID clears the value of the "run_id" field.
+func (scuo *SourceControlUpdateOne) ClearRunID() *SourceControlUpdateOne {
+	scuo.mutation.ClearRunID()
+	return scuo
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
 func (scuo *SourceControlUpdateOne) SetBazelInvocationID(id int) *SourceControlUpdateOne {
 	scuo.mutation.SetBazelInvocationID(id)
@@ -446,6 +538,18 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 	}
 	if scuo.mutation.ActorCleared() {
 		_spec.ClearField(sourcecontrol.FieldActor, field.TypeString)
+	}
+	if value, ok := scuo.mutation.Refs(); ok {
+		_spec.SetField(sourcecontrol.FieldRefs, field.TypeString, value)
+	}
+	if scuo.mutation.RefsCleared() {
+		_spec.ClearField(sourcecontrol.FieldRefs, field.TypeString)
+	}
+	if value, ok := scuo.mutation.RunID(); ok {
+		_spec.SetField(sourcecontrol.FieldRunID, field.TypeString, value)
+	}
+	if scuo.mutation.RunIDCleared() {
+		_spec.ClearField(sourcecontrol.FieldRunID, field.TypeString)
 	}
 	if scuo.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{

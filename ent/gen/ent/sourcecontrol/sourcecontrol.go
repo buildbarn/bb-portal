@@ -20,6 +20,10 @@ const (
 	FieldCommitSha = "commit_sha"
 	// FieldActor holds the string denoting the actor field in the database.
 	FieldActor = "actor"
+	// FieldRefs holds the string denoting the refs field in the database.
+	FieldRefs = "refs"
+	// FieldRunID holds the string denoting the run_id field in the database.
+	FieldRunID = "run_id"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// Table holds the table name of the sourcecontrol in the database.
@@ -40,6 +44,8 @@ var Columns = []string{
 	FieldBranch,
 	FieldCommitSha,
 	FieldActor,
+	FieldRefs,
+	FieldRunID,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "source_controls"
@@ -89,6 +95,16 @@ func ByCommitSha(opts ...sql.OrderTermOption) OrderOption {
 // ByActor orders the results by the actor field.
 func ByActor(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldActor, opts...).ToFunc()
+}
+
+// ByRefs orders the results by the refs field.
+func ByRefs(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRefs, opts...).ToFunc()
+}
+
+// ByRunID orders the results by the run_id field.
+func ByRunID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRunID, opts...).ToFunc()
 }
 
 // ByBazelInvocationField orders the results by bazel_invocation field.

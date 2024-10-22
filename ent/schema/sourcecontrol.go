@@ -25,6 +25,12 @@ func (SourceControl) Fields() []ent.Field {
 
 		// The source control actor associated with the invocation
 		field.String("actor").Optional(),
+
+		// The source control refs associated with the invocation
+		field.String("refs").Optional(),
+
+		// The source control run i d associated with the invocation
+		field.String("run_id").Optional(),
 	}
 }
 

@@ -2915,6 +2915,16 @@ func (sc *SourceControlQuery) collectField(ctx context.Context, oneNode bool, op
 				selectedFields = append(selectedFields, sourcecontrol.FieldActor)
 				fieldSeen[sourcecontrol.FieldActor] = struct{}{}
 			}
+		case "refs":
+			if _, ok := fieldSeen[sourcecontrol.FieldRefs]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldRefs)
+				fieldSeen[sourcecontrol.FieldRefs] = struct{}{}
+			}
+		case "runID":
+			if _, ok := fieldSeen[sourcecontrol.FieldRunID]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldRunID)
+				fieldSeen[sourcecontrol.FieldRunID] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:

@@ -548,4 +548,6 @@ type SourceControlData struct {
 	Branch        string
 	CommitSHA     string
 	Actor         string
+	Refs          string
+	RunId         string
 }
