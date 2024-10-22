@@ -1,11 +1,13 @@
 {
   "bazelInvocation": {
     "bazelCommand": {
-      "buildOptions": "--build_event_json_file=./pkg/summary/testdata/nextjs_build.bep.ndjson",
+      "cmdLine": [],
       "command": "test",
       "executable": "bazel",
-      "id": "",
-      "residual": "//..."
+      "explicitCmdLine": "",
+      "explicitStartupOptions": [],
+      "residual": "//...",
+      "startupOptions": []
     },
     "build": null,
     "endedAt": "2024-05-03T00:24:29.605Z",

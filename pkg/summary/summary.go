@@ -225,10 +225,13 @@ type ExitCode struct {
 
 // BazelCommandLine struct.
 type BazelCommandLine struct {
-	Executable string
-	Command    string
-	Residual   string
-	Options    []string
+	Command                string
+	Executable             string
+	Residual               string
+	ExplicitCmdLine        []string
+	CmdLine                []string
+	StartUpOptions         []string
+	ExplicitStartupOptions []string
 }
 
 // Blob holds information about a blob in the CAS. Should be easily converted to/from the one in the

@@ -12,11 +12,34 @@
     },
     "BazelVersion": "7.1.0",
     "BazelCommandLine": {
-      "Executable": "bazel",
       "Command": "test",
+      "Executable": "bazel",
       "Residual": "//...",
-      "Options": [
+      "ExplicitCmdLine": [
         "--build_event_json_file=./pkg/summary/testdata/nextjs_build_fail.bep.ndjson"
+      ],
+      "CmdLine": [
+        "--enable_runfiles=1",
+        "--build_event_json_file=./pkg/summary/testdata/nextjs_build_fail.bep.ndjson"
+      ],
+      "StartUpOptions": [
+        "--max_idle_secs=10800",
+        "--noshutdown_on_low_sys_mem",
+        "--connect_timeout_secs=30",
+        "--output_user_root=/var/tmp/_bazel_nameless",
+        "--output_base=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096",
+        "--failure_detail_out=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/failure_detail.rawproto",
+        "--expand_configs_in_place",
+        "--idle_server_tasks",
+        "--write_command_log",
+        "--nowatchfs",
+        "--nofatal_event_bus_exceptions",
+        "--nowindows_enable_symlinks",
+        "--noclient_debug",
+        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
+      ],
+      "ExplicitStartupOptions": [
+        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
       ]
     },
     "Problems": [
@@ -301,7 +324,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-18T18:21:46.80365425Z"
+        "FirstSeen": "2024-10-21T20:29:59.23819457Z"
       },
       "//react/src:lint": {
         "TestSummary": {
@@ -362,7 +385,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-18T18:21:46.802806794Z"
+        "FirstSeen": "2024-10-21T20:29:59.237353084Z"
       },
       "//react/src:src_typecheck_test": {
         "TestSummary": {
@@ -423,7 +446,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-18T18:21:46.801494027Z"
+        "FirstSeen": "2024-10-21T20:29:59.236034577Z"
       },
       "//react/src:test": {
         "TestSummary": {
@@ -484,7 +507,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-18T18:21:46.803017763Z"
+        "FirstSeen": "2024-10-21T20:29:59.237550502Z"
       },
       "//react/src:test_lib_typecheck_test": {
         "TestSummary": {
@@ -545,7 +568,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-18T18:21:46.801751308Z"
+        "FirstSeen": "2024-10-21T20:29:59.236305188Z"
       },
       "//react:build_smoke_test": {
         "TestSummary": {
@@ -606,7 +629,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-18T18:21:46.801938256Z"
+        "FirstSeen": "2024-10-21T20:29:59.236502847Z"
       },
       "//vue:build_test": {
         "TestSummary": {
@@ -667,7 +690,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-18T18:21:46.802300732Z"
+        "FirstSeen": "2024-10-21T20:29:59.236856922Z"
       },
       "//vue:type-check": {
         "TestSummary": {
@@ -728,7 +751,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-18T18:21:46.802518022Z"
+        "FirstSeen": "2024-10-21T20:29:59.237153885Z"
       }
     },
     "Targets": {

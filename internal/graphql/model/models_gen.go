@@ -45,11 +45,14 @@ func (this ActionProblem) GetID() string    { return this.ID }
 func (this ActionProblem) GetLabel() string { return this.Label }
 
 type BazelCommand struct {
-	ID         string `json:"id"`
-	Command    string `json:"command"`
-	Executable string `json:"executable"`
-	Options    string `json:"options"`
-	Residual   string `json:"residual"`
+	ID                     string    `json:"id"`
+	Command                string    `json:"command"`
+	Executable             string    `json:"executable"`
+	Residual               string    `json:"residual"`
+	ExplicitCmdLine        string    `json:"explicitCmdLine"`
+	CmdLine                []*string `json:"cmdLine,omitempty"`
+	StartupOptions         []*string `json:"startupOptions,omitempty"`
+	ExplicitStartupOptions []*string `json:"explicitStartupOptions,omitempty"`
 }
 
 type BazelInvocationState struct {

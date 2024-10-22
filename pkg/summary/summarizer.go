@@ -813,7 +813,10 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 
 // handleOptionsParsed
 func (s Summarizer) handleOptionsParsed(optionsParsed *bes.OptionsParsed) {
-	s.summary.InvocationSummary.BazelCommandLine.Options = optionsParsed.GetExplicitCmdLine()
+	s.summary.InvocationSummary.BazelCommandLine.ExplicitCmdLine = optionsParsed.GetExplicitCmdLine()
+	s.summary.InvocationSummary.BazelCommandLine.CmdLine = optionsParsed.GetCmdLine()
+	s.summary.InvocationSummary.BazelCommandLine.ExplicitStartupOptions = optionsParsed.GetExplicitStartupOptions()
+	s.summary.InvocationSummary.BazelCommandLine.StartUpOptions = optionsParsed.GetStartupOptions()
 }
 
 // handleBuildToolLogs
@@ -840,7 +843,6 @@ func (s Summarizer) updateSummaryFromStructuredCommandLine(structuredCommandLine
 		if label == "command options" {
 			s.summary.InvocationSummary.EnvVars = map[string]string{}
 			parseEnvVarsFromSectionOptions(section, &s.summary.InvocationSummary.EnvVars)
-
 			s.summary.ProfileName = parseProfileNameFromSectionOptions(section)
 		} else if section.GetChunkList() != nil {
 			sectionChunksStr := strings.Join(section.GetChunkList().GetChunk(), " ")

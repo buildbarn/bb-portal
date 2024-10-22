@@ -46,8 +46,11 @@ type BazelCommand {
   id: ID!
   command: String!
   executable: String!
-  options: String!
   residual: String!
+  explicitCmdLine: String!
+  cmdLine: [String]
+  startupOptions: [String]
+  explicitStartupOptions: [String]
 }
 
 extend type BazelInvocation {
