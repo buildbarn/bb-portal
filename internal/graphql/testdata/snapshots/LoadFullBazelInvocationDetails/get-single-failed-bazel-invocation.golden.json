@@ -6,6 +6,7 @@
       "executable": "bazel",
       "explicitCmdLine": "",
       "explicitStartupOptions": [],
+      "id": "",
       "residual": "//...",
       "startupOptions": []
     },
@@ -213,6 +214,7 @@
         "url": "../summary/testdata/nextjs_build_fail.bep.ndjson"
       }
     ],
+    "sourceControl": null,
     "startedAt": "2024-05-03T00:24:15.374Z",
     "state": {
       "bepCompleted": true,
