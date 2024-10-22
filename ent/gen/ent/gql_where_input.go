@@ -35,6 +35,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
@@ -1748,6 +1749,10 @@ type BazelInvocationWhereInput struct {
 	// "targets" edge predicates.
 	HasTargets     *bool                   `json:"hasTargets,omitempty"`
 	HasTargetsWith []*TargetPairWhereInput `json:"hasTargetsWith,omitempty"`
+
+	// "source_control" edge predicates.
+	HasSourceControl     *bool                      `json:"hasSourceControl,omitempty"`
+	HasSourceControlWith []*SourceControlWhereInput `json:"hasSourceControlWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -2481,6 +2486,24 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, bazelinvocation.HasTargetsWith(with...))
+	}
+	if i.HasSourceControl != nil {
+		p := bazelinvocation.HasSourceControl()
+		if !*i.HasSourceControl {
+			p = bazelinvocation.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasSourceControlWith) > 0 {
+		with := make([]predicate.SourceControl, 0, len(i.HasSourceControlWith))
+		for _, w := range i.HasSourceControlWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasSourceControlWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, bazelinvocation.HasSourceControlWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -9103,6 +9126,400 @@ func (i *RunnerCountWhereInput) P() (predicate.RunnerCount, error) {
 		return predicates[0], nil
 	default:
 		return runnercount.And(predicates...), nil
+	}
+}
+
+// SourceControlWhereInput represents a where input for filtering SourceControl queries.
+type SourceControlWhereInput struct {
+	Predicates []predicate.SourceControl  `json:"-"`
+	Not        *SourceControlWhereInput   `json:"not,omitempty"`
+	Or         []*SourceControlWhereInput `json:"or,omitempty"`
+	And        []*SourceControlWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "repo_url" field predicates.
+	RepoURL             *string  `json:"repoURL,omitempty"`
+	RepoURLNEQ          *string  `json:"repoURLNEQ,omitempty"`
+	RepoURLIn           []string `json:"repoURLIn,omitempty"`
+	RepoURLNotIn        []string `json:"repoURLNotIn,omitempty"`
+	RepoURLGT           *string  `json:"repoURLGT,omitempty"`
+	RepoURLGTE          *string  `json:"repoURLGTE,omitempty"`
+	RepoURLLT           *string  `json:"repoURLLT,omitempty"`
+	RepoURLLTE          *string  `json:"repoURLLTE,omitempty"`
+	RepoURLContains     *string  `json:"repoURLContains,omitempty"`
+	RepoURLHasPrefix    *string  `json:"repoURLHasPrefix,omitempty"`
+	RepoURLHasSuffix    *string  `json:"repoURLHasSuffix,omitempty"`
+	RepoURLIsNil        bool     `json:"repoURLIsNil,omitempty"`
+	RepoURLNotNil       bool     `json:"repoURLNotNil,omitempty"`
+	RepoURLEqualFold    *string  `json:"repoURLEqualFold,omitempty"`
+	RepoURLContainsFold *string  `json:"repoURLContainsFold,omitempty"`
+
+	// "branch" field predicates.
+	Branch             *string  `json:"branch,omitempty"`
+	BranchNEQ          *string  `json:"branchNEQ,omitempty"`
+	BranchIn           []string `json:"branchIn,omitempty"`
+	BranchNotIn        []string `json:"branchNotIn,omitempty"`
+	BranchGT           *string  `json:"branchGT,omitempty"`
+	BranchGTE          *string  `json:"branchGTE,omitempty"`
+	BranchLT           *string  `json:"branchLT,omitempty"`
+	BranchLTE          *string  `json:"branchLTE,omitempty"`
+	BranchContains     *string  `json:"branchContains,omitempty"`
+	BranchHasPrefix    *string  `json:"branchHasPrefix,omitempty"`
+	BranchHasSuffix    *string  `json:"branchHasSuffix,omitempty"`
+	BranchIsNil        bool     `json:"branchIsNil,omitempty"`
+	BranchNotNil       bool     `json:"branchNotNil,omitempty"`
+	BranchEqualFold    *string  `json:"branchEqualFold,omitempty"`
+	BranchContainsFold *string  `json:"branchContainsFold,omitempty"`
+
+	// "commit_sha" field predicates.
+	CommitSha             *string  `json:"commitSha,omitempty"`
+	CommitShaNEQ          *string  `json:"commitShaNEQ,omitempty"`
+	CommitShaIn           []string `json:"commitShaIn,omitempty"`
+	CommitShaNotIn        []string `json:"commitShaNotIn,omitempty"`
+	CommitShaGT           *string  `json:"commitShaGT,omitempty"`
+	CommitShaGTE          *string  `json:"commitShaGTE,omitempty"`
+	CommitShaLT           *string  `json:"commitShaLT,omitempty"`
+	CommitShaLTE          *string  `json:"commitShaLTE,omitempty"`
+	CommitShaContains     *string  `json:"commitShaContains,omitempty"`
+	CommitShaHasPrefix    *string  `json:"commitShaHasPrefix,omitempty"`
+	CommitShaHasSuffix    *string  `json:"commitShaHasSuffix,omitempty"`
+	CommitShaIsNil        bool     `json:"commitShaIsNil,omitempty"`
+	CommitShaNotNil       bool     `json:"commitShaNotNil,omitempty"`
+	CommitShaEqualFold    *string  `json:"commitShaEqualFold,omitempty"`
+	CommitShaContainsFold *string  `json:"commitShaContainsFold,omitempty"`
+
+	// "actor" field predicates.
+	Actor             *string  `json:"actor,omitempty"`
+	ActorNEQ          *string  `json:"actorNEQ,omitempty"`
+	ActorIn           []string `json:"actorIn,omitempty"`
+	ActorNotIn        []string `json:"actorNotIn,omitempty"`
+	ActorGT           *string  `json:"actorGT,omitempty"`
+	ActorGTE          *string  `json:"actorGTE,omitempty"`
+	ActorLT           *string  `json:"actorLT,omitempty"`
+	ActorLTE          *string  `json:"actorLTE,omitempty"`
+	ActorContains     *string  `json:"actorContains,omitempty"`
+	ActorHasPrefix    *string  `json:"actorHasPrefix,omitempty"`
+	ActorHasSuffix    *string  `json:"actorHasSuffix,omitempty"`
+	ActorIsNil        bool     `json:"actorIsNil,omitempty"`
+	ActorNotNil       bool     `json:"actorNotNil,omitempty"`
+	ActorEqualFold    *string  `json:"actorEqualFold,omitempty"`
+	ActorContainsFold *string  `json:"actorContainsFold,omitempty"`
+
+	// "bazel_invocation" edge predicates.
+	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
+	HasBazelInvocationWith []*BazelInvocationWhereInput `json:"hasBazelInvocationWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *SourceControlWhereInput) AddPredicates(predicates ...predicate.SourceControl) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the SourceControlWhereInput filter on the SourceControlQuery builder.
+func (i *SourceControlWhereInput) Filter(q *SourceControlQuery) (*SourceControlQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptySourceControlWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptySourceControlWhereInput is returned in case the SourceControlWhereInput is empty.
+var ErrEmptySourceControlWhereInput = errors.New("ent: empty predicate SourceControlWhereInput")
+
+// P returns a predicate for filtering sourcecontrols.
+// An error is returned if the input is empty or invalid.
+func (i *SourceControlWhereInput) P() (predicate.SourceControl, error) {
+	var predicates []predicate.SourceControl
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, sourcecontrol.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.SourceControl, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, sourcecontrol.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.SourceControl, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, sourcecontrol.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, sourcecontrol.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, sourcecontrol.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, sourcecontrol.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, sourcecontrol.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, sourcecontrol.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, sourcecontrol.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, sourcecontrol.IDLTE(*i.IDLTE))
+	}
+	if i.RepoURL != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLEQ(*i.RepoURL))
+	}
+	if i.RepoURLNEQ != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLNEQ(*i.RepoURLNEQ))
+	}
+	if len(i.RepoURLIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RepoURLIn(i.RepoURLIn...))
+	}
+	if len(i.RepoURLNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RepoURLNotIn(i.RepoURLNotIn...))
+	}
+	if i.RepoURLGT != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLGT(*i.RepoURLGT))
+	}
+	if i.RepoURLGTE != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLGTE(*i.RepoURLGTE))
+	}
+	if i.RepoURLLT != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLLT(*i.RepoURLLT))
+	}
+	if i.RepoURLLTE != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLLTE(*i.RepoURLLTE))
+	}
+	if i.RepoURLContains != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLContains(*i.RepoURLContains))
+	}
+	if i.RepoURLHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLHasPrefix(*i.RepoURLHasPrefix))
+	}
+	if i.RepoURLHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLHasSuffix(*i.RepoURLHasSuffix))
+	}
+	if i.RepoURLIsNil {
+		predicates = append(predicates, sourcecontrol.RepoURLIsNil())
+	}
+	if i.RepoURLNotNil {
+		predicates = append(predicates, sourcecontrol.RepoURLNotNil())
+	}
+	if i.RepoURLEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLEqualFold(*i.RepoURLEqualFold))
+	}
+	if i.RepoURLContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.RepoURLContainsFold(*i.RepoURLContainsFold))
+	}
+	if i.Branch != nil {
+		predicates = append(predicates, sourcecontrol.BranchEQ(*i.Branch))
+	}
+	if i.BranchNEQ != nil {
+		predicates = append(predicates, sourcecontrol.BranchNEQ(*i.BranchNEQ))
+	}
+	if len(i.BranchIn) > 0 {
+		predicates = append(predicates, sourcecontrol.BranchIn(i.BranchIn...))
+	}
+	if len(i.BranchNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.BranchNotIn(i.BranchNotIn...))
+	}
+	if i.BranchGT != nil {
+		predicates = append(predicates, sourcecontrol.BranchGT(*i.BranchGT))
+	}
+	if i.BranchGTE != nil {
+		predicates = append(predicates, sourcecontrol.BranchGTE(*i.BranchGTE))
+	}
+	if i.BranchLT != nil {
+		predicates = append(predicates, sourcecontrol.BranchLT(*i.BranchLT))
+	}
+	if i.BranchLTE != nil {
+		predicates = append(predicates, sourcecontrol.BranchLTE(*i.BranchLTE))
+	}
+	if i.BranchContains != nil {
+		predicates = append(predicates, sourcecontrol.BranchContains(*i.BranchContains))
+	}
+	if i.BranchHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.BranchHasPrefix(*i.BranchHasPrefix))
+	}
+	if i.BranchHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.BranchHasSuffix(*i.BranchHasSuffix))
+	}
+	if i.BranchIsNil {
+		predicates = append(predicates, sourcecontrol.BranchIsNil())
+	}
+	if i.BranchNotNil {
+		predicates = append(predicates, sourcecontrol.BranchNotNil())
+	}
+	if i.BranchEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.BranchEqualFold(*i.BranchEqualFold))
+	}
+	if i.BranchContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.BranchContainsFold(*i.BranchContainsFold))
+	}
+	if i.CommitSha != nil {
+		predicates = append(predicates, sourcecontrol.CommitShaEQ(*i.CommitSha))
+	}
+	if i.CommitShaNEQ != nil {
+		predicates = append(predicates, sourcecontrol.CommitShaNEQ(*i.CommitShaNEQ))
+	}
+	if len(i.CommitShaIn) > 0 {
+		predicates = append(predicates, sourcecontrol.CommitShaIn(i.CommitShaIn...))
+	}
+	if len(i.CommitShaNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.CommitShaNotIn(i.CommitShaNotIn...))
+	}
+	if i.CommitShaGT != nil {
+		predicates = append(predicates, sourcecontrol.CommitShaGT(*i.CommitShaGT))
+	}
+	if i.CommitShaGTE != nil {
+		predicates = append(predicates, sourcecontrol.CommitShaGTE(*i.CommitShaGTE))
+	}
+	if i.CommitShaLT != nil {
+		predicates = append(predicates, sourcecontrol.CommitShaLT(*i.CommitShaLT))
+	}
+	if i.CommitShaLTE != nil {
+		predicates = append(predicates, sourcecontrol.CommitShaLTE(*i.CommitShaLTE))
+	}
+	if i.CommitShaContains != nil {
+		predicates = append(predicates, sourcecontrol.CommitShaContains(*i.CommitShaContains))
+	}
+	if i.CommitShaHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.CommitShaHasPrefix(*i.CommitShaHasPrefix))
+	}
+	if i.CommitShaHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.CommitShaHasSuffix(*i.CommitShaHasSuffix))
+	}
+	if i.CommitShaIsNil {
+		predicates = append(predicates, sourcecontrol.CommitShaIsNil())
+	}
+	if i.CommitShaNotNil {
+		predicates = append(predicates, sourcecontrol.CommitShaNotNil())
+	}
+	if i.CommitShaEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.CommitShaEqualFold(*i.CommitShaEqualFold))
+	}
+	if i.CommitShaContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.CommitShaContainsFold(*i.CommitShaContainsFold))
+	}
+	if i.Actor != nil {
+		predicates = append(predicates, sourcecontrol.ActorEQ(*i.Actor))
+	}
+	if i.ActorNEQ != nil {
+		predicates = append(predicates, sourcecontrol.ActorNEQ(*i.ActorNEQ))
+	}
+	if len(i.ActorIn) > 0 {
+		predicates = append(predicates, sourcecontrol.ActorIn(i.ActorIn...))
+	}
+	if len(i.ActorNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.ActorNotIn(i.ActorNotIn...))
+	}
+	if i.ActorGT != nil {
+		predicates = append(predicates, sourcecontrol.ActorGT(*i.ActorGT))
+	}
+	if i.ActorGTE != nil {
+		predicates = append(predicates, sourcecontrol.ActorGTE(*i.ActorGTE))
+	}
+	if i.ActorLT != nil {
+		predicates = append(predicates, sourcecontrol.ActorLT(*i.ActorLT))
+	}
+	if i.ActorLTE != nil {
+		predicates = append(predicates, sourcecontrol.ActorLTE(*i.ActorLTE))
+	}
+	if i.ActorContains != nil {
+		predicates = append(predicates, sourcecontrol.ActorContains(*i.ActorContains))
+	}
+	if i.ActorHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.ActorHasPrefix(*i.ActorHasPrefix))
+	}
+	if i.ActorHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.ActorHasSuffix(*i.ActorHasSuffix))
+	}
+	if i.ActorIsNil {
+		predicates = append(predicates, sourcecontrol.ActorIsNil())
+	}
+	if i.ActorNotNil {
+		predicates = append(predicates, sourcecontrol.ActorNotNil())
+	}
+	if i.ActorEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.ActorEqualFold(*i.ActorEqualFold))
+	}
+	if i.ActorContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.ActorContainsFold(*i.ActorContainsFold))
+	}
+
+	if i.HasBazelInvocation != nil {
+		p := sourcecontrol.HasBazelInvocation()
+		if !*i.HasBazelInvocation {
+			p = sourcecontrol.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBazelInvocationWith) > 0 {
+		with := make([]predicate.BazelInvocation, 0, len(i.HasBazelInvocationWith))
+		for _, w := range i.HasBazelInvocationWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBazelInvocationWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, sourcecontrol.HasBazelInvocationWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptySourceControlWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return sourcecontrol.And(predicates...), nil
 	}
 }
 

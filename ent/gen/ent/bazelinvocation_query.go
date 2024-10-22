@@ -17,6 +17,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 )
@@ -34,6 +35,7 @@ type BazelInvocationQuery struct {
 	withMetrics             *MetricsQuery
 	withTestCollection      *TestCollectionQuery
 	withTargets             *TargetPairQuery
+	withSourceControl       *SourceControlQuery
 	withFKs                 bool
 	modifiers               []func(*sql.Selector)
 	loadTotal               []func(context.Context, []*BazelInvocation) error
@@ -201,6 +203,28 @@ func (biq *BazelInvocationQuery) QueryTargets() *TargetPairQuery {
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
 			sqlgraph.To(targetpair.Table, targetpair.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.TargetsTable, bazelinvocation.TargetsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QuerySourceControl chains the current query on the "source_control" edge.
+func (biq *BazelInvocationQuery) QuerySourceControl() *SourceControlQuery {
+	query := (&SourceControlClient{config: biq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := biq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := biq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(sourcecontrol.Table, sourcecontrol.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, bazelinvocation.SourceControlTable, bazelinvocation.SourceControlColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
 		return fromU, nil
@@ -406,6 +430,7 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		withMetrics:        biq.withMetrics.Clone(),
 		withTestCollection: biq.withTestCollection.Clone(),
 		withTargets:        biq.withTargets.Clone(),
+		withSourceControl:  biq.withSourceControl.Clone(),
 		// clone intermediate query.
 		sql:  biq.sql.Clone(),
 		path: biq.path,
@@ -475,6 +500,17 @@ func (biq *BazelInvocationQuery) WithTargets(opts ...func(*TargetPairQuery)) *Ba
 		opt(query)
 	}
 	biq.withTargets = query
+	return biq
+}
+
+// WithSourceControl tells the query-builder to eager-load the nodes that are connected to
+// the "source_control" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithSourceControl(opts ...func(*SourceControlQuery)) *BazelInvocationQuery {
+	query := (&SourceControlClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	biq.withSourceControl = query
 	return biq
 }
 
@@ -557,13 +593,14 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*BazelInvocation{}
 		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
-		loadedTypes = [6]bool{
+		loadedTypes = [7]bool{
 			biq.withEventFile != nil,
 			biq.withBuild != nil,
 			biq.withProblems != nil,
 			biq.withMetrics != nil,
 			biq.withTestCollection != nil,
 			biq.withTargets != nil,
+			biq.withSourceControl != nil,
 		}
 	)
 	if biq.withEventFile != nil || biq.withBuild != nil {
@@ -631,6 +668,12 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		if err := biq.loadTargets(ctx, query, nodes,
 			func(n *BazelInvocation) { n.Edges.Targets = []*TargetPair{} },
 			func(n *BazelInvocation, e *TargetPair) { n.Edges.Targets = append(n.Edges.Targets, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := biq.withSourceControl; query != nil {
+		if err := biq.loadSourceControl(ctx, query, nodes, nil,
+			func(n *BazelInvocation, e *SourceControl) { n.Edges.SourceControl = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -843,6 +886,34 @@ func (biq *BazelInvocationQuery) loadTargets(ctx context.Context, query *TargetP
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_targets" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (biq *BazelInvocationQuery) loadSourceControl(ctx context.Context, query *SourceControlQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *SourceControl)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*BazelInvocation)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+	}
+	query.withFKs = true
+	query.Where(predicate.SourceControl(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.SourceControlColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.bazel_invocation_source_control
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "bazel_invocation_source_control" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_source_control" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

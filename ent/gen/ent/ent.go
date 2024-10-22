@@ -39,6 +39,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
@@ -138,6 +139,7 @@ func checkColumn(table, column string) error {
 			racestatistics.Table:          racestatistics.ValidColumn,
 			resourceusage.Table:           resourceusage.ValidColumn,
 			runnercount.Table:             runnercount.ValidColumn,
+			sourcecontrol.Table:           sourcecontrol.ValidColumn,
 			systemnetworkstats.Table:      systemnetworkstats.ValidColumn,
 			targetcomplete.Table:          targetcomplete.ValidColumn,
 			targetconfigured.Table:        targetconfigured.ValidColumn,

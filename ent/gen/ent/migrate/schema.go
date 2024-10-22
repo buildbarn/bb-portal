@@ -674,6 +674,29 @@ var (
 			},
 		},
 	}
+	// SourceControlsColumns holds the columns for the "source_controls" table.
+	SourceControlsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "repo_url", Type: field.TypeString, Nullable: true},
+		{Name: "branch", Type: field.TypeString, Nullable: true},
+		{Name: "commit_sha", Type: field.TypeString, Nullable: true},
+		{Name: "actor", Type: field.TypeString, Nullable: true},
+		{Name: "bazel_invocation_source_control", Type: field.TypeInt, Unique: true, Nullable: true},
+	}
+	// SourceControlsTable holds the schema information for the "source_controls" table.
+	SourceControlsTable = &schema.Table{
+		Name:       "source_controls",
+		Columns:    SourceControlsColumns,
+		PrimaryKey: []*schema.Column{SourceControlsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "source_controls_bazel_invocations_source_control",
+				Columns:    []*schema.Column{SourceControlsColumns[5]},
+				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// SystemNetworkStatsColumns holds the columns for the "system_network_stats" table.
 	SystemNetworkStatsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -1041,6 +1064,7 @@ var (
 		RaceStatisticsTable,
 		ResourceUsagesTable,
 		RunnerCountsTable,
+		SourceControlsTable,
 		SystemNetworkStatsTable,
 		TargetCompletesTable,
 		TargetConfiguredsTable,
@@ -1090,6 +1114,7 @@ func init() {
 	RaceStatisticsTable.ForeignKeys[0].RefTable = DynamicExecutionMetricsTable
 	ResourceUsagesTable.ForeignKeys[0].RefTable = ExectionInfosTable
 	RunnerCountsTable.ForeignKeys[0].RefTable = ActionSummariesTable
+	SourceControlsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	SystemNetworkStatsTable.ForeignKeys[0].RefTable = NetworkMetricsTable
 	TargetCompletesTable.ForeignKeys[0].RefTable = TargetPairsTable
 	TargetConfiguredsTable.ForeignKeys[0].RefTable = TargetPairsTable

@@ -87,6 +87,9 @@ type ResourceUsage func(*sql.Selector)
 // RunnerCount is the predicate function for runnercount builders.
 type RunnerCount func(*sql.Selector)
 
+// SourceControl is the predicate function for sourcecontrol builders.
+type SourceControl func(*sql.Selector)
+
 // SystemNetworkStats is the predicate function for systemnetworkstats builders.
 type SystemNetworkStats func(*sql.Selector)
 

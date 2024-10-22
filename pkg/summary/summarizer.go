@@ -808,6 +808,29 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		}
 	}
 
+	// repo
+	if ghRepo, ok := s.summary.EnvVars["GITHUB_REPOSITORY"]; ok {
+		s.summary.SourceControlData.RepositoryURL = ghRepo
+	}
+
+	// head ref
+	if ghHeadRef, ok := s.summary.EnvVars["GITHUB_HEAD_REF"]; ok {
+		s.summary.SourceControlData.Branch = ghHeadRef
+	}
+
+	// commit sha
+	if ghSha, ok := s.summary.EnvVars["GITHUB_SHA"]; ok {
+		s.summary.SourceControlData.CommitSHA = ghSha
+	}
+
+	// actor
+	if ghActor, ok := s.summary.EnvVars["GITHUB_ACTOR"]; ok {
+		s.summary.SourceControlData.Actor = ghActor
+		if s.summary.UserLDAP == "" {
+			s.summary.UserLDAP = ghActor
+		}
+	}
+
 	return nil
 }
 

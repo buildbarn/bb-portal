@@ -191,6 +191,7 @@ type Summary struct {
 	ConfigrationMnemonic string
 	SkipTargetData       bool
 	EnrichTargetData     bool
+	SourceControlData    SourceControlData
 }
 
 // Metrics holds Build metrics details
@@ -540,4 +541,11 @@ type TargetPair struct {
 	TargetKind    string
 	TestSize      TestSize
 	AbortReason   AbortReason
+}
+
+type SourceControlData struct {
+	RepositoryURL string
+	Branch        string
+	CommitSHA     string
+	Actor         string
 }

@@ -55,7 +55,12 @@ func (act SaveActor) SaveSummary(ctx context.Context, summary *summary.Summary) 
 		slog.ErrorContext(ctx, "failed to save tests", "id", summary.InvocationID, "err", err)
 		return nil, fmt.Errorf("could not save test results: %w", err)
 	}
-	bazelInvocation, err := act.saveBazelInvocation(ctx, summary, eventFile, buildRecord, metrics, tests, targets)
+	sourcecontrol, err := act.saveSourceControl(ctx, summary)
+	if err != nil {
+		slog.ErrorContext(ctx, "failed to save source control information", "id", summary.InvocationID, "err", err)
+		return nil, fmt.Errorf("could not save source control information: %w", err)
+	}
+	bazelInvocation, err := act.saveBazelInvocation(ctx, summary, eventFile, buildRecord, metrics, tests, targets, sourcecontrol)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to save bazel invocation", "id", summary.InvocationID, "err", err)
 		return nil, fmt.Errorf("could not save BazelInvocation: %w", err)
@@ -132,6 +137,7 @@ func (act SaveActor) saveBazelInvocation(
 	metrics *ent.Metrics,
 	tests []*ent.TestCollection,
 	targets []*ent.TargetPair,
+	sourcecontrol *ent.SourceControl,
 ) (*ent.BazelInvocation, error) {
 	create := act.db.BazelInvocation.Create().
 		SetInvocationID(uuid.MustParse(summary.InvocationID)).
@@ -153,6 +159,7 @@ func (act SaveActor) saveBazelInvocation(
 		SetRelatedFiles(summary.RelatedFiles).
 		SetEventFile(eventFile).
 		SetMetrics(metrics).
+		SetSourceControl(sourcecontrol).
 		AddTestCollection(tests...).
 		AddTargets(targets...)
 
@@ -417,6 +424,15 @@ func (act SaveActor) saveTests(ctx context.Context, summary *summary.Summary) ([
 		i++
 	}
 	return result, nil
+}
+
+func (act SaveActor) saveSourceControl(ctx context.Context, summary *summary.Summary) (*ent.SourceControl, error) {
+	return act.db.SourceControl.Create().
+		SetActor(summary.SourceControlData.Actor).
+		SetRepoURL(summary.SourceControlData.RepositoryURL).
+		SetCommitSha(summary.SourceControlData.CommitSHA).
+		SetBranch(summary.SourceControlData.Branch).
+		Save(ctx)
 }
 
 func (act SaveActor) saveMissDetails(ctx context.Context, missDetails []summary.MissDetail) ([]*ent.MissDetail, error) {

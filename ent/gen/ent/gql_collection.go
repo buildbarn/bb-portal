@@ -29,6 +29,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
@@ -577,6 +578,17 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			bi.WithNamedTargets(alias, func(wq *TargetPairQuery) {
 				*wq = *query
 			})
+
+		case "sourceControl":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&SourceControlClient{config: bi.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, sourcecontrolImplementors)...); err != nil {
+				return err
+			}
+			bi.withSourceControl = query
 		case "invocationID":
 			if _, ok := fieldSeen[bazelinvocation.FieldInvocationID]; !ok {
 				selectedFields = append(selectedFields, bazelinvocation.FieldInvocationID)
@@ -2847,6 +2859,99 @@ func newRunnerCountPaginateArgs(rv map[string]any) *runnercountPaginateArgs {
 	}
 	if v, ok := rv[whereField].(*RunnerCountWhereInput); ok {
 		args.opts = append(args.opts, WithRunnerCountFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (sc *SourceControlQuery) CollectFields(ctx context.Context, satisfies ...string) (*SourceControlQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return sc, nil
+	}
+	if err := sc.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return sc, nil
+}
+
+func (sc *SourceControlQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(sourcecontrol.Columns))
+		selectedFields = []string{sourcecontrol.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "bazelInvocation":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BazelInvocationClient{config: sc.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
+				return err
+			}
+			sc.withBazelInvocation = query
+		case "repoURL":
+			if _, ok := fieldSeen[sourcecontrol.FieldRepoURL]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldRepoURL)
+				fieldSeen[sourcecontrol.FieldRepoURL] = struct{}{}
+			}
+		case "branch":
+			if _, ok := fieldSeen[sourcecontrol.FieldBranch]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldBranch)
+				fieldSeen[sourcecontrol.FieldBranch] = struct{}{}
+			}
+		case "commitSha":
+			if _, ok := fieldSeen[sourcecontrol.FieldCommitSha]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldCommitSha)
+				fieldSeen[sourcecontrol.FieldCommitSha] = struct{}{}
+			}
+		case "actor":
+			if _, ok := fieldSeen[sourcecontrol.FieldActor]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldActor)
+				fieldSeen[sourcecontrol.FieldActor] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		sc.Select(selectedFields...)
+	}
+	return nil
+}
+
+type sourcecontrolPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []SourceControlPaginateOption
+}
+
+func newSourceControlPaginateArgs(rv map[string]any) *sourcecontrolPaginateArgs {
+	args := &sourcecontrolPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*SourceControlWhereInput); ok {
+		args.opts = append(args.opts, WithSourceControlFilter(v.Filter))
 	}
 	return args
 }

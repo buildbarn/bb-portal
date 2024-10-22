@@ -1149,6 +1149,29 @@ func HasTargetsWith(preds ...predicate.TargetPair) predicate.BazelInvocation {
 	})
 }
 
+// HasSourceControl applies the HasEdge predicate on the "source_control" edge.
+func HasSourceControl() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, SourceControlTable, SourceControlColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSourceControlWith applies the HasEdge predicate on the "source_control" edge with a given conditions (other predicates).
+func HasSourceControlWith(preds ...predicate.SourceControl) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newSourceControlStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.BazelInvocation) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.AndPredicates(predicates...))

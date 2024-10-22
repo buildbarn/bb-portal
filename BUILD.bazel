@@ -13,6 +13,7 @@ load("@gazelle//:def.bzl", "gazelle")
 # gazelle:resolve proto pkg/proto/configuration/global/global.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/global:global_proto
 # gazelle:resolve proto pkg/proto/configuration/grpc/grpc.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc:grpc_proto
 # gazelle:resolve proto pkg/proto/configuration/http/http.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/http:http_proto
+# gazelle:resolve go github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal //pkg/proto/configuration/bb_portal
 gazelle(
     name = "gazelle",
 )

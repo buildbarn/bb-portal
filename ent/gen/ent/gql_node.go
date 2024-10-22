@@ -40,6 +40,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
@@ -195,6 +196,11 @@ var runnercountImplementors = []string{"RunnerCount", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*RunnerCount) IsNode() {}
+
+var sourcecontrolImplementors = []string{"SourceControl", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*SourceControl) IsNode() {}
 
 var systemnetworkstatsImplementors = []string{"SystemNetworkStats", "Node"}
 
@@ -553,6 +559,15 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			Where(runnercount.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, runnercountImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case sourcecontrol.Table:
+		query := c.SourceControl.Query().
+			Where(sourcecontrol.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, sourcecontrolImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -1158,6 +1173,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.RunnerCount.Query().
 			Where(runnercount.IDIn(ids...))
 		query, err := query.CollectFields(ctx, runnercountImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case sourcecontrol.Table:
+		query := c.SourceControl.Query().
+			Where(sourcecontrol.IDIn(ids...))
+		query, err := query.CollectFields(ctx, sourcecontrolImplementors...)
 		if err != nil {
 			return nil, err
 		}

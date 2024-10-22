@@ -333,6 +333,18 @@ func (f RunnerCountFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value,
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RunnerCountMutation", m)
 }
 
+// The SourceControlFunc type is an adapter to allow the use of ordinary
+// function as SourceControl mutator.
+type SourceControlFunc func(context.Context, *ent.SourceControlMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SourceControlFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.SourceControlMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SourceControlMutation", m)
+}
+
 // The SystemNetworkStatsFunc type is an adapter to allow the use of ordinary
 // function as SystemNetworkStats mutator.
 type SystemNetworkStatsFunc func(context.Context, *ent.SystemNetworkStatsMutation) (ent.Value, error)

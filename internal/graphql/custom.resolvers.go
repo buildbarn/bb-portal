@@ -303,7 +303,7 @@ func (r *queryResolver) GetTargetPassAggregation(ctx context.Context, label *str
 }
 
 // GetTestsWithOffset is the resolver for the getTestsWithOffset field.
-func (r *queryResolver) GetTestsWithOffset(ctx context.Context, label *string, offset, limit *int, sortBy, direction *string) (*model.TestGridResult, error) {
+func (r *queryResolver) GetTestsWithOffset(ctx context.Context, label *string, offset *int, limit *int, sortBy *string, direction *string) (*model.TestGridResult, error) {
 	maxLimit := 10000
 	take := 10
 	skip := 0
@@ -420,8 +420,6 @@ func (r *Resolver) BlobReference() BlobReferenceResolver { return &blobReference
 // TestResult returns TestResultResolver implementation.
 func (r *Resolver) TestResult() TestResultResolver { return &testResultResolver{r} }
 
-type (
-	actionProblemResolver struct{ *Resolver }
-	blobReferenceResolver struct{ *Resolver }
-	testResultResolver    struct{ *Resolver }
-)
+type actionProblemResolver struct{ *Resolver }
+type blobReferenceResolver struct{ *Resolver }
+type testResultResolver struct{ *Resolver }

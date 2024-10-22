@@ -164,6 +164,14 @@ func (bi *BazelInvocation) Targets(ctx context.Context) (result []*TargetPair, e
 	return result, err
 }
 
+func (bi *BazelInvocation) SourceControl(ctx context.Context) (*SourceControl, error) {
+	result, err := bi.Edges.SourceControlOrErr()
+	if IsNotLoaded(err) {
+		result, err = bi.QuerySourceControl().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (bip *BazelInvocationProblem) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
 	result, err := bip.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
@@ -556,6 +564,14 @@ func (rc *RunnerCount) ActionSummary(ctx context.Context) (*ActionSummary, error
 	result, err := rc.Edges.ActionSummaryOrErr()
 	if IsNotLoaded(err) {
 		result, err = rc.QueryActionSummary().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (sc *SourceControl) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := sc.Edges.BazelInvocationOrErr()
+	if IsNotLoaded(err) {
+		result, err = sc.QueryBazelInvocation().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }

@@ -15,6 +15,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/pkg/summary"
@@ -312,6 +313,25 @@ func (bic *BazelInvocationCreate) AddTargets(t ...*TargetPair) *BazelInvocationC
 	return bic.AddTargetIDs(ids...)
 }
 
+// SetSourceControlID sets the "source_control" edge to the SourceControl entity by ID.
+func (bic *BazelInvocationCreate) SetSourceControlID(id int) *BazelInvocationCreate {
+	bic.mutation.SetSourceControlID(id)
+	return bic
+}
+
+// SetNillableSourceControlID sets the "source_control" edge to the SourceControl entity by ID if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableSourceControlID(id *int) *BazelInvocationCreate {
+	if id != nil {
+		bic = bic.SetSourceControlID(*id)
+	}
+	return bic
+}
+
+// SetSourceControl sets the "source_control" edge to the SourceControl entity.
+func (bic *BazelInvocationCreate) SetSourceControl(s *SourceControl) *BazelInvocationCreate {
+	return bic.SetSourceControlID(s.ID)
+}
+
 // Mutation returns the BazelInvocationMutation object of the builder.
 func (bic *BazelInvocationCreate) Mutation() *BazelInvocationMutation {
 	return bic.mutation
@@ -552,6 +572,22 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.SourceControlIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.SourceControlTable,
+			Columns: []string{bazelinvocation.SourceControlColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
