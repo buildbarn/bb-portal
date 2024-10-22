@@ -30,12 +30,22 @@ const SourceControlDisplay: React.FC<{ sourceControlData: SourceControl | undefi
                 <Row>
                     <Space size="large">
                         <Descriptions bordered column={1}>
-                            <Descriptions.Item label="Repository URL"><Link target="_blank" href={sourceControlData?.repoURL ?? ""}>{sourceControlData?.repoURL}</Link> </Descriptions.Item>
-                            <Descriptions.Item label="Branch Name"><Link target="_blank" href={branchURL}> {sourceControlData?.branch}</Link></Descriptions.Item>
-                            <Descriptions.Item label="Commit SHA"><Link target="_blank" href={commitURL}>  {sourceControlData?.commitSha}</Link></Descriptions.Item>
-                            <Descriptions.Item label="Actor"><Link target="_blank" href={actorURL}>  {sourceControlData?.actor}</Link></Descriptions.Item>
-                            <Descriptions.Item label="Run ID"> <Link target="_blank" href={runURL}>{sourceControlData?.runID}</Link></Descriptions.Item>
-                            <Descriptions.Item label="Pull Request"> <Link target="_blank" href={prURL}>#{prParts[2]}</Link></Descriptions.Item>
+                            <Descriptions.Item label="Repository URL">
+                                <Link target="_blank" href={sourceControlData?.repoURL ?? ""}>{sourceControlData?.repoURL}</Link>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Branch Name">
+                                <Link target="_blank" href={branchURL}> {sourceControlData?.branch}</Link>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Commit SHA">
+                                <Link target="_blank" href={commitURL}>  {sourceControlData?.commitSha}</Link></Descriptions.Item>
+                            <Descriptions.Item label="Actor"><Link target="_blank" href={actorURL}>  {sourceControlData?.actor}</Link>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Run ID">
+                                <Link target="_blank" href={runURL}>{sourceControlData?.runID}</Link>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Pull Request">
+                                <Link target="_blank" href={prURL}>#{prParts[2]}</Link>
+                            </Descriptions.Item>
                         </Descriptions>
                     </Space>
                 </Row>

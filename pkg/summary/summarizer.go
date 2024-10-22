@@ -837,8 +837,8 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 	}
 
 	// run id
-	if ghRunId, ok := s.summary.EnvVars["GITHUB_RUN_ID"]; ok {
-		s.summary.SourceControlData.RunId = ghRunId
+	if ghRunID, ok := s.summary.EnvVars["GITHUB_RUN_ID"]; ok {
+		s.summary.SourceControlData.RunID = ghRunID
 	}
 
 	return nil

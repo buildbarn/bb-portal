@@ -543,11 +543,12 @@ type TargetPair struct {
 	AbortReason   AbortReason
 }
 
+// SourceControlData for an invocation
 type SourceControlData struct {
 	RepositoryURL string
 	Branch        string
 	CommitSHA     string
 	Actor         string
 	Refs          string
-	RunId         string
+	RunID         string
 }

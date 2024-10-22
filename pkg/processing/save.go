@@ -433,7 +433,7 @@ func (act SaveActor) saveSourceControl(ctx context.Context, summary *summary.Sum
 		SetCommitSha(summary.SourceControlData.CommitSHA).
 		SetBranch(summary.SourceControlData.Branch).
 		SetRefs(summary.SourceControlData.Refs).
-		SetRunID(summary.SourceControlData.RunId).
+		SetRunID(summary.SourceControlData.RunID).
 		Save(ctx)
 }
 
