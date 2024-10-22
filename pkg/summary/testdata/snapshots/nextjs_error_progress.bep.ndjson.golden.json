@@ -1078,6 +1078,14 @@
     "ProfileName": "command.profile.gz",
     "ConfigrationMnemonic": "darwin_arm64-fastbuild",
     "SkipTargetData": false,
-    "EnrichTargetData": false
+    "EnrichTargetData": false,
+    "SourceControlData": {
+      "RepositoryURL": "",
+      "Branch": "",
+      "CommitSHA": "",
+      "Actor": "",
+      "Refs": "",
+      "RunID": ""
+    }
   }
 }

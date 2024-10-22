@@ -40,6 +40,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
@@ -92,6 +93,7 @@ const (
 	TypeRaceStatistics          = "RaceStatistics"
 	TypeResourceUsage           = "ResourceUsage"
 	TypeRunnerCount             = "RunnerCount"
+	TypeSourceControl           = "SourceControl"
 	TypeSystemNetworkStats      = "SystemNetworkStats"
 	TypeTargetComplete          = "TargetComplete"
 	TypeTargetConfigured        = "TargetConfigured"
@@ -3740,6 +3742,8 @@ type BazelInvocationMutation struct {
 	targets                map[int]struct{}
 	removedtargets         map[int]struct{}
 	clearedtargets         bool
+	source_control         *int
+	clearedsource_control  bool
 	done                   bool
 	oldValue               func(context.Context) (*BazelInvocation, error)
 	predicates             []predicate.BazelInvocation
@@ -4940,6 +4944,45 @@ func (m *BazelInvocationMutation) ResetTargets() {
 	m.removedtargets = nil
 }
 
+// SetSourceControlID sets the "source_control" edge to the SourceControl entity by id.
+func (m *BazelInvocationMutation) SetSourceControlID(id int) {
+	m.source_control = &id
+}
+
+// ClearSourceControl clears the "source_control" edge to the SourceControl entity.
+func (m *BazelInvocationMutation) ClearSourceControl() {
+	m.clearedsource_control = true
+}
+
+// SourceControlCleared reports if the "source_control" edge to the SourceControl entity was cleared.
+func (m *BazelInvocationMutation) SourceControlCleared() bool {
+	return m.clearedsource_control
+}
+
+// SourceControlID returns the "source_control" edge ID in the mutation.
+func (m *BazelInvocationMutation) SourceControlID() (id int, exists bool) {
+	if m.source_control != nil {
+		return *m.source_control, true
+	}
+	return
+}
+
+// SourceControlIDs returns the "source_control" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// SourceControlID instead. It exists only for internal usage by the builders.
+func (m *BazelInvocationMutation) SourceControlIDs() (ids []int) {
+	if id := m.source_control; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetSourceControl resets all changes to the "source_control" edge.
+func (m *BazelInvocationMutation) ResetSourceControl() {
+	m.source_control = nil
+	m.clearedsource_control = false
+}
+
 // Where appends a list predicates to the BazelInvocationMutation builder.
 func (m *BazelInvocationMutation) Where(ps ...predicate.BazelInvocation) {
 	m.predicates = append(m.predicates, ps...)
@@ -5453,7 +5496,7 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 7)
 	if m.event_file != nil {
 		edges = append(edges, bazelinvocation.EdgeEventFile)
 	}
@@ -5471,6 +5514,9 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	}
 	if m.targets != nil {
 		edges = append(edges, bazelinvocation.EdgeTargets)
+	}
+	if m.source_control != nil {
+		edges = append(edges, bazelinvocation.EdgeSourceControl)
 	}
 	return edges
 }
@@ -5509,13 +5555,17 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case bazelinvocation.EdgeSourceControl:
+		if id := m.source_control; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 7)
 	if m.removedproblems != nil {
 		edges = append(edges, bazelinvocation.EdgeProblems)
 	}
@@ -5556,7 +5606,7 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 7)
 	if m.clearedevent_file {
 		edges = append(edges, bazelinvocation.EdgeEventFile)
 	}
@@ -5574,6 +5624,9 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	}
 	if m.clearedtargets {
 		edges = append(edges, bazelinvocation.EdgeTargets)
+	}
+	if m.clearedsource_control {
+		edges = append(edges, bazelinvocation.EdgeSourceControl)
 	}
 	return edges
 }
@@ -5594,6 +5647,8 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedtest_collection
 	case bazelinvocation.EdgeTargets:
 		return m.clearedtargets
+	case bazelinvocation.EdgeSourceControl:
+		return m.clearedsource_control
 	}
 	return false
 }
@@ -5610,6 +5665,9 @@ func (m *BazelInvocationMutation) ClearEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeMetrics:
 		m.ClearMetrics()
+		return nil
+	case bazelinvocation.EdgeSourceControl:
+		m.ClearSourceControl()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation unique edge %s", name)
@@ -5636,6 +5694,9 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeTargets:
 		m.ResetTargets()
+		return nil
+	case bazelinvocation.EdgeSourceControl:
+		m.ResetSourceControl()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation edge %s", name)
@@ -20164,6 +20225,786 @@ func (m *RunnerCountMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown RunnerCount edge %s", name)
+}
+
+// SourceControlMutation represents an operation that mutates the SourceControl nodes in the graph.
+type SourceControlMutation struct {
+	config
+	op                      Op
+	typ                     string
+	id                      *int
+	repo_url                *string
+	branch                  *string
+	commit_sha              *string
+	actor                   *string
+	refs                    *string
+	run_id                  *string
+	clearedFields           map[string]struct{}
+	bazel_invocation        *int
+	clearedbazel_invocation bool
+	done                    bool
+	oldValue                func(context.Context) (*SourceControl, error)
+	predicates              []predicate.SourceControl
+}
+
+var _ ent.Mutation = (*SourceControlMutation)(nil)
+
+// sourcecontrolOption allows management of the mutation configuration using functional options.
+type sourcecontrolOption func(*SourceControlMutation)
+
+// newSourceControlMutation creates new mutation for the SourceControl entity.
+func newSourceControlMutation(c config, op Op, opts ...sourcecontrolOption) *SourceControlMutation {
+	m := &SourceControlMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeSourceControl,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withSourceControlID sets the ID field of the mutation.
+func withSourceControlID(id int) sourcecontrolOption {
+	return func(m *SourceControlMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *SourceControl
+		)
+		m.oldValue = func(ctx context.Context) (*SourceControl, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().SourceControl.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withSourceControl sets the old SourceControl of the mutation.
+func withSourceControl(node *SourceControl) sourcecontrolOption {
+	return func(m *SourceControlMutation) {
+		m.oldValue = func(context.Context) (*SourceControl, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m SourceControlMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m SourceControlMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *SourceControlMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *SourceControlMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().SourceControl.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetRepoURL sets the "repo_url" field.
+func (m *SourceControlMutation) SetRepoURL(s string) {
+	m.repo_url = &s
+}
+
+// RepoURL returns the value of the "repo_url" field in the mutation.
+func (m *SourceControlMutation) RepoURL() (r string, exists bool) {
+	v := m.repo_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRepoURL returns the old "repo_url" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldRepoURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRepoURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRepoURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRepoURL: %w", err)
+	}
+	return oldValue.RepoURL, nil
+}
+
+// ClearRepoURL clears the value of the "repo_url" field.
+func (m *SourceControlMutation) ClearRepoURL() {
+	m.repo_url = nil
+	m.clearedFields[sourcecontrol.FieldRepoURL] = struct{}{}
+}
+
+// RepoURLCleared returns if the "repo_url" field was cleared in this mutation.
+func (m *SourceControlMutation) RepoURLCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldRepoURL]
+	return ok
+}
+
+// ResetRepoURL resets all changes to the "repo_url" field.
+func (m *SourceControlMutation) ResetRepoURL() {
+	m.repo_url = nil
+	delete(m.clearedFields, sourcecontrol.FieldRepoURL)
+}
+
+// SetBranch sets the "branch" field.
+func (m *SourceControlMutation) SetBranch(s string) {
+	m.branch = &s
+}
+
+// Branch returns the value of the "branch" field in the mutation.
+func (m *SourceControlMutation) Branch() (r string, exists bool) {
+	v := m.branch
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBranch returns the old "branch" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldBranch(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBranch is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBranch requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBranch: %w", err)
+	}
+	return oldValue.Branch, nil
+}
+
+// ClearBranch clears the value of the "branch" field.
+func (m *SourceControlMutation) ClearBranch() {
+	m.branch = nil
+	m.clearedFields[sourcecontrol.FieldBranch] = struct{}{}
+}
+
+// BranchCleared returns if the "branch" field was cleared in this mutation.
+func (m *SourceControlMutation) BranchCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldBranch]
+	return ok
+}
+
+// ResetBranch resets all changes to the "branch" field.
+func (m *SourceControlMutation) ResetBranch() {
+	m.branch = nil
+	delete(m.clearedFields, sourcecontrol.FieldBranch)
+}
+
+// SetCommitSha sets the "commit_sha" field.
+func (m *SourceControlMutation) SetCommitSha(s string) {
+	m.commit_sha = &s
+}
+
+// CommitSha returns the value of the "commit_sha" field in the mutation.
+func (m *SourceControlMutation) CommitSha() (r string, exists bool) {
+	v := m.commit_sha
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCommitSha returns the old "commit_sha" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldCommitSha(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCommitSha is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCommitSha requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCommitSha: %w", err)
+	}
+	return oldValue.CommitSha, nil
+}
+
+// ClearCommitSha clears the value of the "commit_sha" field.
+func (m *SourceControlMutation) ClearCommitSha() {
+	m.commit_sha = nil
+	m.clearedFields[sourcecontrol.FieldCommitSha] = struct{}{}
+}
+
+// CommitShaCleared returns if the "commit_sha" field was cleared in this mutation.
+func (m *SourceControlMutation) CommitShaCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldCommitSha]
+	return ok
+}
+
+// ResetCommitSha resets all changes to the "commit_sha" field.
+func (m *SourceControlMutation) ResetCommitSha() {
+	m.commit_sha = nil
+	delete(m.clearedFields, sourcecontrol.FieldCommitSha)
+}
+
+// SetActor sets the "actor" field.
+func (m *SourceControlMutation) SetActor(s string) {
+	m.actor = &s
+}
+
+// Actor returns the value of the "actor" field in the mutation.
+func (m *SourceControlMutation) Actor() (r string, exists bool) {
+	v := m.actor
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldActor returns the old "actor" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldActor(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldActor is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldActor requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldActor: %w", err)
+	}
+	return oldValue.Actor, nil
+}
+
+// ClearActor clears the value of the "actor" field.
+func (m *SourceControlMutation) ClearActor() {
+	m.actor = nil
+	m.clearedFields[sourcecontrol.FieldActor] = struct{}{}
+}
+
+// ActorCleared returns if the "actor" field was cleared in this mutation.
+func (m *SourceControlMutation) ActorCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldActor]
+	return ok
+}
+
+// ResetActor resets all changes to the "actor" field.
+func (m *SourceControlMutation) ResetActor() {
+	m.actor = nil
+	delete(m.clearedFields, sourcecontrol.FieldActor)
+}
+
+// SetRefs sets the "refs" field.
+func (m *SourceControlMutation) SetRefs(s string) {
+	m.refs = &s
+}
+
+// Refs returns the value of the "refs" field in the mutation.
+func (m *SourceControlMutation) Refs() (r string, exists bool) {
+	v := m.refs
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRefs returns the old "refs" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldRefs(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRefs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRefs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRefs: %w", err)
+	}
+	return oldValue.Refs, nil
+}
+
+// ClearRefs clears the value of the "refs" field.
+func (m *SourceControlMutation) ClearRefs() {
+	m.refs = nil
+	m.clearedFields[sourcecontrol.FieldRefs] = struct{}{}
+}
+
+// RefsCleared returns if the "refs" field was cleared in this mutation.
+func (m *SourceControlMutation) RefsCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldRefs]
+	return ok
+}
+
+// ResetRefs resets all changes to the "refs" field.
+func (m *SourceControlMutation) ResetRefs() {
+	m.refs = nil
+	delete(m.clearedFields, sourcecontrol.FieldRefs)
+}
+
+// SetRunID sets the "run_id" field.
+func (m *SourceControlMutation) SetRunID(s string) {
+	m.run_id = &s
+}
+
+// RunID returns the value of the "run_id" field in the mutation.
+func (m *SourceControlMutation) RunID() (r string, exists bool) {
+	v := m.run_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRunID returns the old "run_id" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldRunID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRunID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRunID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRunID: %w", err)
+	}
+	return oldValue.RunID, nil
+}
+
+// ClearRunID clears the value of the "run_id" field.
+func (m *SourceControlMutation) ClearRunID() {
+	m.run_id = nil
+	m.clearedFields[sourcecontrol.FieldRunID] = struct{}{}
+}
+
+// RunIDCleared returns if the "run_id" field was cleared in this mutation.
+func (m *SourceControlMutation) RunIDCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldRunID]
+	return ok
+}
+
+// ResetRunID resets all changes to the "run_id" field.
+func (m *SourceControlMutation) ResetRunID() {
+	m.run_id = nil
+	delete(m.clearedFields, sourcecontrol.FieldRunID)
+}
+
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
+func (m *SourceControlMutation) SetBazelInvocationID(id int) {
+	m.bazel_invocation = &id
+}
+
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
+func (m *SourceControlMutation) ClearBazelInvocation() {
+	m.clearedbazel_invocation = true
+}
+
+// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
+func (m *SourceControlMutation) BazelInvocationCleared() bool {
+	return m.clearedbazel_invocation
+}
+
+// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
+func (m *SourceControlMutation) BazelInvocationID() (id int, exists bool) {
+	if m.bazel_invocation != nil {
+		return *m.bazel_invocation, true
+	}
+	return
+}
+
+// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BazelInvocationID instead. It exists only for internal usage by the builders.
+func (m *SourceControlMutation) BazelInvocationIDs() (ids []int) {
+	if id := m.bazel_invocation; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
+func (m *SourceControlMutation) ResetBazelInvocation() {
+	m.bazel_invocation = nil
+	m.clearedbazel_invocation = false
+}
+
+// Where appends a list predicates to the SourceControlMutation builder.
+func (m *SourceControlMutation) Where(ps ...predicate.SourceControl) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the SourceControlMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *SourceControlMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.SourceControl, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *SourceControlMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *SourceControlMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (SourceControl).
+func (m *SourceControlMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *SourceControlMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m.repo_url != nil {
+		fields = append(fields, sourcecontrol.FieldRepoURL)
+	}
+	if m.branch != nil {
+		fields = append(fields, sourcecontrol.FieldBranch)
+	}
+	if m.commit_sha != nil {
+		fields = append(fields, sourcecontrol.FieldCommitSha)
+	}
+	if m.actor != nil {
+		fields = append(fields, sourcecontrol.FieldActor)
+	}
+	if m.refs != nil {
+		fields = append(fields, sourcecontrol.FieldRefs)
+	}
+	if m.run_id != nil {
+		fields = append(fields, sourcecontrol.FieldRunID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *SourceControlMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case sourcecontrol.FieldRepoURL:
+		return m.RepoURL()
+	case sourcecontrol.FieldBranch:
+		return m.Branch()
+	case sourcecontrol.FieldCommitSha:
+		return m.CommitSha()
+	case sourcecontrol.FieldActor:
+		return m.Actor()
+	case sourcecontrol.FieldRefs:
+		return m.Refs()
+	case sourcecontrol.FieldRunID:
+		return m.RunID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *SourceControlMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case sourcecontrol.FieldRepoURL:
+		return m.OldRepoURL(ctx)
+	case sourcecontrol.FieldBranch:
+		return m.OldBranch(ctx)
+	case sourcecontrol.FieldCommitSha:
+		return m.OldCommitSha(ctx)
+	case sourcecontrol.FieldActor:
+		return m.OldActor(ctx)
+	case sourcecontrol.FieldRefs:
+		return m.OldRefs(ctx)
+	case sourcecontrol.FieldRunID:
+		return m.OldRunID(ctx)
+	}
+	return nil, fmt.Errorf("unknown SourceControl field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SourceControlMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case sourcecontrol.FieldRepoURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRepoURL(v)
+		return nil
+	case sourcecontrol.FieldBranch:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBranch(v)
+		return nil
+	case sourcecontrol.FieldCommitSha:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCommitSha(v)
+		return nil
+	case sourcecontrol.FieldActor:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetActor(v)
+		return nil
+	case sourcecontrol.FieldRefs:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRefs(v)
+		return nil
+	case sourcecontrol.FieldRunID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRunID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SourceControl field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *SourceControlMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *SourceControlMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SourceControlMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown SourceControl numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *SourceControlMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(sourcecontrol.FieldRepoURL) {
+		fields = append(fields, sourcecontrol.FieldRepoURL)
+	}
+	if m.FieldCleared(sourcecontrol.FieldBranch) {
+		fields = append(fields, sourcecontrol.FieldBranch)
+	}
+	if m.FieldCleared(sourcecontrol.FieldCommitSha) {
+		fields = append(fields, sourcecontrol.FieldCommitSha)
+	}
+	if m.FieldCleared(sourcecontrol.FieldActor) {
+		fields = append(fields, sourcecontrol.FieldActor)
+	}
+	if m.FieldCleared(sourcecontrol.FieldRefs) {
+		fields = append(fields, sourcecontrol.FieldRefs)
+	}
+	if m.FieldCleared(sourcecontrol.FieldRunID) {
+		fields = append(fields, sourcecontrol.FieldRunID)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *SourceControlMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *SourceControlMutation) ClearField(name string) error {
+	switch name {
+	case sourcecontrol.FieldRepoURL:
+		m.ClearRepoURL()
+		return nil
+	case sourcecontrol.FieldBranch:
+		m.ClearBranch()
+		return nil
+	case sourcecontrol.FieldCommitSha:
+		m.ClearCommitSha()
+		return nil
+	case sourcecontrol.FieldActor:
+		m.ClearActor()
+		return nil
+	case sourcecontrol.FieldRefs:
+		m.ClearRefs()
+		return nil
+	case sourcecontrol.FieldRunID:
+		m.ClearRunID()
+		return nil
+	}
+	return fmt.Errorf("unknown SourceControl nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *SourceControlMutation) ResetField(name string) error {
+	switch name {
+	case sourcecontrol.FieldRepoURL:
+		m.ResetRepoURL()
+		return nil
+	case sourcecontrol.FieldBranch:
+		m.ResetBranch()
+		return nil
+	case sourcecontrol.FieldCommitSha:
+		m.ResetCommitSha()
+		return nil
+	case sourcecontrol.FieldActor:
+		m.ResetActor()
+		return nil
+	case sourcecontrol.FieldRefs:
+		m.ResetRefs()
+		return nil
+	case sourcecontrol.FieldRunID:
+		m.ResetRunID()
+		return nil
+	}
+	return fmt.Errorf("unknown SourceControl field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *SourceControlMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.bazel_invocation != nil {
+		edges = append(edges, sourcecontrol.EdgeBazelInvocation)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *SourceControlMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case sourcecontrol.EdgeBazelInvocation:
+		if id := m.bazel_invocation; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *SourceControlMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *SourceControlMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *SourceControlMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedbazel_invocation {
+		edges = append(edges, sourcecontrol.EdgeBazelInvocation)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *SourceControlMutation) EdgeCleared(name string) bool {
+	switch name {
+	case sourcecontrol.EdgeBazelInvocation:
+		return m.clearedbazel_invocation
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *SourceControlMutation) ClearEdge(name string) error {
+	switch name {
+	case sourcecontrol.EdgeBazelInvocation:
+		m.ClearBazelInvocation()
+		return nil
+	}
+	return fmt.Errorf("unknown SourceControl unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *SourceControlMutation) ResetEdge(name string) error {
+	switch name {
+	case sourcecontrol.EdgeBazelInvocation:
+		m.ResetBazelInvocation()
+		return nil
+	}
+	return fmt.Errorf("unknown SourceControl edge %s", name)
 }
 
 // SystemNetworkStatsMutation represents an operation that mutates the SystemNetworkStats nodes in the graph.

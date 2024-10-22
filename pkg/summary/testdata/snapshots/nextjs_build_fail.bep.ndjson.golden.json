@@ -324,7 +324,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-21T20:29:59.23819457Z"
+        "FirstSeen": "2024-10-22T17:03:17.270500808Z"
       },
       "//react/src:lint": {
         "TestSummary": {
@@ -385,7 +385,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-21T20:29:59.237353084Z"
+        "FirstSeen": "2024-10-22T17:03:17.269540716Z"
       },
       "//react/src:src_typecheck_test": {
         "TestSummary": {
@@ -446,7 +446,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-21T20:29:59.236034577Z"
+        "FirstSeen": "2024-10-22T17:03:17.268192278Z"
       },
       "//react/src:test": {
         "TestSummary": {
@@ -507,7 +507,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-21T20:29:59.237550502Z"
+        "FirstSeen": "2024-10-22T17:03:17.269725194Z"
       },
       "//react/src:test_lib_typecheck_test": {
         "TestSummary": {
@@ -568,7 +568,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-21T20:29:59.236305188Z"
+        "FirstSeen": "2024-10-22T17:03:17.268470041Z"
       },
       "//react:build_smoke_test": {
         "TestSummary": {
@@ -629,7 +629,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-21T20:29:59.236502847Z"
+        "FirstSeen": "2024-10-22T17:03:17.268656159Z"
       },
       "//vue:build_test": {
         "TestSummary": {
@@ -690,7 +690,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-21T20:29:59.236856922Z"
+        "FirstSeen": "2024-10-22T17:03:17.269050045Z"
       },
       "//vue:type-check": {
         "TestSummary": {
@@ -751,7 +751,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-21T20:29:59.237153885Z"
+        "FirstSeen": "2024-10-22T17:03:17.269331397Z"
       }
     },
     "Targets": {
@@ -2893,6 +2893,14 @@
     "ProfileName": "command.profile.gz",
     "ConfigrationMnemonic": "darwin_arm64-fastbuild",
     "SkipTargetData": false,
-    "EnrichTargetData": false
+    "EnrichTargetData": false,
+    "SourceControlData": {
+      "RepositoryURL": "",
+      "Branch": "",
+      "CommitSHA": "",
+      "Actor": "",
+      "Refs": "",
+      "RunID": ""
+    }
   }
 }

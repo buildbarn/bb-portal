@@ -35,6 +35,7 @@ import {
   WifiOutlined,
   HddOutlined,
   CodeOutlined,
+  BranchesOutlined,
 } from "@ant-design/icons";
 import themeStyles from '@/theme/theme.module.css';
 import { debugMode } from "@/components/Utilities/debugMode";
@@ -54,6 +55,7 @@ import NetworkMetricsDisplay from "../NetworkMetrics";
 import TestMetricsDisplay from "../TestsMetrics";
 import { env } from 'next-runtime-env';
 import CommandLineDisplay from "../CommandLine";
+import SourceControlDisplay from "../SourceControlDisplay";
 
 
 const BazelInvocation: React.FC<{
@@ -70,6 +72,7 @@ const BazelInvocation: React.FC<{
     bazelCommand,
     profile,
     relatedFiles,
+    sourceControl,
     user,
     metrics,
     testCollection,
@@ -113,8 +116,11 @@ const BazelInvocation: React.FC<{
 
   targetData?.map(x => { targetTimes.set(x.label ?? "", x.durationInMs ?? 0) })
 
+  //show/hide tabs
   const testCount = testCollection?.length ?? 0
   const hideTestsTab: boolean = testCount == 0
+  const hideTargetsTab: boolean = (targetData?.length ?? 0) == 0 ? true : false
+  const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null ? true : false
 
   let { exitCode } = state;
   exitCode = exitCode ?? null;
@@ -127,6 +133,7 @@ const BazelInvocation: React.FC<{
     titleBits.push(<BuildStepResultTag key="result" result={exitCode?.name as BuildStepResultEnum} />);
   }
 
+  //logs
   const logs: string = buildLogs ?? "no build log data found..."
 
   var items: TabsProps['items'] = [
@@ -239,6 +246,14 @@ const BazelInvocation: React.FC<{
       icon: <CodeOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
         <CommandLineDisplay commandLineData={bazelCommand ?? undefined} />
+      </Space>,
+    },
+    {
+      key: 'BazelInvocationTabs-SourceControl',
+      label: 'Source Control',
+      icon: <BranchesOutlined />,
+      children: <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <SourceControlDisplay sourceControlData={sourceControl} />
       </Space>,
     },
   ];

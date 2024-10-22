@@ -231,6 +231,11 @@ func (r *runnerCountResolver) ID(ctx context.Context, obj *ent.RunnerCount) (str
 }
 
 // ID is the resolver for the id field.
+func (r *sourceControlResolver) ID(ctx context.Context, obj *ent.SourceControl) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("SourceControl", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
 func (r *systemNetworkStatsResolver) ID(ctx context.Context, obj *ent.SystemNetworkStats) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("SystemNetworkStats", obj.ID), nil
 }
@@ -1371,6 +1376,46 @@ func (r *runnerCountWhereInputResolver) IDLte(ctx context.Context, obj *ent.Runn
 }
 
 // ID is the resolver for the id field.
+func (r *sourceControlWhereInputResolver) ID(ctx context.Context, obj *ent.SourceControlWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *sourceControlWhereInputResolver) IDNeq(ctx context.Context, obj *ent.SourceControlWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *sourceControlWhereInputResolver) IDIn(ctx context.Context, obj *ent.SourceControlWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *sourceControlWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.SourceControlWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *sourceControlWhereInputResolver) IDGt(ctx context.Context, obj *ent.SourceControlWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *sourceControlWhereInputResolver) IDGte(ctx context.Context, obj *ent.SourceControlWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *sourceControlWhereInputResolver) IDLt(ctx context.Context, obj *ent.SourceControlWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *sourceControlWhereInputResolver) IDLte(ctx context.Context, obj *ent.SourceControlWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
 func (r *systemNetworkStatsWhereInputResolver) ID(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
@@ -1946,6 +1991,9 @@ func (r *Resolver) ResourceUsage() ResourceUsageResolver { return &resourceUsage
 // RunnerCount returns RunnerCountResolver implementation.
 func (r *Resolver) RunnerCount() RunnerCountResolver { return &runnerCountResolver{r} }
 
+// SourceControl returns SourceControlResolver implementation.
+func (r *Resolver) SourceControl() SourceControlResolver { return &sourceControlResolver{r} }
+
 // SystemNetworkStats returns SystemNetworkStatsResolver implementation.
 func (r *Resolver) SystemNetworkStats() SystemNetworkStatsResolver {
 	return &systemNetworkStatsResolver{r}
@@ -2115,6 +2163,11 @@ func (r *Resolver) RunnerCountWhereInput() RunnerCountWhereInputResolver {
 	return &runnerCountWhereInputResolver{r}
 }
 
+// SourceControlWhereInput returns SourceControlWhereInputResolver implementation.
+func (r *Resolver) SourceControlWhereInput() SourceControlWhereInputResolver {
+	return &sourceControlWhereInputResolver{r}
+}
+
 // SystemNetworkStatsWhereInput returns SystemNetworkStatsWhereInputResolver implementation.
 func (r *Resolver) SystemNetworkStatsWhereInput() SystemNetworkStatsWhereInputResolver {
 	return &systemNetworkStatsWhereInputResolver{r}
@@ -2204,6 +2257,7 @@ type (
 	raceStatisticsResolver                    struct{ *Resolver }
 	resourceUsageResolver                     struct{ *Resolver }
 	runnerCountResolver                       struct{ *Resolver }
+	sourceControlResolver                     struct{ *Resolver }
 	systemNetworkStatsResolver                struct{ *Resolver }
 	targetCompleteResolver                    struct{ *Resolver }
 	targetConfiguredResolver                  struct{ *Resolver }
@@ -2243,6 +2297,7 @@ type (
 	raceStatisticsWhereInputResolver          struct{ *Resolver }
 	resourceUsageWhereInputResolver           struct{ *Resolver }
 	runnerCountWhereInputResolver             struct{ *Resolver }
+	sourceControlWhereInputResolver           struct{ *Resolver }
 	systemNetworkStatsWhereInputResolver      struct{ *Resolver }
 	targetCompleteWhereInputResolver          struct{ *Resolver }
 	targetConfiguredWhereInputResolver        struct{ *Resolver }

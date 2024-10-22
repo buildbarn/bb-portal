@@ -409,7 +409,7 @@
         "CachedLocally": false,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-21T20:29:59.438625267Z"
+        "FirstSeen": "2024-10-22T17:03:17.498245162Z"
       },
       "//next.js:build_smoke_test": {
         "TestSummary": {
@@ -470,7 +470,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-21T20:29:59.438044912Z"
+        "FirstSeen": "2024-10-22T17:03:17.497860265Z"
       },
       "//next.js:build_test": {
         "TestSummary": {
@@ -531,7 +531,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-21T20:29:59.437979719Z"
+        "FirstSeen": "2024-10-22T17:03:17.497825774Z"
       }
     },
     "Targets": {
@@ -1225,6 +1225,14 @@
     "ProfileName": "command.profile.gz",
     "ConfigrationMnemonic": "darwin_arm64-fastbuild",
     "SkipTargetData": false,
-    "EnrichTargetData": false
+    "EnrichTargetData": false,
+    "SourceControlData": {
+      "RepositoryURL": "",
+      "Branch": "",
+      "CommitSHA": "",
+      "Actor": "",
+      "Refs": "",
+      "RunID": ""
+    }
   }
 }

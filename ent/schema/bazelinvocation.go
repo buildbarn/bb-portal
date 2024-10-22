@@ -104,6 +104,10 @@ func (BazelInvocation) Edges() []ent.Edge {
 
 		// Target Data for the completed Invocation
 		edge.To("targets", TargetPair.Type),
+
+		// Edge to source control information
+		edge.To("source_control", SourceControl.Type).
+			Unique(),
 	}
 }
 

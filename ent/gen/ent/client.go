@@ -42,6 +42,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
@@ -115,6 +116,8 @@ type Client struct {
 	ResourceUsage *ResourceUsageClient
 	// RunnerCount is the client for interacting with the RunnerCount builders.
 	RunnerCount *RunnerCountClient
+	// SourceControl is the client for interacting with the SourceControl builders.
+	SourceControl *SourceControlClient
 	// SystemNetworkStats is the client for interacting with the SystemNetworkStats builders.
 	SystemNetworkStats *SystemNetworkStatsClient
 	// TargetComplete is the client for interacting with the TargetComplete builders.
@@ -179,6 +182,7 @@ func (c *Client) init() {
 	c.RaceStatistics = NewRaceStatisticsClient(c.config)
 	c.ResourceUsage = NewResourceUsageClient(c.config)
 	c.RunnerCount = NewRunnerCountClient(c.config)
+	c.SourceControl = NewSourceControlClient(c.config)
 	c.SystemNetworkStats = NewSystemNetworkStatsClient(c.config)
 	c.TargetComplete = NewTargetCompleteClient(c.config)
 	c.TargetConfigured = NewTargetConfiguredClient(c.config)
@@ -310,6 +314,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		RaceStatistics:          NewRaceStatisticsClient(cfg),
 		ResourceUsage:           NewResourceUsageClient(cfg),
 		RunnerCount:             NewRunnerCountClient(cfg),
+		SourceControl:           NewSourceControlClient(cfg),
 		SystemNetworkStats:      NewSystemNetworkStatsClient(cfg),
 		TargetComplete:          NewTargetCompleteClient(cfg),
 		TargetConfigured:        NewTargetConfiguredClient(cfg),
@@ -368,6 +373,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		RaceStatistics:          NewRaceStatisticsClient(cfg),
 		ResourceUsage:           NewResourceUsageClient(cfg),
 		RunnerCount:             NewRunnerCountClient(cfg),
+		SourceControl:           NewSourceControlClient(cfg),
 		SystemNetworkStats:      NewSystemNetworkStatsClient(cfg),
 		TargetComplete:          NewTargetCompleteClient(cfg),
 		TargetConfigured:        NewTargetConfiguredClient(cfg),
@@ -415,10 +421,10 @@ func (c *Client) Use(hooks ...Hook) {
 		c.EvaluationStat, c.EventFile, c.ExectionInfo, c.FilesMetric, c.GarbageMetrics,
 		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics,
 		c.OutputGroup, c.PackageLoadMetrics, c.PackageMetrics, c.RaceStatistics,
-		c.ResourceUsage, c.RunnerCount, c.SystemNetworkStats, c.TargetComplete,
-		c.TargetConfigured, c.TargetMetrics, c.TargetPair, c.TestCollection,
-		c.TestFile, c.TestResultBES, c.TestSummary, c.TimingBreakdown, c.TimingChild,
-		c.TimingMetrics,
+		c.ResourceUsage, c.RunnerCount, c.SourceControl, c.SystemNetworkStats,
+		c.TargetComplete, c.TargetConfigured, c.TargetMetrics, c.TargetPair,
+		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
+		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
 	} {
 		n.Use(hooks...)
 	}
@@ -434,10 +440,10 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.EvaluationStat, c.EventFile, c.ExectionInfo, c.FilesMetric, c.GarbageMetrics,
 		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics,
 		c.OutputGroup, c.PackageLoadMetrics, c.PackageMetrics, c.RaceStatistics,
-		c.ResourceUsage, c.RunnerCount, c.SystemNetworkStats, c.TargetComplete,
-		c.TargetConfigured, c.TargetMetrics, c.TargetPair, c.TestCollection,
-		c.TestFile, c.TestResultBES, c.TestSummary, c.TimingBreakdown, c.TimingChild,
-		c.TimingMetrics,
+		c.ResourceUsage, c.RunnerCount, c.SourceControl, c.SystemNetworkStats,
+		c.TargetComplete, c.TargetConfigured, c.TargetMetrics, c.TargetPair,
+		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
+		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -500,6 +506,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.ResourceUsage.mutate(ctx, m)
 	case *RunnerCountMutation:
 		return c.RunnerCount.mutate(ctx, m)
+	case *SourceControlMutation:
+		return c.SourceControl.mutate(ctx, m)
 	case *SystemNetworkStatsMutation:
 		return c.SystemNetworkStats.mutate(ctx, m)
 	case *TargetCompleteMutation:
@@ -1450,6 +1458,22 @@ func (c *BazelInvocationClient) QueryTargets(bi *BazelInvocation) *TargetPairQue
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(targetpair.Table, targetpair.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.TargetsTable, bazelinvocation.TargetsColumn),
+		)
+		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QuerySourceControl queries the source_control edge of a BazelInvocation.
+func (c *BazelInvocationClient) QuerySourceControl(bi *BazelInvocation) *SourceControlQuery {
+	query := (&SourceControlClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := bi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(sourcecontrol.Table, sourcecontrol.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, false, bazelinvocation.SourceControlTable, bazelinvocation.SourceControlColumn),
 		)
 		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
 		return fromV, nil
@@ -5144,6 +5168,155 @@ func (c *RunnerCountClient) mutate(ctx context.Context, m *RunnerCountMutation) 
 	}
 }
 
+// SourceControlClient is a client for the SourceControl schema.
+type SourceControlClient struct {
+	config
+}
+
+// NewSourceControlClient returns a client for the SourceControl from the given config.
+func NewSourceControlClient(c config) *SourceControlClient {
+	return &SourceControlClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `sourcecontrol.Hooks(f(g(h())))`.
+func (c *SourceControlClient) Use(hooks ...Hook) {
+	c.hooks.SourceControl = append(c.hooks.SourceControl, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `sourcecontrol.Intercept(f(g(h())))`.
+func (c *SourceControlClient) Intercept(interceptors ...Interceptor) {
+	c.inters.SourceControl = append(c.inters.SourceControl, interceptors...)
+}
+
+// Create returns a builder for creating a SourceControl entity.
+func (c *SourceControlClient) Create() *SourceControlCreate {
+	mutation := newSourceControlMutation(c.config, OpCreate)
+	return &SourceControlCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SourceControl entities.
+func (c *SourceControlClient) CreateBulk(builders ...*SourceControlCreate) *SourceControlCreateBulk {
+	return &SourceControlCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *SourceControlClient) MapCreateBulk(slice any, setFunc func(*SourceControlCreate, int)) *SourceControlCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &SourceControlCreateBulk{err: fmt.Errorf("calling to SourceControlClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*SourceControlCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &SourceControlCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SourceControl.
+func (c *SourceControlClient) Update() *SourceControlUpdate {
+	mutation := newSourceControlMutation(c.config, OpUpdate)
+	return &SourceControlUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SourceControlClient) UpdateOne(sc *SourceControl) *SourceControlUpdateOne {
+	mutation := newSourceControlMutation(c.config, OpUpdateOne, withSourceControl(sc))
+	return &SourceControlUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SourceControlClient) UpdateOneID(id int) *SourceControlUpdateOne {
+	mutation := newSourceControlMutation(c.config, OpUpdateOne, withSourceControlID(id))
+	return &SourceControlUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SourceControl.
+func (c *SourceControlClient) Delete() *SourceControlDelete {
+	mutation := newSourceControlMutation(c.config, OpDelete)
+	return &SourceControlDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SourceControlClient) DeleteOne(sc *SourceControl) *SourceControlDeleteOne {
+	return c.DeleteOneID(sc.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *SourceControlClient) DeleteOneID(id int) *SourceControlDeleteOne {
+	builder := c.Delete().Where(sourcecontrol.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SourceControlDeleteOne{builder}
+}
+
+// Query returns a query builder for SourceControl.
+func (c *SourceControlClient) Query() *SourceControlQuery {
+	return &SourceControlQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeSourceControl},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a SourceControl entity by its id.
+func (c *SourceControlClient) Get(ctx context.Context, id int) (*SourceControl, error) {
+	return c.Query().Where(sourcecontrol.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SourceControlClient) GetX(ctx context.Context, id int) *SourceControl {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a SourceControl.
+func (c *SourceControlClient) QueryBazelInvocation(sc *SourceControl) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sourcecontrol.Table, sourcecontrol.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2O, true, sourcecontrol.BazelInvocationTable, sourcecontrol.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(sc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *SourceControlClient) Hooks() []Hook {
+	return c.hooks.SourceControl
+}
+
+// Interceptors returns the client interceptors.
+func (c *SourceControlClient) Interceptors() []Interceptor {
+	return c.inters.SourceControl
+}
+
+func (c *SourceControlClient) mutate(ctx context.Context, m *SourceControlMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&SourceControlCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&SourceControlUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&SourceControlUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&SourceControlDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown SourceControl mutation op: %q", m.Op())
+	}
+}
+
 // SystemNetworkStatsClient is a client for the SystemNetworkStats schema.
 type SystemNetworkStatsClient struct {
 	config
@@ -7132,10 +7305,10 @@ type (
 		CumulativeMetrics, DynamicExecutionMetrics, EvaluationStat, EventFile,
 		ExectionInfo, FilesMetric, GarbageMetrics, MemoryMetrics, Metrics, MissDetail,
 		NamedSetOfFiles, NetworkMetrics, OutputGroup, PackageLoadMetrics,
-		PackageMetrics, RaceStatistics, ResourceUsage, RunnerCount, SystemNetworkStats,
-		TargetComplete, TargetConfigured, TargetMetrics, TargetPair, TestCollection,
-		TestFile, TestResultBES, TestSummary, TimingBreakdown, TimingChild,
-		TimingMetrics []ent.Hook
+		PackageMetrics, RaceStatistics, ResourceUsage, RunnerCount, SourceControl,
+		SystemNetworkStats, TargetComplete, TargetConfigured, TargetMetrics,
+		TargetPair, TestCollection, TestFile, TestResultBES, TestSummary,
+		TimingBreakdown, TimingChild, TimingMetrics []ent.Hook
 	}
 	inters struct {
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
@@ -7143,9 +7316,9 @@ type (
 		CumulativeMetrics, DynamicExecutionMetrics, EvaluationStat, EventFile,
 		ExectionInfo, FilesMetric, GarbageMetrics, MemoryMetrics, Metrics, MissDetail,
 		NamedSetOfFiles, NetworkMetrics, OutputGroup, PackageLoadMetrics,
-		PackageMetrics, RaceStatistics, ResourceUsage, RunnerCount, SystemNetworkStats,
-		TargetComplete, TargetConfigured, TargetMetrics, TargetPair, TestCollection,
-		TestFile, TestResultBES, TestSummary, TimingBreakdown, TimingChild,
-		TimingMetrics []ent.Interceptor
+		PackageMetrics, RaceStatistics, ResourceUsage, RunnerCount, SourceControl,
+		SystemNetworkStats, TargetComplete, TargetConfigured, TargetMetrics,
+		TargetPair, TestCollection, TestFile, TestResultBES, TestSummary,
+		TimingBreakdown, TimingChild, TimingMetrics []ent.Interceptor
 	}
 )

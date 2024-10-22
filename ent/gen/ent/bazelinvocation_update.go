@@ -17,6 +17,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/pkg/summary"
@@ -432,6 +433,25 @@ func (biu *BazelInvocationUpdate) AddTargets(t ...*TargetPair) *BazelInvocationU
 	return biu.AddTargetIDs(ids...)
 }
 
+// SetSourceControlID sets the "source_control" edge to the SourceControl entity by ID.
+func (biu *BazelInvocationUpdate) SetSourceControlID(id int) *BazelInvocationUpdate {
+	biu.mutation.SetSourceControlID(id)
+	return biu
+}
+
+// SetNillableSourceControlID sets the "source_control" edge to the SourceControl entity by ID if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableSourceControlID(id *int) *BazelInvocationUpdate {
+	if id != nil {
+		biu = biu.SetSourceControlID(*id)
+	}
+	return biu
+}
+
+// SetSourceControl sets the "source_control" edge to the SourceControl entity.
+func (biu *BazelInvocationUpdate) SetSourceControl(s *SourceControl) *BazelInvocationUpdate {
+	return biu.SetSourceControlID(s.ID)
+}
+
 // Mutation returns the BazelInvocationMutation object of the builder.
 func (biu *BazelInvocationUpdate) Mutation() *BazelInvocationMutation {
 	return biu.mutation
@@ -516,6 +536,12 @@ func (biu *BazelInvocationUpdate) RemoveTargets(t ...*TargetPair) *BazelInvocati
 		ids[i] = t[i].ID
 	}
 	return biu.RemoveTargetIDs(ids...)
+}
+
+// ClearSourceControl clears the "source_control" edge to the SourceControl entity.
+func (biu *BazelInvocationUpdate) ClearSourceControl() *BazelInvocationUpdate {
+	biu.mutation.ClearSourceControl()
+	return biu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -870,6 +896,35 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biu.mutation.SourceControlCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.SourceControlTable,
+			Columns: []string{bazelinvocation.SourceControlColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.SourceControlIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.SourceControlTable,
+			Columns: []string{bazelinvocation.SourceControlColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -1294,6 +1349,25 @@ func (biuo *BazelInvocationUpdateOne) AddTargets(t ...*TargetPair) *BazelInvocat
 	return biuo.AddTargetIDs(ids...)
 }
 
+// SetSourceControlID sets the "source_control" edge to the SourceControl entity by ID.
+func (biuo *BazelInvocationUpdateOne) SetSourceControlID(id int) *BazelInvocationUpdateOne {
+	biuo.mutation.SetSourceControlID(id)
+	return biuo
+}
+
+// SetNillableSourceControlID sets the "source_control" edge to the SourceControl entity by ID if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableSourceControlID(id *int) *BazelInvocationUpdateOne {
+	if id != nil {
+		biuo = biuo.SetSourceControlID(*id)
+	}
+	return biuo
+}
+
+// SetSourceControl sets the "source_control" edge to the SourceControl entity.
+func (biuo *BazelInvocationUpdateOne) SetSourceControl(s *SourceControl) *BazelInvocationUpdateOne {
+	return biuo.SetSourceControlID(s.ID)
+}
+
 // Mutation returns the BazelInvocationMutation object of the builder.
 func (biuo *BazelInvocationUpdateOne) Mutation() *BazelInvocationMutation {
 	return biuo.mutation
@@ -1378,6 +1452,12 @@ func (biuo *BazelInvocationUpdateOne) RemoveTargets(t ...*TargetPair) *BazelInvo
 		ids[i] = t[i].ID
 	}
 	return biuo.RemoveTargetIDs(ids...)
+}
+
+// ClearSourceControl clears the "source_control" edge to the SourceControl entity.
+func (biuo *BazelInvocationUpdateOne) ClearSourceControl() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearSourceControl()
+	return biuo
 }
 
 // Where appends a list predicates to the BazelInvocationUpdate builder.
@@ -1762,6 +1842,35 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biuo.mutation.SourceControlCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.SourceControlTable,
+			Columns: []string{bazelinvocation.SourceControlColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.SourceControlIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   bazelinvocation.SourceControlTable,
+			Columns: []string{bazelinvocation.SourceControlColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

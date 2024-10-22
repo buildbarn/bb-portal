@@ -66,6 +66,8 @@ type Tx struct {
 	ResourceUsage *ResourceUsageClient
 	// RunnerCount is the client for interacting with the RunnerCount builders.
 	RunnerCount *RunnerCountClient
+	// SourceControl is the client for interacting with the SourceControl builders.
+	SourceControl *SourceControlClient
 	// SystemNetworkStats is the client for interacting with the SystemNetworkStats builders.
 	SystemNetworkStats *SystemNetworkStatsClient
 	// TargetComplete is the client for interacting with the TargetComplete builders.
@@ -248,6 +250,7 @@ func (tx *Tx) init() {
 	tx.RaceStatistics = NewRaceStatisticsClient(tx.config)
 	tx.ResourceUsage = NewResourceUsageClient(tx.config)
 	tx.RunnerCount = NewRunnerCountClient(tx.config)
+	tx.SourceControl = NewSourceControlClient(tx.config)
 	tx.SystemNetworkStats = NewSystemNetworkStatsClient(tx.config)
 	tx.TargetComplete = NewTargetCompleteClient(tx.config)
 	tx.TargetConfigured = NewTargetConfiguredClient(tx.config)

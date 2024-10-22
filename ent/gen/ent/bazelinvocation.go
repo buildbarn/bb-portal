@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/pkg/summary"
 	"github.com/google/uuid"
 )
@@ -79,11 +80,13 @@ type BazelInvocationEdges struct {
 	TestCollection []*TestCollection `json:"test_collection,omitempty"`
 	// Targets holds the value of the targets edge.
 	Targets []*TargetPair `json:"targets,omitempty"`
+	// SourceControl holds the value of the source_control edge.
+	SourceControl *SourceControl `json:"source_control,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [6]bool
+	loadedTypes [7]bool
 	// totalCount holds the count of the edges above.
-	totalCount [5]map[string]int
+	totalCount [6]map[string]int
 
 	namedProblems       map[string][]*BazelInvocationProblem
 	namedTestCollection map[string][]*TestCollection
@@ -148,6 +151,17 @@ func (e BazelInvocationEdges) TargetsOrErr() ([]*TargetPair, error) {
 		return e.Targets, nil
 	}
 	return nil, &NotLoadedError{edge: "targets"}
+}
+
+// SourceControlOrErr returns the SourceControl value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BazelInvocationEdges) SourceControlOrErr() (*SourceControl, error) {
+	if e.SourceControl != nil {
+		return e.SourceControl, nil
+	} else if e.loadedTypes[6] {
+		return nil, &NotFoundError{label: sourcecontrol.Label}
+	}
+	return nil, &NotLoadedError{edge: "source_control"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -353,6 +367,11 @@ func (bi *BazelInvocation) QueryTestCollection() *TestCollectionQuery {
 // QueryTargets queries the "targets" edge of the BazelInvocation entity.
 func (bi *BazelInvocation) QueryTargets() *TargetPairQuery {
 	return NewBazelInvocationClient(bi.config).QueryTargets(bi)
+}
+
+// QuerySourceControl queries the "source_control" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QuerySourceControl() *SourceControlQuery {
+	return NewBazelInvocationClient(bi.config).QuerySourceControl(bi)
 }
 
 // Update returns a builder for updating this BazelInvocation.

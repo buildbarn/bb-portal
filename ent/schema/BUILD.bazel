@@ -30,6 +30,7 @@ go_library(
         "racestatistics.go",
         "resourceusage.go",
         "runnercount.go",
+        "sourcecontrol.go",
         "systemnetworkstats.go",
         "targetcomplete.go",
         "targetconfigured.go",

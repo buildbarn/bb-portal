@@ -58,6 +58,8 @@ const (
 	EdgeTestCollection = "test_collection"
 	// EdgeTargets holds the string denoting the targets edge name in mutations.
 	EdgeTargets = "targets"
+	// EdgeSourceControl holds the string denoting the source_control edge name in mutations.
+	EdgeSourceControl = "source_control"
 	// Table holds the table name of the bazelinvocation in the database.
 	Table = "bazel_invocations"
 	// EventFileTable is the table that holds the event_file relation/edge.
@@ -102,6 +104,13 @@ const (
 	TargetsInverseTable = "target_pairs"
 	// TargetsColumn is the table column denoting the targets relation/edge.
 	TargetsColumn = "bazel_invocation_targets"
+	// SourceControlTable is the table that holds the source_control relation/edge.
+	SourceControlTable = "source_controls"
+	// SourceControlInverseTable is the table name for the SourceControl entity.
+	// It exists in this package in order to avoid circular dependency with the "sourcecontrol" package.
+	SourceControlInverseTable = "source_controls"
+	// SourceControlColumn is the table column denoting the source_control relation/edge.
+	SourceControlColumn = "bazel_invocation_source_control"
 )
 
 // Columns holds all SQL columns for bazelinvocation fields.
@@ -293,6 +302,13 @@ func ByTargets(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newTargetsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// BySourceControlField orders the results by source_control field.
+func BySourceControlField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSourceControlStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newEventFileStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -333,5 +349,12 @@ func newTargetsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TargetsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, TargetsTable, TargetsColumn),
+	)
+}
+func newSourceControlStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(SourceControlInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, false, SourceControlTable, SourceControlColumn),
 	)
 }

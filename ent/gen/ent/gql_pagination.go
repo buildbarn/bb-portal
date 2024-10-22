@@ -41,6 +41,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
@@ -6921,6 +6922,255 @@ func (rc *RunnerCount) ToEdge(order *RunnerCountOrder) *RunnerCountEdge {
 	return &RunnerCountEdge{
 		Node:   rc,
 		Cursor: order.Field.toCursor(rc),
+	}
+}
+
+// SourceControlEdge is the edge representation of SourceControl.
+type SourceControlEdge struct {
+	Node   *SourceControl `json:"node"`
+	Cursor Cursor         `json:"cursor"`
+}
+
+// SourceControlConnection is the connection containing edges to SourceControl.
+type SourceControlConnection struct {
+	Edges      []*SourceControlEdge `json:"edges"`
+	PageInfo   PageInfo             `json:"pageInfo"`
+	TotalCount int                  `json:"totalCount"`
+}
+
+func (c *SourceControlConnection) build(nodes []*SourceControl, pager *sourcecontrolPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *SourceControl
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *SourceControl {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *SourceControl {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*SourceControlEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &SourceControlEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// SourceControlPaginateOption enables pagination customization.
+type SourceControlPaginateOption func(*sourcecontrolPager) error
+
+// WithSourceControlOrder configures pagination ordering.
+func WithSourceControlOrder(order *SourceControlOrder) SourceControlPaginateOption {
+	if order == nil {
+		order = DefaultSourceControlOrder
+	}
+	o := *order
+	return func(pager *sourcecontrolPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultSourceControlOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithSourceControlFilter configures pagination filter.
+func WithSourceControlFilter(filter func(*SourceControlQuery) (*SourceControlQuery, error)) SourceControlPaginateOption {
+	return func(pager *sourcecontrolPager) error {
+		if filter == nil {
+			return errors.New("SourceControlQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type sourcecontrolPager struct {
+	reverse bool
+	order   *SourceControlOrder
+	filter  func(*SourceControlQuery) (*SourceControlQuery, error)
+}
+
+func newSourceControlPager(opts []SourceControlPaginateOption, reverse bool) (*sourcecontrolPager, error) {
+	pager := &sourcecontrolPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultSourceControlOrder
+	}
+	return pager, nil
+}
+
+func (p *sourcecontrolPager) applyFilter(query *SourceControlQuery) (*SourceControlQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *sourcecontrolPager) toCursor(sc *SourceControl) Cursor {
+	return p.order.Field.toCursor(sc)
+}
+
+func (p *sourcecontrolPager) applyCursors(query *SourceControlQuery, after, before *Cursor) (*SourceControlQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultSourceControlOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *sourcecontrolPager) applyOrder(query *SourceControlQuery) *SourceControlQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultSourceControlOrder.Field {
+		query = query.Order(DefaultSourceControlOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *sourcecontrolPager) orderExpr(query *SourceControlQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultSourceControlOrder.Field {
+			b.Comma().Ident(DefaultSourceControlOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to SourceControl.
+func (sc *SourceControlQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...SourceControlPaginateOption,
+) (*SourceControlConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newSourceControlPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if sc, err = pager.applyFilter(sc); err != nil {
+		return nil, err
+	}
+	conn := &SourceControlConnection{Edges: []*SourceControlEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := sc.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if sc, err = pager.applyCursors(sc, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		sc.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := sc.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	sc = pager.applyOrder(sc)
+	nodes, err := sc.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+// SourceControlOrderField defines the ordering field of SourceControl.
+type SourceControlOrderField struct {
+	// Value extracts the ordering value from the given SourceControl.
+	Value    func(*SourceControl) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) sourcecontrol.OrderOption
+	toCursor func(*SourceControl) Cursor
+}
+
+// SourceControlOrder defines the ordering of SourceControl.
+type SourceControlOrder struct {
+	Direction OrderDirection           `json:"direction"`
+	Field     *SourceControlOrderField `json:"field"`
+}
+
+// DefaultSourceControlOrder is the default ordering of SourceControl.
+var DefaultSourceControlOrder = &SourceControlOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &SourceControlOrderField{
+		Value: func(sc *SourceControl) (ent.Value, error) {
+			return sc.ID, nil
+		},
+		column: sourcecontrol.FieldID,
+		toTerm: sourcecontrol.ByID,
+		toCursor: func(sc *SourceControl) Cursor {
+			return Cursor{ID: sc.ID}
+		},
+	},
+}
+
+// ToEdge converts SourceControl into SourceControlEdge.
+func (sc *SourceControl) ToEdge(order *SourceControlOrder) *SourceControlEdge {
+	if order == nil {
+		order = DefaultSourceControlOrder
+	}
+	return &SourceControlEdge{
+		Node:   sc,
+		Cursor: order.Field.toCursor(sc),
 	}
 }
 
