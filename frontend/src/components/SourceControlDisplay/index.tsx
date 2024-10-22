@@ -16,26 +16,15 @@ import Link from "next/link";
 const SourceControlDisplay: React.FC<{ sourceControlData: SourceControl | undefined | null }> = ({
     sourceControlData: sourceControlData
 }) => {
-
-    const createUnorderedList = (items: string[]): JSX.Element => {
-        return (
-            <ul>
-                {items.map((item, index) => (
-                    <li key={index}>{item}</li>
-                ))}
-            </ul>
-        );
-    };
-
+    //build urls
     const runURL = sourceControlData?.repoURL + "/actions/runs/" + "10976627244"
     const actorURL = "https://github.com/" + sourceControlData?.actor
     const branchURL = sourceControlData?.repoURL + "/tree/" + sourceControlData?.branch
     const commitURL = sourceControlData?.repoURL + "/commit/" + sourceControlData?.commitSha
-    var prref = "refs/pull/12718/merge"
-    var prParts = prref.split("/")
+    const prParts = sourceControlData?.refs?.split("/") ?? ""
     const prURL = sourceControlData?.repoURL + "/" + prParts[1] + "/" + prParts[2]
-    return (
 
+    return (
         <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
             <PortalCard type="inner" icon={<BranchesOutlined />} titleBits={["Source Control Information"]}>
                 <Row>
@@ -45,9 +34,8 @@ const SourceControlDisplay: React.FC<{ sourceControlData: SourceControl | undefi
                             <Descriptions.Item label="Branch Name"><Link target="_blank" href={branchURL}> {sourceControlData?.branch}</Link></Descriptions.Item>
                             <Descriptions.Item label="Commit SHA"><Link target="_blank" href={commitURL}>  {sourceControlData?.commitSha}</Link></Descriptions.Item>
                             <Descriptions.Item label="Actor"><Link target="_blank" href={actorURL}>  {sourceControlData?.actor}</Link></Descriptions.Item>
-                            <Descriptions.Item label="Run ID"> <Link target="_blank" href={runURL}>10976627244</Link></Descriptions.Item>
+                            <Descriptions.Item label="Run ID"> <Link target="_blank" href={runURL}>{sourceControlData?.runID}</Link></Descriptions.Item>
                             <Descriptions.Item label="Pull Request"> <Link target="_blank" href={prURL}>#{prParts[2]}</Link></Descriptions.Item>
-
                         </Descriptions>
                     </Space>
                 </Row>

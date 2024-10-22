@@ -219,6 +219,8 @@ fragment BazelInvocationInfo on BazelInvocation {
     actor
     branch
     repoURL
+    refs
+    runID
   }
 }
 `);
