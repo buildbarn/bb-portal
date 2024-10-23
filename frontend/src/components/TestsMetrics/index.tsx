@@ -75,7 +75,7 @@ const test_columns: TableColumnsType<TestDataType> = [
     {
         title: "Label",
         dataIndex: "name",
-        render: (_, record) => <Link href={"/tests/" + encodeURIComponent(record.name)}>{record.name}</Link>,
+        render: (_, record) => <Link href={"/tests/" + btoa(encodeURIComponent(record.name))}>{record.name}</Link>,
         filterSearch: true,
         filterDropdown: filterProps => (
             <SearchWidget placeholder="Target Pattern..." {...filterProps} />
