@@ -15,7 +15,7 @@ type EventFile struct {
 // Fields of the EventFile.
 func (EventFile) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("url").Unique().Immutable(),
+		field.String("url").Immutable(),
 		field.Time("mod_time"),
 		field.String("protocol"), // *.bep, *.log, etc
 		field.String("mime_type"),
