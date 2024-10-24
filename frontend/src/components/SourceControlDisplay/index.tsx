@@ -15,7 +15,7 @@ const SourceControlDisplay: React.FC<{ sourceControlData: SourceControl | undefi
     if (!ghUrl.endsWith("/")) {
         ghUrl += "/"
     }
-    const runURL = ghUrl + sourceControlData?.repoURL + "/actions/runs/" + "10976627244"
+    const runURL = ghUrl + sourceControlData?.repoURL + "/actions/runs/" + sourceControlData?.runID
     const actorURL = ghUrl + sourceControlData?.actor
     const branchURL = ghUrl + sourceControlData?.repoURL + "/tree/" + sourceControlData?.branch
     const commitURL = ghUrl + sourceControlData?.repoURL + "/commit/" + sourceControlData?.commitSha
