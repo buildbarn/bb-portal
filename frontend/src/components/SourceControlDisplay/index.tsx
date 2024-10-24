@@ -16,6 +16,7 @@ const SourceControlDisplay: React.FC<{ sourceControlData: SourceControl | undefi
         ghUrl += "/"
     }
     const runURL = ghUrl + sourceControlData?.repoURL + "/actions/runs/" + sourceControlData?.runID
+    const repoUrl = ghUrl + sourceControlData?.repoURL
     const actorURL = ghUrl + sourceControlData?.actor
     const branchURL = ghUrl + sourceControlData?.repoURL + "/tree/" + sourceControlData?.branch
     const commitURL = ghUrl + sourceControlData?.repoURL + "/commit/" + sourceControlData?.commitSha
@@ -28,8 +29,8 @@ const SourceControlDisplay: React.FC<{ sourceControlData: SourceControl | undefi
                 <Row>
                     <Space size="large">
                         <Descriptions bordered column={1}>
-                            <Descriptions.Item label="Repository URL">
-                                <Link target="_blank" href={sourceControlData?.repoURL ?? ""}>{sourceControlData?.repoURL}</Link>
+                            <Descriptions.Item label="Repository">
+                                <Link target="_blank" href={repoUrl}>{sourceControlData?.repoURL}</Link>
                             </Descriptions.Item>
                             <Descriptions.Item label="Branch Name">
                                 <Link target="_blank" href={branchURL}> {sourceControlData?.branch}</Link>
