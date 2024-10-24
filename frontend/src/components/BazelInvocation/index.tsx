@@ -11,7 +11,6 @@ import {
   TestCollection,
   TargetPair,
   BuildGraphMetrics,
-  BazelCommand,
 } from "@/graphql/__generated__/graphql";
 import styles from "../AppBar/index.module.css"
 import React from "react";
@@ -68,19 +67,19 @@ const BazelInvocation: React.FC<{
     invocationID,
     build,
     state,
-    stepLabel,
     bazelCommand,
     profile,
-    relatedFiles,
     sourceControl,
     user,
     metrics,
     testCollection,
-    targets
+    targets,
+    //stepLabel,
+    //relatedFiles,
 
   } = invocationOverview;
 
-  var buildLogs = "tmp"
+
   //data for runner metrics
   var runnerMetrics: RunnerCount[] = [];
   metrics?.actionSummary?.runnerCount?.map((item: RunnerCount) => runnerMetrics.push(item));
@@ -90,9 +89,6 @@ const BazelInvocation: React.FC<{
 
   //artifact metrics
   var artifactMetrics: ArtifactMetrics | undefined = metrics?.artifactMetrics ?? undefined;
-
-  //data for target metrics
-  var targetMetrics: TargetMetrics | undefined | null = metrics?.targetMetrics ?? undefined
 
   //memory metrics
   var memoryMetrics: MemoryMetrics | undefined = metrics?.memoryMetrics ?? undefined
@@ -107,21 +103,21 @@ const BazelInvocation: React.FC<{
   var networkMetrics: NetworkMetrics | undefined = metrics?.networkMetrics ?? undefined
   const bytesRecv = networkMetrics?.systemNetworkStats?.bytesRecv ?? 0
   const bytesSent = networkMetrics?.systemNetworkStats?.bytesSent ?? 0
-  const hideNetworkMetricsTab: boolean = bytesRecv == 0 && bytesSent == 0
 
   //test data
   var testCollections: TestCollection[] | undefined | null = testCollection
+
+  //data for target metrics
+  var targetMetrics: TargetMetrics | undefined | null = metrics?.targetMetrics ?? undefined
   var targetData: TargetPair[] | undefined | null = targets
   var targetTimes: Map<string, number> = new Map<string, number>();
-
   targetData?.map(x => { targetTimes.set(x.label ?? "", x.durationInMs ?? 0) })
 
-  //show/hide tabs
-  const testCount = testCollection?.length ?? 0
-  const hideTestsTab: boolean = testCount == 0
-  const hideTargetsTab: boolean = (targetData?.length ?? 0) == 0 ? true : false
-  const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null ? true : false
+  //logs
+  var buildLogs = "tmp"
+  const logs: string = buildLogs ?? "no build log data found..."
 
+  //build the title
   let { exitCode } = state;
   exitCode = exitCode ?? null;
   const titleBits: React.ReactNode[] = [<span key="label">User: {user?.LDAP}</span>];
@@ -133,9 +129,7 @@ const BazelInvocation: React.FC<{
     titleBits.push(<BuildStepResultTag key="result" result={exitCode?.name as BuildStepResultEnum} />);
   }
 
-  //logs
-  const logs: string = buildLogs ?? "no build log data found..."
-
+  //tabs
   var items: TabsProps['items'] = [
     {
       key: 'BazelInvocationTabs-Problems',
@@ -146,14 +140,12 @@ const BazelInvocation: React.FC<{
         {exitCode === null || exitCode.code !== 0 ? (
           children
         ) : (
-
           <PortalAlert
             message="There is no debug information to display because there are no reported failures with the build step"
             type="success"
             showIcon
           />
         )}
-
       </Space>,
     },
     {
@@ -190,7 +182,6 @@ const BazelInvocation: React.FC<{
         <ActionDataMetrics acMetrics={acMetrics} />
       </Space>,
     },
-
     {
       key: 'BazelInvocationTabs-Artifacts',
       label: 'Artifacts',
@@ -215,7 +206,6 @@ const BazelInvocation: React.FC<{
         <TimingMetricsDisplay timingMetrics={timingMetrics} buildGraphMetrics={buildGraphMetrics} />
       </Space>,
     },
-
     {
       key: 'BazelInvocationTabs-Targets',
       label: 'Targets',
@@ -258,25 +248,35 @@ const BazelInvocation: React.FC<{
     },
   ];
 
-  const hideLogs = true //hide the logs tab for now
-  if (hideLogs == true) {
-    var idx = items.findIndex((x, _) => x.key == "BazelInvocationTabs-Logs")
-    if (idx > -1) {
-      items.splice(idx, 1);
-    }
+  //show/hide tabs
+  interface TabShowHideDisplay {
+    hide: boolean,
+    key: string
   }
 
-  if (hideTestsTab == true) {
-    var idx = items.findIndex((x, _) => x.key == "BazelInvocationTabs-Tests")
-    if (idx > -1) {
-      items.splice(idx, 1);
-    }
-  }
+  const hideTestsTab: boolean = (testCollection?.length ?? 0) == 0
+  const hideTargetsTab: boolean = (targetData?.length ?? 0) == 0 ? true : false
+  const hideNetworkTab: boolean = bytesRecv == 0 && bytesSent == 0
+  const hideSourceControlTab: boolean = sourceControl?.runID == undefined || sourceControl.runID == null || sourceControl.runID == "" ? true : false
+  const hideLogsTab: boolean = true
+  const hideMemoryTab: boolean = (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 && (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 && (memoryMetrics?.usedHeapSizePostBuild ?? 0) == 0
 
-  if (hideNetworkMetricsTab == true) {
-    var idx = items.findIndex((x, _) => x.key == "BazelInvocationTabs-Network")
-    if (idx > -1) {
-      items.splice(idx, 1);
+  const showHideTabs: TabShowHideDisplay[] = [
+    { key: "BazelInvocationTabs-Tests", hide: hideTestsTab },
+    { key: "BazelInvocationTabs-Targets", hide: hideTargetsTab },
+    { key: "BazelInvocationTabs-Network", hide: hideNetworkTab },
+    { key: "BazelInvocationTabs-SourceControl", hide: hideSourceControlTab },
+    { key: "BazelInvocationTabs-Logs", hide: hideLogsTab },
+    { key: "BazelInvocationTabs-Memory", hide: hideMemoryTab },
+  ]
+
+  for (var i in showHideTabs) {
+    var tab = showHideTabs[i]
+    if (tab.hide == true) {
+      var idx = items.findIndex((x, _) => x.key == tab.key)
+      if (idx > -1) {
+        items.splice(idx, 1);
+      }
     }
   }
 

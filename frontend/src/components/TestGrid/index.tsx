@@ -46,7 +46,9 @@ const columns: TableColumnsType<TestGridRowDataType> = [
     title: "Label",
     dataIndex: "label",
     filterSearch: true,
-    render: (_, record) => <Link href={"tests/" + encodeURIComponent(record.label)}>{record.label}</Link>,
+    render: (_, record) =>
+
+      <Link href={"tests/" + btoa(encodeURIComponent(record.label))}>{record.label}</Link>,
     filterDropdown: filterProps => (
       <SearchWidget placeholder="Target Pattern..." {...filterProps} />
     ),
@@ -123,14 +125,11 @@ const TestGrid: React.FC<Props> = () => {
       var vars: GetTestsWithOffsetQueryVariables = {}
       if (filters['label']?.length) {
         var label = filters['label']?.[0]?.toString() ?? ""
-        console.log(label)
         vars.label = label
       } else {
         vars.label = ""
       }
-      console.log("pagination.curreent", pagination.current)
       vars.offset = ((pagination.current ?? 1) - 1) * PAGE_SIZE;
-      console.log(vars.offset)
       setVariables(vars)
     },
     [variables],

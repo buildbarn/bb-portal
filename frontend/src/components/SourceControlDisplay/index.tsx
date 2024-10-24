@@ -1,28 +1,26 @@
 import React from "react";
-import { Space, Table, Row, Col, Statistic, List, Descriptions } from 'antd';
-import { BranchesOutlined, CodeOutlined, DeploymentUnitOutlined, SearchOutlined } from '@ant-design/icons';
-import type { StatisticProps, TableColumnsType } from "antd/lib";
-import CountUp from 'react-countup';
-import { BazelCommand, SourceControl, TargetMetrics, TargetPair } from "@/graphql/__generated__/graphql";
+import { Space, Row, Descriptions } from 'antd';
+import { BranchesOutlined } from '@ant-design/icons';
+import { SourceControl } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
-import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
-import NullBooleanTag from "../NullableBooleanTag";
-import styles from "../../theme/theme.module.css"
-import { millisecondsToTime } from "../Utilities/time";
 import Link from "next/link";
-
+import { env } from 'next-runtime-env';
 
 
 const SourceControlDisplay: React.FC<{ sourceControlData: SourceControl | undefined | null }> = ({
     sourceControlData: sourceControlData
 }) => {
     //build urls
-    const runURL = sourceControlData?.repoURL + "/actions/runs/" + "10976627244"
-    const actorURL = "https://github.com/" + sourceControlData?.actor
-    const branchURL = sourceControlData?.repoURL + "/tree/" + sourceControlData?.branch
-    const commitURL = sourceControlData?.repoURL + "/commit/" + sourceControlData?.commitSha
+    var ghUrl = env('NEXT_PUBLIC_GITHUB_URL') ?? "https://github.com/"
+    if (!ghUrl.endsWith("/")) {
+        ghUrl += "/"
+    }
+    const runURL = ghUrl + sourceControlData?.repoURL + "/actions/runs/" + "10976627244"
+    const actorURL = ghUrl + sourceControlData?.actor
+    const branchURL = ghUrl + sourceControlData?.repoURL + "/tree/" + sourceControlData?.branch
+    const commitURL = ghUrl + sourceControlData?.repoURL + "/commit/" + sourceControlData?.commitSha
     const prParts = sourceControlData?.refs?.split("/") ?? ""
-    const prURL = sourceControlData?.repoURL + "/" + prParts[1] + "/" + prParts[2]
+    const prURL = ghUrl + sourceControlData?.repoURL + "/" + prParts[1] + "/" + prParts[2]
 
     return (
         <Space direction="vertical" size="middle" style={{ display: 'flex' }} >

@@ -39,35 +39,35 @@ const TestGridBtn: React.FC<Props> = ({ status, invocationId }) => {
 
         ),
         PASSED: (
-            <Button href={"/bazel-invocations/" + invocationId} icon={<CheckCircleFilled />} color="success" className={themeStyles.colorSuccess} />
+            <Button href={"/bazel-invocations/" + invocationId} icon={<CheckCircleFilled />} className={themeStyles.colorSuccess} />
 
         ),
         FLAKY: (
-            <Button icon={<InfoCircleFilled />} color="warning" className={themeStyles.colorAborted} />
+            <Button href={"/bazel-invocations/" + invocationId} icon={<InfoCircleFilled />} className={themeStyles.colorAborted} />
 
         ),
         FAILED: (
-            <Button icon={<CloseCircleFilled />} color="danger" className={themeStyles.colorFailure} />
+            <Button href={"/bazel-invocations/" + invocationId} icon={<CloseCircleFilled />} color="danger" className={themeStyles.colorFailure} />
 
         ),
         TIMEOUT: (
-            <Button icon={<MinusCircleFilled />} color="danger" className={themeStyles.colorFailure} />
+            <Button href={"/bazel-invocations/" + invocationId} icon={<MinusCircleFilled />} color="danger" className={themeStyles.colorFailure} />
 
         ),
         INCOMPLETE: (
-            <Button icon={<StopOutlined />} color="secondary" className={themeStyles.colorAborted} />
+            <Button href={"/bazel-invocations/" + invocationId} icon={<StopOutlined />} className={themeStyles.colorAborted} />
 
         ),
         REMOTE_FAILURE: (
-            <Button icon={<CloseCircleFilled />} color="danger" className={themeStyles.colorFailure} />
+            <Button href={"/bazel-invocations/" + invocationId} icon={<CloseCircleFilled />} color="danger" className={themeStyles.colorFailure} />
 
         ),
         FAILED_TO_BUILD: (
-            <Button icon={<QuestionCircleFilled />} color="danger" className={themeStyles.colorFailure} />
+            <Button href={"/bazel-invocations/" + invocationId} icon={<QuestionCircleFilled />} color="danger" className={themeStyles.colorFailure} />
 
         ),
         TOOL_HALTED_BEFORE_TESTING: (
-            <Button icon={<QuestionCircleFilled />} color="secondary" className={themeStyles.colorDisabled} />
+            <Button href={"/bazel-invocations/" + invocationId} icon={<QuestionCircleFilled />} className={themeStyles.colorDisabled} />
         ),
     };
 

@@ -14,7 +14,7 @@ interface PageParams {
 }
 
 const Page: React.FC<PageParams> = ({ params }) => {
-    const label = decodeURIComponent(params.slug)
+    const label = decodeURIComponent(atob(decodeURIComponent(params.slug)))
     return (
         <Content
             content={
