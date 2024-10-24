@@ -15,13 +15,13 @@ const SourceControlDisplay: React.FC<{ sourceControlData: SourceControl | undefi
     if (!ghUrl.endsWith("/")) {
         ghUrl += "/"
     }
-    const runURL = ghUrl + sourceControlData?.repoURL + "/actions/runs/" + sourceControlData?.runID
     const repoUrl = ghUrl + sourceControlData?.repoURL
+    const runURL = repoUrl + "/actions/runs/" + sourceControlData?.runID
     const actorURL = ghUrl + sourceControlData?.actor
-    const branchURL = ghUrl + sourceControlData?.repoURL + "/tree/" + sourceControlData?.branch
-    const commitURL = ghUrl + sourceControlData?.repoURL + "/commit/" + sourceControlData?.commitSha
+    const branchURL = repoUrl + "/tree/" + sourceControlData?.branch
+    const commitURL = repoUrl + "/commit/" + sourceControlData?.commitSha
     const prParts = sourceControlData?.refs?.split("/") ?? ""
-    const prURL = ghUrl + sourceControlData?.repoURL + "/" + prParts[1] + "/" + prParts[2]
+    const prURL = repoUrl + "/" + prParts[1] + "/" + prParts[2]
 
     return (
         <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
@@ -32,7 +32,7 @@ const SourceControlDisplay: React.FC<{ sourceControlData: SourceControl | undefi
                             <Descriptions.Item label="Repository">
                                 <Link target="_blank" href={repoUrl}>{sourceControlData?.repoURL}</Link>
                             </Descriptions.Item>
-                            <Descriptions.Item label="Branch Name">
+                            <Descriptions.Item label="Branch">
                                 <Link target="_blank" href={branchURL}> {sourceControlData?.branch}</Link>
                             </Descriptions.Item>
                             <Descriptions.Item label="Commit SHA">
