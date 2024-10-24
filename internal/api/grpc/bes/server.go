@@ -52,7 +52,7 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 			StreamId:       streamID,
 			SequenceNumber: sequenceNumber,
 		}); err != nil {
-			slog.ErrorContext(stream.Context(), "Send failed", "err", err)
+			slog.ErrorContext(stream.Context(), "Send failed", "err", err, "streamid", streamID, "sequenceNumber", sequenceNumber)
 		}
 	}
 
