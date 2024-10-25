@@ -58,27 +58,22 @@ func (c *buildEventChannel) Finalize() error {
 	// defer the ctx so its not reaped when the client closes the connection
 	ctx, cancel := context.WithTimeout(context.Background(), time.Hour*24)
 	defer cancel()
-
 	summaryReport, err := c.summarizer.FinishProcessing()
 	if err != nil {
 		slog.ErrorContext(c.ctx, "FinishProcessing failed", "err", err)
 		cancel()
 		return err
 	}
-
 	// Hack for eventFile being required
 	summaryReport.EventFileURL = fmt.Sprintf(
 		"grpc://localhost:8082/google.devtools.build.v1/PublishLifecycleEvent?invocationId=%s&buildID=%s&component=%s",
 		c.streamID.GetInvocationId(), c.streamID.GetBuildId(), c.streamID.GetComponent(),
 	)
-
 	slog.InfoContext(c.ctx, "Saving invocation",
 		"InvocationId", c.streamID.GetInvocationId(),
 		"BuildId", c.streamID.GetBuildId(),
 		"Component", c.streamID.GetComponent())
-
 	startTime := time.Now()
-
 	// try to get the invocation id
 	if summaryReport.InvocationID == "" {
 		summaryReport.InvocationID = c.streamID.GetInvocationId()
@@ -87,19 +82,15 @@ func (c *buildEventChannel) Finalize() error {
 			"buildId", c.streamID.GetBuildId(),
 			"component", c.streamID.GetComponent())
 	}
-
 	invocation, err := c.workflow.SaveSummary(ctx, summaryReport)
 	if err != nil {
 		slog.ErrorContext(ctx, "SaveSummary failed", "err", err)
 		cancel()
 		return err
 	}
-
 	cancel()
-
 	endTime := time.Now()
 	elapsedTime := endTime.Sub(startTime)
-
 	slog.InfoContext(c.ctx, fmt.Sprintf("Saved invocation in %v", elapsedTime.String()), "id", invocation.InvocationID)
 	return nil
 }
