@@ -62,6 +62,7 @@ func (c *buildEventChannel) Finalize() error {
 	summaryReport, err := c.summarizer.FinishProcessing()
 	if err != nil {
 		slog.ErrorContext(c.ctx, "FinishProcessing failed", "err", err)
+		cancel()
 		return err
 	}
 
