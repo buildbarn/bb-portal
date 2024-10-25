@@ -30,35 +30,35 @@ type SaveActor struct {
 
 // SaveSummary saves an invocation summary to the database.
 func (act SaveActor) SaveSummary(ctx context.Context, summary *summary.Summary) (*ent.BazelInvocation, error) {
+	// errors := []error{}
+	if summary.InvocationID == "" {
+		slog.ErrorContext(ctx, "No Invocation ID Found on summary", "ctx.Err()", ctx.Err())
+		return nil, fmt.Errorf("no Invocation ID Found on summary")
+	}
 	eventFile, err := act.saveEventFile(ctx, summary)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to save event file", "id", summary.InvocationID, "err", err)
-		return nil, fmt.Errorf("could not save EventFile: %w", err)
 	}
 	buildRecord, err := act.findOrCreateBuild(ctx, summary)
 	if err != nil {
-		slog.ErrorContext(ctx, "failed to find or create build", "id", summary.InvocationID, "err", err)
-		return nil, err
+		slog.ErrorContext(ctx, "failed to find or create build", "summary.InvocationId", summary.InvocationID, "err", err)
 	}
 	metrics, err := act.saveMetrics(ctx, summary.Metrics)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to save metrics", "id", summary.InvocationID, "err", err)
-		return nil, fmt.Errorf("could not save Metrics: %w", err)
 	}
 	targets, err := act.saveTargets(ctx, summary)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to save targets", "id", summary.InvocationID, "err", err)
-		return nil, fmt.Errorf("could not save Targets: %w", err)
 	}
 	tests, err := act.saveTests(ctx, summary)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to save tests", "id", summary.InvocationID, "err", err)
-		return nil, fmt.Errorf("could not save test results: %w", err)
+		tests = nil
 	}
 	sourcecontrol, err := act.saveSourceControl(ctx, summary)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to save source control information", "id", summary.InvocationID, "err", err)
-		return nil, fmt.Errorf("could not save source control information: %w", err)
 	}
 	bazelInvocation, err := act.saveBazelInvocation(ctx, summary, eventFile, buildRecord, metrics, tests, targets, sourcecontrol)
 	if err != nil {
@@ -139,6 +139,9 @@ func (act SaveActor) saveBazelInvocation(
 	targets []*ent.TargetPair,
 	sourcecontrol *ent.SourceControl,
 ) (*ent.BazelInvocation, error) {
+	if summary == nil {
+		return nil, fmt.Errorf("no summary object provided")
+	}
 	uniqueID, err := uuid.Parse(summary.InvocationID)
 	if err != nil {
 		return nil, err
@@ -158,15 +161,24 @@ func (act SaveActor) saveBazelInvocation(
 		SetConfigurationMnemonic(summary.ConfigrationMnemonic).
 		SetPlatformName(summary.PlatformName).
 		SetNumFetches(summary.NumFetches).
-		SetBuildLogs(summary.BuildLogs.String()).
 		SetUserLdap(summary.UserLDAP).
-		SetRelatedFiles(summary.RelatedFiles).
-		SetEventFile(eventFile).
-		SetMetrics(metrics).
-		SetSourceControl(sourcecontrol).
-		AddTestCollection(tests...).
-		AddTargets(targets...)
+		SetRelatedFiles(summary.RelatedFiles)
 
+	if eventFile != nil {
+		create = create.SetEventFile(eventFile)
+	}
+	if metrics != nil {
+		create = create.SetMetrics(metrics)
+	}
+	if tests != nil {
+		create = create.AddTestCollection(tests...)
+	}
+	if targets != nil {
+		create = create.AddTargets(targets...)
+	}
+	if sourcecontrol != nil {
+		create = create.SetSourceControl(sourcecontrol)
+	}
 	if buildRecord != nil {
 		create = create.SetBuild(buildRecord)
 	}
@@ -210,7 +222,7 @@ func (act SaveActor) saveTestFiles(ctx context.Context, files []summary.TestFile
 func (act SaveActor) saveOutputGroup(ctx context.Context, ouputGroup summary.OutputGroup) (*ent.OutputGroup, error) {
 	inlineFiles, err := act.saveTestFiles(ctx, ouputGroup.InlineFiles)
 	if err != nil {
-		slog.ErrorContext(ctx, "failed to save output group", "id", "err", err)
+		slog.ErrorContext(ctx, "failed to save output group", "err", err)
 		return nil, err
 	}
 
