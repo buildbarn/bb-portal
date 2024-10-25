@@ -88,7 +88,7 @@ func (c *buildEventChannel) Finalize() error {
 			"component", c.streamID.GetComponent())
 	}
 
-	invocation, err := c.workflow.SaveSummary(ctx, summaryReport) // will c.workflow still be there?
+	invocation, err := c.workflow.SaveSummary(ctx, summaryReport)
 	if err != nil {
 		slog.ErrorContext(ctx, "SaveSummary failed", "err", err)
 		cancel()
