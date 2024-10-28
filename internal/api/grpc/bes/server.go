@@ -53,13 +53,16 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 			SequenceNumber: sequenceNumber,
 		}); err != nil {
 
-			// with the option --bes_uplod_mode=fully_async or nowait_for_upload_complete
+			// with the option --bes_upload_mode=fully_async or nowait_for_upload_complete
 			// its not an error when the send fails. the bes gracefully terminated the close
 			// i.e. sent an EOF. for long running builds that take a while to save to the db (> 1s)
 			// the context is processed in the background, so by the time we are acknowledging these
 			// requests, the client connection may have already timed out and these errors can be
 			// safely ignored
-			if isClosing && (err.Error() != "rpc error: code = Unavailable desc = transport is closing") {
+			grpcErr := status.Convert(err)
+			if isClosing &&
+				grpcErr.Code() == codes.Unavailable &&
+				grpcErr.Message() == "transport is closing" {
 				return
 			}
 
