@@ -30,7 +30,7 @@ const BazelInvocationsTable: React.FC<Props> = ({ height }) => {
   const { loading, data, previousData, error } = useQuery(FIND_BAZEL_INVOCATIONS_QUERY, {
     variables,
     pollInterval: 120000,
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: "network-only",
   });
 
   const onChange: TableProps<BazelInvocationNodeFragment>['onChange'] = useCallback(

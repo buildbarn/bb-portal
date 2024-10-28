@@ -348,7 +348,7 @@ var (
 	// EventFilesColumns holds the columns for the "event_files" table.
 	EventFilesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "url", Type: field.TypeString, Unique: true},
+		{Name: "url", Type: field.TypeString},
 		{Name: "mod_time", Type: field.TypeTime},
 		{Name: "protocol", Type: field.TypeString},
 		{Name: "mime_type", Type: field.TypeString},

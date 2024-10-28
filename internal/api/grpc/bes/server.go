@@ -47,12 +47,35 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 	// We'll want to ack these once all events are received, as we don't support resumption.
 	seqNrs := make([]int64, 0)
 
-	ack := func(streamID *build.StreamId, sequenceNumber int64) {
+	ack := func(streamID *build.StreamId, sequenceNumber int64, isClosing bool) {
 		if err := stream.Send(&build.PublishBuildToolEventStreamResponse{
 			StreamId:       streamID,
 			SequenceNumber: sequenceNumber,
 		}); err != nil {
-			slog.ErrorContext(stream.Context(), "Send failed", "err", err)
+
+			// with the option --bes_upload_mode=fully_async or nowait_for_upload_complete
+			// its not an error when the send fails. the bes gracefully terminated the close
+			// i.e. sent an EOF. for long running builds that take a while to save to the db (> 1s)
+			// the context is processed in the background, so by the time we are acknowledging these
+			// requests, the client connection may have already timed out and these errors can be
+			// safely ignored
+			grpcErr := status.Convert(err)
+			if isClosing &&
+				grpcErr.Code() == codes.Unavailable &&
+				grpcErr.Message() == "transport is closing" {
+				return
+			}
+
+			slog.ErrorContext(
+				stream.Context(),
+				"Send failed",
+				"err",
+				err,
+				"streamid",
+				streamID,
+				"sequenceNumber",
+				sequenceNumber,
+			)
 		}
 	}
 
@@ -77,7 +100,9 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 		case err := <-errCh:
 			if err == io.EOF {
 				slog.InfoContext(stream.Context(), "Stream finished", "event", stream.Context())
+
 				if eventCh == nil {
+					slog.WarnContext(stream.Context(), "No event channel found for stream event", "event", stream.Context())
 					return nil
 				}
 
@@ -100,7 +125,7 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 
 				// Ack all events
 				for _, seqNr := range seqNrs {
-					ack(streamID, seqNr)
+					ack(streamID, seqNr, true)
 				}
 
 				return nil
