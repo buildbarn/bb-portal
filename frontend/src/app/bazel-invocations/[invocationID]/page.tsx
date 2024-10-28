@@ -40,6 +40,11 @@ const BazelInvocationsContent: React.FC<Props> = ({ loading, error, networkStatu
       </Spin>
     );
   }
+  if (loading && networkStatus !== NetworkStatus.poll) {
+    return (
+      <Spin />
+    );
+  }
   if (error && invocationInfo) {
     return (
       <>
