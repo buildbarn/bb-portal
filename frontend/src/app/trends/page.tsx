@@ -15,7 +15,7 @@ import CountUp from 'react-countup';
 const Page: React.FC = () => {
 
     const [variables, setVariables] = useState<FindBuildTimesQueryVariables>({
-        first: 10000,
+        first: 1000,
     });
 
     const { loading, data, previousData, error } = useQuery(FIND_BUILD_DURATIONS, {
@@ -52,7 +52,11 @@ const Page: React.FC = () => {
             to: x.endedAt,
             duration: (new Date(x.endedAt).getTime() - new Date(x.startedAt).getTime())
         }
-        dataPoints.push(point)
+        // if there are empty/nil dates they get set to max epoch start time
+        // which throws the graph off.
+        if (point.duration > 0) {
+            dataPoints.push(point)
+        }
     });
 
     const formatter: StatisticProps['formatter'] = (value) => (
@@ -84,14 +88,14 @@ const Page: React.FC = () => {
                         <PortalCard
                             type='inner'
                             icon={<ClockCircleFilled />}
-                            titleBits={[<span>Invocation Durations <Badge count={data?.findBazelInvocations.totalCount} /> </span>]}>
+                            titleBits={[<span>Invocation Durations</span>]}>
                             <Row>
                                 <Space size="large">
+                                    <Statistic title="Total" value={data?.findBazelInvocations.totalCount} formatter={formatter} valueStyle={{ color: "#82ca9d" }} />
                                     <Statistic title="Average" value={avg} formatter={formatter} valueStyle={{ color: "#82ca9d" }} />
                                     <Statistic title="Median" value={median} formatter={formatter} valueStyle={{ color: "#8884d8" }} />
                                     <Statistic title="Max" value={max} formatter={formatter} />
                                     <Statistic title="Min" value={min} formatter={formatter} />
-
                                 </Space>
                             </Row>
                             <Row>
