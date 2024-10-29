@@ -1,19 +1,19 @@
 import React from 'react';
 import linkifyHtml from 'linkify-html';
-import {Descriptions, Space, Typography} from 'antd';
+import { Descriptions, Space, Typography } from 'antd';
 import themeStyles from '@/theme/theme.module.css';
-import {FindBuildByUuidQuery} from '@/graphql/__generated__/graphql';
+import { FindBuildByUuidQuery } from '@/graphql/__generated__/graphql';
 import PortalCard from '@/components/PortalCard';
 import PortalAlert from '@/components/PortalAlert';
 import BuildStepStatusIcon from '@/components/BuildStepStatusIcon';
-import {getFragmentData} from '@/graphql/__generated__';
+import { getFragmentData } from '@/graphql/__generated__';
 import {
   BAZEL_INVOCATION_FRAGMENT,
   FULL_BAZEL_INVOCATION_DETAILS, PROBLEM_INFO_FRAGMENT
 } from "@/app/bazel-invocations/[invocationID]/index.graphql";
 import byResultRank from "@/components/Build/index.helpers";
-import {maxBy} from "lodash";
-import {BuildStepResultEnum} from "@/components/BuildStepResultTag";
+import { maxBy } from "lodash";
+import { BuildStepResultEnum } from "@/components/BuildStepResultTag";
 import BazelInvocation from "@/components/BazelInvocation";
 import BuildProblems from "@/components/Problems";
 
@@ -67,16 +67,16 @@ const Build: React.FC<Props> = ({ buildQueryResults, buildStepToDisplayID, inner
             {
               invocations?.map(invocation => {
                 const invocationOverview = getFragmentData(BAZEL_INVOCATION_FRAGMENT, invocation)
-                const problems = invocation.problems.map(p => getFragmentData(PROBLEM_INFO_FRAGMENT, p))
+                //const problems = invocation.problems.map(p => getFragmentData(PROBLEM_INFO_FRAGMENT, p))
                 return (
                   <BazelInvocation
                     key={invocationOverview.invocationID}
                     invocationOverview={invocationOverview}
-                    problems={problems}
+
                     isNestedWithinBuildCard
                   >
                     <BuildProblems
-                      problems={problems}
+                      problems={[]}
                     />
                   </BazelInvocation>
                 );

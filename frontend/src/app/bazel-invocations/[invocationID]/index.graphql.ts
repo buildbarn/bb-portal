@@ -287,14 +287,9 @@ fragment BlobReferenceInfo on BlobReference {
 
 export const FULL_BAZEL_INVOCATION_DETAILS = gql(/* GraphQL */ `
     fragment FullBazelInvocationDetails on BazelInvocation {
-      problems {
-        ...ProblemInfo
-      }
       ...BazelInvocationInfo
     }
 `);
-
-
 
 
 export const GET_ACTION_PROBLEM = gql(/* GraphQL */ `

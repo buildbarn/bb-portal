@@ -83,7 +83,7 @@ const Page: React.FC<PageParams> = ({ params }) => {
 
   const invocation = getFragmentData(FULL_BAZEL_INVOCATION_DETAILS, data?.bazelInvocation);
   const invocationOverview = getFragmentData(BAZEL_INVOCATION_FRAGMENT, invocation)
-  const problems = invocation?.problems.map(p => getFragmentData(PROBLEM_INFO_FRAGMENT, p))
+  //const problems = invocation?.problems.map(p => getFragmentData(PROBLEM_INFO_FRAGMENT, p))
 
   const stop = shouldStopPolling(invocation);
   useEffect(() => {
@@ -96,7 +96,7 @@ const Page: React.FC<PageParams> = ({ params }) => {
 
   return (
     <Content
-      content={<BazelInvocationsContent loading={loading} error={error} networkStatus={networkStatus} invocationInfo={invocationOverview as BazelInvocationInfoFragment} problems={problems ?? []} />}
+      content={<BazelInvocationsContent loading={loading} error={error} networkStatus={networkStatus} invocationInfo={invocationOverview as BazelInvocationInfoFragment} problems={[]} />}
     />
   );
 }

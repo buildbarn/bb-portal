@@ -35,6 +35,7 @@ import {
   HddOutlined,
   CodeOutlined,
   BranchesOutlined,
+  InfoCircleFilled,
 } from "@ant-design/icons";
 import themeStyles from '@/theme/theme.module.css';
 import { debugMode } from "@/components/Utilities/debugMode";
@@ -55,14 +56,15 @@ import TestMetricsDisplay from "../TestsMetrics";
 import { env } from 'next-runtime-env';
 import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
+import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
 
 
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
-  problems?: ProblemInfoFragment[] | null | undefined;
+  //problems?: ProblemInfoFragment[] | null | undefined;
   children?: React.ReactNode;
   isNestedWithinBuildCard?: boolean;
-}> = ({ invocationOverview, problems, children, isNestedWithinBuildCard }) => {
+}> = ({ invocationOverview, children, isNestedWithinBuildCard }) => {
   const {
     invocationID,
     build,
@@ -132,20 +134,23 @@ const BazelInvocation: React.FC<{
   //tabs
   var items: TabsProps['items'] = [
     {
-      key: 'BazelInvocationTabs-Problems',
-      label: 'Problems',
-      icon: <ExclamationCircleOutlined />,
+      key: 'BazelInvocationTabs-Overview',
+      label: 'Overview',
+      icon: <InfoCircleFilled />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
-        {debugMode() && <DebugInfo invocationId={invocationID} exitCode={exitCode} />}
-        {exitCode === null || exitCode.code !== 0 ? (
-          children
-        ) : (
-          <PortalAlert
-            message="There is no debug information to display because there are no reported failures with the build step"
-            type="success"
-            showIcon
-          />
-        )}
+        <PortalCard type="inner" icon={<FileSearchOutlined />} titleBits={["Invocation Overview"]}>
+          <InvocationOverviewDisplay
+            command={[bazelCommand.executable, bazelCommand.command, bazelCommand.residual, bazelCommand.explicitCmdLine].join(" ")}
+            targets={targetTimes.size}
+            cpu="k8s"
+            user={user?.LDAP ?? ""}
+            invocationId={invocationID}
+            configuration="k8s-fast-build"
+            numFetches={10}
+            startedAt={invocationOverview.startedAt}
+            endedAt={invocationOverview.endedAt}
+            status={state.exitCode?.name ?? ""} />
+        </PortalCard>
       </Space>,
     },
     {
@@ -246,6 +251,23 @@ const BazelInvocation: React.FC<{
         <SourceControlDisplay sourceControlData={sourceControl} />
       </Space>,
     },
+    {
+      key: 'BazelInvocationTabs-Problems',
+      label: 'Problems',
+      icon: <ExclamationCircleOutlined />,
+      children: <Space direction="vertical" size="middle" className={themeStyles.space}>
+        {debugMode() && <DebugInfo invocationId={invocationID} exitCode={exitCode} />}
+        {exitCode === null || exitCode.code !== 0 ? (
+          children
+        ) : (
+          <PortalAlert
+            message="There is no debug information to display because there are no reported failures with the build step"
+            type="success"
+            showIcon
+          />
+        )}
+      </Space>,
+    },
   ];
 
   //show/hide tabs
@@ -260,6 +282,7 @@ const BazelInvocation: React.FC<{
   const hideSourceControlTab: boolean = sourceControl?.runID == undefined || sourceControl.runID == null || sourceControl.runID == "" ? true : false
   const hideLogsTab: boolean = true
   const hideMemoryTab: boolean = (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 && (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 && (memoryMetrics?.usedHeapSizePostBuild ?? 0) == 0
+  const hideProblemsTab: boolean = exitCode?.name == "SUCCESS"
 
   const showHideTabs: TabShowHideDisplay[] = [
     { key: "BazelInvocationTabs-Tests", hide: hideTestsTab },
@@ -291,11 +314,11 @@ const BazelInvocation: React.FC<{
     );
   }
 
-  if (problems?.length) {
-    extraBits.push(
-      <CopyTextButton buttonText="Copy Problems" copyText={problems.map(problem => problem.label).join(' ')} />
-    );
-  }
+  // if (problems?.length) {
+  //   extraBits.push(
+  //     <CopyTextButton buttonText="Copy Problems" copyText={problems.map(problem => problem.label).join(' ')} />
+  //   );
+  // }
 
   if (!isNestedWithinBuildCard && build?.buildUUID) {
     extraBits.unshift(<span key="build">Build <Link href={`/builds/${build.buildUUID}`}>{build.buildUUID}</Link></span>);

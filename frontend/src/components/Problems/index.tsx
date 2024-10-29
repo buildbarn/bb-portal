@@ -1,11 +1,12 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
-import { Collapse, CollapseProps } from 'antd';
+import { Button, Collapse, CollapseProps } from 'antd';
 import CopyTextButton from '@/components/CopyTextButton';
 import PortalAlert from '@/components/PortalAlert';
 import themeStyles from '@/theme/theme.module.css';
-import {ProblemInfoFragment} from "@/graphql/__generated__/graphql";
-import BuildProblem, {BuildProblemLabel} from "@/components/Problems/BuildProblem";
+import { ProblemInfoFragment } from "@/graphql/__generated__/graphql";
+import BuildProblem, { BuildProblemLabel } from "@/components/Problems/BuildProblem";
+import { ExclamationCircleFilled } from '@ant-design/icons';
 
 interface Props {
   problems?: ProblemInfoFragment[];
@@ -19,11 +20,15 @@ export const CopyAllProblemLabels: React.FC<{ problems: ProblemInfoFragment[] }>
 const BuildProblems: React.FC<Props> = ({ problems }) => {
   if (!problems || problems?.length === 0) {
     return (
-      <PortalAlert
-        message="There is no reported debug information to display for this failure"
-        type="warning"
-        showIcon
-      />
+      <div>
+        <PortalAlert
+          message="There are reported errors for this invocation."
+          type="warning"
+          showIcon
+        />
+
+        Click here to view error details
+      </div>
     );
   }
 
