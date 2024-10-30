@@ -11,6 +11,8 @@
       "startupOptions": []
     },
     "build": null,
+    "configurationMnemonic": "darwin_arm64-fastbuild",
+    "cpu": "darwin_arm64",
     "endedAt": "2024-05-03T00:24:16.367Z",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjI=",
     "invocationID": "08ae089d-4c85-405c-83fc-dbe9fc1dc942",
@@ -188,21 +190,7 @@
         "wallTimeInMs": 960
       }
     },
-    "problems": [
-      {
-        "__typename": "ActionProblem",
-        "id": "QWN0aW9uUHJvYmxlbTox",
-        "label": "//next.js/pages:pages",
-        "stderr": null,
-        "stdout": {
-          "availabilityStatus": "PROCESSING",
-          "downloadURL": "/api/v1/blobs/1/stdout",
-          "name": "stdout",
-          "sizeInBytes": 0
-        },
-        "type": "TsProject"
-      }
-    ],
+    "numFetches": 0,
     "profile": null,
     "relatedFiles": [
       {

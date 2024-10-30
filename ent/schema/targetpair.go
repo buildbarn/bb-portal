@@ -1,7 +1,9 @@
 package schema
 
 import (
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -15,17 +17,23 @@ type TargetPair struct {
 func (TargetPair) Fields() []ent.Field {
 	return []ent.Field{
 		// The label of the target ex: //foo:bar.
-		field.String("label").Optional(),
+		field.String("label").
+			Optional(),
 
 		// Duration in Milliseconds.
 		// Time from target configured message received and processed until target completed message received and processed, calculated on build complete
-		field.Int64("duration_in_ms").Optional(),
+		field.Int64("duration_in_ms").
+			Optional().
+			Annotations(entgql.OrderField("DURATION")),
 
 		// Overall success of the target (defaults to false).
-		field.Bool("success").Optional().Default(false),
+		field.Bool("success").
+			Optional().
+			Default(false),
 
 		// The target kind if available.
-		field.String("target_kind").Optional(),
+		field.String("target_kind").
+			Optional(),
 
 		// The size of the test, if the target is a test target. Unset otherwise.
 		field.Enum("test_size").
@@ -70,5 +78,13 @@ func (TargetPair) Edges() []ent.Edge {
 		// Edge to the target completed object.
 		edge.To("completion", TargetComplete.Type).
 			Unique(),
+	}
+}
+
+// Annotations of the TargetPair
+func (TargetPair) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entgql.RelayConnection(),
+		entgql.QueryField("findTargets"),
 	}
 }

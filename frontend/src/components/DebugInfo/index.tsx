@@ -10,6 +10,7 @@ interface Props {
 }
 
 const DebugInfo: React.FC<Props> = ({ invocationId, exitCode }) => {
+
   return (
     <Collapse
       bordered={false}

@@ -8,6 +8,24 @@ export const LOAD_FULL_BAZEL_INVOCATION_DETAILS = gql(/* GraphQL */ `
   }
 `);
 
+export const GET_PROBLEM_DETAILS = gql(/* GraphQL */ `
+  query GetProblemDetails($invocationID: String!) {
+    bazelInvocation(invocationId: $invocationID) {
+      ...ProblemDetails
+    }
+  }
+`);
+
+export const PROBLEM_DETAILS_FRAGMENT = gql(/* GraphQL */`
+
+  fragment ProblemDetails on BazelInvocation{
+    problems {
+        ...ProblemInfo
+      }
+  }
+
+`)
+
 export const BAZEL_INVOCATION_FRAGMENT = gql(/* GraphQL */ `
 fragment BazelInvocationInfo on BazelInvocation {
   metrics {
@@ -212,6 +230,9 @@ fragment BazelInvocationInfo on BazelInvocation {
     }
     id
   }
+  configurationMnemonic
+  cpu
+  numFetches
   stepLabel
   sourceControl {
     id
@@ -287,14 +308,9 @@ fragment BlobReferenceInfo on BlobReference {
 
 export const FULL_BAZEL_INVOCATION_DETAILS = gql(/* GraphQL */ `
     fragment FullBazelInvocationDetails on BazelInvocation {
-      problems {
-        ...ProblemInfo
-      }
       ...BazelInvocationInfo
     }
 `);
-
-
 
 
 export const GET_ACTION_PROBLEM = gql(/* GraphQL */ `

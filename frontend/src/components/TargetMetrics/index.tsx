@@ -10,6 +10,7 @@ import NullBooleanTag from "../NullableBooleanTag";
 import TargetAbortReasonTag, { AbortReasonsEnum } from "./targetAbortReasonTag";
 import styles from "../../theme/theme.module.css"
 import { millisecondsToTime } from "../Utilities/time";
+import Link from "next/link";
 interface TargetDataType {
     key: React.Key;
     name: string;           //label
@@ -69,9 +70,10 @@ const TargetMetricsDisplay: React.FC<{
         const target_columns: TableColumnsType<TargetDataType> = [
             {
 
-                title: "Mnemonic",
+                title: "Label",
                 dataIndex: "name",
                 filterSearch: true,
+                render: (_, record) => <Link href={"/targets/" + btoa(encodeURIComponent(record.name))}>{record.name}</Link>,
                 filterDropdown: filterProps => (
                     <SearchWidget placeholder="Target Pattern..." {...filterProps} />
                 ),

@@ -376,6 +376,80 @@ func (r *queryResolver) GetTestsWithOffset(ctx context.Context, label *string, o
 	return response, nil
 }
 
+// GetTargetsWithOffset is the resolver for the GetTargetsWithOffset field.
+func (r *queryResolver) GetTargetsWithOffset(ctx context.Context, label *string, offset, limit *int, sortBy, direction *string) (*model.TargetGridResult, error) {
+	maxLimit := 10000
+	take := 10
+	skip := 0
+	if limit != nil {
+		if *limit > maxLimit {
+			return nil, fmt.Errorf("limit cannot exceed %d", maxLimit)
+		}
+		take = *limit
+	}
+	if offset != nil {
+		skip = *offset
+	}
+	orderBy := "first_seen"
+	if sortBy != nil {
+		orderBy = *sortBy
+	}
+
+	var result []*model.TargetGridRow
+	query := r.client.TargetPair.Query()
+
+	switch orderBy {
+	case "duration":
+		query = query.Order(targetpair.ByDurationInMs())
+	}
+
+	if label != nil && *label != "" {
+		query = query.Where(targetpair.LabelContains(*label))
+	}
+
+	err := query.
+		Limit(take).
+		Offset(skip).
+		GroupBy(targetpair.FieldLabel).
+		Aggregate(ent.Count(),
+			ent.As(ent.Mean(targetpair.FieldDurationInMs), "avg"),
+			ent.Sum(targetpair.FieldDurationInMs),
+			ent.Min(targetpair.FieldDurationInMs),
+			ent.Max(targetpair.FieldDurationInMs)).
+		Scan(ctx, &result)
+	if err != nil {
+		return nil, err
+	}
+	for _, item := range result {
+		lbl := *item.Label
+		cnt := *item.Count
+		passes, err := r.client.TargetPair.Query().
+			Where(targetpair.
+				And(targetpair.LabelEQ(lbl),
+					targetpair.SuccessEQ(true))).
+			Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		passRate := float64(passes / cnt)
+		item.PassRate = &passRate
+	}
+	l := r.client.TargetPair.Query()
+	if label != nil && *label != "" {
+		l = l.Where(targetpair.LabelContains(*label))
+	}
+	labels, err := l.GroupBy(targetpair.FieldLabel).Strings(ctx)
+	if err != nil {
+		return nil, err
+	}
+	totalCount := len(labels)
+	response := &model.TargetGridResult{
+		Result: result,
+		Total:  &totalCount,
+	}
+	return response, nil
+}
+
 // GetAveragePassPercentageForLabel is the resolver for the getAveragePassPercentageForLabel field.
 func (r *queryResolver) GetAveragePassPercentageForLabel(ctx context.Context, label string) (*float64, error) {
 	// TODO: maybe there is a more elegant/faster way to do this with aggregaate

@@ -13,7 +13,7 @@ import {
   BuildGraphMetrics,
 } from "@/graphql/__generated__/graphql";
 import styles from "../AppBar/index.module.css"
-import React from "react";
+import React, { useState } from "react";
 import PortalDuration from "@/components/PortalDuration";
 import PortalCard from "@/components/PortalCard";
 import { Space, Tabs, Typography } from "antd";
@@ -35,6 +35,8 @@ import {
   HddOutlined,
   CodeOutlined,
   BranchesOutlined,
+  InfoCircleFilled,
+  InfoCircleOutlined,
 } from "@ant-design/icons";
 import themeStyles from '@/theme/theme.module.css';
 import { debugMode } from "@/components/Utilities/debugMode";
@@ -55,14 +57,17 @@ import TestMetricsDisplay from "../TestsMetrics";
 import { env } from 'next-runtime-env';
 import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
+import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
+import BuildProblem from "../Problems/BuildProblem";
+import BuildProblems from "../Problems";
 
 
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
-  problems?: ProblemInfoFragment[] | null | undefined;
-  children?: React.ReactNode;
+  //problems?: ProblemInfoFragment[] | null | undefined;
+  //children?: React.ReactNode;
   isNestedWithinBuildCard?: boolean;
-}> = ({ invocationOverview, problems, children, isNestedWithinBuildCard }) => {
+}> = ({ invocationOverview, isNestedWithinBuildCard }) => {
   const {
     invocationID,
     build,
@@ -74,6 +79,9 @@ const BazelInvocation: React.FC<{
     metrics,
     testCollection,
     targets,
+    numFetches,
+    cpu,
+    configurationMnemonic
     //stepLabel,
     //relatedFiles,
 
@@ -129,23 +137,66 @@ const BazelInvocation: React.FC<{
     titleBits.push(<BuildStepResultTag key="result" result={exitCode?.name as BuildStepResultEnum} />);
   }
 
+
+  const hideTestsTab: boolean = (testCollection?.length ?? 0) == 0
+  const hideTargetsTab: boolean = (targetData?.length ?? 0) == 0 ? true : false
+  const hideNetworkTab: boolean = bytesRecv == 0 && bytesSent == 0
+  const hideSourceControlTab: boolean = sourceControl?.runID == undefined || sourceControl.runID == null || sourceControl.runID == "" ? true : false
+  const hideLogsTab: boolean = true
+  const hideMemoryTab: boolean = (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 && (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 && (memoryMetrics?.usedHeapSizePostBuild ?? 0) == 0
+  const hideProblemsTab: boolean = exitCode?.name == "SUCCESS"
+  const hideArtifactsTab: boolean = (artifactMetrics?.outputArtifactsSeen?.count ?? 0) == 0 && (artifactMetrics?.sourceArtifactsRead?.count ?? 0) == 0 && (artifactMetrics?.outputArtifactsFromActionCache?.count ?? 0) == 0 && (artifactMetrics?.topLevelArtifacts?.count ?? 0) == 0
+  const hideActionsDataTab: boolean = acMetrics?.actionsExecuted == 0
+  const hideRunnersTab: boolean = runnerMetrics.length == 0
+
+  interface TabShowHideDisplay {
+    hide: boolean,
+    key: string
+  }
+
+  const showHideTabs: TabShowHideDisplay[] = [
+    { key: "BazelInvocationTabs-Tests", hide: hideTestsTab },
+    { key: "BazelInvocationTabs-Targets", hide: hideTargetsTab },
+    { key: "BazelInvocationTabs-Network", hide: hideNetworkTab },
+    { key: "BazelInvocationTabs-SourceControl", hide: hideSourceControlTab },
+    { key: "BazelInvocationTabs-Logs", hide: hideLogsTab },
+    { key: "BazelInvocationTabs-Memory", hide: hideMemoryTab },
+    { key: "BazelInvocationTabs-Problems", hide: hideProblemsTab },
+    { key: "BazelInvocationTabs-Artifacts", hide: hideArtifactsTab },
+    { key: "BazelInvocationTabs-ActionsData", hide: hideActionsDataTab },
+    { key: "BazelInvocationTabs-Runners", hide: hideRunnersTab },
+  ]
+
+  const [activeKey, setActiveKey] = useState(localStorage.getItem("bazelInvocationViewActiveTabKey") ?? 'BazelInvocationTabs-Overview');
+  function checkIfNotHidden(key: string) {
+    var hidden: boolean = showHideTabs.filter(x => x.key == key).at(0)?.hide ?? false
+    return hidden ? 'BazelInvocationTabs-Overview' : key
+  }
+  const onTabChange = (key: string) => {
+    setActiveKey(key);
+    localStorage.setItem("bazelInvocationViewActiveTabKey", key)
+  };
+
   //tabs
   var items: TabsProps['items'] = [
     {
-      key: 'BazelInvocationTabs-Problems',
-      label: 'Problems',
-      icon: <ExclamationCircleOutlined />,
+      key: 'BazelInvocationTabs-Overview',
+      label: 'Overview',
+      icon: <InfoCircleOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
-        {debugMode() && <DebugInfo invocationId={invocationID} exitCode={exitCode} />}
-        {exitCode === null || exitCode.code !== 0 ? (
-          children
-        ) : (
-          <PortalAlert
-            message="There is no debug information to display because there are no reported failures with the build step"
-            type="success"
-            showIcon
-          />
-        )}
+        <PortalCard type="inner" icon={<FileSearchOutlined />} titleBits={["Invocation Overview"]}>
+          <InvocationOverviewDisplay
+            command={[bazelCommand.executable, bazelCommand.command, bazelCommand.residual, bazelCommand.explicitCmdLine].join(" ")}
+            targets={targetTimes.size}
+            cpu={cpu ?? ""}
+            user={user?.LDAP ?? ""}
+            invocationId={invocationID}
+            configuration={configurationMnemonic ?? ""}
+            numFetches={numFetches ?? 0}
+            startedAt={invocationOverview.startedAt}
+            endedAt={invocationOverview.endedAt}
+            status={state.exitCode?.name ?? ""} />
+        </PortalCard>
       </Space>,
     },
     {
@@ -246,29 +297,17 @@ const BazelInvocation: React.FC<{
         <SourceControlDisplay sourceControlData={sourceControl} />
       </Space>,
     },
+    {
+      key: 'BazelInvocationTabs-Problems',
+      label: 'Problems',
+      icon: <ExclamationCircleOutlined />,
+      children: <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <BuildProblems invocationId={invocationID} onTabChange={onTabChange} />
+      </Space>,
+    },
   ];
 
   //show/hide tabs
-  interface TabShowHideDisplay {
-    hide: boolean,
-    key: string
-  }
-
-  const hideTestsTab: boolean = (testCollection?.length ?? 0) == 0
-  const hideTargetsTab: boolean = (targetData?.length ?? 0) == 0 ? true : false
-  const hideNetworkTab: boolean = bytesRecv == 0 && bytesSent == 0
-  const hideSourceControlTab: boolean = sourceControl?.runID == undefined || sourceControl.runID == null || sourceControl.runID == "" ? true : false
-  const hideLogsTab: boolean = true
-  const hideMemoryTab: boolean = (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 && (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 && (memoryMetrics?.usedHeapSizePostBuild ?? 0) == 0
-
-  const showHideTabs: TabShowHideDisplay[] = [
-    { key: "BazelInvocationTabs-Tests", hide: hideTestsTab },
-    { key: "BazelInvocationTabs-Targets", hide: hideTargetsTab },
-    { key: "BazelInvocationTabs-Network", hide: hideNetworkTab },
-    { key: "BazelInvocationTabs-SourceControl", hide: hideSourceControlTab },
-    { key: "BazelInvocationTabs-Logs", hide: hideLogsTab },
-    { key: "BazelInvocationTabs-Memory", hide: hideMemoryTab },
-  ]
 
   for (var i in showHideTabs) {
     var tab = showHideTabs[i]
@@ -291,19 +330,13 @@ const BazelInvocation: React.FC<{
     );
   }
 
-  if (problems?.length) {
-    extraBits.push(
-      <CopyTextButton buttonText="Copy Problems" copyText={problems.map(problem => problem.label).join(' ')} />
-    );
-  }
-
   if (!isNestedWithinBuildCard && build?.buildUUID) {
     extraBits.unshift(<span key="build">Build <Link href={`/builds/${build.buildUUID}`}>{build.buildUUID}</Link></span>);
   }
 
   return (
     <PortalCard type={isNestedWithinBuildCard ? "inner" : undefined} icon={<BuildOutlined />} titleBits={titleBits} extraBits={extraBits}>
-      <Tabs defaultActiveKey="1" items={items} />
+      <Tabs items={items} activeKey={checkIfNotHidden(activeKey)} onChange={onTabChange} defaultActiveKey="BazelInvocationTabs-Overview" />
     </PortalCard >
   );
 };

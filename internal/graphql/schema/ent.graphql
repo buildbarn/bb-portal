@@ -2454,6 +2454,37 @@ type Query {
     """
     where: RunnerCountWhereInput
   ): RunnerCountConnection!
+  findTargets(
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: Cursor
+
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: Cursor
+
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+
+    """
+    Ordering options for TargetPairs returned from the connection.
+    """
+    orderBy: TargetPairOrder
+
+    """
+    Filtering options for TargetPairs returned from the connection.
+    """
+    where: TargetPairWhereInput
+  ): TargetPairConnection!
   findTests(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -3381,6 +3412,55 @@ enum TargetPairAbortReason @goModel(model: "github.com/buildbarn/bb-portal/ent/g
   SKIPPED
   INCOMPLETE
   OUT_OF_MEMORY
+}
+"""
+A connection to a list of items.
+"""
+type TargetPairConnection {
+  """
+  A list of edges.
+  """
+  edges: [TargetPairEdge]
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type TargetPairEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: TargetPair
+  """
+  A cursor for use in pagination.
+  """
+  cursor: Cursor!
+}
+"""
+Ordering options for TargetPair connections
+"""
+input TargetPairOrder {
+  """
+  The ordering direction.
+  """
+  direction: OrderDirection! = ASC
+  """
+  The field by which to order TargetPairs.
+  """
+  field: TargetPairOrderField!
+}
+"""
+Properties by which TargetPair connections can be ordered.
+"""
+enum TargetPairOrderField {
+  DURATION
 }
 """
 TargetPairTestSize is enum for the field test_size

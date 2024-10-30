@@ -124,7 +124,7 @@ const ActionDataMetrics: React.FC<{ acMetrics: ActionSummary | undefined; }> = (
                         </PortalCard> */}
                     </Col>
                     <Col span="10">
-                        <PortalCard type="inner" icon={<PieChartOutlined />} titleBits={["User Time Breakdown"]}>
+                        <PortalCard type="inner" icon={<PieChartOutlined />} titleBits={["User Time Breakdown"]} hidden={totalUserTime == 0}>
                             <PieChart width={600} height={556}>
                                 <Pie
                                     activeIndex={activeIndexRunner}

@@ -496,11 +496,13 @@ type ComplexityRoot struct {
 		FindBuilds                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.BuildWhereInput) int
 		FindMetrics                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.MetricsWhereInput) int
 		FindRunnerCounts                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.RunnerCountWhereInput) int
+		FindTargets                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TargetPairOrder, where *ent.TargetPairWhereInput) int
 		FindTests                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) int
 		GetAveragePassPercentageForLabel func(childComplexity int, label string) int
 		GetBuild                         func(childComplexity int, buildURL *string, buildUUID *uuid.UUID) int
 		GetTargetDurationAggregation     func(childComplexity int, label *string) int
 		GetTargetPassAggregation         func(childComplexity int, label *string) int
+		GetTargetsWithOffset             func(childComplexity int, label *string, offset *int, limit *int, sortBy *string, direction *string) int
 		GetTestDurationAggregation       func(childComplexity int, label *string) int
 		GetTestPassAggregation           func(childComplexity int, label *string) int
 		GetTestsWithOffset               func(childComplexity int, label *string, offset *int, limit *int, sortBy *string, direction *string) int
@@ -604,6 +606,28 @@ type ComplexityRoot struct {
 		TestSize      func(childComplexity int) int
 	}
 
+	TargetGridCell struct {
+		AbortReason  func(childComplexity int) int
+		Complete     func(childComplexity int) int
+		InvocationID func(childComplexity int) int
+	}
+
+	TargetGridResult struct {
+		Result func(childComplexity int) int
+		Total  func(childComplexity int) int
+	}
+
+	TargetGridRow struct {
+		Avg      func(childComplexity int) int
+		Cells    func(childComplexity int) int
+		Count    func(childComplexity int) int
+		Label    func(childComplexity int) int
+		Max      func(childComplexity int) int
+		Min      func(childComplexity int) int
+		PassRate func(childComplexity int) int
+		Sum      func(childComplexity int) int
+	}
+
 	TargetMetrics struct {
 		ID                                   func(childComplexity int) int
 		Metrics                              func(childComplexity int) int
@@ -623,6 +647,17 @@ type ComplexityRoot struct {
 		Success         func(childComplexity int) int
 		TargetKind      func(childComplexity int) int
 		TestSize        func(childComplexity int) int
+	}
+
+	TargetPairConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	TargetPairEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 
 	TargetProblem struct {
@@ -865,6 +900,7 @@ type QueryResolver interface {
 	FindBuilds(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.BuildWhereInput) (*ent.BuildConnection, error)
 	FindMetrics(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.MetricsWhereInput) (*ent.MetricsConnection, error)
 	FindRunnerCounts(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.RunnerCountWhereInput) (*ent.RunnerCountConnection, error)
+	FindTargets(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TargetPairOrder, where *ent.TargetPairWhereInput) (*ent.TargetPairConnection, error)
 	FindTests(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) (*ent.TestCollectionConnection, error)
 	BazelInvocation(ctx context.Context, invocationID string) (*ent.BazelInvocation, error)
 	GetBuild(ctx context.Context, buildURL *string, buildUUID *uuid.UUID) (*ent.Build, error)
@@ -875,6 +911,7 @@ type QueryResolver interface {
 	GetTargetDurationAggregation(ctx context.Context, label *string) ([]*model.TargetAggregate, error)
 	GetTargetPassAggregation(ctx context.Context, label *string) ([]*model.TargetAggregate, error)
 	GetTestsWithOffset(ctx context.Context, label *string, offset *int, limit *int, sortBy *string, direction *string) (*model.TestGridResult, error)
+	GetTargetsWithOffset(ctx context.Context, label *string, offset *int, limit *int, sortBy *string, direction *string) (*model.TargetGridResult, error)
 	GetAveragePassPercentageForLabel(ctx context.Context, label string) (*float64, error)
 }
 type RaceStatisticsResolver interface {
@@ -3006,6 +3043,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.FindRunnerCounts(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["where"].(*ent.RunnerCountWhereInput)), true
 
+	case "Query.findTargets":
+		if e.complexity.Query.FindTargets == nil {
+			break
+		}
+
+		args, err := ec.field_Query_findTargets_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.FindTargets(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.TargetPairOrder), args["where"].(*ent.TargetPairWhereInput)), true
+
 	case "Query.findTests":
 		if e.complexity.Query.FindTests == nil {
 			break
@@ -3065,6 +3114,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetTargetPassAggregation(childComplexity, args["label"].(*string)), true
+
+	case "Query.getTargetsWithOffset":
+		if e.complexity.Query.GetTargetsWithOffset == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getTargetsWithOffset_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetTargetsWithOffset(childComplexity, args["label"].(*string), args["offset"].(*int), args["limit"].(*int), args["sortBy"].(*string), args["direction"].(*string)), true
 
 	case "Query.getTestDurationAggregation":
 		if e.complexity.Query.GetTestDurationAggregation == nil {
@@ -3598,6 +3659,97 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TargetConfigured.TestSize(childComplexity), true
 
+	case "TargetGridCell.abortReason":
+		if e.complexity.TargetGridCell.AbortReason == nil {
+			break
+		}
+
+		return e.complexity.TargetGridCell.AbortReason(childComplexity), true
+
+	case "TargetGridCell.complete":
+		if e.complexity.TargetGridCell.Complete == nil {
+			break
+		}
+
+		return e.complexity.TargetGridCell.Complete(childComplexity), true
+
+	case "TargetGridCell.invocationId":
+		if e.complexity.TargetGridCell.InvocationID == nil {
+			break
+		}
+
+		return e.complexity.TargetGridCell.InvocationID(childComplexity), true
+
+	case "TargetGridResult.result":
+		if e.complexity.TargetGridResult.Result == nil {
+			break
+		}
+
+		return e.complexity.TargetGridResult.Result(childComplexity), true
+
+	case "TargetGridResult.total":
+		if e.complexity.TargetGridResult.Total == nil {
+			break
+		}
+
+		return e.complexity.TargetGridResult.Total(childComplexity), true
+
+	case "TargetGridRow.avg":
+		if e.complexity.TargetGridRow.Avg == nil {
+			break
+		}
+
+		return e.complexity.TargetGridRow.Avg(childComplexity), true
+
+	case "TargetGridRow.cells":
+		if e.complexity.TargetGridRow.Cells == nil {
+			break
+		}
+
+		return e.complexity.TargetGridRow.Cells(childComplexity), true
+
+	case "TargetGridRow.count":
+		if e.complexity.TargetGridRow.Count == nil {
+			break
+		}
+
+		return e.complexity.TargetGridRow.Count(childComplexity), true
+
+	case "TargetGridRow.label":
+		if e.complexity.TargetGridRow.Label == nil {
+			break
+		}
+
+		return e.complexity.TargetGridRow.Label(childComplexity), true
+
+	case "TargetGridRow.max":
+		if e.complexity.TargetGridRow.Max == nil {
+			break
+		}
+
+		return e.complexity.TargetGridRow.Max(childComplexity), true
+
+	case "TargetGridRow.min":
+		if e.complexity.TargetGridRow.Min == nil {
+			break
+		}
+
+		return e.complexity.TargetGridRow.Min(childComplexity), true
+
+	case "TargetGridRow.passRate":
+		if e.complexity.TargetGridRow.PassRate == nil {
+			break
+		}
+
+		return e.complexity.TargetGridRow.PassRate(childComplexity), true
+
+	case "TargetGridRow.sum":
+		if e.complexity.TargetGridRow.Sum == nil {
+			break
+		}
+
+		return e.complexity.TargetGridRow.Sum(childComplexity), true
+
 	case "TargetMetrics.id":
 		if e.complexity.TargetMetrics.ID == nil {
 			break
@@ -3702,6 +3854,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.TargetPair.TestSize(childComplexity), true
+
+	case "TargetPairConnection.edges":
+		if e.complexity.TargetPairConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.TargetPairConnection.Edges(childComplexity), true
+
+	case "TargetPairConnection.pageInfo":
+		if e.complexity.TargetPairConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.TargetPairConnection.PageInfo(childComplexity), true
+
+	case "TargetPairConnection.totalCount":
+		if e.complexity.TargetPairConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.TargetPairConnection.TotalCount(childComplexity), true
+
+	case "TargetPairEdge.cursor":
+		if e.complexity.TargetPairEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.TargetPairEdge.Cursor(childComplexity), true
+
+	case "TargetPairEdge.node":
+		if e.complexity.TargetPairEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.TargetPairEdge.Node(childComplexity), true
 
 	case "TargetProblem.id":
 		if e.complexity.TargetProblem.ID == nil {
@@ -4402,6 +4589,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputTargetCompleteWhereInput,
 		ec.unmarshalInputTargetConfiguredWhereInput,
 		ec.unmarshalInputTargetMetricsWhereInput,
+		ec.unmarshalInputTargetPairOrder,
 		ec.unmarshalInputTargetPairWhereInput,
 		ec.unmarshalInputTestCollectionOrder,
 		ec.unmarshalInputTestCollectionWhereInput,
@@ -5165,6 +5353,173 @@ func (ec *executionContext) field_Query_findRunnerCounts_argsWhere(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Query_findTargets_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_findTargets_argsAfter(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["after"] = arg0
+	arg1, err := ec.field_Query_findTargets_argsFirst(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["first"] = arg1
+	arg2, err := ec.field_Query_findTargets_argsBefore(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["before"] = arg2
+	arg3, err := ec.field_Query_findTargets_argsLast(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["last"] = arg3
+	arg4, err := ec.field_Query_findTargets_argsOrderBy(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orderBy"] = arg4
+	arg5, err := ec.field_Query_findTargets_argsWhere(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["where"] = arg5
+	return args, nil
+}
+func (ec *executionContext) field_Query_findTargets_argsAfter(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*entgql.Cursor[int], error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["after"]
+	if !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+	if tmp, ok := rawArgs["after"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_findTargets_argsFirst(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["first"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+	if tmp, ok := rawArgs["first"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_findTargets_argsBefore(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*entgql.Cursor[int], error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["before"]
+	if !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+	if tmp, ok := rawArgs["before"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_findTargets_argsLast(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["last"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+	if tmp, ok := rawArgs["last"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_findTargets_argsOrderBy(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.TargetPairOrder, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["orderBy"]
+	if !ok {
+		var zeroVal *ent.TargetPairOrder
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		return ec.unmarshalOTargetPairOrder2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairOrder(ctx, tmp)
+	}
+
+	var zeroVal *ent.TargetPairOrder
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_findTargets_argsWhere(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*ent.TargetPairWhereInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["where"]
+	if !ok {
+		var zeroVal *ent.TargetPairWhereInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+	if tmp, ok := rawArgs["where"]; ok {
+		return ec.unmarshalOTargetPairWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairWhereInput(ctx, tmp)
+	}
+
+	var zeroVal *ent.TargetPairWhereInput
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_findTests_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -5480,6 +5835,146 @@ func (ec *executionContext) field_Query_getTargetPassAggregation_argsLabel(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("label"))
 	if tmp, ok := rawArgs["label"]; ok {
+		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+	}
+
+	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getTargetsWithOffset_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_getTargetsWithOffset_argsLabel(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["label"] = arg0
+	arg1, err := ec.field_Query_getTargetsWithOffset_argsOffset(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg1
+	arg2, err := ec.field_Query_getTargetsWithOffset_argsLimit(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg2
+	arg3, err := ec.field_Query_getTargetsWithOffset_argsSortBy(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["sortBy"] = arg3
+	arg4, err := ec.field_Query_getTargetsWithOffset_argsDirection(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["direction"] = arg4
+	return args, nil
+}
+func (ec *executionContext) field_Query_getTargetsWithOffset_argsLabel(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["label"]
+	if !ok {
+		var zeroVal *string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("label"))
+	if tmp, ok := rawArgs["label"]; ok {
+		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+	}
+
+	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getTargetsWithOffset_argsOffset(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["offset"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+	if tmp, ok := rawArgs["offset"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getTargetsWithOffset_argsLimit(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["limit"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+	if tmp, ok := rawArgs["limit"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getTargetsWithOffset_argsSortBy(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["sortBy"]
+	if !ok {
+		var zeroVal *string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sortBy"))
+	if tmp, ok := rawArgs["sortBy"]; ok {
+		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+	}
+
+	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getTargetsWithOffset_argsDirection(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["direction"]
+	if !ok {
+		var zeroVal *string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+	if tmp, ok := rawArgs["direction"]; ok {
 		return ec.unmarshalOString2ᚖstring(ctx, tmp)
 	}
 
@@ -17266,6 +17761,69 @@ func (ec *executionContext) fieldContext_Query_findRunnerCounts(ctx context.Cont
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_findTargets(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_findTargets(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().FindTargets(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.TargetPairOrder), fc.Args["where"].(*ent.TargetPairWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.TargetPairConnection)
+	fc.Result = res
+	return ec.marshalNTargetPairConnection2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_findTargets(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_TargetPairConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_TargetPairConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_TargetPairConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TargetPairConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_findTargets_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_findTests(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_findTests(ctx, field)
 	if err != nil {
@@ -17932,6 +18490,64 @@ func (ec *executionContext) fieldContext_Query_getTestsWithOffset(ctx context.Co
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_getTestsWithOffset_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getTargetsWithOffset(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getTargetsWithOffset(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetTargetsWithOffset(rctx, fc.Args["label"].(*string), fc.Args["offset"].(*int), fc.Args["limit"].(*int), fc.Args["sortBy"].(*string), fc.Args["direction"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.TargetGridResult)
+	fc.Result = res
+	return ec.marshalOTargetGridResult2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐTargetGridResult(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getTargetsWithOffset(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "total":
+				return ec.fieldContext_TargetGridResult_total(ctx, field)
+			case "result":
+				return ec.fieldContext_TargetGridResult_result(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TargetGridResult", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getTargetsWithOffset_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -21003,6 +21619,591 @@ func (ec *executionContext) fieldContext_TargetConfigured_targetPair(_ context.C
 	return fc, nil
 }
 
+func (ec *executionContext) _TargetGridCell_invocationId(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridCell) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridCell_invocationId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.InvocationID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*uuid.UUID)
+	fc.Result = res
+	return ec.marshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridCell_invocationId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridCell",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type UUID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridCell_complete(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridCell) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridCell_complete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Complete, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.TargetComplete)
+	fc.Result = res
+	return ec.marshalOTargetComplete2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetComplete(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridCell_complete(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridCell",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_TargetComplete_id(ctx, field)
+			case "success":
+				return ec.fieldContext_TargetComplete_success(ctx, field)
+			case "tag":
+				return ec.fieldContext_TargetComplete_tag(ctx, field)
+			case "targetKind":
+				return ec.fieldContext_TargetComplete_targetKind(ctx, field)
+			case "endTimeInMs":
+				return ec.fieldContext_TargetComplete_endTimeInMs(ctx, field)
+			case "testTimeoutSeconds":
+				return ec.fieldContext_TargetComplete_testTimeoutSeconds(ctx, field)
+			case "testTimeout":
+				return ec.fieldContext_TargetComplete_testTimeout(ctx, field)
+			case "testSize":
+				return ec.fieldContext_TargetComplete_testSize(ctx, field)
+			case "targetPair":
+				return ec.fieldContext_TargetComplete_targetPair(ctx, field)
+			case "importantOutput":
+				return ec.fieldContext_TargetComplete_importantOutput(ctx, field)
+			case "directoryOutput":
+				return ec.fieldContext_TargetComplete_directoryOutput(ctx, field)
+			case "outputGroup":
+				return ec.fieldContext_TargetComplete_outputGroup(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TargetComplete", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridCell_abortReason(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridCell) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridCell_abortReason(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AbortReason, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*targetpair.AbortReason)
+	fc.Result = res
+	return ec.marshalOTargetPairAbortReason2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐAbortReason(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridCell_abortReason(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridCell",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type TargetPairAbortReason does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridResult_total(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridResult) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridResult_total(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Total, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridResult_total(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridResult",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridResult_result(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridResult) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridResult_result(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Result, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TargetGridRow)
+	fc.Result = res
+	return ec.marshalOTargetGridRow2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐTargetGridRow(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridResult_result(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridResult",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "label":
+				return ec.fieldContext_TargetGridRow_label(ctx, field)
+			case "count":
+				return ec.fieldContext_TargetGridRow_count(ctx, field)
+			case "sum":
+				return ec.fieldContext_TargetGridRow_sum(ctx, field)
+			case "min":
+				return ec.fieldContext_TargetGridRow_min(ctx, field)
+			case "max":
+				return ec.fieldContext_TargetGridRow_max(ctx, field)
+			case "avg":
+				return ec.fieldContext_TargetGridRow_avg(ctx, field)
+			case "passRate":
+				return ec.fieldContext_TargetGridRow_passRate(ctx, field)
+			case "cells":
+				return ec.fieldContext_TargetGridRow_cells(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TargetGridRow", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridRow_label(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridRow) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridRow_label(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Label, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridRow_label(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridRow",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridRow_count(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridRow) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridRow_count(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Count, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridRow_count(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridRow",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridRow_sum(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridRow) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridRow_sum(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Sum, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridRow_sum(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridRow",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridRow_min(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridRow) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridRow_min(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Min, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridRow_min(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridRow",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridRow_max(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridRow) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridRow_max(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Max, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridRow_max(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridRow",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridRow_avg(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridRow) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridRow_avg(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Avg, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*float64)
+	fc.Result = res
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridRow_avg(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridRow",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridRow_passRate(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridRow) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridRow_passRate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PassRate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*float64)
+	fc.Result = res
+	return ec.marshalOFloat2ᚖfloat64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridRow_passRate(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridRow",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetGridRow_cells(ctx context.Context, field graphql.CollectedField, obj *model.TargetGridRow) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetGridRow_cells(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cells, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TargetGridCell)
+	fc.Result = res
+	return ec.marshalOTargetGridCell2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐTargetGridCell(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetGridRow_cells(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetGridRow",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "invocationId":
+				return ec.fieldContext_TargetGridCell_invocationId(ctx, field)
+			case "complete":
+				return ec.fieldContext_TargetGridCell_complete(ctx, field)
+			case "abortReason":
+				return ec.fieldContext_TargetGridCell_abortReason(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TargetGridCell", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _TargetMetrics_id(ctx context.Context, field graphql.CollectedField, obj *ent.TargetMetrics) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TargetMetrics_id(ctx, field)
 	if err != nil {
@@ -21741,6 +22942,258 @@ func (ec *executionContext) fieldContext_TargetPair_completion(_ context.Context
 				return ec.fieldContext_TargetComplete_outputGroup(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type TargetComplete", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetPairConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.TargetPairConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetPairConnection_edges(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.TargetPairEdge)
+	fc.Result = res
+	return ec.marshalOTargetPairEdge2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairEdge(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetPairConnection_edges(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetPairConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "node":
+				return ec.fieldContext_TargetPairEdge_node(ctx, field)
+			case "cursor":
+				return ec.fieldContext_TargetPairEdge_cursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TargetPairEdge", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetPairConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *ent.TargetPairConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetPairConnection_pageInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.PageInfo[int])
+	fc.Result = res
+	return ec.marshalNPageInfo2entgoᚗioᚋcontribᚋentgqlᚐPageInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetPairConnection_pageInfo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetPairConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "hasNextPage":
+				return ec.fieldContext_PageInfo_hasNextPage(ctx, field)
+			case "hasPreviousPage":
+				return ec.fieldContext_PageInfo_hasPreviousPage(ctx, field)
+			case "startCursor":
+				return ec.fieldContext_PageInfo_startCursor(ctx, field)
+			case "endCursor":
+				return ec.fieldContext_PageInfo_endCursor(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PageInfo", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetPairConnection_totalCount(ctx context.Context, field graphql.CollectedField, obj *ent.TargetPairConnection) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetPairConnection_totalCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetPairConnection_totalCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetPairConnection",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetPairEdge_node(ctx context.Context, field graphql.CollectedField, obj *ent.TargetPairEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetPairEdge_node(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.TargetPair)
+	fc.Result = res
+	return ec.marshalOTargetPair2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPair(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetPairEdge_node(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetPairEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_TargetPair_id(ctx, field)
+			case "label":
+				return ec.fieldContext_TargetPair_label(ctx, field)
+			case "durationInMs":
+				return ec.fieldContext_TargetPair_durationInMs(ctx, field)
+			case "success":
+				return ec.fieldContext_TargetPair_success(ctx, field)
+			case "targetKind":
+				return ec.fieldContext_TargetPair_targetKind(ctx, field)
+			case "testSize":
+				return ec.fieldContext_TargetPair_testSize(ctx, field)
+			case "abortReason":
+				return ec.fieldContext_TargetPair_abortReason(ctx, field)
+			case "bazelInvocation":
+				return ec.fieldContext_TargetPair_bazelInvocation(ctx, field)
+			case "configuration":
+				return ec.fieldContext_TargetPair_configuration(ctx, field)
+			case "completion":
+				return ec.fieldContext_TargetPair_completion(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TargetPair", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TargetPairEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *ent.TargetPairEdge) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TargetPairEdge_cursor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(entgql.Cursor[int])
+	fc.Result = res
+	return ec.marshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TargetPairEdge_cursor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TargetPairEdge",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Cursor does not have child fields")
 		},
 	}
 	return fc, nil
@@ -41755,6 +43208,44 @@ func (ec *executionContext) unmarshalInputTargetMetricsWhereInput(ctx context.Co
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputTargetPairOrder(ctx context.Context, obj interface{}) (ent.TargetPairOrder, error) {
+	var it ent.TargetPairOrder
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNTargetPairOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputTargetPairWhereInput(ctx context.Context, obj interface{}) (ent.TargetPairWhereInput, error) {
 	var it ent.TargetPairWhereInput
 	asMap := map[string]interface{}{}
@@ -51758,6 +53249,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "findTargets":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_findTargets(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "findTests":
 			field := field
 
@@ -51945,6 +53458,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getTestsWithOffset(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getTargetsWithOffset":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getTargetsWithOffset(ctx, field)
 				return res
 			}
 
@@ -53029,6 +54561,134 @@ func (ec *executionContext) _TargetConfigured(ctx context.Context, sel ast.Selec
 	return out
 }
 
+var targetGridCellImplementors = []string{"TargetGridCell"}
+
+func (ec *executionContext) _TargetGridCell(ctx context.Context, sel ast.SelectionSet, obj *model.TargetGridCell) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, targetGridCellImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TargetGridCell")
+		case "invocationId":
+			out.Values[i] = ec._TargetGridCell_invocationId(ctx, field, obj)
+		case "complete":
+			out.Values[i] = ec._TargetGridCell_complete(ctx, field, obj)
+		case "abortReason":
+			out.Values[i] = ec._TargetGridCell_abortReason(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var targetGridResultImplementors = []string{"TargetGridResult"}
+
+func (ec *executionContext) _TargetGridResult(ctx context.Context, sel ast.SelectionSet, obj *model.TargetGridResult) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, targetGridResultImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TargetGridResult")
+		case "total":
+			out.Values[i] = ec._TargetGridResult_total(ctx, field, obj)
+		case "result":
+			out.Values[i] = ec._TargetGridResult_result(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var targetGridRowImplementors = []string{"TargetGridRow"}
+
+func (ec *executionContext) _TargetGridRow(ctx context.Context, sel ast.SelectionSet, obj *model.TargetGridRow) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, targetGridRowImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TargetGridRow")
+		case "label":
+			out.Values[i] = ec._TargetGridRow_label(ctx, field, obj)
+		case "count":
+			out.Values[i] = ec._TargetGridRow_count(ctx, field, obj)
+		case "sum":
+			out.Values[i] = ec._TargetGridRow_sum(ctx, field, obj)
+		case "min":
+			out.Values[i] = ec._TargetGridRow_min(ctx, field, obj)
+		case "max":
+			out.Values[i] = ec._TargetGridRow_max(ctx, field, obj)
+		case "avg":
+			out.Values[i] = ec._TargetGridRow_avg(ctx, field, obj)
+		case "passRate":
+			out.Values[i] = ec._TargetGridRow_passRate(ctx, field, obj)
+		case "cells":
+			out.Values[i] = ec._TargetGridRow_cells(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var targetMetricsImplementors = []string{"TargetMetrics", "Node"}
 
 func (ec *executionContext) _TargetMetrics(ctx context.Context, sel ast.SelectionSet, obj *ent.TargetMetrics) graphql.Marshaler {
@@ -53296,6 +54956,93 @@ func (ec *executionContext) _TargetPair(ctx context.Context, sel ast.SelectionSe
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var targetPairConnectionImplementors = []string{"TargetPairConnection"}
+
+func (ec *executionContext) _TargetPairConnection(ctx context.Context, sel ast.SelectionSet, obj *ent.TargetPairConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, targetPairConnectionImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TargetPairConnection")
+		case "edges":
+			out.Values[i] = ec._TargetPairConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._TargetPairConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalCount":
+			out.Values[i] = ec._TargetPairConnection_totalCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var targetPairEdgeImplementors = []string{"TargetPairEdge"}
+
+func (ec *executionContext) _TargetPairEdge(ctx context.Context, sel ast.SelectionSet, obj *ent.TargetPairEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, targetPairEdgeImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TargetPairEdge")
+		case "node":
+			out.Values[i] = ec._TargetPairEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._TargetPairEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -55961,6 +57708,36 @@ func (ec *executionContext) unmarshalNTargetPairAbortReason2githubᚗcomᚋbuild
 }
 
 func (ec *executionContext) marshalNTargetPairAbortReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐAbortReason(ctx context.Context, sel ast.SelectionSet, v targetpair.AbortReason) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) marshalNTargetPairConnection2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairConnection(ctx context.Context, sel ast.SelectionSet, v ent.TargetPairConnection) graphql.Marshaler {
+	return ec._TargetPairConnection(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNTargetPairConnection2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairConnection(ctx context.Context, sel ast.SelectionSet, v *ent.TargetPairConnection) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._TargetPairConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNTargetPairOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairOrderField(ctx context.Context, v interface{}) (*ent.TargetPairOrderField, error) {
+	var res = new(ent.TargetPairOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTargetPairOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.TargetPairOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
 	return v
 }
 
@@ -58951,6 +60728,109 @@ func (ec *executionContext) unmarshalOTargetConfiguredWhereInput2ᚖgithubᚗcom
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalOTargetGridCell2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐTargetGridCell(ctx context.Context, sel ast.SelectionSet, v []*model.TargetGridCell) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOTargetGridCell2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐTargetGridCell(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOTargetGridCell2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐTargetGridCell(ctx context.Context, sel ast.SelectionSet, v *model.TargetGridCell) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._TargetGridCell(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOTargetGridResult2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐTargetGridResult(ctx context.Context, sel ast.SelectionSet, v *model.TargetGridResult) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._TargetGridResult(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOTargetGridRow2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐTargetGridRow(ctx context.Context, sel ast.SelectionSet, v []*model.TargetGridRow) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOTargetGridRow2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐTargetGridRow(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOTargetGridRow2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐTargetGridRow(ctx context.Context, sel ast.SelectionSet, v *model.TargetGridRow) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._TargetGridRow(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalOTargetMetrics2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetMetrics(ctx context.Context, sel ast.SelectionSet, v *ent.TargetMetrics) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -59131,6 +61011,62 @@ func (ec *executionContext) marshalOTargetPairAbortReason2ᚖgithubᚗcomᚋbuil
 		return graphql.Null
 	}
 	return v
+}
+
+func (ec *executionContext) marshalOTargetPairEdge2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairEdge(ctx context.Context, sel ast.SelectionSet, v []*ent.TargetPairEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOTargetPairEdge2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairEdge(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOTargetPairEdge2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairEdge(ctx context.Context, sel ast.SelectionSet, v *ent.TargetPairEdge) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._TargetPairEdge(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOTargetPairOrder2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairOrder(ctx context.Context, v interface{}) (*ent.TargetPairOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputTargetPairOrder(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOTargetPairTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐTestSize(ctx context.Context, v interface{}) (targetpair.TestSize, error) {

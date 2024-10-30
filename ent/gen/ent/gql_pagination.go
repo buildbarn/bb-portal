@@ -8378,6 +8378,53 @@ func (tp *TargetPairQuery) Paginate(
 	return conn, nil
 }
 
+var (
+	// TargetPairOrderFieldDurationInMs orders TargetPair by duration_in_ms.
+	TargetPairOrderFieldDurationInMs = &TargetPairOrderField{
+		Value: func(tp *TargetPair) (ent.Value, error) {
+			return tp.DurationInMs, nil
+		},
+		column: targetpair.FieldDurationInMs,
+		toTerm: targetpair.ByDurationInMs,
+		toCursor: func(tp *TargetPair) Cursor {
+			return Cursor{
+				ID:    tp.ID,
+				Value: tp.DurationInMs,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f TargetPairOrderField) String() string {
+	var str string
+	switch f.column {
+	case TargetPairOrderFieldDurationInMs.column:
+		str = "DURATION"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f TargetPairOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *TargetPairOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("TargetPairOrderField %T must be a string", v)
+	}
+	switch str {
+	case "DURATION":
+		*f = *TargetPairOrderFieldDurationInMs
+	default:
+		return fmt.Errorf("%s is not a valid TargetPairOrderField", str)
+	}
+	return nil
+}
+
 // TargetPairOrderField defines the ordering field of TargetPair.
 type TargetPairOrderField struct {
 	// Value extracts the ordering value from the given TargetPair.

@@ -29,7 +29,6 @@ const startedAtColumn: ColumnType<BazelInvocationNodeFragment> = {
   width: 165,
   title: 'Start Time',
   sorter: (a, b) => dayjs(a.startedAt).isBefore(dayjs(b.startedAt)) == true ? 0 : 1,
-  defaultSortOrder: "descend",
   render: (_, record) => (
     <Typography.Text code ellipsis className={styles.startedAt}>
       {dayjs(record.startedAt).format('YYYY-MM-DD hh:mm:ss A')}
