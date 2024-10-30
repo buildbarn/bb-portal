@@ -55,12 +55,7 @@ const BazelInvocationsContent: React.FC<Props> = ({ loading, error, networkStatu
   }
 
   if (invocationInfo) {
-    return <BazelInvocation invocationOverview={invocationInfo}>
-      <BuildProblems
-        problems={problems}
-      />
-    </BazelInvocation>
-
+    return <BazelInvocation invocationOverview={invocationInfo} />
   }
 
   return <></>
@@ -83,7 +78,7 @@ const Page: React.FC<PageParams> = ({ params }) => {
 
   const invocation = getFragmentData(FULL_BAZEL_INVOCATION_DETAILS, data?.bazelInvocation);
   const invocationOverview = getFragmentData(BAZEL_INVOCATION_FRAGMENT, invocation)
-  //const problems = invocation?.problems.map(p => getFragmentData(PROBLEM_INFO_FRAGMENT, p))
+
 
   const stop = shouldStopPolling(invocation);
   useEffect(() => {

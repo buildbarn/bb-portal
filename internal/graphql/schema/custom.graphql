@@ -8,6 +8,7 @@ extend type Query {
   getTargetDurationAggregation(label: String): [TargetAggregate]
   getTargetPassAggregation(label: String):[TargetAggregate]
   getTestsWithOffset(label: String, offset: Int, limit: Int, sortBy: String, direction: String):TestGridResult
+  getTargetsWithOffset(label: String, offset: Int, limit: Int, sortBy: String, direction: String):TargetGridResult
   getAveragePassPercentageForLabel(label: String!):Float
 }
 
@@ -21,9 +22,25 @@ type TargetAggregate {
   pass: Int
 }
 
+type TargetGridResult {
+  total: Int
+  result: [TargetGridRow]
+}
+
 type TestGridResult {
   total: Int
   result: [TestGridRow]
+}
+
+type TargetGridRow {
+  label: String
+  count: Int
+  sum: Int
+  min: Int
+  max: Int
+  avg: Float
+  passRate: Float
+  cells: [TargetGridCell]
 }
 
 type TestGridRow {
@@ -35,6 +52,12 @@ type TestGridRow {
   avg: Float
   passRate: Float
   cells: [TestGridCell]
+}
+
+type TargetGridCell {
+  invocationId: UUID
+  complete: TargetComplete
+  abortReason: TargetPairAbortReason
 }
 
 type TestGridCell {

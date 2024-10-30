@@ -210,6 +210,11 @@ func (r *queryResolver) FindRunnerCounts(ctx context.Context, after *entgql.Curs
 	return r.client.RunnerCount.Query().Paginate(ctx, after, first, before, last, ent.WithRunnerCountFilter(where.Filter))
 }
 
+// FindTargets is the resolver for the findTargets field.
+func (r *queryResolver) FindTargets(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TargetPairOrder, where *ent.TargetPairWhereInput) (*ent.TargetPairConnection, error) {
+	return r.client.TargetPair.Query().Paginate(ctx, after, first, before, last, ent.WithTargetPairFilter(where.Filter), ent.WithTargetPairOrder(orderBy))
+}
+
 // FindTests is the resolver for the findTests field.
 func (r *queryResolver) FindTests(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) (*ent.TestCollectionConnection, error) {
 	return r.client.TestCollection.Query().Paginate(ctx, after, first, before, last, ent.WithTestCollectionFilter(where.Filter), ent.WithTestCollectionOrder(orderBy))

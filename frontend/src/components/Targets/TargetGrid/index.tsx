@@ -1,35 +1,31 @@
 import React, { useCallback, useState } from 'react';
 import { TableColumnsType } from "antd/lib"
 import { Space, Row, Statistic, Table, TableProps, TablePaginationConfig, Pagination } from 'antd';
-import { TestStatusEnum } from '../TestStatusTag';
+import { TestStatusEnum } from '../../TestStatusTag';
 import type { StatisticProps } from "antd/lib";
 import CountUp from 'react-countup';
 import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
 import { SearchOutlined } from '@ant-design/icons';
 import { useQuery } from '@apollo/client';
-import { GET_TEST_GRID_DATA } from '@/app/tests/index.graphql';
 import { FilterValue } from 'antd/es/table/interface';
 import { uniqueId } from 'lodash';
-import { GetTestsWithOffsetQueryVariables } from '@/graphql/__generated__/graphql';
-import TestGridRow from '../TestGridRow';
-import PortalAlert from '../PortalAlert';
+import { GetTargetsWithOffsetQueryVariables } from '@/graphql/__generated__/graphql';
+import TargetGridRow from '../TargetGridRow';
+import PortalAlert from '../../PortalAlert';
 import Link from 'next/link';
-import styles from "../../theme/theme.module.css"
-import { millisecondsToTime } from '../Utilities/time';
-interface Props {
-  //labelData: GetTestsWithOffsetQuery | undefined
-}
+import styles from "../../../theme/theme.module.css"
+import { millisecondsToTime } from '../../Utilities/time';
+import GET_TARGETS_DATA from '@/app/targets/graphql';
 
-const formatter: StatisticProps['formatter'] = (value) => (
-  <CountUp end={value as number} separator="," />
-);
-export interface TestStatusType {
+interface Props { }
+
+export interface TargetStatusType {
   label: string
   invocationId: string,
   status: TestStatusEnum
 }
 
-interface TestGridRowDataType {
+interface TargetGridRowDataType {
   key: React.Key;
   label: string;
   average_duration: number;
@@ -37,18 +33,20 @@ interface TestGridRowDataType {
   max_duration: number;
   total_count: number;
   pass_rate: number;
-  status: TestStatusType[];
+  status: TargetStatusType[];
 }
-
+const formatter: StatisticProps['formatter'] = (value) => (
+  <CountUp end={value as number} separator="," />
+);
 const PAGE_SIZE = 10
-const columns: TableColumnsType<TestGridRowDataType> = [
+const columns: TableColumnsType<TargetGridRowDataType> = [
   {
     title: "Label",
     dataIndex: "label",
     filterSearch: true,
     render: (_, record) =>
 
-      <Link href={"tests/" + btoa(encodeURIComponent(record.label))}>{record.label}</Link>,
+      <Link href={"targets/" + btoa(encodeURIComponent(record.label))}>{record.label}</Link>,
     filterDropdown: filterProps => (
       <SearchWidget placeholder="Target Pattern..." {...filterProps} />
     ),
@@ -88,26 +86,26 @@ const columns: TableColumnsType<TestGridRowDataType> = [
   }
 ]
 
-const TestGrid: React.FC<Props> = () => {
+const TargetGrid: React.FC<Props> = () => {
 
-  const [variables, setVariables] = useState<GetTestsWithOffsetQueryVariables>({})
+  const [variables, setVariables] = useState<GetTargetsWithOffsetQueryVariables>({})
 
-  const { loading: labelLoading, data: labelData, previousData: labelPreviousData, error: labelError } = useQuery(GET_TEST_GRID_DATA, {
+  const { loading: labelLoading, data: labelData, previousData: labelPreviousData, error: labelError } = useQuery(GET_TARGETS_DATA, {
     variables: variables,
     fetchPolicy: 'cache-and-network',
   });
 
   const data = labelLoading ? labelPreviousData : labelData;
-  var result: TestGridRowDataType[] = []
+  var result: TargetGridRowDataType[] = []
   var totalCnt: number = 0
 
   if (labelError) {
     <PortalAlert className="error" message="There was a problem communicating w/the backend server." />
   } else {
-    totalCnt = data?.getTestsWithOffset?.total ?? 0
-    data?.getTestsWithOffset?.result?.map(dataRow => {
-      var row: TestGridRowDataType = {
-        key: "test-grid-row-data-" + uniqueId(),
+    totalCnt = data?.getTargetsWithOffset?.total ?? 0
+    data?.getTargetsWithOffset?.result?.map(dataRow => {
+      var row: TargetGridRowDataType = {
+        key: "target-grid-row-data-" + uniqueId(),
         label: dataRow?.label ?? "",
         status: [],
         average_duration: dataRow?.avg ?? 0,
@@ -119,10 +117,10 @@ const TestGrid: React.FC<Props> = () => {
       result.push(row)
     })
   }
-  const onChange: TableProps<TestGridRowDataType>['onChange'] = useCallback(
+  const onChange: TableProps<TargetGridRowDataType>['onChange'] = useCallback(
     (pagination: TablePaginationConfig,
       filters: Record<string, FilterValue | null>, extra: any) => {
-      var vars: GetTestsWithOffsetQueryVariables = {}
+      var vars: GetTargetsWithOffsetQueryVariables = {}
       if (filters['label']?.length) {
         var label = filters['label']?.[0]?.toString() ?? ""
         vars.label = label
@@ -138,12 +136,12 @@ const TestGrid: React.FC<Props> = () => {
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
       <Row>
         <Space size="large">
-          <Statistic title="Test Targets" value={totalCnt} formatter={formatter} />
+          <Statistic title="Targets" value={totalCnt} formatter={formatter} />
         </Space>
       </Row>
 
       <Row>
-        <Table<TestGridRowDataType>
+        <Table<TargetGridRowDataType>
           columns={columns}
           loading={labelLoading}
           rowKey="key"
@@ -152,7 +150,7 @@ const TestGrid: React.FC<Props> = () => {
             indentSize: 100,
             expandedRowRender: (record) => (
               //TODO: dynamically determine number of buttons to display based on page width and pass that as first
-              <TestGridRow rowLabel={record.label} first={20} reverseOrder={true} />
+              <TargetGridRow rowLabel={record.label} first={20} reverseOrder={true} />
             ),
             rowExpandable: (_) => true,
           }}
@@ -166,4 +164,4 @@ const TestGrid: React.FC<Props> = () => {
   );
 };
 
-export default TestGrid;
+export default TargetGrid;

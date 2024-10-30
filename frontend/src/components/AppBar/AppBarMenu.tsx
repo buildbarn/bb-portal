@@ -4,9 +4,10 @@ import React from 'react';
 import { Menu } from 'antd';
 import { MenuMode } from 'rc-menu/es/interface';
 import { usePathname } from 'next/navigation';
-import { ItemType } from 'antd/lib/menu/hooks/useItems';
+//import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import styles from './index.module.css';
 import { getClosestKey } from '@/components/Utilities/navigation';
+import { ItemType } from 'antd/lib/menu/interface';
 
 type Props = {
   mode: MenuMode;
