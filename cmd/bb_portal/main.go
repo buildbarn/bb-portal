@@ -171,7 +171,7 @@ func newPortalService(archiver processing.BlobMultiArchiver, dbClient *ent.Clien
 	router.PathPrefix("/graphql").Handler(srv)
 	router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
 	router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, archiver)).Methods("POST")
-	//TODO: add some functionality to actually check that the service is healthy, not just up
+	// TODO: add some functionality to actually check that the service is healthy, not just up
 	router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]bool{"ok": true})
 	})
