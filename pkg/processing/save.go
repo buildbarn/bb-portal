@@ -22,14 +22,41 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
 )
 
-// SaveActor ...SaveActor The save actor struct with the db client and a blob archiver.
+// SaveActor The save actor struct with the db client and a blob archiver.
 type SaveActor struct {
 	db           *ent.Client
 	blobArchiver BlobMultiArchiver
 }
 
-// SaveSummary saves an invocation summary to the database.
+// Rollback a transaction on error
+func rollback(tx *ent.Tx, err error) error {
+	if rerr := tx.Rollback(); rerr != nil {
+		err = fmt.Errorf("%w: %v", err, rerr)
+	}
+	return err
+}
+
+// SaveSummary saves an invocation summary to the database as a transaction or rollsback on failure.
 func (act SaveActor) SaveSummary(ctx context.Context, summary *summary.Summary) (*ent.BazelInvocation, error) {
+	tx, err := act.db.Tx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	act.db = tx.Client()
+	result, err := act.saveSummary(ctx, summary)
+	if err != nil {
+		slog.ErrorContext(ctx, "Error saving the invocation to the database.  Rolling back the transaction", "err", err)
+		return nil, rollback(tx, err)
+	}
+	err = tx.Commit()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+// saveSummary saves an invocation summary to the database.
+func (act SaveActor) saveSummary(ctx context.Context, summary *summary.Summary) (*ent.BazelInvocation, error) {
 	// errors := []error{}
 	if summary.InvocationID == "" {
 		slog.ErrorContext(ctx, "No Invocation ID Found on summary", "ctx.Err()", ctx.Err())
