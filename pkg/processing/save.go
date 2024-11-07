@@ -45,6 +45,7 @@ func (act SaveActor) SaveSummary(ctx context.Context, summary *summary.Summary) 
 	act.db = tx.Client()
 	result, err := act.saveSummary(ctx, summary)
 	if err != nil {
+		slog.ErrorContext(ctx, "Error saving the invocation to the database.  Rolling back the transaction", "err", err)
 		return nil, rollback(tx, err)
 	}
 	err = tx.Commit()
