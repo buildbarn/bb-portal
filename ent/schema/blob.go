@@ -16,7 +16,7 @@ func (Blob) Fields() []ent.Field {
 		field.String("uri").Unique().Immutable(),
 		field.Int64("size_bytes").Optional(),
 		field.Enum("archiving_status").
-			Values("QUEUED", "ARCHIVING", "SUCCESS", "FAILED").
+			Values("QUEUED", "ARCHIVING", "SUCCESS", "FAILED", "BYTESTREAM").
 			Default("QUEUED"),
 		field.String("reason").Optional(),
 		field.String("archive_url").Optional(),
