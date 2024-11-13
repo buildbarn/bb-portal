@@ -84,6 +84,19 @@ func (s Summarizer) summarize(it *events.BuildEventIterator) (*Summary, error) {
 func (s Summarizer) FinishProcessing() (*Summary, error) {
 	// If problems are ignored for the exit code, return immediately.
 	slog.Debug("processing", "err", "none")
+
+	if s.summary.EndedAt == nil {
+		now := time.Now()
+		s.summary.EndedAt = &now
+	}
+
+	if s.summary.ExitCode == nil {
+		s.summary.ExitCode = &ExitCode{
+			Code: 1000,
+			Name: "UNKNOWN",
+		}
+	}
+
 	if !shouldIgnoreProblems(s.summary.ExitCode) {
 		slog.Debug("problems found", "err", "none")
 		// Add any detected test problems.
