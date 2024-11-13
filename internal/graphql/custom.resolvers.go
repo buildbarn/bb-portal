@@ -175,6 +175,21 @@ func (r *blobReferenceResolver) AvailabilityStatus(ctx context.Context, obj *mod
 	}
 }
 
+// EphemeralUrl is the resolver for the downloadURL field.
+func (r *blobReferenceResolver) EphemeralURL(ctx context.Context, obj *model.BlobReference) (string, error) {
+	if obj.Blob == nil {
+		panic("Got a name but not blob")
+	}
+	if obj.Blob.ArchivingStatus != blob.ArchivingStatusBYTESTREAM {
+		return "", nil
+	}
+	_tmp := strings.Split(obj.Blob.URI, "/blobs/")[1]
+	_split := strings.Split(_tmp, "/")
+	hash, size := _split[0], _split[1]
+
+	return fmt.Sprintf("/blobs/sha256/file/%s-%s/%s", hash, size, url.PathEscape(obj.Name)), nil
+}
+
 // Env is the resolver for the env field.
 func (r *buildResolver) Env(ctx context.Context, obj *ent.Build) ([]*model.EnvVar, error) {
 	envVars := make([]*model.EnvVar, 0, len(obj.Env))

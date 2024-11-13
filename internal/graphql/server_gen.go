@@ -273,6 +273,7 @@ type ComplexityRoot struct {
 	BlobReference struct {
 		AvailabilityStatus func(childComplexity int) int
 		DownloadURL        func(childComplexity int) int
+		EphemeralURL       func(childComplexity int) int
 		Name               func(childComplexity int) int
 		SizeInBytes        func(childComplexity int) int
 	}
@@ -839,6 +840,7 @@ type BlobReferenceResolver interface {
 	DownloadURL(ctx context.Context, obj *model.BlobReference) (string, error)
 	SizeInBytes(ctx context.Context, obj *model.BlobReference) (*int, error)
 	AvailabilityStatus(ctx context.Context, obj *model.BlobReference) (model.ActionOutputStatus, error)
+	EphemeralURL(ctx context.Context, obj *model.BlobReference) (string, error)
 }
 type BuildResolver interface {
 	ID(ctx context.Context, obj *ent.Build) (string, error)
@@ -2044,6 +2046,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BlobReference.DownloadURL(childComplexity), true
+
+	case "BlobReference.ephemeralURL":
+		if e.complexity.BlobReference.EphemeralURL == nil {
+			break
+		}
+
+		return e.complexity.BlobReference.EphemeralURL(childComplexity), true
 
 	case "BlobReference.name":
 		if e.complexity.BlobReference.Name == nil {
@@ -7315,6 +7324,8 @@ func (ec *executionContext) fieldContext_ActionProblem_stdout(_ context.Context,
 				return ec.fieldContext_BlobReference_sizeInBytes(ctx, field)
 			case "availabilityStatus":
 				return ec.fieldContext_BlobReference_availabilityStatus(ctx, field)
+			case "ephemeralURL":
+				return ec.fieldContext_BlobReference_ephemeralURL(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BlobReference", field.Name)
 		},
@@ -7366,6 +7377,8 @@ func (ec *executionContext) fieldContext_ActionProblem_stderr(_ context.Context,
 				return ec.fieldContext_BlobReference_sizeInBytes(ctx, field)
 			case "availabilityStatus":
 				return ec.fieldContext_BlobReference_availabilityStatus(ctx, field)
+			case "ephemeralURL":
+				return ec.fieldContext_BlobReference_ephemeralURL(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BlobReference", field.Name)
 		},
@@ -10950,6 +10963,50 @@ func (ec *executionContext) fieldContext_BlobReference_availabilityStatus(_ cont
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ActionOutputStatus does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _BlobReference_ephemeralURL(ctx context.Context, field graphql.CollectedField, obj *model.BlobReference) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_BlobReference_ephemeralURL(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BlobReference().EphemeralURL(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_BlobReference_ephemeralURL(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BlobReference",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -25402,6 +25459,8 @@ func (ec *executionContext) fieldContext_TestResult_actionLogOutput(_ context.Co
 				return ec.fieldContext_BlobReference_sizeInBytes(ctx, field)
 			case "availabilityStatus":
 				return ec.fieldContext_BlobReference_availabilityStatus(ctx, field)
+			case "ephemeralURL":
+				return ec.fieldContext_BlobReference_ephemeralURL(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BlobReference", field.Name)
 		},
@@ -25453,6 +25512,8 @@ func (ec *executionContext) fieldContext_TestResult_undeclaredTestOutputs(_ cont
 				return ec.fieldContext_BlobReference_sizeInBytes(ctx, field)
 			case "availabilityStatus":
 				return ec.fieldContext_BlobReference_availabilityStatus(ctx, field)
+			case "ephemeralURL":
+				return ec.fieldContext_BlobReference_ephemeralURL(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BlobReference", field.Name)
 		},
@@ -49869,6 +49930,42 @@ func (ec *executionContext) _BlobReference(ctx context.Context, sel ast.Selectio
 					}
 				}()
 				res = ec._BlobReference_availabilityStatus(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "ephemeralURL":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._BlobReference_ephemeralURL(ctx, field, obj)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

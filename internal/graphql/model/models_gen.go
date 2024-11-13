@@ -69,6 +69,7 @@ type BlobReference struct {
 	DownloadURL        string             `json:"downloadURL"`
 	SizeInBytes        *int               `json:"sizeInBytes,omitempty"`
 	AvailabilityStatus ActionOutputStatus `json:"availabilityStatus"`
+	EphemeralURL       string             `json:"ephemeralURL"`
 	// The blob being referenced
 	Blob *ent.Blob `json:"-"`
 }
@@ -213,17 +214,19 @@ const (
 	ActionOutputStatusProcessing  ActionOutputStatus = "PROCESSING"
 	ActionOutputStatusAvailable   ActionOutputStatus = "AVAILABLE"
 	ActionOutputStatusUnavailable ActionOutputStatus = "UNAVAILABLE"
+	ActionOutputStatusBytestream  ActionOutputStatus = "BYTESTREAM"
 )
 
 var AllActionOutputStatus = []ActionOutputStatus{
 	ActionOutputStatusProcessing,
 	ActionOutputStatusAvailable,
 	ActionOutputStatusUnavailable,
+	ActionOutputStatusBytestream,
 }
 
 func (e ActionOutputStatus) IsValid() bool {
 	switch e {
-	case ActionOutputStatusProcessing, ActionOutputStatusAvailable, ActionOutputStatusUnavailable:
+	case ActionOutputStatusProcessing, ActionOutputStatusAvailable, ActionOutputStatusUnavailable, ActionOutputStatusBytestream:
 		return true
 	}
 	return false

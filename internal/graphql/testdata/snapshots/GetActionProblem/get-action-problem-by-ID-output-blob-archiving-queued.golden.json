@@ -6,6 +6,7 @@
     "stdout": {
       "availabilityStatus": "PROCESSING",
       "downloadURL": "/api/v1/blobs/1/stdout",
+      "ephemeralURL": "",
       "name": "stdout",
       "sizeInBytes": 0
     }

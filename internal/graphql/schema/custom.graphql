@@ -6,16 +6,28 @@ extend type Query {
   getTestDurationAggregation(label: String): [TargetAggregate]
   getTestPassAggregation(label: String): [TargetAggregate]
   getTargetDurationAggregation(label: String): [TargetAggregate]
-  getTargetPassAggregation(label: String):[TargetAggregate]
-  getTestsWithOffset(label: String, offset: Int, limit: Int, sortBy: String, direction: String):TestGridResult
-  getTargetsWithOffset(label: String, offset: Int, limit: Int, sortBy: String, direction: String):TargetGridResult
-  getAveragePassPercentageForLabel(label: String!):Float
+  getTargetPassAggregation(label: String): [TargetAggregate]
+  getTestsWithOffset(
+    label: String
+    offset: Int
+    limit: Int
+    sortBy: String
+    direction: String
+  ): TestGridResult
+  getTargetsWithOffset(
+    label: String
+    offset: Int
+    limit: Int
+    sortBy: String
+    direction: String
+  ): TargetGridResult
+  getAveragePassPercentageForLabel(label: String!): Float
 }
 
 type TargetAggregate {
   label: String
-	count: Int
-	sum: Int
+  count: Int
+  sum: Int
   min: Int
   max: Int
   avg: Int
@@ -126,6 +138,7 @@ enum ActionOutputStatus {
   PROCESSING
   AVAILABLE
   UNAVAILABLE
+  BYTESTREAM
 }
 
 type BlobReference {
@@ -133,6 +146,7 @@ type BlobReference {
   downloadURL: String! @goField(forceResolver: true)
   sizeInBytes: Int @goField(forceResolver: true)
   availabilityStatus: ActionOutputStatus! @goField(forceResolver: true)
+  ephemeralURL: String! @goField(forceResolver: true)
 }
 
 type ActionProblem implements Node & Problem {
@@ -146,7 +160,7 @@ type ActionProblem implements Node & Problem {
 type ProgressProblem implements Node & Problem {
   id: ID!
   label: String!
-#  TODO: Possibly store these as blobs?
+  #  TODO: Possibly store these as blobs?
   output: String!
 }
 
@@ -173,7 +187,7 @@ type TestResult implements Node {
 }
 
 extend type BazelInvocation {
-    problems: [Problem!]!
+  problems: [Problem!]!
 }
 
 enum BuildStepStatus {
@@ -206,5 +220,5 @@ type Profile {
 }
 
 extend type BazelInvocation {
-    profile: Profile
+  profile: Profile
 }
