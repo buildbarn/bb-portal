@@ -57,10 +57,11 @@ const DefaultArchivingStatus = ArchivingStatusQUEUED
 
 // ArchivingStatus values.
 const (
-	ArchivingStatusQUEUED    ArchivingStatus = "QUEUED"
-	ArchivingStatusARCHIVING ArchivingStatus = "ARCHIVING"
-	ArchivingStatusSUCCESS   ArchivingStatus = "SUCCESS"
-	ArchivingStatusFAILED    ArchivingStatus = "FAILED"
+	ArchivingStatusQUEUED     ArchivingStatus = "QUEUED"
+	ArchivingStatusARCHIVING  ArchivingStatus = "ARCHIVING"
+	ArchivingStatusSUCCESS    ArchivingStatus = "SUCCESS"
+	ArchivingStatusFAILED     ArchivingStatus = "FAILED"
+	ArchivingStatusBYTESTREAM ArchivingStatus = "BYTESTREAM"
 )
 
 func (as ArchivingStatus) String() string {
@@ -70,7 +71,7 @@ func (as ArchivingStatus) String() string {
 // ArchivingStatusValidator is a validator for the "archiving_status" field enum values. It is called by the builders before save.
 func ArchivingStatusValidator(as ArchivingStatus) error {
 	switch as {
-	case ArchivingStatusQUEUED, ArchivingStatusARCHIVING, ArchivingStatusSUCCESS, ArchivingStatusFAILED:
+	case ArchivingStatusQUEUED, ArchivingStatusARCHIVING, ArchivingStatusSUCCESS, ArchivingStatusFAILED, ArchivingStatusBYTESTREAM:
 		return nil
 	default:
 		return fmt.Errorf("blob: invalid enum value for archiving_status field: %q", as)

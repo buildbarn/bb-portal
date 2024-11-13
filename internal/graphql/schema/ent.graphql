@@ -821,6 +821,7 @@ enum BlobArchivingStatus @goModel(model: "github.com/buildbarn/bb-portal/ent/gen
   ARCHIVING
   SUCCESS
   FAILED
+  BYTESTREAM
 }
 """
 BlobWhereInput is used for filtering Blob objects.
