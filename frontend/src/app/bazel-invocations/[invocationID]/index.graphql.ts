@@ -302,6 +302,7 @@ fragment BlobReferenceInfo on BlobReference {
   name
   sizeInBytes
   downloadURL
+  ephemeralURL
 }
 `)
 

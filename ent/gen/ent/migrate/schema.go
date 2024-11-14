@@ -198,7 +198,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "uri", Type: field.TypeString, Unique: true},
 		{Name: "size_bytes", Type: field.TypeInt64, Nullable: true},
-		{Name: "archiving_status", Type: field.TypeEnum, Enums: []string{"QUEUED", "ARCHIVING", "SUCCESS", "FAILED"}, Default: "QUEUED"},
+		{Name: "archiving_status", Type: field.TypeEnum, Enums: []string{"QUEUED", "ARCHIVING", "SUCCESS", "FAILED", "BYTESTREAM"}, Default: "QUEUED"},
 		{Name: "reason", Type: field.TypeString, Nullable: true},
 		{Name: "archive_url", Type: field.TypeString, Nullable: true},
 	}

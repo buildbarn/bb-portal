@@ -138,8 +138,9 @@ func NewNoopArchiver() NoopArchiver {
 // ArchiveBlob Archive Blob function.
 func (na NoopArchiver) ArchiveBlob(_ context.Context, blobURI detectors.BlobURI) ent.Blob {
 	return ent.Blob{
-		URI:        string(blobURI),
-		SizeBytes:  0,
-		ArchiveURL: "",
+		URI:             string(blobURI),
+		SizeBytes:       0,
+		ArchiveURL:      "",
+		ArchivingStatus: blob.ArchivingStatusBYTESTREAM,
 	}
 }

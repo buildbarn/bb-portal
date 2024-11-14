@@ -2,6 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {util} from 'zod';
 import {BlobReference} from '@/graphql/__generated__/graphql';
 import {LogViewerCard} from "@/components/LogViewer";
+import { env } from 'next-runtime-env';
+import { Button, Card, Space, Tooltip } from 'antd';
+import ButtonGroup from 'antd/es/button/button-group';
+import { DownloadOutlined, WarningOutlined } from '@ant-design/icons';
+import Link from 'next/link';
+import styles from "@/components/LogViewer/index.module.css"
+import DownloadButton from '@/components/DownloadButton';
 
 interface Props {
     blobReference: BlobReference;
@@ -9,6 +16,8 @@ interface Props {
 }
 
 const DEFAULT_TAIL_BYTES = 10_000;
+
+
 
 /* eslint-disable consistent-return */
 const LogOutput: React.FC<Props> = ({blobReference, tailBytes = DEFAULT_TAIL_BYTES}) => {
@@ -38,6 +47,21 @@ const LogOutput: React.FC<Props> = ({blobReference, tailBytes = DEFAULT_TAIL_BYT
         selectedLines.shift();
         validContent = selectedLines.join('\n')
     }
+
+    if (blobReference.ephemeralURL != "" && env('NEXT_PUBLIC_BROWSER_URL')) {
+        console.log("blobReference.ephemeralURL=", blobReference.ephemeralURL)
+        const url = new URL(blobReference.ephemeralURL, env('NEXT_PUBLIC_BROWSER_URL'))
+        return <Space direction="horizontal" size="small">
+        <Card>
+          <ButtonGroup>
+            <DownloadButton url={url.toString()} enabled={true} buttonLabel="Download Log File" fileName="output.log" />
+            <Tooltip title="Depending on the configuration of your remote cache, this link may point to ephemeral content and it could disappear.">
+              <Button icon={<WarningOutlined/>} danger />
+            </Tooltip>
+          </ButtonGroup>
+        </Card>
+      </Space>
+      }
 
     return <LogViewerCard log={validContent}/>;
 };
