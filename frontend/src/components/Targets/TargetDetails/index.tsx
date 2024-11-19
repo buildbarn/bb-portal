@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Space, Row, Statistic } from 'antd';
+import { Space, Row, Statistic, TableColumnsType, Table } from 'antd';
 import { TestStatusEnum } from '../../TestStatusTag';
 import type { StatisticProps } from "antd/lib";
 import CountUp from 'react-countup';
@@ -11,6 +11,10 @@ import PortalCard from '../../PortalCard';
 import { FieldTimeOutlined, BorderInnerOutlined } from '@ant-design/icons/lib/icons';
 import TargetGridRow from '../TargetGridRow';
 import { FIND_TARGETS } from '@/app/targets/graphql';
+import NullBooleanTag from '@/components/NullableBooleanTag';
+import Link from 'next/link';
+import { millisecondsToTime } from '@/components/Utilities/time';
+import styles from "@/theme/theme.module.css"
 
 interface Props {
     label: string
@@ -29,7 +33,27 @@ const PAGE_SIZE = 10
 interface GraphDataPoint {
     name: string
     duration: number
+    success: boolean
 }
+
+const target_columns: TableColumnsType<GraphDataPoint> = [
+    {
+        title: "Overall Success",
+        dataIndex: "success",
+        render: (x) => <NullBooleanTag key="success" status={x as boolean | null} />,
+    },
+    {
+        title: "Invocation ID",
+        dataIndex: "name",
+        render: (_, record) => <Link href={"/bazel-invocations/" + record.name}>{record.name}</Link>,
+    },
+    {
+        title: "Duration",
+        dataIndex: "duration",
+        align: "right",
+        render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.duration)}</span>,
+    },
+]
 
 
 const TestDetails: React.FC<Props> = ({ label }) => {
@@ -38,7 +62,6 @@ const TestDetails: React.FC<Props> = ({ label }) => {
     const { loading: labelLoading, data: labelData, previousData: labelPreviousData, error: labelError } = useQuery(FIND_TARGETS, {
         variables: variables,
         fetchPolicy: 'network-only',
-        //pollInterval: 120000,
     });
 
 
@@ -56,6 +79,7 @@ const TestDetails: React.FC<Props> = ({ label }) => {
             result.push({
                 name: row?.bazelInvocation?.invocationID ?? "",
                 duration: row?.durationInMs ?? 0,
+                success: row?.success ?? false,
             })
             total_duration += row?.durationInMs ?? 0
         });
@@ -71,7 +95,7 @@ const TestDetails: React.FC<Props> = ({ label }) => {
                 </Space>
             </Row>
             <PortalCard icon={<FieldTimeOutlined />} titleBits={["Target Duration Over Time"]} >
-                <AreaChart width={1500} height={250} data={result}
+                <AreaChart width={800} height={250} data={result}
                     margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                         <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -81,14 +105,18 @@ const TestDetails: React.FC<Props> = ({ label }) => {
                     </defs>
                     <XAxis />
                     <YAxis />
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <Tooltip />
                     <Area type="monotone" dataKey="duration" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
                 </AreaChart>
             </PortalCard>
             <Row>
-                <PortalCard icon={<BorderInnerOutlined />} titleBits={["Target Pass/Fail Grid"]}>
-                    <TargetGridRow rowLabel={label} first={1000} reverseOrder={true} />
+                <PortalCard icon={<BorderInnerOutlined />} titleBits={["Per Invocation Details"]}>
+                    <Table
+                        loading={labelLoading}
+                        dataSource={result}
+                        columns={target_columns}
+                        />
                 </PortalCard>
             </Row>
         </Space>

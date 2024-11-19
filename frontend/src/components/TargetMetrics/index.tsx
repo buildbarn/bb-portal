@@ -14,7 +14,7 @@ import Link from "next/link";
 interface TargetDataType {
     key: React.Key;
     name: string;           //label
-    success: boolean;       //overall sucess/fail
+    success: boolean;       //overall success/fail
     value: number;          //duration
     target_kind: string;    //target kind if available
     failure_reason: string  //failure reason if any

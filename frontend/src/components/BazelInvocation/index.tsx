@@ -147,7 +147,20 @@ const BazelInvocation: React.FC<{
   const hideProblemsTab: boolean = exitCode?.name == "SUCCESS"
   const hideArtifactsTab: boolean = (artifactMetrics?.outputArtifactsSeen?.count ?? 0) == 0 && (artifactMetrics?.sourceArtifactsRead?.count ?? 0) == 0 && (artifactMetrics?.outputArtifactsFromActionCache?.count ?? 0) == 0 && (artifactMetrics?.topLevelArtifacts?.count ?? 0) == 0
   const hideActionsDataTab: boolean = acMetrics?.actionsExecuted == 0
+  const hideActionCacheTab: boolean = acMetrics?.actionCacheStatistics?.hits == 0 && acMetrics?.actionCacheStatistics?.misses == 0
   const hideRunnersTab: boolean = runnerMetrics.length == 0
+  const hideTimingTab: boolean = timingMetrics?.wallTimeInMs == 0 &&
+    timingMetrics.executionPhaseTimeInMs == 0 &&
+    timingMetrics.analysisPhaseTimeInMs == 0 &&
+    timingMetrics.cpuTimeInMs == 0 &&
+    timingMetrics.actionsExecutionStartInMs == 0 &&
+    buildGraphMetrics?.actionCount == 0 &&
+    buildGraphMetrics.actionLookupValueCount == 0 &&
+    buildGraphMetrics.actionCountNotIncludingAspects ==0 &&
+    buildGraphMetrics.inputFileConfiguredTargetCount == 0 &&
+    buildGraphMetrics.outputArtifactCount == 0 &&
+    buildGraphMetrics.postInvocationSkyframeNodeCount == 0 &&
+    buildGraphMetrics.outputFileConfiguredTargetCount == 0
 
   interface TabShowHideDisplay {
     hide: boolean,
@@ -164,6 +177,8 @@ const BazelInvocation: React.FC<{
     { key: "BazelInvocationTabs-Problems", hide: hideProblemsTab },
     { key: "BazelInvocationTabs-Artifacts", hide: hideArtifactsTab },
     { key: "BazelInvocationTabs-ActionsData", hide: hideActionsDataTab },
+    { key: "BazelInvocationTabs-ActionCache", hide: hideActionCacheTab},
+    { key: "BazelInvocationTabs-Timing", hide: hideTimingTab},
     { key: "BazelInvocationTabs-Runners", hide: hideRunnersTab },
   ]
 
