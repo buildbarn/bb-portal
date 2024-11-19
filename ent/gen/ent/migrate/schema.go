@@ -138,6 +138,8 @@ var (
 		{Name: "build_logs", Type: field.TypeString, Nullable: true},
 		{Name: "cpu", Type: field.TypeString, Nullable: true},
 		{Name: "platform_name", Type: field.TypeString, Nullable: true},
+		{Name: "hostname", Type: field.TypeString, Nullable: true},
+		{Name: "is_ci_worker", Type: field.TypeBool, Nullable: true},
 		{Name: "configuration_mnemonic", Type: field.TypeString, Nullable: true},
 		{Name: "num_fetches", Type: field.TypeInt64, Nullable: true},
 		{Name: "profile_name", Type: field.TypeString},
@@ -152,13 +154,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "bazel_invocations_builds_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[18]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[20]},
 				RefColumns: []*schema.Column{BuildsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "bazel_invocations_event_files_bazel_invocation",
-				Columns:    []*schema.Column{BazelInvocationsColumns[19]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[21]},
 				RefColumns: []*schema.Column{EventFilesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

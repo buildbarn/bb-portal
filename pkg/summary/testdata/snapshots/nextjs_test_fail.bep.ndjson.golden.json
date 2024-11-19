@@ -409,7 +409,7 @@
         "CachedLocally": false,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-22T17:03:17.498245162Z"
+        "FirstSeen": "2024-11-19T18:40:54.654715363Z"
       },
       "//next.js:build_smoke_test": {
         "TestSummary": {
@@ -470,7 +470,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-22T17:03:17.497860265Z"
+        "FirstSeen": "2024-11-19T18:40:54.654130458Z"
       },
       "//next.js:build_test": {
         "TestSummary": {
@@ -531,7 +531,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2024-10-22T17:03:17.497825774Z"
+        "FirstSeen": "2024-11-19T18:40:54.654042204Z"
       }
     },
     "Targets": {
@@ -1222,6 +1222,8 @@
     "NumFetches": 0,
     "CPU": "darwin_arm64",
     "PlatformName": "darwin_arm64",
+    "Hostname": "",
+    "IsCiWorker": false,
     "ProfileName": "command.profile.gz",
     "ConfigrationMnemonic": "darwin_arm64-fastbuild",
     "SkipTargetData": false,

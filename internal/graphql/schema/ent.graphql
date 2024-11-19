@@ -407,6 +407,8 @@ type BazelInvocation implements Node {
   buildLogs: String
   cpu: String
   platformName: String
+  hostname: String
+  isCiWorker: Boolean
   configurationMnemonic: String
   numFetches: Int
   eventFile: EventFile!
@@ -722,6 +724,31 @@ input BazelInvocationWhereInput {
   platformNameNotNil: Boolean
   platformNameEqualFold: String
   platformNameContainsFold: String
+  """
+  hostname field predicates
+  """
+  hostname: String
+  hostnameNEQ: String
+  hostnameIn: [String!]
+  hostnameNotIn: [String!]
+  hostnameGT: String
+  hostnameGTE: String
+  hostnameLT: String
+  hostnameLTE: String
+  hostnameContains: String
+  hostnameHasPrefix: String
+  hostnameHasSuffix: String
+  hostnameIsNil: Boolean
+  hostnameNotNil: Boolean
+  hostnameEqualFold: String
+  hostnameContainsFold: String
+  """
+  is_ci_worker field predicates
+  """
+  isCiWorker: Boolean
+  isCiWorkerNEQ: Boolean
+  isCiWorkerIsNil: Boolean
+  isCiWorkerNotNil: Boolean
   """
   configuration_mnemonic field predicates
   """

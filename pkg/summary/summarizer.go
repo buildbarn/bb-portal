@@ -414,25 +414,24 @@ func (s Summarizer) handleTestSummary(testSummary *bes.TestSummary, label string
 // handleBuildMetadata
 func (s Summarizer) handleBuildMetadata(metadataProto *bes.BuildMetadata) {
 	metadataMap := metadataProto.GetMetadata()
-	// extract user data
+	// extract metadata
 	if metadataMap == nil {
 		return
 	}
-	stepLabel, stepLabelOk := metadataMap[stepLabelKey]
-	if !stepLabelOk {
-		slog.Debug("No step label found in build metadata")
+	if stepLabel, ok := metadataMap[stepLabelKey]; ok {
+		s.summary.StepLabel = stepLabel
 	}
-	userEmail, userEmailOk := metadataMap[userEmailKey]
-	if !userEmailOk {
-		slog.Debug("No user email found in build metadata")
+	if userEmail, ok := metadataMap[userEmailKey]; ok {
+		s.summary.UserEmail = userEmail
 	}
-	userLdap, userLdapOk := metadataMap[userLdapKey]
-	if !userLdapOk {
-		slog.Debug("No user ldap information found in build metadata")
+	if userLdap, ok := metadataMap[userLdapKey]; ok {
+		s.summary.UserLDAP = userLdap
 	}
-	s.summary.StepLabel = stepLabel
-	s.summary.UserEmail = userEmail
-	s.summary.UserLDAP = userLdap
+	if isCiWorkerVal, ok := metadataMap[isCiWorkerKey]; ok {
+		if isCiWorkerVal == "TRUE" {
+			s.summary.IsCiWorker = true
+		}
+	}
 }
 
 // handleBuildMetrics
@@ -806,6 +805,23 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 	// Set build URL and UUID
 	s.summary.BuildURL = s.summary.InvocationSummary.EnvVars["BUILD_URL"]
 	s.summary.BuildUUID = uuid.NewSHA1(uuid.NameSpaceURL, []byte(s.summary.BuildURL))
+
+	// Set Hostname
+	if hostNameVal, ok := s.summary.EnvVars["HOSTNAME"]; ok {
+		s.summary.Hostname = hostNameVal
+	}
+
+	// Set CI Worker Role from environment variables (can also come from metadata)
+	if isCiWorkerVal, ok := s.summary.EnvVars["BB_PORTAL_IS_CI_WORKER"]; ok {
+		if isCiWorkerVal == "TRUE" {
+			s.summary.IsCiWorker = true
+		}
+	}
+
+	// Set Step Label from environment variables
+	if ghJobNameVal, ok := s.summary.EnvVars["GITHUB_JOB"]; ok {
+		s.summary.StepLabel = ghJobNameVal
+	}
 
 	// Set SkipTargetData
 	if skipTargetSaveEnvVarVal, ok := s.summary.EnvVars["BB_PORTAL_SKIP_SAVE_TARGETS"]; ok {

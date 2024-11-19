@@ -1075,6 +1075,8 @@
     "NumFetches": 0,
     "CPU": "darwin_arm64",
     "PlatformName": "darwin_arm64",
+    "Hostname": "",
+    "IsCiWorker": false,
     "ProfileName": "command.profile.gz",
     "ConfigrationMnemonic": "darwin_arm64-fastbuild",
     "SkipTargetData": false,

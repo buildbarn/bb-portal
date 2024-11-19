@@ -3722,6 +3722,8 @@ type BazelInvocationMutation struct {
 	build_logs             *string
 	cpu                    *string
 	platform_name          *string
+	hostname               *string
+	is_ci_worker           *bool
 	configuration_mnemonic *string
 	num_fetches            *int64
 	addnum_fetches         *int64
@@ -4510,6 +4512,104 @@ func (m *BazelInvocationMutation) ResetPlatformName() {
 	delete(m.clearedFields, bazelinvocation.FieldPlatformName)
 }
 
+// SetHostname sets the "hostname" field.
+func (m *BazelInvocationMutation) SetHostname(s string) {
+	m.hostname = &s
+}
+
+// Hostname returns the value of the "hostname" field in the mutation.
+func (m *BazelInvocationMutation) Hostname() (r string, exists bool) {
+	v := m.hostname
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHostname returns the old "hostname" field's value of the BazelInvocation entity.
+// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BazelInvocationMutation) OldHostname(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHostname is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHostname requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHostname: %w", err)
+	}
+	return oldValue.Hostname, nil
+}
+
+// ClearHostname clears the value of the "hostname" field.
+func (m *BazelInvocationMutation) ClearHostname() {
+	m.hostname = nil
+	m.clearedFields[bazelinvocation.FieldHostname] = struct{}{}
+}
+
+// HostnameCleared returns if the "hostname" field was cleared in this mutation.
+func (m *BazelInvocationMutation) HostnameCleared() bool {
+	_, ok := m.clearedFields[bazelinvocation.FieldHostname]
+	return ok
+}
+
+// ResetHostname resets all changes to the "hostname" field.
+func (m *BazelInvocationMutation) ResetHostname() {
+	m.hostname = nil
+	delete(m.clearedFields, bazelinvocation.FieldHostname)
+}
+
+// SetIsCiWorker sets the "is_ci_worker" field.
+func (m *BazelInvocationMutation) SetIsCiWorker(b bool) {
+	m.is_ci_worker = &b
+}
+
+// IsCiWorker returns the value of the "is_ci_worker" field in the mutation.
+func (m *BazelInvocationMutation) IsCiWorker() (r bool, exists bool) {
+	v := m.is_ci_worker
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsCiWorker returns the old "is_ci_worker" field's value of the BazelInvocation entity.
+// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BazelInvocationMutation) OldIsCiWorker(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsCiWorker is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsCiWorker requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsCiWorker: %w", err)
+	}
+	return oldValue.IsCiWorker, nil
+}
+
+// ClearIsCiWorker clears the value of the "is_ci_worker" field.
+func (m *BazelInvocationMutation) ClearIsCiWorker() {
+	m.is_ci_worker = nil
+	m.clearedFields[bazelinvocation.FieldIsCiWorker] = struct{}{}
+}
+
+// IsCiWorkerCleared returns if the "is_ci_worker" field was cleared in this mutation.
+func (m *BazelInvocationMutation) IsCiWorkerCleared() bool {
+	_, ok := m.clearedFields[bazelinvocation.FieldIsCiWorker]
+	return ok
+}
+
+// ResetIsCiWorker resets all changes to the "is_ci_worker" field.
+func (m *BazelInvocationMutation) ResetIsCiWorker() {
+	m.is_ci_worker = nil
+	delete(m.clearedFields, bazelinvocation.FieldIsCiWorker)
+}
+
 // SetConfigurationMnemonic sets the "configuration_mnemonic" field.
 func (m *BazelInvocationMutation) SetConfigurationMnemonic(s string) {
 	m.configuration_mnemonic = &s
@@ -5017,7 +5117,7 @@ func (m *BazelInvocationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BazelInvocationMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 19)
 	if m.invocation_id != nil {
 		fields = append(fields, bazelinvocation.FieldInvocationID)
 	}
@@ -5059,6 +5159,12 @@ func (m *BazelInvocationMutation) Fields() []string {
 	}
 	if m.platform_name != nil {
 		fields = append(fields, bazelinvocation.FieldPlatformName)
+	}
+	if m.hostname != nil {
+		fields = append(fields, bazelinvocation.FieldHostname)
+	}
+	if m.is_ci_worker != nil {
+		fields = append(fields, bazelinvocation.FieldIsCiWorker)
 	}
 	if m.configuration_mnemonic != nil {
 		fields = append(fields, bazelinvocation.FieldConfigurationMnemonic)
@@ -5105,6 +5211,10 @@ func (m *BazelInvocationMutation) Field(name string) (ent.Value, bool) {
 		return m.CPU()
 	case bazelinvocation.FieldPlatformName:
 		return m.PlatformName()
+	case bazelinvocation.FieldHostname:
+		return m.Hostname()
+	case bazelinvocation.FieldIsCiWorker:
+		return m.IsCiWorker()
 	case bazelinvocation.FieldConfigurationMnemonic:
 		return m.ConfigurationMnemonic()
 	case bazelinvocation.FieldNumFetches:
@@ -5148,6 +5258,10 @@ func (m *BazelInvocationMutation) OldField(ctx context.Context, name string) (en
 		return m.OldCPU(ctx)
 	case bazelinvocation.FieldPlatformName:
 		return m.OldPlatformName(ctx)
+	case bazelinvocation.FieldHostname:
+		return m.OldHostname(ctx)
+	case bazelinvocation.FieldIsCiWorker:
+		return m.OldIsCiWorker(ctx)
 	case bazelinvocation.FieldConfigurationMnemonic:
 		return m.OldConfigurationMnemonic(ctx)
 	case bazelinvocation.FieldNumFetches:
@@ -5260,6 +5374,20 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPlatformName(v)
+		return nil
+	case bazelinvocation.FieldHostname:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHostname(v)
+		return nil
+	case bazelinvocation.FieldIsCiWorker:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsCiWorker(v)
 		return nil
 	case bazelinvocation.FieldConfigurationMnemonic:
 		v, ok := value.(string)
@@ -5378,6 +5506,12 @@ func (m *BazelInvocationMutation) ClearedFields() []string {
 	if m.FieldCleared(bazelinvocation.FieldPlatformName) {
 		fields = append(fields, bazelinvocation.FieldPlatformName)
 	}
+	if m.FieldCleared(bazelinvocation.FieldHostname) {
+		fields = append(fields, bazelinvocation.FieldHostname)
+	}
+	if m.FieldCleared(bazelinvocation.FieldIsCiWorker) {
+		fields = append(fields, bazelinvocation.FieldIsCiWorker)
+	}
 	if m.FieldCleared(bazelinvocation.FieldConfigurationMnemonic) {
 		fields = append(fields, bazelinvocation.FieldConfigurationMnemonic)
 	}
@@ -5424,6 +5558,12 @@ func (m *BazelInvocationMutation) ClearField(name string) error {
 		return nil
 	case bazelinvocation.FieldPlatformName:
 		m.ClearPlatformName()
+		return nil
+	case bazelinvocation.FieldHostname:
+		m.ClearHostname()
+		return nil
+	case bazelinvocation.FieldIsCiWorker:
+		m.ClearIsCiWorker()
 		return nil
 	case bazelinvocation.FieldConfigurationMnemonic:
 		m.ClearConfigurationMnemonic()
@@ -5480,6 +5620,12 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 		return nil
 	case bazelinvocation.FieldPlatformName:
 		m.ResetPlatformName()
+		return nil
+	case bazelinvocation.FieldHostname:
+		m.ResetHostname()
+		return nil
+	case bazelinvocation.FieldIsCiWorker:
+		m.ResetIsCiWorker()
 		return nil
 	case bazelinvocation.FieldConfigurationMnemonic:
 		m.ResetConfigurationMnemonic()
