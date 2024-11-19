@@ -22,12 +22,24 @@ interface Props {
     configuration: string
     startedAt: string
     endedAt: string
+    hostname: string
     numFetches: number
 }
 
 type OverviewProps = Props & IntrinsicAttributes & CardProps & RefAttributes<HTMLDivElement>;
 
-export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({ targets, command, cpu, user, status, invocationId, configuration, startedAt, endedAt, numFetches, ...props }) => {
+export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({
+    targets,
+    command,
+    cpu,
+    user,
+    status,
+    invocationId,
+    configuration,
+    startedAt,
+    endedAt,
+    hostname,
+    numFetches, ...props }) => {
     return (
         <Space>
             <Descriptions column={1} bordered >
@@ -51,6 +63,9 @@ export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({ targets, co
                 </Descriptions.Item>
                 <Descriptions.Item label="Configuration">
                     {configuration}
+                </Descriptions.Item>
+                <Descriptions.Item label="Hostname">
+                    {hostname}
                 </Descriptions.Item>
                 <Descriptions.Item label="Number of Fetches">
                     {numFetches}

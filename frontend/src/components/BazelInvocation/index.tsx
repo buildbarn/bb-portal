@@ -2,7 +2,6 @@ import {
   ActionSummary,
   ArtifactMetrics,
   BazelInvocationInfoFragment,
-  ProblemInfoFragment,
   RunnerCount,
   TargetMetrics,
   MemoryMetrics,
@@ -18,8 +17,6 @@ import PortalDuration from "@/components/PortalDuration";
 import PortalCard from "@/components/PortalCard";
 import { Space, Tabs, Typography } from "antd";
 import type { TabsProps } from "antd/lib";
-import CopyTextButton from "@/components/CopyTextButton";
-import PortalAlert from "@/components/PortalAlert";
 import {
   BuildOutlined,
   FileSearchOutlined,
@@ -35,12 +32,9 @@ import {
   HddOutlined,
   CodeOutlined,
   BranchesOutlined,
-  InfoCircleFilled,
   InfoCircleOutlined,
 } from "@ant-design/icons";
 import themeStyles from '@/theme/theme.module.css';
-import { debugMode } from "@/components/Utilities/debugMode";
-import DebugInfo from "@/components/DebugInfo";
 import BuildStepResultTag, { BuildStepResultEnum } from "@/components/BuildStepResultTag";
 import DownloadButton from '@/components/DownloadButton'
 import Link from '@/components/Link';
@@ -58,14 +52,11 @@ import { env } from 'next-runtime-env';
 import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
 import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
-import BuildProblem from "../Problems/BuildProblem";
 import BuildProblems from "../Problems";
 
 
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
-  //problems?: ProblemInfoFragment[] | null | undefined;
-  //children?: React.ReactNode;
   isNestedWithinBuildCard?: boolean;
 }> = ({ invocationOverview, isNestedWithinBuildCard }) => {
   const {
@@ -81,8 +72,10 @@ const BazelInvocation: React.FC<{
     targets,
     numFetches,
     cpu,
-    configurationMnemonic
-    //stepLabel,
+    configurationMnemonic,
+    stepLabel,
+    hostname,
+    isCiWorker
     //relatedFiles,
 
   } = invocationOverview;
@@ -210,6 +203,7 @@ const BazelInvocation: React.FC<{
             numFetches={numFetches ?? 0}
             startedAt={invocationOverview.startedAt}
             endedAt={invocationOverview.endedAt}
+            hostname={hostname ?? ""}
             status={state.exitCode?.name ?? ""} />
         </PortalCard>
       </Space>,
