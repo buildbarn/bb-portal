@@ -204,6 +204,8 @@ const BazelInvocation: React.FC<{
             startedAt={invocationOverview.startedAt}
             endedAt={invocationOverview.endedAt}
             hostname={hostname ?? ""}
+            isCiWorker={isCiWorker ?? false}
+            stepLabel={stepLabel ?? ""}
             status={state.exitCode?.name ?? ""} />
         </PortalCard>
       </Space>,
@@ -303,7 +305,7 @@ const BazelInvocation: React.FC<{
       label: 'Source Control',
       icon: <BranchesOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
-        <SourceControlDisplay sourceControlData={sourceControl} />
+        <SourceControlDisplay sourceControlData={sourceControl} stepLabel={stepLabel} />
       </Space>,
     },
     {

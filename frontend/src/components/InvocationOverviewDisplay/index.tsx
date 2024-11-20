@@ -1,18 +1,11 @@
 import React, { RefAttributes } from 'react';
-import { Card, CardProps, Descriptions, List, Space } from 'antd';
-import { AnsiUp } from 'ansi_up';
-import linkifyHtml from 'linkify-html';
+import { CardProps, Descriptions, Space } from 'antd';
 import { JSX } from 'react/jsx-runtime';
-import styles from './index.module.css';
-import PortalAlert from '@/components/PortalAlert';
 import IntrinsicAttributes = JSX.IntrinsicAttributes;
-import PortalCard from '../PortalCard';
-import { ExclamationCircleFilled } from '@ant-design/icons';
 import BuildStepResultTag, { BuildStepResultEnum } from '../BuildStepResultTag';
 import PortalDuration from '../PortalDuration';
 
 interface Props {
-
     targets: number,
     command: string,
     cpu: string,
@@ -23,6 +16,8 @@ interface Props {
     startedAt: string
     endedAt: string
     hostname: string
+    isCiWorker: boolean,
+    stepLabel: string,
     numFetches: number
 }
 
@@ -39,7 +34,12 @@ export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({
     startedAt,
     endedAt,
     hostname,
+    isCiWorker,
+    stepLabel,
     numFetches, ...props }) => {
+
+        const stepLabelExists = stepLabel != "" && stepLabel != null
+
     return (
         <Space>
             <Descriptions column={1} bordered >
@@ -70,6 +70,12 @@ export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({
                 <Descriptions.Item label="Number of Fetches">
                     {numFetches}
                 </Descriptions.Item>
+                { isCiWorker &&
+                 <Descriptions.Item label="CI Worker">True</Descriptions.Item>
+                }
+                { stepLabelExists &&
+                    <Descriptions.Item label="CI Step Label">{stepLabel}</Descriptions.Item>
+                }
             </Descriptions>
         </Space>
     );

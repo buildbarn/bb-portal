@@ -17,6 +17,7 @@ const (
 	userEmailKey  = "user_email"
 	userLdapKey   = "user_ldap"
 	isCiWorkerKey = "is_ci_worker"
+	hostnameKey   = "hostname"
 )
 
 // Exit Code constant.

@@ -810,6 +810,9 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 	if hostNameVal, ok := s.summary.EnvVars["HOSTNAME"]; ok {
 		s.summary.Hostname = hostNameVal
 	}
+	if hostNameVal, ok := s.summary.EnvVars["BB_PORTAL_HOSTNAME"]; ok {
+		s.summary.Hostname = hostNameVal
+	}
 
 	// Set CI Worker Role from environment variables (can also come from metadata)
 	if isCiWorkerVal, ok := s.summary.EnvVars["BB_PORTAL_IS_CI_WORKER"]; ok {
