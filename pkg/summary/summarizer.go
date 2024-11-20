@@ -432,6 +432,9 @@ func (s Summarizer) handleBuildMetadata(metadataProto *bes.BuildMetadata) {
 			s.summary.IsCiWorker = true
 		}
 	}
+	if hostnameVal, ok := metadataMap[hostnameKey]; ok {
+		s.summary.Hostname = hostnameVal
+	}
 }
 
 // handleBuildMetrics

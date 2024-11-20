@@ -184,11 +184,12 @@ func (act SaveActor) saveBazelInvocation(
 		SetBepCompleted(summary.BEPCompleted).
 		SetStepLabel(summary.StepLabel).
 		SetUserEmail(summary.UserEmail).
+		SetUserLdap(summary.UserLDAP).
 		SetCPU(summary.CPU).
 		SetConfigurationMnemonic(summary.ConfigrationMnemonic).
 		SetPlatformName(summary.PlatformName).
 		SetNumFetches(summary.NumFetches).
-		SetUserLdap(summary.UserLDAP).
+		SetHostname(summary.Hostname).
 		SetRelatedFiles(summary.RelatedFiles)
 
 	if eventFile != nil {
