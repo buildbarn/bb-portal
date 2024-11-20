@@ -14,8 +14,10 @@
     "configurationMnemonic": "darwin_arm64-fastbuild",
     "cpu": "darwin_arm64",
     "endedAt": "2024-05-03T00:24:29.605Z",
+    "hostname": "",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjE=",
     "invocationID": "fd03240f-697e-4b64-95bc-888e27445bf9",
+    "isCiWorker": false,
     "metrics": {
       "actionSummary": {
         "actionCacheStatistics": {
