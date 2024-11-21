@@ -834,9 +834,17 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		}
 	}
 
+	// default step label to workfow + job
+	if ghWfVal, ok := s.summary.EnvVars["GITHUB_WORKFLOW"]; ok {
+		s.summary.StepLabel = ghWfVal
+		if ghJobNameVal, ok := s.summary.EnvVars["GITHUB_JOB"]; ok {
+			s.summary.StepLabel += "+" + ghJobNameVal
+		}
+	}
+
 	// Set Step Label from environment variables
-	if ghJobNameVal, ok := s.summary.EnvVars["GITHUB_JOB"]; ok {
-		s.summary.StepLabel = ghJobNameVal
+	if stepLabelVal, ok := s.summary.EnvVars["BB_PORTAL_STEP_LABEL"]; ok {
+		s.summary.StepLabel = stepLabelVal
 	}
 
 	// Set SkipTargetData
