@@ -56,17 +56,14 @@ const SourceControlDisplay: React.FC<{
                             <Descriptions.Item label="Workflow">
                                 {sourceControlData?.workflow}
                             </Descriptions.Item>
-                            <Descriptions.Item label="Workspace">
-                                 {sourceControlData?.workspace}
+                            <Descriptions.Item label="Job">
+                                {sourceControlData?.job}
                             </Descriptions.Item>
                             <Descriptions.Item label="Action">
                                 {sourceControlData?.action}
                             </Descriptions.Item>
                             <Descriptions.Item label="Event Name">
                                 {sourceControlData?.eventName}
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Job">
-                                {sourceControlData?.job}
                             </Descriptions.Item>
                             <Descriptions.Item label="Runner Name">
                                 {sourceControlData?.runnerName}

@@ -244,6 +244,14 @@ fragment BazelInvocationInfo on BazelInvocation {
     repoURL
     refs
     runID
+    workflow
+    workspace
+    action
+    eventName
+    job
+    runnerName
+    runnerArch
+    runnerOs
   }
 }
 `);
