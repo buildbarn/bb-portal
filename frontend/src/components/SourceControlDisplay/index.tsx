@@ -52,6 +52,32 @@ const SourceControlDisplay: React.FC<{
                                 {stepLabel}
                             </Descriptions.Item>
                         </Descriptions>
+                        <Descriptions bordered column={1}>
+                            <Descriptions.Item label="Workflow">
+                                {sourceControlData?.workflow}
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Workspace">
+                                 {sourceControlData?.workspace}
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Action">
+                                {sourceControlData?.action}
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Event Name">
+                                {sourceControlData?.eventName}
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Job">
+                                {sourceControlData?.job}
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Runner Name">
+                                {sourceControlData?.runnerName}
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Runner Architecture">
+                                {sourceControlData?.runnerArch}
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Runner Operating System">
+                                {sourceControlData?.runnerOs}
+                            </Descriptions.Item>
+                        </Descriptions>
                     </Space>
                 </Row>
             </PortalCard>
