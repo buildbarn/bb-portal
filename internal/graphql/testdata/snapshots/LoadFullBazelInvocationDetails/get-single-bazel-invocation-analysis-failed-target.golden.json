@@ -1,14 +1,35 @@
 {
   "bazelInvocation": {
     "bazelCommand": {
-      "cmdLine": [],
+      "cmdLine": [
+        "--enable_runfiles=1",
+        "--build_metadata=BUILD_STEP_LABEL=nextjs_test",
+        "--build_event_json_file=./pkg/summary/testdata/nextjs_test_fail.bep.ndjson"
+      ],
       "command": "test",
       "executable": "bazel",
-      "explicitCmdLine": "",
-      "explicitStartupOptions": [],
+      "explicitCmdLine": "--build_metadata=BUILD_STEP_LABEL=nextjs_test --build_event_json_file=./pkg/summary/testdata/nextjs_test_fail.bep.ndjson",
+      "explicitStartupOptions": [
+        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
+      ],
       "id": "",
       "residual": "//next.js/...",
-      "startupOptions": []
+      "startupOptions": [
+        "--max_idle_secs=10800",
+        "--noshutdown_on_low_sys_mem",
+        "--connect_timeout_secs=30",
+        "--output_user_root=/var/tmp/_bazel_nameless",
+        "--output_base=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096",
+        "--failure_detail_out=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/failure_detail.rawproto",
+        "--expand_configs_in_place",
+        "--idle_server_tasks",
+        "--write_command_log",
+        "--nowatchfs",
+        "--nofatal_event_bus_exceptions",
+        "--nowindows_enable_symlinks",
+        "--noclient_debug",
+        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
+      ]
     },
     "build": {
       "buildUUID": "16276f4b-81e2-5b48-a09a-7c7c7b8b692f",
@@ -197,7 +218,15 @@
         "url": "../summary/testdata/nextjs_test_fail.bep.ndjson"
       }
     ],
-    "sourceControl": null,
+    "sourceControl": {
+      "actor": "",
+      "branch": "",
+      "commitSha": "",
+      "id": "U291cmNlQ29udHJvbDo1",
+      "refs": "",
+      "repoURL": "",
+      "runID": ""
+    },
     "startedAt": "2024-05-13T23:43:23.045Z",
     "state": {
       "bepCompleted": true,
@@ -214,8 +243,17 @@
     "targets": [
       {
         "abortReason": "",
-        "durationInMs": 3,
+        "durationInMs": 0,
         "id": "VGFyZ2V0UGFpcjoyMTU=",
+        "label": "//next.js:tsconfig",
+        "success": true,
+        "targetKind": "ts_config rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjoyMTY=",
         "label": "//next.js/pages:_jest_test_bazel_sequencer",
         "success": true,
         "targetKind": "_copy_file rule",
@@ -223,53 +261,8 @@
       },
       {
         "abortReason": "",
-        "durationInMs": 2,
-        "id": "VGFyZ2V0UGFpcjoyMTY=",
-        "label": "//next.js/pages:_jest_test_bazel_snapshot_resolver",
-        "success": true,
-        "targetKind": "_copy_file rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 2,
-        "id": "VGFyZ2V0UGFpcjoyMTc=",
-        "label": "//next.js/public:public",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 2,
-        "id": "VGFyZ2V0UGFpcjoyMTg=",
-        "label": "//next.js:next",
-        "success": true,
-        "targetKind": "_run_binary rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 2,
-        "id": "VGFyZ2V0UGFpcjoyMTk=",
-        "label": "//next.js:next_dev",
-        "success": true,
-        "targetKind": "_js_run_devserver rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 1,
-        "id": "VGFyZ2V0UGFpcjoyMjA=",
-        "label": "//next.js:package_json",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
         "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoyMjE=",
+        "id": "VGFyZ2V0UGFpcjoyMTc=",
         "label": "//next.js/pages/api:api",
         "success": true,
         "targetKind": "ts_project rule",
@@ -278,6 +271,42 @@
       {
         "abortReason": "",
         "durationInMs": 2,
+        "id": "VGFyZ2V0UGFpcjoyMTg=",
+        "label": "//next.js/pages:_jest_test_jest_entrypoint",
+        "success": true,
+        "targetKind": "directory_path rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjoyMTk=",
+        "label": "//next.js/public:public",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 2,
+        "id": "VGFyZ2V0UGFpcjoyMjA=",
+        "label": "//next.js:build_smoke_test",
+        "success": true,
+        "targetKind": "js_test rule",
+        "testSize": "MEDIUM"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjoyMjE=",
+        "label": "//next.js:package_json",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 1,
         "id": "VGFyZ2V0UGFpcjoyMjI=",
         "label": "//next.js/pages:_jest_test_bazel_snapshot_reporter",
         "success": true,
@@ -286,18 +315,18 @@
       },
       {
         "abortReason": "",
-        "durationInMs": 3,
+        "durationInMs": 1,
         "id": "VGFyZ2V0UGFpcjoyMjM=",
-        "label": "//next.js:build_smoke_test",
+        "label": "//next.js/pages:pages",
         "success": true,
-        "targetKind": "js_test rule",
-        "testSize": "MEDIUM"
+        "targetKind": "ts_project rule",
+        "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
-        "durationInMs": 3,
+        "durationInMs": 1,
         "id": "VGFyZ2V0UGFpcjoyMjQ=",
-        "label": "//next.js:eslintrc",
+        "label": "//next.js/styles:styles",
         "success": true,
         "targetKind": "js_library rule",
         "testSize": "UNKNOWN"
@@ -306,32 +335,32 @@
         "abortReason": "",
         "durationInMs": 0,
         "id": "VGFyZ2V0UGFpcjoyMjU=",
-        "label": "//next.js:jest_config",
+        "label": "//next.js:next_start",
         "success": true,
-        "targetKind": "js_library rule",
+        "targetKind": "_js_run_devserver rule",
         "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
-        "durationInMs": 2,
+        "durationInMs": 1,
         "id": "VGFyZ2V0UGFpcjoyMjY=",
-        "label": "//next.js/pages:pages",
+        "label": "//next.js/pages:_jest_test_bazel_snapshot_resolver",
         "success": true,
-        "targetKind": "ts_project rule",
+        "targetKind": "_copy_file rule",
         "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
-        "durationInMs": 2,
+        "durationInMs": 0,
         "id": "VGFyZ2V0UGFpcjoyMjc=",
-        "label": "//next.js/styles:styles",
+        "label": "//next.js/pages:jest_test",
         "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
+        "targetKind": "jest_test rule",
+        "testSize": "MEDIUM"
       },
       {
         "abortReason": "",
-        "durationInMs": 2,
+        "durationInMs": 1,
         "id": "VGFyZ2V0UGFpcjoyMjg=",
         "label": "//next.js:next_js_binary",
         "success": true,
@@ -340,35 +369,8 @@
       },
       {
         "abortReason": "",
-        "durationInMs": 0,
+        "durationInMs": 2,
         "id": "VGFyZ2V0UGFpcjoyMjk=",
-        "label": "//next.js:tsconfig",
-        "success": true,
-        "targetKind": "ts_config rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoyMzA=",
-        "label": "//next.js/pages:jest_test",
-        "success": true,
-        "targetKind": "jest_test rule",
-        "testSize": "MEDIUM"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 3,
-        "id": "VGFyZ2V0UGFpcjoyMzE=",
-        "label": "//next.js/pages:_jest_test_jest_entrypoint",
-        "success": true,
-        "targetKind": "directory_path rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 3,
-        "id": "VGFyZ2V0UGFpcjoyMzI=",
         "label": "//next.js/pages:specs",
         "success": true,
         "targetKind": "ts_project rule",
@@ -376,8 +378,8 @@
       },
       {
         "abortReason": "",
-        "durationInMs": 3,
-        "id": "VGFyZ2V0UGFpcjoyMzM=",
+        "durationInMs": 2,
+        "id": "VGFyZ2V0UGFpcjoyMzA=",
         "label": "//next.js:build_test",
         "success": true,
         "targetKind": "_empty_test rule",
@@ -385,9 +387,36 @@
       },
       {
         "abortReason": "",
+        "durationInMs": 2,
+        "id": "VGFyZ2V0UGFpcjoyMzE=",
+        "label": "//next.js:eslintrc",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjoyMzI=",
+        "label": "//next.js:jest_config",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjoyMzM=",
+        "label": "//next.js:next",
+        "success": true,
+        "targetKind": "_run_binary rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
         "durationInMs": 1,
         "id": "VGFyZ2V0UGFpcjoyMzQ=",
-        "label": "//next.js:next_start",
+        "label": "//next.js:next_dev",
         "success": true,
         "targetKind": "_js_run_devserver rule",
         "testSize": "UNKNOWN"
