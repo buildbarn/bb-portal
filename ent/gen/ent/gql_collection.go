@@ -649,6 +649,16 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				selectedFields = append(selectedFields, bazelinvocation.FieldPlatformName)
 				fieldSeen[bazelinvocation.FieldPlatformName] = struct{}{}
 			}
+		case "hostname":
+			if _, ok := fieldSeen[bazelinvocation.FieldHostname]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldHostname)
+				fieldSeen[bazelinvocation.FieldHostname] = struct{}{}
+			}
+		case "isCiWorker":
+			if _, ok := fieldSeen[bazelinvocation.FieldIsCiWorker]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldIsCiWorker)
+				fieldSeen[bazelinvocation.FieldIsCiWorker] = struct{}{}
+			}
 		case "configurationMnemonic":
 			if _, ok := fieldSeen[bazelinvocation.FieldConfigurationMnemonic]; !ok {
 				selectedFields = append(selectedFields, bazelinvocation.FieldConfigurationMnemonic)

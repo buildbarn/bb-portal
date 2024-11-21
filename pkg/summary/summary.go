@@ -13,12 +13,14 @@ import (
 // Step Label and user Key constants.
 const (
 	// stepLabelKey is used in buildMetadata events to provide a human-readable label for build steps.
-	stepLabelKey = "BUILD_STEP_LABEL"
-	userEmailKey = "user_email"
-	userLdapKey  = "user_ldap"
+	stepLabelKey  = "BUILD_STEP_LABEL"
+	userEmailKey  = "user_email"
+	userLdapKey   = "user_ldap"
+	isCiWorkerKey = "is_ci_worker"
+	hostnameKey   = "hostname"
 )
 
-// Exit Code constatn.
+// Exit Code constant.
 const (
 	ExitCodeSuccess     = 0
 	ExitCodeInterrupted = 8
@@ -187,6 +189,8 @@ type Summary struct {
 	NumFetches           int64
 	CPU                  string
 	PlatformName         string
+	Hostname             string
+	IsCiWorker           bool
 	ProfileName          string
 	ConfigrationMnemonic string
 	SkipTargetData       bool

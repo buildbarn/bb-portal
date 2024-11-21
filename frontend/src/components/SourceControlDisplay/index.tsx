@@ -7,9 +7,12 @@ import Link from "next/link";
 import { env } from 'next-runtime-env';
 
 
-const SourceControlDisplay: React.FC<{ sourceControlData: SourceControl | undefined | null }> = ({
-    sourceControlData: sourceControlData
-}) => {
+const SourceControlDisplay: React.FC<{
+    stepLabel: string | undefined | null,
+    sourceControlData: SourceControl | undefined | null }> = ({
+        sourceControlData: sourceControlData,
+        stepLabel: stepLabel
+    }) => {
     //build urls
     var ghUrl = env('NEXT_PUBLIC_GITHUB_URL') ?? "https://github.com/"
     if (!ghUrl.endsWith("/")) {
@@ -44,6 +47,9 @@ const SourceControlDisplay: React.FC<{ sourceControlData: SourceControl | undefi
                             </Descriptions.Item>
                             <Descriptions.Item label="Pull Request">
                                 <Link target="_blank" href={prURL}>#{prParts[2]}</Link>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Step Label">
+                                {stepLabel}
                             </Descriptions.Item>
                         </Descriptions>
                     </Space>

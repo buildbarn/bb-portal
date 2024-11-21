@@ -2,7 +2,6 @@ import {
   ActionSummary,
   ArtifactMetrics,
   BazelInvocationInfoFragment,
-  ProblemInfoFragment,
   RunnerCount,
   TargetMetrics,
   MemoryMetrics,
@@ -18,8 +17,6 @@ import PortalDuration from "@/components/PortalDuration";
 import PortalCard from "@/components/PortalCard";
 import { Space, Tabs, Typography } from "antd";
 import type { TabsProps } from "antd/lib";
-import CopyTextButton from "@/components/CopyTextButton";
-import PortalAlert from "@/components/PortalAlert";
 import {
   BuildOutlined,
   FileSearchOutlined,
@@ -35,12 +32,9 @@ import {
   HddOutlined,
   CodeOutlined,
   BranchesOutlined,
-  InfoCircleFilled,
   InfoCircleOutlined,
 } from "@ant-design/icons";
 import themeStyles from '@/theme/theme.module.css';
-import { debugMode } from "@/components/Utilities/debugMode";
-import DebugInfo from "@/components/DebugInfo";
 import BuildStepResultTag, { BuildStepResultEnum } from "@/components/BuildStepResultTag";
 import DownloadButton from '@/components/DownloadButton'
 import Link from '@/components/Link';
@@ -58,14 +52,11 @@ import { env } from 'next-runtime-env';
 import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
 import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
-import BuildProblem from "../Problems/BuildProblem";
 import BuildProblems from "../Problems";
 
 
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
-  //problems?: ProblemInfoFragment[] | null | undefined;
-  //children?: React.ReactNode;
   isNestedWithinBuildCard?: boolean;
 }> = ({ invocationOverview, isNestedWithinBuildCard }) => {
   const {
@@ -81,8 +72,10 @@ const BazelInvocation: React.FC<{
     targets,
     numFetches,
     cpu,
-    configurationMnemonic
-    //stepLabel,
+    configurationMnemonic,
+    stepLabel,
+    hostname,
+    isCiWorker
     //relatedFiles,
 
   } = invocationOverview;
@@ -147,7 +140,20 @@ const BazelInvocation: React.FC<{
   const hideProblemsTab: boolean = exitCode?.name == "SUCCESS"
   const hideArtifactsTab: boolean = (artifactMetrics?.outputArtifactsSeen?.count ?? 0) == 0 && (artifactMetrics?.sourceArtifactsRead?.count ?? 0) == 0 && (artifactMetrics?.outputArtifactsFromActionCache?.count ?? 0) == 0 && (artifactMetrics?.topLevelArtifacts?.count ?? 0) == 0
   const hideActionsDataTab: boolean = acMetrics?.actionsExecuted == 0
+  const hideActionCacheTab: boolean = acMetrics?.actionCacheStatistics?.hits == 0 && acMetrics?.actionCacheStatistics?.misses == 0
   const hideRunnersTab: boolean = runnerMetrics.length == 0
+  const hideTimingTab: boolean = timingMetrics?.wallTimeInMs == 0 &&
+    timingMetrics.executionPhaseTimeInMs == 0 &&
+    timingMetrics.analysisPhaseTimeInMs == 0 &&
+    timingMetrics.cpuTimeInMs == 0 &&
+    timingMetrics.actionsExecutionStartInMs == 0 &&
+    buildGraphMetrics?.actionCount == 0 &&
+    buildGraphMetrics.actionLookupValueCount == 0 &&
+    buildGraphMetrics.actionCountNotIncludingAspects ==0 &&
+    buildGraphMetrics.inputFileConfiguredTargetCount == 0 &&
+    buildGraphMetrics.outputArtifactCount == 0 &&
+    buildGraphMetrics.postInvocationSkyframeNodeCount == 0 &&
+    buildGraphMetrics.outputFileConfiguredTargetCount == 0
 
   interface TabShowHideDisplay {
     hide: boolean,
@@ -164,6 +170,8 @@ const BazelInvocation: React.FC<{
     { key: "BazelInvocationTabs-Problems", hide: hideProblemsTab },
     { key: "BazelInvocationTabs-Artifacts", hide: hideArtifactsTab },
     { key: "BazelInvocationTabs-ActionsData", hide: hideActionsDataTab },
+    { key: "BazelInvocationTabs-ActionCache", hide: hideActionCacheTab},
+    { key: "BazelInvocationTabs-Timing", hide: hideTimingTab},
     { key: "BazelInvocationTabs-Runners", hide: hideRunnersTab },
   ]
 
@@ -195,6 +203,9 @@ const BazelInvocation: React.FC<{
             numFetches={numFetches ?? 0}
             startedAt={invocationOverview.startedAt}
             endedAt={invocationOverview.endedAt}
+            hostname={hostname ?? ""}
+            isCiWorker={isCiWorker ?? false}
+            stepLabel={stepLabel ?? ""}
             status={state.exitCode?.name ?? ""} />
         </PortalCard>
       </Space>,
@@ -294,7 +305,7 @@ const BazelInvocation: React.FC<{
       label: 'Source Control',
       icon: <BranchesOutlined />,
       children: <Space direction="vertical" size="middle" className={themeStyles.space}>
-        <SourceControlDisplay sourceControlData={sourceControl} />
+        <SourceControlDisplay sourceControlData={sourceControl} stepLabel={stepLabel} />
       </Space>,
     },
     {

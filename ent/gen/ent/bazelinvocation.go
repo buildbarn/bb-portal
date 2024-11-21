@@ -52,6 +52,10 @@ type BazelInvocation struct {
 	CPU string `json:"cpu,omitempty"`
 	// PlatformName holds the value of the "platform_name" field.
 	PlatformName string `json:"platform_name,omitempty"`
+	// Hostname holds the value of the "hostname" field.
+	Hostname string `json:"hostname,omitempty"`
+	// IsCiWorker holds the value of the "is_ci_worker" field.
+	IsCiWorker bool `json:"is_ci_worker,omitempty"`
 	// ConfigurationMnemonic holds the value of the "configuration_mnemonic" field.
 	ConfigurationMnemonic string `json:"configuration_mnemonic,omitempty"`
 	// NumFetches holds the value of the "num_fetches" field.
@@ -171,11 +175,11 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case bazelinvocation.FieldSummary, bazelinvocation.FieldRelatedFiles:
 			values[i] = new([]byte)
-		case bazelinvocation.FieldBepCompleted:
+		case bazelinvocation.FieldBepCompleted, bazelinvocation.FieldIsCiWorker:
 			values[i] = new(sql.NullBool)
 		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber, bazelinvocation.FieldNumFetches:
 			values[i] = new(sql.NullInt64)
-		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldBuildLogs, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldConfigurationMnemonic, bazelinvocation.FieldProfileName:
+		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldBuildLogs, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldHostname, bazelinvocation.FieldConfigurationMnemonic, bazelinvocation.FieldProfileName:
 			values[i] = new(sql.NullString)
 		case bazelinvocation.FieldStartedAt, bazelinvocation.FieldEndedAt:
 			values[i] = new(sql.NullTime)
@@ -293,6 +297,18 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field platform_name", values[i])
 			} else if value.Valid {
 				bi.PlatformName = value.String
+			}
+		case bazelinvocation.FieldHostname:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field hostname", values[i])
+			} else if value.Valid {
+				bi.Hostname = value.String
+			}
+		case bazelinvocation.FieldIsCiWorker:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field is_ci_worker", values[i])
+			} else if value.Valid {
+				bi.IsCiWorker = value.Bool
 			}
 		case bazelinvocation.FieldConfigurationMnemonic:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -438,6 +454,12 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("platform_name=")
 	builder.WriteString(bi.PlatformName)
+	builder.WriteString(", ")
+	builder.WriteString("hostname=")
+	builder.WriteString(bi.Hostname)
+	builder.WriteString(", ")
+	builder.WriteString("is_ci_worker=")
+	builder.WriteString(fmt.Sprintf("%v", bi.IsCiWorker))
 	builder.WriteString(", ")
 	builder.WriteString("configuration_mnemonic=")
 	builder.WriteString(bi.ConfigurationMnemonic)

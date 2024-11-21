@@ -65,6 +65,12 @@ func (BazelInvocation) Fields() []ent.Field {
 		// The platform name from the configuration event(s).
 		field.String("platform_name").Optional(),
 
+		// The host name from the system where the invocation was launched
+		field.String("hostname").Optional(),
+
+		// If this invocation is part of CI
+		field.Bool("is_ci_worker").Optional(),
+
 		// The name from the configuration event(s).
 		field.String("configuration_mnemonic").Optional(),
 

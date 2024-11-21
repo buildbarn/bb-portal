@@ -99,7 +99,10 @@ const Page: React.FC = () => {
                                 </Space>
                             </Row>
                             <Row>
-                                <AreaChart width={1500} height={250} data={dataPoints}
+                                <AreaChart
+                                    width={1500}
+                                    height={250}
+                                    data={dataPoints}
                                     margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
@@ -109,7 +112,7 @@ const Page: React.FC = () => {
                                     </defs>
                                     <XAxis dataKey="name" />
                                     <YAxis />
-                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <CartesianGrid vertical={false} strokeDasharray="3 3" />
                                     <Tooltip />
                                     <Area type="monotone" dataKey="duration" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
                                 </AreaChart>

@@ -40,6 +40,10 @@ const (
 	FieldCPU = "cpu"
 	// FieldPlatformName holds the string denoting the platform_name field in the database.
 	FieldPlatformName = "platform_name"
+	// FieldHostname holds the string denoting the hostname field in the database.
+	FieldHostname = "hostname"
+	// FieldIsCiWorker holds the string denoting the is_ci_worker field in the database.
+	FieldIsCiWorker = "is_ci_worker"
 	// FieldConfigurationMnemonic holds the string denoting the configuration_mnemonic field in the database.
 	FieldConfigurationMnemonic = "configuration_mnemonic"
 	// FieldNumFetches holds the string denoting the num_fetches field in the database.
@@ -130,6 +134,8 @@ var Columns = []string{
 	FieldBuildLogs,
 	FieldCPU,
 	FieldPlatformName,
+	FieldHostname,
+	FieldIsCiWorker,
 	FieldConfigurationMnemonic,
 	FieldNumFetches,
 	FieldProfileName,
@@ -223,6 +229,16 @@ func ByCPU(opts ...sql.OrderTermOption) OrderOption {
 // ByPlatformName orders the results by the platform_name field.
 func ByPlatformName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPlatformName, opts...).ToFunc()
+}
+
+// ByHostname orders the results by the hostname field.
+func ByHostname(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHostname, opts...).ToFunc()
+}
+
+// ByIsCiWorker orders the results by the is_ci_worker field.
+func ByIsCiWorker(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsCiWorker, opts...).ToFunc()
 }
 
 // ByConfigurationMnemonic orders the results by the configuration_mnemonic field.

@@ -234,6 +234,8 @@ fragment BazelInvocationInfo on BazelInvocation {
   cpu
   numFetches
   stepLabel
+  hostname
+  isCiWorker
   sourceControl {
     id
     commitSha

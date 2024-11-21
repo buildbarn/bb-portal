@@ -185,6 +185,34 @@ func (bic *BazelInvocationCreate) SetNillablePlatformName(s *string) *BazelInvoc
 	return bic
 }
 
+// SetHostname sets the "hostname" field.
+func (bic *BazelInvocationCreate) SetHostname(s string) *BazelInvocationCreate {
+	bic.mutation.SetHostname(s)
+	return bic
+}
+
+// SetNillableHostname sets the "hostname" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableHostname(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetHostname(*s)
+	}
+	return bic
+}
+
+// SetIsCiWorker sets the "is_ci_worker" field.
+func (bic *BazelInvocationCreate) SetIsCiWorker(b bool) *BazelInvocationCreate {
+	bic.mutation.SetIsCiWorker(b)
+	return bic
+}
+
+// SetNillableIsCiWorker sets the "is_ci_worker" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableIsCiWorker(b *bool) *BazelInvocationCreate {
+	if b != nil {
+		bic.SetIsCiWorker(*b)
+	}
+	return bic
+}
+
 // SetConfigurationMnemonic sets the "configuration_mnemonic" field.
 func (bic *BazelInvocationCreate) SetConfigurationMnemonic(s string) *BazelInvocationCreate {
 	bic.mutation.SetConfigurationMnemonic(s)
@@ -468,6 +496,14 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	if value, ok := bic.mutation.PlatformName(); ok {
 		_spec.SetField(bazelinvocation.FieldPlatformName, field.TypeString, value)
 		_node.PlatformName = value
+	}
+	if value, ok := bic.mutation.Hostname(); ok {
+		_spec.SetField(bazelinvocation.FieldHostname, field.TypeString, value)
+		_node.Hostname = value
+	}
+	if value, ok := bic.mutation.IsCiWorker(); ok {
+		_spec.SetField(bazelinvocation.FieldIsCiWorker, field.TypeBool, value)
+		_node.IsCiWorker = value
 	}
 	if value, ok := bic.mutation.ConfigurationMnemonic(); ok {
 		_spec.SetField(bazelinvocation.FieldConfigurationMnemonic, field.TypeString, value)

@@ -1682,6 +1682,29 @@ type BazelInvocationWhereInput struct {
 	PlatformNameEqualFold    *string  `json:"platformNameEqualFold,omitempty"`
 	PlatformNameContainsFold *string  `json:"platformNameContainsFold,omitempty"`
 
+	// "hostname" field predicates.
+	Hostname             *string  `json:"hostname,omitempty"`
+	HostnameNEQ          *string  `json:"hostnameNEQ,omitempty"`
+	HostnameIn           []string `json:"hostnameIn,omitempty"`
+	HostnameNotIn        []string `json:"hostnameNotIn,omitempty"`
+	HostnameGT           *string  `json:"hostnameGT,omitempty"`
+	HostnameGTE          *string  `json:"hostnameGTE,omitempty"`
+	HostnameLT           *string  `json:"hostnameLT,omitempty"`
+	HostnameLTE          *string  `json:"hostnameLTE,omitempty"`
+	HostnameContains     *string  `json:"hostnameContains,omitempty"`
+	HostnameHasPrefix    *string  `json:"hostnameHasPrefix,omitempty"`
+	HostnameHasSuffix    *string  `json:"hostnameHasSuffix,omitempty"`
+	HostnameIsNil        bool     `json:"hostnameIsNil,omitempty"`
+	HostnameNotNil       bool     `json:"hostnameNotNil,omitempty"`
+	HostnameEqualFold    *string  `json:"hostnameEqualFold,omitempty"`
+	HostnameContainsFold *string  `json:"hostnameContainsFold,omitempty"`
+
+	// "is_ci_worker" field predicates.
+	IsCiWorker       *bool `json:"isCiWorker,omitempty"`
+	IsCiWorkerNEQ    *bool `json:"isCiWorkerNEQ,omitempty"`
+	IsCiWorkerIsNil  bool  `json:"isCiWorkerIsNil,omitempty"`
+	IsCiWorkerNotNil bool  `json:"isCiWorkerNotNil,omitempty"`
+
 	// "configuration_mnemonic" field predicates.
 	ConfigurationMnemonic             *string  `json:"configurationMnemonic,omitempty"`
 	ConfigurationMnemonicNEQ          *string  `json:"configurationMnemonicNEQ,omitempty"`
@@ -2263,6 +2286,63 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 	}
 	if i.PlatformNameContainsFold != nil {
 		predicates = append(predicates, bazelinvocation.PlatformNameContainsFold(*i.PlatformNameContainsFold))
+	}
+	if i.Hostname != nil {
+		predicates = append(predicates, bazelinvocation.HostnameEQ(*i.Hostname))
+	}
+	if i.HostnameNEQ != nil {
+		predicates = append(predicates, bazelinvocation.HostnameNEQ(*i.HostnameNEQ))
+	}
+	if len(i.HostnameIn) > 0 {
+		predicates = append(predicates, bazelinvocation.HostnameIn(i.HostnameIn...))
+	}
+	if len(i.HostnameNotIn) > 0 {
+		predicates = append(predicates, bazelinvocation.HostnameNotIn(i.HostnameNotIn...))
+	}
+	if i.HostnameGT != nil {
+		predicates = append(predicates, bazelinvocation.HostnameGT(*i.HostnameGT))
+	}
+	if i.HostnameGTE != nil {
+		predicates = append(predicates, bazelinvocation.HostnameGTE(*i.HostnameGTE))
+	}
+	if i.HostnameLT != nil {
+		predicates = append(predicates, bazelinvocation.HostnameLT(*i.HostnameLT))
+	}
+	if i.HostnameLTE != nil {
+		predicates = append(predicates, bazelinvocation.HostnameLTE(*i.HostnameLTE))
+	}
+	if i.HostnameContains != nil {
+		predicates = append(predicates, bazelinvocation.HostnameContains(*i.HostnameContains))
+	}
+	if i.HostnameHasPrefix != nil {
+		predicates = append(predicates, bazelinvocation.HostnameHasPrefix(*i.HostnameHasPrefix))
+	}
+	if i.HostnameHasSuffix != nil {
+		predicates = append(predicates, bazelinvocation.HostnameHasSuffix(*i.HostnameHasSuffix))
+	}
+	if i.HostnameIsNil {
+		predicates = append(predicates, bazelinvocation.HostnameIsNil())
+	}
+	if i.HostnameNotNil {
+		predicates = append(predicates, bazelinvocation.HostnameNotNil())
+	}
+	if i.HostnameEqualFold != nil {
+		predicates = append(predicates, bazelinvocation.HostnameEqualFold(*i.HostnameEqualFold))
+	}
+	if i.HostnameContainsFold != nil {
+		predicates = append(predicates, bazelinvocation.HostnameContainsFold(*i.HostnameContainsFold))
+	}
+	if i.IsCiWorker != nil {
+		predicates = append(predicates, bazelinvocation.IsCiWorkerEQ(*i.IsCiWorker))
+	}
+	if i.IsCiWorkerNEQ != nil {
+		predicates = append(predicates, bazelinvocation.IsCiWorkerNEQ(*i.IsCiWorkerNEQ))
+	}
+	if i.IsCiWorkerIsNil {
+		predicates = append(predicates, bazelinvocation.IsCiWorkerIsNil())
+	}
+	if i.IsCiWorkerNotNil {
+		predicates = append(predicates, bazelinvocation.IsCiWorkerNotNil())
 	}
 	if i.ConfigurationMnemonic != nil {
 		predicates = append(predicates, bazelinvocation.ConfigurationMnemonicEQ(*i.ConfigurationMnemonic))

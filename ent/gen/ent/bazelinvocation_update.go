@@ -278,6 +278,46 @@ func (biu *BazelInvocationUpdate) ClearPlatformName() *BazelInvocationUpdate {
 	return biu
 }
 
+// SetHostname sets the "hostname" field.
+func (biu *BazelInvocationUpdate) SetHostname(s string) *BazelInvocationUpdate {
+	biu.mutation.SetHostname(s)
+	return biu
+}
+
+// SetNillableHostname sets the "hostname" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableHostname(s *string) *BazelInvocationUpdate {
+	if s != nil {
+		biu.SetHostname(*s)
+	}
+	return biu
+}
+
+// ClearHostname clears the value of the "hostname" field.
+func (biu *BazelInvocationUpdate) ClearHostname() *BazelInvocationUpdate {
+	biu.mutation.ClearHostname()
+	return biu
+}
+
+// SetIsCiWorker sets the "is_ci_worker" field.
+func (biu *BazelInvocationUpdate) SetIsCiWorker(b bool) *BazelInvocationUpdate {
+	biu.mutation.SetIsCiWorker(b)
+	return biu
+}
+
+// SetNillableIsCiWorker sets the "is_ci_worker" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableIsCiWorker(b *bool) *BazelInvocationUpdate {
+	if b != nil {
+		biu.SetIsCiWorker(*b)
+	}
+	return biu
+}
+
+// ClearIsCiWorker clears the value of the "is_ci_worker" field.
+func (biu *BazelInvocationUpdate) ClearIsCiWorker() *BazelInvocationUpdate {
+	biu.mutation.ClearIsCiWorker()
+	return biu
+}
+
 // SetConfigurationMnemonic sets the "configuration_mnemonic" field.
 func (biu *BazelInvocationUpdate) SetConfigurationMnemonic(s string) *BazelInvocationUpdate {
 	biu.mutation.SetConfigurationMnemonic(s)
@@ -662,6 +702,18 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.PlatformNameCleared() {
 		_spec.ClearField(bazelinvocation.FieldPlatformName, field.TypeString)
+	}
+	if value, ok := biu.mutation.Hostname(); ok {
+		_spec.SetField(bazelinvocation.FieldHostname, field.TypeString, value)
+	}
+	if biu.mutation.HostnameCleared() {
+		_spec.ClearField(bazelinvocation.FieldHostname, field.TypeString)
+	}
+	if value, ok := biu.mutation.IsCiWorker(); ok {
+		_spec.SetField(bazelinvocation.FieldIsCiWorker, field.TypeBool, value)
+	}
+	if biu.mutation.IsCiWorkerCleared() {
+		_spec.ClearField(bazelinvocation.FieldIsCiWorker, field.TypeBool)
 	}
 	if value, ok := biu.mutation.ConfigurationMnemonic(); ok {
 		_spec.SetField(bazelinvocation.FieldConfigurationMnemonic, field.TypeString, value)
@@ -1194,6 +1246,46 @@ func (biuo *BazelInvocationUpdateOne) ClearPlatformName() *BazelInvocationUpdate
 	return biuo
 }
 
+// SetHostname sets the "hostname" field.
+func (biuo *BazelInvocationUpdateOne) SetHostname(s string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetHostname(s)
+	return biuo
+}
+
+// SetNillableHostname sets the "hostname" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableHostname(s *string) *BazelInvocationUpdateOne {
+	if s != nil {
+		biuo.SetHostname(*s)
+	}
+	return biuo
+}
+
+// ClearHostname clears the value of the "hostname" field.
+func (biuo *BazelInvocationUpdateOne) ClearHostname() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearHostname()
+	return biuo
+}
+
+// SetIsCiWorker sets the "is_ci_worker" field.
+func (biuo *BazelInvocationUpdateOne) SetIsCiWorker(b bool) *BazelInvocationUpdateOne {
+	biuo.mutation.SetIsCiWorker(b)
+	return biuo
+}
+
+// SetNillableIsCiWorker sets the "is_ci_worker" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableIsCiWorker(b *bool) *BazelInvocationUpdateOne {
+	if b != nil {
+		biuo.SetIsCiWorker(*b)
+	}
+	return biuo
+}
+
+// ClearIsCiWorker clears the value of the "is_ci_worker" field.
+func (biuo *BazelInvocationUpdateOne) ClearIsCiWorker() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearIsCiWorker()
+	return biuo
+}
+
 // SetConfigurationMnemonic sets the "configuration_mnemonic" field.
 func (biuo *BazelInvocationUpdateOne) SetConfigurationMnemonic(s string) *BazelInvocationUpdateOne {
 	biuo.mutation.SetConfigurationMnemonic(s)
@@ -1608,6 +1700,18 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.PlatformNameCleared() {
 		_spec.ClearField(bazelinvocation.FieldPlatformName, field.TypeString)
+	}
+	if value, ok := biuo.mutation.Hostname(); ok {
+		_spec.SetField(bazelinvocation.FieldHostname, field.TypeString, value)
+	}
+	if biuo.mutation.HostnameCleared() {
+		_spec.ClearField(bazelinvocation.FieldHostname, field.TypeString)
+	}
+	if value, ok := biuo.mutation.IsCiWorker(); ok {
+		_spec.SetField(bazelinvocation.FieldIsCiWorker, field.TypeBool, value)
+	}
+	if biuo.mutation.IsCiWorkerCleared() {
+		_spec.ClearField(bazelinvocation.FieldIsCiWorker, field.TypeBool)
 	}
 	if value, ok := biuo.mutation.ConfigurationMnemonic(); ok {
 		_spec.SetField(bazelinvocation.FieldConfigurationMnemonic, field.TypeString, value)
