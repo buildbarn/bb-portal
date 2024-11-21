@@ -478,6 +478,14 @@ func (act SaveActor) saveSourceControl(ctx context.Context, summary *summary.Sum
 		SetBranch(summary.SourceControlData.Branch).
 		SetRefs(summary.SourceControlData.Refs).
 		SetRunID(summary.SourceControlData.RunID).
+		SetAction(summary.SourceControlData.Action).
+		SetWorkflow(summary.SourceControlData.Workflow).
+		SetWorkspace(summary.SourceControlData.Workspace).
+		SetEventName(summary.SourceControlData.EventName).
+		SetJob(summary.SourceControlData.Job).
+		SetRunnerName(summary.SourceControlData.RunnerName).
+		SetRunnerArch(summary.SourceControlData.RunnerArch).
+		SetRunnerOs(summary.SourceControlData.RunnerOs).
 		Save(ctx)
 }
 

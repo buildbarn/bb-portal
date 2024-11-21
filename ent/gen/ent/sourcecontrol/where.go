@@ -83,6 +83,46 @@ func RunID(v string) predicate.SourceControl {
 	return predicate.SourceControl(sql.FieldEQ(FieldRunID, v))
 }
 
+// Workflow applies equality check predicate on the "workflow" field. It's identical to WorkflowEQ.
+func Workflow(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldWorkflow, v))
+}
+
+// Action applies equality check predicate on the "action" field. It's identical to ActionEQ.
+func Action(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldAction, v))
+}
+
+// Workspace applies equality check predicate on the "workspace" field. It's identical to WorkspaceEQ.
+func Workspace(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldWorkspace, v))
+}
+
+// EventName applies equality check predicate on the "event_name" field. It's identical to EventNameEQ.
+func EventName(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldEventName, v))
+}
+
+// Job applies equality check predicate on the "job" field. It's identical to JobEQ.
+func Job(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldJob, v))
+}
+
+// RunnerName applies equality check predicate on the "runner_name" field. It's identical to RunnerNameEQ.
+func RunnerName(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldRunnerName, v))
+}
+
+// RunnerArch applies equality check predicate on the "runner_arch" field. It's identical to RunnerArchEQ.
+func RunnerArch(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldRunnerArch, v))
+}
+
+// RunnerOs applies equality check predicate on the "runner_os" field. It's identical to RunnerOsEQ.
+func RunnerOs(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldRunnerOs, v))
+}
+
 // RepoURLEQ applies the EQ predicate on the "repo_url" field.
 func RepoURLEQ(v string) predicate.SourceControl {
 	return predicate.SourceControl(sql.FieldEQ(FieldRepoURL, v))
@@ -531,6 +571,606 @@ func RunIDEqualFold(v string) predicate.SourceControl {
 // RunIDContainsFold applies the ContainsFold predicate on the "run_id" field.
 func RunIDContainsFold(v string) predicate.SourceControl {
 	return predicate.SourceControl(sql.FieldContainsFold(FieldRunID, v))
+}
+
+// WorkflowEQ applies the EQ predicate on the "workflow" field.
+func WorkflowEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldWorkflow, v))
+}
+
+// WorkflowNEQ applies the NEQ predicate on the "workflow" field.
+func WorkflowNEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNEQ(FieldWorkflow, v))
+}
+
+// WorkflowIn applies the In predicate on the "workflow" field.
+func WorkflowIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIn(FieldWorkflow, vs...))
+}
+
+// WorkflowNotIn applies the NotIn predicate on the "workflow" field.
+func WorkflowNotIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotIn(FieldWorkflow, vs...))
+}
+
+// WorkflowGT applies the GT predicate on the "workflow" field.
+func WorkflowGT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGT(FieldWorkflow, v))
+}
+
+// WorkflowGTE applies the GTE predicate on the "workflow" field.
+func WorkflowGTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGTE(FieldWorkflow, v))
+}
+
+// WorkflowLT applies the LT predicate on the "workflow" field.
+func WorkflowLT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLT(FieldWorkflow, v))
+}
+
+// WorkflowLTE applies the LTE predicate on the "workflow" field.
+func WorkflowLTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLTE(FieldWorkflow, v))
+}
+
+// WorkflowContains applies the Contains predicate on the "workflow" field.
+func WorkflowContains(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContains(FieldWorkflow, v))
+}
+
+// WorkflowHasPrefix applies the HasPrefix predicate on the "workflow" field.
+func WorkflowHasPrefix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasPrefix(FieldWorkflow, v))
+}
+
+// WorkflowHasSuffix applies the HasSuffix predicate on the "workflow" field.
+func WorkflowHasSuffix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasSuffix(FieldWorkflow, v))
+}
+
+// WorkflowIsNil applies the IsNil predicate on the "workflow" field.
+func WorkflowIsNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIsNull(FieldWorkflow))
+}
+
+// WorkflowNotNil applies the NotNil predicate on the "workflow" field.
+func WorkflowNotNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotNull(FieldWorkflow))
+}
+
+// WorkflowEqualFold applies the EqualFold predicate on the "workflow" field.
+func WorkflowEqualFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEqualFold(FieldWorkflow, v))
+}
+
+// WorkflowContainsFold applies the ContainsFold predicate on the "workflow" field.
+func WorkflowContainsFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContainsFold(FieldWorkflow, v))
+}
+
+// ActionEQ applies the EQ predicate on the "action" field.
+func ActionEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldAction, v))
+}
+
+// ActionNEQ applies the NEQ predicate on the "action" field.
+func ActionNEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNEQ(FieldAction, v))
+}
+
+// ActionIn applies the In predicate on the "action" field.
+func ActionIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIn(FieldAction, vs...))
+}
+
+// ActionNotIn applies the NotIn predicate on the "action" field.
+func ActionNotIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotIn(FieldAction, vs...))
+}
+
+// ActionGT applies the GT predicate on the "action" field.
+func ActionGT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGT(FieldAction, v))
+}
+
+// ActionGTE applies the GTE predicate on the "action" field.
+func ActionGTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGTE(FieldAction, v))
+}
+
+// ActionLT applies the LT predicate on the "action" field.
+func ActionLT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLT(FieldAction, v))
+}
+
+// ActionLTE applies the LTE predicate on the "action" field.
+func ActionLTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLTE(FieldAction, v))
+}
+
+// ActionContains applies the Contains predicate on the "action" field.
+func ActionContains(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContains(FieldAction, v))
+}
+
+// ActionHasPrefix applies the HasPrefix predicate on the "action" field.
+func ActionHasPrefix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasPrefix(FieldAction, v))
+}
+
+// ActionHasSuffix applies the HasSuffix predicate on the "action" field.
+func ActionHasSuffix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasSuffix(FieldAction, v))
+}
+
+// ActionIsNil applies the IsNil predicate on the "action" field.
+func ActionIsNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIsNull(FieldAction))
+}
+
+// ActionNotNil applies the NotNil predicate on the "action" field.
+func ActionNotNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotNull(FieldAction))
+}
+
+// ActionEqualFold applies the EqualFold predicate on the "action" field.
+func ActionEqualFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEqualFold(FieldAction, v))
+}
+
+// ActionContainsFold applies the ContainsFold predicate on the "action" field.
+func ActionContainsFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContainsFold(FieldAction, v))
+}
+
+// WorkspaceEQ applies the EQ predicate on the "workspace" field.
+func WorkspaceEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldWorkspace, v))
+}
+
+// WorkspaceNEQ applies the NEQ predicate on the "workspace" field.
+func WorkspaceNEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNEQ(FieldWorkspace, v))
+}
+
+// WorkspaceIn applies the In predicate on the "workspace" field.
+func WorkspaceIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIn(FieldWorkspace, vs...))
+}
+
+// WorkspaceNotIn applies the NotIn predicate on the "workspace" field.
+func WorkspaceNotIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotIn(FieldWorkspace, vs...))
+}
+
+// WorkspaceGT applies the GT predicate on the "workspace" field.
+func WorkspaceGT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGT(FieldWorkspace, v))
+}
+
+// WorkspaceGTE applies the GTE predicate on the "workspace" field.
+func WorkspaceGTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGTE(FieldWorkspace, v))
+}
+
+// WorkspaceLT applies the LT predicate on the "workspace" field.
+func WorkspaceLT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLT(FieldWorkspace, v))
+}
+
+// WorkspaceLTE applies the LTE predicate on the "workspace" field.
+func WorkspaceLTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLTE(FieldWorkspace, v))
+}
+
+// WorkspaceContains applies the Contains predicate on the "workspace" field.
+func WorkspaceContains(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContains(FieldWorkspace, v))
+}
+
+// WorkspaceHasPrefix applies the HasPrefix predicate on the "workspace" field.
+func WorkspaceHasPrefix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasPrefix(FieldWorkspace, v))
+}
+
+// WorkspaceHasSuffix applies the HasSuffix predicate on the "workspace" field.
+func WorkspaceHasSuffix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasSuffix(FieldWorkspace, v))
+}
+
+// WorkspaceIsNil applies the IsNil predicate on the "workspace" field.
+func WorkspaceIsNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIsNull(FieldWorkspace))
+}
+
+// WorkspaceNotNil applies the NotNil predicate on the "workspace" field.
+func WorkspaceNotNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotNull(FieldWorkspace))
+}
+
+// WorkspaceEqualFold applies the EqualFold predicate on the "workspace" field.
+func WorkspaceEqualFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEqualFold(FieldWorkspace, v))
+}
+
+// WorkspaceContainsFold applies the ContainsFold predicate on the "workspace" field.
+func WorkspaceContainsFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContainsFold(FieldWorkspace, v))
+}
+
+// EventNameEQ applies the EQ predicate on the "event_name" field.
+func EventNameEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldEventName, v))
+}
+
+// EventNameNEQ applies the NEQ predicate on the "event_name" field.
+func EventNameNEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNEQ(FieldEventName, v))
+}
+
+// EventNameIn applies the In predicate on the "event_name" field.
+func EventNameIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIn(FieldEventName, vs...))
+}
+
+// EventNameNotIn applies the NotIn predicate on the "event_name" field.
+func EventNameNotIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotIn(FieldEventName, vs...))
+}
+
+// EventNameGT applies the GT predicate on the "event_name" field.
+func EventNameGT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGT(FieldEventName, v))
+}
+
+// EventNameGTE applies the GTE predicate on the "event_name" field.
+func EventNameGTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGTE(FieldEventName, v))
+}
+
+// EventNameLT applies the LT predicate on the "event_name" field.
+func EventNameLT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLT(FieldEventName, v))
+}
+
+// EventNameLTE applies the LTE predicate on the "event_name" field.
+func EventNameLTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLTE(FieldEventName, v))
+}
+
+// EventNameContains applies the Contains predicate on the "event_name" field.
+func EventNameContains(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContains(FieldEventName, v))
+}
+
+// EventNameHasPrefix applies the HasPrefix predicate on the "event_name" field.
+func EventNameHasPrefix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasPrefix(FieldEventName, v))
+}
+
+// EventNameHasSuffix applies the HasSuffix predicate on the "event_name" field.
+func EventNameHasSuffix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasSuffix(FieldEventName, v))
+}
+
+// EventNameIsNil applies the IsNil predicate on the "event_name" field.
+func EventNameIsNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIsNull(FieldEventName))
+}
+
+// EventNameNotNil applies the NotNil predicate on the "event_name" field.
+func EventNameNotNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotNull(FieldEventName))
+}
+
+// EventNameEqualFold applies the EqualFold predicate on the "event_name" field.
+func EventNameEqualFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEqualFold(FieldEventName, v))
+}
+
+// EventNameContainsFold applies the ContainsFold predicate on the "event_name" field.
+func EventNameContainsFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContainsFold(FieldEventName, v))
+}
+
+// JobEQ applies the EQ predicate on the "job" field.
+func JobEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldJob, v))
+}
+
+// JobNEQ applies the NEQ predicate on the "job" field.
+func JobNEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNEQ(FieldJob, v))
+}
+
+// JobIn applies the In predicate on the "job" field.
+func JobIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIn(FieldJob, vs...))
+}
+
+// JobNotIn applies the NotIn predicate on the "job" field.
+func JobNotIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotIn(FieldJob, vs...))
+}
+
+// JobGT applies the GT predicate on the "job" field.
+func JobGT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGT(FieldJob, v))
+}
+
+// JobGTE applies the GTE predicate on the "job" field.
+func JobGTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGTE(FieldJob, v))
+}
+
+// JobLT applies the LT predicate on the "job" field.
+func JobLT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLT(FieldJob, v))
+}
+
+// JobLTE applies the LTE predicate on the "job" field.
+func JobLTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLTE(FieldJob, v))
+}
+
+// JobContains applies the Contains predicate on the "job" field.
+func JobContains(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContains(FieldJob, v))
+}
+
+// JobHasPrefix applies the HasPrefix predicate on the "job" field.
+func JobHasPrefix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasPrefix(FieldJob, v))
+}
+
+// JobHasSuffix applies the HasSuffix predicate on the "job" field.
+func JobHasSuffix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasSuffix(FieldJob, v))
+}
+
+// JobIsNil applies the IsNil predicate on the "job" field.
+func JobIsNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIsNull(FieldJob))
+}
+
+// JobNotNil applies the NotNil predicate on the "job" field.
+func JobNotNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotNull(FieldJob))
+}
+
+// JobEqualFold applies the EqualFold predicate on the "job" field.
+func JobEqualFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEqualFold(FieldJob, v))
+}
+
+// JobContainsFold applies the ContainsFold predicate on the "job" field.
+func JobContainsFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContainsFold(FieldJob, v))
+}
+
+// RunnerNameEQ applies the EQ predicate on the "runner_name" field.
+func RunnerNameEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldRunnerName, v))
+}
+
+// RunnerNameNEQ applies the NEQ predicate on the "runner_name" field.
+func RunnerNameNEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNEQ(FieldRunnerName, v))
+}
+
+// RunnerNameIn applies the In predicate on the "runner_name" field.
+func RunnerNameIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIn(FieldRunnerName, vs...))
+}
+
+// RunnerNameNotIn applies the NotIn predicate on the "runner_name" field.
+func RunnerNameNotIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotIn(FieldRunnerName, vs...))
+}
+
+// RunnerNameGT applies the GT predicate on the "runner_name" field.
+func RunnerNameGT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGT(FieldRunnerName, v))
+}
+
+// RunnerNameGTE applies the GTE predicate on the "runner_name" field.
+func RunnerNameGTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGTE(FieldRunnerName, v))
+}
+
+// RunnerNameLT applies the LT predicate on the "runner_name" field.
+func RunnerNameLT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLT(FieldRunnerName, v))
+}
+
+// RunnerNameLTE applies the LTE predicate on the "runner_name" field.
+func RunnerNameLTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLTE(FieldRunnerName, v))
+}
+
+// RunnerNameContains applies the Contains predicate on the "runner_name" field.
+func RunnerNameContains(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContains(FieldRunnerName, v))
+}
+
+// RunnerNameHasPrefix applies the HasPrefix predicate on the "runner_name" field.
+func RunnerNameHasPrefix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasPrefix(FieldRunnerName, v))
+}
+
+// RunnerNameHasSuffix applies the HasSuffix predicate on the "runner_name" field.
+func RunnerNameHasSuffix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasSuffix(FieldRunnerName, v))
+}
+
+// RunnerNameIsNil applies the IsNil predicate on the "runner_name" field.
+func RunnerNameIsNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIsNull(FieldRunnerName))
+}
+
+// RunnerNameNotNil applies the NotNil predicate on the "runner_name" field.
+func RunnerNameNotNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotNull(FieldRunnerName))
+}
+
+// RunnerNameEqualFold applies the EqualFold predicate on the "runner_name" field.
+func RunnerNameEqualFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEqualFold(FieldRunnerName, v))
+}
+
+// RunnerNameContainsFold applies the ContainsFold predicate on the "runner_name" field.
+func RunnerNameContainsFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContainsFold(FieldRunnerName, v))
+}
+
+// RunnerArchEQ applies the EQ predicate on the "runner_arch" field.
+func RunnerArchEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldRunnerArch, v))
+}
+
+// RunnerArchNEQ applies the NEQ predicate on the "runner_arch" field.
+func RunnerArchNEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNEQ(FieldRunnerArch, v))
+}
+
+// RunnerArchIn applies the In predicate on the "runner_arch" field.
+func RunnerArchIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIn(FieldRunnerArch, vs...))
+}
+
+// RunnerArchNotIn applies the NotIn predicate on the "runner_arch" field.
+func RunnerArchNotIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotIn(FieldRunnerArch, vs...))
+}
+
+// RunnerArchGT applies the GT predicate on the "runner_arch" field.
+func RunnerArchGT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGT(FieldRunnerArch, v))
+}
+
+// RunnerArchGTE applies the GTE predicate on the "runner_arch" field.
+func RunnerArchGTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGTE(FieldRunnerArch, v))
+}
+
+// RunnerArchLT applies the LT predicate on the "runner_arch" field.
+func RunnerArchLT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLT(FieldRunnerArch, v))
+}
+
+// RunnerArchLTE applies the LTE predicate on the "runner_arch" field.
+func RunnerArchLTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLTE(FieldRunnerArch, v))
+}
+
+// RunnerArchContains applies the Contains predicate on the "runner_arch" field.
+func RunnerArchContains(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContains(FieldRunnerArch, v))
+}
+
+// RunnerArchHasPrefix applies the HasPrefix predicate on the "runner_arch" field.
+func RunnerArchHasPrefix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasPrefix(FieldRunnerArch, v))
+}
+
+// RunnerArchHasSuffix applies the HasSuffix predicate on the "runner_arch" field.
+func RunnerArchHasSuffix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasSuffix(FieldRunnerArch, v))
+}
+
+// RunnerArchIsNil applies the IsNil predicate on the "runner_arch" field.
+func RunnerArchIsNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIsNull(FieldRunnerArch))
+}
+
+// RunnerArchNotNil applies the NotNil predicate on the "runner_arch" field.
+func RunnerArchNotNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotNull(FieldRunnerArch))
+}
+
+// RunnerArchEqualFold applies the EqualFold predicate on the "runner_arch" field.
+func RunnerArchEqualFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEqualFold(FieldRunnerArch, v))
+}
+
+// RunnerArchContainsFold applies the ContainsFold predicate on the "runner_arch" field.
+func RunnerArchContainsFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContainsFold(FieldRunnerArch, v))
+}
+
+// RunnerOsEQ applies the EQ predicate on the "runner_os" field.
+func RunnerOsEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldRunnerOs, v))
+}
+
+// RunnerOsNEQ applies the NEQ predicate on the "runner_os" field.
+func RunnerOsNEQ(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNEQ(FieldRunnerOs, v))
+}
+
+// RunnerOsIn applies the In predicate on the "runner_os" field.
+func RunnerOsIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIn(FieldRunnerOs, vs...))
+}
+
+// RunnerOsNotIn applies the NotIn predicate on the "runner_os" field.
+func RunnerOsNotIn(vs ...string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotIn(FieldRunnerOs, vs...))
+}
+
+// RunnerOsGT applies the GT predicate on the "runner_os" field.
+func RunnerOsGT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGT(FieldRunnerOs, v))
+}
+
+// RunnerOsGTE applies the GTE predicate on the "runner_os" field.
+func RunnerOsGTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldGTE(FieldRunnerOs, v))
+}
+
+// RunnerOsLT applies the LT predicate on the "runner_os" field.
+func RunnerOsLT(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLT(FieldRunnerOs, v))
+}
+
+// RunnerOsLTE applies the LTE predicate on the "runner_os" field.
+func RunnerOsLTE(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldLTE(FieldRunnerOs, v))
+}
+
+// RunnerOsContains applies the Contains predicate on the "runner_os" field.
+func RunnerOsContains(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContains(FieldRunnerOs, v))
+}
+
+// RunnerOsHasPrefix applies the HasPrefix predicate on the "runner_os" field.
+func RunnerOsHasPrefix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasPrefix(FieldRunnerOs, v))
+}
+
+// RunnerOsHasSuffix applies the HasSuffix predicate on the "runner_os" field.
+func RunnerOsHasSuffix(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldHasSuffix(FieldRunnerOs, v))
+}
+
+// RunnerOsIsNil applies the IsNil predicate on the "runner_os" field.
+func RunnerOsIsNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIsNull(FieldRunnerOs))
+}
+
+// RunnerOsNotNil applies the NotNil predicate on the "runner_os" field.
+func RunnerOsNotNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotNull(FieldRunnerOs))
+}
+
+// RunnerOsEqualFold applies the EqualFold predicate on the "runner_os" field.
+func RunnerOsEqualFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEqualFold(FieldRunnerOs, v))
+}
+
+// RunnerOsContainsFold applies the ContainsFold predicate on the "runner_os" field.
+func RunnerOsContainsFold(v string) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldContainsFold(FieldRunnerOs, v))
 }
 
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.

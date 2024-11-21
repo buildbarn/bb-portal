@@ -1,14 +1,34 @@
 {
   "bazelInvocation": {
     "bazelCommand": {
-      "cmdLine": [],
+      "cmdLine": [
+        "--enable_runfiles=1",
+        "--build_event_json_file=./pkg/summary/testdata/nextjs_build.bep.ndjson"
+      ],
       "command": "test",
       "executable": "bazel",
-      "explicitCmdLine": "",
-      "explicitStartupOptions": [],
+      "explicitCmdLine": "--build_event_json_file=./pkg/summary/testdata/nextjs_build.bep.ndjson",
+      "explicitStartupOptions": [
+        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
+      ],
       "id": "",
       "residual": "//...",
-      "startupOptions": []
+      "startupOptions": [
+        "--max_idle_secs=10800",
+        "--noshutdown_on_low_sys_mem",
+        "--connect_timeout_secs=30",
+        "--output_user_root=/var/tmp/_bazel_nameless",
+        "--output_base=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096",
+        "--failure_detail_out=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/failure_detail.rawproto",
+        "--expand_configs_in_place",
+        "--idle_server_tasks",
+        "--write_command_log",
+        "--nowatchfs",
+        "--nofatal_event_bus_exceptions",
+        "--nowindows_enable_symlinks",
+        "--noclient_debug",
+        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
+      ]
     },
     "build": null,
     "configurationMnemonic": "darwin_arm64-fastbuild",
@@ -210,7 +230,23 @@
         "url": "../summary/testdata/nextjs_build.bep.ndjson"
       }
     ],
-    "sourceControl": null,
+    "sourceControl": {
+      "action": "",
+      "actor": "",
+      "branch": "",
+      "commitSha": "",
+      "eventName": "",
+      "id": "U291cmNlQ29udHJvbDox",
+      "job": "",
+      "refs": "",
+      "repoURL": "",
+      "runID": "",
+      "runnerArch": "",
+      "runnerName": "",
+      "runnerOs": "",
+      "workflow": "",
+      "workspace": ""
+    },
     "startedAt": "2024-05-03T00:24:28.621Z",
     "state": {
       "bepCompleted": true,
@@ -227,26 +263,44 @@
     "targets": [
       {
         "abortReason": "",
-        "durationInMs": 4,
+        "durationInMs": 0,
         "id": "VGFyZ2V0UGFpcjox",
-        "label": "//react/src:src_typecheck_test",
+        "label": "//packages/one:one",
+        "success": true,
+        "targetKind": "_npm_package rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 5,
+        "id": "VGFyZ2V0UGFpcjoy",
+        "label": "//react/src:test_lib_typecheck_test",
         "success": true,
         "targetKind": "_empty_test rule",
         "testSize": "SMALL"
       },
       {
         "abortReason": "",
-        "durationInMs": 2,
-        "id": "VGFyZ2V0UGFpcjoy",
-        "label": "//react:build",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjoz",
+        "label": "//react-webpack:_dev_server_webpack_binary_entrypoint",
         "success": true,
-        "targetKind": "_run_binary rule",
+        "targetKind": "directory_path rule",
         "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
-        "durationInMs": 12,
-        "id": "VGFyZ2V0UGFpcjoz",
+        "durationInMs": 10,
+        "id": "VGFyZ2V0UGFpcjo0",
+        "label": "//next.js/pages:pages",
+        "success": true,
+        "targetKind": "ts_project rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 10,
+        "id": "VGFyZ2V0UGFpcjo1",
         "label": "//next.js:next_start",
         "success": true,
         "targetKind": "_js_run_devserver rule",
@@ -255,295 +309,7 @@
       {
         "abortReason": "",
         "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo0",
-        "label": "//react:preview",
-        "success": true,
-        "targetKind": "js_binary rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo1",
-        "label": "//vue:vite",
-        "success": true,
-        "targetKind": "js_binary rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 10,
         "id": "VGFyZ2V0UGFpcjo2",
-        "label": "//next.js/pages:_jest_test_jest_entrypoint",
-        "success": true,
-        "targetKind": "directory_path rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo3",
-        "label": "//react/src:test_lib_transpile",
-        "success": true,
-        "targetKind": "swc_compile rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo4",
-        "label": "//react-webpack:_bundle_webpack_binary_entrypoint",
-        "success": true,
-        "targetKind": "directory_path rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 1,
-        "id": "VGFyZ2V0UGFpcjo5",
-        "label": "//next.js:jest_config",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoxMA==",
-        "label": "//packages/one:one",
-        "success": true,
-        "targetKind": "_npm_package rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 1,
-        "id": "VGFyZ2V0UGFpcjoxMQ==",
-        "label": "//react/src:assets",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 3,
-        "id": "VGFyZ2V0UGFpcjoxMg==",
-        "label": "//react/src:test_lib",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 7,
-        "id": "VGFyZ2V0UGFpcjoxMw==",
-        "label": "//react:package_json",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoxNA==",
-        "label": "//react-webpack/src:transpile",
-        "success": true,
-        "targetKind": "swc_compile rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 6,
-        "id": "VGFyZ2V0UGFpcjoxNQ==",
-        "label": "//react-webpack:build_smoke_test",
-        "success": true,
-        "targetKind": "js_test rule",
-        "testSize": "MEDIUM"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoxNg==",
-        "label": "//next.js/public:public",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 7,
-        "id": "VGFyZ2V0UGFpcjoxNw==",
-        "label": "//react/src:lint",
-        "success": true,
-        "targetKind": "eslint_test rule",
-        "testSize": "MEDIUM"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 2,
-        "id": "VGFyZ2V0UGFpcjoxOA==",
-        "label": "//react/src:src_typecheck",
-        "success": true,
-        "targetKind": "filegroup rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoxOQ==",
-        "label": "//react:vite",
-        "success": true,
-        "targetKind": "js_binary rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoyMA==",
-        "label": "//vue/libraries/simple:build",
-        "success": true,
-        "targetKind": "_run_binary rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 1,
-        "id": "VGFyZ2V0UGFpcjoyMQ==",
-        "label": "//react/src:src_transpile",
-        "success": true,
-        "targetKind": "swc_compile rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoyMg==",
-        "label": "//vue/libraries/simple:types",
-        "success": true,
-        "targetKind": "_run_binary rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoyMw==",
-        "label": "//vue/src:src",
-        "success": true,
-        "targetKind": "_copy_to_bin rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 2,
-        "id": "VGFyZ2V0UGFpcjoyNA==",
-        "label": "//vue:build_test",
-        "success": true,
-        "targetKind": "_empty_test rule",
-        "testSize": "SMALL"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoyNQ==",
-        "label": "//next.js/styles:styles",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 9,
-        "id": "VGFyZ2V0UGFpcjoyNg==",
-        "label": "//next.js:next_dev",
-        "success": true,
-        "targetKind": "_js_run_devserver rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoyNw==",
-        "label": "//next.js:next_js_binary",
-        "success": true,
-        "targetKind": "js_binary rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjoyOA==",
-        "label": "//react:vite.config",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 10,
-        "id": "VGFyZ2V0UGFpcjoyOQ==",
-        "label": "//next.js/pages:pages",
-        "success": true,
-        "targetKind": "ts_project rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjozMA==",
-        "label": "//next.js:tsconfig",
-        "success": true,
-        "targetKind": "ts_config rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 1,
-        "id": "VGFyZ2V0UGFpcjozMQ==",
-        "label": "//react/src:src",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 5,
-        "id": "VGFyZ2V0UGFpcjozMg==",
-        "label": "//react-webpack:_bundle_webpack_binary",
-        "success": true,
-        "targetKind": "js_binary rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 1,
-        "id": "VGFyZ2V0UGFpcjozMw==",
-        "label": "//next.js/pages:_jest_test_bazel_snapshot_resolver",
-        "success": true,
-        "targetKind": "_copy_file rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 11,
-        "id": "VGFyZ2V0UGFpcjozNA==",
-        "label": "//next.js:build_smoke_test",
-        "success": true,
-        "targetKind": "js_test rule",
-        "testSize": "MEDIUM"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 10,
-        "id": "VGFyZ2V0UGFpcjozNQ==",
-        "label": "//next.js:build_test",
-        "success": true,
-        "targetKind": "_empty_test rule",
-        "testSize": "SMALL"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjozNg==",
         "label": "//react/src:src_typings",
         "success": true,
         "targetKind": "ts_project rule",
@@ -551,44 +317,8 @@
       },
       {
         "abortReason": "",
-        "durationInMs": 5,
-        "id": "VGFyZ2V0UGFpcjozNw==",
-        "label": "//react:build_smoke_test",
-        "success": true,
-        "targetKind": "js_test rule",
-        "testSize": "MEDIUM"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 6,
-        "id": "VGFyZ2V0UGFpcjozOA==",
-        "label": "//react-webpack:_dev_server_webpack_binary",
-        "success": true,
-        "targetKind": "js_binary rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 9,
-        "id": "VGFyZ2V0UGFpcjozOQ==",
-        "label": "//next.js:eslintrc",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
         "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo0MA==",
-        "label": "//react/public:public",
-        "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo0MQ==",
+        "id": "VGFyZ2V0UGFpcjo3",
         "label": "//react:write_swcrc",
         "success": true,
         "targetKind": "_run_binary rule",
@@ -596,35 +326,44 @@
       },
       {
         "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo0Mg==",
-        "label": "//vue/libraries/simple:vite.config",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjo4",
+        "label": "//next.js/pages:_jest_test_bazel_sequencer",
         "success": true,
-        "targetKind": "js_library rule",
+        "targetKind": "_copy_file rule",
         "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
-        "durationInMs": 13,
-        "id": "VGFyZ2V0UGFpcjo0Mw==",
-        "label": "//next.js/pages:jest_test",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjo5",
+        "label": "//next.js/pages:_jest_test_bazel_snapshot_reporter",
         "success": true,
-        "targetKind": "jest_test rule",
-        "testSize": "MEDIUM"
+        "targetKind": "_copy_file rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjoxMA==",
+        "label": "//react:vite",
+        "success": true,
+        "targetKind": "js_binary rule",
+        "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
         "durationInMs": 5,
-        "id": "VGFyZ2V0UGFpcjo0NA==",
-        "label": "//react/src:test_lib_typecheck_test",
+        "id": "VGFyZ2V0UGFpcjoxMQ==",
+        "label": "//react-webpack:_dev_server_webpack_binary",
         "success": true,
-        "targetKind": "_empty_test rule",
-        "testSize": "SMALL"
+        "targetKind": "js_binary rule",
+        "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
         "durationInMs": 4,
-        "id": "VGFyZ2V0UGFpcjo0NQ==",
+        "id": "VGFyZ2V0UGFpcjoxMg==",
         "label": "//next.js/pages/api:api",
         "success": true,
         "targetKind": "ts_project rule",
@@ -633,124 +372,70 @@
       {
         "abortReason": "",
         "durationInMs": 1,
-        "id": "VGFyZ2V0UGFpcjo0Ng==",
-        "label": "//next.js/pages:_jest_test_bazel_sequencer",
+        "id": "VGFyZ2V0UGFpcjoxMw==",
+        "label": "//next.js:jest_config",
         "success": true,
-        "targetKind": "_copy_file rule",
+        "targetKind": "js_library rule",
         "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
-        "durationInMs": 11,
-        "id": "VGFyZ2V0UGFpcjo0Nw==",
-        "label": "//next.js/pages:specs",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjoxNA==",
+        "label": "//react/src:src_transpile",
         "success": true,
-        "targetKind": "ts_project rule",
+        "targetKind": "swc_compile rule",
         "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 6,
-        "id": "VGFyZ2V0UGFpcjo0OA==",
-        "label": "//react/src:test",
-        "success": true,
-        "targetKind": "js_test rule",
-        "testSize": "MEDIUM"
       },
       {
         "abortReason": "",
         "durationInMs": 2,
-        "id": "VGFyZ2V0UGFpcjo0OQ==",
-        "label": "//react/src:test_lib_typecheck",
+        "id": "VGFyZ2V0UGFpcjoxNQ==",
+        "label": "//react/src:src_typecheck",
         "success": true,
         "targetKind": "filegroup rule",
         "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo1MA==",
-        "label": "//react/src:test_lib_typings",
+        "durationInMs": 4,
+        "id": "VGFyZ2V0UGFpcjoxNg==",
+        "label": "//react/src:src_typecheck_test",
         "success": true,
-        "targetKind": "ts_project rule",
-        "testSize": "UNKNOWN"
+        "targetKind": "_empty_test rule",
+        "testSize": "SMALL"
       },
       {
         "abortReason": "",
         "durationInMs": 1,
-        "id": "VGFyZ2V0UGFpcjo1MQ==",
-        "label": "//vue:build",
+        "id": "VGFyZ2V0UGFpcjoxNw==",
+        "label": "//react:preview",
         "success": true,
-        "targetKind": "_run_binary rule",
+        "targetKind": "js_binary rule",
         "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 1,
-        "id": "VGFyZ2V0UGFpcjo1Mg==",
-        "label": "//packages/one:one_ts",
-        "success": true,
-        "targetKind": "ts_project rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 6,
-        "id": "VGFyZ2V0UGFpcjo1Mw==",
-        "label": "//react:start",
-        "success": true,
-        "targetKind": "_js_run_devserver rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 2,
-        "id": "VGFyZ2V0UGFpcjo1NA==",
-        "label": "//vue:type-check",
-        "success": true,
-        "targetKind": "js_test rule",
-        "testSize": "MEDIUM"
       },
       {
         "abortReason": "",
         "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo1NQ==",
-        "label": "//react-webpack:bundle",
+        "id": "VGFyZ2V0UGFpcjoxOA==",
+        "label": "//vue/libraries/simple:vite.config",
         "success": true,
-        "targetKind": "_webpack_bundle rule",
+        "targetKind": "js_library rule",
         "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
-        "durationInMs": 5,
-        "id": "VGFyZ2V0UGFpcjo1Ng==",
-        "label": "//react-webpack:dev_server",
+        "durationInMs": 10,
+        "id": "VGFyZ2V0UGFpcjoxOQ==",
+        "label": "//next.js/pages:_jest_test_jest_entrypoint",
         "success": true,
-        "targetKind": "_js_run_devserver rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 1,
-        "id": "VGFyZ2V0UGFpcjo1Nw==",
-        "label": "//vue/libraries/simple:simple",
-        "success": true,
-        "targetKind": "_npm_package rule",
-        "testSize": "UNKNOWN"
-      },
-      {
-        "abortReason": "",
-        "durationInMs": 1,
-        "id": "VGFyZ2V0UGFpcjo1OA==",
-        "label": "//next.js/pages:_jest_test_bazel_snapshot_reporter",
-        "success": true,
-        "targetKind": "_copy_file rule",
+        "targetKind": "directory_path rule",
         "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
         "durationInMs": 11,
-        "id": "VGFyZ2V0UGFpcjo1OQ==",
+        "id": "VGFyZ2V0UGFpcjoyMA==",
         "label": "//next.js:next",
         "success": true,
         "targetKind": "_run_binary rule",
@@ -758,17 +443,17 @@
       },
       {
         "abortReason": "",
-        "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo2MA==",
-        "label": "//next.js:package_json",
+        "durationInMs": 6,
+        "id": "VGFyZ2V0UGFpcjoyMQ==",
+        "label": "//react/src:test",
         "success": true,
-        "targetKind": "js_library rule",
-        "testSize": "UNKNOWN"
+        "targetKind": "js_test rule",
+        "testSize": "MEDIUM"
       },
       {
         "abortReason": "",
         "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo2MQ==",
+        "id": "VGFyZ2V0UGFpcjoyMg==",
         "label": "//react:tsconfig",
         "success": true,
         "targetKind": "ts_config rule",
@@ -777,29 +462,380 @@
       {
         "abortReason": "",
         "durationInMs": 0,
-        "id": "VGFyZ2V0UGFpcjo2Mg==",
-        "label": "//react-webpack:_dev_server_webpack_binary_entrypoint",
+        "id": "VGFyZ2V0UGFpcjoyMw==",
+        "label": "//react-webpack:bundle",
+        "success": true,
+        "targetKind": "_webpack_bundle rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjoyNA==",
+        "label": "//next.js/styles:styles",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 10,
+        "id": "VGFyZ2V0UGFpcjoyNQ==",
+        "label": "//next.js:build_test",
+        "success": true,
+        "targetKind": "_empty_test rule",
+        "testSize": "SMALL"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjoyNg==",
+        "label": "//react/src:src",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 2,
+        "id": "VGFyZ2V0UGFpcjoyNw==",
+        "label": "//react:build",
+        "success": true,
+        "targetKind": "_run_binary rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 2,
+        "id": "VGFyZ2V0UGFpcjoyOA==",
+        "label": "//vue:build_test",
+        "success": true,
+        "targetKind": "_empty_test rule",
+        "testSize": "SMALL"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjoyOQ==",
+        "label": "//:eslint",
+        "success": true,
+        "targetKind": "js_binary rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 2,
+        "id": "VGFyZ2V0UGFpcjozMA==",
+        "label": "//react/src:test_lib_typecheck",
+        "success": true,
+        "targetKind": "filegroup rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjozMQ==",
+        "label": "//react-webpack/src:transpile",
+        "success": true,
+        "targetKind": "swc_compile rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 3,
+        "id": "VGFyZ2V0UGFpcjozMg==",
+        "label": "//vue:type-check",
+        "success": true,
+        "targetKind": "js_test rule",
+        "testSize": "MEDIUM"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 12,
+        "id": "VGFyZ2V0UGFpcjozMw==",
+        "label": "//next.js/pages:jest_test",
+        "success": true,
+        "targetKind": "jest_test rule",
+        "testSize": "MEDIUM"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjozNA==",
+        "label": "//next.js/public:public",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 9,
+        "id": "VGFyZ2V0UGFpcjozNQ==",
+        "label": "//next.js:eslintrc",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjozNg==",
+        "label": "//react/public:public",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjozNw==",
+        "label": "//react/src:assets",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjozOA==",
+        "label": "//react:vite.config",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 5,
+        "id": "VGFyZ2V0UGFpcjozOQ==",
+        "label": "//react-webpack:_bundle_webpack_binary",
+        "success": true,
+        "targetKind": "js_binary rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 5,
+        "id": "VGFyZ2V0UGFpcjo0MA==",
+        "label": "//react-webpack:dev_server",
+        "success": true,
+        "targetKind": "_js_run_devserver rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 7,
+        "id": "VGFyZ2V0UGFpcjo0MQ==",
+        "label": "//react/src:lint",
+        "success": true,
+        "targetKind": "eslint_test rule",
+        "testSize": "MEDIUM"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjo0Mg==",
+        "label": "//react/src:test_lib_typings",
+        "success": true,
+        "targetKind": "ts_project rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjo0Mw==",
+        "label": "//vue:vite",
+        "success": true,
+        "targetKind": "js_binary rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 10,
+        "id": "VGFyZ2V0UGFpcjo0NA==",
+        "label": "//next.js:build_smoke_test",
+        "success": true,
+        "targetKind": "js_test rule",
+        "testSize": "MEDIUM"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjo0NQ==",
+        "label": "//next.js:next_js_binary",
+        "success": true,
+        "targetKind": "js_binary rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 3,
+        "id": "VGFyZ2V0UGFpcjo0Ng==",
+        "label": "//react/src:test_lib",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjo0Nw==",
+        "label": "//react/src:test_lib_transpile",
+        "success": true,
+        "targetKind": "swc_compile rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 7,
+        "id": "VGFyZ2V0UGFpcjo0OA==",
+        "label": "//react:package_json",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjo0OQ==",
+        "label": "//vue/libraries/simple:build",
+        "success": true,
+        "targetKind": "_run_binary rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjo1MA==",
+        "label": "//next.js/pages:_jest_test_bazel_snapshot_resolver",
+        "success": true,
+        "targetKind": "_copy_file rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 9,
+        "id": "VGFyZ2V0UGFpcjo1MQ==",
+        "label": "//next.js/pages:specs",
+        "success": true,
+        "targetKind": "ts_project rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjo1Mg==",
+        "label": "//next.js:tsconfig",
+        "success": true,
+        "targetKind": "ts_config rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjo1Mw==",
+        "label": "//packages/one:one_ts",
+        "success": true,
+        "targetKind": "ts_project rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjo1NA==",
+        "label": "//vue/src:src",
+        "success": true,
+        "targetKind": "_copy_to_bin rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 9,
+        "id": "VGFyZ2V0UGFpcjo1NQ==",
+        "label": "//next.js:next_dev",
+        "success": true,
+        "targetKind": "_js_run_devserver rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjo1Ng==",
+        "label": "//next.js:package_json",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 5,
+        "id": "VGFyZ2V0UGFpcjo1Nw==",
+        "label": "//react:build_smoke_test",
+        "success": true,
+        "targetKind": "js_test rule",
+        "testSize": "MEDIUM"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0UGFpcjo1OA==",
+        "label": "//react-webpack:_bundle_webpack_binary_entrypoint",
         "success": true,
         "targetKind": "directory_path rule",
         "testSize": "UNKNOWN"
       },
       {
         "abortReason": "",
-        "durationInMs": 2,
-        "id": "VGFyZ2V0UGFpcjo2Mw==",
-        "label": "//:eslint",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjo1OQ==",
+        "label": "//vue/libraries/simple:simple",
         "success": true,
-        "targetKind": "js_binary rule",
+        "targetKind": "_npm_package rule",
         "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjo2MA==",
+        "label": "//vue/libraries/simple:types",
+        "success": true,
+        "targetKind": "_run_binary rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 1,
+        "id": "VGFyZ2V0UGFpcjo2MQ==",
+        "label": "//vue:build",
+        "success": true,
+        "targetKind": "_run_binary rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 5,
+        "id": "VGFyZ2V0UGFpcjo2Mg==",
+        "label": "//react:start",
+        "success": true,
+        "targetKind": "_js_run_devserver rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 6,
+        "id": "VGFyZ2V0UGFpcjo2Mw==",
+        "label": "//react-webpack:build_smoke_test",
+        "success": true,
+        "targetKind": "js_test rule",
+        "testSize": "MEDIUM"
       }
     ],
     "testCollection": [
       {
         "cachedLocally": true,
         "cachedRemotely": false,
-        "durationMs": 85000,
+        "durationMs": 1134000,
         "id": "VGVzdENvbGxlY3Rpb246MQ==",
-        "label": "//react/src:src_typecheck_test",
+        "label": "//next.js/pages:jest_test",
         "overallStatus": "PASSED",
         "strategy": ""
       },
@@ -815,53 +851,8 @@
       {
         "cachedLocally": true,
         "cachedRemotely": false,
-        "durationMs": 191000,
-        "id": "VGVzdENvbGxlY3Rpb246Mw==",
-        "label": "//react:build_smoke_test",
-        "overallStatus": "PASSED",
-        "strategy": ""
-      },
-      {
-        "cachedLocally": true,
-        "cachedRemotely": false,
-        "durationMs": 89000,
-        "id": "VGVzdENvbGxlY3Rpb246NA==",
-        "label": "//next.js:build_test",
-        "overallStatus": "PASSED",
-        "strategy": ""
-      },
-      {
-        "cachedLocally": true,
-        "cachedRemotely": false,
-        "durationMs": 1134000,
-        "id": "VGVzdENvbGxlY3Rpb246NQ==",
-        "label": "//next.js/pages:jest_test",
-        "overallStatus": "PASSED",
-        "strategy": ""
-      },
-      {
-        "cachedLocally": true,
-        "cachedRemotely": false,
-        "durationMs": 354000,
-        "id": "VGVzdENvbGxlY3Rpb246Ng==",
-        "label": "//next.js:build_smoke_test",
-        "overallStatus": "PASSED",
-        "strategy": ""
-      },
-      {
-        "cachedLocally": true,
-        "cachedRemotely": false,
-        "durationMs": 68000,
-        "id": "VGVzdENvbGxlY3Rpb246Nw==",
-        "label": "//vue:build_test",
-        "overallStatus": "PASSED",
-        "strategy": ""
-      },
-      {
-        "cachedLocally": true,
-        "cachedRemotely": false,
         "durationMs": 1180000,
-        "id": "VGVzdENvbGxlY3Rpb246OA==",
+        "id": "VGVzdENvbGxlY3Rpb246Mw==",
         "label": "//vue:type-check",
         "overallStatus": "PASSED",
         "strategy": ""
@@ -869,17 +860,8 @@
       {
         "cachedLocally": true,
         "cachedRemotely": false,
-        "durationMs": 112000,
-        "id": "VGVzdENvbGxlY3Rpb246OQ==",
-        "label": "//react/src:lint",
-        "overallStatus": "PASSED",
-        "strategy": ""
-      },
-      {
-        "cachedLocally": true,
-        "cachedRemotely": false,
         "durationMs": 1715000,
-        "id": "VGVzdENvbGxlY3Rpb246MTA=",
+        "id": "VGVzdENvbGxlY3Rpb246NA==",
         "label": "//react/src:test",
         "overallStatus": "PASSED",
         "strategy": ""
@@ -887,9 +869,63 @@
       {
         "cachedLocally": true,
         "cachedRemotely": false,
+        "durationMs": 112000,
+        "id": "VGVzdENvbGxlY3Rpb246NQ==",
+        "label": "//react/src:lint",
+        "overallStatus": "PASSED",
+        "strategy": ""
+      },
+      {
+        "cachedLocally": true,
+        "cachedRemotely": false,
         "durationMs": 170000,
-        "id": "VGVzdENvbGxlY3Rpb246MTE=",
+        "id": "VGVzdENvbGxlY3Rpb246Ng==",
         "label": "//react-webpack:build_smoke_test",
+        "overallStatus": "PASSED",
+        "strategy": ""
+      },
+      {
+        "cachedLocally": true,
+        "cachedRemotely": false,
+        "durationMs": 89000,
+        "id": "VGVzdENvbGxlY3Rpb246Nw==",
+        "label": "//next.js:build_test",
+        "overallStatus": "PASSED",
+        "strategy": ""
+      },
+      {
+        "cachedLocally": true,
+        "cachedRemotely": false,
+        "durationMs": 354000,
+        "id": "VGVzdENvbGxlY3Rpb246OA==",
+        "label": "//next.js:build_smoke_test",
+        "overallStatus": "PASSED",
+        "strategy": ""
+      },
+      {
+        "cachedLocally": true,
+        "cachedRemotely": false,
+        "durationMs": 85000,
+        "id": "VGVzdENvbGxlY3Rpb246OQ==",
+        "label": "//react/src:src_typecheck_test",
+        "overallStatus": "PASSED",
+        "strategy": ""
+      },
+      {
+        "cachedLocally": true,
+        "cachedRemotely": false,
+        "durationMs": 191000,
+        "id": "VGVzdENvbGxlY3Rpb246MTA=",
+        "label": "//react:build_smoke_test",
+        "overallStatus": "PASSED",
+        "strategy": ""
+      },
+      {
+        "cachedLocally": true,
+        "cachedRemotely": false,
+        "durationMs": 68000,
+        "id": "VGVzdENvbGxlY3Rpb246MTE=",
+        "label": "//vue:build_test",
         "overallStatus": "PASSED",
         "strategy": ""
       }

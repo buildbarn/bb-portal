@@ -2845,6 +2845,14 @@ type SourceControl implements Node {
   actor: String
   refs: String
   runID: String
+  workflow: String
+  action: String
+  workspace: String
+  eventName: String
+  job: String
+  runnerName: String
+  runnerArch: String
+  runnerOs: String
   bazelInvocation: BazelInvocation
 }
 """
@@ -2974,6 +2982,150 @@ input SourceControlWhereInput {
   runIDNotNil: Boolean
   runIDEqualFold: String
   runIDContainsFold: String
+  """
+  workflow field predicates
+  """
+  workflow: String
+  workflowNEQ: String
+  workflowIn: [String!]
+  workflowNotIn: [String!]
+  workflowGT: String
+  workflowGTE: String
+  workflowLT: String
+  workflowLTE: String
+  workflowContains: String
+  workflowHasPrefix: String
+  workflowHasSuffix: String
+  workflowIsNil: Boolean
+  workflowNotNil: Boolean
+  workflowEqualFold: String
+  workflowContainsFold: String
+  """
+  action field predicates
+  """
+  action: String
+  actionNEQ: String
+  actionIn: [String!]
+  actionNotIn: [String!]
+  actionGT: String
+  actionGTE: String
+  actionLT: String
+  actionLTE: String
+  actionContains: String
+  actionHasPrefix: String
+  actionHasSuffix: String
+  actionIsNil: Boolean
+  actionNotNil: Boolean
+  actionEqualFold: String
+  actionContainsFold: String
+  """
+  workspace field predicates
+  """
+  workspace: String
+  workspaceNEQ: String
+  workspaceIn: [String!]
+  workspaceNotIn: [String!]
+  workspaceGT: String
+  workspaceGTE: String
+  workspaceLT: String
+  workspaceLTE: String
+  workspaceContains: String
+  workspaceHasPrefix: String
+  workspaceHasSuffix: String
+  workspaceIsNil: Boolean
+  workspaceNotNil: Boolean
+  workspaceEqualFold: String
+  workspaceContainsFold: String
+  """
+  event_name field predicates
+  """
+  eventName: String
+  eventNameNEQ: String
+  eventNameIn: [String!]
+  eventNameNotIn: [String!]
+  eventNameGT: String
+  eventNameGTE: String
+  eventNameLT: String
+  eventNameLTE: String
+  eventNameContains: String
+  eventNameHasPrefix: String
+  eventNameHasSuffix: String
+  eventNameIsNil: Boolean
+  eventNameNotNil: Boolean
+  eventNameEqualFold: String
+  eventNameContainsFold: String
+  """
+  job field predicates
+  """
+  job: String
+  jobNEQ: String
+  jobIn: [String!]
+  jobNotIn: [String!]
+  jobGT: String
+  jobGTE: String
+  jobLT: String
+  jobLTE: String
+  jobContains: String
+  jobHasPrefix: String
+  jobHasSuffix: String
+  jobIsNil: Boolean
+  jobNotNil: Boolean
+  jobEqualFold: String
+  jobContainsFold: String
+  """
+  runner_name field predicates
+  """
+  runnerName: String
+  runnerNameNEQ: String
+  runnerNameIn: [String!]
+  runnerNameNotIn: [String!]
+  runnerNameGT: String
+  runnerNameGTE: String
+  runnerNameLT: String
+  runnerNameLTE: String
+  runnerNameContains: String
+  runnerNameHasPrefix: String
+  runnerNameHasSuffix: String
+  runnerNameIsNil: Boolean
+  runnerNameNotNil: Boolean
+  runnerNameEqualFold: String
+  runnerNameContainsFold: String
+  """
+  runner_arch field predicates
+  """
+  runnerArch: String
+  runnerArchNEQ: String
+  runnerArchIn: [String!]
+  runnerArchNotIn: [String!]
+  runnerArchGT: String
+  runnerArchGTE: String
+  runnerArchLT: String
+  runnerArchLTE: String
+  runnerArchContains: String
+  runnerArchHasPrefix: String
+  runnerArchHasSuffix: String
+  runnerArchIsNil: Boolean
+  runnerArchNotNil: Boolean
+  runnerArchEqualFold: String
+  runnerArchContainsFold: String
+  """
+  runner_os field predicates
+  """
+  runnerOs: String
+  runnerOsNEQ: String
+  runnerOsIn: [String!]
+  runnerOsNotIn: [String!]
+  runnerOsGT: String
+  runnerOsGTE: String
+  runnerOsLT: String
+  runnerOsLTE: String
+  runnerOsContains: String
+  runnerOsHasPrefix: String
+  runnerOsHasSuffix: String
+  runnerOsIsNil: Boolean
+  runnerOsNotNil: Boolean
+  runnerOsEqualFold: String
+  runnerOsContainsFold: String
   """
   bazel_invocation edge predicates
   """

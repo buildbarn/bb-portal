@@ -1087,7 +1087,15 @@
       "CommitSHA": "",
       "Actor": "",
       "Refs": "",
-      "RunID": ""
+      "RunID": "",
+      "Workflow": "",
+      "Action": "",
+      "Workspace": "",
+      "EventName": "",
+      "Job": "",
+      "RunnerName": "",
+      "RunnerArch": "",
+      "RunnerOs": ""
     }
   }
 }

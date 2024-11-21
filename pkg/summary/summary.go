@@ -555,4 +555,12 @@ type SourceControlData struct {
 	Actor         string
 	Refs          string
 	RunID         string
+	Workflow      string
+	Action        string
+	Workspace     string
+	EventName     string
+	Job           string
+	RunnerName    string
+	RunnerArch    string
+	RunnerOs      string
 }

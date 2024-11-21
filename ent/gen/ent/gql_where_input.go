@@ -9328,6 +9328,142 @@ type SourceControlWhereInput struct {
 	RunIDEqualFold    *string  `json:"runIDEqualFold,omitempty"`
 	RunIDContainsFold *string  `json:"runIDContainsFold,omitempty"`
 
+	// "workflow" field predicates.
+	Workflow             *string  `json:"workflow,omitempty"`
+	WorkflowNEQ          *string  `json:"workflowNEQ,omitempty"`
+	WorkflowIn           []string `json:"workflowIn,omitempty"`
+	WorkflowNotIn        []string `json:"workflowNotIn,omitempty"`
+	WorkflowGT           *string  `json:"workflowGT,omitempty"`
+	WorkflowGTE          *string  `json:"workflowGTE,omitempty"`
+	WorkflowLT           *string  `json:"workflowLT,omitempty"`
+	WorkflowLTE          *string  `json:"workflowLTE,omitempty"`
+	WorkflowContains     *string  `json:"workflowContains,omitempty"`
+	WorkflowHasPrefix    *string  `json:"workflowHasPrefix,omitempty"`
+	WorkflowHasSuffix    *string  `json:"workflowHasSuffix,omitempty"`
+	WorkflowIsNil        bool     `json:"workflowIsNil,omitempty"`
+	WorkflowNotNil       bool     `json:"workflowNotNil,omitempty"`
+	WorkflowEqualFold    *string  `json:"workflowEqualFold,omitempty"`
+	WorkflowContainsFold *string  `json:"workflowContainsFold,omitempty"`
+
+	// "action" field predicates.
+	Action             *string  `json:"action,omitempty"`
+	ActionNEQ          *string  `json:"actionNEQ,omitempty"`
+	ActionIn           []string `json:"actionIn,omitempty"`
+	ActionNotIn        []string `json:"actionNotIn,omitempty"`
+	ActionGT           *string  `json:"actionGT,omitempty"`
+	ActionGTE          *string  `json:"actionGTE,omitempty"`
+	ActionLT           *string  `json:"actionLT,omitempty"`
+	ActionLTE          *string  `json:"actionLTE,omitempty"`
+	ActionContains     *string  `json:"actionContains,omitempty"`
+	ActionHasPrefix    *string  `json:"actionHasPrefix,omitempty"`
+	ActionHasSuffix    *string  `json:"actionHasSuffix,omitempty"`
+	ActionIsNil        bool     `json:"actionIsNil,omitempty"`
+	ActionNotNil       bool     `json:"actionNotNil,omitempty"`
+	ActionEqualFold    *string  `json:"actionEqualFold,omitempty"`
+	ActionContainsFold *string  `json:"actionContainsFold,omitempty"`
+
+	// "workspace" field predicates.
+	Workspace             *string  `json:"workspace,omitempty"`
+	WorkspaceNEQ          *string  `json:"workspaceNEQ,omitempty"`
+	WorkspaceIn           []string `json:"workspaceIn,omitempty"`
+	WorkspaceNotIn        []string `json:"workspaceNotIn,omitempty"`
+	WorkspaceGT           *string  `json:"workspaceGT,omitempty"`
+	WorkspaceGTE          *string  `json:"workspaceGTE,omitempty"`
+	WorkspaceLT           *string  `json:"workspaceLT,omitempty"`
+	WorkspaceLTE          *string  `json:"workspaceLTE,omitempty"`
+	WorkspaceContains     *string  `json:"workspaceContains,omitempty"`
+	WorkspaceHasPrefix    *string  `json:"workspaceHasPrefix,omitempty"`
+	WorkspaceHasSuffix    *string  `json:"workspaceHasSuffix,omitempty"`
+	WorkspaceIsNil        bool     `json:"workspaceIsNil,omitempty"`
+	WorkspaceNotNil       bool     `json:"workspaceNotNil,omitempty"`
+	WorkspaceEqualFold    *string  `json:"workspaceEqualFold,omitempty"`
+	WorkspaceContainsFold *string  `json:"workspaceContainsFold,omitempty"`
+
+	// "event_name" field predicates.
+	EventName             *string  `json:"eventName,omitempty"`
+	EventNameNEQ          *string  `json:"eventNameNEQ,omitempty"`
+	EventNameIn           []string `json:"eventNameIn,omitempty"`
+	EventNameNotIn        []string `json:"eventNameNotIn,omitempty"`
+	EventNameGT           *string  `json:"eventNameGT,omitempty"`
+	EventNameGTE          *string  `json:"eventNameGTE,omitempty"`
+	EventNameLT           *string  `json:"eventNameLT,omitempty"`
+	EventNameLTE          *string  `json:"eventNameLTE,omitempty"`
+	EventNameContains     *string  `json:"eventNameContains,omitempty"`
+	EventNameHasPrefix    *string  `json:"eventNameHasPrefix,omitempty"`
+	EventNameHasSuffix    *string  `json:"eventNameHasSuffix,omitempty"`
+	EventNameIsNil        bool     `json:"eventNameIsNil,omitempty"`
+	EventNameNotNil       bool     `json:"eventNameNotNil,omitempty"`
+	EventNameEqualFold    *string  `json:"eventNameEqualFold,omitempty"`
+	EventNameContainsFold *string  `json:"eventNameContainsFold,omitempty"`
+
+	// "job" field predicates.
+	Job             *string  `json:"job,omitempty"`
+	JobNEQ          *string  `json:"jobNEQ,omitempty"`
+	JobIn           []string `json:"jobIn,omitempty"`
+	JobNotIn        []string `json:"jobNotIn,omitempty"`
+	JobGT           *string  `json:"jobGT,omitempty"`
+	JobGTE          *string  `json:"jobGTE,omitempty"`
+	JobLT           *string  `json:"jobLT,omitempty"`
+	JobLTE          *string  `json:"jobLTE,omitempty"`
+	JobContains     *string  `json:"jobContains,omitempty"`
+	JobHasPrefix    *string  `json:"jobHasPrefix,omitempty"`
+	JobHasSuffix    *string  `json:"jobHasSuffix,omitempty"`
+	JobIsNil        bool     `json:"jobIsNil,omitempty"`
+	JobNotNil       bool     `json:"jobNotNil,omitempty"`
+	JobEqualFold    *string  `json:"jobEqualFold,omitempty"`
+	JobContainsFold *string  `json:"jobContainsFold,omitempty"`
+
+	// "runner_name" field predicates.
+	RunnerName             *string  `json:"runnerName,omitempty"`
+	RunnerNameNEQ          *string  `json:"runnerNameNEQ,omitempty"`
+	RunnerNameIn           []string `json:"runnerNameIn,omitempty"`
+	RunnerNameNotIn        []string `json:"runnerNameNotIn,omitempty"`
+	RunnerNameGT           *string  `json:"runnerNameGT,omitempty"`
+	RunnerNameGTE          *string  `json:"runnerNameGTE,omitempty"`
+	RunnerNameLT           *string  `json:"runnerNameLT,omitempty"`
+	RunnerNameLTE          *string  `json:"runnerNameLTE,omitempty"`
+	RunnerNameContains     *string  `json:"runnerNameContains,omitempty"`
+	RunnerNameHasPrefix    *string  `json:"runnerNameHasPrefix,omitempty"`
+	RunnerNameHasSuffix    *string  `json:"runnerNameHasSuffix,omitempty"`
+	RunnerNameIsNil        bool     `json:"runnerNameIsNil,omitempty"`
+	RunnerNameNotNil       bool     `json:"runnerNameNotNil,omitempty"`
+	RunnerNameEqualFold    *string  `json:"runnerNameEqualFold,omitempty"`
+	RunnerNameContainsFold *string  `json:"runnerNameContainsFold,omitempty"`
+
+	// "runner_arch" field predicates.
+	RunnerArch             *string  `json:"runnerArch,omitempty"`
+	RunnerArchNEQ          *string  `json:"runnerArchNEQ,omitempty"`
+	RunnerArchIn           []string `json:"runnerArchIn,omitempty"`
+	RunnerArchNotIn        []string `json:"runnerArchNotIn,omitempty"`
+	RunnerArchGT           *string  `json:"runnerArchGT,omitempty"`
+	RunnerArchGTE          *string  `json:"runnerArchGTE,omitempty"`
+	RunnerArchLT           *string  `json:"runnerArchLT,omitempty"`
+	RunnerArchLTE          *string  `json:"runnerArchLTE,omitempty"`
+	RunnerArchContains     *string  `json:"runnerArchContains,omitempty"`
+	RunnerArchHasPrefix    *string  `json:"runnerArchHasPrefix,omitempty"`
+	RunnerArchHasSuffix    *string  `json:"runnerArchHasSuffix,omitempty"`
+	RunnerArchIsNil        bool     `json:"runnerArchIsNil,omitempty"`
+	RunnerArchNotNil       bool     `json:"runnerArchNotNil,omitempty"`
+	RunnerArchEqualFold    *string  `json:"runnerArchEqualFold,omitempty"`
+	RunnerArchContainsFold *string  `json:"runnerArchContainsFold,omitempty"`
+
+	// "runner_os" field predicates.
+	RunnerOs             *string  `json:"runnerOs,omitempty"`
+	RunnerOsNEQ          *string  `json:"runnerOsNEQ,omitempty"`
+	RunnerOsIn           []string `json:"runnerOsIn,omitempty"`
+	RunnerOsNotIn        []string `json:"runnerOsNotIn,omitempty"`
+	RunnerOsGT           *string  `json:"runnerOsGT,omitempty"`
+	RunnerOsGTE          *string  `json:"runnerOsGTE,omitempty"`
+	RunnerOsLT           *string  `json:"runnerOsLT,omitempty"`
+	RunnerOsLTE          *string  `json:"runnerOsLTE,omitempty"`
+	RunnerOsContains     *string  `json:"runnerOsContains,omitempty"`
+	RunnerOsHasPrefix    *string  `json:"runnerOsHasPrefix,omitempty"`
+	RunnerOsHasSuffix    *string  `json:"runnerOsHasSuffix,omitempty"`
+	RunnerOsIsNil        bool     `json:"runnerOsIsNil,omitempty"`
+	RunnerOsNotNil       bool     `json:"runnerOsNotNil,omitempty"`
+	RunnerOsEqualFold    *string  `json:"runnerOsEqualFold,omitempty"`
+	RunnerOsContainsFold *string  `json:"runnerOsContainsFold,omitempty"`
+
 	// "bazel_invocation" edge predicates.
 	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
 	HasBazelInvocationWith []*BazelInvocationWhereInput `json:"hasBazelInvocationWith,omitempty"`
@@ -9697,6 +9833,366 @@ func (i *SourceControlWhereInput) P() (predicate.SourceControl, error) {
 	}
 	if i.RunIDContainsFold != nil {
 		predicates = append(predicates, sourcecontrol.RunIDContainsFold(*i.RunIDContainsFold))
+	}
+	if i.Workflow != nil {
+		predicates = append(predicates, sourcecontrol.WorkflowEQ(*i.Workflow))
+	}
+	if i.WorkflowNEQ != nil {
+		predicates = append(predicates, sourcecontrol.WorkflowNEQ(*i.WorkflowNEQ))
+	}
+	if len(i.WorkflowIn) > 0 {
+		predicates = append(predicates, sourcecontrol.WorkflowIn(i.WorkflowIn...))
+	}
+	if len(i.WorkflowNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.WorkflowNotIn(i.WorkflowNotIn...))
+	}
+	if i.WorkflowGT != nil {
+		predicates = append(predicates, sourcecontrol.WorkflowGT(*i.WorkflowGT))
+	}
+	if i.WorkflowGTE != nil {
+		predicates = append(predicates, sourcecontrol.WorkflowGTE(*i.WorkflowGTE))
+	}
+	if i.WorkflowLT != nil {
+		predicates = append(predicates, sourcecontrol.WorkflowLT(*i.WorkflowLT))
+	}
+	if i.WorkflowLTE != nil {
+		predicates = append(predicates, sourcecontrol.WorkflowLTE(*i.WorkflowLTE))
+	}
+	if i.WorkflowContains != nil {
+		predicates = append(predicates, sourcecontrol.WorkflowContains(*i.WorkflowContains))
+	}
+	if i.WorkflowHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.WorkflowHasPrefix(*i.WorkflowHasPrefix))
+	}
+	if i.WorkflowHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.WorkflowHasSuffix(*i.WorkflowHasSuffix))
+	}
+	if i.WorkflowIsNil {
+		predicates = append(predicates, sourcecontrol.WorkflowIsNil())
+	}
+	if i.WorkflowNotNil {
+		predicates = append(predicates, sourcecontrol.WorkflowNotNil())
+	}
+	if i.WorkflowEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.WorkflowEqualFold(*i.WorkflowEqualFold))
+	}
+	if i.WorkflowContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.WorkflowContainsFold(*i.WorkflowContainsFold))
+	}
+	if i.Action != nil {
+		predicates = append(predicates, sourcecontrol.ActionEQ(*i.Action))
+	}
+	if i.ActionNEQ != nil {
+		predicates = append(predicates, sourcecontrol.ActionNEQ(*i.ActionNEQ))
+	}
+	if len(i.ActionIn) > 0 {
+		predicates = append(predicates, sourcecontrol.ActionIn(i.ActionIn...))
+	}
+	if len(i.ActionNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.ActionNotIn(i.ActionNotIn...))
+	}
+	if i.ActionGT != nil {
+		predicates = append(predicates, sourcecontrol.ActionGT(*i.ActionGT))
+	}
+	if i.ActionGTE != nil {
+		predicates = append(predicates, sourcecontrol.ActionGTE(*i.ActionGTE))
+	}
+	if i.ActionLT != nil {
+		predicates = append(predicates, sourcecontrol.ActionLT(*i.ActionLT))
+	}
+	if i.ActionLTE != nil {
+		predicates = append(predicates, sourcecontrol.ActionLTE(*i.ActionLTE))
+	}
+	if i.ActionContains != nil {
+		predicates = append(predicates, sourcecontrol.ActionContains(*i.ActionContains))
+	}
+	if i.ActionHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.ActionHasPrefix(*i.ActionHasPrefix))
+	}
+	if i.ActionHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.ActionHasSuffix(*i.ActionHasSuffix))
+	}
+	if i.ActionIsNil {
+		predicates = append(predicates, sourcecontrol.ActionIsNil())
+	}
+	if i.ActionNotNil {
+		predicates = append(predicates, sourcecontrol.ActionNotNil())
+	}
+	if i.ActionEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.ActionEqualFold(*i.ActionEqualFold))
+	}
+	if i.ActionContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.ActionContainsFold(*i.ActionContainsFold))
+	}
+	if i.Workspace != nil {
+		predicates = append(predicates, sourcecontrol.WorkspaceEQ(*i.Workspace))
+	}
+	if i.WorkspaceNEQ != nil {
+		predicates = append(predicates, sourcecontrol.WorkspaceNEQ(*i.WorkspaceNEQ))
+	}
+	if len(i.WorkspaceIn) > 0 {
+		predicates = append(predicates, sourcecontrol.WorkspaceIn(i.WorkspaceIn...))
+	}
+	if len(i.WorkspaceNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.WorkspaceNotIn(i.WorkspaceNotIn...))
+	}
+	if i.WorkspaceGT != nil {
+		predicates = append(predicates, sourcecontrol.WorkspaceGT(*i.WorkspaceGT))
+	}
+	if i.WorkspaceGTE != nil {
+		predicates = append(predicates, sourcecontrol.WorkspaceGTE(*i.WorkspaceGTE))
+	}
+	if i.WorkspaceLT != nil {
+		predicates = append(predicates, sourcecontrol.WorkspaceLT(*i.WorkspaceLT))
+	}
+	if i.WorkspaceLTE != nil {
+		predicates = append(predicates, sourcecontrol.WorkspaceLTE(*i.WorkspaceLTE))
+	}
+	if i.WorkspaceContains != nil {
+		predicates = append(predicates, sourcecontrol.WorkspaceContains(*i.WorkspaceContains))
+	}
+	if i.WorkspaceHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.WorkspaceHasPrefix(*i.WorkspaceHasPrefix))
+	}
+	if i.WorkspaceHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.WorkspaceHasSuffix(*i.WorkspaceHasSuffix))
+	}
+	if i.WorkspaceIsNil {
+		predicates = append(predicates, sourcecontrol.WorkspaceIsNil())
+	}
+	if i.WorkspaceNotNil {
+		predicates = append(predicates, sourcecontrol.WorkspaceNotNil())
+	}
+	if i.WorkspaceEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.WorkspaceEqualFold(*i.WorkspaceEqualFold))
+	}
+	if i.WorkspaceContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.WorkspaceContainsFold(*i.WorkspaceContainsFold))
+	}
+	if i.EventName != nil {
+		predicates = append(predicates, sourcecontrol.EventNameEQ(*i.EventName))
+	}
+	if i.EventNameNEQ != nil {
+		predicates = append(predicates, sourcecontrol.EventNameNEQ(*i.EventNameNEQ))
+	}
+	if len(i.EventNameIn) > 0 {
+		predicates = append(predicates, sourcecontrol.EventNameIn(i.EventNameIn...))
+	}
+	if len(i.EventNameNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.EventNameNotIn(i.EventNameNotIn...))
+	}
+	if i.EventNameGT != nil {
+		predicates = append(predicates, sourcecontrol.EventNameGT(*i.EventNameGT))
+	}
+	if i.EventNameGTE != nil {
+		predicates = append(predicates, sourcecontrol.EventNameGTE(*i.EventNameGTE))
+	}
+	if i.EventNameLT != nil {
+		predicates = append(predicates, sourcecontrol.EventNameLT(*i.EventNameLT))
+	}
+	if i.EventNameLTE != nil {
+		predicates = append(predicates, sourcecontrol.EventNameLTE(*i.EventNameLTE))
+	}
+	if i.EventNameContains != nil {
+		predicates = append(predicates, sourcecontrol.EventNameContains(*i.EventNameContains))
+	}
+	if i.EventNameHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.EventNameHasPrefix(*i.EventNameHasPrefix))
+	}
+	if i.EventNameHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.EventNameHasSuffix(*i.EventNameHasSuffix))
+	}
+	if i.EventNameIsNil {
+		predicates = append(predicates, sourcecontrol.EventNameIsNil())
+	}
+	if i.EventNameNotNil {
+		predicates = append(predicates, sourcecontrol.EventNameNotNil())
+	}
+	if i.EventNameEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.EventNameEqualFold(*i.EventNameEqualFold))
+	}
+	if i.EventNameContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.EventNameContainsFold(*i.EventNameContainsFold))
+	}
+	if i.Job != nil {
+		predicates = append(predicates, sourcecontrol.JobEQ(*i.Job))
+	}
+	if i.JobNEQ != nil {
+		predicates = append(predicates, sourcecontrol.JobNEQ(*i.JobNEQ))
+	}
+	if len(i.JobIn) > 0 {
+		predicates = append(predicates, sourcecontrol.JobIn(i.JobIn...))
+	}
+	if len(i.JobNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.JobNotIn(i.JobNotIn...))
+	}
+	if i.JobGT != nil {
+		predicates = append(predicates, sourcecontrol.JobGT(*i.JobGT))
+	}
+	if i.JobGTE != nil {
+		predicates = append(predicates, sourcecontrol.JobGTE(*i.JobGTE))
+	}
+	if i.JobLT != nil {
+		predicates = append(predicates, sourcecontrol.JobLT(*i.JobLT))
+	}
+	if i.JobLTE != nil {
+		predicates = append(predicates, sourcecontrol.JobLTE(*i.JobLTE))
+	}
+	if i.JobContains != nil {
+		predicates = append(predicates, sourcecontrol.JobContains(*i.JobContains))
+	}
+	if i.JobHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.JobHasPrefix(*i.JobHasPrefix))
+	}
+	if i.JobHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.JobHasSuffix(*i.JobHasSuffix))
+	}
+	if i.JobIsNil {
+		predicates = append(predicates, sourcecontrol.JobIsNil())
+	}
+	if i.JobNotNil {
+		predicates = append(predicates, sourcecontrol.JobNotNil())
+	}
+	if i.JobEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.JobEqualFold(*i.JobEqualFold))
+	}
+	if i.JobContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.JobContainsFold(*i.JobContainsFold))
+	}
+	if i.RunnerName != nil {
+		predicates = append(predicates, sourcecontrol.RunnerNameEQ(*i.RunnerName))
+	}
+	if i.RunnerNameNEQ != nil {
+		predicates = append(predicates, sourcecontrol.RunnerNameNEQ(*i.RunnerNameNEQ))
+	}
+	if len(i.RunnerNameIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RunnerNameIn(i.RunnerNameIn...))
+	}
+	if len(i.RunnerNameNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RunnerNameNotIn(i.RunnerNameNotIn...))
+	}
+	if i.RunnerNameGT != nil {
+		predicates = append(predicates, sourcecontrol.RunnerNameGT(*i.RunnerNameGT))
+	}
+	if i.RunnerNameGTE != nil {
+		predicates = append(predicates, sourcecontrol.RunnerNameGTE(*i.RunnerNameGTE))
+	}
+	if i.RunnerNameLT != nil {
+		predicates = append(predicates, sourcecontrol.RunnerNameLT(*i.RunnerNameLT))
+	}
+	if i.RunnerNameLTE != nil {
+		predicates = append(predicates, sourcecontrol.RunnerNameLTE(*i.RunnerNameLTE))
+	}
+	if i.RunnerNameContains != nil {
+		predicates = append(predicates, sourcecontrol.RunnerNameContains(*i.RunnerNameContains))
+	}
+	if i.RunnerNameHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.RunnerNameHasPrefix(*i.RunnerNameHasPrefix))
+	}
+	if i.RunnerNameHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.RunnerNameHasSuffix(*i.RunnerNameHasSuffix))
+	}
+	if i.RunnerNameIsNil {
+		predicates = append(predicates, sourcecontrol.RunnerNameIsNil())
+	}
+	if i.RunnerNameNotNil {
+		predicates = append(predicates, sourcecontrol.RunnerNameNotNil())
+	}
+	if i.RunnerNameEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.RunnerNameEqualFold(*i.RunnerNameEqualFold))
+	}
+	if i.RunnerNameContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.RunnerNameContainsFold(*i.RunnerNameContainsFold))
+	}
+	if i.RunnerArch != nil {
+		predicates = append(predicates, sourcecontrol.RunnerArchEQ(*i.RunnerArch))
+	}
+	if i.RunnerArchNEQ != nil {
+		predicates = append(predicates, sourcecontrol.RunnerArchNEQ(*i.RunnerArchNEQ))
+	}
+	if len(i.RunnerArchIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RunnerArchIn(i.RunnerArchIn...))
+	}
+	if len(i.RunnerArchNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RunnerArchNotIn(i.RunnerArchNotIn...))
+	}
+	if i.RunnerArchGT != nil {
+		predicates = append(predicates, sourcecontrol.RunnerArchGT(*i.RunnerArchGT))
+	}
+	if i.RunnerArchGTE != nil {
+		predicates = append(predicates, sourcecontrol.RunnerArchGTE(*i.RunnerArchGTE))
+	}
+	if i.RunnerArchLT != nil {
+		predicates = append(predicates, sourcecontrol.RunnerArchLT(*i.RunnerArchLT))
+	}
+	if i.RunnerArchLTE != nil {
+		predicates = append(predicates, sourcecontrol.RunnerArchLTE(*i.RunnerArchLTE))
+	}
+	if i.RunnerArchContains != nil {
+		predicates = append(predicates, sourcecontrol.RunnerArchContains(*i.RunnerArchContains))
+	}
+	if i.RunnerArchHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.RunnerArchHasPrefix(*i.RunnerArchHasPrefix))
+	}
+	if i.RunnerArchHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.RunnerArchHasSuffix(*i.RunnerArchHasSuffix))
+	}
+	if i.RunnerArchIsNil {
+		predicates = append(predicates, sourcecontrol.RunnerArchIsNil())
+	}
+	if i.RunnerArchNotNil {
+		predicates = append(predicates, sourcecontrol.RunnerArchNotNil())
+	}
+	if i.RunnerArchEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.RunnerArchEqualFold(*i.RunnerArchEqualFold))
+	}
+	if i.RunnerArchContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.RunnerArchContainsFold(*i.RunnerArchContainsFold))
+	}
+	if i.RunnerOs != nil {
+		predicates = append(predicates, sourcecontrol.RunnerOsEQ(*i.RunnerOs))
+	}
+	if i.RunnerOsNEQ != nil {
+		predicates = append(predicates, sourcecontrol.RunnerOsNEQ(*i.RunnerOsNEQ))
+	}
+	if len(i.RunnerOsIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RunnerOsIn(i.RunnerOsIn...))
+	}
+	if len(i.RunnerOsNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.RunnerOsNotIn(i.RunnerOsNotIn...))
+	}
+	if i.RunnerOsGT != nil {
+		predicates = append(predicates, sourcecontrol.RunnerOsGT(*i.RunnerOsGT))
+	}
+	if i.RunnerOsGTE != nil {
+		predicates = append(predicates, sourcecontrol.RunnerOsGTE(*i.RunnerOsGTE))
+	}
+	if i.RunnerOsLT != nil {
+		predicates = append(predicates, sourcecontrol.RunnerOsLT(*i.RunnerOsLT))
+	}
+	if i.RunnerOsLTE != nil {
+		predicates = append(predicates, sourcecontrol.RunnerOsLTE(*i.RunnerOsLTE))
+	}
+	if i.RunnerOsContains != nil {
+		predicates = append(predicates, sourcecontrol.RunnerOsContains(*i.RunnerOsContains))
+	}
+	if i.RunnerOsHasPrefix != nil {
+		predicates = append(predicates, sourcecontrol.RunnerOsHasPrefix(*i.RunnerOsHasPrefix))
+	}
+	if i.RunnerOsHasSuffix != nil {
+		predicates = append(predicates, sourcecontrol.RunnerOsHasSuffix(*i.RunnerOsHasSuffix))
+	}
+	if i.RunnerOsIsNil {
+		predicates = append(predicates, sourcecontrol.RunnerOsIsNil())
+	}
+	if i.RunnerOsNotNil {
+		predicates = append(predicates, sourcecontrol.RunnerOsNotNil())
+	}
+	if i.RunnerOsEqualFold != nil {
+		predicates = append(predicates, sourcecontrol.RunnerOsEqualFold(*i.RunnerOsEqualFold))
+	}
+	if i.RunnerOsContainsFold != nil {
+		predicates = append(predicates, sourcecontrol.RunnerOsContainsFold(*i.RunnerOsContainsFold))
 	}
 
 	if i.HasBazelInvocation != nil {

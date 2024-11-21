@@ -148,6 +148,166 @@ func (scu *SourceControlUpdate) ClearRunID() *SourceControlUpdate {
 	return scu
 }
 
+// SetWorkflow sets the "workflow" field.
+func (scu *SourceControlUpdate) SetWorkflow(s string) *SourceControlUpdate {
+	scu.mutation.SetWorkflow(s)
+	return scu
+}
+
+// SetNillableWorkflow sets the "workflow" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableWorkflow(s *string) *SourceControlUpdate {
+	if s != nil {
+		scu.SetWorkflow(*s)
+	}
+	return scu
+}
+
+// ClearWorkflow clears the value of the "workflow" field.
+func (scu *SourceControlUpdate) ClearWorkflow() *SourceControlUpdate {
+	scu.mutation.ClearWorkflow()
+	return scu
+}
+
+// SetAction sets the "action" field.
+func (scu *SourceControlUpdate) SetAction(s string) *SourceControlUpdate {
+	scu.mutation.SetAction(s)
+	return scu
+}
+
+// SetNillableAction sets the "action" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableAction(s *string) *SourceControlUpdate {
+	if s != nil {
+		scu.SetAction(*s)
+	}
+	return scu
+}
+
+// ClearAction clears the value of the "action" field.
+func (scu *SourceControlUpdate) ClearAction() *SourceControlUpdate {
+	scu.mutation.ClearAction()
+	return scu
+}
+
+// SetWorkspace sets the "workspace" field.
+func (scu *SourceControlUpdate) SetWorkspace(s string) *SourceControlUpdate {
+	scu.mutation.SetWorkspace(s)
+	return scu
+}
+
+// SetNillableWorkspace sets the "workspace" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableWorkspace(s *string) *SourceControlUpdate {
+	if s != nil {
+		scu.SetWorkspace(*s)
+	}
+	return scu
+}
+
+// ClearWorkspace clears the value of the "workspace" field.
+func (scu *SourceControlUpdate) ClearWorkspace() *SourceControlUpdate {
+	scu.mutation.ClearWorkspace()
+	return scu
+}
+
+// SetEventName sets the "event_name" field.
+func (scu *SourceControlUpdate) SetEventName(s string) *SourceControlUpdate {
+	scu.mutation.SetEventName(s)
+	return scu
+}
+
+// SetNillableEventName sets the "event_name" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableEventName(s *string) *SourceControlUpdate {
+	if s != nil {
+		scu.SetEventName(*s)
+	}
+	return scu
+}
+
+// ClearEventName clears the value of the "event_name" field.
+func (scu *SourceControlUpdate) ClearEventName() *SourceControlUpdate {
+	scu.mutation.ClearEventName()
+	return scu
+}
+
+// SetJob sets the "job" field.
+func (scu *SourceControlUpdate) SetJob(s string) *SourceControlUpdate {
+	scu.mutation.SetJob(s)
+	return scu
+}
+
+// SetNillableJob sets the "job" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableJob(s *string) *SourceControlUpdate {
+	if s != nil {
+		scu.SetJob(*s)
+	}
+	return scu
+}
+
+// ClearJob clears the value of the "job" field.
+func (scu *SourceControlUpdate) ClearJob() *SourceControlUpdate {
+	scu.mutation.ClearJob()
+	return scu
+}
+
+// SetRunnerName sets the "runner_name" field.
+func (scu *SourceControlUpdate) SetRunnerName(s string) *SourceControlUpdate {
+	scu.mutation.SetRunnerName(s)
+	return scu
+}
+
+// SetNillableRunnerName sets the "runner_name" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableRunnerName(s *string) *SourceControlUpdate {
+	if s != nil {
+		scu.SetRunnerName(*s)
+	}
+	return scu
+}
+
+// ClearRunnerName clears the value of the "runner_name" field.
+func (scu *SourceControlUpdate) ClearRunnerName() *SourceControlUpdate {
+	scu.mutation.ClearRunnerName()
+	return scu
+}
+
+// SetRunnerArch sets the "runner_arch" field.
+func (scu *SourceControlUpdate) SetRunnerArch(s string) *SourceControlUpdate {
+	scu.mutation.SetRunnerArch(s)
+	return scu
+}
+
+// SetNillableRunnerArch sets the "runner_arch" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableRunnerArch(s *string) *SourceControlUpdate {
+	if s != nil {
+		scu.SetRunnerArch(*s)
+	}
+	return scu
+}
+
+// ClearRunnerArch clears the value of the "runner_arch" field.
+func (scu *SourceControlUpdate) ClearRunnerArch() *SourceControlUpdate {
+	scu.mutation.ClearRunnerArch()
+	return scu
+}
+
+// SetRunnerOs sets the "runner_os" field.
+func (scu *SourceControlUpdate) SetRunnerOs(s string) *SourceControlUpdate {
+	scu.mutation.SetRunnerOs(s)
+	return scu
+}
+
+// SetNillableRunnerOs sets the "runner_os" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableRunnerOs(s *string) *SourceControlUpdate {
+	if s != nil {
+		scu.SetRunnerOs(*s)
+	}
+	return scu
+}
+
+// ClearRunnerOs clears the value of the "runner_os" field.
+func (scu *SourceControlUpdate) ClearRunnerOs() *SourceControlUpdate {
+	scu.mutation.ClearRunnerOs()
+	return scu
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
 func (scu *SourceControlUpdate) SetBazelInvocationID(id int) *SourceControlUpdate {
 	scu.mutation.SetBazelInvocationID(id)
@@ -249,6 +409,54 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if scu.mutation.RunIDCleared() {
 		_spec.ClearField(sourcecontrol.FieldRunID, field.TypeString)
+	}
+	if value, ok := scu.mutation.Workflow(); ok {
+		_spec.SetField(sourcecontrol.FieldWorkflow, field.TypeString, value)
+	}
+	if scu.mutation.WorkflowCleared() {
+		_spec.ClearField(sourcecontrol.FieldWorkflow, field.TypeString)
+	}
+	if value, ok := scu.mutation.Action(); ok {
+		_spec.SetField(sourcecontrol.FieldAction, field.TypeString, value)
+	}
+	if scu.mutation.ActionCleared() {
+		_spec.ClearField(sourcecontrol.FieldAction, field.TypeString)
+	}
+	if value, ok := scu.mutation.Workspace(); ok {
+		_spec.SetField(sourcecontrol.FieldWorkspace, field.TypeString, value)
+	}
+	if scu.mutation.WorkspaceCleared() {
+		_spec.ClearField(sourcecontrol.FieldWorkspace, field.TypeString)
+	}
+	if value, ok := scu.mutation.EventName(); ok {
+		_spec.SetField(sourcecontrol.FieldEventName, field.TypeString, value)
+	}
+	if scu.mutation.EventNameCleared() {
+		_spec.ClearField(sourcecontrol.FieldEventName, field.TypeString)
+	}
+	if value, ok := scu.mutation.Job(); ok {
+		_spec.SetField(sourcecontrol.FieldJob, field.TypeString, value)
+	}
+	if scu.mutation.JobCleared() {
+		_spec.ClearField(sourcecontrol.FieldJob, field.TypeString)
+	}
+	if value, ok := scu.mutation.RunnerName(); ok {
+		_spec.SetField(sourcecontrol.FieldRunnerName, field.TypeString, value)
+	}
+	if scu.mutation.RunnerNameCleared() {
+		_spec.ClearField(sourcecontrol.FieldRunnerName, field.TypeString)
+	}
+	if value, ok := scu.mutation.RunnerArch(); ok {
+		_spec.SetField(sourcecontrol.FieldRunnerArch, field.TypeString, value)
+	}
+	if scu.mutation.RunnerArchCleared() {
+		_spec.ClearField(sourcecontrol.FieldRunnerArch, field.TypeString)
+	}
+	if value, ok := scu.mutation.RunnerOs(); ok {
+		_spec.SetField(sourcecontrol.FieldRunnerOs, field.TypeString, value)
+	}
+	if scu.mutation.RunnerOsCleared() {
+		_spec.ClearField(sourcecontrol.FieldRunnerOs, field.TypeString)
 	}
 	if scu.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -419,6 +627,166 @@ func (scuo *SourceControlUpdateOne) ClearRunID() *SourceControlUpdateOne {
 	return scuo
 }
 
+// SetWorkflow sets the "workflow" field.
+func (scuo *SourceControlUpdateOne) SetWorkflow(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetWorkflow(s)
+	return scuo
+}
+
+// SetNillableWorkflow sets the "workflow" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableWorkflow(s *string) *SourceControlUpdateOne {
+	if s != nil {
+		scuo.SetWorkflow(*s)
+	}
+	return scuo
+}
+
+// ClearWorkflow clears the value of the "workflow" field.
+func (scuo *SourceControlUpdateOne) ClearWorkflow() *SourceControlUpdateOne {
+	scuo.mutation.ClearWorkflow()
+	return scuo
+}
+
+// SetAction sets the "action" field.
+func (scuo *SourceControlUpdateOne) SetAction(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetAction(s)
+	return scuo
+}
+
+// SetNillableAction sets the "action" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableAction(s *string) *SourceControlUpdateOne {
+	if s != nil {
+		scuo.SetAction(*s)
+	}
+	return scuo
+}
+
+// ClearAction clears the value of the "action" field.
+func (scuo *SourceControlUpdateOne) ClearAction() *SourceControlUpdateOne {
+	scuo.mutation.ClearAction()
+	return scuo
+}
+
+// SetWorkspace sets the "workspace" field.
+func (scuo *SourceControlUpdateOne) SetWorkspace(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetWorkspace(s)
+	return scuo
+}
+
+// SetNillableWorkspace sets the "workspace" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableWorkspace(s *string) *SourceControlUpdateOne {
+	if s != nil {
+		scuo.SetWorkspace(*s)
+	}
+	return scuo
+}
+
+// ClearWorkspace clears the value of the "workspace" field.
+func (scuo *SourceControlUpdateOne) ClearWorkspace() *SourceControlUpdateOne {
+	scuo.mutation.ClearWorkspace()
+	return scuo
+}
+
+// SetEventName sets the "event_name" field.
+func (scuo *SourceControlUpdateOne) SetEventName(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetEventName(s)
+	return scuo
+}
+
+// SetNillableEventName sets the "event_name" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableEventName(s *string) *SourceControlUpdateOne {
+	if s != nil {
+		scuo.SetEventName(*s)
+	}
+	return scuo
+}
+
+// ClearEventName clears the value of the "event_name" field.
+func (scuo *SourceControlUpdateOne) ClearEventName() *SourceControlUpdateOne {
+	scuo.mutation.ClearEventName()
+	return scuo
+}
+
+// SetJob sets the "job" field.
+func (scuo *SourceControlUpdateOne) SetJob(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetJob(s)
+	return scuo
+}
+
+// SetNillableJob sets the "job" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableJob(s *string) *SourceControlUpdateOne {
+	if s != nil {
+		scuo.SetJob(*s)
+	}
+	return scuo
+}
+
+// ClearJob clears the value of the "job" field.
+func (scuo *SourceControlUpdateOne) ClearJob() *SourceControlUpdateOne {
+	scuo.mutation.ClearJob()
+	return scuo
+}
+
+// SetRunnerName sets the "runner_name" field.
+func (scuo *SourceControlUpdateOne) SetRunnerName(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetRunnerName(s)
+	return scuo
+}
+
+// SetNillableRunnerName sets the "runner_name" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableRunnerName(s *string) *SourceControlUpdateOne {
+	if s != nil {
+		scuo.SetRunnerName(*s)
+	}
+	return scuo
+}
+
+// ClearRunnerName clears the value of the "runner_name" field.
+func (scuo *SourceControlUpdateOne) ClearRunnerName() *SourceControlUpdateOne {
+	scuo.mutation.ClearRunnerName()
+	return scuo
+}
+
+// SetRunnerArch sets the "runner_arch" field.
+func (scuo *SourceControlUpdateOne) SetRunnerArch(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetRunnerArch(s)
+	return scuo
+}
+
+// SetNillableRunnerArch sets the "runner_arch" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableRunnerArch(s *string) *SourceControlUpdateOne {
+	if s != nil {
+		scuo.SetRunnerArch(*s)
+	}
+	return scuo
+}
+
+// ClearRunnerArch clears the value of the "runner_arch" field.
+func (scuo *SourceControlUpdateOne) ClearRunnerArch() *SourceControlUpdateOne {
+	scuo.mutation.ClearRunnerArch()
+	return scuo
+}
+
+// SetRunnerOs sets the "runner_os" field.
+func (scuo *SourceControlUpdateOne) SetRunnerOs(s string) *SourceControlUpdateOne {
+	scuo.mutation.SetRunnerOs(s)
+	return scuo
+}
+
+// SetNillableRunnerOs sets the "runner_os" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableRunnerOs(s *string) *SourceControlUpdateOne {
+	if s != nil {
+		scuo.SetRunnerOs(*s)
+	}
+	return scuo
+}
+
+// ClearRunnerOs clears the value of the "runner_os" field.
+func (scuo *SourceControlUpdateOne) ClearRunnerOs() *SourceControlUpdateOne {
+	scuo.mutation.ClearRunnerOs()
+	return scuo
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
 func (scuo *SourceControlUpdateOne) SetBazelInvocationID(id int) *SourceControlUpdateOne {
 	scuo.mutation.SetBazelInvocationID(id)
@@ -550,6 +918,54 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 	}
 	if scuo.mutation.RunIDCleared() {
 		_spec.ClearField(sourcecontrol.FieldRunID, field.TypeString)
+	}
+	if value, ok := scuo.mutation.Workflow(); ok {
+		_spec.SetField(sourcecontrol.FieldWorkflow, field.TypeString, value)
+	}
+	if scuo.mutation.WorkflowCleared() {
+		_spec.ClearField(sourcecontrol.FieldWorkflow, field.TypeString)
+	}
+	if value, ok := scuo.mutation.Action(); ok {
+		_spec.SetField(sourcecontrol.FieldAction, field.TypeString, value)
+	}
+	if scuo.mutation.ActionCleared() {
+		_spec.ClearField(sourcecontrol.FieldAction, field.TypeString)
+	}
+	if value, ok := scuo.mutation.Workspace(); ok {
+		_spec.SetField(sourcecontrol.FieldWorkspace, field.TypeString, value)
+	}
+	if scuo.mutation.WorkspaceCleared() {
+		_spec.ClearField(sourcecontrol.FieldWorkspace, field.TypeString)
+	}
+	if value, ok := scuo.mutation.EventName(); ok {
+		_spec.SetField(sourcecontrol.FieldEventName, field.TypeString, value)
+	}
+	if scuo.mutation.EventNameCleared() {
+		_spec.ClearField(sourcecontrol.FieldEventName, field.TypeString)
+	}
+	if value, ok := scuo.mutation.Job(); ok {
+		_spec.SetField(sourcecontrol.FieldJob, field.TypeString, value)
+	}
+	if scuo.mutation.JobCleared() {
+		_spec.ClearField(sourcecontrol.FieldJob, field.TypeString)
+	}
+	if value, ok := scuo.mutation.RunnerName(); ok {
+		_spec.SetField(sourcecontrol.FieldRunnerName, field.TypeString, value)
+	}
+	if scuo.mutation.RunnerNameCleared() {
+		_spec.ClearField(sourcecontrol.FieldRunnerName, field.TypeString)
+	}
+	if value, ok := scuo.mutation.RunnerArch(); ok {
+		_spec.SetField(sourcecontrol.FieldRunnerArch, field.TypeString, value)
+	}
+	if scuo.mutation.RunnerArchCleared() {
+		_spec.ClearField(sourcecontrol.FieldRunnerArch, field.TypeString)
+	}
+	if value, ok := scuo.mutation.RunnerOs(); ok {
+		_spec.SetField(sourcecontrol.FieldRunnerOs, field.TypeString, value)
+	}
+	if scuo.mutation.RunnerOsCleared() {
+		_spec.ClearField(sourcecontrol.FieldRunnerOs, field.TypeString)
 	}
 	if scuo.mutation.BazelInvocationCleared() {
 		edge := &sqlgraph.EdgeSpec{

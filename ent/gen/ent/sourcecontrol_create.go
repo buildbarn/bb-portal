@@ -103,6 +103,118 @@ func (scc *SourceControlCreate) SetNillableRunID(s *string) *SourceControlCreate
 	return scc
 }
 
+// SetWorkflow sets the "workflow" field.
+func (scc *SourceControlCreate) SetWorkflow(s string) *SourceControlCreate {
+	scc.mutation.SetWorkflow(s)
+	return scc
+}
+
+// SetNillableWorkflow sets the "workflow" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableWorkflow(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetWorkflow(*s)
+	}
+	return scc
+}
+
+// SetAction sets the "action" field.
+func (scc *SourceControlCreate) SetAction(s string) *SourceControlCreate {
+	scc.mutation.SetAction(s)
+	return scc
+}
+
+// SetNillableAction sets the "action" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableAction(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetAction(*s)
+	}
+	return scc
+}
+
+// SetWorkspace sets the "workspace" field.
+func (scc *SourceControlCreate) SetWorkspace(s string) *SourceControlCreate {
+	scc.mutation.SetWorkspace(s)
+	return scc
+}
+
+// SetNillableWorkspace sets the "workspace" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableWorkspace(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetWorkspace(*s)
+	}
+	return scc
+}
+
+// SetEventName sets the "event_name" field.
+func (scc *SourceControlCreate) SetEventName(s string) *SourceControlCreate {
+	scc.mutation.SetEventName(s)
+	return scc
+}
+
+// SetNillableEventName sets the "event_name" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableEventName(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetEventName(*s)
+	}
+	return scc
+}
+
+// SetJob sets the "job" field.
+func (scc *SourceControlCreate) SetJob(s string) *SourceControlCreate {
+	scc.mutation.SetJob(s)
+	return scc
+}
+
+// SetNillableJob sets the "job" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableJob(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetJob(*s)
+	}
+	return scc
+}
+
+// SetRunnerName sets the "runner_name" field.
+func (scc *SourceControlCreate) SetRunnerName(s string) *SourceControlCreate {
+	scc.mutation.SetRunnerName(s)
+	return scc
+}
+
+// SetNillableRunnerName sets the "runner_name" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRunnerName(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetRunnerName(*s)
+	}
+	return scc
+}
+
+// SetRunnerArch sets the "runner_arch" field.
+func (scc *SourceControlCreate) SetRunnerArch(s string) *SourceControlCreate {
+	scc.mutation.SetRunnerArch(s)
+	return scc
+}
+
+// SetNillableRunnerArch sets the "runner_arch" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRunnerArch(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetRunnerArch(*s)
+	}
+	return scc
+}
+
+// SetRunnerOs sets the "runner_os" field.
+func (scc *SourceControlCreate) SetRunnerOs(s string) *SourceControlCreate {
+	scc.mutation.SetRunnerOs(s)
+	return scc
+}
+
+// SetNillableRunnerOs sets the "runner_os" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRunnerOs(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetRunnerOs(*s)
+	}
+	return scc
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
 func (scc *SourceControlCreate) SetBazelInvocationID(id int) *SourceControlCreate {
 	scc.mutation.SetBazelInvocationID(id)
@@ -205,6 +317,38 @@ func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSp
 	if value, ok := scc.mutation.RunID(); ok {
 		_spec.SetField(sourcecontrol.FieldRunID, field.TypeString, value)
 		_node.RunID = value
+	}
+	if value, ok := scc.mutation.Workflow(); ok {
+		_spec.SetField(sourcecontrol.FieldWorkflow, field.TypeString, value)
+		_node.Workflow = value
+	}
+	if value, ok := scc.mutation.Action(); ok {
+		_spec.SetField(sourcecontrol.FieldAction, field.TypeString, value)
+		_node.Action = value
+	}
+	if value, ok := scc.mutation.Workspace(); ok {
+		_spec.SetField(sourcecontrol.FieldWorkspace, field.TypeString, value)
+		_node.Workspace = value
+	}
+	if value, ok := scc.mutation.EventName(); ok {
+		_spec.SetField(sourcecontrol.FieldEventName, field.TypeString, value)
+		_node.EventName = value
+	}
+	if value, ok := scc.mutation.Job(); ok {
+		_spec.SetField(sourcecontrol.FieldJob, field.TypeString, value)
+		_node.Job = value
+	}
+	if value, ok := scc.mutation.RunnerName(); ok {
+		_spec.SetField(sourcecontrol.FieldRunnerName, field.TypeString, value)
+		_node.RunnerName = value
+	}
+	if value, ok := scc.mutation.RunnerArch(); ok {
+		_spec.SetField(sourcecontrol.FieldRunnerArch, field.TypeString, value)
+		_node.RunnerArch = value
+	}
+	if value, ok := scc.mutation.RunnerOs(); ok {
+		_spec.SetField(sourcecontrol.FieldRunnerOs, field.TypeString, value)
+		_node.RunnerOs = value
 	}
 	if nodes := scc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

@@ -810,6 +810,9 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 	s.summary.BuildUUID = uuid.NewSHA1(uuid.NameSpaceURL, []byte(s.summary.BuildURL))
 
 	// Set Hostname
+	if hostNameVal, ok := s.summary.EnvVars["RUNNER_NAME"]; ok {
+		s.summary.Hostname = hostNameVal
+	}
 	if hostNameVal, ok := s.summary.EnvVars["HOSTNAME"]; ok {
 		s.summary.Hostname = hostNameVal
 	}
@@ -824,9 +827,24 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		}
 	}
 
+	// github actions default env var
+	if isCiWorkerVal, ok := s.summary.EnvVars["CI"]; ok {
+		if isCiWorkerVal == "true" {
+			s.summary.IsCiWorker = true
+		}
+	}
+
+	// default step label to workfow + job
+	if ghWfVal, ok := s.summary.EnvVars["GITHUB_WORKFLOW"]; ok {
+		s.summary.StepLabel = ghWfVal
+		if ghJobNameVal, ok := s.summary.EnvVars["GITHUB_JOB"]; ok {
+			s.summary.StepLabel += "+" + ghJobNameVal
+		}
+	}
+
 	// Set Step Label from environment variables
-	if ghJobNameVal, ok := s.summary.EnvVars["GITHUB_JOB"]; ok {
-		s.summary.StepLabel = ghJobNameVal
+	if stepLabelVal, ok := s.summary.EnvVars["BB_PORTAL_STEP_LABEL"]; ok {
+		s.summary.StepLabel = stepLabelVal
 	}
 
 	// Set SkipTargetData
@@ -874,6 +892,46 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 	// run id
 	if ghRunID, ok := s.summary.EnvVars["GITHUB_RUN_ID"]; ok {
 		s.summary.SourceControlData.RunID = ghRunID
+	}
+
+	// workflow
+	if ghWorkflow, ok := s.summary.EnvVars["GITHUB_WORKFLOW"]; ok {
+		s.summary.SourceControlData.Workflow = ghWorkflow
+	}
+
+	// action
+	if ghAction, ok := s.summary.EnvVars["GITHUB_ACTION"]; ok {
+		s.summary.SourceControlData.Action = ghAction
+	}
+
+	// workspace
+	if ghWorkspace, ok := s.summary.EnvVars["GITHUB_WORKSPACE"]; ok {
+		s.summary.SourceControlData.Workspace = ghWorkspace
+	}
+
+	// event_name
+	if ghEventName, ok := s.summary.EnvVars["GITHUB_EVENT_NAME"]; ok {
+		s.summary.SourceControlData.EventName = ghEventName
+	}
+
+	// job
+	if ghJob, ok := s.summary.EnvVars["GITHUB_JOB"]; ok {
+		s.summary.SourceControlData.Job = ghJob
+	}
+
+	// runner arch
+	if runnerArch, ok := s.summary.EnvVars["RUNNER_ARCH"]; ok {
+		s.summary.SourceControlData.RunnerArch = runnerArch
+	}
+
+	// runner name
+	if runnerName, ok := s.summary.EnvVars["RUNNER_NAME"]; ok {
+		s.summary.SourceControlData.RunnerName = runnerName
+	}
+
+	// runner os
+	if runnerOs, ok := s.summary.EnvVars["RUNNER_OS"]; ok {
+		s.summary.SourceControlData.RunnerOs = runnerOs
 	}
 
 	return nil

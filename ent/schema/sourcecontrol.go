@@ -29,8 +29,32 @@ func (SourceControl) Fields() []ent.Field {
 		// The source control refs associated with the invocation
 		field.String("refs").Optional(),
 
-		// The source control run i d associated with the invocation
+		// The source control run id associated with the invocation
 		field.String("run_id").Optional(),
+
+		// The source control workflow associated with the invocation
+		field.String("workflow").Optional(),
+
+		// The source control action associated with the invocation
+		field.String("action").Optional(),
+
+		// The source control workspace associated with the invocation
+		field.String("workspace").Optional(),
+
+		// The source control event name associated with the invocation
+		field.String("event_name").Optional(),
+
+		// The source control job associated with the invocation
+		field.String("job").Optional(),
+
+		// The source control job associated with the invocation (Possible duplicate)
+		field.String("runner_name").Optional(),
+
+		// The source control runner architecture associated with the invocation (Possible duplicate)
+		field.String("runner_arch").Optional(),
+
+		// The source control runner architecture associated with the invocation (Possible duplicate)
+		field.String("runner_os").Optional(),
 	}
 }
 
