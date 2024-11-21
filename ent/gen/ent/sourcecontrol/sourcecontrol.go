@@ -24,6 +24,22 @@ const (
 	FieldRefs = "refs"
 	// FieldRunID holds the string denoting the run_id field in the database.
 	FieldRunID = "run_id"
+	// FieldWorkflow holds the string denoting the workflow field in the database.
+	FieldWorkflow = "workflow"
+	// FieldAction holds the string denoting the action field in the database.
+	FieldAction = "action"
+	// FieldWorkspace holds the string denoting the workspace field in the database.
+	FieldWorkspace = "workspace"
+	// FieldEventName holds the string denoting the event_name field in the database.
+	FieldEventName = "event_name"
+	// FieldJob holds the string denoting the job field in the database.
+	FieldJob = "job"
+	// FieldRunnerName holds the string denoting the runner_name field in the database.
+	FieldRunnerName = "runner_name"
+	// FieldRunnerArch holds the string denoting the runner_arch field in the database.
+	FieldRunnerArch = "runner_arch"
+	// FieldRunnerOs holds the string denoting the runner_os field in the database.
+	FieldRunnerOs = "runner_os"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// Table holds the table name of the sourcecontrol in the database.
@@ -46,6 +62,14 @@ var Columns = []string{
 	FieldActor,
 	FieldRefs,
 	FieldRunID,
+	FieldWorkflow,
+	FieldAction,
+	FieldWorkspace,
+	FieldEventName,
+	FieldJob,
+	FieldRunnerName,
+	FieldRunnerArch,
+	FieldRunnerOs,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "source_controls"
@@ -105,6 +129,46 @@ func ByRefs(opts ...sql.OrderTermOption) OrderOption {
 // ByRunID orders the results by the run_id field.
 func ByRunID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRunID, opts...).ToFunc()
+}
+
+// ByWorkflow orders the results by the workflow field.
+func ByWorkflow(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldWorkflow, opts...).ToFunc()
+}
+
+// ByAction orders the results by the action field.
+func ByAction(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAction, opts...).ToFunc()
+}
+
+// ByWorkspace orders the results by the workspace field.
+func ByWorkspace(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldWorkspace, opts...).ToFunc()
+}
+
+// ByEventName orders the results by the event_name field.
+func ByEventName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEventName, opts...).ToFunc()
+}
+
+// ByJob orders the results by the job field.
+func ByJob(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldJob, opts...).ToFunc()
+}
+
+// ByRunnerName orders the results by the runner_name field.
+func ByRunnerName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRunnerName, opts...).ToFunc()
+}
+
+// ByRunnerArch orders the results by the runner_arch field.
+func ByRunnerArch(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRunnerArch, opts...).ToFunc()
+}
+
+// ByRunnerOs orders the results by the runner_os field.
+func ByRunnerOs(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRunnerOs, opts...).ToFunc()
 }
 
 // ByBazelInvocationField orders the results by bazel_invocation field.

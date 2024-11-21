@@ -2935,6 +2935,46 @@ func (sc *SourceControlQuery) collectField(ctx context.Context, oneNode bool, op
 				selectedFields = append(selectedFields, sourcecontrol.FieldRunID)
 				fieldSeen[sourcecontrol.FieldRunID] = struct{}{}
 			}
+		case "workflow":
+			if _, ok := fieldSeen[sourcecontrol.FieldWorkflow]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldWorkflow)
+				fieldSeen[sourcecontrol.FieldWorkflow] = struct{}{}
+			}
+		case "action":
+			if _, ok := fieldSeen[sourcecontrol.FieldAction]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldAction)
+				fieldSeen[sourcecontrol.FieldAction] = struct{}{}
+			}
+		case "workspace":
+			if _, ok := fieldSeen[sourcecontrol.FieldWorkspace]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldWorkspace)
+				fieldSeen[sourcecontrol.FieldWorkspace] = struct{}{}
+			}
+		case "eventName":
+			if _, ok := fieldSeen[sourcecontrol.FieldEventName]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldEventName)
+				fieldSeen[sourcecontrol.FieldEventName] = struct{}{}
+			}
+		case "job":
+			if _, ok := fieldSeen[sourcecontrol.FieldJob]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldJob)
+				fieldSeen[sourcecontrol.FieldJob] = struct{}{}
+			}
+		case "runnerName":
+			if _, ok := fieldSeen[sourcecontrol.FieldRunnerName]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldRunnerName)
+				fieldSeen[sourcecontrol.FieldRunnerName] = struct{}{}
+			}
+		case "runnerArch":
+			if _, ok := fieldSeen[sourcecontrol.FieldRunnerArch]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldRunnerArch)
+				fieldSeen[sourcecontrol.FieldRunnerArch] = struct{}{}
+			}
+		case "runnerOs":
+			if _, ok := fieldSeen[sourcecontrol.FieldRunnerOs]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldRunnerOs)
+				fieldSeen[sourcecontrol.FieldRunnerOs] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:

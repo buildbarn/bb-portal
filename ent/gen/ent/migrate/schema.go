@@ -685,6 +685,14 @@ var (
 		{Name: "actor", Type: field.TypeString, Nullable: true},
 		{Name: "refs", Type: field.TypeString, Nullable: true},
 		{Name: "run_id", Type: field.TypeString, Nullable: true},
+		{Name: "workflow", Type: field.TypeString, Nullable: true},
+		{Name: "action", Type: field.TypeString, Nullable: true},
+		{Name: "workspace", Type: field.TypeString, Nullable: true},
+		{Name: "event_name", Type: field.TypeString, Nullable: true},
+		{Name: "job", Type: field.TypeString, Nullable: true},
+		{Name: "runner_name", Type: field.TypeString, Nullable: true},
+		{Name: "runner_arch", Type: field.TypeString, Nullable: true},
+		{Name: "runner_os", Type: field.TypeString, Nullable: true},
 		{Name: "bazel_invocation_source_control", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// SourceControlsTable holds the schema information for the "source_controls" table.
@@ -695,7 +703,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "source_controls_bazel_invocations_source_control",
-				Columns:    []*schema.Column{SourceControlsColumns[7]},
+				Columns:    []*schema.Column{SourceControlsColumns[15]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

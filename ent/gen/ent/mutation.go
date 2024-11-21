@@ -20385,6 +20385,14 @@ type SourceControlMutation struct {
 	actor                   *string
 	refs                    *string
 	run_id                  *string
+	workflow                *string
+	action                  *string
+	workspace               *string
+	event_name              *string
+	job                     *string
+	runner_name             *string
+	runner_arch             *string
+	runner_os               *string
 	clearedFields           map[string]struct{}
 	bazel_invocation        *int
 	clearedbazel_invocation bool
@@ -20785,6 +20793,398 @@ func (m *SourceControlMutation) ResetRunID() {
 	delete(m.clearedFields, sourcecontrol.FieldRunID)
 }
 
+// SetWorkflow sets the "workflow" field.
+func (m *SourceControlMutation) SetWorkflow(s string) {
+	m.workflow = &s
+}
+
+// Workflow returns the value of the "workflow" field in the mutation.
+func (m *SourceControlMutation) Workflow() (r string, exists bool) {
+	v := m.workflow
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWorkflow returns the old "workflow" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldWorkflow(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWorkflow is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWorkflow requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWorkflow: %w", err)
+	}
+	return oldValue.Workflow, nil
+}
+
+// ClearWorkflow clears the value of the "workflow" field.
+func (m *SourceControlMutation) ClearWorkflow() {
+	m.workflow = nil
+	m.clearedFields[sourcecontrol.FieldWorkflow] = struct{}{}
+}
+
+// WorkflowCleared returns if the "workflow" field was cleared in this mutation.
+func (m *SourceControlMutation) WorkflowCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldWorkflow]
+	return ok
+}
+
+// ResetWorkflow resets all changes to the "workflow" field.
+func (m *SourceControlMutation) ResetWorkflow() {
+	m.workflow = nil
+	delete(m.clearedFields, sourcecontrol.FieldWorkflow)
+}
+
+// SetAction sets the "action" field.
+func (m *SourceControlMutation) SetAction(s string) {
+	m.action = &s
+}
+
+// Action returns the value of the "action" field in the mutation.
+func (m *SourceControlMutation) Action() (r string, exists bool) {
+	v := m.action
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAction returns the old "action" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldAction(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAction is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAction requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAction: %w", err)
+	}
+	return oldValue.Action, nil
+}
+
+// ClearAction clears the value of the "action" field.
+func (m *SourceControlMutation) ClearAction() {
+	m.action = nil
+	m.clearedFields[sourcecontrol.FieldAction] = struct{}{}
+}
+
+// ActionCleared returns if the "action" field was cleared in this mutation.
+func (m *SourceControlMutation) ActionCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldAction]
+	return ok
+}
+
+// ResetAction resets all changes to the "action" field.
+func (m *SourceControlMutation) ResetAction() {
+	m.action = nil
+	delete(m.clearedFields, sourcecontrol.FieldAction)
+}
+
+// SetWorkspace sets the "workspace" field.
+func (m *SourceControlMutation) SetWorkspace(s string) {
+	m.workspace = &s
+}
+
+// Workspace returns the value of the "workspace" field in the mutation.
+func (m *SourceControlMutation) Workspace() (r string, exists bool) {
+	v := m.workspace
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldWorkspace returns the old "workspace" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldWorkspace(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldWorkspace is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldWorkspace requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldWorkspace: %w", err)
+	}
+	return oldValue.Workspace, nil
+}
+
+// ClearWorkspace clears the value of the "workspace" field.
+func (m *SourceControlMutation) ClearWorkspace() {
+	m.workspace = nil
+	m.clearedFields[sourcecontrol.FieldWorkspace] = struct{}{}
+}
+
+// WorkspaceCleared returns if the "workspace" field was cleared in this mutation.
+func (m *SourceControlMutation) WorkspaceCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldWorkspace]
+	return ok
+}
+
+// ResetWorkspace resets all changes to the "workspace" field.
+func (m *SourceControlMutation) ResetWorkspace() {
+	m.workspace = nil
+	delete(m.clearedFields, sourcecontrol.FieldWorkspace)
+}
+
+// SetEventName sets the "event_name" field.
+func (m *SourceControlMutation) SetEventName(s string) {
+	m.event_name = &s
+}
+
+// EventName returns the value of the "event_name" field in the mutation.
+func (m *SourceControlMutation) EventName() (r string, exists bool) {
+	v := m.event_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEventName returns the old "event_name" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldEventName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEventName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEventName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEventName: %w", err)
+	}
+	return oldValue.EventName, nil
+}
+
+// ClearEventName clears the value of the "event_name" field.
+func (m *SourceControlMutation) ClearEventName() {
+	m.event_name = nil
+	m.clearedFields[sourcecontrol.FieldEventName] = struct{}{}
+}
+
+// EventNameCleared returns if the "event_name" field was cleared in this mutation.
+func (m *SourceControlMutation) EventNameCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldEventName]
+	return ok
+}
+
+// ResetEventName resets all changes to the "event_name" field.
+func (m *SourceControlMutation) ResetEventName() {
+	m.event_name = nil
+	delete(m.clearedFields, sourcecontrol.FieldEventName)
+}
+
+// SetJob sets the "job" field.
+func (m *SourceControlMutation) SetJob(s string) {
+	m.job = &s
+}
+
+// Job returns the value of the "job" field in the mutation.
+func (m *SourceControlMutation) Job() (r string, exists bool) {
+	v := m.job
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldJob returns the old "job" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldJob(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldJob is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldJob requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldJob: %w", err)
+	}
+	return oldValue.Job, nil
+}
+
+// ClearJob clears the value of the "job" field.
+func (m *SourceControlMutation) ClearJob() {
+	m.job = nil
+	m.clearedFields[sourcecontrol.FieldJob] = struct{}{}
+}
+
+// JobCleared returns if the "job" field was cleared in this mutation.
+func (m *SourceControlMutation) JobCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldJob]
+	return ok
+}
+
+// ResetJob resets all changes to the "job" field.
+func (m *SourceControlMutation) ResetJob() {
+	m.job = nil
+	delete(m.clearedFields, sourcecontrol.FieldJob)
+}
+
+// SetRunnerName sets the "runner_name" field.
+func (m *SourceControlMutation) SetRunnerName(s string) {
+	m.runner_name = &s
+}
+
+// RunnerName returns the value of the "runner_name" field in the mutation.
+func (m *SourceControlMutation) RunnerName() (r string, exists bool) {
+	v := m.runner_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRunnerName returns the old "runner_name" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldRunnerName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRunnerName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRunnerName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRunnerName: %w", err)
+	}
+	return oldValue.RunnerName, nil
+}
+
+// ClearRunnerName clears the value of the "runner_name" field.
+func (m *SourceControlMutation) ClearRunnerName() {
+	m.runner_name = nil
+	m.clearedFields[sourcecontrol.FieldRunnerName] = struct{}{}
+}
+
+// RunnerNameCleared returns if the "runner_name" field was cleared in this mutation.
+func (m *SourceControlMutation) RunnerNameCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldRunnerName]
+	return ok
+}
+
+// ResetRunnerName resets all changes to the "runner_name" field.
+func (m *SourceControlMutation) ResetRunnerName() {
+	m.runner_name = nil
+	delete(m.clearedFields, sourcecontrol.FieldRunnerName)
+}
+
+// SetRunnerArch sets the "runner_arch" field.
+func (m *SourceControlMutation) SetRunnerArch(s string) {
+	m.runner_arch = &s
+}
+
+// RunnerArch returns the value of the "runner_arch" field in the mutation.
+func (m *SourceControlMutation) RunnerArch() (r string, exists bool) {
+	v := m.runner_arch
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRunnerArch returns the old "runner_arch" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldRunnerArch(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRunnerArch is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRunnerArch requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRunnerArch: %w", err)
+	}
+	return oldValue.RunnerArch, nil
+}
+
+// ClearRunnerArch clears the value of the "runner_arch" field.
+func (m *SourceControlMutation) ClearRunnerArch() {
+	m.runner_arch = nil
+	m.clearedFields[sourcecontrol.FieldRunnerArch] = struct{}{}
+}
+
+// RunnerArchCleared returns if the "runner_arch" field was cleared in this mutation.
+func (m *SourceControlMutation) RunnerArchCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldRunnerArch]
+	return ok
+}
+
+// ResetRunnerArch resets all changes to the "runner_arch" field.
+func (m *SourceControlMutation) ResetRunnerArch() {
+	m.runner_arch = nil
+	delete(m.clearedFields, sourcecontrol.FieldRunnerArch)
+}
+
+// SetRunnerOs sets the "runner_os" field.
+func (m *SourceControlMutation) SetRunnerOs(s string) {
+	m.runner_os = &s
+}
+
+// RunnerOs returns the value of the "runner_os" field in the mutation.
+func (m *SourceControlMutation) RunnerOs() (r string, exists bool) {
+	v := m.runner_os
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRunnerOs returns the old "runner_os" field's value of the SourceControl entity.
+// If the SourceControl object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SourceControlMutation) OldRunnerOs(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRunnerOs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRunnerOs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRunnerOs: %w", err)
+	}
+	return oldValue.RunnerOs, nil
+}
+
+// ClearRunnerOs clears the value of the "runner_os" field.
+func (m *SourceControlMutation) ClearRunnerOs() {
+	m.runner_os = nil
+	m.clearedFields[sourcecontrol.FieldRunnerOs] = struct{}{}
+}
+
+// RunnerOsCleared returns if the "runner_os" field was cleared in this mutation.
+func (m *SourceControlMutation) RunnerOsCleared() bool {
+	_, ok := m.clearedFields[sourcecontrol.FieldRunnerOs]
+	return ok
+}
+
+// ResetRunnerOs resets all changes to the "runner_os" field.
+func (m *SourceControlMutation) ResetRunnerOs() {
+	m.runner_os = nil
+	delete(m.clearedFields, sourcecontrol.FieldRunnerOs)
+}
+
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
 func (m *SourceControlMutation) SetBazelInvocationID(id int) {
 	m.bazel_invocation = &id
@@ -20858,7 +21258,7 @@ func (m *SourceControlMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SourceControlMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 14)
 	if m.repo_url != nil {
 		fields = append(fields, sourcecontrol.FieldRepoURL)
 	}
@@ -20876,6 +21276,30 @@ func (m *SourceControlMutation) Fields() []string {
 	}
 	if m.run_id != nil {
 		fields = append(fields, sourcecontrol.FieldRunID)
+	}
+	if m.workflow != nil {
+		fields = append(fields, sourcecontrol.FieldWorkflow)
+	}
+	if m.action != nil {
+		fields = append(fields, sourcecontrol.FieldAction)
+	}
+	if m.workspace != nil {
+		fields = append(fields, sourcecontrol.FieldWorkspace)
+	}
+	if m.event_name != nil {
+		fields = append(fields, sourcecontrol.FieldEventName)
+	}
+	if m.job != nil {
+		fields = append(fields, sourcecontrol.FieldJob)
+	}
+	if m.runner_name != nil {
+		fields = append(fields, sourcecontrol.FieldRunnerName)
+	}
+	if m.runner_arch != nil {
+		fields = append(fields, sourcecontrol.FieldRunnerArch)
+	}
+	if m.runner_os != nil {
+		fields = append(fields, sourcecontrol.FieldRunnerOs)
 	}
 	return fields
 }
@@ -20897,6 +21321,22 @@ func (m *SourceControlMutation) Field(name string) (ent.Value, bool) {
 		return m.Refs()
 	case sourcecontrol.FieldRunID:
 		return m.RunID()
+	case sourcecontrol.FieldWorkflow:
+		return m.Workflow()
+	case sourcecontrol.FieldAction:
+		return m.Action()
+	case sourcecontrol.FieldWorkspace:
+		return m.Workspace()
+	case sourcecontrol.FieldEventName:
+		return m.EventName()
+	case sourcecontrol.FieldJob:
+		return m.Job()
+	case sourcecontrol.FieldRunnerName:
+		return m.RunnerName()
+	case sourcecontrol.FieldRunnerArch:
+		return m.RunnerArch()
+	case sourcecontrol.FieldRunnerOs:
+		return m.RunnerOs()
 	}
 	return nil, false
 }
@@ -20918,6 +21358,22 @@ func (m *SourceControlMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldRefs(ctx)
 	case sourcecontrol.FieldRunID:
 		return m.OldRunID(ctx)
+	case sourcecontrol.FieldWorkflow:
+		return m.OldWorkflow(ctx)
+	case sourcecontrol.FieldAction:
+		return m.OldAction(ctx)
+	case sourcecontrol.FieldWorkspace:
+		return m.OldWorkspace(ctx)
+	case sourcecontrol.FieldEventName:
+		return m.OldEventName(ctx)
+	case sourcecontrol.FieldJob:
+		return m.OldJob(ctx)
+	case sourcecontrol.FieldRunnerName:
+		return m.OldRunnerName(ctx)
+	case sourcecontrol.FieldRunnerArch:
+		return m.OldRunnerArch(ctx)
+	case sourcecontrol.FieldRunnerOs:
+		return m.OldRunnerOs(ctx)
 	}
 	return nil, fmt.Errorf("unknown SourceControl field %s", name)
 }
@@ -20969,6 +21425,62 @@ func (m *SourceControlMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetRunID(v)
 		return nil
+	case sourcecontrol.FieldWorkflow:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWorkflow(v)
+		return nil
+	case sourcecontrol.FieldAction:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAction(v)
+		return nil
+	case sourcecontrol.FieldWorkspace:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetWorkspace(v)
+		return nil
+	case sourcecontrol.FieldEventName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEventName(v)
+		return nil
+	case sourcecontrol.FieldJob:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetJob(v)
+		return nil
+	case sourcecontrol.FieldRunnerName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRunnerName(v)
+		return nil
+	case sourcecontrol.FieldRunnerArch:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRunnerArch(v)
+		return nil
+	case sourcecontrol.FieldRunnerOs:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRunnerOs(v)
+		return nil
 	}
 	return fmt.Errorf("unknown SourceControl field %s", name)
 }
@@ -21017,6 +21529,30 @@ func (m *SourceControlMutation) ClearedFields() []string {
 	if m.FieldCleared(sourcecontrol.FieldRunID) {
 		fields = append(fields, sourcecontrol.FieldRunID)
 	}
+	if m.FieldCleared(sourcecontrol.FieldWorkflow) {
+		fields = append(fields, sourcecontrol.FieldWorkflow)
+	}
+	if m.FieldCleared(sourcecontrol.FieldAction) {
+		fields = append(fields, sourcecontrol.FieldAction)
+	}
+	if m.FieldCleared(sourcecontrol.FieldWorkspace) {
+		fields = append(fields, sourcecontrol.FieldWorkspace)
+	}
+	if m.FieldCleared(sourcecontrol.FieldEventName) {
+		fields = append(fields, sourcecontrol.FieldEventName)
+	}
+	if m.FieldCleared(sourcecontrol.FieldJob) {
+		fields = append(fields, sourcecontrol.FieldJob)
+	}
+	if m.FieldCleared(sourcecontrol.FieldRunnerName) {
+		fields = append(fields, sourcecontrol.FieldRunnerName)
+	}
+	if m.FieldCleared(sourcecontrol.FieldRunnerArch) {
+		fields = append(fields, sourcecontrol.FieldRunnerArch)
+	}
+	if m.FieldCleared(sourcecontrol.FieldRunnerOs) {
+		fields = append(fields, sourcecontrol.FieldRunnerOs)
+	}
 	return fields
 }
 
@@ -21049,6 +21585,30 @@ func (m *SourceControlMutation) ClearField(name string) error {
 	case sourcecontrol.FieldRunID:
 		m.ClearRunID()
 		return nil
+	case sourcecontrol.FieldWorkflow:
+		m.ClearWorkflow()
+		return nil
+	case sourcecontrol.FieldAction:
+		m.ClearAction()
+		return nil
+	case sourcecontrol.FieldWorkspace:
+		m.ClearWorkspace()
+		return nil
+	case sourcecontrol.FieldEventName:
+		m.ClearEventName()
+		return nil
+	case sourcecontrol.FieldJob:
+		m.ClearJob()
+		return nil
+	case sourcecontrol.FieldRunnerName:
+		m.ClearRunnerName()
+		return nil
+	case sourcecontrol.FieldRunnerArch:
+		m.ClearRunnerArch()
+		return nil
+	case sourcecontrol.FieldRunnerOs:
+		m.ClearRunnerOs()
+		return nil
 	}
 	return fmt.Errorf("unknown SourceControl nullable field %s", name)
 }
@@ -21074,6 +21634,30 @@ func (m *SourceControlMutation) ResetField(name string) error {
 		return nil
 	case sourcecontrol.FieldRunID:
 		m.ResetRunID()
+		return nil
+	case sourcecontrol.FieldWorkflow:
+		m.ResetWorkflow()
+		return nil
+	case sourcecontrol.FieldAction:
+		m.ResetAction()
+		return nil
+	case sourcecontrol.FieldWorkspace:
+		m.ResetWorkspace()
+		return nil
+	case sourcecontrol.FieldEventName:
+		m.ResetEventName()
+		return nil
+	case sourcecontrol.FieldJob:
+		m.ResetJob()
+		return nil
+	case sourcecontrol.FieldRunnerName:
+		m.ResetRunnerName()
+		return nil
+	case sourcecontrol.FieldRunnerArch:
+		m.ResetRunnerArch()
+		return nil
+	case sourcecontrol.FieldRunnerOs:
+		m.ResetRunnerOs()
 		return nil
 	}
 	return fmt.Errorf("unknown SourceControl field %s", name)

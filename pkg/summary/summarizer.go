@@ -810,6 +810,9 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 	s.summary.BuildUUID = uuid.NewSHA1(uuid.NameSpaceURL, []byte(s.summary.BuildURL))
 
 	// Set Hostname
+	if hostNameVal, ok := s.summary.EnvVars["RUNNER_NAME"]; ok {
+		s.summary.Hostname = hostNameVal
+	}
 	if hostNameVal, ok := s.summary.EnvVars["HOSTNAME"]; ok {
 		s.summary.Hostname = hostNameVal
 	}
@@ -820,6 +823,13 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 	// Set CI Worker Role from environment variables (can also come from metadata)
 	if isCiWorkerVal, ok := s.summary.EnvVars["BB_PORTAL_IS_CI_WORKER"]; ok {
 		if isCiWorkerVal == "TRUE" {
+			s.summary.IsCiWorker = true
+		}
+	}
+
+	// github actions default env var
+	if isCiWorkerVal, ok := s.summary.EnvVars["CI"]; ok {
+		if isCiWorkerVal == "true" {
 			s.summary.IsCiWorker = true
 		}
 	}
@@ -874,6 +884,46 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 	// run id
 	if ghRunID, ok := s.summary.EnvVars["GITHUB_RUN_ID"]; ok {
 		s.summary.SourceControlData.RunID = ghRunID
+	}
+
+	// workflow
+	if ghWorkflow, ok := s.summary.EnvVars["GITHUB_WORKFLOW"]; ok {
+		s.summary.SourceControlData.Workflow = ghWorkflow
+	}
+
+	// action
+	if ghAction, ok := s.summary.EnvVars["GITHUB_ACTION"]; ok {
+		s.summary.SourceControlData.Action = ghAction
+	}
+
+	// workspace
+	if ghWorkspace, ok := s.summary.EnvVars["GITHUB_WORKSPACE"]; ok {
+		s.summary.SourceControlData.Workspace = ghWorkspace
+	}
+
+	// event_name
+	if ghEventName, ok := s.summary.EnvVars["GITHUB_EVENT_NAME"]; ok {
+		s.summary.SourceControlData.EventName = ghEventName
+	}
+
+	// job
+	if ghJob, ok := s.summary.EnvVars["GITHUB_JOB"]; ok {
+		s.summary.SourceControlData.Job = ghJob
+	}
+
+	// runner arch
+	if runnerArch, ok := s.summary.EnvVars["RUNNER_ARCH"]; ok {
+		s.summary.SourceControlData.RunnerArch = runnerArch
+	}
+
+	// runner name
+	if runnerName, ok := s.summary.EnvVars["RUNNER_NAME"]; ok {
+		s.summary.SourceControlData.RunnerName = runnerName
+	}
+
+	// runner os
+	if runnerOs, ok := s.summary.EnvVars["RUNNER_OS"]; ok {
+		s.summary.SourceControlData.RunnerOs = runnerOs
 	}
 
 	return nil

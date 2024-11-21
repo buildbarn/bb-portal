@@ -29,6 +29,22 @@ type SourceControl struct {
 	Refs string `json:"refs,omitempty"`
 	// RunID holds the value of the "run_id" field.
 	RunID string `json:"run_id,omitempty"`
+	// Workflow holds the value of the "workflow" field.
+	Workflow string `json:"workflow,omitempty"`
+	// Action holds the value of the "action" field.
+	Action string `json:"action,omitempty"`
+	// Workspace holds the value of the "workspace" field.
+	Workspace string `json:"workspace,omitempty"`
+	// EventName holds the value of the "event_name" field.
+	EventName string `json:"event_name,omitempty"`
+	// Job holds the value of the "job" field.
+	Job string `json:"job,omitempty"`
+	// RunnerName holds the value of the "runner_name" field.
+	RunnerName string `json:"runner_name,omitempty"`
+	// RunnerArch holds the value of the "runner_arch" field.
+	RunnerArch string `json:"runner_arch,omitempty"`
+	// RunnerOs holds the value of the "runner_os" field.
+	RunnerOs string `json:"runner_os,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SourceControlQuery when eager-loading is set.
 	Edges                           SourceControlEdges `json:"edges"`
@@ -65,7 +81,7 @@ func (*SourceControl) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sourcecontrol.FieldID:
 			values[i] = new(sql.NullInt64)
-		case sourcecontrol.FieldRepoURL, sourcecontrol.FieldBranch, sourcecontrol.FieldCommitSha, sourcecontrol.FieldActor, sourcecontrol.FieldRefs, sourcecontrol.FieldRunID:
+		case sourcecontrol.FieldRepoURL, sourcecontrol.FieldBranch, sourcecontrol.FieldCommitSha, sourcecontrol.FieldActor, sourcecontrol.FieldRefs, sourcecontrol.FieldRunID, sourcecontrol.FieldWorkflow, sourcecontrol.FieldAction, sourcecontrol.FieldWorkspace, sourcecontrol.FieldEventName, sourcecontrol.FieldJob, sourcecontrol.FieldRunnerName, sourcecontrol.FieldRunnerArch, sourcecontrol.FieldRunnerOs:
 			values[i] = new(sql.NullString)
 		case sourcecontrol.ForeignKeys[0]: // bazel_invocation_source_control
 			values[i] = new(sql.NullInt64)
@@ -125,6 +141,54 @@ func (sc *SourceControl) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field run_id", values[i])
 			} else if value.Valid {
 				sc.RunID = value.String
+			}
+		case sourcecontrol.FieldWorkflow:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field workflow", values[i])
+			} else if value.Valid {
+				sc.Workflow = value.String
+			}
+		case sourcecontrol.FieldAction:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field action", values[i])
+			} else if value.Valid {
+				sc.Action = value.String
+			}
+		case sourcecontrol.FieldWorkspace:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field workspace", values[i])
+			} else if value.Valid {
+				sc.Workspace = value.String
+			}
+		case sourcecontrol.FieldEventName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field event_name", values[i])
+			} else if value.Valid {
+				sc.EventName = value.String
+			}
+		case sourcecontrol.FieldJob:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field job", values[i])
+			} else if value.Valid {
+				sc.Job = value.String
+			}
+		case sourcecontrol.FieldRunnerName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field runner_name", values[i])
+			} else if value.Valid {
+				sc.RunnerName = value.String
+			}
+		case sourcecontrol.FieldRunnerArch:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field runner_arch", values[i])
+			} else if value.Valid {
+				sc.RunnerArch = value.String
+			}
+		case sourcecontrol.FieldRunnerOs:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field runner_os", values[i])
+			} else if value.Valid {
+				sc.RunnerOs = value.String
 			}
 		case sourcecontrol.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -191,6 +255,30 @@ func (sc *SourceControl) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("run_id=")
 	builder.WriteString(sc.RunID)
+	builder.WriteString(", ")
+	builder.WriteString("workflow=")
+	builder.WriteString(sc.Workflow)
+	builder.WriteString(", ")
+	builder.WriteString("action=")
+	builder.WriteString(sc.Action)
+	builder.WriteString(", ")
+	builder.WriteString("workspace=")
+	builder.WriteString(sc.Workspace)
+	builder.WriteString(", ")
+	builder.WriteString("event_name=")
+	builder.WriteString(sc.EventName)
+	builder.WriteString(", ")
+	builder.WriteString("job=")
+	builder.WriteString(sc.Job)
+	builder.WriteString(", ")
+	builder.WriteString("runner_name=")
+	builder.WriteString(sc.RunnerName)
+	builder.WriteString(", ")
+	builder.WriteString("runner_arch=")
+	builder.WriteString(sc.RunnerArch)
+	builder.WriteString(", ")
+	builder.WriteString("runner_os=")
+	builder.WriteString(sc.RunnerOs)
 	builder.WriteByte(')')
 	return builder.String()
 }
