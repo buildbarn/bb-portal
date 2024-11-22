@@ -28,7 +28,6 @@ const startedAtColumn: ColumnType<BazelInvocationNodeFragment> = {
   key: 'startedAt',
   width: 165,
   title: 'Start Time',
-  sorter: (a, b) => dayjs(a.startedAt).isBefore(dayjs(b.startedAt)) == true ? 0 : 1,
   render: (_, record) => (
     <Typography.Text code ellipsis className={styles.startedAt}>
       {dayjs(record.startedAt).format('YYYY-MM-DD hh:mm:ss A')}
@@ -56,6 +55,46 @@ const statusColumn: ColumnType<BazelInvocationNodeFragment> = {
   width: 120,
   title: 'Result',
   render: (_, record) => <BuildStepResultTag result={record.state.exitCode?.name as BuildStepResultEnum} />,
+  filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
+  onFilter:  (value, record) => record.state.exitCode?.name == value,
+  filters:[
+    {
+      text: "Succeeded",
+      value: "SUCCESS",
+    },
+    {
+      text: "Unstable",
+      value: "UNSTABLE",
+    },
+    {
+      text: "Parsing Failed",
+      value: "PARSING_FAILURE",
+    },
+    {
+      text: "Build Failed",
+      value: "BUILD_FAILURE",
+    },
+    {
+      text: "Tests Failed",
+      value: "TESTS_FAILED",
+    },
+    {
+      text: "Not Built",
+      value: "NOT_BUILT",
+    },
+    {
+      text: "Aborted",
+      value: "ABORTED",
+    },
+    {
+      text: "Interrupted",
+      value: "INTERRUPTED",
+    },
+    {
+      text: "Status Unknown",
+      value: "UNKNOWN",
+    },
+  ]
 };
 
 const buildColumn: ColumnType<BazelInvocationNodeFragment> = {
@@ -74,7 +113,9 @@ const userColumn: ColumnType<BazelInvocationNodeFragment> = {
   width: 120,
   title: "User",
   render: (_, record) => <Link href={`mailto:${record.user?.Email}`}>{record.user?.LDAP}</Link>,
-
+  filterDropdown: filterProps => (
+    <SearchWidget placeholder="Provide a username..." {...filterProps} />
+  ),
   filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
 }
 

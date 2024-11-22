@@ -11,7 +11,11 @@ import { FilterDropdownProps } from "antd/es/table/interface";
 import dayjs from "dayjs";
 import { blue } from "@ant-design/colors";
 import styles from "@/components/SearchWidgets/index.module.css";
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 interface SearchFilterIconProps {
   icon: React.ReactNode;
   filtered: boolean;

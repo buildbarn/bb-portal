@@ -50,6 +50,16 @@ const BazelInvocationsTable: React.FC<Props> = ({ height }) => {
       if (filters['build']?.length) {
         wheres.push({ hasBuildWith: [{ buildUUID: filters['build'][0].toString() }] });
       }
+      if (filters["user"]?.length){
+        wheres.push({ userLdapContains: filters['user'][0].toString() });
+      }
+
+      //TODO extend where inputs to allow querying by result
+      //for now, this is a filter performed on pre-fetched results
+      // if (filters['result']?.length) {
+      //   wheres.push({ })
+      // }
+
       setVariables({
         first: PAGE_SIZE,
         where: wheres.length ? { and: [...wheres] } : wheres[0],
