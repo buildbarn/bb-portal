@@ -1,6 +1,6 @@
 import React from 'react';
 import linkifyHtml from 'linkify-html';
-import { CollapseProps, Descriptions, Space, Typography } from 'antd';
+import { Space, Typography } from 'antd';
 import themeStyles from '@/theme/theme.module.css';
 import { FindBuildByUuidQuery } from '@/graphql/__generated__/graphql';
 import PortalCard from '@/components/PortalCard';
@@ -9,15 +9,13 @@ import BuildStepStatusIcon from '@/components/BuildStepStatusIcon';
 import { getFragmentData } from '@/graphql/__generated__';
 import {
   BAZEL_INVOCATION_FRAGMENT,
-  FULL_BAZEL_INVOCATION_DETAILS, PROBLEM_INFO_FRAGMENT
+  FULL_BAZEL_INVOCATION_DETAILS,
 } from "@/app/bazel-invocations/[invocationID]/index.graphql";
 import byResultRank from "@/components/Build/index.helpers";
-import { maxBy, xor } from "lodash";
+import { maxBy} from "lodash";
 import { BuildStepResultEnum } from "@/components/BuildStepResultTag";
 import BazelInvocation from "@/components/BazelInvocation";
-import BuildProblems from "@/components/Problems";
 import styles from "../AppBar/index.module.css"
-import PortalDuration from '../PortalDuration';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 
@@ -67,23 +65,7 @@ const Build: React.FC<Props> = ({ buildQueryResults, buildStepToDisplayID, inner
     }
   })
 
-  const items: CollapseProps['items'] = [
-    {
-      key: '1',
-      label: 'This is panel header 1',
-      children: <p>1</p>,
-    },
-    {
-      key: '2',
-      label: 'This is panel header 2',
-      children: <p>2</p>,
-    },
-    {
-      key: '3',
-      label: 'This is panel header 3',
-      children: <p>3</p>,
-    },
-  ];
+//TODO: put these all in an accordian collapse for some additional organization
 
   return (
     <PortalCard
@@ -100,18 +82,12 @@ const Build: React.FC<Props> = ({ buildQueryResults, buildStepToDisplayID, inner
             {
               invocations?.map(invocation => {
                 const invocationOverview = getFragmentData(BAZEL_INVOCATION_FRAGMENT, invocation)
-                //const problems = invocation.problems.map(p => getFragmentData(PROBLEM_INFO_FRAGMENT, p))
                 return (
                   <BazelInvocation
                     key={invocationOverview.invocationID}
                     invocationOverview={invocationOverview}
-
                     isNestedWithinBuildCard
-                  >
-                    <BuildProblems
-                      problems={[]}
-                    />
-                  </BazelInvocation>
+                  />
                 );
               })
             }

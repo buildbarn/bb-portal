@@ -28,7 +28,7 @@ npxgen:
 
 .PHONY: test
 test:
-	go test ./...
+	bazel test //...
 
 .PHONY: update-schema
 update-schema:

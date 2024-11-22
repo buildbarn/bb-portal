@@ -58,6 +58,7 @@ import BuildProblems from "../Problems";
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
   isNestedWithinBuildCard?: boolean;
+  collapsed?: boolean
 }> = ({ invocationOverview, isNestedWithinBuildCard }) => {
   const {
     invocationID,
@@ -75,7 +76,8 @@ const BazelInvocation: React.FC<{
     configurationMnemonic,
     stepLabel,
     hostname,
-    isCiWorker
+    isCiWorker,
+    collapsed,
     //relatedFiles,
 
   } = invocationOverview;
