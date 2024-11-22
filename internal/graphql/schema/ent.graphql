@@ -946,6 +946,7 @@ type Build implements Node {
   id: ID!
   buildURL: String!
   buildUUID: UUID!
+  timestamp: Time
   invocations: [BazelInvocation!]
 }
 """
@@ -1209,6 +1210,19 @@ input BuildWhereInput {
   buildUUIDGTE: UUID
   buildUUIDLT: UUID
   buildUUIDLTE: UUID
+  """
+  timestamp field predicates
+  """
+  timestamp: Time
+  timestampNEQ: Time
+  timestampIn: [Time!]
+  timestampNotIn: [Time!]
+  timestampGT: Time
+  timestampGTE: Time
+  timestampLT: Time
+  timestampLTE: Time
+  timestampIsNil: Boolean
+  timestampNotNil: Boolean
   """
   invocations edge predicates
   """

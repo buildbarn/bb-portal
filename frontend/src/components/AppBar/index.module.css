@@ -65,3 +65,9 @@
 .linkItem {
   /* empty style will override default behavior of hiding on smaller screen. */
 }
+
+.normalWeight {
+  font-weight: normal;
+  font-size-adjust: calc(.5);
+  padding-left: 10px;
+}

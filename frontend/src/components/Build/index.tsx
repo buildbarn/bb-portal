@@ -1,6 +1,6 @@
 import React from 'react';
 import linkifyHtml from 'linkify-html';
-import { Descriptions, Space, Typography } from 'antd';
+import { CollapseProps, Descriptions, Space, Typography } from 'antd';
 import themeStyles from '@/theme/theme.module.css';
 import { FindBuildByUuidQuery } from '@/graphql/__generated__/graphql';
 import PortalCard from '@/components/PortalCard';
@@ -12,10 +12,14 @@ import {
   FULL_BAZEL_INVOCATION_DETAILS, PROBLEM_INFO_FRAGMENT
 } from "@/app/bazel-invocations/[invocationID]/index.graphql";
 import byResultRank from "@/components/Build/index.helpers";
-import { maxBy } from "lodash";
+import { maxBy, xor } from "lodash";
 import { BuildStepResultEnum } from "@/components/BuildStepResultTag";
 import BazelInvocation from "@/components/BazelInvocation";
 import BuildProblems from "@/components/Problems";
+import styles from "../AppBar/index.module.css"
+import PortalDuration from '../PortalDuration';
+import dayjs from 'dayjs';
+import Link from 'next/link';
 
 interface Props {
   buildQueryResults: FindBuildByUuidQuery;
@@ -30,10 +34,22 @@ const Build: React.FC<Props> = ({ buildQueryResults, buildStepToDisplayID, inner
   }
 
   const titleBits: React.ReactNode[] = [
-    <span key="build">Build: {build.buildUUID}</span>
+    <span key="build">Build ID: <Typography.Text type="secondary"  className={styles.normalWeight}>{build.buildUUID}</Typography.Text></span>
+  ];
+  titleBits.push(<span className={styles.copyIcon}>
+    <Typography.Text copyable={{text: build.buildUUID ?? "Copy"}}/>
+  </span>)
+  titleBits.push(<span key="build-url">Build URL: <Link href={build.buildURL} target="_blank" className={styles.normalWeight} ><Typography.Text type="secondary" >{build.buildURL}</Typography.Text> </Link>
+  </span>)
+
+  const extraBits: React.ReactNode[] = [
+    <Typography.Text code ellipsis className={styles.startedAt}>
+      {dayjs(build.timestamp).format('YYYY-MM-DD hh:mm:ss A')}
+    </Typography.Text>
   ];
 
   const invocations = getFragmentData(FULL_BAZEL_INVOCATION_DETAILS, build.invocations);
+
   const aggregateBuildStepStatus =
     maxBy(
       invocations?.map(invocation => {
@@ -51,16 +67,33 @@ const Build: React.FC<Props> = ({ buildQueryResults, buildStepToDisplayID, inner
     }
   })
 
+  const items: CollapseProps['items'] = [
+    {
+      key: '1',
+      label: 'This is panel header 1',
+      children: <p>1</p>,
+    },
+    {
+      key: '2',
+      label: 'This is panel header 2',
+      children: <p>2</p>,
+    },
+    {
+      key: '3',
+      label: 'This is panel header 3',
+      children: <p>3</p>,
+    },
+  ];
+
   return (
     <PortalCard
       bordered={false}
       type={innerCard ? 'inner' : undefined}
       icon={<BuildStepStatusIcon status={aggregateBuildStepStatus} />}
       titleBits={titleBits}
+      extraBits={extraBits}
     >
-      {envVarItems.length ? (
-        <Descriptions bordered layout="horizontal" column={1} items={envVarItems} />
-      ) : null}
+
       {build.invocations ? (
         <Space direction="vertical" size="middle" className={themeStyles.space}>
           <>

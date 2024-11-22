@@ -216,6 +216,7 @@ var (
 		{Name: "build_url", Type: field.TypeString, Unique: true},
 		{Name: "build_uuid", Type: field.TypeUUID, Unique: true},
 		{Name: "env", Type: field.TypeJSON},
+		{Name: "timestamp", Type: field.TypeTime, Nullable: true},
 	}
 	// BuildsTable holds the schema information for the "builds" table.
 	BuildsTable = &schema.Table{

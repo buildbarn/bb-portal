@@ -946,6 +946,11 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 				selectedFields = append(selectedFields, build.FieldBuildUUID)
 				fieldSeen[build.FieldBuildUUID] = struct{}{}
 			}
+		case "timestamp":
+			if _, ok := fieldSeen[build.FieldTimestamp]; !ok {
+				selectedFields = append(selectedFields, build.FieldTimestamp)
+				fieldSeen[build.FieldTimestamp] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:

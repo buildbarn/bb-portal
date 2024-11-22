@@ -286,6 +286,7 @@ type ComplexityRoot struct {
 		Env         func(childComplexity int) int
 		ID          func(childComplexity int) int
 		Invocations func(childComplexity int) int
+		Timestamp   func(childComplexity int) int
 	}
 
 	BuildConnection struct {
@@ -2126,6 +2127,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Build.Invocations(childComplexity), true
+
+	case "Build.timestamp":
+		if e.complexity.Build.Timestamp == nil {
+			break
+		}
+
+		return e.complexity.Build.Timestamp(childComplexity), true
 
 	case "BuildConnection.edges":
 		if e.complexity.BuildConnection.Edges == nil {
@@ -9385,6 +9393,8 @@ func (ec *executionContext) fieldContext_BazelInvocation_build(_ context.Context
 				return ec.fieldContext_Build_buildURL(ctx, field)
 			case "buildUUID":
 				return ec.fieldContext_Build_buildUUID(ctx, field)
+			case "timestamp":
+				return ec.fieldContext_Build_timestamp(ctx, field)
 			case "invocations":
 				return ec.fieldContext_Build_invocations(ctx, field)
 			case "env":
@@ -11330,6 +11340,47 @@ func (ec *executionContext) fieldContext_Build_buildUUID(_ context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _Build_timestamp(ctx context.Context, field graphql.CollectedField, obj *ent.Build) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Build_timestamp(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Timestamp, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Build_timestamp(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Build",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Build_invocations(ctx context.Context, field graphql.CollectedField, obj *ent.Build) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Build_invocations(ctx, field)
 	if err != nil {
@@ -11668,6 +11719,8 @@ func (ec *executionContext) fieldContext_BuildEdge_node(_ context.Context, field
 				return ec.fieldContext_Build_buildURL(ctx, field)
 			case "buildUUID":
 				return ec.fieldContext_Build_buildUUID(ctx, field)
+			case "timestamp":
+				return ec.fieldContext_Build_timestamp(ctx, field)
 			case "invocations":
 				return ec.fieldContext_Build_invocations(ctx, field)
 			case "env":
@@ -18299,6 +18352,8 @@ func (ec *executionContext) fieldContext_Query_getBuild(ctx context.Context, fie
 				return ec.fieldContext_Build_buildURL(ctx, field)
 			case "buildUUID":
 				return ec.fieldContext_Build_buildUUID(ctx, field)
+			case "timestamp":
+				return ec.fieldContext_Build_timestamp(ctx, field)
 			case "invocations":
 				return ec.fieldContext_Build_invocations(ctx, field)
 			case "env":
@@ -34974,7 +35029,7 @@ func (ec *executionContext) unmarshalInputBuildWhereInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "buildURL", "buildURLNEQ", "buildURLIn", "buildURLNotIn", "buildURLGT", "buildURLGTE", "buildURLLT", "buildURLLTE", "buildURLContains", "buildURLHasPrefix", "buildURLHasSuffix", "buildURLEqualFold", "buildURLContainsFold", "buildUUID", "buildUUIDNEQ", "buildUUIDIn", "buildUUIDNotIn", "buildUUIDGT", "buildUUIDGTE", "buildUUIDLT", "buildUUIDLTE", "hasInvocations", "hasInvocationsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "buildURL", "buildURLNEQ", "buildURLIn", "buildURLNotIn", "buildURLGT", "buildURLGTE", "buildURLLT", "buildURLLTE", "buildURLContains", "buildURLHasPrefix", "buildURLHasSuffix", "buildURLEqualFold", "buildURLContainsFold", "buildUUID", "buildUUIDNEQ", "buildUUIDIn", "buildUUIDNotIn", "buildUUIDGT", "buildUUIDGTE", "buildUUIDLT", "buildUUIDLTE", "timestamp", "timestampNEQ", "timestampIn", "timestampNotIn", "timestampGT", "timestampGTE", "timestampLT", "timestampLTE", "timestampIsNil", "timestampNotNil", "hasInvocations", "hasInvocationsWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -35221,6 +35276,76 @@ func (ec *executionContext) unmarshalInputBuildWhereInput(ctx context.Context, o
 				return it, err
 			}
 			it.BuildUUIDLTE = data
+		case "timestamp":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timestamp"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Timestamp = data
+		case "timestampNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timestampNEQ"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TimestampNEQ = data
+		case "timestampIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timestampIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TimestampIn = data
+		case "timestampNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timestampNotIn"))
+			data, err := ec.unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TimestampNotIn = data
+		case "timestampGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timestampGT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TimestampGT = data
+		case "timestampGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timestampGTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TimestampGTE = data
+		case "timestampLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timestampLT"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TimestampLT = data
+		case "timestampLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timestampLTE"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TimestampLTE = data
+		case "timestampIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timestampIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TimestampIsNil = data
+		case "timestampNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timestampNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TimestampNotNil = data
 		case "hasInvocations":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasInvocations"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -51591,6 +51716,8 @@ func (ec *executionContext) _Build(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "timestamp":
+			out.Values[i] = ec._Build_timestamp(ctx, field, obj)
 		case "invocations":
 			field := field
 

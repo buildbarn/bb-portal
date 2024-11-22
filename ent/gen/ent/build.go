@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -24,6 +25,8 @@ type Build struct {
 	BuildUUID uuid.UUID `json:"build_uuid,omitempty"`
 	// Env holds the value of the "env" field.
 	Env map[string]string `json:"env,omitempty"`
+	// Timestamp holds the value of the "timestamp" field.
+	Timestamp time.Time `json:"timestamp,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BuildQuery when eager-loading is set.
 	Edges        BuildEdges `json:"edges"`
@@ -63,6 +66,8 @@ func (*Build) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case build.FieldBuildURL:
 			values[i] = new(sql.NullString)
+		case build.FieldTimestamp:
+			values[i] = new(sql.NullTime)
 		case build.FieldBuildUUID:
 			values[i] = new(uuid.UUID)
 		default:
@@ -105,6 +110,12 @@ func (b *Build) assignValues(columns []string, values []any) error {
 				if err := json.Unmarshal(*value, &b.Env); err != nil {
 					return fmt.Errorf("unmarshal field env: %w", err)
 				}
+			}
+		case build.FieldTimestamp:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field timestamp", values[i])
+			} else if value.Valid {
+				b.Timestamp = value.Time
 			}
 		default:
 			b.selectValues.Set(columns[i], values[i])
@@ -155,6 +166,9 @@ func (b *Build) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("env=")
 	builder.WriteString(fmt.Sprintf("%v", b.Env))
+	builder.WriteString(", ")
+	builder.WriteString("timestamp=")
+	builder.WriteString(b.Timestamp.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

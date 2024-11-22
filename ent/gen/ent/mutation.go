@@ -7013,6 +7013,7 @@ type BuildMutation struct {
 	build_url          *string
 	build_uuid         *uuid.UUID
 	env                *map[string]string
+	timestamp          *time.Time
 	clearedFields      map[string]struct{}
 	invocations        map[int]struct{}
 	removedinvocations map[int]struct{}
@@ -7228,6 +7229,55 @@ func (m *BuildMutation) ResetEnv() {
 	m.env = nil
 }
 
+// SetTimestamp sets the "timestamp" field.
+func (m *BuildMutation) SetTimestamp(t time.Time) {
+	m.timestamp = &t
+}
+
+// Timestamp returns the value of the "timestamp" field in the mutation.
+func (m *BuildMutation) Timestamp() (r time.Time, exists bool) {
+	v := m.timestamp
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTimestamp returns the old "timestamp" field's value of the Build entity.
+// If the Build object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BuildMutation) OldTimestamp(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTimestamp is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTimestamp requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTimestamp: %w", err)
+	}
+	return oldValue.Timestamp, nil
+}
+
+// ClearTimestamp clears the value of the "timestamp" field.
+func (m *BuildMutation) ClearTimestamp() {
+	m.timestamp = nil
+	m.clearedFields[build.FieldTimestamp] = struct{}{}
+}
+
+// TimestampCleared returns if the "timestamp" field was cleared in this mutation.
+func (m *BuildMutation) TimestampCleared() bool {
+	_, ok := m.clearedFields[build.FieldTimestamp]
+	return ok
+}
+
+// ResetTimestamp resets all changes to the "timestamp" field.
+func (m *BuildMutation) ResetTimestamp() {
+	m.timestamp = nil
+	delete(m.clearedFields, build.FieldTimestamp)
+}
+
 // AddInvocationIDs adds the "invocations" edge to the BazelInvocation entity by ids.
 func (m *BuildMutation) AddInvocationIDs(ids ...int) {
 	if m.invocations == nil {
@@ -7316,7 +7366,7 @@ func (m *BuildMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BuildMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.build_url != nil {
 		fields = append(fields, build.FieldBuildURL)
 	}
@@ -7325,6 +7375,9 @@ func (m *BuildMutation) Fields() []string {
 	}
 	if m.env != nil {
 		fields = append(fields, build.FieldEnv)
+	}
+	if m.timestamp != nil {
+		fields = append(fields, build.FieldTimestamp)
 	}
 	return fields
 }
@@ -7340,6 +7393,8 @@ func (m *BuildMutation) Field(name string) (ent.Value, bool) {
 		return m.BuildUUID()
 	case build.FieldEnv:
 		return m.Env()
+	case build.FieldTimestamp:
+		return m.Timestamp()
 	}
 	return nil, false
 }
@@ -7355,6 +7410,8 @@ func (m *BuildMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldBuildUUID(ctx)
 	case build.FieldEnv:
 		return m.OldEnv(ctx)
+	case build.FieldTimestamp:
+		return m.OldTimestamp(ctx)
 	}
 	return nil, fmt.Errorf("unknown Build field %s", name)
 }
@@ -7385,6 +7442,13 @@ func (m *BuildMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEnv(v)
 		return nil
+	case build.FieldTimestamp:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTimestamp(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Build field %s", name)
 }
@@ -7414,7 +7478,11 @@ func (m *BuildMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *BuildMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(build.FieldTimestamp) {
+		fields = append(fields, build.FieldTimestamp)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -7427,6 +7495,11 @@ func (m *BuildMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *BuildMutation) ClearField(name string) error {
+	switch name {
+	case build.FieldTimestamp:
+		m.ClearTimestamp()
+		return nil
+	}
 	return fmt.Errorf("unknown Build nullable field %s", name)
 }
 
@@ -7442,6 +7515,9 @@ func (m *BuildMutation) ResetField(name string) error {
 		return nil
 	case build.FieldEnv:
 		m.ResetEnv()
+		return nil
+	case build.FieldTimestamp:
+		m.ResetTimestamp()
 		return nil
 	}
 	return fmt.Errorf("unknown Build field %s", name)

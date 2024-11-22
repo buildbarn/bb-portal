@@ -3253,6 +3253,18 @@ type BuildWhereInput struct {
 	BuildUUIDLT    *uuid.UUID  `json:"buildUUIDLT,omitempty"`
 	BuildUUIDLTE   *uuid.UUID  `json:"buildUUIDLTE,omitempty"`
 
+	// "timestamp" field predicates.
+	Timestamp       *time.Time  `json:"timestamp,omitempty"`
+	TimestampNEQ    *time.Time  `json:"timestampNEQ,omitempty"`
+	TimestampIn     []time.Time `json:"timestampIn,omitempty"`
+	TimestampNotIn  []time.Time `json:"timestampNotIn,omitempty"`
+	TimestampGT     *time.Time  `json:"timestampGT,omitempty"`
+	TimestampGTE    *time.Time  `json:"timestampGTE,omitempty"`
+	TimestampLT     *time.Time  `json:"timestampLT,omitempty"`
+	TimestampLTE    *time.Time  `json:"timestampLTE,omitempty"`
+	TimestampIsNil  bool        `json:"timestampIsNil,omitempty"`
+	TimestampNotNil bool        `json:"timestampNotNil,omitempty"`
+
 	// "invocations" edge predicates.
 	HasInvocations     *bool                        `json:"hasInvocations,omitempty"`
 	HasInvocationsWith []*BazelInvocationWhereInput `json:"hasInvocationsWith,omitempty"`
@@ -3415,6 +3427,36 @@ func (i *BuildWhereInput) P() (predicate.Build, error) {
 	}
 	if i.BuildUUIDLTE != nil {
 		predicates = append(predicates, build.BuildUUIDLTE(*i.BuildUUIDLTE))
+	}
+	if i.Timestamp != nil {
+		predicates = append(predicates, build.TimestampEQ(*i.Timestamp))
+	}
+	if i.TimestampNEQ != nil {
+		predicates = append(predicates, build.TimestampNEQ(*i.TimestampNEQ))
+	}
+	if len(i.TimestampIn) > 0 {
+		predicates = append(predicates, build.TimestampIn(i.TimestampIn...))
+	}
+	if len(i.TimestampNotIn) > 0 {
+		predicates = append(predicates, build.TimestampNotIn(i.TimestampNotIn...))
+	}
+	if i.TimestampGT != nil {
+		predicates = append(predicates, build.TimestampGT(*i.TimestampGT))
+	}
+	if i.TimestampGTE != nil {
+		predicates = append(predicates, build.TimestampGTE(*i.TimestampGTE))
+	}
+	if i.TimestampLT != nil {
+		predicates = append(predicates, build.TimestampLT(*i.TimestampLT))
+	}
+	if i.TimestampLTE != nil {
+		predicates = append(predicates, build.TimestampLTE(*i.TimestampLTE))
+	}
+	if i.TimestampIsNil {
+		predicates = append(predicates, build.TimestampIsNil())
+	}
+	if i.TimestampNotNil {
+		predicates = append(predicates, build.TimestampNotNil())
 	}
 
 	if i.HasInvocations != nil {

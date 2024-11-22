@@ -30,7 +30,7 @@ const getBuildStepsMenuItems = (
       return getItem({
         depth: menuItemDepth,
         href: `${pathBase}/${encodeURIComponent(invocation.invocationID)}`,
-        title: invocation.invocationID,
+        title:  invocation.stepLabel == "" ?invocation.invocationID : invocation.stepLabel,
         icon: <BuildStepStatusIcon status={invocation.state.exitCode?.name as BuildStepResultEnum} />,
         danger: invocation.state.exitCode?.name !== BuildStepResultEnum.SUCCESS,
         activeMenuItemRef,

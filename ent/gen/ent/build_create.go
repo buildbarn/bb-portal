@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -36,6 +37,20 @@ func (bc *BuildCreate) SetBuildUUID(u uuid.UUID) *BuildCreate {
 // SetEnv sets the "env" field.
 func (bc *BuildCreate) SetEnv(m map[string]string) *BuildCreate {
 	bc.mutation.SetEnv(m)
+	return bc
+}
+
+// SetTimestamp sets the "timestamp" field.
+func (bc *BuildCreate) SetTimestamp(t time.Time) *BuildCreate {
+	bc.mutation.SetTimestamp(t)
+	return bc
+}
+
+// SetNillableTimestamp sets the "timestamp" field if the given value is not nil.
+func (bc *BuildCreate) SetNillableTimestamp(t *time.Time) *BuildCreate {
+	if t != nil {
+		bc.SetTimestamp(*t)
+	}
 	return bc
 }
 
@@ -134,6 +149,10 @@ func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 	if value, ok := bc.mutation.Env(); ok {
 		_spec.SetField(build.FieldEnv, field.TypeJSON, value)
 		_node.Env = value
+	}
+	if value, ok := bc.mutation.Timestamp(); ok {
+		_spec.SetField(build.FieldTimestamp, field.TypeTime, value)
+		_node.Timestamp = value
 	}
 	if nodes := bc.mutation.InvocationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

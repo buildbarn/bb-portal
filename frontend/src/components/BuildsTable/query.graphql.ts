@@ -20,6 +20,7 @@ export const BUILD_NODE_FRAGMENT = gql(/* GraphQL */ `
     id
     buildUUID
     buildURL
+    timestamp
   }
 `);
 
