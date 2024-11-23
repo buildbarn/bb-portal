@@ -28,7 +28,13 @@ npxgen:
 
 .PHONY: test
 test:
-	go test ./...
+	bazel test //...
+
+.PHONY: update-schema
+update-schema:
+	go generate ./...
+	bazel run //:gazelle
+	git restore pkg/proto/configuration/bb_portal/BUILD.bazel
 
 .PHONY: update-tests
 update-tests:

@@ -3,6 +3,8 @@
 package build
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -62,6 +64,11 @@ func BuildURL(v string) predicate.Build {
 // BuildUUID applies equality check predicate on the "build_uuid" field. It's identical to BuildUUIDEQ.
 func BuildUUID(v uuid.UUID) predicate.Build {
 	return predicate.Build(sql.FieldEQ(FieldBuildUUID, v))
+}
+
+// Timestamp applies equality check predicate on the "timestamp" field. It's identical to TimestampEQ.
+func Timestamp(v time.Time) predicate.Build {
+	return predicate.Build(sql.FieldEQ(FieldTimestamp, v))
 }
 
 // BuildURLEQ applies the EQ predicate on the "build_url" field.
@@ -167,6 +174,56 @@ func BuildUUIDLT(v uuid.UUID) predicate.Build {
 // BuildUUIDLTE applies the LTE predicate on the "build_uuid" field.
 func BuildUUIDLTE(v uuid.UUID) predicate.Build {
 	return predicate.Build(sql.FieldLTE(FieldBuildUUID, v))
+}
+
+// TimestampEQ applies the EQ predicate on the "timestamp" field.
+func TimestampEQ(v time.Time) predicate.Build {
+	return predicate.Build(sql.FieldEQ(FieldTimestamp, v))
+}
+
+// TimestampNEQ applies the NEQ predicate on the "timestamp" field.
+func TimestampNEQ(v time.Time) predicate.Build {
+	return predicate.Build(sql.FieldNEQ(FieldTimestamp, v))
+}
+
+// TimestampIn applies the In predicate on the "timestamp" field.
+func TimestampIn(vs ...time.Time) predicate.Build {
+	return predicate.Build(sql.FieldIn(FieldTimestamp, vs...))
+}
+
+// TimestampNotIn applies the NotIn predicate on the "timestamp" field.
+func TimestampNotIn(vs ...time.Time) predicate.Build {
+	return predicate.Build(sql.FieldNotIn(FieldTimestamp, vs...))
+}
+
+// TimestampGT applies the GT predicate on the "timestamp" field.
+func TimestampGT(v time.Time) predicate.Build {
+	return predicate.Build(sql.FieldGT(FieldTimestamp, v))
+}
+
+// TimestampGTE applies the GTE predicate on the "timestamp" field.
+func TimestampGTE(v time.Time) predicate.Build {
+	return predicate.Build(sql.FieldGTE(FieldTimestamp, v))
+}
+
+// TimestampLT applies the LT predicate on the "timestamp" field.
+func TimestampLT(v time.Time) predicate.Build {
+	return predicate.Build(sql.FieldLT(FieldTimestamp, v))
+}
+
+// TimestampLTE applies the LTE predicate on the "timestamp" field.
+func TimestampLTE(v time.Time) predicate.Build {
+	return predicate.Build(sql.FieldLTE(FieldTimestamp, v))
+}
+
+// TimestampIsNil applies the IsNil predicate on the "timestamp" field.
+func TimestampIsNil() predicate.Build {
+	return predicate.Build(sql.FieldIsNull(FieldTimestamp))
+}
+
+// TimestampNotNil applies the NotNil predicate on the "timestamp" field.
+func TimestampNotNil() predicate.Build {
+	return predicate.Build(sql.FieldNotNull(FieldTimestamp))
 }
 
 // HasInvocations applies the HasEdge predicate on the "invocations" edge.

@@ -772,6 +772,7 @@ func (act SaveActor) findOrCreateBuild(ctx context.Context, summary *summary.Sum
 			SetBuildURL(summary.BuildURL).
 			SetBuildUUID(summary.BuildUUID).
 			SetEnv(buildEnvVars(summary.EnvVars)).
+			SetTimestamp(summary.StartedAt).
 			Save(ctx)
 	}
 

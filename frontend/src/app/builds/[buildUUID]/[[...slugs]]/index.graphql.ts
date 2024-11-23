@@ -6,6 +6,7 @@ export const FIND_BUILD_BY_UUID_QUERY = gql(/* GraphQL */ `
       id
       buildURL
       buildUUID
+      timestamp
       invocations {
         ...FullBazelInvocationDetails
       }

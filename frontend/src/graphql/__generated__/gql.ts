@@ -22,7 +22,7 @@ const documents = {
     "\n    fragment FullBazelInvocationDetails on BazelInvocation {\n      ...BazelInvocationInfo\n    }\n": types.FullBazelInvocationDetailsFragmentDoc,
     "\n  query GetActionProblem($id: ID!) {\n    node(id: $id) {\n      id\n      ... on ActionProblem {\n        label\n        stdout {\n          ...BlobReferenceInfo\n        }\n        stderr {\n          ...BlobReferenceInfo\n        }\n      }\n    }\n  }\n": types.GetActionProblemDocument,
     "\nfragment TestResultInfo on TestResult {\n      actionLogOutput {\n  ...BlobReferenceInfo\n  }\n  attempt\n  run\n  shard\n  status\n  undeclaredTestOutputs {\n    ...BlobReferenceInfo\n  }\n}": types.TestResultInfoFragmentDoc,
-    "\n  query FindBuildByUUID($url: String, $uuid: UUID) {\n    getBuild(buildURL: $url, buildUUID: $uuid) {\n      id\n      buildURL\n      buildUUID\n      invocations {\n        ...FullBazelInvocationDetails\n      }\n      env {\n        key\n        value\n      }\n    }\n  }\n": types.FindBuildByUuidDocument,
+    "\n  query FindBuildByUUID($url: String, $uuid: UUID) {\n    getBuild(buildURL: $url, buildUUID: $uuid) {\n      id\n      buildURL\n      buildUUID\n      timestamp\n      invocations {\n        ...FullBazelInvocationDetails\n      }\n      env {\n        key\n        value\n      }\n    }\n  }\n": types.FindBuildByUuidDocument,
     "\nquery GetTargetsWithOffset(\n  $label: String,\n  $offset: Int,\n  $limit: Int,\n  $sortBy: String,\n  $direction: String) {\n    getTargetsWithOffset(\n      label: $label\n      offset: $offset\n      limit: $limit\n      sortBy: $sortBy\n      direction: $direction\n    ) {\n      total\n      result {\n        label\n        sum\n        min\n        max\n        avg\n        count\n        passRate\n      }\n    }\n  }\n": types.GetTargetsWithOffsetDocument,
     "\n  query FindTargets(\n     $first: Int!\n     $where: TargetPairWhereInput\n     $orderBy: TargetPairOrder\n     $after: Cursor\n   ){\n   findTargets (first: $first, where: $where, orderBy: $orderBy, after: $after){\n     totalCount\n     pageInfo{\n       startCursor\n       endCursor\n       hasNextPage\n       hasPreviousPage\n     }\n     edges {\n       node {\n         id\n         durationInMs\n         label\n         success\n         bazelInvocation {\n           invocationID\n         }\n       }\n     }\n   }\n }\n ": types.FindTargetsDocument,
     "\nquery GetTestsWithOffset(\n  $label: String,\n  $offset: Int,\n  $limit: Int,\n  $sortBy: String,\n  $direction: String) {\n    getTestsWithOffset(\n      label: $label\n      offset: $offset\n      limit: $limit\n      sortBy: $sortBy\n      direction: $direction\n    ) {\n      total\n      result {\n        label\n        sum\n        min\n        max\n        avg\n        count\n        passRate\n      }\n    }\n  }\n": types.GetTestsWithOffsetDocument,
@@ -34,7 +34,7 @@ const documents = {
     "\n  query FindBazelInvocations(\n    $first: Int!\n    $where: BazelInvocationWhereInput\n  ) {\n    findBazelInvocations(first: $first, where: $where) {\n      edges {\n        node {\n          ...BazelInvocationNode\n        }\n      }\n    }\n  }\n": types.FindBazelInvocationsDocument,
     "\n  fragment BazelInvocationNode on BazelInvocation {\n    id\n    invocationID\n    startedAt\n    user {\n      Email\n      LDAP\n    }\n    endedAt\n    state {\n      bepCompleted\n      exitCode {\n        code\n        name\n      }\n    }\n    build {\n      buildUUID\n    }\n  }\n": types.BazelInvocationNodeFragmentDoc,
     "\n  query FindBuilds(\n    $first: Int!\n    $where: BuildWhereInput\n  ) {\n    findBuilds(first: $first, where: $where) {\n      edges {\n        node {\n          ...BuildNode\n        }\n      }\n    }\n  }\n": types.FindBuildsDocument,
-    "\n  fragment BuildNode on Build {\n    id\n    buildUUID\n    buildURL\n  }\n": types.BuildNodeFragmentDoc,
+    "\n  fragment BuildNode on Build {\n    id\n    buildUUID\n    buildURL\n    timestamp\n  }\n": types.BuildNodeFragmentDoc,
     "\n    query FindTestsWithCache(\n       $first: Int!\n       $where: TestCollectionWhereInput\n       $orderBy: TestCollectionOrder\n       $after: Cursor\n     ){\n     findTests (first: $first, where: $where, orderBy: $orderBy, after: $after){\n       totalCount\n       pageInfo{\n         startCursor\n         endCursor\n         hasNextPage\n         hasPreviousPage\n       }\n       edges {\n         node {\n           id\n           durationMs\n           firstSeen\n           label\n           overallStatus\n           cachedLocally\n           cachedRemotely\n           bazelInvocation {\n             invocationID\n           }\n         }\n       }\n     }\n   }\n   ": types.FindTestsWithCacheDocument,
 };
 
@@ -91,7 +91,7 @@ export function gql(source: "\nfragment TestResultInfo on TestResult {\n      ac
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query FindBuildByUUID($url: String, $uuid: UUID) {\n    getBuild(buildURL: $url, buildUUID: $uuid) {\n      id\n      buildURL\n      buildUUID\n      invocations {\n        ...FullBazelInvocationDetails\n      }\n      env {\n        key\n        value\n      }\n    }\n  }\n"): (typeof documents)["\n  query FindBuildByUUID($url: String, $uuid: UUID) {\n    getBuild(buildURL: $url, buildUUID: $uuid) {\n      id\n      buildURL\n      buildUUID\n      invocations {\n        ...FullBazelInvocationDetails\n      }\n      env {\n        key\n        value\n      }\n    }\n  }\n"];
+export function gql(source: "\n  query FindBuildByUUID($url: String, $uuid: UUID) {\n    getBuild(buildURL: $url, buildUUID: $uuid) {\n      id\n      buildURL\n      buildUUID\n      timestamp\n      invocations {\n        ...FullBazelInvocationDetails\n      }\n      env {\n        key\n        value\n      }\n    }\n  }\n"): (typeof documents)["\n  query FindBuildByUUID($url: String, $uuid: UUID) {\n    getBuild(buildURL: $url, buildUUID: $uuid) {\n      id\n      buildURL\n      buildUUID\n      timestamp\n      invocations {\n        ...FullBazelInvocationDetails\n      }\n      env {\n        key\n        value\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -139,7 +139,7 @@ export function gql(source: "\n  query FindBuilds(\n    $first: Int!\n    $where
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  fragment BuildNode on Build {\n    id\n    buildUUID\n    buildURL\n  }\n"): (typeof documents)["\n  fragment BuildNode on Build {\n    id\n    buildUUID\n    buildURL\n  }\n"];
+export function gql(source: "\n  fragment BuildNode on Build {\n    id\n    buildUUID\n    buildURL\n    timestamp\n  }\n"): (typeof documents)["\n  fragment BuildNode on Build {\n    id\n    buildUUID\n    buildURL\n    timestamp\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -21,6 +21,7 @@ func (Build) Fields() []ent.Field {
 		field.String("build_url").Unique().Immutable(),
 		field.UUID("build_uuid", uuid.UUID{}).Unique().Immutable(),
 		field.JSON("env", map[string]string{}).Annotations(entgql.Skip()), // NOTE: Uses custom resolver.
+		field.Time("timestamp").Optional(),
 	}
 }
 

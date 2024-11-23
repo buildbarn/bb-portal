@@ -56,7 +56,9 @@ export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({
                     {user}
                 </Descriptions.Item>
                 <Descriptions.Item label="Command">
-                    {command}
+                    <code>
+                        {command}
+                    </code>
                 </Descriptions.Item>
                 <Descriptions.Item label="CPU">
                     {cpu}

@@ -18,6 +18,8 @@ const (
 	FieldBuildUUID = "build_uuid"
 	// FieldEnv holds the string denoting the env field in the database.
 	FieldEnv = "env"
+	// FieldTimestamp holds the string denoting the timestamp field in the database.
+	FieldTimestamp = "timestamp"
 	// EdgeInvocations holds the string denoting the invocations edge name in mutations.
 	EdgeInvocations = "invocations"
 	// Table holds the table name of the build in the database.
@@ -37,6 +39,7 @@ var Columns = []string{
 	FieldBuildURL,
 	FieldBuildUUID,
 	FieldEnv,
+	FieldTimestamp,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -65,6 +68,11 @@ func ByBuildURL(opts ...sql.OrderTermOption) OrderOption {
 // ByBuildUUID orders the results by the build_uuid field.
 func ByBuildUUID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBuildUUID, opts...).ToFunc()
+}
+
+// ByTimestamp orders the results by the timestamp field.
+func ByTimestamp(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTimestamp, opts...).ToFunc()
 }
 
 // ByInvocationsCount orders the results by invocations count.

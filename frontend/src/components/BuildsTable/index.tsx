@@ -42,6 +42,15 @@ const BuildsTable: React.FC<Props> = ({ height }) => {
       if (filters['buildURL']?.length) {
         wheres.push({ buildURLHasPrefix: filters['buildURL'][0].toString() });
       }
+      if (filters['buildDate']?.length === 2) {
+        if (filters['buildDate'][0])  {
+          wheres.push({ timestampGTE: filters['buildDate'][0]});
+        }
+        if (filters['buildDate'][1])  {
+          wheres.push({ timestampLTE: filters['buildDate'][1]});
+        }
+      }
+
       setVariables({
         first: PAGE_SIZE,
         where: wheres.length ? { and: [...wheres] } : wheres[0],

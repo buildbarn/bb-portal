@@ -58,6 +58,7 @@ import BuildProblems from "../Problems";
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
   isNestedWithinBuildCard?: boolean;
+  collapsed?: boolean
 }> = ({ invocationOverview, isNestedWithinBuildCard }) => {
   const {
     invocationID,
@@ -75,7 +76,8 @@ const BazelInvocation: React.FC<{
     configurationMnemonic,
     stepLabel,
     hostname,
-    isCiWorker
+    isCiWorker,
+    collapsed,
     //relatedFiles,
 
   } = invocationOverview;
@@ -121,8 +123,8 @@ const BazelInvocation: React.FC<{
   //build the title
   let { exitCode } = state;
   exitCode = exitCode ?? null;
-  const titleBits: React.ReactNode[] = [<span key="label">User: {user?.LDAP}</span>];
-  titleBits.push(<span key="label">Invocation: {invocationID}</span>)
+  const titleBits: React.ReactNode[] = [<span key="label">User: <Typography.Text type="secondary"  className={styles.normalWeight}>{user?.LDAP}</Typography.Text></span>];
+  titleBits.push(<span key="label">Invocation ID: <Typography.Text type="secondary" className={styles.normalWeight}>{invocationID}</Typography.Text> </span>)
   titleBits.push(<span className={styles.copyIcon}>
     <Typography.Text copyable={{ text: invocationID ?? "Copy" }}></Typography.Text>
   </span>)
@@ -130,6 +132,20 @@ const BazelInvocation: React.FC<{
     titleBits.push(<BuildStepResultTag key="result" result={exitCode?.name as BuildStepResultEnum} />);
   }
 
+  const extraBits: React.ReactNode[] = [
+    <PortalDuration key="duration" from={invocationOverview.startedAt} to={invocationOverview.endedAt} includeIcon includePopover />,
+  ];
+
+  if (env('NEXT_PUBLIC_BROWSER_URL') && profile) {
+    var url = new URL(`blobs/sha256/file/${profile.digest}-${profile.sizeInBytes}/${profile.name}`, env('NEXT_PUBLIC_BROWSER_URL'))
+    extraBits.push(
+      <DownloadButton url={url.toString()} fileName="profile" buttonLabel="Profile" enabled={true} />
+    );
+  }
+
+  if (!isNestedWithinBuildCard && build?.buildUUID) {
+    extraBits.unshift(<span key="build">Build <Link href={`/builds/${build.buildUUID}`}>{build.buildUUID}</Link></span>);
+  }
 
   const hideTestsTab: boolean = (testCollection?.length ?? 0) == 0
   const hideTargetsTab: boolean = (targetData?.length ?? 0) == 0 ? true : false
@@ -328,21 +344,6 @@ const BazelInvocation: React.FC<{
         items.splice(idx, 1);
       }
     }
-  }
-
-  const extraBits: React.ReactNode[] = [
-    <PortalDuration key="duration" from={invocationOverview.startedAt} to={invocationOverview.endedAt} includeIcon includePopover />,
-  ];
-
-  if (env('NEXT_PUBLIC_BROWSER_URL') && profile) {
-    var url = new URL(`blobs/sha256/file/${profile.digest}-${profile.sizeInBytes}/${profile.name}`, env('NEXT_PUBLIC_BROWSER_URL'))
-    extraBits.push(
-      <DownloadButton url={url.toString()} fileName="profile" buttonLabel="Profile" enabled={true} />
-    );
-  }
-
-  if (!isNestedWithinBuildCard && build?.buildUUID) {
-    extraBits.unshift(<span key="build">Build <Link href={`/builds/${build.buildUUID}`}>{build.buildUUID}</Link></span>);
   }
 
   return (
