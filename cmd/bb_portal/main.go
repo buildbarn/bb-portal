@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"flag"
 	"log/slog"
 	"net/http"
@@ -11,10 +12,13 @@ import (
 	"time"
 
 	"entgo.io/contrib/entgql"
+	"entgo.io/ent/dialect"
+	entsql "entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/fsnotify/fsnotify"
 	"github.com/gorilla/mux"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/mattn/go-sqlite3"
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	go_grpc "google.golang.org/grpc"
@@ -65,10 +69,22 @@ func main() {
 			return util.StatusWrap(err, "Failed to apply global configuration options")
 		}
 
-		dbClient, err := ent.Open(
-			*dsDriver,
-			*dsURL,
-		)
+		var dbClient *ent.Client
+
+		if *dsDriver == "pgx" {
+			db, err := sql.Open("pgx", *dsURL)
+			if err != nil {
+				fatal("Failed to open pgx database", "err", err)
+			}
+			drv := entsql.OpenDB(dialect.Postgres, db)
+			dbClient = ent.NewClient(ent.Driver(drv))
+		} else {
+			dbClient, err = ent.Open(
+				*dsDriver,
+				*dsURL,
+			)
+		}
+
 		if err != nil {
 			return util.StatusWrapf(err, "Failed to open ent client")
 		}
