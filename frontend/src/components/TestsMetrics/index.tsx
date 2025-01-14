@@ -1,7 +1,6 @@
 import React from "react";
 import { Table, Row, Statistic, Space } from 'antd';
 import type { StatisticProps, TableColumnsType } from "antd/lib";
-import CountUp from 'react-countup';
 import TestStatusTag from "../TestStatusTag";
 import { TestCollection } from "@/graphql/__generated__/graphql";
 import { TestStatusEnum } from "../TestStatusTag";
@@ -22,9 +21,6 @@ interface TestDataType {
     cached_remote: boolean | null;
     duration: number;
 }
-const formatter: StatisticProps['formatter'] = (value) => (
-    <CountUp end={value as number} separator="," />
-);
 
 const test_columns: TableColumnsType<TestDataType> = [
     {
@@ -196,13 +192,13 @@ const TestMetricsDisplay: React.FC<{
                 <PortalCard type="inner" icon={<ExperimentOutlined />} titleBits={["Tests"]}>
                     <Row>
                         <Space size="large">
-                            <Statistic title="Tests Completed" value={totalTests} formatter={formatter} />
-                            <Statistic title="Passed" value={numPassed} formatter={formatter} />
-                            <Statistic title="Failed" value={numFailed} formatter={formatter} />
-                            <Statistic title="Executed Locally" value={numExecutedLocally} formatter={formatter} />
-                            <Statistic title="Executed Remotely" value={numExecutedRemotely} formatter={formatter} />
-                            <Statistic title="Local Cache Hit" value={localCacheHit} formatter={formatter} />
-                            <Statistic title="Remote Cache Hit" value={remoteCacheHit} formatter={formatter} />
+                            <Statistic title="Tests Completed" value={totalTests} />
+                            <Statistic title="Passed" value={numPassed} />
+                            <Statistic title="Failed" value={numFailed} />
+                            <Statistic title="Executed Locally" value={numExecutedLocally} />
+                            <Statistic title="Executed Remotely" value={numExecutedRemotely} />
+                            <Statistic title="Local Cache Hit" value={localCacheHit} />
+                            <Statistic title="Remote Cache Hit" value={remoteCacheHit} />
                         </Space>
                     </Row>
                     <Row justify="space-around" align="middle">

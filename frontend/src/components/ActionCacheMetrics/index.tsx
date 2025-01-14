@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import { PieChart, Pie, Cell, Legend, BarChart, Bar, LabelList } from 'recharts';
 import { Table, Row, Col, Statistic, Tooltip, Space } from 'antd';
 import type { StatisticProps, TableColumnsType } from "antd/lib";
-import CountUp from 'react-countup';
 import { ActionCacheStatistics, ActionSummary, MissDetail } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { PieChartOutlined, DashboardOutlined, HddOutlined } from "@ant-design/icons";
@@ -17,10 +16,6 @@ interface MissDetailDisplayDataType {
     value: number;
     rate: string;
 }
-
-const formatter: StatisticProps['formatter'] = (value) => (
-    <CountUp end={value as number} separator="," />
-);
 
 var ac_colors =
     [
@@ -114,11 +109,11 @@ const AcMetrics: React.FC<{ acMetrics: ActionSummary | undefined; }> = ({ acMetr
                             <Tooltip />
                             <Legend />
                         </BarChart>
-                        <Statistic title="Hits" value={acMetricsData?.hits ?? 0} formatter={formatter} valueStyle={{ color: "#82ca9d" }} />
-                        <Statistic title="Misses" value={acMetricsData?.misses ?? 0} formatter={formatter} valueStyle={{ color: "#8884d8" }} />
-                        <Statistic title="Size (bytes)" value={acMetricsData?.sizeInBytes ?? 0} formatter={formatter} />
-                        <Statistic title="Save Time(ms)" value={acMetricsData?.saveTimeInMs ?? 0} formatter={formatter} />
-                        <Statistic title="Load Time(ms)" value={acMetricsData?.loadTimeInMs ?? 0} formatter={formatter} />
+                        <Statistic title="Hits" value={acMetricsData?.hits ?? 0} valueStyle={{ color: "#82ca9d" }} />
+                        <Statistic title="Misses" value={acMetricsData?.misses ?? 0} valueStyle={{ color: "#8884d8" }} />
+                        <Statistic title="Size (bytes)" value={acMetricsData?.sizeInBytes ?? 0} />
+                        <Statistic title="Save Time(ms)" value={acMetricsData?.saveTimeInMs ?? 0} />
+                        <Statistic title="Load Time(ms)" value={acMetricsData?.loadTimeInMs ?? 0} />
 
                     </Space>
                 </Row>

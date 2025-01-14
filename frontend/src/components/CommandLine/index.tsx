@@ -2,7 +2,6 @@ import React from "react";
 import { Space, Table, Row, Col, Statistic, List } from 'antd';
 import { CodeOutlined, DeploymentUnitOutlined, SearchOutlined } from '@ant-design/icons';
 import type { StatisticProps, TableColumnsType } from "antd/lib";
-import CountUp from 'react-countup';
 import { BazelCommand, TargetMetrics, TargetPair } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';

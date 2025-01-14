@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import { PieChart, Pie, Cell, Legend } from "recharts";
 import { Table, Row, Col, Statistic, Space } from "antd";
 import type { StatisticProps, TableColumnsType } from "antd/lib";
-import CountUp from "react-countup";
 import { MemoryMetrics, GarbageMetrics } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { PieChartOutlined, HddOutlined } from "@ant-design/icons";
@@ -15,10 +14,6 @@ interface GarbageMetricDetailDisplayType {
   value: number;
   color: string;
 }
-
-const formatter: StatisticProps["formatter"] = (value) => (
-  <CountUp end={value as number} separator="," />
-);
 
 const garbage_columns: TableColumnsType<GarbageMetricDetailDisplayType> = [
   {
@@ -70,17 +65,14 @@ const MemoryMetricsDisplay: React.FC<{
             <Statistic
               title="Peak Post GC Heap Size"
               value={memoryMetrics?.peakPostGcHeapSize ?? 0}
-              formatter={formatter}
             />
             <Statistic
               title="Peak Post TC Tenured Space Heap Size"
               value={memoryMetrics?.peakPostGcTenuredSpaceHeapSize ?? 0}
-              formatter={formatter}
             />
             <Statistic
               title="Used Heap Size Post Build"
               value={memoryMetrics?.usedHeapSizePostBuild ?? 0}
-              formatter={formatter}
             />
           </Space>
         </Row>

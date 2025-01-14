@@ -10,7 +10,6 @@ import { useQuery } from '@apollo/client';
 import FIND_BUILD_DURATIONS from './index.graphql';
 import { AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Area } from 'recharts';
 import type { StatisticProps } from "antd/lib";
-import CountUp from 'react-countup';
 
 const Page: React.FC = () => {
 
@@ -59,10 +58,6 @@ const Page: React.FC = () => {
         }
     });
 
-    const formatter: StatisticProps['formatter'] = (value) => (
-        <CountUp end={value as number} separator="," />
-    );
-
     var avg: number = dataPoints.reduce((sum, item) => sum + item.duration, 0) / dataPoints.length;
     var medianVals = dataPoints.map(x => x.duration).sort((a, b) => a - b);
     var medianMid = Math.floor(dataPoints.length / 2);
@@ -91,11 +86,11 @@ const Page: React.FC = () => {
                             titleBits={[<span>Invocation Durations</span>]}>
                             <Row>
                                 <Space size="large">
-                                    <Statistic title="Total" value={data?.findBazelInvocations.totalCount} formatter={formatter} valueStyle={{ color: "#82ca9d" }} />
-                                    <Statistic title="Average" value={avg} formatter={formatter} valueStyle={{ color: "#82ca9d" }} />
-                                    <Statistic title="Median" value={median} formatter={formatter} valueStyle={{ color: "#8884d8" }} />
-                                    <Statistic title="Max" value={max} formatter={formatter} />
-                                    <Statistic title="Min" value={min} formatter={formatter} />
+                                    <Statistic title="Total" value={data?.findBazelInvocations.totalCount} valueStyle={{ color: "#82ca9d" }} />
+                                    <Statistic title="Average" value={avg} valueStyle={{ color: "#82ca9d" }} />
+                                    <Statistic title="Median" value={median} valueStyle={{ color: "#8884d8" }} />
+                                    <Statistic title="Max" value={max} />
+                                    <Statistic title="Min" value={min} />
                                 </Space>
                             </Row>
                             <Row>
