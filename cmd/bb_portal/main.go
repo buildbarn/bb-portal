@@ -88,8 +88,15 @@ func main() {
 		if err != nil {
 			return util.StatusWrapf(err, "Failed to open ent client")
 		}
-		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
-			return util.StatusWrapf(err, "Failed to run schema migration")
+
+		if *dsDriver == "pgx" {
+			if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
+				return util.StatusWrapf(err, "Failed to run schema migration")
+			}
+		} else {
+			if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
+				return util.StatusWrapf(err, "Failed to run schema migration")
+			}
 		}
 
 		blobArchiver := processing.NewBlobMultiArchiver()
