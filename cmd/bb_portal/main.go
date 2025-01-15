@@ -94,7 +94,6 @@ func main() {
 				return util.StatusWrapf(err, "Failed to run schema migration")
 			}
 		} else {
-
 			if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
 				return util.StatusWrapf(err, "Failed to run schema migration")
 			}
