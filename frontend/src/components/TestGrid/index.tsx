@@ -36,7 +36,6 @@ interface TestGridRowDataType {
   min_duration: number;
   max_duration: number;
   total_count: number;
-  pass_rate: number;
   status: TestStatusType[];
 }
 
@@ -58,19 +57,16 @@ const columns: TableColumnsType<TestGridRowDataType> = [
   {
     title: "Average Duration",
     dataIndex: "average_duration",
-    //sorter: (a, b) => a.average_duration - b.average_duration,
     render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.average_duration)}</span>
   },
   {
     title: "Min Duration",
     dataIndex: "min_duration",
-    //sorter: (a, b) => a.average_duration - b.average_duration,
     render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.min_duration)}</span>
   },
   {
     title: "Max Duration",
     dataIndex: "max_duration",
-    //sorter: (a, b) => a.average_duration - b.average_duration,
     render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.max_duration)}</span>
   },
   {
@@ -78,7 +74,6 @@ const columns: TableColumnsType<TestGridRowDataType> = [
     dataIndex: "total_count",
     align: "right",
     render: (_, record) => <span className={styles.numberFormat}>{record.total_count}</span>,
-    //sorter: (a, b) => a.total_count - b.total_count,
   },
 ]
 
@@ -93,12 +88,10 @@ const TestGrid: React.FC<Props> = () => {
 
   const data = labelLoading ? labelPreviousData : labelData;
   var result: TestGridRowDataType[] = []
-  var totalCnt: number = 0
 
   if (labelError) {
     <PortalAlert className="error" message="There was a problem communicating w/the backend server." />
   } else {
-    totalCnt = data?.getTestsWithOffset?.total ?? 0
     data?.getTestsWithOffset?.result?.map(dataRow => {
       var row: TestGridRowDataType = {
         key: "test-grid-row-data-" + uniqueId(),
@@ -108,7 +101,6 @@ const TestGrid: React.FC<Props> = () => {
         min_duration: dataRow?.min ?? 0,
         max_duration: dataRow?.max ?? 0,
         total_count: dataRow?.count ?? 0,
-        pass_rate: dataRow?.passRate ?? 0
       }
       result.push(row)
     })
@@ -139,16 +131,11 @@ const TestGrid: React.FC<Props> = () => {
           expandable={{
             indentSize: 100,
             expandedRowRender: (record) => (
-              //TODO: dynamically determine number of buttons to display based on page width and pass that as first
               <TestGridRow rowLabel={record.label} first={20} reverseOrder={true} />
             ),
             rowExpandable: (_) => true,
           }}
           pagination = {false}
-          // pagination={{
-          //   total: totalCnt,
-          //   showSizeChanger: false,
-          // }}
           dataSource={result} />
       </Row>
     </Space>
