@@ -40,7 +40,7 @@ interface TestGridRowDataType {
   status: TestStatusType[];
 }
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 20
 const columns: TableColumnsType<TestGridRowDataType> = [
   {
     title: "Label",
@@ -80,21 +80,15 @@ const columns: TableColumnsType<TestGridRowDataType> = [
     render: (_, record) => <span className={styles.numberFormat}>{record.total_count}</span>,
     //sorter: (a, b) => a.total_count - b.total_count,
   },
-  {
-    title: "Pass Rate",
-    dataIndex: "pass_rate",
-    //sorter: (a, b) => a.pass_rate - b.pass_rate,
-    render: (_, record) => <span className={styles.numberFormat}> {(record.pass_rate * 100).toFixed(2)}%</span>
-  }
 ]
 
 const TestGrid: React.FC<Props> = () => {
 
-  const [variables, setVariables] = useState<GetTestsWithOffsetQueryVariables>({})
+  const [variables, setVariables] = useState<GetTestsWithOffsetQueryVariables>({ limit:  PAGE_SIZE})
 
   const { loading: labelLoading, data: labelData, previousData: labelPreviousData, error: labelError } = useQuery(GET_TEST_GRID_DATA, {
     variables: variables,
-    fetchPolicy: 'cache-and-network',
+    pollInterval: 300000
   });
 
   const data = labelLoading ? labelPreviousData : labelData;
@@ -137,12 +131,6 @@ const TestGrid: React.FC<Props> = () => {
   return (
     <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
       <Row>
-        <Space size="large">
-          <Statistic title="Test Targets" value={totalCnt} formatter={formatter} />
-        </Space>
-      </Row>
-
-      <Row>
         <Table<TestGridRowDataType>
           columns={columns}
           loading={labelLoading}
@@ -156,10 +144,11 @@ const TestGrid: React.FC<Props> = () => {
             ),
             rowExpandable: (_) => true,
           }}
-          pagination={{
-            total: totalCnt,
-            showSizeChanger: false,
-          }}
+          pagination = {false}
+          // pagination={{
+          //   total: totalCnt,
+          //   showSizeChanger: false,
+          // }}
           dataSource={result} />
       </Row>
     </Space>
