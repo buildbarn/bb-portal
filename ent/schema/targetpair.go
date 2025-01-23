@@ -86,9 +86,7 @@ func (TargetPair) Edges() []ent.Edge {
 func (TargetPair) Indexes() []ent.Index {
 	return []ent.Index{
 		// Index for the label field.
-		// Unique index for the label field.
-		index.Fields("label").
-			Unique(),
+		index.Fields("label"),
 	}
 }
 

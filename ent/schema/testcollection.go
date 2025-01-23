@@ -78,7 +78,7 @@ func (TestCollection) Edges() []ent.Edge {
 func (TestCollection) Indexes() []ent.Index {
 	return []ent.Index{
 		// Add a unique index on the label field
-		index.Fields("label").Unique(),
+		index.Fields("label"),
 	}
 }
 
