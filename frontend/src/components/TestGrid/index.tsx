@@ -10,15 +10,14 @@ import { useQuery } from '@apollo/client';
 import { GET_TEST_GRID_DATA } from '@/app/tests/index.graphql';
 import { FilterValue } from 'antd/es/table/interface';
 import { uniqueId } from 'lodash';
-import { GetTestsWithOffsetQueryVariables } from '@/graphql/__generated__/graphql';
+import { GetTestsWithOffsetQueryVariables, GetUniqueTestLabelsQueryVariables } from '@/graphql/__generated__/graphql';
 import TestGridRow from '../TestGridRow';
 import PortalAlert from '../PortalAlert';
 import Link from 'next/link';
 import styles from "../../theme/theme.module.css"
 import { millisecondsToTime } from '../Utilities/time';
-interface Props {
-  //labelData: GetTestsWithOffsetQuery | undefined
-}
+import { GET_TEST_LABELS } from './graphql';
+interface Props {}
 
 const formatter: StatisticProps['formatter'] = (value) => (
   <CountUp end={value as number} separator="," />
@@ -32,11 +31,6 @@ export interface TestStatusType {
 interface TestGridRowDataType {
   key: React.Key;
   label: string;
-  average_duration: number;
-  min_duration: number;
-  max_duration: number;
-  total_count: number;
-  status: TestStatusType[];
 }
 
 const PAGE_SIZE = 20
@@ -54,34 +48,13 @@ const columns: TableColumnsType<TestGridRowDataType> = [
     filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
     onFilter: (value, record) => (record.label.includes(value.toString()) ? true : false)
   },
-  {
-    title: "Average Duration",
-    dataIndex: "average_duration",
-    render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.average_duration)}</span>
-  },
-  {
-    title: "Min Duration",
-    dataIndex: "min_duration",
-    render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.min_duration)}</span>
-  },
-  {
-    title: "Max Duration",
-    dataIndex: "max_duration",
-    render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.max_duration)}</span>
-  },
-  {
-    title: "# Runs",
-    dataIndex: "total_count",
-    align: "right",
-    render: (_, record) => <span className={styles.numberFormat}>{record.total_count}</span>,
-  },
 ]
 
 const TestGrid: React.FC<Props> = () => {
 
-  const [variables, setVariables] = useState<GetTestsWithOffsetQueryVariables>({ limit:  PAGE_SIZE})
+  const [variables, setVariables] = useState<GetUniqueTestLabelsQueryVariables>({})
 
-  const { loading: labelLoading, data: labelData, previousData: labelPreviousData, error: labelError } = useQuery(GET_TEST_GRID_DATA, {
+  const { loading: labelLoading, data: labelData, previousData: labelPreviousData, error: labelError } = useQuery(GET_TEST_LABELS, {
     variables: variables,
     pollInterval: 300000
   });
@@ -92,15 +65,10 @@ const TestGrid: React.FC<Props> = () => {
   if (labelError) {
     <PortalAlert className="error" message="There was a problem communicating w/the backend server." />
   } else {
-    data?.getTestsWithOffset?.result?.map(dataRow => {
+    data?.getUniqueTestLabels?.map(dataRow => {
       var row: TestGridRowDataType = {
         key: "test-grid-row-data-" + uniqueId(),
-        label: dataRow?.label ?? "",
-        status: [],
-        average_duration: dataRow?.avg ?? 0,
-        min_duration: dataRow?.min ?? 0,
-        max_duration: dataRow?.max ?? 0,
-        total_count: dataRow?.count ?? 0,
+        label: dataRow ?? "",
       }
       result.push(row)
     })

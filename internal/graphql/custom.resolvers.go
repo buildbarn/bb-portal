@@ -232,44 +232,33 @@ func (r *queryResolver) GetBuild(ctx context.Context, buildURL *string, buildUUI
 
 // GetUniqueTestLabels is the resolver for the getUniqueTestLabels field.
 func (r *queryResolver) GetUniqueTestLabels(ctx context.Context, param *string) ([]*string, error) {
-	if param == nil {
-		res, err := r.client.TestCollection.Query().
-			GroupBy(testcollection.FieldLabel).
-			Strings(ctx)
-		if err != nil {
-			return nil, err
-		}
-		return helpers.StringSliceArrayToPointerArray(res), nil
+	query := r.client.TestCollection.Query().Limit(100)
+	// started := time.Now()
+	if param != nil && *param != "" {
+		query = query.Where(testcollection.LabelContains(*param))
 	}
-	res, err := r.client.TestCollection.Query().
-		Where(testcollection.LabelContains(*param)).
-		GroupBy(testcollection.FieldLabel).
-		Strings(ctx)
+	res, err := query.Unique(true).Select(testcollection.FieldLabel).Strings(ctx)
 	if err != nil {
 		return nil, err
 	}
+	// elapsed := time.Since(started)
+	// slog.Info("GetUniqueTestLabels", "elapsed:", elapsed.String())
 	return helpers.StringSliceArrayToPointerArray(res), nil
 }
 
 // GetUniqueTargetLabels is the resolver for the getUniqueTargetLabels field.
 func (r *queryResolver) GetUniqueTargetLabels(ctx context.Context, param *string) ([]*string, error) {
-	if param == nil {
-		res, err := r.client.TargetPair.Query().
-			GroupBy(targetpair.FieldLabel).
-			Strings(ctx)
-		if err != nil {
-			return nil, err
-		}
-		return helpers.StringSliceArrayToPointerArray(res), nil
+	// started := time.Now()
+	query := r.client.TargetPair.Query().Limit(100)
+	if param != nil && *param != "" {
+		query = query.Where(targetpair.LabelContains(*param))
 	}
-	res, err := r.client.TargetPair.Query().
-		Where(targetpair.LabelContains(*param)).
-		GroupBy(targetpair.FieldLabel).
-		Strings(ctx)
+	res, err := query.Unique(true).Select(targetpair.FieldLabel).Strings(ctx)
 	if err != nil {
 		return nil, err
 	}
-
+	// elapsed := time.Since(started)
+	// slog.Info("GetUniqueTargetLabels", "elapsed:", elapsed.String())
 	return helpers.StringSliceArrayToPointerArray(res), nil
 }
 
