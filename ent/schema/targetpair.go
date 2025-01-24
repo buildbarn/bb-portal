@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // TargetPair holds the schema definition for the TargetPair entity.
@@ -78,6 +79,14 @@ func (TargetPair) Edges() []ent.Edge {
 		// Edge to the target completed object.
 		edge.To("completion", TargetComplete.Type).
 			Unique(),
+	}
+}
+
+// Indexes of the TargetPair.
+func (TargetPair) Indexes() []ent.Index {
+	return []ent.Index{
+		// Index for the label field.
+		index.Fields("label"),
 	}
 }
 

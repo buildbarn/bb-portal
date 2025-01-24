@@ -7,5 +7,6 @@
   grpcServers: [{
     listenAddresses: [':8082'],
     authenticationPolicy: { allow: {} },
+    maximumReceivedMessageSizeBytes: 10*1024*1024
   }],
 }

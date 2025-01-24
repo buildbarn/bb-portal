@@ -28,11 +28,6 @@ query GetTestsWithOffset(
   }
 `);
 
-export const GET_UNIQUE_TEST_LABELS = gql(/* GraphQL */ `
-  query GetUniqueTestLabels{
-    getUniqueTestLabels
-  }
-`);
 
 export const GET_AVERAGE_PASS_PERCENTAGE_FOR_LABEL = gql(/* GraphQL */ `
 

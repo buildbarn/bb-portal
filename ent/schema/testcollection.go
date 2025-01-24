@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // TestCollection holds the schema definition for the TestCollection entity.
@@ -70,6 +71,14 @@ func (TestCollection) Edges() []ent.Edge {
 
 		// A collection of test results associated with this collection
 		edge.To("test_results", TestResultBES.Type),
+	}
+}
+
+// Indexes of the TestCollection.
+func (TestCollection) Indexes() []ent.Index {
+	return []ent.Index{
+		// Add a unique index on the label field
+		index.Fields("label"),
 	}
 }
 

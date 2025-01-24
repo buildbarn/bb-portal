@@ -26,7 +26,6 @@ const documents = {
     "\nquery GetTargetsWithOffset(\n  $label: String,\n  $offset: Int,\n  $limit: Int,\n  $sortBy: String,\n  $direction: String) {\n    getTargetsWithOffset(\n      label: $label\n      offset: $offset\n      limit: $limit\n      sortBy: $sortBy\n      direction: $direction\n    ) {\n      total\n      result {\n        label\n        sum\n        min\n        max\n        avg\n        count\n        passRate\n      }\n    }\n  }\n": types.GetTargetsWithOffsetDocument,
     "\n  query FindTargets(\n     $first: Int!\n     $where: TargetPairWhereInput\n     $orderBy: TargetPairOrder\n     $after: Cursor\n   ){\n   findTargets (first: $first, where: $where, orderBy: $orderBy, after: $after){\n     totalCount\n     pageInfo{\n       startCursor\n       endCursor\n       hasNextPage\n       hasPreviousPage\n     }\n     edges {\n       node {\n         id\n         durationInMs\n         label\n         success\n         bazelInvocation {\n           invocationID\n         }\n       }\n     }\n   }\n }\n ": types.FindTargetsDocument,
     "\nquery GetTestsWithOffset(\n  $label: String,\n  $offset: Int,\n  $limit: Int,\n  $sortBy: String,\n  $direction: String) {\n    getTestsWithOffset(\n      label: $label\n      offset: $offset\n      limit: $limit\n      sortBy: $sortBy\n      direction: $direction\n    ) {\n      total\n      result {\n        label\n        sum\n        min\n        max\n        avg\n        count\n        passRate\n      }\n    }\n  }\n": types.GetTestsWithOffsetDocument,
-    "\n  query GetUniqueTestLabels{\n    getUniqueTestLabels\n  }\n": types.GetUniqueTestLabelsDocument,
     "\n\n  query GetAveragePassPercentageForLabel(\n    $label: String!\n  ) {\n    getAveragePassPercentageForLabel(label:$label)\n  }\n\n": types.GetAveragePassPercentageForLabelDocument,
     "\n  query GetTestDurationAggregation(\n    $label: String\n  ) {\n    getTestDurationAggregation(label:$label) {\n      label\n      count\n      sum\n      min\n      max\n    }\n  }\n": types.GetTestDurationAggregationDocument,
     "\n query FindTests(\n    $first: Int!\n    $where: TestCollectionWhereInput\n    $orderBy: TestCollectionOrder\n    $after: Cursor\n  ){\n  findTests (first: $first, where: $where, orderBy: $orderBy, after: $after){\n    totalCount\n    pageInfo{\n      startCursor\n      endCursor\n      hasNextPage\n      hasPreviousPage\n    }\n    edges {\n      node {\n        id\n        durationMs\n        firstSeen\n        label\n        overallStatus\n        bazelInvocation {\n          invocationID\n        }\n      }\n    }\n  }\n}\n": types.FindTestsDocument,
@@ -36,6 +35,8 @@ const documents = {
     "\n  query FindBuilds(\n    $first: Int!\n    $where: BuildWhereInput\n  ) {\n    findBuilds(first: $first, where: $where) {\n      edges {\n        node {\n          ...BuildNode\n        }\n      }\n    }\n  }\n": types.FindBuildsDocument,
     "\n  fragment BuildNode on Build {\n    id\n    buildUUID\n    buildURL\n    timestamp\n  }\n": types.BuildNodeFragmentDoc,
     "\n    query FindTestsWithCache(\n       $first: Int!\n       $where: TestCollectionWhereInput\n       $orderBy: TestCollectionOrder\n       $after: Cursor\n     ){\n     findTests (first: $first, where: $where, orderBy: $orderBy, after: $after){\n       totalCount\n       pageInfo{\n         startCursor\n         endCursor\n         hasNextPage\n         hasPreviousPage\n       }\n       edges {\n         node {\n           id\n           durationMs\n           firstSeen\n           label\n           overallStatus\n           cachedLocally\n           cachedRemotely\n           bazelInvocation {\n             invocationID\n           }\n         }\n       }\n     }\n   }\n   ": types.FindTestsWithCacheDocument,
+    "\nquery GetUniqueTargetLabels($label: String) {\n  getUniqueTargetLabels(param: $label)\n}\n": types.GetUniqueTargetLabelsDocument,
+    "\nquery GetUniqueTestLabels($label: String) {\n  getUniqueTestLabels(param: $label)\n}\n": types.GetUniqueTestLabelsDocument,
 };
 
 /**
@@ -107,10 +108,6 @@ export function gql(source: "\nquery GetTestsWithOffset(\n  $label: String,\n  $
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query GetUniqueTestLabels{\n    getUniqueTestLabels\n  }\n"): (typeof documents)["\n  query GetUniqueTestLabels{\n    getUniqueTestLabels\n  }\n"];
-/**
- * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function gql(source: "\n\n  query GetAveragePassPercentageForLabel(\n    $label: String!\n  ) {\n    getAveragePassPercentageForLabel(label:$label)\n  }\n\n"): (typeof documents)["\n\n  query GetAveragePassPercentageForLabel(\n    $label: String!\n  ) {\n    getAveragePassPercentageForLabel(label:$label)\n  }\n\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -144,6 +141,14 @@ export function gql(source: "\n  fragment BuildNode on Build {\n    id\n    buil
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n    query FindTestsWithCache(\n       $first: Int!\n       $where: TestCollectionWhereInput\n       $orderBy: TestCollectionOrder\n       $after: Cursor\n     ){\n     findTests (first: $first, where: $where, orderBy: $orderBy, after: $after){\n       totalCount\n       pageInfo{\n         startCursor\n         endCursor\n         hasNextPage\n         hasPreviousPage\n       }\n       edges {\n         node {\n           id\n           durationMs\n           firstSeen\n           label\n           overallStatus\n           cachedLocally\n           cachedRemotely\n           bazelInvocation {\n             invocationID\n           }\n         }\n       }\n     }\n   }\n   "): (typeof documents)["\n    query FindTestsWithCache(\n       $first: Int!\n       $where: TestCollectionWhereInput\n       $orderBy: TestCollectionOrder\n       $after: Cursor\n     ){\n     findTests (first: $first, where: $where, orderBy: $orderBy, after: $after){\n       totalCount\n       pageInfo{\n         startCursor\n         endCursor\n         hasNextPage\n         hasPreviousPage\n       }\n       edges {\n         node {\n           id\n           durationMs\n           firstSeen\n           label\n           overallStatus\n           cachedLocally\n           cachedRemotely\n           bazelInvocation {\n             invocationID\n           }\n         }\n       }\n     }\n   }\n   "];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\nquery GetUniqueTargetLabels($label: String) {\n  getUniqueTargetLabels(param: $label)\n}\n"): (typeof documents)["\nquery GetUniqueTargetLabels($label: String) {\n  getUniqueTargetLabels(param: $label)\n}\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\nquery GetUniqueTestLabels($label: String) {\n  getUniqueTestLabels(param: $label)\n}\n"): (typeof documents)["\nquery GetUniqueTestLabels($label: String) {\n  getUniqueTestLabels(param: $label)\n}\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

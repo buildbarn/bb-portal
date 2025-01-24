@@ -11,6 +11,8 @@ import (
 	"os"
 	"time"
 
+	_ "net/http/pprof"
+
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
@@ -52,6 +54,11 @@ var (
 )
 
 func main() {
+	go func() {
+		pprof := http.ListenAndServe("localhost:8083", nil)
+		slog.Info(pprof.Error())
+	}()
+
 	program.RunMain(func(ctx context.Context, siblingsGroup, dependenciesGroup program.Group) error {
 		flag.Parse()
 

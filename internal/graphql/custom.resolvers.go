@@ -232,44 +232,33 @@ func (r *queryResolver) GetBuild(ctx context.Context, buildURL *string, buildUUI
 
 // GetUniqueTestLabels is the resolver for the getUniqueTestLabels field.
 func (r *queryResolver) GetUniqueTestLabels(ctx context.Context, param *string) ([]*string, error) {
-	if param == nil {
-		res, err := r.client.TestCollection.Query().
-			GroupBy(testcollection.FieldLabel).
-			Strings(ctx)
-		if err != nil {
-			return nil, err
-		}
-		return helpers.StringSliceArrayToPointerArray(res), nil
+	query := r.client.TestCollection.Query().Limit(100)
+	// started := time.Now()
+	if param != nil && *param != "" {
+		query = query.Where(testcollection.LabelContains(*param))
 	}
-	res, err := r.client.TestCollection.Query().
-		Where(testcollection.LabelContains(*param)).
-		GroupBy(testcollection.FieldLabel).
-		Strings(ctx)
+	res, err := query.Unique(true).Select(testcollection.FieldLabel).Strings(ctx)
 	if err != nil {
 		return nil, err
 	}
+	// elapsed := time.Since(started)
+	// slog.Info("GetUniqueTestLabels", "elapsed:", elapsed.String())
 	return helpers.StringSliceArrayToPointerArray(res), nil
 }
 
 // GetUniqueTargetLabels is the resolver for the getUniqueTargetLabels field.
 func (r *queryResolver) GetUniqueTargetLabels(ctx context.Context, param *string) ([]*string, error) {
-	if param == nil {
-		res, err := r.client.TargetPair.Query().
-			GroupBy(targetpair.FieldLabel).
-			Strings(ctx)
-		if err != nil {
-			return nil, err
-		}
-		return helpers.StringSliceArrayToPointerArray(res), nil
+	// started := time.Now()
+	query := r.client.TargetPair.Query().Limit(100)
+	if param != nil && *param != "" {
+		query = query.Where(targetpair.LabelContains(*param))
 	}
-	res, err := r.client.TargetPair.Query().
-		Where(targetpair.LabelContains(*param)).
-		GroupBy(targetpair.FieldLabel).
-		Strings(ctx)
+	res, err := query.Unique(true).Select(targetpair.FieldLabel).Strings(ctx)
 	if err != nil {
 		return nil, err
 	}
-
+	// elapsed := time.Since(started)
+	// slog.Info("GetUniqueTargetLabels", "elapsed:", elapsed.String())
 	return helpers.StringSliceArrayToPointerArray(res), nil
 }
 
@@ -319,7 +308,7 @@ func (r *queryResolver) GetTargetPassAggregation(ctx context.Context, label *str
 
 // GetTestsWithOffset is the resolver for the getTestsWithOffset field.
 func (r *queryResolver) GetTestsWithOffset(ctx context.Context, label *string, offset, limit *int, sortBy, direction *string) (*model.TestGridResult, error) {
-	maxLimit := 10000
+	maxLimit := 100
 	take := 10
 	skip := 0
 	if limit != nil {
@@ -331,18 +320,9 @@ func (r *queryResolver) GetTestsWithOffset(ctx context.Context, label *string, o
 	if offset != nil {
 		skip = *offset
 	}
-	orderBy := "first_seen"
-	if sortBy != nil {
-		orderBy = *sortBy
-	}
 
 	var result []*model.TestGridRow
 	query := r.client.TestCollection.Query()
-
-	switch orderBy {
-	case "first_seen":
-		query = query.Order(testcollection.ByFirstSeen())
-	}
 
 	if label != nil && *label != "" {
 		query = query.Where(testcollection.LabelContains(*label))
@@ -361,29 +341,7 @@ func (r *queryResolver) GetTestsWithOffset(ctx context.Context, label *string, o
 	if err != nil {
 		return nil, err
 	}
-	for _, item := range result {
-		lbl := *item.Label
-		cnt := *item.Count
-		passes, err := r.client.TestCollection.Query().
-			Where(testcollection.
-				And(testcollection.LabelEQ(lbl),
-					testcollection.OverallStatusEQ(testcollection.OverallStatusPASSED))).
-			Count(ctx)
-		if err != nil {
-			return nil, err
-		}
-		passRate := float64(passes / cnt)
-		item.PassRate = &passRate
-	}
-	l := r.client.TestCollection.Query()
-	if label != nil && *label != "" {
-		l = l.Where(testcollection.LabelContains(*label))
-	}
-	labels, err := l.GroupBy(testcollection.FieldLabel).Strings(ctx)
-	if err != nil {
-		return nil, err
-	}
-	totalCount := len(labels)
+	totalCount := 0
 	response := &model.TestGridResult{
 		Result: result,
 		Total:  &totalCount,
@@ -393,7 +351,7 @@ func (r *queryResolver) GetTestsWithOffset(ctx context.Context, label *string, o
 
 // GetTargetsWithOffset is the resolver for the GetTargetsWithOffset field.
 func (r *queryResolver) GetTargetsWithOffset(ctx context.Context, label *string, offset, limit *int, sortBy, direction *string) (*model.TargetGridResult, error) {
-	maxLimit := 10000
+	maxLimit := 100
 	take := 10
 	skip := 0
 	if limit != nil {
@@ -405,18 +363,9 @@ func (r *queryResolver) GetTargetsWithOffset(ctx context.Context, label *string,
 	if offset != nil {
 		skip = *offset
 	}
-	orderBy := "first_seen"
-	if sortBy != nil {
-		orderBy = *sortBy
-	}
 
 	var result []*model.TargetGridRow
 	query := r.client.TargetPair.Query()
-
-	switch orderBy {
-	case "duration":
-		query = query.Order(targetpair.ByDurationInMs())
-	}
 
 	if label != nil && *label != "" {
 		query = query.Where(targetpair.LabelContains(*label))
@@ -435,29 +384,7 @@ func (r *queryResolver) GetTargetsWithOffset(ctx context.Context, label *string,
 	if err != nil {
 		return nil, err
 	}
-	for _, item := range result {
-		lbl := *item.Label
-		cnt := *item.Count
-		passes, err := r.client.TargetPair.Query().
-			Where(targetpair.
-				And(targetpair.LabelEQ(lbl),
-					targetpair.SuccessEQ(true))).
-			Count(ctx)
-		if err != nil {
-			return nil, err
-		}
-		passRate := float64(passes / cnt)
-		item.PassRate = &passRate
-	}
-	l := r.client.TargetPair.Query()
-	if label != nil && *label != "" {
-		l = l.Where(targetpair.LabelContains(*label))
-	}
-	labels, err := l.GroupBy(targetpair.FieldLabel).Strings(ctx)
-	if err != nil {
-		return nil, err
-	}
-	totalCount := len(labels)
+	totalCount := 0
 	response := &model.TargetGridResult{
 		Result: result,
 		Total:  &totalCount,
