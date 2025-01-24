@@ -8,11 +8,22 @@ export const FIND_BUILD_BY_UUID_QUERY = gql(/* GraphQL */ `
       buildUUID
       timestamp
       invocations {
-        ...FullBazelInvocationDetails
-      }
-      env {
-        key
-        value
+        id
+        invocationID
+        userLdap
+        endedAt
+        startedAt
+        state {
+          exitCode {
+            name
+          }
+        }
+        sourceControl{
+          job
+          action
+          workflow
+          runnerName
+        }
       }
     }
   }
