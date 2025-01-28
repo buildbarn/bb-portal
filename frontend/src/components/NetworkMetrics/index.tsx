@@ -16,7 +16,7 @@ const NetworkMetricsDisplay: React.FC<{ networkMetrics: NetworkMetrics | undefin
     const systemNetworkStats: SystemNetworkStats | undefined = networkMetrics?.systemNetworkStats ?? undefined
     return (
         <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
-            <PortalCard titleBits={["Systen Network Metrics"]} icon={<FieldTimeOutlined />}>
+            <PortalCard titleBits={["System Network Metrics"]} icon={<FieldTimeOutlined />}>
                 <Row>
                     <Space size="large">
                         <Statistic title="Bytes Recieved" value={systemNetworkStats?.bytesRecv ?? 0} formatter={formatter} />
