@@ -48,7 +48,6 @@ func (r MissReason) EnumIndex() int32 {
 // String Enum helper method.
 func (r MissReason) String() string {
 	return [...]string{
-		"UNKNOWN",
 		"DIFFERENT_ACTION_KEY",
 		"DIFFERENT_DEPS",
 		"DIFFERENT_ENVIRONMENT",

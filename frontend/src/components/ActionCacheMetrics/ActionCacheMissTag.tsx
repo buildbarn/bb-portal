@@ -13,14 +13,13 @@ import { Tag } from 'antd';
 import themeStyles from '@/theme/theme.module.css';
 
 export const ALL_STATUS_VALUES = [
-    'UNKNOWN',
     'DIFFERENT_ACTION_KEY',
     'DIFFERENT_DEPS',
     'DIFFERENT_ENVIRONMENT',
     'DIFFERENT_FILES',
     'CORRUPTED_CACHE_ENTRY',
     'NOT_CACHED',
-
+    'UNCONDITIONAL_EXECUTION',
 ] as const;
 export type MissDetailTuple = typeof ALL_STATUS_VALUES;
 export type MissDetailEnum = MissDetailTuple[number];
@@ -30,11 +29,6 @@ interface Props {
 }
 
 const STATUS_TAGS: { [key in MissDetailEnum]: React.ReactNode } = {
-    UNKNOWN: (
-        <Tag icon={<QuestionCircleFilled />} color="default" className={themeStyles.tag}>
-            <span className={themeStyles.tagContent}>Unknown</span>
-        </Tag>
-    ),
     DIFFERENT_ACTION_KEY: (
         <Tag icon={<KeyOutlined />} color="blue" className={themeStyles.tag}>
             <span className={themeStyles.tagContent}>Different Action Key</span>
@@ -65,7 +59,11 @@ const STATUS_TAGS: { [key in MissDetailEnum]: React.ReactNode } = {
             <span className={themeStyles.tagContent}>Not Cached</span>
         </Tag>
     ),
-
+    UNCONDITIONAL_EXECUTION: (
+        <Tag icon={<MinusCircleFilled />} color="green" className={themeStyles.tag}>
+            <span className={themeStyles.tagContent}>Unconditional Execution</span>
+        </Tag>
+    ),
 };
 
 const MissDetailTag: React.FC<Props> = ({ status }) => {

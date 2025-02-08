@@ -24,13 +24,13 @@ const formatter: StatisticProps['formatter'] = (value) => (
 
 var ac_colors =
     [
-        "grey",     //unknown
         "blue",     //different action key
         "pink",     //different deps
         "purple",   //different env
         "cyan",     //diff files
         "orange",   //corrupted cache entry
-        "red"]      //not cached
+        "red",      //not cached
+        "green"]    //unconditional execution
 
 const ac_columns: TableColumnsType<MissDetailDisplayDataType> = [
     {
