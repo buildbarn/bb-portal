@@ -13,6 +13,7 @@ import { Tag } from 'antd';
 import themeStyles from '@/theme/theme.module.css';
 
 export const ALL_STATUS_VALUES = [
+    'UNKNOWN',
     'DIFFERENT_ACTION_KEY',
     'DIFFERENT_DEPS',
     'DIFFERENT_ENVIRONMENT',
@@ -29,6 +30,11 @@ interface Props {
 }
 
 const STATUS_TAGS: { [key in MissDetailEnum]: React.ReactNode } = {
+    UNKNOWN: (
+        <Tag icon={<QuestionCircleFilled />} color="default" className={themeStyles.tag}>
+            <span className={themeStyles.tagContent}>Unknown</span>
+        </Tag>
+    ),
     DIFFERENT_ACTION_KEY: (
         <Tag icon={<KeyOutlined />} color="blue" className={themeStyles.tag}>
             <span className={themeStyles.tagContent}>Different Action Key</span>

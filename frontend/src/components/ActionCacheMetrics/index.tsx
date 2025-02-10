@@ -24,6 +24,7 @@ const formatter: StatisticProps['formatter'] = (value) => (
 
 var ac_colors =
     [
+        "grey",     //unknown
         "blue",     //different action key
         "pink",     //different deps
         "purple",   //different env
