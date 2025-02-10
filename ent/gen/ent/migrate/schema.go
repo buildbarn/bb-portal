@@ -28,7 +28,7 @@ var (
 				Symbol:     "action_cache_statistics_action_summaries_action_cache_statistics",
 				Columns:    []*schema.Column{ActionCacheStatisticsColumns[6]},
 				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -54,7 +54,7 @@ var (
 				Symbol:     "action_data_action_summaries_action_data",
 				Columns:    []*schema.Column{ActionDataColumns[8]},
 				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -77,7 +77,7 @@ var (
 				Symbol:     "action_summaries_metrics_action_summary",
 				Columns:    []*schema.Column{ActionSummariesColumns[5]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -99,25 +99,25 @@ var (
 				Symbol:     "artifact_metrics_files_metrics_source_artifacts_read",
 				Columns:    []*schema.Column{ArtifactMetricsColumns[1]},
 				RefColumns: []*schema.Column{FilesMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "artifact_metrics_files_metrics_output_artifacts_seen",
 				Columns:    []*schema.Column{ArtifactMetricsColumns[2]},
 				RefColumns: []*schema.Column{FilesMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "artifact_metrics_files_metrics_output_artifacts_from_action_cache",
 				Columns:    []*schema.Column{ArtifactMetricsColumns[3]},
 				RefColumns: []*schema.Column{FilesMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "artifact_metrics_metrics_artifact_metrics",
 				Columns:    []*schema.Column{ArtifactMetricsColumns[4]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -156,7 +156,7 @@ var (
 				Symbol:     "bazel_invocations_builds_invocations",
 				Columns:    []*schema.Column{BazelInvocationsColumns[20]},
 				RefColumns: []*schema.Column{BuildsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "bazel_invocations_event_files_bazel_invocation",
@@ -191,7 +191,7 @@ var (
 				Symbol:     "bazel_invocation_problems_bazel_invocations_problems",
 				Columns:    []*schema.Column{BazelInvocationProblemsColumns[4]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -259,31 +259,31 @@ var (
 				Symbol:     "build_graph_metrics_evaluation_stats_dirtied_values",
 				Columns:    []*schema.Column{BuildGraphMetricsColumns[10]},
 				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "build_graph_metrics_evaluation_stats_changed_values",
 				Columns:    []*schema.Column{BuildGraphMetricsColumns[11]},
 				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "build_graph_metrics_evaluation_stats_built_values",
 				Columns:    []*schema.Column{BuildGraphMetricsColumns[12]},
 				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "build_graph_metrics_evaluation_stats_cleaned_values",
 				Columns:    []*schema.Column{BuildGraphMetricsColumns[13]},
 				RefColumns: []*schema.Column{EvaluationStatsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "build_graph_metrics_metrics_build_graph_metrics",
 				Columns:    []*schema.Column{BuildGraphMetricsColumns[14]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -304,7 +304,7 @@ var (
 				Symbol:     "cumulative_metrics_metrics_cumulative_metrics",
 				Columns:    []*schema.Column{CumulativeMetricsColumns[3]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -323,7 +323,7 @@ var (
 				Symbol:     "dynamic_execution_metrics_metrics_dynamic_execution_metrics",
 				Columns:    []*schema.Column{DynamicExecutionMetricsColumns[1]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -344,7 +344,7 @@ var (
 				Symbol:     "evaluation_stats_build_graph_metrics_evaluated_values",
 				Columns:    []*schema.Column{EvaluationStatsColumns[3]},
 				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -391,7 +391,7 @@ var (
 				Symbol:     "exection_infos_test_result_be_ss_execution_info",
 				Columns:    []*schema.Column{ExectionInfosColumns[6]},
 				RefColumns: []*schema.Column{TestResultBeSsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -412,7 +412,7 @@ var (
 				Symbol:     "files_metrics_artifact_metrics_top_level_artifacts",
 				Columns:    []*schema.Column{FilesMetricsColumns[3]},
 				RefColumns: []*schema.Column{ArtifactMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -433,7 +433,7 @@ var (
 				Symbol:     "garbage_metrics_memory_metrics_garbage_metrics",
 				Columns:    []*schema.Column{GarbageMetricsColumns[3]},
 				RefColumns: []*schema.Column{MemoryMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -455,7 +455,7 @@ var (
 				Symbol:     "memory_metrics_metrics_memory_metrics",
 				Columns:    []*schema.Column{MemoryMetricsColumns[4]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -474,7 +474,7 @@ var (
 				Symbol:     "metrics_bazel_invocations_metrics",
 				Columns:    []*schema.Column{MetricsColumns[1]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -495,7 +495,7 @@ var (
 				Symbol:     "miss_details_action_cache_statistics_miss_details",
 				Columns:    []*schema.Column{MissDetailsColumns[3]},
 				RefColumns: []*schema.Column{ActionCacheStatisticsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -515,13 +515,13 @@ var (
 				Symbol:     "named_set_of_files_named_set_of_files_file_sets",
 				Columns:    []*schema.Column{NamedSetOfFilesColumns[1]},
 				RefColumns: []*schema.Column{NamedSetOfFilesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "named_set_of_files_output_groups_file_sets",
 				Columns:    []*schema.Column{NamedSetOfFilesColumns[2]},
 				RefColumns: []*schema.Column{OutputGroupsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -540,7 +540,7 @@ var (
 				Symbol:     "network_metrics_metrics_network_metrics",
 				Columns:    []*schema.Column{NetworkMetricsColumns[1]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -561,7 +561,7 @@ var (
 				Symbol:     "output_groups_target_completes_output_group",
 				Columns:    []*schema.Column{OutputGroupsColumns[3]},
 				RefColumns: []*schema.Column{TargetCompletesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -586,7 +586,7 @@ var (
 				Symbol:     "package_load_metrics_package_metrics_package_load_metrics",
 				Columns:    []*schema.Column{PackageLoadMetricsColumns[7]},
 				RefColumns: []*schema.Column{PackageMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -606,7 +606,7 @@ var (
 				Symbol:     "package_metrics_metrics_package_metrics",
 				Columns:    []*schema.Column{PackageMetricsColumns[2]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -630,7 +630,7 @@ var (
 				Symbol:     "race_statistics_dynamic_execution_metrics_race_statistics",
 				Columns:    []*schema.Column{RaceStatisticsColumns[6]},
 				RefColumns: []*schema.Column{DynamicExecutionMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -651,7 +651,7 @@ var (
 				Symbol:     "resource_usages_exection_infos_resource_usage",
 				Columns:    []*schema.Column{ResourceUsagesColumns[3]},
 				RefColumns: []*schema.Column{ExectionInfosColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -673,7 +673,7 @@ var (
 				Symbol:     "runner_counts_action_summaries_runner_count",
 				Columns:    []*schema.Column{RunnerCountsColumns[4]},
 				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -706,7 +706,7 @@ var (
 				Symbol:     "source_controls_bazel_invocations_source_control",
 				Columns:    []*schema.Column{SourceControlsColumns[15]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -733,7 +733,7 @@ var (
 				Symbol:     "system_network_stats_network_metrics_system_network_stats",
 				Columns:    []*schema.Column{SystemNetworkStatsColumns[9]},
 				RefColumns: []*schema.Column{NetworkMetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -759,7 +759,7 @@ var (
 				Symbol:     "target_completes_target_pairs_completion",
 				Columns:    []*schema.Column{TargetCompletesColumns[8]},
 				RefColumns: []*schema.Column{TargetPairsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -782,7 +782,7 @@ var (
 				Symbol:     "target_configureds_target_pairs_configuration",
 				Columns:    []*schema.Column{TargetConfiguredsColumns[5]},
 				RefColumns: []*schema.Column{TargetPairsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -804,7 +804,7 @@ var (
 				Symbol:     "target_metrics_metrics_target_metrics",
 				Columns:    []*schema.Column{TargetMetricsColumns[4]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -829,7 +829,14 @@ var (
 				Symbol:     "target_pairs_bazel_invocations_targets",
 				Columns:    []*schema.Column{TargetPairsColumns[7]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "targetpair_label",
+				Unique:  false,
+				Columns: []*schema.Column{TargetPairsColumns[1]},
 			},
 		},
 	}
@@ -855,7 +862,14 @@ var (
 				Symbol:     "test_collections_bazel_invocations_test_collection",
 				Columns:    []*schema.Column{TestCollectionsColumns[8]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "testcollection_label",
+				Unique:  false,
+				Columns: []*schema.Column{TestCollectionsColumns[1]},
 			},
 		},
 	}
@@ -885,43 +899,43 @@ var (
 				Symbol:     "test_files_named_set_of_files_files",
 				Columns:    []*schema.Column{TestFilesColumns[6]},
 				RefColumns: []*schema.Column{NamedSetOfFilesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "test_files_output_groups_inline_files",
 				Columns:    []*schema.Column{TestFilesColumns[7]},
 				RefColumns: []*schema.Column{OutputGroupsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "test_files_target_completes_important_output",
 				Columns:    []*schema.Column{TestFilesColumns[8]},
 				RefColumns: []*schema.Column{TargetCompletesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "test_files_target_completes_directory_output",
 				Columns:    []*schema.Column{TestFilesColumns[9]},
 				RefColumns: []*schema.Column{TargetCompletesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "test_files_test_result_be_ss_test_action_output",
 				Columns:    []*schema.Column{TestFilesColumns[10]},
 				RefColumns: []*schema.Column{TestResultBeSsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "test_files_test_summaries_passed",
 				Columns:    []*schema.Column{TestFilesColumns[11]},
 				RefColumns: []*schema.Column{TestSummariesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "test_files_test_summaries_failed",
 				Columns:    []*schema.Column{TestFilesColumns[12]},
 				RefColumns: []*schema.Column{TestSummariesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -949,7 +963,7 @@ var (
 				Symbol:     "test_result_be_ss_test_collections_test_results",
 				Columns:    []*schema.Column{TestResultBeSsColumns[10]},
 				RefColumns: []*schema.Column{TestCollectionsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -978,7 +992,7 @@ var (
 				Symbol:     "test_summaries_test_collections_test_summary",
 				Columns:    []*schema.Column{TestSummariesColumns[11]},
 				RefColumns: []*schema.Column{TestCollectionsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -999,7 +1013,7 @@ var (
 				Symbol:     "timing_breakdowns_exection_infos_timing_breakdown",
 				Columns:    []*schema.Column{TimingBreakdownsColumns[3]},
 				RefColumns: []*schema.Column{ExectionInfosColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -1020,7 +1034,7 @@ var (
 				Symbol:     "timing_childs_timing_breakdowns_child",
 				Columns:    []*schema.Column{TimingChildsColumns[3]},
 				RefColumns: []*schema.Column{TimingBreakdownsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -1044,7 +1058,7 @@ var (
 				Symbol:     "timing_metrics_metrics_timing_metrics",
 				Columns:    []*schema.Column{TimingMetricsColumns[6]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}

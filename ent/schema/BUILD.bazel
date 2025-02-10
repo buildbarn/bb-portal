@@ -51,6 +51,7 @@ go_library(
         "@com_github_google_uuid//:uuid",
         "@io_entgo_contrib//entgql",
         "@io_entgo_ent//:ent",
+        "@io_entgo_ent//dialect/entsql",
         "@io_entgo_ent//schema",
         "@io_entgo_ent//schema/edge",
         "@io_entgo_ent//schema/field",

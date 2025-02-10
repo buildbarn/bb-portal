@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -67,10 +68,16 @@ func (TestCollection) Edges() []ent.Edge {
 			Ref("test_collection").Unique(),
 
 		// The test summary aossicated with the test.
-		edge.To("test_summary", TestSummary.Type).Unique(),
+		edge.To("test_summary", TestSummary.Type).Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// A collection of test results associated with this collection
-		edge.To("test_results", TestResultBES.Type),
+		edge.To("test_results", TestResultBES.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
 

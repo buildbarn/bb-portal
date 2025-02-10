@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -34,6 +35,9 @@ func (TimingBreakdown) Edges() []ent.Edge {
 		// Timing children (this could probably be better reempleted as a node to itself.
 		// except the relationship to the executio info object.  maybe we don't care about that?
 		// for now, an intermediate 'parent' object is used)
-		edge.To("child", TimingChild.Type),
+		edge.To("child", TimingChild.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }

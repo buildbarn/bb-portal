@@ -1,9 +1,0 @@
-load("@rules_go//go:def.bzl", "go_library")
-
-go_library(
-    name = "hook",
-    srcs = ["hook.go"],
-    importpath = "github.com/buildbarn/bb-portal/ent/gen/ent/hook",
-    visibility = ["//visibility:public"],
-    deps = ["//ent/gen/ent"],
-)

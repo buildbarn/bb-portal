@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -70,9 +71,15 @@ func (TestSummary) Edges() []ent.Edge {
 			Unique(),
 
 		// Path to logs of passed runs.
-		edge.To("passed", TestFile.Type),
+		edge.To("passed", TestFile.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Path to logs of failed runs;
-		edge.To("failed", TestFile.Type),
+		edge.To("failed", TestFile.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }

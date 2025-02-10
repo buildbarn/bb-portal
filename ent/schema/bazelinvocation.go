@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -99,21 +100,36 @@ func (BazelInvocation) Edges() []ent.Edge {
 		// Edge to any probles detected.
 		// NOTE: Uses custom resolver / types.
 		edge.To("problems", BazelInvocationProblem.Type).
-			Annotations(entgql.Skip(entgql.SkipType)),
+			Annotations(
+				entgql.Skip(entgql.SkipType),
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Build Metrics for the Completed Invocation
 		edge.To("metrics", Metrics.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			).
 			Unique(),
 
 		// Test Data for the completed Invocation
-		edge.To("test_collection", TestCollection.Type),
+		edge.To("test_collection", TestCollection.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Target Data for the completed Invocation
-		edge.To("targets", TargetPair.Type),
+		edge.To("targets", TargetPair.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Edge to source control information
 		edge.To("source_control", SourceControl.Type).
-			Unique(),
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
 

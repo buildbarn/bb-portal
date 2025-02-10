@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -44,9 +45,15 @@ func (ExectionInfo) Edges() []ent.Edge {
 		// Represents a hierarchical timing breakdown of an activity.
 		// The top level time should be the total time of the activity.
 		// Invariant: `time` >= sum of `time`s of all direct children.
-		edge.To("timing_breakdown", TimingBreakdown.Type).Unique(),
+		edge.To("timing_breakdown", TimingBreakdown.Type).Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// resource usage info
-		edge.To("resource_usage", ResourceUsage.Type),
+		edge.To("resource_usage", ResourceUsage.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }

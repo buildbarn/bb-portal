@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -84,25 +85,37 @@ func (BuildGraphMetrics) Edges() []ent.Edge {
 		// those that transitively depend on a node that changed by itself (e.g. one
 		// representing a file in the file system)
 		edge.To("dirtied_values", EvaluationStat.Type).
-			Unique(),
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Changed Values.
 		// Number of SkyValues that changed by themselves. For example, when a file
 		// on the file system changes, the SkyValue representing it will change.
 		edge.To("changed_values", EvaluationStat.Type).
-			Unique(),
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Built Values.
 		// Number of SkyValues that were built. This means that they were evaluated
 		// and were found to have changed from their previous version.
 		edge.To("built_values", EvaluationStat.Type).
-			Unique(),
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Cleaned Values.
 		// Number of SkyValues that were evaluated and found clean, i.e. equal to
 		// their previous version.
 		edge.To("cleaned_values", EvaluationStat.Type).
-			Unique(),
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Evaluated Values.
 		// Number of evaluations to build SkyValues. This includes restarted
@@ -110,6 +123,9 @@ func (BuildGraphMetrics) Edges() []ent.Edge {
 		// SkyValue. Subtract built_values from this number to get the number of
 		// restarted evaluations.
 		edge.To("evaluated_values", EvaluationStat.Type).
-			Unique(),
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }

@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 )
 
@@ -24,10 +25,16 @@ func (NamedSetOfFiles) Edges() []ent.Edge {
 			Unique(),
 
 		// Files that belong to this named set of files.
-		edge.To("files", TestFile.Type),
+		edge.To("files", TestFile.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Other named sets whose members also belong to this set.
-		edge.To("file_sets", NamedSetOfFiles.Type).Unique(),
+		edge.To("file_sets", NamedSetOfFiles.Type).Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
 

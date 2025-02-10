@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 )
 
@@ -24,6 +25,9 @@ func (DynamicExecutionMetrics) Edges() []ent.Edge {
 			Unique(),
 
 		// Race statistics grouped by mnemonic, local_name, remote_name.
-		edge.To("race_statistics", RaceStatistics.Type),
+		edge.To("race_statistics", RaceStatistics.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }

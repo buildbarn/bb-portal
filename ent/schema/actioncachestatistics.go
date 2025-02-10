@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -42,6 +43,9 @@ func (ActionCacheStatistics) Edges() []ent.Edge {
 			Unique(),
 
 		// Breakdown of the cache misses based on the reasons behind them.
-		edge.To("miss_details", MissDetail.Type),
+		edge.To("miss_details", MissDetail.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }

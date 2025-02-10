@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -41,6 +42,9 @@ func (PackageMetrics) Edges() []ent.Edge {
 			Unique(),
 
 		// Loading time metrics per package.
-		edge.To("package_load_metrics", PackageLoadMetrics.Type),
+		edge.To("package_load_metrics", PackageLoadMetrics.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }

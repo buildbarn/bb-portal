@@ -24,6 +24,19 @@ extend type Query {
   getAveragePassPercentageForLabel(label: String!): Float
 }
 
+extend type Mutation {
+  deleteInvocation(invocationId: UUID!): Boolean!
+  deleteBuild(buildUUID: UUID!): Boolean!
+  deleteInvocationsBefore(time: Time!): DeleteResult!
+  deleteBuildsBefore(time: Time!): DeleteResult!
+}
+
+type DeleteResult {
+  deleted: Int!
+  found: Int!
+  successful: Boolean!
+}
+
 type TargetAggregate {
   label: String
   count: Int

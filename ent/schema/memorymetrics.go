@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -37,6 +38,9 @@ func (MemoryMetrics) Edges() []ent.Edge {
 			Unique(),
 
 		// Metrics about garbage collection
-		edge.To("garbage_metrics", GarbageMetrics.Type),
+		edge.To("garbage_metrics", GarbageMetrics.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
