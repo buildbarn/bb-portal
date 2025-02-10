@@ -25,3 +25,7 @@
 .ac-miss-detail-NOT_CACHED {
     color: "#ffbd33"
 }
+
+.ac-miss-detail-UNCONDITIONAL_EXECUTION {
+    color: "#008000"
+}
