@@ -15,6 +15,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+RUN npm install -g corepack@latest
 RUN corepack enable pnpm && pnpm run build
 
 # Production image, copy all the files and run next
