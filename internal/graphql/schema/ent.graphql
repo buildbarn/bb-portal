@@ -1,13 +1,5 @@
-directive @goField(
-  forceResolver: Boolean
-  name: String
-  omittable: Boolean
-) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
-directive @goModel(
-  model: String
-  models: [String!]
-  forceGenerate: Boolean
-) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
+directive @goField(forceResolver: Boolean, name: String, omittable: Boolean) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+directive @goModel(model: String, models: [String!], forceGenerate: Boolean) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
 type ActionCacheStatistics implements Node {
   id: ID!
   sizeInBytes: Int
@@ -851,10 +843,7 @@ type Blob implements Node {
 """
 BlobArchivingStatus is enum for the field archiving_status
 """
-enum BlobArchivingStatus
-  @goModel(
-    model: "github.com/buildbarn/bb-portal/ent/gen/ent/blob.ArchivingStatus"
-  ) {
+enum BlobArchivingStatus @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/blob.ArchivingStatus") {
   QUEUED
   ARCHIVING
   SUCCESS
@@ -1966,10 +1955,7 @@ type MissDetail implements Node {
 """
 MissDetailReason is enum for the field reason
 """
-enum MissDetailReason
-  @goModel(
-    model: "github.com/buildbarn/bb-portal/ent/gen/ent/missdetail.Reason"
-  ) {
+enum MissDetailReason @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/missdetail.Reason") {
   DIFFERENT_ACTION_KEY
   DIFFERENT_DEPS
   DIFFERENT_ENVIRONMENT
@@ -2106,8 +2092,7 @@ input NetworkMetricsWhereInput {
 An object with an ID.
 Follows the [Relay Global Object Identification Specification](https://relay.dev/graphql/objectidentification.htm)
 """
-interface Node
-  @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent.Noder") {
+interface Node @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent.Noder") {
   """
   The id of the object.
   """
@@ -3319,10 +3304,7 @@ type TargetComplete implements Node {
 """
 TargetCompleteTestSize is enum for the field test_size
 """
-enum TargetCompleteTestSize
-  @goModel(
-    model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete.TestSize"
-  ) {
+enum TargetCompleteTestSize @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete.TestSize") {
   UNKNOWN
   SMALL
   MEDIUM
@@ -3453,10 +3435,7 @@ type TargetConfigured implements Node {
 """
 TargetConfiguredTestSize is enum for the field test_size
 """
-enum TargetConfiguredTestSize
-  @goModel(
-    model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured.TestSize"
-  ) {
+enum TargetConfiguredTestSize @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured.TestSize") {
   UNKNOWN
   SMALL
   MEDIUM
@@ -3614,10 +3593,7 @@ type TargetPair implements Node {
 """
 TargetPairAbortReason is enum for the field abort_reason
 """
-enum TargetPairAbortReason
-  @goModel(
-    model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetpair.AbortReason"
-  ) {
+enum TargetPairAbortReason @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetpair.AbortReason") {
   UNKNOWN
   USER_INTERRUPTED
   NO_ANALYZE
@@ -3683,10 +3659,7 @@ enum TargetPairOrderField {
 """
 TargetPairTestSize is enum for the field test_size
 """
-enum TargetPairTestSize
-  @goModel(
-    model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetpair.TestSize"
-  ) {
+enum TargetPairTestSize @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetpair.TestSize") {
   UNKNOWN
   SMALL
   MEDIUM
@@ -3868,10 +3841,7 @@ enum TestCollectionOrderField {
 """
 TestCollectionOverallStatus is enum for the field overall_status
 """
-enum TestCollectionOverallStatus
-  @goModel(
-    model: "github.com/buildbarn/bb-portal/ent/gen/ent/testcollection.OverallStatus"
-  ) {
+enum TestCollectionOverallStatus @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/testcollection.OverallStatus") {
   NO_STATUS
   PASSED
   FLAKY
@@ -4121,10 +4091,7 @@ type TestResultBES implements Node {
 """
 TestResultBESTestStatus is enum for the field test_status
 """
-enum TestResultBESTestStatus
-  @goModel(
-    model: "github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes.TestStatus"
-  ) {
+enum TestResultBESTestStatus @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes.TestStatus") {
   NO_STATUS
   PASSED
   FLAKY
@@ -4298,10 +4265,7 @@ type TestSummary implements Node {
 """
 TestSummaryOverallStatus is enum for the field overall_status
 """
-enum TestSummaryOverallStatus
-  @goModel(
-    model: "github.com/buildbarn/bb-portal/ent/gen/ent/testsummary.OverallStatus"
-  ) {
+enum TestSummaryOverallStatus @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/testsummary.OverallStatus") {
   NO_STATUS
   PASSED
   FLAKY
