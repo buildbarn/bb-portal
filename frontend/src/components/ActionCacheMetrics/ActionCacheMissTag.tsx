@@ -20,7 +20,7 @@ export const ALL_STATUS_VALUES = [
     'DIFFERENT_FILES',
     'CORRUPTED_CACHE_ENTRY',
     'NOT_CACHED',
-
+    'UNCONDITIONAL_EXECUTION',
 ] as const;
 export type MissDetailTuple = typeof ALL_STATUS_VALUES;
 export type MissDetailEnum = MissDetailTuple[number];
@@ -65,7 +65,11 @@ const STATUS_TAGS: { [key in MissDetailEnum]: React.ReactNode } = {
             <span className={themeStyles.tagContent}>Not Cached</span>
         </Tag>
     ),
-
+    UNCONDITIONAL_EXECUTION: (
+        <Tag icon={<MinusCircleFilled />} color="green" className={themeStyles.tag}>
+            <span className={themeStyles.tagContent}>Unconditional Execution</span>
+        </Tag>
+    ),
 };
 
 const MissDetailTag: React.FC<Props> = ({ status }) => {

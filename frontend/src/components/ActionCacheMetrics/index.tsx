@@ -30,7 +30,8 @@ var ac_colors =
         "purple",   //different env
         "cyan",     //diff files
         "orange",   //corrupted cache entry
-        "red"]      //not cached
+        "red",      //not cached
+        "green"]    //unconditional execution
 
 const ac_columns: TableColumnsType<MissDetailDisplayDataType> = [
     {
