@@ -1198,6 +1198,13 @@ export type CumulativeMetricsWhereInput = {
   or?: InputMaybe<Array<CumulativeMetricsWhereInput>>;
 };
 
+export type DeleteResult = {
+  __typename?: 'DeleteResult';
+  deleted: Scalars['Int']['output'];
+  found: Scalars['Int']['output'];
+  successful: Scalars['Boolean']['output'];
+};
+
 export type DynamicExecutionMetrics = Node & {
   __typename?: 'DynamicExecutionMetrics';
   id: Scalars['ID']['output'];
@@ -1838,6 +1845,34 @@ export type MissDetailWhereInput = {
   reasonNEQ?: InputMaybe<MissDetailReason>;
   reasonNotIn?: InputMaybe<Array<MissDetailReason>>;
   reasonNotNil?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  deleteBuild: Scalars['Boolean']['output'];
+  deleteBuildsBefore: DeleteResult;
+  deleteInvocation: Scalars['Boolean']['output'];
+  deleteInvocationsBefore: DeleteResult;
+};
+
+
+export type MutationDeleteBuildArgs = {
+  buildUUID: Scalars['UUID']['input'];
+};
+
+
+export type MutationDeleteBuildsBeforeArgs = {
+  time: Scalars['Time']['input'];
+};
+
+
+export type MutationDeleteInvocationArgs = {
+  invocationId: Scalars['UUID']['input'];
+};
+
+
+export type MutationDeleteInvocationsBeforeArgs = {
+  time: Scalars['Time']['input'];
 };
 
 export type NamedFile = {

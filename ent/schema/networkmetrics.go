@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 )
 
@@ -25,6 +26,9 @@ func (NetworkMetrics) Edges() []ent.Edge {
 
 		// Information about host network.
 		edge.To("system_network_stats", SystemNetworkStats.Type).
-			Unique(),
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }

@@ -12,6 +12,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
@@ -204,6 +205,80 @@ func (r *buildResolver) Env(ctx context.Context, obj *ent.Build) ([]*model.EnvVa
 		return cmp.Compare(a.Key, b.Key)
 	})
 	return envVars, nil
+}
+
+// DeleteInvocation is the resolver for the deleteInvocation field.
+func (r *mutationResolver) DeleteInvocation(ctx context.Context, invocationID uuid.UUID) (bool, error) {
+	invocation, err := r.client.BazelInvocation.Query().Where(bazelinvocation.InvocationID(invocationID)).First(ctx)
+	if err != nil {
+		return false, fmt.Errorf("could not find invocation: %w", err)
+	}
+
+	// Delete the invocation
+	err = r.client.BazelInvocation.DeleteOne(invocation).Exec(ctx)
+	if err != nil {
+		return false, fmt.Errorf("could not delete invocation with: %w", err)
+	}
+	return true, nil
+}
+
+// DeleteBuild is the resolver for the deleteBuild field.
+func (r *mutationResolver) DeleteBuild(ctx context.Context, buildUUID uuid.UUID) (bool, error) {
+	build, err := r.client.Build.Query().Where(build.BuildUUID(buildUUID)).First(ctx)
+	if err != nil {
+		return false, fmt.Errorf("could not find build: %w", err)
+	}
+	for _, invocations := range build.Edges.Invocations {
+		err = r.client.BazelInvocation.DeleteOne(invocations).Exec(ctx)
+		if err != nil {
+			return false, fmt.Errorf("could not delete build: %w", err)
+		}
+	}
+	err = r.client.Build.DeleteOne(build).Exec(ctx)
+	if err != nil {
+		return false, fmt.Errorf("could not delete build with: %w", err)
+	}
+	return true, nil
+}
+
+// DeleteInvocationsBefore is the resolver for the deleteInvocationsBefore field.
+func (r *mutationResolver) DeleteInvocationsBefore(ctx context.Context, time time.Time) (*model.DeleteResult, error) {
+	// find invocaations before time
+	result := &model.DeleteResult{Deleted: 0, Successful: false}
+	invocations, err := r.client.BazelInvocation.Query().Where(bazelinvocation.EndedAtLT(time)).All(ctx)
+	if err != nil {
+		return result, fmt.Errorf("could not find invocations: %w", err)
+	}
+	result.Found = len(invocations)
+	for _, invocation := range invocations {
+		err = r.client.BazelInvocation.DeleteOne(invocation).Exec(ctx)
+		if err != nil {
+			return result, fmt.Errorf("could not delete invocations: %w", err)
+		}
+		result.Deleted++
+	}
+	result.Successful = true
+	return result, nil
+}
+
+// DeleteBuildsBefore is the resolver for the deleteBuildsBefore field.
+func (r *mutationResolver) DeleteBuildsBefore(ctx context.Context, time time.Time) (*model.DeleteResult, error) {
+	// find builds before time
+	result := &model.DeleteResult{Deleted: 0, Successful: false}
+	builds, err := r.client.Build.Query().Where(build.TimestampLT(time)).All(ctx)
+	if err != nil {
+		return result, fmt.Errorf("could not find builds: %w", err)
+	}
+	result.Found = len(builds)
+	for _, build := range builds {
+		err = r.client.Build.DeleteOne(build).Exec(ctx)
+		if err != nil {
+			return result, fmt.Errorf("could not delete build with: %w", err)
+		}
+		result.Deleted++
+	}
+	result.Successful = true
+	return result, nil
 }
 
 // BazelInvocation is the resolver for the bazelInvocation field.
@@ -433,11 +508,15 @@ func (r *Resolver) ActionProblem() ActionProblemResolver { return &actionProblem
 // BlobReference returns BlobReferenceResolver implementation.
 func (r *Resolver) BlobReference() BlobReferenceResolver { return &blobReferenceResolver{r} }
 
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+
 // TestResult returns TestResultResolver implementation.
 func (r *Resolver) TestResult() TestResultResolver { return &testResultResolver{r} }
 
 type (
 	actionProblemResolver struct{ *Resolver }
 	blobReferenceResolver struct{ *Resolver }
+	mutationResolver      struct{ *Resolver }
 	testResultResolver    struct{ *Resolver }
 )

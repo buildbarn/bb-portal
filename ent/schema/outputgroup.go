@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -35,9 +36,15 @@ func (OutputGroup) Edges() []ent.Edge {
 		// Inline Files.
 		// Inlined files that belong to this output group, requested via
 		// --build_event_inline_output_groups.
-		edge.To("inline_files", TestFile.Type),
+		edge.To("inline_files", TestFile.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// List of file sets that belong to this output group as well.
-		edge.To("file_sets", NamedSetOfFiles.Type).Unique(),
+		edge.To("file_sets", NamedSetOfFiles.Type).Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }

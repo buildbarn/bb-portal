@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -46,13 +47,22 @@ func (ActionSummary) Edges() []ent.Edge {
 			Unique(),
 
 		// Contains the top N actions by number of actions executed.
-		edge.To("action_data", ActionData.Type),
+		edge.To("action_data", ActionData.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Count of which Runner types were executed which actions.
-		edge.To("runner_count", RunnerCount.Type),
+		edge.To("runner_count", RunnerCount.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Information about the action cache behavior during a single invocation.
 		edge.To("action_cache_statistics", ActionCacheStatistics.Type).
-			Unique(),
+			Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }

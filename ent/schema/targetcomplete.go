@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -61,16 +62,25 @@ func (TargetComplete) Edges() []ent.Edge {
 		// Temporarily, also report the important outputs directly.
 		// This is only to allow existing clients help transition to the deduplicated representation;
 		// new clients should not use it.
-		edge.To("important_output", TestFile.Type),
+		edge.To("important_output", TestFile.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Report output artifacts (referenced transitively via output_group) which
 		// emit directories instead of singleton files. These directory_output entries
 		// will never include a uri.
-		edge.To("directory_output", TestFile.Type),
+		edge.To("directory_output", TestFile.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// The output files are arranged by their output group. If an output file
 		// is part of multiple output groups, it appears once in each output
 		// group.
-		edge.To("output_group", OutputGroup.Type).Unique(),
+		edge.To("output_group", OutputGroup.Type).Unique().
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
