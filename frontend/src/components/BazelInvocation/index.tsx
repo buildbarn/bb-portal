@@ -15,7 +15,7 @@ import styles from "../AppBar/index.module.css";
 import React, { useState } from "react";
 import PortalDuration from "@/components/PortalDuration";
 import PortalCard from "@/components/PortalCard";
-import { Space, Tabs, Typography } from "antd";
+import { Space, Tabs, Tooltip, Typography } from "antd";
 import type { TabsProps } from "antd/lib";
 import {
   BuildOutlined,
@@ -33,6 +33,7 @@ import {
   CodeOutlined,
   BranchesOutlined,
   InfoCircleOutlined,
+  CopyFilled,
 } from "@ant-design/icons";
 import themeStyles from "@/theme/theme.module.css";
 import BuildStepResultTag, {
@@ -207,7 +208,7 @@ const BazelInvocation: React.FC<{
     sourceControl.runID == ""
       ? true
       : false;
-  const hideLogsTab: boolean = true;
+  const hideLogsTab: boolean = false;
   const hideMemoryTab: boolean =
     (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 &&
     (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 &&
@@ -317,10 +318,14 @@ const BazelInvocation: React.FC<{
           <PortalCard
             type="inner"
             icon={<FileSearchOutlined />}
-            titleBits={["Build Logs"]}
-            extraBits={["test"]}
+            titleBits={["Raw Build Logs"]}
+            extraBits={[
+              <Tooltip title="Bazel emits logs in ANSI format a screen at a time.  They are presented here concatenated for your convenience.">
+                <ExclamationCircleOutlined />
+              </Tooltip>,
+            ]}
           >
-            <LogViewerCard log={logs} copyable={true} />
+            <LogViewerCard invocationId={invocationID} copyable={true} />
           </PortalCard>
         </Space>
       ),

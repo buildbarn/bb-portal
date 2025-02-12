@@ -177,6 +177,7 @@ func (act SaveActor) saveBazelInvocation(
 		SetInvocationID(uniqueID).
 		SetProfileName(summary.ProfileName).
 		SetStartedAt(summary.StartedAt).
+		SetBuildLogs(summary.BuildLogs.String()).
 		SetNillableEndedAt(summary.EndedAt).
 		SetChangeNumber(summary.ChangeNumber).
 		SetPatchsetNumber(summary.PatchsetNumber).

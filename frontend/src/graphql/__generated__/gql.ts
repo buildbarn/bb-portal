@@ -34,6 +34,7 @@ const documents = {
     "\n  fragment BazelInvocationNode on BazelInvocation {\n    id\n    invocationID\n    startedAt\n    user {\n      Email\n      LDAP\n    }\n    endedAt\n    state {\n      bepCompleted\n      exitCode {\n        code\n        name\n      }\n    }\n    build {\n      buildUUID\n    }\n  }\n": types.BazelInvocationNodeFragmentDoc,
     "\n  query FindBuilds(\n    $first: Int!\n    $where: BuildWhereInput\n  ) {\n    findBuilds(first: $first, where: $where) {\n      edges {\n        node {\n          ...BuildNode\n        }\n      }\n    }\n  }\n": types.FindBuildsDocument,
     "\n  fragment BuildNode on Build {\n    id\n    buildUUID\n    buildURL\n    timestamp\n  }\n": types.BuildNodeFragmentDoc,
+    "\nquery GetBuildLogs ($invocationId: String!){\n  bazelInvocation(invocationId: $invocationId){\n    invocationID\n    buildLogs    \n  }\n}\n": types.GetBuildLogsDocument,
     "\n    query FindTestsWithCache(\n       $first: Int!\n       $where: TestCollectionWhereInput\n       $orderBy: TestCollectionOrder\n       $after: Cursor\n     ){\n     findTests (first: $first, where: $where, orderBy: $orderBy, after: $after){\n       totalCount\n       pageInfo{\n         startCursor\n         endCursor\n         hasNextPage\n         hasPreviousPage\n       }\n       edges {\n         node {\n           id\n           durationMs\n           firstSeen\n           label\n           overallStatus\n           cachedLocally\n           cachedRemotely\n           bazelInvocation {\n             invocationID\n           }\n         }\n       }\n     }\n   }\n   ": types.FindTestsWithCacheDocument,
     "\nquery GetUniqueTargetLabels($label: String) {\n  getUniqueTargetLabels(param: $label)\n}\n": types.GetUniqueTargetLabelsDocument,
     "\nquery GetUniqueTestLabels($label: String) {\n  getUniqueTestLabels(param: $label)\n}\n": types.GetUniqueTestLabelsDocument,
@@ -137,6 +138,10 @@ export function gql(source: "\n  query FindBuilds(\n    $first: Int!\n    $where
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  fragment BuildNode on Build {\n    id\n    buildUUID\n    buildURL\n    timestamp\n  }\n"): (typeof documents)["\n  fragment BuildNode on Build {\n    id\n    buildUUID\n    buildURL\n    timestamp\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\nquery GetBuildLogs ($invocationId: String!){\n  bazelInvocation(invocationId: $invocationId){\n    invocationID\n    buildLogs    \n  }\n}\n"): (typeof documents)["\nquery GetBuildLogs ($invocationId: String!){\n  bazelInvocation(invocationId: $invocationId){\n    invocationID\n    buildLogs    \n  }\n}\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
