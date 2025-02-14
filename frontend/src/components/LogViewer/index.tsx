@@ -22,17 +22,7 @@ interface Props {
 }
 
 const LogViewer: React.FC<Props> = ({ log, invocationId }) => {
-  if (invocationId == undefined) {
-    return (
-      <PortalAlert
-        message="There is no invocationId"
-        type="warning"
-        showIcon
-        className={styles.alert}
-      />
-    );
-  }
-  if (!log && !invocationId) {
+  if (!log) {
     return (
       <PortalAlert
         message="There is no log information to display"
@@ -41,57 +31,9 @@ const LogViewer: React.FC<Props> = ({ log, invocationId }) => {
         className={styles.alert}
       />
     );
-  }
-  if (!log && invocationId !== undefined && invocationId !== "") {
-    const [variables, setVariables] = useState<GetBuildLogsQueryVariables>({
-      invocationId: invocationId,
-    });
-    const { loading, data, previousData, error } = useQuery(GET_BUILD_LOGS, {
-      variables: variables,
-      pollInterval: 300000,
-    });
-    if (error) {
-      return (
-        <PortalAlert
-          message="There was a problem communicating with the backend server."
-          type="error"
-          showIcon
-          className={styles.alert}
-        />
-      );
-    }
-    if (loading) {
-      return (
-        <PortalAlert
-          message="Loading..."
-          type="info"
-          showIcon
-          className={styles.alert}
-        />
-      );
-    }
-    if (data?.bazelInvocation?.buildLogs === null) {
-      return (
-        <PortalAlert
-          message="There is no information to display"
-          type="warning"
-          showIcon
-          className={styles.alert}
-        />
-      );
-    }
-    log = data?.bazelInvocation?.buildLogs ?? "";
+  } else {
     const innerHTML = ansi.ansi_to_html(log);
     return <pre dangerouslySetInnerHTML={{ __html: innerHTML }} />;
-  } else {
-    return (
-      <PortalAlert
-        message="There is no information to display"
-        type="warning"
-        showIcon
-        className={styles.alert}
-      />
-    );
   }
 };
 

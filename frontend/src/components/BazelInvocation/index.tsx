@@ -79,6 +79,7 @@ const BazelInvocation: React.FC<{
     stepLabel,
     hostname,
     isCiWorker,
+    buildLogs,
 
     //relatedFiles,
   } = invocationOverview;
@@ -128,7 +129,6 @@ const BazelInvocation: React.FC<{
   });
 
   //logs
-  var buildLogs = "tmp";
   const logs: string = buildLogs ?? "no build log data found...";
 
   //build the title
@@ -325,7 +325,7 @@ const BazelInvocation: React.FC<{
               </Tooltip>,
             ]}
           >
-            <LogViewerCard invocationId={invocationID} copyable={true} />
+            <LogViewerCard log={logs} copyable={true} />
           </PortalCard>
         </Space>
       ),
