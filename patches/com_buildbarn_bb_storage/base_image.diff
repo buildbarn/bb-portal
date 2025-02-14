@@ -44,6 +44,6 @@ index e4aa679..4900487 100644
          name = name,
          image = image,
 -        repository = "ghcr.io/buildbarn/" + component,
-+        repository = "ghcr.io/buildbarn/" + component + "-backend",
++        repository = "artifactory.stackav.io/docker/buildbarn/eie/" + component + "-backend",
          remote_tags = "@com_github_buildbarn_bb_storage//tools:stamped_tags",
      )

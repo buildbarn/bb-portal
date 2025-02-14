@@ -185,6 +185,7 @@ fragment BazelInvocationInfo on BazelInvocation {
     id
     buildUUID
   }
+  buildLogs
   profile {
     id
     name
