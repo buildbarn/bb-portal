@@ -160,10 +160,34 @@ func (s Summarizer) ProcessEvent(buildEvent *events.BuildEvent) error {
 		if err != nil {
 			return err
 		}
+	case *bes.BuildEventId_Progress:
+		s.handleBuildProgress(buildEvent.GetProgress())
 	}
 
 	s.summary.BEPCompleted = buildEvent.GetLastMessage()
 	return nil
+}
+
+// handleBuildProgress function to extract std out and std err from build progress event
+func (s Summarizer) handleBuildProgress(progress *bes.Progress) {
+	result := progress.GetStdout()
+	if progress.GetStderr() != progress.GetStdout() {
+		result += progress.GetStderr()
+	}
+	// remove duplicate lines from w/in the same screen of output
+	if result != "" {
+		result = strings.ReplaceAll(result, "\r", "")
+		lines := strings.Split(result, "\n")
+		uniqueLines := make(map[string]struct{})
+		for _, line := range lines {
+			if _, exists := uniqueLines[line]; !exists {
+				uniqueLines[line] = struct{}{}
+				if line != "" && line != "\n" {
+					s.summary.BuildLogs.WriteString(line + "\n")
+				}
+			}
+		}
+	}
 }
 
 // handleStarted
