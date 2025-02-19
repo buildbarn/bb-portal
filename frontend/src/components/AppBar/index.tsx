@@ -24,6 +24,7 @@ const APP_BAR_MENU_ITEMS: ItemType[] = [
   getItem({ depth: 0, href: '/trends', title: 'Trends' }),
   getItem({ depth: 0, href: '/tests', title: 'Tests' }),
   getItem({ depth: 0, href: '/targets', title: 'Targets' }),
+  getItem({ depth: 0, href: '/browser', title: 'Browser' }),
   getItem({
     depth: 0,
     href: '/scheduler',

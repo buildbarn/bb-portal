@@ -1,0 +1,4 @@
+.welcomeList > li > p > pre {
+  word-break: break-all;
+  margin-bottom: 0.5em;
+}

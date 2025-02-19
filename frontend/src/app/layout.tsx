@@ -13,6 +13,9 @@ import Dynamic from '@/components/Dynamic';
 import { ApolloWrapper } from '@/components/ApolloWrapper';
 import parseStringBoolean from '@/utils/storage';
 import { PublicEnvScript } from 'next-runtime-env';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import GrpcClientsProvider from '@/context/GrpcClientsProvider';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const PREFERS_DARK_KEY = 'prefers-dark';
 
@@ -61,6 +64,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   const [extraAppBarMenuItems, setExtraAppBarMenuItems] = useState<ItemType[]>([]);
 
+  const queryClient = new QueryClient()
+
   return (
     <>
       <title>Buildbarn Portal</title>
@@ -73,18 +78,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <ApolloWrapper>
               <RootStyleRegistry>
                 <ConfigProvider theme={theme}>
-                  <Dynamic>
-                    <Layout className={styles.layout}>
-                      <AppBar
-                        toggleTheme={toggleTheme}
-                        prefersDark={prefersDark}
-                        extraMenuItems={extraAppBarMenuItems}
-                      />
-                      <SetExtraAppBarMenuItemsContext.Provider value={setExtraAppBarMenuItems}>
-                        {children}
-                      </SetExtraAppBarMenuItemsContext.Provider>
-                    </Layout>
-                  </Dynamic>
+                  <QueryClientProvider client={queryClient}>
+                    <GrpcClientsProvider>
+                      <Dynamic>
+                        <Layout className={styles.layout}>
+                          <AppBar
+                            toggleTheme={toggleTheme}
+                            prefersDark={prefersDark}
+                            extraMenuItems={extraAppBarMenuItems}
+                          />
+                          <SetExtraAppBarMenuItemsContext.Provider value={setExtraAppBarMenuItems}>
+                            {children}
+                          </SetExtraAppBarMenuItemsContext.Provider>
+                        </Layout>
+                      </Dynamic>
+                    </GrpcClientsProvider>
+                    {/* Adds devtools. Is automatically removed for production builds. */}
+                    <ReactQueryDevtools initialIsOpen={false} />
+                  </QueryClientProvider>
                 </ConfigProvider>
               </RootStyleRegistry>
             </ApolloWrapper>

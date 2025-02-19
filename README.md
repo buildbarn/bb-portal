@@ -106,6 +106,17 @@ Once you have BEP files produced by Bazel, you can upload them via the applicati
 
 BB-portal can show the same information as the web interface from BB-scheduler. To do this, you need to configure the `buildQueueStateProxy` in the portal configuration file. The interface can be found under the `Scheduler` tab in the menu.
 
+### BB-browser
+
+BB-portal can show the same information as BB-browser. Everything it can show is visible under the tab `Browser`. To make the browser functionality work, you need to configure
+
+- `actionCacheProxy`
+- `contentAddressableStorageProxy`
+- (optional) `initialSizeClassCacheProxy`
+- (optional) `fileSystemAccessCacheProxy`
+
+in the portal configuration file. Despite having the name "browser", it is not possible to browse through the content. Instead other parts of Buildbarn will generate links to the browser. To open the content in bb-portal, the the prefix for the links should be `http://url-to-bb-portal/browser/`. After the `/browser/` prefix, the rest of the URL is compatible with urls for bb-browser.
+
 ## Using GraphiQL To Explore the GraphQL API
 
 The GraphiQL explorer is available via http://localhost:8081/graphiql.

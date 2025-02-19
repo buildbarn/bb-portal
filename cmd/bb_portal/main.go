@@ -29,6 +29,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
 	"github.com/buildbarn/bb-portal/internal/api"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
+	"github.com/buildbarn/bb-portal/internal/api/servefiles"
 	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
@@ -117,8 +118,10 @@ func main() {
 		defer watcher.Close()
 		runWatcher(watcher, dbClient, *bepFolder, blobArchiver)
 
+		serveFileService := servefiles.NewFileServerServiceFromConfiguration(dependenciesGroup, &configuration, grpcClientFactory)
+
 		router := mux.NewRouter()
-		newPortalService(blobArchiver, dbClient, router)
+		newPortalService(blobArchiver, dbClient, serveFileService, router)
 		bb_http.NewServersFromConfigurationAndServe(
 			configuration.HttpServers,
 			bb_http.NewMetricsHandler(router, "PortalUI"),
@@ -199,13 +202,18 @@ func fatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func newPortalService(archiver processing.BlobMultiArchiver, dbClient *ent.Client, router *mux.Router) {
+func newPortalService(archiver processing.BlobMultiArchiver, dbClient *ent.Client, serveFilesService *servefiles.FileServerService, router *mux.Router) {
 	srv := handler.NewDefaultServer(graphql.NewSchema(dbClient))
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})
 
 	router.PathPrefix("/graphql").Handler(srv)
 	router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
 	router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, archiver)).Methods("POST")
+	if serveFilesService != nil {
+		router.HandleFunc("/api/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/file/{hash}-{sizeBytes}/{name}", serveFilesService.HandleFile).Methods("GET")
+		router.HandleFunc("/api/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/command/{hash}-{sizeBytes}/", serveFilesService.HandleCommand).Methods("GET")
+		router.HandleFunc("/api/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/directory/{hash}-{sizeBytes}/", serveFilesService.HandleDirectory).Methods("GET")
+	}
 	router.PathPrefix("/").Handler(frontendServer())
 }
 
