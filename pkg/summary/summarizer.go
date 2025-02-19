@@ -1,6 +1,7 @@
 package summary
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"errors"
@@ -11,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/google/uuid"
 	"google.golang.org/api/iterator"
@@ -183,11 +185,18 @@ func (s Summarizer) handleBuildProgress(progress *bes.Progress) {
 			if _, exists := uniqueLines[line]; !exists {
 				uniqueLines[line] = struct{}{}
 				if line != "" && line != "\n" {
-					s.summary.BuildLogs.WriteString(line + "\n")
+					if utf8.ValidString(line) {
+						s.summary.BuildLogs.WriteString(sanitizeUTF8(line) + "\n")
+					}
 				}
 			}
 		}
 	}
+}
+
+func sanitizeUTF8(s string) string {
+	bs := bytes.ReplaceAll([]byte(s), []byte{0}, []byte{})
+	return strings.ToValidUTF8(string(bs), "?")
 }
 
 // handleStarted
