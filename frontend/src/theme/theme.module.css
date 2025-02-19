@@ -101,3 +101,8 @@
   font-size: 90% !important;
   display: inline-block !important;
 }
+
+.compactTable > td {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}

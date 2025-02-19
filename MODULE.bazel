@@ -5,7 +5,9 @@
 module(name = "com_github_buildbarn_bb_portal")
 
 bazel_dep(name = "bazel_remote_apis", version = "0.0.0")
+bazel_dep(name = "com_github_buildbarn_bb_remote_execution")
 bazel_dep(name = "com_github_buildbarn_bb_storage")
+bazel_dep(name = "com_github_buildbarn_go_xdr")
 bazel_dep(name = "gazelle", version = "0.38.0")
 bazel_dep(name = "googleapis", version = "0.0.0-20240819-fe8ba054a")
 bazel_dep(name = "googletest", version = "1.15.2")
@@ -22,6 +24,12 @@ git_override(
 )
 
 git_override(
+    module_name = "com_github_buildbarn_bb_remote_execution",
+    commit = "853626adcafd25a948f90b05a251bfba9a0e236f",
+    remote = "https://github.com/buildbarn/bb-remote-execution.git",
+)
+
+git_override(
     module_name = "com_github_buildbarn_bb_storage",
     commit = "0941111f29e31905e4081e6262bccf0c123940ed",
     patches = [
@@ -29,6 +37,22 @@ git_override(
         "//:patches/com_buildbarn_bb_storage/workflows_template.diff",
     ],
     remote = "https://github.com/buildbarn/bb-storage.git",
+)
+
+git_override(
+    module_name = "com_github_buildbarn_go_xdr",
+    commit = "236788cf9e8948a1e8875c7dd243e2be180cdfd7",
+    remote = "https://github.com/buildbarn/go-xdr.git",
+)
+
+git_override(
+    module_name = "rules_antlr",
+    commit = "89a29cca479363a5aee53e203719510bdc6be6ff",
+    patches = [
+        "//:patches/rules_antlr/antlr-4.10.diff",
+        "//:patches/rules_antlr/bzlmod.diff",
+    ],
+    remote = "https://github.com/marcohu/rules_antlr.git",
 )
 
 git_override(
@@ -65,7 +89,9 @@ use_repo(
     "com_github_gorilla_mux",
     "com_github_hashicorp_go_multierror",
     "com_github_hedwigz_entviz",
+    "com_github_improbable_eng_grpc_web",
     "com_github_jackc_pgx_v5",
+    "com_github_jmespath_go_jmespath",
     "com_github_machinebox_graphql",
     "com_github_mattn_go_sqlite3",
     "com_github_pkg_errors",

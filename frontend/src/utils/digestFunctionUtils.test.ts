@@ -1,0 +1,99 @@
+import { DigestFunction_Value } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
+import { expect, test } from "vitest";
+import {
+  digestFunctionValueFromString,
+  digestFunctionValueToString,
+} from "./digestFunctionUtils";
+
+test("digestFunctionValueFromString", () => {
+  expect(digestFunctionValueFromString("UNKNOWN")).toBe(
+    DigestFunction_Value.UNKNOWN,
+  );
+  expect(digestFunctionValueFromString("unknown")).toBe(
+    DigestFunction_Value.UNKNOWN,
+  );
+  expect(digestFunctionValueFromString("SHA256")).toBe(
+    DigestFunction_Value.SHA256,
+  );
+  expect(digestFunctionValueFromString("sha256")).toBe(
+    DigestFunction_Value.SHA256,
+  );
+  expect(digestFunctionValueFromString("SHA1")).toBe(DigestFunction_Value.SHA1);
+  expect(digestFunctionValueFromString("sha1")).toBe(DigestFunction_Value.SHA1);
+  expect(digestFunctionValueFromString("MD5")).toBe(DigestFunction_Value.MD5);
+  expect(digestFunctionValueFromString("md5")).toBe(DigestFunction_Value.MD5);
+  expect(digestFunctionValueFromString("VSO")).toBe(DigestFunction_Value.VSO);
+  expect(digestFunctionValueFromString("vso")).toBe(DigestFunction_Value.VSO);
+  expect(digestFunctionValueFromString("SHA384")).toBe(
+    DigestFunction_Value.SHA384,
+  );
+  expect(digestFunctionValueFromString("sha384")).toBe(
+    DigestFunction_Value.SHA384,
+  );
+  expect(digestFunctionValueFromString("SHA512")).toBe(
+    DigestFunction_Value.SHA512,
+  );
+  expect(digestFunctionValueFromString("sha512")).toBe(
+    DigestFunction_Value.SHA512,
+  );
+  expect(digestFunctionValueFromString("MURMUR3")).toBe(
+    DigestFunction_Value.MURMUR3,
+  );
+  expect(digestFunctionValueFromString("murmur3")).toBe(
+    DigestFunction_Value.MURMUR3,
+  );
+  expect(digestFunctionValueFromString("SHA256TREE")).toBe(
+    DigestFunction_Value.SHA256TREE,
+  );
+  expect(digestFunctionValueFromString("sha256tree")).toBe(
+    DigestFunction_Value.SHA256TREE,
+  );
+  expect(digestFunctionValueFromString("BLAKE3")).toBe(
+    DigestFunction_Value.BLAKE3,
+  );
+  expect(digestFunctionValueFromString("blake3")).toBe(
+    DigestFunction_Value.BLAKE3,
+  );
+  expect(digestFunctionValueFromString("UNRECOGNIZED")).toBe(
+    DigestFunction_Value.UNRECOGNIZED,
+  );
+  expect(digestFunctionValueFromString("unrecognized")).toBe(
+    DigestFunction_Value.UNRECOGNIZED,
+  );
+  expect(digestFunctionValueFromString("")).toBe(
+    DigestFunction_Value.UNRECOGNIZED,
+  );
+  expect(digestFunctionValueFromString("foo")).toBe(
+    DigestFunction_Value.UNRECOGNIZED,
+  );
+});
+
+test("digestFunctionValueToString", () => {
+  expect(digestFunctionValueToString(DigestFunction_Value.UNKNOWN)).toBe(
+    "unknown",
+  );
+  expect(digestFunctionValueToString(DigestFunction_Value.SHA256)).toBe(
+    "sha256",
+  );
+  expect(digestFunctionValueToString(DigestFunction_Value.SHA1)).toBe("sha1");
+  expect(digestFunctionValueToString(DigestFunction_Value.MD5)).toBe("md5");
+  expect(digestFunctionValueToString(DigestFunction_Value.VSO)).toBe("vso");
+  expect(digestFunctionValueToString(DigestFunction_Value.SHA384)).toBe(
+    "sha384",
+  );
+  expect(digestFunctionValueToString(DigestFunction_Value.SHA512)).toBe(
+    "sha512",
+  );
+  expect(digestFunctionValueToString(DigestFunction_Value.MURMUR3)).toBe(
+    "murmur3",
+  );
+  expect(digestFunctionValueToString(DigestFunction_Value.SHA256TREE)).toBe(
+    "sha256tree",
+  );
+  expect(digestFunctionValueToString(DigestFunction_Value.BLAKE3)).toBe(
+    "blake3",
+  );
+  expect(digestFunctionValueToString(DigestFunction_Value.UNRECOGNIZED)).toBe(
+    "unrecognized",
+  );
+});

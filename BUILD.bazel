@@ -2,18 +2,24 @@
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 load("@gazelle//:def.bzl", "gazelle")
 
+# gazelle:exclude frontend/src/proto
 # gazelle:go_grpc_compilers @rules_go//proto:go_proto,@rules_go//proto:go_grpc_v2
 # gazelle:prefix github.com/buildbarn/bb-portal
 # gazelle:go_naming_convention_external import
+# gazelle:resolve proto go build/bazel/remote/execution/v2/remote_execution.proto @bazel_remote_apis//build/bazel/remote/execution/v2:remote_execution_go_proto
+# gazelle:resolve proto go google/rpc/status.proto @org_golang_google_genproto_googleapis_rpc//status
 # gazelle:resolve proto go pkg/proto/configuration/auth/auth.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/auth
 # gazelle:resolve proto go pkg/proto/configuration/global/global.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/global
 # gazelle:resolve proto go pkg/proto/configuration/grpc/grpc.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc
 # gazelle:resolve proto go pkg/proto/configuration/http/http.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/http
+# gazelle:resolve proto build/bazel/remote/execution/v2/remote_execution.proto @bazel_remote_apis//build/bazel/remote/execution/v2:remote_execution_proto
+# gazelle:resolve proto google/rpc/status.proto @googleapis//google/rpc:status_proto
 # gazelle:resolve proto pkg/proto/configuration/auth/auth.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/auth:auth_proto
 # gazelle:resolve proto pkg/proto/configuration/global/global.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/global:global_proto
 # gazelle:resolve proto pkg/proto/configuration/grpc/grpc.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc:grpc_proto
 # gazelle:resolve proto pkg/proto/configuration/http/http.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/http:http_proto
 # gazelle:resolve go github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal //pkg/proto/configuration/bb_portal
+# gazelle:resolve go github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2 @bazel_remote_apis//build/bazel/remote/execution/v2:remote_execution_go_proto
 gazelle(
     name = "gazelle",
 )

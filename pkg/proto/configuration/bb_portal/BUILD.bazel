@@ -7,6 +7,7 @@ proto_library(
     srcs = ["bb_portal.proto"],
     visibility = ["//visibility:public"],
     deps = [
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/auth:auth_proto",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/global:global_proto",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc:grpc_proto",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/http:http_proto",
@@ -19,6 +20,7 @@ go_proto_library(
     proto = ":bb_portal_proto",
     visibility = ["//visibility:public"],
     deps = [
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/auth",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/global",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/http",

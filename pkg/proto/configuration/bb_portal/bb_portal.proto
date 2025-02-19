@@ -2,11 +2,24 @@ syntax = "proto3";
 
 package buildbarn.configuration.bb_portal;
 
+import "pkg/proto/configuration/auth/auth.proto";
 import "pkg/proto/configuration/global/global.proto";
 import "pkg/proto/configuration/grpc/grpc.proto";
 import "pkg/proto/configuration/http/http.proto";
 
 option go_package = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal";
+
+message GrpcWebProxyConfiguration {
+  // gRPC server to proxy requests to.
+  buildbarn.configuration.grpc.ClientConfiguration client = 1;
+
+  // Http servers to spawn to listen for gRPC-Web requests from the browser.
+  repeated buildbarn.configuration.http.ServerConfiguration http_servers = 2;
+
+  // Origins that are allowed to access the gRPC-Web proxy. If this is not
+  // configured correctly, it will cause CORS errors in the browser.
+  repeated string allowed_origins = 3;
+}
 
 message ApplicationConfiguration {
   // Configuration for HTTP servers that expose the web UI.
@@ -17,4 +30,13 @@ message ApplicationConfiguration {
 
   // Common configuration options that apply to all Buildbarn binaries.
   buildbarn.configuration.global.Configuration global = 3;
+
+  // Authorizer that is used to determine which instances the user is allowed
+  // to access.
+  buildbarn.configuration.auth.AuthorizerConfiguration
+      instance_name_authorizer = 4;
+
+  // Configures the gRPC-Web proxies that are used from the web UI to
+  // communicate with the Buildbarn.
+  GrpcWebProxyConfiguration build_queue_state_proxy = 5;
 }

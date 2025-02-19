@@ -102,6 +102,10 @@ You can then upload the `build_events_01.json` output file to see the results in
 
 Once you have BEP files produced by Bazel, you can upload them via the application homepage.
 
+### BB-scheduler
+
+BB-portal can show the same information as the web interface from BB-scheduler. To do this, you need to configure the `buildQueueStateProxy` in the portal configuration file. The interface can be found under the `Scheduler` tab in the menu.
+
 ## Using GraphiQL To Explore the GraphQL API
 
 The GraphiQL explorer is available via http://localhost:8081/graphiql.

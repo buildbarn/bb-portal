@@ -1,4 +1,4 @@
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 const updateQueryParam = (
   router: AppRouterInstance,
@@ -14,7 +14,7 @@ const updateQueryParam = (
   }
 
   const search = currentSearchParams.toString();
-  const query = search ? `?${search}` : '';
+  const query = search ? `?${search}` : "";
   router.push(`${pathname}${query}`);
 };
 

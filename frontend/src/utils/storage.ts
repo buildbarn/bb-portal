@@ -1,5 +1,5 @@
 const parseStringBoolean = (val: string | null): boolean => {
-  return val === 'true';
+  return val === "true";
 };
 
 export default parseStringBoolean;
