@@ -3,7 +3,6 @@ import { TableColumnsType } from "antd/lib"
 import { Space, Row, Statistic, Table, TableProps, TablePaginationConfig, Pagination, Alert } from 'antd';
 import { TestStatusEnum } from '../../TestStatusTag';
 import type { StatisticProps } from "antd/lib";
-import CountUp from 'react-countup';
 import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
 import { SearchOutlined } from '@ant-design/icons';
 import { useQuery } from '@apollo/client';
@@ -30,9 +29,7 @@ interface TargetGridRowDataType {
   key: React.Key;
   label: string;
 }
-const formatter: StatisticProps['formatter'] = (value) => (
-  <CountUp end={value as number} separator="," />
-);
+
 const PAGE_SIZE = 20
 const columns: TableColumnsType<TargetGridRowDataType> = [
   {

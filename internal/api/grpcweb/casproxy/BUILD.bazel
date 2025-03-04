@@ -1,0 +1,21 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "casproxy",
+    srcs = ["server.go"],
+    importpath = "github.com/buildbarn/bb-portal/internal/api/grpcweb/casproxy",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//internal/api/grpcweb",
+        "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@org_golang_google_genproto_googleapis_bytestream//:bytestream",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)
+
+go_test(
+    name = "casproxy_test",
+    srcs = ["server_test.go"],
+    embed = [":casproxy"],
+)

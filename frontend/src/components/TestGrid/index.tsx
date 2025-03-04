@@ -3,7 +3,6 @@ import { TableColumnsType } from "antd/lib"
 import { Space, Row, Statistic, Table, TableProps, TablePaginationConfig, Pagination } from 'antd';
 import { TestStatusEnum } from '../TestStatusTag';
 import type { StatisticProps } from "antd/lib";
-import CountUp from 'react-countup';
 import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
 import { SearchOutlined } from '@ant-design/icons';
 import { useQuery } from '@apollo/client';
@@ -19,9 +18,6 @@ import { millisecondsToTime } from '../Utilities/time';
 import { GET_TEST_LABELS } from './graphql';
 interface Props {}
 
-const formatter: StatisticProps['formatter'] = (value) => (
-  <CountUp end={value as number} separator="," />
-);
 export interface TestStatusType {
   label: string
   invocationId: string,

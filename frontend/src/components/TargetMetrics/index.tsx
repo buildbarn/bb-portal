@@ -2,7 +2,6 @@ import React from "react";
 import { Space, Table, Row, Col, Statistic } from 'antd';
 import { DeploymentUnitOutlined, SearchOutlined } from '@ant-design/icons';
 import type { StatisticProps, TableColumnsType } from "antd/lib";
-import CountUp from 'react-countup';
 import { TargetMetrics, TargetPair } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
@@ -19,10 +18,6 @@ interface TargetDataType {
     target_kind: string;    //target kind if available
     failure_reason: string  //failure reason if any
 }
-
-const formatter: StatisticProps['formatter'] = (value) => (
-    <CountUp end={value as number} separator="," />
-);
 
 const TargetMetricsDisplay: React.FC<{
     targetMetrics: TargetMetrics | undefined | null,
@@ -176,11 +171,11 @@ const TargetMetricsDisplay: React.FC<{
                 <PortalCard type="inner" icon={<DeploymentUnitOutlined />} titleBits={["Targets"]}>
                     <Row>
                         <Space size="large">
-                            <Statistic title="Targets Analyzed" value={targets_analyzed} formatter={formatter} />
-                            <Statistic title="Targets Built Successfully" value={targets_built_successfully} formatter={formatter} valueStyle={{ color: "green" }} />
-                            <Statistic title="Targets Skipped" value={targets_skipped} formatter={formatter} valueStyle={{ color: "purple" }} />
-                            <Statistic title="Targets Configured" value={targetMetrics?.targetsConfigured ?? 0} formatter={formatter} />
-                            <Statistic title="Targets Configured Not Including Aspects" value={targetMetrics?.targetsConfiguredNotIncludingAspects ?? 0} formatter={formatter} />
+                            <Statistic title="Targets Analyzed" value={targets_analyzed} />
+                            <Statistic title="Targets Built Successfully" value={targets_built_successfully} valueStyle={{ color: "green" }} />
+                            <Statistic title="Targets Skipped" value={targets_skipped} valueStyle={{ color: "purple" }} />
+                            <Statistic title="Targets Configured" value={targetMetrics?.targetsConfigured ?? 0} />
+                            <Statistic title="Targets Configured Not Including Aspects" value={targetMetrics?.targetsConfiguredNotIncludingAspects ?? 0} />
                         </Space>
                     </Row>
                     <Row justify="space-around" align="middle">

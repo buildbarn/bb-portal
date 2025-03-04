@@ -2,11 +2,25 @@ syntax = "proto3";
 
 package buildbarn.configuration.bb_portal;
 
+import "pkg/proto/configuration/auth/auth.proto";
+import "pkg/proto/configuration/blobstore/blobstore.proto";
 import "pkg/proto/configuration/global/global.proto";
 import "pkg/proto/configuration/grpc/grpc.proto";
 import "pkg/proto/configuration/http/http.proto";
 
 option go_package = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal";
+
+message GrpcWebProxyConfiguration {
+  // gRPC server to proxy requests to.
+  buildbarn.configuration.grpc.ClientConfiguration client = 1;
+
+  // Http servers to spawn to listen for gRPC-Web requests from the browser.
+  repeated buildbarn.configuration.http.ServerConfiguration http_servers = 2;
+
+  // Origins that are allowed to access the gRPC-Web proxy. If this is not
+  // configured correctly, it will cause CORS errors in the browser.
+  repeated string allowed_origins = 3;
+}
 
 message ApplicationConfiguration {
   // Configuration for HTTP servers that expose the web UI.
@@ -17,4 +31,24 @@ message ApplicationConfiguration {
 
   // Common configuration options that apply to all Buildbarn binaries.
   buildbarn.configuration.global.Configuration global = 3;
+
+  // Authorizer that is used to determine which instances the user is allowed
+  // to access.
+  buildbarn.configuration.auth.AuthorizerConfiguration
+      instance_name_authorizer = 4;
+
+  // Configures the gRPC-Web proxies that are used from the web UI to
+  // communicate with the Buildbarn.
+  GrpcWebProxyConfiguration build_queue_state_proxy = 5;
+  GrpcWebProxyConfiguration action_cache_proxy = 6;
+  GrpcWebProxyConfiguration content_addressable_storage_proxy = 7;
+  GrpcWebProxyConfiguration initial_size_class_cache_proxy = 8;
+  GrpcWebProxyConfiguration file_system_access_cache_proxy = 9;
+
+  // Configuration for serving files with Content Addressable Storage.
+  buildbarn.configuration.blobstore.BlobAccessConfiguration
+      serve_files_cas_configuration = 10;
+
+  // Maximum Protobuf message size to unmarshal.
+  int64 maximum_message_size_bytes = 11;
 }

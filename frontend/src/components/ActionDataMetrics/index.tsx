@@ -3,7 +3,6 @@ import { PieChart, Pie, Cell } from 'recharts';
 import { Table, Row, Col, Space, Statistic } from 'antd';
 import { BuildOutlined, PieChartOutlined } from "@ant-design/icons";
 import type { StatisticProps, TableColumnsType } from "antd/lib";
-import CountUp from 'react-countup';
 import { ActionSummary, ActionData } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { renderActiveShape, newColorFind } from "../Utilities/renderShape"
@@ -15,10 +14,6 @@ interface ActionDataGraphDisplayType {
     value: number;
     color: string;
 }
-
-const formatter: StatisticProps['formatter'] = (value) => (
-    <CountUp end={value as number} separator="," />
-);
 
 interface ActionDataColumnType {
     key: React.Key;
@@ -107,10 +102,10 @@ const ActionDataMetrics: React.FC<{ acMetrics: ActionSummary | undefined; }> = (
             <PortalCard icon={<PieChart />} type="inner" titleBits={["Actions"]}>
                 <Row>
                     <Space size={"large"}>
-                        <Statistic title="Actions Executed" value={totalActionsExecuted} formatter={formatter} />
-                        <Statistic title="Actions Created" value={totalActionsCreated} formatter={formatter} />
-                        <Statistic title="Total User Time(ms)" value={totalUserTime} formatter={formatter} />
-                        <Statistic title="Total System Time(ms)" value={totalSystemTime} formatter={formatter} />
+                        <Statistic title="Actions Executed" value={totalActionsExecuted} />
+                        <Statistic title="Actions Created" value={totalActionsCreated} />
+                        <Statistic title="Total User Time(ms)" value={totalUserTime} />
+                        <Statistic title="Total System Time(ms)" value={totalSystemTime} />
                     </Space>
                 </Row>
                 <Row justify="space-around" align="top">

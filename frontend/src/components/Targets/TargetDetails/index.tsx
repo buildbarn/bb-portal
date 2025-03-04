@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Space, Row, Statistic, TableColumnsType, Table } from 'antd';
 import { TestStatusEnum } from '../../TestStatusTag';
 import type { StatisticProps } from "antd/lib";
-import CountUp from 'react-countup';
 import { useQuery } from '@apollo/client';
 import { FindTargetsQueryVariables } from '@/graphql/__generated__/graphql';
 import PortalAlert from '../../PortalAlert';
@@ -19,10 +18,6 @@ import styles from "@/theme/theme.module.css"
 interface Props {
     label: string
 }
-
-const formatter: StatisticProps['formatter'] = (value) => (
-    <CountUp end={value as number} separator="," />
-);
 
 export interface TargetStatusType {
     label: string
@@ -90,8 +85,8 @@ const TestDetails: React.FC<Props> = ({ label }) => {
             <h1>{label}</h1>
             <Row>
                 <Space size="large">
-                    <Statistic title="Average Duration" value={total_duration / totalCnt} formatter={formatter} />
-                    <Statistic title="Total Runs" value={totalCnt} formatter={formatter} />
+                    <Statistic title="Average Duration" value={total_duration / totalCnt} />
+                    <Statistic title="Total Runs" value={totalCnt} />
                 </Space>
             </Row>
             <PortalCard icon={<FieldTimeOutlined />} titleBits={["Target Duration Over Time"]} >
