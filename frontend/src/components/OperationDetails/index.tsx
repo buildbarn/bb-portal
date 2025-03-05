@@ -40,6 +40,7 @@ const OperationDetails: React.FC<Props> = ({ label }) => {
     queryFn: buildQueueStateClient.getOperation.bind(window, {
       operationName: label,
     }),
+    staleTime: Number.POSITIVE_INFINITY,
   });
 
   if (isError) {
