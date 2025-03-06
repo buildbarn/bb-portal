@@ -35,6 +35,7 @@ const OperationsTable: React.FC = () => {
       pageSize: PAGE_SIZE,
       filterInvocationId: getSerializedFilterInvocationId(filterInvocationId),
     }),
+    staleTime: Number.POSITIVE_INFINITY,
   });
 
   let emptyText = "No active operations";
