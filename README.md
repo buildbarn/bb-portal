@@ -60,11 +60,10 @@ Currently this is used to download the build profile.
 
 ## Using the Application
 
-Go to http://localhost:8081.
-This will go through the reverse proxy that the backend runs.
+Go to <http://localhost:3000> or <http://localhost:8081> (which goes through a reverse proxy in the go backend).
 
-> **_NOTE:_** Even though the frontend is available directly at http://localhost:3000, APIs don't work on that port, so you will
-not be able to see any data if you access the application in this way.
+> **_NOTE:_** Should the frontend be served on a different url, remember to
+> update `frontendProxyUrl` and/or `allowedOrigins` in the configuration.
 
 The home page of the application will appear as follows:
 
@@ -119,7 +118,7 @@ in the portal configuration file. Despite having the name "browser", it is not p
 
 ## Using GraphiQL To Explore the GraphQL API
 
-The GraphiQL explorer is available via http://localhost:8081/graphiql.
+The GraphiQL explorer is available via <http://localhost:8081/graphiql>.
 
 ## Generated Code
 
