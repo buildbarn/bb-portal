@@ -17,9 +17,9 @@ message GrpcWebProxyConfiguration {
   // Http servers to spawn to listen for gRPC-Web requests from the browser.
   repeated buildbarn.configuration.http.ServerConfiguration http_servers = 2;
 
-  // Origins that are allowed to access the gRPC-Web proxy. If this is not
-  // configured correctly, it will cause CORS errors in the browser.
-  repeated string allowed_origins = 3;
+  // Was `allowed_origins`. This option has been moved to
+  // `ApplicationConfiguration.allowed_origins`.
+  reserved 3;
 }
 
 message ApplicationConfiguration {
@@ -51,4 +51,13 @@ message ApplicationConfiguration {
 
   // Maximum Protobuf message size to unmarshal.
   int64 maximum_message_size_bytes = 11;
+
+  // URL to proxy frontend reqeusts to. If this is not set or it is an empty
+  // string, the proxy will not be started.
+  string frontend_proxy_url = 12;
+
+  // Origins that are allowed to make requests to the backend and through the
+  // gRPC-web proxy. If this is not configured correctly, it will cause CORS
+  // errors in the browser.
+  repeated string allowed_origins = 13;
 }

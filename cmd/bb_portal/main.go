@@ -4,11 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"flag"
+	"log"
 	"log/slog"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"slices"
 	"time"
 
 	_ "net/http/pprof"
@@ -22,6 +24,7 @@ import (
 	"github.com/gorilla/mux"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/rs/cors"
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	go_grpc "google.golang.org/grpc"
 
@@ -121,10 +124,19 @@ func main() {
 		serveFileService := servefiles.NewFileServerServiceFromConfiguration(dependenciesGroup, &configuration, grpcClientFactory)
 
 		router := mux.NewRouter()
-		newPortalService(blobArchiver, dbClient, serveFileService, router)
+		c := cors.New(
+			cors.Options{
+				AllowOriginFunc: func(origin string) bool {
+					return slices.Contains(configuration.AllowedOrigins, origin) || slices.Contains(configuration.AllowedOrigins, "*")
+				},
+				AllowedMethods: []string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
+				AllowedHeaders: []string{"Authorization", "Content-Type"},
+			},
+		)
+		newPortalService(&configuration, blobArchiver, dbClient, serveFileService, router)
 		bb_http.NewServersFromConfigurationAndServe(
 			configuration.HttpServers,
-			bb_http.NewMetricsHandler(router, "PortalUI"),
+			bb_http.NewMetricsHandler(c.Handler(router), "PortalUI"),
 			siblingsGroup,
 		)
 
@@ -202,7 +214,7 @@ func fatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func newPortalService(archiver processing.BlobMultiArchiver, dbClient *ent.Client, serveFilesService *servefiles.FileServerService, router *mux.Router) {
+func newPortalService(configuration *bb_portal.ApplicationConfiguration, archiver processing.BlobMultiArchiver, dbClient *ent.Client, serveFilesService *servefiles.FileServerService, router *mux.Router) {
 	srv := handler.NewDefaultServer(graphql.NewSchema(dbClient))
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})
 
@@ -214,13 +226,18 @@ func newPortalService(archiver processing.BlobMultiArchiver, dbClient *ent.Clien
 		router.HandleFunc("/api/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/command/{hash}-{sizeBytes}/", serveFilesService.HandleCommand).Methods("GET")
 		router.HandleFunc("/api/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/directory/{hash}-{sizeBytes}/", serveFilesService.HandleDirectory).Methods("GET")
 	}
-	router.PathPrefix("/").Handler(frontendServer())
+	if configuration.FrontendProxyUrl != "" {
+		router.PathPrefix("/").Handler(frontendServer(configuration.FrontendProxyUrl))
+	}
 }
 
-func frontendServer() http.Handler {
-	targetURL := &url.URL{
-		Scheme: "http",
-		Host:   "localhost:3000",
+func frontendServer(proxyURL string) http.Handler {
+	remote, err := url.Parse(proxyURL)
+	if err != nil {
+		log.Fatalf("Could not parse proxy URL: %v", err)
 	}
-	return httputil.NewSingleHostReverseProxy(targetURL)
+
+	log.Println("Proxying frontend to", remote)
+
+	return httputil.NewSingleHostReverseProxy(remote)
 }

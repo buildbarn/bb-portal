@@ -40,6 +40,7 @@ go_library(
         "@com_github_improbable_eng_grpc_web//go/grpcweb",
         "@com_github_jackc_pgx_v5//stdlib",
         "@com_github_mattn_go_sqlite3//:go-sqlite3",
+        "@com_github_rs_cors//:cors",
         "@io_entgo_contrib//entgql",
         "@io_entgo_ent//dialect",
         "@io_entgo_ent//dialect/sql",

@@ -7,6 +7,9 @@
 // - A Buildbarn frontend, accessible at localhost:8980
 
 {
+  frontendProxyUrl: 'http://localhost:3000',
+  allowedOrigins: ['http://localhost:3000', 'http://localhost:8081'],
+
   serveFilesCasConfiguration: {
     grpc: { address: 'localhost:8980' },
   },
@@ -44,7 +47,6 @@
     client: {
       address: 'localhost:8984',
     },
-    allowedOrigins: ['http://localhost:8081'],
     httpServers: [{
       listenAddresses: [':9433'],
       authenticationPolicy: {
@@ -66,7 +68,6 @@
     client: {
       address: 'localhost:8980',
     },
-    allowedOrigins: ['http://localhost:8081'],
     httpServers: [{
       listenAddresses: [':9434'],
       authenticationPolicy: {
@@ -88,7 +89,6 @@
     client: {
       address: 'localhost:8980',
     },
-    allowedOrigins: ['http://localhost:8081'],
     httpServers: [{
       listenAddresses: [':9435'],
       authenticationPolicy: {
@@ -110,7 +110,6 @@
     client: {
       address: 'localhost:8980',
     },
-    allowedOrigins: ['http://localhost:8081'],
     httpServers: [{
       listenAddresses: [':9436'],
       authenticationPolicy: {
@@ -131,7 +130,6 @@
     client: {
       address: 'localhost:8980',
     },
-    allowedOrigins: ['http://localhost:8081'],
     httpServers: [{
       listenAddresses: [':9437'],
       authenticationPolicy: {
