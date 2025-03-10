@@ -33,7 +33,7 @@
   grpcServers: [{
     listenAddresses: [':8082'],
     authenticationPolicy: { allow: {} },
-    maximumReceivedMessageSizeBytes: 10*1024*1024
+    maximumReceivedMessageSizeBytes: 10 * 1024 * 1024,
   }],
 
   instanceNameAuthorizer: {
@@ -47,103 +47,44 @@
     client: {
       address: 'localhost:8984',
     },
-    httpServers: [{
-      listenAddresses: [':9433'],
-      authenticationPolicy: {
-        allow: {
-          public: {
-            user: 'FooBar',
-          },
-          private: {
-            groups: ['admin'],
-            instances: ['fuse', 'testingQueue'],
-            email: 'foo@example.com',
-          },
-        },
-      },
-    }],
   },
 
   actionCacheProxy: {
     client: {
       address: 'localhost:8980',
     },
-    httpServers: [{
-      listenAddresses: [':9434'],
-      authenticationPolicy: {
-        allow: {
-          public: {
-            user: 'FooBar',
-          },
-          private: {
-            groups: ['admin'],
-            instances: ['fuse', 'testingQueue'],
-            email: 'foo@example.com',
-          },
-        },
-      },
-    }],
   },
 
   contentAddressableStorageProxy: {
     client: {
       address: 'localhost:8980',
     },
-    httpServers: [{
-      listenAddresses: [':9435'],
-      authenticationPolicy: {
-        allow: {
-          public: {
-            user: 'FooBar',
-          },
-          private: {
-            groups: ['admin'],
-            instances: ['fuse', 'testingQueue'],
-            email: 'foo@example.com',
-          },
-        },
-      },
-    }],
   },
 
   initialSizeClassCacheProxy: {
     client: {
       address: 'localhost:8980',
     },
-    httpServers: [{
-      listenAddresses: [':9436'],
-      authenticationPolicy: {
-        allow: {
-          public: {
-            user: 'FooBar',
-          },
-          private: {
-            groups: ['admin'],
-            instances: ['fuse', 'testingQueue'],
-            email: 'foo@example.com',
-          },
-        },
-      },
-    }],
   },
   fileSystemAccessCacheProxy: {
     client: {
       address: 'localhost:8980',
     },
-    httpServers: [{
-      listenAddresses: [':9437'],
-      authenticationPolicy: {
-        allow: {
-          public: {
-            user: 'FooBar',
-          },
-          private: {
-            groups: ['admin'],
-            instances: ['fuse', 'testingQueue'],
-            email: 'foo@example.com',
-          },
+  },
+
+  proxyConfiguration: [{
+    listenAddresses: [':8985'],
+    authenticationPolicy: {
+      allow: {
+        public: {
+          user: 'FooBar',
+        },
+        private: {
+          groups: ['admin'],
+          instances: ['fuse', 'testingQueue'],
+          email: 'foo@example.com',
         },
       },
-    }],
-  },
+    },
+  }],
 }

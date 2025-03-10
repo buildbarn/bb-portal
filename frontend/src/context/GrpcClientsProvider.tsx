@@ -30,27 +30,27 @@ export interface GrpcClientsProviderProps {
 const GrpcClientsProvider = ({ children }: GrpcClientsProviderProps) => {
   const buildQueueStateClient: BuildQueueStateClient = createClient(
     BuildQueueStateDefinition,
-    createChannel(env("NEXT_PUBLIC_BB_BUILDQUEUESTATE_GRPC_BACKEND_URL") || ""),
+    createChannel(env("NEXT_PUBLIC_BB_GRPC_WEB_PROXY_URL") || ""),
   );
 
   const actionCacheClient: ActionCacheClient = createClient(
     ActionCacheDefinition,
-    createChannel(env("NEXT_PUBLIC_BB_ACTIONCACHE_GRPC_BACKEND_URL") || ""),
+    createChannel(env("NEXT_PUBLIC_BB_GRPC_WEB_PROXY_URL") || ""),
   );
 
   const casByteStreamClient: ByteStreamClient = createClient(
     ByteStreamDefinition,
-    createChannel(env("NEXT_PUBLIC_BB_CAS_GRPC_BACKEND_URL") || ""),
+    createChannel(env("NEXT_PUBLIC_BB_GRPC_WEB_PROXY_URL") || ""),
   );
 
   const initialSizeClassCacheClient: InitialSizeClassCacheClient = createClient(
     InitialSizeClassCacheDefinition,
-    createChannel(env("NEXT_PUBLIC_BB_ISCC_GRPC_BACKEND_URL") || ""),
+    createChannel(env("NEXT_PUBLIC_BB_GRPC_WEB_PROXY_URL") || ""),
   );
 
   const fileSystemAccessCacheClient: FileSystemAccessCacheClient = createClient(
     FileSystemAccessCacheDefinition,
-    createChannel(env("NEXT_PUBLIC_BB_FSAC_GRPC_BACKEND_URL") || ""),
+    createChannel(env("NEXT_PUBLIC_BB_GRPC_WEB_PROXY_URL") || ""),
   );
 
   return (

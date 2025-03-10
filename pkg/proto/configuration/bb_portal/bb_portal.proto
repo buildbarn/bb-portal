@@ -14,8 +14,9 @@ message GrpcWebProxyConfiguration {
   // gRPC server to proxy requests to.
   buildbarn.configuration.grpc.ClientConfiguration client = 1;
 
-  // Http servers to spawn to listen for gRPC-Web requests from the browser.
-  repeated buildbarn.configuration.http.ServerConfiguration http_servers = 2;
+  // Was `http_servers`. Moved to
+  // `ApplicationConfiguration.proxy_configuration`.
+  reserved 2;
 
   // Was `allowed_origins`. This option has been moved to
   // `ApplicationConfiguration.allowed_origins`.
@@ -60,4 +61,8 @@ message ApplicationConfiguration {
   // gRPC-web proxy. If this is not configured correctly, it will cause CORS
   // errors in the browser.
   repeated string allowed_origins = 13;
+
+  // HTTP server to spawn to listen for gRPC-Web requests from the browser.
+  repeated buildbarn.configuration.http.ServerConfiguration
+      proxy_configuration = 14;
 }
