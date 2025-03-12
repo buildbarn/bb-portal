@@ -285,17 +285,23 @@ func (tsu *TestSummaryUpdate) ClearLabel() *TestSummaryUpdate {
 	return tsu
 }
 
-// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (tsu *TestSummaryUpdate) SetTestCollectionID(id int) *TestSummaryUpdate {
-	tsu.mutation.SetTestCollectionID(id)
+// SetTestCollectionID sets the "test_collection_id" field.
+func (tsu *TestSummaryUpdate) SetTestCollectionID(i int) *TestSummaryUpdate {
+	tsu.mutation.SetTestCollectionID(i)
 	return tsu
 }
 
-// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableTestCollectionID(id *int) *TestSummaryUpdate {
-	if id != nil {
-		tsu = tsu.SetTestCollectionID(*id)
+// SetNillableTestCollectionID sets the "test_collection_id" field if the given value is not nil.
+func (tsu *TestSummaryUpdate) SetNillableTestCollectionID(i *int) *TestSummaryUpdate {
+	if i != nil {
+		tsu.SetTestCollectionID(*i)
 	}
+	return tsu
+}
+
+// ClearTestCollectionID clears the value of the "test_collection_id" field.
+func (tsu *TestSummaryUpdate) ClearTestCollectionID() *TestSummaryUpdate {
+	tsu.mutation.ClearTestCollectionID()
 	return tsu
 }
 
@@ -915,17 +921,23 @@ func (tsuo *TestSummaryUpdateOne) ClearLabel() *TestSummaryUpdateOne {
 	return tsuo
 }
 
-// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (tsuo *TestSummaryUpdateOne) SetTestCollectionID(id int) *TestSummaryUpdateOne {
-	tsuo.mutation.SetTestCollectionID(id)
+// SetTestCollectionID sets the "test_collection_id" field.
+func (tsuo *TestSummaryUpdateOne) SetTestCollectionID(i int) *TestSummaryUpdateOne {
+	tsuo.mutation.SetTestCollectionID(i)
 	return tsuo
 }
 
-// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableTestCollectionID(id *int) *TestSummaryUpdateOne {
-	if id != nil {
-		tsuo = tsuo.SetTestCollectionID(*id)
+// SetNillableTestCollectionID sets the "test_collection_id" field if the given value is not nil.
+func (tsuo *TestSummaryUpdateOne) SetNillableTestCollectionID(i *int) *TestSummaryUpdateOne {
+	if i != nil {
+		tsuo.SetTestCollectionID(*i)
 	}
+	return tsuo
+}
+
+// ClearTestCollectionID clears the value of the "test_collection_id" field.
+func (tsuo *TestSummaryUpdateOne) ClearTestCollectionID() *TestSummaryUpdateOne {
+	tsuo.mutation.ClearTestCollectionID()
 	return tsuo
 }
 

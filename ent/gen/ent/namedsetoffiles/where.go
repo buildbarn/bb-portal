@@ -53,6 +53,41 @@ func IDLTE(id int) predicate.NamedSetOfFiles {
 	return predicate.NamedSetOfFiles(sql.FieldLTE(FieldID, id))
 }
 
+// OutputGroupID applies equality check predicate on the "output_group_id" field. It's identical to OutputGroupIDEQ.
+func OutputGroupID(v int) predicate.NamedSetOfFiles {
+	return predicate.NamedSetOfFiles(sql.FieldEQ(FieldOutputGroupID, v))
+}
+
+// OutputGroupIDEQ applies the EQ predicate on the "output_group_id" field.
+func OutputGroupIDEQ(v int) predicate.NamedSetOfFiles {
+	return predicate.NamedSetOfFiles(sql.FieldEQ(FieldOutputGroupID, v))
+}
+
+// OutputGroupIDNEQ applies the NEQ predicate on the "output_group_id" field.
+func OutputGroupIDNEQ(v int) predicate.NamedSetOfFiles {
+	return predicate.NamedSetOfFiles(sql.FieldNEQ(FieldOutputGroupID, v))
+}
+
+// OutputGroupIDIn applies the In predicate on the "output_group_id" field.
+func OutputGroupIDIn(vs ...int) predicate.NamedSetOfFiles {
+	return predicate.NamedSetOfFiles(sql.FieldIn(FieldOutputGroupID, vs...))
+}
+
+// OutputGroupIDNotIn applies the NotIn predicate on the "output_group_id" field.
+func OutputGroupIDNotIn(vs ...int) predicate.NamedSetOfFiles {
+	return predicate.NamedSetOfFiles(sql.FieldNotIn(FieldOutputGroupID, vs...))
+}
+
+// OutputGroupIDIsNil applies the IsNil predicate on the "output_group_id" field.
+func OutputGroupIDIsNil() predicate.NamedSetOfFiles {
+	return predicate.NamedSetOfFiles(sql.FieldIsNull(FieldOutputGroupID))
+}
+
+// OutputGroupIDNotNil applies the NotNil predicate on the "output_group_id" field.
+func OutputGroupIDNotNil() predicate.NamedSetOfFiles {
+	return predicate.NamedSetOfFiles(sql.FieldNotNull(FieldOutputGroupID))
+}
+
 // HasOutputGroup applies the HasEdge predicate on the "output_group" edge.
 func HasOutputGroup() predicate.NamedSetOfFiles {
 	return predicate.NamedSetOfFiles(func(s *sql.Selector) {

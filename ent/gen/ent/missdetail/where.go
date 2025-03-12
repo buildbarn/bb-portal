@@ -58,6 +58,11 @@ func Count(v int32) predicate.MissDetail {
 	return predicate.MissDetail(sql.FieldEQ(FieldCount, v))
 }
 
+// ActionCacheStatisticsID applies equality check predicate on the "action_cache_statistics_id" field. It's identical to ActionCacheStatisticsIDEQ.
+func ActionCacheStatisticsID(v int) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldEQ(FieldActionCacheStatisticsID, v))
+}
+
 // ReasonEQ applies the EQ predicate on the "reason" field.
 func ReasonEQ(v Reason) predicate.MissDetail {
 	return predicate.MissDetail(sql.FieldEQ(FieldReason, v))
@@ -136,6 +141,36 @@ func CountIsNil() predicate.MissDetail {
 // CountNotNil applies the NotNil predicate on the "count" field.
 func CountNotNil() predicate.MissDetail {
 	return predicate.MissDetail(sql.FieldNotNull(FieldCount))
+}
+
+// ActionCacheStatisticsIDEQ applies the EQ predicate on the "action_cache_statistics_id" field.
+func ActionCacheStatisticsIDEQ(v int) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldEQ(FieldActionCacheStatisticsID, v))
+}
+
+// ActionCacheStatisticsIDNEQ applies the NEQ predicate on the "action_cache_statistics_id" field.
+func ActionCacheStatisticsIDNEQ(v int) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldNEQ(FieldActionCacheStatisticsID, v))
+}
+
+// ActionCacheStatisticsIDIn applies the In predicate on the "action_cache_statistics_id" field.
+func ActionCacheStatisticsIDIn(vs ...int) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldIn(FieldActionCacheStatisticsID, vs...))
+}
+
+// ActionCacheStatisticsIDNotIn applies the NotIn predicate on the "action_cache_statistics_id" field.
+func ActionCacheStatisticsIDNotIn(vs ...int) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldNotIn(FieldActionCacheStatisticsID, vs...))
+}
+
+// ActionCacheStatisticsIDIsNil applies the IsNil predicate on the "action_cache_statistics_id" field.
+func ActionCacheStatisticsIDIsNil() predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldIsNull(FieldActionCacheStatisticsID))
+}
+
+// ActionCacheStatisticsIDNotNil applies the NotNil predicate on the "action_cache_statistics_id" field.
+func ActionCacheStatisticsIDNotNil() predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldNotNull(FieldActionCacheStatisticsID))
 }
 
 // HasActionCacheStatistics applies the HasEdge predicate on the "action_cache_statistics" edge.

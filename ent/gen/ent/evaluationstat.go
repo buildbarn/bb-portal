@@ -21,11 +21,12 @@ type EvaluationStat struct {
 	SkyfunctionName string `json:"skyfunction_name,omitempty"`
 	// Count holds the value of the "count" field.
 	Count int64 `json:"count,omitempty"`
+	// BuildGraphMetricsID holds the value of the "build_graph_metrics_id" field.
+	BuildGraphMetricsID int `json:"build_graph_metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EvaluationStatQuery when eager-loading is set.
-	Edges                                EvaluationStatEdges `json:"edges"`
-	build_graph_metrics_evaluated_values *int
-	selectValues                         sql.SelectValues
+	Edges        EvaluationStatEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // EvaluationStatEdges holds the relations/edges for other nodes in the graph.
@@ -55,12 +56,10 @@ func (*EvaluationStat) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case evaluationstat.FieldID, evaluationstat.FieldCount:
+		case evaluationstat.FieldID, evaluationstat.FieldCount, evaluationstat.FieldBuildGraphMetricsID:
 			values[i] = new(sql.NullInt64)
 		case evaluationstat.FieldSkyfunctionName:
 			values[i] = new(sql.NullString)
-		case evaluationstat.ForeignKeys[0]: // build_graph_metrics_evaluated_values
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -94,12 +93,11 @@ func (es *EvaluationStat) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				es.Count = value.Int64
 			}
-		case evaluationstat.ForeignKeys[0]:
+		case evaluationstat.FieldBuildGraphMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_evaluated_values", value)
+				return fmt.Errorf("unexpected type %T for field build_graph_metrics_id", values[i])
 			} else if value.Valid {
-				es.build_graph_metrics_evaluated_values = new(int)
-				*es.build_graph_metrics_evaluated_values = int(value.Int64)
+				es.BuildGraphMetricsID = int(value.Int64)
 			}
 		default:
 			es.selectValues.Set(columns[i], values[i])
@@ -147,6 +145,9 @@ func (es *EvaluationStat) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("count=")
 	builder.WriteString(fmt.Sprintf("%v", es.Count))
+	builder.WriteString(", ")
+	builder.WriteString("build_graph_metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", es.BuildGraphMetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

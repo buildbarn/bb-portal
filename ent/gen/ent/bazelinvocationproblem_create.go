@@ -39,16 +39,16 @@ func (bipc *BazelInvocationProblemCreate) SetBepEvents(jm json.RawMessage) *Baze
 	return bipc
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (bipc *BazelInvocationProblemCreate) SetBazelInvocationID(id int) *BazelInvocationProblemCreate {
-	bipc.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (bipc *BazelInvocationProblemCreate) SetBazelInvocationID(i int) *BazelInvocationProblemCreate {
+	bipc.mutation.SetBazelInvocationID(i)
 	return bipc
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (bipc *BazelInvocationProblemCreate) SetNillableBazelInvocationID(id *int) *BazelInvocationProblemCreate {
-	if id != nil {
-		bipc = bipc.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (bipc *BazelInvocationProblemCreate) SetNillableBazelInvocationID(i *int) *BazelInvocationProblemCreate {
+	if i != nil {
+		bipc.SetBazelInvocationID(*i)
 	}
 	return bipc
 }
@@ -153,7 +153,7 @@ func (bipc *BazelInvocationProblemCreate) createSpec() (*BazelInvocationProblem,
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.bazel_invocation_problems = &nodes[0]
+		_node.BazelInvocationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

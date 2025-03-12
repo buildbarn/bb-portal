@@ -69,17 +69,23 @@ func (tbu *TimingBreakdownUpdate) ClearTime() *TimingBreakdownUpdate {
 	return tbu
 }
 
-// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (tbu *TimingBreakdownUpdate) SetExecutionInfoID(id int) *TimingBreakdownUpdate {
-	tbu.mutation.SetExecutionInfoID(id)
+// SetExecutionInfoID sets the "execution_info_id" field.
+func (tbu *TimingBreakdownUpdate) SetExecutionInfoID(i int) *TimingBreakdownUpdate {
+	tbu.mutation.SetExecutionInfoID(i)
 	return tbu
 }
 
-// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (tbu *TimingBreakdownUpdate) SetNillableExecutionInfoID(id *int) *TimingBreakdownUpdate {
-	if id != nil {
-		tbu = tbu.SetExecutionInfoID(*id)
+// SetNillableExecutionInfoID sets the "execution_info_id" field if the given value is not nil.
+func (tbu *TimingBreakdownUpdate) SetNillableExecutionInfoID(i *int) *TimingBreakdownUpdate {
+	if i != nil {
+		tbu.SetExecutionInfoID(*i)
 	}
+	return tbu
+}
+
+// ClearExecutionInfoID clears the value of the "execution_info_id" field.
+func (tbu *TimingBreakdownUpdate) ClearExecutionInfoID() *TimingBreakdownUpdate {
+	tbu.mutation.ClearExecutionInfoID()
 	return tbu
 }
 
@@ -317,17 +323,23 @@ func (tbuo *TimingBreakdownUpdateOne) ClearTime() *TimingBreakdownUpdateOne {
 	return tbuo
 }
 
-// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (tbuo *TimingBreakdownUpdateOne) SetExecutionInfoID(id int) *TimingBreakdownUpdateOne {
-	tbuo.mutation.SetExecutionInfoID(id)
+// SetExecutionInfoID sets the "execution_info_id" field.
+func (tbuo *TimingBreakdownUpdateOne) SetExecutionInfoID(i int) *TimingBreakdownUpdateOne {
+	tbuo.mutation.SetExecutionInfoID(i)
 	return tbuo
 }
 
-// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (tbuo *TimingBreakdownUpdateOne) SetNillableExecutionInfoID(id *int) *TimingBreakdownUpdateOne {
-	if id != nil {
-		tbuo = tbuo.SetExecutionInfoID(*id)
+// SetNillableExecutionInfoID sets the "execution_info_id" field if the given value is not nil.
+func (tbuo *TimingBreakdownUpdateOne) SetNillableExecutionInfoID(i *int) *TimingBreakdownUpdateOne {
+	if i != nil {
+		tbuo.SetExecutionInfoID(*i)
 	}
+	return tbuo
+}
+
+// ClearExecutionInfoID clears the value of the "execution_info_id" field.
+func (tbuo *TimingBreakdownUpdateOne) ClearExecutionInfoID() *TimingBreakdownUpdateOne {
+	tbuo.mutation.ClearExecutionInfoID()
 	return tbuo
 }
 

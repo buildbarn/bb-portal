@@ -27,7 +27,6 @@ type TestSummaryQuery struct {
 	withTestCollection *TestCollectionQuery
 	withPassed         *TestFileQuery
 	withFailed         *TestFileQuery
-	withFKs            bool
 	modifiers          []func(*sql.Selector)
 	loadTotal          []func(context.Context, []*TestSummary) error
 	withNamedPassed    map[string]*TestFileQuery
@@ -445,7 +444,6 @@ func (tsq *TestSummaryQuery) prepareQuery(ctx context.Context) error {
 func (tsq *TestSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TestSummary, error) {
 	var (
 		nodes       = []*TestSummary{}
-		withFKs     = tsq.withFKs
 		_spec       = tsq.querySpec()
 		loadedTypes = [3]bool{
 			tsq.withTestCollection != nil,
@@ -453,12 +451,6 @@ func (tsq *TestSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 			tsq.withFailed != nil,
 		}
 	)
-	if tsq.withTestCollection != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, testsummary.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TestSummary).scanValues(nil, columns)
 	}
@@ -526,10 +518,7 @@ func (tsq *TestSummaryQuery) loadTestCollection(ctx context.Context, query *Test
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TestSummary)
 	for i := range nodes {
-		if nodes[i].test_collection_test_summary == nil {
-			continue
-		}
-		fk := *nodes[i].test_collection_test_summary
+		fk := nodes[i].TestCollectionID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -546,7 +535,7 @@ func (tsq *TestSummaryQuery) loadTestCollection(ctx context.Context, query *Test
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "test_collection_test_summary" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "test_collection_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -644,6 +633,9 @@ func (tsq *TestSummaryQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != testsummary.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if tsq.withTestCollection != nil {
+			_spec.Node.AddColumnOnce(testsummary.FieldTestCollectionID)
 		}
 	}
 	if ps := tsq.predicates; len(ps) > 0 {

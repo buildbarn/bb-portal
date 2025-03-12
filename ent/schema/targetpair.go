@@ -62,6 +62,8 @@ func (TargetPair) Fields() []ent.Field {
 				"INCOMPLETE",
 				"OUT_OF_MEMORY").
 			Optional(),
+
+		field.Int("bazel_invocation_id").Optional(),
 	}
 }
 
@@ -71,7 +73,8 @@ func (TargetPair) Edges() []ent.Edge {
 		// Edge back to the bazel invocation.
 		edge.From("bazel_invocation", BazelInvocation.Type).
 			Ref("targets").
-			Unique(),
+			Unique().
+			Field("bazel_invocation_id"),
 
 		// Edge to the target configuration object.
 		edge.To("configuration", TargetConfigured.Type).
@@ -94,6 +97,7 @@ func (TargetPair) Indexes() []ent.Index {
 	return []ent.Index{
 		// Index for the label field.
 		index.Fields("label"),
+		index.Fields("bazel_invocation_id"),
 	}
 }
 

@@ -73,6 +73,11 @@ func RemoteCacheHits(v int64) predicate.ActionSummary {
 	return predicate.ActionSummary(sql.FieldEQ(FieldRemoteCacheHits, v))
 }
 
+// MetricsID applies equality check predicate on the "metrics_id" field. It's identical to MetricsIDEQ.
+func MetricsID(v int) predicate.ActionSummary {
+	return predicate.ActionSummary(sql.FieldEQ(FieldMetricsID, v))
+}
+
 // ActionsCreatedEQ applies the EQ predicate on the "actions_created" field.
 func ActionsCreatedEQ(v int64) predicate.ActionSummary {
 	return predicate.ActionSummary(sql.FieldEQ(FieldActionsCreated, v))
@@ -271,6 +276,36 @@ func RemoteCacheHitsIsNil() predicate.ActionSummary {
 // RemoteCacheHitsNotNil applies the NotNil predicate on the "remote_cache_hits" field.
 func RemoteCacheHitsNotNil() predicate.ActionSummary {
 	return predicate.ActionSummary(sql.FieldNotNull(FieldRemoteCacheHits))
+}
+
+// MetricsIDEQ applies the EQ predicate on the "metrics_id" field.
+func MetricsIDEQ(v int) predicate.ActionSummary {
+	return predicate.ActionSummary(sql.FieldEQ(FieldMetricsID, v))
+}
+
+// MetricsIDNEQ applies the NEQ predicate on the "metrics_id" field.
+func MetricsIDNEQ(v int) predicate.ActionSummary {
+	return predicate.ActionSummary(sql.FieldNEQ(FieldMetricsID, v))
+}
+
+// MetricsIDIn applies the In predicate on the "metrics_id" field.
+func MetricsIDIn(vs ...int) predicate.ActionSummary {
+	return predicate.ActionSummary(sql.FieldIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDNotIn applies the NotIn predicate on the "metrics_id" field.
+func MetricsIDNotIn(vs ...int) predicate.ActionSummary {
+	return predicate.ActionSummary(sql.FieldNotIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDIsNil applies the IsNil predicate on the "metrics_id" field.
+func MetricsIDIsNil() predicate.ActionSummary {
+	return predicate.ActionSummary(sql.FieldIsNull(FieldMetricsID))
+}
+
+// MetricsIDNotNil applies the NotNil predicate on the "metrics_id" field.
+func MetricsIDNotNil() predicate.ActionSummary {
+	return predicate.ActionSummary(sql.FieldNotNull(FieldMetricsID))
 }
 
 // HasMetrics applies the HasEdge predicate on the "metrics" edge.

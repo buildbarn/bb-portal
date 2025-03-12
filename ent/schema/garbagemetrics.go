@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // GarbageMetrics holds the schema definition for the GarbageMetrics entity.
@@ -19,6 +20,8 @@ func (GarbageMetrics) Fields() []ent.Field {
 
 		// Number of bytes of garbage of the given type collected during this invocation
 		field.Int64("garbage_collected").Optional(),
+
+		field.Int("memory_metrics_id").Optional(),
 	}
 }
 
@@ -28,6 +31,14 @@ func (GarbageMetrics) Edges() []ent.Edge {
 		// Edge back to the memory metrics object
 		edge.From("memory_metrics", MemoryMetrics.Type).
 			Ref("garbage_metrics").
-			Unique(),
+			Unique().
+			Field("memory_metrics_id"), // New field added
+	}
+}
+
+// Indexes of the GarbageMetrics.
+func (GarbageMetrics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("memory_metrics_id"),
 	}
 }

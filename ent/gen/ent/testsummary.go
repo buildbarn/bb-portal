@@ -37,11 +37,12 @@ type TestSummary struct {
 	TotalRunDuration int64 `json:"total_run_duration,omitempty"`
 	// Label holds the value of the "label" field.
 	Label string `json:"label,omitempty"`
+	// TestCollectionID holds the value of the "test_collection_id" field.
+	TestCollectionID int `json:"test_collection_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestSummaryQuery when eager-loading is set.
-	Edges                        TestSummaryEdges `json:"edges"`
-	test_collection_test_summary *int
-	selectValues                 sql.SelectValues
+	Edges        TestSummaryEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // TestSummaryEdges holds the relations/edges for other nodes in the graph.
@@ -96,12 +97,10 @@ func (*TestSummary) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case testsummary.FieldID, testsummary.FieldTotalRunCount, testsummary.FieldRunCount, testsummary.FieldAttemptCount, testsummary.FieldShardCount, testsummary.FieldTotalNumCached, testsummary.FieldFirstStartTime, testsummary.FieldLastStopTime, testsummary.FieldTotalRunDuration:
+		case testsummary.FieldID, testsummary.FieldTotalRunCount, testsummary.FieldRunCount, testsummary.FieldAttemptCount, testsummary.FieldShardCount, testsummary.FieldTotalNumCached, testsummary.FieldFirstStartTime, testsummary.FieldLastStopTime, testsummary.FieldTotalRunDuration, testsummary.FieldTestCollectionID:
 			values[i] = new(sql.NullInt64)
 		case testsummary.FieldOverallStatus, testsummary.FieldLabel:
 			values[i] = new(sql.NullString)
-		case testsummary.ForeignKeys[0]: // test_collection_test_summary
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -183,12 +182,11 @@ func (ts *TestSummary) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ts.Label = value.String
 			}
-		case testsummary.ForeignKeys[0]:
+		case testsummary.FieldTestCollectionID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field test_collection_test_summary", value)
+				return fmt.Errorf("unexpected type %T for field test_collection_id", values[i])
 			} else if value.Valid {
-				ts.test_collection_test_summary = new(int)
-				*ts.test_collection_test_summary = int(value.Int64)
+				ts.TestCollectionID = int(value.Int64)
 			}
 		default:
 			ts.selectValues.Set(columns[i], values[i])
@@ -270,6 +268,9 @@ func (ts *TestSummary) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("label=")
 	builder.WriteString(ts.Label)
+	builder.WriteString(", ")
+	builder.WriteString("test_collection_id=")
+	builder.WriteString(fmt.Sprintf("%v", ts.TestCollectionID))
 	builder.WriteByte(')')
 	return builder.String()
 }

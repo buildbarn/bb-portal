@@ -144,6 +144,26 @@ func (eiu *ExectionInfoUpdate) ClearHostname() *ExectionInfoUpdate {
 	return eiu
 }
 
+// SetExecutionInfoID sets the "execution_info_id" field.
+func (eiu *ExectionInfoUpdate) SetExecutionInfoID(i int) *ExectionInfoUpdate {
+	eiu.mutation.SetExecutionInfoID(i)
+	return eiu
+}
+
+// SetNillableExecutionInfoID sets the "execution_info_id" field if the given value is not nil.
+func (eiu *ExectionInfoUpdate) SetNillableExecutionInfoID(i *int) *ExectionInfoUpdate {
+	if i != nil {
+		eiu.SetExecutionInfoID(*i)
+	}
+	return eiu
+}
+
+// ClearExecutionInfoID clears the value of the "execution_info_id" field.
+func (eiu *ExectionInfoUpdate) ClearExecutionInfoID() *ExectionInfoUpdate {
+	eiu.mutation.ClearExecutionInfoID()
+	return eiu
+}
+
 // SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
 func (eiu *ExectionInfoUpdate) SetTestResultID(id int) *ExectionInfoUpdate {
 	eiu.mutation.SetTestResultID(id)
@@ -541,6 +561,26 @@ func (eiuo *ExectionInfoUpdateOne) SetNillableHostname(s *string) *ExectionInfoU
 // ClearHostname clears the value of the "hostname" field.
 func (eiuo *ExectionInfoUpdateOne) ClearHostname() *ExectionInfoUpdateOne {
 	eiuo.mutation.ClearHostname()
+	return eiuo
+}
+
+// SetExecutionInfoID sets the "execution_info_id" field.
+func (eiuo *ExectionInfoUpdateOne) SetExecutionInfoID(i int) *ExectionInfoUpdateOne {
+	eiuo.mutation.SetExecutionInfoID(i)
+	return eiuo
+}
+
+// SetNillableExecutionInfoID sets the "execution_info_id" field if the given value is not nil.
+func (eiuo *ExectionInfoUpdateOne) SetNillableExecutionInfoID(i *int) *ExectionInfoUpdateOne {
+	if i != nil {
+		eiuo.SetExecutionInfoID(*i)
+	}
+	return eiuo
+}
+
+// ClearExecutionInfoID clears the value of the "execution_info_id" field.
+func (eiuo *ExectionInfoUpdateOne) ClearExecutionInfoID() *ExectionInfoUpdateOne {
+	eiuo.mutation.ClearExecutionInfoID()
 	return eiuo
 }
 

@@ -31,11 +31,12 @@ type TargetPair struct {
 	TestSize targetpair.TestSize `json:"test_size,omitempty"`
 	// AbortReason holds the value of the "abort_reason" field.
 	AbortReason targetpair.AbortReason `json:"abort_reason,omitempty"`
+	// BazelInvocationID holds the value of the "bazel_invocation_id" field.
+	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetPairQuery when eager-loading is set.
-	Edges                    TargetPairEdges `json:"edges"`
-	bazel_invocation_targets *int
-	selectValues             sql.SelectValues
+	Edges        TargetPairEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // TargetPairEdges holds the relations/edges for other nodes in the graph.
@@ -93,12 +94,10 @@ func (*TargetPair) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case targetpair.FieldSuccess:
 			values[i] = new(sql.NullBool)
-		case targetpair.FieldID, targetpair.FieldDurationInMs:
+		case targetpair.FieldID, targetpair.FieldDurationInMs, targetpair.FieldBazelInvocationID:
 			values[i] = new(sql.NullInt64)
 		case targetpair.FieldLabel, targetpair.FieldTargetKind, targetpair.FieldTestSize, targetpair.FieldAbortReason:
 			values[i] = new(sql.NullString)
-		case targetpair.ForeignKeys[0]: // bazel_invocation_targets
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -156,12 +155,11 @@ func (tp *TargetPair) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				tp.AbortReason = targetpair.AbortReason(value.String)
 			}
-		case targetpair.ForeignKeys[0]:
+		case targetpair.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_targets", value)
+				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				tp.bazel_invocation_targets = new(int)
-				*tp.bazel_invocation_targets = int(value.Int64)
+				tp.BazelInvocationID = int(value.Int64)
 			}
 		default:
 			tp.selectValues.Set(columns[i], values[i])
@@ -231,6 +229,9 @@ func (tp *TargetPair) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("abort_reason=")
 	builder.WriteString(fmt.Sprintf("%v", tp.AbortReason))
+	builder.WriteString(", ")
+	builder.WriteString("bazel_invocation_id=")
+	builder.WriteString(fmt.Sprintf("%v", tp.BazelInvocationID))
 	builder.WriteByte(')')
 	return builder.String()
 }

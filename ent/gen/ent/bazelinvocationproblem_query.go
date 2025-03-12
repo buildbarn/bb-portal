@@ -23,7 +23,6 @@ type BazelInvocationProblemQuery struct {
 	inters              []Interceptor
 	predicates          []predicate.BazelInvocationProblem
 	withBazelInvocation *BazelInvocationQuery
-	withFKs             bool
 	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*BazelInvocationProblem) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (bipq *BazelInvocationProblemQuery) prepareQuery(ctx context.Context) error
 func (bipq *BazelInvocationProblemQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*BazelInvocationProblem, error) {
 	var (
 		nodes       = []*BazelInvocationProblem{}
-		withFKs     = bipq.withFKs
 		_spec       = bipq.querySpec()
 		loadedTypes = [1]bool{
 			bipq.withBazelInvocation != nil,
 		}
 	)
-	if bipq.withBazelInvocation != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, bazelinvocationproblem.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*BazelInvocationProblem).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (bipq *BazelInvocationProblemQuery) loadBazelInvocation(ctx context.Context
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*BazelInvocationProblem)
 	for i := range nodes {
-		if nodes[i].bazel_invocation_problems == nil {
-			continue
-		}
-		fk := *nodes[i].bazel_invocation_problems
+		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (bipq *BazelInvocationProblemQuery) loadBazelInvocation(ctx context.Context
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_problems" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (bipq *BazelInvocationProblemQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != bazelinvocationproblem.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if bipq.withBazelInvocation != nil {
+			_spec.Node.AddColumnOnce(bazelinvocationproblem.FieldBazelInvocationID)
 		}
 	}
 	if ps := bipq.predicates; len(ps) > 0 {

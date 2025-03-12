@@ -19,6 +19,8 @@ func (EvaluationStat) Fields() []ent.Field {
 
 		// How many times a given operation was carried out on a Skyfunction.
 		field.Int64("count").Optional(),
+
+		field.Int("build_graph_metrics_id").Optional(),
 	}
 }
 
@@ -56,6 +58,7 @@ func (EvaluationStat) Edges() []ent.Edge {
 			// SkyValue. Subtract built_values from this number to get the number of
 			// restarted evaluations.
 			Ref("evaluated_values").
+			Field("build_graph_metrics_id"). // New field added
 			Unique(),
 	}
 }

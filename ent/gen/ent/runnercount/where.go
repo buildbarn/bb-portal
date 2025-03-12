@@ -68,6 +68,11 @@ func ActionsExecuted(v int64) predicate.RunnerCount {
 	return predicate.RunnerCount(sql.FieldEQ(FieldActionsExecuted, v))
 }
 
+// ActionSummaryID applies equality check predicate on the "action_summary_id" field. It's identical to ActionSummaryIDEQ.
+func ActionSummaryID(v int) predicate.RunnerCount {
+	return predicate.RunnerCount(sql.FieldEQ(FieldActionSummaryID, v))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.RunnerCount {
 	return predicate.RunnerCount(sql.FieldEQ(FieldName, v))
@@ -266,6 +271,36 @@ func ActionsExecutedIsNil() predicate.RunnerCount {
 // ActionsExecutedNotNil applies the NotNil predicate on the "actions_executed" field.
 func ActionsExecutedNotNil() predicate.RunnerCount {
 	return predicate.RunnerCount(sql.FieldNotNull(FieldActionsExecuted))
+}
+
+// ActionSummaryIDEQ applies the EQ predicate on the "action_summary_id" field.
+func ActionSummaryIDEQ(v int) predicate.RunnerCount {
+	return predicate.RunnerCount(sql.FieldEQ(FieldActionSummaryID, v))
+}
+
+// ActionSummaryIDNEQ applies the NEQ predicate on the "action_summary_id" field.
+func ActionSummaryIDNEQ(v int) predicate.RunnerCount {
+	return predicate.RunnerCount(sql.FieldNEQ(FieldActionSummaryID, v))
+}
+
+// ActionSummaryIDIn applies the In predicate on the "action_summary_id" field.
+func ActionSummaryIDIn(vs ...int) predicate.RunnerCount {
+	return predicate.RunnerCount(sql.FieldIn(FieldActionSummaryID, vs...))
+}
+
+// ActionSummaryIDNotIn applies the NotIn predicate on the "action_summary_id" field.
+func ActionSummaryIDNotIn(vs ...int) predicate.RunnerCount {
+	return predicate.RunnerCount(sql.FieldNotIn(FieldActionSummaryID, vs...))
+}
+
+// ActionSummaryIDIsNil applies the IsNil predicate on the "action_summary_id" field.
+func ActionSummaryIDIsNil() predicate.RunnerCount {
+	return predicate.RunnerCount(sql.FieldIsNull(FieldActionSummaryID))
+}
+
+// ActionSummaryIDNotNil applies the NotNil predicate on the "action_summary_id" field.
+func ActionSummaryIDNotNil() predicate.RunnerCount {
+	return predicate.RunnerCount(sql.FieldNotNull(FieldActionSummaryID))
 }
 
 // HasActionSummary applies the HasEdge predicate on the "action_summary" edge.

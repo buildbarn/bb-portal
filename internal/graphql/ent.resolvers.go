@@ -23,9 +23,19 @@ func (r *actionCacheStatisticsResolver) ID(ctx context.Context, obj *ent.ActionC
 	return helpers.GraphQLIDFromTypeAndID("ActionCacheStatistics", obj.ID), nil
 }
 
+// ActionSummaryID is the resolver for the actionSummaryID field.
+func (r *actionCacheStatisticsResolver) ActionSummaryID(ctx context.Context, obj *ent.ActionCacheStatistics) (*string, error) {
+	panic(fmt.Errorf("not implemented: ActionSummaryID - actionSummaryID"))
+}
+
 // ID is the resolver for the id field.
 func (r *actionDataResolver) ID(ctx context.Context, obj *ent.ActionData) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("ActionData", obj.ID), nil
+}
+
+// ActionSummaryID is the resolver for the actionSummaryID field.
+func (r *actionDataResolver) ActionSummaryID(ctx context.Context, obj *ent.ActionData) (*string, error) {
+	panic(fmt.Errorf("not implemented: ActionSummaryID - actionSummaryID"))
 }
 
 // ID is the resolver for the id field.
@@ -33,9 +43,19 @@ func (r *actionSummaryResolver) ID(ctx context.Context, obj *ent.ActionSummary) 
 	return helpers.GraphQLIDFromTypeAndID("ActionSummary", obj.ID), nil
 }
 
+// MetricsID is the resolver for the metricsID field.
+func (r *actionSummaryResolver) MetricsID(ctx context.Context, obj *ent.ActionSummary) (*string, error) {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
 // ID is the resolver for the id field.
 func (r *artifactMetricsResolver) ID(ctx context.Context, obj *ent.ArtifactMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("ArtifactMetrics", obj.ID), nil
+}
+
+// MetricsID is the resolver for the metricsID field.
+func (r *artifactMetricsResolver) MetricsID(ctx context.Context, obj *ent.ArtifactMetrics) (*string, error) {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
 }
 
 // ID is the resolver for the id field.
@@ -43,9 +63,24 @@ func (r *bazelInvocationResolver) ID(ctx context.Context, obj *ent.BazelInvocati
 	return helpers.GraphQLIDFromTypeAndID("BazelInvocation", obj.ID), nil
 }
 
+// EventFileID is the resolver for the eventFileID field.
+func (r *bazelInvocationResolver) EventFileID(ctx context.Context, obj *ent.BazelInvocation) (*string, error) {
+	panic(fmt.Errorf("not implemented: EventFileID - eventFileID"))
+}
+
+// BuildID is the resolver for the buildID field.
+func (r *bazelInvocationResolver) BuildID(ctx context.Context, obj *ent.BazelInvocation) (*string, error) {
+	panic(fmt.Errorf("not implemented: BuildID - buildID"))
+}
+
 // ID is the resolver for the id field.
 func (r *bazelInvocationProblemResolver) ID(ctx context.Context, obj *ent.BazelInvocationProblem) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("BazelInvocationProblem", obj.ID), nil
+}
+
+// BazelInvocationID is the resolver for the bazelInvocationID field.
+func (r *bazelInvocationProblemResolver) BazelInvocationID(ctx context.Context, obj *ent.BazelInvocationProblem) (*string, error) {
+	panic(fmt.Errorf("not implemented: BazelInvocationID - bazelInvocationID"))
 }
 
 // ID is the resolver for the id field.
@@ -63,9 +98,19 @@ func (r *buildGraphMetricsResolver) ID(ctx context.Context, obj *ent.BuildGraphM
 	return helpers.GraphQLIDFromTypeAndID("BuildGraphMetrics", obj.ID), nil
 }
 
+// MetricsID is the resolver for the metricsID field.
+func (r *buildGraphMetricsResolver) MetricsID(ctx context.Context, obj *ent.BuildGraphMetrics) (*string, error) {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
 // ID is the resolver for the id field.
 func (r *cumulativeMetricsResolver) ID(ctx context.Context, obj *ent.CumulativeMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("CumulativeMetrics", obj.ID), nil
+}
+
+// MetricsID is the resolver for the metricsID field.
+func (r *cumulativeMetricsResolver) MetricsID(ctx context.Context, obj *ent.CumulativeMetrics) (*string, error) {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
 }
 
 // ID is the resolver for the id field.
@@ -73,9 +118,19 @@ func (r *dynamicExecutionMetricsResolver) ID(ctx context.Context, obj *ent.Dynam
 	return helpers.GraphQLIDFromTypeAndID("DynamicExecutionMetrics", obj.ID), nil
 }
 
+// MetricsID is the resolver for the metricsID field.
+func (r *dynamicExecutionMetricsResolver) MetricsID(ctx context.Context, obj *ent.DynamicExecutionMetrics) (*string, error) {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
 // ID is the resolver for the id field.
 func (r *evaluationStatResolver) ID(ctx context.Context, obj *ent.EvaluationStat) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("EvaluationStatResolver", obj.ID), nil
+}
+
+// BuildGraphMetricsID is the resolver for the buildGraphMetricsID field.
+func (r *evaluationStatResolver) BuildGraphMetricsID(ctx context.Context, obj *ent.EvaluationStat) (*string, error) {
+	panic(fmt.Errorf("not implemented: BuildGraphMetricsID - buildGraphMetricsID"))
 }
 
 // ID is the resolver for the id field.
@@ -88,9 +143,19 @@ func (r *exectionInfoResolver) ID(ctx context.Context, obj *ent.ExectionInfo) (s
 	return helpers.GraphQLIDFromTypeAndID("ExecutionInfo", obj.ID), nil
 }
 
+// ExecutionInfoID is the resolver for the executionInfoID field.
+func (r *exectionInfoResolver) ExecutionInfoID(ctx context.Context, obj *ent.ExectionInfo) (*string, error) {
+	panic(fmt.Errorf("not implemented: ExecutionInfoID - executionInfoID"))
+}
+
 // ID is the resolver for the id field.
 func (r *filesMetricResolver) ID(ctx context.Context, obj *ent.FilesMetric) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("FilesMetric", obj.ID), nil
+}
+
+// ArtifactMetricsID is the resolver for the artifactMetricsID field.
+func (r *filesMetricResolver) ArtifactMetricsID(ctx context.Context, obj *ent.FilesMetric) (*string, error) {
+	panic(fmt.Errorf("not implemented: ArtifactMetricsID - artifactMetricsID"))
 }
 
 // ID is the resolver for the id field.
@@ -98,9 +163,19 @@ func (r *garbageMetricsResolver) ID(ctx context.Context, obj *ent.GarbageMetrics
 	return helpers.GraphQLIDFromTypeAndID("GarbageMetrics", obj.ID), nil
 }
 
+// MemoryMetricsID is the resolver for the memoryMetricsID field.
+func (r *garbageMetricsResolver) MemoryMetricsID(ctx context.Context, obj *ent.GarbageMetrics) (*string, error) {
+	panic(fmt.Errorf("not implemented: MemoryMetricsID - memoryMetricsID"))
+}
+
 // ID is the resolver for the id field.
 func (r *memoryMetricsResolver) ID(ctx context.Context, obj *ent.MemoryMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("MemoryMetrics", obj.ID), nil
+}
+
+// MetricsID is the resolver for the metricsID field.
+func (r *memoryMetricsResolver) MetricsID(ctx context.Context, obj *ent.MemoryMetrics) (*string, error) {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
 }
 
 // ID is the resolver for the id field.
@@ -108,9 +183,19 @@ func (r *metricsResolver) ID(ctx context.Context, obj *ent.Metrics) (string, err
 	return helpers.GraphQLIDFromTypeAndID("Metrics", obj.ID), nil
 }
 
+// BazelInvocationID is the resolver for the bazelInvocationID field.
+func (r *metricsResolver) BazelInvocationID(ctx context.Context, obj *ent.Metrics) (*string, error) {
+	panic(fmt.Errorf("not implemented: BazelInvocationID - bazelInvocationID"))
+}
+
 // ID is the resolver for the id field.
 func (r *missDetailResolver) ID(ctx context.Context, obj *ent.MissDetail) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("MissDetai", obj.ID), nil
+}
+
+// ActionCacheStatisticsID is the resolver for the actionCacheStatisticsID field.
+func (r *missDetailResolver) ActionCacheStatisticsID(ctx context.Context, obj *ent.MissDetail) (*string, error) {
+	panic(fmt.Errorf("not implemented: ActionCacheStatisticsID - actionCacheStatisticsID"))
 }
 
 // ID is the resolver for the id field.
@@ -118,9 +203,19 @@ func (r *namedSetOfFilesResolver) ID(ctx context.Context, obj *ent.NamedSetOfFil
 	return helpers.GraphQLIDFromTypeAndID("NamedSetOfFiles", obj.ID), nil
 }
 
+// OutputGroupID is the resolver for the outputGroupID field.
+func (r *namedSetOfFilesResolver) OutputGroupID(ctx context.Context, obj *ent.NamedSetOfFiles) (*string, error) {
+	panic(fmt.Errorf("not implemented: OutputGroupID - outputGroupID"))
+}
+
 // ID is the resolver for the id field.
 func (r *networkMetricsResolver) ID(ctx context.Context, obj *ent.NetworkMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("NetworkMetrics", obj.ID), nil
+}
+
+// MetricsID is the resolver for the metricsID field.
+func (r *networkMetricsResolver) MetricsID(ctx context.Context, obj *ent.NetworkMetrics) (*string, error) {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
 }
 
 // ID is the resolver for the id field.
@@ -128,14 +223,29 @@ func (r *outputGroupResolver) ID(ctx context.Context, obj *ent.OutputGroup) (str
 	return helpers.GraphQLIDFromTypeAndID("OutputGroup", obj.ID), nil
 }
 
+// TargetCompleteID is the resolver for the targetCompleteID field.
+func (r *outputGroupResolver) TargetCompleteID(ctx context.Context, obj *ent.OutputGroup) (*string, error) {
+	panic(fmt.Errorf("not implemented: TargetCompleteID - targetCompleteID"))
+}
+
 // ID is the resolver for the id field.
 func (r *packageLoadMetricsResolver) ID(ctx context.Context, obj *ent.PackageLoadMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("PackageLoadMetrics", obj.ID), nil
 }
 
+// PackageMetricsID is the resolver for the packageMetricsID field.
+func (r *packageLoadMetricsResolver) PackageMetricsID(ctx context.Context, obj *ent.PackageLoadMetrics) (*string, error) {
+	panic(fmt.Errorf("not implemented: PackageMetricsID - packageMetricsID"))
+}
+
 // ID is the resolver for the id field.
 func (r *packageMetricsResolver) ID(ctx context.Context, obj *ent.PackageMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("PackageMetrics", obj.ID), nil
+}
+
+// MetricsID is the resolver for the metricsID field.
+func (r *packageMetricsResolver) MetricsID(ctx context.Context, obj *ent.PackageMetrics) (*string, error) {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
 }
 
 // Node is the resolver for the node field.
@@ -225,9 +335,19 @@ func (r *raceStatisticsResolver) ID(ctx context.Context, obj *ent.RaceStatistics
 	return helpers.GraphQLIDFromTypeAndID("RaceStatistics", obj.ID), nil
 }
 
+// DynamicExecutionMetricsID is the resolver for the dynamicExecutionMetricsID field.
+func (r *raceStatisticsResolver) DynamicExecutionMetricsID(ctx context.Context, obj *ent.RaceStatistics) (*string, error) {
+	panic(fmt.Errorf("not implemented: DynamicExecutionMetricsID - dynamicExecutionMetricsID"))
+}
+
 // ID is the resolver for the id field.
 func (r *resourceUsageResolver) ID(ctx context.Context, obj *ent.ResourceUsage) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("ResourceUsage", obj.ID), nil
+}
+
+// ExecutionInfoID is the resolver for the executionInfoID field.
+func (r *resourceUsageResolver) ExecutionInfoID(ctx context.Context, obj *ent.ResourceUsage) (*string, error) {
+	panic(fmt.Errorf("not implemented: ExecutionInfoID - executionInfoID"))
 }
 
 // ID is the resolver for the id field.
@@ -235,9 +355,19 @@ func (r *runnerCountResolver) ID(ctx context.Context, obj *ent.RunnerCount) (str
 	return helpers.GraphQLIDFromTypeAndID("RunnerCount", obj.ID), nil
 }
 
+// ActionSummaryID is the resolver for the actionSummaryID field.
+func (r *runnerCountResolver) ActionSummaryID(ctx context.Context, obj *ent.RunnerCount) (*string, error) {
+	panic(fmt.Errorf("not implemented: ActionSummaryID - actionSummaryID"))
+}
+
 // ID is the resolver for the id field.
 func (r *sourceControlResolver) ID(ctx context.Context, obj *ent.SourceControl) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("SourceControl", obj.ID), nil
+}
+
+// BazelInvocationID is the resolver for the bazelInvocationID field.
+func (r *sourceControlResolver) BazelInvocationID(ctx context.Context, obj *ent.SourceControl) (*string, error) {
+	panic(fmt.Errorf("not implemented: BazelInvocationID - bazelInvocationID"))
 }
 
 // ID is the resolver for the id field.
@@ -245,9 +375,19 @@ func (r *systemNetworkStatsResolver) ID(ctx context.Context, obj *ent.SystemNetw
 	return helpers.GraphQLIDFromTypeAndID("SystemNetworkStats", obj.ID), nil
 }
 
+// NetworkMetricsID is the resolver for the networkMetricsID field.
+func (r *systemNetworkStatsResolver) NetworkMetricsID(ctx context.Context, obj *ent.SystemNetworkStats) (*string, error) {
+	panic(fmt.Errorf("not implemented: NetworkMetricsID - networkMetricsID"))
+}
+
 // ID is the resolver for the id field.
 func (r *targetCompleteResolver) ID(ctx context.Context, obj *ent.TargetComplete) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("TargetComplete", obj.ID), nil
+}
+
+// TargetPairID is the resolver for the targetPairID field.
+func (r *targetCompleteResolver) TargetPairID(ctx context.Context, obj *ent.TargetComplete) (*string, error) {
+	panic(fmt.Errorf("not implemented: TargetPairID - targetPairID"))
 }
 
 // ID is the resolver for the id field.
@@ -255,9 +395,19 @@ func (r *targetConfiguredResolver) ID(ctx context.Context, obj *ent.TargetConfig
 	return helpers.GraphQLIDFromTypeAndID("TargetConfigured", obj.ID), nil
 }
 
+// TargetPairID is the resolver for the targetPairID field.
+func (r *targetConfiguredResolver) TargetPairID(ctx context.Context, obj *ent.TargetConfigured) (*string, error) {
+	panic(fmt.Errorf("not implemented: TargetPairID - targetPairID"))
+}
+
 // ID is the resolver for the id field.
 func (r *targetMetricsResolver) ID(ctx context.Context, obj *ent.TargetMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("TargetMetrics", obj.ID), nil
+}
+
+// MetricsID is the resolver for the metricsID field.
+func (r *targetMetricsResolver) MetricsID(ctx context.Context, obj *ent.TargetMetrics) (*string, error) {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
 }
 
 // ID is the resolver for the id field.
@@ -265,9 +415,19 @@ func (r *targetPairResolver) ID(ctx context.Context, obj *ent.TargetPair) (strin
 	return helpers.GraphQLIDFromTypeAndID("TargetPair", obj.ID), nil
 }
 
+// BazelInvocationID is the resolver for the bazelInvocationID field.
+func (r *targetPairResolver) BazelInvocationID(ctx context.Context, obj *ent.TargetPair) (*string, error) {
+	panic(fmt.Errorf("not implemented: BazelInvocationID - bazelInvocationID"))
+}
+
 // ID is the resolver for the id field.
 func (r *testCollectionResolver) ID(ctx context.Context, obj *ent.TestCollection) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("TestCollection", obj.ID), nil
+}
+
+// BazelInvocationID is the resolver for the bazelInvocationID field.
+func (r *testCollectionResolver) BazelInvocationID(ctx context.Context, obj *ent.TestCollection) (*string, error) {
+	panic(fmt.Errorf("not implemented: BazelInvocationID - bazelInvocationID"))
 }
 
 // ID is the resolver for the id field.
@@ -275,9 +435,19 @@ func (r *testFileResolver) ID(ctx context.Context, obj *ent.TestFile) (string, e
 	return helpers.GraphQLIDFromTypeAndID("TestFile", obj.ID), nil
 }
 
+// TestResultID is the resolver for the testResultID field.
+func (r *testFileResolver) TestResultID(ctx context.Context, obj *ent.TestFile) (*string, error) {
+	panic(fmt.Errorf("not implemented: TestResultID - testResultID"))
+}
+
 // ID is the resolver for the id field.
 func (r *testResultBESResolver) ID(ctx context.Context, obj *ent.TestResultBES) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("TestResultBES", obj.ID), nil
+}
+
+// TestCollectionID is the resolver for the testCollectionID field.
+func (r *testResultBESResolver) TestCollectionID(ctx context.Context, obj *ent.TestResultBES) (*string, error) {
+	panic(fmt.Errorf("not implemented: TestCollectionID - testCollectionID"))
 }
 
 // ID is the resolver for the id field.
@@ -285,14 +455,29 @@ func (r *testSummaryResolver) ID(ctx context.Context, obj *ent.TestSummary) (str
 	return helpers.GraphQLIDFromTypeAndID("TestSummary", obj.ID), nil
 }
 
+// TestCollectionID is the resolver for the testCollectionID field.
+func (r *testSummaryResolver) TestCollectionID(ctx context.Context, obj *ent.TestSummary) (*string, error) {
+	panic(fmt.Errorf("not implemented: TestCollectionID - testCollectionID"))
+}
+
 // ID is the resolver for the id field.
 func (r *timingBreakdownResolver) ID(ctx context.Context, obj *ent.TimingBreakdown) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("TimingBreakdown", obj.ID), nil
 }
 
+// ExecutionInfoID is the resolver for the executionInfoID field.
+func (r *timingBreakdownResolver) ExecutionInfoID(ctx context.Context, obj *ent.TimingBreakdown) (*string, error) {
+	panic(fmt.Errorf("not implemented: ExecutionInfoID - executionInfoID"))
+}
+
 // ID is the resolver for the id field.
 func (r *timingChildResolver) ID(ctx context.Context, obj *ent.TimingChild) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("TimingChild", obj.ID), nil
+}
+
+// TimingBreakdownID is the resolver for the timingBreakdownID field.
+func (r *timingChildResolver) TimingBreakdownID(ctx context.Context, obj *ent.TimingChild) (*string, error) {
+	panic(fmt.Errorf("not implemented: TimingBreakdownID - timingBreakdownID"))
 }
 
 // ID is the resolver for the id field.
@@ -340,6 +525,26 @@ func (r *actionCacheStatisticsWhereInputResolver) IDLte(ctx context.Context, obj
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// ActionSummaryID is the resolver for the actionSummaryID field.
+func (r *actionCacheStatisticsWhereInputResolver) ActionSummaryID(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryID - actionSummaryID"))
+}
+
+// ActionSummaryIdneq is the resolver for the actionSummaryIDNEQ field.
+func (r *actionCacheStatisticsWhereInputResolver) ActionSummaryIdneq(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryIdneq - actionSummaryIDNEQ"))
+}
+
+// ActionSummaryIDIn is the resolver for the actionSummaryIDIn field.
+func (r *actionCacheStatisticsWhereInputResolver) ActionSummaryIDIn(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryIDIn - actionSummaryIDIn"))
+}
+
+// ActionSummaryIDNotIn is the resolver for the actionSummaryIDNotIn field.
+func (r *actionCacheStatisticsWhereInputResolver) ActionSummaryIDNotIn(ctx context.Context, obj *ent.ActionCacheStatisticsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryIDNotIn - actionSummaryIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *actionDataWhereInputResolver) ID(ctx context.Context, obj *ent.ActionDataWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -378,6 +583,26 @@ func (r *actionDataWhereInputResolver) IDLt(ctx context.Context, obj *ent.Action
 // IDLte is the resolver for the idLTE field.
 func (r *actionDataWhereInputResolver) IDLte(ctx context.Context, obj *ent.ActionDataWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ActionSummaryID is the resolver for the actionSummaryID field.
+func (r *actionDataWhereInputResolver) ActionSummaryID(ctx context.Context, obj *ent.ActionDataWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryID - actionSummaryID"))
+}
+
+// ActionSummaryIdneq is the resolver for the actionSummaryIDNEQ field.
+func (r *actionDataWhereInputResolver) ActionSummaryIdneq(ctx context.Context, obj *ent.ActionDataWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryIdneq - actionSummaryIDNEQ"))
+}
+
+// ActionSummaryIDIn is the resolver for the actionSummaryIDIn field.
+func (r *actionDataWhereInputResolver) ActionSummaryIDIn(ctx context.Context, obj *ent.ActionDataWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryIDIn - actionSummaryIDIn"))
+}
+
+// ActionSummaryIDNotIn is the resolver for the actionSummaryIDNotIn field.
+func (r *actionDataWhereInputResolver) ActionSummaryIDNotIn(ctx context.Context, obj *ent.ActionDataWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryIDNotIn - actionSummaryIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -420,6 +645,26 @@ func (r *actionSummaryWhereInputResolver) IDLte(ctx context.Context, obj *ent.Ac
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// MetricsID is the resolver for the metricsID field.
+func (r *actionSummaryWhereInputResolver) MetricsID(ctx context.Context, obj *ent.ActionSummaryWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
+// MetricsIdneq is the resolver for the metricsIDNEQ field.
+func (r *actionSummaryWhereInputResolver) MetricsIdneq(ctx context.Context, obj *ent.ActionSummaryWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsIdneq - metricsIDNEQ"))
+}
+
+// MetricsIDIn is the resolver for the metricsIDIn field.
+func (r *actionSummaryWhereInputResolver) MetricsIDIn(ctx context.Context, obj *ent.ActionSummaryWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDIn - metricsIDIn"))
+}
+
+// MetricsIDNotIn is the resolver for the metricsIDNotIn field.
+func (r *actionSummaryWhereInputResolver) MetricsIDNotIn(ctx context.Context, obj *ent.ActionSummaryWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDNotIn - metricsIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *artifactMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.ArtifactMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -458,6 +703,26 @@ func (r *artifactMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent.A
 // IDLte is the resolver for the idLTE field.
 func (r *artifactMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.ArtifactMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// MetricsID is the resolver for the metricsID field.
+func (r *artifactMetricsWhereInputResolver) MetricsID(ctx context.Context, obj *ent.ArtifactMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
+// MetricsIdneq is the resolver for the metricsIDNEQ field.
+func (r *artifactMetricsWhereInputResolver) MetricsIdneq(ctx context.Context, obj *ent.ArtifactMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsIdneq - metricsIDNEQ"))
+}
+
+// MetricsIDIn is the resolver for the metricsIDIn field.
+func (r *artifactMetricsWhereInputResolver) MetricsIDIn(ctx context.Context, obj *ent.ArtifactMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDIn - metricsIDIn"))
+}
+
+// MetricsIDNotIn is the resolver for the metricsIDNotIn field.
+func (r *artifactMetricsWhereInputResolver) MetricsIDNotIn(ctx context.Context, obj *ent.ArtifactMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDNotIn - metricsIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -500,6 +765,26 @@ func (r *bazelInvocationProblemWhereInputResolver) IDLte(ctx context.Context, ob
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// BazelInvocationID is the resolver for the bazelInvocationID field.
+func (r *bazelInvocationProblemWhereInputResolver) BazelInvocationID(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationID - bazelInvocationID"))
+}
+
+// BazelInvocationIdneq is the resolver for the bazelInvocationIDNEQ field.
+func (r *bazelInvocationProblemWhereInputResolver) BazelInvocationIdneq(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIdneq - bazelInvocationIDNEQ"))
+}
+
+// BazelInvocationIDIn is the resolver for the bazelInvocationIDIn field.
+func (r *bazelInvocationProblemWhereInputResolver) BazelInvocationIDIn(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIDIn - bazelInvocationIDIn"))
+}
+
+// BazelInvocationIDNotIn is the resolver for the bazelInvocationIDNotIn field.
+func (r *bazelInvocationProblemWhereInputResolver) BazelInvocationIDNotIn(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIDNotIn - bazelInvocationIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *bazelInvocationWhereInputResolver) ID(ctx context.Context, obj *ent.BazelInvocationWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -538,6 +823,46 @@ func (r *bazelInvocationWhereInputResolver) IDLt(ctx context.Context, obj *ent.B
 // IDLte is the resolver for the idLTE field.
 func (r *bazelInvocationWhereInputResolver) IDLte(ctx context.Context, obj *ent.BazelInvocationWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// EventFileID is the resolver for the eventFileID field.
+func (r *bazelInvocationWhereInputResolver) EventFileID(ctx context.Context, obj *ent.BazelInvocationWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: EventFileID - eventFileID"))
+}
+
+// EventFileIdneq is the resolver for the eventFileIDNEQ field.
+func (r *bazelInvocationWhereInputResolver) EventFileIdneq(ctx context.Context, obj *ent.BazelInvocationWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: EventFileIdneq - eventFileIDNEQ"))
+}
+
+// EventFileIDIn is the resolver for the eventFileIDIn field.
+func (r *bazelInvocationWhereInputResolver) EventFileIDIn(ctx context.Context, obj *ent.BazelInvocationWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: EventFileIDIn - eventFileIDIn"))
+}
+
+// EventFileIDNotIn is the resolver for the eventFileIDNotIn field.
+func (r *bazelInvocationWhereInputResolver) EventFileIDNotIn(ctx context.Context, obj *ent.BazelInvocationWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: EventFileIDNotIn - eventFileIDNotIn"))
+}
+
+// BuildID is the resolver for the buildID field.
+func (r *bazelInvocationWhereInputResolver) BuildID(ctx context.Context, obj *ent.BazelInvocationWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BuildID - buildID"))
+}
+
+// BuildIdneq is the resolver for the buildIDNEQ field.
+func (r *bazelInvocationWhereInputResolver) BuildIdneq(ctx context.Context, obj *ent.BazelInvocationWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BuildIdneq - buildIDNEQ"))
+}
+
+// BuildIDIn is the resolver for the buildIDIn field.
+func (r *bazelInvocationWhereInputResolver) BuildIDIn(ctx context.Context, obj *ent.BazelInvocationWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BuildIDIn - buildIDIn"))
+}
+
+// BuildIDNotIn is the resolver for the buildIDNotIn field.
+func (r *bazelInvocationWhereInputResolver) BuildIDNotIn(ctx context.Context, obj *ent.BazelInvocationWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BuildIDNotIn - buildIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -620,6 +945,26 @@ func (r *buildGraphMetricsWhereInputResolver) IDLte(ctx context.Context, obj *en
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// MetricsID is the resolver for the metricsID field.
+func (r *buildGraphMetricsWhereInputResolver) MetricsID(ctx context.Context, obj *ent.BuildGraphMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
+// MetricsIdneq is the resolver for the metricsIDNEQ field.
+func (r *buildGraphMetricsWhereInputResolver) MetricsIdneq(ctx context.Context, obj *ent.BuildGraphMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsIdneq - metricsIDNEQ"))
+}
+
+// MetricsIDIn is the resolver for the metricsIDIn field.
+func (r *buildGraphMetricsWhereInputResolver) MetricsIDIn(ctx context.Context, obj *ent.BuildGraphMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDIn - metricsIDIn"))
+}
+
+// MetricsIDNotIn is the resolver for the metricsIDNotIn field.
+func (r *buildGraphMetricsWhereInputResolver) MetricsIDNotIn(ctx context.Context, obj *ent.BuildGraphMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDNotIn - metricsIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *buildWhereInputResolver) ID(ctx context.Context, obj *ent.BuildWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -700,6 +1045,26 @@ func (r *cumulativeMetricsWhereInputResolver) IDLte(ctx context.Context, obj *en
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// MetricsID is the resolver for the metricsID field.
+func (r *cumulativeMetricsWhereInputResolver) MetricsID(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
+// MetricsIdneq is the resolver for the metricsIDNEQ field.
+func (r *cumulativeMetricsWhereInputResolver) MetricsIdneq(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsIdneq - metricsIDNEQ"))
+}
+
+// MetricsIDIn is the resolver for the metricsIDIn field.
+func (r *cumulativeMetricsWhereInputResolver) MetricsIDIn(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDIn - metricsIDIn"))
+}
+
+// MetricsIDNotIn is the resolver for the metricsIDNotIn field.
+func (r *cumulativeMetricsWhereInputResolver) MetricsIDNotIn(ctx context.Context, obj *ent.CumulativeMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDNotIn - metricsIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *dynamicExecutionMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -740,6 +1105,26 @@ func (r *dynamicExecutionMetricsWhereInputResolver) IDLte(ctx context.Context, o
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// MetricsID is the resolver for the metricsID field.
+func (r *dynamicExecutionMetricsWhereInputResolver) MetricsID(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
+// MetricsIdneq is the resolver for the metricsIDNEQ field.
+func (r *dynamicExecutionMetricsWhereInputResolver) MetricsIdneq(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsIdneq - metricsIDNEQ"))
+}
+
+// MetricsIDIn is the resolver for the metricsIDIn field.
+func (r *dynamicExecutionMetricsWhereInputResolver) MetricsIDIn(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDIn - metricsIDIn"))
+}
+
+// MetricsIDNotIn is the resolver for the metricsIDNotIn field.
+func (r *dynamicExecutionMetricsWhereInputResolver) MetricsIDNotIn(ctx context.Context, obj *ent.DynamicExecutionMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDNotIn - metricsIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *evaluationStatWhereInputResolver) ID(ctx context.Context, obj *ent.EvaluationStatWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -778,6 +1163,26 @@ func (r *evaluationStatWhereInputResolver) IDLt(ctx context.Context, obj *ent.Ev
 // IDLte is the resolver for the idLTE field.
 func (r *evaluationStatWhereInputResolver) IDLte(ctx context.Context, obj *ent.EvaluationStatWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// BuildGraphMetricsID is the resolver for the buildGraphMetricsID field.
+func (r *evaluationStatWhereInputResolver) BuildGraphMetricsID(ctx context.Context, obj *ent.EvaluationStatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BuildGraphMetricsID - buildGraphMetricsID"))
+}
+
+// BuildGraphMetricsIdneq is the resolver for the buildGraphMetricsIDNEQ field.
+func (r *evaluationStatWhereInputResolver) BuildGraphMetricsIdneq(ctx context.Context, obj *ent.EvaluationStatWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BuildGraphMetricsIdneq - buildGraphMetricsIDNEQ"))
+}
+
+// BuildGraphMetricsIDIn is the resolver for the buildGraphMetricsIDIn field.
+func (r *evaluationStatWhereInputResolver) BuildGraphMetricsIDIn(ctx context.Context, obj *ent.EvaluationStatWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BuildGraphMetricsIDIn - buildGraphMetricsIDIn"))
+}
+
+// BuildGraphMetricsIDNotIn is the resolver for the buildGraphMetricsIDNotIn field.
+func (r *evaluationStatWhereInputResolver) BuildGraphMetricsIDNotIn(ctx context.Context, obj *ent.EvaluationStatWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BuildGraphMetricsIDNotIn - buildGraphMetricsIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -860,6 +1265,26 @@ func (r *exectionInfoWhereInputResolver) IDLte(ctx context.Context, obj *ent.Exe
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// ExecutionInfoID is the resolver for the executionInfoID field.
+func (r *exectionInfoWhereInputResolver) ExecutionInfoID(ctx context.Context, obj *ent.ExectionInfoWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoID - executionInfoID"))
+}
+
+// ExecutionInfoIdneq is the resolver for the executionInfoIDNEQ field.
+func (r *exectionInfoWhereInputResolver) ExecutionInfoIdneq(ctx context.Context, obj *ent.ExectionInfoWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoIdneq - executionInfoIDNEQ"))
+}
+
+// ExecutionInfoIDIn is the resolver for the executionInfoIDIn field.
+func (r *exectionInfoWhereInputResolver) ExecutionInfoIDIn(ctx context.Context, obj *ent.ExectionInfoWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoIDIn - executionInfoIDIn"))
+}
+
+// ExecutionInfoIDNotIn is the resolver for the executionInfoIDNotIn field.
+func (r *exectionInfoWhereInputResolver) ExecutionInfoIDNotIn(ctx context.Context, obj *ent.ExectionInfoWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoIDNotIn - executionInfoIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *filesMetricWhereInputResolver) ID(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -898,6 +1323,26 @@ func (r *filesMetricWhereInputResolver) IDLt(ctx context.Context, obj *ent.Files
 // IDLte is the resolver for the idLTE field.
 func (r *filesMetricWhereInputResolver) IDLte(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ArtifactMetricsID is the resolver for the artifactMetricsID field.
+func (r *filesMetricWhereInputResolver) ArtifactMetricsID(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ArtifactMetricsID - artifactMetricsID"))
+}
+
+// ArtifactMetricsIdneq is the resolver for the artifactMetricsIDNEQ field.
+func (r *filesMetricWhereInputResolver) ArtifactMetricsIdneq(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ArtifactMetricsIdneq - artifactMetricsIDNEQ"))
+}
+
+// ArtifactMetricsIDIn is the resolver for the artifactMetricsIDIn field.
+func (r *filesMetricWhereInputResolver) ArtifactMetricsIDIn(ctx context.Context, obj *ent.FilesMetricWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ArtifactMetricsIDIn - artifactMetricsIDIn"))
+}
+
+// ArtifactMetricsIDNotIn is the resolver for the artifactMetricsIDNotIn field.
+func (r *filesMetricWhereInputResolver) ArtifactMetricsIDNotIn(ctx context.Context, obj *ent.FilesMetricWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ArtifactMetricsIDNotIn - artifactMetricsIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -940,6 +1385,26 @@ func (r *garbageMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.G
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// MemoryMetricsID is the resolver for the memoryMetricsID field.
+func (r *garbageMetricsWhereInputResolver) MemoryMetricsID(ctx context.Context, obj *ent.GarbageMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MemoryMetricsID - memoryMetricsID"))
+}
+
+// MemoryMetricsIdneq is the resolver for the memoryMetricsIDNEQ field.
+func (r *garbageMetricsWhereInputResolver) MemoryMetricsIdneq(ctx context.Context, obj *ent.GarbageMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MemoryMetricsIdneq - memoryMetricsIDNEQ"))
+}
+
+// MemoryMetricsIDIn is the resolver for the memoryMetricsIDIn field.
+func (r *garbageMetricsWhereInputResolver) MemoryMetricsIDIn(ctx context.Context, obj *ent.GarbageMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MemoryMetricsIDIn - memoryMetricsIDIn"))
+}
+
+// MemoryMetricsIDNotIn is the resolver for the memoryMetricsIDNotIn field.
+func (r *garbageMetricsWhereInputResolver) MemoryMetricsIDNotIn(ctx context.Context, obj *ent.GarbageMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MemoryMetricsIDNotIn - memoryMetricsIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *memoryMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.MemoryMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -978,6 +1443,26 @@ func (r *memoryMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent.Mem
 // IDLte is the resolver for the idLTE field.
 func (r *memoryMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.MemoryMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// MetricsID is the resolver for the metricsID field.
+func (r *memoryMetricsWhereInputResolver) MetricsID(ctx context.Context, obj *ent.MemoryMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
+// MetricsIdneq is the resolver for the metricsIDNEQ field.
+func (r *memoryMetricsWhereInputResolver) MetricsIdneq(ctx context.Context, obj *ent.MemoryMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsIdneq - metricsIDNEQ"))
+}
+
+// MetricsIDIn is the resolver for the metricsIDIn field.
+func (r *memoryMetricsWhereInputResolver) MetricsIDIn(ctx context.Context, obj *ent.MemoryMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDIn - metricsIDIn"))
+}
+
+// MetricsIDNotIn is the resolver for the metricsIDNotIn field.
+func (r *memoryMetricsWhereInputResolver) MetricsIDNotIn(ctx context.Context, obj *ent.MemoryMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDNotIn - metricsIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1020,6 +1505,26 @@ func (r *metricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.MetricsW
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// BazelInvocationID is the resolver for the bazelInvocationID field.
+func (r *metricsWhereInputResolver) BazelInvocationID(ctx context.Context, obj *ent.MetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationID - bazelInvocationID"))
+}
+
+// BazelInvocationIdneq is the resolver for the bazelInvocationIDNEQ field.
+func (r *metricsWhereInputResolver) BazelInvocationIdneq(ctx context.Context, obj *ent.MetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIdneq - bazelInvocationIDNEQ"))
+}
+
+// BazelInvocationIDIn is the resolver for the bazelInvocationIDIn field.
+func (r *metricsWhereInputResolver) BazelInvocationIDIn(ctx context.Context, obj *ent.MetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIDIn - bazelInvocationIDIn"))
+}
+
+// BazelInvocationIDNotIn is the resolver for the bazelInvocationIDNotIn field.
+func (r *metricsWhereInputResolver) BazelInvocationIDNotIn(ctx context.Context, obj *ent.MetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIDNotIn - bazelInvocationIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *missDetailWhereInputResolver) ID(ctx context.Context, obj *ent.MissDetailWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -1058,6 +1563,26 @@ func (r *missDetailWhereInputResolver) IDLt(ctx context.Context, obj *ent.MissDe
 // IDLte is the resolver for the idLTE field.
 func (r *missDetailWhereInputResolver) IDLte(ctx context.Context, obj *ent.MissDetailWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ActionCacheStatisticsID is the resolver for the actionCacheStatisticsID field.
+func (r *missDetailWhereInputResolver) ActionCacheStatisticsID(ctx context.Context, obj *ent.MissDetailWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ActionCacheStatisticsID - actionCacheStatisticsID"))
+}
+
+// ActionCacheStatisticsIdneq is the resolver for the actionCacheStatisticsIDNEQ field.
+func (r *missDetailWhereInputResolver) ActionCacheStatisticsIdneq(ctx context.Context, obj *ent.MissDetailWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ActionCacheStatisticsIdneq - actionCacheStatisticsIDNEQ"))
+}
+
+// ActionCacheStatisticsIDIn is the resolver for the actionCacheStatisticsIDIn field.
+func (r *missDetailWhereInputResolver) ActionCacheStatisticsIDIn(ctx context.Context, obj *ent.MissDetailWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ActionCacheStatisticsIDIn - actionCacheStatisticsIDIn"))
+}
+
+// ActionCacheStatisticsIDNotIn is the resolver for the actionCacheStatisticsIDNotIn field.
+func (r *missDetailWhereInputResolver) ActionCacheStatisticsIDNotIn(ctx context.Context, obj *ent.MissDetailWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ActionCacheStatisticsIDNotIn - actionCacheStatisticsIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1100,6 +1625,26 @@ func (r *namedSetOfFilesWhereInputResolver) IDLte(ctx context.Context, obj *ent.
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// OutputGroupID is the resolver for the outputGroupID field.
+func (r *namedSetOfFilesWhereInputResolver) OutputGroupID(ctx context.Context, obj *ent.NamedSetOfFilesWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: OutputGroupID - outputGroupID"))
+}
+
+// OutputGroupIdneq is the resolver for the outputGroupIDNEQ field.
+func (r *namedSetOfFilesWhereInputResolver) OutputGroupIdneq(ctx context.Context, obj *ent.NamedSetOfFilesWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: OutputGroupIdneq - outputGroupIDNEQ"))
+}
+
+// OutputGroupIDIn is the resolver for the outputGroupIDIn field.
+func (r *namedSetOfFilesWhereInputResolver) OutputGroupIDIn(ctx context.Context, obj *ent.NamedSetOfFilesWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: OutputGroupIDIn - outputGroupIDIn"))
+}
+
+// OutputGroupIDNotIn is the resolver for the outputGroupIDNotIn field.
+func (r *namedSetOfFilesWhereInputResolver) OutputGroupIDNotIn(ctx context.Context, obj *ent.NamedSetOfFilesWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: OutputGroupIDNotIn - outputGroupIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *networkMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.NetworkMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -1138,6 +1683,26 @@ func (r *networkMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent.Ne
 // IDLte is the resolver for the idLTE field.
 func (r *networkMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.NetworkMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// MetricsID is the resolver for the metricsID field.
+func (r *networkMetricsWhereInputResolver) MetricsID(ctx context.Context, obj *ent.NetworkMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
+// MetricsIdneq is the resolver for the metricsIDNEQ field.
+func (r *networkMetricsWhereInputResolver) MetricsIdneq(ctx context.Context, obj *ent.NetworkMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsIdneq - metricsIDNEQ"))
+}
+
+// MetricsIDIn is the resolver for the metricsIDIn field.
+func (r *networkMetricsWhereInputResolver) MetricsIDIn(ctx context.Context, obj *ent.NetworkMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDIn - metricsIDIn"))
+}
+
+// MetricsIDNotIn is the resolver for the metricsIDNotIn field.
+func (r *networkMetricsWhereInputResolver) MetricsIDNotIn(ctx context.Context, obj *ent.NetworkMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDNotIn - metricsIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1180,6 +1745,26 @@ func (r *outputGroupWhereInputResolver) IDLte(ctx context.Context, obj *ent.Outp
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// TargetCompleteID is the resolver for the targetCompleteID field.
+func (r *outputGroupWhereInputResolver) TargetCompleteID(ctx context.Context, obj *ent.OutputGroupWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TargetCompleteID - targetCompleteID"))
+}
+
+// TargetCompleteIdneq is the resolver for the targetCompleteIDNEQ field.
+func (r *outputGroupWhereInputResolver) TargetCompleteIdneq(ctx context.Context, obj *ent.OutputGroupWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TargetCompleteIdneq - targetCompleteIDNEQ"))
+}
+
+// TargetCompleteIDIn is the resolver for the targetCompleteIDIn field.
+func (r *outputGroupWhereInputResolver) TargetCompleteIDIn(ctx context.Context, obj *ent.OutputGroupWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TargetCompleteIDIn - targetCompleteIDIn"))
+}
+
+// TargetCompleteIDNotIn is the resolver for the targetCompleteIDNotIn field.
+func (r *outputGroupWhereInputResolver) TargetCompleteIDNotIn(ctx context.Context, obj *ent.OutputGroupWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TargetCompleteIDNotIn - targetCompleteIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *packageLoadMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -1218,6 +1803,26 @@ func (r *packageLoadMetricsWhereInputResolver) IDLt(ctx context.Context, obj *en
 // IDLte is the resolver for the idLTE field.
 func (r *packageLoadMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// PackageMetricsID is the resolver for the packageMetricsID field.
+func (r *packageLoadMetricsWhereInputResolver) PackageMetricsID(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: PackageMetricsID - packageMetricsID"))
+}
+
+// PackageMetricsIdneq is the resolver for the packageMetricsIDNEQ field.
+func (r *packageLoadMetricsWhereInputResolver) PackageMetricsIdneq(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: PackageMetricsIdneq - packageMetricsIDNEQ"))
+}
+
+// PackageMetricsIDIn is the resolver for the packageMetricsIDIn field.
+func (r *packageLoadMetricsWhereInputResolver) PackageMetricsIDIn(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: PackageMetricsIDIn - packageMetricsIDIn"))
+}
+
+// PackageMetricsIDNotIn is the resolver for the packageMetricsIDNotIn field.
+func (r *packageLoadMetricsWhereInputResolver) PackageMetricsIDNotIn(ctx context.Context, obj *ent.PackageLoadMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: PackageMetricsIDNotIn - packageMetricsIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1260,6 +1865,26 @@ func (r *packageMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.P
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// MetricsID is the resolver for the metricsID field.
+func (r *packageMetricsWhereInputResolver) MetricsID(ctx context.Context, obj *ent.PackageMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
+// MetricsIdneq is the resolver for the metricsIDNEQ field.
+func (r *packageMetricsWhereInputResolver) MetricsIdneq(ctx context.Context, obj *ent.PackageMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsIdneq - metricsIDNEQ"))
+}
+
+// MetricsIDIn is the resolver for the metricsIDIn field.
+func (r *packageMetricsWhereInputResolver) MetricsIDIn(ctx context.Context, obj *ent.PackageMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDIn - metricsIDIn"))
+}
+
+// MetricsIDNotIn is the resolver for the metricsIDNotIn field.
+func (r *packageMetricsWhereInputResolver) MetricsIDNotIn(ctx context.Context, obj *ent.PackageMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDNotIn - metricsIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *raceStatisticsWhereInputResolver) ID(ctx context.Context, obj *ent.RaceStatisticsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -1298,6 +1923,26 @@ func (r *raceStatisticsWhereInputResolver) IDLt(ctx context.Context, obj *ent.Ra
 // IDLte is the resolver for the idLTE field.
 func (r *raceStatisticsWhereInputResolver) IDLte(ctx context.Context, obj *ent.RaceStatisticsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// DynamicExecutionMetricsID is the resolver for the dynamicExecutionMetricsID field.
+func (r *raceStatisticsWhereInputResolver) DynamicExecutionMetricsID(ctx context.Context, obj *ent.RaceStatisticsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DynamicExecutionMetricsID - dynamicExecutionMetricsID"))
+}
+
+// DynamicExecutionMetricsIdneq is the resolver for the dynamicExecutionMetricsIDNEQ field.
+func (r *raceStatisticsWhereInputResolver) DynamicExecutionMetricsIdneq(ctx context.Context, obj *ent.RaceStatisticsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: DynamicExecutionMetricsIdneq - dynamicExecutionMetricsIDNEQ"))
+}
+
+// DynamicExecutionMetricsIDIn is the resolver for the dynamicExecutionMetricsIDIn field.
+func (r *raceStatisticsWhereInputResolver) DynamicExecutionMetricsIDIn(ctx context.Context, obj *ent.RaceStatisticsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DynamicExecutionMetricsIDIn - dynamicExecutionMetricsIDIn"))
+}
+
+// DynamicExecutionMetricsIDNotIn is the resolver for the dynamicExecutionMetricsIDNotIn field.
+func (r *raceStatisticsWhereInputResolver) DynamicExecutionMetricsIDNotIn(ctx context.Context, obj *ent.RaceStatisticsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: DynamicExecutionMetricsIDNotIn - dynamicExecutionMetricsIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1340,6 +1985,26 @@ func (r *resourceUsageWhereInputResolver) IDLte(ctx context.Context, obj *ent.Re
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// ExecutionInfoID is the resolver for the executionInfoID field.
+func (r *resourceUsageWhereInputResolver) ExecutionInfoID(ctx context.Context, obj *ent.ResourceUsageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoID - executionInfoID"))
+}
+
+// ExecutionInfoIdneq is the resolver for the executionInfoIDNEQ field.
+func (r *resourceUsageWhereInputResolver) ExecutionInfoIdneq(ctx context.Context, obj *ent.ResourceUsageWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoIdneq - executionInfoIDNEQ"))
+}
+
+// ExecutionInfoIDIn is the resolver for the executionInfoIDIn field.
+func (r *resourceUsageWhereInputResolver) ExecutionInfoIDIn(ctx context.Context, obj *ent.ResourceUsageWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoIDIn - executionInfoIDIn"))
+}
+
+// ExecutionInfoIDNotIn is the resolver for the executionInfoIDNotIn field.
+func (r *resourceUsageWhereInputResolver) ExecutionInfoIDNotIn(ctx context.Context, obj *ent.ResourceUsageWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoIDNotIn - executionInfoIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *runnerCountWhereInputResolver) ID(ctx context.Context, obj *ent.RunnerCountWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -1378,6 +2043,26 @@ func (r *runnerCountWhereInputResolver) IDLt(ctx context.Context, obj *ent.Runne
 // IDLte is the resolver for the idLTE field.
 func (r *runnerCountWhereInputResolver) IDLte(ctx context.Context, obj *ent.RunnerCountWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ActionSummaryID is the resolver for the actionSummaryID field.
+func (r *runnerCountWhereInputResolver) ActionSummaryID(ctx context.Context, obj *ent.RunnerCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryID - actionSummaryID"))
+}
+
+// ActionSummaryIdneq is the resolver for the actionSummaryIDNEQ field.
+func (r *runnerCountWhereInputResolver) ActionSummaryIdneq(ctx context.Context, obj *ent.RunnerCountWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryIdneq - actionSummaryIDNEQ"))
+}
+
+// ActionSummaryIDIn is the resolver for the actionSummaryIDIn field.
+func (r *runnerCountWhereInputResolver) ActionSummaryIDIn(ctx context.Context, obj *ent.RunnerCountWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryIDIn - actionSummaryIDIn"))
+}
+
+// ActionSummaryIDNotIn is the resolver for the actionSummaryIDNotIn field.
+func (r *runnerCountWhereInputResolver) ActionSummaryIDNotIn(ctx context.Context, obj *ent.RunnerCountWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ActionSummaryIDNotIn - actionSummaryIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1420,6 +2105,26 @@ func (r *sourceControlWhereInputResolver) IDLte(ctx context.Context, obj *ent.So
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// BazelInvocationID is the resolver for the bazelInvocationID field.
+func (r *sourceControlWhereInputResolver) BazelInvocationID(ctx context.Context, obj *ent.SourceControlWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationID - bazelInvocationID"))
+}
+
+// BazelInvocationIdneq is the resolver for the bazelInvocationIDNEQ field.
+func (r *sourceControlWhereInputResolver) BazelInvocationIdneq(ctx context.Context, obj *ent.SourceControlWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIdneq - bazelInvocationIDNEQ"))
+}
+
+// BazelInvocationIDIn is the resolver for the bazelInvocationIDIn field.
+func (r *sourceControlWhereInputResolver) BazelInvocationIDIn(ctx context.Context, obj *ent.SourceControlWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIDIn - bazelInvocationIDIn"))
+}
+
+// BazelInvocationIDNotIn is the resolver for the bazelInvocationIDNotIn field.
+func (r *sourceControlWhereInputResolver) BazelInvocationIDNotIn(ctx context.Context, obj *ent.SourceControlWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIDNotIn - bazelInvocationIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *systemNetworkStatsWhereInputResolver) ID(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -1458,6 +2163,26 @@ func (r *systemNetworkStatsWhereInputResolver) IDLt(ctx context.Context, obj *en
 // IDLte is the resolver for the idLTE field.
 func (r *systemNetworkStatsWhereInputResolver) IDLte(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// NetworkMetricsID is the resolver for the networkMetricsID field.
+func (r *systemNetworkStatsWhereInputResolver) NetworkMetricsID(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: NetworkMetricsID - networkMetricsID"))
+}
+
+// NetworkMetricsIdneq is the resolver for the networkMetricsIDNEQ field.
+func (r *systemNetworkStatsWhereInputResolver) NetworkMetricsIdneq(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: NetworkMetricsIdneq - networkMetricsIDNEQ"))
+}
+
+// NetworkMetricsIDIn is the resolver for the networkMetricsIDIn field.
+func (r *systemNetworkStatsWhereInputResolver) NetworkMetricsIDIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: NetworkMetricsIDIn - networkMetricsIDIn"))
+}
+
+// NetworkMetricsIDNotIn is the resolver for the networkMetricsIDNotIn field.
+func (r *systemNetworkStatsWhereInputResolver) NetworkMetricsIDNotIn(ctx context.Context, obj *ent.SystemNetworkStatsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: NetworkMetricsIDNotIn - networkMetricsIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1500,6 +2225,26 @@ func (r *targetCompleteWhereInputResolver) IDLte(ctx context.Context, obj *ent.T
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// TargetPairID is the resolver for the targetPairID field.
+func (r *targetCompleteWhereInputResolver) TargetPairID(ctx context.Context, obj *ent.TargetCompleteWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TargetPairID - targetPairID"))
+}
+
+// TargetPairIdneq is the resolver for the targetPairIDNEQ field.
+func (r *targetCompleteWhereInputResolver) TargetPairIdneq(ctx context.Context, obj *ent.TargetCompleteWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TargetPairIdneq - targetPairIDNEQ"))
+}
+
+// TargetPairIDIn is the resolver for the targetPairIDIn field.
+func (r *targetCompleteWhereInputResolver) TargetPairIDIn(ctx context.Context, obj *ent.TargetCompleteWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TargetPairIDIn - targetPairIDIn"))
+}
+
+// TargetPairIDNotIn is the resolver for the targetPairIDNotIn field.
+func (r *targetCompleteWhereInputResolver) TargetPairIDNotIn(ctx context.Context, obj *ent.TargetCompleteWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TargetPairIDNotIn - targetPairIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *targetConfiguredWhereInputResolver) ID(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -1538,6 +2283,26 @@ func (r *targetConfiguredWhereInputResolver) IDLt(ctx context.Context, obj *ent.
 // IDLte is the resolver for the idLTE field.
 func (r *targetConfiguredWhereInputResolver) IDLte(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// TargetPairID is the resolver for the targetPairID field.
+func (r *targetConfiguredWhereInputResolver) TargetPairID(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TargetPairID - targetPairID"))
+}
+
+// TargetPairIdneq is the resolver for the targetPairIDNEQ field.
+func (r *targetConfiguredWhereInputResolver) TargetPairIdneq(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TargetPairIdneq - targetPairIDNEQ"))
+}
+
+// TargetPairIDIn is the resolver for the targetPairIDIn field.
+func (r *targetConfiguredWhereInputResolver) TargetPairIDIn(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TargetPairIDIn - targetPairIDIn"))
+}
+
+// TargetPairIDNotIn is the resolver for the targetPairIDNotIn field.
+func (r *targetConfiguredWhereInputResolver) TargetPairIDNotIn(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TargetPairIDNotIn - targetPairIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1580,6 +2345,26 @@ func (r *targetMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.Ta
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// MetricsID is the resolver for the metricsID field.
+func (r *targetMetricsWhereInputResolver) MetricsID(ctx context.Context, obj *ent.TargetMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsID - metricsID"))
+}
+
+// MetricsIdneq is the resolver for the metricsIDNEQ field.
+func (r *targetMetricsWhereInputResolver) MetricsIdneq(ctx context.Context, obj *ent.TargetMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: MetricsIdneq - metricsIDNEQ"))
+}
+
+// MetricsIDIn is the resolver for the metricsIDIn field.
+func (r *targetMetricsWhereInputResolver) MetricsIDIn(ctx context.Context, obj *ent.TargetMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDIn - metricsIDIn"))
+}
+
+// MetricsIDNotIn is the resolver for the metricsIDNotIn field.
+func (r *targetMetricsWhereInputResolver) MetricsIDNotIn(ctx context.Context, obj *ent.TargetMetricsWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: MetricsIDNotIn - metricsIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *targetPairWhereInputResolver) ID(ctx context.Context, obj *ent.TargetPairWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -1618,6 +2403,26 @@ func (r *targetPairWhereInputResolver) IDLt(ctx context.Context, obj *ent.Target
 // IDLte is the resolver for the idLTE field.
 func (r *targetPairWhereInputResolver) IDLte(ctx context.Context, obj *ent.TargetPairWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// BazelInvocationID is the resolver for the bazelInvocationID field.
+func (r *targetPairWhereInputResolver) BazelInvocationID(ctx context.Context, obj *ent.TargetPairWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationID - bazelInvocationID"))
+}
+
+// BazelInvocationIdneq is the resolver for the bazelInvocationIDNEQ field.
+func (r *targetPairWhereInputResolver) BazelInvocationIdneq(ctx context.Context, obj *ent.TargetPairWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIdneq - bazelInvocationIDNEQ"))
+}
+
+// BazelInvocationIDIn is the resolver for the bazelInvocationIDIn field.
+func (r *targetPairWhereInputResolver) BazelInvocationIDIn(ctx context.Context, obj *ent.TargetPairWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIDIn - bazelInvocationIDIn"))
+}
+
+// BazelInvocationIDNotIn is the resolver for the bazelInvocationIDNotIn field.
+func (r *targetPairWhereInputResolver) BazelInvocationIDNotIn(ctx context.Context, obj *ent.TargetPairWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIDNotIn - bazelInvocationIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1660,6 +2465,26 @@ func (r *testCollectionWhereInputResolver) IDLte(ctx context.Context, obj *ent.T
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// BazelInvocationID is the resolver for the bazelInvocationID field.
+func (r *testCollectionWhereInputResolver) BazelInvocationID(ctx context.Context, obj *ent.TestCollectionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationID - bazelInvocationID"))
+}
+
+// BazelInvocationIdneq is the resolver for the bazelInvocationIDNEQ field.
+func (r *testCollectionWhereInputResolver) BazelInvocationIdneq(ctx context.Context, obj *ent.TestCollectionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIdneq - bazelInvocationIDNEQ"))
+}
+
+// BazelInvocationIDIn is the resolver for the bazelInvocationIDIn field.
+func (r *testCollectionWhereInputResolver) BazelInvocationIDIn(ctx context.Context, obj *ent.TestCollectionWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIDIn - bazelInvocationIDIn"))
+}
+
+// BazelInvocationIDNotIn is the resolver for the bazelInvocationIDNotIn field.
+func (r *testCollectionWhereInputResolver) BazelInvocationIDNotIn(ctx context.Context, obj *ent.TestCollectionWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: BazelInvocationIDNotIn - bazelInvocationIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *testFileWhereInputResolver) ID(ctx context.Context, obj *ent.TestFileWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -1698,6 +2523,26 @@ func (r *testFileWhereInputResolver) IDLt(ctx context.Context, obj *ent.TestFile
 // IDLte is the resolver for the idLTE field.
 func (r *testFileWhereInputResolver) IDLte(ctx context.Context, obj *ent.TestFileWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// TestResultID is the resolver for the testResultID field.
+func (r *testFileWhereInputResolver) TestResultID(ctx context.Context, obj *ent.TestFileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TestResultID - testResultID"))
+}
+
+// TestResultIdneq is the resolver for the testResultIDNEQ field.
+func (r *testFileWhereInputResolver) TestResultIdneq(ctx context.Context, obj *ent.TestFileWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TestResultIdneq - testResultIDNEQ"))
+}
+
+// TestResultIDIn is the resolver for the testResultIDIn field.
+func (r *testFileWhereInputResolver) TestResultIDIn(ctx context.Context, obj *ent.TestFileWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TestResultIDIn - testResultIDIn"))
+}
+
+// TestResultIDNotIn is the resolver for the testResultIDNotIn field.
+func (r *testFileWhereInputResolver) TestResultIDNotIn(ctx context.Context, obj *ent.TestFileWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TestResultIDNotIn - testResultIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1740,6 +2585,26 @@ func (r *testResultBESWhereInputResolver) IDLte(ctx context.Context, obj *ent.Te
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// TestCollectionID is the resolver for the testCollectionID field.
+func (r *testResultBESWhereInputResolver) TestCollectionID(ctx context.Context, obj *ent.TestResultBESWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TestCollectionID - testCollectionID"))
+}
+
+// TestCollectionIdneq is the resolver for the testCollectionIDNEQ field.
+func (r *testResultBESWhereInputResolver) TestCollectionIdneq(ctx context.Context, obj *ent.TestResultBESWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TestCollectionIdneq - testCollectionIDNEQ"))
+}
+
+// TestCollectionIDIn is the resolver for the testCollectionIDIn field.
+func (r *testResultBESWhereInputResolver) TestCollectionIDIn(ctx context.Context, obj *ent.TestResultBESWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TestCollectionIDIn - testCollectionIDIn"))
+}
+
+// TestCollectionIDNotIn is the resolver for the testCollectionIDNotIn field.
+func (r *testResultBESWhereInputResolver) TestCollectionIDNotIn(ctx context.Context, obj *ent.TestResultBESWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TestCollectionIDNotIn - testCollectionIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *testSummaryWhereInputResolver) ID(ctx context.Context, obj *ent.TestSummaryWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -1778,6 +2643,26 @@ func (r *testSummaryWhereInputResolver) IDLt(ctx context.Context, obj *ent.TestS
 // IDLte is the resolver for the idLTE field.
 func (r *testSummaryWhereInputResolver) IDLte(ctx context.Context, obj *ent.TestSummaryWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// TestCollectionID is the resolver for the testCollectionID field.
+func (r *testSummaryWhereInputResolver) TestCollectionID(ctx context.Context, obj *ent.TestSummaryWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TestCollectionID - testCollectionID"))
+}
+
+// TestCollectionIdneq is the resolver for the testCollectionIDNEQ field.
+func (r *testSummaryWhereInputResolver) TestCollectionIdneq(ctx context.Context, obj *ent.TestSummaryWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TestCollectionIdneq - testCollectionIDNEQ"))
+}
+
+// TestCollectionIDIn is the resolver for the testCollectionIDIn field.
+func (r *testSummaryWhereInputResolver) TestCollectionIDIn(ctx context.Context, obj *ent.TestSummaryWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TestCollectionIDIn - testCollectionIDIn"))
+}
+
+// TestCollectionIDNotIn is the resolver for the testCollectionIDNotIn field.
+func (r *testSummaryWhereInputResolver) TestCollectionIDNotIn(ctx context.Context, obj *ent.TestSummaryWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TestCollectionIDNotIn - testCollectionIDNotIn"))
 }
 
 // ID is the resolver for the id field.
@@ -1820,6 +2705,26 @@ func (r *timingBreakdownWhereInputResolver) IDLte(ctx context.Context, obj *ent.
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// ExecutionInfoID is the resolver for the executionInfoID field.
+func (r *timingBreakdownWhereInputResolver) ExecutionInfoID(ctx context.Context, obj *ent.TimingBreakdownWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoID - executionInfoID"))
+}
+
+// ExecutionInfoIdneq is the resolver for the executionInfoIDNEQ field.
+func (r *timingBreakdownWhereInputResolver) ExecutionInfoIdneq(ctx context.Context, obj *ent.TimingBreakdownWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoIdneq - executionInfoIDNEQ"))
+}
+
+// ExecutionInfoIDIn is the resolver for the executionInfoIDIn field.
+func (r *timingBreakdownWhereInputResolver) ExecutionInfoIDIn(ctx context.Context, obj *ent.TimingBreakdownWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoIDIn - executionInfoIDIn"))
+}
+
+// ExecutionInfoIDNotIn is the resolver for the executionInfoIDNotIn field.
+func (r *timingBreakdownWhereInputResolver) ExecutionInfoIDNotIn(ctx context.Context, obj *ent.TimingBreakdownWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: ExecutionInfoIDNotIn - executionInfoIDNotIn"))
+}
+
 // ID is the resolver for the id field.
 func (r *timingChildWhereInputResolver) ID(ctx context.Context, obj *ent.TimingChildWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -1858,6 +2763,26 @@ func (r *timingChildWhereInputResolver) IDLt(ctx context.Context, obj *ent.Timin
 // IDLte is the resolver for the idLTE field.
 func (r *timingChildWhereInputResolver) IDLte(ctx context.Context, obj *ent.TimingChildWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// TimingBreakdownID is the resolver for the timingBreakdownID field.
+func (r *timingChildWhereInputResolver) TimingBreakdownID(ctx context.Context, obj *ent.TimingChildWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TimingBreakdownID - timingBreakdownID"))
+}
+
+// TimingBreakdownIdneq is the resolver for the timingBreakdownIDNEQ field.
+func (r *timingChildWhereInputResolver) TimingBreakdownIdneq(ctx context.Context, obj *ent.TimingChildWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: TimingBreakdownIdneq - timingBreakdownIDNEQ"))
+}
+
+// TimingBreakdownIDIn is the resolver for the timingBreakdownIDIn field.
+func (r *timingChildWhereInputResolver) TimingBreakdownIDIn(ctx context.Context, obj *ent.TimingChildWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TimingBreakdownIDIn - timingBreakdownIDIn"))
+}
+
+// TimingBreakdownIDNotIn is the resolver for the timingBreakdownIDNotIn field.
+func (r *timingChildWhereInputResolver) TimingBreakdownIDNotIn(ctx context.Context, obj *ent.TimingChildWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: TimingBreakdownIDNotIn - timingBreakdownIDNotIn"))
 }
 
 // ID is the resolver for the id field.

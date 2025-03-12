@@ -32,6 +32,9 @@ func (PackageLoadMetrics) Fields() []ent.Field {
 
 		// Package overhead.
 		field.Uint64("package_overhead").Optional(),
+
+		// Package metrics ID
+		field.Int("package_metrics_id").Optional(),
 	}
 }
 
@@ -41,6 +44,7 @@ func (PackageLoadMetrics) Edges() []ent.Edge {
 		// Edge back to the package metrics
 		edge.From("package_metrics", PackageMetrics.Type).
 			Ref("package_load_metrics").
-			Unique(),
+			Unique().
+			Field("package_metrics_id"),
 	}
 }

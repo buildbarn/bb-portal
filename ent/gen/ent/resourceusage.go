@@ -21,11 +21,12 @@ type ResourceUsage struct {
 	Name string `json:"name,omitempty"`
 	// Value holds the value of the "value" field.
 	Value string `json:"value,omitempty"`
+	// ExecutionInfoID holds the value of the "execution_info_id" field.
+	ExecutionInfoID int `json:"execution_info_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ResourceUsageQuery when eager-loading is set.
-	Edges                        ResourceUsageEdges `json:"edges"`
-	exection_info_resource_usage *int
-	selectValues                 sql.SelectValues
+	Edges        ResourceUsageEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // ResourceUsageEdges holds the relations/edges for other nodes in the graph.
@@ -55,12 +56,10 @@ func (*ResourceUsage) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case resourceusage.FieldID:
+		case resourceusage.FieldID, resourceusage.FieldExecutionInfoID:
 			values[i] = new(sql.NullInt64)
 		case resourceusage.FieldName, resourceusage.FieldValue:
 			values[i] = new(sql.NullString)
-		case resourceusage.ForeignKeys[0]: // exection_info_resource_usage
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -94,12 +93,11 @@ func (ru *ResourceUsage) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ru.Value = value.String
 			}
-		case resourceusage.ForeignKeys[0]:
+		case resourceusage.FieldExecutionInfoID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field exection_info_resource_usage", value)
+				return fmt.Errorf("unexpected type %T for field execution_info_id", values[i])
 			} else if value.Valid {
-				ru.exection_info_resource_usage = new(int)
-				*ru.exection_info_resource_usage = int(value.Int64)
+				ru.ExecutionInfoID = int(value.Int64)
 			}
 		default:
 			ru.selectValues.Set(columns[i], values[i])
@@ -147,6 +145,9 @@ func (ru *ResourceUsage) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("value=")
 	builder.WriteString(ru.Value)
+	builder.WriteString(", ")
+	builder.WriteString("execution_info_id=")
+	builder.WriteString(fmt.Sprintf("%v", ru.ExecutionInfoID))
 	builder.WriteByte(')')
 	return builder.String()
 }

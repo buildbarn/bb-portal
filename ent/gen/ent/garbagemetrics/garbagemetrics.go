@@ -16,6 +16,8 @@ const (
 	FieldType = "type"
 	// FieldGarbageCollected holds the string denoting the garbage_collected field in the database.
 	FieldGarbageCollected = "garbage_collected"
+	// FieldMemoryMetricsID holds the string denoting the memory_metrics_id field in the database.
+	FieldMemoryMetricsID = "memory_metrics_id"
 	// EdgeMemoryMetrics holds the string denoting the memory_metrics edge name in mutations.
 	EdgeMemoryMetrics = "memory_metrics"
 	// Table holds the table name of the garbagemetrics in the database.
@@ -26,7 +28,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "memorymetrics" package.
 	MemoryMetricsInverseTable = "memory_metrics"
 	// MemoryMetricsColumn is the table column denoting the memory_metrics relation/edge.
-	MemoryMetricsColumn = "memory_metrics_garbage_metrics"
+	MemoryMetricsColumn = "memory_metrics_id"
 )
 
 // Columns holds all SQL columns for garbagemetrics fields.
@@ -34,23 +36,13 @@ var Columns = []string{
 	FieldID,
 	FieldType,
 	FieldGarbageCollected,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "garbage_metrics"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"memory_metrics_garbage_metrics",
+	FieldMemoryMetricsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -73,6 +65,11 @@ func ByType(opts ...sql.OrderTermOption) OrderOption {
 // ByGarbageCollected orders the results by the garbage_collected field.
 func ByGarbageCollected(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldGarbageCollected, opts...).ToFunc()
+}
+
+// ByMemoryMetricsID orders the results by the memory_metrics_id field.
+func ByMemoryMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMemoryMetricsID, opts...).ToFunc()
 }
 
 // ByMemoryMetricsField orders the results by memory_metrics field.

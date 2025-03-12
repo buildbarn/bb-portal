@@ -23,11 +23,12 @@ type RunnerCount struct {
 	ExecKind string `json:"exec_kind,omitempty"`
 	// ActionsExecuted holds the value of the "actions_executed" field.
 	ActionsExecuted int64 `json:"actions_executed,omitempty"`
+	// ActionSummaryID holds the value of the "action_summary_id" field.
+	ActionSummaryID int `json:"action_summary_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RunnerCountQuery when eager-loading is set.
-	Edges                       RunnerCountEdges `json:"edges"`
-	action_summary_runner_count *int
-	selectValues                sql.SelectValues
+	Edges        RunnerCountEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // RunnerCountEdges holds the relations/edges for other nodes in the graph.
@@ -57,12 +58,10 @@ func (*RunnerCount) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case runnercount.FieldID, runnercount.FieldActionsExecuted:
+		case runnercount.FieldID, runnercount.FieldActionsExecuted, runnercount.FieldActionSummaryID:
 			values[i] = new(sql.NullInt64)
 		case runnercount.FieldName, runnercount.FieldExecKind:
 			values[i] = new(sql.NullString)
-		case runnercount.ForeignKeys[0]: // action_summary_runner_count
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -102,12 +101,11 @@ func (rc *RunnerCount) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				rc.ActionsExecuted = value.Int64
 			}
-		case runnercount.ForeignKeys[0]:
+		case runnercount.FieldActionSummaryID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field action_summary_runner_count", value)
+				return fmt.Errorf("unexpected type %T for field action_summary_id", values[i])
 			} else if value.Valid {
-				rc.action_summary_runner_count = new(int)
-				*rc.action_summary_runner_count = int(value.Int64)
+				rc.ActionSummaryID = int(value.Int64)
 			}
 		default:
 			rc.selectValues.Set(columns[i], values[i])
@@ -158,6 +156,9 @@ func (rc *RunnerCount) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("actions_executed=")
 	builder.WriteString(fmt.Sprintf("%v", rc.ActionsExecuted))
+	builder.WriteString(", ")
+	builder.WriteString("action_summary_id=")
+	builder.WriteString(fmt.Sprintf("%v", rc.ActionSummaryID))
 	builder.WriteByte(')')
 	return builder.String()
 }

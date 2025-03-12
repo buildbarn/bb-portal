@@ -26,11 +26,12 @@ type TargetConfigured struct {
 	StartTimeInMs int64 `json:"start_time_in_ms,omitempty"`
 	// TestSize holds the value of the "test_size" field.
 	TestSize targetconfigured.TestSize `json:"test_size,omitempty"`
+	// TargetPairID holds the value of the "target_pair_id" field.
+	TargetPairID int `json:"target_pair_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetConfiguredQuery when eager-loading is set.
-	Edges                     TargetConfiguredEdges `json:"edges"`
-	target_pair_configuration *int
-	selectValues              sql.SelectValues
+	Edges        TargetConfiguredEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // TargetConfiguredEdges holds the relations/edges for other nodes in the graph.
@@ -62,12 +63,10 @@ func (*TargetConfigured) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case targetconfigured.FieldTag:
 			values[i] = new([]byte)
-		case targetconfigured.FieldID, targetconfigured.FieldStartTimeInMs:
+		case targetconfigured.FieldID, targetconfigured.FieldStartTimeInMs, targetconfigured.FieldTargetPairID:
 			values[i] = new(sql.NullInt64)
 		case targetconfigured.FieldTargetKind, targetconfigured.FieldTestSize:
 			values[i] = new(sql.NullString)
-		case targetconfigured.ForeignKeys[0]: // target_pair_configuration
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -115,12 +114,11 @@ func (tc *TargetConfigured) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				tc.TestSize = targetconfigured.TestSize(value.String)
 			}
-		case targetconfigured.ForeignKeys[0]:
+		case targetconfigured.FieldTargetPairID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field target_pair_configuration", value)
+				return fmt.Errorf("unexpected type %T for field target_pair_id", values[i])
 			} else if value.Valid {
-				tc.target_pair_configuration = new(int)
-				*tc.target_pair_configuration = int(value.Int64)
+				tc.TargetPairID = int(value.Int64)
 			}
 		default:
 			tc.selectValues.Set(columns[i], values[i])
@@ -174,6 +172,9 @@ func (tc *TargetConfigured) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("test_size=")
 	builder.WriteString(fmt.Sprintf("%v", tc.TestSize))
+	builder.WriteString(", ")
+	builder.WriteString("target_pair_id=")
+	builder.WriteString(fmt.Sprintf("%v", tc.TargetPairID))
 	builder.WriteByte(')')
 	return builder.String()
 }

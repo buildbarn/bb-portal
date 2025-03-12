@@ -29,11 +29,12 @@ type PackageLoadMetrics struct {
 	NumTransitiveLoads uint64 `json:"num_transitive_loads,omitempty"`
 	// PackageOverhead holds the value of the "package_overhead" field.
 	PackageOverhead uint64 `json:"package_overhead,omitempty"`
+	// PackageMetricsID holds the value of the "package_metrics_id" field.
+	PackageMetricsID int `json:"package_metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PackageLoadMetricsQuery when eager-loading is set.
-	Edges                                PackageLoadMetricsEdges `json:"edges"`
-	package_metrics_package_load_metrics *int
-	selectValues                         sql.SelectValues
+	Edges        PackageLoadMetricsEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // PackageLoadMetricsEdges holds the relations/edges for other nodes in the graph.
@@ -63,12 +64,10 @@ func (*PackageLoadMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case packageloadmetrics.FieldID, packageloadmetrics.FieldLoadDuration, packageloadmetrics.FieldNumTargets, packageloadmetrics.FieldComputationSteps, packageloadmetrics.FieldNumTransitiveLoads, packageloadmetrics.FieldPackageOverhead:
+		case packageloadmetrics.FieldID, packageloadmetrics.FieldLoadDuration, packageloadmetrics.FieldNumTargets, packageloadmetrics.FieldComputationSteps, packageloadmetrics.FieldNumTransitiveLoads, packageloadmetrics.FieldPackageOverhead, packageloadmetrics.FieldPackageMetricsID:
 			values[i] = new(sql.NullInt64)
 		case packageloadmetrics.FieldName:
 			values[i] = new(sql.NullString)
-		case packageloadmetrics.ForeignKeys[0]: // package_metrics_package_load_metrics
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -126,12 +125,11 @@ func (plm *PackageLoadMetrics) assignValues(columns []string, values []any) erro
 			} else if value.Valid {
 				plm.PackageOverhead = uint64(value.Int64)
 			}
-		case packageloadmetrics.ForeignKeys[0]:
+		case packageloadmetrics.FieldPackageMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field package_metrics_package_load_metrics", value)
+				return fmt.Errorf("unexpected type %T for field package_metrics_id", values[i])
 			} else if value.Valid {
-				plm.package_metrics_package_load_metrics = new(int)
-				*plm.package_metrics_package_load_metrics = int(value.Int64)
+				plm.PackageMetricsID = int(value.Int64)
 			}
 		default:
 			plm.selectValues.Set(columns[i], values[i])
@@ -191,6 +189,9 @@ func (plm *PackageLoadMetrics) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("package_overhead=")
 	builder.WriteString(fmt.Sprintf("%v", plm.PackageOverhead))
+	builder.WriteString(", ")
+	builder.WriteString("package_metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", plm.PackageMetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

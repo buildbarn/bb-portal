@@ -20,6 +20,8 @@ const (
 	FieldActionsExecuted = "actions_executed"
 	// FieldRemoteCacheHits holds the string denoting the remote_cache_hits field in the database.
 	FieldRemoteCacheHits = "remote_cache_hits"
+	// FieldMetricsID holds the string denoting the metrics_id field in the database.
+	FieldMetricsID = "metrics_id"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
 	// EdgeActionData holds the string denoting the action_data edge name in mutations.
@@ -36,28 +38,28 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
-	MetricsColumn = "metrics_action_summary"
+	MetricsColumn = "metrics_id"
 	// ActionDataTable is the table that holds the action_data relation/edge.
 	ActionDataTable = "action_data"
 	// ActionDataInverseTable is the table name for the ActionData entity.
 	// It exists in this package in order to avoid circular dependency with the "actiondata" package.
 	ActionDataInverseTable = "action_data"
 	// ActionDataColumn is the table column denoting the action_data relation/edge.
-	ActionDataColumn = "action_summary_action_data"
+	ActionDataColumn = "action_summary_id"
 	// RunnerCountTable is the table that holds the runner_count relation/edge.
 	RunnerCountTable = "runner_counts"
 	// RunnerCountInverseTable is the table name for the RunnerCount entity.
 	// It exists in this package in order to avoid circular dependency with the "runnercount" package.
 	RunnerCountInverseTable = "runner_counts"
 	// RunnerCountColumn is the table column denoting the runner_count relation/edge.
-	RunnerCountColumn = "action_summary_runner_count"
+	RunnerCountColumn = "action_summary_id"
 	// ActionCacheStatisticsTable is the table that holds the action_cache_statistics relation/edge.
 	ActionCacheStatisticsTable = "action_cache_statistics"
 	// ActionCacheStatisticsInverseTable is the table name for the ActionCacheStatistics entity.
 	// It exists in this package in order to avoid circular dependency with the "actioncachestatistics" package.
 	ActionCacheStatisticsInverseTable = "action_cache_statistics"
 	// ActionCacheStatisticsColumn is the table column denoting the action_cache_statistics relation/edge.
-	ActionCacheStatisticsColumn = "action_summary_action_cache_statistics"
+	ActionCacheStatisticsColumn = "action_summary_id"
 )
 
 // Columns holds all SQL columns for actionsummary fields.
@@ -67,23 +69,13 @@ var Columns = []string{
 	FieldActionsCreatedNotIncludingAspects,
 	FieldActionsExecuted,
 	FieldRemoteCacheHits,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "action_summaries"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"metrics_action_summary",
+	FieldMetricsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -116,6 +108,11 @@ func ByActionsExecuted(opts ...sql.OrderTermOption) OrderOption {
 // ByRemoteCacheHits orders the results by the remote_cache_hits field.
 func ByRemoteCacheHits(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRemoteCacheHits, opts...).ToFunc()
+}
+
+// ByMetricsID orders the results by the metrics_id field.
+func ByMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMetricsID, opts...).ToFunc()
 }
 
 // ByMetricsField orders the results by metrics field.

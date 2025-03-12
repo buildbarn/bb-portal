@@ -23,7 +23,6 @@ type PackageLoadMetricsQuery struct {
 	inters             []Interceptor
 	predicates         []predicate.PackageLoadMetrics
 	withPackageMetrics *PackageMetricsQuery
-	withFKs            bool
 	modifiers          []func(*sql.Selector)
 	loadTotal          []func(context.Context, []*PackageLoadMetrics) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (plmq *PackageLoadMetricsQuery) prepareQuery(ctx context.Context) error {
 func (plmq *PackageLoadMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*PackageLoadMetrics, error) {
 	var (
 		nodes       = []*PackageLoadMetrics{}
-		withFKs     = plmq.withFKs
 		_spec       = plmq.querySpec()
 		loadedTypes = [1]bool{
 			plmq.withPackageMetrics != nil,
 		}
 	)
-	if plmq.withPackageMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, packageloadmetrics.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*PackageLoadMetrics).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (plmq *PackageLoadMetricsQuery) loadPackageMetrics(ctx context.Context, que
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*PackageLoadMetrics)
 	for i := range nodes {
-		if nodes[i].package_metrics_package_load_metrics == nil {
-			continue
-		}
-		fk := *nodes[i].package_metrics_package_load_metrics
+		fk := nodes[i].PackageMetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (plmq *PackageLoadMetricsQuery) loadPackageMetrics(ctx context.Context, que
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "package_metrics_package_load_metrics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "package_metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (plmq *PackageLoadMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != packageloadmetrics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if plmq.withPackageMetrics != nil {
+			_spec.Node.AddColumnOnce(packageloadmetrics.FieldPackageMetricsID)
 		}
 	}
 	if ps := plmq.predicates; len(ps) > 0 {

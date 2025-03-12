@@ -18,6 +18,8 @@ const (
 	FieldTargetsConfigured = "targets_configured"
 	// FieldTargetsConfiguredNotIncludingAspects holds the string denoting the targets_configured_not_including_aspects field in the database.
 	FieldTargetsConfiguredNotIncludingAspects = "targets_configured_not_including_aspects"
+	// FieldMetricsID holds the string denoting the metrics_id field in the database.
+	FieldMetricsID = "metrics_id"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
 	// Table holds the table name of the targetmetrics in the database.
@@ -28,7 +30,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
-	MetricsColumn = "metrics_target_metrics"
+	MetricsColumn = "metrics_id"
 )
 
 // Columns holds all SQL columns for targetmetrics fields.
@@ -37,23 +39,13 @@ var Columns = []string{
 	FieldTargetsLoaded,
 	FieldTargetsConfigured,
 	FieldTargetsConfiguredNotIncludingAspects,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "target_metrics"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"metrics_target_metrics",
+	FieldMetricsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -81,6 +73,11 @@ func ByTargetsConfigured(opts ...sql.OrderTermOption) OrderOption {
 // ByTargetsConfiguredNotIncludingAspects orders the results by the targets_configured_not_including_aspects field.
 func ByTargetsConfiguredNotIncludingAspects(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTargetsConfiguredNotIncludingAspects, opts...).ToFunc()
+}
+
+// ByMetricsID orders the results by the metrics_id field.
+func ByMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMetricsID, opts...).ToFunc()
 }
 
 // ByMetricsField orders the results by metrics field.

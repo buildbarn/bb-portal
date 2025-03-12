@@ -47,16 +47,16 @@ func (gmc *GarbageMetricsCreate) SetNillableGarbageCollected(i *int64) *GarbageM
 	return gmc
 }
 
-// SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
-func (gmc *GarbageMetricsCreate) SetMemoryMetricsID(id int) *GarbageMetricsCreate {
-	gmc.mutation.SetMemoryMetricsID(id)
+// SetMemoryMetricsID sets the "memory_metrics_id" field.
+func (gmc *GarbageMetricsCreate) SetMemoryMetricsID(i int) *GarbageMetricsCreate {
+	gmc.mutation.SetMemoryMetricsID(i)
 	return gmc
 }
 
-// SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
-func (gmc *GarbageMetricsCreate) SetNillableMemoryMetricsID(id *int) *GarbageMetricsCreate {
-	if id != nil {
-		gmc = gmc.SetMemoryMetricsID(*id)
+// SetNillableMemoryMetricsID sets the "memory_metrics_id" field if the given value is not nil.
+func (gmc *GarbageMetricsCreate) SetNillableMemoryMetricsID(i *int) *GarbageMetricsCreate {
+	if i != nil {
+		gmc.SetMemoryMetricsID(*i)
 	}
 	return gmc
 }
@@ -148,7 +148,7 @@ func (gmc *GarbageMetricsCreate) createSpec() (*GarbageMetrics, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.memory_metrics_garbage_metrics = &nodes[0]
+		_node.MemoryMetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

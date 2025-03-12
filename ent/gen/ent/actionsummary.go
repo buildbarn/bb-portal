@@ -26,11 +26,12 @@ type ActionSummary struct {
 	ActionsExecuted int64 `json:"actions_executed,omitempty"`
 	// RemoteCacheHits holds the value of the "remote_cache_hits" field.
 	RemoteCacheHits int64 `json:"remote_cache_hits,omitempty"`
+	// MetricsID holds the value of the "metrics_id" field.
+	MetricsID int `json:"metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActionSummaryQuery when eager-loading is set.
-	Edges                  ActionSummaryEdges `json:"edges"`
-	metrics_action_summary *int
-	selectValues           sql.SelectValues
+	Edges        ActionSummaryEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // ActionSummaryEdges holds the relations/edges for other nodes in the graph.
@@ -98,9 +99,7 @@ func (*ActionSummary) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case actionsummary.FieldID, actionsummary.FieldActionsCreated, actionsummary.FieldActionsCreatedNotIncludingAspects, actionsummary.FieldActionsExecuted, actionsummary.FieldRemoteCacheHits:
-			values[i] = new(sql.NullInt64)
-		case actionsummary.ForeignKeys[0]: // metrics_action_summary
+		case actionsummary.FieldID, actionsummary.FieldActionsCreated, actionsummary.FieldActionsCreatedNotIncludingAspects, actionsummary.FieldActionsExecuted, actionsummary.FieldRemoteCacheHits, actionsummary.FieldMetricsID:
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -147,12 +146,11 @@ func (as *ActionSummary) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				as.RemoteCacheHits = value.Int64
 			}
-		case actionsummary.ForeignKeys[0]:
+		case actionsummary.FieldMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field metrics_action_summary", value)
+				return fmt.Errorf("unexpected type %T for field metrics_id", values[i])
 			} else if value.Valid {
-				as.metrics_action_summary = new(int)
-				*as.metrics_action_summary = int(value.Int64)
+				as.MetricsID = int(value.Int64)
 			}
 		default:
 			as.selectValues.Set(columns[i], values[i])
@@ -221,6 +219,9 @@ func (as *ActionSummary) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("remote_cache_hits=")
 	builder.WriteString(fmt.Sprintf("%v", as.RemoteCacheHits))
+	builder.WriteString(", ")
+	builder.WriteString("metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", as.MetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -110,17 +110,23 @@ func (mmu *MemoryMetricsUpdate) ClearPeakPostGcTenuredSpaceHeapSize() *MemoryMet
 	return mmu
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (mmu *MemoryMetricsUpdate) SetMetricsID(id int) *MemoryMetricsUpdate {
-	mmu.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (mmu *MemoryMetricsUpdate) SetMetricsID(i int) *MemoryMetricsUpdate {
+	mmu.mutation.SetMetricsID(i)
 	return mmu
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (mmu *MemoryMetricsUpdate) SetNillableMetricsID(id *int) *MemoryMetricsUpdate {
-	if id != nil {
-		mmu = mmu.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (mmu *MemoryMetricsUpdate) SetNillableMetricsID(i *int) *MemoryMetricsUpdate {
+	if i != nil {
+		mmu.SetMetricsID(*i)
 	}
+	return mmu
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (mmu *MemoryMetricsUpdate) ClearMetricsID() *MemoryMetricsUpdate {
+	mmu.mutation.ClearMetricsID()
 	return mmu
 }
 
@@ -414,17 +420,23 @@ func (mmuo *MemoryMetricsUpdateOne) ClearPeakPostGcTenuredSpaceHeapSize() *Memor
 	return mmuo
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (mmuo *MemoryMetricsUpdateOne) SetMetricsID(id int) *MemoryMetricsUpdateOne {
-	mmuo.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (mmuo *MemoryMetricsUpdateOne) SetMetricsID(i int) *MemoryMetricsUpdateOne {
+	mmuo.mutation.SetMetricsID(i)
 	return mmuo
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (mmuo *MemoryMetricsUpdateOne) SetNillableMetricsID(id *int) *MemoryMetricsUpdateOne {
-	if id != nil {
-		mmuo = mmuo.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (mmuo *MemoryMetricsUpdateOne) SetNillableMetricsID(i *int) *MemoryMetricsUpdateOne {
+	if i != nil {
+		mmuo.SetMetricsID(*i)
 	}
+	return mmuo
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (mmuo *MemoryMetricsUpdateOne) ClearMetricsID() *MemoryMetricsUpdateOne {
+	mmuo.mutation.ClearMetricsID()
 	return mmuo
 }
 

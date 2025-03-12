@@ -418,7 +418,9 @@ func (efq *EventFileQuery) loadBazelInvocation(ctx context.Context, query *Bazel
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(bazelinvocation.FieldEventFileID)
+	}
 	query.Where(predicate.BazelInvocation(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(eventfile.BazelInvocationColumn), fks...))
 	}))
@@ -427,13 +429,10 @@ func (efq *EventFileQuery) loadBazelInvocation(ctx context.Context, query *Bazel
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.event_file_bazel_invocation
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "event_file_bazel_invocation" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.EventFileID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "event_file_bazel_invocation" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "event_file_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

@@ -190,17 +190,23 @@ func (tcu *TargetCompleteUpdate) ClearTestSize() *TargetCompleteUpdate {
 	return tcu
 }
 
-// SetTargetPairID sets the "target_pair" edge to the TargetPair entity by ID.
-func (tcu *TargetCompleteUpdate) SetTargetPairID(id int) *TargetCompleteUpdate {
-	tcu.mutation.SetTargetPairID(id)
+// SetTargetPairID sets the "target_pair_id" field.
+func (tcu *TargetCompleteUpdate) SetTargetPairID(i int) *TargetCompleteUpdate {
+	tcu.mutation.SetTargetPairID(i)
 	return tcu
 }
 
-// SetNillableTargetPairID sets the "target_pair" edge to the TargetPair entity by ID if the given value is not nil.
-func (tcu *TargetCompleteUpdate) SetNillableTargetPairID(id *int) *TargetCompleteUpdate {
-	if id != nil {
-		tcu = tcu.SetTargetPairID(*id)
+// SetNillableTargetPairID sets the "target_pair_id" field if the given value is not nil.
+func (tcu *TargetCompleteUpdate) SetNillableTargetPairID(i *int) *TargetCompleteUpdate {
+	if i != nil {
+		tcu.SetTargetPairID(*i)
 	}
+	return tcu
+}
+
+// ClearTargetPairID clears the value of the "target_pair_id" field.
+func (tcu *TargetCompleteUpdate) ClearTargetPairID() *TargetCompleteUpdate {
+	tcu.mutation.ClearTargetPairID()
 	return tcu
 }
 
@@ -749,17 +755,23 @@ func (tcuo *TargetCompleteUpdateOne) ClearTestSize() *TargetCompleteUpdateOne {
 	return tcuo
 }
 
-// SetTargetPairID sets the "target_pair" edge to the TargetPair entity by ID.
-func (tcuo *TargetCompleteUpdateOne) SetTargetPairID(id int) *TargetCompleteUpdateOne {
-	tcuo.mutation.SetTargetPairID(id)
+// SetTargetPairID sets the "target_pair_id" field.
+func (tcuo *TargetCompleteUpdateOne) SetTargetPairID(i int) *TargetCompleteUpdateOne {
+	tcuo.mutation.SetTargetPairID(i)
 	return tcuo
 }
 
-// SetNillableTargetPairID sets the "target_pair" edge to the TargetPair entity by ID if the given value is not nil.
-func (tcuo *TargetCompleteUpdateOne) SetNillableTargetPairID(id *int) *TargetCompleteUpdateOne {
-	if id != nil {
-		tcuo = tcuo.SetTargetPairID(*id)
+// SetNillableTargetPairID sets the "target_pair_id" field if the given value is not nil.
+func (tcuo *TargetCompleteUpdateOne) SetNillableTargetPairID(i *int) *TargetCompleteUpdateOne {
+	if i != nil {
+		tcuo.SetTargetPairID(*i)
 	}
+	return tcuo
+}
+
+// ClearTargetPairID clears the value of the "target_pair_id" field.
+func (tcuo *TargetCompleteUpdateOne) ClearTargetPairID() *TargetCompleteUpdateOne {
+	tcuo.mutation.ClearTargetPairID()
 	return tcuo
 }
 

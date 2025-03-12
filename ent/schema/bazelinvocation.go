@@ -80,6 +80,9 @@ func (BazelInvocation) Fields() []ent.Field {
 
 		// The name of the build profile.
 		field.String("profile_name").Annotations(entgql.Skip(entgql.SkipType)),
+
+		field.Int("event_file_id").Optional(),
+		field.Int("build_id").Optional(),
 	}
 }
 
@@ -90,12 +93,14 @@ func (BazelInvocation) Edges() []ent.Edge {
 		edge.From("event_file", EventFile.Type).
 			Ref("bazel_invocation").
 			Unique().
-			Required(),
+			// Required().
+			Field("event_file_id"),
 
 		// Edge back from the Build.
 		edge.From("build", Build.Type).
 			Ref("invocations").
-			Unique(),
+			Unique().
+			Field("build_id"),
 
 		// Edge to any probles detected.
 		// NOTE: Uses custom resolver / types.
@@ -137,6 +142,7 @@ func (BazelInvocation) Edges() []ent.Edge {
 func (BazelInvocation) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("change_number", "patchset_number"),
+		index.Fields("invocation_id"),
 	}
 }
 

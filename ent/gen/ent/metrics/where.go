@@ -53,6 +53,41 @@ func IDLTE(id int) predicate.Metrics {
 	return predicate.Metrics(sql.FieldLTE(FieldID, id))
 }
 
+// BazelInvocationID applies equality check predicate on the "bazel_invocation_id" field. It's identical to BazelInvocationIDEQ.
+func BazelInvocationID(v int) predicate.Metrics {
+	return predicate.Metrics(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDEQ(v int) predicate.Metrics {
+	return predicate.Metrics(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDNEQ applies the NEQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNEQ(v int) predicate.Metrics {
+	return predicate.Metrics(sql.FieldNEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDIn applies the In predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIn(vs ...int) predicate.Metrics {
+	return predicate.Metrics(sql.FieldIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDNotIn applies the NotIn predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotIn(vs ...int) predicate.Metrics {
+	return predicate.Metrics(sql.FieldNotIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDIsNil applies the IsNil predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIsNil() predicate.Metrics {
+	return predicate.Metrics(sql.FieldIsNull(FieldBazelInvocationID))
+}
+
+// BazelInvocationIDNotNil applies the NotNil predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotNil() predicate.Metrics {
+	return predicate.Metrics(sql.FieldNotNull(FieldBazelInvocationID))
+}
+
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.
 func HasBazelInvocation() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {

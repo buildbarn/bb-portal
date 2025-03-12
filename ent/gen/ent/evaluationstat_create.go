@@ -47,16 +47,16 @@ func (esc *EvaluationStatCreate) SetNillableCount(i *int64) *EvaluationStatCreat
 	return esc
 }
 
-// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
-func (esc *EvaluationStatCreate) SetBuildGraphMetricsID(id int) *EvaluationStatCreate {
-	esc.mutation.SetBuildGraphMetricsID(id)
+// SetBuildGraphMetricsID sets the "build_graph_metrics_id" field.
+func (esc *EvaluationStatCreate) SetBuildGraphMetricsID(i int) *EvaluationStatCreate {
+	esc.mutation.SetBuildGraphMetricsID(i)
 	return esc
 }
 
-// SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
-func (esc *EvaluationStatCreate) SetNillableBuildGraphMetricsID(id *int) *EvaluationStatCreate {
-	if id != nil {
-		esc = esc.SetBuildGraphMetricsID(*id)
+// SetNillableBuildGraphMetricsID sets the "build_graph_metrics_id" field if the given value is not nil.
+func (esc *EvaluationStatCreate) SetNillableBuildGraphMetricsID(i *int) *EvaluationStatCreate {
+	if i != nil {
+		esc.SetBuildGraphMetricsID(*i)
 	}
 	return esc
 }
@@ -148,7 +148,7 @@ func (esc *EvaluationStatCreate) createSpec() (*EvaluationStat, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.build_graph_metrics_evaluated_values = &nodes[0]
+		_node.BuildGraphMetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -59,6 +59,8 @@ func (TestSummary) Fields() []ent.Field {
 
 		// Test target label, possibly redundant and could be removed.
 		field.String("label").Optional(),
+
+		field.Int("test_collection_id").Optional(),
 	}
 }
 
@@ -68,7 +70,8 @@ func (TestSummary) Edges() []ent.Edge {
 		// Edge back tot he test collection.
 		edge.From("test_collection", TestCollection.Type).
 			Ref("test_summary").
-			Unique(),
+			Unique().
+			Field("test_collection_id"),
 
 		// Path to logs of passed runs.
 		edge.To("passed", TestFile.Type).

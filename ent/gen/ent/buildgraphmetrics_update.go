@@ -272,17 +272,23 @@ func (bgmu *BuildGraphMetricsUpdate) ClearPostInvocationSkyframeNodeCount() *Bui
 	return bgmu
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (bgmu *BuildGraphMetricsUpdate) SetMetricsID(id int) *BuildGraphMetricsUpdate {
-	bgmu.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (bgmu *BuildGraphMetricsUpdate) SetMetricsID(i int) *BuildGraphMetricsUpdate {
+	bgmu.mutation.SetMetricsID(i)
 	return bgmu
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (bgmu *BuildGraphMetricsUpdate) SetNillableMetricsID(id *int) *BuildGraphMetricsUpdate {
-	if id != nil {
-		bgmu = bgmu.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (bgmu *BuildGraphMetricsUpdate) SetNillableMetricsID(i *int) *BuildGraphMetricsUpdate {
+	if i != nil {
+		bgmu.SetMetricsID(*i)
 	}
+	return bgmu
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (bgmu *BuildGraphMetricsUpdate) ClearMetricsID() *BuildGraphMetricsUpdate {
+	bgmu.mutation.ClearMetricsID()
 	return bgmu
 }
 
@@ -981,17 +987,23 @@ func (bgmuo *BuildGraphMetricsUpdateOne) ClearPostInvocationSkyframeNodeCount() 
 	return bgmuo
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetMetricsID(id int) *BuildGraphMetricsUpdateOne {
-	bgmuo.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetMetricsID(i int) *BuildGraphMetricsUpdateOne {
+	bgmuo.mutation.SetMetricsID(i)
 	return bgmuo
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableMetricsID(id *int) *BuildGraphMetricsUpdateOne {
-	if id != nil {
-		bgmuo = bgmuo.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (bgmuo *BuildGraphMetricsUpdateOne) SetNillableMetricsID(i *int) *BuildGraphMetricsUpdateOne {
+	if i != nil {
+		bgmuo.SetMetricsID(*i)
 	}
+	return bgmuo
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (bgmuo *BuildGraphMetricsUpdateOne) ClearMetricsID() *BuildGraphMetricsUpdateOne {
+	bgmuo.mutation.ClearMetricsID()
 	return bgmuo
 }
 

@@ -73,6 +73,11 @@ func Name(v string) predicate.TestFile {
 	return predicate.TestFile(sql.FieldEQ(FieldName, v))
 }
 
+// TestResultID applies equality check predicate on the "test_result_id" field. It's identical to TestResultIDEQ.
+func TestResultID(v int) predicate.TestFile {
+	return predicate.TestFile(sql.FieldEQ(FieldTestResultID, v))
+}
+
 // DigestEQ applies the EQ predicate on the "digest" field.
 func DigestEQ(v string) predicate.TestFile {
 	return predicate.TestFile(sql.FieldEQ(FieldDigest, v))
@@ -356,6 +361,36 @@ func PrefixIsNil() predicate.TestFile {
 // PrefixNotNil applies the NotNil predicate on the "prefix" field.
 func PrefixNotNil() predicate.TestFile {
 	return predicate.TestFile(sql.FieldNotNull(FieldPrefix))
+}
+
+// TestResultIDEQ applies the EQ predicate on the "test_result_id" field.
+func TestResultIDEQ(v int) predicate.TestFile {
+	return predicate.TestFile(sql.FieldEQ(FieldTestResultID, v))
+}
+
+// TestResultIDNEQ applies the NEQ predicate on the "test_result_id" field.
+func TestResultIDNEQ(v int) predicate.TestFile {
+	return predicate.TestFile(sql.FieldNEQ(FieldTestResultID, v))
+}
+
+// TestResultIDIn applies the In predicate on the "test_result_id" field.
+func TestResultIDIn(vs ...int) predicate.TestFile {
+	return predicate.TestFile(sql.FieldIn(FieldTestResultID, vs...))
+}
+
+// TestResultIDNotIn applies the NotIn predicate on the "test_result_id" field.
+func TestResultIDNotIn(vs ...int) predicate.TestFile {
+	return predicate.TestFile(sql.FieldNotIn(FieldTestResultID, vs...))
+}
+
+// TestResultIDIsNil applies the IsNil predicate on the "test_result_id" field.
+func TestResultIDIsNil() predicate.TestFile {
+	return predicate.TestFile(sql.FieldIsNull(FieldTestResultID))
+}
+
+// TestResultIDNotNil applies the NotNil predicate on the "test_result_id" field.
+func TestResultIDNotNil() predicate.TestFile {
+	return predicate.TestFile(sql.FieldNotNull(FieldTestResultID))
 }
 
 // HasTestResult applies the HasEdge predicate on the "test_result" edge.

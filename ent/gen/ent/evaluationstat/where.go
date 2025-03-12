@@ -63,6 +63,11 @@ func Count(v int64) predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldEQ(FieldCount, v))
 }
 
+// BuildGraphMetricsID applies equality check predicate on the "build_graph_metrics_id" field. It's identical to BuildGraphMetricsIDEQ.
+func BuildGraphMetricsID(v int) predicate.EvaluationStat {
+	return predicate.EvaluationStat(sql.FieldEQ(FieldBuildGraphMetricsID, v))
+}
+
 // SkyfunctionNameEQ applies the EQ predicate on the "skyfunction_name" field.
 func SkyfunctionNameEQ(v string) predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldEQ(FieldSkyfunctionName, v))
@@ -186,6 +191,36 @@ func CountIsNil() predicate.EvaluationStat {
 // CountNotNil applies the NotNil predicate on the "count" field.
 func CountNotNil() predicate.EvaluationStat {
 	return predicate.EvaluationStat(sql.FieldNotNull(FieldCount))
+}
+
+// BuildGraphMetricsIDEQ applies the EQ predicate on the "build_graph_metrics_id" field.
+func BuildGraphMetricsIDEQ(v int) predicate.EvaluationStat {
+	return predicate.EvaluationStat(sql.FieldEQ(FieldBuildGraphMetricsID, v))
+}
+
+// BuildGraphMetricsIDNEQ applies the NEQ predicate on the "build_graph_metrics_id" field.
+func BuildGraphMetricsIDNEQ(v int) predicate.EvaluationStat {
+	return predicate.EvaluationStat(sql.FieldNEQ(FieldBuildGraphMetricsID, v))
+}
+
+// BuildGraphMetricsIDIn applies the In predicate on the "build_graph_metrics_id" field.
+func BuildGraphMetricsIDIn(vs ...int) predicate.EvaluationStat {
+	return predicate.EvaluationStat(sql.FieldIn(FieldBuildGraphMetricsID, vs...))
+}
+
+// BuildGraphMetricsIDNotIn applies the NotIn predicate on the "build_graph_metrics_id" field.
+func BuildGraphMetricsIDNotIn(vs ...int) predicate.EvaluationStat {
+	return predicate.EvaluationStat(sql.FieldNotIn(FieldBuildGraphMetricsID, vs...))
+}
+
+// BuildGraphMetricsIDIsNil applies the IsNil predicate on the "build_graph_metrics_id" field.
+func BuildGraphMetricsIDIsNil() predicate.EvaluationStat {
+	return predicate.EvaluationStat(sql.FieldIsNull(FieldBuildGraphMetricsID))
+}
+
+// BuildGraphMetricsIDNotNil applies the NotNil predicate on the "build_graph_metrics_id" field.
+func BuildGraphMetricsIDNotNil() predicate.EvaluationStat {
+	return predicate.EvaluationStat(sql.FieldNotNull(FieldBuildGraphMetricsID))
 }
 
 // HasBuildGraphMetrics applies the HasEdge predicate on the "build_graph_metrics" edge.

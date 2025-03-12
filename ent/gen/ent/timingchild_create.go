@@ -47,16 +47,16 @@ func (tcc *TimingChildCreate) SetNillableTime(s *string) *TimingChildCreate {
 	return tcc
 }
 
-// SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
-func (tcc *TimingChildCreate) SetTimingBreakdownID(id int) *TimingChildCreate {
-	tcc.mutation.SetTimingBreakdownID(id)
+// SetTimingBreakdownID sets the "timing_breakdown_id" field.
+func (tcc *TimingChildCreate) SetTimingBreakdownID(i int) *TimingChildCreate {
+	tcc.mutation.SetTimingBreakdownID(i)
 	return tcc
 }
 
-// SetNillableTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID if the given value is not nil.
-func (tcc *TimingChildCreate) SetNillableTimingBreakdownID(id *int) *TimingChildCreate {
-	if id != nil {
-		tcc = tcc.SetTimingBreakdownID(*id)
+// SetNillableTimingBreakdownID sets the "timing_breakdown_id" field if the given value is not nil.
+func (tcc *TimingChildCreate) SetNillableTimingBreakdownID(i *int) *TimingChildCreate {
+	if i != nil {
+		tcc.SetTimingBreakdownID(*i)
 	}
 	return tcc
 }
@@ -148,7 +148,7 @@ func (tcc *TimingChildCreate) createSpec() (*TimingChild, *sqlgraph.CreateSpec) 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.timing_breakdown_child = &nodes[0]
+		_node.TimingBreakdownID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -70,17 +70,23 @@ func (ogu *OutputGroupUpdate) ClearIncomplete() *OutputGroupUpdate {
 	return ogu
 }
 
-// SetTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID.
-func (ogu *OutputGroupUpdate) SetTargetCompleteID(id int) *OutputGroupUpdate {
-	ogu.mutation.SetTargetCompleteID(id)
+// SetTargetCompleteID sets the "target_complete_id" field.
+func (ogu *OutputGroupUpdate) SetTargetCompleteID(i int) *OutputGroupUpdate {
+	ogu.mutation.SetTargetCompleteID(i)
 	return ogu
 }
 
-// SetNillableTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID if the given value is not nil.
-func (ogu *OutputGroupUpdate) SetNillableTargetCompleteID(id *int) *OutputGroupUpdate {
-	if id != nil {
-		ogu = ogu.SetTargetCompleteID(*id)
+// SetNillableTargetCompleteID sets the "target_complete_id" field if the given value is not nil.
+func (ogu *OutputGroupUpdate) SetNillableTargetCompleteID(i *int) *OutputGroupUpdate {
+	if i != nil {
+		ogu.SetTargetCompleteID(*i)
 	}
+	return ogu
+}
+
+// ClearTargetCompleteID clears the value of the "target_complete_id" field.
+func (ogu *OutputGroupUpdate) ClearTargetCompleteID() *OutputGroupUpdate {
+	ogu.mutation.ClearTargetCompleteID()
 	return ogu
 }
 
@@ -372,17 +378,23 @@ func (oguo *OutputGroupUpdateOne) ClearIncomplete() *OutputGroupUpdateOne {
 	return oguo
 }
 
-// SetTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID.
-func (oguo *OutputGroupUpdateOne) SetTargetCompleteID(id int) *OutputGroupUpdateOne {
-	oguo.mutation.SetTargetCompleteID(id)
+// SetTargetCompleteID sets the "target_complete_id" field.
+func (oguo *OutputGroupUpdateOne) SetTargetCompleteID(i int) *OutputGroupUpdateOne {
+	oguo.mutation.SetTargetCompleteID(i)
 	return oguo
 }
 
-// SetNillableTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID if the given value is not nil.
-func (oguo *OutputGroupUpdateOne) SetNillableTargetCompleteID(id *int) *OutputGroupUpdateOne {
-	if id != nil {
-		oguo = oguo.SetTargetCompleteID(*id)
+// SetNillableTargetCompleteID sets the "target_complete_id" field if the given value is not nil.
+func (oguo *OutputGroupUpdateOne) SetNillableTargetCompleteID(i *int) *OutputGroupUpdateOne {
+	if i != nil {
+		oguo.SetTargetCompleteID(*i)
 	}
+	return oguo
+}
+
+// ClearTargetCompleteID clears the value of the "target_complete_id" field.
+func (oguo *OutputGroupUpdateOne) ClearTargetCompleteID() *OutputGroupUpdateOne {
+	oguo.mutation.ClearTargetCompleteID()
 	return oguo
 }
 

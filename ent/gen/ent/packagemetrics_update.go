@@ -56,17 +56,23 @@ func (pmu *PackageMetricsUpdate) ClearPackagesLoaded() *PackageMetricsUpdate {
 	return pmu
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (pmu *PackageMetricsUpdate) SetMetricsID(id int) *PackageMetricsUpdate {
-	pmu.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (pmu *PackageMetricsUpdate) SetMetricsID(i int) *PackageMetricsUpdate {
+	pmu.mutation.SetMetricsID(i)
 	return pmu
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (pmu *PackageMetricsUpdate) SetNillableMetricsID(id *int) *PackageMetricsUpdate {
-	if id != nil {
-		pmu = pmu.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (pmu *PackageMetricsUpdate) SetNillableMetricsID(i *int) *PackageMetricsUpdate {
+	if i != nil {
+		pmu.SetMetricsID(*i)
 	}
+	return pmu
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (pmu *PackageMetricsUpdate) ClearMetricsID() *PackageMetricsUpdate {
+	pmu.mutation.ClearMetricsID()
 	return pmu
 }
 
@@ -288,17 +294,23 @@ func (pmuo *PackageMetricsUpdateOne) ClearPackagesLoaded() *PackageMetricsUpdate
 	return pmuo
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (pmuo *PackageMetricsUpdateOne) SetMetricsID(id int) *PackageMetricsUpdateOne {
-	pmuo.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (pmuo *PackageMetricsUpdateOne) SetMetricsID(i int) *PackageMetricsUpdateOne {
+	pmuo.mutation.SetMetricsID(i)
 	return pmuo
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (pmuo *PackageMetricsUpdateOne) SetNillableMetricsID(id *int) *PackageMetricsUpdateOne {
-	if id != nil {
-		pmuo = pmuo.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (pmuo *PackageMetricsUpdateOne) SetNillableMetricsID(i *int) *PackageMetricsUpdateOne {
+	if i != nil {
+		pmuo.SetMetricsID(*i)
 	}
+	return pmuo
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (pmuo *PackageMetricsUpdateOne) ClearMetricsID() *PackageMetricsUpdateOne {
+	pmuo.mutation.ClearMetricsID()
 	return pmuo
 }
 

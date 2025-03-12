@@ -30,6 +30,8 @@ const (
 	FieldFirstSeen = "first_seen"
 	// FieldDurationMs holds the string denoting the duration_ms field in the database.
 	FieldDurationMs = "duration_ms"
+	// FieldBazelInvocationID holds the string denoting the bazel_invocation_id field in the database.
+	FieldBazelInvocationID = "bazel_invocation_id"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// EdgeTestSummary holds the string denoting the test_summary edge name in mutations.
@@ -44,21 +46,21 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
 	BazelInvocationInverseTable = "bazel_invocations"
 	// BazelInvocationColumn is the table column denoting the bazel_invocation relation/edge.
-	BazelInvocationColumn = "bazel_invocation_test_collection"
+	BazelInvocationColumn = "bazel_invocation_id"
 	// TestSummaryTable is the table that holds the test_summary relation/edge.
 	TestSummaryTable = "test_summaries"
 	// TestSummaryInverseTable is the table name for the TestSummary entity.
 	// It exists in this package in order to avoid circular dependency with the "testsummary" package.
 	TestSummaryInverseTable = "test_summaries"
 	// TestSummaryColumn is the table column denoting the test_summary relation/edge.
-	TestSummaryColumn = "test_collection_test_summary"
+	TestSummaryColumn = "test_collection_id"
 	// TestResultsTable is the table that holds the test_results relation/edge.
 	TestResultsTable = "test_result_be_ss"
 	// TestResultsInverseTable is the table name for the TestResultBES entity.
 	// It exists in this package in order to avoid circular dependency with the "testresultbes" package.
 	TestResultsInverseTable = "test_result_be_ss"
 	// TestResultsColumn is the table column denoting the test_results relation/edge.
-	TestResultsColumn = "test_collection_test_results"
+	TestResultsColumn = "test_collection_id"
 )
 
 // Columns holds all SQL columns for testcollection fields.
@@ -71,23 +73,13 @@ var Columns = []string{
 	FieldCachedRemotely,
 	FieldFirstSeen,
 	FieldDurationMs,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "test_collections"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"bazel_invocation_test_collection",
+	FieldBazelInvocationID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -168,6 +160,11 @@ func ByFirstSeen(opts ...sql.OrderTermOption) OrderOption {
 // ByDurationMs orders the results by the duration_ms field.
 func ByDurationMs(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDurationMs, opts...).ToFunc()
+}
+
+// ByBazelInvocationID orders the results by the bazel_invocation_id field.
+func ByBazelInvocationID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBazelInvocationID, opts...).ToFunc()
 }
 
 // ByBazelInvocationField orders the results by bazel_invocation field.

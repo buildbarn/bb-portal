@@ -63,6 +63,11 @@ func Time(v string) predicate.TimingChild {
 	return predicate.TimingChild(sql.FieldEQ(FieldTime, v))
 }
 
+// TimingBreakdownID applies equality check predicate on the "timing_breakdown_id" field. It's identical to TimingBreakdownIDEQ.
+func TimingBreakdownID(v int) predicate.TimingChild {
+	return predicate.TimingChild(sql.FieldEQ(FieldTimingBreakdownID, v))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.TimingChild {
 	return predicate.TimingChild(sql.FieldEQ(FieldName, v))
@@ -211,6 +216,36 @@ func TimeEqualFold(v string) predicate.TimingChild {
 // TimeContainsFold applies the ContainsFold predicate on the "time" field.
 func TimeContainsFold(v string) predicate.TimingChild {
 	return predicate.TimingChild(sql.FieldContainsFold(FieldTime, v))
+}
+
+// TimingBreakdownIDEQ applies the EQ predicate on the "timing_breakdown_id" field.
+func TimingBreakdownIDEQ(v int) predicate.TimingChild {
+	return predicate.TimingChild(sql.FieldEQ(FieldTimingBreakdownID, v))
+}
+
+// TimingBreakdownIDNEQ applies the NEQ predicate on the "timing_breakdown_id" field.
+func TimingBreakdownIDNEQ(v int) predicate.TimingChild {
+	return predicate.TimingChild(sql.FieldNEQ(FieldTimingBreakdownID, v))
+}
+
+// TimingBreakdownIDIn applies the In predicate on the "timing_breakdown_id" field.
+func TimingBreakdownIDIn(vs ...int) predicate.TimingChild {
+	return predicate.TimingChild(sql.FieldIn(FieldTimingBreakdownID, vs...))
+}
+
+// TimingBreakdownIDNotIn applies the NotIn predicate on the "timing_breakdown_id" field.
+func TimingBreakdownIDNotIn(vs ...int) predicate.TimingChild {
+	return predicate.TimingChild(sql.FieldNotIn(FieldTimingBreakdownID, vs...))
+}
+
+// TimingBreakdownIDIsNil applies the IsNil predicate on the "timing_breakdown_id" field.
+func TimingBreakdownIDIsNil() predicate.TimingChild {
+	return predicate.TimingChild(sql.FieldIsNull(FieldTimingBreakdownID))
+}
+
+// TimingBreakdownIDNotNil applies the NotNil predicate on the "timing_breakdown_id" field.
+func TimingBreakdownIDNotNil() predicate.TimingChild {
+	return predicate.TimingChild(sql.FieldNotNull(FieldTimingBreakdownID))
 }
 
 // HasTimingBreakdown applies the HasEdge predicate on the "timing_breakdown" edge.

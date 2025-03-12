@@ -53,6 +53,41 @@ func IDLTE(id int) predicate.NetworkMetrics {
 	return predicate.NetworkMetrics(sql.FieldLTE(FieldID, id))
 }
 
+// MetricsID applies equality check predicate on the "metrics_id" field. It's identical to MetricsIDEQ.
+func MetricsID(v int) predicate.NetworkMetrics {
+	return predicate.NetworkMetrics(sql.FieldEQ(FieldMetricsID, v))
+}
+
+// MetricsIDEQ applies the EQ predicate on the "metrics_id" field.
+func MetricsIDEQ(v int) predicate.NetworkMetrics {
+	return predicate.NetworkMetrics(sql.FieldEQ(FieldMetricsID, v))
+}
+
+// MetricsIDNEQ applies the NEQ predicate on the "metrics_id" field.
+func MetricsIDNEQ(v int) predicate.NetworkMetrics {
+	return predicate.NetworkMetrics(sql.FieldNEQ(FieldMetricsID, v))
+}
+
+// MetricsIDIn applies the In predicate on the "metrics_id" field.
+func MetricsIDIn(vs ...int) predicate.NetworkMetrics {
+	return predicate.NetworkMetrics(sql.FieldIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDNotIn applies the NotIn predicate on the "metrics_id" field.
+func MetricsIDNotIn(vs ...int) predicate.NetworkMetrics {
+	return predicate.NetworkMetrics(sql.FieldNotIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDIsNil applies the IsNil predicate on the "metrics_id" field.
+func MetricsIDIsNil() predicate.NetworkMetrics {
+	return predicate.NetworkMetrics(sql.FieldIsNull(FieldMetricsID))
+}
+
+// MetricsIDNotNil applies the NotNil predicate on the "metrics_id" field.
+func MetricsIDNotNil() predicate.NetworkMetrics {
+	return predicate.NetworkMetrics(sql.FieldNotNull(FieldMetricsID))
+}
+
 // HasMetrics applies the HasEdge predicate on the "metrics" edge.
 func HasMetrics() predicate.NetworkMetrics {
 	return predicate.NetworkMetrics(func(s *sql.Selector) {

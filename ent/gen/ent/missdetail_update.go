@@ -75,17 +75,23 @@ func (mdu *MissDetailUpdate) ClearCount() *MissDetailUpdate {
 	return mdu
 }
 
-// SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (mdu *MissDetailUpdate) SetActionCacheStatisticsID(id int) *MissDetailUpdate {
-	mdu.mutation.SetActionCacheStatisticsID(id)
+// SetActionCacheStatisticsID sets the "action_cache_statistics_id" field.
+func (mdu *MissDetailUpdate) SetActionCacheStatisticsID(i int) *MissDetailUpdate {
+	mdu.mutation.SetActionCacheStatisticsID(i)
 	return mdu
 }
 
-// SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (mdu *MissDetailUpdate) SetNillableActionCacheStatisticsID(id *int) *MissDetailUpdate {
-	if id != nil {
-		mdu = mdu.SetActionCacheStatisticsID(*id)
+// SetNillableActionCacheStatisticsID sets the "action_cache_statistics_id" field if the given value is not nil.
+func (mdu *MissDetailUpdate) SetNillableActionCacheStatisticsID(i *int) *MissDetailUpdate {
+	if i != nil {
+		mdu.SetActionCacheStatisticsID(*i)
 	}
+	return mdu
+}
+
+// ClearActionCacheStatisticsID clears the value of the "action_cache_statistics_id" field.
+func (mdu *MissDetailUpdate) ClearActionCacheStatisticsID() *MissDetailUpdate {
+	mdu.mutation.ClearActionCacheStatisticsID()
 	return mdu
 }
 
@@ -265,17 +271,23 @@ func (mduo *MissDetailUpdateOne) ClearCount() *MissDetailUpdateOne {
 	return mduo
 }
 
-// SetActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID.
-func (mduo *MissDetailUpdateOne) SetActionCacheStatisticsID(id int) *MissDetailUpdateOne {
-	mduo.mutation.SetActionCacheStatisticsID(id)
+// SetActionCacheStatisticsID sets the "action_cache_statistics_id" field.
+func (mduo *MissDetailUpdateOne) SetActionCacheStatisticsID(i int) *MissDetailUpdateOne {
+	mduo.mutation.SetActionCacheStatisticsID(i)
 	return mduo
 }
 
-// SetNillableActionCacheStatisticsID sets the "action_cache_statistics" edge to the ActionCacheStatistics entity by ID if the given value is not nil.
-func (mduo *MissDetailUpdateOne) SetNillableActionCacheStatisticsID(id *int) *MissDetailUpdateOne {
-	if id != nil {
-		mduo = mduo.SetActionCacheStatisticsID(*id)
+// SetNillableActionCacheStatisticsID sets the "action_cache_statistics_id" field if the given value is not nil.
+func (mduo *MissDetailUpdateOne) SetNillableActionCacheStatisticsID(i *int) *MissDetailUpdateOne {
+	if i != nil {
+		mduo.SetActionCacheStatisticsID(*i)
 	}
+	return mduo
+}
+
+// ClearActionCacheStatisticsID clears the value of the "action_cache_statistics_id" field.
+func (mduo *MissDetailUpdateOne) ClearActionCacheStatisticsID() *MissDetailUpdateOne {
+	mduo.mutation.ClearActionCacheStatisticsID()
 	return mduo
 }
 

@@ -21,6 +21,8 @@ func (TimingBreakdown) Fields() []ent.Field {
 		// Time spent ding the activity (duration).
 		// NOTE: proto has this as an int, but implemented as a string
 		field.String("time").Optional(),
+
+		field.Int("execution_info_id").Optional(),
 	}
 }
 
@@ -30,7 +32,8 @@ func (TimingBreakdown) Edges() []ent.Edge {
 		// Edge back to the execution info object
 		edge.From("execution_info", ExectionInfo.Type).
 			Ref("timing_breakdown").
-			Unique(),
+			Unique().
+			Field("execution_info_id"),
 
 		// Timing children (this could probably be better reempleted as a node to itself.
 		// except the relationship to the executio info object.  maybe we don't care about that?

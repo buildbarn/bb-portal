@@ -16,6 +16,8 @@ const (
 	FieldName = "name"
 	// FieldTime holds the string denoting the time field in the database.
 	FieldTime = "time"
+	// FieldTimingBreakdownID holds the string denoting the timing_breakdown_id field in the database.
+	FieldTimingBreakdownID = "timing_breakdown_id"
 	// EdgeTimingBreakdown holds the string denoting the timing_breakdown edge name in mutations.
 	EdgeTimingBreakdown = "timing_breakdown"
 	// Table holds the table name of the timingchild in the database.
@@ -26,7 +28,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "timingbreakdown" package.
 	TimingBreakdownInverseTable = "timing_breakdowns"
 	// TimingBreakdownColumn is the table column denoting the timing_breakdown relation/edge.
-	TimingBreakdownColumn = "timing_breakdown_child"
+	TimingBreakdownColumn = "timing_breakdown_id"
 )
 
 // Columns holds all SQL columns for timingchild fields.
@@ -34,23 +36,13 @@ var Columns = []string{
 	FieldID,
 	FieldName,
 	FieldTime,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "timing_childs"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"timing_breakdown_child",
+	FieldTimingBreakdownID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -73,6 +65,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByTime orders the results by the time field.
 func ByTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTime, opts...).ToFunc()
+}
+
+// ByTimingBreakdownID orders the results by the timing_breakdown_id field.
+func ByTimingBreakdownID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTimingBreakdownID, opts...).ToFunc()
 }
 
 // ByTimingBreakdownField orders the results by timing_breakdown field.

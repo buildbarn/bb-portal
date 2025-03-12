@@ -50,6 +50,10 @@ const (
 	FieldNumFetches = "num_fetches"
 	// FieldProfileName holds the string denoting the profile_name field in the database.
 	FieldProfileName = "profile_name"
+	// FieldEventFileID holds the string denoting the event_file_id field in the database.
+	FieldEventFileID = "event_file_id"
+	// FieldBuildID holds the string denoting the build_id field in the database.
+	FieldBuildID = "build_id"
 	// EdgeEventFile holds the string denoting the event_file edge name in mutations.
 	EdgeEventFile = "event_file"
 	// EdgeBuild holds the string denoting the build edge name in mutations.
@@ -72,49 +76,49 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "eventfile" package.
 	EventFileInverseTable = "event_files"
 	// EventFileColumn is the table column denoting the event_file relation/edge.
-	EventFileColumn = "event_file_bazel_invocation"
+	EventFileColumn = "event_file_id"
 	// BuildTable is the table that holds the build relation/edge.
 	BuildTable = "bazel_invocations"
 	// BuildInverseTable is the table name for the Build entity.
 	// It exists in this package in order to avoid circular dependency with the "build" package.
 	BuildInverseTable = "builds"
 	// BuildColumn is the table column denoting the build relation/edge.
-	BuildColumn = "build_invocations"
+	BuildColumn = "build_id"
 	// ProblemsTable is the table that holds the problems relation/edge.
 	ProblemsTable = "bazel_invocation_problems"
 	// ProblemsInverseTable is the table name for the BazelInvocationProblem entity.
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocationproblem" package.
 	ProblemsInverseTable = "bazel_invocation_problems"
 	// ProblemsColumn is the table column denoting the problems relation/edge.
-	ProblemsColumn = "bazel_invocation_problems"
+	ProblemsColumn = "bazel_invocation_id"
 	// MetricsTable is the table that holds the metrics relation/edge.
 	MetricsTable = "metrics"
 	// MetricsInverseTable is the table name for the Metrics entity.
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
-	MetricsColumn = "bazel_invocation_metrics"
+	MetricsColumn = "bazel_invocation_id"
 	// TestCollectionTable is the table that holds the test_collection relation/edge.
 	TestCollectionTable = "test_collections"
 	// TestCollectionInverseTable is the table name for the TestCollection entity.
 	// It exists in this package in order to avoid circular dependency with the "testcollection" package.
 	TestCollectionInverseTable = "test_collections"
 	// TestCollectionColumn is the table column denoting the test_collection relation/edge.
-	TestCollectionColumn = "bazel_invocation_test_collection"
+	TestCollectionColumn = "bazel_invocation_id"
 	// TargetsTable is the table that holds the targets relation/edge.
 	TargetsTable = "target_pairs"
 	// TargetsInverseTable is the table name for the TargetPair entity.
 	// It exists in this package in order to avoid circular dependency with the "targetpair" package.
 	TargetsInverseTable = "target_pairs"
 	// TargetsColumn is the table column denoting the targets relation/edge.
-	TargetsColumn = "bazel_invocation_targets"
+	TargetsColumn = "bazel_invocation_id"
 	// SourceControlTable is the table that holds the source_control relation/edge.
 	SourceControlTable = "source_controls"
 	// SourceControlInverseTable is the table name for the SourceControl entity.
 	// It exists in this package in order to avoid circular dependency with the "sourcecontrol" package.
 	SourceControlInverseTable = "source_controls"
 	// SourceControlColumn is the table column denoting the source_control relation/edge.
-	SourceControlColumn = "bazel_invocation_source_control"
+	SourceControlColumn = "bazel_invocation_id"
 )
 
 // Columns holds all SQL columns for bazelinvocation fields.
@@ -139,24 +143,14 @@ var Columns = []string{
 	FieldConfigurationMnemonic,
 	FieldNumFetches,
 	FieldProfileName,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "bazel_invocations"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"build_invocations",
-	"event_file_bazel_invocation",
+	FieldEventFileID,
+	FieldBuildID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -254,6 +248,16 @@ func ByNumFetches(opts ...sql.OrderTermOption) OrderOption {
 // ByProfileName orders the results by the profile_name field.
 func ByProfileName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProfileName, opts...).ToFunc()
+}
+
+// ByEventFileID orders the results by the event_file_id field.
+func ByEventFileID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEventFileID, opts...).ToFunc()
+}
+
+// ByBuildID orders the results by the build_id field.
+func ByBuildID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBuildID, opts...).ToFunc()
 }
 
 // ByEventFileField orders the results by event_file field.

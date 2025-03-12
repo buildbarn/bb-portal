@@ -139,17 +139,23 @@ func (asu *ActionSummaryUpdate) ClearRemoteCacheHits() *ActionSummaryUpdate {
 	return asu
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (asu *ActionSummaryUpdate) SetMetricsID(id int) *ActionSummaryUpdate {
-	asu.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (asu *ActionSummaryUpdate) SetMetricsID(i int) *ActionSummaryUpdate {
+	asu.mutation.SetMetricsID(i)
 	return asu
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (asu *ActionSummaryUpdate) SetNillableMetricsID(id *int) *ActionSummaryUpdate {
-	if id != nil {
-		asu = asu.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (asu *ActionSummaryUpdate) SetNillableMetricsID(i *int) *ActionSummaryUpdate {
+	if i != nil {
+		asu.SetMetricsID(*i)
 	}
+	return asu
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (asu *ActionSummaryUpdate) ClearMetricsID() *ActionSummaryUpdate {
+	asu.mutation.ClearMetricsID()
 	return asu
 }
 
@@ -614,17 +620,23 @@ func (asuo *ActionSummaryUpdateOne) ClearRemoteCacheHits() *ActionSummaryUpdateO
 	return asuo
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (asuo *ActionSummaryUpdateOne) SetMetricsID(id int) *ActionSummaryUpdateOne {
-	asuo.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (asuo *ActionSummaryUpdateOne) SetMetricsID(i int) *ActionSummaryUpdateOne {
+	asuo.mutation.SetMetricsID(i)
 	return asuo
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (asuo *ActionSummaryUpdateOne) SetNillableMetricsID(id *int) *ActionSummaryUpdateOne {
-	if id != nil {
-		asuo = asuo.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (asuo *ActionSummaryUpdateOne) SetNillableMetricsID(i *int) *ActionSummaryUpdateOne {
+	if i != nil {
+		asuo.SetMetricsID(*i)
 	}
+	return asuo
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (asuo *ActionSummaryUpdateOne) ClearMetricsID() *ActionSummaryUpdateOne {
+	asuo.mutation.ClearMetricsID()
 	return asuo
 }
 

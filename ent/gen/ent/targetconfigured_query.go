@@ -23,7 +23,6 @@ type TargetConfiguredQuery struct {
 	inters         []Interceptor
 	predicates     []predicate.TargetConfigured
 	withTargetPair *TargetPairQuery
-	withFKs        bool
 	modifiers      []func(*sql.Selector)
 	loadTotal      []func(context.Context, []*TargetConfigured) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (tcq *TargetConfiguredQuery) prepareQuery(ctx context.Context) error {
 func (tcq *TargetConfiguredQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TargetConfigured, error) {
 	var (
 		nodes       = []*TargetConfigured{}
-		withFKs     = tcq.withFKs
 		_spec       = tcq.querySpec()
 		loadedTypes = [1]bool{
 			tcq.withTargetPair != nil,
 		}
 	)
-	if tcq.withTargetPair != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, targetconfigured.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TargetConfigured).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (tcq *TargetConfiguredQuery) loadTargetPair(ctx context.Context, query *Tar
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TargetConfigured)
 	for i := range nodes {
-		if nodes[i].target_pair_configuration == nil {
-			continue
-		}
-		fk := *nodes[i].target_pair_configuration
+		fk := nodes[i].TargetPairID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (tcq *TargetConfiguredQuery) loadTargetPair(ctx context.Context, query *Tar
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "target_pair_configuration" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "target_pair_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (tcq *TargetConfiguredQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != targetconfigured.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if tcq.withTargetPair != nil {
+			_spec.Node.AddColumnOnce(targetconfigured.FieldTargetPairID)
 		}
 	}
 	if ps := tcq.predicates; len(ps) > 0 {

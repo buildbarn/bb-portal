@@ -78,6 +78,11 @@ func TestTimeout(v int64) predicate.TargetComplete {
 	return predicate.TargetComplete(sql.FieldEQ(FieldTestTimeout, v))
 }
 
+// TargetPairID applies equality check predicate on the "target_pair_id" field. It's identical to TargetPairIDEQ.
+func TargetPairID(v int) predicate.TargetComplete {
+	return predicate.TargetComplete(sql.FieldEQ(FieldTargetPairID, v))
+}
+
 // SuccessEQ applies the EQ predicate on the "success" field.
 func SuccessEQ(v bool) predicate.TargetComplete {
 	return predicate.TargetComplete(sql.FieldEQ(FieldSuccess, v))
@@ -361,6 +366,36 @@ func TestSizeIsNil() predicate.TargetComplete {
 // TestSizeNotNil applies the NotNil predicate on the "test_size" field.
 func TestSizeNotNil() predicate.TargetComplete {
 	return predicate.TargetComplete(sql.FieldNotNull(FieldTestSize))
+}
+
+// TargetPairIDEQ applies the EQ predicate on the "target_pair_id" field.
+func TargetPairIDEQ(v int) predicate.TargetComplete {
+	return predicate.TargetComplete(sql.FieldEQ(FieldTargetPairID, v))
+}
+
+// TargetPairIDNEQ applies the NEQ predicate on the "target_pair_id" field.
+func TargetPairIDNEQ(v int) predicate.TargetComplete {
+	return predicate.TargetComplete(sql.FieldNEQ(FieldTargetPairID, v))
+}
+
+// TargetPairIDIn applies the In predicate on the "target_pair_id" field.
+func TargetPairIDIn(vs ...int) predicate.TargetComplete {
+	return predicate.TargetComplete(sql.FieldIn(FieldTargetPairID, vs...))
+}
+
+// TargetPairIDNotIn applies the NotIn predicate on the "target_pair_id" field.
+func TargetPairIDNotIn(vs ...int) predicate.TargetComplete {
+	return predicate.TargetComplete(sql.FieldNotIn(FieldTargetPairID, vs...))
+}
+
+// TargetPairIDIsNil applies the IsNil predicate on the "target_pair_id" field.
+func TargetPairIDIsNil() predicate.TargetComplete {
+	return predicate.TargetComplete(sql.FieldIsNull(FieldTargetPairID))
+}
+
+// TargetPairIDNotNil applies the NotNil predicate on the "target_pair_id" field.
+func TargetPairIDNotNil() predicate.TargetComplete {
+	return predicate.TargetComplete(sql.FieldNotNull(FieldTargetPairID))
 }
 
 // HasTargetPair applies the HasEdge predicate on the "target_pair" edge.

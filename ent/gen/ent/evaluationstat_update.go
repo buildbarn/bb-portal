@@ -75,17 +75,23 @@ func (esu *EvaluationStatUpdate) ClearCount() *EvaluationStatUpdate {
 	return esu
 }
 
-// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
-func (esu *EvaluationStatUpdate) SetBuildGraphMetricsID(id int) *EvaluationStatUpdate {
-	esu.mutation.SetBuildGraphMetricsID(id)
+// SetBuildGraphMetricsID sets the "build_graph_metrics_id" field.
+func (esu *EvaluationStatUpdate) SetBuildGraphMetricsID(i int) *EvaluationStatUpdate {
+	esu.mutation.SetBuildGraphMetricsID(i)
 	return esu
 }
 
-// SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
-func (esu *EvaluationStatUpdate) SetNillableBuildGraphMetricsID(id *int) *EvaluationStatUpdate {
-	if id != nil {
-		esu = esu.SetBuildGraphMetricsID(*id)
+// SetNillableBuildGraphMetricsID sets the "build_graph_metrics_id" field if the given value is not nil.
+func (esu *EvaluationStatUpdate) SetNillableBuildGraphMetricsID(i *int) *EvaluationStatUpdate {
+	if i != nil {
+		esu.SetBuildGraphMetricsID(*i)
 	}
+	return esu
+}
+
+// ClearBuildGraphMetricsID clears the value of the "build_graph_metrics_id" field.
+func (esu *EvaluationStatUpdate) ClearBuildGraphMetricsID() *EvaluationStatUpdate {
+	esu.mutation.ClearBuildGraphMetricsID()
 	return esu
 }
 
@@ -252,17 +258,23 @@ func (esuo *EvaluationStatUpdateOne) ClearCount() *EvaluationStatUpdateOne {
 	return esuo
 }
 
-// SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
-func (esuo *EvaluationStatUpdateOne) SetBuildGraphMetricsID(id int) *EvaluationStatUpdateOne {
-	esuo.mutation.SetBuildGraphMetricsID(id)
+// SetBuildGraphMetricsID sets the "build_graph_metrics_id" field.
+func (esuo *EvaluationStatUpdateOne) SetBuildGraphMetricsID(i int) *EvaluationStatUpdateOne {
+	esuo.mutation.SetBuildGraphMetricsID(i)
 	return esuo
 }
 
-// SetNillableBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID if the given value is not nil.
-func (esuo *EvaluationStatUpdateOne) SetNillableBuildGraphMetricsID(id *int) *EvaluationStatUpdateOne {
-	if id != nil {
-		esuo = esuo.SetBuildGraphMetricsID(*id)
+// SetNillableBuildGraphMetricsID sets the "build_graph_metrics_id" field if the given value is not nil.
+func (esuo *EvaluationStatUpdateOne) SetNillableBuildGraphMetricsID(i *int) *EvaluationStatUpdateOne {
+	if i != nil {
+		esuo.SetBuildGraphMetricsID(*i)
 	}
+	return esuo
+}
+
+// ClearBuildGraphMetricsID clears the value of the "build_graph_metrics_id" field.
+func (esuo *EvaluationStatUpdateOne) ClearBuildGraphMetricsID() *EvaluationStatUpdateOne {
+	esuo.mutation.ClearBuildGraphMetricsID()
 	return esuo
 }
 

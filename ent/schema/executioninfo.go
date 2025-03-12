@@ -31,6 +31,8 @@ func (ExectionInfo) Fields() []ent.Field {
 		// The hostname of the machine where the test action was executed (in case
 		// of remote execution), if known.
 		field.String("hostname").Optional(),
+
+		field.Int("execution_info_id").Optional(),
 	}
 }
 
@@ -40,7 +42,8 @@ func (ExectionInfo) Edges() []ent.Edge {
 		// Edge back to the test result
 		edge.From("test_result", TestResultBES.Type).
 			Ref("execution_info").
-			Unique(),
+			Unique().
+			Field("execution_info_id"), // New field added
 
 		// Represents a hierarchical timing breakdown of an activity.
 		// The top level time should be the total time of the activity.

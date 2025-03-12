@@ -27,11 +27,12 @@ type ActionCacheStatistics struct {
 	Hits int32 `json:"hits,omitempty"`
 	// Misses holds the value of the "misses" field.
 	Misses int32 `json:"misses,omitempty"`
+	// ActionSummaryID holds the value of the "action_summary_id" field.
+	ActionSummaryID int `json:"action_summary_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActionCacheStatisticsQuery when eager-loading is set.
-	Edges                                  ActionCacheStatisticsEdges `json:"edges"`
-	action_summary_action_cache_statistics *int
-	selectValues                           sql.SelectValues
+	Edges        ActionCacheStatisticsEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // ActionCacheStatisticsEdges holds the relations/edges for other nodes in the graph.
@@ -74,9 +75,7 @@ func (*ActionCacheStatistics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case actioncachestatistics.FieldID, actioncachestatistics.FieldSizeInBytes, actioncachestatistics.FieldSaveTimeInMs, actioncachestatistics.FieldLoadTimeInMs, actioncachestatistics.FieldHits, actioncachestatistics.FieldMisses:
-			values[i] = new(sql.NullInt64)
-		case actioncachestatistics.ForeignKeys[0]: // action_summary_action_cache_statistics
+		case actioncachestatistics.FieldID, actioncachestatistics.FieldSizeInBytes, actioncachestatistics.FieldSaveTimeInMs, actioncachestatistics.FieldLoadTimeInMs, actioncachestatistics.FieldHits, actioncachestatistics.FieldMisses, actioncachestatistics.FieldActionSummaryID:
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -129,12 +128,11 @@ func (acs *ActionCacheStatistics) assignValues(columns []string, values []any) e
 			} else if value.Valid {
 				acs.Misses = int32(value.Int64)
 			}
-		case actioncachestatistics.ForeignKeys[0]:
+		case actioncachestatistics.FieldActionSummaryID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field action_summary_action_cache_statistics", value)
+				return fmt.Errorf("unexpected type %T for field action_summary_id", values[i])
 			} else if value.Valid {
-				acs.action_summary_action_cache_statistics = new(int)
-				*acs.action_summary_action_cache_statistics = int(value.Int64)
+				acs.ActionSummaryID = int(value.Int64)
 			}
 		default:
 			acs.selectValues.Set(columns[i], values[i])
@@ -196,6 +194,9 @@ func (acs *ActionCacheStatistics) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("misses=")
 	builder.WriteString(fmt.Sprintf("%v", acs.Misses))
+	builder.WriteString(", ")
+	builder.WriteString("action_summary_id=")
+	builder.WriteString(fmt.Sprintf("%v", acs.ActionSummaryID))
 	builder.WriteByte(')')
 	return builder.String()
 }

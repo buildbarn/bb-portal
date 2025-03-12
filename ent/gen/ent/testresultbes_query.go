@@ -28,7 +28,6 @@ type TestResultBESQuery struct {
 	withTestCollection        *TestCollectionQuery
 	withTestActionOutput      *TestFileQuery
 	withExecutionInfo         *ExectionInfoQuery
-	withFKs                   bool
 	modifiers                 []func(*sql.Selector)
 	loadTotal                 []func(context.Context, []*TestResultBES) error
 	withNamedTestActionOutput map[string]*TestFileQuery
@@ -445,7 +444,6 @@ func (trbq *TestResultBESQuery) prepareQuery(ctx context.Context) error {
 func (trbq *TestResultBESQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TestResultBES, error) {
 	var (
 		nodes       = []*TestResultBES{}
-		withFKs     = trbq.withFKs
 		_spec       = trbq.querySpec()
 		loadedTypes = [3]bool{
 			trbq.withTestCollection != nil,
@@ -453,12 +451,6 @@ func (trbq *TestResultBESQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			trbq.withExecutionInfo != nil,
 		}
 	)
-	if trbq.withTestCollection != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, testresultbes.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TestResultBES).scanValues(nil, columns)
 	}
@@ -518,10 +510,7 @@ func (trbq *TestResultBESQuery) loadTestCollection(ctx context.Context, query *T
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TestResultBES)
 	for i := range nodes {
-		if nodes[i].test_collection_test_results == nil {
-			continue
-		}
-		fk := *nodes[i].test_collection_test_results
+		fk := nodes[i].TestCollectionID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -538,7 +527,7 @@ func (trbq *TestResultBESQuery) loadTestCollection(ctx context.Context, query *T
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "test_collection_test_results" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "test_collection_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -557,6 +546,9 @@ func (trbq *TestResultBESQuery) loadTestActionOutput(ctx context.Context, query 
 		}
 	}
 	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(testfile.FieldTestResultID)
+	}
 	query.Where(predicate.TestFile(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(testresultbes.TestActionOutputColumn), fks...))
 	}))
@@ -565,13 +557,10 @@ func (trbq *TestResultBESQuery) loadTestActionOutput(ctx context.Context, query 
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.test_result_bes_test_action_output
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "test_result_bes_test_action_output" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.TestResultID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "test_result_bes_test_action_output" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "test_result_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -584,7 +573,9 @@ func (trbq *TestResultBESQuery) loadExecutionInfo(ctx context.Context, query *Ex
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(exectioninfo.FieldExecutionInfoID)
+	}
 	query.Where(predicate.ExectionInfo(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(testresultbes.ExecutionInfoColumn), fks...))
 	}))
@@ -593,13 +584,10 @@ func (trbq *TestResultBESQuery) loadExecutionInfo(ctx context.Context, query *Ex
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.test_result_bes_execution_info
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "test_result_bes_execution_info" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.ExecutionInfoID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "test_result_bes_execution_info" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "execution_info_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -633,6 +621,9 @@ func (trbq *TestResultBESQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != testresultbes.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if trbq.withTestCollection != nil {
+			_spec.Node.AddColumnOnce(testresultbes.FieldTestCollectionID)
 		}
 	}
 	if ps := trbq.predicates; len(ps) > 0 {

@@ -81,16 +81,16 @@ func (tfc *TestFileCreate) SetPrefix(s []string) *TestFileCreate {
 	return tfc
 }
 
-// SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
-func (tfc *TestFileCreate) SetTestResultID(id int) *TestFileCreate {
-	tfc.mutation.SetTestResultID(id)
+// SetTestResultID sets the "test_result_id" field.
+func (tfc *TestFileCreate) SetTestResultID(i int) *TestFileCreate {
+	tfc.mutation.SetTestResultID(i)
 	return tfc
 }
 
-// SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
-func (tfc *TestFileCreate) SetNillableTestResultID(id *int) *TestFileCreate {
-	if id != nil {
-		tfc = tfc.SetTestResultID(*id)
+// SetNillableTestResultID sets the "test_result_id" field if the given value is not nil.
+func (tfc *TestFileCreate) SetNillableTestResultID(i *int) *TestFileCreate {
+	if i != nil {
+		tfc.SetTestResultID(*i)
 	}
 	return tfc
 }
@@ -194,7 +194,7 @@ func (tfc *TestFileCreate) createSpec() (*TestFile, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.test_result_bes_test_action_output = &nodes[0]
+		_node.TestResultID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

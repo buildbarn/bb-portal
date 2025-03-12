@@ -21,11 +21,12 @@ type TimingChild struct {
 	Name string `json:"name,omitempty"`
 	// Time holds the value of the "time" field.
 	Time string `json:"time,omitempty"`
+	// TimingBreakdownID holds the value of the "timing_breakdown_id" field.
+	TimingBreakdownID int `json:"timing_breakdown_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TimingChildQuery when eager-loading is set.
-	Edges                  TimingChildEdges `json:"edges"`
-	timing_breakdown_child *int
-	selectValues           sql.SelectValues
+	Edges        TimingChildEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // TimingChildEdges holds the relations/edges for other nodes in the graph.
@@ -55,12 +56,10 @@ func (*TimingChild) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case timingchild.FieldID:
+		case timingchild.FieldID, timingchild.FieldTimingBreakdownID:
 			values[i] = new(sql.NullInt64)
 		case timingchild.FieldName, timingchild.FieldTime:
 			values[i] = new(sql.NullString)
-		case timingchild.ForeignKeys[0]: // timing_breakdown_child
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -94,12 +93,11 @@ func (tc *TimingChild) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				tc.Time = value.String
 			}
-		case timingchild.ForeignKeys[0]:
+		case timingchild.FieldTimingBreakdownID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field timing_breakdown_child", value)
+				return fmt.Errorf("unexpected type %T for field timing_breakdown_id", values[i])
 			} else if value.Valid {
-				tc.timing_breakdown_child = new(int)
-				*tc.timing_breakdown_child = int(value.Int64)
+				tc.TimingBreakdownID = int(value.Int64)
 			}
 		default:
 			tc.selectValues.Set(columns[i], values[i])
@@ -147,6 +145,9 @@ func (tc *TimingChild) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("time=")
 	builder.WriteString(tc.Time)
+	builder.WriteString(", ")
+	builder.WriteString("timing_breakdown_id=")
+	builder.WriteString(fmt.Sprintf("%v", tc.TimingBreakdownID))
 	builder.WriteByte(')')
 	return builder.String()
 }

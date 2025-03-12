@@ -29,17 +29,23 @@ func (nmu *NetworkMetricsUpdate) Where(ps ...predicate.NetworkMetrics) *NetworkM
 	return nmu
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (nmu *NetworkMetricsUpdate) SetMetricsID(id int) *NetworkMetricsUpdate {
-	nmu.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (nmu *NetworkMetricsUpdate) SetMetricsID(i int) *NetworkMetricsUpdate {
+	nmu.mutation.SetMetricsID(i)
 	return nmu
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (nmu *NetworkMetricsUpdate) SetNillableMetricsID(id *int) *NetworkMetricsUpdate {
-	if id != nil {
-		nmu = nmu.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (nmu *NetworkMetricsUpdate) SetNillableMetricsID(i *int) *NetworkMetricsUpdate {
+	if i != nil {
+		nmu.SetMetricsID(*i)
 	}
+	return nmu
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (nmu *NetworkMetricsUpdate) ClearMetricsID() *NetworkMetricsUpdate {
+	nmu.mutation.ClearMetricsID()
 	return nmu
 }
 
@@ -198,17 +204,23 @@ type NetworkMetricsUpdateOne struct {
 	mutation *NetworkMetricsMutation
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (nmuo *NetworkMetricsUpdateOne) SetMetricsID(id int) *NetworkMetricsUpdateOne {
-	nmuo.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (nmuo *NetworkMetricsUpdateOne) SetMetricsID(i int) *NetworkMetricsUpdateOne {
+	nmuo.mutation.SetMetricsID(i)
 	return nmuo
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (nmuo *NetworkMetricsUpdateOne) SetNillableMetricsID(id *int) *NetworkMetricsUpdateOne {
-	if id != nil {
-		nmuo = nmuo.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (nmuo *NetworkMetricsUpdateOne) SetNillableMetricsID(i *int) *NetworkMetricsUpdateOne {
+	if i != nil {
+		nmuo.SetMetricsID(*i)
 	}
+	return nmuo
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (nmuo *NetworkMetricsUpdateOne) ClearMetricsID() *NetworkMetricsUpdateOne {
+	nmuo.mutation.ClearMetricsID()
 	return nmuo
 }
 

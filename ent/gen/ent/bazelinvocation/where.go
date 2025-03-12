@@ -141,6 +141,16 @@ func ProfileName(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldProfileName, v))
 }
 
+// EventFileID applies equality check predicate on the "event_file_id" field. It's identical to EventFileIDEQ.
+func EventFileID(v int) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldEventFileID, v))
+}
+
+// BuildID applies equality check predicate on the "build_id" field. It's identical to BuildIDEQ.
+func BuildID(v int) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldBuildID, v))
+}
+
 // InvocationIDEQ applies the EQ predicate on the "invocation_id" field.
 func InvocationIDEQ(v uuid.UUID) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldInvocationID, v))
@@ -1114,6 +1124,66 @@ func ProfileNameEqualFold(v string) predicate.BazelInvocation {
 // ProfileNameContainsFold applies the ContainsFold predicate on the "profile_name" field.
 func ProfileNameContainsFold(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldContainsFold(FieldProfileName, v))
+}
+
+// EventFileIDEQ applies the EQ predicate on the "event_file_id" field.
+func EventFileIDEQ(v int) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldEventFileID, v))
+}
+
+// EventFileIDNEQ applies the NEQ predicate on the "event_file_id" field.
+func EventFileIDNEQ(v int) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldEventFileID, v))
+}
+
+// EventFileIDIn applies the In predicate on the "event_file_id" field.
+func EventFileIDIn(vs ...int) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldEventFileID, vs...))
+}
+
+// EventFileIDNotIn applies the NotIn predicate on the "event_file_id" field.
+func EventFileIDNotIn(vs ...int) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldEventFileID, vs...))
+}
+
+// EventFileIDIsNil applies the IsNil predicate on the "event_file_id" field.
+func EventFileIDIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldEventFileID))
+}
+
+// EventFileIDNotNil applies the NotNil predicate on the "event_file_id" field.
+func EventFileIDNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldEventFileID))
+}
+
+// BuildIDEQ applies the EQ predicate on the "build_id" field.
+func BuildIDEQ(v int) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldBuildID, v))
+}
+
+// BuildIDNEQ applies the NEQ predicate on the "build_id" field.
+func BuildIDNEQ(v int) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldBuildID, v))
+}
+
+// BuildIDIn applies the In predicate on the "build_id" field.
+func BuildIDIn(vs ...int) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldBuildID, vs...))
+}
+
+// BuildIDNotIn applies the NotIn predicate on the "build_id" field.
+func BuildIDNotIn(vs ...int) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldBuildID, vs...))
+}
+
+// BuildIDIsNil applies the IsNil predicate on the "build_id" field.
+func BuildIDIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldBuildID))
+}
+
+// BuildIDNotNil applies the NotNil predicate on the "build_id" field.
+func BuildIDNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldBuildID))
 }
 
 // HasEventFile applies the HasEdge predicate on the "event_file" edge.

@@ -63,6 +63,11 @@ func StartTimeInMs(v int64) predicate.TargetConfigured {
 	return predicate.TargetConfigured(sql.FieldEQ(FieldStartTimeInMs, v))
 }
 
+// TargetPairID applies equality check predicate on the "target_pair_id" field. It's identical to TargetPairIDEQ.
+func TargetPairID(v int) predicate.TargetConfigured {
+	return predicate.TargetConfigured(sql.FieldEQ(FieldTargetPairID, v))
+}
+
 // TagIsNil applies the IsNil predicate on the "tag" field.
 func TagIsNil() predicate.TargetConfigured {
 	return predicate.TargetConfigured(sql.FieldIsNull(FieldTag))
@@ -226,6 +231,36 @@ func TestSizeIsNil() predicate.TargetConfigured {
 // TestSizeNotNil applies the NotNil predicate on the "test_size" field.
 func TestSizeNotNil() predicate.TargetConfigured {
 	return predicate.TargetConfigured(sql.FieldNotNull(FieldTestSize))
+}
+
+// TargetPairIDEQ applies the EQ predicate on the "target_pair_id" field.
+func TargetPairIDEQ(v int) predicate.TargetConfigured {
+	return predicate.TargetConfigured(sql.FieldEQ(FieldTargetPairID, v))
+}
+
+// TargetPairIDNEQ applies the NEQ predicate on the "target_pair_id" field.
+func TargetPairIDNEQ(v int) predicate.TargetConfigured {
+	return predicate.TargetConfigured(sql.FieldNEQ(FieldTargetPairID, v))
+}
+
+// TargetPairIDIn applies the In predicate on the "target_pair_id" field.
+func TargetPairIDIn(vs ...int) predicate.TargetConfigured {
+	return predicate.TargetConfigured(sql.FieldIn(FieldTargetPairID, vs...))
+}
+
+// TargetPairIDNotIn applies the NotIn predicate on the "target_pair_id" field.
+func TargetPairIDNotIn(vs ...int) predicate.TargetConfigured {
+	return predicate.TargetConfigured(sql.FieldNotIn(FieldTargetPairID, vs...))
+}
+
+// TargetPairIDIsNil applies the IsNil predicate on the "target_pair_id" field.
+func TargetPairIDIsNil() predicate.TargetConfigured {
+	return predicate.TargetConfigured(sql.FieldIsNull(FieldTargetPairID))
+}
+
+// TargetPairIDNotNil applies the NotNil predicate on the "target_pair_id" field.
+func TargetPairIDNotNil() predicate.TargetConfigured {
+	return predicate.TargetConfigured(sql.FieldNotNull(FieldTargetPairID))
 }
 
 // HasTargetPair applies the HasEdge predicate on the "target_pair" edge.

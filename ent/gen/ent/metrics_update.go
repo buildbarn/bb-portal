@@ -38,17 +38,23 @@ func (mu *MetricsUpdate) Where(ps ...predicate.Metrics) *MetricsUpdate {
 	return mu
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (mu *MetricsUpdate) SetBazelInvocationID(id int) *MetricsUpdate {
-	mu.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (mu *MetricsUpdate) SetBazelInvocationID(i int) *MetricsUpdate {
+	mu.mutation.SetBazelInvocationID(i)
 	return mu
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (mu *MetricsUpdate) SetNillableBazelInvocationID(id *int) *MetricsUpdate {
-	if id != nil {
-		mu = mu.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (mu *MetricsUpdate) SetNillableBazelInvocationID(i *int) *MetricsUpdate {
+	if i != nil {
+		mu.SetBazelInvocationID(*i)
 	}
+	return mu
+}
+
+// ClearBazelInvocationID clears the value of the "bazel_invocation_id" field.
+func (mu *MetricsUpdate) ClearBazelInvocationID() *MetricsUpdate {
+	mu.mutation.ClearBazelInvocationID()
 	return mu
 }
 
@@ -693,17 +699,23 @@ type MetricsUpdateOne struct {
 	mutation *MetricsMutation
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (muo *MetricsUpdateOne) SetBazelInvocationID(id int) *MetricsUpdateOne {
-	muo.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (muo *MetricsUpdateOne) SetBazelInvocationID(i int) *MetricsUpdateOne {
+	muo.mutation.SetBazelInvocationID(i)
 	return muo
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (muo *MetricsUpdateOne) SetNillableBazelInvocationID(id *int) *MetricsUpdateOne {
-	if id != nil {
-		muo = muo.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (muo *MetricsUpdateOne) SetNillableBazelInvocationID(i *int) *MetricsUpdateOne {
+	if i != nil {
+		muo.SetBazelInvocationID(*i)
 	}
+	return muo
+}
+
+// ClearBazelInvocationID clears the value of the "bazel_invocation_id" field.
+func (muo *MetricsUpdateOne) ClearBazelInvocationID() *MetricsUpdateOne {
+	muo.mutation.ClearBazelInvocationID()
 	return muo
 }
 

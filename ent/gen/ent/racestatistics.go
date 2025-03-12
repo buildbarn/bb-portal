@@ -27,11 +27,12 @@ type RaceStatistics struct {
 	LocalWins int64 `json:"local_wins,omitempty"`
 	// RenoteWins holds the value of the "renote_wins" field.
 	RenoteWins int64 `json:"renote_wins,omitempty"`
+	// DynamicExecutionMetricsID holds the value of the "dynamic_execution_metrics_id" field.
+	DynamicExecutionMetricsID int `json:"dynamic_execution_metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RaceStatisticsQuery when eager-loading is set.
-	Edges                                     RaceStatisticsEdges `json:"edges"`
-	dynamic_execution_metrics_race_statistics *int
-	selectValues                              sql.SelectValues
+	Edges        RaceStatisticsEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // RaceStatisticsEdges holds the relations/edges for other nodes in the graph.
@@ -61,12 +62,10 @@ func (*RaceStatistics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case racestatistics.FieldID, racestatistics.FieldLocalWins, racestatistics.FieldRenoteWins:
+		case racestatistics.FieldID, racestatistics.FieldLocalWins, racestatistics.FieldRenoteWins, racestatistics.FieldDynamicExecutionMetricsID:
 			values[i] = new(sql.NullInt64)
 		case racestatistics.FieldMnemonic, racestatistics.FieldLocalRunner, racestatistics.FieldRemoteRunner:
 			values[i] = new(sql.NullString)
-		case racestatistics.ForeignKeys[0]: // dynamic_execution_metrics_race_statistics
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -118,12 +117,11 @@ func (rs *RaceStatistics) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				rs.RenoteWins = value.Int64
 			}
-		case racestatistics.ForeignKeys[0]:
+		case racestatistics.FieldDynamicExecutionMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field dynamic_execution_metrics_race_statistics", value)
+				return fmt.Errorf("unexpected type %T for field dynamic_execution_metrics_id", values[i])
 			} else if value.Valid {
-				rs.dynamic_execution_metrics_race_statistics = new(int)
-				*rs.dynamic_execution_metrics_race_statistics = int(value.Int64)
+				rs.DynamicExecutionMetricsID = int(value.Int64)
 			}
 		default:
 			rs.selectValues.Set(columns[i], values[i])
@@ -180,6 +178,9 @@ func (rs *RaceStatistics) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("renote_wins=")
 	builder.WriteString(fmt.Sprintf("%v", rs.RenoteWins))
+	builder.WriteString(", ")
+	builder.WriteString("dynamic_execution_metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", rs.DynamicExecutionMetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

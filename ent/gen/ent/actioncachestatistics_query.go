@@ -26,7 +26,6 @@ type ActionCacheStatisticsQuery struct {
 	predicates           []predicate.ActionCacheStatistics
 	withActionSummary    *ActionSummaryQuery
 	withMissDetails      *MissDetailQuery
-	withFKs              bool
 	modifiers            []func(*sql.Selector)
 	loadTotal            []func(context.Context, []*ActionCacheStatistics) error
 	withNamedMissDetails map[string]*MissDetailQuery
@@ -409,19 +408,12 @@ func (acsq *ActionCacheStatisticsQuery) prepareQuery(ctx context.Context) error 
 func (acsq *ActionCacheStatisticsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ActionCacheStatistics, error) {
 	var (
 		nodes       = []*ActionCacheStatistics{}
-		withFKs     = acsq.withFKs
 		_spec       = acsq.querySpec()
 		loadedTypes = [2]bool{
 			acsq.withActionSummary != nil,
 			acsq.withMissDetails != nil,
 		}
 	)
-	if acsq.withActionSummary != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, actioncachestatistics.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ActionCacheStatistics).scanValues(nil, columns)
 	}
@@ -475,10 +467,7 @@ func (acsq *ActionCacheStatisticsQuery) loadActionSummary(ctx context.Context, q
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*ActionCacheStatistics)
 	for i := range nodes {
-		if nodes[i].action_summary_action_cache_statistics == nil {
-			continue
-		}
-		fk := *nodes[i].action_summary_action_cache_statistics
+		fk := nodes[i].ActionSummaryID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -495,7 +484,7 @@ func (acsq *ActionCacheStatisticsQuery) loadActionSummary(ctx context.Context, q
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "action_summary_action_cache_statistics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "action_summary_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -513,7 +502,9 @@ func (acsq *ActionCacheStatisticsQuery) loadMissDetails(ctx context.Context, que
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(missdetail.FieldActionCacheStatisticsID)
+	}
 	query.Where(predicate.MissDetail(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(actioncachestatistics.MissDetailsColumn), fks...))
 	}))
@@ -522,13 +513,10 @@ func (acsq *ActionCacheStatisticsQuery) loadMissDetails(ctx context.Context, que
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.action_cache_statistics_miss_details
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "action_cache_statistics_miss_details" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.ActionCacheStatisticsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "action_cache_statistics_miss_details" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "action_cache_statistics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -562,6 +550,9 @@ func (acsq *ActionCacheStatisticsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != actioncachestatistics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if acsq.withActionSummary != nil {
+			_spec.Node.AddColumnOnce(actioncachestatistics.FieldActionSummaryID)
 		}
 	}
 	if ps := acsq.predicates; len(ps) > 0 {

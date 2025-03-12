@@ -61,16 +61,16 @@ func (rcc *RunnerCountCreate) SetNillableActionsExecuted(i *int64) *RunnerCountC
 	return rcc
 }
 
-// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (rcc *RunnerCountCreate) SetActionSummaryID(id int) *RunnerCountCreate {
-	rcc.mutation.SetActionSummaryID(id)
+// SetActionSummaryID sets the "action_summary_id" field.
+func (rcc *RunnerCountCreate) SetActionSummaryID(i int) *RunnerCountCreate {
+	rcc.mutation.SetActionSummaryID(i)
 	return rcc
 }
 
-// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (rcc *RunnerCountCreate) SetNillableActionSummaryID(id *int) *RunnerCountCreate {
-	if id != nil {
-		rcc = rcc.SetActionSummaryID(*id)
+// SetNillableActionSummaryID sets the "action_summary_id" field if the given value is not nil.
+func (rcc *RunnerCountCreate) SetNillableActionSummaryID(i *int) *RunnerCountCreate {
+	if i != nil {
+		rcc.SetActionSummaryID(*i)
 	}
 	return rcc
 }
@@ -166,7 +166,7 @@ func (rcc *RunnerCountCreate) createSpec() (*RunnerCount, *sqlgraph.CreateSpec) 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.action_summary_runner_count = &nodes[0]
+		_node.ActionSummaryID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

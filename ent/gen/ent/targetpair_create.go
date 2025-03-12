@@ -105,16 +105,16 @@ func (tpc *TargetPairCreate) SetNillableAbortReason(tr *targetpair.AbortReason) 
 	return tpc
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tpc *TargetPairCreate) SetBazelInvocationID(id int) *TargetPairCreate {
-	tpc.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (tpc *TargetPairCreate) SetBazelInvocationID(i int) *TargetPairCreate {
+	tpc.mutation.SetBazelInvocationID(i)
 	return tpc
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tpc *TargetPairCreate) SetNillableBazelInvocationID(id *int) *TargetPairCreate {
-	if id != nil {
-		tpc = tpc.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (tpc *TargetPairCreate) SetNillableBazelInvocationID(i *int) *TargetPairCreate {
+	if i != nil {
+		tpc.SetBazelInvocationID(*i)
 	}
 	return tpc
 }
@@ -283,7 +283,7 @@ func (tpc *TargetPairCreate) createSpec() (*TargetPair, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.bazel_invocation_targets = &nodes[0]
+		_node.BazelInvocationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tpc.mutation.ConfigurationIDs(); len(nodes) > 0 {

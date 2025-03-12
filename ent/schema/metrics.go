@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
+	"entgo.io/ent/schema/field"
 )
 
 // Metrics holds the schema definition for the Metrics entity.
@@ -15,7 +16,9 @@ type Metrics struct {
 
 // Fields of the Metrics struct.
 func (Metrics) Fields() []ent.Field {
-	return []ent.Field{}
+	return []ent.Field{
+		field.Int("bazel_invocation_id").Optional(),
+	}
 }
 
 // Edges of the Metrics.
@@ -24,7 +27,8 @@ func (Metrics) Edges() []ent.Edge {
 		// Edge back to the bazel invocation.
 		edge.From("bazel_invocation", BazelInvocation.Type).
 			Ref("metrics").
-			Unique(),
+			Unique().
+			Field("bazel_invocation_id"), // New field added
 
 		// The action summmary with details about actions executed.
 		edge.To("action_summary", ActionSummary.Type).

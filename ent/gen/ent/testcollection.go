@@ -33,11 +33,12 @@ type TestCollection struct {
 	FirstSeen *time.Time `json:"first_seen,omitempty"`
 	// DurationMs holds the value of the "duration_ms" field.
 	DurationMs int64 `json:"duration_ms,omitempty"`
+	// BazelInvocationID holds the value of the "bazel_invocation_id" field.
+	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestCollectionQuery when eager-loading is set.
-	Edges                            TestCollectionEdges `json:"edges"`
-	bazel_invocation_test_collection *int
-	selectValues                     sql.SelectValues
+	Edges        TestCollectionEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // TestCollectionEdges holds the relations/edges for other nodes in the graph.
@@ -95,14 +96,12 @@ func (*TestCollection) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case testcollection.FieldCachedLocally, testcollection.FieldCachedRemotely:
 			values[i] = new(sql.NullBool)
-		case testcollection.FieldID, testcollection.FieldDurationMs:
+		case testcollection.FieldID, testcollection.FieldDurationMs, testcollection.FieldBazelInvocationID:
 			values[i] = new(sql.NullInt64)
 		case testcollection.FieldLabel, testcollection.FieldOverallStatus, testcollection.FieldStrategy:
 			values[i] = new(sql.NullString)
 		case testcollection.FieldFirstSeen:
 			values[i] = new(sql.NullTime)
-		case testcollection.ForeignKeys[0]: // bazel_invocation_test_collection
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -167,12 +166,11 @@ func (tc *TestCollection) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				tc.DurationMs = value.Int64
 			}
-		case testcollection.ForeignKeys[0]:
+		case testcollection.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_test_collection", value)
+				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				tc.bazel_invocation_test_collection = new(int)
-				*tc.bazel_invocation_test_collection = int(value.Int64)
+				tc.BazelInvocationID = int(value.Int64)
 			}
 		default:
 			tc.selectValues.Set(columns[i], values[i])
@@ -247,6 +245,9 @@ func (tc *TestCollection) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("duration_ms=")
 	builder.WriteString(fmt.Sprintf("%v", tc.DurationMs))
+	builder.WriteString(", ")
+	builder.WriteString("bazel_invocation_id=")
+	builder.WriteString(fmt.Sprintf("%v", tc.BazelInvocationID))
 	builder.WriteByte(')')
 	return builder.String()
 }

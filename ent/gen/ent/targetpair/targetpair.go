@@ -28,6 +28,8 @@ const (
 	FieldTestSize = "test_size"
 	// FieldAbortReason holds the string denoting the abort_reason field in the database.
 	FieldAbortReason = "abort_reason"
+	// FieldBazelInvocationID holds the string denoting the bazel_invocation_id field in the database.
+	FieldBazelInvocationID = "bazel_invocation_id"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// EdgeConfiguration holds the string denoting the configuration edge name in mutations.
@@ -42,21 +44,21 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
 	BazelInvocationInverseTable = "bazel_invocations"
 	// BazelInvocationColumn is the table column denoting the bazel_invocation relation/edge.
-	BazelInvocationColumn = "bazel_invocation_targets"
+	BazelInvocationColumn = "bazel_invocation_id"
 	// ConfigurationTable is the table that holds the configuration relation/edge.
 	ConfigurationTable = "target_configureds"
 	// ConfigurationInverseTable is the table name for the TargetConfigured entity.
 	// It exists in this package in order to avoid circular dependency with the "targetconfigured" package.
 	ConfigurationInverseTable = "target_configureds"
 	// ConfigurationColumn is the table column denoting the configuration relation/edge.
-	ConfigurationColumn = "target_pair_configuration"
+	ConfigurationColumn = "target_pair_id"
 	// CompletionTable is the table that holds the completion relation/edge.
 	CompletionTable = "target_completes"
 	// CompletionInverseTable is the table name for the TargetComplete entity.
 	// It exists in this package in order to avoid circular dependency with the "targetcomplete" package.
 	CompletionInverseTable = "target_completes"
 	// CompletionColumn is the table column denoting the completion relation/edge.
-	CompletionColumn = "target_pair_completion"
+	CompletionColumn = "target_pair_id"
 )
 
 // Columns holds all SQL columns for targetpair fields.
@@ -68,23 +70,13 @@ var Columns = []string{
 	FieldTargetKind,
 	FieldTestSize,
 	FieldAbortReason,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "target_pairs"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"bazel_invocation_targets",
+	FieldBazelInvocationID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -194,6 +186,11 @@ func ByTestSize(opts ...sql.OrderTermOption) OrderOption {
 // ByAbortReason orders the results by the abort_reason field.
 func ByAbortReason(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAbortReason, opts...).ToFunc()
+}
+
+// ByBazelInvocationID orders the results by the bazel_invocation_id field.
+func ByBazelInvocationID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBazelInvocationID, opts...).ToFunc()
 }
 
 // ByBazelInvocationField orders the results by bazel_invocation field.

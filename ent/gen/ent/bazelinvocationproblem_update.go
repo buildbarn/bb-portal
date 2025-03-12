@@ -70,17 +70,23 @@ func (bipu *BazelInvocationProblemUpdate) AppendBepEvents(jm json.RawMessage) *B
 	return bipu
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (bipu *BazelInvocationProblemUpdate) SetBazelInvocationID(id int) *BazelInvocationProblemUpdate {
-	bipu.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (bipu *BazelInvocationProblemUpdate) SetBazelInvocationID(i int) *BazelInvocationProblemUpdate {
+	bipu.mutation.SetBazelInvocationID(i)
 	return bipu
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (bipu *BazelInvocationProblemUpdate) SetNillableBazelInvocationID(id *int) *BazelInvocationProblemUpdate {
-	if id != nil {
-		bipu = bipu.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (bipu *BazelInvocationProblemUpdate) SetNillableBazelInvocationID(i *int) *BazelInvocationProblemUpdate {
+	if i != nil {
+		bipu.SetBazelInvocationID(*i)
 	}
+	return bipu
+}
+
+// ClearBazelInvocationID clears the value of the "bazel_invocation_id" field.
+func (bipu *BazelInvocationProblemUpdate) ClearBazelInvocationID() *BazelInvocationProblemUpdate {
+	bipu.mutation.ClearBazelInvocationID()
 	return bipu
 }
 
@@ -239,17 +245,23 @@ func (bipuo *BazelInvocationProblemUpdateOne) AppendBepEvents(jm json.RawMessage
 	return bipuo
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (bipuo *BazelInvocationProblemUpdateOne) SetBazelInvocationID(id int) *BazelInvocationProblemUpdateOne {
-	bipuo.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (bipuo *BazelInvocationProblemUpdateOne) SetBazelInvocationID(i int) *BazelInvocationProblemUpdateOne {
+	bipuo.mutation.SetBazelInvocationID(i)
 	return bipuo
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (bipuo *BazelInvocationProblemUpdateOne) SetNillableBazelInvocationID(id *int) *BazelInvocationProblemUpdateOne {
-	if id != nil {
-		bipuo = bipuo.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (bipuo *BazelInvocationProblemUpdateOne) SetNillableBazelInvocationID(i *int) *BazelInvocationProblemUpdateOne {
+	if i != nil {
+		bipuo.SetBazelInvocationID(*i)
 	}
+	return bipuo
+}
+
+// ClearBazelInvocationID clears the value of the "bazel_invocation_id" field.
+func (bipuo *BazelInvocationProblemUpdateOne) ClearBazelInvocationID() *BazelInvocationProblemUpdateOne {
+	bipuo.mutation.ClearBazelInvocationID()
 	return bipuo
 }
 

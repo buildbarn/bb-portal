@@ -30,6 +30,7 @@ func (PackageMetrics) Fields() []ent.Field {
 		// After Feb 2022, this value is the number of packages successfully
 		// loaded.
 		field.Int64("packages_loaded").Optional(),
+		field.Int("metrics_id").Optional(),
 	}
 }
 
@@ -39,7 +40,8 @@ func (PackageMetrics) Edges() []ent.Edge {
 		// Edge back to the metrics object.
 		edge.From("metrics", Metrics.Type).
 			Ref("package_metrics").
-			Unique(),
+			Unique().
+			Field("metrics_id"),
 
 		// Loading time metrics per package.
 		edge.To("package_load_metrics", PackageLoadMetrics.Type).

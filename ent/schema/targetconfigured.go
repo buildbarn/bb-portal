@@ -36,6 +36,8 @@ func (TargetConfigured) Fields() []ent.Field {
 				"LARGE",
 				"ENORMOUS").
 			Optional(),
+
+		field.Int("target_pair_id").Optional(),
 	}
 }
 
@@ -45,6 +47,7 @@ func (TargetConfigured) Edges() []ent.Edge {
 		// Edge back to the target pair.
 		edge.From("target_pair", TargetPair.Type).
 			Ref("configuration").
-			Unique(),
+			Unique().
+			Field("target_pair_id"),
 	}
 }

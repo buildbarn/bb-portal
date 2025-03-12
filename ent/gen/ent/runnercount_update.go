@@ -95,17 +95,23 @@ func (rcu *RunnerCountUpdate) ClearActionsExecuted() *RunnerCountUpdate {
 	return rcu
 }
 
-// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (rcu *RunnerCountUpdate) SetActionSummaryID(id int) *RunnerCountUpdate {
-	rcu.mutation.SetActionSummaryID(id)
+// SetActionSummaryID sets the "action_summary_id" field.
+func (rcu *RunnerCountUpdate) SetActionSummaryID(i int) *RunnerCountUpdate {
+	rcu.mutation.SetActionSummaryID(i)
 	return rcu
 }
 
-// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (rcu *RunnerCountUpdate) SetNillableActionSummaryID(id *int) *RunnerCountUpdate {
-	if id != nil {
-		rcu = rcu.SetActionSummaryID(*id)
+// SetNillableActionSummaryID sets the "action_summary_id" field if the given value is not nil.
+func (rcu *RunnerCountUpdate) SetNillableActionSummaryID(i *int) *RunnerCountUpdate {
+	if i != nil {
+		rcu.SetActionSummaryID(*i)
 	}
+	return rcu
+}
+
+// ClearActionSummaryID clears the value of the "action_summary_id" field.
+func (rcu *RunnerCountUpdate) ClearActionSummaryID() *RunnerCountUpdate {
+	rcu.mutation.ClearActionSummaryID()
 	return rcu
 }
 
@@ -298,17 +304,23 @@ func (rcuo *RunnerCountUpdateOne) ClearActionsExecuted() *RunnerCountUpdateOne {
 	return rcuo
 }
 
-// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (rcuo *RunnerCountUpdateOne) SetActionSummaryID(id int) *RunnerCountUpdateOne {
-	rcuo.mutation.SetActionSummaryID(id)
+// SetActionSummaryID sets the "action_summary_id" field.
+func (rcuo *RunnerCountUpdateOne) SetActionSummaryID(i int) *RunnerCountUpdateOne {
+	rcuo.mutation.SetActionSummaryID(i)
 	return rcuo
 }
 
-// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (rcuo *RunnerCountUpdateOne) SetNillableActionSummaryID(id *int) *RunnerCountUpdateOne {
-	if id != nil {
-		rcuo = rcuo.SetActionSummaryID(*id)
+// SetNillableActionSummaryID sets the "action_summary_id" field if the given value is not nil.
+func (rcuo *RunnerCountUpdateOne) SetNillableActionSummaryID(i *int) *RunnerCountUpdateOne {
+	if i != nil {
+		rcuo.SetActionSummaryID(*i)
 	}
+	return rcuo
+}
+
+// ClearActionSummaryID clears the value of the "action_summary_id" field.
+func (rcuo *RunnerCountUpdateOne) ClearActionSummaryID() *RunnerCountUpdateOne {
+	rcuo.mutation.ClearActionSummaryID()
 	return rcuo
 }
 

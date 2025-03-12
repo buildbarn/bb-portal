@@ -16,6 +16,8 @@ const (
 	FieldSizeInBytes = "size_in_bytes"
 	// FieldCount holds the string denoting the count field in the database.
 	FieldCount = "count"
+	// FieldArtifactMetricsID holds the string denoting the artifact_metrics_id field in the database.
+	FieldArtifactMetricsID = "artifact_metrics_id"
 	// EdgeArtifactMetrics holds the string denoting the artifact_metrics edge name in mutations.
 	EdgeArtifactMetrics = "artifact_metrics"
 	// Table holds the table name of the filesmetric in the database.
@@ -26,7 +28,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "artifactmetrics" package.
 	ArtifactMetricsInverseTable = "artifact_metrics"
 	// ArtifactMetricsColumn is the table column denoting the artifact_metrics relation/edge.
-	ArtifactMetricsColumn = "artifact_metrics_top_level_artifacts"
+	ArtifactMetricsColumn = "artifact_metrics_id"
 )
 
 // Columns holds all SQL columns for filesmetric fields.
@@ -34,23 +36,13 @@ var Columns = []string{
 	FieldID,
 	FieldSizeInBytes,
 	FieldCount,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "files_metrics"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"artifact_metrics_top_level_artifacts",
+	FieldArtifactMetricsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -73,6 +65,11 @@ func BySizeInBytes(opts ...sql.OrderTermOption) OrderOption {
 // ByCount orders the results by the count field.
 func ByCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCount, opts...).ToFunc()
+}
+
+// ByArtifactMetricsID orders the results by the artifact_metrics_id field.
+func ByArtifactMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldArtifactMetricsID, opts...).ToFunc()
 }
 
 // ByArtifactMetricsField orders the results by artifact_metrics field.

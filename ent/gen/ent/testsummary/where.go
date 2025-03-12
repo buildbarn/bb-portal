@@ -93,6 +93,11 @@ func TotalRunDuration(v int64) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldEQ(FieldTotalRunDuration, v))
 }
 
+// TestCollectionID applies equality check predicate on the "test_collection_id" field. It's identical to TestCollectionIDEQ.
+func TestCollectionID(v int) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldEQ(FieldTestCollectionID, v))
+}
+
 // OverallStatusEQ applies the EQ predicate on the "overall_status" field.
 func OverallStatusEQ(v OverallStatus) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldEQ(FieldOverallStatus, v))
@@ -596,6 +601,36 @@ func LabelEqualFold(v string) predicate.TestSummary {
 // LabelContainsFold applies the ContainsFold predicate on the "label" field.
 func LabelContainsFold(v string) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldContainsFold(FieldLabel, v))
+}
+
+// TestCollectionIDEQ applies the EQ predicate on the "test_collection_id" field.
+func TestCollectionIDEQ(v int) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldEQ(FieldTestCollectionID, v))
+}
+
+// TestCollectionIDNEQ applies the NEQ predicate on the "test_collection_id" field.
+func TestCollectionIDNEQ(v int) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldNEQ(FieldTestCollectionID, v))
+}
+
+// TestCollectionIDIn applies the In predicate on the "test_collection_id" field.
+func TestCollectionIDIn(vs ...int) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldIn(FieldTestCollectionID, vs...))
+}
+
+// TestCollectionIDNotIn applies the NotIn predicate on the "test_collection_id" field.
+func TestCollectionIDNotIn(vs ...int) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldNotIn(FieldTestCollectionID, vs...))
+}
+
+// TestCollectionIDIsNil applies the IsNil predicate on the "test_collection_id" field.
+func TestCollectionIDIsNil() predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldIsNull(FieldTestCollectionID))
+}
+
+// TestCollectionIDNotNil applies the NotNil predicate on the "test_collection_id" field.
+func TestCollectionIDNotNil() predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldNotNull(FieldTestCollectionID))
 }
 
 // HasTestCollection applies the HasEdge predicate on the "test_collection" edge.

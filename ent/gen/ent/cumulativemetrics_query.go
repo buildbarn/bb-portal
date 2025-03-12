@@ -23,7 +23,6 @@ type CumulativeMetricsQuery struct {
 	inters      []Interceptor
 	predicates  []predicate.CumulativeMetrics
 	withMetrics *MetricsQuery
-	withFKs     bool
 	modifiers   []func(*sql.Selector)
 	loadTotal   []func(context.Context, []*CumulativeMetrics) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (cmq *CumulativeMetricsQuery) prepareQuery(ctx context.Context) error {
 func (cmq *CumulativeMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*CumulativeMetrics, error) {
 	var (
 		nodes       = []*CumulativeMetrics{}
-		withFKs     = cmq.withFKs
 		_spec       = cmq.querySpec()
 		loadedTypes = [1]bool{
 			cmq.withMetrics != nil,
 		}
 	)
-	if cmq.withMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, cumulativemetrics.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*CumulativeMetrics).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (cmq *CumulativeMetricsQuery) loadMetrics(ctx context.Context, query *Metri
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*CumulativeMetrics)
 	for i := range nodes {
-		if nodes[i].metrics_cumulative_metrics == nil {
-			continue
-		}
-		fk := *nodes[i].metrics_cumulative_metrics
+		fk := nodes[i].MetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (cmq *CumulativeMetricsQuery) loadMetrics(ctx context.Context, query *Metri
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "metrics_cumulative_metrics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (cmq *CumulativeMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != cumulativemetrics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if cmq.withMetrics != nil {
+			_spec.Node.AddColumnOnce(cumulativemetrics.FieldMetricsID)
 		}
 	}
 	if ps := cmq.predicates; len(ps) > 0 {

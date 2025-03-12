@@ -47,6 +47,9 @@ func (TargetComplete) Fields() []ent.Field {
 				"ENORMOUS").
 			Optional(),
 
+		// New field for target_pair edge.
+		field.Int("target_pair_id").Optional(),
+
 		// TODO: implement failure detail.
 	}
 }
@@ -57,6 +60,7 @@ func (TargetComplete) Edges() []ent.Edge {
 		// Edge back to the target pair.
 		edge.From("target_pair", TargetPair.Type).
 			Ref("completion").
+			Field("target_pair_id").
 			Unique(),
 
 		// Temporarily, also report the important outputs directly.

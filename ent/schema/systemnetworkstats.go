@@ -37,6 +37,8 @@ func (SystemNetworkStats) Fields() []ent.Field {
 
 		// Peak packets/sec received during the invocation.
 		field.Uint64("peak_packets_recv_per_sec").Optional(),
+
+		field.Int("network_metrics_id").Optional(),
 	}
 }
 
@@ -46,6 +48,7 @@ func (SystemNetworkStats) Edges() []ent.Edge {
 		// Edge back to the network metrics object.
 		edge.From("network_metrics", NetworkMetrics.Type).
 			Ref("system_network_stats").
-			Unique(),
+			Unique().
+			Field("network_metrics_id"),
 	}
 }

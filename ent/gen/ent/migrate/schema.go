@@ -16,7 +16,7 @@ var (
 		{Name: "load_time_in_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "hits", Type: field.TypeInt32, Nullable: true},
 		{Name: "misses", Type: field.TypeInt32, Nullable: true},
-		{Name: "action_summary_action_cache_statistics", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "action_summary_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// ActionCacheStatisticsTable holds the schema information for the "action_cache_statistics" table.
 	ActionCacheStatisticsTable = &schema.Table{
@@ -31,6 +31,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "actioncachestatistics_action_summary_id",
+				Unique:  false,
+				Columns: []*schema.Column{ActionCacheStatisticsColumns[6]},
+			},
+		},
 	}
 	// ActionDataColumns holds the columns for the "action_data" table.
 	ActionDataColumns = []*schema.Column{
@@ -42,7 +49,7 @@ var (
 		{Name: "last_ended_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "system_time", Type: field.TypeInt64, Nullable: true},
 		{Name: "user_time", Type: field.TypeInt64, Nullable: true},
-		{Name: "action_summary_action_data", Type: field.TypeInt, Nullable: true},
+		{Name: "action_summary_id", Type: field.TypeInt, Nullable: true},
 	}
 	// ActionDataTable holds the schema information for the "action_data" table.
 	ActionDataTable = &schema.Table{
@@ -57,6 +64,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "actiondata_action_summary_id",
+				Unique:  false,
+				Columns: []*schema.Column{ActionDataColumns[8]},
+			},
+		},
 	}
 	// ActionSummariesColumns holds the columns for the "action_summaries" table.
 	ActionSummariesColumns = []*schema.Column{
@@ -65,7 +79,7 @@ var (
 		{Name: "actions_created_not_including_aspects", Type: field.TypeInt64, Nullable: true},
 		{Name: "actions_executed", Type: field.TypeInt64, Nullable: true},
 		{Name: "remote_cache_hits", Type: field.TypeInt64, Nullable: true},
-		{Name: "metrics_action_summary", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// ActionSummariesTable holds the schema information for the "action_summaries" table.
 	ActionSummariesTable = &schema.Table{
@@ -87,7 +101,7 @@ var (
 		{Name: "artifact_metrics_source_artifacts_read", Type: field.TypeInt, Nullable: true},
 		{Name: "artifact_metrics_output_artifacts_seen", Type: field.TypeInt, Nullable: true},
 		{Name: "artifact_metrics_output_artifacts_from_action_cache", Type: field.TypeInt, Nullable: true},
-		{Name: "metrics_artifact_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// ArtifactMetricsTable holds the schema information for the "artifact_metrics" table.
 	ArtifactMetricsTable = &schema.Table{
@@ -120,6 +134,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "artifactmetrics_metrics_id",
+				Unique:  false,
+				Columns: []*schema.Column{ArtifactMetricsColumns[4]},
+			},
+		},
 	}
 	// BazelInvocationsColumns holds the columns for the "bazel_invocations" table.
 	BazelInvocationsColumns = []*schema.Column{
@@ -143,8 +164,8 @@ var (
 		{Name: "configuration_mnemonic", Type: field.TypeString, Nullable: true},
 		{Name: "num_fetches", Type: field.TypeInt64, Nullable: true},
 		{Name: "profile_name", Type: field.TypeString},
-		{Name: "build_invocations", Type: field.TypeInt, Nullable: true},
-		{Name: "event_file_bazel_invocation", Type: field.TypeInt, Unique: true},
+		{Name: "build_id", Type: field.TypeInt, Nullable: true},
+		{Name: "event_file_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// BazelInvocationsTable holds the schema information for the "bazel_invocations" table.
 	BazelInvocationsTable = &schema.Table{
@@ -162,7 +183,7 @@ var (
 				Symbol:     "bazel_invocations_event_files_bazel_invocation",
 				Columns:    []*schema.Column{BazelInvocationsColumns[21]},
 				RefColumns: []*schema.Column{EventFilesColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.SetNull,
 			},
 		},
 		Indexes: []*schema.Index{
@@ -170,6 +191,11 @@ var (
 				Name:    "bazelinvocation_change_number_patchset_number",
 				Unique:  false,
 				Columns: []*schema.Column{BazelInvocationsColumns[4], BazelInvocationsColumns[5]},
+			},
+			{
+				Name:    "bazelinvocation_invocation_id",
+				Unique:  false,
+				Columns: []*schema.Column{BazelInvocationsColumns[1]},
 			},
 		},
 	}
@@ -179,7 +205,7 @@ var (
 		{Name: "problem_type", Type: field.TypeString},
 		{Name: "label", Type: field.TypeString},
 		{Name: "bep_events", Type: field.TypeJSON},
-		{Name: "bazel_invocation_problems", Type: field.TypeInt, Nullable: true},
+		{Name: "bazel_invocation_id", Type: field.TypeInt, Nullable: true},
 	}
 	// BazelInvocationProblemsTable holds the schema information for the "bazel_invocation_problems" table.
 	BazelInvocationProblemsTable = &schema.Table{
@@ -247,7 +273,7 @@ var (
 		{Name: "build_graph_metrics_changed_values", Type: field.TypeInt, Nullable: true},
 		{Name: "build_graph_metrics_built_values", Type: field.TypeInt, Nullable: true},
 		{Name: "build_graph_metrics_cleaned_values", Type: field.TypeInt, Nullable: true},
-		{Name: "metrics_build_graph_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// BuildGraphMetricsTable holds the schema information for the "build_graph_metrics" table.
 	BuildGraphMetricsTable = &schema.Table{
@@ -286,13 +312,20 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "buildgraphmetrics_metrics_id",
+				Unique:  false,
+				Columns: []*schema.Column{BuildGraphMetricsColumns[14]},
+			},
+		},
 	}
 	// CumulativeMetricsColumns holds the columns for the "cumulative_metrics" table.
 	CumulativeMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "num_analyses", Type: field.TypeInt32, Nullable: true},
 		{Name: "num_builds", Type: field.TypeInt32, Nullable: true},
-		{Name: "metrics_cumulative_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// CumulativeMetricsTable holds the schema information for the "cumulative_metrics" table.
 	CumulativeMetricsTable = &schema.Table{
@@ -311,7 +344,7 @@ var (
 	// DynamicExecutionMetricsColumns holds the columns for the "dynamic_execution_metrics" table.
 	DynamicExecutionMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "metrics_dynamic_execution_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// DynamicExecutionMetricsTable holds the schema information for the "dynamic_execution_metrics" table.
 	DynamicExecutionMetricsTable = &schema.Table{
@@ -332,7 +365,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "skyfunction_name", Type: field.TypeString, Nullable: true},
 		{Name: "count", Type: field.TypeInt64, Nullable: true},
-		{Name: "build_graph_metrics_evaluated_values", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "build_graph_metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// EvaluationStatsTable holds the schema information for the "evaluation_stats" table.
 	EvaluationStatsTable = &schema.Table{
@@ -379,7 +412,7 @@ var (
 		{Name: "cached_remotely", Type: field.TypeBool, Nullable: true},
 		{Name: "exit_code", Type: field.TypeInt32, Nullable: true},
 		{Name: "hostname", Type: field.TypeString, Nullable: true},
-		{Name: "test_result_bes_execution_info", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "execution_info_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// ExectionInfosTable holds the schema information for the "exection_infos" table.
 	ExectionInfosTable = &schema.Table{
@@ -400,7 +433,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "size_in_bytes", Type: field.TypeInt64, Nullable: true},
 		{Name: "count", Type: field.TypeInt32, Nullable: true},
-		{Name: "artifact_metrics_top_level_artifacts", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "artifact_metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// FilesMetricsTable holds the schema information for the "files_metrics" table.
 	FilesMetricsTable = &schema.Table{
@@ -421,7 +454,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "type", Type: field.TypeString, Nullable: true},
 		{Name: "garbage_collected", Type: field.TypeInt64, Nullable: true},
-		{Name: "memory_metrics_garbage_metrics", Type: field.TypeInt, Nullable: true},
+		{Name: "memory_metrics_id", Type: field.TypeInt, Nullable: true},
 	}
 	// GarbageMetricsTable holds the schema information for the "garbage_metrics" table.
 	GarbageMetricsTable = &schema.Table{
@@ -436,6 +469,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "garbagemetrics_memory_metrics_id",
+				Unique:  false,
+				Columns: []*schema.Column{GarbageMetricsColumns[3]},
+			},
+		},
 	}
 	// MemoryMetricsColumns holds the columns for the "memory_metrics" table.
 	MemoryMetricsColumns = []*schema.Column{
@@ -443,7 +483,7 @@ var (
 		{Name: "peak_post_gc_heap_size", Type: field.TypeInt64, Nullable: true},
 		{Name: "used_heap_size_post_build", Type: field.TypeInt64, Nullable: true},
 		{Name: "peak_post_gc_tenured_space_heap_size", Type: field.TypeInt64, Nullable: true},
-		{Name: "metrics_memory_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// MemoryMetricsTable holds the schema information for the "memory_metrics" table.
 	MemoryMetricsTable = &schema.Table{
@@ -462,7 +502,7 @@ var (
 	// MetricsColumns holds the columns for the "metrics" table.
 	MetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "bazel_invocation_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "bazel_invocation_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// MetricsTable holds the schema information for the "metrics" table.
 	MetricsTable = &schema.Table{
@@ -483,7 +523,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "reason", Type: field.TypeEnum, Nullable: true, Enums: []string{"DIFFERENT_ACTION_KEY", "DIFFERENT_DEPS", "DIFFERENT_ENVIRONMENT", "DIFFERENT_FILES", "CORRUPTED_CACHE_ENTRY", "NOT_CACHED", "UNCONDITIONAL_EXECUTION", "UNKNOWN"}, Default: "UNKNOWN"},
 		{Name: "count", Type: field.TypeInt32, Nullable: true},
-		{Name: "action_cache_statistics_miss_details", Type: field.TypeInt, Nullable: true},
+		{Name: "action_cache_statistics_id", Type: field.TypeInt, Nullable: true},
 	}
 	// MissDetailsTable holds the schema information for the "miss_details" table.
 	MissDetailsTable = &schema.Table{
@@ -498,12 +538,19 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "missdetail_action_cache_statistics_id",
+				Unique:  false,
+				Columns: []*schema.Column{MissDetailsColumns[3]},
+			},
+		},
 	}
 	// NamedSetOfFilesColumns holds the columns for the "named_set_of_files" table.
 	NamedSetOfFilesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "named_set_of_files_file_sets", Type: field.TypeInt, Unique: true, Nullable: true},
-		{Name: "output_group_file_sets", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "output_group_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// NamedSetOfFilesTable holds the schema information for the "named_set_of_files" table.
 	NamedSetOfFilesTable = &schema.Table{
@@ -528,7 +575,7 @@ var (
 	// NetworkMetricsColumns holds the columns for the "network_metrics" table.
 	NetworkMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "metrics_network_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// NetworkMetricsTable holds the schema information for the "network_metrics" table.
 	NetworkMetricsTable = &schema.Table{
@@ -549,7 +596,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "incomplete", Type: field.TypeBool, Nullable: true},
-		{Name: "target_complete_output_group", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "target_complete_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// OutputGroupsTable holds the schema information for the "output_groups" table.
 	OutputGroupsTable = &schema.Table{
@@ -574,7 +621,7 @@ var (
 		{Name: "computation_steps", Type: field.TypeUint64, Nullable: true},
 		{Name: "num_transitive_loads", Type: field.TypeUint64, Nullable: true},
 		{Name: "package_overhead", Type: field.TypeUint64, Nullable: true},
-		{Name: "package_metrics_package_load_metrics", Type: field.TypeInt, Nullable: true},
+		{Name: "package_metrics_id", Type: field.TypeInt, Nullable: true},
 	}
 	// PackageLoadMetricsTable holds the schema information for the "package_load_metrics" table.
 	PackageLoadMetricsTable = &schema.Table{
@@ -594,7 +641,7 @@ var (
 	PackageMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "packages_loaded", Type: field.TypeInt64, Nullable: true},
-		{Name: "metrics_package_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// PackageMetricsTable holds the schema information for the "package_metrics" table.
 	PackageMetricsTable = &schema.Table{
@@ -618,7 +665,7 @@ var (
 		{Name: "remote_runner", Type: field.TypeString, Nullable: true},
 		{Name: "local_wins", Type: field.TypeInt64, Nullable: true},
 		{Name: "renote_wins", Type: field.TypeInt64, Nullable: true},
-		{Name: "dynamic_execution_metrics_race_statistics", Type: field.TypeInt, Nullable: true},
+		{Name: "dynamic_execution_metrics_id", Type: field.TypeInt, Nullable: true},
 	}
 	// RaceStatisticsTable holds the schema information for the "race_statistics" table.
 	RaceStatisticsTable = &schema.Table{
@@ -639,7 +686,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "value", Type: field.TypeString, Nullable: true},
-		{Name: "exection_info_resource_usage", Type: field.TypeInt, Nullable: true},
+		{Name: "execution_info_id", Type: field.TypeInt, Nullable: true},
 	}
 	// ResourceUsagesTable holds the schema information for the "resource_usages" table.
 	ResourceUsagesTable = &schema.Table{
@@ -661,7 +708,7 @@ var (
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "exec_kind", Type: field.TypeString, Nullable: true},
 		{Name: "actions_executed", Type: field.TypeInt64, Nullable: true},
-		{Name: "action_summary_runner_count", Type: field.TypeInt, Nullable: true},
+		{Name: "action_summary_id", Type: field.TypeInt, Nullable: true},
 	}
 	// RunnerCountsTable holds the schema information for the "runner_counts" table.
 	RunnerCountsTable = &schema.Table{
@@ -674,6 +721,13 @@ var (
 				Columns:    []*schema.Column{RunnerCountsColumns[4]},
 				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "runnercount_action_summary_id",
+				Unique:  false,
+				Columns: []*schema.Column{RunnerCountsColumns[4]},
 			},
 		},
 	}
@@ -694,7 +748,7 @@ var (
 		{Name: "runner_name", Type: field.TypeString, Nullable: true},
 		{Name: "runner_arch", Type: field.TypeString, Nullable: true},
 		{Name: "runner_os", Type: field.TypeString, Nullable: true},
-		{Name: "bazel_invocation_source_control", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "bazel_invocation_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// SourceControlsTable holds the schema information for the "source_controls" table.
 	SourceControlsTable = &schema.Table{
@@ -721,7 +775,7 @@ var (
 		{Name: "peak_bytes_recv_per_sec", Type: field.TypeUint64, Nullable: true},
 		{Name: "peak_packets_sent_per_sec", Type: field.TypeUint64, Nullable: true},
 		{Name: "peak_packets_recv_per_sec", Type: field.TypeUint64, Nullable: true},
-		{Name: "network_metrics_system_network_stats", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "network_metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// SystemNetworkStatsTable holds the schema information for the "system_network_stats" table.
 	SystemNetworkStatsTable = &schema.Table{
@@ -747,7 +801,7 @@ var (
 		{Name: "test_timeout_seconds", Type: field.TypeInt64, Nullable: true},
 		{Name: "test_timeout", Type: field.TypeInt64, Nullable: true},
 		{Name: "test_size", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNKNOWN", "SMALL", "MEDIUM", "LARGE", "ENORMOUS"}},
-		{Name: "target_pair_completion", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "target_pair_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// TargetCompletesTable holds the schema information for the "target_completes" table.
 	TargetCompletesTable = &schema.Table{
@@ -770,7 +824,7 @@ var (
 		{Name: "target_kind", Type: field.TypeString, Nullable: true},
 		{Name: "start_time_in_ms", Type: field.TypeInt64, Nullable: true},
 		{Name: "test_size", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNKNOWN", "SMALL", "MEDIUM", "LARGE", "ENORMOUS"}},
-		{Name: "target_pair_configuration", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "target_pair_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// TargetConfiguredsTable holds the schema information for the "target_configureds" table.
 	TargetConfiguredsTable = &schema.Table{
@@ -792,7 +846,7 @@ var (
 		{Name: "targets_loaded", Type: field.TypeInt64, Nullable: true},
 		{Name: "targets_configured", Type: field.TypeInt64, Nullable: true},
 		{Name: "targets_configured_not_including_aspects", Type: field.TypeInt64, Nullable: true},
-		{Name: "metrics_target_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "metrics_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// TargetMetricsTable holds the schema information for the "target_metrics" table.
 	TargetMetricsTable = &schema.Table{
@@ -817,7 +871,7 @@ var (
 		{Name: "target_kind", Type: field.TypeString, Nullable: true},
 		{Name: "test_size", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNKNOWN", "SMALL", "MEDIUM", "LARGE", "ENORMOUS"}, Default: "UNKNOWN"},
 		{Name: "abort_reason", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNKNOWN", "USER_INTERRUPTED", "NO_ANALYZE", "NO_BUILD", "TIME_OUT", "REMOTE_ENVIRONMENT_FAILURE", "INTERNAL", "LOADING_FAILURE", "ANALYSIS_FAILURE", "SKIPPED", "INCOMPLETE", "OUT_OF_MEMORY"}},
-		{Name: "bazel_invocation_targets", Type: field.TypeInt, Nullable: true},
+		{Name: "bazel_invocation_id", Type: field.TypeInt, Nullable: true},
 	}
 	// TargetPairsTable holds the schema information for the "target_pairs" table.
 	TargetPairsTable = &schema.Table{
@@ -838,6 +892,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{TargetPairsColumns[1]},
 			},
+			{
+				Name:    "targetpair_bazel_invocation_id",
+				Unique:  false,
+				Columns: []*schema.Column{TargetPairsColumns[7]},
+			},
 		},
 	}
 	// TestCollectionsColumns holds the columns for the "test_collections" table.
@@ -850,7 +909,7 @@ var (
 		{Name: "cached_remotely", Type: field.TypeBool, Nullable: true},
 		{Name: "first_seen", Type: field.TypeTime, Nullable: true},
 		{Name: "duration_ms", Type: field.TypeInt64, Nullable: true},
-		{Name: "bazel_invocation_test_collection", Type: field.TypeInt, Nullable: true},
+		{Name: "bazel_invocation_id", Type: field.TypeInt, Nullable: true},
 	}
 	// TestCollectionsTable holds the schema information for the "test_collections" table.
 	TestCollectionsTable = &schema.Table{
@@ -871,6 +930,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{TestCollectionsColumns[1]},
 			},
+			{
+				Name:    "testcollection_bazel_invocation_id",
+				Unique:  false,
+				Columns: []*schema.Column{TestCollectionsColumns[8]},
+			},
 		},
 	}
 	// TestFilesColumns holds the columns for the "test_files" table.
@@ -885,7 +949,7 @@ var (
 		{Name: "output_group_inline_files", Type: field.TypeInt, Nullable: true},
 		{Name: "target_complete_important_output", Type: field.TypeInt, Nullable: true},
 		{Name: "target_complete_directory_output", Type: field.TypeInt, Nullable: true},
-		{Name: "test_result_bes_test_action_output", Type: field.TypeInt, Nullable: true},
+		{Name: "test_result_id", Type: field.TypeInt, Nullable: true},
 		{Name: "test_summary_passed", Type: field.TypeInt, Nullable: true},
 		{Name: "test_summary_failed", Type: field.TypeInt, Nullable: true},
 	}
@@ -951,7 +1015,7 @@ var (
 		{Name: "test_attempt_start", Type: field.TypeString, Nullable: true},
 		{Name: "test_attempt_duration_millis", Type: field.TypeInt64, Nullable: true},
 		{Name: "test_attempt_duration", Type: field.TypeInt64, Nullable: true},
-		{Name: "test_collection_test_results", Type: field.TypeInt, Nullable: true},
+		{Name: "test_collection_id", Type: field.TypeInt, Nullable: true},
 	}
 	// TestResultBeSsTable holds the schema information for the "test_result_be_ss" table.
 	TestResultBeSsTable = &schema.Table{
@@ -980,7 +1044,7 @@ var (
 		{Name: "last_stop_time", Type: field.TypeInt64, Nullable: true},
 		{Name: "total_run_duration", Type: field.TypeInt64, Nullable: true},
 		{Name: "label", Type: field.TypeString, Nullable: true},
-		{Name: "test_collection_test_summary", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "test_collection_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// TestSummariesTable holds the schema information for the "test_summaries" table.
 	TestSummariesTable = &schema.Table{
@@ -1001,7 +1065,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "time", Type: field.TypeString, Nullable: true},
-		{Name: "exection_info_timing_breakdown", Type: field.TypeInt, Unique: true, Nullable: true},
+		{Name: "execution_info_id", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// TimingBreakdownsTable holds the schema information for the "timing_breakdowns" table.
 	TimingBreakdownsTable = &schema.Table{
@@ -1022,7 +1086,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Nullable: true},
 		{Name: "time", Type: field.TypeString, Nullable: true},
-		{Name: "timing_breakdown_child", Type: field.TypeInt, Nullable: true},
+		{Name: "timing_breakdown_id", Type: field.TypeInt, Nullable: true},
 	}
 	// TimingChildsTable holds the schema information for the "timing_childs" table.
 	TimingChildsTable = &schema.Table{

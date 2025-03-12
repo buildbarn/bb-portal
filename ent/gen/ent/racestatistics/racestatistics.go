@@ -22,6 +22,8 @@ const (
 	FieldLocalWins = "local_wins"
 	// FieldRenoteWins holds the string denoting the renote_wins field in the database.
 	FieldRenoteWins = "renote_wins"
+	// FieldDynamicExecutionMetricsID holds the string denoting the dynamic_execution_metrics_id field in the database.
+	FieldDynamicExecutionMetricsID = "dynamic_execution_metrics_id"
 	// EdgeDynamicExecutionMetrics holds the string denoting the dynamic_execution_metrics edge name in mutations.
 	EdgeDynamicExecutionMetrics = "dynamic_execution_metrics"
 	// Table holds the table name of the racestatistics in the database.
@@ -32,7 +34,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "dynamicexecutionmetrics" package.
 	DynamicExecutionMetricsInverseTable = "dynamic_execution_metrics"
 	// DynamicExecutionMetricsColumn is the table column denoting the dynamic_execution_metrics relation/edge.
-	DynamicExecutionMetricsColumn = "dynamic_execution_metrics_race_statistics"
+	DynamicExecutionMetricsColumn = "dynamic_execution_metrics_id"
 )
 
 // Columns holds all SQL columns for racestatistics fields.
@@ -43,23 +45,13 @@ var Columns = []string{
 	FieldRemoteRunner,
 	FieldLocalWins,
 	FieldRenoteWins,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "race_statistics"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"dynamic_execution_metrics_race_statistics",
+	FieldDynamicExecutionMetricsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -97,6 +89,11 @@ func ByLocalWins(opts ...sql.OrderTermOption) OrderOption {
 // ByRenoteWins orders the results by the renote_wins field.
 func ByRenoteWins(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRenoteWins, opts...).ToFunc()
+}
+
+// ByDynamicExecutionMetricsID orders the results by the dynamic_execution_metrics_id field.
+func ByDynamicExecutionMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDynamicExecutionMetricsID, opts...).ToFunc()
 }
 
 // ByDynamicExecutionMetricsField orders the results by dynamic_execution_metrics field.

@@ -22,6 +22,8 @@ const (
 	FieldName = "name"
 	// FieldPrefix holds the string denoting the prefix field in the database.
 	FieldPrefix = "prefix"
+	// FieldTestResultID holds the string denoting the test_result_id field in the database.
+	FieldTestResultID = "test_result_id"
 	// EdgeTestResult holds the string denoting the test_result edge name in mutations.
 	EdgeTestResult = "test_result"
 	// Table holds the table name of the testfile in the database.
@@ -32,7 +34,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "testresultbes" package.
 	TestResultInverseTable = "test_result_be_ss"
 	// TestResultColumn is the table column denoting the test_result relation/edge.
-	TestResultColumn = "test_result_bes_test_action_output"
+	TestResultColumn = "test_result_id"
 )
 
 // Columns holds all SQL columns for testfile fields.
@@ -43,6 +45,7 @@ var Columns = []string{
 	FieldLength,
 	FieldName,
 	FieldPrefix,
+	FieldTestResultID,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "test_files"
@@ -52,7 +55,6 @@ var ForeignKeys = []string{
 	"output_group_inline_files",
 	"target_complete_important_output",
 	"target_complete_directory_output",
-	"test_result_bes_test_action_output",
 	"test_summary_passed",
 	"test_summary_failed",
 }
@@ -98,6 +100,11 @@ func ByLength(opts ...sql.OrderTermOption) OrderOption {
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByTestResultID orders the results by the test_result_id field.
+func ByTestResultID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTestResultID, opts...).ToFunc()
 }
 
 // ByTestResultField orders the results by test_result field.

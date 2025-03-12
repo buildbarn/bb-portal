@@ -23,7 +23,6 @@ type FilesMetricQuery struct {
 	inters              []Interceptor
 	predicates          []predicate.FilesMetric
 	withArtifactMetrics *ArtifactMetricsQuery
-	withFKs             bool
 	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*FilesMetric) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (fmq *FilesMetricQuery) prepareQuery(ctx context.Context) error {
 func (fmq *FilesMetricQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FilesMetric, error) {
 	var (
 		nodes       = []*FilesMetric{}
-		withFKs     = fmq.withFKs
 		_spec       = fmq.querySpec()
 		loadedTypes = [1]bool{
 			fmq.withArtifactMetrics != nil,
 		}
 	)
-	if fmq.withArtifactMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, filesmetric.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*FilesMetric).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (fmq *FilesMetricQuery) loadArtifactMetrics(ctx context.Context, query *Art
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*FilesMetric)
 	for i := range nodes {
-		if nodes[i].artifact_metrics_top_level_artifacts == nil {
-			continue
-		}
-		fk := *nodes[i].artifact_metrics_top_level_artifacts
+		fk := nodes[i].ArtifactMetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (fmq *FilesMetricQuery) loadArtifactMetrics(ctx context.Context, query *Art
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "artifact_metrics_top_level_artifacts" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "artifact_metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (fmq *FilesMetricQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != filesmetric.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if fmq.withArtifactMetrics != nil {
+			_spec.Node.AddColumnOnce(filesmetric.FieldArtifactMetricsID)
 		}
 	}
 	if ps := fmq.predicates; len(ps) > 0 {

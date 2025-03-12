@@ -215,16 +215,16 @@ func (scc *SourceControlCreate) SetNillableRunnerOs(s *string) *SourceControlCre
 	return scc
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (scc *SourceControlCreate) SetBazelInvocationID(id int) *SourceControlCreate {
-	scc.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (scc *SourceControlCreate) SetBazelInvocationID(i int) *SourceControlCreate {
+	scc.mutation.SetBazelInvocationID(i)
 	return scc
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableBazelInvocationID(id *int) *SourceControlCreate {
-	if id != nil {
-		scc = scc.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableBazelInvocationID(i *int) *SourceControlCreate {
+	if i != nil {
+		scc.SetBazelInvocationID(*i)
 	}
 	return scc
 }
@@ -364,7 +364,7 @@ func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSp
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.bazel_invocation_source_control = &nodes[0]
+		_node.BazelInvocationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

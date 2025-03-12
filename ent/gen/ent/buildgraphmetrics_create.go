@@ -146,16 +146,16 @@ func (bgmc *BuildGraphMetricsCreate) SetNillablePostInvocationSkyframeNodeCount(
 	return bgmc
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (bgmc *BuildGraphMetricsCreate) SetMetricsID(id int) *BuildGraphMetricsCreate {
-	bgmc.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (bgmc *BuildGraphMetricsCreate) SetMetricsID(i int) *BuildGraphMetricsCreate {
+	bgmc.mutation.SetMetricsID(i)
 	return bgmc
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (bgmc *BuildGraphMetricsCreate) SetNillableMetricsID(id *int) *BuildGraphMetricsCreate {
-	if id != nil {
-		bgmc = bgmc.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (bgmc *BuildGraphMetricsCreate) SetNillableMetricsID(i *int) *BuildGraphMetricsCreate {
+	if i != nil {
+		bgmc.SetMetricsID(*i)
 	}
 	return bgmc
 }
@@ -370,7 +370,7 @@ func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.metrics_build_graph_metrics = &nodes[0]
+		_node.MetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := bgmc.mutation.DirtiedValuesIDs(); len(nodes) > 0 {

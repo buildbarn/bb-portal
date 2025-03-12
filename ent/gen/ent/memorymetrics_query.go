@@ -26,7 +26,6 @@ type MemoryMetricsQuery struct {
 	predicates              []predicate.MemoryMetrics
 	withMetrics             *MetricsQuery
 	withGarbageMetrics      *GarbageMetricsQuery
-	withFKs                 bool
 	modifiers               []func(*sql.Selector)
 	loadTotal               []func(context.Context, []*MemoryMetrics) error
 	withNamedGarbageMetrics map[string]*GarbageMetricsQuery
@@ -409,19 +408,12 @@ func (mmq *MemoryMetricsQuery) prepareQuery(ctx context.Context) error {
 func (mmq *MemoryMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*MemoryMetrics, error) {
 	var (
 		nodes       = []*MemoryMetrics{}
-		withFKs     = mmq.withFKs
 		_spec       = mmq.querySpec()
 		loadedTypes = [2]bool{
 			mmq.withMetrics != nil,
 			mmq.withGarbageMetrics != nil,
 		}
 	)
-	if mmq.withMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, memorymetrics.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*MemoryMetrics).scanValues(nil, columns)
 	}
@@ -475,10 +467,7 @@ func (mmq *MemoryMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQu
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*MemoryMetrics)
 	for i := range nodes {
-		if nodes[i].metrics_memory_metrics == nil {
-			continue
-		}
-		fk := *nodes[i].metrics_memory_metrics
+		fk := nodes[i].MetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -495,7 +484,7 @@ func (mmq *MemoryMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQu
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "metrics_memory_metrics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -513,7 +502,9 @@ func (mmq *MemoryMetricsQuery) loadGarbageMetrics(ctx context.Context, query *Ga
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(garbagemetrics.FieldMemoryMetricsID)
+	}
 	query.Where(predicate.GarbageMetrics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(memorymetrics.GarbageMetricsColumn), fks...))
 	}))
@@ -522,13 +513,10 @@ func (mmq *MemoryMetricsQuery) loadGarbageMetrics(ctx context.Context, query *Ga
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.memory_metrics_garbage_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "memory_metrics_garbage_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.MemoryMetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "memory_metrics_garbage_metrics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "memory_metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -562,6 +550,9 @@ func (mmq *MemoryMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != memorymetrics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if mmq.withMetrics != nil {
+			_spec.Node.AddColumnOnce(memorymetrics.FieldMetricsID)
 		}
 	}
 	if ps := mmq.predicates; len(ps) > 0 {

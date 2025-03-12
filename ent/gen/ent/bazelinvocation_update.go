@@ -379,29 +379,49 @@ func (biu *BazelInvocationUpdate) SetNillableProfileName(s *string) *BazelInvoca
 	return biu
 }
 
-// SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
-func (biu *BazelInvocationUpdate) SetEventFileID(id int) *BazelInvocationUpdate {
-	biu.mutation.SetEventFileID(id)
+// SetEventFileID sets the "event_file_id" field.
+func (biu *BazelInvocationUpdate) SetEventFileID(i int) *BazelInvocationUpdate {
+	biu.mutation.SetEventFileID(i)
+	return biu
+}
+
+// SetNillableEventFileID sets the "event_file_id" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableEventFileID(i *int) *BazelInvocationUpdate {
+	if i != nil {
+		biu.SetEventFileID(*i)
+	}
+	return biu
+}
+
+// ClearEventFileID clears the value of the "event_file_id" field.
+func (biu *BazelInvocationUpdate) ClearEventFileID() *BazelInvocationUpdate {
+	biu.mutation.ClearEventFileID()
+	return biu
+}
+
+// SetBuildID sets the "build_id" field.
+func (biu *BazelInvocationUpdate) SetBuildID(i int) *BazelInvocationUpdate {
+	biu.mutation.SetBuildID(i)
+	return biu
+}
+
+// SetNillableBuildID sets the "build_id" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableBuildID(i *int) *BazelInvocationUpdate {
+	if i != nil {
+		biu.SetBuildID(*i)
+	}
+	return biu
+}
+
+// ClearBuildID clears the value of the "build_id" field.
+func (biu *BazelInvocationUpdate) ClearBuildID() *BazelInvocationUpdate {
+	biu.mutation.ClearBuildID()
 	return biu
 }
 
 // SetEventFile sets the "event_file" edge to the EventFile entity.
 func (biu *BazelInvocationUpdate) SetEventFile(e *EventFile) *BazelInvocationUpdate {
 	return biu.SetEventFileID(e.ID)
-}
-
-// SetBuildID sets the "build" edge to the Build entity by ID.
-func (biu *BazelInvocationUpdate) SetBuildID(id int) *BazelInvocationUpdate {
-	biu.mutation.SetBuildID(id)
-	return biu
-}
-
-// SetNillableBuildID sets the "build" edge to the Build entity by ID if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableBuildID(id *int) *BazelInvocationUpdate {
-	if id != nil {
-		biu = biu.SetBuildID(*id)
-	}
-	return biu
 }
 
 // SetBuild sets the "build" edge to the Build entity.
@@ -611,18 +631,7 @@ func (biu *BazelInvocationUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (biu *BazelInvocationUpdate) check() error {
-	if _, ok := biu.mutation.EventFileID(); biu.mutation.EventFileCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "BazelInvocation.event_file"`)
-	}
-	return nil
-}
-
 func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := biu.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(bazelinvocation.Table, bazelinvocation.Columns, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt))
 	if ps := biu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -1347,29 +1356,49 @@ func (biuo *BazelInvocationUpdateOne) SetNillableProfileName(s *string) *BazelIn
 	return biuo
 }
 
-// SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
-func (biuo *BazelInvocationUpdateOne) SetEventFileID(id int) *BazelInvocationUpdateOne {
-	biuo.mutation.SetEventFileID(id)
+// SetEventFileID sets the "event_file_id" field.
+func (biuo *BazelInvocationUpdateOne) SetEventFileID(i int) *BazelInvocationUpdateOne {
+	biuo.mutation.SetEventFileID(i)
+	return biuo
+}
+
+// SetNillableEventFileID sets the "event_file_id" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableEventFileID(i *int) *BazelInvocationUpdateOne {
+	if i != nil {
+		biuo.SetEventFileID(*i)
+	}
+	return biuo
+}
+
+// ClearEventFileID clears the value of the "event_file_id" field.
+func (biuo *BazelInvocationUpdateOne) ClearEventFileID() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearEventFileID()
+	return biuo
+}
+
+// SetBuildID sets the "build_id" field.
+func (biuo *BazelInvocationUpdateOne) SetBuildID(i int) *BazelInvocationUpdateOne {
+	biuo.mutation.SetBuildID(i)
+	return biuo
+}
+
+// SetNillableBuildID sets the "build_id" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableBuildID(i *int) *BazelInvocationUpdateOne {
+	if i != nil {
+		biuo.SetBuildID(*i)
+	}
+	return biuo
+}
+
+// ClearBuildID clears the value of the "build_id" field.
+func (biuo *BazelInvocationUpdateOne) ClearBuildID() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearBuildID()
 	return biuo
 }
 
 // SetEventFile sets the "event_file" edge to the EventFile entity.
 func (biuo *BazelInvocationUpdateOne) SetEventFile(e *EventFile) *BazelInvocationUpdateOne {
 	return biuo.SetEventFileID(e.ID)
-}
-
-// SetBuildID sets the "build" edge to the Build entity by ID.
-func (biuo *BazelInvocationUpdateOne) SetBuildID(id int) *BazelInvocationUpdateOne {
-	biuo.mutation.SetBuildID(id)
-	return biuo
-}
-
-// SetNillableBuildID sets the "build" edge to the Build entity by ID if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableBuildID(id *int) *BazelInvocationUpdateOne {
-	if id != nil {
-		biuo = biuo.SetBuildID(*id)
-	}
-	return biuo
 }
 
 // SetBuild sets the "build" edge to the Build entity.
@@ -1592,18 +1621,7 @@ func (biuo *BazelInvocationUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (biuo *BazelInvocationUpdateOne) check() error {
-	if _, ok := biuo.mutation.EventFileID(); biuo.mutation.EventFileCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "BazelInvocation.event_file"`)
-	}
-	return nil
-}
-
 func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *BazelInvocation, err error) {
-	if err := biuo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(bazelinvocation.Table, bazelinvocation.Columns, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt))
 	id, ok := biuo.mutation.ID()
 	if !ok {

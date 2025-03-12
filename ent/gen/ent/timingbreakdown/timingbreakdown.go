@@ -16,6 +16,8 @@ const (
 	FieldName = "name"
 	// FieldTime holds the string denoting the time field in the database.
 	FieldTime = "time"
+	// FieldExecutionInfoID holds the string denoting the execution_info_id field in the database.
+	FieldExecutionInfoID = "execution_info_id"
 	// EdgeExecutionInfo holds the string denoting the execution_info edge name in mutations.
 	EdgeExecutionInfo = "execution_info"
 	// EdgeChild holds the string denoting the child edge name in mutations.
@@ -28,14 +30,14 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "exectioninfo" package.
 	ExecutionInfoInverseTable = "exection_infos"
 	// ExecutionInfoColumn is the table column denoting the execution_info relation/edge.
-	ExecutionInfoColumn = "exection_info_timing_breakdown"
+	ExecutionInfoColumn = "execution_info_id"
 	// ChildTable is the table that holds the child relation/edge.
 	ChildTable = "timing_childs"
 	// ChildInverseTable is the table name for the TimingChild entity.
 	// It exists in this package in order to avoid circular dependency with the "timingchild" package.
 	ChildInverseTable = "timing_childs"
 	// ChildColumn is the table column denoting the child relation/edge.
-	ChildColumn = "timing_breakdown_child"
+	ChildColumn = "timing_breakdown_id"
 )
 
 // Columns holds all SQL columns for timingbreakdown fields.
@@ -43,23 +45,13 @@ var Columns = []string{
 	FieldID,
 	FieldName,
 	FieldTime,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "timing_breakdowns"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"exection_info_timing_breakdown",
+	FieldExecutionInfoID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -82,6 +74,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByTime orders the results by the time field.
 func ByTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTime, opts...).ToFunc()
+}
+
+// ByExecutionInfoID orders the results by the execution_info_id field.
+func ByExecutionInfoID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldExecutionInfoID, opts...).ToFunc()
 }
 
 // ByExecutionInfoField orders the results by execution_info field.

@@ -28,7 +28,6 @@ type TestCollectionQuery struct {
 	withBazelInvocation  *BazelInvocationQuery
 	withTestSummary      *TestSummaryQuery
 	withTestResults      *TestResultBESQuery
-	withFKs              bool
 	modifiers            []func(*sql.Selector)
 	loadTotal            []func(context.Context, []*TestCollection) error
 	withNamedTestResults map[string]*TestResultBESQuery
@@ -445,7 +444,6 @@ func (tcq *TestCollectionQuery) prepareQuery(ctx context.Context) error {
 func (tcq *TestCollectionQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TestCollection, error) {
 	var (
 		nodes       = []*TestCollection{}
-		withFKs     = tcq.withFKs
 		_spec       = tcq.querySpec()
 		loadedTypes = [3]bool{
 			tcq.withBazelInvocation != nil,
@@ -453,12 +451,6 @@ func (tcq *TestCollectionQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			tcq.withTestResults != nil,
 		}
 	)
-	if tcq.withBazelInvocation != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, testcollection.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TestCollection).scanValues(nil, columns)
 	}
@@ -518,10 +510,7 @@ func (tcq *TestCollectionQuery) loadBazelInvocation(ctx context.Context, query *
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TestCollection)
 	for i := range nodes {
-		if nodes[i].bazel_invocation_test_collection == nil {
-			continue
-		}
-		fk := *nodes[i].bazel_invocation_test_collection
+		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -538,7 +527,7 @@ func (tcq *TestCollectionQuery) loadBazelInvocation(ctx context.Context, query *
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_test_collection" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -553,7 +542,9 @@ func (tcq *TestCollectionQuery) loadTestSummary(ctx context.Context, query *Test
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(testsummary.FieldTestCollectionID)
+	}
 	query.Where(predicate.TestSummary(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(testcollection.TestSummaryColumn), fks...))
 	}))
@@ -562,13 +553,10 @@ func (tcq *TestCollectionQuery) loadTestSummary(ctx context.Context, query *Test
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.test_collection_test_summary
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "test_collection_test_summary" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.TestCollectionID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "test_collection_test_summary" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "test_collection_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -584,7 +572,9 @@ func (tcq *TestCollectionQuery) loadTestResults(ctx context.Context, query *Test
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(testresultbes.FieldTestCollectionID)
+	}
 	query.Where(predicate.TestResultBES(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(testcollection.TestResultsColumn), fks...))
 	}))
@@ -593,13 +583,10 @@ func (tcq *TestCollectionQuery) loadTestResults(ctx context.Context, query *Test
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.test_collection_test_results
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "test_collection_test_results" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.TestCollectionID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "test_collection_test_results" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "test_collection_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -633,6 +620,9 @@ func (tcq *TestCollectionQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != testcollection.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if tcq.withBazelInvocation != nil {
+			_spec.Node.AddColumnOnce(testcollection.FieldBazelInvocationID)
 		}
 	}
 	if ps := tcq.predicates; len(ps) > 0 {

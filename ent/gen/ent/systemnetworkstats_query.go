@@ -23,7 +23,6 @@ type SystemNetworkStatsQuery struct {
 	inters             []Interceptor
 	predicates         []predicate.SystemNetworkStats
 	withNetworkMetrics *NetworkMetricsQuery
-	withFKs            bool
 	modifiers          []func(*sql.Selector)
 	loadTotal          []func(context.Context, []*SystemNetworkStats) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (snsq *SystemNetworkStatsQuery) prepareQuery(ctx context.Context) error {
 func (snsq *SystemNetworkStatsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SystemNetworkStats, error) {
 	var (
 		nodes       = []*SystemNetworkStats{}
-		withFKs     = snsq.withFKs
 		_spec       = snsq.querySpec()
 		loadedTypes = [1]bool{
 			snsq.withNetworkMetrics != nil,
 		}
 	)
-	if snsq.withNetworkMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, systemnetworkstats.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*SystemNetworkStats).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (snsq *SystemNetworkStatsQuery) loadNetworkMetrics(ctx context.Context, que
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*SystemNetworkStats)
 	for i := range nodes {
-		if nodes[i].network_metrics_system_network_stats == nil {
-			continue
-		}
-		fk := *nodes[i].network_metrics_system_network_stats
+		fk := nodes[i].NetworkMetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (snsq *SystemNetworkStatsQuery) loadNetworkMetrics(ctx context.Context, que
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "network_metrics_system_network_stats" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "network_metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (snsq *SystemNetworkStatsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != systemnetworkstats.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if snsq.withNetworkMetrics != nil {
+			_spec.Node.AddColumnOnce(systemnetworkstats.FieldNetworkMetricsID)
 		}
 	}
 	if ps := snsq.predicates; len(ps) > 0 {

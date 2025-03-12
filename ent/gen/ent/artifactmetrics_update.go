@@ -29,17 +29,23 @@ func (amu *ArtifactMetricsUpdate) Where(ps ...predicate.ArtifactMetrics) *Artifa
 	return amu
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (amu *ArtifactMetricsUpdate) SetMetricsID(id int) *ArtifactMetricsUpdate {
-	amu.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (amu *ArtifactMetricsUpdate) SetMetricsID(i int) *ArtifactMetricsUpdate {
+	amu.mutation.SetMetricsID(i)
 	return amu
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (amu *ArtifactMetricsUpdate) SetNillableMetricsID(id *int) *ArtifactMetricsUpdate {
-	if id != nil {
-		amu = amu.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (amu *ArtifactMetricsUpdate) SetNillableMetricsID(i *int) *ArtifactMetricsUpdate {
+	if i != nil {
+		amu.SetMetricsID(*i)
 	}
+	return amu
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (amu *ArtifactMetricsUpdate) ClearMetricsID() *ArtifactMetricsUpdate {
+	amu.mutation.ClearMetricsID()
 	return amu
 }
 
@@ -360,17 +366,23 @@ type ArtifactMetricsUpdateOne struct {
 	mutation *ArtifactMetricsMutation
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (amuo *ArtifactMetricsUpdateOne) SetMetricsID(id int) *ArtifactMetricsUpdateOne {
-	amuo.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (amuo *ArtifactMetricsUpdateOne) SetMetricsID(i int) *ArtifactMetricsUpdateOne {
+	amuo.mutation.SetMetricsID(i)
 	return amuo
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (amuo *ArtifactMetricsUpdateOne) SetNillableMetricsID(id *int) *ArtifactMetricsUpdateOne {
-	if id != nil {
-		amuo = amuo.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (amuo *ArtifactMetricsUpdateOne) SetNillableMetricsID(i *int) *ArtifactMetricsUpdateOne {
+	if i != nil {
+		amuo.SetMetricsID(*i)
 	}
+	return amuo
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (amuo *ArtifactMetricsUpdateOne) ClearMetricsID() *ArtifactMetricsUpdateOne {
+	amuo.mutation.ClearMetricsID()
 	return amuo
 }
 

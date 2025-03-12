@@ -34,16 +34,16 @@ func (pmc *PackageMetricsCreate) SetNillablePackagesLoaded(i *int64) *PackageMet
 	return pmc
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (pmc *PackageMetricsCreate) SetMetricsID(id int) *PackageMetricsCreate {
-	pmc.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (pmc *PackageMetricsCreate) SetMetricsID(i int) *PackageMetricsCreate {
+	pmc.mutation.SetMetricsID(i)
 	return pmc
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (pmc *PackageMetricsCreate) SetNillableMetricsID(id *int) *PackageMetricsCreate {
-	if id != nil {
-		pmc = pmc.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (pmc *PackageMetricsCreate) SetNillableMetricsID(i *int) *PackageMetricsCreate {
+	if i != nil {
+		pmc.SetMetricsID(*i)
 	}
 	return pmc
 }
@@ -146,7 +146,7 @@ func (pmc *PackageMetricsCreate) createSpec() (*PackageMetrics, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.metrics_package_metrics = &nodes[0]
+		_node.MetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := pmc.mutation.PackageLoadMetricsIDs(); len(nodes) > 0 {

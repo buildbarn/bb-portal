@@ -68,6 +68,11 @@ func TargetsConfiguredNotIncludingAspects(v int64) predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldEQ(FieldTargetsConfiguredNotIncludingAspects, v))
 }
 
+// MetricsID applies equality check predicate on the "metrics_id" field. It's identical to MetricsIDEQ.
+func MetricsID(v int) predicate.TargetMetrics {
+	return predicate.TargetMetrics(sql.FieldEQ(FieldMetricsID, v))
+}
+
 // TargetsLoadedEQ applies the EQ predicate on the "targets_loaded" field.
 func TargetsLoadedEQ(v int64) predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldEQ(FieldTargetsLoaded, v))
@@ -216,6 +221,36 @@ func TargetsConfiguredNotIncludingAspectsIsNil() predicate.TargetMetrics {
 // TargetsConfiguredNotIncludingAspectsNotNil applies the NotNil predicate on the "targets_configured_not_including_aspects" field.
 func TargetsConfiguredNotIncludingAspectsNotNil() predicate.TargetMetrics {
 	return predicate.TargetMetrics(sql.FieldNotNull(FieldTargetsConfiguredNotIncludingAspects))
+}
+
+// MetricsIDEQ applies the EQ predicate on the "metrics_id" field.
+func MetricsIDEQ(v int) predicate.TargetMetrics {
+	return predicate.TargetMetrics(sql.FieldEQ(FieldMetricsID, v))
+}
+
+// MetricsIDNEQ applies the NEQ predicate on the "metrics_id" field.
+func MetricsIDNEQ(v int) predicate.TargetMetrics {
+	return predicate.TargetMetrics(sql.FieldNEQ(FieldMetricsID, v))
+}
+
+// MetricsIDIn applies the In predicate on the "metrics_id" field.
+func MetricsIDIn(vs ...int) predicate.TargetMetrics {
+	return predicate.TargetMetrics(sql.FieldIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDNotIn applies the NotIn predicate on the "metrics_id" field.
+func MetricsIDNotIn(vs ...int) predicate.TargetMetrics {
+	return predicate.TargetMetrics(sql.FieldNotIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDIsNil applies the IsNil predicate on the "metrics_id" field.
+func MetricsIDIsNil() predicate.TargetMetrics {
+	return predicate.TargetMetrics(sql.FieldIsNull(FieldMetricsID))
+}
+
+// MetricsIDNotNil applies the NotNil predicate on the "metrics_id" field.
+func MetricsIDNotNil() predicate.TargetMetrics {
+	return predicate.TargetMetrics(sql.FieldNotNull(FieldMetricsID))
 }
 
 // HasMetrics applies the HasEdge predicate on the "metrics" edge.

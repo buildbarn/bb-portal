@@ -28,7 +28,6 @@ type ExectionInfoQuery struct {
 	withTestResult         *TestResultBESQuery
 	withTimingBreakdown    *TimingBreakdownQuery
 	withResourceUsage      *ResourceUsageQuery
-	withFKs                bool
 	modifiers              []func(*sql.Selector)
 	loadTotal              []func(context.Context, []*ExectionInfo) error
 	withNamedResourceUsage map[string]*ResourceUsageQuery
@@ -445,7 +444,6 @@ func (eiq *ExectionInfoQuery) prepareQuery(ctx context.Context) error {
 func (eiq *ExectionInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ExectionInfo, error) {
 	var (
 		nodes       = []*ExectionInfo{}
-		withFKs     = eiq.withFKs
 		_spec       = eiq.querySpec()
 		loadedTypes = [3]bool{
 			eiq.withTestResult != nil,
@@ -453,12 +451,6 @@ func (eiq *ExectionInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 			eiq.withResourceUsage != nil,
 		}
 	)
-	if eiq.withTestResult != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, exectioninfo.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ExectionInfo).scanValues(nil, columns)
 	}
@@ -518,10 +510,7 @@ func (eiq *ExectionInfoQuery) loadTestResult(ctx context.Context, query *TestRes
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*ExectionInfo)
 	for i := range nodes {
-		if nodes[i].test_result_bes_execution_info == nil {
-			continue
-		}
-		fk := *nodes[i].test_result_bes_execution_info
+		fk := nodes[i].ExecutionInfoID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -538,7 +527,7 @@ func (eiq *ExectionInfoQuery) loadTestResult(ctx context.Context, query *TestRes
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "test_result_bes_execution_info" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "execution_info_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -553,7 +542,9 @@ func (eiq *ExectionInfoQuery) loadTimingBreakdown(ctx context.Context, query *Ti
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(timingbreakdown.FieldExecutionInfoID)
+	}
 	query.Where(predicate.TimingBreakdown(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(exectioninfo.TimingBreakdownColumn), fks...))
 	}))
@@ -562,13 +553,10 @@ func (eiq *ExectionInfoQuery) loadTimingBreakdown(ctx context.Context, query *Ti
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.exection_info_timing_breakdown
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "exection_info_timing_breakdown" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.ExecutionInfoID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "exection_info_timing_breakdown" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "execution_info_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -584,7 +572,9 @@ func (eiq *ExectionInfoQuery) loadResourceUsage(ctx context.Context, query *Reso
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(resourceusage.FieldExecutionInfoID)
+	}
 	query.Where(predicate.ResourceUsage(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(exectioninfo.ResourceUsageColumn), fks...))
 	}))
@@ -593,13 +583,10 @@ func (eiq *ExectionInfoQuery) loadResourceUsage(ctx context.Context, query *Reso
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.exection_info_resource_usage
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "exection_info_resource_usage" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.ExecutionInfoID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "exection_info_resource_usage" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "execution_info_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -633,6 +620,9 @@ func (eiq *ExectionInfoQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != exectioninfo.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if eiq.withTestResult != nil {
+			_spec.Node.AddColumnOnce(exectioninfo.FieldExecutionInfoID)
 		}
 	}
 	if ps := eiq.predicates; len(ps) > 0 {

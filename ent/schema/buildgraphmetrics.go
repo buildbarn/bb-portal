@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // BuildGraphMetrics holds the schema definition for the BuildGraphMetrics entity.
@@ -69,6 +70,9 @@ func (BuildGraphMetrics) Fields() []ent.Field {
 		// settings or with Skybuild, and may overestimate if there are nodes from
 		// prior evaluations still in the cache.
 		field.Int32("post_invocation_skyframe_node_count").Optional(),
+
+		// foriegn key to metrics
+		field.Int("metrics_id").Optional(),
 	}
 }
 
@@ -77,7 +81,8 @@ func (BuildGraphMetrics) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("metrics", Metrics.Type).
 			Ref("build_graph_metrics").
-			Unique(),
+			Unique().
+			Field("metrics_id"),
 		// NOTE: these are all missing from the proto, but i'm including them here for now for completeness
 
 		// Dirtied Values.
@@ -127,5 +132,12 @@ func (BuildGraphMetrics) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+	}
+}
+
+// Indexes for BuildGraphMetrics.
+func (BuildGraphMetrics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("metrics_id"),
 	}
 }

@@ -83,6 +83,11 @@ func PackageOverhead(v uint64) predicate.PackageLoadMetrics {
 	return predicate.PackageLoadMetrics(sql.FieldEQ(FieldPackageOverhead, v))
 }
 
+// PackageMetricsID applies equality check predicate on the "package_metrics_id" field. It's identical to PackageMetricsIDEQ.
+func PackageMetricsID(v int) predicate.PackageLoadMetrics {
+	return predicate.PackageLoadMetrics(sql.FieldEQ(FieldPackageMetricsID, v))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.PackageLoadMetrics {
 	return predicate.PackageLoadMetrics(sql.FieldEQ(FieldName, v))
@@ -406,6 +411,36 @@ func PackageOverheadIsNil() predicate.PackageLoadMetrics {
 // PackageOverheadNotNil applies the NotNil predicate on the "package_overhead" field.
 func PackageOverheadNotNil() predicate.PackageLoadMetrics {
 	return predicate.PackageLoadMetrics(sql.FieldNotNull(FieldPackageOverhead))
+}
+
+// PackageMetricsIDEQ applies the EQ predicate on the "package_metrics_id" field.
+func PackageMetricsIDEQ(v int) predicate.PackageLoadMetrics {
+	return predicate.PackageLoadMetrics(sql.FieldEQ(FieldPackageMetricsID, v))
+}
+
+// PackageMetricsIDNEQ applies the NEQ predicate on the "package_metrics_id" field.
+func PackageMetricsIDNEQ(v int) predicate.PackageLoadMetrics {
+	return predicate.PackageLoadMetrics(sql.FieldNEQ(FieldPackageMetricsID, v))
+}
+
+// PackageMetricsIDIn applies the In predicate on the "package_metrics_id" field.
+func PackageMetricsIDIn(vs ...int) predicate.PackageLoadMetrics {
+	return predicate.PackageLoadMetrics(sql.FieldIn(FieldPackageMetricsID, vs...))
+}
+
+// PackageMetricsIDNotIn applies the NotIn predicate on the "package_metrics_id" field.
+func PackageMetricsIDNotIn(vs ...int) predicate.PackageLoadMetrics {
+	return predicate.PackageLoadMetrics(sql.FieldNotIn(FieldPackageMetricsID, vs...))
+}
+
+// PackageMetricsIDIsNil applies the IsNil predicate on the "package_metrics_id" field.
+func PackageMetricsIDIsNil() predicate.PackageLoadMetrics {
+	return predicate.PackageLoadMetrics(sql.FieldIsNull(FieldPackageMetricsID))
+}
+
+// PackageMetricsIDNotNil applies the NotNil predicate on the "package_metrics_id" field.
+func PackageMetricsIDNotNil() predicate.PackageLoadMetrics {
+	return predicate.PackageLoadMetrics(sql.FieldNotNull(FieldPackageMetricsID))
 }
 
 // HasPackageMetrics applies the HasEdge predicate on the "package_metrics" edge.

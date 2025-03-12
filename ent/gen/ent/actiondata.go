@@ -31,11 +31,12 @@ type ActionData struct {
 	SystemTime int64 `json:"system_time,omitempty"`
 	// UserTime holds the value of the "user_time" field.
 	UserTime int64 `json:"user_time,omitempty"`
+	// ActionSummaryID holds the value of the "action_summary_id" field.
+	ActionSummaryID int `json:"action_summary_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ActionDataQuery when eager-loading is set.
-	Edges                      ActionDataEdges `json:"edges"`
-	action_summary_action_data *int
-	selectValues               sql.SelectValues
+	Edges        ActionDataEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // ActionDataEdges holds the relations/edges for other nodes in the graph.
@@ -65,12 +66,10 @@ func (*ActionData) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case actiondata.FieldID, actiondata.FieldActionsExecuted, actiondata.FieldActionsCreated, actiondata.FieldFirstStartedMs, actiondata.FieldLastEndedMs, actiondata.FieldSystemTime, actiondata.FieldUserTime:
+		case actiondata.FieldID, actiondata.FieldActionsExecuted, actiondata.FieldActionsCreated, actiondata.FieldFirstStartedMs, actiondata.FieldLastEndedMs, actiondata.FieldSystemTime, actiondata.FieldUserTime, actiondata.FieldActionSummaryID:
 			values[i] = new(sql.NullInt64)
 		case actiondata.FieldMnemonic:
 			values[i] = new(sql.NullString)
-		case actiondata.ForeignKeys[0]: // action_summary_action_data
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -134,12 +133,11 @@ func (ad *ActionData) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ad.UserTime = value.Int64
 			}
-		case actiondata.ForeignKeys[0]:
+		case actiondata.FieldActionSummaryID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field action_summary_action_data", value)
+				return fmt.Errorf("unexpected type %T for field action_summary_id", values[i])
 			} else if value.Valid {
-				ad.action_summary_action_data = new(int)
-				*ad.action_summary_action_data = int(value.Int64)
+				ad.ActionSummaryID = int(value.Int64)
 			}
 		default:
 			ad.selectValues.Set(columns[i], values[i])
@@ -202,6 +200,9 @@ func (ad *ActionData) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("user_time=")
 	builder.WriteString(fmt.Sprintf("%v", ad.UserTime))
+	builder.WriteString(", ")
+	builder.WriteString("action_summary_id=")
+	builder.WriteString(fmt.Sprintf("%v", ad.ActionSummaryID))
 	builder.WriteByte(')')
 	return builder.String()
 }

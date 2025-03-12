@@ -29,17 +29,23 @@ func (demu *DynamicExecutionMetricsUpdate) Where(ps ...predicate.DynamicExecutio
 	return demu
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (demu *DynamicExecutionMetricsUpdate) SetMetricsID(id int) *DynamicExecutionMetricsUpdate {
-	demu.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (demu *DynamicExecutionMetricsUpdate) SetMetricsID(i int) *DynamicExecutionMetricsUpdate {
+	demu.mutation.SetMetricsID(i)
 	return demu
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (demu *DynamicExecutionMetricsUpdate) SetNillableMetricsID(id *int) *DynamicExecutionMetricsUpdate {
-	if id != nil {
-		demu = demu.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (demu *DynamicExecutionMetricsUpdate) SetNillableMetricsID(i *int) *DynamicExecutionMetricsUpdate {
+	if i != nil {
+		demu.SetMetricsID(*i)
 	}
+	return demu
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (demu *DynamicExecutionMetricsUpdate) ClearMetricsID() *DynamicExecutionMetricsUpdate {
+	demu.mutation.ClearMetricsID()
 	return demu
 }
 
@@ -225,17 +231,23 @@ type DynamicExecutionMetricsUpdateOne struct {
 	mutation *DynamicExecutionMetricsMutation
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (demuo *DynamicExecutionMetricsUpdateOne) SetMetricsID(id int) *DynamicExecutionMetricsUpdateOne {
-	demuo.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (demuo *DynamicExecutionMetricsUpdateOne) SetMetricsID(i int) *DynamicExecutionMetricsUpdateOne {
+	demuo.mutation.SetMetricsID(i)
 	return demuo
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (demuo *DynamicExecutionMetricsUpdateOne) SetNillableMetricsID(id *int) *DynamicExecutionMetricsUpdateOne {
-	if id != nil {
-		demuo = demuo.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (demuo *DynamicExecutionMetricsUpdateOne) SetNillableMetricsID(i *int) *DynamicExecutionMetricsUpdateOne {
+	if i != nil {
+		demuo.SetMetricsID(*i)
 	}
+	return demuo
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (demuo *DynamicExecutionMetricsUpdateOne) ClearMetricsID() *DynamicExecutionMetricsUpdateOne {
+	demuo.mutation.ClearMetricsID()
 	return demuo
 }
 

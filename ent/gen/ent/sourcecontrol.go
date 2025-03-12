@@ -45,11 +45,12 @@ type SourceControl struct {
 	RunnerArch string `json:"runner_arch,omitempty"`
 	// RunnerOs holds the value of the "runner_os" field.
 	RunnerOs string `json:"runner_os,omitempty"`
+	// BazelInvocationID holds the value of the "bazel_invocation_id" field.
+	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SourceControlQuery when eager-loading is set.
-	Edges                           SourceControlEdges `json:"edges"`
-	bazel_invocation_source_control *int
-	selectValues                    sql.SelectValues
+	Edges        SourceControlEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // SourceControlEdges holds the relations/edges for other nodes in the graph.
@@ -79,12 +80,10 @@ func (*SourceControl) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case sourcecontrol.FieldID:
+		case sourcecontrol.FieldID, sourcecontrol.FieldBazelInvocationID:
 			values[i] = new(sql.NullInt64)
 		case sourcecontrol.FieldRepoURL, sourcecontrol.FieldBranch, sourcecontrol.FieldCommitSha, sourcecontrol.FieldActor, sourcecontrol.FieldRefs, sourcecontrol.FieldRunID, sourcecontrol.FieldWorkflow, sourcecontrol.FieldAction, sourcecontrol.FieldWorkspace, sourcecontrol.FieldEventName, sourcecontrol.FieldJob, sourcecontrol.FieldRunnerName, sourcecontrol.FieldRunnerArch, sourcecontrol.FieldRunnerOs:
 			values[i] = new(sql.NullString)
-		case sourcecontrol.ForeignKeys[0]: // bazel_invocation_source_control
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -190,12 +189,11 @@ func (sc *SourceControl) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				sc.RunnerOs = value.String
 			}
-		case sourcecontrol.ForeignKeys[0]:
+		case sourcecontrol.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_source_control", value)
+				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				sc.bazel_invocation_source_control = new(int)
-				*sc.bazel_invocation_source_control = int(value.Int64)
+				sc.BazelInvocationID = int(value.Int64)
 			}
 		default:
 			sc.selectValues.Set(columns[i], values[i])
@@ -279,6 +277,9 @@ func (sc *SourceControl) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("runner_os=")
 	builder.WriteString(sc.RunnerOs)
+	builder.WriteString(", ")
+	builder.WriteString("bazel_invocation_id=")
+	builder.WriteString(fmt.Sprintf("%v", sc.BazelInvocationID))
 	builder.WriteByte(')')
 	return builder.String()
 }

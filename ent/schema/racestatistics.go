@@ -29,6 +29,8 @@ func (RaceStatistics) Fields() []ent.Field {
 
 		// Number of wins of remote branch in race.
 		field.Int64("renote_wins").Optional(),
+
+		field.Int("dynamic_execution_metrics_id").Optional(),
 	}
 }
 
@@ -38,6 +40,7 @@ func (RaceStatistics) Edges() []ent.Edge {
 		// Edge back to the dynamic execution metrics object.
 		edge.From("dynamic_execution_metrics", DynamicExecutionMetrics.Type).
 			Ref("race_statistics").
-			Unique(),
+			Unique().
+			Field("dynamic_execution_metrics_id"),
 	}
 }

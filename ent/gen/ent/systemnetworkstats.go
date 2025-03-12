@@ -33,11 +33,12 @@ type SystemNetworkStats struct {
 	PeakPacketsSentPerSec uint64 `json:"peak_packets_sent_per_sec,omitempty"`
 	// PeakPacketsRecvPerSec holds the value of the "peak_packets_recv_per_sec" field.
 	PeakPacketsRecvPerSec uint64 `json:"peak_packets_recv_per_sec,omitempty"`
+	// NetworkMetricsID holds the value of the "network_metrics_id" field.
+	NetworkMetricsID int `json:"network_metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SystemNetworkStatsQuery when eager-loading is set.
-	Edges                                SystemNetworkStatsEdges `json:"edges"`
-	network_metrics_system_network_stats *int
-	selectValues                         sql.SelectValues
+	Edges        SystemNetworkStatsEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // SystemNetworkStatsEdges holds the relations/edges for other nodes in the graph.
@@ -67,9 +68,7 @@ func (*SystemNetworkStats) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case systemnetworkstats.FieldID, systemnetworkstats.FieldBytesSent, systemnetworkstats.FieldBytesRecv, systemnetworkstats.FieldPacketsSent, systemnetworkstats.FieldPacketsRecv, systemnetworkstats.FieldPeakBytesSentPerSec, systemnetworkstats.FieldPeakBytesRecvPerSec, systemnetworkstats.FieldPeakPacketsSentPerSec, systemnetworkstats.FieldPeakPacketsRecvPerSec:
-			values[i] = new(sql.NullInt64)
-		case systemnetworkstats.ForeignKeys[0]: // network_metrics_system_network_stats
+		case systemnetworkstats.FieldID, systemnetworkstats.FieldBytesSent, systemnetworkstats.FieldBytesRecv, systemnetworkstats.FieldPacketsSent, systemnetworkstats.FieldPacketsRecv, systemnetworkstats.FieldPeakBytesSentPerSec, systemnetworkstats.FieldPeakBytesRecvPerSec, systemnetworkstats.FieldPeakPacketsSentPerSec, systemnetworkstats.FieldPeakPacketsRecvPerSec, systemnetworkstats.FieldNetworkMetricsID:
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -140,12 +139,11 @@ func (sns *SystemNetworkStats) assignValues(columns []string, values []any) erro
 			} else if value.Valid {
 				sns.PeakPacketsRecvPerSec = uint64(value.Int64)
 			}
-		case systemnetworkstats.ForeignKeys[0]:
+		case systemnetworkstats.FieldNetworkMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field network_metrics_system_network_stats", value)
+				return fmt.Errorf("unexpected type %T for field network_metrics_id", values[i])
 			} else if value.Valid {
-				sns.network_metrics_system_network_stats = new(int)
-				*sns.network_metrics_system_network_stats = int(value.Int64)
+				sns.NetworkMetricsID = int(value.Int64)
 			}
 		default:
 			sns.selectValues.Set(columns[i], values[i])
@@ -211,6 +209,9 @@ func (sns *SystemNetworkStats) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("peak_packets_recv_per_sec=")
 	builder.WriteString(fmt.Sprintf("%v", sns.PeakPacketsRecvPerSec))
+	builder.WriteString(", ")
+	builder.WriteString("network_metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", sns.NetworkMetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

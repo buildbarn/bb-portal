@@ -63,6 +63,11 @@ func NumBuilds(v int32) predicate.CumulativeMetrics {
 	return predicate.CumulativeMetrics(sql.FieldEQ(FieldNumBuilds, v))
 }
 
+// MetricsID applies equality check predicate on the "metrics_id" field. It's identical to MetricsIDEQ.
+func MetricsID(v int) predicate.CumulativeMetrics {
+	return predicate.CumulativeMetrics(sql.FieldEQ(FieldMetricsID, v))
+}
+
 // NumAnalysesEQ applies the EQ predicate on the "num_analyses" field.
 func NumAnalysesEQ(v int32) predicate.CumulativeMetrics {
 	return predicate.CumulativeMetrics(sql.FieldEQ(FieldNumAnalyses, v))
@@ -161,6 +166,36 @@ func NumBuildsIsNil() predicate.CumulativeMetrics {
 // NumBuildsNotNil applies the NotNil predicate on the "num_builds" field.
 func NumBuildsNotNil() predicate.CumulativeMetrics {
 	return predicate.CumulativeMetrics(sql.FieldNotNull(FieldNumBuilds))
+}
+
+// MetricsIDEQ applies the EQ predicate on the "metrics_id" field.
+func MetricsIDEQ(v int) predicate.CumulativeMetrics {
+	return predicate.CumulativeMetrics(sql.FieldEQ(FieldMetricsID, v))
+}
+
+// MetricsIDNEQ applies the NEQ predicate on the "metrics_id" field.
+func MetricsIDNEQ(v int) predicate.CumulativeMetrics {
+	return predicate.CumulativeMetrics(sql.FieldNEQ(FieldMetricsID, v))
+}
+
+// MetricsIDIn applies the In predicate on the "metrics_id" field.
+func MetricsIDIn(vs ...int) predicate.CumulativeMetrics {
+	return predicate.CumulativeMetrics(sql.FieldIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDNotIn applies the NotIn predicate on the "metrics_id" field.
+func MetricsIDNotIn(vs ...int) predicate.CumulativeMetrics {
+	return predicate.CumulativeMetrics(sql.FieldNotIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDIsNil applies the IsNil predicate on the "metrics_id" field.
+func MetricsIDIsNil() predicate.CumulativeMetrics {
+	return predicate.CumulativeMetrics(sql.FieldIsNull(FieldMetricsID))
+}
+
+// MetricsIDNotNil applies the NotNil predicate on the "metrics_id" field.
+func MetricsIDNotNil() predicate.CumulativeMetrics {
+	return predicate.CumulativeMetrics(sql.FieldNotNull(FieldMetricsID))
 }
 
 // HasMetrics applies the HasEdge predicate on the "metrics" edge.

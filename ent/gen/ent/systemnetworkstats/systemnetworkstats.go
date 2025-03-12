@@ -28,6 +28,8 @@ const (
 	FieldPeakPacketsSentPerSec = "peak_packets_sent_per_sec"
 	// FieldPeakPacketsRecvPerSec holds the string denoting the peak_packets_recv_per_sec field in the database.
 	FieldPeakPacketsRecvPerSec = "peak_packets_recv_per_sec"
+	// FieldNetworkMetricsID holds the string denoting the network_metrics_id field in the database.
+	FieldNetworkMetricsID = "network_metrics_id"
 	// EdgeNetworkMetrics holds the string denoting the network_metrics edge name in mutations.
 	EdgeNetworkMetrics = "network_metrics"
 	// Table holds the table name of the systemnetworkstats in the database.
@@ -38,7 +40,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "networkmetrics" package.
 	NetworkMetricsInverseTable = "network_metrics"
 	// NetworkMetricsColumn is the table column denoting the network_metrics relation/edge.
-	NetworkMetricsColumn = "network_metrics_system_network_stats"
+	NetworkMetricsColumn = "network_metrics_id"
 )
 
 // Columns holds all SQL columns for systemnetworkstats fields.
@@ -52,23 +54,13 @@ var Columns = []string{
 	FieldPeakBytesRecvPerSec,
 	FieldPeakPacketsSentPerSec,
 	FieldPeakPacketsRecvPerSec,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "system_network_stats"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"network_metrics_system_network_stats",
+	FieldNetworkMetricsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -121,6 +113,11 @@ func ByPeakPacketsSentPerSec(opts ...sql.OrderTermOption) OrderOption {
 // ByPeakPacketsRecvPerSec orders the results by the peak_packets_recv_per_sec field.
 func ByPeakPacketsRecvPerSec(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPeakPacketsRecvPerSec, opts...).ToFunc()
+}
+
+// ByNetworkMetricsID orders the results by the network_metrics_id field.
+func ByNetworkMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNetworkMetricsID, opts...).ToFunc()
 }
 
 // ByNetworkMetricsField orders the results by network_metrics field.

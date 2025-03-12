@@ -21,11 +21,12 @@ type TimingBreakdown struct {
 	Name string `json:"name,omitempty"`
 	// Time holds the value of the "time" field.
 	Time string `json:"time,omitempty"`
+	// ExecutionInfoID holds the value of the "execution_info_id" field.
+	ExecutionInfoID int `json:"execution_info_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TimingBreakdownQuery when eager-loading is set.
-	Edges                          TimingBreakdownEdges `json:"edges"`
-	exection_info_timing_breakdown *int
-	selectValues                   sql.SelectValues
+	Edges        TimingBreakdownEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // TimingBreakdownEdges holds the relations/edges for other nodes in the graph.
@@ -68,12 +69,10 @@ func (*TimingBreakdown) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case timingbreakdown.FieldID:
+		case timingbreakdown.FieldID, timingbreakdown.FieldExecutionInfoID:
 			values[i] = new(sql.NullInt64)
 		case timingbreakdown.FieldName, timingbreakdown.FieldTime:
 			values[i] = new(sql.NullString)
-		case timingbreakdown.ForeignKeys[0]: // exection_info_timing_breakdown
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -107,12 +106,11 @@ func (tb *TimingBreakdown) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				tb.Time = value.String
 			}
-		case timingbreakdown.ForeignKeys[0]:
+		case timingbreakdown.FieldExecutionInfoID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field exection_info_timing_breakdown", value)
+				return fmt.Errorf("unexpected type %T for field execution_info_id", values[i])
 			} else if value.Valid {
-				tb.exection_info_timing_breakdown = new(int)
-				*tb.exection_info_timing_breakdown = int(value.Int64)
+				tb.ExecutionInfoID = int(value.Int64)
 			}
 		default:
 			tb.selectValues.Set(columns[i], values[i])
@@ -165,6 +163,9 @@ func (tb *TimingBreakdown) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("time=")
 	builder.WriteString(tb.Time)
+	builder.WriteString(", ")
+	builder.WriteString("execution_info_id=")
+	builder.WriteString(fmt.Sprintf("%v", tb.ExecutionInfoID))
 	builder.WriteByte(')')
 	return builder.String()
 }

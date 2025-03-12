@@ -68,17 +68,23 @@ func (ruu *ResourceUsageUpdate) ClearValue() *ResourceUsageUpdate {
 	return ruu
 }
 
-// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (ruu *ResourceUsageUpdate) SetExecutionInfoID(id int) *ResourceUsageUpdate {
-	ruu.mutation.SetExecutionInfoID(id)
+// SetExecutionInfoID sets the "execution_info_id" field.
+func (ruu *ResourceUsageUpdate) SetExecutionInfoID(i int) *ResourceUsageUpdate {
+	ruu.mutation.SetExecutionInfoID(i)
 	return ruu
 }
 
-// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (ruu *ResourceUsageUpdate) SetNillableExecutionInfoID(id *int) *ResourceUsageUpdate {
-	if id != nil {
-		ruu = ruu.SetExecutionInfoID(*id)
+// SetNillableExecutionInfoID sets the "execution_info_id" field if the given value is not nil.
+func (ruu *ResourceUsageUpdate) SetNillableExecutionInfoID(i *int) *ResourceUsageUpdate {
+	if i != nil {
+		ruu.SetExecutionInfoID(*i)
 	}
+	return ruu
+}
+
+// ClearExecutionInfoID clears the value of the "execution_info_id" field.
+func (ruu *ResourceUsageUpdate) ClearExecutionInfoID() *ResourceUsageUpdate {
+	ruu.mutation.ClearExecutionInfoID()
 	return ruu
 }
 
@@ -235,17 +241,23 @@ func (ruuo *ResourceUsageUpdateOne) ClearValue() *ResourceUsageUpdateOne {
 	return ruuo
 }
 
-// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (ruuo *ResourceUsageUpdateOne) SetExecutionInfoID(id int) *ResourceUsageUpdateOne {
-	ruuo.mutation.SetExecutionInfoID(id)
+// SetExecutionInfoID sets the "execution_info_id" field.
+func (ruuo *ResourceUsageUpdateOne) SetExecutionInfoID(i int) *ResourceUsageUpdateOne {
+	ruuo.mutation.SetExecutionInfoID(i)
 	return ruuo
 }
 
-// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (ruuo *ResourceUsageUpdateOne) SetNillableExecutionInfoID(id *int) *ResourceUsageUpdateOne {
-	if id != nil {
-		ruuo = ruuo.SetExecutionInfoID(*id)
+// SetNillableExecutionInfoID sets the "execution_info_id" field if the given value is not nil.
+func (ruuo *ResourceUsageUpdateOne) SetNillableExecutionInfoID(i *int) *ResourceUsageUpdateOne {
+	if i != nil {
+		ruuo.SetExecutionInfoID(*i)
 	}
+	return ruuo
+}
+
+// ClearExecutionInfoID clears the value of the "execution_info_id" field.
+func (ruuo *ResourceUsageUpdateOne) ClearExecutionInfoID() *ResourceUsageUpdateOne {
+	ruuo.mutation.ClearExecutionInfoID()
 	return ruuo
 }
 

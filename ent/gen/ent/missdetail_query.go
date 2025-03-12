@@ -23,7 +23,6 @@ type MissDetailQuery struct {
 	inters                    []Interceptor
 	predicates                []predicate.MissDetail
 	withActionCacheStatistics *ActionCacheStatisticsQuery
-	withFKs                   bool
 	modifiers                 []func(*sql.Selector)
 	loadTotal                 []func(context.Context, []*MissDetail) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (mdq *MissDetailQuery) prepareQuery(ctx context.Context) error {
 func (mdq *MissDetailQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*MissDetail, error) {
 	var (
 		nodes       = []*MissDetail{}
-		withFKs     = mdq.withFKs
 		_spec       = mdq.querySpec()
 		loadedTypes = [1]bool{
 			mdq.withActionCacheStatistics != nil,
 		}
 	)
-	if mdq.withActionCacheStatistics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, missdetail.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*MissDetail).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (mdq *MissDetailQuery) loadActionCacheStatistics(ctx context.Context, query
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*MissDetail)
 	for i := range nodes {
-		if nodes[i].action_cache_statistics_miss_details == nil {
-			continue
-		}
-		fk := *nodes[i].action_cache_statistics_miss_details
+		fk := nodes[i].ActionCacheStatisticsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (mdq *MissDetailQuery) loadActionCacheStatistics(ctx context.Context, query
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "action_cache_statistics_miss_details" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "action_cache_statistics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (mdq *MissDetailQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != missdetail.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if mdq.withActionCacheStatistics != nil {
+			_spec.Node.AddColumnOnce(missdetail.FieldActionCacheStatisticsID)
 		}
 	}
 	if ps := mdq.predicates; len(ps) > 0 {

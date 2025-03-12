@@ -62,12 +62,14 @@ type BazelInvocation struct {
 	NumFetches int64 `json:"num_fetches,omitempty"`
 	// ProfileName holds the value of the "profile_name" field.
 	ProfileName string `json:"profile_name,omitempty"`
+	// EventFileID holds the value of the "event_file_id" field.
+	EventFileID int `json:"event_file_id,omitempty"`
+	// BuildID holds the value of the "build_id" field.
+	BuildID int `json:"build_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BazelInvocationQuery when eager-loading is set.
-	Edges                       BazelInvocationEdges `json:"edges"`
-	build_invocations           *int
-	event_file_bazel_invocation *int
-	selectValues                sql.SelectValues
+	Edges        BazelInvocationEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // BazelInvocationEdges holds the relations/edges for other nodes in the graph.
@@ -177,7 +179,7 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case bazelinvocation.FieldBepCompleted, bazelinvocation.FieldIsCiWorker:
 			values[i] = new(sql.NullBool)
-		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber, bazelinvocation.FieldNumFetches:
+		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber, bazelinvocation.FieldNumFetches, bazelinvocation.FieldEventFileID, bazelinvocation.FieldBuildID:
 			values[i] = new(sql.NullInt64)
 		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldBuildLogs, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldHostname, bazelinvocation.FieldConfigurationMnemonic, bazelinvocation.FieldProfileName:
 			values[i] = new(sql.NullString)
@@ -185,10 +187,6 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullTime)
 		case bazelinvocation.FieldInvocationID:
 			values[i] = new(uuid.UUID)
-		case bazelinvocation.ForeignKeys[0]: // build_invocations
-			values[i] = new(sql.NullInt64)
-		case bazelinvocation.ForeignKeys[1]: // event_file_bazel_invocation
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -328,19 +326,17 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				bi.ProfileName = value.String
 			}
-		case bazelinvocation.ForeignKeys[0]:
+		case bazelinvocation.FieldEventFileID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field build_invocations", value)
+				return fmt.Errorf("unexpected type %T for field event_file_id", values[i])
 			} else if value.Valid {
-				bi.build_invocations = new(int)
-				*bi.build_invocations = int(value.Int64)
+				bi.EventFileID = int(value.Int64)
 			}
-		case bazelinvocation.ForeignKeys[1]:
+		case bazelinvocation.FieldBuildID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field event_file_bazel_invocation", value)
+				return fmt.Errorf("unexpected type %T for field build_id", values[i])
 			} else if value.Valid {
-				bi.event_file_bazel_invocation = new(int)
-				*bi.event_file_bazel_invocation = int(value.Int64)
+				bi.BuildID = int(value.Int64)
 			}
 		default:
 			bi.selectValues.Set(columns[i], values[i])
@@ -469,6 +465,12 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("profile_name=")
 	builder.WriteString(bi.ProfileName)
+	builder.WriteString(", ")
+	builder.WriteString("event_file_id=")
+	builder.WriteString(fmt.Sprintf("%v", bi.EventFileID))
+	builder.WriteString(", ")
+	builder.WriteString("build_id=")
+	builder.WriteString(fmt.Sprintf("%v", bi.BuildID))
 	builder.WriteByte(')')
 	return builder.String()
 }

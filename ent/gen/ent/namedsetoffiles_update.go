@@ -29,17 +29,23 @@ func (nsofu *NamedSetOfFilesUpdate) Where(ps ...predicate.NamedSetOfFiles) *Name
 	return nsofu
 }
 
-// SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID.
-func (nsofu *NamedSetOfFilesUpdate) SetOutputGroupID(id int) *NamedSetOfFilesUpdate {
-	nsofu.mutation.SetOutputGroupID(id)
+// SetOutputGroupID sets the "output_group_id" field.
+func (nsofu *NamedSetOfFilesUpdate) SetOutputGroupID(i int) *NamedSetOfFilesUpdate {
+	nsofu.mutation.SetOutputGroupID(i)
 	return nsofu
 }
 
-// SetNillableOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID if the given value is not nil.
-func (nsofu *NamedSetOfFilesUpdate) SetNillableOutputGroupID(id *int) *NamedSetOfFilesUpdate {
-	if id != nil {
-		nsofu = nsofu.SetOutputGroupID(*id)
+// SetNillableOutputGroupID sets the "output_group_id" field if the given value is not nil.
+func (nsofu *NamedSetOfFilesUpdate) SetNillableOutputGroupID(i *int) *NamedSetOfFilesUpdate {
+	if i != nil {
+		nsofu.SetOutputGroupID(*i)
 	}
+	return nsofu
+}
+
+// ClearOutputGroupID clears the value of the "output_group_id" field.
+func (nsofu *NamedSetOfFilesUpdate) ClearOutputGroupID() *NamedSetOfFilesUpdate {
+	nsofu.mutation.ClearOutputGroupID()
 	return nsofu
 }
 
@@ -279,17 +285,23 @@ type NamedSetOfFilesUpdateOne struct {
 	mutation *NamedSetOfFilesMutation
 }
 
-// SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID.
-func (nsofuo *NamedSetOfFilesUpdateOne) SetOutputGroupID(id int) *NamedSetOfFilesUpdateOne {
-	nsofuo.mutation.SetOutputGroupID(id)
+// SetOutputGroupID sets the "output_group_id" field.
+func (nsofuo *NamedSetOfFilesUpdateOne) SetOutputGroupID(i int) *NamedSetOfFilesUpdateOne {
+	nsofuo.mutation.SetOutputGroupID(i)
 	return nsofuo
 }
 
-// SetNillableOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID if the given value is not nil.
-func (nsofuo *NamedSetOfFilesUpdateOne) SetNillableOutputGroupID(id *int) *NamedSetOfFilesUpdateOne {
-	if id != nil {
-		nsofuo = nsofuo.SetOutputGroupID(*id)
+// SetNillableOutputGroupID sets the "output_group_id" field if the given value is not nil.
+func (nsofuo *NamedSetOfFilesUpdateOne) SetNillableOutputGroupID(i *int) *NamedSetOfFilesUpdateOne {
+	if i != nil {
+		nsofuo.SetOutputGroupID(*i)
 	}
+	return nsofuo
+}
+
+// ClearOutputGroupID clears the value of the "output_group_id" field.
+func (nsofuo *NamedSetOfFilesUpdateOne) ClearOutputGroupID() *NamedSetOfFilesUpdateOne {
+	nsofuo.mutation.ClearOutputGroupID()
 	return nsofuo
 }
 

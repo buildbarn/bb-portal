@@ -75,17 +75,23 @@ func (gmu *GarbageMetricsUpdate) ClearGarbageCollected() *GarbageMetricsUpdate {
 	return gmu
 }
 
-// SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
-func (gmu *GarbageMetricsUpdate) SetMemoryMetricsID(id int) *GarbageMetricsUpdate {
-	gmu.mutation.SetMemoryMetricsID(id)
+// SetMemoryMetricsID sets the "memory_metrics_id" field.
+func (gmu *GarbageMetricsUpdate) SetMemoryMetricsID(i int) *GarbageMetricsUpdate {
+	gmu.mutation.SetMemoryMetricsID(i)
 	return gmu
 }
 
-// SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
-func (gmu *GarbageMetricsUpdate) SetNillableMemoryMetricsID(id *int) *GarbageMetricsUpdate {
-	if id != nil {
-		gmu = gmu.SetMemoryMetricsID(*id)
+// SetNillableMemoryMetricsID sets the "memory_metrics_id" field if the given value is not nil.
+func (gmu *GarbageMetricsUpdate) SetNillableMemoryMetricsID(i *int) *GarbageMetricsUpdate {
+	if i != nil {
+		gmu.SetMemoryMetricsID(*i)
 	}
+	return gmu
+}
+
+// ClearMemoryMetricsID clears the value of the "memory_metrics_id" field.
+func (gmu *GarbageMetricsUpdate) ClearMemoryMetricsID() *GarbageMetricsUpdate {
+	gmu.mutation.ClearMemoryMetricsID()
 	return gmu
 }
 
@@ -252,17 +258,23 @@ func (gmuo *GarbageMetricsUpdateOne) ClearGarbageCollected() *GarbageMetricsUpda
 	return gmuo
 }
 
-// SetMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID.
-func (gmuo *GarbageMetricsUpdateOne) SetMemoryMetricsID(id int) *GarbageMetricsUpdateOne {
-	gmuo.mutation.SetMemoryMetricsID(id)
+// SetMemoryMetricsID sets the "memory_metrics_id" field.
+func (gmuo *GarbageMetricsUpdateOne) SetMemoryMetricsID(i int) *GarbageMetricsUpdateOne {
+	gmuo.mutation.SetMemoryMetricsID(i)
 	return gmuo
 }
 
-// SetNillableMemoryMetricsID sets the "memory_metrics" edge to the MemoryMetrics entity by ID if the given value is not nil.
-func (gmuo *GarbageMetricsUpdateOne) SetNillableMemoryMetricsID(id *int) *GarbageMetricsUpdateOne {
-	if id != nil {
-		gmuo = gmuo.SetMemoryMetricsID(*id)
+// SetNillableMemoryMetricsID sets the "memory_metrics_id" field if the given value is not nil.
+func (gmuo *GarbageMetricsUpdateOne) SetNillableMemoryMetricsID(i *int) *GarbageMetricsUpdateOne {
+	if i != nil {
+		gmuo.SetMemoryMetricsID(*i)
 	}
+	return gmuo
+}
+
+// ClearMemoryMetricsID clears the value of the "memory_metrics_id" field.
+func (gmuo *GarbageMetricsUpdateOne) ClearMemoryMetricsID() *GarbageMetricsUpdateOne {
+	gmuo.mutation.ClearMemoryMetricsID()
 	return gmuo
 }
 

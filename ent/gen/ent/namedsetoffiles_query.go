@@ -369,6 +369,18 @@ func (nsofq *NamedSetOfFilesQuery) WithFileSets(opts ...func(*NamedSetOfFilesQue
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		OutputGroupID int `json:"output_group_id,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.NamedSetOfFiles.Query().
+//		GroupBy(namedsetoffiles.FieldOutputGroupID).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
 func (nsofq *NamedSetOfFilesQuery) GroupBy(field string, fields ...string) *NamedSetOfFilesGroupBy {
 	nsofq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &NamedSetOfFilesGroupBy{build: nsofq}
@@ -380,6 +392,16 @@ func (nsofq *NamedSetOfFilesQuery) GroupBy(field string, fields ...string) *Name
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
+//
+// Example:
+//
+//	var v []struct {
+//		OutputGroupID int `json:"output_group_id,omitempty"`
+//	}
+//
+//	client.NamedSetOfFiles.Query().
+//		Select(namedsetoffiles.FieldOutputGroupID).
+//		Scan(ctx, &v)
 func (nsofq *NamedSetOfFilesQuery) Select(fields ...string) *NamedSetOfFilesSelect {
 	nsofq.ctx.Fields = append(nsofq.ctx.Fields, fields...)
 	sbuild := &NamedSetOfFilesSelect{NamedSetOfFilesQuery: nsofq}
@@ -430,7 +452,7 @@ func (nsofq *NamedSetOfFilesQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 			nsofq.withFileSets != nil,
 		}
 	)
-	if nsofq.withOutputGroup != nil || nsofq.withFileSets != nil {
+	if nsofq.withFileSets != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -495,10 +517,7 @@ func (nsofq *NamedSetOfFilesQuery) loadOutputGroup(ctx context.Context, query *O
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*NamedSetOfFiles)
 	for i := range nodes {
-		if nodes[i].output_group_file_sets == nil {
-			continue
-		}
-		fk := *nodes[i].output_group_file_sets
+		fk := nodes[i].OutputGroupID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -515,7 +534,7 @@ func (nsofq *NamedSetOfFilesQuery) loadOutputGroup(ctx context.Context, query *O
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "output_group_file_sets" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "output_group_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -614,6 +633,9 @@ func (nsofq *NamedSetOfFilesQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != namedsetoffiles.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if nsofq.withOutputGroup != nil {
+			_spec.Node.AddColumnOnce(namedsetoffiles.FieldOutputGroupID)
 		}
 	}
 	if ps := nsofq.predicates; len(ps) > 0 {

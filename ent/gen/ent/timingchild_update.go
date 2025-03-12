@@ -68,17 +68,23 @@ func (tcu *TimingChildUpdate) ClearTime() *TimingChildUpdate {
 	return tcu
 }
 
-// SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
-func (tcu *TimingChildUpdate) SetTimingBreakdownID(id int) *TimingChildUpdate {
-	tcu.mutation.SetTimingBreakdownID(id)
+// SetTimingBreakdownID sets the "timing_breakdown_id" field.
+func (tcu *TimingChildUpdate) SetTimingBreakdownID(i int) *TimingChildUpdate {
+	tcu.mutation.SetTimingBreakdownID(i)
 	return tcu
 }
 
-// SetNillableTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID if the given value is not nil.
-func (tcu *TimingChildUpdate) SetNillableTimingBreakdownID(id *int) *TimingChildUpdate {
-	if id != nil {
-		tcu = tcu.SetTimingBreakdownID(*id)
+// SetNillableTimingBreakdownID sets the "timing_breakdown_id" field if the given value is not nil.
+func (tcu *TimingChildUpdate) SetNillableTimingBreakdownID(i *int) *TimingChildUpdate {
+	if i != nil {
+		tcu.SetTimingBreakdownID(*i)
 	}
+	return tcu
+}
+
+// ClearTimingBreakdownID clears the value of the "timing_breakdown_id" field.
+func (tcu *TimingChildUpdate) ClearTimingBreakdownID() *TimingChildUpdate {
+	tcu.mutation.ClearTimingBreakdownID()
 	return tcu
 }
 
@@ -235,17 +241,23 @@ func (tcuo *TimingChildUpdateOne) ClearTime() *TimingChildUpdateOne {
 	return tcuo
 }
 
-// SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID.
-func (tcuo *TimingChildUpdateOne) SetTimingBreakdownID(id int) *TimingChildUpdateOne {
-	tcuo.mutation.SetTimingBreakdownID(id)
+// SetTimingBreakdownID sets the "timing_breakdown_id" field.
+func (tcuo *TimingChildUpdateOne) SetTimingBreakdownID(i int) *TimingChildUpdateOne {
+	tcuo.mutation.SetTimingBreakdownID(i)
 	return tcuo
 }
 
-// SetNillableTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by ID if the given value is not nil.
-func (tcuo *TimingChildUpdateOne) SetNillableTimingBreakdownID(id *int) *TimingChildUpdateOne {
-	if id != nil {
-		tcuo = tcuo.SetTimingBreakdownID(*id)
+// SetNillableTimingBreakdownID sets the "timing_breakdown_id" field if the given value is not nil.
+func (tcuo *TimingChildUpdateOne) SetNillableTimingBreakdownID(i *int) *TimingChildUpdateOne {
+	if i != nil {
+		tcuo.SetTimingBreakdownID(*i)
 	}
+	return tcuo
+}
+
+// ClearTimingBreakdownID clears the value of the "timing_breakdown_id" field.
+func (tcuo *TimingChildUpdateOne) ClearTimingBreakdownID() *TimingChildUpdateOne {
+	tcuo.mutation.ClearTimingBreakdownID()
 	return tcuo
 }
 

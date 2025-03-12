@@ -131,16 +131,16 @@ func (snsc *SystemNetworkStatsCreate) SetNillablePeakPacketsRecvPerSec(u *uint64
 	return snsc
 }
 
-// SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
-func (snsc *SystemNetworkStatsCreate) SetNetworkMetricsID(id int) *SystemNetworkStatsCreate {
-	snsc.mutation.SetNetworkMetricsID(id)
+// SetNetworkMetricsID sets the "network_metrics_id" field.
+func (snsc *SystemNetworkStatsCreate) SetNetworkMetricsID(i int) *SystemNetworkStatsCreate {
+	snsc.mutation.SetNetworkMetricsID(i)
 	return snsc
 }
 
-// SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
-func (snsc *SystemNetworkStatsCreate) SetNillableNetworkMetricsID(id *int) *SystemNetworkStatsCreate {
-	if id != nil {
-		snsc = snsc.SetNetworkMetricsID(*id)
+// SetNillableNetworkMetricsID sets the "network_metrics_id" field if the given value is not nil.
+func (snsc *SystemNetworkStatsCreate) SetNillableNetworkMetricsID(i *int) *SystemNetworkStatsCreate {
+	if i != nil {
+		snsc.SetNetworkMetricsID(*i)
 	}
 	return snsc
 }
@@ -256,7 +256,7 @@ func (snsc *SystemNetworkStatsCreate) createSpec() (*SystemNetworkStats, *sqlgra
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.network_metrics_system_network_stats = &nodes[0]
+		_node.NetworkMetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

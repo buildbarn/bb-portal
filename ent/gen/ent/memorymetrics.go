@@ -23,11 +23,12 @@ type MemoryMetrics struct {
 	UsedHeapSizePostBuild int64 `json:"used_heap_size_post_build,omitempty"`
 	// PeakPostGcTenuredSpaceHeapSize holds the value of the "peak_post_gc_tenured_space_heap_size" field.
 	PeakPostGcTenuredSpaceHeapSize int64 `json:"peak_post_gc_tenured_space_heap_size,omitempty"`
+	// MetricsID holds the value of the "metrics_id" field.
+	MetricsID int `json:"metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MemoryMetricsQuery when eager-loading is set.
-	Edges                  MemoryMetricsEdges `json:"edges"`
-	metrics_memory_metrics *int
-	selectValues           sql.SelectValues
+	Edges        MemoryMetricsEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // MemoryMetricsEdges holds the relations/edges for other nodes in the graph.
@@ -70,9 +71,7 @@ func (*MemoryMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case memorymetrics.FieldID, memorymetrics.FieldPeakPostGcHeapSize, memorymetrics.FieldUsedHeapSizePostBuild, memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize:
-			values[i] = new(sql.NullInt64)
-		case memorymetrics.ForeignKeys[0]: // metrics_memory_metrics
+		case memorymetrics.FieldID, memorymetrics.FieldPeakPostGcHeapSize, memorymetrics.FieldUsedHeapSizePostBuild, memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize, memorymetrics.FieldMetricsID:
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -113,12 +112,11 @@ func (mm *MemoryMetrics) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				mm.PeakPostGcTenuredSpaceHeapSize = value.Int64
 			}
-		case memorymetrics.ForeignKeys[0]:
+		case memorymetrics.FieldMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field metrics_memory_metrics", value)
+				return fmt.Errorf("unexpected type %T for field metrics_id", values[i])
 			} else if value.Valid {
-				mm.metrics_memory_metrics = new(int)
-				*mm.metrics_memory_metrics = int(value.Int64)
+				mm.MetricsID = int(value.Int64)
 			}
 		default:
 			mm.selectValues.Set(columns[i], values[i])
@@ -174,6 +172,9 @@ func (mm *MemoryMetrics) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("peak_post_gc_tenured_space_heap_size=")
 	builder.WriteString(fmt.Sprintf("%v", mm.PeakPostGcTenuredSpaceHeapSize))
+	builder.WriteString(", ")
+	builder.WriteString("metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", mm.MetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

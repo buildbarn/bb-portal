@@ -48,16 +48,16 @@ func (tbc *TimingBreakdownCreate) SetNillableTime(s *string) *TimingBreakdownCre
 	return tbc
 }
 
-// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (tbc *TimingBreakdownCreate) SetExecutionInfoID(id int) *TimingBreakdownCreate {
-	tbc.mutation.SetExecutionInfoID(id)
+// SetExecutionInfoID sets the "execution_info_id" field.
+func (tbc *TimingBreakdownCreate) SetExecutionInfoID(i int) *TimingBreakdownCreate {
+	tbc.mutation.SetExecutionInfoID(i)
 	return tbc
 }
 
-// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (tbc *TimingBreakdownCreate) SetNillableExecutionInfoID(id *int) *TimingBreakdownCreate {
-	if id != nil {
-		tbc = tbc.SetExecutionInfoID(*id)
+// SetNillableExecutionInfoID sets the "execution_info_id" field if the given value is not nil.
+func (tbc *TimingBreakdownCreate) SetNillableExecutionInfoID(i *int) *TimingBreakdownCreate {
+	if i != nil {
+		tbc.SetExecutionInfoID(*i)
 	}
 	return tbc
 }
@@ -164,7 +164,7 @@ func (tbc *TimingBreakdownCreate) createSpec() (*TimingBreakdown, *sqlgraph.Crea
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.exection_info_timing_breakdown = &nodes[0]
+		_node.ExecutionInfoID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tbc.mutation.ChildIDs(); len(nodes) > 0 {

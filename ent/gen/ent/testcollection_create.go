@@ -120,16 +120,16 @@ func (tcc *TestCollectionCreate) SetNillableDurationMs(i *int64) *TestCollection
 	return tcc
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tcc *TestCollectionCreate) SetBazelInvocationID(id int) *TestCollectionCreate {
-	tcc.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (tcc *TestCollectionCreate) SetBazelInvocationID(i int) *TestCollectionCreate {
+	tcc.mutation.SetBazelInvocationID(i)
 	return tcc
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tcc *TestCollectionCreate) SetNillableBazelInvocationID(id *int) *TestCollectionCreate {
-	if id != nil {
-		tcc = tcc.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (tcc *TestCollectionCreate) SetNillableBazelInvocationID(i *int) *TestCollectionCreate {
+	if i != nil {
+		tcc.SetBazelInvocationID(*i)
 	}
 	return tcc
 }
@@ -289,7 +289,7 @@ func (tcc *TestCollectionCreate) createSpec() (*TestCollection, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.bazel_invocation_test_collection = &nodes[0]
+		_node.BazelInvocationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tcc.mutation.TestSummaryIDs(); len(nodes) > 0 {

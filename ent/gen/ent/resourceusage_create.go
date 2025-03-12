@@ -47,16 +47,16 @@ func (ruc *ResourceUsageCreate) SetNillableValue(s *string) *ResourceUsageCreate
 	return ruc
 }
 
-// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID.
-func (ruc *ResourceUsageCreate) SetExecutionInfoID(id int) *ResourceUsageCreate {
-	ruc.mutation.SetExecutionInfoID(id)
+// SetExecutionInfoID sets the "execution_info_id" field.
+func (ruc *ResourceUsageCreate) SetExecutionInfoID(i int) *ResourceUsageCreate {
+	ruc.mutation.SetExecutionInfoID(i)
 	return ruc
 }
 
-// SetNillableExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by ID if the given value is not nil.
-func (ruc *ResourceUsageCreate) SetNillableExecutionInfoID(id *int) *ResourceUsageCreate {
-	if id != nil {
-		ruc = ruc.SetExecutionInfoID(*id)
+// SetNillableExecutionInfoID sets the "execution_info_id" field if the given value is not nil.
+func (ruc *ResourceUsageCreate) SetNillableExecutionInfoID(i *int) *ResourceUsageCreate {
+	if i != nil {
+		ruc.SetExecutionInfoID(*i)
 	}
 	return ruc
 }
@@ -148,7 +148,7 @@ func (ruc *ResourceUsageCreate) createSpec() (*ResourceUsage, *sqlgraph.CreateSp
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.exection_info_resource_usage = &nodes[0]
+		_node.ExecutionInfoID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

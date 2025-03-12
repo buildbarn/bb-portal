@@ -210,17 +210,23 @@ func (adu *ActionDataUpdate) ClearUserTime() *ActionDataUpdate {
 	return adu
 }
 
-// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (adu *ActionDataUpdate) SetActionSummaryID(id int) *ActionDataUpdate {
-	adu.mutation.SetActionSummaryID(id)
+// SetActionSummaryID sets the "action_summary_id" field.
+func (adu *ActionDataUpdate) SetActionSummaryID(i int) *ActionDataUpdate {
+	adu.mutation.SetActionSummaryID(i)
 	return adu
 }
 
-// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (adu *ActionDataUpdate) SetNillableActionSummaryID(id *int) *ActionDataUpdate {
-	if id != nil {
-		adu = adu.SetActionSummaryID(*id)
+// SetNillableActionSummaryID sets the "action_summary_id" field if the given value is not nil.
+func (adu *ActionDataUpdate) SetNillableActionSummaryID(i *int) *ActionDataUpdate {
+	if i != nil {
+		adu.SetActionSummaryID(*i)
 	}
+	return adu
+}
+
+// ClearActionSummaryID clears the value of the "action_summary_id" field.
+func (adu *ActionDataUpdate) ClearActionSummaryID() *ActionDataUpdate {
+	adu.mutation.ClearActionSummaryID()
 	return adu
 }
 
@@ -567,17 +573,23 @@ func (aduo *ActionDataUpdateOne) ClearUserTime() *ActionDataUpdateOne {
 	return aduo
 }
 
-// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (aduo *ActionDataUpdateOne) SetActionSummaryID(id int) *ActionDataUpdateOne {
-	aduo.mutation.SetActionSummaryID(id)
+// SetActionSummaryID sets the "action_summary_id" field.
+func (aduo *ActionDataUpdateOne) SetActionSummaryID(i int) *ActionDataUpdateOne {
+	aduo.mutation.SetActionSummaryID(i)
 	return aduo
 }
 
-// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (aduo *ActionDataUpdateOne) SetNillableActionSummaryID(id *int) *ActionDataUpdateOne {
-	if id != nil {
-		aduo = aduo.SetActionSummaryID(*id)
+// SetNillableActionSummaryID sets the "action_summary_id" field if the given value is not nil.
+func (aduo *ActionDataUpdateOne) SetNillableActionSummaryID(i *int) *ActionDataUpdateOne {
+	if i != nil {
+		aduo.SetActionSummaryID(*i)
 	}
+	return aduo
+}
+
+// ClearActionSummaryID clears the value of the "action_summary_id" field.
+func (aduo *ActionDataUpdateOne) ClearActionSummaryID() *ActionDataUpdateOne {
+	aduo.mutation.ClearActionSummaryID()
 	return aduo
 }
 

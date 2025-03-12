@@ -93,6 +93,11 @@ func PeakPacketsRecvPerSec(v uint64) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldPeakPacketsRecvPerSec, v))
 }
 
+// NetworkMetricsID applies equality check predicate on the "network_metrics_id" field. It's identical to NetworkMetricsIDEQ.
+func NetworkMetricsID(v int) predicate.SystemNetworkStats {
+	return predicate.SystemNetworkStats(sql.FieldEQ(FieldNetworkMetricsID, v))
+}
+
 // BytesSentEQ applies the EQ predicate on the "bytes_sent" field.
 func BytesSentEQ(v uint64) predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldEQ(FieldBytesSent, v))
@@ -491,6 +496,36 @@ func PeakPacketsRecvPerSecIsNil() predicate.SystemNetworkStats {
 // PeakPacketsRecvPerSecNotNil applies the NotNil predicate on the "peak_packets_recv_per_sec" field.
 func PeakPacketsRecvPerSecNotNil() predicate.SystemNetworkStats {
 	return predicate.SystemNetworkStats(sql.FieldNotNull(FieldPeakPacketsRecvPerSec))
+}
+
+// NetworkMetricsIDEQ applies the EQ predicate on the "network_metrics_id" field.
+func NetworkMetricsIDEQ(v int) predicate.SystemNetworkStats {
+	return predicate.SystemNetworkStats(sql.FieldEQ(FieldNetworkMetricsID, v))
+}
+
+// NetworkMetricsIDNEQ applies the NEQ predicate on the "network_metrics_id" field.
+func NetworkMetricsIDNEQ(v int) predicate.SystemNetworkStats {
+	return predicate.SystemNetworkStats(sql.FieldNEQ(FieldNetworkMetricsID, v))
+}
+
+// NetworkMetricsIDIn applies the In predicate on the "network_metrics_id" field.
+func NetworkMetricsIDIn(vs ...int) predicate.SystemNetworkStats {
+	return predicate.SystemNetworkStats(sql.FieldIn(FieldNetworkMetricsID, vs...))
+}
+
+// NetworkMetricsIDNotIn applies the NotIn predicate on the "network_metrics_id" field.
+func NetworkMetricsIDNotIn(vs ...int) predicate.SystemNetworkStats {
+	return predicate.SystemNetworkStats(sql.FieldNotIn(FieldNetworkMetricsID, vs...))
+}
+
+// NetworkMetricsIDIsNil applies the IsNil predicate on the "network_metrics_id" field.
+func NetworkMetricsIDIsNil() predicate.SystemNetworkStats {
+	return predicate.SystemNetworkStats(sql.FieldIsNull(FieldNetworkMetricsID))
+}
+
+// NetworkMetricsIDNotNil applies the NotNil predicate on the "network_metrics_id" field.
+func NetworkMetricsIDNotNil() predicate.SystemNetworkStats {
+	return predicate.SystemNetworkStats(sql.FieldNotNull(FieldNetworkMetricsID))
 }
 
 // HasNetworkMetrics applies the HasEdge predicate on the "network_metrics" edge.

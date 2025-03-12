@@ -109,17 +109,23 @@ func (tmu *TargetMetricsUpdate) ClearTargetsConfiguredNotIncludingAspects() *Tar
 	return tmu
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmu *TargetMetricsUpdate) SetMetricsID(id int) *TargetMetricsUpdate {
-	tmu.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (tmu *TargetMetricsUpdate) SetMetricsID(i int) *TargetMetricsUpdate {
+	tmu.mutation.SetMetricsID(i)
 	return tmu
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmu *TargetMetricsUpdate) SetNillableMetricsID(id *int) *TargetMetricsUpdate {
-	if id != nil {
-		tmu = tmu.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (tmu *TargetMetricsUpdate) SetNillableMetricsID(i *int) *TargetMetricsUpdate {
+	if i != nil {
+		tmu.SetMetricsID(*i)
 	}
+	return tmu
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (tmu *TargetMetricsUpdate) ClearMetricsID() *TargetMetricsUpdate {
+	tmu.mutation.ClearMetricsID()
 	return tmu
 }
 
@@ -332,17 +338,23 @@ func (tmuo *TargetMetricsUpdateOne) ClearTargetsConfiguredNotIncludingAspects() 
 	return tmuo
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmuo *TargetMetricsUpdateOne) SetMetricsID(id int) *TargetMetricsUpdateOne {
-	tmuo.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (tmuo *TargetMetricsUpdateOne) SetMetricsID(i int) *TargetMetricsUpdateOne {
+	tmuo.mutation.SetMetricsID(i)
 	return tmuo
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmuo *TargetMetricsUpdateOne) SetNillableMetricsID(id *int) *TargetMetricsUpdateOne {
-	if id != nil {
-		tmuo = tmuo.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (tmuo *TargetMetricsUpdateOne) SetNillableMetricsID(i *int) *TargetMetricsUpdateOne {
+	if i != nil {
+		tmuo.SetMetricsID(*i)
 	}
+	return tmuo
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (tmuo *TargetMetricsUpdateOne) ClearMetricsID() *TargetMetricsUpdateOne {
+	tmuo.mutation.ClearMetricsID()
 	return tmuo
 }
 
