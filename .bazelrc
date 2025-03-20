@@ -9,4 +9,10 @@ build --remote_default_exec_properties=container-image=docker://ghcr.io/cattheha
 build --jobs=64
 build --incompatible_enable_cc_toolchain_resolution=true
 build --incompatible_use_cc_configure_from_rules_cc=true
+build --cxxopt=-std=c++17
+build --host_cxxopt=-std=c++17
+test --test_output=errors
+build --extra_toolchains=//tools/remote-toolchains:all
+
+
 common --incompatible_enable_proto_toolchain_resolution
