@@ -56,8 +56,6 @@
   local getJobs(binaries, containers, doUpload) = {
     build_and_test: {
       'runs-on': 'ubuntu-latest',
-      env:
-        BUILD_URL: ${{ github.event.number }},
       steps: [
         // TODO: Switch back to l.gcr.io/google/bazel once updated
         // container images get published once again.
@@ -77,6 +75,9 @@
         {
           name: 'Gazelle',
           run: "rm -f $(find . -name '*.pb.go' | sed -e 's/[^/]*$/BUILD.bazel/') && bazel run //:gazelle",
+          env: {
+            BUILD_URL: '${{ github.event.number }}',
+          },
         },
         {
           name: 'Buildifier',
