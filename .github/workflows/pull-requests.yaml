@@ -53,7 +53,7 @@
             },
             {
                "name": "linux_amd64: build and test",
-               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_amd64_cgo //... --bes_results_url=https://bbportal.ivy.cx/bazel-invocations/ --bes_backend=grpcs://bes.ivy.cx:443"
+               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_amd64_cgo //..."
             },
             {
                "name": "linux_arm64: build and test",
