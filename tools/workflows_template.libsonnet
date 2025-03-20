@@ -56,6 +56,8 @@
   local getJobs(binaries, containers, doUpload) = {
     build_and_test: {
       'runs-on': 'ubuntu-latest',
+      env:
+        BUILD_URL: ${{ github.event.number }},
       steps: [
         // TODO: Switch back to l.gcr.io/google/bazel once updated
         // container images get published once again.
