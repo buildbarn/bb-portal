@@ -2,10 +2,18 @@
    "jobs": {
       "build_and_test": {
          "runs-on": "ubuntu-latest",
+         "env": {
+            "BUILD_URL": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "TEST_ENV_VAR" : "a test literal value"
+         },
          "steps": [
             {
                "name": "Check out source code",
                "uses": "actions/checkout@v1"
+            },
+            { 
+               "name" : "printenv",
+               "run" : "printenv"
             },
             {
                "name": "Installing Bazel",
@@ -18,9 +26,6 @@
             {
                "name": "Gazelle",
                "run": "rm -f $(find . -name '*.pb.go' | sed -e 's/[^/]*$/BUILD.bazel/') && bazel run //:gazelle",
-               'env': {
-                  'BUILD_URL': '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
-               },
             },
             {
                "name": "Buildifier",
