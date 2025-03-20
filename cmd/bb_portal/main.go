@@ -148,6 +148,7 @@ func main() {
 			configuration.HttpServers,
 			bb_http.NewMetricsHandler(c.Handler(router), "PortalUI"),
 			siblingsGroup,
+			grpcClientFactory,
 		)
 
 		if err := bb_grpc.NewServersFromConfigurationAndServe(
@@ -156,6 +157,7 @@ func main() {
 				build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), bes.NewBuildEventServer(dbClient, blobArchiver))
 			},
 			siblingsGroup,
+			grpcClientFactory,
 		); err != nil {
 			return util.StatusWrap(err, "gRPC server failure")
 		}

@@ -12,7 +12,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/api/grpcweb/isccproxy"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-remote-execution/pkg/proto/buildqueuestate"
-	"github.com/buildbarn/bb-storage/pkg/auth"
+	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	bb_http "github.com/buildbarn/bb-storage/pkg/http"
 	"github.com/buildbarn/bb-storage/pkg/program"
@@ -49,6 +49,7 @@ func registerAndStartServer(
 		proxyConfig.HttpServers,
 		bb_http.NewMetricsHandler(grpcWebServer, metricsName),
 		siblingsGroup,
+		grpcClientFactory,
 	)
 }
 
@@ -72,7 +73,7 @@ func StartGrpcWebProxyServer(
 		return
 	}
 
-	instanceNameAuthorizer, err := auth.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer)
+	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, grpcClientFactory)
 	if err != nil {
 		log.Fatalf("Failed to create InstanceNameAuthorizer: %v", err)
 	}

@@ -4,34 +4,35 @@
 
 module(name = "com_github_buildbarn_bb_portal")
 
-bazel_dep(name = "bazel_remote_apis", version = "0.0.0")
+bazel_dep(name = "bazel_remote_apis", version = "0")
 bazel_dep(name = "com_github_buildbarn_bb_remote_execution")
 bazel_dep(name = "com_github_buildbarn_bb_storage")
 bazel_dep(name = "com_github_buildbarn_go_xdr")
-bazel_dep(name = "gazelle", version = "0.38.0")
-bazel_dep(name = "googleapis", version = "0.0.0-20240819-fe8ba054a")
+bazel_dep(name = "gazelle", version = "0.42.0")
+bazel_dep(name = "googleapis", version = "0.0.0-20241220-5e258e33")
 bazel_dep(name = "googletest", version = "1.15.2")
-bazel_dep(name = "protobuf", version = "27.3")
-bazel_dep(name = "rules_go", version = "0.50.1")
+bazel_dep(name = "protobuf", version = "29.3")
+bazel_dep(name = "rules_go", version = "0.53.0")
 bazel_dep(name = "rules_jsonnet", version = "0.6.0")
-bazel_dep(name = "rules_oci", version = "1.8.0")
-bazel_dep(name = "toolchains_llvm", version = "1.1.2")
+bazel_dep(name = "rules_oci", version = "2.2.2")
+bazel_dep(name = "rules_proto", version = "7.1.0")
+bazel_dep(name = "toolchains_llvm", version = "1.3.0")
 
 git_override(
     module_name = "bazel_remote_apis",
-    commit = "de1d77b12feb81f96909f0410991c3c966d9d8e7",
+    commit = "7f922028fcfac63bdd8431e68de152d9e7a9e2a0",
     remote = "https://github.com/bazelbuild/remote-apis.git",
 )
 
 git_override(
     module_name = "com_github_buildbarn_bb_remote_execution",
-    commit = "853626adcafd25a948f90b05a251bfba9a0e236f",
+    commit = "20a2e6d4cc7173e8fd215ecd54e416487ce146ab",
     remote = "https://github.com/buildbarn/bb-remote-execution.git",
 )
 
 git_override(
     module_name = "com_github_buildbarn_bb_storage",
-    commit = "0941111f29e31905e4081e6262bccf0c123940ed",
+    commit = "ed3a308b8e16acab47f874574806b97bf907f3f9",
     patches = [
         "//:patches/com_buildbarn_bb_storage/base_image.diff",
         "//:patches/com_buildbarn_bb_storage/workflows_template.diff",
@@ -55,27 +56,35 @@ git_override(
     remote = "https://github.com/marcohu/rules_antlr.git",
 )
 
-git_override(
+single_version_override(
     module_name = "gazelle",
-    commit = "4d0129d7adae33e8e648d3624aff8fa8f93f375b",
-    patches = [
-        "//:patches/gazelle/bazel-remote-apis.diff",
-        "//:patches/gazelle/dont-flatten-srcs.diff",
-    ],
-    remote = "https://github.com/bazelbuild/bazel-gazelle.git",
+    patches = ["//:patches/gazelle/dont-flatten-srcs.diff"],
+)
+
+single_version_override(
+    module_name = "jsonnet",
+    patches = ["//:patches/jsonnet/bazel-8.diff"],
 )
 
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
-go_sdk.download(version = "1.23.0")
+go_sdk.download(version = "1.24.0")
 
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.gazelle_override(
     build_file_generation = "on",
-    directives = [
-        "gazelle:resolve go github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2 @bazel_remote_apis//build/bazel/remote/execution/v2:remote_execution_go_proto",
-        "gazelle:resolve go github.com/bazelbuild/remote-apis/build/bazel/semver @bazel_remote_apis//build/bazel/semver:semver_go_proto",
+    path = "github.com/cncf/xds/go",
+)
+go_deps.module_override(
+    patches = [
+        "@com_github_buildbarn_bb_remote_execution//:patches/com_github_hanwen_go_fuse_v2/direntrylist-offsets-and-testability.diff",
+        "@com_github_buildbarn_bb_remote_execution//:patches/com_github_hanwen_go_fuse_v2/writeback-cache.diff",
+        "@com_github_buildbarn_bb_remote_execution//:patches/com_github_hanwen_go_fuse_v2/notify-testability.diff",
     ],
-    path = "github.com/bazelbuild/remote-apis-sdks",
+    path = "github.com/hanwen/go-fuse/v2",
+)
+go_deps.module_override(
+    patches = ["@com_github_buildbarn_bb_storage//:patches/org_golang_x_sys/o-search.diff"],
+    path = "golang.org/x/sys",
 )
 go_deps.from_file(go_mod = "//:go.mod")
 use_repo(
@@ -83,7 +92,6 @@ use_repo(
     "cc_mvdan_gofumpt",
     "com_github_99designs_gqlgen",
     "com_github_bazelbuild_buildtools",
-    "com_github_bazelbuild_remote_apis_sdks",
     "com_github_fsnotify_fsnotify",
     "com_github_google_uuid",
     "com_github_gorilla_mux",

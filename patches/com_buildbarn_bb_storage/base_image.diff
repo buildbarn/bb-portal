@@ -1,11 +1,11 @@
 diff --git MODULE.bazel MODULE.bazel
-index 7f3bade..1323c32 100644
+index 4dce8d0..1041af2 100644
 --- MODULE.bazel
 +++ MODULE.bazel
-@@ -137,3 +137,14 @@ oci.pull(
-     ],
+@@ -157,3 +157,19 @@ use_repo(
+     "distroless_static_linux_amd64",
+     "distroless_static_linux_arm64_v8",
  )
- use_repo(oci, "distroless_static")
 +
 +oci.pull(
 +    name = "distroless_base",
@@ -16,9 +16,14 @@ index 7f3bade..1323c32 100644
 +        "linux/arm64/v8",
 +    ],
 +)
-+use_repo(oci, "distroless_base")
++use_repo(
++    oci,
++    "distroless_base",
++    "distroless_base_linux_amd64",
++    "distroless_base_linux_arm64_v8",
++)
 diff --git tools/container.bzl tools/container.bzl
-index e4aa679..4900487 100644
+index e4aa679..c777774 100644
 --- tools/container.bzl
 +++ tools/container.bzl
 @@ -22,7 +22,7 @@ def multiarch_go_image(name, binary):

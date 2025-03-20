@@ -2,6 +2,8 @@ package processing
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -9,8 +11,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/bazelbuild/remote-apis-sdks/go/pkg/digest"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
@@ -93,15 +93,29 @@ func (lfa LocalFileArchiver) ArchiveBlob(_ context.Context, blobURI detectors.Bl
 	}
 }
 
+func digestFromFile(path string) (string, int64, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return "", 0, err
+	}
+	defer f.Close()
+	h := sha256.New()
+	size, err := io.Copy(h, f)
+	if err != nil {
+		return "", 0, err
+	}
+	return hex.EncodeToString(h.Sum(nil)), size, nil
+}
+
 // A function to archive a blob.
 func (lfa LocalFileArchiver) archiveBlob(blobURI detectors.BlobURI) (*ent.Blob, error) {
 	sourcePath := strings.TrimPrefix(string(blobURI), "file://")
-	d, err := digest.NewFromFile(sourcePath)
+	hash, size, err := digestFromFile(sourcePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create digest for path %s: %w", sourcePath, err)
 	}
 	// Avoid using path.Join() as it removes the "./" prefix for a relative path.
-	destPath := lfa.blobArchiveFolder + "/" + d.Hash + "-" + strconv.FormatInt(d.Size, 10)
+	destPath := lfa.blobArchiveFolder + "/" + hash + "-" + strconv.FormatInt(size, 10)
 	destPath = strings.ReplaceAll(destPath, "//", "/")
 
 	var source *os.File
@@ -121,7 +135,7 @@ func (lfa LocalFileArchiver) archiveBlob(blobURI detectors.BlobURI) (*ent.Blob, 
 	}
 	return &ent.Blob{
 		URI:        destPath,
-		SizeBytes:  d.Size,
+		SizeBytes:  size,
 		ArchiveURL: destPath,
 	}, nil
 }
