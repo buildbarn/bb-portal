@@ -1,1 +1,9 @@
 run --workspace_status_command="bash tools/workspace-status.sh"
+build --bes_backend=grpcs://bes.ivy.cx:443
+build --bes_results_url=https://bbportal.ivy.cx/bazel-invocations/
+build --remote_cache=grpcs://rbe.ivy.cx:443
+build --remote_executor=grpcs://rbe.ivy.cx:443
+build --remote_instance_name=rbe
+build --remote_default_exec_properties=OSFamily=linux
+build --remote_default_exec_properties=container-image=docker://ghcr.io/catthehacker/ubuntu:act-22.04@sha256:5f9c35c25db1d51a8ddaae5c0ba8d3c163c5e9a4a6cc97acd409ac7eae239448
+build --jobs=64
