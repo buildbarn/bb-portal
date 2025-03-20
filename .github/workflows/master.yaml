@@ -17,7 +17,10 @@
             },
             {
                "name": "Gazelle",
-               "run": "rm -f $(find . -name '*.pb.go' | sed -e 's/[^/]*$/BUILD.bazel/') && bazel run //:gazelle"
+               "run": "rm -f $(find . -name '*.pb.go' | sed -e 's/[^/]*$/BUILD.bazel/') && bazel run //:gazelle",
+               'env': {
+                  BUILD_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
+               },
             },
             {
                "name": "Buildifier",
