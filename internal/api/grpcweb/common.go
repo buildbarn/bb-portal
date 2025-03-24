@@ -8,10 +8,10 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/digest"
 )
 
-// IsInstanceNamePrefixAllowed checks whether the given instance name prefix is
+// IsInstanceNameAllowed checks whether the given instance name is
 // allowed by the authorizer.
-func IsInstanceNamePrefixAllowed(ctx context.Context, authorizer auth.Authorizer, instanceNamePrefix string) bool {
-	instanceName, err := digest.NewInstanceName(instanceNamePrefix)
+func IsInstanceNameAllowed(ctx context.Context, authorizer auth.Authorizer, instanceNameString string) bool {
+	instanceName, err := digest.NewInstanceName(instanceNameString)
 	if err != nil {
 		log.Println("Error parsing instance name from operation: ", err)
 		return false

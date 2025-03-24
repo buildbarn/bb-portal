@@ -28,7 +28,7 @@ func (s *IsccServerImpl) GetPreviousExecutionStats(ctx context.Context, req *isc
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
-	if !grpcweb.IsInstanceNamePrefixAllowed(ctx, s.authorizer, req.InstanceName) {
+	if !grpcweb.IsInstanceNameAllowed(ctx, s.authorizer, req.InstanceName) {
 		return nil, status.Errorf(codes.PermissionDenied, "Not authorized")
 	}
 	return s.client.GetPreviousExecutionStats(ctx, req)

@@ -10,7 +10,7 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-func TestIsInstanceNamePrefixAllowed(t *testing.T) {
+func TestIsInstanceNameAllowed(t *testing.T) {
 	a := auth.NewJMESPathExpressionAuthorizer(
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
 	)
@@ -29,22 +29,22 @@ func TestIsInstanceNamePrefixAllowed(t *testing.T) {
 	}))
 
 	t.Run("ValidInstanceNames", func(t *testing.T) {
-		if !IsInstanceNamePrefixAllowed(ctx, a, "") {
+		if !IsInstanceNameAllowed(ctx, a, "") {
 			t.Error("Expected empty instance name to be allowed")
 		}
-		if !IsInstanceNamePrefixAllowed(ctx, a, "allowed") {
+		if !IsInstanceNameAllowed(ctx, a, "allowed") {
 			t.Error("Expected instance name to be allowed")
 		}
-		if !IsInstanceNamePrefixAllowed(ctx, a, "alsoAllowed") {
+		if !IsInstanceNameAllowed(ctx, a, "alsoAllowed") {
 			t.Error("Expected instance name to be allowed")
 		}
 	})
 
 	t.Run("InvalidInstanceNames", func(t *testing.T) {
-		if IsInstanceNamePrefixAllowed(ctx, a, "forbidden") {
+		if IsInstanceNameAllowed(ctx, a, "forbidden") {
 			t.Error("Expected instance name to be forbidden")
 		}
-		if IsInstanceNamePrefixAllowed(ctx, a, "allowed/") {
+		if IsInstanceNameAllowed(ctx, a, "allowed/") {
 			t.Error("Expected instance name to be forbidden")
 		}
 	})

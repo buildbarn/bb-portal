@@ -27,7 +27,7 @@ func (s *ActionCacheServerImpl) GetActionResult(ctx context.Context, req *remote
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
-	if !grpcweb.IsInstanceNamePrefixAllowed(ctx, s.authorizer, req.InstanceName) {
+	if !grpcweb.IsInstanceNameAllowed(ctx, s.authorizer, req.InstanceName) {
 		return nil, status.Errorf(codes.NotFound, "Not found")
 	}
 
