@@ -79,7 +79,7 @@ test("generateFileSystemReferenceQueryParams", () => {
     }),
   ).toEqual({
     fileSystemAccessProfile:
-      "%7B%22digest%22%3A%7B%22hash%22%3A%2201234%22%2C%22sizeBytes%22%3A%22999%22%7D%2C%22pathHashesBaseHash%22%3A%2256789%22%7D",
+      '{"digest":{"hash":"01234","sizeBytes":"999"},"pathHashesBaseHash":"56789"}',
   });
 });
 
