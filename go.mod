@@ -24,6 +24,7 @@ require (
 	github.com/machinebox/graphql v0.2.2
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/pkg/errors v0.9.1
+	github.com/rs/cors v1.11.1
 	github.com/stretchr/testify v1.9.0
 	github.com/vektah/gqlparser/v2 v2.5.17
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
@@ -107,7 +108,6 @@ require (
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.59.1 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
-	github.com/rs/cors v1.7.0 // indirect
 	github.com/sercand/kuberesolver/v5 v5.1.1 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9 // indirect

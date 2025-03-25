@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { Divider, Space, Typography } from 'antd';
+import { env } from 'next-runtime-env';
 import styles from './page.module.css';
 import Content from '@/components/Content';
 import Uploader from '@/components/Uploader';
-import { env } from 'next-runtime-env';
 
 const bazelrcLines = `build --bes_backend=${env('NEXT_PUBLIC_BES_GRPC_BACKEND_URL')}\nbuild --bes_results_url=${env('NEXT_PUBLIC_BES_BACKEND_URL')}/bazel-invocations/`;
 
@@ -33,7 +33,7 @@ export default function Home() {
                   flag to analyze
                 </Typography.Text>
               }
-              action="/api/v1/bep/upload"
+              action={`${env("NEXT_PUBLIC_BES_BACKEND_URL")}/api/v1/bep/upload`}
             />
             <Divider />
             <Typography.Text>

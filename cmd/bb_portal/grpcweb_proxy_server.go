@@ -24,26 +24,29 @@ import (
 )
 
 func registerAndStartServer(
-	configuration *bb_portal.GrpcWebProxyConfiguration,
+	globalConfig *bb_portal.ApplicationConfiguration,
+	proxyConfig *bb_portal.GrpcWebProxyConfiguration,
 	siblingsGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
 	metricsName string,
 	registerServer func(*go_grpc.Server, go_grpc.ClientConnInterface),
 ) {
-	grpcClient, err := grpcClientFactory.NewClientFromConfiguration(configuration.Client)
+	grpcClient, err := grpcClientFactory.NewClientFromConfiguration(proxyConfig.Client)
 	if err != nil {
 		log.Fatalf("Could not connect to gRPC server: %v", err)
 	}
 
 	options := []grpcweb.Option{
-		grpcweb.WithOriginFunc(func(origin string) bool { return slices.Contains(configuration.AllowedOrigins, origin) }),
+		grpcweb.WithOriginFunc(func(origin string) bool {
+			return slices.Contains(globalConfig.AllowedOrigins, origin) || slices.Contains(globalConfig.AllowedOrigins, "*")
+		}),
 	}
 
 	grpcServer := go_grpc.NewServer()
 	registerServer(grpcServer, grpcClient)
 	grpcWebServer := grpcweb.WrapServer(grpcServer, options...)
 	bb_http.NewServersFromConfigurationAndServe(
-		configuration.HttpServers,
+		proxyConfig.HttpServers,
 		bb_http.NewMetricsHandler(grpcWebServer, metricsName),
 		siblingsGroup,
 	)
@@ -76,6 +79,7 @@ func StartGrpcWebProxyServer(
 
 	if configuration.BuildQueueStateProxy != nil {
 		registerAndStartServer(
+			configuration,
 			configuration.BuildQueueStateProxy,
 			siblingsGroup,
 			grpcClientFactory,
@@ -91,6 +95,7 @@ func StartGrpcWebProxyServer(
 
 	if configuration.ActionCacheProxy != nil {
 		registerAndStartServer(
+			configuration,
 			configuration.ActionCacheProxy,
 			siblingsGroup,
 			grpcClientFactory,
@@ -106,6 +111,7 @@ func StartGrpcWebProxyServer(
 
 	if configuration.ContentAddressableStorageProxy != nil {
 		registerAndStartServer(
+			configuration,
 			configuration.ContentAddressableStorageProxy,
 			siblingsGroup,
 			grpcClientFactory,
@@ -121,6 +127,7 @@ func StartGrpcWebProxyServer(
 
 	if configuration.InitialSizeClassCacheProxy != nil {
 		registerAndStartServer(
+			configuration,
 			configuration.InitialSizeClassCacheProxy,
 			siblingsGroup,
 			grpcClientFactory,
@@ -136,6 +143,7 @@ func StartGrpcWebProxyServer(
 
 	if configuration.FileSystemAccessCacheProxy != nil {
 		registerAndStartServer(
+			configuration,
 			configuration.FileSystemAccessCacheProxy,
 			siblingsGroup,
 			grpcClientFactory,
