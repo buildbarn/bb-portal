@@ -2,6 +2,8 @@ package buildqueuestateproxy
 
 import (
 	"context"
+	"math"
+	"sort"
 
 	"github.com/buildbarn/bb-portal/internal/api/grpcweb"
 	"github.com/buildbarn/bb-remote-execution/pkg/proto/buildqueuestate"
@@ -42,16 +44,18 @@ func (s *BuildQueueStateServerImpl) GetOperation(ctx context.Context, req *build
 
 // ListOperations proxies ListOperations requests to the client.
 func (s *BuildQueueStateServerImpl) ListOperations(ctx context.Context, req *buildqueuestate.ListOperationsRequest) (*buildqueuestate.ListOperationsResponse, error) {
-	response, err := s.client.ListOperations(ctx, req)
+	// Fetch all operations by setting the page size to the maximum value.
+	response, err := s.client.ListOperations(ctx, &buildqueuestate.ListOperationsRequest{
+		PageSize:           math.MaxUint32,
+		FilterInvocationId: req.FilterInvocationId,
+		FilterStage:        req.FilterStage,
+	})
 	if err != nil {
 		return nil, err
 	}
-	response.Operations = filterOperations(ctx, response, s.authorizer)
-	// We modify the pagination info to not leak information about operations
-	// that the user is not allowed to see.
-	response.PaginationInfo.StartIndex = 0
-	response.PaginationInfo.TotalEntries = 0
-	return response, err
+
+	allOperations := filterOperations(ctx, response, s.authorizer)
+	return createPaginatedListOperationsResponse(allOperations, req.PageSize, req.StartAfter), nil
 }
 
 // KillOperations proxies KillOperations requests to the client.
@@ -165,4 +169,30 @@ func getInstanceNamePrefixFromListWorkersRequest(req *buildqueuestate.ListWorker
 	}
 
 	return "", status.Errorf(codes.InvalidArgument, "Request does not contain a valid InstanceNamePrefix")
+}
+
+// getPaginationInfo uses binary searching to determine which
+// information should be returned by InMemoryBuildQueue's List*()
+// operations.
+func getPaginationInfo(n int, pageSize uint32, f func(int) bool) (*buildqueuestate.PaginationInfo, int) {
+	startIndex := uint32(sort.Search(n, f))
+	endIndex := uint32(n)
+	if endIndex-startIndex > pageSize {
+		endIndex = startIndex + pageSize
+	}
+	return &buildqueuestate.PaginationInfo{
+		StartIndex:   startIndex,
+		TotalEntries: uint32(n),
+	}, int(endIndex)
+}
+
+func createPaginatedListOperationsResponse(allOperations []*buildqueuestate.OperationState, pageSize uint32, startAfter *buildqueuestate.ListOperationsRequest_StartAfter) *buildqueuestate.ListOperationsResponse {
+	paginationInfo, endIndex := getPaginationInfo(len(allOperations), pageSize, func(i int) bool {
+		return startAfter == nil || allOperations[i].Name > startAfter.OperationName
+	})
+
+	return &buildqueuestate.ListOperationsResponse{
+		Operations:     allOperations[paginationInfo.StartIndex:endIndex],
+		PaginationInfo: paginationInfo,
+	}
 }

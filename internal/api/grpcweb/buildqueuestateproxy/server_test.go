@@ -317,3 +317,190 @@ func TestGetInstanceNamePrefixFromListWorkersRequest(t *testing.T) {
 		}
 	})
 }
+
+func TestGetPaginationInfo(t *testing.T) {
+	t.Run("NoEntries", func(t *testing.T) {
+		paginationInfo, endIndex := getPaginationInfo(0, 10, func(i int) bool { return true })
+		if paginationInfo.StartIndex != 0 {
+			t.Errorf("Expected start index 0, got %d", paginationInfo.StartIndex)
+		}
+		if paginationInfo.TotalEntries != 0 {
+			t.Errorf("Expected total entries 0, got %d", paginationInfo.TotalEntries)
+		}
+		if endIndex != 0 {
+			t.Errorf("Expected end index 0, got %d", endIndex)
+		}
+	})
+
+	t.Run("LessThanPageSize", func(t *testing.T) {
+		paginationInfo, endIndex := getPaginationInfo(5, 10, func(i int) bool { return true })
+		if paginationInfo.StartIndex != 0 {
+			t.Errorf("Expected start index 0, got %d", paginationInfo.StartIndex)
+		}
+		if paginationInfo.TotalEntries != 5 {
+			t.Errorf("Expected total entries 5, got %d", paginationInfo.TotalEntries)
+		}
+		if endIndex != 5 {
+			t.Errorf("Expected end index 5, got %d", endIndex)
+		}
+	})
+
+	t.Run("ExactPageSize", func(t *testing.T) {
+		paginationInfo, endIndex := getPaginationInfo(10, 10, func(i int) bool { return true })
+		if paginationInfo.StartIndex != 0 {
+			t.Errorf("Expected start index 0, got %d", paginationInfo.StartIndex)
+		}
+		if paginationInfo.TotalEntries != 10 {
+			t.Errorf("Expected total entries 10, got %d", paginationInfo.TotalEntries)
+		}
+		if endIndex != 10 {
+			t.Errorf("Expected end index 10, got %d", endIndex)
+		}
+	})
+
+	t.Run("MoreThanPageSize", func(t *testing.T) {
+		paginationInfo, endIndex := getPaginationInfo(15, 10, func(i int) bool { return true })
+		if paginationInfo.StartIndex != 0 {
+			t.Errorf("Expected start index 0, got %d", paginationInfo.StartIndex)
+		}
+		if paginationInfo.TotalEntries != 15 {
+			t.Errorf("Expected total entries 15, got %d", paginationInfo.TotalEntries)
+		}
+		if endIndex != 10 {
+			t.Errorf("Expected end index 10, got %d", endIndex)
+		}
+	})
+
+	t.Run("StartAfterMiddle", func(t *testing.T) {
+		paginationInfo, endIndex := getPaginationInfo(20, 5, func(i int) bool { return i >= 10 })
+		if paginationInfo.StartIndex != 10 {
+			t.Errorf("Expected start index 10, got %d", paginationInfo.StartIndex)
+		}
+		if paginationInfo.TotalEntries != 20 {
+			t.Errorf("Expected total entries 20, got %d", paginationInfo.TotalEntries)
+		}
+		if endIndex != 15 {
+			t.Errorf("Expected end index 15, got %d", endIndex)
+		}
+	})
+
+	t.Run("StartCloseToEnd", func(t *testing.T) {
+		paginationInfo, endIndex := getPaginationInfo(20, 5, func(i int) bool { return i >= 18 })
+		if paginationInfo.StartIndex != 18 {
+			t.Errorf("Expected start index 18, got %d", paginationInfo.StartIndex)
+		}
+		if paginationInfo.TotalEntries != 20 {
+			t.Errorf("Expected total entries 20, got %d", paginationInfo.TotalEntries)
+		}
+		if endIndex != 20 {
+			t.Errorf("Expected end index 20, got %d", endIndex)
+		}
+	})
+}
+
+func TestCreatePaginatedListOperationsResponse(t *testing.T) {
+	t.Run("NoOperations", func(t *testing.T) {
+		allOperations := []*buildqueuestate.OperationState{}
+		response := createPaginatedListOperationsResponse(allOperations, 10, nil)
+		if len(response.Operations) != 0 {
+			t.Errorf("Expected no operations, got %d", len(response.Operations))
+		}
+		if response.PaginationInfo.TotalEntries != 0 {
+			t.Errorf("Expected total entries 0, got %d", response.PaginationInfo.TotalEntries)
+		}
+	})
+
+	t.Run("LessThanPageSize", func(t *testing.T) {
+		allOperations := []*buildqueuestate.OperationState{
+			{Name: "op1"},
+			{Name: "op2"},
+		}
+		response := createPaginatedListOperationsResponse(allOperations, 10, nil)
+		if len(response.Operations) != 2 {
+			t.Errorf("Expected 2 operations, got %d", len(response.Operations))
+		}
+		if response.PaginationInfo.TotalEntries != 2 {
+			t.Errorf("Expected total entries 2, got %d", response.PaginationInfo.TotalEntries)
+		}
+	})
+
+	t.Run("ExactPageSize", func(t *testing.T) {
+		allOperations := []*buildqueuestate.OperationState{
+			{Name: "op1"},
+			{Name: "op2"},
+			{Name: "op3"},
+		}
+		response := createPaginatedListOperationsResponse(allOperations, 3, nil)
+		if len(response.Operations) != 3 {
+			t.Errorf("Expected 3 operations, got %d", len(response.Operations))
+		}
+		if response.PaginationInfo.TotalEntries != 3 {
+			t.Errorf("Expected total entries 3, got %d", response.PaginationInfo.TotalEntries)
+		}
+	})
+
+	t.Run("MoreThanPageSize", func(t *testing.T) {
+		allOperations := []*buildqueuestate.OperationState{
+			{Name: "op1"},
+			{Name: "op2"},
+			{Name: "op3"},
+			{Name: "op4"},
+		}
+		response := createPaginatedListOperationsResponse(allOperations, 2, nil)
+		if len(response.Operations) != 2 {
+			t.Errorf("Expected 2 operations, got %d", len(response.Operations))
+		}
+		if response.PaginationInfo.TotalEntries != 4 {
+			t.Errorf("Expected total entries 4, got %d", response.PaginationInfo.TotalEntries)
+		}
+	})
+
+	t.Run("StartAfterMiddle", func(t *testing.T) {
+		allOperations := []*buildqueuestate.OperationState{
+			{Name: "op1"},
+			{Name: "op2"},
+			{Name: "op3"},
+			{Name: "op4"},
+		}
+		startAfter := &buildqueuestate.ListOperationsRequest_StartAfter{OperationName: "op2"}
+		response := createPaginatedListOperationsResponse(allOperations, 2, startAfter)
+		if len(response.Operations) != 2 {
+			t.Errorf("Expected 2 operations, got %d", len(response.Operations))
+		}
+		if response.Operations[0].Name != "op3" {
+			t.Errorf("Expected operation 'op3', got %s", response.Operations[0].Name)
+		}
+		if response.Operations[1].Name != "op4" {
+			t.Errorf("Expected operation 'op4', got %s", response.Operations[1].Name)
+		}
+		if response.PaginationInfo.StartIndex != 2 {
+			t.Errorf("Expected start index 2, got %d", response.PaginationInfo.StartIndex)
+		}
+		if response.PaginationInfo.TotalEntries != 4 {
+			t.Errorf("Expected total entries 4, got %d", response.PaginationInfo.TotalEntries)
+		}
+	})
+
+	t.Run("StartCloseToEnd", func(t *testing.T) {
+		allOperations := []*buildqueuestate.OperationState{
+			{Name: "op1"},
+			{Name: "op2"},
+			{Name: "op3"},
+			{Name: "op4"},
+		}
+		startAfter := &buildqueuestate.ListOperationsRequest_StartAfter{OperationName: "op3"}
+		response := createPaginatedListOperationsResponse(allOperations, 2, startAfter)
+		if len(response.Operations) != 1 {
+			t.Errorf("Expected 1 operation, got %d", len(response.Operations))
+		}
+		if response.Operations[0].Name != "op4" {
+			t.Errorf("Expected operation 'op4', got %s", response.Operations[0].Name)
+		}
+		if response.PaginationInfo.StartIndex != 3 {
+			t.Errorf("Expected start index 3, got %d", response.PaginationInfo.StartIndex)
+		}
+		if response.PaginationInfo.TotalEntries != 4 {
+			t.Errorf("Expected total entries 4, got %d", response.PaginationInfo.TotalEntries)
+		}
+	})
+}
