@@ -30,7 +30,7 @@ func (s *CasServerImpl) Read(req *bytestream.ReadRequest, stream bytestream.Byte
 	}
 
 	instanceName := getInstanceName(req.ResourceName)
-	if !grpcweb.IsInstanceNamePrefixAllowed(stream.Context(), s.authorizer, instanceName) {
+	if !grpcweb.IsInstanceNameAllowed(stream.Context(), s.authorizer, instanceName) {
 		return status.Errorf(codes.PermissionDenied, "Not authorized")
 	}
 

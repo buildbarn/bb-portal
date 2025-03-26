@@ -28,16 +28,6 @@ describe("parseBrowserPageSlug", () => {
     expect(result).toBeUndefined();
   });
 
-  it("should return undefined if instanceName is empty", () => {
-    const result = parseBrowserPageSlug([
-      "blobs",
-      "sha256",
-      "action",
-      "hash-size",
-    ]);
-    expect(result).toBeUndefined();
-  });
-
   it("should return undefined if browserPageType is undefined", () => {
     const result = parseBrowserPageSlug([
       "instance",
@@ -76,6 +66,22 @@ describe("parseBrowserPageSlug", () => {
       browserPageType: "action",
       digest: { hash: "hash", sizeBytes: "size" },
       otherParams: ["other", "params"],
+    });
+  });
+
+  it("should parse valid slug without instance name", () => {
+    const result = parseBrowserPageSlug([
+      "blobs",
+      "sha256",
+      "action",
+      "hash-size",
+    ]);
+    expect(result).toEqual({
+      instanceName: "",
+      digestFunction: 1,
+      browserPageType: "action",
+      digest: { hash: "hash", sizeBytes: "size" },
+      otherParams: [],
     });
   });
 

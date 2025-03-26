@@ -7,18 +7,18 @@ export const operationsStateToActionPageUrl = (
   const instanceNamePrefix =
     operation.invocationName?.sizeClassQueueName?.platformQueueName
       ?.instanceNamePrefix;
+  const instanceNameSuffix = operation.instanceNameSuffix;
   const digestFunction = digestFunctionValueToString(operation.digestFunction);
   const actionDigestHash = operation.actionDigest?.hash;
   const actionDigestSizeBytes = operation.actionDigest?.sizeBytes;
 
-  if (
-    !instanceNamePrefix ||
-    !digestFunction ||
-    !actionDigestHash ||
-    !actionDigestSizeBytes
-  ) {
+  if (!digestFunction || !actionDigestHash || !actionDigestSizeBytes) {
     return undefined;
   }
 
-  return `/browser/${instanceNamePrefix}/blobs/${digestFunction}/action/${actionDigestHash}-${actionDigestSizeBytes}`;
+  let url = "/browser";
+  if (instanceNamePrefix) url += `/${instanceNamePrefix}`;
+  if (instanceNameSuffix) url += `/${instanceNameSuffix}`;
+  url += `/blobs/${digestFunction}/action/${actionDigestHash}-${actionDigestSizeBytes}`;
+  return url;
 };

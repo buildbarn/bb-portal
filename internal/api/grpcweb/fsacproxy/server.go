@@ -28,7 +28,7 @@ func (s *FsacServerImpl) GetFileSystemAccessProfile(ctx context.Context, req *fs
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
-	if !grpcweb.IsInstanceNamePrefixAllowed(ctx, s.authorizer, req.InstanceName) {
+	if !grpcweb.IsInstanceNameAllowed(ctx, s.authorizer, req.InstanceName) {
 		return nil, status.Errorf(codes.PermissionDenied, "Not authorized")
 	}
 	return s.client.GetFileSystemAccessProfile(ctx, req)

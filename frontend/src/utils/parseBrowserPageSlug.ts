@@ -16,11 +16,7 @@ export const parseBrowserPageSlug = (
   const digestFunction = digestFunctionValueFromString(slug[blobIndex + 1]);
   const browserPageType = getBrowserPageTypeFromString(slug[blobIndex + 2]);
 
-  if (
-    instanceName === "" ||
-    digestFunction === undefined ||
-    browserPageType === undefined
-  ) {
+  if (digestFunction === undefined || browserPageType === undefined) {
     return undefined;
   }
 
