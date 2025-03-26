@@ -157,17 +157,23 @@ func (tpu *TargetPairUpdate) ClearAbortReason() *TargetPairUpdate {
 	return tpu
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tpu *TargetPairUpdate) SetBazelInvocationID(id int) *TargetPairUpdate {
-	tpu.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (tpu *TargetPairUpdate) SetBazelInvocationID(i int) *TargetPairUpdate {
+	tpu.mutation.SetBazelInvocationID(i)
 	return tpu
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tpu *TargetPairUpdate) SetNillableBazelInvocationID(id *int) *TargetPairUpdate {
-	if id != nil {
-		tpu = tpu.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (tpu *TargetPairUpdate) SetNillableBazelInvocationID(i *int) *TargetPairUpdate {
+	if i != nil {
+		tpu.SetBazelInvocationID(*i)
 	}
+	return tpu
+}
+
+// ClearBazelInvocationID clears the value of the "bazel_invocation_id" field.
+func (tpu *TargetPairUpdate) ClearBazelInvocationID() *TargetPairUpdate {
+	tpu.mutation.ClearBazelInvocationID()
 	return tpu
 }
 
@@ -564,17 +570,23 @@ func (tpuo *TargetPairUpdateOne) ClearAbortReason() *TargetPairUpdateOne {
 	return tpuo
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tpuo *TargetPairUpdateOne) SetBazelInvocationID(id int) *TargetPairUpdateOne {
-	tpuo.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (tpuo *TargetPairUpdateOne) SetBazelInvocationID(i int) *TargetPairUpdateOne {
+	tpuo.mutation.SetBazelInvocationID(i)
 	return tpuo
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tpuo *TargetPairUpdateOne) SetNillableBazelInvocationID(id *int) *TargetPairUpdateOne {
-	if id != nil {
-		tpuo = tpuo.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (tpuo *TargetPairUpdateOne) SetNillableBazelInvocationID(i *int) *TargetPairUpdateOne {
+	if i != nil {
+		tpuo.SetBazelInvocationID(*i)
 	}
+	return tpuo
+}
+
+// ClearBazelInvocationID clears the value of the "bazel_invocation_id" field.
+func (tpuo *TargetPairUpdateOne) ClearBazelInvocationID() *TargetPairUpdateOne {
+	tpuo.mutation.ClearBazelInvocationID()
 	return tpuo
 }
 

@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // ActionData holds the schema definition for the ActionData entity.
@@ -40,6 +41,9 @@ func (ActionData) Fields() []ent.Field {
 		// User time spent in millisconds
 		field.Int64("user_time").
 			Optional(),
+
+		// foreign key to the action summary
+		field.Int("action_summary_id").Optional(),
 	}
 }
 
@@ -49,6 +53,15 @@ func (ActionData) Edges() []ent.Edge {
 		// Edge back to the associated action summary.
 		edge.From("action_summary", ActionSummary.Type).
 			Ref("action_data").
-			Unique(),
+			Unique().
+			Field("action_summary_id"),
+	}
+}
+
+// Indexes of the ActionData.
+func (ActionData) Indexes() []ent.Index {
+	return []ent.Index{
+		// Unique index for the action summary.
+		index.Fields("action_summary_id"),
 	}
 }

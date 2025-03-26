@@ -24,6 +24,8 @@ const (
 	FieldNumTransitiveLoads = "num_transitive_loads"
 	// FieldPackageOverhead holds the string denoting the package_overhead field in the database.
 	FieldPackageOverhead = "package_overhead"
+	// FieldPackageMetricsID holds the string denoting the package_metrics_id field in the database.
+	FieldPackageMetricsID = "package_metrics_id"
 	// EdgePackageMetrics holds the string denoting the package_metrics edge name in mutations.
 	EdgePackageMetrics = "package_metrics"
 	// Table holds the table name of the packageloadmetrics in the database.
@@ -34,7 +36,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "packagemetrics" package.
 	PackageMetricsInverseTable = "package_metrics"
 	// PackageMetricsColumn is the table column denoting the package_metrics relation/edge.
-	PackageMetricsColumn = "package_metrics_package_load_metrics"
+	PackageMetricsColumn = "package_metrics_id"
 )
 
 // Columns holds all SQL columns for packageloadmetrics fields.
@@ -46,23 +48,13 @@ var Columns = []string{
 	FieldComputationSteps,
 	FieldNumTransitiveLoads,
 	FieldPackageOverhead,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "package_load_metrics"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"package_metrics_package_load_metrics",
+	FieldPackageMetricsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -105,6 +97,11 @@ func ByNumTransitiveLoads(opts ...sql.OrderTermOption) OrderOption {
 // ByPackageOverhead orders the results by the package_overhead field.
 func ByPackageOverhead(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPackageOverhead, opts...).ToFunc()
+}
+
+// ByPackageMetricsID orders the results by the package_metrics_id field.
+func ByPackageMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPackageMetricsID, opts...).ToFunc()
 }
 
 // ByPackageMetricsField orders the results by package_metrics field.

@@ -58,6 +58,11 @@ func ProblemType(v string) predicate.BazelInvocationProblem {
 	return predicate.BazelInvocationProblem(sql.FieldEQ(FieldProblemType, v))
 }
 
+// BazelInvocationID applies equality check predicate on the "bazel_invocation_id" field. It's identical to BazelInvocationIDEQ.
+func BazelInvocationID(v int) predicate.BazelInvocationProblem {
+	return predicate.BazelInvocationProblem(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
 // ProblemTypeEQ applies the EQ predicate on the "problem_type" field.
 func ProblemTypeEQ(v string) predicate.BazelInvocationProblem {
 	return predicate.BazelInvocationProblem(sql.FieldEQ(FieldProblemType, v))
@@ -186,6 +191,36 @@ func LabelEqualFold(v string) predicate.BazelInvocationProblem {
 // LabelContainsFold applies the ContainsFold predicate on the "label" field.
 func LabelContainsFold(v string) predicate.BazelInvocationProblem {
 	return predicate.BazelInvocationProblem(sql.FieldContainsFold(FieldLabel, v))
+}
+
+// BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDEQ(v int) predicate.BazelInvocationProblem {
+	return predicate.BazelInvocationProblem(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDNEQ applies the NEQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNEQ(v int) predicate.BazelInvocationProblem {
+	return predicate.BazelInvocationProblem(sql.FieldNEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDIn applies the In predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIn(vs ...int) predicate.BazelInvocationProblem {
+	return predicate.BazelInvocationProblem(sql.FieldIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDNotIn applies the NotIn predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotIn(vs ...int) predicate.BazelInvocationProblem {
+	return predicate.BazelInvocationProblem(sql.FieldNotIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDIsNil applies the IsNil predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIsNil() predicate.BazelInvocationProblem {
+	return predicate.BazelInvocationProblem(sql.FieldIsNull(FieldBazelInvocationID))
+}
+
+// BazelInvocationIDNotNil applies the NotNil predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotNil() predicate.BazelInvocationProblem {
+	return predicate.BazelInvocationProblem(sql.FieldNotNull(FieldBazelInvocationID))
 }
 
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.

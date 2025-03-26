@@ -61,16 +61,16 @@ func (tmc *TargetMetricsCreate) SetNillableTargetsConfiguredNotIncludingAspects(
 	return tmc
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (tmc *TargetMetricsCreate) SetMetricsID(id int) *TargetMetricsCreate {
-	tmc.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (tmc *TargetMetricsCreate) SetMetricsID(i int) *TargetMetricsCreate {
+	tmc.mutation.SetMetricsID(i)
 	return tmc
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (tmc *TargetMetricsCreate) SetNillableMetricsID(id *int) *TargetMetricsCreate {
-	if id != nil {
-		tmc = tmc.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (tmc *TargetMetricsCreate) SetNillableMetricsID(i *int) *TargetMetricsCreate {
+	if i != nil {
+		tmc.SetMetricsID(*i)
 	}
 	return tmc
 }
@@ -166,7 +166,7 @@ func (tmc *TargetMetricsCreate) createSpec() (*TargetMetrics, *sqlgraph.CreateSp
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.metrics_target_metrics = &nodes[0]
+		_node.MetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

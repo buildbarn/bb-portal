@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
+	"entgo.io/ent/schema/field"
 )
 
 // NamedSetOfFiles holds the schema definition for the NamedSetOfFiles entity.
@@ -13,7 +14,9 @@ type NamedSetOfFiles struct {
 
 // Fields of the NamedSetOfFiles.
 func (NamedSetOfFiles) Fields() []ent.Field {
-	return []ent.Field{}
+	return []ent.Field{
+		field.Int("output_group_id").Optional(),
+	}
 }
 
 // Edges of the NamedSetOfFiles.
@@ -22,7 +25,8 @@ func (NamedSetOfFiles) Edges() []ent.Edge {
 		// Edge back to output group.
 		edge.From("output_group", OutputGroup.Type).
 			Ref("file_sets").
-			Unique(),
+			Unique().
+			Field("output_group_id"),
 
 		// Files that belong to this named set of files.
 		edge.To("files", TestFile.Type).

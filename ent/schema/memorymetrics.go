@@ -26,6 +26,8 @@ func (MemoryMetrics) Fields() []ent.Field {
 		// Size of the peak tenured space JVM heap size event in bytes post GC. Note
 		// that this reports 0 if there was no major GC during the build.
 		field.Int64("peak_post_gc_tenured_space_heap_size").Optional(),
+
+		field.Int("metrics_id").Optional(),
 	}
 }
 
@@ -35,7 +37,8 @@ func (MemoryMetrics) Edges() []ent.Edge {
 		// Edge back to the memory metrics object
 		edge.From("metrics", Metrics.Type).
 			Ref("memory_metrics").
-			Unique(),
+			Unique().
+			Field("metrics_id"), // New field added
 
 		// Metrics about garbage collection
 		edge.To("garbage_metrics", GarbageMetrics.Type).

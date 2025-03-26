@@ -25,15 +25,19 @@ func (CumulativeMetrics) Fields() []ent.Field {
 		// one. Will be incremented for every build/test/run/etc. command that
 		// reaches the execution phase.
 		field.Int32("num_builds").Optional(),
+
+		// foriegn key to the metrics object.
+		field.Int("metrics_id").Optional(),
 	}
 }
 
-// Edges of the TimingMetrics.
+// Edges of the CumulativeMetrics.
 func (CumulativeMetrics) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the metircs object.
 		edge.From("metrics", Metrics.Type).
 			Ref("cumulative_metrics").
+			Field("metrics_id").
 			Unique(),
 	}
 }

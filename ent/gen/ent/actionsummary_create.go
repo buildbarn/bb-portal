@@ -78,16 +78,16 @@ func (asc *ActionSummaryCreate) SetNillableRemoteCacheHits(i *int64) *ActionSumm
 	return asc
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (asc *ActionSummaryCreate) SetMetricsID(id int) *ActionSummaryCreate {
-	asc.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (asc *ActionSummaryCreate) SetMetricsID(i int) *ActionSummaryCreate {
+	asc.mutation.SetMetricsID(i)
 	return asc
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (asc *ActionSummaryCreate) SetNillableMetricsID(id *int) *ActionSummaryCreate {
-	if id != nil {
-		asc = asc.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (asc *ActionSummaryCreate) SetNillableMetricsID(i *int) *ActionSummaryCreate {
+	if i != nil {
+		asc.SetMetricsID(*i)
 	}
 	return asc
 }
@@ -236,7 +236,7 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.metrics_action_summary = &nodes[0]
+		_node.MetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := asc.mutation.ActionDataIDs(); len(nodes) > 0 {

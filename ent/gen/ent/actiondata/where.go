@@ -88,6 +88,11 @@ func UserTime(v int64) predicate.ActionData {
 	return predicate.ActionData(sql.FieldEQ(FieldUserTime, v))
 }
 
+// ActionSummaryID applies equality check predicate on the "action_summary_id" field. It's identical to ActionSummaryIDEQ.
+func ActionSummaryID(v int) predicate.ActionData {
+	return predicate.ActionData(sql.FieldEQ(FieldActionSummaryID, v))
+}
+
 // MnemonicEQ applies the EQ predicate on the "mnemonic" field.
 func MnemonicEQ(v string) predicate.ActionData {
 	return predicate.ActionData(sql.FieldEQ(FieldMnemonic, v))
@@ -461,6 +466,36 @@ func UserTimeIsNil() predicate.ActionData {
 // UserTimeNotNil applies the NotNil predicate on the "user_time" field.
 func UserTimeNotNil() predicate.ActionData {
 	return predicate.ActionData(sql.FieldNotNull(FieldUserTime))
+}
+
+// ActionSummaryIDEQ applies the EQ predicate on the "action_summary_id" field.
+func ActionSummaryIDEQ(v int) predicate.ActionData {
+	return predicate.ActionData(sql.FieldEQ(FieldActionSummaryID, v))
+}
+
+// ActionSummaryIDNEQ applies the NEQ predicate on the "action_summary_id" field.
+func ActionSummaryIDNEQ(v int) predicate.ActionData {
+	return predicate.ActionData(sql.FieldNEQ(FieldActionSummaryID, v))
+}
+
+// ActionSummaryIDIn applies the In predicate on the "action_summary_id" field.
+func ActionSummaryIDIn(vs ...int) predicate.ActionData {
+	return predicate.ActionData(sql.FieldIn(FieldActionSummaryID, vs...))
+}
+
+// ActionSummaryIDNotIn applies the NotIn predicate on the "action_summary_id" field.
+func ActionSummaryIDNotIn(vs ...int) predicate.ActionData {
+	return predicate.ActionData(sql.FieldNotIn(FieldActionSummaryID, vs...))
+}
+
+// ActionSummaryIDIsNil applies the IsNil predicate on the "action_summary_id" field.
+func ActionSummaryIDIsNil() predicate.ActionData {
+	return predicate.ActionData(sql.FieldIsNull(FieldActionSummaryID))
+}
+
+// ActionSummaryIDNotNil applies the NotNil predicate on the "action_summary_id" field.
+func ActionSummaryIDNotNil() predicate.ActionData {
+	return predicate.ActionData(sql.FieldNotNull(FieldActionSummaryID))
 }
 
 // HasActionSummary applies the HasEdge predicate on the "action_summary" edge.

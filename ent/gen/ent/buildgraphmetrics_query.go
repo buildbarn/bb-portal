@@ -559,7 +559,7 @@ func (bgmq *BuildGraphMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHo
 			bgmq.withEvaluatedValues != nil,
 		}
 	)
-	if bgmq.withMetrics != nil || bgmq.withDirtiedValues != nil || bgmq.withChangedValues != nil || bgmq.withBuiltValues != nil || bgmq.withCleanedValues != nil {
+	if bgmq.withDirtiedValues != nil || bgmq.withChangedValues != nil || bgmq.withBuiltValues != nil || bgmq.withCleanedValues != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -634,10 +634,7 @@ func (bgmq *BuildGraphMetricsQuery) loadMetrics(ctx context.Context, query *Metr
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*BuildGraphMetrics)
 	for i := range nodes {
-		if nodes[i].metrics_build_graph_metrics == nil {
-			continue
-		}
-		fk := *nodes[i].metrics_build_graph_metrics
+		fk := nodes[i].MetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -654,7 +651,7 @@ func (bgmq *BuildGraphMetricsQuery) loadMetrics(ctx context.Context, query *Metr
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "metrics_build_graph_metrics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -797,7 +794,9 @@ func (bgmq *BuildGraphMetricsQuery) loadEvaluatedValues(ctx context.Context, que
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(evaluationstat.FieldBuildGraphMetricsID)
+	}
 	query.Where(predicate.EvaluationStat(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(buildgraphmetrics.EvaluatedValuesColumn), fks...))
 	}))
@@ -806,13 +805,10 @@ func (bgmq *BuildGraphMetricsQuery) loadEvaluatedValues(ctx context.Context, que
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.build_graph_metrics_evaluated_values
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "build_graph_metrics_evaluated_values" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.BuildGraphMetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "build_graph_metrics_evaluated_values" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "build_graph_metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -846,6 +842,9 @@ func (bgmq *BuildGraphMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != buildgraphmetrics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if bgmq.withMetrics != nil {
+			_spec.Node.AddColumnOnce(buildgraphmetrics.FieldMetricsID)
 		}
 	}
 	if ps := bgmq.predicates; len(ps) > 0 {

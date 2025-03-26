@@ -68,6 +68,11 @@ func PeakPostGcTenuredSpaceHeapSize(v int64) predicate.MemoryMetrics {
 	return predicate.MemoryMetrics(sql.FieldEQ(FieldPeakPostGcTenuredSpaceHeapSize, v))
 }
 
+// MetricsID applies equality check predicate on the "metrics_id" field. It's identical to MetricsIDEQ.
+func MetricsID(v int) predicate.MemoryMetrics {
+	return predicate.MemoryMetrics(sql.FieldEQ(FieldMetricsID, v))
+}
+
 // PeakPostGcHeapSizeEQ applies the EQ predicate on the "peak_post_gc_heap_size" field.
 func PeakPostGcHeapSizeEQ(v int64) predicate.MemoryMetrics {
 	return predicate.MemoryMetrics(sql.FieldEQ(FieldPeakPostGcHeapSize, v))
@@ -216,6 +221,36 @@ func PeakPostGcTenuredSpaceHeapSizeIsNil() predicate.MemoryMetrics {
 // PeakPostGcTenuredSpaceHeapSizeNotNil applies the NotNil predicate on the "peak_post_gc_tenured_space_heap_size" field.
 func PeakPostGcTenuredSpaceHeapSizeNotNil() predicate.MemoryMetrics {
 	return predicate.MemoryMetrics(sql.FieldNotNull(FieldPeakPostGcTenuredSpaceHeapSize))
+}
+
+// MetricsIDEQ applies the EQ predicate on the "metrics_id" field.
+func MetricsIDEQ(v int) predicate.MemoryMetrics {
+	return predicate.MemoryMetrics(sql.FieldEQ(FieldMetricsID, v))
+}
+
+// MetricsIDNEQ applies the NEQ predicate on the "metrics_id" field.
+func MetricsIDNEQ(v int) predicate.MemoryMetrics {
+	return predicate.MemoryMetrics(sql.FieldNEQ(FieldMetricsID, v))
+}
+
+// MetricsIDIn applies the In predicate on the "metrics_id" field.
+func MetricsIDIn(vs ...int) predicate.MemoryMetrics {
+	return predicate.MemoryMetrics(sql.FieldIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDNotIn applies the NotIn predicate on the "metrics_id" field.
+func MetricsIDNotIn(vs ...int) predicate.MemoryMetrics {
+	return predicate.MemoryMetrics(sql.FieldNotIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDIsNil applies the IsNil predicate on the "metrics_id" field.
+func MetricsIDIsNil() predicate.MemoryMetrics {
+	return predicate.MemoryMetrics(sql.FieldIsNull(FieldMetricsID))
+}
+
+// MetricsIDNotNil applies the NotNil predicate on the "metrics_id" field.
+func MetricsIDNotNil() predicate.MemoryMetrics {
+	return predicate.MemoryMetrics(sql.FieldNotNull(FieldMetricsID))
 }
 
 // HasMetrics applies the HasEdge predicate on the "metrics" edge.

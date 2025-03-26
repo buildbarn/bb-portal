@@ -78,6 +78,11 @@ func Misses(v int32) predicate.ActionCacheStatistics {
 	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldMisses, v))
 }
 
+// ActionSummaryID applies equality check predicate on the "action_summary_id" field. It's identical to ActionSummaryIDEQ.
+func ActionSummaryID(v int) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldActionSummaryID, v))
+}
+
 // SizeInBytesEQ applies the EQ predicate on the "size_in_bytes" field.
 func SizeInBytesEQ(v uint64) predicate.ActionCacheStatistics {
 	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldSizeInBytes, v))
@@ -326,6 +331,36 @@ func MissesIsNil() predicate.ActionCacheStatistics {
 // MissesNotNil applies the NotNil predicate on the "misses" field.
 func MissesNotNil() predicate.ActionCacheStatistics {
 	return predicate.ActionCacheStatistics(sql.FieldNotNull(FieldMisses))
+}
+
+// ActionSummaryIDEQ applies the EQ predicate on the "action_summary_id" field.
+func ActionSummaryIDEQ(v int) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldEQ(FieldActionSummaryID, v))
+}
+
+// ActionSummaryIDNEQ applies the NEQ predicate on the "action_summary_id" field.
+func ActionSummaryIDNEQ(v int) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldNEQ(FieldActionSummaryID, v))
+}
+
+// ActionSummaryIDIn applies the In predicate on the "action_summary_id" field.
+func ActionSummaryIDIn(vs ...int) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldIn(FieldActionSummaryID, vs...))
+}
+
+// ActionSummaryIDNotIn applies the NotIn predicate on the "action_summary_id" field.
+func ActionSummaryIDNotIn(vs ...int) predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldNotIn(FieldActionSummaryID, vs...))
+}
+
+// ActionSummaryIDIsNil applies the IsNil predicate on the "action_summary_id" field.
+func ActionSummaryIDIsNil() predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldIsNull(FieldActionSummaryID))
+}
+
+// ActionSummaryIDNotNil applies the NotNil predicate on the "action_summary_id" field.
+func ActionSummaryIDNotNil() predicate.ActionCacheStatistics {
+	return predicate.ActionCacheStatistics(sql.FieldNotNull(FieldActionSummaryID))
 }
 
 // HasActionSummary applies the HasEdge predicate on the "action_summary" edge.

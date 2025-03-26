@@ -78,6 +78,11 @@ func Hostname(v string) predicate.ExectionInfo {
 	return predicate.ExectionInfo(sql.FieldEQ(FieldHostname, v))
 }
 
+// ExecutionInfoID applies equality check predicate on the "execution_info_id" field. It's identical to ExecutionInfoIDEQ.
+func ExecutionInfoID(v int) predicate.ExectionInfo {
+	return predicate.ExectionInfo(sql.FieldEQ(FieldExecutionInfoID, v))
+}
+
 // TimeoutSecondsEQ applies the EQ predicate on the "timeout_seconds" field.
 func TimeoutSecondsEQ(v int32) predicate.ExectionInfo {
 	return predicate.ExectionInfo(sql.FieldEQ(FieldTimeoutSeconds, v))
@@ -346,6 +351,36 @@ func HostnameEqualFold(v string) predicate.ExectionInfo {
 // HostnameContainsFold applies the ContainsFold predicate on the "hostname" field.
 func HostnameContainsFold(v string) predicate.ExectionInfo {
 	return predicate.ExectionInfo(sql.FieldContainsFold(FieldHostname, v))
+}
+
+// ExecutionInfoIDEQ applies the EQ predicate on the "execution_info_id" field.
+func ExecutionInfoIDEQ(v int) predicate.ExectionInfo {
+	return predicate.ExectionInfo(sql.FieldEQ(FieldExecutionInfoID, v))
+}
+
+// ExecutionInfoIDNEQ applies the NEQ predicate on the "execution_info_id" field.
+func ExecutionInfoIDNEQ(v int) predicate.ExectionInfo {
+	return predicate.ExectionInfo(sql.FieldNEQ(FieldExecutionInfoID, v))
+}
+
+// ExecutionInfoIDIn applies the In predicate on the "execution_info_id" field.
+func ExecutionInfoIDIn(vs ...int) predicate.ExectionInfo {
+	return predicate.ExectionInfo(sql.FieldIn(FieldExecutionInfoID, vs...))
+}
+
+// ExecutionInfoIDNotIn applies the NotIn predicate on the "execution_info_id" field.
+func ExecutionInfoIDNotIn(vs ...int) predicate.ExectionInfo {
+	return predicate.ExectionInfo(sql.FieldNotIn(FieldExecutionInfoID, vs...))
+}
+
+// ExecutionInfoIDIsNil applies the IsNil predicate on the "execution_info_id" field.
+func ExecutionInfoIDIsNil() predicate.ExectionInfo {
+	return predicate.ExectionInfo(sql.FieldIsNull(FieldExecutionInfoID))
+}
+
+// ExecutionInfoIDNotNil applies the NotNil predicate on the "execution_info_id" field.
+func ExecutionInfoIDNotNil() predicate.ExectionInfo {
+	return predicate.ExectionInfo(sql.FieldNotNull(FieldExecutionInfoID))
 }
 
 // HasTestResult applies the HasEdge predicate on the "test_result" edge.

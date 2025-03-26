@@ -15,14 +15,15 @@ import (
 
 // NetworkMetrics is the model entity for the NetworkMetrics schema.
 type NetworkMetrics struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// MetricsID holds the value of the "metrics_id" field.
+	MetricsID int `json:"metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the NetworkMetricsQuery when eager-loading is set.
-	Edges                   NetworkMetricsEdges `json:"edges"`
-	metrics_network_metrics *int
-	selectValues            sql.SelectValues
+	Edges        NetworkMetricsEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // NetworkMetricsEdges holds the relations/edges for other nodes in the graph.
@@ -65,9 +66,7 @@ func (*NetworkMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case networkmetrics.FieldID:
-			values[i] = new(sql.NullInt64)
-		case networkmetrics.ForeignKeys[0]: // metrics_network_metrics
+		case networkmetrics.FieldID, networkmetrics.FieldMetricsID:
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -90,12 +89,11 @@ func (nm *NetworkMetrics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			nm.ID = int(value.Int64)
-		case networkmetrics.ForeignKeys[0]:
+		case networkmetrics.FieldMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field metrics_network_metrics", value)
+				return fmt.Errorf("unexpected type %T for field metrics_id", values[i])
 			} else if value.Valid {
-				nm.metrics_network_metrics = new(int)
-				*nm.metrics_network_metrics = int(value.Int64)
+				nm.MetricsID = int(value.Int64)
 			}
 		default:
 			nm.selectValues.Set(columns[i], values[i])
@@ -142,7 +140,9 @@ func (nm *NetworkMetrics) Unwrap() *NetworkMetrics {
 func (nm *NetworkMetrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("NetworkMetrics(")
-	builder.WriteString(fmt.Sprintf("id=%v", nm.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", nm.ID))
+	builder.WriteString("metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", nm.MetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

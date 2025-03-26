@@ -90,16 +90,16 @@ func (acsc *ActionCacheStatisticsCreate) SetNillableMisses(i *int32) *ActionCach
 	return acsc
 }
 
-// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (acsc *ActionCacheStatisticsCreate) SetActionSummaryID(id int) *ActionCacheStatisticsCreate {
-	acsc.mutation.SetActionSummaryID(id)
+// SetActionSummaryID sets the "action_summary_id" field.
+func (acsc *ActionCacheStatisticsCreate) SetActionSummaryID(i int) *ActionCacheStatisticsCreate {
+	acsc.mutation.SetActionSummaryID(i)
 	return acsc
 }
 
-// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (acsc *ActionCacheStatisticsCreate) SetNillableActionSummaryID(id *int) *ActionCacheStatisticsCreate {
-	if id != nil {
-		acsc = acsc.SetActionSummaryID(*id)
+// SetNillableActionSummaryID sets the "action_summary_id" field if the given value is not nil.
+func (acsc *ActionCacheStatisticsCreate) SetNillableActionSummaryID(i *int) *ActionCacheStatisticsCreate {
+	if i != nil {
+		acsc.SetActionSummaryID(*i)
 	}
 	return acsc
 }
@@ -218,7 +218,7 @@ func (acsc *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.action_summary_action_cache_statistics = &nodes[0]
+		_node.ActionSummaryID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := acsc.mutation.MissDetailsIDs(); len(nodes) > 0 {

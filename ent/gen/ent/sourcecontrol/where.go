@@ -123,6 +123,11 @@ func RunnerOs(v string) predicate.SourceControl {
 	return predicate.SourceControl(sql.FieldEQ(FieldRunnerOs, v))
 }
 
+// BazelInvocationID applies equality check predicate on the "bazel_invocation_id" field. It's identical to BazelInvocationIDEQ.
+func BazelInvocationID(v int) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
 // RepoURLEQ applies the EQ predicate on the "repo_url" field.
 func RepoURLEQ(v string) predicate.SourceControl {
 	return predicate.SourceControl(sql.FieldEQ(FieldRepoURL, v))
@@ -1171,6 +1176,36 @@ func RunnerOsEqualFold(v string) predicate.SourceControl {
 // RunnerOsContainsFold applies the ContainsFold predicate on the "runner_os" field.
 func RunnerOsContainsFold(v string) predicate.SourceControl {
 	return predicate.SourceControl(sql.FieldContainsFold(FieldRunnerOs, v))
+}
+
+// BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDEQ(v int) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDNEQ applies the NEQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNEQ(v int) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDIn applies the In predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIn(vs ...int) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDNotIn applies the NotIn predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotIn(vs ...int) predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDIsNil applies the IsNil predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIsNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldIsNull(FieldBazelInvocationID))
+}
+
+// BazelInvocationIDNotNil applies the NotNil predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotNil() predicate.SourceControl {
+	return predicate.SourceControl(sql.FieldNotNull(FieldBazelInvocationID))
 }
 
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.

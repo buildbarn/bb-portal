@@ -30,7 +30,6 @@ type ActionSummaryQuery struct {
 	withActionData            *ActionDataQuery
 	withRunnerCount           *RunnerCountQuery
 	withActionCacheStatistics *ActionCacheStatisticsQuery
-	withFKs                   bool
 	modifiers                 []func(*sql.Selector)
 	loadTotal                 []func(context.Context, []*ActionSummary) error
 	withNamedActionData       map[string]*ActionDataQuery
@@ -482,7 +481,6 @@ func (asq *ActionSummaryQuery) prepareQuery(ctx context.Context) error {
 func (asq *ActionSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ActionSummary, error) {
 	var (
 		nodes       = []*ActionSummary{}
-		withFKs     = asq.withFKs
 		_spec       = asq.querySpec()
 		loadedTypes = [4]bool{
 			asq.withMetrics != nil,
@@ -491,12 +489,6 @@ func (asq *ActionSummaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 			asq.withActionCacheStatistics != nil,
 		}
 	)
-	if asq.withMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, actionsummary.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ActionSummary).scanValues(nil, columns)
 	}
@@ -570,10 +562,7 @@ func (asq *ActionSummaryQuery) loadMetrics(ctx context.Context, query *MetricsQu
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*ActionSummary)
 	for i := range nodes {
-		if nodes[i].metrics_action_summary == nil {
-			continue
-		}
-		fk := *nodes[i].metrics_action_summary
+		fk := nodes[i].MetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -590,7 +579,7 @@ func (asq *ActionSummaryQuery) loadMetrics(ctx context.Context, query *MetricsQu
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "metrics_action_summary" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -608,7 +597,9 @@ func (asq *ActionSummaryQuery) loadActionData(ctx context.Context, query *Action
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(actiondata.FieldActionSummaryID)
+	}
 	query.Where(predicate.ActionData(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(actionsummary.ActionDataColumn), fks...))
 	}))
@@ -617,13 +608,10 @@ func (asq *ActionSummaryQuery) loadActionData(ctx context.Context, query *Action
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.action_summary_action_data
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "action_summary_action_data" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.ActionSummaryID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "action_summary_action_data" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "action_summary_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -639,7 +627,9 @@ func (asq *ActionSummaryQuery) loadRunnerCount(ctx context.Context, query *Runne
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(runnercount.FieldActionSummaryID)
+	}
 	query.Where(predicate.RunnerCount(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(actionsummary.RunnerCountColumn), fks...))
 	}))
@@ -648,13 +638,10 @@ func (asq *ActionSummaryQuery) loadRunnerCount(ctx context.Context, query *Runne
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.action_summary_runner_count
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "action_summary_runner_count" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.ActionSummaryID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "action_summary_runner_count" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "action_summary_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -667,7 +654,9 @@ func (asq *ActionSummaryQuery) loadActionCacheStatistics(ctx context.Context, qu
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(actioncachestatistics.FieldActionSummaryID)
+	}
 	query.Where(predicate.ActionCacheStatistics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(actionsummary.ActionCacheStatisticsColumn), fks...))
 	}))
@@ -676,13 +665,10 @@ func (asq *ActionSummaryQuery) loadActionCacheStatistics(ctx context.Context, qu
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.action_summary_action_cache_statistics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "action_summary_action_cache_statistics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.ActionSummaryID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "action_summary_action_cache_statistics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "action_summary_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -716,6 +702,9 @@ func (asq *ActionSummaryQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != actionsummary.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if asq.withMetrics != nil {
+			_spec.Node.AddColumnOnce(actionsummary.FieldMetricsID)
 		}
 	}
 	if ps := asq.predicates; len(ps) > 0 {

@@ -23,7 +23,6 @@ type GarbageMetricsQuery struct {
 	inters            []Interceptor
 	predicates        []predicate.GarbageMetrics
 	withMemoryMetrics *MemoryMetricsQuery
-	withFKs           bool
 	modifiers         []func(*sql.Selector)
 	loadTotal         []func(context.Context, []*GarbageMetrics) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (gmq *GarbageMetricsQuery) prepareQuery(ctx context.Context) error {
 func (gmq *GarbageMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*GarbageMetrics, error) {
 	var (
 		nodes       = []*GarbageMetrics{}
-		withFKs     = gmq.withFKs
 		_spec       = gmq.querySpec()
 		loadedTypes = [1]bool{
 			gmq.withMemoryMetrics != nil,
 		}
 	)
-	if gmq.withMemoryMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, garbagemetrics.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*GarbageMetrics).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (gmq *GarbageMetricsQuery) loadMemoryMetrics(ctx context.Context, query *Me
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*GarbageMetrics)
 	for i := range nodes {
-		if nodes[i].memory_metrics_garbage_metrics == nil {
-			continue
-		}
-		fk := *nodes[i].memory_metrics_garbage_metrics
+		fk := nodes[i].MemoryMetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (gmq *GarbageMetricsQuery) loadMemoryMetrics(ctx context.Context, query *Me
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "memory_metrics_garbage_metrics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "memory_metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (gmq *GarbageMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != garbagemetrics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if gmq.withMemoryMetrics != nil {
+			_spec.Node.AddColumnOnce(garbagemetrics.FieldMemoryMetricsID)
 		}
 	}
 	if ps := gmq.predicates; len(ps) > 0 {

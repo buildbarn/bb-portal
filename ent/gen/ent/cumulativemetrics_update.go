@@ -82,17 +82,23 @@ func (cmu *CumulativeMetricsUpdate) ClearNumBuilds() *CumulativeMetricsUpdate {
 	return cmu
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (cmu *CumulativeMetricsUpdate) SetMetricsID(id int) *CumulativeMetricsUpdate {
-	cmu.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (cmu *CumulativeMetricsUpdate) SetMetricsID(i int) *CumulativeMetricsUpdate {
+	cmu.mutation.SetMetricsID(i)
 	return cmu
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (cmu *CumulativeMetricsUpdate) SetNillableMetricsID(id *int) *CumulativeMetricsUpdate {
-	if id != nil {
-		cmu = cmu.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (cmu *CumulativeMetricsUpdate) SetNillableMetricsID(i *int) *CumulativeMetricsUpdate {
+	if i != nil {
+		cmu.SetMetricsID(*i)
 	}
+	return cmu
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (cmu *CumulativeMetricsUpdate) ClearMetricsID() *CumulativeMetricsUpdate {
+	cmu.mutation.ClearMetricsID()
 	return cmu
 }
 
@@ -269,17 +275,23 @@ func (cmuo *CumulativeMetricsUpdateOne) ClearNumBuilds() *CumulativeMetricsUpdat
 	return cmuo
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (cmuo *CumulativeMetricsUpdateOne) SetMetricsID(id int) *CumulativeMetricsUpdateOne {
-	cmuo.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (cmuo *CumulativeMetricsUpdateOne) SetMetricsID(i int) *CumulativeMetricsUpdateOne {
+	cmuo.mutation.SetMetricsID(i)
 	return cmuo
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (cmuo *CumulativeMetricsUpdateOne) SetNillableMetricsID(id *int) *CumulativeMetricsUpdateOne {
-	if id != nil {
-		cmuo = cmuo.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (cmuo *CumulativeMetricsUpdateOne) SetNillableMetricsID(i *int) *CumulativeMetricsUpdateOne {
+	if i != nil {
+		cmuo.SetMetricsID(*i)
 	}
+	return cmuo
+}
+
+// ClearMetricsID clears the value of the "metrics_id" field.
+func (cmuo *CumulativeMetricsUpdateOne) ClearMetricsID() *CumulativeMetricsUpdateOne {
+	cmuo.mutation.ClearMetricsID()
 	return cmuo
 }
 

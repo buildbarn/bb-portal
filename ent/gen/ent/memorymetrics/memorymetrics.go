@@ -18,6 +18,8 @@ const (
 	FieldUsedHeapSizePostBuild = "used_heap_size_post_build"
 	// FieldPeakPostGcTenuredSpaceHeapSize holds the string denoting the peak_post_gc_tenured_space_heap_size field in the database.
 	FieldPeakPostGcTenuredSpaceHeapSize = "peak_post_gc_tenured_space_heap_size"
+	// FieldMetricsID holds the string denoting the metrics_id field in the database.
+	FieldMetricsID = "metrics_id"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
 	// EdgeGarbageMetrics holds the string denoting the garbage_metrics edge name in mutations.
@@ -30,14 +32,14 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
-	MetricsColumn = "metrics_memory_metrics"
+	MetricsColumn = "metrics_id"
 	// GarbageMetricsTable is the table that holds the garbage_metrics relation/edge.
 	GarbageMetricsTable = "garbage_metrics"
 	// GarbageMetricsInverseTable is the table name for the GarbageMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "garbagemetrics" package.
 	GarbageMetricsInverseTable = "garbage_metrics"
 	// GarbageMetricsColumn is the table column denoting the garbage_metrics relation/edge.
-	GarbageMetricsColumn = "memory_metrics_garbage_metrics"
+	GarbageMetricsColumn = "memory_metrics_id"
 )
 
 // Columns holds all SQL columns for memorymetrics fields.
@@ -46,23 +48,13 @@ var Columns = []string{
 	FieldPeakPostGcHeapSize,
 	FieldUsedHeapSizePostBuild,
 	FieldPeakPostGcTenuredSpaceHeapSize,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "memory_metrics"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"metrics_memory_metrics",
+	FieldMetricsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -90,6 +82,11 @@ func ByUsedHeapSizePostBuild(opts ...sql.OrderTermOption) OrderOption {
 // ByPeakPostGcTenuredSpaceHeapSize orders the results by the peak_post_gc_tenured_space_heap_size field.
 func ByPeakPostGcTenuredSpaceHeapSize(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPeakPostGcTenuredSpaceHeapSize, opts...).ToFunc()
+}
+
+// ByMetricsID orders the results by the metrics_id field.
+func ByMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMetricsID, opts...).ToFunc()
 }
 
 // ByMetricsField orders the results by metrics field.

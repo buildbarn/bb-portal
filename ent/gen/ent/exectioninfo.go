@@ -28,11 +28,12 @@ type ExectionInfo struct {
 	ExitCode int32 `json:"exit_code,omitempty"`
 	// Hostname holds the value of the "hostname" field.
 	Hostname string `json:"hostname,omitempty"`
+	// ExecutionInfoID holds the value of the "execution_info_id" field.
+	ExecutionInfoID int `json:"execution_info_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ExectionInfoQuery when eager-loading is set.
-	Edges                          ExectionInfoEdges `json:"edges"`
-	test_result_bes_execution_info *int
-	selectValues                   sql.SelectValues
+	Edges        ExectionInfoEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // ExectionInfoEdges holds the relations/edges for other nodes in the graph.
@@ -90,12 +91,10 @@ func (*ExectionInfo) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case exectioninfo.FieldCachedRemotely:
 			values[i] = new(sql.NullBool)
-		case exectioninfo.FieldID, exectioninfo.FieldTimeoutSeconds, exectioninfo.FieldExitCode:
+		case exectioninfo.FieldID, exectioninfo.FieldTimeoutSeconds, exectioninfo.FieldExitCode, exectioninfo.FieldExecutionInfoID:
 			values[i] = new(sql.NullInt64)
 		case exectioninfo.FieldStrategy, exectioninfo.FieldHostname:
 			values[i] = new(sql.NullString)
-		case exectioninfo.ForeignKeys[0]: // test_result_bes_execution_info
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -147,12 +146,11 @@ func (ei *ExectionInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ei.Hostname = value.String
 			}
-		case exectioninfo.ForeignKeys[0]:
+		case exectioninfo.FieldExecutionInfoID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field test_result_bes_execution_info", value)
+				return fmt.Errorf("unexpected type %T for field execution_info_id", values[i])
 			} else if value.Valid {
-				ei.test_result_bes_execution_info = new(int)
-				*ei.test_result_bes_execution_info = int(value.Int64)
+				ei.ExecutionInfoID = int(value.Int64)
 			}
 		default:
 			ei.selectValues.Set(columns[i], values[i])
@@ -219,6 +217,9 @@ func (ei *ExectionInfo) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("hostname=")
 	builder.WriteString(ei.Hostname)
+	builder.WriteString(", ")
+	builder.WriteString("execution_info_id=")
+	builder.WriteString(fmt.Sprintf("%v", ei.ExecutionInfoID))
 	builder.WriteByte(')')
 	return builder.String()
 }

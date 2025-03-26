@@ -80,6 +80,11 @@ func DurationMs(v int64) predicate.TestCollection {
 	return predicate.TestCollection(sql.FieldEQ(FieldDurationMs, v))
 }
 
+// BazelInvocationID applies equality check predicate on the "bazel_invocation_id" field. It's identical to BazelInvocationIDEQ.
+func BazelInvocationID(v int) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
 // LabelEQ applies the EQ predicate on the "label" field.
 func LabelEQ(v string) predicate.TestCollection {
 	return predicate.TestCollection(sql.FieldEQ(FieldLabel, v))
@@ -398,6 +403,36 @@ func DurationMsIsNil() predicate.TestCollection {
 // DurationMsNotNil applies the NotNil predicate on the "duration_ms" field.
 func DurationMsNotNil() predicate.TestCollection {
 	return predicate.TestCollection(sql.FieldNotNull(FieldDurationMs))
+}
+
+// BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDEQ(v int) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDNEQ applies the NEQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNEQ(v int) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldNEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDIn applies the In predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIn(vs ...int) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDNotIn applies the NotIn predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotIn(vs ...int) predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldNotIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDIsNil applies the IsNil predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIsNil() predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldIsNull(FieldBazelInvocationID))
+}
+
+// BazelInvocationIDNotNil applies the NotNil predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotNil() predicate.TestCollection {
+	return predicate.TestCollection(sql.FieldNotNull(FieldBazelInvocationID))
 }
 
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.

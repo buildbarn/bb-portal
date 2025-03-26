@@ -14,14 +14,15 @@ import (
 
 // NamedSetOfFiles is the model entity for the NamedSetOfFiles schema.
 type NamedSetOfFiles struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// OutputGroupID holds the value of the "output_group_id" field.
+	OutputGroupID int `json:"output_group_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the NamedSetOfFilesQuery when eager-loading is set.
 	Edges                        NamedSetOfFilesEdges `json:"edges"`
 	named_set_of_files_file_sets *int
-	output_group_file_sets       *int
 	selectValues                 sql.SelectValues
 }
 
@@ -78,11 +79,9 @@ func (*NamedSetOfFiles) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case namedsetoffiles.FieldID:
+		case namedsetoffiles.FieldID, namedsetoffiles.FieldOutputGroupID:
 			values[i] = new(sql.NullInt64)
 		case namedsetoffiles.ForeignKeys[0]: // named_set_of_files_file_sets
-			values[i] = new(sql.NullInt64)
-		case namedsetoffiles.ForeignKeys[1]: // output_group_file_sets
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -105,19 +104,18 @@ func (nsof *NamedSetOfFiles) assignValues(columns []string, values []any) error 
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			nsof.ID = int(value.Int64)
+		case namedsetoffiles.FieldOutputGroupID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field output_group_id", values[i])
+			} else if value.Valid {
+				nsof.OutputGroupID = int(value.Int64)
+			}
 		case namedsetoffiles.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field named_set_of_files_file_sets", value)
 			} else if value.Valid {
 				nsof.named_set_of_files_file_sets = new(int)
 				*nsof.named_set_of_files_file_sets = int(value.Int64)
-			}
-		case namedsetoffiles.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field output_group_file_sets", value)
-			} else if value.Valid {
-				nsof.output_group_file_sets = new(int)
-				*nsof.output_group_file_sets = int(value.Int64)
 			}
 		default:
 			nsof.selectValues.Set(columns[i], values[i])
@@ -169,7 +167,9 @@ func (nsof *NamedSetOfFiles) Unwrap() *NamedSetOfFiles {
 func (nsof *NamedSetOfFiles) String() string {
 	var builder strings.Builder
 	builder.WriteString("NamedSetOfFiles(")
-	builder.WriteString(fmt.Sprintf("id=%v", nsof.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", nsof.ID))
+	builder.WriteString("output_group_id=")
+	builder.WriteString(fmt.Sprintf("%v", nsof.OutputGroupID))
 	builder.WriteByte(')')
 	return builder.String()
 }

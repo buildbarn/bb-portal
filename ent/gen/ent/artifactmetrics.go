@@ -15,16 +15,17 @@ import (
 
 // ArtifactMetrics is the model entity for the ArtifactMetrics schema.
 type ArtifactMetrics struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// MetricsID holds the value of the "metrics_id" field.
+	MetricsID int `json:"metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ArtifactMetricsQuery when eager-loading is set.
 	Edges                                               ArtifactMetricsEdges `json:"edges"`
 	artifact_metrics_source_artifacts_read              *int
 	artifact_metrics_output_artifacts_seen              *int
 	artifact_metrics_output_artifacts_from_action_cache *int
-	metrics_artifact_metrics                            *int
 	selectValues                                        sql.SelectValues
 }
 
@@ -107,15 +108,13 @@ func (*ArtifactMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case artifactmetrics.FieldID:
+		case artifactmetrics.FieldID, artifactmetrics.FieldMetricsID:
 			values[i] = new(sql.NullInt64)
 		case artifactmetrics.ForeignKeys[0]: // artifact_metrics_source_artifacts_read
 			values[i] = new(sql.NullInt64)
 		case artifactmetrics.ForeignKeys[1]: // artifact_metrics_output_artifacts_seen
 			values[i] = new(sql.NullInt64)
 		case artifactmetrics.ForeignKeys[2]: // artifact_metrics_output_artifacts_from_action_cache
-			values[i] = new(sql.NullInt64)
-		case artifactmetrics.ForeignKeys[3]: // metrics_artifact_metrics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -138,6 +137,12 @@ func (am *ArtifactMetrics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			am.ID = int(value.Int64)
+		case artifactmetrics.FieldMetricsID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field metrics_id", values[i])
+			} else if value.Valid {
+				am.MetricsID = int(value.Int64)
+			}
 		case artifactmetrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_source_artifacts_read", value)
@@ -158,13 +163,6 @@ func (am *ArtifactMetrics) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				am.artifact_metrics_output_artifacts_from_action_cache = new(int)
 				*am.artifact_metrics_output_artifacts_from_action_cache = int(value.Int64)
-			}
-		case artifactmetrics.ForeignKeys[3]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field metrics_artifact_metrics", value)
-			} else if value.Valid {
-				am.metrics_artifact_metrics = new(int)
-				*am.metrics_artifact_metrics = int(value.Int64)
 			}
 		default:
 			am.selectValues.Set(columns[i], values[i])
@@ -226,7 +224,9 @@ func (am *ArtifactMetrics) Unwrap() *ArtifactMetrics {
 func (am *ArtifactMetrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("ArtifactMetrics(")
-	builder.WriteString(fmt.Sprintf("id=%v", am.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", am.ID))
+	builder.WriteString("metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", am.MetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

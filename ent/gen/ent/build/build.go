@@ -30,7 +30,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
 	InvocationsInverseTable = "bazel_invocations"
 	// InvocationsColumn is the table column denoting the invocations relation/edge.
-	InvocationsColumn = "build_invocations"
+	InvocationsColumn = "build_id"
 )
 
 // Columns holds all SQL columns for build fields.

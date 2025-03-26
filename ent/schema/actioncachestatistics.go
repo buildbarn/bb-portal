@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // ActionCacheStatistics holds the schema definition for the ActionCacheStatistics entity.
@@ -31,6 +32,8 @@ func (ActionCacheStatistics) Fields() []ent.Field {
 		// Cache counters.
 		field.Int32("hits").Optional(),
 		field.Int32("misses").Optional(),
+
+		field.Int("action_summary_id").Optional(),
 	}
 }
 
@@ -40,12 +43,20 @@ func (ActionCacheStatistics) Edges() []ent.Edge {
 		// Edge back to the associated action summary.
 		edge.From("action_summary", ActionSummary.Type).
 			Ref("action_cache_statistics").
-			Unique(),
+			Unique().
+			Field("action_summary_id"),
 
 		// Breakdown of the cache misses based on the reasons behind them.
 		edge.To("miss_details", MissDetail.Type).
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+	}
+}
+
+// Indexes of the ActionCacheStatistics.
+func (ActionCacheStatistics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("action_summary_id"),
 	}
 }

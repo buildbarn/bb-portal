@@ -29,7 +29,6 @@ type TargetCompleteQuery struct {
 	withImportantOutput      *TestFileQuery
 	withDirectoryOutput      *TestFileQuery
 	withOutputGroup          *OutputGroupQuery
-	withFKs                  bool
 	modifiers                []func(*sql.Selector)
 	loadTotal                []func(context.Context, []*TargetComplete) error
 	withNamedImportantOutput map[string]*TestFileQuery
@@ -481,7 +480,6 @@ func (tcq *TargetCompleteQuery) prepareQuery(ctx context.Context) error {
 func (tcq *TargetCompleteQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TargetComplete, error) {
 	var (
 		nodes       = []*TargetComplete{}
-		withFKs     = tcq.withFKs
 		_spec       = tcq.querySpec()
 		loadedTypes = [4]bool{
 			tcq.withTargetPair != nil,
@@ -490,12 +488,6 @@ func (tcq *TargetCompleteQuery) sqlAll(ctx context.Context, hooks ...queryHook) 
 			tcq.withOutputGroup != nil,
 		}
 	)
-	if tcq.withTargetPair != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, targetcomplete.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TargetComplete).scanValues(nil, columns)
 	}
@@ -569,10 +561,7 @@ func (tcq *TargetCompleteQuery) loadTargetPair(ctx context.Context, query *Targe
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TargetComplete)
 	for i := range nodes {
-		if nodes[i].target_pair_completion == nil {
-			continue
-		}
-		fk := *nodes[i].target_pair_completion
+		fk := nodes[i].TargetPairID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -589,7 +578,7 @@ func (tcq *TargetCompleteQuery) loadTargetPair(ctx context.Context, query *Targe
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "target_pair_completion" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "target_pair_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -666,7 +655,9 @@ func (tcq *TargetCompleteQuery) loadOutputGroup(ctx context.Context, query *Outp
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(outputgroup.FieldTargetCompleteID)
+	}
 	query.Where(predicate.OutputGroup(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(targetcomplete.OutputGroupColumn), fks...))
 	}))
@@ -675,13 +666,10 @@ func (tcq *TargetCompleteQuery) loadOutputGroup(ctx context.Context, query *Outp
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.target_complete_output_group
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "target_complete_output_group" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.TargetCompleteID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "target_complete_output_group" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "target_complete_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -715,6 +703,9 @@ func (tcq *TargetCompleteQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != targetcomplete.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if tcq.withTargetPair != nil {
+			_spec.Node.AddColumnOnce(targetcomplete.FieldTargetPairID)
 		}
 	}
 	if ps := tcq.predicates; len(ps) > 0 {

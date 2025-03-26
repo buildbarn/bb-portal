@@ -55,6 +55,9 @@ func (SourceControl) Fields() []ent.Field {
 
 		// The source control runner architecture associated with the invocation (Possible duplicate)
 		field.String("runner_os").Optional(),
+
+		// The bazel invocation id associated with the invocation
+		field.Int("bazel_invocation_id").Optional(),
 	}
 }
 
@@ -64,6 +67,7 @@ func (SourceControl) Edges() []ent.Edge {
 		// Edge back to the bazel invocation
 		edge.From("bazel_invocation", BazelInvocation.Type).
 			Ref("source_control").
-			Unique(),
+			Unique().
+			Field("bazel_invocation_id"),
 	}
 }

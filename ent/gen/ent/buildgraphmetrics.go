@@ -36,6 +36,8 @@ type BuildGraphMetrics struct {
 	OutputArtifactCount int32 `json:"output_artifact_count,omitempty"`
 	// PostInvocationSkyframeNodeCount holds the value of the "post_invocation_skyframe_node_count" field.
 	PostInvocationSkyframeNodeCount int32 `json:"post_invocation_skyframe_node_count,omitempty"`
+	// MetricsID holds the value of the "metrics_id" field.
+	MetricsID int `json:"metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BuildGraphMetricsQuery when eager-loading is set.
 	Edges                              BuildGraphMetricsEdges `json:"edges"`
@@ -43,7 +45,6 @@ type BuildGraphMetrics struct {
 	build_graph_metrics_changed_values *int
 	build_graph_metrics_built_values   *int
 	build_graph_metrics_cleaned_values *int
-	metrics_build_graph_metrics        *int
 	selectValues                       sql.SelectValues
 }
 
@@ -139,7 +140,7 @@ func (*BuildGraphMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case buildgraphmetrics.FieldID, buildgraphmetrics.FieldActionLookupValueCount, buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects, buildgraphmetrics.FieldActionCount, buildgraphmetrics.FieldActionCountNotIncludingAspects, buildgraphmetrics.FieldInputFileConfiguredTargetCount, buildgraphmetrics.FieldOutputFileConfiguredTargetCount, buildgraphmetrics.FieldOtherConfiguredTargetCount, buildgraphmetrics.FieldOutputArtifactCount, buildgraphmetrics.FieldPostInvocationSkyframeNodeCount:
+		case buildgraphmetrics.FieldID, buildgraphmetrics.FieldActionLookupValueCount, buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects, buildgraphmetrics.FieldActionCount, buildgraphmetrics.FieldActionCountNotIncludingAspects, buildgraphmetrics.FieldInputFileConfiguredTargetCount, buildgraphmetrics.FieldOutputFileConfiguredTargetCount, buildgraphmetrics.FieldOtherConfiguredTargetCount, buildgraphmetrics.FieldOutputArtifactCount, buildgraphmetrics.FieldPostInvocationSkyframeNodeCount, buildgraphmetrics.FieldMetricsID:
 			values[i] = new(sql.NullInt64)
 		case buildgraphmetrics.ForeignKeys[0]: // build_graph_metrics_dirtied_values
 			values[i] = new(sql.NullInt64)
@@ -148,8 +149,6 @@ func (*BuildGraphMetrics) scanValues(columns []string) ([]any, error) {
 		case buildgraphmetrics.ForeignKeys[2]: // build_graph_metrics_built_values
 			values[i] = new(sql.NullInt64)
 		case buildgraphmetrics.ForeignKeys[3]: // build_graph_metrics_cleaned_values
-			values[i] = new(sql.NullInt64)
-		case buildgraphmetrics.ForeignKeys[4]: // metrics_build_graph_metrics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -226,6 +225,12 @@ func (bgm *BuildGraphMetrics) assignValues(columns []string, values []any) error
 			} else if value.Valid {
 				bgm.PostInvocationSkyframeNodeCount = int32(value.Int64)
 			}
+		case buildgraphmetrics.FieldMetricsID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field metrics_id", values[i])
+			} else if value.Valid {
+				bgm.MetricsID = int(value.Int64)
+			}
 		case buildgraphmetrics.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_graph_metrics_dirtied_values", value)
@@ -253,13 +258,6 @@ func (bgm *BuildGraphMetrics) assignValues(columns []string, values []any) error
 			} else if value.Valid {
 				bgm.build_graph_metrics_cleaned_values = new(int)
 				*bgm.build_graph_metrics_cleaned_values = int(value.Int64)
-			}
-		case buildgraphmetrics.ForeignKeys[4]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field metrics_build_graph_metrics", value)
-			} else if value.Valid {
-				bgm.metrics_build_graph_metrics = new(int)
-				*bgm.metrics_build_graph_metrics = int(value.Int64)
 			}
 		default:
 			bgm.selectValues.Set(columns[i], values[i])
@@ -353,6 +351,9 @@ func (bgm *BuildGraphMetrics) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("post_invocation_skyframe_node_count=")
 	builder.WriteString(fmt.Sprintf("%v", bgm.PostInvocationSkyframeNodeCount))
+	builder.WriteString(", ")
+	builder.WriteString("metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", bgm.MetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -24,11 +24,12 @@ type BazelInvocationProblem struct {
 	Label string `json:"label,omitempty"`
 	// BepEvents holds the value of the "bep_events" field.
 	BepEvents json.RawMessage `json:"bep_events,omitempty"`
+	// BazelInvocationID holds the value of the "bazel_invocation_id" field.
+	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BazelInvocationProblemQuery when eager-loading is set.
-	Edges                     BazelInvocationProblemEdges `json:"edges"`
-	bazel_invocation_problems *int
-	selectValues              sql.SelectValues
+	Edges        BazelInvocationProblemEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // BazelInvocationProblemEdges holds the relations/edges for other nodes in the graph.
@@ -60,12 +61,10 @@ func (*BazelInvocationProblem) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case bazelinvocationproblem.FieldBepEvents:
 			values[i] = new([]byte)
-		case bazelinvocationproblem.FieldID:
+		case bazelinvocationproblem.FieldID, bazelinvocationproblem.FieldBazelInvocationID:
 			values[i] = new(sql.NullInt64)
 		case bazelinvocationproblem.FieldProblemType, bazelinvocationproblem.FieldLabel:
 			values[i] = new(sql.NullString)
-		case bazelinvocationproblem.ForeignKeys[0]: // bazel_invocation_problems
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -107,12 +106,11 @@ func (bip *BazelInvocationProblem) assignValues(columns []string, values []any) 
 					return fmt.Errorf("unmarshal field bep_events: %w", err)
 				}
 			}
-		case bazelinvocationproblem.ForeignKeys[0]:
+		case bazelinvocationproblem.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_problems", value)
+				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				bip.bazel_invocation_problems = new(int)
-				*bip.bazel_invocation_problems = int(value.Int64)
+				bip.BazelInvocationID = int(value.Int64)
 			}
 		default:
 			bip.selectValues.Set(columns[i], values[i])
@@ -163,6 +161,9 @@ func (bip *BazelInvocationProblem) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("bep_events=")
 	builder.WriteString(fmt.Sprintf("%v", bip.BepEvents))
+	builder.WriteString(", ")
+	builder.WriteString("bazel_invocation_id=")
+	builder.WriteString(fmt.Sprintf("%v", bip.BazelInvocationID))
 	builder.WriteByte(')')
 	return builder.String()
 }

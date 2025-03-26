@@ -430,7 +430,9 @@ func (bq *BuildQuery) loadInvocations(ctx context.Context, query *BazelInvocatio
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(bazelinvocation.FieldBuildID)
+	}
 	query.Where(predicate.BazelInvocation(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(build.InvocationsColumn), fks...))
 	}))
@@ -439,13 +441,10 @@ func (bq *BuildQuery) loadInvocations(ctx context.Context, query *BazelInvocatio
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.build_invocations
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "build_invocations" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.BuildID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "build_invocations" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "build_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

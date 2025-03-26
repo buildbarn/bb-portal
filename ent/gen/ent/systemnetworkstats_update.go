@@ -244,17 +244,23 @@ func (snsu *SystemNetworkStatsUpdate) ClearPeakPacketsRecvPerSec() *SystemNetwor
 	return snsu
 }
 
-// SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
-func (snsu *SystemNetworkStatsUpdate) SetNetworkMetricsID(id int) *SystemNetworkStatsUpdate {
-	snsu.mutation.SetNetworkMetricsID(id)
+// SetNetworkMetricsID sets the "network_metrics_id" field.
+func (snsu *SystemNetworkStatsUpdate) SetNetworkMetricsID(i int) *SystemNetworkStatsUpdate {
+	snsu.mutation.SetNetworkMetricsID(i)
 	return snsu
 }
 
-// SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
-func (snsu *SystemNetworkStatsUpdate) SetNillableNetworkMetricsID(id *int) *SystemNetworkStatsUpdate {
-	if id != nil {
-		snsu = snsu.SetNetworkMetricsID(*id)
+// SetNillableNetworkMetricsID sets the "network_metrics_id" field if the given value is not nil.
+func (snsu *SystemNetworkStatsUpdate) SetNillableNetworkMetricsID(i *int) *SystemNetworkStatsUpdate {
+	if i != nil {
+		snsu.SetNetworkMetricsID(*i)
 	}
+	return snsu
+}
+
+// ClearNetworkMetricsID clears the value of the "network_metrics_id" field.
+func (snsu *SystemNetworkStatsUpdate) ClearNetworkMetricsID() *SystemNetworkStatsUpdate {
+	snsu.mutation.ClearNetworkMetricsID()
 	return snsu
 }
 
@@ -647,17 +653,23 @@ func (snsuo *SystemNetworkStatsUpdateOne) ClearPeakPacketsRecvPerSec() *SystemNe
 	return snsuo
 }
 
-// SetNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNetworkMetricsID(id int) *SystemNetworkStatsUpdateOne {
-	snsuo.mutation.SetNetworkMetricsID(id)
+// SetNetworkMetricsID sets the "network_metrics_id" field.
+func (snsuo *SystemNetworkStatsUpdateOne) SetNetworkMetricsID(i int) *SystemNetworkStatsUpdateOne {
+	snsuo.mutation.SetNetworkMetricsID(i)
 	return snsuo
 }
 
-// SetNillableNetworkMetricsID sets the "network_metrics" edge to the NetworkMetrics entity by ID if the given value is not nil.
-func (snsuo *SystemNetworkStatsUpdateOne) SetNillableNetworkMetricsID(id *int) *SystemNetworkStatsUpdateOne {
-	if id != nil {
-		snsuo = snsuo.SetNetworkMetricsID(*id)
+// SetNillableNetworkMetricsID sets the "network_metrics_id" field if the given value is not nil.
+func (snsuo *SystemNetworkStatsUpdateOne) SetNillableNetworkMetricsID(i *int) *SystemNetworkStatsUpdateOne {
+	if i != nil {
+		snsuo.SetNetworkMetricsID(*i)
 	}
+	return snsuo
+}
+
+// ClearNetworkMetricsID clears the value of the "network_metrics_id" field.
+func (snsuo *SystemNetworkStatsUpdateOne) ClearNetworkMetricsID() *SystemNetworkStatsUpdateOne {
+	snsuo.mutation.ClearNetworkMetricsID()
 	return snsuo
 }
 

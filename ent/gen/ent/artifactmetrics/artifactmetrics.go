@@ -12,6 +12,8 @@ const (
 	Label = "artifact_metrics"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldMetricsID holds the string denoting the metrics_id field in the database.
+	FieldMetricsID = "metrics_id"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
 	// EdgeSourceArtifactsRead holds the string denoting the source_artifacts_read edge name in mutations.
@@ -30,7 +32,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
-	MetricsColumn = "metrics_artifact_metrics"
+	MetricsColumn = "metrics_id"
 	// SourceArtifactsReadTable is the table that holds the source_artifacts_read relation/edge.
 	SourceArtifactsReadTable = "artifact_metrics"
 	// SourceArtifactsReadInverseTable is the table name for the FilesMetric entity.
@@ -58,12 +60,13 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "filesmetric" package.
 	TopLevelArtifactsInverseTable = "files_metrics"
 	// TopLevelArtifactsColumn is the table column denoting the top_level_artifacts relation/edge.
-	TopLevelArtifactsColumn = "artifact_metrics_top_level_artifacts"
+	TopLevelArtifactsColumn = "artifact_metrics_id"
 )
 
 // Columns holds all SQL columns for artifactmetrics fields.
 var Columns = []string{
 	FieldID,
+	FieldMetricsID,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "artifact_metrics"
@@ -72,7 +75,6 @@ var ForeignKeys = []string{
 	"artifact_metrics_source_artifacts_read",
 	"artifact_metrics_output_artifacts_seen",
 	"artifact_metrics_output_artifacts_from_action_cache",
-	"metrics_artifact_metrics",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -96,6 +98,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByMetricsID orders the results by the metrics_id field.
+func ByMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMetricsID, opts...).ToFunc()
 }
 
 // ByMetricsField orders the results by metrics field.

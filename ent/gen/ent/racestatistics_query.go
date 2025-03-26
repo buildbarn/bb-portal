@@ -23,7 +23,6 @@ type RaceStatisticsQuery struct {
 	inters                      []Interceptor
 	predicates                  []predicate.RaceStatistics
 	withDynamicExecutionMetrics *DynamicExecutionMetricsQuery
-	withFKs                     bool
 	modifiers                   []func(*sql.Selector)
 	loadTotal                   []func(context.Context, []*RaceStatistics) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (rsq *RaceStatisticsQuery) prepareQuery(ctx context.Context) error {
 func (rsq *RaceStatisticsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*RaceStatistics, error) {
 	var (
 		nodes       = []*RaceStatistics{}
-		withFKs     = rsq.withFKs
 		_spec       = rsq.querySpec()
 		loadedTypes = [1]bool{
 			rsq.withDynamicExecutionMetrics != nil,
 		}
 	)
-	if rsq.withDynamicExecutionMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, racestatistics.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*RaceStatistics).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (rsq *RaceStatisticsQuery) loadDynamicExecutionMetrics(ctx context.Context,
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*RaceStatistics)
 	for i := range nodes {
-		if nodes[i].dynamic_execution_metrics_race_statistics == nil {
-			continue
-		}
-		fk := *nodes[i].dynamic_execution_metrics_race_statistics
+		fk := nodes[i].DynamicExecutionMetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (rsq *RaceStatisticsQuery) loadDynamicExecutionMetrics(ctx context.Context,
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "dynamic_execution_metrics_race_statistics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "dynamic_execution_metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (rsq *RaceStatisticsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != racestatistics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if rsq.withDynamicExecutionMetrics != nil {
+			_spec.Node.AddColumnOnce(racestatistics.FieldDynamicExecutionMetricsID)
 		}
 	}
 	if ps := rsq.predicates; len(ps) > 0 {

@@ -22,6 +22,8 @@ const (
 	FieldExitCode = "exit_code"
 	// FieldHostname holds the string denoting the hostname field in the database.
 	FieldHostname = "hostname"
+	// FieldExecutionInfoID holds the string denoting the execution_info_id field in the database.
+	FieldExecutionInfoID = "execution_info_id"
 	// EdgeTestResult holds the string denoting the test_result edge name in mutations.
 	EdgeTestResult = "test_result"
 	// EdgeTimingBreakdown holds the string denoting the timing_breakdown edge name in mutations.
@@ -36,21 +38,21 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "testresultbes" package.
 	TestResultInverseTable = "test_result_be_ss"
 	// TestResultColumn is the table column denoting the test_result relation/edge.
-	TestResultColumn = "test_result_bes_execution_info"
+	TestResultColumn = "execution_info_id"
 	// TimingBreakdownTable is the table that holds the timing_breakdown relation/edge.
 	TimingBreakdownTable = "timing_breakdowns"
 	// TimingBreakdownInverseTable is the table name for the TimingBreakdown entity.
 	// It exists in this package in order to avoid circular dependency with the "timingbreakdown" package.
 	TimingBreakdownInverseTable = "timing_breakdowns"
 	// TimingBreakdownColumn is the table column denoting the timing_breakdown relation/edge.
-	TimingBreakdownColumn = "exection_info_timing_breakdown"
+	TimingBreakdownColumn = "execution_info_id"
 	// ResourceUsageTable is the table that holds the resource_usage relation/edge.
 	ResourceUsageTable = "resource_usages"
 	// ResourceUsageInverseTable is the table name for the ResourceUsage entity.
 	// It exists in this package in order to avoid circular dependency with the "resourceusage" package.
 	ResourceUsageInverseTable = "resource_usages"
 	// ResourceUsageColumn is the table column denoting the resource_usage relation/edge.
-	ResourceUsageColumn = "exection_info_resource_usage"
+	ResourceUsageColumn = "execution_info_id"
 )
 
 // Columns holds all SQL columns for exectioninfo fields.
@@ -61,23 +63,13 @@ var Columns = []string{
 	FieldCachedRemotely,
 	FieldExitCode,
 	FieldHostname,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "exection_infos"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"test_result_bes_execution_info",
+	FieldExecutionInfoID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -115,6 +107,11 @@ func ByExitCode(opts ...sql.OrderTermOption) OrderOption {
 // ByHostname orders the results by the hostname field.
 func ByHostname(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldHostname, opts...).ToFunc()
+}
+
+// ByExecutionInfoID orders the results by the execution_info_id field.
+func ByExecutionInfoID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldExecutionInfoID, opts...).ToFunc()
 }
 
 // ByTestResultField orders the results by test_result field.

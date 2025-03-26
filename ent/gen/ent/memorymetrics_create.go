@@ -62,16 +62,16 @@ func (mmc *MemoryMetricsCreate) SetNillablePeakPostGcTenuredSpaceHeapSize(i *int
 	return mmc
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (mmc *MemoryMetricsCreate) SetMetricsID(id int) *MemoryMetricsCreate {
-	mmc.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (mmc *MemoryMetricsCreate) SetMetricsID(i int) *MemoryMetricsCreate {
+	mmc.mutation.SetMetricsID(i)
 	return mmc
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (mmc *MemoryMetricsCreate) SetNillableMetricsID(id *int) *MemoryMetricsCreate {
-	if id != nil {
-		mmc = mmc.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (mmc *MemoryMetricsCreate) SetNillableMetricsID(i *int) *MemoryMetricsCreate {
+	if i != nil {
+		mmc.SetMetricsID(*i)
 	}
 	return mmc
 }
@@ -182,7 +182,7 @@ func (mmc *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSp
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.metrics_memory_metrics = &nodes[0]
+		_node.MetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := mmc.mutation.GarbageMetricsIDs(); len(nodes) > 0 {

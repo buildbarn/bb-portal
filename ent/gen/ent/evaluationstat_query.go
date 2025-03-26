@@ -23,7 +23,6 @@ type EvaluationStatQuery struct {
 	inters                []Interceptor
 	predicates            []predicate.EvaluationStat
 	withBuildGraphMetrics *BuildGraphMetricsQuery
-	withFKs               bool
 	modifiers             []func(*sql.Selector)
 	loadTotal             []func(context.Context, []*EvaluationStat) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (esq *EvaluationStatQuery) prepareQuery(ctx context.Context) error {
 func (esq *EvaluationStatQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*EvaluationStat, error) {
 	var (
 		nodes       = []*EvaluationStat{}
-		withFKs     = esq.withFKs
 		_spec       = esq.querySpec()
 		loadedTypes = [1]bool{
 			esq.withBuildGraphMetrics != nil,
 		}
 	)
-	if esq.withBuildGraphMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, evaluationstat.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*EvaluationStat).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (esq *EvaluationStatQuery) loadBuildGraphMetrics(ctx context.Context, query
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*EvaluationStat)
 	for i := range nodes {
-		if nodes[i].build_graph_metrics_evaluated_values == nil {
-			continue
-		}
-		fk := *nodes[i].build_graph_metrics_evaluated_values
+		fk := nodes[i].BuildGraphMetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (esq *EvaluationStatQuery) loadBuildGraphMetrics(ctx context.Context, query
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "build_graph_metrics_evaluated_values" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "build_graph_metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (esq *EvaluationStatQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != evaluationstat.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if esq.withBuildGraphMetrics != nil {
+			_spec.Node.AddColumnOnce(evaluationstat.FieldBuildGraphMetricsID)
 		}
 	}
 	if ps := esq.predicates; len(ps) > 0 {

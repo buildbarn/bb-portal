@@ -67,16 +67,16 @@ func (tcc *TargetConfiguredCreate) SetNillableTestSize(ts *targetconfigured.Test
 	return tcc
 }
 
-// SetTargetPairID sets the "target_pair" edge to the TargetPair entity by ID.
-func (tcc *TargetConfiguredCreate) SetTargetPairID(id int) *TargetConfiguredCreate {
-	tcc.mutation.SetTargetPairID(id)
+// SetTargetPairID sets the "target_pair_id" field.
+func (tcc *TargetConfiguredCreate) SetTargetPairID(i int) *TargetConfiguredCreate {
+	tcc.mutation.SetTargetPairID(i)
 	return tcc
 }
 
-// SetNillableTargetPairID sets the "target_pair" edge to the TargetPair entity by ID if the given value is not nil.
-func (tcc *TargetConfiguredCreate) SetNillableTargetPairID(id *int) *TargetConfiguredCreate {
-	if id != nil {
-		tcc = tcc.SetTargetPairID(*id)
+// SetNillableTargetPairID sets the "target_pair_id" field if the given value is not nil.
+func (tcc *TargetConfiguredCreate) SetNillableTargetPairID(i *int) *TargetConfiguredCreate {
+	if i != nil {
+		tcc.SetTargetPairID(*i)
 	}
 	return tcc
 }
@@ -181,7 +181,7 @@ func (tcc *TargetConfiguredCreate) createSpec() (*TargetConfigured, *sqlgraph.Cr
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.target_pair_configuration = &nodes[0]
+		_node.TargetPairID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

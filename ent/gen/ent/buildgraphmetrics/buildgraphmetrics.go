@@ -30,6 +30,8 @@ const (
 	FieldOutputArtifactCount = "output_artifact_count"
 	// FieldPostInvocationSkyframeNodeCount holds the string denoting the post_invocation_skyframe_node_count field in the database.
 	FieldPostInvocationSkyframeNodeCount = "post_invocation_skyframe_node_count"
+	// FieldMetricsID holds the string denoting the metrics_id field in the database.
+	FieldMetricsID = "metrics_id"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
 	// EdgeDirtiedValues holds the string denoting the dirtied_values edge name in mutations.
@@ -50,7 +52,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
-	MetricsColumn = "metrics_build_graph_metrics"
+	MetricsColumn = "metrics_id"
 	// DirtiedValuesTable is the table that holds the dirtied_values relation/edge.
 	DirtiedValuesTable = "build_graph_metrics"
 	// DirtiedValuesInverseTable is the table name for the EvaluationStat entity.
@@ -85,7 +87,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "evaluationstat" package.
 	EvaluatedValuesInverseTable = "evaluation_stats"
 	// EvaluatedValuesColumn is the table column denoting the evaluated_values relation/edge.
-	EvaluatedValuesColumn = "build_graph_metrics_evaluated_values"
+	EvaluatedValuesColumn = "build_graph_metrics_id"
 )
 
 // Columns holds all SQL columns for buildgraphmetrics fields.
@@ -100,6 +102,7 @@ var Columns = []string{
 	FieldOtherConfiguredTargetCount,
 	FieldOutputArtifactCount,
 	FieldPostInvocationSkyframeNodeCount,
+	FieldMetricsID,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "build_graph_metrics"
@@ -109,7 +112,6 @@ var ForeignKeys = []string{
 	"build_graph_metrics_changed_values",
 	"build_graph_metrics_built_values",
 	"build_graph_metrics_cleaned_values",
-	"metrics_build_graph_metrics",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -178,6 +180,11 @@ func ByOutputArtifactCount(opts ...sql.OrderTermOption) OrderOption {
 // ByPostInvocationSkyframeNodeCount orders the results by the post_invocation_skyframe_node_count field.
 func ByPostInvocationSkyframeNodeCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPostInvocationSkyframeNodeCount, opts...).ToFunc()
+}
+
+// ByMetricsID orders the results by the metrics_id field.
+func ByMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMetricsID, opts...).ToFunc()
 }
 
 // ByMetricsField orders the results by metrics field.

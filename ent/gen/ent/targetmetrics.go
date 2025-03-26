@@ -23,11 +23,12 @@ type TargetMetrics struct {
 	TargetsConfigured int64 `json:"targets_configured,omitempty"`
 	// TargetsConfiguredNotIncludingAspects holds the value of the "targets_configured_not_including_aspects" field.
 	TargetsConfiguredNotIncludingAspects int64 `json:"targets_configured_not_including_aspects,omitempty"`
+	// MetricsID holds the value of the "metrics_id" field.
+	MetricsID int `json:"metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetMetricsQuery when eager-loading is set.
-	Edges                  TargetMetricsEdges `json:"edges"`
-	metrics_target_metrics *int
-	selectValues           sql.SelectValues
+	Edges        TargetMetricsEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // TargetMetricsEdges holds the relations/edges for other nodes in the graph.
@@ -57,9 +58,7 @@ func (*TargetMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case targetmetrics.FieldID, targetmetrics.FieldTargetsLoaded, targetmetrics.FieldTargetsConfigured, targetmetrics.FieldTargetsConfiguredNotIncludingAspects:
-			values[i] = new(sql.NullInt64)
-		case targetmetrics.ForeignKeys[0]: // metrics_target_metrics
+		case targetmetrics.FieldID, targetmetrics.FieldTargetsLoaded, targetmetrics.FieldTargetsConfigured, targetmetrics.FieldTargetsConfiguredNotIncludingAspects, targetmetrics.FieldMetricsID:
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -100,12 +99,11 @@ func (tm *TargetMetrics) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				tm.TargetsConfiguredNotIncludingAspects = value.Int64
 			}
-		case targetmetrics.ForeignKeys[0]:
+		case targetmetrics.FieldMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field metrics_target_metrics", value)
+				return fmt.Errorf("unexpected type %T for field metrics_id", values[i])
 			} else if value.Valid {
-				tm.metrics_target_metrics = new(int)
-				*tm.metrics_target_metrics = int(value.Int64)
+				tm.MetricsID = int(value.Int64)
 			}
 		default:
 			tm.selectValues.Set(columns[i], values[i])
@@ -156,6 +154,9 @@ func (tm *TargetMetrics) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("targets_configured_not_including_aspects=")
 	builder.WriteString(fmt.Sprintf("%v", tm.TargetsConfiguredNotIncludingAspects))
+	builder.WriteString(", ")
+	builder.WriteString("metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", tm.MetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

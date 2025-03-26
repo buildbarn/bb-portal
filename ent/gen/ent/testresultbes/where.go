@@ -83,6 +83,11 @@ func TestAttemptDuration(v int64) predicate.TestResultBES {
 	return predicate.TestResultBES(sql.FieldEQ(FieldTestAttemptDuration, v))
 }
 
+// TestCollectionID applies equality check predicate on the "test_collection_id" field. It's identical to TestCollectionIDEQ.
+func TestCollectionID(v int) predicate.TestResultBES {
+	return predicate.TestResultBES(sql.FieldEQ(FieldTestCollectionID, v))
+}
+
 // TestStatusEQ applies the EQ predicate on the "test_status" field.
 func TestStatusEQ(v TestStatus) predicate.TestResultBES {
 	return predicate.TestResultBES(sql.FieldEQ(FieldTestStatus, v))
@@ -516,6 +521,36 @@ func TestAttemptDurationIsNil() predicate.TestResultBES {
 // TestAttemptDurationNotNil applies the NotNil predicate on the "test_attempt_duration" field.
 func TestAttemptDurationNotNil() predicate.TestResultBES {
 	return predicate.TestResultBES(sql.FieldNotNull(FieldTestAttemptDuration))
+}
+
+// TestCollectionIDEQ applies the EQ predicate on the "test_collection_id" field.
+func TestCollectionIDEQ(v int) predicate.TestResultBES {
+	return predicate.TestResultBES(sql.FieldEQ(FieldTestCollectionID, v))
+}
+
+// TestCollectionIDNEQ applies the NEQ predicate on the "test_collection_id" field.
+func TestCollectionIDNEQ(v int) predicate.TestResultBES {
+	return predicate.TestResultBES(sql.FieldNEQ(FieldTestCollectionID, v))
+}
+
+// TestCollectionIDIn applies the In predicate on the "test_collection_id" field.
+func TestCollectionIDIn(vs ...int) predicate.TestResultBES {
+	return predicate.TestResultBES(sql.FieldIn(FieldTestCollectionID, vs...))
+}
+
+// TestCollectionIDNotIn applies the NotIn predicate on the "test_collection_id" field.
+func TestCollectionIDNotIn(vs ...int) predicate.TestResultBES {
+	return predicate.TestResultBES(sql.FieldNotIn(FieldTestCollectionID, vs...))
+}
+
+// TestCollectionIDIsNil applies the IsNil predicate on the "test_collection_id" field.
+func TestCollectionIDIsNil() predicate.TestResultBES {
+	return predicate.TestResultBES(sql.FieldIsNull(FieldTestCollectionID))
+}
+
+// TestCollectionIDNotNil applies the NotNil predicate on the "test_collection_id" field.
+func TestCollectionIDNotNil() predicate.TestResultBES {
+	return predicate.TestResultBES(sql.FieldNotNull(FieldTestCollectionID))
 }
 
 // HasTestCollection applies the HasEdge predicate on the "test_collection" edge.

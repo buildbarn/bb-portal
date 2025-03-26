@@ -12,6 +12,8 @@ const (
 	Label = "named_set_of_files"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldOutputGroupID holds the string denoting the output_group_id field in the database.
+	FieldOutputGroupID = "output_group_id"
 	// EdgeOutputGroup holds the string denoting the output_group edge name in mutations.
 	EdgeOutputGroup = "output_group"
 	// EdgeFiles holds the string denoting the files edge name in mutations.
@@ -26,7 +28,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "outputgroup" package.
 	OutputGroupInverseTable = "output_groups"
 	// OutputGroupColumn is the table column denoting the output_group relation/edge.
-	OutputGroupColumn = "output_group_file_sets"
+	OutputGroupColumn = "output_group_id"
 	// FilesTable is the table that holds the files relation/edge.
 	FilesTable = "test_files"
 	// FilesInverseTable is the table name for the TestFile entity.
@@ -43,13 +45,13 @@ const (
 // Columns holds all SQL columns for namedsetoffiles fields.
 var Columns = []string{
 	FieldID,
+	FieldOutputGroupID,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "named_set_of_files"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"named_set_of_files_file_sets",
-	"output_group_file_sets",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -73,6 +75,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByOutputGroupID orders the results by the output_group_id field.
+func ByOutputGroupID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOutputGroupID, opts...).ToFunc()
 }
 
 // ByOutputGroupField orders the results by output_group field.

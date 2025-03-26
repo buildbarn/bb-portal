@@ -16,6 +16,8 @@ const (
 	FieldSkyfunctionName = "skyfunction_name"
 	// FieldCount holds the string denoting the count field in the database.
 	FieldCount = "count"
+	// FieldBuildGraphMetricsID holds the string denoting the build_graph_metrics_id field in the database.
+	FieldBuildGraphMetricsID = "build_graph_metrics_id"
 	// EdgeBuildGraphMetrics holds the string denoting the build_graph_metrics edge name in mutations.
 	EdgeBuildGraphMetrics = "build_graph_metrics"
 	// Table holds the table name of the evaluationstat in the database.
@@ -26,7 +28,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "buildgraphmetrics" package.
 	BuildGraphMetricsInverseTable = "build_graph_metrics"
 	// BuildGraphMetricsColumn is the table column denoting the build_graph_metrics relation/edge.
-	BuildGraphMetricsColumn = "build_graph_metrics_evaluated_values"
+	BuildGraphMetricsColumn = "build_graph_metrics_id"
 )
 
 // Columns holds all SQL columns for evaluationstat fields.
@@ -34,23 +36,13 @@ var Columns = []string{
 	FieldID,
 	FieldSkyfunctionName,
 	FieldCount,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "evaluation_stats"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"build_graph_metrics_evaluated_values",
+	FieldBuildGraphMetricsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -73,6 +65,11 @@ func BySkyfunctionName(opts ...sql.OrderTermOption) OrderOption {
 // ByCount orders the results by the count field.
 func ByCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCount, opts...).ToFunc()
+}
+
+// ByBuildGraphMetricsID orders the results by the build_graph_metrics_id field.
+func ByBuildGraphMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBuildGraphMetricsID, opts...).ToFunc()
 }
 
 // ByBuildGraphMetricsField orders the results by build_graph_metrics field.

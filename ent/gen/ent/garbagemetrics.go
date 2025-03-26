@@ -21,11 +21,12 @@ type GarbageMetrics struct {
 	Type string `json:"type,omitempty"`
 	// GarbageCollected holds the value of the "garbage_collected" field.
 	GarbageCollected int64 `json:"garbage_collected,omitempty"`
+	// MemoryMetricsID holds the value of the "memory_metrics_id" field.
+	MemoryMetricsID int `json:"memory_metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the GarbageMetricsQuery when eager-loading is set.
-	Edges                          GarbageMetricsEdges `json:"edges"`
-	memory_metrics_garbage_metrics *int
-	selectValues                   sql.SelectValues
+	Edges        GarbageMetricsEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // GarbageMetricsEdges holds the relations/edges for other nodes in the graph.
@@ -55,12 +56,10 @@ func (*GarbageMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case garbagemetrics.FieldID, garbagemetrics.FieldGarbageCollected:
+		case garbagemetrics.FieldID, garbagemetrics.FieldGarbageCollected, garbagemetrics.FieldMemoryMetricsID:
 			values[i] = new(sql.NullInt64)
 		case garbagemetrics.FieldType:
 			values[i] = new(sql.NullString)
-		case garbagemetrics.ForeignKeys[0]: // memory_metrics_garbage_metrics
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -94,12 +93,11 @@ func (gm *GarbageMetrics) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				gm.GarbageCollected = value.Int64
 			}
-		case garbagemetrics.ForeignKeys[0]:
+		case garbagemetrics.FieldMemoryMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field memory_metrics_garbage_metrics", value)
+				return fmt.Errorf("unexpected type %T for field memory_metrics_id", values[i])
 			} else if value.Valid {
-				gm.memory_metrics_garbage_metrics = new(int)
-				*gm.memory_metrics_garbage_metrics = int(value.Int64)
+				gm.MemoryMetricsID = int(value.Int64)
 			}
 		default:
 			gm.selectValues.Set(columns[i], values[i])
@@ -147,6 +145,9 @@ func (gm *GarbageMetrics) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("garbage_collected=")
 	builder.WriteString(fmt.Sprintf("%v", gm.GarbageCollected))
+	builder.WriteString(", ")
+	builder.WriteString("memory_metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", gm.MemoryMetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

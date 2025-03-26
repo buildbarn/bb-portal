@@ -40,6 +40,8 @@ const (
 	FieldRunnerArch = "runner_arch"
 	// FieldRunnerOs holds the string denoting the runner_os field in the database.
 	FieldRunnerOs = "runner_os"
+	// FieldBazelInvocationID holds the string denoting the bazel_invocation_id field in the database.
+	FieldBazelInvocationID = "bazel_invocation_id"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// Table holds the table name of the sourcecontrol in the database.
@@ -50,7 +52,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
 	BazelInvocationInverseTable = "bazel_invocations"
 	// BazelInvocationColumn is the table column denoting the bazel_invocation relation/edge.
-	BazelInvocationColumn = "bazel_invocation_source_control"
+	BazelInvocationColumn = "bazel_invocation_id"
 )
 
 // Columns holds all SQL columns for sourcecontrol fields.
@@ -70,23 +72,13 @@ var Columns = []string{
 	FieldRunnerName,
 	FieldRunnerArch,
 	FieldRunnerOs,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "source_controls"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"bazel_invocation_source_control",
+	FieldBazelInvocationID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -169,6 +161,11 @@ func ByRunnerArch(opts ...sql.OrderTermOption) OrderOption {
 // ByRunnerOs orders the results by the runner_os field.
 func ByRunnerOs(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRunnerOs, opts...).ToFunc()
+}
+
+// ByBazelInvocationID orders the results by the bazel_invocation_id field.
+func ByBazelInvocationID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBazelInvocationID, opts...).ToFunc()
 }
 
 // ByBazelInvocationField orders the results by bazel_invocation field.

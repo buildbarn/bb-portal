@@ -121,7 +121,7 @@ func (bi *BazelInvocation) EventFile(ctx context.Context) (*EventFile, error) {
 	if IsNotLoaded(err) {
 		result, err = bi.QueryEventFile().Only(ctx)
 	}
-	return result, err
+	return result, MaskNotFound(err)
 }
 
 func (bi *BazelInvocation) Build(ctx context.Context) (*Build, error) {

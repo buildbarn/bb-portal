@@ -68,6 +68,11 @@ func TargetKind(v string) predicate.TargetPair {
 	return predicate.TargetPair(sql.FieldEQ(FieldTargetKind, v))
 }
 
+// BazelInvocationID applies equality check predicate on the "bazel_invocation_id" field. It's identical to BazelInvocationIDEQ.
+func BazelInvocationID(v int) predicate.TargetPair {
+	return predicate.TargetPair(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
 // LabelEQ applies the EQ predicate on the "label" field.
 func LabelEQ(v string) predicate.TargetPair {
 	return predicate.TargetPair(sql.FieldEQ(FieldLabel, v))
@@ -346,6 +351,36 @@ func AbortReasonIsNil() predicate.TargetPair {
 // AbortReasonNotNil applies the NotNil predicate on the "abort_reason" field.
 func AbortReasonNotNil() predicate.TargetPair {
 	return predicate.TargetPair(sql.FieldNotNull(FieldAbortReason))
+}
+
+// BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDEQ(v int) predicate.TargetPair {
+	return predicate.TargetPair(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDNEQ applies the NEQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNEQ(v int) predicate.TargetPair {
+	return predicate.TargetPair(sql.FieldNEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDIn applies the In predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIn(vs ...int) predicate.TargetPair {
+	return predicate.TargetPair(sql.FieldIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDNotIn applies the NotIn predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotIn(vs ...int) predicate.TargetPair {
+	return predicate.TargetPair(sql.FieldNotIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDIsNil applies the IsNil predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIsNil() predicate.TargetPair {
+	return predicate.TargetPair(sql.FieldIsNull(FieldBazelInvocationID))
+}
+
+// BazelInvocationIDNotNil applies the NotNil predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotNil() predicate.TargetPair {
+	return predicate.TargetPair(sql.FieldNotNull(FieldBazelInvocationID))
 }
 
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.

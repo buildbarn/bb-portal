@@ -103,16 +103,16 @@ func (plmc *PackageLoadMetricsCreate) SetNillablePackageOverhead(u *uint64) *Pac
 	return plmc
 }
 
-// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
-func (plmc *PackageLoadMetricsCreate) SetPackageMetricsID(id int) *PackageLoadMetricsCreate {
-	plmc.mutation.SetPackageMetricsID(id)
+// SetPackageMetricsID sets the "package_metrics_id" field.
+func (plmc *PackageLoadMetricsCreate) SetPackageMetricsID(i int) *PackageLoadMetricsCreate {
+	plmc.mutation.SetPackageMetricsID(i)
 	return plmc
 }
 
-// SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
-func (plmc *PackageLoadMetricsCreate) SetNillablePackageMetricsID(id *int) *PackageLoadMetricsCreate {
-	if id != nil {
-		plmc = plmc.SetPackageMetricsID(*id)
+// SetNillablePackageMetricsID sets the "package_metrics_id" field if the given value is not nil.
+func (plmc *PackageLoadMetricsCreate) SetNillablePackageMetricsID(i *int) *PackageLoadMetricsCreate {
+	if i != nil {
+		plmc.SetPackageMetricsID(*i)
 	}
 	return plmc
 }
@@ -220,7 +220,7 @@ func (plmc *PackageLoadMetricsCreate) createSpec() (*PackageLoadMetrics, *sqlgra
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.package_metrics_package_load_metrics = &nodes[0]
+		_node.PackageMetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

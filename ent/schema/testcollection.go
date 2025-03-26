@@ -57,6 +57,8 @@ func (TestCollection) Fields() []ent.Field {
 		field.Int64("duration_ms").
 			Optional().
 			Annotations(entgql.OrderField("DURATION")),
+
+		field.Int("bazel_invocation_id").Optional(),
 	}
 }
 
@@ -65,7 +67,9 @@ func (TestCollection) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the bazel invocaiton.
 		edge.From("bazel_invocation", BazelInvocation.Type).
-			Ref("test_collection").Unique(),
+			Ref("test_collection").
+			Field("bazel_invocation_id").
+			Unique(),
 
 		// The test summary aossicated with the test.
 		edge.To("test_summary", TestSummary.Type).Unique().
@@ -86,6 +90,7 @@ func (TestCollection) Indexes() []ent.Index {
 	return []ent.Index{
 		// Add a unique index on the label field
 		index.Fields("label"),
+		index.Fields("bazel_invocation_id"),
 	}
 }
 

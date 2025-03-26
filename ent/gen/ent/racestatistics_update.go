@@ -142,17 +142,23 @@ func (rsu *RaceStatisticsUpdate) ClearRenoteWins() *RaceStatisticsUpdate {
 	return rsu
 }
 
-// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
-func (rsu *RaceStatisticsUpdate) SetDynamicExecutionMetricsID(id int) *RaceStatisticsUpdate {
-	rsu.mutation.SetDynamicExecutionMetricsID(id)
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics_id" field.
+func (rsu *RaceStatisticsUpdate) SetDynamicExecutionMetricsID(i int) *RaceStatisticsUpdate {
+	rsu.mutation.SetDynamicExecutionMetricsID(i)
 	return rsu
 }
 
-// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
-func (rsu *RaceStatisticsUpdate) SetNillableDynamicExecutionMetricsID(id *int) *RaceStatisticsUpdate {
-	if id != nil {
-		rsu = rsu.SetDynamicExecutionMetricsID(*id)
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics_id" field if the given value is not nil.
+func (rsu *RaceStatisticsUpdate) SetNillableDynamicExecutionMetricsID(i *int) *RaceStatisticsUpdate {
+	if i != nil {
+		rsu.SetDynamicExecutionMetricsID(*i)
 	}
+	return rsu
+}
+
+// ClearDynamicExecutionMetricsID clears the value of the "dynamic_execution_metrics_id" field.
+func (rsu *RaceStatisticsUpdate) ClearDynamicExecutionMetricsID() *RaceStatisticsUpdate {
+	rsu.mutation.ClearDynamicExecutionMetricsID()
 	return rsu
 }
 
@@ -407,17 +413,23 @@ func (rsuo *RaceStatisticsUpdateOne) ClearRenoteWins() *RaceStatisticsUpdateOne 
 	return rsuo
 }
 
-// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
-func (rsuo *RaceStatisticsUpdateOne) SetDynamicExecutionMetricsID(id int) *RaceStatisticsUpdateOne {
-	rsuo.mutation.SetDynamicExecutionMetricsID(id)
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics_id" field.
+func (rsuo *RaceStatisticsUpdateOne) SetDynamicExecutionMetricsID(i int) *RaceStatisticsUpdateOne {
+	rsuo.mutation.SetDynamicExecutionMetricsID(i)
 	return rsuo
 }
 
-// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
-func (rsuo *RaceStatisticsUpdateOne) SetNillableDynamicExecutionMetricsID(id *int) *RaceStatisticsUpdateOne {
-	if id != nil {
-		rsuo = rsuo.SetDynamicExecutionMetricsID(*id)
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics_id" field if the given value is not nil.
+func (rsuo *RaceStatisticsUpdateOne) SetNillableDynamicExecutionMetricsID(i *int) *RaceStatisticsUpdateOne {
+	if i != nil {
+		rsuo.SetDynamicExecutionMetricsID(*i)
 	}
+	return rsuo
+}
+
+// ClearDynamicExecutionMetricsID clears the value of the "dynamic_execution_metrics_id" field.
+func (rsuo *RaceStatisticsUpdateOne) ClearDynamicExecutionMetricsID() *RaceStatisticsUpdateOne {
+	rsuo.mutation.ClearDynamicExecutionMetricsID()
 	return rsuo
 }
 

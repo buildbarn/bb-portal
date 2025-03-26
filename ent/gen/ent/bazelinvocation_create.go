@@ -247,29 +247,37 @@ func (bic *BazelInvocationCreate) SetProfileName(s string) *BazelInvocationCreat
 	return bic
 }
 
-// SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
-func (bic *BazelInvocationCreate) SetEventFileID(id int) *BazelInvocationCreate {
-	bic.mutation.SetEventFileID(id)
+// SetEventFileID sets the "event_file_id" field.
+func (bic *BazelInvocationCreate) SetEventFileID(i int) *BazelInvocationCreate {
+	bic.mutation.SetEventFileID(i)
+	return bic
+}
+
+// SetNillableEventFileID sets the "event_file_id" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableEventFileID(i *int) *BazelInvocationCreate {
+	if i != nil {
+		bic.SetEventFileID(*i)
+	}
+	return bic
+}
+
+// SetBuildID sets the "build_id" field.
+func (bic *BazelInvocationCreate) SetBuildID(i int) *BazelInvocationCreate {
+	bic.mutation.SetBuildID(i)
+	return bic
+}
+
+// SetNillableBuildID sets the "build_id" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableBuildID(i *int) *BazelInvocationCreate {
+	if i != nil {
+		bic.SetBuildID(*i)
+	}
 	return bic
 }
 
 // SetEventFile sets the "event_file" edge to the EventFile entity.
 func (bic *BazelInvocationCreate) SetEventFile(e *EventFile) *BazelInvocationCreate {
 	return bic.SetEventFileID(e.ID)
-}
-
-// SetBuildID sets the "build" edge to the Build entity by ID.
-func (bic *BazelInvocationCreate) SetBuildID(id int) *BazelInvocationCreate {
-	bic.mutation.SetBuildID(id)
-	return bic
-}
-
-// SetNillableBuildID sets the "build" edge to the Build entity by ID if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableBuildID(id *int) *BazelInvocationCreate {
-	if id != nil {
-		bic = bic.SetBuildID(*id)
-	}
-	return bic
 }
 
 // SetBuild sets the "build" edge to the Build entity.
@@ -412,9 +420,6 @@ func (bic *BazelInvocationCreate) check() error {
 	if _, ok := bic.mutation.ProfileName(); !ok {
 		return &ValidationError{Name: "profile_name", err: errors.New(`ent: missing required field "BazelInvocation.profile_name"`)}
 	}
-	if _, ok := bic.mutation.EventFileID(); !ok {
-		return &ValidationError{Name: "event_file", err: errors.New(`ent: missing required edge "BazelInvocation.event_file"`)}
-	}
 	return nil
 }
 
@@ -531,7 +536,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.event_file_bazel_invocation = &nodes[0]
+		_node.EventFileID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := bic.mutation.BuildIDs(); len(nodes) > 0 {
@@ -548,7 +553,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.build_invocations = &nodes[0]
+		_node.BuildID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := bic.mutation.ProblemsIDs(); len(nodes) > 0 {

@@ -10,19 +10,24 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/namedsetoffiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
@@ -76,6 +81,10 @@ func (acs *ActionCacheStatisticsQuery) collectField(ctx context.Context, oneNode
 				return err
 			}
 			acs.withActionSummary = query
+			if _, ok := fieldSeen[actioncachestatistics.FieldActionSummaryID]; !ok {
+				selectedFields = append(selectedFields, actioncachestatistics.FieldActionSummaryID)
+				fieldSeen[actioncachestatistics.FieldActionSummaryID] = struct{}{}
+			}
 
 		case "missDetails":
 			var (
@@ -113,6 +122,11 @@ func (acs *ActionCacheStatisticsQuery) collectField(ctx context.Context, oneNode
 			if _, ok := fieldSeen[actioncachestatistics.FieldMisses]; !ok {
 				selectedFields = append(selectedFields, actioncachestatistics.FieldMisses)
 				fieldSeen[actioncachestatistics.FieldMisses] = struct{}{}
+			}
+		case "actionSummaryID":
+			if _, ok := fieldSeen[actioncachestatistics.FieldActionSummaryID]; !ok {
+				selectedFields = append(selectedFields, actioncachestatistics.FieldActionSummaryID)
+				fieldSeen[actioncachestatistics.FieldActionSummaryID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -187,6 +201,10 @@ func (ad *ActionDataQuery) collectField(ctx context.Context, oneNode bool, opCtx
 				return err
 			}
 			ad.withActionSummary = query
+			if _, ok := fieldSeen[actiondata.FieldActionSummaryID]; !ok {
+				selectedFields = append(selectedFields, actiondata.FieldActionSummaryID)
+				fieldSeen[actiondata.FieldActionSummaryID] = struct{}{}
+			}
 		case "mnemonic":
 			if _, ok := fieldSeen[actiondata.FieldMnemonic]; !ok {
 				selectedFields = append(selectedFields, actiondata.FieldMnemonic)
@@ -221,6 +239,11 @@ func (ad *ActionDataQuery) collectField(ctx context.Context, oneNode bool, opCtx
 			if _, ok := fieldSeen[actiondata.FieldUserTime]; !ok {
 				selectedFields = append(selectedFields, actiondata.FieldUserTime)
 				fieldSeen[actiondata.FieldUserTime] = struct{}{}
+			}
+		case "actionSummaryID":
+			if _, ok := fieldSeen[actiondata.FieldActionSummaryID]; !ok {
+				selectedFields = append(selectedFields, actiondata.FieldActionSummaryID)
+				fieldSeen[actiondata.FieldActionSummaryID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -295,6 +318,10 @@ func (as *ActionSummaryQuery) collectField(ctx context.Context, oneNode bool, op
 				return err
 			}
 			as.withMetrics = query
+			if _, ok := fieldSeen[actionsummary.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, actionsummary.FieldMetricsID)
+				fieldSeen[actionsummary.FieldMetricsID] = struct{}{}
+			}
 
 		case "actionData":
 			var (
@@ -352,6 +379,11 @@ func (as *ActionSummaryQuery) collectField(ctx context.Context, oneNode bool, op
 				selectedFields = append(selectedFields, actionsummary.FieldRemoteCacheHits)
 				fieldSeen[actionsummary.FieldRemoteCacheHits] = struct{}{}
 			}
+		case "metricsID":
+			if _, ok := fieldSeen[actionsummary.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, actionsummary.FieldMetricsID)
+				fieldSeen[actionsummary.FieldMetricsID] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:
@@ -407,6 +439,11 @@ func (am *ArtifactMetricsQuery) CollectFields(ctx context.Context, satisfies ...
 
 func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(artifactmetrics.Columns))
+		selectedFields = []string{artifactmetrics.FieldID}
+	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
@@ -420,6 +457,10 @@ func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, 
 				return err
 			}
 			am.withMetrics = query
+			if _, ok := fieldSeen[artifactmetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, artifactmetrics.FieldMetricsID)
+				fieldSeen[artifactmetrics.FieldMetricsID] = struct{}{}
+			}
 
 		case "sourceArtifactsRead":
 			var (
@@ -464,7 +505,19 @@ func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, 
 				return err
 			}
 			am.withTopLevelArtifacts = query
+		case "metricsID":
+			if _, ok := fieldSeen[artifactmetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, artifactmetrics.FieldMetricsID)
+				fieldSeen[artifactmetrics.FieldMetricsID] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		am.Select(selectedFields...)
 	}
 	return nil
 }
@@ -530,6 +583,10 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				return err
 			}
 			bi.withEventFile = query
+			if _, ok := fieldSeen[bazelinvocation.FieldEventFileID]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldEventFileID)
+				fieldSeen[bazelinvocation.FieldEventFileID] = struct{}{}
+			}
 
 		case "build":
 			var (
@@ -541,6 +598,10 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				return err
 			}
 			bi.withBuild = query
+			if _, ok := fieldSeen[bazelinvocation.FieldBuildID]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldBuildID)
+				fieldSeen[bazelinvocation.FieldBuildID] = struct{}{}
+			}
 
 		case "metrics":
 			var (
@@ -669,6 +730,16 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				selectedFields = append(selectedFields, bazelinvocation.FieldNumFetches)
 				fieldSeen[bazelinvocation.FieldNumFetches] = struct{}{}
 			}
+		case "eventFileID":
+			if _, ok := fieldSeen[bazelinvocation.FieldEventFileID]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldEventFileID)
+				fieldSeen[bazelinvocation.FieldEventFileID] = struct{}{}
+			}
+		case "buildID":
+			if _, ok := fieldSeen[bazelinvocation.FieldBuildID]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldBuildID)
+				fieldSeen[bazelinvocation.FieldBuildID] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:
@@ -764,6 +835,10 @@ func (bip *BazelInvocationProblemQuery) collectField(ctx context.Context, oneNod
 				return err
 			}
 			bip.withBazelInvocation = query
+			if _, ok := fieldSeen[bazelinvocationproblem.FieldBazelInvocationID]; !ok {
+				selectedFields = append(selectedFields, bazelinvocationproblem.FieldBazelInvocationID)
+				fieldSeen[bazelinvocationproblem.FieldBazelInvocationID] = struct{}{}
+			}
 		case "problemType":
 			if _, ok := fieldSeen[bazelinvocationproblem.FieldProblemType]; !ok {
 				selectedFields = append(selectedFields, bazelinvocationproblem.FieldProblemType)
@@ -773,6 +848,11 @@ func (bip *BazelInvocationProblemQuery) collectField(ctx context.Context, oneNod
 			if _, ok := fieldSeen[bazelinvocationproblem.FieldLabel]; !ok {
 				selectedFields = append(selectedFields, bazelinvocationproblem.FieldLabel)
 				fieldSeen[bazelinvocationproblem.FieldLabel] = struct{}{}
+			}
+		case "bazelInvocationID":
+			if _, ok := fieldSeen[bazelinvocationproblem.FieldBazelInvocationID]; !ok {
+				selectedFields = append(selectedFields, bazelinvocationproblem.FieldBazelInvocationID)
+				fieldSeen[bazelinvocationproblem.FieldBazelInvocationID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1024,6 +1104,10 @@ func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode boo
 				return err
 			}
 			bgm.withMetrics = query
+			if _, ok := fieldSeen[buildgraphmetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, buildgraphmetrics.FieldMetricsID)
+				fieldSeen[buildgraphmetrics.FieldMetricsID] = struct{}{}
+			}
 
 		case "dirtiedValues":
 			var (
@@ -1124,6 +1208,11 @@ func (bgm *BuildGraphMetricsQuery) collectField(ctx context.Context, oneNode boo
 				selectedFields = append(selectedFields, buildgraphmetrics.FieldPostInvocationSkyframeNodeCount)
 				fieldSeen[buildgraphmetrics.FieldPostInvocationSkyframeNodeCount] = struct{}{}
 			}
+		case "metricsID":
+			if _, ok := fieldSeen[buildgraphmetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, buildgraphmetrics.FieldMetricsID)
+				fieldSeen[buildgraphmetrics.FieldMetricsID] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:
@@ -1197,6 +1286,10 @@ func (cm *CumulativeMetricsQuery) collectField(ctx context.Context, oneNode bool
 				return err
 			}
 			cm.withMetrics = query
+			if _, ok := fieldSeen[cumulativemetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, cumulativemetrics.FieldMetricsID)
+				fieldSeen[cumulativemetrics.FieldMetricsID] = struct{}{}
+			}
 		case "numAnalyses":
 			if _, ok := fieldSeen[cumulativemetrics.FieldNumAnalyses]; !ok {
 				selectedFields = append(selectedFields, cumulativemetrics.FieldNumAnalyses)
@@ -1206,6 +1299,11 @@ func (cm *CumulativeMetricsQuery) collectField(ctx context.Context, oneNode bool
 			if _, ok := fieldSeen[cumulativemetrics.FieldNumBuilds]; !ok {
 				selectedFields = append(selectedFields, cumulativemetrics.FieldNumBuilds)
 				fieldSeen[cumulativemetrics.FieldNumBuilds] = struct{}{}
+			}
+		case "metricsID":
+			if _, ok := fieldSeen[cumulativemetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, cumulativemetrics.FieldMetricsID)
+				fieldSeen[cumulativemetrics.FieldMetricsID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1262,6 +1360,11 @@ func (dem *DynamicExecutionMetricsQuery) CollectFields(ctx context.Context, sati
 
 func (dem *DynamicExecutionMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(dynamicexecutionmetrics.Columns))
+		selectedFields = []string{dynamicexecutionmetrics.FieldID}
+	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
@@ -1275,6 +1378,10 @@ func (dem *DynamicExecutionMetricsQuery) collectField(ctx context.Context, oneNo
 				return err
 			}
 			dem.withMetrics = query
+			if _, ok := fieldSeen[dynamicexecutionmetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, dynamicexecutionmetrics.FieldMetricsID)
+				fieldSeen[dynamicexecutionmetrics.FieldMetricsID] = struct{}{}
+			}
 
 		case "raceStatistics":
 			var (
@@ -1288,7 +1395,19 @@ func (dem *DynamicExecutionMetricsQuery) collectField(ctx context.Context, oneNo
 			dem.WithNamedRaceStatistics(alias, func(wq *RaceStatisticsQuery) {
 				*wq = *query
 			})
+		case "metricsID":
+			if _, ok := fieldSeen[dynamicexecutionmetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, dynamicexecutionmetrics.FieldMetricsID)
+				fieldSeen[dynamicexecutionmetrics.FieldMetricsID] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		dem.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1354,6 +1473,10 @@ func (es *EvaluationStatQuery) collectField(ctx context.Context, oneNode bool, o
 				return err
 			}
 			es.withBuildGraphMetrics = query
+			if _, ok := fieldSeen[evaluationstat.FieldBuildGraphMetricsID]; !ok {
+				selectedFields = append(selectedFields, evaluationstat.FieldBuildGraphMetricsID)
+				fieldSeen[evaluationstat.FieldBuildGraphMetricsID] = struct{}{}
+			}
 		case "skyfunctionName":
 			if _, ok := fieldSeen[evaluationstat.FieldSkyfunctionName]; !ok {
 				selectedFields = append(selectedFields, evaluationstat.FieldSkyfunctionName)
@@ -1363,6 +1486,11 @@ func (es *EvaluationStatQuery) collectField(ctx context.Context, oneNode bool, o
 			if _, ok := fieldSeen[evaluationstat.FieldCount]; !ok {
 				selectedFields = append(selectedFields, evaluationstat.FieldCount)
 				fieldSeen[evaluationstat.FieldCount] = struct{}{}
+			}
+		case "buildGraphMetricsID":
+			if _, ok := fieldSeen[evaluationstat.FieldBuildGraphMetricsID]; !ok {
+				selectedFields = append(selectedFields, evaluationstat.FieldBuildGraphMetricsID)
+				fieldSeen[evaluationstat.FieldBuildGraphMetricsID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1540,6 +1668,10 @@ func (ei *ExectionInfoQuery) collectField(ctx context.Context, oneNode bool, opC
 				return err
 			}
 			ei.withTestResult = query
+			if _, ok := fieldSeen[exectioninfo.FieldExecutionInfoID]; !ok {
+				selectedFields = append(selectedFields, exectioninfo.FieldExecutionInfoID)
+				fieldSeen[exectioninfo.FieldExecutionInfoID] = struct{}{}
+			}
 
 		case "timingBreakdown":
 			var (
@@ -1588,6 +1720,11 @@ func (ei *ExectionInfoQuery) collectField(ctx context.Context, oneNode bool, opC
 			if _, ok := fieldSeen[exectioninfo.FieldHostname]; !ok {
 				selectedFields = append(selectedFields, exectioninfo.FieldHostname)
 				fieldSeen[exectioninfo.FieldHostname] = struct{}{}
+			}
+		case "executionInfoID":
+			if _, ok := fieldSeen[exectioninfo.FieldExecutionInfoID]; !ok {
+				selectedFields = append(selectedFields, exectioninfo.FieldExecutionInfoID)
+				fieldSeen[exectioninfo.FieldExecutionInfoID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1662,6 +1799,10 @@ func (fm *FilesMetricQuery) collectField(ctx context.Context, oneNode bool, opCt
 				return err
 			}
 			fm.withArtifactMetrics = query
+			if _, ok := fieldSeen[filesmetric.FieldArtifactMetricsID]; !ok {
+				selectedFields = append(selectedFields, filesmetric.FieldArtifactMetricsID)
+				fieldSeen[filesmetric.FieldArtifactMetricsID] = struct{}{}
+			}
 		case "sizeInBytes":
 			if _, ok := fieldSeen[filesmetric.FieldSizeInBytes]; !ok {
 				selectedFields = append(selectedFields, filesmetric.FieldSizeInBytes)
@@ -1671,6 +1812,11 @@ func (fm *FilesMetricQuery) collectField(ctx context.Context, oneNode bool, opCt
 			if _, ok := fieldSeen[filesmetric.FieldCount]; !ok {
 				selectedFields = append(selectedFields, filesmetric.FieldCount)
 				fieldSeen[filesmetric.FieldCount] = struct{}{}
+			}
+		case "artifactMetricsID":
+			if _, ok := fieldSeen[filesmetric.FieldArtifactMetricsID]; !ok {
+				selectedFields = append(selectedFields, filesmetric.FieldArtifactMetricsID)
+				fieldSeen[filesmetric.FieldArtifactMetricsID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1745,6 +1891,10 @@ func (gm *GarbageMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 				return err
 			}
 			gm.withMemoryMetrics = query
+			if _, ok := fieldSeen[garbagemetrics.FieldMemoryMetricsID]; !ok {
+				selectedFields = append(selectedFields, garbagemetrics.FieldMemoryMetricsID)
+				fieldSeen[garbagemetrics.FieldMemoryMetricsID] = struct{}{}
+			}
 		case "type":
 			if _, ok := fieldSeen[garbagemetrics.FieldType]; !ok {
 				selectedFields = append(selectedFields, garbagemetrics.FieldType)
@@ -1754,6 +1904,11 @@ func (gm *GarbageMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 			if _, ok := fieldSeen[garbagemetrics.FieldGarbageCollected]; !ok {
 				selectedFields = append(selectedFields, garbagemetrics.FieldGarbageCollected)
 				fieldSeen[garbagemetrics.FieldGarbageCollected] = struct{}{}
+			}
+		case "memoryMetricsID":
+			if _, ok := fieldSeen[garbagemetrics.FieldMemoryMetricsID]; !ok {
+				selectedFields = append(selectedFields, garbagemetrics.FieldMemoryMetricsID)
+				fieldSeen[garbagemetrics.FieldMemoryMetricsID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1828,6 +1983,10 @@ func (mm *MemoryMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 				return err
 			}
 			mm.withMetrics = query
+			if _, ok := fieldSeen[memorymetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, memorymetrics.FieldMetricsID)
+				fieldSeen[memorymetrics.FieldMetricsID] = struct{}{}
+			}
 
 		case "garbageMetrics":
 			var (
@@ -1855,6 +2014,11 @@ func (mm *MemoryMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 			if _, ok := fieldSeen[memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize]; !ok {
 				selectedFields = append(selectedFields, memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize)
 				fieldSeen[memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize] = struct{}{}
+			}
+		case "metricsID":
+			if _, ok := fieldSeen[memorymetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, memorymetrics.FieldMetricsID)
+				fieldSeen[memorymetrics.FieldMetricsID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -1911,6 +2075,11 @@ func (m *MetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (
 
 func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(metrics.Columns))
+		selectedFields = []string{metrics.FieldID}
+	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
@@ -1924,6 +2093,10 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				return err
 			}
 			m.withBazelInvocation = query
+			if _, ok := fieldSeen[metrics.FieldBazelInvocationID]; !ok {
+				selectedFields = append(selectedFields, metrics.FieldBazelInvocationID)
+				fieldSeen[metrics.FieldBazelInvocationID] = struct{}{}
+			}
 
 		case "actionSummary":
 			var (
@@ -2034,7 +2207,19 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				return err
 			}
 			m.withBuildGraphMetrics = query
+		case "bazelInvocationID":
+			if _, ok := fieldSeen[metrics.FieldBazelInvocationID]; !ok {
+				selectedFields = append(selectedFields, metrics.FieldBazelInvocationID)
+				fieldSeen[metrics.FieldBazelInvocationID] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		m.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2100,6 +2285,10 @@ func (md *MissDetailQuery) collectField(ctx context.Context, oneNode bool, opCtx
 				return err
 			}
 			md.withActionCacheStatistics = query
+			if _, ok := fieldSeen[missdetail.FieldActionCacheStatisticsID]; !ok {
+				selectedFields = append(selectedFields, missdetail.FieldActionCacheStatisticsID)
+				fieldSeen[missdetail.FieldActionCacheStatisticsID] = struct{}{}
+			}
 		case "reason":
 			if _, ok := fieldSeen[missdetail.FieldReason]; !ok {
 				selectedFields = append(selectedFields, missdetail.FieldReason)
@@ -2109,6 +2298,11 @@ func (md *MissDetailQuery) collectField(ctx context.Context, oneNode bool, opCtx
 			if _, ok := fieldSeen[missdetail.FieldCount]; !ok {
 				selectedFields = append(selectedFields, missdetail.FieldCount)
 				fieldSeen[missdetail.FieldCount] = struct{}{}
+			}
+		case "actionCacheStatisticsID":
+			if _, ok := fieldSeen[missdetail.FieldActionCacheStatisticsID]; !ok {
+				selectedFields = append(selectedFields, missdetail.FieldActionCacheStatisticsID)
+				fieldSeen[missdetail.FieldActionCacheStatisticsID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -2165,6 +2359,11 @@ func (nsof *NamedSetOfFilesQuery) CollectFields(ctx context.Context, satisfies .
 
 func (nsof *NamedSetOfFilesQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(namedsetoffiles.Columns))
+		selectedFields = []string{namedsetoffiles.FieldID}
+	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
@@ -2178,6 +2377,10 @@ func (nsof *NamedSetOfFilesQuery) collectField(ctx context.Context, oneNode bool
 				return err
 			}
 			nsof.withOutputGroup = query
+			if _, ok := fieldSeen[namedsetoffiles.FieldOutputGroupID]; !ok {
+				selectedFields = append(selectedFields, namedsetoffiles.FieldOutputGroupID)
+				fieldSeen[namedsetoffiles.FieldOutputGroupID] = struct{}{}
+			}
 
 		case "files":
 			var (
@@ -2202,7 +2405,19 @@ func (nsof *NamedSetOfFilesQuery) collectField(ctx context.Context, oneNode bool
 				return err
 			}
 			nsof.withFileSets = query
+		case "outputGroupID":
+			if _, ok := fieldSeen[namedsetoffiles.FieldOutputGroupID]; !ok {
+				selectedFields = append(selectedFields, namedsetoffiles.FieldOutputGroupID)
+				fieldSeen[namedsetoffiles.FieldOutputGroupID] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		nsof.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2250,6 +2465,11 @@ func (nm *NetworkMetricsQuery) CollectFields(ctx context.Context, satisfies ...s
 
 func (nm *NetworkMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(networkmetrics.Columns))
+		selectedFields = []string{networkmetrics.FieldID}
+	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
@@ -2263,6 +2483,10 @@ func (nm *NetworkMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 				return err
 			}
 			nm.withMetrics = query
+			if _, ok := fieldSeen[networkmetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, networkmetrics.FieldMetricsID)
+				fieldSeen[networkmetrics.FieldMetricsID] = struct{}{}
+			}
 
 		case "systemNetworkStats":
 			var (
@@ -2274,7 +2498,19 @@ func (nm *NetworkMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 				return err
 			}
 			nm.withSystemNetworkStats = query
+		case "metricsID":
+			if _, ok := fieldSeen[networkmetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, networkmetrics.FieldMetricsID)
+				fieldSeen[networkmetrics.FieldMetricsID] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		nm.Select(selectedFields...)
 	}
 	return nil
 }
@@ -2340,6 +2576,10 @@ func (og *OutputGroupQuery) collectField(ctx context.Context, oneNode bool, opCt
 				return err
 			}
 			og.withTargetComplete = query
+			if _, ok := fieldSeen[outputgroup.FieldTargetCompleteID]; !ok {
+				selectedFields = append(selectedFields, outputgroup.FieldTargetCompleteID)
+				fieldSeen[outputgroup.FieldTargetCompleteID] = struct{}{}
+			}
 
 		case "inlineFiles":
 			var (
@@ -2373,6 +2613,11 @@ func (og *OutputGroupQuery) collectField(ctx context.Context, oneNode bool, opCt
 			if _, ok := fieldSeen[outputgroup.FieldIncomplete]; !ok {
 				selectedFields = append(selectedFields, outputgroup.FieldIncomplete)
 				fieldSeen[outputgroup.FieldIncomplete] = struct{}{}
+			}
+		case "targetCompleteID":
+			if _, ok := fieldSeen[outputgroup.FieldTargetCompleteID]; !ok {
+				selectedFields = append(selectedFields, outputgroup.FieldTargetCompleteID)
+				fieldSeen[outputgroup.FieldTargetCompleteID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -2447,6 +2692,10 @@ func (plm *PackageLoadMetricsQuery) collectField(ctx context.Context, oneNode bo
 				return err
 			}
 			plm.withPackageMetrics = query
+			if _, ok := fieldSeen[packageloadmetrics.FieldPackageMetricsID]; !ok {
+				selectedFields = append(selectedFields, packageloadmetrics.FieldPackageMetricsID)
+				fieldSeen[packageloadmetrics.FieldPackageMetricsID] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[packageloadmetrics.FieldName]; !ok {
 				selectedFields = append(selectedFields, packageloadmetrics.FieldName)
@@ -2476,6 +2725,11 @@ func (plm *PackageLoadMetricsQuery) collectField(ctx context.Context, oneNode bo
 			if _, ok := fieldSeen[packageloadmetrics.FieldPackageOverhead]; !ok {
 				selectedFields = append(selectedFields, packageloadmetrics.FieldPackageOverhead)
 				fieldSeen[packageloadmetrics.FieldPackageOverhead] = struct{}{}
+			}
+		case "packageMetricsID":
+			if _, ok := fieldSeen[packageloadmetrics.FieldPackageMetricsID]; !ok {
+				selectedFields = append(selectedFields, packageloadmetrics.FieldPackageMetricsID)
+				fieldSeen[packageloadmetrics.FieldPackageMetricsID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -2550,6 +2804,10 @@ func (pm *PackageMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 				return err
 			}
 			pm.withMetrics = query
+			if _, ok := fieldSeen[packagemetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, packagemetrics.FieldMetricsID)
+				fieldSeen[packagemetrics.FieldMetricsID] = struct{}{}
+			}
 
 		case "packageLoadMetrics":
 			var (
@@ -2567,6 +2825,11 @@ func (pm *PackageMetricsQuery) collectField(ctx context.Context, oneNode bool, o
 			if _, ok := fieldSeen[packagemetrics.FieldPackagesLoaded]; !ok {
 				selectedFields = append(selectedFields, packagemetrics.FieldPackagesLoaded)
 				fieldSeen[packagemetrics.FieldPackagesLoaded] = struct{}{}
+			}
+		case "metricsID":
+			if _, ok := fieldSeen[packagemetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, packagemetrics.FieldMetricsID)
+				fieldSeen[packagemetrics.FieldMetricsID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -2641,6 +2904,10 @@ func (rs *RaceStatisticsQuery) collectField(ctx context.Context, oneNode bool, o
 				return err
 			}
 			rs.withDynamicExecutionMetrics = query
+			if _, ok := fieldSeen[racestatistics.FieldDynamicExecutionMetricsID]; !ok {
+				selectedFields = append(selectedFields, racestatistics.FieldDynamicExecutionMetricsID)
+				fieldSeen[racestatistics.FieldDynamicExecutionMetricsID] = struct{}{}
+			}
 		case "mnemonic":
 			if _, ok := fieldSeen[racestatistics.FieldMnemonic]; !ok {
 				selectedFields = append(selectedFields, racestatistics.FieldMnemonic)
@@ -2665,6 +2932,11 @@ func (rs *RaceStatisticsQuery) collectField(ctx context.Context, oneNode bool, o
 			if _, ok := fieldSeen[racestatistics.FieldRenoteWins]; !ok {
 				selectedFields = append(selectedFields, racestatistics.FieldRenoteWins)
 				fieldSeen[racestatistics.FieldRenoteWins] = struct{}{}
+			}
+		case "dynamicExecutionMetricsID":
+			if _, ok := fieldSeen[racestatistics.FieldDynamicExecutionMetricsID]; !ok {
+				selectedFields = append(selectedFields, racestatistics.FieldDynamicExecutionMetricsID)
+				fieldSeen[racestatistics.FieldDynamicExecutionMetricsID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -2739,6 +3011,10 @@ func (ru *ResourceUsageQuery) collectField(ctx context.Context, oneNode bool, op
 				return err
 			}
 			ru.withExecutionInfo = query
+			if _, ok := fieldSeen[resourceusage.FieldExecutionInfoID]; !ok {
+				selectedFields = append(selectedFields, resourceusage.FieldExecutionInfoID)
+				fieldSeen[resourceusage.FieldExecutionInfoID] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[resourceusage.FieldName]; !ok {
 				selectedFields = append(selectedFields, resourceusage.FieldName)
@@ -2748,6 +3024,11 @@ func (ru *ResourceUsageQuery) collectField(ctx context.Context, oneNode bool, op
 			if _, ok := fieldSeen[resourceusage.FieldValue]; !ok {
 				selectedFields = append(selectedFields, resourceusage.FieldValue)
 				fieldSeen[resourceusage.FieldValue] = struct{}{}
+			}
+		case "executionInfoID":
+			if _, ok := fieldSeen[resourceusage.FieldExecutionInfoID]; !ok {
+				selectedFields = append(selectedFields, resourceusage.FieldExecutionInfoID)
+				fieldSeen[resourceusage.FieldExecutionInfoID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -2822,6 +3103,10 @@ func (rc *RunnerCountQuery) collectField(ctx context.Context, oneNode bool, opCt
 				return err
 			}
 			rc.withActionSummary = query
+			if _, ok := fieldSeen[runnercount.FieldActionSummaryID]; !ok {
+				selectedFields = append(selectedFields, runnercount.FieldActionSummaryID)
+				fieldSeen[runnercount.FieldActionSummaryID] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[runnercount.FieldName]; !ok {
 				selectedFields = append(selectedFields, runnercount.FieldName)
@@ -2836,6 +3121,11 @@ func (rc *RunnerCountQuery) collectField(ctx context.Context, oneNode bool, opCt
 			if _, ok := fieldSeen[runnercount.FieldActionsExecuted]; !ok {
 				selectedFields = append(selectedFields, runnercount.FieldActionsExecuted)
 				fieldSeen[runnercount.FieldActionsExecuted] = struct{}{}
+			}
+		case "actionSummaryID":
+			if _, ok := fieldSeen[runnercount.FieldActionSummaryID]; !ok {
+				selectedFields = append(selectedFields, runnercount.FieldActionSummaryID)
+				fieldSeen[runnercount.FieldActionSummaryID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -2910,6 +3200,10 @@ func (sc *SourceControlQuery) collectField(ctx context.Context, oneNode bool, op
 				return err
 			}
 			sc.withBazelInvocation = query
+			if _, ok := fieldSeen[sourcecontrol.FieldBazelInvocationID]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldBazelInvocationID)
+				fieldSeen[sourcecontrol.FieldBazelInvocationID] = struct{}{}
+			}
 		case "repoURL":
 			if _, ok := fieldSeen[sourcecontrol.FieldRepoURL]; !ok {
 				selectedFields = append(selectedFields, sourcecontrol.FieldRepoURL)
@@ -2979,6 +3273,11 @@ func (sc *SourceControlQuery) collectField(ctx context.Context, oneNode bool, op
 			if _, ok := fieldSeen[sourcecontrol.FieldRunnerOs]; !ok {
 				selectedFields = append(selectedFields, sourcecontrol.FieldRunnerOs)
 				fieldSeen[sourcecontrol.FieldRunnerOs] = struct{}{}
+			}
+		case "bazelInvocationID":
+			if _, ok := fieldSeen[sourcecontrol.FieldBazelInvocationID]; !ok {
+				selectedFields = append(selectedFields, sourcecontrol.FieldBazelInvocationID)
+				fieldSeen[sourcecontrol.FieldBazelInvocationID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -3053,6 +3352,10 @@ func (sns *SystemNetworkStatsQuery) collectField(ctx context.Context, oneNode bo
 				return err
 			}
 			sns.withNetworkMetrics = query
+			if _, ok := fieldSeen[systemnetworkstats.FieldNetworkMetricsID]; !ok {
+				selectedFields = append(selectedFields, systemnetworkstats.FieldNetworkMetricsID)
+				fieldSeen[systemnetworkstats.FieldNetworkMetricsID] = struct{}{}
+			}
 		case "bytesSent":
 			if _, ok := fieldSeen[systemnetworkstats.FieldBytesSent]; !ok {
 				selectedFields = append(selectedFields, systemnetworkstats.FieldBytesSent)
@@ -3092,6 +3395,11 @@ func (sns *SystemNetworkStatsQuery) collectField(ctx context.Context, oneNode bo
 			if _, ok := fieldSeen[systemnetworkstats.FieldPeakPacketsRecvPerSec]; !ok {
 				selectedFields = append(selectedFields, systemnetworkstats.FieldPeakPacketsRecvPerSec)
 				fieldSeen[systemnetworkstats.FieldPeakPacketsRecvPerSec] = struct{}{}
+			}
+		case "networkMetricsID":
+			if _, ok := fieldSeen[systemnetworkstats.FieldNetworkMetricsID]; !ok {
+				selectedFields = append(selectedFields, systemnetworkstats.FieldNetworkMetricsID)
+				fieldSeen[systemnetworkstats.FieldNetworkMetricsID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -3166,6 +3474,10 @@ func (tc *TargetCompleteQuery) collectField(ctx context.Context, oneNode bool, o
 				return err
 			}
 			tc.withTargetPair = query
+			if _, ok := fieldSeen[targetcomplete.FieldTargetPairID]; !ok {
+				selectedFields = append(selectedFields, targetcomplete.FieldTargetPairID)
+				fieldSeen[targetcomplete.FieldTargetPairID] = struct{}{}
+			}
 
 		case "importantOutput":
 			var (
@@ -3237,6 +3549,11 @@ func (tc *TargetCompleteQuery) collectField(ctx context.Context, oneNode bool, o
 			if _, ok := fieldSeen[targetcomplete.FieldTestSize]; !ok {
 				selectedFields = append(selectedFields, targetcomplete.FieldTestSize)
 				fieldSeen[targetcomplete.FieldTestSize] = struct{}{}
+			}
+		case "targetPairID":
+			if _, ok := fieldSeen[targetcomplete.FieldTargetPairID]; !ok {
+				selectedFields = append(selectedFields, targetcomplete.FieldTargetPairID)
+				fieldSeen[targetcomplete.FieldTargetPairID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -3311,6 +3628,10 @@ func (tc *TargetConfiguredQuery) collectField(ctx context.Context, oneNode bool,
 				return err
 			}
 			tc.withTargetPair = query
+			if _, ok := fieldSeen[targetconfigured.FieldTargetPairID]; !ok {
+				selectedFields = append(selectedFields, targetconfigured.FieldTargetPairID)
+				fieldSeen[targetconfigured.FieldTargetPairID] = struct{}{}
+			}
 		case "tag":
 			if _, ok := fieldSeen[targetconfigured.FieldTag]; !ok {
 				selectedFields = append(selectedFields, targetconfigured.FieldTag)
@@ -3330,6 +3651,11 @@ func (tc *TargetConfiguredQuery) collectField(ctx context.Context, oneNode bool,
 			if _, ok := fieldSeen[targetconfigured.FieldTestSize]; !ok {
 				selectedFields = append(selectedFields, targetconfigured.FieldTestSize)
 				fieldSeen[targetconfigured.FieldTestSize] = struct{}{}
+			}
+		case "targetPairID":
+			if _, ok := fieldSeen[targetconfigured.FieldTargetPairID]; !ok {
+				selectedFields = append(selectedFields, targetconfigured.FieldTargetPairID)
+				fieldSeen[targetconfigured.FieldTargetPairID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -3404,6 +3730,10 @@ func (tm *TargetMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 				return err
 			}
 			tm.withMetrics = query
+			if _, ok := fieldSeen[targetmetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, targetmetrics.FieldMetricsID)
+				fieldSeen[targetmetrics.FieldMetricsID] = struct{}{}
+			}
 		case "targetsLoaded":
 			if _, ok := fieldSeen[targetmetrics.FieldTargetsLoaded]; !ok {
 				selectedFields = append(selectedFields, targetmetrics.FieldTargetsLoaded)
@@ -3418,6 +3748,11 @@ func (tm *TargetMetricsQuery) collectField(ctx context.Context, oneNode bool, op
 			if _, ok := fieldSeen[targetmetrics.FieldTargetsConfiguredNotIncludingAspects]; !ok {
 				selectedFields = append(selectedFields, targetmetrics.FieldTargetsConfiguredNotIncludingAspects)
 				fieldSeen[targetmetrics.FieldTargetsConfiguredNotIncludingAspects] = struct{}{}
+			}
+		case "metricsID":
+			if _, ok := fieldSeen[targetmetrics.FieldMetricsID]; !ok {
+				selectedFields = append(selectedFields, targetmetrics.FieldMetricsID)
+				fieldSeen[targetmetrics.FieldMetricsID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -3492,6 +3827,10 @@ func (tp *TargetPairQuery) collectField(ctx context.Context, oneNode bool, opCtx
 				return err
 			}
 			tp.withBazelInvocation = query
+			if _, ok := fieldSeen[targetpair.FieldBazelInvocationID]; !ok {
+				selectedFields = append(selectedFields, targetpair.FieldBazelInvocationID)
+				fieldSeen[targetpair.FieldBazelInvocationID] = struct{}{}
+			}
 
 		case "configuration":
 			var (
@@ -3543,6 +3882,11 @@ func (tp *TargetPairQuery) collectField(ctx context.Context, oneNode bool, opCtx
 			if _, ok := fieldSeen[targetpair.FieldAbortReason]; !ok {
 				selectedFields = append(selectedFields, targetpair.FieldAbortReason)
 				fieldSeen[targetpair.FieldAbortReason] = struct{}{}
+			}
+		case "bazelInvocationID":
+			if _, ok := fieldSeen[targetpair.FieldBazelInvocationID]; !ok {
+				selectedFields = append(selectedFields, targetpair.FieldBazelInvocationID)
+				fieldSeen[targetpair.FieldBazelInvocationID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -3639,6 +3983,10 @@ func (tc *TestCollectionQuery) collectField(ctx context.Context, oneNode bool, o
 				return err
 			}
 			tc.withBazelInvocation = query
+			if _, ok := fieldSeen[testcollection.FieldBazelInvocationID]; !ok {
+				selectedFields = append(selectedFields, testcollection.FieldBazelInvocationID)
+				fieldSeen[testcollection.FieldBazelInvocationID] = struct{}{}
+			}
 
 		case "testSummary":
 			var (
@@ -3697,6 +4045,11 @@ func (tc *TestCollectionQuery) collectField(ctx context.Context, oneNode bool, o
 			if _, ok := fieldSeen[testcollection.FieldDurationMs]; !ok {
 				selectedFields = append(selectedFields, testcollection.FieldDurationMs)
 				fieldSeen[testcollection.FieldDurationMs] = struct{}{}
+			}
+		case "bazelInvocationID":
+			if _, ok := fieldSeen[testcollection.FieldBazelInvocationID]; !ok {
+				selectedFields = append(selectedFields, testcollection.FieldBazelInvocationID)
+				fieldSeen[testcollection.FieldBazelInvocationID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -3793,6 +4146,10 @@ func (tf *TestFileQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 				return err
 			}
 			tf.withTestResult = query
+			if _, ok := fieldSeen[testfile.FieldTestResultID]; !ok {
+				selectedFields = append(selectedFields, testfile.FieldTestResultID)
+				fieldSeen[testfile.FieldTestResultID] = struct{}{}
+			}
 		case "digest":
 			if _, ok := fieldSeen[testfile.FieldDigest]; !ok {
 				selectedFields = append(selectedFields, testfile.FieldDigest)
@@ -3817,6 +4174,11 @@ func (tf *TestFileQuery) collectField(ctx context.Context, oneNode bool, opCtx *
 			if _, ok := fieldSeen[testfile.FieldPrefix]; !ok {
 				selectedFields = append(selectedFields, testfile.FieldPrefix)
 				fieldSeen[testfile.FieldPrefix] = struct{}{}
+			}
+		case "testResultID":
+			if _, ok := fieldSeen[testfile.FieldTestResultID]; !ok {
+				selectedFields = append(selectedFields, testfile.FieldTestResultID)
+				fieldSeen[testfile.FieldTestResultID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -3891,6 +4253,10 @@ func (trb *TestResultBESQuery) collectField(ctx context.Context, oneNode bool, o
 				return err
 			}
 			trb.withTestCollection = query
+			if _, ok := fieldSeen[testresultbes.FieldTestCollectionID]; !ok {
+				selectedFields = append(selectedFields, testresultbes.FieldTestCollectionID)
+				fieldSeen[testresultbes.FieldTestCollectionID] = struct{}{}
+			}
 
 		case "testActionOutput":
 			var (
@@ -3959,6 +4325,11 @@ func (trb *TestResultBESQuery) collectField(ctx context.Context, oneNode bool, o
 			if _, ok := fieldSeen[testresultbes.FieldTestAttemptDuration]; !ok {
 				selectedFields = append(selectedFields, testresultbes.FieldTestAttemptDuration)
 				fieldSeen[testresultbes.FieldTestAttemptDuration] = struct{}{}
+			}
+		case "testCollectionID":
+			if _, ok := fieldSeen[testresultbes.FieldTestCollectionID]; !ok {
+				selectedFields = append(selectedFields, testresultbes.FieldTestCollectionID)
+				fieldSeen[testresultbes.FieldTestCollectionID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -4033,6 +4404,10 @@ func (ts *TestSummaryQuery) collectField(ctx context.Context, oneNode bool, opCt
 				return err
 			}
 			ts.withTestCollection = query
+			if _, ok := fieldSeen[testsummary.FieldTestCollectionID]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldTestCollectionID)
+				fieldSeen[testsummary.FieldTestCollectionID] = struct{}{}
+			}
 
 		case "passed":
 			var (
@@ -4109,6 +4484,11 @@ func (ts *TestSummaryQuery) collectField(ctx context.Context, oneNode bool, opCt
 				selectedFields = append(selectedFields, testsummary.FieldLabel)
 				fieldSeen[testsummary.FieldLabel] = struct{}{}
 			}
+		case "testCollectionID":
+			if _, ok := fieldSeen[testsummary.FieldTestCollectionID]; !ok {
+				selectedFields = append(selectedFields, testsummary.FieldTestCollectionID)
+				fieldSeen[testsummary.FieldTestCollectionID] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:
@@ -4182,6 +4562,10 @@ func (tb *TimingBreakdownQuery) collectField(ctx context.Context, oneNode bool, 
 				return err
 			}
 			tb.withExecutionInfo = query
+			if _, ok := fieldSeen[timingbreakdown.FieldExecutionInfoID]; !ok {
+				selectedFields = append(selectedFields, timingbreakdown.FieldExecutionInfoID)
+				fieldSeen[timingbreakdown.FieldExecutionInfoID] = struct{}{}
+			}
 
 		case "child":
 			var (
@@ -4204,6 +4588,11 @@ func (tb *TimingBreakdownQuery) collectField(ctx context.Context, oneNode bool, 
 			if _, ok := fieldSeen[timingbreakdown.FieldTime]; !ok {
 				selectedFields = append(selectedFields, timingbreakdown.FieldTime)
 				fieldSeen[timingbreakdown.FieldTime] = struct{}{}
+			}
+		case "executionInfoID":
+			if _, ok := fieldSeen[timingbreakdown.FieldExecutionInfoID]; !ok {
+				selectedFields = append(selectedFields, timingbreakdown.FieldExecutionInfoID)
+				fieldSeen[timingbreakdown.FieldExecutionInfoID] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -4278,6 +4667,10 @@ func (tc *TimingChildQuery) collectField(ctx context.Context, oneNode bool, opCt
 				return err
 			}
 			tc.withTimingBreakdown = query
+			if _, ok := fieldSeen[timingchild.FieldTimingBreakdownID]; !ok {
+				selectedFields = append(selectedFields, timingchild.FieldTimingBreakdownID)
+				fieldSeen[timingchild.FieldTimingBreakdownID] = struct{}{}
+			}
 		case "name":
 			if _, ok := fieldSeen[timingchild.FieldName]; !ok {
 				selectedFields = append(selectedFields, timingchild.FieldName)
@@ -4287,6 +4680,11 @@ func (tc *TimingChildQuery) collectField(ctx context.Context, oneNode bool, opCt
 			if _, ok := fieldSeen[timingchild.FieldTime]; !ok {
 				selectedFields = append(selectedFields, timingchild.FieldTime)
 				fieldSeen[timingchild.FieldTime] = struct{}{}
+			}
+		case "timingBreakdownID":
+			if _, ok := fieldSeen[timingchild.FieldTimingBreakdownID]; !ok {
+				selectedFields = append(selectedFields, timingchild.FieldTimingBreakdownID)
+				fieldSeen[timingchild.FieldTimingBreakdownID] = struct{}{}
 			}
 		case "id":
 		case "__typename":

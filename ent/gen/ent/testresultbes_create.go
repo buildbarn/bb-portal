@@ -139,16 +139,16 @@ func (trbc *TestResultBESCreate) SetNillableTestAttemptDuration(i *int64) *TestR
 	return trbc
 }
 
-// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (trbc *TestResultBESCreate) SetTestCollectionID(id int) *TestResultBESCreate {
-	trbc.mutation.SetTestCollectionID(id)
+// SetTestCollectionID sets the "test_collection_id" field.
+func (trbc *TestResultBESCreate) SetTestCollectionID(i int) *TestResultBESCreate {
+	trbc.mutation.SetTestCollectionID(i)
 	return trbc
 }
 
-// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (trbc *TestResultBESCreate) SetNillableTestCollectionID(id *int) *TestResultBESCreate {
-	if id != nil {
-		trbc = trbc.SetTestCollectionID(*id)
+// SetNillableTestCollectionID sets the "test_collection_id" field if the given value is not nil.
+func (trbc *TestResultBESCreate) SetNillableTestCollectionID(i *int) *TestResultBESCreate {
+	if i != nil {
+		trbc.SetTestCollectionID(*i)
 	}
 	return trbc
 }
@@ -316,7 +316,7 @@ func (trbc *TestResultBESCreate) createSpec() (*TestResultBES, *sqlgraph.CreateS
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.test_collection_test_results = &nodes[0]
+		_node.TestCollectionID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := trbc.mutation.TestActionOutputIDs(); len(nodes) > 0 {

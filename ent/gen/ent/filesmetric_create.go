@@ -47,16 +47,16 @@ func (fmc *FilesMetricCreate) SetNillableCount(i *int32) *FilesMetricCreate {
 	return fmc
 }
 
-// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
-func (fmc *FilesMetricCreate) SetArtifactMetricsID(id int) *FilesMetricCreate {
-	fmc.mutation.SetArtifactMetricsID(id)
+// SetArtifactMetricsID sets the "artifact_metrics_id" field.
+func (fmc *FilesMetricCreate) SetArtifactMetricsID(i int) *FilesMetricCreate {
+	fmc.mutation.SetArtifactMetricsID(i)
 	return fmc
 }
 
-// SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
-func (fmc *FilesMetricCreate) SetNillableArtifactMetricsID(id *int) *FilesMetricCreate {
-	if id != nil {
-		fmc = fmc.SetArtifactMetricsID(*id)
+// SetNillableArtifactMetricsID sets the "artifact_metrics_id" field if the given value is not nil.
+func (fmc *FilesMetricCreate) SetNillableArtifactMetricsID(i *int) *FilesMetricCreate {
+	if i != nil {
+		fmc.SetArtifactMetricsID(*i)
 	}
 	return fmc
 }
@@ -148,7 +148,7 @@ func (fmc *FilesMetricCreate) createSpec() (*FilesMetric, *sqlgraph.CreateSpec) 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.artifact_metrics_top_level_artifacts = &nodes[0]
+		_node.ArtifactMetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

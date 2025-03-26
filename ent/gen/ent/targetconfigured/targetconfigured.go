@@ -24,6 +24,8 @@ const (
 	FieldStartTimeInMs = "start_time_in_ms"
 	// FieldTestSize holds the string denoting the test_size field in the database.
 	FieldTestSize = "test_size"
+	// FieldTargetPairID holds the string denoting the target_pair_id field in the database.
+	FieldTargetPairID = "target_pair_id"
 	// EdgeTargetPair holds the string denoting the target_pair edge name in mutations.
 	EdgeTargetPair = "target_pair"
 	// Table holds the table name of the targetconfigured in the database.
@@ -34,7 +36,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "targetpair" package.
 	TargetPairInverseTable = "target_pairs"
 	// TargetPairColumn is the table column denoting the target_pair relation/edge.
-	TargetPairColumn = "target_pair_configuration"
+	TargetPairColumn = "target_pair_id"
 )
 
 // Columns holds all SQL columns for targetconfigured fields.
@@ -44,23 +46,13 @@ var Columns = []string{
 	FieldTargetKind,
 	FieldStartTimeInMs,
 	FieldTestSize,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "target_configureds"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"target_pair_configuration",
+	FieldTargetPairID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -114,6 +106,11 @@ func ByStartTimeInMs(opts ...sql.OrderTermOption) OrderOption {
 // ByTestSize orders the results by the test_size field.
 func ByTestSize(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTestSize, opts...).ToFunc()
+}
+
+// ByTargetPairID orders the results by the target_pair_id field.
+func ByTargetPairID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTargetPairID, opts...).ToFunc()
 }
 
 // ByTargetPairField orders the results by target_pair field.

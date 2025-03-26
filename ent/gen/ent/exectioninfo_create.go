@@ -91,6 +91,20 @@ func (eic *ExectionInfoCreate) SetNillableHostname(s *string) *ExectionInfoCreat
 	return eic
 }
 
+// SetExecutionInfoID sets the "execution_info_id" field.
+func (eic *ExectionInfoCreate) SetExecutionInfoID(i int) *ExectionInfoCreate {
+	eic.mutation.SetExecutionInfoID(i)
+	return eic
+}
+
+// SetNillableExecutionInfoID sets the "execution_info_id" field if the given value is not nil.
+func (eic *ExectionInfoCreate) SetNillableExecutionInfoID(i *int) *ExectionInfoCreate {
+	if i != nil {
+		eic.SetExecutionInfoID(*i)
+	}
+	return eic
+}
+
 // SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
 func (eic *ExectionInfoCreate) SetTestResultID(id int) *ExectionInfoCreate {
 	eic.mutation.SetTestResultID(id)
@@ -238,7 +252,7 @@ func (eic *ExectionInfoCreate) createSpec() (*ExectionInfo, *sqlgraph.CreateSpec
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.test_result_bes_execution_info = &nodes[0]
+		_node.ExecutionInfoID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := eic.mutation.TimingBreakdownIDs(); len(nodes) > 0 {

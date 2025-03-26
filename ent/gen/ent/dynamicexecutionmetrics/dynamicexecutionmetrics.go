@@ -12,6 +12,8 @@ const (
 	Label = "dynamic_execution_metrics"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldMetricsID holds the string denoting the metrics_id field in the database.
+	FieldMetricsID = "metrics_id"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
 	// EdgeRaceStatistics holds the string denoting the race_statistics edge name in mutations.
@@ -24,36 +26,26 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
-	MetricsColumn = "metrics_dynamic_execution_metrics"
+	MetricsColumn = "metrics_id"
 	// RaceStatisticsTable is the table that holds the race_statistics relation/edge.
 	RaceStatisticsTable = "race_statistics"
 	// RaceStatisticsInverseTable is the table name for the RaceStatistics entity.
 	// It exists in this package in order to avoid circular dependency with the "racestatistics" package.
 	RaceStatisticsInverseTable = "race_statistics"
 	// RaceStatisticsColumn is the table column denoting the race_statistics relation/edge.
-	RaceStatisticsColumn = "dynamic_execution_metrics_race_statistics"
+	RaceStatisticsColumn = "dynamic_execution_metrics_id"
 )
 
 // Columns holds all SQL columns for dynamicexecutionmetrics fields.
 var Columns = []string{
 	FieldID,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "dynamic_execution_metrics"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"metrics_dynamic_execution_metrics",
+	FieldMetricsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -66,6 +58,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByMetricsID orders the results by the metrics_id field.
+func ByMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMetricsID, opts...).ToFunc()
 }
 
 // ByMetricsField orders the results by metrics field.

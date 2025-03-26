@@ -23,7 +23,6 @@ type TimingChildQuery struct {
 	inters              []Interceptor
 	predicates          []predicate.TimingChild
 	withTimingBreakdown *TimingBreakdownQuery
-	withFKs             bool
 	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*TimingChild) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (tcq *TimingChildQuery) prepareQuery(ctx context.Context) error {
 func (tcq *TimingChildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TimingChild, error) {
 	var (
 		nodes       = []*TimingChild{}
-		withFKs     = tcq.withFKs
 		_spec       = tcq.querySpec()
 		loadedTypes = [1]bool{
 			tcq.withTimingBreakdown != nil,
 		}
 	)
-	if tcq.withTimingBreakdown != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, timingchild.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TimingChild).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (tcq *TimingChildQuery) loadTimingBreakdown(ctx context.Context, query *Tim
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TimingChild)
 	for i := range nodes {
-		if nodes[i].timing_breakdown_child == nil {
-			continue
-		}
-		fk := *nodes[i].timing_breakdown_child
+		fk := nodes[i].TimingBreakdownID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (tcq *TimingChildQuery) loadTimingBreakdown(ctx context.Context, query *Tim
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "timing_breakdown_child" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "timing_breakdown_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (tcq *TimingChildQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != timingchild.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if tcq.withTimingBreakdown != nil {
+			_spec.Node.AddColumnOnce(timingchild.FieldTimingBreakdownID)
 		}
 	}
 	if ps := tcq.predicates; len(ps) > 0 {

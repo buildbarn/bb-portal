@@ -20,16 +20,16 @@ type NamedSetOfFilesCreate struct {
 	hooks    []Hook
 }
 
-// SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID.
-func (nsofc *NamedSetOfFilesCreate) SetOutputGroupID(id int) *NamedSetOfFilesCreate {
-	nsofc.mutation.SetOutputGroupID(id)
+// SetOutputGroupID sets the "output_group_id" field.
+func (nsofc *NamedSetOfFilesCreate) SetOutputGroupID(i int) *NamedSetOfFilesCreate {
+	nsofc.mutation.SetOutputGroupID(i)
 	return nsofc
 }
 
-// SetNillableOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID if the given value is not nil.
-func (nsofc *NamedSetOfFilesCreate) SetNillableOutputGroupID(id *int) *NamedSetOfFilesCreate {
-	if id != nil {
-		nsofc = nsofc.SetOutputGroupID(*id)
+// SetNillableOutputGroupID sets the "output_group_id" field if the given value is not nil.
+func (nsofc *NamedSetOfFilesCreate) SetNillableOutputGroupID(i *int) *NamedSetOfFilesCreate {
+	if i != nil {
+		nsofc.SetOutputGroupID(*i)
 	}
 	return nsofc
 }
@@ -147,7 +147,7 @@ func (nsofc *NamedSetOfFilesCreate) createSpec() (*NamedSetOfFiles, *sqlgraph.Cr
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.output_group_file_sets = &nodes[0]
+		_node.OutputGroupID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := nsofc.mutation.FilesIDs(); len(nodes) > 0 {

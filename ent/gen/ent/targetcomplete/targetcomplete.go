@@ -30,6 +30,8 @@ const (
 	FieldTestTimeout = "test_timeout"
 	// FieldTestSize holds the string denoting the test_size field in the database.
 	FieldTestSize = "test_size"
+	// FieldTargetPairID holds the string denoting the target_pair_id field in the database.
+	FieldTargetPairID = "target_pair_id"
 	// EdgeTargetPair holds the string denoting the target_pair edge name in mutations.
 	EdgeTargetPair = "target_pair"
 	// EdgeImportantOutput holds the string denoting the important_output edge name in mutations.
@@ -46,7 +48,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "targetpair" package.
 	TargetPairInverseTable = "target_pairs"
 	// TargetPairColumn is the table column denoting the target_pair relation/edge.
-	TargetPairColumn = "target_pair_completion"
+	TargetPairColumn = "target_pair_id"
 	// ImportantOutputTable is the table that holds the important_output relation/edge.
 	ImportantOutputTable = "test_files"
 	// ImportantOutputInverseTable is the table name for the TestFile entity.
@@ -67,7 +69,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "outputgroup" package.
 	OutputGroupInverseTable = "output_groups"
 	// OutputGroupColumn is the table column denoting the output_group relation/edge.
-	OutputGroupColumn = "target_complete_output_group"
+	OutputGroupColumn = "target_complete_id"
 )
 
 // Columns holds all SQL columns for targetcomplete fields.
@@ -80,23 +82,13 @@ var Columns = []string{
 	FieldTestTimeoutSeconds,
 	FieldTestTimeout,
 	FieldTestSize,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "target_completes"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"target_pair_completion",
+	FieldTargetPairID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -165,6 +157,11 @@ func ByTestTimeout(opts ...sql.OrderTermOption) OrderOption {
 // ByTestSize orders the results by the test_size field.
 func ByTestSize(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTestSize, opts...).ToFunc()
+}
+
+// ByTargetPairID orders the results by the target_pair_id field.
+func ByTargetPairID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTargetPairID, opts...).ToFunc()
 }
 
 // ByTargetPairField orders the results by target_pair field.

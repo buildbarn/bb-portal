@@ -82,17 +82,23 @@ func (fmu *FilesMetricUpdate) ClearCount() *FilesMetricUpdate {
 	return fmu
 }
 
-// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
-func (fmu *FilesMetricUpdate) SetArtifactMetricsID(id int) *FilesMetricUpdate {
-	fmu.mutation.SetArtifactMetricsID(id)
+// SetArtifactMetricsID sets the "artifact_metrics_id" field.
+func (fmu *FilesMetricUpdate) SetArtifactMetricsID(i int) *FilesMetricUpdate {
+	fmu.mutation.SetArtifactMetricsID(i)
 	return fmu
 }
 
-// SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
-func (fmu *FilesMetricUpdate) SetNillableArtifactMetricsID(id *int) *FilesMetricUpdate {
-	if id != nil {
-		fmu = fmu.SetArtifactMetricsID(*id)
+// SetNillableArtifactMetricsID sets the "artifact_metrics_id" field if the given value is not nil.
+func (fmu *FilesMetricUpdate) SetNillableArtifactMetricsID(i *int) *FilesMetricUpdate {
+	if i != nil {
+		fmu.SetArtifactMetricsID(*i)
 	}
+	return fmu
+}
+
+// ClearArtifactMetricsID clears the value of the "artifact_metrics_id" field.
+func (fmu *FilesMetricUpdate) ClearArtifactMetricsID() *FilesMetricUpdate {
+	fmu.mutation.ClearArtifactMetricsID()
 	return fmu
 }
 
@@ -269,17 +275,23 @@ func (fmuo *FilesMetricUpdateOne) ClearCount() *FilesMetricUpdateOne {
 	return fmuo
 }
 
-// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID.
-func (fmuo *FilesMetricUpdateOne) SetArtifactMetricsID(id int) *FilesMetricUpdateOne {
-	fmuo.mutation.SetArtifactMetricsID(id)
+// SetArtifactMetricsID sets the "artifact_metrics_id" field.
+func (fmuo *FilesMetricUpdateOne) SetArtifactMetricsID(i int) *FilesMetricUpdateOne {
+	fmuo.mutation.SetArtifactMetricsID(i)
 	return fmuo
 }
 
-// SetNillableArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by ID if the given value is not nil.
-func (fmuo *FilesMetricUpdateOne) SetNillableArtifactMetricsID(id *int) *FilesMetricUpdateOne {
-	if id != nil {
-		fmuo = fmuo.SetArtifactMetricsID(*id)
+// SetNillableArtifactMetricsID sets the "artifact_metrics_id" field if the given value is not nil.
+func (fmuo *FilesMetricUpdateOne) SetNillableArtifactMetricsID(i *int) *FilesMetricUpdateOne {
+	if i != nil {
+		fmuo.SetArtifactMetricsID(*i)
 	}
+	return fmuo
+}
+
+// ClearArtifactMetricsID clears the value of the "artifact_metrics_id" field.
+func (fmuo *FilesMetricUpdateOne) ClearArtifactMetricsID() *FilesMetricUpdateOne {
+	fmuo.mutation.ClearArtifactMetricsID()
 	return fmuo
 }
 

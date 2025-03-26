@@ -12,6 +12,8 @@ const (
 	Label = "metrics"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldBazelInvocationID holds the string denoting the bazel_invocation_id field in the database.
+	FieldBazelInvocationID = "bazel_invocation_id"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// EdgeActionSummary holds the string denoting the action_summary edge name in mutations.
@@ -42,35 +44,35 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
 	BazelInvocationInverseTable = "bazel_invocations"
 	// BazelInvocationColumn is the table column denoting the bazel_invocation relation/edge.
-	BazelInvocationColumn = "bazel_invocation_metrics"
+	BazelInvocationColumn = "bazel_invocation_id"
 	// ActionSummaryTable is the table that holds the action_summary relation/edge.
 	ActionSummaryTable = "action_summaries"
 	// ActionSummaryInverseTable is the table name for the ActionSummary entity.
 	// It exists in this package in order to avoid circular dependency with the "actionsummary" package.
 	ActionSummaryInverseTable = "action_summaries"
 	// ActionSummaryColumn is the table column denoting the action_summary relation/edge.
-	ActionSummaryColumn = "metrics_action_summary"
+	ActionSummaryColumn = "metrics_id"
 	// MemoryMetricsTable is the table that holds the memory_metrics relation/edge.
 	MemoryMetricsTable = "memory_metrics"
 	// MemoryMetricsInverseTable is the table name for the MemoryMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "memorymetrics" package.
 	MemoryMetricsInverseTable = "memory_metrics"
 	// MemoryMetricsColumn is the table column denoting the memory_metrics relation/edge.
-	MemoryMetricsColumn = "metrics_memory_metrics"
+	MemoryMetricsColumn = "metrics_id"
 	// TargetMetricsTable is the table that holds the target_metrics relation/edge.
 	TargetMetricsTable = "target_metrics"
 	// TargetMetricsInverseTable is the table name for the TargetMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "targetmetrics" package.
 	TargetMetricsInverseTable = "target_metrics"
 	// TargetMetricsColumn is the table column denoting the target_metrics relation/edge.
-	TargetMetricsColumn = "metrics_target_metrics"
+	TargetMetricsColumn = "metrics_id"
 	// PackageMetricsTable is the table that holds the package_metrics relation/edge.
 	PackageMetricsTable = "package_metrics"
 	// PackageMetricsInverseTable is the table name for the PackageMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "packagemetrics" package.
 	PackageMetricsInverseTable = "package_metrics"
 	// PackageMetricsColumn is the table column denoting the package_metrics relation/edge.
-	PackageMetricsColumn = "metrics_package_metrics"
+	PackageMetricsColumn = "metrics_id"
 	// TimingMetricsTable is the table that holds the timing_metrics relation/edge.
 	TimingMetricsTable = "timing_metrics"
 	// TimingMetricsInverseTable is the table name for the TimingMetrics entity.
@@ -84,57 +86,47 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "cumulativemetrics" package.
 	CumulativeMetricsInverseTable = "cumulative_metrics"
 	// CumulativeMetricsColumn is the table column denoting the cumulative_metrics relation/edge.
-	CumulativeMetricsColumn = "metrics_cumulative_metrics"
+	CumulativeMetricsColumn = "metrics_id"
 	// ArtifactMetricsTable is the table that holds the artifact_metrics relation/edge.
 	ArtifactMetricsTable = "artifact_metrics"
 	// ArtifactMetricsInverseTable is the table name for the ArtifactMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "artifactmetrics" package.
 	ArtifactMetricsInverseTable = "artifact_metrics"
 	// ArtifactMetricsColumn is the table column denoting the artifact_metrics relation/edge.
-	ArtifactMetricsColumn = "metrics_artifact_metrics"
+	ArtifactMetricsColumn = "metrics_id"
 	// NetworkMetricsTable is the table that holds the network_metrics relation/edge.
 	NetworkMetricsTable = "network_metrics"
 	// NetworkMetricsInverseTable is the table name for the NetworkMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "networkmetrics" package.
 	NetworkMetricsInverseTable = "network_metrics"
 	// NetworkMetricsColumn is the table column denoting the network_metrics relation/edge.
-	NetworkMetricsColumn = "metrics_network_metrics"
+	NetworkMetricsColumn = "metrics_id"
 	// DynamicExecutionMetricsTable is the table that holds the dynamic_execution_metrics relation/edge.
 	DynamicExecutionMetricsTable = "dynamic_execution_metrics"
 	// DynamicExecutionMetricsInverseTable is the table name for the DynamicExecutionMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "dynamicexecutionmetrics" package.
 	DynamicExecutionMetricsInverseTable = "dynamic_execution_metrics"
 	// DynamicExecutionMetricsColumn is the table column denoting the dynamic_execution_metrics relation/edge.
-	DynamicExecutionMetricsColumn = "metrics_dynamic_execution_metrics"
+	DynamicExecutionMetricsColumn = "metrics_id"
 	// BuildGraphMetricsTable is the table that holds the build_graph_metrics relation/edge.
 	BuildGraphMetricsTable = "build_graph_metrics"
 	// BuildGraphMetricsInverseTable is the table name for the BuildGraphMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "buildgraphmetrics" package.
 	BuildGraphMetricsInverseTable = "build_graph_metrics"
 	// BuildGraphMetricsColumn is the table column denoting the build_graph_metrics relation/edge.
-	BuildGraphMetricsColumn = "metrics_build_graph_metrics"
+	BuildGraphMetricsColumn = "metrics_id"
 )
 
 // Columns holds all SQL columns for metrics fields.
 var Columns = []string{
 	FieldID,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "metrics"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"bazel_invocation_metrics",
+	FieldBazelInvocationID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -147,6 +139,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByBazelInvocationID orders the results by the bazel_invocation_id field.
+func ByBazelInvocationID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBazelInvocationID, opts...).ToFunc()
 }
 
 // ByBazelInvocationField orders the results by bazel_invocation field.

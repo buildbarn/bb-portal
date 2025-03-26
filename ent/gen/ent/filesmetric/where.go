@@ -63,6 +63,11 @@ func Count(v int32) predicate.FilesMetric {
 	return predicate.FilesMetric(sql.FieldEQ(FieldCount, v))
 }
 
+// ArtifactMetricsID applies equality check predicate on the "artifact_metrics_id" field. It's identical to ArtifactMetricsIDEQ.
+func ArtifactMetricsID(v int) predicate.FilesMetric {
+	return predicate.FilesMetric(sql.FieldEQ(FieldArtifactMetricsID, v))
+}
+
 // SizeInBytesEQ applies the EQ predicate on the "size_in_bytes" field.
 func SizeInBytesEQ(v int64) predicate.FilesMetric {
 	return predicate.FilesMetric(sql.FieldEQ(FieldSizeInBytes, v))
@@ -161,6 +166,36 @@ func CountIsNil() predicate.FilesMetric {
 // CountNotNil applies the NotNil predicate on the "count" field.
 func CountNotNil() predicate.FilesMetric {
 	return predicate.FilesMetric(sql.FieldNotNull(FieldCount))
+}
+
+// ArtifactMetricsIDEQ applies the EQ predicate on the "artifact_metrics_id" field.
+func ArtifactMetricsIDEQ(v int) predicate.FilesMetric {
+	return predicate.FilesMetric(sql.FieldEQ(FieldArtifactMetricsID, v))
+}
+
+// ArtifactMetricsIDNEQ applies the NEQ predicate on the "artifact_metrics_id" field.
+func ArtifactMetricsIDNEQ(v int) predicate.FilesMetric {
+	return predicate.FilesMetric(sql.FieldNEQ(FieldArtifactMetricsID, v))
+}
+
+// ArtifactMetricsIDIn applies the In predicate on the "artifact_metrics_id" field.
+func ArtifactMetricsIDIn(vs ...int) predicate.FilesMetric {
+	return predicate.FilesMetric(sql.FieldIn(FieldArtifactMetricsID, vs...))
+}
+
+// ArtifactMetricsIDNotIn applies the NotIn predicate on the "artifact_metrics_id" field.
+func ArtifactMetricsIDNotIn(vs ...int) predicate.FilesMetric {
+	return predicate.FilesMetric(sql.FieldNotIn(FieldArtifactMetricsID, vs...))
+}
+
+// ArtifactMetricsIDIsNil applies the IsNil predicate on the "artifact_metrics_id" field.
+func ArtifactMetricsIDIsNil() predicate.FilesMetric {
+	return predicate.FilesMetric(sql.FieldIsNull(FieldArtifactMetricsID))
+}
+
+// ArtifactMetricsIDNotNil applies the NotNil predicate on the "artifact_metrics_id" field.
+func ArtifactMetricsIDNotNil() predicate.FilesMetric {
+	return predicate.FilesMetric(sql.FieldNotNull(FieldArtifactMetricsID))
 }
 
 // HasArtifactMetrics applies the HasEdge predicate on the "artifact_metrics" edge.

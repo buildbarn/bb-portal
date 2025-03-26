@@ -26,7 +26,6 @@ type DynamicExecutionMetricsQuery struct {
 	predicates              []predicate.DynamicExecutionMetrics
 	withMetrics             *MetricsQuery
 	withRaceStatistics      *RaceStatisticsQuery
-	withFKs                 bool
 	modifiers               []func(*sql.Selector)
 	loadTotal               []func(context.Context, []*DynamicExecutionMetrics) error
 	withNamedRaceStatistics map[string]*RaceStatisticsQuery
@@ -334,6 +333,18 @@ func (demq *DynamicExecutionMetricsQuery) WithRaceStatistics(opts ...func(*RaceS
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		MetricsID int `json:"metrics_id,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.DynamicExecutionMetrics.Query().
+//		GroupBy(dynamicexecutionmetrics.FieldMetricsID).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
 func (demq *DynamicExecutionMetricsQuery) GroupBy(field string, fields ...string) *DynamicExecutionMetricsGroupBy {
 	demq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &DynamicExecutionMetricsGroupBy{build: demq}
@@ -345,6 +356,16 @@ func (demq *DynamicExecutionMetricsQuery) GroupBy(field string, fields ...string
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
+//
+// Example:
+//
+//	var v []struct {
+//		MetricsID int `json:"metrics_id,omitempty"`
+//	}
+//
+//	client.DynamicExecutionMetrics.Query().
+//		Select(dynamicexecutionmetrics.FieldMetricsID).
+//		Scan(ctx, &v)
 func (demq *DynamicExecutionMetricsQuery) Select(fields ...string) *DynamicExecutionMetricsSelect {
 	demq.ctx.Fields = append(demq.ctx.Fields, fields...)
 	sbuild := &DynamicExecutionMetricsSelect{DynamicExecutionMetricsQuery: demq}
@@ -387,19 +408,12 @@ func (demq *DynamicExecutionMetricsQuery) prepareQuery(ctx context.Context) erro
 func (demq *DynamicExecutionMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*DynamicExecutionMetrics, error) {
 	var (
 		nodes       = []*DynamicExecutionMetrics{}
-		withFKs     = demq.withFKs
 		_spec       = demq.querySpec()
 		loadedTypes = [2]bool{
 			demq.withMetrics != nil,
 			demq.withRaceStatistics != nil,
 		}
 	)
-	if demq.withMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, dynamicexecutionmetrics.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*DynamicExecutionMetrics).scanValues(nil, columns)
 	}
@@ -455,10 +469,7 @@ func (demq *DynamicExecutionMetricsQuery) loadMetrics(ctx context.Context, query
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*DynamicExecutionMetrics)
 	for i := range nodes {
-		if nodes[i].metrics_dynamic_execution_metrics == nil {
-			continue
-		}
-		fk := *nodes[i].metrics_dynamic_execution_metrics
+		fk := nodes[i].MetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -475,7 +486,7 @@ func (demq *DynamicExecutionMetricsQuery) loadMetrics(ctx context.Context, query
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "metrics_dynamic_execution_metrics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -493,7 +504,9 @@ func (demq *DynamicExecutionMetricsQuery) loadRaceStatistics(ctx context.Context
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(racestatistics.FieldDynamicExecutionMetricsID)
+	}
 	query.Where(predicate.RaceStatistics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(dynamicexecutionmetrics.RaceStatisticsColumn), fks...))
 	}))
@@ -502,13 +515,10 @@ func (demq *DynamicExecutionMetricsQuery) loadRaceStatistics(ctx context.Context
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.dynamic_execution_metrics_race_statistics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "dynamic_execution_metrics_race_statistics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.DynamicExecutionMetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "dynamic_execution_metrics_race_statistics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "dynamic_execution_metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -542,6 +552,9 @@ func (demq *DynamicExecutionMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != dynamicexecutionmetrics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if demq.withMetrics != nil {
+			_spec.Node.AddColumnOnce(dynamicexecutionmetrics.FieldMetricsID)
 		}
 	}
 	if ps := demq.predicates; len(ps) > 0 {

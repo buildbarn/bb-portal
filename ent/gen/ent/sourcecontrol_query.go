@@ -23,7 +23,6 @@ type SourceControlQuery struct {
 	inters              []Interceptor
 	predicates          []predicate.SourceControl
 	withBazelInvocation *BazelInvocationQuery
-	withFKs             bool
 	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*SourceControl) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (scq *SourceControlQuery) prepareQuery(ctx context.Context) error {
 func (scq *SourceControlQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SourceControl, error) {
 	var (
 		nodes       = []*SourceControl{}
-		withFKs     = scq.withFKs
 		_spec       = scq.querySpec()
 		loadedTypes = [1]bool{
 			scq.withBazelInvocation != nil,
 		}
 	)
-	if scq.withBazelInvocation != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, sourcecontrol.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*SourceControl).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (scq *SourceControlQuery) loadBazelInvocation(ctx context.Context, query *B
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*SourceControl)
 	for i := range nodes {
-		if nodes[i].bazel_invocation_source_control == nil {
-			continue
-		}
-		fk := *nodes[i].bazel_invocation_source_control
+		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (scq *SourceControlQuery) loadBazelInvocation(ctx context.Context, query *B
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_source_control" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (scq *SourceControlQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != sourcecontrol.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if scq.withBazelInvocation != nil {
+			_spec.Node.AddColumnOnce(sourcecontrol.FieldBazelInvocationID)
 		}
 	}
 	if ps := scq.predicates; len(ps) > 0 {

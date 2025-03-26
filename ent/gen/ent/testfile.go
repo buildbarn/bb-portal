@@ -28,17 +28,18 @@ type TestFile struct {
 	Name string `json:"name,omitempty"`
 	// Prefix holds the value of the "prefix" field.
 	Prefix []string `json:"prefix,omitempty"`
+	// TestResultID holds the value of the "test_result_id" field.
+	TestResultID int `json:"test_result_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestFileQuery when eager-loading is set.
-	Edges                              TestFileEdges `json:"edges"`
-	named_set_of_files_files           *int
-	output_group_inline_files          *int
-	target_complete_important_output   *int
-	target_complete_directory_output   *int
-	test_result_bes_test_action_output *int
-	test_summary_passed                *int
-	test_summary_failed                *int
-	selectValues                       sql.SelectValues
+	Edges                            TestFileEdges `json:"edges"`
+	named_set_of_files_files         *int
+	output_group_inline_files        *int
+	target_complete_important_output *int
+	target_complete_directory_output *int
+	test_summary_passed              *int
+	test_summary_failed              *int
+	selectValues                     sql.SelectValues
 }
 
 // TestFileEdges holds the relations/edges for other nodes in the graph.
@@ -70,7 +71,7 @@ func (*TestFile) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case testfile.FieldPrefix:
 			values[i] = new([]byte)
-		case testfile.FieldID, testfile.FieldLength:
+		case testfile.FieldID, testfile.FieldLength, testfile.FieldTestResultID:
 			values[i] = new(sql.NullInt64)
 		case testfile.FieldDigest, testfile.FieldFile, testfile.FieldName:
 			values[i] = new(sql.NullString)
@@ -82,11 +83,9 @@ func (*TestFile) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case testfile.ForeignKeys[3]: // target_complete_directory_output
 			values[i] = new(sql.NullInt64)
-		case testfile.ForeignKeys[4]: // test_result_bes_test_action_output
+		case testfile.ForeignKeys[4]: // test_summary_passed
 			values[i] = new(sql.NullInt64)
-		case testfile.ForeignKeys[5]: // test_summary_passed
-			values[i] = new(sql.NullInt64)
-		case testfile.ForeignKeys[6]: // test_summary_failed
+		case testfile.ForeignKeys[5]: // test_summary_failed
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -141,6 +140,12 @@ func (tf *TestFile) assignValues(columns []string, values []any) error {
 					return fmt.Errorf("unmarshal field prefix: %w", err)
 				}
 			}
+		case testfile.FieldTestResultID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field test_result_id", values[i])
+			} else if value.Valid {
+				tf.TestResultID = int(value.Int64)
+			}
 		case testfile.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field named_set_of_files_files", value)
@@ -171,19 +176,12 @@ func (tf *TestFile) assignValues(columns []string, values []any) error {
 			}
 		case testfile.ForeignKeys[4]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field test_result_bes_test_action_output", value)
-			} else if value.Valid {
-				tf.test_result_bes_test_action_output = new(int)
-				*tf.test_result_bes_test_action_output = int(value.Int64)
-			}
-		case testfile.ForeignKeys[5]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_summary_passed", value)
 			} else if value.Valid {
 				tf.test_summary_passed = new(int)
 				*tf.test_summary_passed = int(value.Int64)
 			}
-		case testfile.ForeignKeys[6]:
+		case testfile.ForeignKeys[5]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_summary_failed", value)
 			} else if value.Valid {
@@ -245,6 +243,9 @@ func (tf *TestFile) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("prefix=")
 	builder.WriteString(fmt.Sprintf("%v", tf.Prefix))
+	builder.WriteString(", ")
+	builder.WriteString("test_result_id=")
+	builder.WriteString(fmt.Sprintf("%v", tf.TestResultID))
 	builder.WriteByte(')')
 	return builder.String()
 }

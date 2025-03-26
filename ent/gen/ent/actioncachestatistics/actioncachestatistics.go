@@ -22,6 +22,8 @@ const (
 	FieldHits = "hits"
 	// FieldMisses holds the string denoting the misses field in the database.
 	FieldMisses = "misses"
+	// FieldActionSummaryID holds the string denoting the action_summary_id field in the database.
+	FieldActionSummaryID = "action_summary_id"
 	// EdgeActionSummary holds the string denoting the action_summary edge name in mutations.
 	EdgeActionSummary = "action_summary"
 	// EdgeMissDetails holds the string denoting the miss_details edge name in mutations.
@@ -34,14 +36,14 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "actionsummary" package.
 	ActionSummaryInverseTable = "action_summaries"
 	// ActionSummaryColumn is the table column denoting the action_summary relation/edge.
-	ActionSummaryColumn = "action_summary_action_cache_statistics"
+	ActionSummaryColumn = "action_summary_id"
 	// MissDetailsTable is the table that holds the miss_details relation/edge.
 	MissDetailsTable = "miss_details"
 	// MissDetailsInverseTable is the table name for the MissDetail entity.
 	// It exists in this package in order to avoid circular dependency with the "missdetail" package.
 	MissDetailsInverseTable = "miss_details"
 	// MissDetailsColumn is the table column denoting the miss_details relation/edge.
-	MissDetailsColumn = "action_cache_statistics_miss_details"
+	MissDetailsColumn = "action_cache_statistics_id"
 )
 
 // Columns holds all SQL columns for actioncachestatistics fields.
@@ -52,23 +54,13 @@ var Columns = []string{
 	FieldLoadTimeInMs,
 	FieldHits,
 	FieldMisses,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "action_cache_statistics"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"action_summary_action_cache_statistics",
+	FieldActionSummaryID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -106,6 +98,11 @@ func ByHits(opts ...sql.OrderTermOption) OrderOption {
 // ByMisses orders the results by the misses field.
 func ByMisses(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMisses, opts...).ToFunc()
+}
+
+// ByActionSummaryID orders the results by the action_summary_id field.
+func ByActionSummaryID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldActionSummaryID, opts...).ToFunc()
 }
 
 // ByActionSummaryField orders the results by action_summary field.

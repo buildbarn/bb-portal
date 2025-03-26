@@ -20,6 +20,8 @@ func (ResourceUsage) Fields() []ent.Field {
 
 		// The value.
 		field.String("value").Optional(),
+
+		field.Int("execution_info_id").Optional(),
 	}
 }
 
@@ -29,6 +31,7 @@ func (ResourceUsage) Edges() []ent.Edge {
 		// Edge back to the execution info.
 		edge.From("execution_info", ExectionInfo.Type).
 			Ref("resource_usage").
-			Unique(),
+			Unique().
+			Field("execution_info_id"),
 	}
 }

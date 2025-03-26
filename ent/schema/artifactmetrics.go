@@ -4,6 +4,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
+	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // ArtifactMetrics holds the schema definition for the ArtifactMetrics entity.
@@ -13,7 +15,10 @@ type ArtifactMetrics struct {
 
 // Fields of the ArtifactMetrics.
 func (ArtifactMetrics) Fields() []ent.Field {
-	return []ent.Field{}
+	return []ent.Field{
+		// foreign key to the metrics object
+		field.Int("metrics_id").Optional(),
+	}
 }
 
 // Edges of the ArtifactMetrics.
@@ -22,7 +27,8 @@ func (ArtifactMetrics) Edges() []ent.Edge {
 		// Edge back to the metrics object
 		edge.From("metrics", Metrics.Type).
 			Ref("artifact_metrics").
-			Unique(),
+			Unique().
+			Field("metrics_id"),
 
 		// Measures all source files newly read this build. Does not include
 		// unchanged sources on incremental builds.
@@ -59,5 +65,12 @@ func (ArtifactMetrics) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+	}
+}
+
+// Indexes of the ArtifactMetrics.
+func (ArtifactMetrics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("metrics_id"),
 	}
 }

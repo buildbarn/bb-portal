@@ -34,6 +34,8 @@ const (
 	FieldTestAttemptDurationMillis = "test_attempt_duration_millis"
 	// FieldTestAttemptDuration holds the string denoting the test_attempt_duration field in the database.
 	FieldTestAttemptDuration = "test_attempt_duration"
+	// FieldTestCollectionID holds the string denoting the test_collection_id field in the database.
+	FieldTestCollectionID = "test_collection_id"
 	// EdgeTestCollection holds the string denoting the test_collection edge name in mutations.
 	EdgeTestCollection = "test_collection"
 	// EdgeTestActionOutput holds the string denoting the test_action_output edge name in mutations.
@@ -48,21 +50,21 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "testcollection" package.
 	TestCollectionInverseTable = "test_collections"
 	// TestCollectionColumn is the table column denoting the test_collection relation/edge.
-	TestCollectionColumn = "test_collection_test_results"
+	TestCollectionColumn = "test_collection_id"
 	// TestActionOutputTable is the table that holds the test_action_output relation/edge.
 	TestActionOutputTable = "test_files"
 	// TestActionOutputInverseTable is the table name for the TestFile entity.
 	// It exists in this package in order to avoid circular dependency with the "testfile" package.
 	TestActionOutputInverseTable = "test_files"
 	// TestActionOutputColumn is the table column denoting the test_action_output relation/edge.
-	TestActionOutputColumn = "test_result_bes_test_action_output"
+	TestActionOutputColumn = "test_result_id"
 	// ExecutionInfoTable is the table that holds the execution_info relation/edge.
 	ExecutionInfoTable = "exection_infos"
 	// ExecutionInfoInverseTable is the table name for the ExectionInfo entity.
 	// It exists in this package in order to avoid circular dependency with the "exectioninfo" package.
 	ExecutionInfoInverseTable = "exection_infos"
 	// ExecutionInfoColumn is the table column denoting the execution_info relation/edge.
-	ExecutionInfoColumn = "test_result_bes_execution_info"
+	ExecutionInfoColumn = "execution_info_id"
 )
 
 // Columns holds all SQL columns for testresultbes fields.
@@ -77,23 +79,13 @@ var Columns = []string{
 	FieldTestAttemptStart,
 	FieldTestAttemptDurationMillis,
 	FieldTestAttemptDuration,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "test_result_be_ss"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"test_collection_test_results",
+	FieldTestCollectionID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -179,6 +171,11 @@ func ByTestAttemptDurationMillis(opts ...sql.OrderTermOption) OrderOption {
 // ByTestAttemptDuration orders the results by the test_attempt_duration field.
 func ByTestAttemptDuration(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTestAttemptDuration, opts...).ToFunc()
+}
+
+// ByTestCollectionID orders the results by the test_collection_id field.
+func ByTestCollectionID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTestCollectionID, opts...).ToFunc()
 }
 
 // ByTestCollectionField orders the results by test_collection field.

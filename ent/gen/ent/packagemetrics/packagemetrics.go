@@ -14,6 +14,8 @@ const (
 	FieldID = "id"
 	// FieldPackagesLoaded holds the string denoting the packages_loaded field in the database.
 	FieldPackagesLoaded = "packages_loaded"
+	// FieldMetricsID holds the string denoting the metrics_id field in the database.
+	FieldMetricsID = "metrics_id"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
 	// EdgePackageLoadMetrics holds the string denoting the package_load_metrics edge name in mutations.
@@ -26,37 +28,27 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "metrics" package.
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
-	MetricsColumn = "metrics_package_metrics"
+	MetricsColumn = "metrics_id"
 	// PackageLoadMetricsTable is the table that holds the package_load_metrics relation/edge.
 	PackageLoadMetricsTable = "package_load_metrics"
 	// PackageLoadMetricsInverseTable is the table name for the PackageLoadMetrics entity.
 	// It exists in this package in order to avoid circular dependency with the "packageloadmetrics" package.
 	PackageLoadMetricsInverseTable = "package_load_metrics"
 	// PackageLoadMetricsColumn is the table column denoting the package_load_metrics relation/edge.
-	PackageLoadMetricsColumn = "package_metrics_package_load_metrics"
+	PackageLoadMetricsColumn = "package_metrics_id"
 )
 
 // Columns holds all SQL columns for packagemetrics fields.
 var Columns = []string{
 	FieldID,
 	FieldPackagesLoaded,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "package_metrics"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"metrics_package_metrics",
+	FieldMetricsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -74,6 +66,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByPackagesLoaded orders the results by the packages_loaded field.
 func ByPackagesLoaded(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPackagesLoaded, opts...).ToFunc()
+}
+
+// ByMetricsID orders the results by the metrics_id field.
+func ByMetricsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMetricsID, opts...).ToFunc()
 }
 
 // ByMetricsField orders the results by metrics field.

@@ -20,6 +20,8 @@ const (
 	FieldReason = "reason"
 	// FieldCount holds the string denoting the count field in the database.
 	FieldCount = "count"
+	// FieldActionCacheStatisticsID holds the string denoting the action_cache_statistics_id field in the database.
+	FieldActionCacheStatisticsID = "action_cache_statistics_id"
 	// EdgeActionCacheStatistics holds the string denoting the action_cache_statistics edge name in mutations.
 	EdgeActionCacheStatistics = "action_cache_statistics"
 	// Table holds the table name of the missdetail in the database.
@@ -30,7 +32,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "actioncachestatistics" package.
 	ActionCacheStatisticsInverseTable = "action_cache_statistics"
 	// ActionCacheStatisticsColumn is the table column denoting the action_cache_statistics relation/edge.
-	ActionCacheStatisticsColumn = "action_cache_statistics_miss_details"
+	ActionCacheStatisticsColumn = "action_cache_statistics_id"
 )
 
 // Columns holds all SQL columns for missdetail fields.
@@ -38,23 +40,13 @@ var Columns = []string{
 	FieldID,
 	FieldReason,
 	FieldCount,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "miss_details"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"action_cache_statistics_miss_details",
+	FieldActionCacheStatisticsID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -109,6 +101,11 @@ func ByReason(opts ...sql.OrderTermOption) OrderOption {
 // ByCount orders the results by the count field.
 func ByCount(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCount, opts...).ToFunc()
+}
+
+// ByActionCacheStatisticsID orders the results by the action_cache_statistics_id field.
+func ByActionCacheStatisticsID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldActionCacheStatisticsID, opts...).ToFunc()
 }
 
 // ByActionCacheStatisticsField orders the results by action_cache_statistics field.

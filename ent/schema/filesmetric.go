@@ -19,6 +19,8 @@ func (FilesMetric) Fields() []ent.Field {
 
 		// The total Coount.
 		field.Int32("count").Optional(),
+
+		field.Int("artifact_metrics_id").Optional(),
 	}
 }
 
@@ -49,6 +51,7 @@ func (FilesMetric) Edges() []ent.Edge {
 			// deduplicate, so if there are two top-level targets in this build that
 			// share an artifact, it will be counted twice.
 			Ref("top_level_artifacts").
+			Field("artifact_metrics_id"). // New field added
 			Unique(),
 	}
 }

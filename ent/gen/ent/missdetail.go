@@ -21,11 +21,12 @@ type MissDetail struct {
 	Reason missdetail.Reason `json:"reason,omitempty"`
 	// Count holds the value of the "count" field.
 	Count int32 `json:"count,omitempty"`
+	// ActionCacheStatisticsID holds the value of the "action_cache_statistics_id" field.
+	ActionCacheStatisticsID int `json:"action_cache_statistics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MissDetailQuery when eager-loading is set.
-	Edges                                MissDetailEdges `json:"edges"`
-	action_cache_statistics_miss_details *int
-	selectValues                         sql.SelectValues
+	Edges        MissDetailEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // MissDetailEdges holds the relations/edges for other nodes in the graph.
@@ -55,12 +56,10 @@ func (*MissDetail) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case missdetail.FieldID, missdetail.FieldCount:
+		case missdetail.FieldID, missdetail.FieldCount, missdetail.FieldActionCacheStatisticsID:
 			values[i] = new(sql.NullInt64)
 		case missdetail.FieldReason:
 			values[i] = new(sql.NullString)
-		case missdetail.ForeignKeys[0]: // action_cache_statistics_miss_details
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -94,12 +93,11 @@ func (md *MissDetail) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				md.Count = int32(value.Int64)
 			}
-		case missdetail.ForeignKeys[0]:
+		case missdetail.FieldActionCacheStatisticsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field action_cache_statistics_miss_details", value)
+				return fmt.Errorf("unexpected type %T for field action_cache_statistics_id", values[i])
 			} else if value.Valid {
-				md.action_cache_statistics_miss_details = new(int)
-				*md.action_cache_statistics_miss_details = int(value.Int64)
+				md.ActionCacheStatisticsID = int(value.Int64)
 			}
 		default:
 			md.selectValues.Set(columns[i], values[i])
@@ -147,6 +145,9 @@ func (md *MissDetail) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("count=")
 	builder.WriteString(fmt.Sprintf("%v", md.Count))
+	builder.WriteString(", ")
+	builder.WriteString("action_cache_statistics_id=")
+	builder.WriteString(fmt.Sprintf("%v", md.ActionCacheStatisticsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

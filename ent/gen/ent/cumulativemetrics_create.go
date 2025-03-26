@@ -47,16 +47,16 @@ func (cmc *CumulativeMetricsCreate) SetNillableNumBuilds(i *int32) *CumulativeMe
 	return cmc
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (cmc *CumulativeMetricsCreate) SetMetricsID(id int) *CumulativeMetricsCreate {
-	cmc.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (cmc *CumulativeMetricsCreate) SetMetricsID(i int) *CumulativeMetricsCreate {
+	cmc.mutation.SetMetricsID(i)
 	return cmc
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (cmc *CumulativeMetricsCreate) SetNillableMetricsID(id *int) *CumulativeMetricsCreate {
-	if id != nil {
-		cmc = cmc.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (cmc *CumulativeMetricsCreate) SetNillableMetricsID(i *int) *CumulativeMetricsCreate {
+	if i != nil {
+		cmc.SetMetricsID(*i)
 	}
 	return cmc
 }
@@ -148,7 +148,7 @@ func (cmc *CumulativeMetricsCreate) createSpec() (*CumulativeMetrics, *sqlgraph.
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.metrics_cumulative_metrics = &nodes[0]
+		_node.MetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

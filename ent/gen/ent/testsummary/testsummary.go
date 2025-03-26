@@ -36,6 +36,8 @@ const (
 	FieldTotalRunDuration = "total_run_duration"
 	// FieldLabel holds the string denoting the label field in the database.
 	FieldLabel = "label"
+	// FieldTestCollectionID holds the string denoting the test_collection_id field in the database.
+	FieldTestCollectionID = "test_collection_id"
 	// EdgeTestCollection holds the string denoting the test_collection edge name in mutations.
 	EdgeTestCollection = "test_collection"
 	// EdgePassed holds the string denoting the passed edge name in mutations.
@@ -50,7 +52,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "testcollection" package.
 	TestCollectionInverseTable = "test_collections"
 	// TestCollectionColumn is the table column denoting the test_collection relation/edge.
-	TestCollectionColumn = "test_collection_test_summary"
+	TestCollectionColumn = "test_collection_id"
 	// PassedTable is the table that holds the passed relation/edge.
 	PassedTable = "test_files"
 	// PassedInverseTable is the table name for the TestFile entity.
@@ -80,23 +82,13 @@ var Columns = []string{
 	FieldLastStopTime,
 	FieldTotalRunDuration,
 	FieldLabel,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "test_summaries"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"test_collection_test_summary",
+	FieldTestCollectionID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -192,6 +184,11 @@ func ByTotalRunDuration(opts ...sql.OrderTermOption) OrderOption {
 // ByLabel orders the results by the label field.
 func ByLabel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLabel, opts...).ToFunc()
+}
+
+// ByTestCollectionID orders the results by the test_collection_id field.
+func ByTestCollectionID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTestCollectionID, opts...).ToFunc()
 }
 
 // ByTestCollectionField orders the results by test_collection field.

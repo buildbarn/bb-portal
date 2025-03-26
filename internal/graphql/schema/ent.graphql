@@ -7,6 +7,7 @@ type ActionCacheStatistics implements Node {
   loadTimeInMs: Int
   hits: Int
   misses: Int
+  actionSummaryID: ID
   actionSummary: ActionSummary
   missDetails: [MissDetail!]
 }
@@ -95,6 +96,15 @@ input ActionCacheStatisticsWhereInput {
   missesIsNil: Boolean
   missesNotNil: Boolean
   """
+  action_summary_id field predicates
+  """
+  actionSummaryID: ID
+  actionSummaryIDNEQ: ID
+  actionSummaryIDIn: [ID!]
+  actionSummaryIDNotIn: [ID!]
+  actionSummaryIDIsNil: Boolean
+  actionSummaryIDNotNil: Boolean
+  """
   action_summary edge predicates
   """
   hasActionSummary: Boolean
@@ -114,6 +124,7 @@ type ActionData implements Node {
   lastEndedMs: Int
   systemTime: Int
   userTime: Int
+  actionSummaryID: ID
   actionSummary: ActionSummary
 }
 """
@@ -232,6 +243,15 @@ input ActionDataWhereInput {
   userTimeIsNil: Boolean
   userTimeNotNil: Boolean
   """
+  action_summary_id field predicates
+  """
+  actionSummaryID: ID
+  actionSummaryIDNEQ: ID
+  actionSummaryIDIn: [ID!]
+  actionSummaryIDNotIn: [ID!]
+  actionSummaryIDIsNil: Boolean
+  actionSummaryIDNotNil: Boolean
+  """
   action_summary edge predicates
   """
   hasActionSummary: Boolean
@@ -243,6 +263,7 @@ type ActionSummary implements Node {
   actionsCreatedNotIncludingAspects: Int
   actionsExecuted: Int
   remoteCacheHits: Int
+  metricsID: ID
   metrics: Metrics
   actionData: [ActionData!]
   runnerCount: [RunnerCount!]
@@ -320,6 +341,15 @@ input ActionSummaryWhereInput {
   remoteCacheHitsIsNil: Boolean
   remoteCacheHitsNotNil: Boolean
   """
+  metrics_id field predicates
+  """
+  metricsID: ID
+  metricsIDNEQ: ID
+  metricsIDIn: [ID!]
+  metricsIDNotIn: [ID!]
+  metricsIDIsNil: Boolean
+  metricsIDNotNil: Boolean
+  """
   metrics edge predicates
   """
   hasMetrics: Boolean
@@ -342,6 +372,7 @@ input ActionSummaryWhereInput {
 }
 type ArtifactMetrics implements Node {
   id: ID!
+  metricsID: ID
   metrics: Metrics
   sourceArtifactsRead: FilesMetric
   outputArtifactsSeen: FilesMetric
@@ -367,6 +398,15 @@ input ArtifactMetricsWhereInput {
   idGTE: ID
   idLT: ID
   idLTE: ID
+  """
+  metrics_id field predicates
+  """
+  metricsID: ID
+  metricsIDNEQ: ID
+  metricsIDIn: [ID!]
+  metricsIDNotIn: [ID!]
+  metricsIDIsNil: Boolean
+  metricsIDNotNil: Boolean
   """
   metrics edge predicates
   """
@@ -411,7 +451,9 @@ type BazelInvocation implements Node {
   isCiWorker: Boolean
   configurationMnemonic: String
   numFetches: Int
-  eventFile: EventFile!
+  eventFileID: ID
+  buildID: ID
+  eventFile: EventFile
   build: Build
   metrics: Metrics
   testCollection: [TestCollection!]
@@ -472,6 +514,7 @@ type BazelInvocationProblem implements Node {
   id: ID!
   problemType: String!
   label: String!
+  bazelInvocationID: ID
   bazelInvocation: BazelInvocation
 }
 """
@@ -525,6 +568,15 @@ input BazelInvocationProblemWhereInput {
   labelHasSuffix: String
   labelEqualFold: String
   labelContainsFold: String
+  """
+  bazel_invocation_id field predicates
+  """
+  bazelInvocationID: ID
+  bazelInvocationIDNEQ: ID
+  bazelInvocationIDIn: [ID!]
+  bazelInvocationIDNotIn: [ID!]
+  bazelInvocationIDIsNil: Boolean
+  bazelInvocationIDNotNil: Boolean
   """
   bazel_invocation edge predicates
   """
@@ -797,6 +849,24 @@ input BazelInvocationWhereInput {
   profileNameEqualFold: String
   profileNameContainsFold: String
   """
+  event_file_id field predicates
+  """
+  eventFileID: ID
+  eventFileIDNEQ: ID
+  eventFileIDIn: [ID!]
+  eventFileIDNotIn: [ID!]
+  eventFileIDIsNil: Boolean
+  eventFileIDNotNil: Boolean
+  """
+  build_id field predicates
+  """
+  buildID: ID
+  buildIDNEQ: ID
+  buildIDIn: [ID!]
+  buildIDNotIn: [ID!]
+  buildIDIsNil: Boolean
+  buildIDNotNil: Boolean
+  """
   event_file edge predicates
   """
   hasEventFile: Boolean
@@ -990,6 +1060,7 @@ type BuildGraphMetrics implements Node {
   otherConfiguredTargetCount: Int
   outputArtifactCount: Int
   postInvocationSkyframeNodeCount: Int
+  metricsID: ID
   metrics: Metrics
   dirtiedValues: EvaluationStat
   changedValues: EvaluationStat
@@ -1134,6 +1205,15 @@ input BuildGraphMetricsWhereInput {
   postInvocationSkyframeNodeCountIsNil: Boolean
   postInvocationSkyframeNodeCountNotNil: Boolean
   """
+  metrics_id field predicates
+  """
+  metricsID: ID
+  metricsIDNEQ: ID
+  metricsIDIn: [ID!]
+  metricsIDNotIn: [ID!]
+  metricsIDIsNil: Boolean
+  metricsIDNotNil: Boolean
+  """
   metrics edge predicates
   """
   hasMetrics: Boolean
@@ -1233,6 +1313,7 @@ type CumulativeMetrics implements Node {
   id: ID!
   numAnalyses: Int
   numBuilds: Int
+  metricsID: ID
   metrics: Metrics
 }
 """
@@ -1281,6 +1362,15 @@ input CumulativeMetricsWhereInput {
   numBuildsIsNil: Boolean
   numBuildsNotNil: Boolean
   """
+  metrics_id field predicates
+  """
+  metricsID: ID
+  metricsIDNEQ: ID
+  metricsIDIn: [ID!]
+  metricsIDNotIn: [ID!]
+  metricsIDIsNil: Boolean
+  metricsIDNotNil: Boolean
+  """
   metrics edge predicates
   """
   hasMetrics: Boolean
@@ -1293,6 +1383,7 @@ https://relay.dev/graphql/connections.htm#sec-Cursor
 scalar Cursor
 type DynamicExecutionMetrics implements Node {
   id: ID!
+  metricsID: ID
   metrics: Metrics
   raceStatistics: [RaceStatistics!]
 }
@@ -1316,6 +1407,15 @@ input DynamicExecutionMetricsWhereInput {
   idLT: ID
   idLTE: ID
   """
+  metrics_id field predicates
+  """
+  metricsID: ID
+  metricsIDNEQ: ID
+  metricsIDIn: [ID!]
+  metricsIDNotIn: [ID!]
+  metricsIDIsNil: Boolean
+  metricsIDNotNil: Boolean
+  """
   metrics edge predicates
   """
   hasMetrics: Boolean
@@ -1330,6 +1430,7 @@ type EvaluationStat implements Node {
   id: ID!
   skyfunctionName: String
   count: Int
+  buildGraphMetricsID: ID
   buildGraphMetrics: BuildGraphMetrics
 }
 """
@@ -1382,6 +1483,15 @@ input EvaluationStatWhereInput {
   countLTE: Int
   countIsNil: Boolean
   countNotNil: Boolean
+  """
+  build_graph_metrics_id field predicates
+  """
+  buildGraphMetricsID: ID
+  buildGraphMetricsIDNEQ: ID
+  buildGraphMetricsIDIn: [ID!]
+  buildGraphMetricsIDNotIn: [ID!]
+  buildGraphMetricsIDIsNil: Boolean
+  buildGraphMetricsIDNotNil: Boolean
   """
   build_graph_metrics edge predicates
   """
@@ -1523,6 +1633,7 @@ type ExectionInfo implements Node {
   cachedRemotely: Boolean
   exitCode: Int
   hostname: String
+  executionInfoID: ID
   testResult: TestResultBES
   timingBreakdown: TimingBreakdown
   resourceUsage: [ResourceUsage!]
@@ -1616,6 +1727,15 @@ input ExectionInfoWhereInput {
   hostnameEqualFold: String
   hostnameContainsFold: String
   """
+  execution_info_id field predicates
+  """
+  executionInfoID: ID
+  executionInfoIDNEQ: ID
+  executionInfoIDIn: [ID!]
+  executionInfoIDNotIn: [ID!]
+  executionInfoIDIsNil: Boolean
+  executionInfoIDNotNil: Boolean
+  """
   test_result edge predicates
   """
   hasTestResult: Boolean
@@ -1635,6 +1755,7 @@ type FilesMetric implements Node {
   id: ID!
   sizeInBytes: Int
   count: Int
+  artifactMetricsID: ID
   artifactMetrics: ArtifactMetrics
 }
 """
@@ -1683,6 +1804,15 @@ input FilesMetricWhereInput {
   countIsNil: Boolean
   countNotNil: Boolean
   """
+  artifact_metrics_id field predicates
+  """
+  artifactMetricsID: ID
+  artifactMetricsIDNEQ: ID
+  artifactMetricsIDIn: [ID!]
+  artifactMetricsIDNotIn: [ID!]
+  artifactMetricsIDIsNil: Boolean
+  artifactMetricsIDNotNil: Boolean
+  """
   artifact_metrics edge predicates
   """
   hasArtifactMetrics: Boolean
@@ -1692,6 +1822,7 @@ type GarbageMetrics implements Node {
   id: ID!
   type: String
   garbageCollected: Int
+  memoryMetricsID: ID
   memoryMetrics: MemoryMetrics
 }
 """
@@ -1745,6 +1876,15 @@ input GarbageMetricsWhereInput {
   garbageCollectedIsNil: Boolean
   garbageCollectedNotNil: Boolean
   """
+  memory_metrics_id field predicates
+  """
+  memoryMetricsID: ID
+  memoryMetricsIDNEQ: ID
+  memoryMetricsIDIn: [ID!]
+  memoryMetricsIDNotIn: [ID!]
+  memoryMetricsIDIsNil: Boolean
+  memoryMetricsIDNotNil: Boolean
+  """
   memory_metrics edge predicates
   """
   hasMemoryMetrics: Boolean
@@ -1755,6 +1895,7 @@ type MemoryMetrics implements Node {
   peakPostGcHeapSize: Int
   usedHeapSizePostBuild: Int
   peakPostGcTenuredSpaceHeapSize: Int
+  metricsID: ID
   metrics: Metrics
   garbageMetrics: [GarbageMetrics!]
 }
@@ -1817,6 +1958,15 @@ input MemoryMetricsWhereInput {
   peakPostGcTenuredSpaceHeapSizeIsNil: Boolean
   peakPostGcTenuredSpaceHeapSizeNotNil: Boolean
   """
+  metrics_id field predicates
+  """
+  metricsID: ID
+  metricsIDNEQ: ID
+  metricsIDIn: [ID!]
+  metricsIDNotIn: [ID!]
+  metricsIDIsNil: Boolean
+  metricsIDNotNil: Boolean
+  """
   metrics edge predicates
   """
   hasMetrics: Boolean
@@ -1829,6 +1979,7 @@ input MemoryMetricsWhereInput {
 }
 type Metrics implements Node {
   id: ID!
+  bazelInvocationID: ID
   bazelInvocation: BazelInvocation
   actionSummary: ActionSummary
   memoryMetrics: MemoryMetrics
@@ -1891,6 +2042,15 @@ input MetricsWhereInput {
   idLT: ID
   idLTE: ID
   """
+  bazel_invocation_id field predicates
+  """
+  bazelInvocationID: ID
+  bazelInvocationIDNEQ: ID
+  bazelInvocationIDIn: [ID!]
+  bazelInvocationIDNotIn: [ID!]
+  bazelInvocationIDIsNil: Boolean
+  bazelInvocationIDNotNil: Boolean
+  """
   bazel_invocation edge predicates
   """
   hasBazelInvocation: Boolean
@@ -1950,6 +2110,7 @@ type MissDetail implements Node {
   id: ID!
   reason: MissDetailReason
   count: Int
+  actionCacheStatisticsID: ID
   actionCacheStatistics: ActionCacheStatistics
 }
 """
@@ -2007,6 +2168,15 @@ input MissDetailWhereInput {
   countIsNil: Boolean
   countNotNil: Boolean
   """
+  action_cache_statistics_id field predicates
+  """
+  actionCacheStatisticsID: ID
+  actionCacheStatisticsIDNEQ: ID
+  actionCacheStatisticsIDIn: [ID!]
+  actionCacheStatisticsIDNotIn: [ID!]
+  actionCacheStatisticsIDIsNil: Boolean
+  actionCacheStatisticsIDNotNil: Boolean
+  """
   action_cache_statistics edge predicates
   """
   hasActionCacheStatistics: Boolean
@@ -2014,6 +2184,7 @@ input MissDetailWhereInput {
 }
 type NamedSetOfFiles implements Node {
   id: ID!
+  outputGroupID: ID
   outputGroup: OutputGroup
   files: [TestFile!]
   fileSets: NamedSetOfFiles
@@ -2038,6 +2209,15 @@ input NamedSetOfFilesWhereInput {
   idLT: ID
   idLTE: ID
   """
+  output_group_id field predicates
+  """
+  outputGroupID: ID
+  outputGroupIDNEQ: ID
+  outputGroupIDIn: [ID!]
+  outputGroupIDNotIn: [ID!]
+  outputGroupIDIsNil: Boolean
+  outputGroupIDNotNil: Boolean
+  """
   output_group edge predicates
   """
   hasOutputGroup: Boolean
@@ -2055,6 +2235,7 @@ input NamedSetOfFilesWhereInput {
 }
 type NetworkMetrics implements Node {
   id: ID!
+  metricsID: ID
   metrics: Metrics
   systemNetworkStats: SystemNetworkStats
 }
@@ -2077,6 +2258,15 @@ input NetworkMetricsWhereInput {
   idGTE: ID
   idLT: ID
   idLTE: ID
+  """
+  metrics_id field predicates
+  """
+  metricsID: ID
+  metricsIDNEQ: ID
+  metricsIDIn: [ID!]
+  metricsIDNotIn: [ID!]
+  metricsIDIsNil: Boolean
+  metricsIDNotNil: Boolean
   """
   metrics edge predicates
   """
@@ -2115,6 +2305,7 @@ type OutputGroup implements Node {
   id: ID!
   name: String
   incomplete: Boolean
+  targetCompleteID: ID
   targetComplete: TargetComplete
   inlineFiles: [TestFile!]
   fileSets: NamedSetOfFiles
@@ -2164,6 +2355,15 @@ input OutputGroupWhereInput {
   incompleteIsNil: Boolean
   incompleteNotNil: Boolean
   """
+  target_complete_id field predicates
+  """
+  targetCompleteID: ID
+  targetCompleteIDNEQ: ID
+  targetCompleteIDIn: [ID!]
+  targetCompleteIDNotIn: [ID!]
+  targetCompleteIDIsNil: Boolean
+  targetCompleteIDNotNil: Boolean
+  """
   target_complete edge predicates
   """
   hasTargetComplete: Boolean
@@ -2187,6 +2387,7 @@ type PackageLoadMetrics implements Node {
   computationSteps: Int
   numTransitiveLoads: Int
   packageOverhead: Int
+  packageMetricsID: ID
   packageMetrics: PackageMetrics
 }
 """
@@ -2292,6 +2493,15 @@ input PackageLoadMetricsWhereInput {
   packageOverheadIsNil: Boolean
   packageOverheadNotNil: Boolean
   """
+  package_metrics_id field predicates
+  """
+  packageMetricsID: ID
+  packageMetricsIDNEQ: ID
+  packageMetricsIDIn: [ID!]
+  packageMetricsIDNotIn: [ID!]
+  packageMetricsIDIsNil: Boolean
+  packageMetricsIDNotNil: Boolean
+  """
   package_metrics edge predicates
   """
   hasPackageMetrics: Boolean
@@ -2300,6 +2510,7 @@ input PackageLoadMetricsWhereInput {
 type PackageMetrics implements Node {
   id: ID!
   packagesLoaded: Int
+  metricsID: ID
   metrics: Metrics
   packageLoadMetrics: [PackageLoadMetrics!]
 }
@@ -2335,6 +2546,15 @@ input PackageMetricsWhereInput {
   packagesLoadedLTE: Int
   packagesLoadedIsNil: Boolean
   packagesLoadedNotNil: Boolean
+  """
+  metrics_id field predicates
+  """
+  metricsID: ID
+  metricsIDNEQ: ID
+  metricsIDIn: [ID!]
+  metricsIDNotIn: [ID!]
+  metricsIDIsNil: Boolean
+  metricsIDNotNil: Boolean
   """
   metrics edge predicates
   """
@@ -2566,6 +2786,7 @@ type RaceStatistics implements Node {
   remoteRunner: String
   localWins: Int
   renoteWins: Int
+  dynamicExecutionMetricsID: ID
   dynamicExecutionMetrics: DynamicExecutionMetrics
 }
 """
@@ -2668,6 +2889,15 @@ input RaceStatisticsWhereInput {
   renoteWinsIsNil: Boolean
   renoteWinsNotNil: Boolean
   """
+  dynamic_execution_metrics_id field predicates
+  """
+  dynamicExecutionMetricsID: ID
+  dynamicExecutionMetricsIDNEQ: ID
+  dynamicExecutionMetricsIDIn: [ID!]
+  dynamicExecutionMetricsIDNotIn: [ID!]
+  dynamicExecutionMetricsIDIsNil: Boolean
+  dynamicExecutionMetricsIDNotNil: Boolean
+  """
   dynamic_execution_metrics edge predicates
   """
   hasDynamicExecutionMetrics: Boolean
@@ -2677,6 +2907,7 @@ type ResourceUsage implements Node {
   id: ID!
   name: String
   value: String
+  executionInfoID: ID
   executionInfo: ExectionInfo
 }
 """
@@ -2735,6 +2966,15 @@ input ResourceUsageWhereInput {
   valueEqualFold: String
   valueContainsFold: String
   """
+  execution_info_id field predicates
+  """
+  executionInfoID: ID
+  executionInfoIDNEQ: ID
+  executionInfoIDIn: [ID!]
+  executionInfoIDNotIn: [ID!]
+  executionInfoIDIsNil: Boolean
+  executionInfoIDNotNil: Boolean
+  """
   execution_info edge predicates
   """
   hasExecutionInfo: Boolean
@@ -2745,6 +2985,7 @@ type RunnerCount implements Node {
   name: String
   execKind: String
   actionsExecuted: Int
+  actionSummaryID: ID
   actionSummary: ActionSummary
 }
 """
@@ -2846,6 +3087,15 @@ input RunnerCountWhereInput {
   actionsExecutedIsNil: Boolean
   actionsExecutedNotNil: Boolean
   """
+  action_summary_id field predicates
+  """
+  actionSummaryID: ID
+  actionSummaryIDNEQ: ID
+  actionSummaryIDIn: [ID!]
+  actionSummaryIDNotIn: [ID!]
+  actionSummaryIDIsNil: Boolean
+  actionSummaryIDNotNil: Boolean
+  """
   action_summary edge predicates
   """
   hasActionSummary: Boolean
@@ -2867,6 +3117,7 @@ type SourceControl implements Node {
   runnerName: String
   runnerArch: String
   runnerOs: String
+  bazelInvocationID: ID
   bazelInvocation: BazelInvocation
 }
 """
@@ -3141,6 +3392,15 @@ input SourceControlWhereInput {
   runnerOsEqualFold: String
   runnerOsContainsFold: String
   """
+  bazel_invocation_id field predicates
+  """
+  bazelInvocationID: ID
+  bazelInvocationIDNEQ: ID
+  bazelInvocationIDIn: [ID!]
+  bazelInvocationIDNotIn: [ID!]
+  bazelInvocationIDIsNil: Boolean
+  bazelInvocationIDNotNil: Boolean
+  """
   bazel_invocation edge predicates
   """
   hasBazelInvocation: Boolean
@@ -3156,6 +3416,7 @@ type SystemNetworkStats implements Node {
   peakBytesRecvPerSec: Int
   peakPacketsSentPerSec: Int
   peakPacketsRecvPerSec: Int
+  networkMetricsID: ID
   networkMetrics: NetworkMetrics
 }
 """
@@ -3282,6 +3543,15 @@ input SystemNetworkStatsWhereInput {
   peakPacketsRecvPerSecIsNil: Boolean
   peakPacketsRecvPerSecNotNil: Boolean
   """
+  network_metrics_id field predicates
+  """
+  networkMetricsID: ID
+  networkMetricsIDNEQ: ID
+  networkMetricsIDIn: [ID!]
+  networkMetricsIDNotIn: [ID!]
+  networkMetricsIDIsNil: Boolean
+  networkMetricsIDNotNil: Boolean
+  """
   network_metrics edge predicates
   """
   hasNetworkMetrics: Boolean
@@ -3296,6 +3566,7 @@ type TargetComplete implements Node {
   testTimeoutSeconds: Int
   testTimeout: Int
   testSize: TargetCompleteTestSize
+  targetPairID: ID
   targetPair: TargetPair
   importantOutput: [TestFile!]
   directoryOutput: [TestFile!]
@@ -3404,6 +3675,15 @@ input TargetCompleteWhereInput {
   testSizeIsNil: Boolean
   testSizeNotNil: Boolean
   """
+  target_pair_id field predicates
+  """
+  targetPairID: ID
+  targetPairIDNEQ: ID
+  targetPairIDIn: [ID!]
+  targetPairIDNotIn: [ID!]
+  targetPairIDIsNil: Boolean
+  targetPairIDNotNil: Boolean
+  """
   target_pair edge predicates
   """
   hasTargetPair: Boolean
@@ -3430,6 +3710,7 @@ type TargetConfigured implements Node {
   targetKind: String
   startTimeInMs: Int
   testSize: TargetConfiguredTestSize
+  targetPairID: ID
   targetPair: TargetPair
 }
 """
@@ -3502,6 +3783,15 @@ input TargetConfiguredWhereInput {
   testSizeIsNil: Boolean
   testSizeNotNil: Boolean
   """
+  target_pair_id field predicates
+  """
+  targetPairID: ID
+  targetPairIDNEQ: ID
+  targetPairIDIn: [ID!]
+  targetPairIDNotIn: [ID!]
+  targetPairIDIsNil: Boolean
+  targetPairIDNotNil: Boolean
+  """
   target_pair edge predicates
   """
   hasTargetPair: Boolean
@@ -3512,6 +3802,7 @@ type TargetMetrics implements Node {
   targetsLoaded: Int
   targetsConfigured: Int
   targetsConfiguredNotIncludingAspects: Int
+  metricsID: ID
   metrics: Metrics
 }
 """
@@ -3573,6 +3864,15 @@ input TargetMetricsWhereInput {
   targetsConfiguredNotIncludingAspectsIsNil: Boolean
   targetsConfiguredNotIncludingAspectsNotNil: Boolean
   """
+  metrics_id field predicates
+  """
+  metricsID: ID
+  metricsIDNEQ: ID
+  metricsIDIn: [ID!]
+  metricsIDNotIn: [ID!]
+  metricsIDIsNil: Boolean
+  metricsIDNotNil: Boolean
+  """
   metrics edge predicates
   """
   hasMetrics: Boolean
@@ -3586,6 +3886,7 @@ type TargetPair implements Node {
   targetKind: String
   testSize: TargetPairTestSize
   abortReason: TargetPairAbortReason
+  bazelInvocationID: ID
   bazelInvocation: BazelInvocation
   configuration: TargetConfigured
   completion: TargetComplete
@@ -3760,6 +4061,15 @@ input TargetPairWhereInput {
   abortReasonIsNil: Boolean
   abortReasonNotNil: Boolean
   """
+  bazel_invocation_id field predicates
+  """
+  bazelInvocationID: ID
+  bazelInvocationIDNEQ: ID
+  bazelInvocationIDIn: [ID!]
+  bazelInvocationIDNotIn: [ID!]
+  bazelInvocationIDIsNil: Boolean
+  bazelInvocationIDNotNil: Boolean
+  """
   bazel_invocation edge predicates
   """
   hasBazelInvocation: Boolean
@@ -3784,6 +4094,7 @@ type TestCollection implements Node {
   cachedRemotely: Boolean
   firstSeen: Time
   durationMs: Int
+  bazelInvocationID: ID
   bazelInvocation: BazelInvocation
   testSummary: TestSummary
   testResults: [TestResultBES!]
@@ -3957,6 +4268,15 @@ input TestCollectionWhereInput {
   durationMsIsNil: Boolean
   durationMsNotNil: Boolean
   """
+  bazel_invocation_id field predicates
+  """
+  bazelInvocationID: ID
+  bazelInvocationIDNEQ: ID
+  bazelInvocationIDIn: [ID!]
+  bazelInvocationIDNotIn: [ID!]
+  bazelInvocationIDIsNil: Boolean
+  bazelInvocationIDNotNil: Boolean
+  """
   bazel_invocation edge predicates
   """
   hasBazelInvocation: Boolean
@@ -3979,6 +4299,7 @@ type TestFile implements Node {
   length: Int
   name: String
   prefix: [String!]
+  testResultID: ID
   testResult: TestResultBES
 }
 """
@@ -4068,6 +4389,15 @@ input TestFileWhereInput {
   nameEqualFold: String
   nameContainsFold: String
   """
+  test_result_id field predicates
+  """
+  testResultID: ID
+  testResultIDNEQ: ID
+  testResultIDIn: [ID!]
+  testResultIDNotIn: [ID!]
+  testResultIDIsNil: Boolean
+  testResultIDNotNil: Boolean
+  """
   test_result edge predicates
   """
   hasTestResult: Boolean
@@ -4084,6 +4414,7 @@ type TestResultBES implements Node {
   testAttemptStart: String
   testAttemptDurationMillis: Int
   testAttemptDuration: Int
+  testCollectionID: ID
   testCollection: TestCollection
   testActionOutput: [TestFile!]
   executionInfo: ExectionInfo
@@ -4231,6 +4562,15 @@ input TestResultBESWhereInput {
   testAttemptDurationIsNil: Boolean
   testAttemptDurationNotNil: Boolean
   """
+  test_collection_id field predicates
+  """
+  testCollectionID: ID
+  testCollectionIDNEQ: ID
+  testCollectionIDIn: [ID!]
+  testCollectionIDNotIn: [ID!]
+  testCollectionIDIsNil: Boolean
+  testCollectionIDNotNil: Boolean
+  """
   test_collection edge predicates
   """
   hasTestCollection: Boolean
@@ -4258,6 +4598,7 @@ type TestSummary implements Node {
   lastStopTime: Int
   totalRunDuration: Int
   label: String
+  testCollectionID: ID
   testCollection: TestCollection
   passed: [TestFile!]
   failed: [TestFile!]
@@ -4427,6 +4768,15 @@ input TestSummaryWhereInput {
   labelEqualFold: String
   labelContainsFold: String
   """
+  test_collection_id field predicates
+  """
+  testCollectionID: ID
+  testCollectionIDNEQ: ID
+  testCollectionIDIn: [ID!]
+  testCollectionIDNotIn: [ID!]
+  testCollectionIDIsNil: Boolean
+  testCollectionIDNotNil: Boolean
+  """
   test_collection edge predicates
   """
   hasTestCollection: Boolean
@@ -4446,6 +4796,7 @@ type TimingBreakdown implements Node {
   id: ID!
   name: String
   time: String
+  executionInfoID: ID
   executionInfo: ExectionInfo
   child: [TimingChild!]
 }
@@ -4505,6 +4856,15 @@ input TimingBreakdownWhereInput {
   timeEqualFold: String
   timeContainsFold: String
   """
+  execution_info_id field predicates
+  """
+  executionInfoID: ID
+  executionInfoIDNEQ: ID
+  executionInfoIDIn: [ID!]
+  executionInfoIDNotIn: [ID!]
+  executionInfoIDIsNil: Boolean
+  executionInfoIDNotNil: Boolean
+  """
   execution_info edge predicates
   """
   hasExecutionInfo: Boolean
@@ -4519,6 +4879,7 @@ type TimingChild implements Node {
   id: ID!
   name: String
   time: String
+  timingBreakdownID: ID
   timingBreakdown: TimingBreakdown
 }
 """
@@ -4576,6 +4937,15 @@ input TimingChildWhereInput {
   timeNotNil: Boolean
   timeEqualFold: String
   timeContainsFold: String
+  """
+  timing_breakdown_id field predicates
+  """
+  timingBreakdownID: ID
+  timingBreakdownIDNEQ: ID
+  timingBreakdownIDIn: [ID!]
+  timingBreakdownIDNotIn: [ID!]
+  timingBreakdownIDIsNil: Boolean
+  timingBreakdownIDNotNil: Boolean
   """
   timing_breakdown edge predicates
   """

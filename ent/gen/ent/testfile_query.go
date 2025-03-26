@@ -377,9 +377,6 @@ func (tfq *TestFileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Te
 			tfq.withTestResult != nil,
 		}
 	)
-	if tfq.withTestResult != nil {
-		withFKs = true
-	}
 	if withFKs {
 		_spec.Node.Columns = append(_spec.Node.Columns, testfile.ForeignKeys...)
 	}
@@ -422,10 +419,7 @@ func (tfq *TestFileQuery) loadTestResult(ctx context.Context, query *TestResultB
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TestFile)
 	for i := range nodes {
-		if nodes[i].test_result_bes_test_action_output == nil {
-			continue
-		}
-		fk := *nodes[i].test_result_bes_test_action_output
+		fk := nodes[i].TestResultID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +436,7 @@ func (tfq *TestFileQuery) loadTestResult(ctx context.Context, query *TestResultB
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "test_result_bes_test_action_output" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "test_result_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +472,9 @@ func (tfq *TestFileQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != testfile.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if tfq.withTestResult != nil {
+			_spec.Node.AddColumnOnce(testfile.FieldTestResultID)
 		}
 	}
 	if ps := tfq.predicates; len(ps) > 0 {

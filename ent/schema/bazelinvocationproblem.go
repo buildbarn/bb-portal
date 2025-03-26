@@ -26,6 +26,8 @@ func (BazelInvocationProblem) Fields() []ent.Field {
 		// The bep_events raw message associated with the field.
 		// NOTE: Internal model, not exposed to API.
 		field.JSON("bep_events", json.RawMessage{}).Annotations(entgql.Skip()),
+
+		field.Int("bazel_invocation_id").Optional(),
 	}
 }
 
@@ -34,6 +36,7 @@ func (BazelInvocationProblem) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("bazel_invocation", BazelInvocation.Type).
 			Ref("problems").
-			Unique(),
+			Unique().
+			Field("bazel_invocation_id"),
 	}
 }

@@ -34,7 +34,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
 	BazelInvocationInverseTable = "bazel_invocations"
 	// BazelInvocationColumn is the table column denoting the bazel_invocation relation/edge.
-	BazelInvocationColumn = "event_file_bazel_invocation"
+	BazelInvocationColumn = "event_file_id"
 )
 
 // Columns holds all SQL columns for eventfile fields.

@@ -29,16 +29,16 @@ type MetricsCreate struct {
 	hooks    []Hook
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (mc *MetricsCreate) SetBazelInvocationID(id int) *MetricsCreate {
-	mc.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (mc *MetricsCreate) SetBazelInvocationID(i int) *MetricsCreate {
+	mc.mutation.SetBazelInvocationID(i)
 	return mc
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillableBazelInvocationID(id *int) *MetricsCreate {
-	if id != nil {
-		mc = mc.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (mc *MetricsCreate) SetNillableBazelInvocationID(i *int) *MetricsCreate {
+	if i != nil {
+		mc.SetBazelInvocationID(*i)
 	}
 	return mc
 }
@@ -312,7 +312,7 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.bazel_invocation_metrics = &nodes[0]
+		_node.BazelInvocationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := mc.mutation.ActionSummaryIDs(); len(nodes) > 0 {

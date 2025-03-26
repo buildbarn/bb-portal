@@ -308,17 +308,23 @@ func (scu *SourceControlUpdate) ClearRunnerOs() *SourceControlUpdate {
 	return scu
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (scu *SourceControlUpdate) SetBazelInvocationID(id int) *SourceControlUpdate {
-	scu.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (scu *SourceControlUpdate) SetBazelInvocationID(i int) *SourceControlUpdate {
+	scu.mutation.SetBazelInvocationID(i)
 	return scu
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (scu *SourceControlUpdate) SetNillableBazelInvocationID(id *int) *SourceControlUpdate {
-	if id != nil {
-		scu = scu.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (scu *SourceControlUpdate) SetNillableBazelInvocationID(i *int) *SourceControlUpdate {
+	if i != nil {
+		scu.SetBazelInvocationID(*i)
 	}
+	return scu
+}
+
+// ClearBazelInvocationID clears the value of the "bazel_invocation_id" field.
+func (scu *SourceControlUpdate) ClearBazelInvocationID() *SourceControlUpdate {
+	scu.mutation.ClearBazelInvocationID()
 	return scu
 }
 
@@ -787,17 +793,23 @@ func (scuo *SourceControlUpdateOne) ClearRunnerOs() *SourceControlUpdateOne {
 	return scuo
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (scuo *SourceControlUpdateOne) SetBazelInvocationID(id int) *SourceControlUpdateOne {
-	scuo.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (scuo *SourceControlUpdateOne) SetBazelInvocationID(i int) *SourceControlUpdateOne {
+	scuo.mutation.SetBazelInvocationID(i)
 	return scuo
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (scuo *SourceControlUpdateOne) SetNillableBazelInvocationID(id *int) *SourceControlUpdateOne {
-	if id != nil {
-		scuo = scuo.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (scuo *SourceControlUpdateOne) SetNillableBazelInvocationID(i *int) *SourceControlUpdateOne {
+	if i != nil {
+		scuo.SetBazelInvocationID(*i)
 	}
+	return scuo
+}
+
+// ClearBazelInvocationID clears the value of the "bazel_invocation_id" field.
+func (scuo *SourceControlUpdateOne) ClearBazelInvocationID() *SourceControlUpdateOne {
+	scuo.mutation.ClearBazelInvocationID()
 	return scuo
 }
 

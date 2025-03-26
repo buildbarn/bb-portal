@@ -36,7 +36,6 @@ type BazelInvocationQuery struct {
 	withTestCollection      *TestCollectionQuery
 	withTargets             *TargetPairQuery
 	withSourceControl       *SourceControlQuery
-	withFKs                 bool
 	modifiers               []func(*sql.Selector)
 	loadTotal               []func(context.Context, []*BazelInvocation) error
 	withNamedProblems       map[string]*BazelInvocationProblemQuery
@@ -591,7 +590,6 @@ func (biq *BazelInvocationQuery) prepareQuery(ctx context.Context) error {
 func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*BazelInvocation, error) {
 	var (
 		nodes       = []*BazelInvocation{}
-		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
 		loadedTypes = [7]bool{
 			biq.withEventFile != nil,
@@ -603,12 +601,6 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			biq.withSourceControl != nil,
 		}
 	)
-	if biq.withEventFile != nil || biq.withBuild != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, bazelinvocation.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*BazelInvocation).scanValues(nil, columns)
 	}
@@ -710,10 +702,7 @@ func (biq *BazelInvocationQuery) loadEventFile(ctx context.Context, query *Event
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*BazelInvocation)
 	for i := range nodes {
-		if nodes[i].event_file_bazel_invocation == nil {
-			continue
-		}
-		fk := *nodes[i].event_file_bazel_invocation
+		fk := nodes[i].EventFileID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -730,7 +719,7 @@ func (biq *BazelInvocationQuery) loadEventFile(ctx context.Context, query *Event
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "event_file_bazel_invocation" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "event_file_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -742,10 +731,7 @@ func (biq *BazelInvocationQuery) loadBuild(ctx context.Context, query *BuildQuer
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*BazelInvocation)
 	for i := range nodes {
-		if nodes[i].build_invocations == nil {
-			continue
-		}
-		fk := *nodes[i].build_invocations
+		fk := nodes[i].BuildID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -762,7 +748,7 @@ func (biq *BazelInvocationQuery) loadBuild(ctx context.Context, query *BuildQuer
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "build_invocations" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "build_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -780,7 +766,9 @@ func (biq *BazelInvocationQuery) loadProblems(ctx context.Context, query *BazelI
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(bazelinvocationproblem.FieldBazelInvocationID)
+	}
 	query.Where(predicate.BazelInvocationProblem(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(bazelinvocation.ProblemsColumn), fks...))
 	}))
@@ -789,13 +777,10 @@ func (biq *BazelInvocationQuery) loadProblems(ctx context.Context, query *BazelI
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.bazel_invocation_problems
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "bazel_invocation_problems" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.BazelInvocationID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_problems" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -808,7 +793,9 @@ func (biq *BazelInvocationQuery) loadMetrics(ctx context.Context, query *Metrics
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(metrics.FieldBazelInvocationID)
+	}
 	query.Where(predicate.Metrics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(bazelinvocation.MetricsColumn), fks...))
 	}))
@@ -817,13 +804,10 @@ func (biq *BazelInvocationQuery) loadMetrics(ctx context.Context, query *Metrics
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.bazel_invocation_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "bazel_invocation_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.BazelInvocationID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_metrics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -839,7 +823,9 @@ func (biq *BazelInvocationQuery) loadTestCollection(ctx context.Context, query *
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(testcollection.FieldBazelInvocationID)
+	}
 	query.Where(predicate.TestCollection(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(bazelinvocation.TestCollectionColumn), fks...))
 	}))
@@ -848,13 +834,10 @@ func (biq *BazelInvocationQuery) loadTestCollection(ctx context.Context, query *
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.bazel_invocation_test_collection
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "bazel_invocation_test_collection" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.BazelInvocationID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_test_collection" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -870,7 +853,9 @@ func (biq *BazelInvocationQuery) loadTargets(ctx context.Context, query *TargetP
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(targetpair.FieldBazelInvocationID)
+	}
 	query.Where(predicate.TargetPair(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(bazelinvocation.TargetsColumn), fks...))
 	}))
@@ -879,13 +864,10 @@ func (biq *BazelInvocationQuery) loadTargets(ctx context.Context, query *TargetP
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.bazel_invocation_targets
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "bazel_invocation_targets" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.BazelInvocationID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_targets" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -898,7 +880,9 @@ func (biq *BazelInvocationQuery) loadSourceControl(ctx context.Context, query *S
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(sourcecontrol.FieldBazelInvocationID)
+	}
 	query.Where(predicate.SourceControl(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(bazelinvocation.SourceControlColumn), fks...))
 	}))
@@ -907,13 +891,10 @@ func (biq *BazelInvocationQuery) loadSourceControl(ctx context.Context, query *S
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.bazel_invocation_source_control
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "bazel_invocation_source_control" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.BazelInvocationID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_source_control" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -947,6 +928,12 @@ func (biq *BazelInvocationQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != bazelinvocation.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if biq.withEventFile != nil {
+			_spec.Node.AddColumnOnce(bazelinvocation.FieldEventFileID)
+		}
+		if biq.withBuild != nil {
+			_spec.Node.AddColumnOnce(bazelinvocation.FieldBuildID)
 		}
 	}
 	if ps := biq.predicates; len(ps) > 0 {

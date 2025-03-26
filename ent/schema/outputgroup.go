@@ -22,6 +22,8 @@ func (OutputGroup) Fields() []ent.Field {
 		// Indicates that one or more of the output group's files were not built
 		// successfully (the generating action failed).
 		field.Bool("incomplete").Optional(),
+
+		field.Int("target_complete_id").Optional(),
 	}
 }
 
@@ -31,7 +33,8 @@ func (OutputGroup) Edges() []ent.Edge {
 		// Edge back to the target completion object.
 		edge.From("target_complete", TargetComplete.Type).
 			Ref("output_group").
-			Unique(),
+			Unique().
+			Field("target_complete_id"),
 
 		// Inline Files.
 		// Inlined files that belong to this output group, requested via

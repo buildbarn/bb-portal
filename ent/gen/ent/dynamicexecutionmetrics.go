@@ -14,14 +14,15 @@ import (
 
 // DynamicExecutionMetrics is the model entity for the DynamicExecutionMetrics schema.
 type DynamicExecutionMetrics struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// MetricsID holds the value of the "metrics_id" field.
+	MetricsID int `json:"metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DynamicExecutionMetricsQuery when eager-loading is set.
-	Edges                             DynamicExecutionMetricsEdges `json:"edges"`
-	metrics_dynamic_execution_metrics *int
-	selectValues                      sql.SelectValues
+	Edges        DynamicExecutionMetricsEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // DynamicExecutionMetricsEdges holds the relations/edges for other nodes in the graph.
@@ -64,9 +65,7 @@ func (*DynamicExecutionMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case dynamicexecutionmetrics.FieldID:
-			values[i] = new(sql.NullInt64)
-		case dynamicexecutionmetrics.ForeignKeys[0]: // metrics_dynamic_execution_metrics
+		case dynamicexecutionmetrics.FieldID, dynamicexecutionmetrics.FieldMetricsID:
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -89,12 +88,11 @@ func (dem *DynamicExecutionMetrics) assignValues(columns []string, values []any)
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			dem.ID = int(value.Int64)
-		case dynamicexecutionmetrics.ForeignKeys[0]:
+		case dynamicexecutionmetrics.FieldMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field metrics_dynamic_execution_metrics", value)
+				return fmt.Errorf("unexpected type %T for field metrics_id", values[i])
 			} else if value.Valid {
-				dem.metrics_dynamic_execution_metrics = new(int)
-				*dem.metrics_dynamic_execution_metrics = int(value.Int64)
+				dem.MetricsID = int(value.Int64)
 			}
 		default:
 			dem.selectValues.Set(columns[i], values[i])
@@ -141,7 +139,9 @@ func (dem *DynamicExecutionMetrics) Unwrap() *DynamicExecutionMetrics {
 func (dem *DynamicExecutionMetrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("DynamicExecutionMetrics(")
-	builder.WriteString(fmt.Sprintf("id=%v", dem.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", dem.ID))
+	builder.WriteString("metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", dem.MetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -89,16 +89,16 @@ func (rsc *RaceStatisticsCreate) SetNillableRenoteWins(i *int64) *RaceStatistics
 	return rsc
 }
 
-// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
-func (rsc *RaceStatisticsCreate) SetDynamicExecutionMetricsID(id int) *RaceStatisticsCreate {
-	rsc.mutation.SetDynamicExecutionMetricsID(id)
+// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics_id" field.
+func (rsc *RaceStatisticsCreate) SetDynamicExecutionMetricsID(i int) *RaceStatisticsCreate {
+	rsc.mutation.SetDynamicExecutionMetricsID(i)
 	return rsc
 }
 
-// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
-func (rsc *RaceStatisticsCreate) SetNillableDynamicExecutionMetricsID(id *int) *RaceStatisticsCreate {
-	if id != nil {
-		rsc = rsc.SetDynamicExecutionMetricsID(*id)
+// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics_id" field if the given value is not nil.
+func (rsc *RaceStatisticsCreate) SetNillableDynamicExecutionMetricsID(i *int) *RaceStatisticsCreate {
+	if i != nil {
+		rsc.SetDynamicExecutionMetricsID(*i)
 	}
 	return rsc
 }
@@ -202,7 +202,7 @@ func (rsc *RaceStatisticsCreate) createSpec() (*RaceStatistics, *sqlgraph.Create
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.dynamic_execution_metrics_race_statistics = &nodes[0]
+		_node.DynamicExecutionMetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

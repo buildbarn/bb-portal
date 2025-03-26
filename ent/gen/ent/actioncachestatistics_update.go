@@ -164,17 +164,23 @@ func (acsu *ActionCacheStatisticsUpdate) ClearMisses() *ActionCacheStatisticsUpd
 	return acsu
 }
 
-// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (acsu *ActionCacheStatisticsUpdate) SetActionSummaryID(id int) *ActionCacheStatisticsUpdate {
-	acsu.mutation.SetActionSummaryID(id)
+// SetActionSummaryID sets the "action_summary_id" field.
+func (acsu *ActionCacheStatisticsUpdate) SetActionSummaryID(i int) *ActionCacheStatisticsUpdate {
+	acsu.mutation.SetActionSummaryID(i)
 	return acsu
 }
 
-// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (acsu *ActionCacheStatisticsUpdate) SetNillableActionSummaryID(id *int) *ActionCacheStatisticsUpdate {
-	if id != nil {
-		acsu = acsu.SetActionSummaryID(*id)
+// SetNillableActionSummaryID sets the "action_summary_id" field if the given value is not nil.
+func (acsu *ActionCacheStatisticsUpdate) SetNillableActionSummaryID(i *int) *ActionCacheStatisticsUpdate {
+	if i != nil {
+		acsu.SetActionSummaryID(*i)
 	}
+	return acsu
+}
+
+// ClearActionSummaryID clears the value of the "action_summary_id" field.
+func (acsu *ActionCacheStatisticsUpdate) ClearActionSummaryID() *ActionCacheStatisticsUpdate {
+	acsu.mutation.ClearActionSummaryID()
 	return acsu
 }
 
@@ -540,17 +546,23 @@ func (acsuo *ActionCacheStatisticsUpdateOne) ClearMisses() *ActionCacheStatistic
 	return acsuo
 }
 
-// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetActionSummaryID(id int) *ActionCacheStatisticsUpdateOne {
-	acsuo.mutation.SetActionSummaryID(id)
+// SetActionSummaryID sets the "action_summary_id" field.
+func (acsuo *ActionCacheStatisticsUpdateOne) SetActionSummaryID(i int) *ActionCacheStatisticsUpdateOne {
+	acsuo.mutation.SetActionSummaryID(i)
 	return acsuo
 }
 
-// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableActionSummaryID(id *int) *ActionCacheStatisticsUpdateOne {
-	if id != nil {
-		acsuo = acsuo.SetActionSummaryID(*id)
+// SetNillableActionSummaryID sets the "action_summary_id" field if the given value is not nil.
+func (acsuo *ActionCacheStatisticsUpdateOne) SetNillableActionSummaryID(i *int) *ActionCacheStatisticsUpdateOne {
+	if i != nil {
+		acsuo.SetActionSummaryID(*i)
 	}
+	return acsuo
+}
+
+// ClearActionSummaryID clears the value of the "action_summary_id" field.
+func (acsuo *ActionCacheStatisticsUpdateOne) ClearActionSummaryID() *ActionCacheStatisticsUpdateOne {
+	acsuo.mutation.ClearActionSummaryID()
 	return acsuo
 }
 

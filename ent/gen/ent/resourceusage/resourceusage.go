@@ -16,6 +16,8 @@ const (
 	FieldName = "name"
 	// FieldValue holds the string denoting the value field in the database.
 	FieldValue = "value"
+	// FieldExecutionInfoID holds the string denoting the execution_info_id field in the database.
+	FieldExecutionInfoID = "execution_info_id"
 	// EdgeExecutionInfo holds the string denoting the execution_info edge name in mutations.
 	EdgeExecutionInfo = "execution_info"
 	// Table holds the table name of the resourceusage in the database.
@@ -26,7 +28,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "exectioninfo" package.
 	ExecutionInfoInverseTable = "exection_infos"
 	// ExecutionInfoColumn is the table column denoting the execution_info relation/edge.
-	ExecutionInfoColumn = "exection_info_resource_usage"
+	ExecutionInfoColumn = "execution_info_id"
 )
 
 // Columns holds all SQL columns for resourceusage fields.
@@ -34,23 +36,13 @@ var Columns = []string{
 	FieldID,
 	FieldName,
 	FieldValue,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "resource_usages"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"exection_info_resource_usage",
+	FieldExecutionInfoID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -73,6 +65,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByValue orders the results by the value field.
 func ByValue(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldValue, opts...).ToFunc()
+}
+
+// ByExecutionInfoID orders the results by the execution_info_id field.
+func ByExecutionInfoID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldExecutionInfoID, opts...).ToFunc()
 }
 
 // ByExecutionInfoField orders the results by execution_info field.

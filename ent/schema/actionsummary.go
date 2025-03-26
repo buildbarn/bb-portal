@@ -36,6 +36,8 @@ func (ActionSummary) Fields() []ent.Field {
 
 		// Deprecated. The total number of remote cache hits.
 		field.Int64("remote_cache_hits").Optional(),
+
+		field.Int("metrics_id").Optional(),
 	}
 }
 
@@ -44,7 +46,8 @@ func (ActionSummary) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("metrics", Metrics.Type).
 			Ref("action_summary").
-			Unique(),
+			Unique().
+			Field("metrics_id"),
 
 		// Contains the top N actions by number of actions executed.
 		edge.To("action_data", ActionData.Type).

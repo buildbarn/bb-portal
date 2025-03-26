@@ -23,7 +23,6 @@ type ResourceUsageQuery struct {
 	inters            []Interceptor
 	predicates        []predicate.ResourceUsage
 	withExecutionInfo *ExectionInfoQuery
-	withFKs           bool
 	modifiers         []func(*sql.Selector)
 	loadTotal         []func(context.Context, []*ResourceUsage) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (ruq *ResourceUsageQuery) prepareQuery(ctx context.Context) error {
 func (ruq *ResourceUsageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ResourceUsage, error) {
 	var (
 		nodes       = []*ResourceUsage{}
-		withFKs     = ruq.withFKs
 		_spec       = ruq.querySpec()
 		loadedTypes = [1]bool{
 			ruq.withExecutionInfo != nil,
 		}
 	)
-	if ruq.withExecutionInfo != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, resourceusage.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ResourceUsage).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (ruq *ResourceUsageQuery) loadExecutionInfo(ctx context.Context, query *Exe
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*ResourceUsage)
 	for i := range nodes {
-		if nodes[i].exection_info_resource_usage == nil {
-			continue
-		}
-		fk := *nodes[i].exection_info_resource_usage
+		fk := nodes[i].ExecutionInfoID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (ruq *ResourceUsageQuery) loadExecutionInfo(ctx context.Context, query *Exe
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "exection_info_resource_usage" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "execution_info_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (ruq *ResourceUsageQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != resourceusage.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if ruq.withExecutionInfo != nil {
+			_spec.Node.AddColumnOnce(resourceusage.FieldExecutionInfoID)
 		}
 	}
 	if ps := ruq.predicates; len(ps) > 0 {

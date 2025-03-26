@@ -24,14 +24,15 @@ import (
 
 // Metrics is the model entity for the Metrics schema.
 type Metrics struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// BazelInvocationID holds the value of the "bazel_invocation_id" field.
+	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the MetricsQuery when eager-loading is set.
-	Edges                    MetricsEdges `json:"edges"`
-	bazel_invocation_metrics *int
-	selectValues             sql.SelectValues
+	Edges        MetricsEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // MetricsEdges holds the relations/edges for other nodes in the graph.
@@ -191,9 +192,7 @@ func (*Metrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case metrics.FieldID:
-			values[i] = new(sql.NullInt64)
-		case metrics.ForeignKeys[0]: // bazel_invocation_metrics
+		case metrics.FieldID, metrics.FieldBazelInvocationID:
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -216,12 +215,11 @@ func (m *Metrics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			m.ID = int(value.Int64)
-		case metrics.ForeignKeys[0]:
+		case metrics.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_metrics", value)
+				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				m.bazel_invocation_metrics = new(int)
-				*m.bazel_invocation_metrics = int(value.Int64)
+				m.BazelInvocationID = int(value.Int64)
 			}
 		default:
 			m.selectValues.Set(columns[i], values[i])
@@ -313,7 +311,9 @@ func (m *Metrics) Unwrap() *Metrics {
 func (m *Metrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("Metrics(")
-	builder.WriteString(fmt.Sprintf("id=%v", m.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", m.ID))
+	builder.WriteString("bazel_invocation_id=")
+	builder.WriteString(fmt.Sprintf("%v", m.BazelInvocationID))
 	builder.WriteByte(')')
 	return builder.String()
 }

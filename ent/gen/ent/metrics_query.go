@@ -44,7 +44,6 @@ type MetricsQuery struct {
 	withNetworkMetrics          *NetworkMetricsQuery
 	withDynamicExecutionMetrics *DynamicExecutionMetricsQuery
 	withBuildGraphMetrics       *BuildGraphMetricsQuery
-	withFKs                     bool
 	modifiers                   []func(*sql.Selector)
 	loadTotal                   []func(context.Context, []*Metrics) error
 	// intermediate query (i.e. traversal path).
@@ -657,6 +656,18 @@ func (mq *MetricsQuery) WithBuildGraphMetrics(opts ...func(*BuildGraphMetricsQue
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.Metrics.Query().
+//		GroupBy(metrics.FieldBazelInvocationID).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
 func (mq *MetricsQuery) GroupBy(field string, fields ...string) *MetricsGroupBy {
 	mq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &MetricsGroupBy{build: mq}
@@ -668,6 +679,16 @@ func (mq *MetricsQuery) GroupBy(field string, fields ...string) *MetricsGroupBy 
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
+//
+// Example:
+//
+//	var v []struct {
+//		BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
+//	}
+//
+//	client.Metrics.Query().
+//		Select(metrics.FieldBazelInvocationID).
+//		Scan(ctx, &v)
 func (mq *MetricsQuery) Select(fields ...string) *MetricsSelect {
 	mq.ctx.Fields = append(mq.ctx.Fields, fields...)
 	sbuild := &MetricsSelect{MetricsQuery: mq}
@@ -710,7 +731,6 @@ func (mq *MetricsQuery) prepareQuery(ctx context.Context) error {
 func (mq *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metrics, error) {
 	var (
 		nodes       = []*Metrics{}
-		withFKs     = mq.withFKs
 		_spec       = mq.querySpec()
 		loadedTypes = [11]bool{
 			mq.withBazelInvocation != nil,
@@ -726,12 +746,6 @@ func (mq *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 			mq.withBuildGraphMetrics != nil,
 		}
 	)
-	if mq.withBazelInvocation != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, metrics.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Metrics).scanValues(nil, columns)
 	}
@@ -831,10 +845,7 @@ func (mq *MetricsQuery) loadBazelInvocation(ctx context.Context, query *BazelInv
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Metrics)
 	for i := range nodes {
-		if nodes[i].bazel_invocation_metrics == nil {
-			continue
-		}
-		fk := *nodes[i].bazel_invocation_metrics
+		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -851,7 +862,7 @@ func (mq *MetricsQuery) loadBazelInvocation(ctx context.Context, query *BazelInv
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_metrics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -866,7 +877,9 @@ func (mq *MetricsQuery) loadActionSummary(ctx context.Context, query *ActionSumm
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(actionsummary.FieldMetricsID)
+	}
 	query.Where(predicate.ActionSummary(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(metrics.ActionSummaryColumn), fks...))
 	}))
@@ -875,13 +888,10 @@ func (mq *MetricsQuery) loadActionSummary(ctx context.Context, query *ActionSumm
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.metrics_action_summary
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_action_summary" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.MetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_action_summary" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -894,7 +904,9 @@ func (mq *MetricsQuery) loadMemoryMetrics(ctx context.Context, query *MemoryMetr
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(memorymetrics.FieldMetricsID)
+	}
 	query.Where(predicate.MemoryMetrics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(metrics.MemoryMetricsColumn), fks...))
 	}))
@@ -903,13 +915,10 @@ func (mq *MetricsQuery) loadMemoryMetrics(ctx context.Context, query *MemoryMetr
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.metrics_memory_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_memory_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.MetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_memory_metrics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -922,7 +931,9 @@ func (mq *MetricsQuery) loadTargetMetrics(ctx context.Context, query *TargetMetr
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(targetmetrics.FieldMetricsID)
+	}
 	query.Where(predicate.TargetMetrics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(metrics.TargetMetricsColumn), fks...))
 	}))
@@ -931,13 +942,10 @@ func (mq *MetricsQuery) loadTargetMetrics(ctx context.Context, query *TargetMetr
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.metrics_target_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_target_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.MetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_target_metrics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -950,7 +958,9 @@ func (mq *MetricsQuery) loadPackageMetrics(ctx context.Context, query *PackageMe
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(packagemetrics.FieldMetricsID)
+	}
 	query.Where(predicate.PackageMetrics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(metrics.PackageMetricsColumn), fks...))
 	}))
@@ -959,13 +969,10 @@ func (mq *MetricsQuery) loadPackageMetrics(ctx context.Context, query *PackageMe
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.metrics_package_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_package_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.MetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_package_metrics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1006,7 +1013,9 @@ func (mq *MetricsQuery) loadCumulativeMetrics(ctx context.Context, query *Cumula
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(cumulativemetrics.FieldMetricsID)
+	}
 	query.Where(predicate.CumulativeMetrics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(metrics.CumulativeMetricsColumn), fks...))
 	}))
@@ -1015,13 +1024,10 @@ func (mq *MetricsQuery) loadCumulativeMetrics(ctx context.Context, query *Cumula
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.metrics_cumulative_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_cumulative_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.MetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_cumulative_metrics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1035,6 +1041,9 @@ func (mq *MetricsQuery) loadArtifactMetrics(ctx context.Context, query *Artifact
 		nodeids[nodes[i].ID] = nodes[i]
 	}
 	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(artifactmetrics.FieldMetricsID)
+	}
 	query.Where(predicate.ArtifactMetrics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(metrics.ArtifactMetricsColumn), fks...))
 	}))
@@ -1043,13 +1052,10 @@ func (mq *MetricsQuery) loadArtifactMetrics(ctx context.Context, query *Artifact
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.metrics_artifact_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_artifact_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.MetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_artifact_metrics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1062,7 +1068,9 @@ func (mq *MetricsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMe
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(networkmetrics.FieldMetricsID)
+	}
 	query.Where(predicate.NetworkMetrics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(metrics.NetworkMetricsColumn), fks...))
 	}))
@@ -1071,13 +1079,10 @@ func (mq *MetricsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMe
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.metrics_network_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_network_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.MetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_network_metrics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1090,7 +1095,9 @@ func (mq *MetricsQuery) loadDynamicExecutionMetrics(ctx context.Context, query *
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(dynamicexecutionmetrics.FieldMetricsID)
+	}
 	query.Where(predicate.DynamicExecutionMetrics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(metrics.DynamicExecutionMetricsColumn), fks...))
 	}))
@@ -1099,13 +1106,10 @@ func (mq *MetricsQuery) loadDynamicExecutionMetrics(ctx context.Context, query *
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.metrics_dynamic_execution_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_dynamic_execution_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.MetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_dynamic_execution_metrics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1119,6 +1123,9 @@ func (mq *MetricsQuery) loadBuildGraphMetrics(ctx context.Context, query *BuildG
 		nodeids[nodes[i].ID] = nodes[i]
 	}
 	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(buildgraphmetrics.FieldMetricsID)
+	}
 	query.Where(predicate.BuildGraphMetrics(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(metrics.BuildGraphMetricsColumn), fks...))
 	}))
@@ -1127,13 +1134,10 @@ func (mq *MetricsQuery) loadBuildGraphMetrics(ctx context.Context, query *BuildG
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.metrics_build_graph_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_build_graph_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.MetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_build_graph_metrics" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1167,6 +1171,9 @@ func (mq *MetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != metrics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if mq.withBazelInvocation != nil {
+			_spec.Node.AddColumnOnce(metrics.FieldBazelInvocationID)
 		}
 	}
 	if ps := mq.predicates; len(ps) > 0 {

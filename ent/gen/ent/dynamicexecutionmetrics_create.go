@@ -20,16 +20,16 @@ type DynamicExecutionMetricsCreate struct {
 	hooks    []Hook
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (demc *DynamicExecutionMetricsCreate) SetMetricsID(id int) *DynamicExecutionMetricsCreate {
-	demc.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (demc *DynamicExecutionMetricsCreate) SetMetricsID(i int) *DynamicExecutionMetricsCreate {
+	demc.mutation.SetMetricsID(i)
 	return demc
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (demc *DynamicExecutionMetricsCreate) SetNillableMetricsID(id *int) *DynamicExecutionMetricsCreate {
-	if id != nil {
-		demc = demc.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (demc *DynamicExecutionMetricsCreate) SetNillableMetricsID(i *int) *DynamicExecutionMetricsCreate {
+	if i != nil {
+		demc.SetMetricsID(*i)
 	}
 	return demc
 }
@@ -128,7 +128,7 @@ func (demc *DynamicExecutionMetricsCreate) createSpec() (*DynamicExecutionMetric
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.metrics_dynamic_execution_metrics = &nodes[0]
+		_node.MetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := demc.mutation.RaceStatisticsIDs(); len(nodes) > 0 {

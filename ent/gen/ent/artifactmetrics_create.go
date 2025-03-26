@@ -20,16 +20,16 @@ type ArtifactMetricsCreate struct {
 	hooks    []Hook
 }
 
-// SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
-func (amc *ArtifactMetricsCreate) SetMetricsID(id int) *ArtifactMetricsCreate {
-	amc.mutation.SetMetricsID(id)
+// SetMetricsID sets the "metrics_id" field.
+func (amc *ArtifactMetricsCreate) SetMetricsID(i int) *ArtifactMetricsCreate {
+	amc.mutation.SetMetricsID(i)
 	return amc
 }
 
-// SetNillableMetricsID sets the "metrics" edge to the Metrics entity by ID if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableMetricsID(id *int) *ArtifactMetricsCreate {
-	if id != nil {
-		amc = amc.SetMetricsID(*id)
+// SetNillableMetricsID sets the "metrics_id" field if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableMetricsID(i *int) *ArtifactMetricsCreate {
+	if i != nil {
+		amc.SetMetricsID(*i)
 	}
 	return amc
 }
@@ -189,7 +189,7 @@ func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.Crea
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.metrics_artifact_metrics = &nodes[0]
+		_node.MetricsID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := amc.mutation.SourceArtifactsReadIDs(); len(nodes) > 0 {

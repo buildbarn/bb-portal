@@ -160,16 +160,16 @@ func (tsc *TestSummaryCreate) SetNillableLabel(s *string) *TestSummaryCreate {
 	return tsc
 }
 
-// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (tsc *TestSummaryCreate) SetTestCollectionID(id int) *TestSummaryCreate {
-	tsc.mutation.SetTestCollectionID(id)
+// SetTestCollectionID sets the "test_collection_id" field.
+func (tsc *TestSummaryCreate) SetTestCollectionID(i int) *TestSummaryCreate {
+	tsc.mutation.SetTestCollectionID(i)
 	return tsc
 }
 
-// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableTestCollectionID(id *int) *TestSummaryCreate {
-	if id != nil {
-		tsc = tsc.SetTestCollectionID(*id)
+// SetNillableTestCollectionID sets the "test_collection_id" field if the given value is not nil.
+func (tsc *TestSummaryCreate) SetNillableTestCollectionID(i *int) *TestSummaryCreate {
+	if i != nil {
+		tsc.SetTestCollectionID(*i)
 	}
 	return tsc
 }
@@ -337,7 +337,7 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.test_collection_test_summary = &nodes[0]
+		_node.TestCollectionID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tsc.mutation.PassedIDs(); len(nodes) > 0 {

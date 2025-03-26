@@ -117,16 +117,16 @@ func (adc *ActionDataCreate) SetNillableUserTime(i *int64) *ActionDataCreate {
 	return adc
 }
 
-// SetActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID.
-func (adc *ActionDataCreate) SetActionSummaryID(id int) *ActionDataCreate {
-	adc.mutation.SetActionSummaryID(id)
+// SetActionSummaryID sets the "action_summary_id" field.
+func (adc *ActionDataCreate) SetActionSummaryID(i int) *ActionDataCreate {
+	adc.mutation.SetActionSummaryID(i)
 	return adc
 }
 
-// SetNillableActionSummaryID sets the "action_summary" edge to the ActionSummary entity by ID if the given value is not nil.
-func (adc *ActionDataCreate) SetNillableActionSummaryID(id *int) *ActionDataCreate {
-	if id != nil {
-		adc = adc.SetActionSummaryID(*id)
+// SetNillableActionSummaryID sets the "action_summary_id" field if the given value is not nil.
+func (adc *ActionDataCreate) SetNillableActionSummaryID(i *int) *ActionDataCreate {
+	if i != nil {
+		adc.SetActionSummaryID(*i)
 	}
 	return adc
 }
@@ -238,7 +238,7 @@ func (adc *ActionDataCreate) createSpec() (*ActionData, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.action_summary_action_data = &nodes[0]
+		_node.ActionSummaryID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -49,16 +49,16 @@ func (ogc *OutputGroupCreate) SetNillableIncomplete(b *bool) *OutputGroupCreate 
 	return ogc
 }
 
-// SetTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID.
-func (ogc *OutputGroupCreate) SetTargetCompleteID(id int) *OutputGroupCreate {
-	ogc.mutation.SetTargetCompleteID(id)
+// SetTargetCompleteID sets the "target_complete_id" field.
+func (ogc *OutputGroupCreate) SetTargetCompleteID(i int) *OutputGroupCreate {
+	ogc.mutation.SetTargetCompleteID(i)
 	return ogc
 }
 
-// SetNillableTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID if the given value is not nil.
-func (ogc *OutputGroupCreate) SetNillableTargetCompleteID(id *int) *OutputGroupCreate {
-	if id != nil {
-		ogc = ogc.SetTargetCompleteID(*id)
+// SetNillableTargetCompleteID sets the "target_complete_id" field if the given value is not nil.
+func (ogc *OutputGroupCreate) SetNillableTargetCompleteID(i *int) *OutputGroupCreate {
+	if i != nil {
+		ogc.SetTargetCompleteID(*i)
 	}
 	return ogc
 }
@@ -184,7 +184,7 @@ func (ogc *OutputGroupCreate) createSpec() (*OutputGroup, *sqlgraph.CreateSpec) 
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.target_complete_output_group = &nodes[0]
+		_node.TargetCompleteID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := ogc.mutation.InlineFilesIDs(); len(nodes) > 0 {

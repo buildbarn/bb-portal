@@ -21,11 +21,12 @@ type CumulativeMetrics struct {
 	NumAnalyses int32 `json:"num_analyses,omitempty"`
 	// NumBuilds holds the value of the "num_builds" field.
 	NumBuilds int32 `json:"num_builds,omitempty"`
+	// MetricsID holds the value of the "metrics_id" field.
+	MetricsID int `json:"metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CumulativeMetricsQuery when eager-loading is set.
-	Edges                      CumulativeMetricsEdges `json:"edges"`
-	metrics_cumulative_metrics *int
-	selectValues               sql.SelectValues
+	Edges        CumulativeMetricsEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // CumulativeMetricsEdges holds the relations/edges for other nodes in the graph.
@@ -55,9 +56,7 @@ func (*CumulativeMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case cumulativemetrics.FieldID, cumulativemetrics.FieldNumAnalyses, cumulativemetrics.FieldNumBuilds:
-			values[i] = new(sql.NullInt64)
-		case cumulativemetrics.ForeignKeys[0]: // metrics_cumulative_metrics
+		case cumulativemetrics.FieldID, cumulativemetrics.FieldNumAnalyses, cumulativemetrics.FieldNumBuilds, cumulativemetrics.FieldMetricsID:
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -92,12 +91,11 @@ func (cm *CumulativeMetrics) assignValues(columns []string, values []any) error 
 			} else if value.Valid {
 				cm.NumBuilds = int32(value.Int64)
 			}
-		case cumulativemetrics.ForeignKeys[0]:
+		case cumulativemetrics.FieldMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field metrics_cumulative_metrics", value)
+				return fmt.Errorf("unexpected type %T for field metrics_id", values[i])
 			} else if value.Valid {
-				cm.metrics_cumulative_metrics = new(int)
-				*cm.metrics_cumulative_metrics = int(value.Int64)
+				cm.MetricsID = int(value.Int64)
 			}
 		default:
 			cm.selectValues.Set(columns[i], values[i])
@@ -145,6 +143,9 @@ func (cm *CumulativeMetrics) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("num_builds=")
 	builder.WriteString(fmt.Sprintf("%v", cm.NumBuilds))
+	builder.WriteString(", ")
+	builder.WriteString("metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", cm.MetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

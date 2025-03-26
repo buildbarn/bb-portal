@@ -78,6 +78,11 @@ func RenoteWins(v int64) predicate.RaceStatistics {
 	return predicate.RaceStatistics(sql.FieldEQ(FieldRenoteWins, v))
 }
 
+// DynamicExecutionMetricsID applies equality check predicate on the "dynamic_execution_metrics_id" field. It's identical to DynamicExecutionMetricsIDEQ.
+func DynamicExecutionMetricsID(v int) predicate.RaceStatistics {
+	return predicate.RaceStatistics(sql.FieldEQ(FieldDynamicExecutionMetricsID, v))
+}
+
 // MnemonicEQ applies the EQ predicate on the "mnemonic" field.
 func MnemonicEQ(v string) predicate.RaceStatistics {
 	return predicate.RaceStatistics(sql.FieldEQ(FieldMnemonic, v))
@@ -401,6 +406,36 @@ func RenoteWinsIsNil() predicate.RaceStatistics {
 // RenoteWinsNotNil applies the NotNil predicate on the "renote_wins" field.
 func RenoteWinsNotNil() predicate.RaceStatistics {
 	return predicate.RaceStatistics(sql.FieldNotNull(FieldRenoteWins))
+}
+
+// DynamicExecutionMetricsIDEQ applies the EQ predicate on the "dynamic_execution_metrics_id" field.
+func DynamicExecutionMetricsIDEQ(v int) predicate.RaceStatistics {
+	return predicate.RaceStatistics(sql.FieldEQ(FieldDynamicExecutionMetricsID, v))
+}
+
+// DynamicExecutionMetricsIDNEQ applies the NEQ predicate on the "dynamic_execution_metrics_id" field.
+func DynamicExecutionMetricsIDNEQ(v int) predicate.RaceStatistics {
+	return predicate.RaceStatistics(sql.FieldNEQ(FieldDynamicExecutionMetricsID, v))
+}
+
+// DynamicExecutionMetricsIDIn applies the In predicate on the "dynamic_execution_metrics_id" field.
+func DynamicExecutionMetricsIDIn(vs ...int) predicate.RaceStatistics {
+	return predicate.RaceStatistics(sql.FieldIn(FieldDynamicExecutionMetricsID, vs...))
+}
+
+// DynamicExecutionMetricsIDNotIn applies the NotIn predicate on the "dynamic_execution_metrics_id" field.
+func DynamicExecutionMetricsIDNotIn(vs ...int) predicate.RaceStatistics {
+	return predicate.RaceStatistics(sql.FieldNotIn(FieldDynamicExecutionMetricsID, vs...))
+}
+
+// DynamicExecutionMetricsIDIsNil applies the IsNil predicate on the "dynamic_execution_metrics_id" field.
+func DynamicExecutionMetricsIDIsNil() predicate.RaceStatistics {
+	return predicate.RaceStatistics(sql.FieldIsNull(FieldDynamicExecutionMetricsID))
+}
+
+// DynamicExecutionMetricsIDNotNil applies the NotNil predicate on the "dynamic_execution_metrics_id" field.
+func DynamicExecutionMetricsIDNotNil() predicate.RaceStatistics {
+	return predicate.RaceStatistics(sql.FieldNotNull(FieldDynamicExecutionMetricsID))
 }
 
 // HasDynamicExecutionMetrics applies the HasEdge predicate on the "dynamic_execution_metrics" edge.

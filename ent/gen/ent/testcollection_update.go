@@ -178,17 +178,23 @@ func (tcu *TestCollectionUpdate) ClearDurationMs() *TestCollectionUpdate {
 	return tcu
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tcu *TestCollectionUpdate) SetBazelInvocationID(id int) *TestCollectionUpdate {
-	tcu.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (tcu *TestCollectionUpdate) SetBazelInvocationID(i int) *TestCollectionUpdate {
+	tcu.mutation.SetBazelInvocationID(i)
 	return tcu
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tcu *TestCollectionUpdate) SetNillableBazelInvocationID(id *int) *TestCollectionUpdate {
-	if id != nil {
-		tcu = tcu.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (tcu *TestCollectionUpdate) SetNillableBazelInvocationID(i *int) *TestCollectionUpdate {
+	if i != nil {
+		tcu.SetBazelInvocationID(*i)
 	}
+	return tcu
+}
+
+// ClearBazelInvocationID clears the value of the "bazel_invocation_id" field.
+func (tcu *TestCollectionUpdate) ClearBazelInvocationID() *TestCollectionUpdate {
+	tcu.mutation.ClearBazelInvocationID()
 	return tcu
 }
 
@@ -633,17 +639,23 @@ func (tcuo *TestCollectionUpdateOne) ClearDurationMs() *TestCollectionUpdateOne 
 	return tcuo
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tcuo *TestCollectionUpdateOne) SetBazelInvocationID(id int) *TestCollectionUpdateOne {
-	tcuo.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (tcuo *TestCollectionUpdateOne) SetBazelInvocationID(i int) *TestCollectionUpdateOne {
+	tcuo.mutation.SetBazelInvocationID(i)
 	return tcuo
 }
 
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tcuo *TestCollectionUpdateOne) SetNillableBazelInvocationID(id *int) *TestCollectionUpdateOne {
-	if id != nil {
-		tcuo = tcuo.SetBazelInvocationID(*id)
+// SetNillableBazelInvocationID sets the "bazel_invocation_id" field if the given value is not nil.
+func (tcuo *TestCollectionUpdateOne) SetNillableBazelInvocationID(i *int) *TestCollectionUpdateOne {
+	if i != nil {
+		tcuo.SetBazelInvocationID(*i)
 	}
+	return tcuo
+}
+
+// ClearBazelInvocationID clears the value of the "bazel_invocation_id" field.
+func (tcuo *TestCollectionUpdateOne) ClearBazelInvocationID() *TestCollectionUpdateOne {
+	tcuo.mutation.ClearBazelInvocationID()
 	return tcuo
 }
 

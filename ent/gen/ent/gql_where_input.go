@@ -128,6 +128,14 @@ type ActionCacheStatisticsWhereInput struct {
 	MissesIsNil  bool    `json:"missesIsNil,omitempty"`
 	MissesNotNil bool    `json:"missesNotNil,omitempty"`
 
+	// "action_summary_id" field predicates.
+	ActionSummaryID       *int  `json:"actionSummaryID,omitempty"`
+	ActionSummaryIDNEQ    *int  `json:"actionSummaryIDNEQ,omitempty"`
+	ActionSummaryIDIn     []int `json:"actionSummaryIDIn,omitempty"`
+	ActionSummaryIDNotIn  []int `json:"actionSummaryIDNotIn,omitempty"`
+	ActionSummaryIDIsNil  bool  `json:"actionSummaryIDIsNil,omitempty"`
+	ActionSummaryIDNotNil bool  `json:"actionSummaryIDNotNil,omitempty"`
+
 	// "action_summary" edge predicates.
 	HasActionSummary     *bool                      `json:"hasActionSummary,omitempty"`
 	HasActionSummaryWith []*ActionSummaryWhereInput `json:"hasActionSummaryWith,omitempty"`
@@ -382,6 +390,24 @@ func (i *ActionCacheStatisticsWhereInput) P() (predicate.ActionCacheStatistics, 
 	if i.MissesNotNil {
 		predicates = append(predicates, actioncachestatistics.MissesNotNil())
 	}
+	if i.ActionSummaryID != nil {
+		predicates = append(predicates, actioncachestatistics.ActionSummaryIDEQ(*i.ActionSummaryID))
+	}
+	if i.ActionSummaryIDNEQ != nil {
+		predicates = append(predicates, actioncachestatistics.ActionSummaryIDNEQ(*i.ActionSummaryIDNEQ))
+	}
+	if len(i.ActionSummaryIDIn) > 0 {
+		predicates = append(predicates, actioncachestatistics.ActionSummaryIDIn(i.ActionSummaryIDIn...))
+	}
+	if len(i.ActionSummaryIDNotIn) > 0 {
+		predicates = append(predicates, actioncachestatistics.ActionSummaryIDNotIn(i.ActionSummaryIDNotIn...))
+	}
+	if i.ActionSummaryIDIsNil {
+		predicates = append(predicates, actioncachestatistics.ActionSummaryIDIsNil())
+	}
+	if i.ActionSummaryIDNotNil {
+		predicates = append(predicates, actioncachestatistics.ActionSummaryIDNotNil())
+	}
 
 	if i.HasActionSummary != nil {
 		p := actioncachestatistics.HasActionSummary()
@@ -534,6 +560,14 @@ type ActionDataWhereInput struct {
 	UserTimeLTE    *int64  `json:"userTimeLTE,omitempty"`
 	UserTimeIsNil  bool    `json:"userTimeIsNil,omitempty"`
 	UserTimeNotNil bool    `json:"userTimeNotNil,omitempty"`
+
+	// "action_summary_id" field predicates.
+	ActionSummaryID       *int  `json:"actionSummaryID,omitempty"`
+	ActionSummaryIDNEQ    *int  `json:"actionSummaryIDNEQ,omitempty"`
+	ActionSummaryIDIn     []int `json:"actionSummaryIDIn,omitempty"`
+	ActionSummaryIDNotIn  []int `json:"actionSummaryIDNotIn,omitempty"`
+	ActionSummaryIDIsNil  bool  `json:"actionSummaryIDIsNil,omitempty"`
+	ActionSummaryIDNotNil bool  `json:"actionSummaryIDNotNil,omitempty"`
 
 	// "action_summary" edge predicates.
 	HasActionSummary     *bool                      `json:"hasActionSummary,omitempty"`
@@ -860,6 +894,24 @@ func (i *ActionDataWhereInput) P() (predicate.ActionData, error) {
 	if i.UserTimeNotNil {
 		predicates = append(predicates, actiondata.UserTimeNotNil())
 	}
+	if i.ActionSummaryID != nil {
+		predicates = append(predicates, actiondata.ActionSummaryIDEQ(*i.ActionSummaryID))
+	}
+	if i.ActionSummaryIDNEQ != nil {
+		predicates = append(predicates, actiondata.ActionSummaryIDNEQ(*i.ActionSummaryIDNEQ))
+	}
+	if len(i.ActionSummaryIDIn) > 0 {
+		predicates = append(predicates, actiondata.ActionSummaryIDIn(i.ActionSummaryIDIn...))
+	}
+	if len(i.ActionSummaryIDNotIn) > 0 {
+		predicates = append(predicates, actiondata.ActionSummaryIDNotIn(i.ActionSummaryIDNotIn...))
+	}
+	if i.ActionSummaryIDIsNil {
+		predicates = append(predicates, actiondata.ActionSummaryIDIsNil())
+	}
+	if i.ActionSummaryIDNotNil {
+		predicates = append(predicates, actiondata.ActionSummaryIDNotNil())
+	}
 
 	if i.HasActionSummary != nil {
 		p := actiondata.HasActionSummary()
@@ -953,6 +1005,14 @@ type ActionSummaryWhereInput struct {
 	RemoteCacheHitsLTE    *int64  `json:"remoteCacheHitsLTE,omitempty"`
 	RemoteCacheHitsIsNil  bool    `json:"remoteCacheHitsIsNil,omitempty"`
 	RemoteCacheHitsNotNil bool    `json:"remoteCacheHitsNotNil,omitempty"`
+
+	// "metrics_id" field predicates.
+	MetricsID       *int  `json:"metricsID,omitempty"`
+	MetricsIDNEQ    *int  `json:"metricsIDNEQ,omitempty"`
+	MetricsIDIn     []int `json:"metricsIDIn,omitempty"`
+	MetricsIDNotIn  []int `json:"metricsIDNotIn,omitempty"`
+	MetricsIDIsNil  bool  `json:"metricsIDIsNil,omitempty"`
+	MetricsIDNotNil bool  `json:"metricsIDNotNil,omitempty"`
 
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
@@ -1186,6 +1246,24 @@ func (i *ActionSummaryWhereInput) P() (predicate.ActionSummary, error) {
 	if i.RemoteCacheHitsNotNil {
 		predicates = append(predicates, actionsummary.RemoteCacheHitsNotNil())
 	}
+	if i.MetricsID != nil {
+		predicates = append(predicates, actionsummary.MetricsIDEQ(*i.MetricsID))
+	}
+	if i.MetricsIDNEQ != nil {
+		predicates = append(predicates, actionsummary.MetricsIDNEQ(*i.MetricsIDNEQ))
+	}
+	if len(i.MetricsIDIn) > 0 {
+		predicates = append(predicates, actionsummary.MetricsIDIn(i.MetricsIDIn...))
+	}
+	if len(i.MetricsIDNotIn) > 0 {
+		predicates = append(predicates, actionsummary.MetricsIDNotIn(i.MetricsIDNotIn...))
+	}
+	if i.MetricsIDIsNil {
+		predicates = append(predicates, actionsummary.MetricsIDIsNil())
+	}
+	if i.MetricsIDNotNil {
+		predicates = append(predicates, actionsummary.MetricsIDNotNil())
+	}
 
 	if i.HasMetrics != nil {
 		p := actionsummary.HasMetrics()
@@ -1285,6 +1363,14 @@ type ArtifactMetricsWhereInput struct {
 	IDGTE   *int  `json:"idGTE,omitempty"`
 	IDLT    *int  `json:"idLT,omitempty"`
 	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "metrics_id" field predicates.
+	MetricsID       *int  `json:"metricsID,omitempty"`
+	MetricsIDNEQ    *int  `json:"metricsIDNEQ,omitempty"`
+	MetricsIDIn     []int `json:"metricsIDIn,omitempty"`
+	MetricsIDNotIn  []int `json:"metricsIDNotIn,omitempty"`
+	MetricsIDIsNil  bool  `json:"metricsIDIsNil,omitempty"`
+	MetricsIDNotNil bool  `json:"metricsIDNotNil,omitempty"`
 
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
@@ -1401,6 +1487,24 @@ func (i *ArtifactMetricsWhereInput) P() (predicate.ArtifactMetrics, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, artifactmetrics.IDLTE(*i.IDLTE))
+	}
+	if i.MetricsID != nil {
+		predicates = append(predicates, artifactmetrics.MetricsIDEQ(*i.MetricsID))
+	}
+	if i.MetricsIDNEQ != nil {
+		predicates = append(predicates, artifactmetrics.MetricsIDNEQ(*i.MetricsIDNEQ))
+	}
+	if len(i.MetricsIDIn) > 0 {
+		predicates = append(predicates, artifactmetrics.MetricsIDIn(i.MetricsIDIn...))
+	}
+	if len(i.MetricsIDNotIn) > 0 {
+		predicates = append(predicates, artifactmetrics.MetricsIDNotIn(i.MetricsIDNotIn...))
+	}
+	if i.MetricsIDIsNil {
+		predicates = append(predicates, artifactmetrics.MetricsIDIsNil())
+	}
+	if i.MetricsIDNotNil {
+		predicates = append(predicates, artifactmetrics.MetricsIDNotNil())
 	}
 
 	if i.HasMetrics != nil {
@@ -1748,6 +1852,22 @@ type BazelInvocationWhereInput struct {
 	ProfileNameHasSuffix    *string  `json:"profileNameHasSuffix,omitempty"`
 	ProfileNameEqualFold    *string  `json:"profileNameEqualFold,omitempty"`
 	ProfileNameContainsFold *string  `json:"profileNameContainsFold,omitempty"`
+
+	// "event_file_id" field predicates.
+	EventFileID       *int  `json:"eventFileID,omitempty"`
+	EventFileIDNEQ    *int  `json:"eventFileIDNEQ,omitempty"`
+	EventFileIDIn     []int `json:"eventFileIDIn,omitempty"`
+	EventFileIDNotIn  []int `json:"eventFileIDNotIn,omitempty"`
+	EventFileIDIsNil  bool  `json:"eventFileIDIsNil,omitempty"`
+	EventFileIDNotNil bool  `json:"eventFileIDNotNil,omitempty"`
+
+	// "build_id" field predicates.
+	BuildID       *int  `json:"buildID,omitempty"`
+	BuildIDNEQ    *int  `json:"buildIDNEQ,omitempty"`
+	BuildIDIn     []int `json:"buildIDIn,omitempty"`
+	BuildIDNotIn  []int `json:"buildIDNotIn,omitempty"`
+	BuildIDIsNil  bool  `json:"buildIDIsNil,omitempty"`
+	BuildIDNotNil bool  `json:"buildIDNotNil,omitempty"`
 
 	// "event_file" edge predicates.
 	HasEventFile     *bool                  `json:"hasEventFile,omitempty"`
@@ -2458,6 +2578,42 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 	if i.ProfileNameContainsFold != nil {
 		predicates = append(predicates, bazelinvocation.ProfileNameContainsFold(*i.ProfileNameContainsFold))
 	}
+	if i.EventFileID != nil {
+		predicates = append(predicates, bazelinvocation.EventFileIDEQ(*i.EventFileID))
+	}
+	if i.EventFileIDNEQ != nil {
+		predicates = append(predicates, bazelinvocation.EventFileIDNEQ(*i.EventFileIDNEQ))
+	}
+	if len(i.EventFileIDIn) > 0 {
+		predicates = append(predicates, bazelinvocation.EventFileIDIn(i.EventFileIDIn...))
+	}
+	if len(i.EventFileIDNotIn) > 0 {
+		predicates = append(predicates, bazelinvocation.EventFileIDNotIn(i.EventFileIDNotIn...))
+	}
+	if i.EventFileIDIsNil {
+		predicates = append(predicates, bazelinvocation.EventFileIDIsNil())
+	}
+	if i.EventFileIDNotNil {
+		predicates = append(predicates, bazelinvocation.EventFileIDNotNil())
+	}
+	if i.BuildID != nil {
+		predicates = append(predicates, bazelinvocation.BuildIDEQ(*i.BuildID))
+	}
+	if i.BuildIDNEQ != nil {
+		predicates = append(predicates, bazelinvocation.BuildIDNEQ(*i.BuildIDNEQ))
+	}
+	if len(i.BuildIDIn) > 0 {
+		predicates = append(predicates, bazelinvocation.BuildIDIn(i.BuildIDIn...))
+	}
+	if len(i.BuildIDNotIn) > 0 {
+		predicates = append(predicates, bazelinvocation.BuildIDNotIn(i.BuildIDNotIn...))
+	}
+	if i.BuildIDIsNil {
+		predicates = append(predicates, bazelinvocation.BuildIDIsNil())
+	}
+	if i.BuildIDNotNil {
+		predicates = append(predicates, bazelinvocation.BuildIDNotNil())
+	}
 
 	if i.HasEventFile != nil {
 		p := bazelinvocation.HasEventFile()
@@ -2642,6 +2798,14 @@ type BazelInvocationProblemWhereInput struct {
 	LabelEqualFold    *string  `json:"labelEqualFold,omitempty"`
 	LabelContainsFold *string  `json:"labelContainsFold,omitempty"`
 
+	// "bazel_invocation_id" field predicates.
+	BazelInvocationID       *int  `json:"bazelInvocationID,omitempty"`
+	BazelInvocationIDNEQ    *int  `json:"bazelInvocationIDNEQ,omitempty"`
+	BazelInvocationIDIn     []int `json:"bazelInvocationIDIn,omitempty"`
+	BazelInvocationIDNotIn  []int `json:"bazelInvocationIDNotIn,omitempty"`
+	BazelInvocationIDIsNil  bool  `json:"bazelInvocationIDIsNil,omitempty"`
+	BazelInvocationIDNotNil bool  `json:"bazelInvocationIDNotNil,omitempty"`
+
 	// "bazel_invocation" edge predicates.
 	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
 	HasBazelInvocationWith []*BazelInvocationWhereInput `json:"hasBazelInvocationWith,omitempty"`
@@ -2819,6 +2983,24 @@ func (i *BazelInvocationProblemWhereInput) P() (predicate.BazelInvocationProblem
 	}
 	if i.LabelContainsFold != nil {
 		predicates = append(predicates, bazelinvocationproblem.LabelContainsFold(*i.LabelContainsFold))
+	}
+	if i.BazelInvocationID != nil {
+		predicates = append(predicates, bazelinvocationproblem.BazelInvocationIDEQ(*i.BazelInvocationID))
+	}
+	if i.BazelInvocationIDNEQ != nil {
+		predicates = append(predicates, bazelinvocationproblem.BazelInvocationIDNEQ(*i.BazelInvocationIDNEQ))
+	}
+	if len(i.BazelInvocationIDIn) > 0 {
+		predicates = append(predicates, bazelinvocationproblem.BazelInvocationIDIn(i.BazelInvocationIDIn...))
+	}
+	if len(i.BazelInvocationIDNotIn) > 0 {
+		predicates = append(predicates, bazelinvocationproblem.BazelInvocationIDNotIn(i.BazelInvocationIDNotIn...))
+	}
+	if i.BazelInvocationIDIsNil {
+		predicates = append(predicates, bazelinvocationproblem.BazelInvocationIDIsNil())
+	}
+	if i.BazelInvocationIDNotNil {
+		predicates = append(predicates, bazelinvocationproblem.BazelInvocationIDNotNil())
 	}
 
 	if i.HasBazelInvocation != nil {
@@ -3612,6 +3794,14 @@ type BuildGraphMetricsWhereInput struct {
 	PostInvocationSkyframeNodeCountIsNil  bool    `json:"postInvocationSkyframeNodeCountIsNil,omitempty"`
 	PostInvocationSkyframeNodeCountNotNil bool    `json:"postInvocationSkyframeNodeCountNotNil,omitempty"`
 
+	// "metrics_id" field predicates.
+	MetricsID       *int  `json:"metricsID,omitempty"`
+	MetricsIDNEQ    *int  `json:"metricsIDNEQ,omitempty"`
+	MetricsIDIn     []int `json:"metricsIDIn,omitempty"`
+	MetricsIDNotIn  []int `json:"metricsIDNotIn,omitempty"`
+	MetricsIDIsNil  bool  `json:"metricsIDIsNil,omitempty"`
+	MetricsIDNotNil bool  `json:"metricsIDNotNil,omitempty"`
+
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
 	HasMetricsWith []*MetricsWhereInput `json:"hasMetricsWith,omitempty"`
@@ -4002,6 +4192,24 @@ func (i *BuildGraphMetricsWhereInput) P() (predicate.BuildGraphMetrics, error) {
 	if i.PostInvocationSkyframeNodeCountNotNil {
 		predicates = append(predicates, buildgraphmetrics.PostInvocationSkyframeNodeCountNotNil())
 	}
+	if i.MetricsID != nil {
+		predicates = append(predicates, buildgraphmetrics.MetricsIDEQ(*i.MetricsID))
+	}
+	if i.MetricsIDNEQ != nil {
+		predicates = append(predicates, buildgraphmetrics.MetricsIDNEQ(*i.MetricsIDNEQ))
+	}
+	if len(i.MetricsIDIn) > 0 {
+		predicates = append(predicates, buildgraphmetrics.MetricsIDIn(i.MetricsIDIn...))
+	}
+	if len(i.MetricsIDNotIn) > 0 {
+		predicates = append(predicates, buildgraphmetrics.MetricsIDNotIn(i.MetricsIDNotIn...))
+	}
+	if i.MetricsIDIsNil {
+		predicates = append(predicates, buildgraphmetrics.MetricsIDIsNil())
+	}
+	if i.MetricsIDNotNil {
+		predicates = append(predicates, buildgraphmetrics.MetricsIDNotNil())
+	}
 
 	if i.HasMetrics != nil {
 		p := buildgraphmetrics.HasMetrics()
@@ -4161,6 +4369,14 @@ type CumulativeMetricsWhereInput struct {
 	NumBuildsLTE    *int32  `json:"numBuildsLTE,omitempty"`
 	NumBuildsIsNil  bool    `json:"numBuildsIsNil,omitempty"`
 	NumBuildsNotNil bool    `json:"numBuildsNotNil,omitempty"`
+
+	// "metrics_id" field predicates.
+	MetricsID       *int  `json:"metricsID,omitempty"`
+	MetricsIDNEQ    *int  `json:"metricsIDNEQ,omitempty"`
+	MetricsIDIn     []int `json:"metricsIDIn,omitempty"`
+	MetricsIDNotIn  []int `json:"metricsIDNotIn,omitempty"`
+	MetricsIDIsNil  bool  `json:"metricsIDIsNil,omitempty"`
+	MetricsIDNotNil bool  `json:"metricsIDNotNil,omitempty"`
 
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
@@ -4322,6 +4538,24 @@ func (i *CumulativeMetricsWhereInput) P() (predicate.CumulativeMetrics, error) {
 	if i.NumBuildsNotNil {
 		predicates = append(predicates, cumulativemetrics.NumBuildsNotNil())
 	}
+	if i.MetricsID != nil {
+		predicates = append(predicates, cumulativemetrics.MetricsIDEQ(*i.MetricsID))
+	}
+	if i.MetricsIDNEQ != nil {
+		predicates = append(predicates, cumulativemetrics.MetricsIDNEQ(*i.MetricsIDNEQ))
+	}
+	if len(i.MetricsIDIn) > 0 {
+		predicates = append(predicates, cumulativemetrics.MetricsIDIn(i.MetricsIDIn...))
+	}
+	if len(i.MetricsIDNotIn) > 0 {
+		predicates = append(predicates, cumulativemetrics.MetricsIDNotIn(i.MetricsIDNotIn...))
+	}
+	if i.MetricsIDIsNil {
+		predicates = append(predicates, cumulativemetrics.MetricsIDIsNil())
+	}
+	if i.MetricsIDNotNil {
+		predicates = append(predicates, cumulativemetrics.MetricsIDNotNil())
+	}
 
 	if i.HasMetrics != nil {
 		p := cumulativemetrics.HasMetrics()
@@ -4367,6 +4601,14 @@ type DynamicExecutionMetricsWhereInput struct {
 	IDGTE   *int  `json:"idGTE,omitempty"`
 	IDLT    *int  `json:"idLT,omitempty"`
 	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "metrics_id" field predicates.
+	MetricsID       *int  `json:"metricsID,omitempty"`
+	MetricsIDNEQ    *int  `json:"metricsIDNEQ,omitempty"`
+	MetricsIDIn     []int `json:"metricsIDIn,omitempty"`
+	MetricsIDNotIn  []int `json:"metricsIDNotIn,omitempty"`
+	MetricsIDIsNil  bool  `json:"metricsIDIsNil,omitempty"`
+	MetricsIDNotNil bool  `json:"metricsIDNotNil,omitempty"`
 
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
@@ -4472,6 +4714,24 @@ func (i *DynamicExecutionMetricsWhereInput) P() (predicate.DynamicExecutionMetri
 	if i.IDLTE != nil {
 		predicates = append(predicates, dynamicexecutionmetrics.IDLTE(*i.IDLTE))
 	}
+	if i.MetricsID != nil {
+		predicates = append(predicates, dynamicexecutionmetrics.MetricsIDEQ(*i.MetricsID))
+	}
+	if i.MetricsIDNEQ != nil {
+		predicates = append(predicates, dynamicexecutionmetrics.MetricsIDNEQ(*i.MetricsIDNEQ))
+	}
+	if len(i.MetricsIDIn) > 0 {
+		predicates = append(predicates, dynamicexecutionmetrics.MetricsIDIn(i.MetricsIDIn...))
+	}
+	if len(i.MetricsIDNotIn) > 0 {
+		predicates = append(predicates, dynamicexecutionmetrics.MetricsIDNotIn(i.MetricsIDNotIn...))
+	}
+	if i.MetricsIDIsNil {
+		predicates = append(predicates, dynamicexecutionmetrics.MetricsIDIsNil())
+	}
+	if i.MetricsIDNotNil {
+		predicates = append(predicates, dynamicexecutionmetrics.MetricsIDNotNil())
+	}
 
 	if i.HasMetrics != nil {
 		p := dynamicexecutionmetrics.HasMetrics()
@@ -4564,6 +4824,14 @@ type EvaluationStatWhereInput struct {
 	CountLTE    *int64  `json:"countLTE,omitempty"`
 	CountIsNil  bool    `json:"countIsNil,omitempty"`
 	CountNotNil bool    `json:"countNotNil,omitempty"`
+
+	// "build_graph_metrics_id" field predicates.
+	BuildGraphMetricsID       *int  `json:"buildGraphMetricsID,omitempty"`
+	BuildGraphMetricsIDNEQ    *int  `json:"buildGraphMetricsIDNEQ,omitempty"`
+	BuildGraphMetricsIDIn     []int `json:"buildGraphMetricsIDIn,omitempty"`
+	BuildGraphMetricsIDNotIn  []int `json:"buildGraphMetricsIDNotIn,omitempty"`
+	BuildGraphMetricsIDIsNil  bool  `json:"buildGraphMetricsIDIsNil,omitempty"`
+	BuildGraphMetricsIDNotNil bool  `json:"buildGraphMetricsIDNotNil,omitempty"`
 
 	// "build_graph_metrics" edge predicates.
 	HasBuildGraphMetrics     *bool                          `json:"hasBuildGraphMetrics,omitempty"`
@@ -4739,6 +5007,24 @@ func (i *EvaluationStatWhereInput) P() (predicate.EvaluationStat, error) {
 	}
 	if i.CountNotNil {
 		predicates = append(predicates, evaluationstat.CountNotNil())
+	}
+	if i.BuildGraphMetricsID != nil {
+		predicates = append(predicates, evaluationstat.BuildGraphMetricsIDEQ(*i.BuildGraphMetricsID))
+	}
+	if i.BuildGraphMetricsIDNEQ != nil {
+		predicates = append(predicates, evaluationstat.BuildGraphMetricsIDNEQ(*i.BuildGraphMetricsIDNEQ))
+	}
+	if len(i.BuildGraphMetricsIDIn) > 0 {
+		predicates = append(predicates, evaluationstat.BuildGraphMetricsIDIn(i.BuildGraphMetricsIDIn...))
+	}
+	if len(i.BuildGraphMetricsIDNotIn) > 0 {
+		predicates = append(predicates, evaluationstat.BuildGraphMetricsIDNotIn(i.BuildGraphMetricsIDNotIn...))
+	}
+	if i.BuildGraphMetricsIDIsNil {
+		predicates = append(predicates, evaluationstat.BuildGraphMetricsIDIsNil())
+	}
+	if i.BuildGraphMetricsIDNotNil {
+		predicates = append(predicates, evaluationstat.BuildGraphMetricsIDNotNil())
 	}
 
 	if i.HasBuildGraphMetrics != nil {
@@ -5308,6 +5594,14 @@ type ExectionInfoWhereInput struct {
 	HostnameEqualFold    *string  `json:"hostnameEqualFold,omitempty"`
 	HostnameContainsFold *string  `json:"hostnameContainsFold,omitempty"`
 
+	// "execution_info_id" field predicates.
+	ExecutionInfoID       *int  `json:"executionInfoID,omitempty"`
+	ExecutionInfoIDNEQ    *int  `json:"executionInfoIDNEQ,omitempty"`
+	ExecutionInfoIDIn     []int `json:"executionInfoIDIn,omitempty"`
+	ExecutionInfoIDNotIn  []int `json:"executionInfoIDNotIn,omitempty"`
+	ExecutionInfoIDIsNil  bool  `json:"executionInfoIDIsNil,omitempty"`
+	ExecutionInfoIDNotNil bool  `json:"executionInfoIDNotNil,omitempty"`
+
 	// "test_result" edge predicates.
 	HasTestResult     *bool                      `json:"hasTestResult,omitempty"`
 	HasTestResultWith []*TestResultBESWhereInput `json:"hasTestResultWith,omitempty"`
@@ -5578,6 +5872,24 @@ func (i *ExectionInfoWhereInput) P() (predicate.ExectionInfo, error) {
 	if i.HostnameContainsFold != nil {
 		predicates = append(predicates, exectioninfo.HostnameContainsFold(*i.HostnameContainsFold))
 	}
+	if i.ExecutionInfoID != nil {
+		predicates = append(predicates, exectioninfo.ExecutionInfoIDEQ(*i.ExecutionInfoID))
+	}
+	if i.ExecutionInfoIDNEQ != nil {
+		predicates = append(predicates, exectioninfo.ExecutionInfoIDNEQ(*i.ExecutionInfoIDNEQ))
+	}
+	if len(i.ExecutionInfoIDIn) > 0 {
+		predicates = append(predicates, exectioninfo.ExecutionInfoIDIn(i.ExecutionInfoIDIn...))
+	}
+	if len(i.ExecutionInfoIDNotIn) > 0 {
+		predicates = append(predicates, exectioninfo.ExecutionInfoIDNotIn(i.ExecutionInfoIDNotIn...))
+	}
+	if i.ExecutionInfoIDIsNil {
+		predicates = append(predicates, exectioninfo.ExecutionInfoIDIsNil())
+	}
+	if i.ExecutionInfoIDNotNil {
+		predicates = append(predicates, exectioninfo.ExecutionInfoIDNotNil())
+	}
 
 	if i.HasTestResult != nil {
 		p := exectioninfo.HasTestResult()
@@ -5683,6 +5995,14 @@ type FilesMetricWhereInput struct {
 	CountLTE    *int32  `json:"countLTE,omitempty"`
 	CountIsNil  bool    `json:"countIsNil,omitempty"`
 	CountNotNil bool    `json:"countNotNil,omitempty"`
+
+	// "artifact_metrics_id" field predicates.
+	ArtifactMetricsID       *int  `json:"artifactMetricsID,omitempty"`
+	ArtifactMetricsIDNEQ    *int  `json:"artifactMetricsIDNEQ,omitempty"`
+	ArtifactMetricsIDIn     []int `json:"artifactMetricsIDIn,omitempty"`
+	ArtifactMetricsIDNotIn  []int `json:"artifactMetricsIDNotIn,omitempty"`
+	ArtifactMetricsIDIsNil  bool  `json:"artifactMetricsIDIsNil,omitempty"`
+	ArtifactMetricsIDNotNil bool  `json:"artifactMetricsIDNotNil,omitempty"`
 
 	// "artifact_metrics" edge predicates.
 	HasArtifactMetrics     *bool                        `json:"hasArtifactMetrics,omitempty"`
@@ -5844,6 +6164,24 @@ func (i *FilesMetricWhereInput) P() (predicate.FilesMetric, error) {
 	if i.CountNotNil {
 		predicates = append(predicates, filesmetric.CountNotNil())
 	}
+	if i.ArtifactMetricsID != nil {
+		predicates = append(predicates, filesmetric.ArtifactMetricsIDEQ(*i.ArtifactMetricsID))
+	}
+	if i.ArtifactMetricsIDNEQ != nil {
+		predicates = append(predicates, filesmetric.ArtifactMetricsIDNEQ(*i.ArtifactMetricsIDNEQ))
+	}
+	if len(i.ArtifactMetricsIDIn) > 0 {
+		predicates = append(predicates, filesmetric.ArtifactMetricsIDIn(i.ArtifactMetricsIDIn...))
+	}
+	if len(i.ArtifactMetricsIDNotIn) > 0 {
+		predicates = append(predicates, filesmetric.ArtifactMetricsIDNotIn(i.ArtifactMetricsIDNotIn...))
+	}
+	if i.ArtifactMetricsIDIsNil {
+		predicates = append(predicates, filesmetric.ArtifactMetricsIDIsNil())
+	}
+	if i.ArtifactMetricsIDNotNil {
+		predicates = append(predicates, filesmetric.ArtifactMetricsIDNotNil())
+	}
 
 	if i.HasArtifactMetrics != nil {
 		p := filesmetric.HasArtifactMetrics()
@@ -5918,6 +6256,14 @@ type GarbageMetricsWhereInput struct {
 	GarbageCollectedLTE    *int64  `json:"garbageCollectedLTE,omitempty"`
 	GarbageCollectedIsNil  bool    `json:"garbageCollectedIsNil,omitempty"`
 	GarbageCollectedNotNil bool    `json:"garbageCollectedNotNil,omitempty"`
+
+	// "memory_metrics_id" field predicates.
+	MemoryMetricsID       *int  `json:"memoryMetricsID,omitempty"`
+	MemoryMetricsIDNEQ    *int  `json:"memoryMetricsIDNEQ,omitempty"`
+	MemoryMetricsIDIn     []int `json:"memoryMetricsIDIn,omitempty"`
+	MemoryMetricsIDNotIn  []int `json:"memoryMetricsIDNotIn,omitempty"`
+	MemoryMetricsIDIsNil  bool  `json:"memoryMetricsIDIsNil,omitempty"`
+	MemoryMetricsIDNotNil bool  `json:"memoryMetricsIDNotNil,omitempty"`
 
 	// "memory_metrics" edge predicates.
 	HasMemoryMetrics     *bool                      `json:"hasMemoryMetrics,omitempty"`
@@ -6094,6 +6440,24 @@ func (i *GarbageMetricsWhereInput) P() (predicate.GarbageMetrics, error) {
 	if i.GarbageCollectedNotNil {
 		predicates = append(predicates, garbagemetrics.GarbageCollectedNotNil())
 	}
+	if i.MemoryMetricsID != nil {
+		predicates = append(predicates, garbagemetrics.MemoryMetricsIDEQ(*i.MemoryMetricsID))
+	}
+	if i.MemoryMetricsIDNEQ != nil {
+		predicates = append(predicates, garbagemetrics.MemoryMetricsIDNEQ(*i.MemoryMetricsIDNEQ))
+	}
+	if len(i.MemoryMetricsIDIn) > 0 {
+		predicates = append(predicates, garbagemetrics.MemoryMetricsIDIn(i.MemoryMetricsIDIn...))
+	}
+	if len(i.MemoryMetricsIDNotIn) > 0 {
+		predicates = append(predicates, garbagemetrics.MemoryMetricsIDNotIn(i.MemoryMetricsIDNotIn...))
+	}
+	if i.MemoryMetricsIDIsNil {
+		predicates = append(predicates, garbagemetrics.MemoryMetricsIDIsNil())
+	}
+	if i.MemoryMetricsIDNotNil {
+		predicates = append(predicates, garbagemetrics.MemoryMetricsIDNotNil())
+	}
 
 	if i.HasMemoryMetrics != nil {
 		p := garbagemetrics.HasMemoryMetrics()
@@ -6175,6 +6539,14 @@ type MemoryMetricsWhereInput struct {
 	PeakPostGcTenuredSpaceHeapSizeLTE    *int64  `json:"peakPostGcTenuredSpaceHeapSizeLTE,omitempty"`
 	PeakPostGcTenuredSpaceHeapSizeIsNil  bool    `json:"peakPostGcTenuredSpaceHeapSizeIsNil,omitempty"`
 	PeakPostGcTenuredSpaceHeapSizeNotNil bool    `json:"peakPostGcTenuredSpaceHeapSizeNotNil,omitempty"`
+
+	// "metrics_id" field predicates.
+	MetricsID       *int  `json:"metricsID,omitempty"`
+	MetricsIDNEQ    *int  `json:"metricsIDNEQ,omitempty"`
+	MetricsIDIn     []int `json:"metricsIDIn,omitempty"`
+	MetricsIDNotIn  []int `json:"metricsIDNotIn,omitempty"`
+	MetricsIDIsNil  bool  `json:"metricsIDIsNil,omitempty"`
+	MetricsIDNotNil bool  `json:"metricsIDNotNil,omitempty"`
 
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
@@ -6370,6 +6742,24 @@ func (i *MemoryMetricsWhereInput) P() (predicate.MemoryMetrics, error) {
 	if i.PeakPostGcTenuredSpaceHeapSizeNotNil {
 		predicates = append(predicates, memorymetrics.PeakPostGcTenuredSpaceHeapSizeNotNil())
 	}
+	if i.MetricsID != nil {
+		predicates = append(predicates, memorymetrics.MetricsIDEQ(*i.MetricsID))
+	}
+	if i.MetricsIDNEQ != nil {
+		predicates = append(predicates, memorymetrics.MetricsIDNEQ(*i.MetricsIDNEQ))
+	}
+	if len(i.MetricsIDIn) > 0 {
+		predicates = append(predicates, memorymetrics.MetricsIDIn(i.MetricsIDIn...))
+	}
+	if len(i.MetricsIDNotIn) > 0 {
+		predicates = append(predicates, memorymetrics.MetricsIDNotIn(i.MetricsIDNotIn...))
+	}
+	if i.MetricsIDIsNil {
+		predicates = append(predicates, memorymetrics.MetricsIDIsNil())
+	}
+	if i.MetricsIDNotNil {
+		predicates = append(predicates, memorymetrics.MetricsIDNotNil())
+	}
 
 	if i.HasMetrics != nil {
 		p := memorymetrics.HasMetrics()
@@ -6433,6 +6823,14 @@ type MetricsWhereInput struct {
 	IDGTE   *int  `json:"idGTE,omitempty"`
 	IDLT    *int  `json:"idLT,omitempty"`
 	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "bazel_invocation_id" field predicates.
+	BazelInvocationID       *int  `json:"bazelInvocationID,omitempty"`
+	BazelInvocationIDNEQ    *int  `json:"bazelInvocationIDNEQ,omitempty"`
+	BazelInvocationIDIn     []int `json:"bazelInvocationIDIn,omitempty"`
+	BazelInvocationIDNotIn  []int `json:"bazelInvocationIDNotIn,omitempty"`
+	BazelInvocationIDIsNil  bool  `json:"bazelInvocationIDIsNil,omitempty"`
+	BazelInvocationIDNotNil bool  `json:"bazelInvocationIDNotNil,omitempty"`
 
 	// "bazel_invocation" edge predicates.
 	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
@@ -6573,6 +6971,24 @@ func (i *MetricsWhereInput) P() (predicate.Metrics, error) {
 	}
 	if i.IDLTE != nil {
 		predicates = append(predicates, metrics.IDLTE(*i.IDLTE))
+	}
+	if i.BazelInvocationID != nil {
+		predicates = append(predicates, metrics.BazelInvocationIDEQ(*i.BazelInvocationID))
+	}
+	if i.BazelInvocationIDNEQ != nil {
+		predicates = append(predicates, metrics.BazelInvocationIDNEQ(*i.BazelInvocationIDNEQ))
+	}
+	if len(i.BazelInvocationIDIn) > 0 {
+		predicates = append(predicates, metrics.BazelInvocationIDIn(i.BazelInvocationIDIn...))
+	}
+	if len(i.BazelInvocationIDNotIn) > 0 {
+		predicates = append(predicates, metrics.BazelInvocationIDNotIn(i.BazelInvocationIDNotIn...))
+	}
+	if i.BazelInvocationIDIsNil {
+		predicates = append(predicates, metrics.BazelInvocationIDIsNil())
+	}
+	if i.BazelInvocationIDNotNil {
+		predicates = append(predicates, metrics.BazelInvocationIDNotNil())
 	}
 
 	if i.HasBazelInvocation != nil {
@@ -6820,6 +7236,14 @@ type MissDetailWhereInput struct {
 	CountIsNil  bool    `json:"countIsNil,omitempty"`
 	CountNotNil bool    `json:"countNotNil,omitempty"`
 
+	// "action_cache_statistics_id" field predicates.
+	ActionCacheStatisticsID       *int  `json:"actionCacheStatisticsID,omitempty"`
+	ActionCacheStatisticsIDNEQ    *int  `json:"actionCacheStatisticsIDNEQ,omitempty"`
+	ActionCacheStatisticsIDIn     []int `json:"actionCacheStatisticsIDIn,omitempty"`
+	ActionCacheStatisticsIDNotIn  []int `json:"actionCacheStatisticsIDNotIn,omitempty"`
+	ActionCacheStatisticsIDIsNil  bool  `json:"actionCacheStatisticsIDIsNil,omitempty"`
+	ActionCacheStatisticsIDNotNil bool  `json:"actionCacheStatisticsIDNotNil,omitempty"`
+
 	// "action_cache_statistics" edge predicates.
 	HasActionCacheStatistics     *bool                              `json:"hasActionCacheStatistics,omitempty"`
 	HasActionCacheStatisticsWith []*ActionCacheStatisticsWhereInput `json:"hasActionCacheStatisticsWith,omitempty"`
@@ -6968,6 +7392,24 @@ func (i *MissDetailWhereInput) P() (predicate.MissDetail, error) {
 	if i.CountNotNil {
 		predicates = append(predicates, missdetail.CountNotNil())
 	}
+	if i.ActionCacheStatisticsID != nil {
+		predicates = append(predicates, missdetail.ActionCacheStatisticsIDEQ(*i.ActionCacheStatisticsID))
+	}
+	if i.ActionCacheStatisticsIDNEQ != nil {
+		predicates = append(predicates, missdetail.ActionCacheStatisticsIDNEQ(*i.ActionCacheStatisticsIDNEQ))
+	}
+	if len(i.ActionCacheStatisticsIDIn) > 0 {
+		predicates = append(predicates, missdetail.ActionCacheStatisticsIDIn(i.ActionCacheStatisticsIDIn...))
+	}
+	if len(i.ActionCacheStatisticsIDNotIn) > 0 {
+		predicates = append(predicates, missdetail.ActionCacheStatisticsIDNotIn(i.ActionCacheStatisticsIDNotIn...))
+	}
+	if i.ActionCacheStatisticsIDIsNil {
+		predicates = append(predicates, missdetail.ActionCacheStatisticsIDIsNil())
+	}
+	if i.ActionCacheStatisticsIDNotNil {
+		predicates = append(predicates, missdetail.ActionCacheStatisticsIDNotNil())
+	}
 
 	if i.HasActionCacheStatistics != nil {
 		p := missdetail.HasActionCacheStatistics()
@@ -7013,6 +7455,14 @@ type NamedSetOfFilesWhereInput struct {
 	IDGTE   *int  `json:"idGTE,omitempty"`
 	IDLT    *int  `json:"idLT,omitempty"`
 	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "output_group_id" field predicates.
+	OutputGroupID       *int  `json:"outputGroupID,omitempty"`
+	OutputGroupIDNEQ    *int  `json:"outputGroupIDNEQ,omitempty"`
+	OutputGroupIDIn     []int `json:"outputGroupIDIn,omitempty"`
+	OutputGroupIDNotIn  []int `json:"outputGroupIDNotIn,omitempty"`
+	OutputGroupIDIsNil  bool  `json:"outputGroupIDIsNil,omitempty"`
+	OutputGroupIDNotNil bool  `json:"outputGroupIDNotNil,omitempty"`
 
 	// "output_group" edge predicates.
 	HasOutputGroup     *bool                    `json:"hasOutputGroup,omitempty"`
@@ -7122,6 +7572,24 @@ func (i *NamedSetOfFilesWhereInput) P() (predicate.NamedSetOfFiles, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, namedsetoffiles.IDLTE(*i.IDLTE))
 	}
+	if i.OutputGroupID != nil {
+		predicates = append(predicates, namedsetoffiles.OutputGroupIDEQ(*i.OutputGroupID))
+	}
+	if i.OutputGroupIDNEQ != nil {
+		predicates = append(predicates, namedsetoffiles.OutputGroupIDNEQ(*i.OutputGroupIDNEQ))
+	}
+	if len(i.OutputGroupIDIn) > 0 {
+		predicates = append(predicates, namedsetoffiles.OutputGroupIDIn(i.OutputGroupIDIn...))
+	}
+	if len(i.OutputGroupIDNotIn) > 0 {
+		predicates = append(predicates, namedsetoffiles.OutputGroupIDNotIn(i.OutputGroupIDNotIn...))
+	}
+	if i.OutputGroupIDIsNil {
+		predicates = append(predicates, namedsetoffiles.OutputGroupIDIsNil())
+	}
+	if i.OutputGroupIDNotNil {
+		predicates = append(predicates, namedsetoffiles.OutputGroupIDNotNil())
+	}
 
 	if i.HasOutputGroup != nil {
 		p := namedsetoffiles.HasOutputGroup()
@@ -7203,6 +7671,14 @@ type NetworkMetricsWhereInput struct {
 	IDGTE   *int  `json:"idGTE,omitempty"`
 	IDLT    *int  `json:"idLT,omitempty"`
 	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "metrics_id" field predicates.
+	MetricsID       *int  `json:"metricsID,omitempty"`
+	MetricsIDNEQ    *int  `json:"metricsIDNEQ,omitempty"`
+	MetricsIDIn     []int `json:"metricsIDIn,omitempty"`
+	MetricsIDNotIn  []int `json:"metricsIDNotIn,omitempty"`
+	MetricsIDIsNil  bool  `json:"metricsIDIsNil,omitempty"`
+	MetricsIDNotNil bool  `json:"metricsIDNotNil,omitempty"`
 
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
@@ -7308,6 +7784,24 @@ func (i *NetworkMetricsWhereInput) P() (predicate.NetworkMetrics, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, networkmetrics.IDLTE(*i.IDLTE))
 	}
+	if i.MetricsID != nil {
+		predicates = append(predicates, networkmetrics.MetricsIDEQ(*i.MetricsID))
+	}
+	if i.MetricsIDNEQ != nil {
+		predicates = append(predicates, networkmetrics.MetricsIDNEQ(*i.MetricsIDNEQ))
+	}
+	if len(i.MetricsIDIn) > 0 {
+		predicates = append(predicates, networkmetrics.MetricsIDIn(i.MetricsIDIn...))
+	}
+	if len(i.MetricsIDNotIn) > 0 {
+		predicates = append(predicates, networkmetrics.MetricsIDNotIn(i.MetricsIDNotIn...))
+	}
+	if i.MetricsIDIsNil {
+		predicates = append(predicates, networkmetrics.MetricsIDIsNil())
+	}
+	if i.MetricsIDNotNil {
+		predicates = append(predicates, networkmetrics.MetricsIDNotNil())
+	}
 
 	if i.HasMetrics != nil {
 		p := networkmetrics.HasMetrics()
@@ -7394,6 +7888,14 @@ type OutputGroupWhereInput struct {
 	IncompleteNEQ    *bool `json:"incompleteNEQ,omitempty"`
 	IncompleteIsNil  bool  `json:"incompleteIsNil,omitempty"`
 	IncompleteNotNil bool  `json:"incompleteNotNil,omitempty"`
+
+	// "target_complete_id" field predicates.
+	TargetCompleteID       *int  `json:"targetCompleteID,omitempty"`
+	TargetCompleteIDNEQ    *int  `json:"targetCompleteIDNEQ,omitempty"`
+	TargetCompleteIDIn     []int `json:"targetCompleteIDIn,omitempty"`
+	TargetCompleteIDNotIn  []int `json:"targetCompleteIDNotIn,omitempty"`
+	TargetCompleteIDIsNil  bool  `json:"targetCompleteIDIsNil,omitempty"`
+	TargetCompleteIDNotNil bool  `json:"targetCompleteIDNotNil,omitempty"`
 
 	// "target_complete" edge predicates.
 	HasTargetComplete     *bool                       `json:"hasTargetComplete,omitempty"`
@@ -7560,6 +8062,24 @@ func (i *OutputGroupWhereInput) P() (predicate.OutputGroup, error) {
 	if i.IncompleteNotNil {
 		predicates = append(predicates, outputgroup.IncompleteNotNil())
 	}
+	if i.TargetCompleteID != nil {
+		predicates = append(predicates, outputgroup.TargetCompleteIDEQ(*i.TargetCompleteID))
+	}
+	if i.TargetCompleteIDNEQ != nil {
+		predicates = append(predicates, outputgroup.TargetCompleteIDNEQ(*i.TargetCompleteIDNEQ))
+	}
+	if len(i.TargetCompleteIDIn) > 0 {
+		predicates = append(predicates, outputgroup.TargetCompleteIDIn(i.TargetCompleteIDIn...))
+	}
+	if len(i.TargetCompleteIDNotIn) > 0 {
+		predicates = append(predicates, outputgroup.TargetCompleteIDNotIn(i.TargetCompleteIDNotIn...))
+	}
+	if i.TargetCompleteIDIsNil {
+		predicates = append(predicates, outputgroup.TargetCompleteIDIsNil())
+	}
+	if i.TargetCompleteIDNotNil {
+		predicates = append(predicates, outputgroup.TargetCompleteIDNotNil())
+	}
 
 	if i.HasTargetComplete != nil {
 		p := outputgroup.HasTargetComplete()
@@ -7718,6 +8238,14 @@ type PackageLoadMetricsWhereInput struct {
 	PackageOverheadLTE    *uint64  `json:"packageOverheadLTE,omitempty"`
 	PackageOverheadIsNil  bool     `json:"packageOverheadIsNil,omitempty"`
 	PackageOverheadNotNil bool     `json:"packageOverheadNotNil,omitempty"`
+
+	// "package_metrics_id" field predicates.
+	PackageMetricsID       *int  `json:"packageMetricsID,omitempty"`
+	PackageMetricsIDNEQ    *int  `json:"packageMetricsIDNEQ,omitempty"`
+	PackageMetricsIDIn     []int `json:"packageMetricsIDIn,omitempty"`
+	PackageMetricsIDNotIn  []int `json:"packageMetricsIDNotIn,omitempty"`
+	PackageMetricsIDIsNil  bool  `json:"packageMetricsIDIsNil,omitempty"`
+	PackageMetricsIDNotNil bool  `json:"packageMetricsIDNotNil,omitempty"`
 
 	// "package_metrics" edge predicates.
 	HasPackageMetrics     *bool                       `json:"hasPackageMetrics,omitempty"`
@@ -8014,6 +8542,24 @@ func (i *PackageLoadMetricsWhereInput) P() (predicate.PackageLoadMetrics, error)
 	if i.PackageOverheadNotNil {
 		predicates = append(predicates, packageloadmetrics.PackageOverheadNotNil())
 	}
+	if i.PackageMetricsID != nil {
+		predicates = append(predicates, packageloadmetrics.PackageMetricsIDEQ(*i.PackageMetricsID))
+	}
+	if i.PackageMetricsIDNEQ != nil {
+		predicates = append(predicates, packageloadmetrics.PackageMetricsIDNEQ(*i.PackageMetricsIDNEQ))
+	}
+	if len(i.PackageMetricsIDIn) > 0 {
+		predicates = append(predicates, packageloadmetrics.PackageMetricsIDIn(i.PackageMetricsIDIn...))
+	}
+	if len(i.PackageMetricsIDNotIn) > 0 {
+		predicates = append(predicates, packageloadmetrics.PackageMetricsIDNotIn(i.PackageMetricsIDNotIn...))
+	}
+	if i.PackageMetricsIDIsNil {
+		predicates = append(predicates, packageloadmetrics.PackageMetricsIDIsNil())
+	}
+	if i.PackageMetricsIDNotNil {
+		predicates = append(predicates, packageloadmetrics.PackageMetricsIDNotNil())
+	}
 
 	if i.HasPackageMetrics != nil {
 		p := packageloadmetrics.HasPackageMetrics()
@@ -8071,6 +8617,14 @@ type PackageMetricsWhereInput struct {
 	PackagesLoadedLTE    *int64  `json:"packagesLoadedLTE,omitempty"`
 	PackagesLoadedIsNil  bool    `json:"packagesLoadedIsNil,omitempty"`
 	PackagesLoadedNotNil bool    `json:"packagesLoadedNotNil,omitempty"`
+
+	// "metrics_id" field predicates.
+	MetricsID       *int  `json:"metricsID,omitempty"`
+	MetricsIDNEQ    *int  `json:"metricsIDNEQ,omitempty"`
+	MetricsIDIn     []int `json:"metricsIDIn,omitempty"`
+	MetricsIDNotIn  []int `json:"metricsIDNotIn,omitempty"`
+	MetricsIDIsNil  bool  `json:"metricsIDIsNil,omitempty"`
+	MetricsIDNotNil bool  `json:"metricsIDNotNil,omitempty"`
 
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
@@ -8205,6 +8759,24 @@ func (i *PackageMetricsWhereInput) P() (predicate.PackageMetrics, error) {
 	}
 	if i.PackagesLoadedNotNil {
 		predicates = append(predicates, packagemetrics.PackagesLoadedNotNil())
+	}
+	if i.MetricsID != nil {
+		predicates = append(predicates, packagemetrics.MetricsIDEQ(*i.MetricsID))
+	}
+	if i.MetricsIDNEQ != nil {
+		predicates = append(predicates, packagemetrics.MetricsIDNEQ(*i.MetricsIDNEQ))
+	}
+	if len(i.MetricsIDIn) > 0 {
+		predicates = append(predicates, packagemetrics.MetricsIDIn(i.MetricsIDIn...))
+	}
+	if len(i.MetricsIDNotIn) > 0 {
+		predicates = append(predicates, packagemetrics.MetricsIDNotIn(i.MetricsIDNotIn...))
+	}
+	if i.MetricsIDIsNil {
+		predicates = append(predicates, packagemetrics.MetricsIDIsNil())
+	}
+	if i.MetricsIDNotNil {
+		predicates = append(predicates, packagemetrics.MetricsIDNotNil())
 	}
 
 	if i.HasMetrics != nil {
@@ -8344,6 +8916,14 @@ type RaceStatisticsWhereInput struct {
 	RenoteWinsLTE    *int64  `json:"renoteWinsLTE,omitempty"`
 	RenoteWinsIsNil  bool    `json:"renoteWinsIsNil,omitempty"`
 	RenoteWinsNotNil bool    `json:"renoteWinsNotNil,omitempty"`
+
+	// "dynamic_execution_metrics_id" field predicates.
+	DynamicExecutionMetricsID       *int  `json:"dynamicExecutionMetricsID,omitempty"`
+	DynamicExecutionMetricsIDNEQ    *int  `json:"dynamicExecutionMetricsIDNEQ,omitempty"`
+	DynamicExecutionMetricsIDIn     []int `json:"dynamicExecutionMetricsIDIn,omitempty"`
+	DynamicExecutionMetricsIDNotIn  []int `json:"dynamicExecutionMetricsIDNotIn,omitempty"`
+	DynamicExecutionMetricsIDIsNil  bool  `json:"dynamicExecutionMetricsIDIsNil,omitempty"`
+	DynamicExecutionMetricsIDNotNil bool  `json:"dynamicExecutionMetricsIDNotNil,omitempty"`
 
 	// "dynamic_execution_metrics" edge predicates.
 	HasDynamicExecutionMetrics     *bool                                `json:"hasDynamicExecutionMetrics,omitempty"`
@@ -8640,6 +9220,24 @@ func (i *RaceStatisticsWhereInput) P() (predicate.RaceStatistics, error) {
 	if i.RenoteWinsNotNil {
 		predicates = append(predicates, racestatistics.RenoteWinsNotNil())
 	}
+	if i.DynamicExecutionMetricsID != nil {
+		predicates = append(predicates, racestatistics.DynamicExecutionMetricsIDEQ(*i.DynamicExecutionMetricsID))
+	}
+	if i.DynamicExecutionMetricsIDNEQ != nil {
+		predicates = append(predicates, racestatistics.DynamicExecutionMetricsIDNEQ(*i.DynamicExecutionMetricsIDNEQ))
+	}
+	if len(i.DynamicExecutionMetricsIDIn) > 0 {
+		predicates = append(predicates, racestatistics.DynamicExecutionMetricsIDIn(i.DynamicExecutionMetricsIDIn...))
+	}
+	if len(i.DynamicExecutionMetricsIDNotIn) > 0 {
+		predicates = append(predicates, racestatistics.DynamicExecutionMetricsIDNotIn(i.DynamicExecutionMetricsIDNotIn...))
+	}
+	if i.DynamicExecutionMetricsIDIsNil {
+		predicates = append(predicates, racestatistics.DynamicExecutionMetricsIDIsNil())
+	}
+	if i.DynamicExecutionMetricsIDNotNil {
+		predicates = append(predicates, racestatistics.DynamicExecutionMetricsIDNotNil())
+	}
 
 	if i.HasDynamicExecutionMetrics != nil {
 		p := racestatistics.HasDynamicExecutionMetrics()
@@ -8719,6 +9317,14 @@ type ResourceUsageWhereInput struct {
 	ValueNotNil       bool     `json:"valueNotNil,omitempty"`
 	ValueEqualFold    *string  `json:"valueEqualFold,omitempty"`
 	ValueContainsFold *string  `json:"valueContainsFold,omitempty"`
+
+	// "execution_info_id" field predicates.
+	ExecutionInfoID       *int  `json:"executionInfoID,omitempty"`
+	ExecutionInfoIDNEQ    *int  `json:"executionInfoIDNEQ,omitempty"`
+	ExecutionInfoIDIn     []int `json:"executionInfoIDIn,omitempty"`
+	ExecutionInfoIDNotIn  []int `json:"executionInfoIDNotIn,omitempty"`
+	ExecutionInfoIDIsNil  bool  `json:"executionInfoIDIsNil,omitempty"`
+	ExecutionInfoIDNotNil bool  `json:"executionInfoIDNotNil,omitempty"`
 
 	// "execution_info" edge predicates.
 	HasExecutionInfo     *bool                     `json:"hasExecutionInfo,omitempty"`
@@ -8910,6 +9516,24 @@ func (i *ResourceUsageWhereInput) P() (predicate.ResourceUsage, error) {
 	if i.ValueContainsFold != nil {
 		predicates = append(predicates, resourceusage.ValueContainsFold(*i.ValueContainsFold))
 	}
+	if i.ExecutionInfoID != nil {
+		predicates = append(predicates, resourceusage.ExecutionInfoIDEQ(*i.ExecutionInfoID))
+	}
+	if i.ExecutionInfoIDNEQ != nil {
+		predicates = append(predicates, resourceusage.ExecutionInfoIDNEQ(*i.ExecutionInfoIDNEQ))
+	}
+	if len(i.ExecutionInfoIDIn) > 0 {
+		predicates = append(predicates, resourceusage.ExecutionInfoIDIn(i.ExecutionInfoIDIn...))
+	}
+	if len(i.ExecutionInfoIDNotIn) > 0 {
+		predicates = append(predicates, resourceusage.ExecutionInfoIDNotIn(i.ExecutionInfoIDNotIn...))
+	}
+	if i.ExecutionInfoIDIsNil {
+		predicates = append(predicates, resourceusage.ExecutionInfoIDIsNil())
+	}
+	if i.ExecutionInfoIDNotNil {
+		predicates = append(predicates, resourceusage.ExecutionInfoIDNotNil())
+	}
 
 	if i.HasExecutionInfo != nil {
 		p := resourceusage.HasExecutionInfo()
@@ -9001,6 +9625,14 @@ type RunnerCountWhereInput struct {
 	ActionsExecutedLTE    *int64  `json:"actionsExecutedLTE,omitempty"`
 	ActionsExecutedIsNil  bool    `json:"actionsExecutedIsNil,omitempty"`
 	ActionsExecutedNotNil bool    `json:"actionsExecutedNotNil,omitempty"`
+
+	// "action_summary_id" field predicates.
+	ActionSummaryID       *int  `json:"actionSummaryID,omitempty"`
+	ActionSummaryIDNEQ    *int  `json:"actionSummaryIDNEQ,omitempty"`
+	ActionSummaryIDIn     []int `json:"actionSummaryIDIn,omitempty"`
+	ActionSummaryIDNotIn  []int `json:"actionSummaryIDNotIn,omitempty"`
+	ActionSummaryIDIsNil  bool  `json:"actionSummaryIDIsNil,omitempty"`
+	ActionSummaryIDNotNil bool  `json:"actionSummaryIDNotNil,omitempty"`
 
 	// "action_summary" edge predicates.
 	HasActionSummary     *bool                      `json:"hasActionSummary,omitempty"`
@@ -9221,6 +9853,24 @@ func (i *RunnerCountWhereInput) P() (predicate.RunnerCount, error) {
 	}
 	if i.ActionsExecutedNotNil {
 		predicates = append(predicates, runnercount.ActionsExecutedNotNil())
+	}
+	if i.ActionSummaryID != nil {
+		predicates = append(predicates, runnercount.ActionSummaryIDEQ(*i.ActionSummaryID))
+	}
+	if i.ActionSummaryIDNEQ != nil {
+		predicates = append(predicates, runnercount.ActionSummaryIDNEQ(*i.ActionSummaryIDNEQ))
+	}
+	if len(i.ActionSummaryIDIn) > 0 {
+		predicates = append(predicates, runnercount.ActionSummaryIDIn(i.ActionSummaryIDIn...))
+	}
+	if len(i.ActionSummaryIDNotIn) > 0 {
+		predicates = append(predicates, runnercount.ActionSummaryIDNotIn(i.ActionSummaryIDNotIn...))
+	}
+	if i.ActionSummaryIDIsNil {
+		predicates = append(predicates, runnercount.ActionSummaryIDIsNil())
+	}
+	if i.ActionSummaryIDNotNil {
+		predicates = append(predicates, runnercount.ActionSummaryIDNotNil())
 	}
 
 	if i.HasActionSummary != nil {
@@ -9505,6 +10155,14 @@ type SourceControlWhereInput struct {
 	RunnerOsNotNil       bool     `json:"runnerOsNotNil,omitempty"`
 	RunnerOsEqualFold    *string  `json:"runnerOsEqualFold,omitempty"`
 	RunnerOsContainsFold *string  `json:"runnerOsContainsFold,omitempty"`
+
+	// "bazel_invocation_id" field predicates.
+	BazelInvocationID       *int  `json:"bazelInvocationID,omitempty"`
+	BazelInvocationIDNEQ    *int  `json:"bazelInvocationIDNEQ,omitempty"`
+	BazelInvocationIDIn     []int `json:"bazelInvocationIDIn,omitempty"`
+	BazelInvocationIDNotIn  []int `json:"bazelInvocationIDNotIn,omitempty"`
+	BazelInvocationIDIsNil  bool  `json:"bazelInvocationIDIsNil,omitempty"`
+	BazelInvocationIDNotNil bool  `json:"bazelInvocationIDNotNil,omitempty"`
 
 	// "bazel_invocation" edge predicates.
 	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
@@ -10236,6 +10894,24 @@ func (i *SourceControlWhereInput) P() (predicate.SourceControl, error) {
 	if i.RunnerOsContainsFold != nil {
 		predicates = append(predicates, sourcecontrol.RunnerOsContainsFold(*i.RunnerOsContainsFold))
 	}
+	if i.BazelInvocationID != nil {
+		predicates = append(predicates, sourcecontrol.BazelInvocationIDEQ(*i.BazelInvocationID))
+	}
+	if i.BazelInvocationIDNEQ != nil {
+		predicates = append(predicates, sourcecontrol.BazelInvocationIDNEQ(*i.BazelInvocationIDNEQ))
+	}
+	if len(i.BazelInvocationIDIn) > 0 {
+		predicates = append(predicates, sourcecontrol.BazelInvocationIDIn(i.BazelInvocationIDIn...))
+	}
+	if len(i.BazelInvocationIDNotIn) > 0 {
+		predicates = append(predicates, sourcecontrol.BazelInvocationIDNotIn(i.BazelInvocationIDNotIn...))
+	}
+	if i.BazelInvocationIDIsNil {
+		predicates = append(predicates, sourcecontrol.BazelInvocationIDIsNil())
+	}
+	if i.BazelInvocationIDNotNil {
+		predicates = append(predicates, sourcecontrol.BazelInvocationIDNotNil())
+	}
 
 	if i.HasBazelInvocation != nil {
 		p := sourcecontrol.HasBazelInvocation()
@@ -10377,6 +11053,14 @@ type SystemNetworkStatsWhereInput struct {
 	PeakPacketsRecvPerSecLTE    *uint64  `json:"peakPacketsRecvPerSecLTE,omitempty"`
 	PeakPacketsRecvPerSecIsNil  bool     `json:"peakPacketsRecvPerSecIsNil,omitempty"`
 	PeakPacketsRecvPerSecNotNil bool     `json:"peakPacketsRecvPerSecNotNil,omitempty"`
+
+	// "network_metrics_id" field predicates.
+	NetworkMetricsID       *int  `json:"networkMetricsID,omitempty"`
+	NetworkMetricsIDNEQ    *int  `json:"networkMetricsIDNEQ,omitempty"`
+	NetworkMetricsIDIn     []int `json:"networkMetricsIDIn,omitempty"`
+	NetworkMetricsIDNotIn  []int `json:"networkMetricsIDNotIn,omitempty"`
+	NetworkMetricsIDIsNil  bool  `json:"networkMetricsIDIsNil,omitempty"`
+	NetworkMetricsIDNotNil bool  `json:"networkMetricsIDNotNil,omitempty"`
 
 	// "network_metrics" edge predicates.
 	HasNetworkMetrics     *bool                       `json:"hasNetworkMetrics,omitempty"`
@@ -10718,6 +11402,24 @@ func (i *SystemNetworkStatsWhereInput) P() (predicate.SystemNetworkStats, error)
 	if i.PeakPacketsRecvPerSecNotNil {
 		predicates = append(predicates, systemnetworkstats.PeakPacketsRecvPerSecNotNil())
 	}
+	if i.NetworkMetricsID != nil {
+		predicates = append(predicates, systemnetworkstats.NetworkMetricsIDEQ(*i.NetworkMetricsID))
+	}
+	if i.NetworkMetricsIDNEQ != nil {
+		predicates = append(predicates, systemnetworkstats.NetworkMetricsIDNEQ(*i.NetworkMetricsIDNEQ))
+	}
+	if len(i.NetworkMetricsIDIn) > 0 {
+		predicates = append(predicates, systemnetworkstats.NetworkMetricsIDIn(i.NetworkMetricsIDIn...))
+	}
+	if len(i.NetworkMetricsIDNotIn) > 0 {
+		predicates = append(predicates, systemnetworkstats.NetworkMetricsIDNotIn(i.NetworkMetricsIDNotIn...))
+	}
+	if i.NetworkMetricsIDIsNil {
+		predicates = append(predicates, systemnetworkstats.NetworkMetricsIDIsNil())
+	}
+	if i.NetworkMetricsIDNotNil {
+		predicates = append(predicates, systemnetworkstats.NetworkMetricsIDNotNil())
+	}
 
 	if i.HasNetworkMetrics != nil {
 		p := systemnetworkstats.HasNetworkMetrics()
@@ -10830,6 +11532,14 @@ type TargetCompleteWhereInput struct {
 	TestSizeNotIn  []targetcomplete.TestSize `json:"testSizeNotIn,omitempty"`
 	TestSizeIsNil  bool                      `json:"testSizeIsNil,omitempty"`
 	TestSizeNotNil bool                      `json:"testSizeNotNil,omitempty"`
+
+	// "target_pair_id" field predicates.
+	TargetPairID       *int  `json:"targetPairID,omitempty"`
+	TargetPairIDNEQ    *int  `json:"targetPairIDNEQ,omitempty"`
+	TargetPairIDIn     []int `json:"targetPairIDIn,omitempty"`
+	TargetPairIDNotIn  []int `json:"targetPairIDNotIn,omitempty"`
+	TargetPairIDIsNil  bool  `json:"targetPairIDIsNil,omitempty"`
+	TargetPairIDNotNil bool  `json:"targetPairIDNotNil,omitempty"`
 
 	// "target_pair" edge predicates.
 	HasTargetPair     *bool                   `json:"hasTargetPair,omitempty"`
@@ -11108,6 +11818,24 @@ func (i *TargetCompleteWhereInput) P() (predicate.TargetComplete, error) {
 	if i.TestSizeNotNil {
 		predicates = append(predicates, targetcomplete.TestSizeNotNil())
 	}
+	if i.TargetPairID != nil {
+		predicates = append(predicates, targetcomplete.TargetPairIDEQ(*i.TargetPairID))
+	}
+	if i.TargetPairIDNEQ != nil {
+		predicates = append(predicates, targetcomplete.TargetPairIDNEQ(*i.TargetPairIDNEQ))
+	}
+	if len(i.TargetPairIDIn) > 0 {
+		predicates = append(predicates, targetcomplete.TargetPairIDIn(i.TargetPairIDIn...))
+	}
+	if len(i.TargetPairIDNotIn) > 0 {
+		predicates = append(predicates, targetcomplete.TargetPairIDNotIn(i.TargetPairIDNotIn...))
+	}
+	if i.TargetPairIDIsNil {
+		predicates = append(predicates, targetcomplete.TargetPairIDIsNil())
+	}
+	if i.TargetPairIDNotNil {
+		predicates = append(predicates, targetcomplete.TargetPairIDNotNil())
+	}
 
 	if i.HasTargetPair != nil {
 		p := targetcomplete.HasTargetPair()
@@ -11244,6 +11972,14 @@ type TargetConfiguredWhereInput struct {
 	TestSizeNotIn  []targetconfigured.TestSize `json:"testSizeNotIn,omitempty"`
 	TestSizeIsNil  bool                        `json:"testSizeIsNil,omitempty"`
 	TestSizeNotNil bool                        `json:"testSizeNotNil,omitempty"`
+
+	// "target_pair_id" field predicates.
+	TargetPairID       *int  `json:"targetPairID,omitempty"`
+	TargetPairIDNEQ    *int  `json:"targetPairIDNEQ,omitempty"`
+	TargetPairIDIn     []int `json:"targetPairIDIn,omitempty"`
+	TargetPairIDNotIn  []int `json:"targetPairIDNotIn,omitempty"`
+	TargetPairIDIsNil  bool  `json:"targetPairIDIsNil,omitempty"`
+	TargetPairIDNotNil bool  `json:"targetPairIDNotNil,omitempty"`
 
 	// "target_pair" edge predicates.
 	HasTargetPair     *bool                   `json:"hasTargetPair,omitempty"`
@@ -11438,6 +12174,24 @@ func (i *TargetConfiguredWhereInput) P() (predicate.TargetConfigured, error) {
 	if i.TestSizeNotNil {
 		predicates = append(predicates, targetconfigured.TestSizeNotNil())
 	}
+	if i.TargetPairID != nil {
+		predicates = append(predicates, targetconfigured.TargetPairIDEQ(*i.TargetPairID))
+	}
+	if i.TargetPairIDNEQ != nil {
+		predicates = append(predicates, targetconfigured.TargetPairIDNEQ(*i.TargetPairIDNEQ))
+	}
+	if len(i.TargetPairIDIn) > 0 {
+		predicates = append(predicates, targetconfigured.TargetPairIDIn(i.TargetPairIDIn...))
+	}
+	if len(i.TargetPairIDNotIn) > 0 {
+		predicates = append(predicates, targetconfigured.TargetPairIDNotIn(i.TargetPairIDNotIn...))
+	}
+	if i.TargetPairIDIsNil {
+		predicates = append(predicates, targetconfigured.TargetPairIDIsNil())
+	}
+	if i.TargetPairIDNotNil {
+		predicates = append(predicates, targetconfigured.TargetPairIDNotNil())
+	}
 
 	if i.HasTargetPair != nil {
 		p := targetconfigured.HasTargetPair()
@@ -11519,6 +12273,14 @@ type TargetMetricsWhereInput struct {
 	TargetsConfiguredNotIncludingAspectsLTE    *int64  `json:"targetsConfiguredNotIncludingAspectsLTE,omitempty"`
 	TargetsConfiguredNotIncludingAspectsIsNil  bool    `json:"targetsConfiguredNotIncludingAspectsIsNil,omitempty"`
 	TargetsConfiguredNotIncludingAspectsNotNil bool    `json:"targetsConfiguredNotIncludingAspectsNotNil,omitempty"`
+
+	// "metrics_id" field predicates.
+	MetricsID       *int  `json:"metricsID,omitempty"`
+	MetricsIDNEQ    *int  `json:"metricsIDNEQ,omitempty"`
+	MetricsIDIn     []int `json:"metricsIDIn,omitempty"`
+	MetricsIDNotIn  []int `json:"metricsIDNotIn,omitempty"`
+	MetricsIDIsNil  bool  `json:"metricsIDIsNil,omitempty"`
+	MetricsIDNotNil bool  `json:"metricsIDNotNil,omitempty"`
 
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
@@ -11710,6 +12472,24 @@ func (i *TargetMetricsWhereInput) P() (predicate.TargetMetrics, error) {
 	if i.TargetsConfiguredNotIncludingAspectsNotNil {
 		predicates = append(predicates, targetmetrics.TargetsConfiguredNotIncludingAspectsNotNil())
 	}
+	if i.MetricsID != nil {
+		predicates = append(predicates, targetmetrics.MetricsIDEQ(*i.MetricsID))
+	}
+	if i.MetricsIDNEQ != nil {
+		predicates = append(predicates, targetmetrics.MetricsIDNEQ(*i.MetricsIDNEQ))
+	}
+	if len(i.MetricsIDIn) > 0 {
+		predicates = append(predicates, targetmetrics.MetricsIDIn(i.MetricsIDIn...))
+	}
+	if len(i.MetricsIDNotIn) > 0 {
+		predicates = append(predicates, targetmetrics.MetricsIDNotIn(i.MetricsIDNotIn...))
+	}
+	if i.MetricsIDIsNil {
+		predicates = append(predicates, targetmetrics.MetricsIDIsNil())
+	}
+	if i.MetricsIDNotNil {
+		predicates = append(predicates, targetmetrics.MetricsIDNotNil())
+	}
 
 	if i.HasMetrics != nil {
 		p := targetmetrics.HasMetrics()
@@ -11823,6 +12603,14 @@ type TargetPairWhereInput struct {
 	AbortReasonNotIn  []targetpair.AbortReason `json:"abortReasonNotIn,omitempty"`
 	AbortReasonIsNil  bool                     `json:"abortReasonIsNil,omitempty"`
 	AbortReasonNotNil bool                     `json:"abortReasonNotNil,omitempty"`
+
+	// "bazel_invocation_id" field predicates.
+	BazelInvocationID       *int  `json:"bazelInvocationID,omitempty"`
+	BazelInvocationIDNEQ    *int  `json:"bazelInvocationIDNEQ,omitempty"`
+	BazelInvocationIDIn     []int `json:"bazelInvocationIDIn,omitempty"`
+	BazelInvocationIDNotIn  []int `json:"bazelInvocationIDNotIn,omitempty"`
+	BazelInvocationIDIsNil  bool  `json:"bazelInvocationIDIsNil,omitempty"`
+	BazelInvocationIDNotNil bool  `json:"bazelInvocationIDNotNil,omitempty"`
 
 	// "bazel_invocation" edge predicates.
 	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
@@ -12100,6 +12888,24 @@ func (i *TargetPairWhereInput) P() (predicate.TargetPair, error) {
 	if i.AbortReasonNotNil {
 		predicates = append(predicates, targetpair.AbortReasonNotNil())
 	}
+	if i.BazelInvocationID != nil {
+		predicates = append(predicates, targetpair.BazelInvocationIDEQ(*i.BazelInvocationID))
+	}
+	if i.BazelInvocationIDNEQ != nil {
+		predicates = append(predicates, targetpair.BazelInvocationIDNEQ(*i.BazelInvocationIDNEQ))
+	}
+	if len(i.BazelInvocationIDIn) > 0 {
+		predicates = append(predicates, targetpair.BazelInvocationIDIn(i.BazelInvocationIDIn...))
+	}
+	if len(i.BazelInvocationIDNotIn) > 0 {
+		predicates = append(predicates, targetpair.BazelInvocationIDNotIn(i.BazelInvocationIDNotIn...))
+	}
+	if i.BazelInvocationIDIsNil {
+		predicates = append(predicates, targetpair.BazelInvocationIDIsNil())
+	}
+	if i.BazelInvocationIDNotNil {
+		predicates = append(predicates, targetpair.BazelInvocationIDNotNil())
+	}
 
 	if i.HasBazelInvocation != nil {
 		p := targetpair.HasBazelInvocation()
@@ -12259,6 +13065,14 @@ type TestCollectionWhereInput struct {
 	DurationMsLTE    *int64  `json:"durationMsLTE,omitempty"`
 	DurationMsIsNil  bool    `json:"durationMsIsNil,omitempty"`
 	DurationMsNotNil bool    `json:"durationMsNotNil,omitempty"`
+
+	// "bazel_invocation_id" field predicates.
+	BazelInvocationID       *int  `json:"bazelInvocationID,omitempty"`
+	BazelInvocationIDNEQ    *int  `json:"bazelInvocationIDNEQ,omitempty"`
+	BazelInvocationIDIn     []int `json:"bazelInvocationIDIn,omitempty"`
+	BazelInvocationIDNotIn  []int `json:"bazelInvocationIDNotIn,omitempty"`
+	BazelInvocationIDIsNil  bool  `json:"bazelInvocationIDIsNil,omitempty"`
+	BazelInvocationIDNotNil bool  `json:"bazelInvocationIDNotNil,omitempty"`
 
 	// "bazel_invocation" edge predicates.
 	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
@@ -12560,6 +13374,24 @@ func (i *TestCollectionWhereInput) P() (predicate.TestCollection, error) {
 	if i.DurationMsNotNil {
 		predicates = append(predicates, testcollection.DurationMsNotNil())
 	}
+	if i.BazelInvocationID != nil {
+		predicates = append(predicates, testcollection.BazelInvocationIDEQ(*i.BazelInvocationID))
+	}
+	if i.BazelInvocationIDNEQ != nil {
+		predicates = append(predicates, testcollection.BazelInvocationIDNEQ(*i.BazelInvocationIDNEQ))
+	}
+	if len(i.BazelInvocationIDIn) > 0 {
+		predicates = append(predicates, testcollection.BazelInvocationIDIn(i.BazelInvocationIDIn...))
+	}
+	if len(i.BazelInvocationIDNotIn) > 0 {
+		predicates = append(predicates, testcollection.BazelInvocationIDNotIn(i.BazelInvocationIDNotIn...))
+	}
+	if i.BazelInvocationIDIsNil {
+		predicates = append(predicates, testcollection.BazelInvocationIDIsNil())
+	}
+	if i.BazelInvocationIDNotNil {
+		predicates = append(predicates, testcollection.BazelInvocationIDNotNil())
+	}
 
 	if i.HasBazelInvocation != nil {
 		p := testcollection.HasBazelInvocation()
@@ -12704,6 +13536,14 @@ type TestFileWhereInput struct {
 	NameNotNil       bool     `json:"nameNotNil,omitempty"`
 	NameEqualFold    *string  `json:"nameEqualFold,omitempty"`
 	NameContainsFold *string  `json:"nameContainsFold,omitempty"`
+
+	// "test_result_id" field predicates.
+	TestResultID       *int  `json:"testResultID,omitempty"`
+	TestResultIDNEQ    *int  `json:"testResultIDNEQ,omitempty"`
+	TestResultIDIn     []int `json:"testResultIDIn,omitempty"`
+	TestResultIDNotIn  []int `json:"testResultIDNotIn,omitempty"`
+	TestResultIDIsNil  bool  `json:"testResultIDIsNil,omitempty"`
+	TestResultIDNotNil bool  `json:"testResultIDNotNil,omitempty"`
 
 	// "test_result" edge predicates.
 	HasTestResult     *bool                      `json:"hasTestResult,omitempty"`
@@ -12970,6 +13810,24 @@ func (i *TestFileWhereInput) P() (predicate.TestFile, error) {
 	if i.NameContainsFold != nil {
 		predicates = append(predicates, testfile.NameContainsFold(*i.NameContainsFold))
 	}
+	if i.TestResultID != nil {
+		predicates = append(predicates, testfile.TestResultIDEQ(*i.TestResultID))
+	}
+	if i.TestResultIDNEQ != nil {
+		predicates = append(predicates, testfile.TestResultIDNEQ(*i.TestResultIDNEQ))
+	}
+	if len(i.TestResultIDIn) > 0 {
+		predicates = append(predicates, testfile.TestResultIDIn(i.TestResultIDIn...))
+	}
+	if len(i.TestResultIDNotIn) > 0 {
+		predicates = append(predicates, testfile.TestResultIDNotIn(i.TestResultIDNotIn...))
+	}
+	if i.TestResultIDIsNil {
+		predicates = append(predicates, testfile.TestResultIDIsNil())
+	}
+	if i.TestResultIDNotNil {
+		predicates = append(predicates, testfile.TestResultIDNotNil())
+	}
 
 	if i.HasTestResult != nil {
 		p := testfile.HasTestResult()
@@ -13116,6 +13974,14 @@ type TestResultBESWhereInput struct {
 	TestAttemptDurationLTE    *int64  `json:"testAttemptDurationLTE,omitempty"`
 	TestAttemptDurationIsNil  bool    `json:"testAttemptDurationIsNil,omitempty"`
 	TestAttemptDurationNotNil bool    `json:"testAttemptDurationNotNil,omitempty"`
+
+	// "test_collection_id" field predicates.
+	TestCollectionID       *int  `json:"testCollectionID,omitempty"`
+	TestCollectionIDNEQ    *int  `json:"testCollectionIDNEQ,omitempty"`
+	TestCollectionIDIn     []int `json:"testCollectionIDIn,omitempty"`
+	TestCollectionIDNotIn  []int `json:"testCollectionIDNotIn,omitempty"`
+	TestCollectionIDIsNil  bool  `json:"testCollectionIDIsNil,omitempty"`
+	TestCollectionIDNotNil bool  `json:"testCollectionIDNotNil,omitempty"`
 
 	// "test_collection" edge predicates.
 	HasTestCollection     *bool                       `json:"hasTestCollection,omitempty"`
@@ -13480,6 +14346,24 @@ func (i *TestResultBESWhereInput) P() (predicate.TestResultBES, error) {
 	if i.TestAttemptDurationNotNil {
 		predicates = append(predicates, testresultbes.TestAttemptDurationNotNil())
 	}
+	if i.TestCollectionID != nil {
+		predicates = append(predicates, testresultbes.TestCollectionIDEQ(*i.TestCollectionID))
+	}
+	if i.TestCollectionIDNEQ != nil {
+		predicates = append(predicates, testresultbes.TestCollectionIDNEQ(*i.TestCollectionIDNEQ))
+	}
+	if len(i.TestCollectionIDIn) > 0 {
+		predicates = append(predicates, testresultbes.TestCollectionIDIn(i.TestCollectionIDIn...))
+	}
+	if len(i.TestCollectionIDNotIn) > 0 {
+		predicates = append(predicates, testresultbes.TestCollectionIDNotIn(i.TestCollectionIDNotIn...))
+	}
+	if i.TestCollectionIDIsNil {
+		predicates = append(predicates, testresultbes.TestCollectionIDIsNil())
+	}
+	if i.TestCollectionIDNotNil {
+		predicates = append(predicates, testresultbes.TestCollectionIDNotNil())
+	}
 
 	if i.HasTestCollection != nil {
 		p := testresultbes.HasTestCollection()
@@ -13682,6 +14566,14 @@ type TestSummaryWhereInput struct {
 	LabelNotNil       bool     `json:"labelNotNil,omitempty"`
 	LabelEqualFold    *string  `json:"labelEqualFold,omitempty"`
 	LabelContainsFold *string  `json:"labelContainsFold,omitempty"`
+
+	// "test_collection_id" field predicates.
+	TestCollectionID       *int  `json:"testCollectionID,omitempty"`
+	TestCollectionIDNEQ    *int  `json:"testCollectionIDNEQ,omitempty"`
+	TestCollectionIDIn     []int `json:"testCollectionIDIn,omitempty"`
+	TestCollectionIDNotIn  []int `json:"testCollectionIDNotIn,omitempty"`
+	TestCollectionIDIsNil  bool  `json:"testCollectionIDIsNil,omitempty"`
+	TestCollectionIDNotNil bool  `json:"testCollectionIDNotNil,omitempty"`
 
 	// "test_collection" edge predicates.
 	HasTestCollection     *bool                       `json:"hasTestCollection,omitempty"`
@@ -14094,6 +14986,24 @@ func (i *TestSummaryWhereInput) P() (predicate.TestSummary, error) {
 	if i.LabelContainsFold != nil {
 		predicates = append(predicates, testsummary.LabelContainsFold(*i.LabelContainsFold))
 	}
+	if i.TestCollectionID != nil {
+		predicates = append(predicates, testsummary.TestCollectionIDEQ(*i.TestCollectionID))
+	}
+	if i.TestCollectionIDNEQ != nil {
+		predicates = append(predicates, testsummary.TestCollectionIDNEQ(*i.TestCollectionIDNEQ))
+	}
+	if len(i.TestCollectionIDIn) > 0 {
+		predicates = append(predicates, testsummary.TestCollectionIDIn(i.TestCollectionIDIn...))
+	}
+	if len(i.TestCollectionIDNotIn) > 0 {
+		predicates = append(predicates, testsummary.TestCollectionIDNotIn(i.TestCollectionIDNotIn...))
+	}
+	if i.TestCollectionIDIsNil {
+		predicates = append(predicates, testsummary.TestCollectionIDIsNil())
+	}
+	if i.TestCollectionIDNotNil {
+		predicates = append(predicates, testsummary.TestCollectionIDNotNil())
+	}
 
 	if i.HasTestCollection != nil {
 		p := testsummary.HasTestCollection()
@@ -14209,6 +15119,14 @@ type TimingBreakdownWhereInput struct {
 	TimeNotNil       bool     `json:"timeNotNil,omitempty"`
 	TimeEqualFold    *string  `json:"timeEqualFold,omitempty"`
 	TimeContainsFold *string  `json:"timeContainsFold,omitempty"`
+
+	// "execution_info_id" field predicates.
+	ExecutionInfoID       *int  `json:"executionInfoID,omitempty"`
+	ExecutionInfoIDNEQ    *int  `json:"executionInfoIDNEQ,omitempty"`
+	ExecutionInfoIDIn     []int `json:"executionInfoIDIn,omitempty"`
+	ExecutionInfoIDNotIn  []int `json:"executionInfoIDNotIn,omitempty"`
+	ExecutionInfoIDIsNil  bool  `json:"executionInfoIDIsNil,omitempty"`
+	ExecutionInfoIDNotNil bool  `json:"executionInfoIDNotNil,omitempty"`
 
 	// "execution_info" edge predicates.
 	HasExecutionInfo     *bool                     `json:"hasExecutionInfo,omitempty"`
@@ -14404,6 +15322,24 @@ func (i *TimingBreakdownWhereInput) P() (predicate.TimingBreakdown, error) {
 	if i.TimeContainsFold != nil {
 		predicates = append(predicates, timingbreakdown.TimeContainsFold(*i.TimeContainsFold))
 	}
+	if i.ExecutionInfoID != nil {
+		predicates = append(predicates, timingbreakdown.ExecutionInfoIDEQ(*i.ExecutionInfoID))
+	}
+	if i.ExecutionInfoIDNEQ != nil {
+		predicates = append(predicates, timingbreakdown.ExecutionInfoIDNEQ(*i.ExecutionInfoIDNEQ))
+	}
+	if len(i.ExecutionInfoIDIn) > 0 {
+		predicates = append(predicates, timingbreakdown.ExecutionInfoIDIn(i.ExecutionInfoIDIn...))
+	}
+	if len(i.ExecutionInfoIDNotIn) > 0 {
+		predicates = append(predicates, timingbreakdown.ExecutionInfoIDNotIn(i.ExecutionInfoIDNotIn...))
+	}
+	if i.ExecutionInfoIDIsNil {
+		predicates = append(predicates, timingbreakdown.ExecutionInfoIDIsNil())
+	}
+	if i.ExecutionInfoIDNotNil {
+		predicates = append(predicates, timingbreakdown.ExecutionInfoIDNotNil())
+	}
 
 	if i.HasExecutionInfo != nil {
 		p := timingbreakdown.HasExecutionInfo()
@@ -14501,6 +15437,14 @@ type TimingChildWhereInput struct {
 	TimeNotNil       bool     `json:"timeNotNil,omitempty"`
 	TimeEqualFold    *string  `json:"timeEqualFold,omitempty"`
 	TimeContainsFold *string  `json:"timeContainsFold,omitempty"`
+
+	// "timing_breakdown_id" field predicates.
+	TimingBreakdownID       *int  `json:"timingBreakdownID,omitempty"`
+	TimingBreakdownIDNEQ    *int  `json:"timingBreakdownIDNEQ,omitempty"`
+	TimingBreakdownIDIn     []int `json:"timingBreakdownIDIn,omitempty"`
+	TimingBreakdownIDNotIn  []int `json:"timingBreakdownIDNotIn,omitempty"`
+	TimingBreakdownIDIsNil  bool  `json:"timingBreakdownIDIsNil,omitempty"`
+	TimingBreakdownIDNotNil bool  `json:"timingBreakdownIDNotNil,omitempty"`
 
 	// "timing_breakdown" edge predicates.
 	HasTimingBreakdown     *bool                        `json:"hasTimingBreakdown,omitempty"`
@@ -14691,6 +15635,24 @@ func (i *TimingChildWhereInput) P() (predicate.TimingChild, error) {
 	}
 	if i.TimeContainsFold != nil {
 		predicates = append(predicates, timingchild.TimeContainsFold(*i.TimeContainsFold))
+	}
+	if i.TimingBreakdownID != nil {
+		predicates = append(predicates, timingchild.TimingBreakdownIDEQ(*i.TimingBreakdownID))
+	}
+	if i.TimingBreakdownIDNEQ != nil {
+		predicates = append(predicates, timingchild.TimingBreakdownIDNEQ(*i.TimingBreakdownIDNEQ))
+	}
+	if len(i.TimingBreakdownIDIn) > 0 {
+		predicates = append(predicates, timingchild.TimingBreakdownIDIn(i.TimingBreakdownIDIn...))
+	}
+	if len(i.TimingBreakdownIDNotIn) > 0 {
+		predicates = append(predicates, timingchild.TimingBreakdownIDNotIn(i.TimingBreakdownIDNotIn...))
+	}
+	if i.TimingBreakdownIDIsNil {
+		predicates = append(predicates, timingchild.TimingBreakdownIDIsNil())
+	}
+	if i.TimingBreakdownIDNotNil {
+		predicates = append(predicates, timingchild.TimingBreakdownIDNotNil())
 	}
 
 	if i.HasTimingBreakdown != nil {

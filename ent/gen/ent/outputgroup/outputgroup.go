@@ -16,6 +16,8 @@ const (
 	FieldName = "name"
 	// FieldIncomplete holds the string denoting the incomplete field in the database.
 	FieldIncomplete = "incomplete"
+	// FieldTargetCompleteID holds the string denoting the target_complete_id field in the database.
+	FieldTargetCompleteID = "target_complete_id"
 	// EdgeTargetComplete holds the string denoting the target_complete edge name in mutations.
 	EdgeTargetComplete = "target_complete"
 	// EdgeInlineFiles holds the string denoting the inline_files edge name in mutations.
@@ -30,7 +32,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "targetcomplete" package.
 	TargetCompleteInverseTable = "target_completes"
 	// TargetCompleteColumn is the table column denoting the target_complete relation/edge.
-	TargetCompleteColumn = "target_complete_output_group"
+	TargetCompleteColumn = "target_complete_id"
 	// InlineFilesTable is the table that holds the inline_files relation/edge.
 	InlineFilesTable = "test_files"
 	// InlineFilesInverseTable is the table name for the TestFile entity.
@@ -44,7 +46,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "namedsetoffiles" package.
 	FileSetsInverseTable = "named_set_of_files"
 	// FileSetsColumn is the table column denoting the file_sets relation/edge.
-	FileSetsColumn = "output_group_file_sets"
+	FileSetsColumn = "output_group_id"
 )
 
 // Columns holds all SQL columns for outputgroup fields.
@@ -52,23 +54,13 @@ var Columns = []string{
 	FieldID,
 	FieldName,
 	FieldIncomplete,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "output_groups"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"target_complete_output_group",
+	FieldTargetCompleteID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -91,6 +83,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByIncomplete orders the results by the incomplete field.
 func ByIncomplete(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldIncomplete, opts...).ToFunc()
+}
+
+// ByTargetCompleteID orders the results by the target_complete_id field.
+func ByTargetCompleteID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTargetCompleteID, opts...).ToFunc()
 }
 
 // ByTargetCompleteField orders the results by target_complete field.

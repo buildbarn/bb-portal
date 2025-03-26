@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // RunnerCount holds the schema definition for the RunnerCount entity.
@@ -24,6 +25,9 @@ func (RunnerCount) Fields() []ent.Field {
 
 		// Count of actions of this type executed.
 		field.Int64("actions_executed").Optional(),
+
+		// foreign key to the action summary
+		field.Int("action_summary_id").Optional(),
 	}
 }
 
@@ -33,7 +37,8 @@ func (RunnerCount) Edges() []ent.Edge {
 		// Edge back to the action summary.
 		edge.From("action_summary", ActionSummary.Type).
 			Ref("runner_count").
-			Unique(),
+			Unique().
+			Field("action_summary_id"),
 	}
 }
 
@@ -42,5 +47,12 @@ func (RunnerCount) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entgql.RelayConnection(),
 		entgql.QueryField("findRunnerCounts"),
+	}
+}
+
+// Indexes of the RunnerCount.
+func (RunnerCount) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("action_summary_id"),
 	}
 }

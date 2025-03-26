@@ -28,6 +28,8 @@ func (TargetMetrics) Fields() []ent.Field {
 		// Size of the peak tenured space JVM heap size event in bytes post GC. Note
 		// that this reports 0 if there was no major GC during the build.
 		field.Int64("targets_configured_not_including_aspects").Optional(),
+
+		field.Int("metrics_id").Optional(),
 	}
 }
 
@@ -37,6 +39,7 @@ func (TargetMetrics) Edges() []ent.Edge {
 		// Edge back to the metrics object.
 		edge.From("metrics", Metrics.Type).
 			Ref("target_metrics").
-			Unique(),
+			Unique().
+			Field("metrics_id"),
 	}
 }

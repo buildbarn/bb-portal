@@ -21,11 +21,12 @@ type FilesMetric struct {
 	SizeInBytes int64 `json:"size_in_bytes,omitempty"`
 	// Count holds the value of the "count" field.
 	Count int32 `json:"count,omitempty"`
+	// ArtifactMetricsID holds the value of the "artifact_metrics_id" field.
+	ArtifactMetricsID int `json:"artifact_metrics_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FilesMetricQuery when eager-loading is set.
-	Edges                                FilesMetricEdges `json:"edges"`
-	artifact_metrics_top_level_artifacts *int
-	selectValues                         sql.SelectValues
+	Edges        FilesMetricEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // FilesMetricEdges holds the relations/edges for other nodes in the graph.
@@ -55,9 +56,7 @@ func (*FilesMetric) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case filesmetric.FieldID, filesmetric.FieldSizeInBytes, filesmetric.FieldCount:
-			values[i] = new(sql.NullInt64)
-		case filesmetric.ForeignKeys[0]: // artifact_metrics_top_level_artifacts
+		case filesmetric.FieldID, filesmetric.FieldSizeInBytes, filesmetric.FieldCount, filesmetric.FieldArtifactMetricsID:
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -92,12 +91,11 @@ func (fm *FilesMetric) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fm.Count = int32(value.Int64)
 			}
-		case filesmetric.ForeignKeys[0]:
+		case filesmetric.FieldArtifactMetricsID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_top_level_artifacts", value)
+				return fmt.Errorf("unexpected type %T for field artifact_metrics_id", values[i])
 			} else if value.Valid {
-				fm.artifact_metrics_top_level_artifacts = new(int)
-				*fm.artifact_metrics_top_level_artifacts = int(value.Int64)
+				fm.ArtifactMetricsID = int(value.Int64)
 			}
 		default:
 			fm.selectValues.Set(columns[i], values[i])
@@ -145,6 +143,9 @@ func (fm *FilesMetric) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("count=")
 	builder.WriteString(fmt.Sprintf("%v", fm.Count))
+	builder.WriteString(", ")
+	builder.WriteString("artifact_metrics_id=")
+	builder.WriteString(fmt.Sprintf("%v", fm.ArtifactMetricsID))
 	builder.WriteByte(')')
 	return builder.String()
 }

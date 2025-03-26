@@ -20,6 +20,8 @@ func (TimingChild) Fields() []ent.Field {
 		// Time spent performing the activity (duration).
 		// NOTE: proto has this as an int, but implemented as a string
 		field.String("time").Optional(),
+
+		field.Int("timing_breakdown_id").Optional(),
 	}
 }
 
@@ -28,6 +30,7 @@ func (TimingChild) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("timing_breakdown", TimingBreakdown.Type).
 			Ref("child").
-			Unique(),
+			Unique().
+			Field("timing_breakdown_id"),
 	}
 }

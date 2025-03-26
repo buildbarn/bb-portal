@@ -28,7 +28,6 @@ type TargetPairQuery struct {
 	withBazelInvocation *BazelInvocationQuery
 	withConfiguration   *TargetConfiguredQuery
 	withCompletion      *TargetCompleteQuery
-	withFKs             bool
 	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*TargetPair) error
 	// intermediate query (i.e. traversal path).
@@ -444,7 +443,6 @@ func (tpq *TargetPairQuery) prepareQuery(ctx context.Context) error {
 func (tpq *TargetPairQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TargetPair, error) {
 	var (
 		nodes       = []*TargetPair{}
-		withFKs     = tpq.withFKs
 		_spec       = tpq.querySpec()
 		loadedTypes = [3]bool{
 			tpq.withBazelInvocation != nil,
@@ -452,12 +450,6 @@ func (tpq *TargetPairQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 			tpq.withCompletion != nil,
 		}
 	)
-	if tpq.withBazelInvocation != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, targetpair.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TargetPair).scanValues(nil, columns)
 	}
@@ -509,10 +501,7 @@ func (tpq *TargetPairQuery) loadBazelInvocation(ctx context.Context, query *Baze
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TargetPair)
 	for i := range nodes {
-		if nodes[i].bazel_invocation_targets == nil {
-			continue
-		}
-		fk := *nodes[i].bazel_invocation_targets
+		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -529,7 +518,7 @@ func (tpq *TargetPairQuery) loadBazelInvocation(ctx context.Context, query *Baze
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_targets" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -544,7 +533,9 @@ func (tpq *TargetPairQuery) loadConfiguration(ctx context.Context, query *Target
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(targetconfigured.FieldTargetPairID)
+	}
 	query.Where(predicate.TargetConfigured(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(targetpair.ConfigurationColumn), fks...))
 	}))
@@ -553,13 +544,10 @@ func (tpq *TargetPairQuery) loadConfiguration(ctx context.Context, query *Target
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.target_pair_configuration
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "target_pair_configuration" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.TargetPairID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "target_pair_configuration" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "target_pair_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -572,7 +560,9 @@ func (tpq *TargetPairQuery) loadCompletion(ctx context.Context, query *TargetCom
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(targetcomplete.FieldTargetPairID)
+	}
 	query.Where(predicate.TargetComplete(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(targetpair.CompletionColumn), fks...))
 	}))
@@ -581,13 +571,10 @@ func (tpq *TargetPairQuery) loadCompletion(ctx context.Context, query *TargetCom
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.target_pair_completion
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "target_pair_completion" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.TargetPairID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "target_pair_completion" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "target_pair_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -621,6 +608,9 @@ func (tpq *TargetPairQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != targetpair.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if tpq.withBazelInvocation != nil {
+			_spec.Node.AddColumnOnce(targetpair.FieldBazelInvocationID)
 		}
 	}
 	if ps := tpq.predicates; len(ps) > 0 {

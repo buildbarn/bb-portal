@@ -35,6 +35,8 @@ func (TestFile) Fields() []ent.Field {
 		//  2. A configuration mnemonic, eg "k8-fastbuild"
 		//  3. An output category, eg "genfiles"
 		field.Strings("prefix").Optional(),
+
+		field.Int("test_result_id").Optional(),
 	}
 }
 
@@ -44,6 +46,7 @@ func (TestFile) Edges() []ent.Edge {
 		// Edge back to the test result.
 		edge.From("test_result", TestResultBES.Type).
 			Ref("test_action_output").
-			Unique(),
+			Unique().
+			Field("test_result_id"),
 	}
 }

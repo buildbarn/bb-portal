@@ -23,7 +23,6 @@ type TargetMetricsQuery struct {
 	inters      []Interceptor
 	predicates  []predicate.TargetMetrics
 	withMetrics *MetricsQuery
-	withFKs     bool
 	modifiers   []func(*sql.Selector)
 	loadTotal   []func(context.Context, []*TargetMetrics) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (tmq *TargetMetricsQuery) prepareQuery(ctx context.Context) error {
 func (tmq *TargetMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TargetMetrics, error) {
 	var (
 		nodes       = []*TargetMetrics{}
-		withFKs     = tmq.withFKs
 		_spec       = tmq.querySpec()
 		loadedTypes = [1]bool{
 			tmq.withMetrics != nil,
 		}
 	)
-	if tmq.withMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, targetmetrics.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TargetMetrics).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (tmq *TargetMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQu
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TargetMetrics)
 	for i := range nodes {
-		if nodes[i].metrics_target_metrics == nil {
-			continue
-		}
-		fk := *nodes[i].metrics_target_metrics
+		fk := nodes[i].MetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (tmq *TargetMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQu
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "metrics_target_metrics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (tmq *TargetMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != targetmetrics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if tmq.withMetrics != nil {
+			_spec.Node.AddColumnOnce(targetmetrics.FieldMetricsID)
 		}
 	}
 	if ps := tmq.predicates; len(ps) > 0 {

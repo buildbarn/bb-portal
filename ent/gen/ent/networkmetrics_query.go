@@ -26,7 +26,6 @@ type NetworkMetricsQuery struct {
 	predicates             []predicate.NetworkMetrics
 	withMetrics            *MetricsQuery
 	withSystemNetworkStats *SystemNetworkStatsQuery
-	withFKs                bool
 	modifiers              []func(*sql.Selector)
 	loadTotal              []func(context.Context, []*NetworkMetrics) error
 	// intermediate query (i.e. traversal path).
@@ -333,6 +332,18 @@ func (nmq *NetworkMetricsQuery) WithSystemNetworkStats(opts ...func(*SystemNetwo
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		MetricsID int `json:"metrics_id,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.NetworkMetrics.Query().
+//		GroupBy(networkmetrics.FieldMetricsID).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
 func (nmq *NetworkMetricsQuery) GroupBy(field string, fields ...string) *NetworkMetricsGroupBy {
 	nmq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &NetworkMetricsGroupBy{build: nmq}
@@ -344,6 +355,16 @@ func (nmq *NetworkMetricsQuery) GroupBy(field string, fields ...string) *Network
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
+//
+// Example:
+//
+//	var v []struct {
+//		MetricsID int `json:"metrics_id,omitempty"`
+//	}
+//
+//	client.NetworkMetrics.Query().
+//		Select(networkmetrics.FieldMetricsID).
+//		Scan(ctx, &v)
 func (nmq *NetworkMetricsQuery) Select(fields ...string) *NetworkMetricsSelect {
 	nmq.ctx.Fields = append(nmq.ctx.Fields, fields...)
 	sbuild := &NetworkMetricsSelect{NetworkMetricsQuery: nmq}
@@ -386,19 +407,12 @@ func (nmq *NetworkMetricsQuery) prepareQuery(ctx context.Context) error {
 func (nmq *NetworkMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*NetworkMetrics, error) {
 	var (
 		nodes       = []*NetworkMetrics{}
-		withFKs     = nmq.withFKs
 		_spec       = nmq.querySpec()
 		loadedTypes = [2]bool{
 			nmq.withMetrics != nil,
 			nmq.withSystemNetworkStats != nil,
 		}
 	)
-	if nmq.withMetrics != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, networkmetrics.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*NetworkMetrics).scanValues(nil, columns)
 	}
@@ -444,10 +458,7 @@ func (nmq *NetworkMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQ
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*NetworkMetrics)
 	for i := range nodes {
-		if nodes[i].metrics_network_metrics == nil {
-			continue
-		}
-		fk := *nodes[i].metrics_network_metrics
+		fk := nodes[i].MetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -464,7 +475,7 @@ func (nmq *NetworkMetricsQuery) loadMetrics(ctx context.Context, query *MetricsQ
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "metrics_network_metrics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -479,7 +490,9 @@ func (nmq *NetworkMetricsQuery) loadSystemNetworkStats(ctx context.Context, quer
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(systemnetworkstats.FieldNetworkMetricsID)
+	}
 	query.Where(predicate.SystemNetworkStats(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(networkmetrics.SystemNetworkStatsColumn), fks...))
 	}))
@@ -488,13 +501,10 @@ func (nmq *NetworkMetricsQuery) loadSystemNetworkStats(ctx context.Context, quer
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.network_metrics_system_network_stats
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "network_metrics_system_network_stats" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.NetworkMetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "network_metrics_system_network_stats" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "network_metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -528,6 +538,9 @@ func (nmq *NetworkMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != networkmetrics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if nmq.withMetrics != nil {
+			_spec.Node.AddColumnOnce(networkmetrics.FieldMetricsID)
 		}
 	}
 	if ps := nmq.predicates; len(ps) > 0 {

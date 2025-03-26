@@ -134,17 +134,23 @@ func (tfu *TestFileUpdate) ClearPrefix() *TestFileUpdate {
 	return tfu
 }
 
-// SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
-func (tfu *TestFileUpdate) SetTestResultID(id int) *TestFileUpdate {
-	tfu.mutation.SetTestResultID(id)
+// SetTestResultID sets the "test_result_id" field.
+func (tfu *TestFileUpdate) SetTestResultID(i int) *TestFileUpdate {
+	tfu.mutation.SetTestResultID(i)
 	return tfu
 }
 
-// SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
-func (tfu *TestFileUpdate) SetNillableTestResultID(id *int) *TestFileUpdate {
-	if id != nil {
-		tfu = tfu.SetTestResultID(*id)
+// SetNillableTestResultID sets the "test_result_id" field if the given value is not nil.
+func (tfu *TestFileUpdate) SetNillableTestResultID(i *int) *TestFileUpdate {
+	if i != nil {
+		tfu.SetTestResultID(*i)
 	}
+	return tfu
+}
+
+// ClearTestResultID clears the value of the "test_result_id" field.
+func (tfu *TestFileUpdate) ClearTestResultID() *TestFileUpdate {
+	tfu.mutation.ClearTestResultID()
 	return tfu
 }
 
@@ -392,17 +398,23 @@ func (tfuo *TestFileUpdateOne) ClearPrefix() *TestFileUpdateOne {
 	return tfuo
 }
 
-// SetTestResultID sets the "test_result" edge to the TestResultBES entity by ID.
-func (tfuo *TestFileUpdateOne) SetTestResultID(id int) *TestFileUpdateOne {
-	tfuo.mutation.SetTestResultID(id)
+// SetTestResultID sets the "test_result_id" field.
+func (tfuo *TestFileUpdateOne) SetTestResultID(i int) *TestFileUpdateOne {
+	tfuo.mutation.SetTestResultID(i)
 	return tfuo
 }
 
-// SetNillableTestResultID sets the "test_result" edge to the TestResultBES entity by ID if the given value is not nil.
-func (tfuo *TestFileUpdateOne) SetNillableTestResultID(id *int) *TestFileUpdateOne {
-	if id != nil {
-		tfuo = tfuo.SetTestResultID(*id)
+// SetNillableTestResultID sets the "test_result_id" field if the given value is not nil.
+func (tfuo *TestFileUpdateOne) SetNillableTestResultID(i *int) *TestFileUpdateOne {
+	if i != nil {
+		tfuo.SetTestResultID(*i)
 	}
+	return tfuo
+}
+
+// ClearTestResultID clears the value of the "test_result_id" field.
+func (tfuo *TestFileUpdateOne) ClearTestResultID() *TestFileUpdateOne {
+	tfuo.mutation.ClearTestResultID()
 	return tfuo
 }
 

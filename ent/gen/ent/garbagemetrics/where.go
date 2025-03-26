@@ -63,6 +63,11 @@ func GarbageCollected(v int64) predicate.GarbageMetrics {
 	return predicate.GarbageMetrics(sql.FieldEQ(FieldGarbageCollected, v))
 }
 
+// MemoryMetricsID applies equality check predicate on the "memory_metrics_id" field. It's identical to MemoryMetricsIDEQ.
+func MemoryMetricsID(v int) predicate.GarbageMetrics {
+	return predicate.GarbageMetrics(sql.FieldEQ(FieldMemoryMetricsID, v))
+}
+
 // TypeEQ applies the EQ predicate on the "type" field.
 func TypeEQ(v string) predicate.GarbageMetrics {
 	return predicate.GarbageMetrics(sql.FieldEQ(FieldType, v))
@@ -186,6 +191,36 @@ func GarbageCollectedIsNil() predicate.GarbageMetrics {
 // GarbageCollectedNotNil applies the NotNil predicate on the "garbage_collected" field.
 func GarbageCollectedNotNil() predicate.GarbageMetrics {
 	return predicate.GarbageMetrics(sql.FieldNotNull(FieldGarbageCollected))
+}
+
+// MemoryMetricsIDEQ applies the EQ predicate on the "memory_metrics_id" field.
+func MemoryMetricsIDEQ(v int) predicate.GarbageMetrics {
+	return predicate.GarbageMetrics(sql.FieldEQ(FieldMemoryMetricsID, v))
+}
+
+// MemoryMetricsIDNEQ applies the NEQ predicate on the "memory_metrics_id" field.
+func MemoryMetricsIDNEQ(v int) predicate.GarbageMetrics {
+	return predicate.GarbageMetrics(sql.FieldNEQ(FieldMemoryMetricsID, v))
+}
+
+// MemoryMetricsIDIn applies the In predicate on the "memory_metrics_id" field.
+func MemoryMetricsIDIn(vs ...int) predicate.GarbageMetrics {
+	return predicate.GarbageMetrics(sql.FieldIn(FieldMemoryMetricsID, vs...))
+}
+
+// MemoryMetricsIDNotIn applies the NotIn predicate on the "memory_metrics_id" field.
+func MemoryMetricsIDNotIn(vs ...int) predicate.GarbageMetrics {
+	return predicate.GarbageMetrics(sql.FieldNotIn(FieldMemoryMetricsID, vs...))
+}
+
+// MemoryMetricsIDIsNil applies the IsNil predicate on the "memory_metrics_id" field.
+func MemoryMetricsIDIsNil() predicate.GarbageMetrics {
+	return predicate.GarbageMetrics(sql.FieldIsNull(FieldMemoryMetricsID))
+}
+
+// MemoryMetricsIDNotNil applies the NotNil predicate on the "memory_metrics_id" field.
+func MemoryMetricsIDNotNil() predicate.GarbageMetrics {
+	return predicate.GarbageMetrics(sql.FieldNotNull(FieldMemoryMetricsID))
 }
 
 // HasMemoryMetrics applies the HasEdge predicate on the "memory_metrics" edge.

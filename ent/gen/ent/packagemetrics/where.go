@@ -58,6 +58,11 @@ func PackagesLoaded(v int64) predicate.PackageMetrics {
 	return predicate.PackageMetrics(sql.FieldEQ(FieldPackagesLoaded, v))
 }
 
+// MetricsID applies equality check predicate on the "metrics_id" field. It's identical to MetricsIDEQ.
+func MetricsID(v int) predicate.PackageMetrics {
+	return predicate.PackageMetrics(sql.FieldEQ(FieldMetricsID, v))
+}
+
 // PackagesLoadedEQ applies the EQ predicate on the "packages_loaded" field.
 func PackagesLoadedEQ(v int64) predicate.PackageMetrics {
 	return predicate.PackageMetrics(sql.FieldEQ(FieldPackagesLoaded, v))
@@ -106,6 +111,36 @@ func PackagesLoadedIsNil() predicate.PackageMetrics {
 // PackagesLoadedNotNil applies the NotNil predicate on the "packages_loaded" field.
 func PackagesLoadedNotNil() predicate.PackageMetrics {
 	return predicate.PackageMetrics(sql.FieldNotNull(FieldPackagesLoaded))
+}
+
+// MetricsIDEQ applies the EQ predicate on the "metrics_id" field.
+func MetricsIDEQ(v int) predicate.PackageMetrics {
+	return predicate.PackageMetrics(sql.FieldEQ(FieldMetricsID, v))
+}
+
+// MetricsIDNEQ applies the NEQ predicate on the "metrics_id" field.
+func MetricsIDNEQ(v int) predicate.PackageMetrics {
+	return predicate.PackageMetrics(sql.FieldNEQ(FieldMetricsID, v))
+}
+
+// MetricsIDIn applies the In predicate on the "metrics_id" field.
+func MetricsIDIn(vs ...int) predicate.PackageMetrics {
+	return predicate.PackageMetrics(sql.FieldIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDNotIn applies the NotIn predicate on the "metrics_id" field.
+func MetricsIDNotIn(vs ...int) predicate.PackageMetrics {
+	return predicate.PackageMetrics(sql.FieldNotIn(FieldMetricsID, vs...))
+}
+
+// MetricsIDIsNil applies the IsNil predicate on the "metrics_id" field.
+func MetricsIDIsNil() predicate.PackageMetrics {
+	return predicate.PackageMetrics(sql.FieldIsNull(FieldMetricsID))
+}
+
+// MetricsIDNotNil applies the NotNil predicate on the "metrics_id" field.
+func MetricsIDNotNil() predicate.PackageMetrics {
+	return predicate.PackageMetrics(sql.FieldNotNull(FieldMetricsID))
 }
 
 // HasMetrics applies the HasEdge predicate on the "metrics" edge.

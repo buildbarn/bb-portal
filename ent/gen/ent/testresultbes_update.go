@@ -230,17 +230,23 @@ func (trbu *TestResultBESUpdate) ClearTestAttemptDuration() *TestResultBESUpdate
 	return trbu
 }
 
-// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (trbu *TestResultBESUpdate) SetTestCollectionID(id int) *TestResultBESUpdate {
-	trbu.mutation.SetTestCollectionID(id)
+// SetTestCollectionID sets the "test_collection_id" field.
+func (trbu *TestResultBESUpdate) SetTestCollectionID(i int) *TestResultBESUpdate {
+	trbu.mutation.SetTestCollectionID(i)
 	return trbu
 }
 
-// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (trbu *TestResultBESUpdate) SetNillableTestCollectionID(id *int) *TestResultBESUpdate {
-	if id != nil {
-		trbu = trbu.SetTestCollectionID(*id)
+// SetNillableTestCollectionID sets the "test_collection_id" field if the given value is not nil.
+func (trbu *TestResultBESUpdate) SetNillableTestCollectionID(i *int) *TestResultBESUpdate {
+	if i != nil {
+		trbu.SetTestCollectionID(*i)
 	}
+	return trbu
+}
+
+// ClearTestCollectionID clears the value of the "test_collection_id" field.
+func (trbu *TestResultBESUpdate) ClearTestCollectionID() *TestResultBESUpdate {
+	trbu.mutation.ClearTestCollectionID()
 	return trbu
 }
 
@@ -760,17 +766,23 @@ func (trbuo *TestResultBESUpdateOne) ClearTestAttemptDuration() *TestResultBESUp
 	return trbuo
 }
 
-// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (trbuo *TestResultBESUpdateOne) SetTestCollectionID(id int) *TestResultBESUpdateOne {
-	trbuo.mutation.SetTestCollectionID(id)
+// SetTestCollectionID sets the "test_collection_id" field.
+func (trbuo *TestResultBESUpdateOne) SetTestCollectionID(i int) *TestResultBESUpdateOne {
+	trbuo.mutation.SetTestCollectionID(i)
 	return trbuo
 }
 
-// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (trbuo *TestResultBESUpdateOne) SetNillableTestCollectionID(id *int) *TestResultBESUpdateOne {
-	if id != nil {
-		trbuo = trbuo.SetTestCollectionID(*id)
+// SetNillableTestCollectionID sets the "test_collection_id" field if the given value is not nil.
+func (trbuo *TestResultBESUpdateOne) SetNillableTestCollectionID(i *int) *TestResultBESUpdateOne {
+	if i != nil {
+		trbuo.SetTestCollectionID(*i)
 	}
+	return trbuo
+}
+
+// ClearTestCollectionID clears the value of the "test_collection_id" field.
+func (trbuo *TestResultBESUpdateOne) ClearTestCollectionID() *TestResultBESUpdateOne {
+	trbuo.mutation.ClearTestCollectionID()
 	return trbuo
 }
 

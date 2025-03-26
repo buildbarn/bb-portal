@@ -23,7 +23,6 @@ type RunnerCountQuery struct {
 	inters            []Interceptor
 	predicates        []predicate.RunnerCount
 	withActionSummary *ActionSummaryQuery
-	withFKs           bool
 	modifiers         []func(*sql.Selector)
 	loadTotal         []func(context.Context, []*RunnerCount) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (rcq *RunnerCountQuery) prepareQuery(ctx context.Context) error {
 func (rcq *RunnerCountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*RunnerCount, error) {
 	var (
 		nodes       = []*RunnerCount{}
-		withFKs     = rcq.withFKs
 		_spec       = rcq.querySpec()
 		loadedTypes = [1]bool{
 			rcq.withActionSummary != nil,
 		}
 	)
-	if rcq.withActionSummary != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, runnercount.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*RunnerCount).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (rcq *RunnerCountQuery) loadActionSummary(ctx context.Context, query *Actio
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*RunnerCount)
 	for i := range nodes {
-		if nodes[i].action_summary_runner_count == nil {
-			continue
-		}
-		fk := *nodes[i].action_summary_runner_count
+		fk := nodes[i].ActionSummaryID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (rcq *RunnerCountQuery) loadActionSummary(ctx context.Context, query *Actio
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "action_summary_runner_count" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "action_summary_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (rcq *RunnerCountQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != runnercount.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if rcq.withActionSummary != nil {
+			_spec.Node.AddColumnOnce(runnercount.FieldActionSummaryID)
 		}
 	}
 	if ps := rcq.predicates; len(ps) > 0 {

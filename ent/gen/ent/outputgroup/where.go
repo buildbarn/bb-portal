@@ -63,6 +63,11 @@ func Incomplete(v bool) predicate.OutputGroup {
 	return predicate.OutputGroup(sql.FieldEQ(FieldIncomplete, v))
 }
 
+// TargetCompleteID applies equality check predicate on the "target_complete_id" field. It's identical to TargetCompleteIDEQ.
+func TargetCompleteID(v int) predicate.OutputGroup {
+	return predicate.OutputGroup(sql.FieldEQ(FieldTargetCompleteID, v))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.OutputGroup {
 	return predicate.OutputGroup(sql.FieldEQ(FieldName, v))
@@ -156,6 +161,36 @@ func IncompleteIsNil() predicate.OutputGroup {
 // IncompleteNotNil applies the NotNil predicate on the "incomplete" field.
 func IncompleteNotNil() predicate.OutputGroup {
 	return predicate.OutputGroup(sql.FieldNotNull(FieldIncomplete))
+}
+
+// TargetCompleteIDEQ applies the EQ predicate on the "target_complete_id" field.
+func TargetCompleteIDEQ(v int) predicate.OutputGroup {
+	return predicate.OutputGroup(sql.FieldEQ(FieldTargetCompleteID, v))
+}
+
+// TargetCompleteIDNEQ applies the NEQ predicate on the "target_complete_id" field.
+func TargetCompleteIDNEQ(v int) predicate.OutputGroup {
+	return predicate.OutputGroup(sql.FieldNEQ(FieldTargetCompleteID, v))
+}
+
+// TargetCompleteIDIn applies the In predicate on the "target_complete_id" field.
+func TargetCompleteIDIn(vs ...int) predicate.OutputGroup {
+	return predicate.OutputGroup(sql.FieldIn(FieldTargetCompleteID, vs...))
+}
+
+// TargetCompleteIDNotIn applies the NotIn predicate on the "target_complete_id" field.
+func TargetCompleteIDNotIn(vs ...int) predicate.OutputGroup {
+	return predicate.OutputGroup(sql.FieldNotIn(FieldTargetCompleteID, vs...))
+}
+
+// TargetCompleteIDIsNil applies the IsNil predicate on the "target_complete_id" field.
+func TargetCompleteIDIsNil() predicate.OutputGroup {
+	return predicate.OutputGroup(sql.FieldIsNull(FieldTargetCompleteID))
+}
+
+// TargetCompleteIDNotNil applies the NotNil predicate on the "target_complete_id" field.
+func TargetCompleteIDNotNil() predicate.OutputGroup {
+	return predicate.OutputGroup(sql.FieldNotNull(FieldTargetCompleteID))
 }
 
 // HasTargetComplete applies the HasEdge predicate on the "target_complete" edge.

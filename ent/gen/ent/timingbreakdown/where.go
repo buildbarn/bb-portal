@@ -63,6 +63,11 @@ func Time(v string) predicate.TimingBreakdown {
 	return predicate.TimingBreakdown(sql.FieldEQ(FieldTime, v))
 }
 
+// ExecutionInfoID applies equality check predicate on the "execution_info_id" field. It's identical to ExecutionInfoIDEQ.
+func ExecutionInfoID(v int) predicate.TimingBreakdown {
+	return predicate.TimingBreakdown(sql.FieldEQ(FieldExecutionInfoID, v))
+}
+
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.TimingBreakdown {
 	return predicate.TimingBreakdown(sql.FieldEQ(FieldName, v))
@@ -211,6 +216,36 @@ func TimeEqualFold(v string) predicate.TimingBreakdown {
 // TimeContainsFold applies the ContainsFold predicate on the "time" field.
 func TimeContainsFold(v string) predicate.TimingBreakdown {
 	return predicate.TimingBreakdown(sql.FieldContainsFold(FieldTime, v))
+}
+
+// ExecutionInfoIDEQ applies the EQ predicate on the "execution_info_id" field.
+func ExecutionInfoIDEQ(v int) predicate.TimingBreakdown {
+	return predicate.TimingBreakdown(sql.FieldEQ(FieldExecutionInfoID, v))
+}
+
+// ExecutionInfoIDNEQ applies the NEQ predicate on the "execution_info_id" field.
+func ExecutionInfoIDNEQ(v int) predicate.TimingBreakdown {
+	return predicate.TimingBreakdown(sql.FieldNEQ(FieldExecutionInfoID, v))
+}
+
+// ExecutionInfoIDIn applies the In predicate on the "execution_info_id" field.
+func ExecutionInfoIDIn(vs ...int) predicate.TimingBreakdown {
+	return predicate.TimingBreakdown(sql.FieldIn(FieldExecutionInfoID, vs...))
+}
+
+// ExecutionInfoIDNotIn applies the NotIn predicate on the "execution_info_id" field.
+func ExecutionInfoIDNotIn(vs ...int) predicate.TimingBreakdown {
+	return predicate.TimingBreakdown(sql.FieldNotIn(FieldExecutionInfoID, vs...))
+}
+
+// ExecutionInfoIDIsNil applies the IsNil predicate on the "execution_info_id" field.
+func ExecutionInfoIDIsNil() predicate.TimingBreakdown {
+	return predicate.TimingBreakdown(sql.FieldIsNull(FieldExecutionInfoID))
+}
+
+// ExecutionInfoIDNotNil applies the NotNil predicate on the "execution_info_id" field.
+func ExecutionInfoIDNotNil() predicate.TimingBreakdown {
+	return predicate.TimingBreakdown(sql.FieldNotNull(FieldExecutionInfoID))
 }
 
 // HasExecutionInfo applies the HasEdge predicate on the "execution_info" edge.

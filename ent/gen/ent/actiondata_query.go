@@ -23,7 +23,6 @@ type ActionDataQuery struct {
 	inters            []Interceptor
 	predicates        []predicate.ActionData
 	withActionSummary *ActionSummaryQuery
-	withFKs           bool
 	modifiers         []func(*sql.Selector)
 	loadTotal         []func(context.Context, []*ActionData) error
 	// intermediate query (i.e. traversal path).
@@ -371,18 +370,11 @@ func (adq *ActionDataQuery) prepareQuery(ctx context.Context) error {
 func (adq *ActionDataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ActionData, error) {
 	var (
 		nodes       = []*ActionData{}
-		withFKs     = adq.withFKs
 		_spec       = adq.querySpec()
 		loadedTypes = [1]bool{
 			adq.withActionSummary != nil,
 		}
 	)
-	if adq.withActionSummary != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, actiondata.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*ActionData).scanValues(nil, columns)
 	}
@@ -422,10 +414,7 @@ func (adq *ActionDataQuery) loadActionSummary(ctx context.Context, query *Action
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*ActionData)
 	for i := range nodes {
-		if nodes[i].action_summary_action_data == nil {
-			continue
-		}
-		fk := *nodes[i].action_summary_action_data
+		fk := nodes[i].ActionSummaryID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -442,7 +431,7 @@ func (adq *ActionDataQuery) loadActionSummary(ctx context.Context, query *Action
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "action_summary_action_data" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "action_summary_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -478,6 +467,9 @@ func (adq *ActionDataQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != actiondata.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if adq.withActionSummary != nil {
+			_spec.Node.AddColumnOnce(actiondata.FieldActionSummaryID)
 		}
 	}
 	if ps := adq.predicates; len(ps) > 0 {

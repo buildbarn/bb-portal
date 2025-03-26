@@ -183,17 +183,23 @@ func (plmu *PackageLoadMetricsUpdate) ClearPackageOverhead() *PackageLoadMetrics
 	return plmu
 }
 
-// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
-func (plmu *PackageLoadMetricsUpdate) SetPackageMetricsID(id int) *PackageLoadMetricsUpdate {
-	plmu.mutation.SetPackageMetricsID(id)
+// SetPackageMetricsID sets the "package_metrics_id" field.
+func (plmu *PackageLoadMetricsUpdate) SetPackageMetricsID(i int) *PackageLoadMetricsUpdate {
+	plmu.mutation.SetPackageMetricsID(i)
 	return plmu
 }
 
-// SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
-func (plmu *PackageLoadMetricsUpdate) SetNillablePackageMetricsID(id *int) *PackageLoadMetricsUpdate {
-	if id != nil {
-		plmu = plmu.SetPackageMetricsID(*id)
+// SetNillablePackageMetricsID sets the "package_metrics_id" field if the given value is not nil.
+func (plmu *PackageLoadMetricsUpdate) SetNillablePackageMetricsID(i *int) *PackageLoadMetricsUpdate {
+	if i != nil {
+		plmu.SetPackageMetricsID(*i)
 	}
+	return plmu
+}
+
+// ClearPackageMetricsID clears the value of the "package_metrics_id" field.
+func (plmu *PackageLoadMetricsUpdate) ClearPackageMetricsID() *PackageLoadMetricsUpdate {
+	plmu.mutation.ClearPackageMetricsID()
 	return plmu
 }
 
@@ -504,17 +510,23 @@ func (plmuo *PackageLoadMetricsUpdateOne) ClearPackageOverhead() *PackageLoadMet
 	return plmuo
 }
 
-// SetPackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID.
-func (plmuo *PackageLoadMetricsUpdateOne) SetPackageMetricsID(id int) *PackageLoadMetricsUpdateOne {
-	plmuo.mutation.SetPackageMetricsID(id)
+// SetPackageMetricsID sets the "package_metrics_id" field.
+func (plmuo *PackageLoadMetricsUpdateOne) SetPackageMetricsID(i int) *PackageLoadMetricsUpdateOne {
+	plmuo.mutation.SetPackageMetricsID(i)
 	return plmuo
 }
 
-// SetNillablePackageMetricsID sets the "package_metrics" edge to the PackageMetrics entity by ID if the given value is not nil.
-func (plmuo *PackageLoadMetricsUpdateOne) SetNillablePackageMetricsID(id *int) *PackageLoadMetricsUpdateOne {
-	if id != nil {
-		plmuo = plmuo.SetPackageMetricsID(*id)
+// SetNillablePackageMetricsID sets the "package_metrics_id" field if the given value is not nil.
+func (plmuo *PackageLoadMetricsUpdateOne) SetNillablePackageMetricsID(i *int) *PackageLoadMetricsUpdateOne {
+	if i != nil {
+		plmuo.SetPackageMetricsID(*i)
 	}
+	return plmuo
+}
+
+// ClearPackageMetricsID clears the value of the "package_metrics_id" field.
+func (plmuo *PackageLoadMetricsUpdateOne) ClearPackageMetricsID() *PackageLoadMetricsUpdateOne {
+	plmuo.mutation.ClearPackageMetricsID()
 	return plmuo
 }
 

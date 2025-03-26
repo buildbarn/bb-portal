@@ -26,7 +26,6 @@ type TimingBreakdownQuery struct {
 	predicates        []predicate.TimingBreakdown
 	withExecutionInfo *ExectionInfoQuery
 	withChild         *TimingChildQuery
-	withFKs           bool
 	modifiers         []func(*sql.Selector)
 	loadTotal         []func(context.Context, []*TimingBreakdown) error
 	withNamedChild    map[string]*TimingChildQuery
@@ -409,19 +408,12 @@ func (tbq *TimingBreakdownQuery) prepareQuery(ctx context.Context) error {
 func (tbq *TimingBreakdownQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TimingBreakdown, error) {
 	var (
 		nodes       = []*TimingBreakdown{}
-		withFKs     = tbq.withFKs
 		_spec       = tbq.querySpec()
 		loadedTypes = [2]bool{
 			tbq.withExecutionInfo != nil,
 			tbq.withChild != nil,
 		}
 	)
-	if tbq.withExecutionInfo != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, timingbreakdown.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TimingBreakdown).scanValues(nil, columns)
 	}
@@ -475,10 +467,7 @@ func (tbq *TimingBreakdownQuery) loadExecutionInfo(ctx context.Context, query *E
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TimingBreakdown)
 	for i := range nodes {
-		if nodes[i].exection_info_timing_breakdown == nil {
-			continue
-		}
-		fk := *nodes[i].exection_info_timing_breakdown
+		fk := nodes[i].ExecutionInfoID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -495,7 +484,7 @@ func (tbq *TimingBreakdownQuery) loadExecutionInfo(ctx context.Context, query *E
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "exection_info_timing_breakdown" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "execution_info_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -513,7 +502,9 @@ func (tbq *TimingBreakdownQuery) loadChild(ctx context.Context, query *TimingChi
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(timingchild.FieldTimingBreakdownID)
+	}
 	query.Where(predicate.TimingChild(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(timingbreakdown.ChildColumn), fks...))
 	}))
@@ -522,13 +513,10 @@ func (tbq *TimingBreakdownQuery) loadChild(ctx context.Context, query *TimingChi
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.timing_breakdown_child
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "timing_breakdown_child" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.TimingBreakdownID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "timing_breakdown_child" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "timing_breakdown_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -562,6 +550,9 @@ func (tbq *TimingBreakdownQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != timingbreakdown.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if tbq.withExecutionInfo != nil {
+			_spec.Node.AddColumnOnce(timingbreakdown.FieldExecutionInfoID)
 		}
 	}
 	if ps := tbq.predicates; len(ps) > 0 {

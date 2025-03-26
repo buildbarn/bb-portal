@@ -33,11 +33,12 @@ type TargetComplete struct {
 	TestTimeout int64 `json:"test_timeout,omitempty"`
 	// TestSize holds the value of the "test_size" field.
 	TestSize targetcomplete.TestSize `json:"test_size,omitempty"`
+	// TargetPairID holds the value of the "target_pair_id" field.
+	TargetPairID int `json:"target_pair_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetCompleteQuery when eager-loading is set.
-	Edges                  TargetCompleteEdges `json:"edges"`
-	target_pair_completion *int
-	selectValues           sql.SelectValues
+	Edges        TargetCompleteEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // TargetCompleteEdges holds the relations/edges for other nodes in the graph.
@@ -109,12 +110,10 @@ func (*TargetComplete) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case targetcomplete.FieldSuccess:
 			values[i] = new(sql.NullBool)
-		case targetcomplete.FieldID, targetcomplete.FieldEndTimeInMs, targetcomplete.FieldTestTimeoutSeconds, targetcomplete.FieldTestTimeout:
+		case targetcomplete.FieldID, targetcomplete.FieldEndTimeInMs, targetcomplete.FieldTestTimeoutSeconds, targetcomplete.FieldTestTimeout, targetcomplete.FieldTargetPairID:
 			values[i] = new(sql.NullInt64)
 		case targetcomplete.FieldTargetKind, targetcomplete.FieldTestSize:
 			values[i] = new(sql.NullString)
-		case targetcomplete.ForeignKeys[0]: // target_pair_completion
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -180,12 +179,11 @@ func (tc *TargetComplete) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				tc.TestSize = targetcomplete.TestSize(value.String)
 			}
-		case targetcomplete.ForeignKeys[0]:
+		case targetcomplete.FieldTargetPairID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field target_pair_completion", value)
+				return fmt.Errorf("unexpected type %T for field target_pair_id", values[i])
 			} else if value.Valid {
-				tc.target_pair_completion = new(int)
-				*tc.target_pair_completion = int(value.Int64)
+				tc.TargetPairID = int(value.Int64)
 			}
 		default:
 			tc.selectValues.Set(columns[i], values[i])
@@ -263,6 +261,9 @@ func (tc *TargetComplete) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("test_size=")
 	builder.WriteString(fmt.Sprintf("%v", tc.TestSize))
+	builder.WriteString(", ")
+	builder.WriteString("target_pair_id=")
+	builder.WriteString(fmt.Sprintf("%v", tc.TargetPairID))
 	builder.WriteByte(')')
 	return builder.String()
 }

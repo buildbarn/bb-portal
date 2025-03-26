@@ -438,6 +438,18 @@ func (amq *ArtifactMetricsQuery) WithTopLevelArtifacts(opts ...func(*FilesMetric
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		MetricsID int `json:"metrics_id,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.ArtifactMetrics.Query().
+//		GroupBy(artifactmetrics.FieldMetricsID).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
 func (amq *ArtifactMetricsQuery) GroupBy(field string, fields ...string) *ArtifactMetricsGroupBy {
 	amq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &ArtifactMetricsGroupBy{build: amq}
@@ -449,6 +461,16 @@ func (amq *ArtifactMetricsQuery) GroupBy(field string, fields ...string) *Artifa
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
+//
+// Example:
+//
+//	var v []struct {
+//		MetricsID int `json:"metrics_id,omitempty"`
+//	}
+//
+//	client.ArtifactMetrics.Query().
+//		Select(artifactmetrics.FieldMetricsID).
+//		Scan(ctx, &v)
 func (amq *ArtifactMetricsQuery) Select(fields ...string) *ArtifactMetricsSelect {
 	amq.ctx.Fields = append(amq.ctx.Fields, fields...)
 	sbuild := &ArtifactMetricsSelect{ArtifactMetricsQuery: amq}
@@ -501,7 +523,7 @@ func (amq *ArtifactMetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			amq.withTopLevelArtifacts != nil,
 		}
 	)
-	if amq.withMetrics != nil || amq.withSourceArtifactsRead != nil || amq.withOutputArtifactsSeen != nil || amq.withOutputArtifactsFromActionCache != nil {
+	if amq.withSourceArtifactsRead != nil || amq.withOutputArtifactsSeen != nil || amq.withOutputArtifactsFromActionCache != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -570,10 +592,7 @@ func (amq *ArtifactMetricsQuery) loadMetrics(ctx context.Context, query *Metrics
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*ArtifactMetrics)
 	for i := range nodes {
-		if nodes[i].metrics_artifact_metrics == nil {
-			continue
-		}
-		fk := *nodes[i].metrics_artifact_metrics
+		fk := nodes[i].MetricsID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -590,7 +609,7 @@ func (amq *ArtifactMetricsQuery) loadMetrics(ctx context.Context, query *Metrics
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "metrics_artifact_metrics" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "metrics_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -701,7 +720,9 @@ func (amq *ArtifactMetricsQuery) loadTopLevelArtifacts(ctx context.Context, quer
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(filesmetric.FieldArtifactMetricsID)
+	}
 	query.Where(predicate.FilesMetric(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(artifactmetrics.TopLevelArtifactsColumn), fks...))
 	}))
@@ -710,13 +731,10 @@ func (amq *ArtifactMetricsQuery) loadTopLevelArtifacts(ctx context.Context, quer
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.artifact_metrics_top_level_artifacts
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "artifact_metrics_top_level_artifacts" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.ArtifactMetricsID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "artifact_metrics_top_level_artifacts" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "artifact_metrics_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -750,6 +768,9 @@ func (amq *ArtifactMetricsQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != artifactmetrics.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if amq.withMetrics != nil {
+			_spec.Node.AddColumnOnce(artifactmetrics.FieldMetricsID)
 		}
 	}
 	if ps := amq.predicates; len(ps) > 0 {
