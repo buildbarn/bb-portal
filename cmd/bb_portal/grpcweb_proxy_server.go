@@ -1,8 +1,9 @@
 package main
 
 import (
+	"errors"
 	"log"
-	"slices"
+	"net/http"
 
 	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"
 	"github.com/buildbarn/bb-portal/internal/api/grpcweb/actioncacheproxy"
@@ -14,8 +15,8 @@ import (
 	"github.com/buildbarn/bb-remote-execution/pkg/proto/buildqueuestate"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
-	bb_http "github.com/buildbarn/bb-storage/pkg/http"
 	"github.com/buildbarn/bb-storage/pkg/program"
+	grpc_configuration "github.com/buildbarn/bb-storage/pkg/proto/configuration/grpc"
 	"github.com/buildbarn/bb-storage/pkg/proto/fsac"
 	"github.com/buildbarn/bb-storage/pkg/proto/iscc"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
@@ -24,12 +25,12 @@ import (
 )
 
 func initializeGrpcWebServer(
-	proxyConfig *bb_portal.GrpcWebProxyConfiguration,
+	grpcClientConfig *grpc_configuration.ClientConfiguration,
 	grpcClientFactory bb_grpc.ClientFactory,
 	grpcServer *go_grpc.Server,
 	registerServer func(*go_grpc.Server, go_grpc.ClientConnInterface),
 ) {
-	grpcClient, err := grpcClientFactory.NewClientFromConfiguration(proxyConfig.Client)
+	grpcClient, err := grpcClientFactory.NewClientFromConfiguration(grpcClientConfig)
 	if err != nil {
 		log.Fatalf("Could not connect to gRPC server: %v", err)
 	}
@@ -50,10 +51,10 @@ func StartGrpcWebProxyServer(
 	configuration *bb_portal.ApplicationConfiguration,
 	siblingsGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
-) {
+) (http.Handler, error) {
 	if configuration.InstanceNameAuthorizer == nil {
 		log.Printf("Did not start gRPC-web proxy because InstanceNameAuthorizer is not configured")
-		return
+		return nil, errors.New("InstanceNameAuthorizer is not configured")
 	}
 
 	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, grpcClientFactory)
@@ -63,9 +64,9 @@ func StartGrpcWebProxyServer(
 
 	grpcServer := go_grpc.NewServer()
 
-	if configuration.BuildQueueStateProxy != nil {
+	if configuration.BuildQueueStateClient != nil {
 		initializeGrpcWebServer(
-			configuration.BuildQueueStateProxy,
+			configuration.BuildQueueStateClient,
 			grpcClientFactory,
 			grpcServer,
 			func(grpcServer *go_grpc.Server, grpcClient go_grpc.ClientConnInterface) {
@@ -74,12 +75,12 @@ func StartGrpcWebProxyServer(
 			},
 		)
 	} else {
-		log.Printf("Did not initialize BuildQueueState proxy because BuildQueueStateProxy is not configured")
+		log.Printf("Did not initialize BuildQueueState proxy because BuildQueueStateClient is not configured")
 	}
 
-	if configuration.ActionCacheProxy != nil {
+	if configuration.ActionCacheClient != nil {
 		initializeGrpcWebServer(
-			configuration.ActionCacheProxy,
+			configuration.ActionCacheClient,
 			grpcClientFactory,
 			grpcServer,
 			func(grpcServer *go_grpc.Server, grpcClient go_grpc.ClientConnInterface) {
@@ -88,12 +89,12 @@ func StartGrpcWebProxyServer(
 			},
 		)
 	} else {
-		log.Printf("Did not initialize ActionCache proxy because ActionCacheProxy is not configured")
+		log.Printf("Did not initialize ActionCache proxy because ActionCacheClient is not configured")
 	}
 
-	if configuration.ContentAddressableStorageProxy != nil {
+	if configuration.ContentAddressableStorageClient != nil {
 		initializeGrpcWebServer(
-			configuration.ContentAddressableStorageProxy,
+			configuration.ContentAddressableStorageClient,
 			grpcClientFactory,
 			grpcServer,
 			func(grpcServer *go_grpc.Server, grpcClient go_grpc.ClientConnInterface) {
@@ -102,12 +103,12 @@ func StartGrpcWebProxyServer(
 			},
 		)
 	} else {
-		log.Printf("Did not initialize ContentAddressableStorage proxy because ContentAddressableStorageProxy is not configured")
+		log.Printf("Did not initialize ContentAddressableStorage proxy because ContentAddressableStorageClient is not configured")
 	}
 
-	if configuration.InitialSizeClassCacheProxy != nil {
+	if configuration.InitialSizeClassCacheClient != nil {
 		initializeGrpcWebServer(
-			configuration.InitialSizeClassCacheProxy,
+			configuration.InitialSizeClassCacheClient,
 			grpcClientFactory,
 			grpcServer,
 			func(grpcServer *go_grpc.Server, grpcClient go_grpc.ClientConnInterface) {
@@ -116,12 +117,12 @@ func StartGrpcWebProxyServer(
 			},
 		)
 	} else {
-		log.Printf("Did not initialize InitialSizeClassCache proxy because InitialSizeClassCacheProxy is not configured")
+		log.Printf("Did not initialize InitialSizeClassCache proxy because InitialSizeClassCacheClient is not configured")
 	}
 
-	if configuration.FileSystemAccessCacheProxy != nil {
+	if configuration.FileSystemAccessCacheClient != nil {
 		initializeGrpcWebServer(
-			configuration.FileSystemAccessCacheProxy,
+			configuration.FileSystemAccessCacheClient,
 			grpcClientFactory,
 			grpcServer,
 			func(grpcServer *go_grpc.Server, grpcClient go_grpc.ClientConnInterface) {
@@ -130,19 +131,8 @@ func StartGrpcWebProxyServer(
 			},
 		)
 	} else {
-		log.Printf("Did not initialize FileSystemAccessCache proxy because FileSystemAccessCacheProxy is not configured")
+		log.Printf("Did not initialize FileSystemAccessCache proxy because FileSystemAccessCacheClient is not configured")
 	}
 
-	options := []grpcweb.Option{
-		grpcweb.WithOriginFunc(func(origin string) bool {
-			return slices.Contains(configuration.AllowedOrigins, origin) || slices.Contains(configuration.AllowedOrigins, "*")
-		}),
-	}
-
-	grpcWebServer := grpcweb.WrapServer(grpcServer, options...)
-	bb_http.NewServersFromConfigurationAndServe(
-		configuration.ProxyConfiguration,
-		bb_http.NewMetricsHandler(grpcWebServer, "GrpcWebProxy"),
-		siblingsGroup,
-	)
+	return grpcweb.WrapServer(grpcServer), nil
 }

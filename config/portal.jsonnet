@@ -8,7 +8,7 @@
 
 {
   frontendProxyUrl: 'http://localhost:3000',
-  allowedOrigins: ['http://localhost:3000', 'http://localhost:8081'],
+  allowedOrigins: ['http://localhost:3000'],
 
   serveFilesCasConfiguration: {
     grpc: { address: 'localhost:8980' },
@@ -43,48 +43,23 @@
     |||,
   },
 
-  buildQueueStateProxy: {
-    client: {
-      address: 'localhost:8984',
-    },
+  buildQueueStateClient: {
+    address: 'localhost:8984',
   },
 
-  actionCacheProxy: {
-    client: {
-      address: 'localhost:8980',
-    },
+  actionCacheClient: {
+    address: 'localhost:8980',
   },
 
-  contentAddressableStorageProxy: {
-    client: {
-      address: 'localhost:8980',
-    },
+  contentAddressableStorageClient: {
+    address: 'localhost:8980',
   },
 
-  initialSizeClassCacheProxy: {
-    client: {
-      address: 'localhost:8980',
-    },
-  },
-  fileSystemAccessCacheProxy: {
-    client: {
-      address: 'localhost:8980',
-    },
+  initialSizeClassCacheClient: {
+    address: 'localhost:8980',
   },
 
-  proxyConfiguration: [{
-    listenAddresses: [':8985'],
-    authenticationPolicy: {
-      allow: {
-        public: {
-          user: 'FooBar',
-        },
-        private: {
-          groups: ['admin'],
-          instances: ['fuse', 'testingQueue'],
-          email: 'foo@example.com',
-        },
-      },
-    },
-  }],
+  fileSystemAccessCacheClient: {
+    address: 'localhost:8980',
+  },
 }

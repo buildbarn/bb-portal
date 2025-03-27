@@ -28,29 +28,31 @@ export interface GrpcClientsProviderProps {
 }
 
 const GrpcClientsProvider = ({ children }: GrpcClientsProviderProps) => {
+  const grpcChannel = createChannel(env("NEXT_PUBLIC_BES_BACKEND_URL") || "");
+
   const buildQueueStateClient: BuildQueueStateClient = createClient(
     BuildQueueStateDefinition,
-    createChannel(env("NEXT_PUBLIC_BB_GRPC_WEB_PROXY_URL") || ""),
+    grpcChannel,
   );
 
   const actionCacheClient: ActionCacheClient = createClient(
     ActionCacheDefinition,
-    createChannel(env("NEXT_PUBLIC_BB_GRPC_WEB_PROXY_URL") || ""),
+    grpcChannel,
   );
 
   const casByteStreamClient: ByteStreamClient = createClient(
     ByteStreamDefinition,
-    createChannel(env("NEXT_PUBLIC_BB_GRPC_WEB_PROXY_URL") || ""),
+    grpcChannel,
   );
 
   const initialSizeClassCacheClient: InitialSizeClassCacheClient = createClient(
     InitialSizeClassCacheDefinition,
-    createChannel(env("NEXT_PUBLIC_BB_GRPC_WEB_PROXY_URL") || ""),
+    grpcChannel,
   );
 
   const fileSystemAccessCacheClient: FileSystemAccessCacheClient = createClient(
     FileSystemAccessCacheDefinition,
-    createChannel(env("NEXT_PUBLIC_BB_GRPC_WEB_PROXY_URL") || ""),
+    grpcChannel,
   );
 
   return (
