@@ -17,7 +17,7 @@
             },
             {
                "name": "Gazelle",
-               "run": "rm -f $(find . -name '*.pb.go' | sed -e 's/[^/]*$/BUILD.bazel/') && bazel run //:gazelle"
+               "run": "rm -f $(find . -name '*.pb.go' -not -path './pkg/proto/bazelbuild/*' | sed -e 's/[^/]*$/BUILD.bazel/') && bazel run //:gazelle"
             },
             {
                "name": "Buildifier",
@@ -37,7 +37,7 @@
             },
             {
                "name": "Protobuf generation",
-               "run": "if [ -d pkg/proto ]; then\n  find . bazel-bin/pkg/proto -name '*.pb.go' -delete || true\n  bazel build $(bazel query --output=label 'kind(\"go_proto_library\", //...)')\n  third_party/bazel/scripts/generate-via-bazel.sh\n  find bazel-bin/pkg/proto -name '*.pb.go' | while read f; do\n    cat $f > $(echo $f | sed -e 's|.*/pkg/proto/|pkg/proto/|')\n  done\nfi\n"
+               "run": "if [ -d pkg/proto ]; then\n  find . bazel-bin/pkg/proto -name '*.pb.go' -delete || true\n  bazel build $(bazel query --output=label 'kind(\"go_proto_library\", //...)')\n  third_party/bazel/download_protofiles.sh\n  find bazel-bin/pkg/proto -name '*.pb.go' | while read f; do\n    cat $f > $(echo $f | sed -e 's|^bazel-bin/||' -e 's|/[^/]*_go_proto_/.*/|/|')\n  done\nfi\n"
             },
             {
                "name": "Embedded asset generation",

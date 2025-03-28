@@ -15,8 +15,8 @@ import (
 	"google.golang.org/api/iterator"
 	"google.golang.org/protobuf/proto"
 
+	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/pkg/events"
-	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 )
 
 // TestBuildEventIteratorBasic A test build event iterator.

@@ -7,11 +7,11 @@ import (
 	"log/slog"
 	"strings"
 
+	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
-	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 )
 
 // Error helpers.

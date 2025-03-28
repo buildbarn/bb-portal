@@ -13,7 +13,7 @@ go_library(
         "//ent/gen/ent",
         "//ent/gen/ent/targetpair",
         "//ent/gen/ent/testcollection",
-        "//third_party/bazel/gen/bes",
+        "//pkg/proto/bazelbuild/bazel:build_event_stream",
         "@com_github_google_uuid//:uuid",
     ],
 )

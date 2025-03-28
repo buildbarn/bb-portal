@@ -1,9 +1,0 @@
-module(
-    name = "bazel-bes",
-    repo_name = "com_github_buildbarn_bbportal_bazelbes",
-)
-
-bazel_dep(name = "buildozer", version = "7.1.2")
-bazel_dep(name = "rules_go", version = "0.48.0", repo_name = "io_bazel_rules_go")
-bazel_dep(name = "rules_pkg", version = "0.10.1")
-bazel_dep(name = "protobuf", version = "26.0", repo_name = "com_google_protobuf")

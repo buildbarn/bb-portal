@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"log/slog"
 
+	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
 	"github.com/buildbarn/bb-portal/pkg/events"
-	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 )
 
 // FileLookup A file lookup type.

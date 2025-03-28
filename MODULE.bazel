@@ -4,7 +4,14 @@
 
 module(name = "com_github_buildbarn_bb_portal")
 
-bazel_dep(name = "bazel_remote_apis", version = "0")
+bazel_dep(name = "bazel_protos")
+local_path_override(
+    module_name = "bazel_protos",
+    path = "third_party/bazel",
+)
+
+bazel_dep(name = "aspect_bazel_lib", version = "2.14.0")
+bazel_dep(name = "bazel_remote_apis", version = "0.0.0")
 bazel_dep(name = "com_github_buildbarn_bb_remote_execution")
 bazel_dep(name = "com_github_buildbarn_bb_storage")
 bazel_dep(name = "com_github_buildbarn_go_xdr")

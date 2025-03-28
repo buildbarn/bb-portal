@@ -9,10 +9,10 @@ import (
 
 	"google.golang.org/protobuf/encoding/protojson"
 
+	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/summary"
-	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 	"google.golang.org/genproto/googleapis/devtools/build/v1"
 )
 

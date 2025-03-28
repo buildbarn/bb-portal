@@ -1,0 +1,159 @@
+"""
+The .proto files have been downloaded from https://github.com/bazelbuild/bazel
+using ./download.sh. The Bazel targets has then been manually crafted
+to be able to keep the .proto files without modifications.
+"""
+# gazelle:ignore
+
+load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_file")
+load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//proto:def.bzl", "go_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+[copy_file(
+    name = name + "_proto_file",
+    src = "@bazel_protos//protobuf:%s.proto" % name,
+    out = name + ".proto",
+    visibility = ["//visibility:public"],
+) for name in [
+    "action_cache",
+    "build_event_stream",
+    "command_line",
+    "failure_details",
+    "invocation_policy",
+    "option_filters",
+    "package_load_metrics",
+    "strategy_policy",
+]]
+
+proto_library(
+    name = "src_main_protobuf_proto",
+    srcs = [
+        ":action_cache_proto_file",
+        ":command_line_proto_file",
+        ":failure_details_proto_file",
+        ":invocation_policy_proto_file",
+        ":option_filters_proto_file",
+        ":strategy_policy_proto_file",
+    ],
+    import_prefix = "src/main/protobuf/",
+    strip_import_prefix = "/pkg/proto/bazelbuild/bazel/",
+    deps = [
+        "@protobuf//:descriptor_proto",
+    ],
+)
+
+go_proto_library(
+    name = "src_main_protobuf_go_proto",
+    importpath = "github.com/bazelbuild/bazel/src/main/protobuf",
+    proto = ":src_main_protobuf_proto",
+)
+
+go_library(
+    name = "src_main_protobuf",
+    embed = [":src_main_protobuf_go_proto"],
+    visibility = ["//visibility:public"],
+)
+
+proto_library(
+    name = "build_event_stream_proto",
+    srcs = [":build_event_stream_proto_file"],
+    import_prefix = "src/main/java/com/google/devtools/build/lib/buildeventstream/proto",
+    strip_import_prefix = "/pkg/proto/bazelbuild/bazel/",
+    deps = [
+        ":package_load_metrics_proto",
+        ":src_main_protobuf_proto",
+        "@protobuf//:any_proto",
+        "@protobuf//:duration_proto",
+        "@protobuf//:timestamp_proto",
+    ],
+)
+
+go_proto_library(
+    name = "build_event_stream_go_proto",
+    importpath = "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto",
+    proto = ":build_event_stream_proto",
+    deps = [
+        ":package_load_metrics",
+        ":src_main_protobuf",
+    ],
+)
+
+go_library(
+    name = "build_event_stream",
+    embed = [":build_event_stream_go_proto"],
+    visibility = ["//visibility:public"],
+)
+
+proto_library(
+    name = "package_load_metrics_proto",
+    srcs = [":package_load_metrics_proto_file"],
+    import_prefix = "src/main/java/com/google/devtools/build/lib/packages/metrics/",
+    strip_import_prefix = "/pkg/proto/bazelbuild/bazel/",
+    deps = [
+        "@protobuf//:duration_proto",
+    ],
+)
+
+go_proto_library(
+    name = "package_load_metrics_go_proto",
+    importpath = "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics",
+    proto = ":package_load_metrics_proto",
+)
+
+go_library(
+    name = "package_load_metrics",
+    embed = [":package_load_metrics_go_proto"],
+    visibility = ["//visibility:public"],
+)
+
+SRC_MAIN_PROTOBUF_FILES = [
+    "action_cache",
+    "command_line",
+    "failure_details",
+    "invocation_policy",
+    "option_filters",
+]
+
+OTHER_FILES = [
+    "build_event_stream",
+    "package_load_metrics",
+]
+
+ALL_FILES = SRC_MAIN_PROTOBUF_FILES + OTHER_FILES
+
+[filegroup(
+    name = s + "_go_proto_pb_go",
+    srcs = [":" + s + "_go_proto"],
+    output_group = "go_generated_srcs",
+) for s in OTHER_FILES]
+
+# Extract the individual files from src_main_protobuf_go_proto_pb_go.
+[genrule(
+    name = s + "_go_proto_pb_go",
+    srcs = [":src_main_protobuf_go_proto_pb_go"],
+    outs = [s + "_generated.pb.go"],
+    cmd = "cp \"$$(echo $(locations :src_main_protobuf_go_proto_pb_go) | tr ' ' '\n' | grep %s)\" $@" % s,
+) for s in SRC_MAIN_PROTOBUF_FILES]
+
+filegroup(
+    name = "src_main_protobuf_go_proto_pb_go",
+    srcs = [":src_main_protobuf_go_proto"],
+    output_group = "go_generated_srcs",
+)
+
+[write_source_file(
+    name = s + "_pb_go",
+    in_file = ":" + s + "_go_proto_pb_go",
+    out_file = s + ".pb.go",
+    suggested_update_target = ":pb_go",
+) for s in ALL_FILES]
+
+write_source_file(
+    name = "pb_go",
+    additional_update_targets = [
+        ":" + s + "_pb_go"
+        for s in ALL_FILES
+    ],
+)

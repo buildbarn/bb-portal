@@ -17,10 +17,11 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/api/iterator"
 
+	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
+	besmetrics "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics"
+	bescore "github.com/bazelbuild/bazel/src/main/protobuf"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
-	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
-	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bescore"
 )
 
 // Summarizer struct.
@@ -710,7 +711,7 @@ func readActionCacheStatistics(actionCacheStatisticsData *bescore.ActionCacheSta
 }
 
 // readPackageLoadMetrics
-func readPackageLoadMetrics(packageLoadMetricsData []*bescore.PackageLoadMetrics) []PackageLoadMetrics {
+func readPackageLoadMetrics(packageLoadMetricsData []*besmetrics.PackageLoadMetrics) []PackageLoadMetrics {
 	packageLoadMetrics := make([]PackageLoadMetrics, len(packageLoadMetricsData))
 
 	for i, plm := range packageLoadMetricsData {
