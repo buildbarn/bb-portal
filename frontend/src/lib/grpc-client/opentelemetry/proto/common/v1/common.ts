@@ -10,9 +10,9 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 export const protobufPackage = "opentelemetry.proto.common.v1";
 
 /**
- * AnyValue is used to represent any type of attribute value. AnyValue may
- * contain a primitive value such as a string or integer or it may contain an
- * arbitrary nested object containing arrays, key-value lists and primitives.
+ * AnyValue is used to represent any type of attribute value. AnyValue may contain a
+ * primitive value such as a string or integer or it may contain an arbitrary nested
+ * object containing arrays, key-value lists and primitives.
  */
 export interface AnyValue {
   stringValue?: string | undefined;
@@ -34,17 +34,18 @@ export interface ArrayValue {
 }
 
 /**
- * KeyValueList is a list of KeyValue messages. We need KeyValueList as a
- * message since `oneof` in AnyValue does not allow repeated fields. Everywhere
- * else where we need a list of KeyValue messages (e.g. in Span) we use
- * `repeated KeyValue` directly to avoid unnecessary extra wrapping (which slows
- * down the protocol). The 2 approaches are semantically equivalent.
+ * KeyValueList is a list of KeyValue messages. We need KeyValueList as a message
+ * since `oneof` in AnyValue does not allow repeated fields. Everywhere else where we need
+ * a list of KeyValue messages (e.g. in Span) we use `repeated KeyValue` directly to
+ * avoid unnecessary extra wrapping (which slows down the protocol). The 2 approaches
+ * are semantically equivalent.
  */
 export interface KeyValueList {
   /**
-   * A collection of key/value pairs of key-value pairs. The list may be empty
-   * (may contain 0 elements). The keys MUST be unique (it is not allowed to
-   * have more than one value with the same key).
+   * A collection of key/value pairs of key-value pairs. The list may be empty (may
+   * contain 0 elements).
+   * The keys MUST be unique (it is not allowed to have more than one
+   * value with the same key).
    */
   values: KeyValue[];
 }
@@ -59,8 +60,8 @@ export interface KeyValue {
 }
 
 /**
- * InstrumentationScope is a message representing the instrumentation scope
- * information such as the fully qualified name and version.
+ * InstrumentationScope is a message representing the instrumentation scope information
+ * such as the fully qualified name and version.
  */
 export interface InstrumentationScope {
   /** An empty instrumentation scope name means the name is unknown. */

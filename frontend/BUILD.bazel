@@ -1,0 +1,53 @@
+load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_file")
+load("@bazel_protos//tools:protobuf.bzl", "get_proto_src")
+
+PROTO_FILES = {
+    "bazel_remote_execution": ("remote_execution", "build/bazel/remote/execution/v2", "@bazel_remote_apis//build/bazel/remote/execution/v2:remote_execution_proto"),
+    "bazel_semver": ("semver", "build/bazel/semver", "@bazel_remote_apis//build/bazel/semver:semver_proto"),
+    "buildbarn_auth": ("auth", "buildbarn/auth", "@com_github_buildbarn_bb_storage//pkg/proto/auth:auth_proto"),
+    "buildbarn_buildqueuestate": ("buildqueuestate", "buildbarn/buildqueuestate", "@com_github_buildbarn_bb_remote_execution//pkg/proto/buildqueuestate:buildqueuestate_proto"),
+    "buildbarn_cas": ("cas", "buildbarn/cas", "@com_github_buildbarn_bb_remote_execution//pkg/proto/cas:cas_proto"),
+    "buildbarn_fsac": ("fsac", "buildbarn/fsac", "@com_github_buildbarn_bb_storage//pkg/proto/fsac:fsac_proto"),
+    "buildbarn_iscc": ("iscc", "buildbarn/iscc", "@com_github_buildbarn_bb_storage//pkg/proto/iscc:iscc_proto"),
+    "buildbarn_query": ("query", "buildbarn/query", "@com_github_buildbarn_bb_browser//pkg/proto/query:query_proto"),
+    "buildbarn_resourceusage": ("resourceusage", "buildbarn/resourceusage", "@com_github_buildbarn_bb_remote_execution//pkg/proto/resourceusage:resourceusage_proto"),
+    "google_annotations": ("annotations", "google/api", "@googleapis//google/api:annotations_proto"),
+    "google_client": ("client", "google/api", "@googleapis//google/api:client_proto"),
+    "google_http": ("http", "google/api", "@googleapis//google/api:http_proto"),
+    "google_launch_stage": ("launch_stage", "google/api", "@googleapis//google/api:launch_stage_proto"),
+    "google_bytestream": ("bytestream", "google/bytestream", "@googleapis//google/bytestream:bytestream_proto"),
+    "google_operations": ("operations", "google/longrunning", "@googleapis//google/longrunning:operations_proto"),
+    "google_any": ("any", "google/protobuf", "@protobuf//:any_proto"),
+    "google_descriptor": ("descriptor", "google/protobuf", "@protobuf//:descriptor_proto"),
+    "google_duration": ("duration", "google/protobuf", "@protobuf//:duration_proto"),
+    "google_empty": ("empty", "google/protobuf", "@protobuf//:empty_proto"),
+    "google_timestamp": ("timestamp", "google/protobuf", "@protobuf//:timestamp_proto"),
+    "google_wrappers": ("wrappers", "google/protobuf", "@protobuf//:wrappers_proto"),
+    "google_status": ("status", "google/rpc", "@googleapis//google/rpc:status_proto"),
+    "opentelemetry_common": ("common", "opentelemetry/proto/common/v1", "@opentelemetry-proto//:common_proto"),
+}
+
+exports_files(
+    [key + ".proto" for key in PROTO_FILES.keys()],
+)
+
+[get_proto_src(
+    name = key + "_proto_src",
+    filename_suffix = "/%s.proto" % filename,
+    proto = src,
+) for key, (filename, output_path, src) in PROTO_FILES.items()]
+
+[write_source_file(
+    name = key + "_proto",
+    in_file = key + "_proto_src",
+    out_file = ":src/proto/%s/%s.proto" % (output_path, filename),
+    suggested_update_target = ":protobuf",
+) for key, (filename, output_path, src) in PROTO_FILES.items()]
+
+write_source_file(
+    name = "protobuf",
+    additional_update_targets = [
+        ":%s_proto" % key
+        for key in PROTO_FILES.keys()
+    ],
+)

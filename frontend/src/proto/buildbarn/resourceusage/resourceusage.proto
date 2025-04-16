@@ -4,7 +4,7 @@ package buildbarn.resourceusage;
 
 import "google/protobuf/duration.proto";
 
-option go_package = "github.com/buildbarn/bb-portal/pkg/proto/resourceusage";
+option go_package = "github.com/buildbarn/bb-remote-execution/pkg/proto/resourceusage";
 
 // File pool resource usage statistics. File pools are used by bb_worker
 // to allocate temporary files that are created by build actions.
