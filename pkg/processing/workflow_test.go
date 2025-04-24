@@ -14,6 +14,7 @@ import (
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent/enttest"
 	"github.com/buildbarn/bb-portal/pkg/processing"
+	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 )
 
 var (
@@ -25,6 +26,9 @@ var (
 const inputFixtureBaseDir = "../summary/testdata/"
 
 func TestWorkflow_ProcessFile(t *testing.T) {
+	// Ensure Prometheus metrics are registered
+	prometheusmetrics.RegisterMetrics()
+
 	if *snapshotForAPITest {
 		*testDBDriver = "sqlite3"
 		dbFile := "../../internal/graphql/testdata/snapshot.db"

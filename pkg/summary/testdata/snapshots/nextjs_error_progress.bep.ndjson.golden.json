@@ -1079,8 +1079,11 @@
     "IsCiWorker": false,
     "ProfileName": "command.profile.gz",
     "ConfigrationMnemonic": "darwin_arm64-fastbuild",
-    "SkipTargetData": false,
+    "SkipTargetData": true,
     "EnrichTargetData": false,
+    "SkipPrometheusTargets": false,
+    "PrometheusTargetDurationSkipThreshold": 2000,
+    "PrometheusTestGranularty": "",
     "SourceControlData": {
       "RepositoryURL": "",
       "Branch": "",

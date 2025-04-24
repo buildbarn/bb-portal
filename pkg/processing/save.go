@@ -18,6 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
+	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/summary"
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
 )
@@ -173,6 +174,9 @@ func (act SaveActor) saveBazelInvocation(
 	if err != nil {
 		return nil, err
 	}
+
+	prometheusmetrics.Invocations.WithLabelValues(summary.Hostname, summary.UserLDAP, summary.StepLabel).Inc()
+
 	create := act.db.BazelInvocation.Create().
 		SetInvocationID(uniqueID).
 		SetProfileName(summary.ProfileName).
@@ -291,7 +295,15 @@ func (act SaveActor) saveTargetCompletion(ctx context.Context, targetCompletion 
 		Save(ctx)
 }
 
-func (act SaveActor) saveTargetPair(ctx context.Context, targetPair summary.TargetPair, label string, enrich bool) (*ent.TargetPair, error) {
+func (act SaveActor) saveTargetPair(ctx context.Context, targetPair summary.TargetPair, label string, enrich, skipPrometheus, skipSave bool, threshold int64) (*ent.TargetPair, error) {
+	if targetPair.DurationInMs > threshold && !skipPrometheus {
+		prometheusmetrics.TargetDurations.WithLabelValues(label).Set(float64(targetPair.DurationInMs))
+	}
+
+	if skipSave {
+		return nil, nil
+	}
+
 	create := act.db.TargetPair.Create().
 		SetLabel(label).
 		SetDurationInMs(targetPair.DurationInMs).
@@ -300,6 +312,7 @@ func (act SaveActor) saveTargetPair(ctx context.Context, targetPair summary.Targ
 		SetTestSize(targetpair.TestSize(targetPair.TestSize.String()))
 
 	if !targetPair.Success {
+
 		reason := targetpair.AbortReason(targetPair.AbortReason.String())
 		create = create.SetAbortReason(reason)
 	}
@@ -326,20 +339,24 @@ func (act SaveActor) saveTargetPair(ctx context.Context, targetPair summary.Targ
 // TODO: is there a more effiient way to do bulk updates instead of sequentially adding everything to the database one object at a time?
 // ironically, MapBulkCreate doesn't work for the map(string)TargetPair.  Its expecting an int index, not a label.
 func (act SaveActor) saveTargets(ctx context.Context, summary *summary.Summary) ([]*ent.TargetPair, error) {
-	if summary.SkipTargetData {
+	// nothing to do, so return empty
+	if summary.SkipPrometheusTargets && summary.SkipTargetData {
 		return []*ent.TargetPair{}, nil
 	}
 	var result []*ent.TargetPair = make([]*ent.TargetPair, len(summary.Targets))
 	i := 0
 	for label, pair := range summary.Targets {
-		targetPair, err := act.saveTargetPair(ctx, pair, label, summary.EnrichTargetData)
+		targetPair, err := act.saveTargetPair(ctx, pair, label, summary.EnrichTargetData, summary.SkipPrometheusTargets, summary.SkipTargetData, summary.PrometheusTargetDurationSkipThreshold)
 		if err != nil {
 			return nil, err
 		}
 		result[i] = targetPair
 		i++
 	}
-	return result, nil
+	if summary.SkipTargetData {
+		return []*ent.TargetPair{}, nil
+	}
+	return []*ent.TargetPair{}, nil
 }
 
 func (act SaveActor) saveTestSummary(ctx context.Context, testSummary summary.TestSummary, label string) (*ent.TestSummary, error) {
@@ -431,7 +448,24 @@ func (act SaveActor) saveTestResults(ctx context.Context, testResults []summary.
 	}).Save(ctx)
 }
 
-func (act SaveActor) saveTestCollection(ctx context.Context, testCollection summary.TestsCollection, label string, encrich bool) (*ent.TestCollection, error) {
+func (act SaveActor) saveTestCollection(ctx context.Context, testCollection summary.TestsCollection, label string, encrich, skipDbSave, skipPrometheus bool) (*ent.TestCollection, error) {
+	strStatus := testCollection.OverallStatus.String()
+	strCacheHit := "miss"
+	if testCollection.CachedLocally {
+		strCacheHit = "local"
+	}
+	if testCollection.CachedRemotely {
+		strCacheHit = "remote"
+	}
+	// if this is a cache hit, we don't care about the duration. Only track durations for non-cache hits
+	if strCacheHit == "miss" && !skipPrometheus {
+		prometheusmetrics.TestDurations.WithLabelValues(label, strStatus, testCollection.Strategy).Set(float64(testCollection.DurationMs))
+	}
+
+	if skipDbSave {
+		return nil, nil
+	}
+
 	create := act.db.TestCollection.Create().
 		SetLabel(label).
 		SetOverallStatus(testcollection.OverallStatus(testCollection.OverallStatus.String())).
@@ -458,15 +492,22 @@ func (act SaveActor) saveTestCollection(ctx context.Context, testCollection summ
 }
 
 func (act SaveActor) saveTests(ctx context.Context, summary *summary.Summary) ([]*ent.TestCollection, error) {
+	if summary.SkipTargetData && summary.SkipPrometheusTargets {
+		return []*ent.TestCollection{}, nil
+	}
 	var result []*ent.TestCollection = make([]*ent.TestCollection, len(summary.Tests))
 	i := 0
 	for label, collection := range summary.Tests {
-		testCollection, err := act.saveTestCollection(ctx, collection, label, summary.EnrichTargetData)
+		testCollection, err := act.saveTestCollection(ctx, collection, label, summary.EnrichTargetData, summary.SkipTargetData, summary.SkipPrometheusTargets)
 		if err != nil {
 			return nil, err
 		}
 		result[i] = testCollection
 		i++
+	}
+
+	if summary.SkipTargetData {
+		return []*ent.TestCollection{}, nil
 	}
 	return result, nil
 }
@@ -504,6 +545,15 @@ func (act SaveActor) saveActionCacheStatistics(ctx context.Context, actionCacheS
 	if err != nil {
 		return nil, err
 	}
+
+	// Calculate the cache hit percentage
+	total := actionCacheStastics.Hits + actionCacheStastics.Misses
+	var cacheHitPercentage float64
+	if total > 0 {
+		cacheHitPercentage = (float64(actionCacheStastics.Hits) / float64(total))
+		prometheusmetrics.CacheHitRate.WithLabelValues("action_cache").Observe(cacheHitPercentage)
+	}
+
 	return act.db.ActionCacheStatistics.Create().
 		SetSizeInBytes(actionCacheStastics.SizeInBytes).
 		SetSaveTimeInMs(actionCacheStastics.SaveTimeInMs).
@@ -550,6 +600,7 @@ func (act SaveActor) saveActionSummary(ctx context.Context, actionSummary summar
 	if err != nil {
 		return nil, err
 	}
+
 	return act.db.ActionSummary.Create().
 		SetActionsCreated(actionSummary.ActionsCreated).
 		SetActionsCreatedNotIncludingAspects(actionSummary.ActionsCreatedNotIncludingAspects).

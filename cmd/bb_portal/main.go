@@ -24,6 +24,7 @@ import (
 	"github.com/gorilla/mux"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/cors"
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	go_grpc "google.golang.org/grpc"
@@ -35,6 +36,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/api/servefiles"
 	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/pkg/processing"
+	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/global"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
@@ -61,6 +63,14 @@ func main() {
 	go func() {
 		pprof := http.ListenAndServe("localhost:8083", nil)
 		slog.Info(pprof.Error())
+	}()
+
+	go func() {
+		// initialize prometheus metrics
+		prometheusmetrics.RegisterMetrics()
+		slog.Info("Starting metrics server on :8112")
+		http.Handle("/metrics", promhttp.Handler())
+		http.ListenAndServe(":8112", nil)
 	}()
 
 	program.RunMain(func(ctx context.Context, siblingsGroup, dependenciesGroup program.Group) error {
