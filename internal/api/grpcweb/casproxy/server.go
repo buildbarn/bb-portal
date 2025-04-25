@@ -29,12 +29,14 @@ func (s *CasServerImpl) Read(req *bytestream.ReadRequest, stream bytestream.Byte
 		return status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
+	ctx := stream.Context()
+
 	instanceName := getInstanceName(req.ResourceName)
-	if !grpcweb.IsInstanceNameAllowed(stream.Context(), s.authorizer, instanceName) {
+	if !grpcweb.IsInstanceNameAllowed(ctx, s.authorizer, instanceName) {
 		return status.Errorf(codes.PermissionDenied, "Not authorized")
 	}
 
-	clientStream, err := s.client.Read(context.Background(), req)
+	clientStream, err := s.client.Read(ctx, req)
 	if err != nil {
 		return err
 	}
