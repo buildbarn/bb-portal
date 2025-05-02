@@ -22,6 +22,7 @@ go_library(
         "//ent/gen/ent/testcollection",
         "//ent/gen/ent/testresultbes",
         "//ent/gen/ent/testsummary",
+        "//pkg/prometheus_metrics",
         "//pkg/summary",
         "//pkg/summary/detectors",
         "@com_github_bazelbuild_remote_apis_sdks//go/pkg/digest",
@@ -36,6 +37,7 @@ go_test(
     deps = [
         ":processing",
         "//ent/gen/ent/enttest",
+        "//pkg/prometheus_metrics",
         "@com_github_mattn_go_sqlite3//:go-sqlite3",
         "@com_github_stretchr_testify//require",
     ],

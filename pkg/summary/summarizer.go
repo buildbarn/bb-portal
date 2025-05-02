@@ -880,10 +880,29 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		s.summary.StepLabel = stepLabelVal
 	}
 
+	// Set SkipEmitPrometheus Metrics
+	if skipEmitPrometheusMetricsVal, ok := s.summary.EnvVars["BB_PORTAL_SKIP_PROMETHEUS_TARGET_METRICS"]; ok {
+		if skipEmitPrometheusMetricsVal == "TRUE" {
+			s.summary.SkipPrometheusTargets = true
+		}
+	}
+
+	// Set Threshold for what target durations to emit data for.
+	s.summary.PrometheusTargetDurationSkipThreshold = 2000
+	if promTargetThreshold, ok := s.summary.EnvVars["BB_PORTAL_PROMETHEUS_TARGET_DURATION_THRESHOLD"]; ok {
+
+		numericThreshold, err := strconv.ParseInt(promTargetThreshold, 10, 64)
+		if err != nil {
+			slog.Error("Could not parse prometheus targret duration threshold.  Defaulting to 2000ms")
+		}
+		s.summary.PrometheusTargetDurationSkipThreshold = numericThreshold
+	}
+
 	// Set SkipTargetData
+	s.summary.SkipTargetData = true
 	if skipTargetSaveEnvVarVal, ok := s.summary.EnvVars["BB_PORTAL_SKIP_SAVE_TARGETS"]; ok {
-		if skipTargetSaveEnvVarVal == "TRUE" {
-			s.summary.SkipTargetData = true
+		if skipTargetSaveEnvVarVal == "FALSE" {
+			s.summary.SkipTargetData = false
 		}
 	}
 

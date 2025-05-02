@@ -167,34 +167,37 @@ func (r AbortReason) String() string {
 // Summary The Invocation Summary object holds details about an invocation.
 type Summary struct {
 	*InvocationSummary
-	Problems             []detectors.Problem
-	RelatedFiles         map[string]string
-	EventFileURL         string
-	BEPCompleted         bool
-	StartedAt            time.Time
-	InvocationID         string
-	StepLabel            string
-	EndedAt              *time.Time
-	ChangeNumber         int
-	PatchsetNumber       int
-	BuildURL             string
-	BuildUUID            uuid.UUID
-	UserLDAP             string
-	UserEmail            string
-	BuildLogs            strings.Builder
-	Metrics              Metrics
-	Tests                map[string]TestsCollection
-	Targets              map[string]TargetPair
-	NumFetches           int64
-	CPU                  string
-	PlatformName         string
-	Hostname             string
-	IsCiWorker           bool
-	ProfileName          string
-	ConfigrationMnemonic string
-	SkipTargetData       bool
-	EnrichTargetData     bool
-	SourceControlData    SourceControlData
+	Problems                              []detectors.Problem
+	RelatedFiles                          map[string]string
+	EventFileURL                          string
+	BEPCompleted                          bool
+	StartedAt                             time.Time
+	InvocationID                          string
+	StepLabel                             string
+	EndedAt                               *time.Time
+	ChangeNumber                          int
+	PatchsetNumber                        int
+	BuildURL                              string
+	BuildUUID                             uuid.UUID
+	UserLDAP                              string
+	UserEmail                             string
+	BuildLogs                             strings.Builder
+	Metrics                               Metrics
+	Tests                                 map[string]TestsCollection
+	Targets                               map[string]TargetPair
+	NumFetches                            int64
+	CPU                                   string
+	PlatformName                          string
+	Hostname                              string
+	IsCiWorker                            bool
+	ProfileName                           string
+	ConfigrationMnemonic                  string
+	SkipTargetData                        bool
+	EnrichTargetData                      bool
+	SkipPrometheusTargets                 bool
+	PrometheusTargetDurationSkipThreshold int64
+	PrometheusTestGranularty              string
+	SourceControlData                     SourceControlData
 }
 
 // Metrics holds Build metrics details
