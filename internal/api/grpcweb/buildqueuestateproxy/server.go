@@ -15,15 +15,20 @@ import (
 
 // BuildQueueStateServerImpl is a gRPC server that forwards requests to a BuildQueueStateClient.
 type BuildQueueStateServerImpl struct {
-	client     buildqueuestate.BuildQueueStateClient
-	authorizer auth.Authorizer
+	client                   buildqueuestate.BuildQueueStateClient
+	instanceNameAuthorizer   auth.Authorizer
+	killOperationsAuthorizer auth.Authorizer
 }
 
 // NewBuildQueueStateServerImpl creates a new BuildQueueStateServerImpl from a
 // given client. It also takes an authorizer to filter out the queues that the
 // user is not allowed to see.
-func NewBuildQueueStateServerImpl(client buildqueuestate.BuildQueueStateClient, authorizer auth.Authorizer) *BuildQueueStateServerImpl {
-	return &BuildQueueStateServerImpl{client: client, authorizer: authorizer}
+func NewBuildQueueStateServerImpl(client buildqueuestate.BuildQueueStateClient, instanceNameAuthorizer, killOperationsAuthorizer auth.Authorizer) *BuildQueueStateServerImpl {
+	return &BuildQueueStateServerImpl{
+		client:                   client,
+		instanceNameAuthorizer:   instanceNameAuthorizer,
+		killOperationsAuthorizer: killOperationsAuthorizer,
+	}
 }
 
 // GetOperation proxies GetOperation requests to the client.
@@ -35,7 +40,7 @@ func (s *BuildQueueStateServerImpl) GetOperation(ctx context.Context, req *build
 
 	platformQueueName := response.GetOperation().GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName()
 
-	if platformQueueName == nil || !common.IsInstanceNameAllowed(ctx, s.authorizer, platformQueueName.InstanceNamePrefix) {
+	if platformQueueName == nil || !common.IsInstanceNameAllowed(ctx, s.instanceNameAuthorizer, platformQueueName.InstanceNamePrefix) {
 		return nil, status.Errorf(codes.NotFound, "Operation was not found")
 	}
 
@@ -54,7 +59,7 @@ func (s *BuildQueueStateServerImpl) ListOperations(ctx context.Context, req *bui
 		return nil, err
 	}
 
-	allOperations := filterOperations(ctx, response, s.authorizer)
+	allOperations := filterOperations(ctx, response, s.instanceNameAuthorizer)
 	return createPaginatedListOperationsResponse(allOperations, req.PageSize, req.StartAfter), nil
 }
 
@@ -62,10 +67,15 @@ func (s *BuildQueueStateServerImpl) ListOperations(ctx context.Context, req *bui
 func (s *BuildQueueStateServerImpl) KillOperations(ctx context.Context, req *buildqueuestate.KillOperationsRequest) (*emptypb.Empty, error) {
 	// Check if the filter is of type OperationName.
 	if filter, ok := req.GetFilter().GetType().(*buildqueuestate.KillOperationsRequest_Filter_OperationName); ok {
-		// Calls GetOperation to check if the operation exists and the user is allowed to kill it.
-		_, err := s.GetOperation(ctx, &buildqueuestate.GetOperationRequest{OperationName: filter.OperationName})
+		// Calls GetOperation to check if the operation exists and the user is allowed access it.
+		response, err := s.GetOperation(ctx, &buildqueuestate.GetOperationRequest{OperationName: filter.OperationName})
 		if err != nil {
 			return nil, err
+		}
+		// Check if the user is allowed to kill the operation.
+		platformQueueName := response.GetOperation().GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName()
+		if !grpcweb.IsInstanceNameAllowed(ctx, s.killOperationsAuthorizer, platformQueueName.InstanceNamePrefix) {
+			return nil, status.Errorf(codes.PermissionDenied, "Not allowed to kill operations for instance name prefix %s", platformQueueName.InstanceNamePrefix)
 		}
 
 		return s.client.KillOperations(ctx, req)
@@ -80,7 +90,7 @@ func (s *BuildQueueStateServerImpl) ListPlatformQueues(ctx context.Context, req 
 	if err != nil {
 		return nil, err
 	}
-	response.PlatformQueues = filterPlatormQueues(ctx, response, s.authorizer)
+	response.PlatformQueues = filterPlatormQueues(ctx, response, s.instanceNameAuthorizer)
 	return response, err
 }
 
@@ -101,7 +111,7 @@ func (s *BuildQueueStateServerImpl) ListWorkers(ctx context.Context, req *buildq
 		return nil, err
 	}
 
-	if !common.IsInstanceNameAllowed(ctx, s.authorizer, instanceNamePrefix) {
+	if !common.IsInstanceNameAllowed(ctx, s.instanceNameAuthorizer, instanceNamePrefix) {
 		return nil, status.Errorf(codes.PermissionDenied, "Not allowed to list workers for instance name prefix %s", instanceNamePrefix)
 	}
 	return s.client.ListWorkers(ctx, req)
