@@ -51,10 +51,10 @@ func StartGrpcWebProxyServer(
 	configuration *bb_portal.ApplicationConfiguration,
 	siblingsGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
-) (http.Handler, error) {
+) (http.Handler, *buildqueuestateproxy.BuildQueueStateServerImpl, error) {
 	if configuration.InstanceNameAuthorizer == nil {
 		log.Printf("Did not start gRPC-web proxy because InstanceNameAuthorizer is not configured")
-		return nil, errors.New("InstanceNameAuthorizer is not configured")
+		return nil, nil, errors.New("InstanceNameAuthorizer is not configured")
 	}
 
 	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, grpcClientFactory)
@@ -63,11 +63,12 @@ func StartGrpcWebProxyServer(
 	}
 
 	grpcServer := go_grpc.NewServer()
+	var buildQueueStateServer *buildqueuestateproxy.BuildQueueStateServerImpl = nil
 
 	if configuration.BuildQueueStateClient != nil {
 		if configuration.KillOperationsAuthorizer == nil {
 			log.Printf("Did not start gRPC-web proxy because KillOperationsAuthorizer is not configured")
-			return nil, errors.New("KillOperationsAuthorizer is not configured")
+			return nil, nil, errors.New("KillOperationsAuthorizer is not configured")
 		}
 		killOperationsAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.KillOperationsAuthorizer, grpcClientFactory)
 		if err != nil {
@@ -80,7 +81,8 @@ func StartGrpcWebProxyServer(
 			grpcServer,
 			func(grpcServer *go_grpc.Server, grpcClient go_grpc.ClientConnInterface) {
 				c := buildqueuestate.NewBuildQueueStateClient(grpcClient)
-				buildqueuestate.RegisterBuildQueueStateServer(grpcServer, buildqueuestateproxy.NewBuildQueueStateServerImpl(c, instanceNameAuthorizer, killOperationsAuthorizer))
+				buildQueueStateServer = buildqueuestateproxy.NewBuildQueueStateServerImpl(c, instanceNameAuthorizer, killOperationsAuthorizer)
+				buildqueuestate.RegisterBuildQueueStateServer(grpcServer, buildQueueStateServer)
 			},
 		)
 	} else {
@@ -143,5 +145,5 @@ func StartGrpcWebProxyServer(
 		log.Printf("Did not initialize FileSystemAccessCache proxy because FileSystemAccessCacheClient is not configured")
 	}
 
-	return grpcweb.WrapServer(grpcServer), nil
+	return grpcweb.WrapServer(grpcServer), buildQueueStateServer, nil
 }

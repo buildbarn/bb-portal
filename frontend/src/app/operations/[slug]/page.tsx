@@ -14,7 +14,7 @@ interface PageParams {
 }
 
 const Page: React.FC<PageParams> = ({ params }) => {
-  const label = decodeURIComponent(params.slug);
+  const operationID = decodeURIComponent(params.slug);
 
   return (
     <Content
@@ -22,9 +22,9 @@ const Page: React.FC<PageParams> = ({ params }) => {
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <PortalCard
             icon={<CodeFilled />}
-            titleBits={[<span key="title">{`Operation ${label}`}</span>]}
+            titleBits={[<span key="title">{`Operation ${operationID}`}</span>]}
           >
-            <OperationDetails label={label} />
+            <OperationDetails operationID={operationID} />
           </PortalCard>
         </Space>
       }
