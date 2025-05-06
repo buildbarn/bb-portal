@@ -34,6 +34,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
 	"github.com/buildbarn/bb-portal/internal/api"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
+	"github.com/buildbarn/bb-portal/internal/api/grpcweb/buildqueuestateproxy"
 	"github.com/buildbarn/bb-portal/internal/api/servefiles"
 	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/pkg/processing"
@@ -133,10 +134,10 @@ func main() {
 		runWatcher(watcher, dbClient, *bepFolder, blobArchiver)
 
 		serveFileService := servefiles.NewFileServerServiceFromConfiguration(dependenciesGroup, &configuration, grpcClientFactory)
-		grpcwebProxyService, _ := StartGrpcWebProxyServer(&configuration, siblingsGroup, grpcClientFactory)
+		grpcwebProxyService, buildQueueStateServer, _ := StartGrpcWebProxyServer(&configuration, siblingsGroup, grpcClientFactory)
 
 		router := mux.NewRouter()
-		newPortalService(&configuration, blobArchiver, dbClient, serveFileService, grpcwebProxyService, router)
+		newPortalService(&configuration, blobArchiver, dbClient, serveFileService, grpcwebProxyService, buildQueueStateServer, router)
 		bb_http.NewServersFromConfigurationAndServe(
 			configuration.HttpServers,
 			bb_http.NewMetricsHandler(configureCors(configuration.AllowedOrigins, router), "PortalUI"),
@@ -217,7 +218,7 @@ func fatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func newPortalService(configuration *bb_portal.ApplicationConfiguration, archiver processing.BlobMultiArchiver, dbClient *ent.Client, serveFilesService *servefiles.FileServerService, grpcwebProxyService http.Handler, router *mux.Router) {
+func newPortalService(configuration *bb_portal.ApplicationConfiguration, archiver processing.BlobMultiArchiver, dbClient *ent.Client, serveFilesService *servefiles.FileServerService, grpcwebProxyService http.Handler, buildQueueStateServer *buildqueuestateproxy.BuildQueueStateServerImpl, router *mux.Router) {
 	srv := handler.NewDefaultServer(graphql.NewSchema(dbClient))
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})
 
@@ -234,6 +235,8 @@ func newPortalService(configuration *bb_portal.ApplicationConfiguration, archive
 				strings.HasPrefix(r.URL.Path, "/buildbarn.buildqueuestate.BuildQueueState/") ||
 				strings.HasPrefix(r.URL.Path, "/build.bazel.remote.execution.v2.ActionCache/")
 		}).Handler(grpcwebProxyService)
+
+		router.HandleFunc("/api/checkPermissions/killOperation/{operationName}", buildQueueStateServer.CheckKillOperationAuthorization).Methods("GET")
 	}
 
 	if serveFilesService != nil {

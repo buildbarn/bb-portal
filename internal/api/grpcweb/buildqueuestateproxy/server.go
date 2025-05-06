@@ -3,11 +3,13 @@ package buildqueuestateproxy
 import (
 	"context"
 	"math"
+	"net/http"
 	"sort"
 
-	"github.com/buildbarn/bb-portal/internal/api/grpcweb"
+	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-remote-execution/pkg/proto/buildqueuestate"
 	"github.com/buildbarn/bb-storage/pkg/auth"
+	"github.com/gorilla/mux"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -40,7 +42,7 @@ func (s *BuildQueueStateServerImpl) GetOperation(ctx context.Context, req *build
 
 	platformQueueName := response.GetOperation().GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName()
 
-	if platformQueueName == nil || !grpcweb.IsInstanceNameAllowed(ctx, s.instanceNameAuthorizer, platformQueueName.InstanceNamePrefix) {
+	if platformQueueName == nil || !common.IsInstanceNameAllowed(ctx, s.instanceNameAuthorizer, platformQueueName.InstanceNamePrefix) {
 		return nil, status.Errorf(codes.NotFound, "Operation was not found")
 	}
 
@@ -67,17 +69,9 @@ func (s *BuildQueueStateServerImpl) ListOperations(ctx context.Context, req *bui
 func (s *BuildQueueStateServerImpl) KillOperations(ctx context.Context, req *buildqueuestate.KillOperationsRequest) (*emptypb.Empty, error) {
 	// Check if the filter is of type OperationName.
 	if filter, ok := req.GetFilter().GetType().(*buildqueuestate.KillOperationsRequest_Filter_OperationName); ok {
-		// Calls GetOperation to check if the operation exists and the user is allowed access it.
-		response, err := s.GetOperation(ctx, &buildqueuestate.GetOperationRequest{OperationName: filter.OperationName})
-		if err != nil {
-			return nil, err
+		if !s.IsAllowedToKillOperation(ctx, filter.OperationName) {
+			return nil, status.Errorf(codes.PermissionDenied, "Not allowed to kill operation")
 		}
-		// Check if the user is allowed to kill the operation.
-		platformQueueName := response.GetOperation().GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName()
-		if !grpcweb.IsInstanceNameAllowed(ctx, s.killOperationsAuthorizer, platformQueueName.InstanceNamePrefix) {
-			return nil, status.Errorf(codes.PermissionDenied, "Not allowed to kill operations for instance name prefix %s", platformQueueName.InstanceNamePrefix)
-		}
-
 		return s.client.KillOperations(ctx, req)
 	}
 
@@ -111,7 +105,7 @@ func (s *BuildQueueStateServerImpl) ListWorkers(ctx context.Context, req *buildq
 		return nil, err
 	}
 
-	if !grpcweb.IsInstanceNameAllowed(ctx, s.instanceNameAuthorizer, instanceNamePrefix) {
+	if !common.IsInstanceNameAllowed(ctx, s.instanceNameAuthorizer, instanceNamePrefix) {
 		return nil, status.Errorf(codes.PermissionDenied, "Not allowed to list workers for instance name prefix %s", instanceNamePrefix)
 	}
 	return s.client.ListWorkers(ctx, req)
@@ -137,6 +131,39 @@ func (s *BuildQueueStateServerImpl) RemoveDrain(ctx context.Context, req *buildq
 	return nil, status.Errorf(codes.Unimplemented, "Action is not supported")
 }
 
+// IsAllowedToKillOperation checks if the user is allowed to kill the
+// operation.
+func (s *BuildQueueStateServerImpl) IsAllowedToKillOperation(ctx context.Context, operationName string) bool {
+	// Calls GetOperation to check if the operation exists and the user is allowed access it.
+	response, err := s.GetOperation(ctx, &buildqueuestate.GetOperationRequest{OperationName: operationName})
+	if err != nil {
+		return false
+	}
+	// Check if the user is allowed to kill the operation.
+	platformQueueName := response.GetOperation().GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName()
+	return common.IsInstanceNameAllowed(ctx, s.killOperationsAuthorizer, platformQueueName.InstanceNamePrefix)
+}
+
+// CheckKillOperationAuthorization is a HTTP endpoint that checks if the user
+// is allowed to kill the operation.
+func (s *BuildQueueStateServerImpl) CheckKillOperationAuthorization(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	ctx := common.ExtractContextFromRequest(r)
+	operationName := mux.Vars(r)["operationName"]
+
+	if s.IsAllowedToKillOperation(ctx, operationName) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"allowed": true}`))
+	} else {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"allowed": false}`))
+	}
+}
+
 func filterPlatormQueues(ctx context.Context, response *buildqueuestate.ListPlatformQueuesResponse, authorizer auth.Authorizer) []*buildqueuestate.PlatformQueueState {
 	queues := response.GetPlatformQueues()
 	// Filter out the queues that the user is not allowed to see.
@@ -145,7 +172,7 @@ func filterPlatormQueues(ctx context.Context, response *buildqueuestate.ListPlat
 
 		name := queue.GetName()
 
-		if name != nil && grpcweb.IsInstanceNameAllowed(ctx, authorizer, name.InstanceNamePrefix) {
+		if name != nil && common.IsInstanceNameAllowed(ctx, authorizer, name.InstanceNamePrefix) {
 			allowedQueues = append(allowedQueues, queue)
 		}
 	}
@@ -160,7 +187,7 @@ func filterOperations(ctx context.Context, response *buildqueuestate.ListOperati
 
 		platformQueueName := operation.GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName()
 
-		if platformQueueName != nil && grpcweb.IsInstanceNameAllowed(ctx, authorizer, platformQueueName.InstanceNamePrefix) {
+		if platformQueueName != nil && common.IsInstanceNameAllowed(ctx, authorizer, platformQueueName.InstanceNamePrefix) {
 			allowedOperations = append(allowedOperations, operation)
 		}
 	}
