@@ -65,13 +65,22 @@ func StartGrpcWebProxyServer(
 	grpcServer := go_grpc.NewServer()
 
 	if configuration.BuildQueueStateClient != nil {
+		if configuration.KillOperationsAuthorizer == nil {
+			log.Printf("Did not start gRPC-web proxy because KillOperationsAuthorizer is not configured")
+			return nil, errors.New("KillOperationsAuthorizer is not configured")
+		}
+		killOperationsAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.KillOperationsAuthorizer, grpcClientFactory)
+		if err != nil {
+			log.Fatalf("Failed to create KillOperationsAuthorizer: %v", err)
+		}
+
 		initializeGrpcWebServer(
 			configuration.BuildQueueStateClient,
 			grpcClientFactory,
 			grpcServer,
 			func(grpcServer *go_grpc.Server, grpcClient go_grpc.ClientConnInterface) {
 				c := buildqueuestate.NewBuildQueueStateClient(grpcClient)
-				buildqueuestate.RegisterBuildQueueStateServer(grpcServer, buildqueuestateproxy.NewBuildQueueStateServerImpl(c, instanceNameAuthorizer))
+				buildqueuestate.RegisterBuildQueueStateServer(grpcServer, buildqueuestateproxy.NewBuildQueueStateServerImpl(c, instanceNameAuthorizer, killOperationsAuthorizer))
 			},
 		)
 	} else {
