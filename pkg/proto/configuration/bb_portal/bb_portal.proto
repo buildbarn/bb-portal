@@ -56,4 +56,9 @@ message ApplicationConfiguration {
   //
   // Recommended value: 500
   uint32 listOperationsPageSize = 14;
+
+  // Authorizer that is used to determine which instances the user is allowed
+  // to kill operations on.
+  buildbarn.configuration.auth.AuthorizerConfiguration
+      kill_operations_authorizer = 15;
 }

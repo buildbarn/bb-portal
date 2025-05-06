@@ -43,6 +43,13 @@
     |||,
   },
 
+  killOperationsAuthorizer: {
+    jmespathExpression: |||
+      contains(authenticationMetadata.private.instances, instanceName)
+      || instanceName == ''
+    |||,
+  },
+
   buildQueueStateClient: {
     address: 'localhost:8984',
   },

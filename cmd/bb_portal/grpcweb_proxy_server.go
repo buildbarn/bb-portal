@@ -68,6 +68,14 @@ func StartGrpcWebProxyServer(
 		if configuration.ListOperationsPageSize <= 0 {
 			log.Fatalf("Error: ListOperationsPageSize is not configured (or is set to 0)")
 		}
+		if configuration.KillOperationsAuthorizer == nil {
+			log.Printf("Did not start gRPC-web proxy because KillOperationsAuthorizer is not configured")
+			return nil, errors.New("KillOperationsAuthorizer is not configured")
+		}
+		killOperationsAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.KillOperationsAuthorizer, grpcClientFactory)
+		if err != nil {
+			log.Fatalf("Failed to create KillOperationsAuthorizer: %v", err)
+		}
 
 		initializeGrpcWebServer(
 			configuration.BuildQueueStateClient,
@@ -75,7 +83,7 @@ func StartGrpcWebProxyServer(
 			grpcServer,
 			func(grpcServer *go_grpc.Server, grpcClient go_grpc.ClientConnInterface) {
 				c := buildqueuestate.NewBuildQueueStateClient(grpcClient)
-				buildqueuestate.RegisterBuildQueueStateServer(grpcServer, buildqueuestateproxy.NewBuildQueueStateServerImpl(c, instanceNameAuthorizer, configuration.ListOperationsPageSize))
+				buildqueuestate.RegisterBuildQueueStateServer(grpcServer, buildqueuestateproxy.NewBuildQueueStateServerImpl(c, instanceNameAuthorizer, killOperationsAuthorizer, configuration.ListOperationsPageSize))
 			},
 		)
 	} else {

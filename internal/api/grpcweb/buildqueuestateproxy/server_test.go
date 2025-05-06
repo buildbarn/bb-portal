@@ -517,8 +517,11 @@ func TestListOperations(t *testing.T) {
 	instanceNameAuthorizer := auth.NewJMESPathExpressionAuthorizer(
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
 	)
+	killOperationsAuthorizer := auth.NewJMESPathExpressionAuthorizer(
+		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
+	)
 
-	bqsServer := NewBuildQueueStateServerImpl(bqsClient, instanceNameAuthorizer, 2)
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, instanceNameAuthorizer, killOperationsAuthorizer, 2)
 
 	operations := []*buildqueuestate.OperationState{
 		{
