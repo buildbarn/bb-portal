@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
@@ -22,7 +23,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
-	"github.com/buildbarn/bb-portal/third_party/bazel/gen/bes"
 	"github.com/google/uuid"
 )
 

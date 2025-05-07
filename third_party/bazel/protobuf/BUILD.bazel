@@ -1,0 +1,38 @@
+load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_file")
+load("//tools:protobuf.bzl", "get_proto_src")
+
+PROTO_FILES = {
+    "action_cache": "@com_github_bazelbuild_bazel//src/main/protobuf:action_cache_proto",
+    "build_event_stream": "@com_github_bazelbuild_bazel//src/main/java/com/google/devtools/build/lib/buildeventstream/proto:build_event_stream_proto",
+    "command_line": "@com_github_bazelbuild_bazel//src/main/protobuf:command_line_proto",
+    "failure_details": "@com_github_bazelbuild_bazel//src/main/protobuf:failure_details_proto",
+    "invocation_policy": "@com_github_bazelbuild_bazel//src/main/protobuf:invocation_policy_proto",
+    "option_filters": "@com_github_bazelbuild_bazel//src/main/protobuf:option_filters_proto",
+    "package_load_metrics": "@com_github_bazelbuild_bazel//src/main/java/com/google/devtools/build/lib/packages/metrics:package_load_metrics_proto",
+    "strategy_policy": "@com_github_bazelbuild_bazel//src/main/protobuf:strategy_policy_proto",
+}
+
+exports_files(
+    [key + ".proto" for key in PROTO_FILES.keys()],
+)
+
+[get_proto_src(
+    name = name + "_proto_src",
+    filename_suffix = "/%s.proto" % name,
+    proto = src,
+) for name, src in PROTO_FILES.items()]
+
+[write_source_file(
+    name = name + "_proto",
+    in_file = name + "_proto_src",
+    out_file = ":%s.proto" % name,
+    suggested_update_target = ":protobuf",
+) for name in PROTO_FILES.keys()]
+
+write_source_file(
+    name = "protobuf",
+    additional_update_targets = [
+        ":%s_proto" % name
+        for name in PROTO_FILES.keys()
+    ],
+)

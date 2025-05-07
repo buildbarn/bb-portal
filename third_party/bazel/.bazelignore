@@ -1,0 +1,5 @@
+# Ignore bazel-* when building from the root.
+bazel-bazel
+bazel-bin
+bazel-out
+bazel-testlogs

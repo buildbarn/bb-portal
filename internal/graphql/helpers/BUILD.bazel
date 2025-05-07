@@ -15,7 +15,7 @@ go_library(
         "//ent/gen/ent/blob",
         "//internal/graphql/model",
         "//pkg/events",
+        "//pkg/proto/bazelbuild/bazel:build_event_stream",
         "//pkg/summary/detectors",
-        "//third_party/bazel/gen/bes",
     ],
 )

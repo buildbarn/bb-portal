@@ -4,8 +4,8 @@ buildportal.db*
 bep-files/
 blob-archive/
 cmd/bb-portal/__debug*
-bazel-*
-!bazel-demo/
-bazel-demo/bazel-*
-bazel-demo/*.ndjson
+/bazel-*
+!/bazel-demo/
+/bazel-demo/bazel-*
+/bazel-demo/*.ndjson
 cmd/bb_portal/__debug*

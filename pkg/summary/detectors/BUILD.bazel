@@ -16,6 +16,6 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/events",
-        "//third_party/bazel/gen/bes",
+        "//pkg/proto/bazelbuild/bazel:build_event_stream",
     ],
 )
