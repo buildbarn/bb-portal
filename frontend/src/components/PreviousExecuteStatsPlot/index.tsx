@@ -22,21 +22,20 @@ interface PlotDataPoint {
 }
 
 const PADDING_FACTOR = 4;
+const REFERENCE_AREA_WIDTH = 0.4;
 
 const PreviousExecutionsPlot: React.FC<Props> = ({ prevStats }) => {
   const succeeded: PlotDataPoint[] = [];
   const timedOut: PlotDataPoint[] = [];
   const sizeClasses: number[] = [];
+  const entries = Object.entries(prevStats.sizeClasses);
 
-  for (const sizeClassEntry of Object.entries(prevStats.sizeClasses)) {
-    const sizeClass = Number.parseInt(sizeClassEntry[0]);
+  for (let i = 0; i < entries.length; ++i) {
+    const sizeClass = Number.parseInt(entries[i][0]);
     sizeClasses.push(sizeClass);
-    for (const prevExec of sizeClassEntry[1].previousExecutions) {
+    for (const prevExec of entries[i][1].previousExecutions) {
       // TODO: Make random scatter deterministic for each data point
-      // TODO: Nicely visualize class gaps in plot (i.e. if the only
-      //       two size classes are labeled 0 and 64, it should not
-      //       look weird)
-      const xValue = sizeClass + (Math.random() - 0.5) / 3;
+      const xValue = i + (Math.random() - 0.5) / 3;
       if (prevExec.succeeded) {
         const time = durationToSeconds(prevExec.succeeded);
         succeeded.push({
@@ -78,9 +77,12 @@ const PreviousExecutionsPlot: React.FC<Props> = ({ prevStats }) => {
           position: "insideBottom",
           offset: 0,
         }}
-        ticks={sizeClasses}
+        ticks={Array.from(Array(entries.length).keys())}
+        tickFormatter={(_, index) => {
+          return entries[index][0];
+        }}
         domain={() => {
-          const len = sizeClasses.length;
+          const len = entries.length;
           return [-PADDING_FACTOR / len, len - 1 + PADDING_FACTOR / len];
         }}
       />
@@ -112,12 +114,12 @@ const PreviousExecutionsPlot: React.FC<Props> = ({ prevStats }) => {
           }
         }}
       />
-      {sizeClasses.map((sizeClass) => {
+      {entries.map((value, index) => {
         return (
           <ReferenceArea
-            key={sizeClass}
-            x1={sizeClass - 0.4}
-            x2={sizeClass + 0.4}
+            key={value[0]}
+            x1={index - REFERENCE_AREA_WIDTH}
+            x2={index + REFERENCE_AREA_WIDTH}
             y1={0}
             fill="gray"
             ifOverflow="extendDomain"
