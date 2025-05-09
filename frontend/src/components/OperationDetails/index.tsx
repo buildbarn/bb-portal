@@ -41,6 +41,7 @@ const OperationDetails: React.FC<Props> = ({ label }) => {
       operationName: label,
     }),
     staleTime: Number.POSITIVE_INFINITY,
+    refetchOnMount: "always",
   });
 
   if (isError) {

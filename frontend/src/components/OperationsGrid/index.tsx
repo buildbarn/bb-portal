@@ -36,6 +36,7 @@ const OperationsTable: React.FC = () => {
       filterInvocationId: getSerializedFilterInvocationId(filterInvocationId),
     }),
     staleTime: Number.POSITIVE_INFINITY,
+    refetchOnMount: "always",
   });
 
   let emptyText = "No active operations";
