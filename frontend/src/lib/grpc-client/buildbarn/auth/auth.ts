@@ -6,7 +6,10 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { type CallContext, type CallOptions } from "nice-grpc-common";
+import { Empty } from "../../google/protobuf/empty";
 import { Value } from "../../google/protobuf/struct";
+import { Timestamp } from "../../google/protobuf/timestamp";
 import { KeyValue } from "../../opentelemetry/proto/common/v1/common";
 
 export const protobufPackage = "buildbarn.auth";
@@ -38,6 +41,89 @@ export interface AuthenticationMetadata {
    * be accessed by JMESPathExpressionAuthorizer.
    */
   private: any | undefined;
+}
+
+export interface AuthenticateRequest {
+  /**
+   * The HTTP or gRPC request headers that the client wants to authenticate.
+   * This metadata is forwarded as part of the request because the communication
+   * with the authentication service might have its own authentication and
+   * authorizing system.
+   */
+  requestMetadata: { [key: string]: AuthenticateRequest_ValueList };
+  /**
+   * A description of for example what subsystem is being accessed and what
+   * kind of request is being made.
+   */
+  scope: any | undefined;
+}
+
+export interface AuthenticateRequest_ValueList {
+  value: string[];
+}
+
+export interface AuthenticateRequest_RequestMetadataEntry {
+  key: string;
+  value: AuthenticateRequest_ValueList | undefined;
+}
+
+export interface AuthenticateResponse {
+  /**
+   * Allow the request.
+   *
+   * The value of this field is used as authentication metadata in
+   * literal form.
+   */
+  allow?:
+    | AuthenticationMetadata
+    | undefined;
+  /**
+   * Deny the request by returning UNAUTHENTICATED with a fixed error message
+   * to the client.
+   */
+  deny?:
+    | string
+    | undefined;
+  /**
+   * The last point in time this response can be reused for the same request.
+   * A null value means not to be cached for future requests.
+   */
+  cacheExpirationTime: Date | undefined;
+}
+
+export interface AuthorizeRequest {
+  /** Metadata returned by the authenticator. */
+  authenticationMetadata:
+    | AuthenticationMetadata
+    | undefined;
+  /**
+   * A description of for example what subsystem is being accessed and what
+   * kind of request is being made.
+   */
+  scope:
+    | any
+    | undefined;
+  /** The instance name to evaluate. */
+  instanceName: string;
+}
+
+export interface AuthorizeResponse {
+  /** Allow the request. */
+  allow?:
+    | Empty
+    | undefined;
+  /**
+   * Deny the request by returning PERMISSION_DENIED with a fixed error
+   * message to the client.
+   */
+  deny?:
+    | string
+    | undefined;
+  /**
+   * The last point in time this response can be reused for the same request.
+   * A null value means not to be cached for future requests.
+   */
+  cacheExpirationTime: Date | undefined;
 }
 
 function createBaseAuthenticationMetadata(): AuthenticationMetadata {
@@ -134,6 +220,589 @@ export const AuthenticationMetadata: MessageFns<AuthenticationMetadata> = {
   },
 };
 
+function createBaseAuthenticateRequest(): AuthenticateRequest {
+  return { requestMetadata: {}, scope: undefined };
+}
+
+export const AuthenticateRequest: MessageFns<AuthenticateRequest> = {
+  encode(message: AuthenticateRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    Object.entries(message.requestMetadata).forEach(([key, value]) => {
+      AuthenticateRequest_RequestMetadataEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).join();
+    });
+    if (message.scope !== undefined) {
+      Value.encode(Value.wrap(message.scope), writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AuthenticateRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAuthenticateRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = AuthenticateRequest_RequestMetadataEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.requestMetadata[entry1.key] = entry1.value;
+          }
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.scope = Value.unwrap(Value.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AuthenticateRequest {
+    return {
+      requestMetadata: isObject(object.requestMetadata)
+        ? Object.entries(object.requestMetadata).reduce<{ [key: string]: AuthenticateRequest_ValueList }>(
+          (acc, [key, value]) => {
+            acc[key] = AuthenticateRequest_ValueList.fromJSON(value);
+            return acc;
+          },
+          {},
+        )
+        : {},
+      scope: isSet(object?.scope) ? object.scope : undefined,
+    };
+  },
+
+  toJSON(message: AuthenticateRequest): unknown {
+    const obj: any = {};
+    if (message.requestMetadata) {
+      const entries = Object.entries(message.requestMetadata);
+      if (entries.length > 0) {
+        obj.requestMetadata = {};
+        entries.forEach(([k, v]) => {
+          obj.requestMetadata[k] = AuthenticateRequest_ValueList.toJSON(v);
+        });
+      }
+    }
+    if (message.scope !== undefined) {
+      obj.scope = message.scope;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<AuthenticateRequest>): AuthenticateRequest {
+    return AuthenticateRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<AuthenticateRequest>): AuthenticateRequest {
+    const message = createBaseAuthenticateRequest();
+    message.requestMetadata = Object.entries(object.requestMetadata ?? {}).reduce<
+      { [key: string]: AuthenticateRequest_ValueList }
+    >((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = AuthenticateRequest_ValueList.fromPartial(value);
+      }
+      return acc;
+    }, {});
+    message.scope = object.scope ?? undefined;
+    return message;
+  },
+};
+
+function createBaseAuthenticateRequest_ValueList(): AuthenticateRequest_ValueList {
+  return { value: [] };
+}
+
+export const AuthenticateRequest_ValueList: MessageFns<AuthenticateRequest_ValueList> = {
+  encode(message: AuthenticateRequest_ValueList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.value) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AuthenticateRequest_ValueList {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAuthenticateRequest_ValueList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.value.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AuthenticateRequest_ValueList {
+    return { value: globalThis.Array.isArray(object?.value) ? object.value.map((e: any) => globalThis.String(e)) : [] };
+  },
+
+  toJSON(message: AuthenticateRequest_ValueList): unknown {
+    const obj: any = {};
+    if (message.value?.length) {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<AuthenticateRequest_ValueList>): AuthenticateRequest_ValueList {
+    return AuthenticateRequest_ValueList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<AuthenticateRequest_ValueList>): AuthenticateRequest_ValueList {
+    const message = createBaseAuthenticateRequest_ValueList();
+    message.value = object.value?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseAuthenticateRequest_RequestMetadataEntry(): AuthenticateRequest_RequestMetadataEntry {
+  return { key: "", value: undefined };
+}
+
+export const AuthenticateRequest_RequestMetadataEntry: MessageFns<AuthenticateRequest_RequestMetadataEntry> = {
+  encode(message: AuthenticateRequest_RequestMetadataEntry, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      AuthenticateRequest_ValueList.encode(message.value, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AuthenticateRequest_RequestMetadataEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAuthenticateRequest_RequestMetadataEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = AuthenticateRequest_ValueList.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AuthenticateRequest_RequestMetadataEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? AuthenticateRequest_ValueList.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: AuthenticateRequest_RequestMetadataEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = AuthenticateRequest_ValueList.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<AuthenticateRequest_RequestMetadataEntry>): AuthenticateRequest_RequestMetadataEntry {
+    return AuthenticateRequest_RequestMetadataEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<AuthenticateRequest_RequestMetadataEntry>): AuthenticateRequest_RequestMetadataEntry {
+    const message = createBaseAuthenticateRequest_RequestMetadataEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? AuthenticateRequest_ValueList.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseAuthenticateResponse(): AuthenticateResponse {
+  return { allow: undefined, deny: undefined, cacheExpirationTime: undefined };
+}
+
+export const AuthenticateResponse: MessageFns<AuthenticateResponse> = {
+  encode(message: AuthenticateResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.allow !== undefined) {
+      AuthenticationMetadata.encode(message.allow, writer.uint32(10).fork()).join();
+    }
+    if (message.deny !== undefined) {
+      writer.uint32(18).string(message.deny);
+    }
+    if (message.cacheExpirationTime !== undefined) {
+      Timestamp.encode(toTimestamp(message.cacheExpirationTime), writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AuthenticateResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAuthenticateResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.allow = AuthenticationMetadata.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.deny = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.cacheExpirationTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AuthenticateResponse {
+    return {
+      allow: isSet(object.allow) ? AuthenticationMetadata.fromJSON(object.allow) : undefined,
+      deny: isSet(object.deny) ? globalThis.String(object.deny) : undefined,
+      cacheExpirationTime: isSet(object.cacheExpirationTime)
+        ? fromJsonTimestamp(object.cacheExpirationTime)
+        : undefined,
+    };
+  },
+
+  toJSON(message: AuthenticateResponse): unknown {
+    const obj: any = {};
+    if (message.allow !== undefined) {
+      obj.allow = AuthenticationMetadata.toJSON(message.allow);
+    }
+    if (message.deny !== undefined) {
+      obj.deny = message.deny;
+    }
+    if (message.cacheExpirationTime !== undefined) {
+      obj.cacheExpirationTime = message.cacheExpirationTime.toISOString();
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<AuthenticateResponse>): AuthenticateResponse {
+    return AuthenticateResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<AuthenticateResponse>): AuthenticateResponse {
+    const message = createBaseAuthenticateResponse();
+    message.allow = (object.allow !== undefined && object.allow !== null)
+      ? AuthenticationMetadata.fromPartial(object.allow)
+      : undefined;
+    message.deny = object.deny ?? undefined;
+    message.cacheExpirationTime = object.cacheExpirationTime ?? undefined;
+    return message;
+  },
+};
+
+function createBaseAuthorizeRequest(): AuthorizeRequest {
+  return { authenticationMetadata: undefined, scope: undefined, instanceName: "" };
+}
+
+export const AuthorizeRequest: MessageFns<AuthorizeRequest> = {
+  encode(message: AuthorizeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.authenticationMetadata !== undefined) {
+      AuthenticationMetadata.encode(message.authenticationMetadata, writer.uint32(10).fork()).join();
+    }
+    if (message.scope !== undefined) {
+      Value.encode(Value.wrap(message.scope), writer.uint32(18).fork()).join();
+    }
+    if (message.instanceName !== "") {
+      writer.uint32(26).string(message.instanceName);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AuthorizeRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAuthorizeRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authenticationMetadata = AuthenticationMetadata.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.scope = Value.unwrap(Value.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.instanceName = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AuthorizeRequest {
+    return {
+      authenticationMetadata: isSet(object.authenticationMetadata)
+        ? AuthenticationMetadata.fromJSON(object.authenticationMetadata)
+        : undefined,
+      scope: isSet(object?.scope) ? object.scope : undefined,
+      instanceName: isSet(object.instanceName) ? globalThis.String(object.instanceName) : "",
+    };
+  },
+
+  toJSON(message: AuthorizeRequest): unknown {
+    const obj: any = {};
+    if (message.authenticationMetadata !== undefined) {
+      obj.authenticationMetadata = AuthenticationMetadata.toJSON(message.authenticationMetadata);
+    }
+    if (message.scope !== undefined) {
+      obj.scope = message.scope;
+    }
+    if (message.instanceName !== "") {
+      obj.instanceName = message.instanceName;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<AuthorizeRequest>): AuthorizeRequest {
+    return AuthorizeRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<AuthorizeRequest>): AuthorizeRequest {
+    const message = createBaseAuthorizeRequest();
+    message.authenticationMetadata =
+      (object.authenticationMetadata !== undefined && object.authenticationMetadata !== null)
+        ? AuthenticationMetadata.fromPartial(object.authenticationMetadata)
+        : undefined;
+    message.scope = object.scope ?? undefined;
+    message.instanceName = object.instanceName ?? "";
+    return message;
+  },
+};
+
+function createBaseAuthorizeResponse(): AuthorizeResponse {
+  return { allow: undefined, deny: undefined, cacheExpirationTime: undefined };
+}
+
+export const AuthorizeResponse: MessageFns<AuthorizeResponse> = {
+  encode(message: AuthorizeResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.allow !== undefined) {
+      Empty.encode(message.allow, writer.uint32(10).fork()).join();
+    }
+    if (message.deny !== undefined) {
+      writer.uint32(18).string(message.deny);
+    }
+    if (message.cacheExpirationTime !== undefined) {
+      Timestamp.encode(toTimestamp(message.cacheExpirationTime), writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AuthorizeResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAuthorizeResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.allow = Empty.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.deny = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.cacheExpirationTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AuthorizeResponse {
+    return {
+      allow: isSet(object.allow) ? Empty.fromJSON(object.allow) : undefined,
+      deny: isSet(object.deny) ? globalThis.String(object.deny) : undefined,
+      cacheExpirationTime: isSet(object.cacheExpirationTime)
+        ? fromJsonTimestamp(object.cacheExpirationTime)
+        : undefined,
+    };
+  },
+
+  toJSON(message: AuthorizeResponse): unknown {
+    const obj: any = {};
+    if (message.allow !== undefined) {
+      obj.allow = Empty.toJSON(message.allow);
+    }
+    if (message.deny !== undefined) {
+      obj.deny = message.deny;
+    }
+    if (message.cacheExpirationTime !== undefined) {
+      obj.cacheExpirationTime = message.cacheExpirationTime.toISOString();
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<AuthorizeResponse>): AuthorizeResponse {
+    return AuthorizeResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<AuthorizeResponse>): AuthorizeResponse {
+    const message = createBaseAuthorizeResponse();
+    message.allow = (object.allow !== undefined && object.allow !== null) ? Empty.fromPartial(object.allow) : undefined;
+    message.deny = object.deny ?? undefined;
+    message.cacheExpirationTime = object.cacheExpirationTime ?? undefined;
+    return message;
+  },
+};
+
+export type AuthenticationDefinition = typeof AuthenticationDefinition;
+export const AuthenticationDefinition = {
+  name: "Authentication",
+  fullName: "buildbarn.auth.Authentication",
+  methods: {
+    /** Authenticates a request that the client has received. */
+    authenticate: {
+      name: "Authenticate",
+      requestType: AuthenticateRequest,
+      requestStream: false,
+      responseType: AuthenticateResponse,
+      responseStream: false,
+      options: {},
+    },
+  },
+} as const;
+
+export interface AuthenticationServiceImplementation<CallContextExt = {}> {
+  /** Authenticates a request that the client has received. */
+  authenticate(
+    request: AuthenticateRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<AuthenticateResponse>>;
+}
+
+export interface AuthenticationClient<CallOptionsExt = {}> {
+  /** Authenticates a request that the client has received. */
+  authenticate(
+    request: DeepPartial<AuthenticateRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<AuthenticateResponse>;
+}
+
+export type AuthorizerDefinition = typeof AuthorizerDefinition;
+export const AuthorizerDefinition = {
+  name: "Authorizer",
+  fullName: "buildbarn.auth.Authorizer",
+  methods: {
+    /** Authorizes a request that the client has received. */
+    authorize: {
+      name: "Authorize",
+      requestType: AuthorizeRequest,
+      requestStream: false,
+      responseType: AuthorizeResponse,
+      responseStream: false,
+      options: {},
+    },
+  },
+} as const;
+
+export interface AuthorizerServiceImplementation<CallContextExt = {}> {
+  /** Authorizes a request that the client has received. */
+  authorize(request: AuthorizeRequest, context: CallContext & CallContextExt): Promise<DeepPartial<AuthorizeResponse>>;
+}
+
+export interface AuthorizerClient<CallOptionsExt = {}> {
+  /** Authorizes a request that the client has received. */
+  authorize(request: DeepPartial<AuthorizeRequest>, options?: CallOptions & CallOptionsExt): Promise<AuthorizeResponse>;
+}
+
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 
 export type DeepPartial<T> = T extends Builtin ? T
@@ -141,6 +810,32 @@ export type DeepPartial<T> = T extends Builtin ? T
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = Math.trunc(date.getTime() / 1_000).toString();
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = (globalThis.Number(t.seconds) || 0) * 1_000;
+  millis += (t.nanos || 0) / 1_000_000;
+  return new globalThis.Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof globalThis.Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new globalThis.Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

@@ -29,7 +29,7 @@
             },
             {
                "name": "Clang format",
-               "run": "find . -name '*.proto' -exec bazel run @llvm_toolchain_llvm//:bin/clang-format -- -i {} +"
+               "run": "find . -name '*.proto' -not -path './frontend/*' -exec bazel run @llvm_toolchain_llvm//:bin/clang-format -- -i {} +"
             },
             {
                "name": "GitHub workflows",

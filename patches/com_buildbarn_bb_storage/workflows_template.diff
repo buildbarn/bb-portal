@@ -1,5 +1,5 @@
 diff --git tools/github_workflows/workflows_template.libsonnet tools/github_workflows/workflows_template.libsonnet
-index 89861ab..626f5d5 100644
+index 89861ab..c686945 100644
 --- tools/github_workflows/workflows_template.libsonnet
 +++ tools/github_workflows/workflows_template.libsonnet
 @@ -6,18 +6,6 @@
@@ -30,6 +30,15 @@ index 89861ab..626f5d5 100644
          },
          {
            name: 'Buildifier',
+@@ -86,7 +74,7 @@
+         },
+         {
+           name: 'Clang format',
+-          run: "find . -name '*.proto' -exec bazel run @llvm_toolchain_llvm//:bin/clang-format -- -i {} +",
++          run: "find . -name '*.proto' -not -path './frontend/*' -exec bazel run @llvm_toolchain_llvm//:bin/clang-format -- -i {} +",
+         },
+         {
+           name: 'GitHub workflows',
 @@ -98,8 +86,9 @@
              if [ -d pkg/proto ]; then
                find . bazel-bin/pkg/proto -name '*.pb.go' -delete || true

@@ -274,11 +274,10 @@ export interface Command {
    * A list of keys for node properties the client expects to retrieve for
    * output files and directories. Keys are either names of string-based
    * [NodeProperty][build.bazel.remote.execution.v2.NodeProperty] or
-   * names of fields in
-   * [NodeProperties][build.bazel.remote.execution.v2.NodeProperties]. In order
-   * to ensure that equivalent `Action`s always hash to the same value, the node
-   * properties MUST be lexicographically sorted by name. Sorting of strings is
-   * done by code point, equivalently, by the UTF-8 bytes.
+   * names of fields in [NodeProperties][build.bazel.remote.execution.v2.NodeProperties].
+   * In order to ensure that equivalent `Action`s always hash to the same
+   * value, the node properties MUST be lexicographically sorted by name.
+   * Sorting of strings is done by code point, equivalently, by the UTF-8 bytes.
    *
    * The interpretation of string-based properties is server-dependent. If a
    * property is not recognized by the server, the server will return an
@@ -435,8 +434,7 @@ export interface Platform_Property {
  * * The files, directories and symlinks in the directory must each be sorted
  *   in lexicographical order by path. The path strings must be sorted by code
  *   point, equivalently, by UTF-8 bytes.
- * * The [NodeProperties][build.bazel.remote.execution.v2.NodeProperty] of
- * files,
+ * * The [NodeProperties][build.bazel.remote.execution.v2.NodeProperty] of files,
  *   directories, and symlinks must be sorted in lexicographical order by
  *   property name.
  *
@@ -572,9 +570,8 @@ export interface SymlinkNode {
    * The target path of the symlink. The path separator is a forward slash `/`.
    * The target path can be relative to the parent directory of the symlink or
    * it can be an absolute path starting with `/`. Support for absolute paths
-   * can be checked using the
-   * [Capabilities][build.bazel.remote.execution.v2.Capabilities] API. `..`
-   * components are allowed anywhere in the target path as logical
+   * can be checked using the [Capabilities][build.bazel.remote.execution.v2.Capabilities]
+   * API. `..` components are allowed anywhere in the target path as logical
    * canonicalization may lead to different behavior in the presence of
    * directory symlinks (e.g. `foo/../bar` may not be the same as `bar`).
    * To reduce potential cache misses, canonicalization is still recommended
@@ -722,9 +719,9 @@ export interface ActionResult {
    */
   outputFiles: OutputFile[];
   /**
-   * The output files of the action that are symbolic links to other files.
-   * Those may be links to other output files, or input files, or even absolute
-   * paths outside of the working directory, if the server supports
+   * The output files of the action that are symbolic links to other files. Those
+   * may be links to other output files, or input files, or even absolute paths
+   * outside of the working directory, if the server supports
    * [SymlinkAbsolutePathStrategy.ALLOWED][build.bazel.remote.execution.v2.CacheCapabilities.SymlinkAbsolutePathStrategy].
    * For each output file requested in the `output_files` or `output_paths`
    * field of the Action, if the corresponding file existed after
@@ -748,8 +745,8 @@ export interface ActionResult {
    * New in v2.1: this field will only be populated if the command
    * `output_paths` field was used, and not the pre v2.1 `output_files` or
    * `output_directories` fields.
-   * The output paths of the action that are symbolic links to other paths.
-   * Those may be links to other outputs, or inputs, or even absolute paths
+   * The output paths of the action that are symbolic links to other paths. Those
+   * may be links to other outputs, or inputs, or even absolute paths
    * outside of the working directory, if the server supports
    * [SymlinkAbsolutePathStrategy.ALLOWED][build.bazel.remote.execution.v2.CacheCapabilities.SymlinkAbsolutePathStrategy].
    * A single entry for each output requested in `output_paths`
@@ -855,9 +852,9 @@ export interface ActionResult {
    * The standard output buffer of the action. The server SHOULD NOT inline
    * stdout unless requested by the client in the
    * [GetActionResultRequest][build.bazel.remote.execution.v2.GetActionResultRequest]
-   * message. The server MAY omit inlining, even if requested, and MUST do so if
-   * inlining would cause the response to exceed message size limits. Clients
-   * SHOULD NOT populate this field when uploading to the cache.
+   * message. The server MAY omit inlining, even if requested, and MUST do so if inlining
+   * would cause the response to exceed message size limits.
+   * Clients SHOULD NOT populate this field when uploading to the cache.
    */
   stdoutRaw: Uint8Array;
   /**
@@ -872,9 +869,9 @@ export interface ActionResult {
    * The standard error buffer of the action. The server SHOULD NOT inline
    * stderr unless requested by the client in the
    * [GetActionResultRequest][build.bazel.remote.execution.v2.GetActionResultRequest]
-   * message. The server MAY omit inlining, even if requested, and MUST do so if
-   * inlining would cause the response to exceed message size limits. Clients
-   * SHOULD NOT populate this field when uploading to the cache.
+   * message. The server MAY omit inlining, even if requested, and MUST do so if inlining
+   * would cause the response to exceed message size limits.
+   * Clients SHOULD NOT populate this field when uploading to the cache.
    */
   stderrRaw: Uint8Array;
   /**
@@ -909,12 +906,12 @@ export interface OutputFile {
   /** True if file is executable, false otherwise. */
   isExecutable: boolean;
   /**
-   * The contents of the file if inlining was requested. The server SHOULD NOT
-   * inline file contents unless requested by the client in the
+   * The contents of the file if inlining was requested. The server SHOULD NOT inline
+   * file contents unless requested by the client in the
    * [GetActionResultRequest][build.bazel.remote.execution.v2.GetActionResultRequest]
-   * message. The server MAY omit inlining, even if requested, and MUST do so if
-   * inlining would cause the response to exceed message size limits. Clients
-   * SHOULD NOT populate this field when uploading to the cache.
+   * message. The server MAY omit inlining, even if requested, and MUST do so if inlining
+   * would cause the response to exceed message size limits.
+   * Clients SHOULD NOT populate this field when uploading to the cache.
    */
   contents: Uint8Array;
   nodeProperties: NodeProperties | undefined;
@@ -1021,8 +1018,8 @@ export interface OutputDirectory {
  */
 export interface OutputSymlink {
   /**
-   * The full path of the symlink relative to the working directory, including
-   * the filename. The path separator is a forward slash `/`. Since this is a
+   * The full path of the symlink relative to the working directory, including the
+   * filename. The path separator is a forward slash `/`. Since this is a
    * relative path, it MUST NOT begin with a leading forward slash.
    */
   path: string;
@@ -1030,9 +1027,8 @@ export interface OutputSymlink {
    * The target path of the symlink. The path separator is a forward slash `/`.
    * The target path can be relative to the parent directory of the symlink or
    * it can be an absolute path starting with `/`. Support for absolute paths
-   * can be checked using the
-   * [Capabilities][build.bazel.remote.execution.v2.Capabilities] API. `..`
-   * components are allowed anywhere in the target path.
+   * can be checked using the [Capabilities][build.bazel.remote.execution.v2.Capabilities]
+   * API. `..` components are allowed anywhere in the target path.
    */
   target: string;
   nodeProperties: NodeProperties | undefined;
@@ -1209,8 +1205,7 @@ export interface ExecuteResponse {
   serverLogs: { [key: string]: LogFile };
   /**
    * Freeform informational message with details on the execution of the action
-   * that may be displayed to the user upon failure or when requested
-   * explicitly.
+   * that may be displayed to the user upon failure or when requested explicitly.
    */
   message: string;
 }
@@ -1599,10 +1594,7 @@ export interface BatchReadBlobsResponse {
   responses: BatchReadBlobsResponse_Response[];
 }
 
-/**
- * A response corresponding to a single blob that the client tried to
- * download.
- */
+/** A response corresponding to a single blob that the client tried to download. */
 export interface BatchReadBlobsResponse_Response {
   /** The digest to which this response corresponds. */
   digest:
@@ -1612,8 +1604,7 @@ export interface BatchReadBlobsResponse_Response {
   data: Uint8Array;
   /**
    * The format the data is encoded in. MUST be `IDENTITY`/unspecified,
-   * or one of the acceptable compressors specified in the
-   * `BatchReadBlobsRequest`.
+   * or one of the acceptable compressors specified in the `BatchReadBlobsRequest`.
    */
   compressor: Compressor_Value;
   /** The result of attempting to download that blob. */
@@ -1743,9 +1734,7 @@ export enum DigestFunction_Value {
   MD5 = 3,
   /**
    * VSO - The Microsoft "VSO-Hash" paged SHA256 digest function.
-   * See
-   * https://github.com/microsoft/BuildXL/blob/master/Documentation/Specs/PagedHash.md
-   * .
+   * See https://github.com/microsoft/BuildXL/blob/master/Documentation/Specs/PagedHash.md .
    */
   VSO = 4,
   /** SHA384 - The SHA-384 digest function. */
@@ -1754,8 +1743,8 @@ export enum DigestFunction_Value {
   SHA512 = 6,
   /**
    * MURMUR3 - Murmur3 128-bit digest function, x64 variant. Note that this is not a
-   * cryptographic hash function and its collision properties are not strongly
-   * guaranteed. See https://github.com/aappleby/smhasher/wiki/MurmurHash3 .
+   * cryptographic hash function and its collision properties are not strongly guaranteed.
+   * See https://github.com/aappleby/smhasher/wiki/MurmurHash3 .
    */
   MURMUR3 = 7,
   /**
@@ -2128,8 +2117,7 @@ export interface ToolDetails {
  * * name: `build.bazel.remote.execution.v2.requestmetadata-bin`
  * * contents: the base64 encoded binary `RequestMetadata` message.
  * Note: the gRPC library serializes binary headers encoded in base64 by
- * default
- * (https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests).
+ * default (https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests).
  * Therefore, if the gRPC library is used to pass/retrieve this
  * metadata, the user may ignore the base64 encoding and assume it is simply
  * serialized as a binary message.
@@ -2156,23 +2144,20 @@ export interface RequestMetadata {
    */
   correlatedInvocationsId: string;
   /**
-   * A brief description of the kind of action, for example, CppCompile or
-   * GoLink. There is no standard agreed set of values for this, and they are
-   * expected to vary between different client tools.
+   * A brief description of the kind of action, for example, CppCompile or GoLink.
+   * There is no standard agreed set of values for this, and they are expected to vary between different client tools.
    */
   actionMnemonic: string;
   /**
    * An identifier for the target which produced this action.
-   * No guarantees are made around how many actions may relate to a single
-   * target.
+   * No guarantees are made around how many actions may relate to a single target.
    */
   targetId: string;
   /**
    * An identifier for the configuration in which the target was built,
    * e.g. for differentiating building host tools or different target platforms.
    * There is no expectation that this value will have any particular structure,
-   * or equality across invocations, though some client tools may offer these
-   * guarantees.
+   * or equality across invocations, though some client tools may offer these guarantees.
    */
   configurationId: string;
 }
@@ -8106,8 +8091,8 @@ export const ActionCacheDefinition = {
      * [ContentAddressableStorage][build.bazel.remote.execution.v2.ContentAddressableStorage]
      * are available at the time of returning the
      * [ActionResult][build.bazel.remote.execution.v2.ActionResult] and will be
-     * for some period of time afterwards. The lifetimes of the referenced blobs
-     * SHOULD be increased if necessary and applicable.
+     * for some period of time afterwards. The lifetimes of the referenced blobs SHOULD be increased
+     * if necessary and applicable.
      *
      * Errors:
      *
@@ -8364,8 +8349,8 @@ export interface ActionCacheServiceImplementation<CallContextExt = {}> {
    * [ContentAddressableStorage][build.bazel.remote.execution.v2.ContentAddressableStorage]
    * are available at the time of returning the
    * [ActionResult][build.bazel.remote.execution.v2.ActionResult] and will be
-   * for some period of time afterwards. The lifetimes of the referenced blobs
-   * SHOULD be increased if necessary and applicable.
+   * for some period of time afterwards. The lifetimes of the referenced blobs SHOULD be increased
+   * if necessary and applicable.
    *
    * Errors:
    *
@@ -8410,8 +8395,8 @@ export interface ActionCacheClient<CallOptionsExt = {}> {
    * [ContentAddressableStorage][build.bazel.remote.execution.v2.ContentAddressableStorage]
    * are available at the time of returning the
    * [ActionResult][build.bazel.remote.execution.v2.ActionResult] and will be
-   * for some period of time afterwards. The lifetimes of the referenced blobs
-   * SHOULD be increased if necessary and applicable.
+   * for some period of time afterwards. The lifetimes of the referenced blobs SHOULD be increased
+   * if necessary and applicable.
    *
    * Errors:
    *
@@ -8470,8 +8455,7 @@ export interface ActionCacheClient<CallOptionsExt = {}> {
  * For large uploads, the client must use the
  * [Write method][google.bytestream.ByteStream.Write] of the ByteStream API.
  *
- * For uncompressed data, The `WriteRequest.resource_name` is of the following
- * form:
+ * For uncompressed data, The `WriteRequest.resource_name` is of the following form:
  * `{instance_name}/uploads/{uuid}/blobs/{digest_function/}{hash}/{size}{/optional_metadata}`
  *
  * Where:
@@ -8493,11 +8477,9 @@ export interface ActionCacheClient<CallOptionsExt = {}> {
  *   or VSO, this component MUST be omitted. In that case the server SHOULD
  *   infer the digest function using the length of the `hash` and the digest
  *   functions announced in the server's capabilities.
- * * `hash` and `size` refer to the
- * [Digest][build.bazel.remote.execution.v2.Digest]
+ * * `hash` and `size` refer to the [Digest][build.bazel.remote.execution.v2.Digest]
  *   of the data being uploaded.
- * * `optional_metadata` is implementation specific data, which clients MAY
- * omit.
+ * * `optional_metadata` is implementation specific data, which clients MAY omit.
  *   Servers MAY ignore this metadata.
  *
  * Data can alternatively be uploaded in compressed form, with the following
@@ -8548,8 +8530,7 @@ export interface ActionCacheClient<CallOptionsExt = {}> {
  * For large downloads, the client must use the
  * [Read method][google.bytestream.ByteStream.Read] of the ByteStream API.
  *
- * For uncompressed data, The `ReadRequest.resource_name` is of the following
- * form:
+ * For uncompressed data, The `ReadRequest.resource_name` is of the following form:
  * `{instance_name}/blobs/{digest_function/}{hash}/{size}`
  * Where `instance_name`, `digest_function`, `hash` and `size` are defined as
  * for uploads.
@@ -8608,8 +8589,8 @@ export const ContentAddressableStorageDefinition = {
      * Clients can use this API before uploading blobs to determine which ones are
      * already present in the CAS and do not need to be uploaded again.
      *
-     * Servers SHOULD increase the lifetimes of the referenced blobs if necessary
-     * and applicable.
+     * Servers SHOULD increase the lifetimes of the referenced blobs if necessary and
+     * applicable.
      *
      * There are no method-specific errors.
      */
@@ -8975,8 +8956,8 @@ export interface ContentAddressableStorageServiceImplementation<CallContextExt =
    * Clients can use this API before uploading blobs to determine which ones are
    * already present in the CAS and do not need to be uploaded again.
    *
-   * Servers SHOULD increase the lifetimes of the referenced blobs if necessary
-   * and applicable.
+   * Servers SHOULD increase the lifetimes of the referenced blobs if necessary and
+   * applicable.
    *
    * There are no method-specific errors.
    */
@@ -9078,8 +9059,8 @@ export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
    * Clients can use this API before uploading blobs to determine which ones are
    * already present in the CAS and do not need to be uploaded again.
    *
-   * Servers SHOULD increase the lifetimes of the referenced blobs if necessary
-   * and applicable.
+   * Servers SHOULD increase the lifetimes of the referenced blobs if necessary and
+   * applicable.
    *
    * There are no method-specific errors.
    */
