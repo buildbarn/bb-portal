@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"os"
 	"slices"
+	"strings"
 	"time"
 
 	_ "net/http/pprof"
@@ -132,21 +133,13 @@ func main() {
 		runWatcher(watcher, dbClient, *bepFolder, blobArchiver)
 
 		serveFileService := servefiles.NewFileServerServiceFromConfiguration(dependenciesGroup, &configuration, grpcClientFactory)
+		grpcwebProxyService, _ := StartGrpcWebProxyServer(&configuration, siblingsGroup, grpcClientFactory)
 
 		router := mux.NewRouter()
-		c := cors.New(
-			cors.Options{
-				AllowOriginFunc: func(origin string) bool {
-					return slices.Contains(configuration.AllowedOrigins, origin) || slices.Contains(configuration.AllowedOrigins, "*")
-				},
-				AllowedMethods: []string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-				AllowedHeaders: []string{"Authorization", "Content-Type"},
-			},
-		)
-		newPortalService(&configuration, blobArchiver, dbClient, serveFileService, router)
+		newPortalService(&configuration, blobArchiver, dbClient, serveFileService, grpcwebProxyService, router)
 		bb_http.NewServersFromConfigurationAndServe(
 			configuration.HttpServers,
-			bb_http.NewMetricsHandler(c.Handler(router), "PortalUI"),
+			bb_http.NewMetricsHandler(configureCors(configuration.AllowedOrigins, router), "PortalUI"),
 			siblingsGroup,
 			grpcClientFactory,
 		)
@@ -161,8 +154,6 @@ func main() {
 		); err != nil {
 			return util.StatusWrap(err, "gRPC server failure")
 		}
-
-		StartGrpcWebProxyServer(&configuration, siblingsGroup, grpcClientFactory)
 
 		lifecycleState.MarkReadyAndWait(siblingsGroup)
 		return nil
@@ -226,13 +217,25 @@ func fatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func newPortalService(configuration *bb_portal.ApplicationConfiguration, archiver processing.BlobMultiArchiver, dbClient *ent.Client, serveFilesService *servefiles.FileServerService, router *mux.Router) {
+func newPortalService(configuration *bb_portal.ApplicationConfiguration, archiver processing.BlobMultiArchiver, dbClient *ent.Client, serveFilesService *servefiles.FileServerService, grpcwebProxyService http.Handler, router *mux.Router) {
 	srv := handler.NewDefaultServer(graphql.NewSchema(dbClient))
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})
 
 	router.PathPrefix("/graphql").Handler(srv)
 	router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
 	router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, archiver)).Methods("POST")
+
+	// Proxy for grpc-web requests
+	if grpcwebProxyService != nil {
+		router.MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
+			return strings.HasPrefix(r.URL.Path, "/google.bytestream.ByteStream/") ||
+				strings.HasPrefix(r.URL.Path, "/buildbarn.iscc.InitialSizeClassCache/") ||
+				strings.HasPrefix(r.URL.Path, "/buildbarn.fsac.FileSystemAccessCache/") ||
+				strings.HasPrefix(r.URL.Path, "/buildbarn.buildqueuestate.BuildQueueState/") ||
+				strings.HasPrefix(r.URL.Path, "/build.bazel.remote.execution.v2.ActionCache/")
+		}).Handler(grpcwebProxyService)
+	}
+
 	if serveFilesService != nil {
 		router.HandleFunc("/api/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/file/{hash}-{sizeBytes}/{name}", serveFilesService.HandleFile).Methods("GET")
 		router.HandleFunc("/api/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/command/{hash}-{sizeBytes}/", serveFilesService.HandleCommand).Methods("GET")
@@ -252,4 +255,20 @@ func frontendServer(proxyURL string) http.Handler {
 	log.Println("Proxying frontend to", remote)
 
 	return httputil.NewSingleHostReverseProxy(remote)
+}
+
+func configureCors(allowedOrigins []string, httpHandler http.Handler) http.Handler {
+	if allowedOrigins == nil {
+		log.Println("No allowed origins specified, CORS disabled")
+		return httpHandler
+	}
+	return cors.New(
+		cors.Options{
+			AllowOriginFunc: func(origin string) bool {
+				return slices.Contains(allowedOrigins, origin) || slices.Contains(allowedOrigins, "*")
+			},
+			AllowedMethods: []string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
+			AllowedHeaders: []string{"Authorization", "Content-Type", "X-Grpc-Web"},
+		},
+	).Handler(httpHandler)
 }
