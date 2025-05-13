@@ -160,6 +160,7 @@ const RecursiveDirectoryNode: React.FC<{
       directoryDigest,
     ),
     staleTime: FETCH_STALE_TIME,
+    refetchOnMount: "always",
   });
 
   // Prefetch all child directories. React-query will cache the results for us
