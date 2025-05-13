@@ -177,19 +177,11 @@ export interface FileDescriptorProto {
    * The supported values are "proto2", "proto3", and "editions".
    *
    * If `edition` is present, this value must be "editions".
-   * WARNING: This field should only be used by protobuf plugins or special
-   * cases like the proto compiler. Other uses are discouraged and
-   * developers should rely on the protoreflect APIs for their client language.
    */
   syntax?:
     | string
     | undefined;
-  /**
-   * The edition of the proto file.
-   * WARNING: This field should only be used by protobuf plugins or special
-   * cases like the proto compiler. Other uses are discouraged and
-   * developers should rely on the protoreflect APIs for their client language.
-   */
+  /** The edition of the proto file. */
   edition?: Edition | undefined;
 }
 
@@ -433,10 +425,10 @@ export enum FieldDescriptorProto_Type {
   TYPE_STRING = 9,
   /**
    * TYPE_GROUP - Tag-delimited aggregate.
-   * Group type is deprecated and not supported after google.protobuf.
-   * However, Proto3 implementations should still be able to parse the group
-   * wire format and treat group fields as unknown fields.  In Editions, the
-   * group wire format can be enabled via the `message_encoding` feature.
+   * Group type is deprecated and not supported after google.protobuf. However, Proto3
+   * implementations should still be able to parse the group wire format and
+   * treat group fields as unknown fields.  In Editions, the group wire format
+   * can be enabled via the `message_encoding` feature.
    */
   TYPE_GROUP = 10,
   /** TYPE_MESSAGE - Length-delimited aggregate. */
@@ -566,9 +558,9 @@ export enum FieldDescriptorProto_Label {
   LABEL_OPTIONAL = 1,
   LABEL_REPEATED = 3,
   /**
-   * LABEL_REQUIRED - The required label is only allowed in google.protobuf.  In proto3 and
-   * Editions it's explicitly prohibited.  In Editions, the `field_presence`
-   * feature can be used to get this behavior.
+   * LABEL_REQUIRED - The required label is only allowed in google.protobuf.  In proto3 and Editions
+   * it's explicitly prohibited.  In Editions, the `field_presence` feature
+   * can be used to get this behavior.
    */
   LABEL_REQUIRED = 2,
   UNRECOGNIZED = -1,
@@ -834,12 +826,7 @@ export interface FileOptions {
   rubyPackage?:
     | string
     | undefined;
-  /**
-   * Any features defined in the specific edition.
-   * WARNING: This field should only be used by protobuf plugins or special
-   * cases like the proto compiler. Other uses are discouraged and
-   * developers should rely on the protoreflect APIs for their client language.
-   */
+  /** Any features defined in the specific edition. */
   features?:
     | FeatureSet
     | undefined;
@@ -977,12 +964,7 @@ export interface MessageOptions {
   deprecatedLegacyJsonFieldConflicts?:
     | boolean
     | undefined;
-  /**
-   * Any features defined in the specific edition.
-   * WARNING: This field should only be used by protobuf plugins or special
-   * cases like the proto compiler. Other uses are discouraged and
-   * developers should rely on the protoreflect APIs for their client language.
-   */
+  /** Any features defined in the specific edition. */
   features?:
     | FeatureSet
     | undefined;
@@ -1087,12 +1069,7 @@ export interface FieldOptions {
   retention?: FieldOptions_OptionRetention | undefined;
   targets: FieldOptions_OptionTargetType[];
   editionDefaults: FieldOptions_EditionDefault[];
-  /**
-   * Any features defined in the specific edition.
-   * WARNING: This field should only be used by protobuf plugins or special
-   * cases like the proto compiler. Other uses are discouraged and
-   * developers should rely on the protoreflect APIs for their client language.
-   */
+  /** Any features defined in the specific edition. */
   features?: FeatureSet | undefined;
   featureSupport?:
     | FieldOptions_FeatureSupport
@@ -1358,12 +1335,7 @@ export interface FieldOptions_FeatureSupport {
 }
 
 export interface OneofOptions {
-  /**
-   * Any features defined in the specific edition.
-   * WARNING: This field should only be used by protobuf plugins or special
-   * cases like the proto compiler. Other uses are discouraged and
-   * developers should rely on the protoreflect APIs for their client language.
-   */
+  /** Any features defined in the specific edition. */
   features?:
     | FeatureSet
     | undefined;
@@ -1401,12 +1373,7 @@ export interface EnumOptions {
   deprecatedLegacyJsonFieldConflicts?:
     | boolean
     | undefined;
-  /**
-   * Any features defined in the specific edition.
-   * WARNING: This field should only be used by protobuf plugins or special
-   * cases like the proto compiler. Other uses are discouraged and
-   * developers should rely on the protoreflect APIs for their client language.
-   */
+  /** Any features defined in the specific edition. */
   features?:
     | FeatureSet
     | undefined;
@@ -1424,12 +1391,7 @@ export interface EnumValueOptions {
   deprecated?:
     | boolean
     | undefined;
-  /**
-   * Any features defined in the specific edition.
-   * WARNING: This field should only be used by protobuf plugins or special
-   * cases like the proto compiler. Other uses are discouraged and
-   * developers should rely on the protoreflect APIs for their client language.
-   */
+  /** Any features defined in the specific edition. */
   features?:
     | FeatureSet
     | undefined;
@@ -1450,12 +1412,7 @@ export interface EnumValueOptions {
 }
 
 export interface ServiceOptions {
-  /**
-   * Any features defined in the specific edition.
-   * WARNING: This field should only be used by protobuf plugins or special
-   * cases like the proto compiler. Other uses are discouraged and
-   * developers should rely on the protoreflect APIs for their client language.
-   */
+  /** Any features defined in the specific edition. */
   features?:
     | FeatureSet
     | undefined;
@@ -1483,12 +1440,7 @@ export interface MethodOptions {
   idempotencyLevel?:
     | MethodOptions_IdempotencyLevel
     | undefined;
-  /**
-   * Any features defined in the specific edition.
-   * WARNING: This field should only be used by protobuf plugins or special
-   * cases like the proto compiler. Other uses are discouraged and
-   * developers should rely on the protoreflect APIs for their client language.
-   */
+  /** Any features defined in the specific edition. */
   features?:
     | FeatureSet
     | undefined;
@@ -1591,7 +1543,6 @@ export interface FeatureSet {
   utf8Validation?: FeatureSet_Utf8Validation | undefined;
   messageEncoding?: FeatureSet_MessageEncoding | undefined;
   jsonFormat?: FeatureSet_JsonFormat | undefined;
-  enforceNamingStyle?: FeatureSet_EnforceNamingStyle | undefined;
 }
 
 export enum FeatureSet_FieldPresence {
@@ -1829,45 +1780,6 @@ export function featureSet_JsonFormatToJSON(object: FeatureSet_JsonFormat): stri
     case FeatureSet_JsonFormat.LEGACY_BEST_EFFORT:
       return "LEGACY_BEST_EFFORT";
     case FeatureSet_JsonFormat.UNRECOGNIZED:
-    default:
-      return "UNRECOGNIZED";
-  }
-}
-
-export enum FeatureSet_EnforceNamingStyle {
-  ENFORCE_NAMING_STYLE_UNKNOWN = 0,
-  STYLE2024 = 1,
-  STYLE_LEGACY = 2,
-  UNRECOGNIZED = -1,
-}
-
-export function featureSet_EnforceNamingStyleFromJSON(object: any): FeatureSet_EnforceNamingStyle {
-  switch (object) {
-    case 0:
-    case "ENFORCE_NAMING_STYLE_UNKNOWN":
-      return FeatureSet_EnforceNamingStyle.ENFORCE_NAMING_STYLE_UNKNOWN;
-    case 1:
-    case "STYLE2024":
-      return FeatureSet_EnforceNamingStyle.STYLE2024;
-    case 2:
-    case "STYLE_LEGACY":
-      return FeatureSet_EnforceNamingStyle.STYLE_LEGACY;
-    case -1:
-    case "UNRECOGNIZED":
-    default:
-      return FeatureSet_EnforceNamingStyle.UNRECOGNIZED;
-  }
-}
-
-export function featureSet_EnforceNamingStyleToJSON(object: FeatureSet_EnforceNamingStyle): string {
-  switch (object) {
-    case FeatureSet_EnforceNamingStyle.ENFORCE_NAMING_STYLE_UNKNOWN:
-      return "ENFORCE_NAMING_STYLE_UNKNOWN";
-    case FeatureSet_EnforceNamingStyle.STYLE2024:
-      return "STYLE2024";
-    case FeatureSet_EnforceNamingStyle.STYLE_LEGACY:
-      return "STYLE_LEGACY";
-    case FeatureSet_EnforceNamingStyle.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
   }
@@ -5906,7 +5818,6 @@ function createBaseFeatureSet(): FeatureSet {
     utf8Validation: 0,
     messageEncoding: 0,
     jsonFormat: 0,
-    enforceNamingStyle: 0,
   };
 }
 
@@ -5929,9 +5840,6 @@ export const FeatureSet: MessageFns<FeatureSet> = {
     }
     if (message.jsonFormat !== undefined && message.jsonFormat !== 0) {
       writer.uint32(48).int32(message.jsonFormat);
-    }
-    if (message.enforceNamingStyle !== undefined && message.enforceNamingStyle !== 0) {
-      writer.uint32(56).int32(message.enforceNamingStyle);
     }
     return writer;
   },
@@ -5991,14 +5899,6 @@ export const FeatureSet: MessageFns<FeatureSet> = {
           message.jsonFormat = reader.int32() as any;
           continue;
         }
-        case 7: {
-          if (tag !== 56) {
-            break;
-          }
-
-          message.enforceNamingStyle = reader.int32() as any;
-          continue;
-        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -6018,9 +5918,6 @@ export const FeatureSet: MessageFns<FeatureSet> = {
       utf8Validation: isSet(object.utf8Validation) ? featureSet_Utf8ValidationFromJSON(object.utf8Validation) : 0,
       messageEncoding: isSet(object.messageEncoding) ? featureSet_MessageEncodingFromJSON(object.messageEncoding) : 0,
       jsonFormat: isSet(object.jsonFormat) ? featureSet_JsonFormatFromJSON(object.jsonFormat) : 0,
-      enforceNamingStyle: isSet(object.enforceNamingStyle)
-        ? featureSet_EnforceNamingStyleFromJSON(object.enforceNamingStyle)
-        : 0,
     };
   },
 
@@ -6044,9 +5941,6 @@ export const FeatureSet: MessageFns<FeatureSet> = {
     if (message.jsonFormat !== undefined && message.jsonFormat !== 0) {
       obj.jsonFormat = featureSet_JsonFormatToJSON(message.jsonFormat);
     }
-    if (message.enforceNamingStyle !== undefined && message.enforceNamingStyle !== 0) {
-      obj.enforceNamingStyle = featureSet_EnforceNamingStyleToJSON(message.enforceNamingStyle);
-    }
     return obj;
   },
 
@@ -6061,7 +5955,6 @@ export const FeatureSet: MessageFns<FeatureSet> = {
     message.utf8Validation = object.utf8Validation ?? 0;
     message.messageEncoding = object.messageEncoding ?? 0;
     message.jsonFormat = object.jsonFormat ?? 0;
-    message.enforceNamingStyle = object.enforceNamingStyle ?? 0;
     return message;
   },
 };
