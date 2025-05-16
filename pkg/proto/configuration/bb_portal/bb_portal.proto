@@ -50,4 +50,10 @@ message ApplicationConfiguration {
   // Origins that are allowed to make requests to the backend. If this is not
   // configured correctly, it will cause CORS errors in the browser.
   repeated string allowed_origins = 13;
+
+  // The page size with which the backend fetches operations from the
+  // BuildQueueState API.
+  //
+  // Recommended value: 500
+  uint32 listOperationsPageSize = 14;
 }

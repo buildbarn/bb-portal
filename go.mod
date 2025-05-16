@@ -4,6 +4,8 @@ go 1.24.0
 
 // Existing patches don't apply against newer go-fuse.
 replace github.com/hanwen/go-fuse/v2 => github.com/hanwen/go-fuse/v2 v2.5.1
+// rules_go doesn't support gomock's package mode.
+replace go.uber.org/mock => go.uber.org/mock v0.4.0
 
 require (
 	entgo.io/contrib v0.6.0
@@ -28,6 +30,7 @@ require (
 	github.com/rs/cors v1.11.1
 	github.com/stretchr/testify v1.10.0
 	github.com/vektah/gqlparser/v2 v2.5.23
+	go.uber.org/mock v0.5.0
 	golang.org/x/lint v0.0.0-20241112194109-818c5a804067
 	golang.org/x/sync v0.13.0
 	google.golang.org/api v0.228.0

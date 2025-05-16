@@ -2,7 +2,6 @@ package buildqueuestateproxy
 
 import (
 	"context"
-	"math"
 	"sort"
 
 	"github.com/buildbarn/bb-portal/internal/api/grpcweb"
@@ -15,15 +14,20 @@ import (
 
 // BuildQueueStateServerImpl is a gRPC server that forwards requests to a BuildQueueStateClient.
 type BuildQueueStateServerImpl struct {
-	client     buildqueuestate.BuildQueueStateClient
-	authorizer auth.Authorizer
+	client                 buildqueuestate.BuildQueueStateClient
+	authorizer             auth.Authorizer
+	listOperationsPageSize uint32
 }
 
 // NewBuildQueueStateServerImpl creates a new BuildQueueStateServerImpl from a
 // given client. It also takes an authorizer to filter out the queues that the
 // user is not allowed to see.
-func NewBuildQueueStateServerImpl(client buildqueuestate.BuildQueueStateClient, authorizer auth.Authorizer) *BuildQueueStateServerImpl {
-	return &BuildQueueStateServerImpl{client: client, authorizer: authorizer}
+func NewBuildQueueStateServerImpl(client buildqueuestate.BuildQueueStateClient, authorizer auth.Authorizer, listOperationsPageSize uint32) *BuildQueueStateServerImpl {
+	return &BuildQueueStateServerImpl{
+		client:                 client,
+		authorizer:             authorizer,
+		listOperationsPageSize: listOperationsPageSize,
+	}
 }
 
 // GetOperation proxies GetOperation requests to the client.
@@ -44,18 +48,31 @@ func (s *BuildQueueStateServerImpl) GetOperation(ctx context.Context, req *build
 
 // ListOperations proxies ListOperations requests to the client.
 func (s *BuildQueueStateServerImpl) ListOperations(ctx context.Context, req *buildqueuestate.ListOperationsRequest) (*buildqueuestate.ListOperationsResponse, error) {
-	// Fetch all operations by setting the page size to the maximum value.
-	response, err := s.client.ListOperations(ctx, &buildqueuestate.ListOperationsRequest{
-		PageSize:           math.MaxUint32,
-		FilterInvocationId: req.FilterInvocationId,
-		FilterStage:        req.FilterStage,
-	})
-	if err != nil {
-		return nil, err
-	}
+	operations := make([]*buildqueuestate.OperationState, 0)
+	var startAfter *buildqueuestate.ListOperationsRequest_StartAfter = nil
 
-	allOperations := filterOperations(ctx, response, s.authorizer)
-	return createPaginatedListOperationsResponse(allOperations, req.PageSize, req.StartAfter), nil
+	// Fetch operations in pages of size pageSize until there are no more. This
+	// avoids the default grpc max message size limit of 4MB.
+	for {
+		response, err := s.client.ListOperations(ctx, &buildqueuestate.ListOperationsRequest{
+			PageSize:           s.listOperationsPageSize,
+			FilterInvocationId: req.FilterInvocationId,
+			FilterStage:        req.FilterStage,
+			StartAfter:         startAfter,
+		})
+		if err != nil {
+			return nil, err
+		}
+		operations = append(operations, response.Operations...)
+		if len(response.Operations) == 0 || uint32(len(response.Operations)) < s.listOperationsPageSize || response.PaginationInfo.TotalEntries == uint32(len(operations)) {
+			break
+		}
+		startAfter = &buildqueuestate.ListOperationsRequest_StartAfter{
+			OperationName: response.Operations[len(response.Operations)-1].Name,
+		}
+	}
+	allowedOperations := filterOperations(ctx, operations, s.authorizer)
+	return createPaginatedListOperationsResponse(allowedOperations, req.PageSize, req.StartAfter), nil
 }
 
 // KillOperations proxies KillOperations requests to the client.
@@ -142,8 +159,7 @@ func filterPlatormQueues(ctx context.Context, response *buildqueuestate.ListPlat
 	return allowedQueues
 }
 
-func filterOperations(ctx context.Context, response *buildqueuestate.ListOperationsResponse, authorizer auth.Authorizer) []*buildqueuestate.OperationState {
-	operations := response.GetOperations()
+func filterOperations(ctx context.Context, operations []*buildqueuestate.OperationState, authorizer auth.Authorizer) []*buildqueuestate.OperationState {
 	// Filter out the operations that the user is not allowed to see.
 	allowedOperations := make([]*buildqueuestate.OperationState, 0, len(operations))
 	for _, operation := range operations {

@@ -1,0 +1,28 @@
+load("@rules_go//extras:gomock.bzl", "gomock")
+load("@rules_go//go:def.bzl", "go_library")
+
+gomock(
+    name = "buildqueuestate_mock",
+    out = "buildqueustate_mock.go",
+    interfaces = [
+        "BuildQueueStateClient",
+    ],
+    library = "@com_github_buildbarn_bb_remote_execution//pkg/proto/buildqueuestate",
+    mockgen_model_library = "@org_uber_go_mock//mockgen/model",
+    mockgen_tool = "@org_uber_go_mock//mockgen",
+    package = "mock",
+)
+
+go_library(
+    name = "mock",
+    srcs = ["buildqueustate_mock.go"],
+    importpath = "github.com/buildbarn/bb-portal/internal/mock",
+    visibility = ["//:__subpackages__"],
+    # keep
+    deps = [
+        "@com_github_buildbarn_bb_remote_execution//pkg/proto/buildqueuestate",
+        "@org_golang_google_grpc//:grpc",
+        "@org_golang_google_protobuf//types/known/emptypb",
+        "@org_uber_go_mock//gomock",
+    ],
+)
