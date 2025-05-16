@@ -4,7 +4,7 @@ import (
 	"context"
 
 	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"
-	"github.com/buildbarn/bb-portal/internal/api/grpcweb"
+	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -27,7 +27,7 @@ func (s *ActionCacheServerImpl) GetActionResult(ctx context.Context, req *remote
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
-	if !grpcweb.IsInstanceNameAllowed(ctx, s.authorizer, req.InstanceName) {
+	if !common.IsInstanceNameAllowed(ctx, s.authorizer, req.InstanceName) {
 		return nil, status.Errorf(codes.NotFound, "Not found")
 	}
 

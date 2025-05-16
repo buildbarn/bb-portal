@@ -2,7 +2,6 @@ package servefiles
 
 import (
 	"bufio"
-	"context"
 	"io"
 	"log"
 	"net/http"
@@ -10,6 +9,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-remote-execution/pkg/builder"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
@@ -21,7 +21,6 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/gorilla/mux"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
 	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"
@@ -56,18 +55,6 @@ func getDigestFromRequest(req *http.Request) (digest.Digest, error) {
 		return digest.BadDigest, util.StatusWrapf(err, "Invalid blob size %#v", vars["sizeBytes"])
 	}
 	return digestFunction.NewDigest(vars["hash"], sizeBytes)
-}
-
-// Generates a Context from an incoming HTTP request, forwarding any
-// request headers as gRPC metadata.
-func extractContextFromRequest(req *http.Request) context.Context {
-	var pairs []string
-	for key, values := range req.Header {
-		for _, value := range values {
-			pairs = append(pairs, key, value)
-		}
-	}
-	return metadata.NewIncomingContext(req.Context(), metadata.Pairs(pairs...))
 }
 
 // FileServerService is a service that serves files from the Content
@@ -114,7 +101,7 @@ func (s FileServerService) HandleFile(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	ctx := extractContextFromRequest(req)
+	ctx := common.ExtractContextFromRequest(req)
 	r := s.contentAddressableStorage.Get(ctx, digest).ToReader()
 	defer r.Close()
 
@@ -156,7 +143,7 @@ func (s FileServerService) HandleCommand(w http.ResponseWriter, req *http.Reques
 		http.Error(w, "Digest not found", http.StatusNotFound)
 		return
 	}
-	ctx := extractContextFromRequest(req)
+	ctx := common.ExtractContextFromRequest(req)
 
 	commandMessage, err := s.contentAddressableStorage.Get(ctx, digest).ToProto(&remoteexecution.Command{}, s.maximumMessageSizeBytes)
 	if err != nil {

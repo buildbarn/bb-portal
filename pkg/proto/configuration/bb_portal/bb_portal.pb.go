@@ -41,6 +41,7 @@ type ApplicationConfiguration struct {
 	MaximumMessageSizeBytes         int64                              `protobuf:"varint,11,opt,name=maximum_message_size_bytes,json=maximumMessageSizeBytes,proto3" json:"maximum_message_size_bytes,omitempty"`
 	FrontendProxyUrl                string                             `protobuf:"bytes,12,opt,name=frontend_proxy_url,json=frontendProxyUrl,proto3" json:"frontend_proxy_url,omitempty"`
 	AllowedOrigins                  []string                           `protobuf:"bytes,13,rep,name=allowed_origins,json=allowedOrigins,proto3" json:"allowed_origins,omitempty"`
+	KillOperationsAuthorizer        *auth.AuthorizerConfiguration      `protobuf:"bytes,14,opt,name=kill_operations_authorizer,json=killOperationsAuthorizer,proto3" json:"kill_operations_authorizer,omitempty"`
 	unknownFields                   protoimpl.UnknownFields
 	sizeCache                       protoimpl.SizeCache
 }
@@ -166,11 +167,19 @@ func (x *ApplicationConfiguration) GetAllowedOrigins() []string {
 	return nil
 }
 
+func (x *ApplicationConfiguration) GetKillOperationsAuthorizer() *auth.AuthorizerConfiguration {
+	if x != nil {
+		return x.KillOperationsAuthorizer
+	}
+	return nil
+}
+
 var File_pkg_proto_configuration_bb_portal_bb_portal_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDesc = "" +
 	"\n" +
-	"1pkg/proto/configuration/bb_portal/bb_portal.proto\x12!buildbarn.configuration.bb_portal\x1a'pkg/proto/configuration/auth/auth.proto\x1a1pkg/proto/configuration/blobstore/blobstore.proto\x1a+pkg/proto/configuration/global/global.proto\x1a'pkg/proto/configuration/grpc/grpc.proto\x1a'pkg/proto/configuration/http/http.proto\"\xd2\t\n" +
+	"1pkg/proto/configuration/bb_portal/bb_portal.proto\x12!buildbarn.configuration.bb_portal\x1a'pkg/proto/configuration/auth/auth.proto\x1a1pkg/proto/configuration/blobstore/blobstore.proto\x1a+pkg/proto/configuration/global/global.proto\x1a'pkg/proto/configuration/grpc/grpc.proto\x1a'pkg/proto/configuration/http/http.proto\"\xc7\n" +
+	"\n" +
 	"\x18ApplicationConfiguration\x12T\n" +
 	"\fhttp_servers\x18\x01 \x03(\v21.buildbarn.configuration.http.ServerConfigurationR\vhttpServers\x12T\n" +
 	"\fgrpc_servers\x18\x02 \x03(\v21.buildbarn.configuration.grpc.ServerConfigurationR\vgrpcServers\x12E\n" +
@@ -185,7 +194,8 @@ const file_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDesc = "" +
 	" \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\x1aserveFilesCasConfiguration\x12;\n" +
 	"\x1amaximum_message_size_bytes\x18\v \x01(\x03R\x17maximumMessageSizeBytes\x12,\n" +
 	"\x12frontend_proxy_url\x18\f \x01(\tR\x10frontendProxyUrl\x12'\n" +
-	"\x0fallowed_origins\x18\r \x03(\tR\x0eallowedOriginsBBZ@github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portalb\x06proto3"
+	"\x0fallowed_origins\x18\r \x03(\tR\x0eallowedOrigins\x12s\n" +
+	"\x1akill_operations_authorizer\x18\x0e \x01(\v25.buildbarn.configuration.auth.AuthorizerConfigurationR\x18killOperationsAuthorizerBBZ@github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portalb\x06proto3"
 
 var (
 	file_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDescOnce sync.Once
@@ -220,11 +230,12 @@ var file_pkg_proto_configuration_bb_portal_bb_portal_proto_depIdxs = []int32{
 	5,  // 7: buildbarn.configuration.bb_portal.ApplicationConfiguration.initial_size_class_cache_client:type_name -> buildbarn.configuration.grpc.ClientConfiguration
 	5,  // 8: buildbarn.configuration.bb_portal.ApplicationConfiguration.file_system_access_cache_client:type_name -> buildbarn.configuration.grpc.ClientConfiguration
 	6,  // 9: buildbarn.configuration.bb_portal.ApplicationConfiguration.serve_files_cas_configuration:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
-	10, // [10:10] is the sub-list for method output_type
-	10, // [10:10] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	4,  // 10: buildbarn.configuration.bb_portal.ApplicationConfiguration.kill_operations_authorizer:type_name -> buildbarn.configuration.auth.AuthorizerConfiguration
+	11, // [11:11] is the sub-list for method output_type
+	11, // [11:11] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_configuration_bb_portal_bb_portal_proto_init() }
