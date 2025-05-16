@@ -9,12 +9,20 @@ import type {
   WorkerState,
 } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import type { ListWorkerFilterType } from "@/types/ListWorkerFilterType";
+import { FeatureType, isFeatureEnabled } from "@/utils/isFeatureEnabled";
 import { CalendarFilled } from "@ant-design/icons";
-import { useSearchParams } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useMemo } from "react";
 
 const Page: React.FC = () => {
+  if (!isFeatureEnabled(FeatureType.SCHEDULER)) {
+    return notFound();
+  }
+  return <PageContent />;
+};
+
+const PageContent: React.FC = () => {
   const searchParams = useSearchParams();
 
   const { listWorkerFilterType, sizeClassQueueName, paginationCursor } =

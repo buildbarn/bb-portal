@@ -6,8 +6,14 @@ import { LayoutOutlined } from "@ant-design/icons";
 import { Space, Typography } from "antd";
 import type React from "react";
 import styles from "./page.module.css";
+import { notFound } from 'next/navigation';
+import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
 
 const Page: React.FC = () => {
+  if (!isFeatureEnabled(FeatureType.BROWSER)) {
+    return notFound();
+  }
+
   return (
     <Content
       content={

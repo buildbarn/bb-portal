@@ -7,6 +7,7 @@ import styles from '@/components/AppBar/index.module.css';
 import { SIDER_BAR_MINIMUM_SCREEN_WIDTH } from '@/components/Content';
 import FooterBar from '@/components/FooterBar';
 import { getItem } from '@/components/Utilities/navigation';
+import { FeatureType, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import useScreenSize from '@/utils/screen';
 import { MenuOutlined } from '@ant-design/icons';
 import { Button, Divider, Drawer, Layout } from 'antd';
@@ -19,18 +20,30 @@ export const SetExtraAppBarMenuItemsContext = createContext<
 >(undefined);
 
 const APP_BAR_MENU_ITEMS: ItemType[] = [
-  getItem({ depth: 0, href: '/builds', title: 'Builds' }),
-  getItem({ depth: 0, href: '/bazel-invocations', title: 'Invocations' }),
-  getItem({ depth: 0, href: '/trends', title: 'Trends' }),
-  getItem({ depth: 0, href: '/tests', title: 'Tests' }),
-  getItem({ depth: 0, href: '/targets', title: 'Targets' }),
-  getItem({ depth: 0, href: '/browser', title: 'Browser' }),
-  getItem({
-    depth: 0,
-    href: '/scheduler',
-    title: 'Scheduler',
-    children: [getItem({ depth: 0, href: '/operations', title: 'Operations' })],
-  }),
+  ...(isFeatureEnabled(FeatureType.BES)
+    ? [
+        getItem({ depth: 0, href: '/builds', title: 'Builds' }),
+        getItem({ depth: 0, href: '/bazel-invocations', title: 'Invocations' }),
+        getItem({ depth: 0, href: '/trends', title: 'Trends' }),
+        getItem({ depth: 0, href: '/tests', title: 'Tests' }),
+        getItem({ depth: 0, href: '/targets', title: 'Targets' }),
+      ]
+    : []),
+  ...(isFeatureEnabled(FeatureType.BROWSER)
+    ? [getItem({ depth: 0, href: '/browser', title: 'Browser' })]
+    : []),
+  ...(isFeatureEnabled(FeatureType.SCHEDULER)
+    ? [
+        getItem({
+          depth: 0,
+          href: '/scheduler',
+          title: 'Scheduler',
+          children: [
+            getItem({ depth: 0, href: '/operations', title: 'Operations' }),
+          ],
+        }),
+      ]
+    : []),
 ];
 
 type Props = {
