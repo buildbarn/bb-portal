@@ -41,6 +41,7 @@ type ApplicationConfiguration struct {
 	MaximumMessageSizeBytes         int64                              `protobuf:"varint,11,opt,name=maximum_message_size_bytes,json=maximumMessageSizeBytes,proto3" json:"maximum_message_size_bytes,omitempty"`
 	FrontendProxyUrl                string                             `protobuf:"bytes,12,opt,name=frontend_proxy_url,json=frontendProxyUrl,proto3" json:"frontend_proxy_url,omitempty"`
 	AllowedOrigins                  []string                           `protobuf:"bytes,13,rep,name=allowed_origins,json=allowedOrigins,proto3" json:"allowed_origins,omitempty"`
+	ListOperationsPageSize          uint32                             `protobuf:"varint,14,opt,name=listOperationsPageSize,proto3" json:"listOperationsPageSize,omitempty"`
 	unknownFields                   protoimpl.UnknownFields
 	sizeCache                       protoimpl.SizeCache
 }
@@ -166,11 +167,19 @@ func (x *ApplicationConfiguration) GetAllowedOrigins() []string {
 	return nil
 }
 
+func (x *ApplicationConfiguration) GetListOperationsPageSize() uint32 {
+	if x != nil {
+		return x.ListOperationsPageSize
+	}
+	return 0
+}
+
 var File_pkg_proto_configuration_bb_portal_bb_portal_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDesc = "" +
 	"\n" +
-	"1pkg/proto/configuration/bb_portal/bb_portal.proto\x12!buildbarn.configuration.bb_portal\x1a'pkg/proto/configuration/auth/auth.proto\x1a1pkg/proto/configuration/blobstore/blobstore.proto\x1a+pkg/proto/configuration/global/global.proto\x1a'pkg/proto/configuration/grpc/grpc.proto\x1a'pkg/proto/configuration/http/http.proto\"\xd2\t\n" +
+	"1pkg/proto/configuration/bb_portal/bb_portal.proto\x12!buildbarn.configuration.bb_portal\x1a'pkg/proto/configuration/auth/auth.proto\x1a1pkg/proto/configuration/blobstore/blobstore.proto\x1a+pkg/proto/configuration/global/global.proto\x1a'pkg/proto/configuration/grpc/grpc.proto\x1a'pkg/proto/configuration/http/http.proto\"\x8a\n" +
+	"\n" +
 	"\x18ApplicationConfiguration\x12T\n" +
 	"\fhttp_servers\x18\x01 \x03(\v21.buildbarn.configuration.http.ServerConfigurationR\vhttpServers\x12T\n" +
 	"\fgrpc_servers\x18\x02 \x03(\v21.buildbarn.configuration.grpc.ServerConfigurationR\vgrpcServers\x12E\n" +
@@ -185,7 +194,8 @@ const file_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDesc = "" +
 	" \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\x1aserveFilesCasConfiguration\x12;\n" +
 	"\x1amaximum_message_size_bytes\x18\v \x01(\x03R\x17maximumMessageSizeBytes\x12,\n" +
 	"\x12frontend_proxy_url\x18\f \x01(\tR\x10frontendProxyUrl\x12'\n" +
-	"\x0fallowed_origins\x18\r \x03(\tR\x0eallowedOriginsBBZ@github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portalb\x06proto3"
+	"\x0fallowed_origins\x18\r \x03(\tR\x0eallowedOrigins\x126\n" +
+	"\x16listOperationsPageSize\x18\x0e \x01(\rR\x16listOperationsPageSizeBBZ@github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portalb\x06proto3"
 
 var (
 	file_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDescOnce sync.Once

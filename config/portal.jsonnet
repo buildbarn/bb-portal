@@ -62,4 +62,6 @@
   fileSystemAccessCacheClient: {
     address: 'localhost:8980',
   },
+
+  listOperationsPageSize: 500,
 }
