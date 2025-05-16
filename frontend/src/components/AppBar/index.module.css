@@ -6,50 +6,24 @@
   z-index: 3;
   backdrop-filter: blur(6px);
   box-shadow: var(--ant-card-box-shadow);
-}
-
-.appBar {
-  display: flex;
-  justify-content: space-between;
-}
-
-.title {
-  display: flex !important;
-  flex-shrink: 0;
+  display: inline-grid;
+  grid-template-columns: max-content 1fr max-content;
   align-items: center;
-  gap: 1rem;
-  height: var(--app-bar-height);
-}
-
-.icon {
-  font-size: 1.5rem;
 }
 
 .menu {
-  width: 580px;
   background-color: inherit !important;
-}
-
-.appBarMenuContainer {
-  margin-left: auto;
-}
-
-.appBarMenu {
-  min-width: 177px;
-  /* Hack to get the menu to not disappear on resize */
-}
-
-.buttons {
-  margin-left: 1rem;
-  white-space: nowrap;
+  justify-content: end;
+  width: 100%;
+  border: none !important;
 }
 
 .buttonContainer {
-  text-align: center;
+  margin-left: 1rem;
 }
 
 .menuButton {
-  margin-left: auto;
+  justify-self: end;
 }
 
 .footerBar {
