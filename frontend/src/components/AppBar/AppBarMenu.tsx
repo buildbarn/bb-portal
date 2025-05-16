@@ -1,28 +1,31 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Menu } from 'antd';
-import { MenuMode } from 'rc-menu/es/interface';
-import { usePathname } from 'next/navigation';
-//import { ItemType } from 'antd/lib/menu/hooks/useItems';
-import styles from './index.module.css';
-import { getClosestKey } from '@/components/Utilities/navigation';
-import { ItemType } from 'antd/lib/menu/interface';
+import { getClosestKey } from "@/components/Utilities/navigation";
+import { Menu } from "antd";
+import type { ItemType } from "antd/lib/menu/interface";
+import { usePathname } from "next/navigation";
+import type { MenuMode } from "rc-menu/es/interface";
+import type React from "react";
+import styles from "./index.module.css";
 
 type Props = {
   mode: MenuMode;
   items: ItemType[];
-  className?: string;
 };
 
-const AppBarMenu: React.FC<Props> = ({ mode, items, className }) => {
+const AppBarMenu: React.FC<Props> = ({ mode, items }) => {
   const closestKeyToPathname = getClosestKey(usePathname(), items);
-  const currentKeys = closestKeyToPathname ? [closestKeyToPathname.toString()] : [];
-  const classNames = [styles.menu];
-  if (className) {
-    classNames.push(className);
-  }
-  return <Menu selectedKeys={currentKeys} mode={mode} style={{ minWidth: 0, flex: "auto" }} items={items} className={classNames.join(' ')} />;
+  const currentKeys = closestKeyToPathname
+    ? [closestKeyToPathname.toString()]
+    : [];
+  return (
+    <Menu
+      selectedKeys={currentKeys}
+      mode={mode}
+      items={items}
+      className={styles.menu}
+    />
+  );
 };
 
 export default AppBarMenu;
