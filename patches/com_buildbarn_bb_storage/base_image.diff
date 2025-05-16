@@ -1,5 +1,5 @@
 diff --git MODULE.bazel MODULE.bazel
-index 4dce8d0..1041af2 100644
+index 2e4df22..4a21686 100644
 --- MODULE.bazel
 +++ MODULE.bazel
 @@ -157,3 +157,19 @@ use_repo(
@@ -23,10 +23,10 @@ index 4dce8d0..1041af2 100644
 +    "distroless_base_linux_arm64_v8",
 +)
 diff --git tools/container.bzl tools/container.bzl
-index e4aa679..c777774 100644
+index fa213df..de892a2 100644
 --- tools/container.bzl
 +++ tools/container.bzl
-@@ -22,7 +22,7 @@ def multiarch_go_image(name, binary):
+@@ -21,7 +21,7 @@ def multiarch_go_image(name, binary):
  
      oci_image(
          name = image_target,
@@ -35,16 +35,18 @@ index e4aa679..c777774 100644
          entrypoint = ["/app/{}".format(native.package_relative_label(binary).name)],
          tars = [tar_target],
          # Don't build un-transitioned images, as the default target architecture might be unsupported
-@@ -32,7 +32,7 @@ def multiarch_go_image(name, binary):
-
-     for arch in ["amd64", "arm64"]:
-         arch_image_target = "{}_{}_image".format(name, arch)
--        target_platform = "@rules_go//go/toolchain:linux_" + arch
-+        target_platform = "@rules_go//go/toolchain:linux_" + arch + "_cgo"
-         images.append(arch_image_target)
-         platform_transition_filegroup(
-             name = arch_image_target,
-@@ -49,6 +49,6 @@ def container_push_official(name, image, component):
+@@ -33,8 +33,8 @@ def multiarch_go_image(name, binary):
+         name = name,
+         images = [image_target],
+         platforms = [
+-            "@rules_go//go/toolchain:linux_amd64",
+-            "@rules_go//go/toolchain:linux_arm64",
++            "@rules_go//go/toolchain:linux_amd64_cgo",
++            "@rules_go//go/toolchain:linux_arm64_cgo",
+         ],
+     )
+ 
+@@ -42,6 +42,6 @@ def container_push_official(name, image, component):
      oci_push(
          name = name,
          image = image,

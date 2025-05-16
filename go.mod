@@ -2,15 +2,18 @@ module github.com/buildbarn/bb-portal
 
 go 1.24.0
 
+// Existing patches don't apply against newer go-fuse.
+replace github.com/hanwen/go-fuse/v2 => github.com/hanwen/go-fuse/v2 v2.5.1
+
 require (
 	entgo.io/contrib v0.6.0
 	entgo.io/ent v0.14.4
 	github.com/99designs/gqlgen v0.17.68
-	github.com/bazelbuild/buildtools v0.0.0-20250312151547-737aaf84facd
+	github.com/bazelbuild/buildtools v0.0.0-20250410144851-f37c35dc3237
 	github.com/bazelbuild/remote-apis v0.0.0-20250311143718-2721568dea74
 	github.com/buildbarn/bb-remote-execution v0.0.0-20250227074154-20a2e6d4cc71
 	github.com/buildbarn/bb-storage v0.0.0-20250319025836-ed3a308b8e16
-	github.com/fsnotify/fsnotify v1.8.0
+	github.com/fsnotify/fsnotify v1.9.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/hashicorp/go-multierror v1.1.1
@@ -26,23 +29,23 @@ require (
 	github.com/stretchr/testify v1.10.0
 	github.com/vektah/gqlparser/v2 v2.5.23
 	golang.org/x/lint v0.0.0-20241112194109-818c5a804067
-	golang.org/x/sync v0.12.0
-	google.golang.org/api v0.227.0
-	google.golang.org/genproto v0.0.0-20250313205543-e70fdf4c4cb4
-	google.golang.org/genproto/googleapis/bytestream v0.0.0-20250313205543-e70fdf4c4cb4
-	google.golang.org/grpc v1.71.0
-	google.golang.org/protobuf v1.36.5
+	golang.org/x/sync v0.13.0
+	google.golang.org/api v0.228.0
+	google.golang.org/genproto v0.0.0-20250409194420-de1ac958c67a
+	google.golang.org/genproto/googleapis/bytestream v0.0.0-20250409194420-de1ac958c67a
+	google.golang.org/grpc v1.71.1
+	google.golang.org/protobuf v1.36.6
 	mvdan.cc/gofumpt v0.7.0
 )
 
 require (
 	ariga.io/atlas v0.32.0 // indirect
 	cel.dev/expr v0.22.0 // indirect
-	cloud.google.com/go v0.119.0 // indirect
+	cloud.google.com/go v0.120.0 // indirect
 	cloud.google.com/go/auth v0.15.0 // indirect
-	cloud.google.com/go/auth/oauth2adapt v0.2.7 // indirect
+	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect
-	cloud.google.com/go/iam v1.4.2 // indirect
+	cloud.google.com/go/iam v1.5.0 // indirect
 	cloud.google.com/go/longrunning v0.6.6 // indirect
 	cloud.google.com/go/monitoring v1.24.1 // indirect
 	cloud.google.com/go/storage v1.51.0 // indirect
@@ -143,8 +146,8 @@ require (
 	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	golang.org/x/tools v0.31.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20250313205543-e70fdf4c4cb4 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250313205543-e70fdf4c4cb4 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20250404141209-ee84b53bf3d0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250404141209-ee84b53bf3d0 // indirect
 	google.golang.org/grpc/security/advancedtls v1.0.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	nhooyr.io/websocket v1.8.17 // indirect
