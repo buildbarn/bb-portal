@@ -1,6 +1,7 @@
 "use client";
 
 import Content from "@/components/Content";
+import PageDisabled from "@/components/PageDisabled";
 import PortalAlert from "@/components/PortalAlert";
 import PortalCard from "@/components/PortalCard";
 import WorkersGrid from "@/components/WorkersGrid";
@@ -9,12 +10,20 @@ import type {
   WorkerState,
 } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import type { ListWorkerFilterType } from "@/types/ListWorkerFilterType";
+import { FeatureType, isFeatureEnabled } from "@/utils/isFeatureEnabled";
 import { CalendarFilled } from "@ant-design/icons";
 import { useSearchParams } from "next/navigation";
 import type React from "react";
 import { useMemo } from "react";
 
 const Page: React.FC = () => {
+  if (!isFeatureEnabled(FeatureType.SCHEDULER)) {
+    return <PageDisabled />;
+  }
+  return <PageContent />;
+};
+
+const PageContent: React.FC = () => {
   const searchParams = useSearchParams();
 
   const { listWorkerFilterType, sizeClassQueueName, paginationCursor } =

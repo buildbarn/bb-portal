@@ -2,13 +2,17 @@
 
 import Content from "@/components/Content";
 import OperationsGrid from "@/components/OperationsGrid";
+import PageDisabled from "@/components/PageDisabled";
 import PortalCard from "@/components/PortalCard";
-import useScreenSize from "@/utils/screen";
+import { FeatureType, isFeatureEnabled } from "@/utils/isFeatureEnabled";
 import { CodeFilled } from "@ant-design/icons";
 import type React from "react";
 
 const Page: React.FC = () => {
-  const screenSize = useScreenSize();
+  if (!isFeatureEnabled(FeatureType.SCHEDULER)) {
+    return <PageDisabled />;
+  }
+
   return (
     <Content
       content={

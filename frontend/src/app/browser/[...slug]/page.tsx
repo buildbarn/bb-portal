@@ -5,8 +5,10 @@ import BrowserCommandGrid from "@/components/BrowserCommandGrid";
 import BrowserDirectoryPage from "@/components/BrowserDirectoryPage";
 import BrowserPreviousExecutionsPage from "@/components/BrowserPreviousExecutionsPage";
 import Content from "@/components/Content";
+import PageDisabled from "@/components/PageDisabled";
 import PortalCard from "@/components/PortalCard";
 import { BrowserPageType } from "@/types/BrowserPageType";
+import { FeatureType, isFeatureEnabled } from "@/utils/isFeatureEnabled";
 import { parseBrowserPageSlug } from "@/utils/parseBrowserPageSlug";
 import {
   CalculatorOutlined,
@@ -26,6 +28,9 @@ interface PageParams {
 }
 
 const Page: React.FC<PageParams> = ({ params }) => {
+  if (!isFeatureEnabled(FeatureType.BROWSER)) {
+    return <PageDisabled />;
+  }
   const browserPageParams = parseBrowserPageSlug(params.slug);
 
   if (browserPageParams === undefined) {

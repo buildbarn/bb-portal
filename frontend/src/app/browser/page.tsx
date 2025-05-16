@@ -1,13 +1,20 @@
 "use client";
 
 import Content from "@/components/Content";
+import PageDisabled from "@/components/PageDisabled";
 import PortalCard from "@/components/PortalCard";
 import { LayoutOutlined } from "@ant-design/icons";
 import { Space, Typography } from "antd";
 import type React from "react";
 import styles from "./page.module.css";
+import { notFound } from 'next/navigation';
+import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
 
 const Page: React.FC = () => {
+  if (!isFeatureEnabled(FeatureType.BROWSER)) {
+    return <PageDisabled />;
+  }
+
   return (
     <Content
       content={

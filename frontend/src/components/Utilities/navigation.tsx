@@ -3,6 +3,7 @@
 import React, { ReactNode, Key } from 'react';
 import { ItemType } from 'antd/lib/menu/hooks/useItems';
 import { MenuItemLabel, MenuItemTag } from '@/components/MenuItemLabel';
+import { FeatureType, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 
 export type UpdateSidebarMenuExpandedWidthFunction = (updatedSidebarMenuExpandedWidth: number) => void;
 
@@ -17,6 +18,7 @@ interface ItemProps {
   disabled?: boolean;
   activeMenuItemRef?: React.RefObject<HTMLDivElement>;
   updateMenuItemWidth?: UpdateSidebarMenuExpandedWidthFunction;
+  requiredFeatures?: FeatureType[];
 }
 
 export const getItem = ({
@@ -30,7 +32,14 @@ export const getItem = ({
   disabled,
   activeMenuItemRef,
   updateMenuItemWidth,
-}: ItemProps): ItemType => {
+  requiredFeatures,
+}: ItemProps): ItemType | undefined => {
+  for (const feature of requiredFeatures || []) {
+    if (!isFeatureEnabled(feature)) {
+      return undefined;
+    }
+  }
+
   return {
     key: href,
     icon: icon,

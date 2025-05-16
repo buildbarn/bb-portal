@@ -3,15 +3,23 @@
 import React, { useState } from 'react';
 import Content from '@/components/Content';
 import PortalCard from '@/components/PortalCard';
-import { Space, Statistic, Row, Badge } from 'antd';
+import { Space, Statistic, Row } from 'antd';
 import { ClockCircleFilled, LineChartOutlined } from '@ant-design/icons';
 import { FindBuildTimesQueryVariables, BazelInvocationNodeFragment } from '@/graphql/__generated__/graphql';
 import { useQuery } from '@apollo/client';
 import FIND_BUILD_DURATIONS from './index.graphql';
 import { AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Area } from 'recharts';
-import type { StatisticProps } from "antd/lib";
+import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
+import PageDisabled from '@/components/PageDisabled';
 
 const Page: React.FC = () => {
+    if (!isFeatureEnabled(FeatureType.BES)) {
+        return <PageDisabled />;
+    }
+    return <PageContent />
+}
+
+const PageContent: React.FC = () => {
 
     const [variables, setVariables] = useState<FindBuildTimesQueryVariables>({
         first: 1000,
