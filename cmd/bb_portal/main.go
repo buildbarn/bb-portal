@@ -89,47 +89,6 @@ func main() {
 			return util.StatusWrap(err, "Failed to apply global configuration options")
 		}
 
-		var dbClient *ent.Client
-
-		if *dsDriver == "pgx" {
-			db, err := sql.Open("pgx", *dsURL)
-			if err != nil {
-				fatal("Failed to open pgx database", "err", err)
-			}
-			drv := entsql.OpenDB(dialect.Postgres, db)
-			dbClient = ent.NewClient(ent.Driver(drv))
-		} else {
-			dbClient, err = ent.Open(
-				*dsDriver,
-				*dsURL,
-			)
-		}
-
-		if err != nil {
-			return util.StatusWrapf(err, "Failed to open ent client")
-		}
-
-		if *dsDriver == "pgx" {
-			if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
-				return util.StatusWrapf(err, "Failed to run schema migration")
-			}
-		} else {
-			if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
-				return util.StatusWrapf(err, "Failed to run schema migration")
-			}
-		}
-
-		blobArchiver := processing.NewBlobMultiArchiver()
-		configureBlobArchiving(blobArchiver, *blobArchiveFolder)
-
-		// Create new watcher.
-		watcher, err := fsnotify.NewWatcher()
-		if err != nil {
-			return util.StatusWrapf(err, "Failed to create fsnotify.Watcher")
-		}
-		defer watcher.Close()
-		runWatcher(watcher, dbClient, *bepFolder, blobArchiver)
-
 		router := mux.NewRouter()
 
 		err = NewGrpcWebSchedulerService(&configuration, siblingsGroup, grpcClientFactory, router)
@@ -140,30 +99,23 @@ func main() {
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create gRPC-Web Browser service")
 		}
-
-		newPortalService(&configuration, blobArchiver, dbClient, router)
-
+		err = newBuildEventStreamService(&configuration, siblingsGroup, grpcClientFactory, router)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to create BES service")
+		}
+		// This must be the last service created for the router, as it will
+		// handle all unmatched requests.
 		err = newFrontendProxyService(&configuration, router)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create frontend proxy service")
 		}
+
 		bb_http.NewServersFromConfigurationAndServe(
 			configuration.HttpServers,
 			bb_http.NewMetricsHandler(allowCorsWrapper(configuration.AllowedOrigins, router), "PortalUI"),
 			siblingsGroup,
 			grpcClientFactory,
 		)
-
-		if err := bb_grpc.NewServersFromConfigurationAndServe(
-			configuration.BuildEventStreamConfiguration.GrpcServers,
-			func(s go_grpc.ServiceRegistrar) {
-				build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), bes.NewBuildEventServer(dbClient, blobArchiver))
-			},
-			siblingsGroup,
-			grpcClientFactory,
-		); err != nil {
-			return util.StatusWrap(err, "gRPC server failure")
-		}
 
 		lifecycleState.MarkReadyAndWait(siblingsGroup)
 		return nil
@@ -227,13 +179,74 @@ func fatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func newPortalService(configuration *bb_portal.ApplicationConfiguration, archiver processing.BlobMultiArchiver, dbClient *ent.Client, router *mux.Router) {
+func newBuildEventStreamService(configuration *bb_portal.ApplicationConfiguration, siblingsGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, router *mux.Router) error {
+	besConfiguration := configuration.BesServiceConfiguration
+	if besConfiguration == nil {
+		log.Printf("Did not start BuildEventStream service because buildEventStreamConfiguration is not configured")
+		return nil
+	}
+
+	var dbClient *ent.Client
+	var err error
+
+	if *dsDriver == "pgx" {
+		db, err := sql.Open("pgx", *dsURL)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to open pgx database")
+		}
+		drv := entsql.OpenDB(dialect.Postgres, db)
+		dbClient = ent.NewClient(ent.Driver(drv))
+	} else {
+		dbClient, err = ent.Open(
+			*dsDriver,
+			*dsURL,
+		)
+	}
+
+	if err != nil {
+		return util.StatusWrap(err, "Failed to open ent client")
+	}
+
+	if *dsDriver == "pgx" {
+		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
+			return util.StatusWrap(err, "Failed to run schema migration")
+		}
+	} else {
+		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
+			return util.StatusWrap(err, "Failed to run schema migration")
+		}
+	}
+
+	blobArchiver := processing.NewBlobMultiArchiver()
+	configureBlobArchiving(blobArchiver, *blobArchiveFolder)
+
+	// Create new watcher.
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		return util.StatusWrap(err, "Failed to create fsnotify.Watcher")
+	}
+	defer watcher.Close()
+	runWatcher(watcher, dbClient, *bepFolder, blobArchiver)
+
 	srv := handler.NewDefaultServer(graphql.NewSchema(dbClient))
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})
 
 	router.PathPrefix("/graphql").Handler(srv)
 	router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
-	router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, archiver)).Methods("POST")
+	router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, blobArchiver)).Methods("POST")
+
+	if err := bb_grpc.NewServersFromConfigurationAndServe(
+		besConfiguration.GrpcServers,
+		func(s go_grpc.ServiceRegistrar) {
+			build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), bes.NewBuildEventServer(dbClient, blobArchiver))
+		},
+		siblingsGroup,
+		grpcClientFactory,
+	); err != nil {
+		return util.StatusWrap(err, "gRPC server failure")
+	}
+
+	return nil
 }
 
 func newFrontendProxyService(configuration *bb_portal.ApplicationConfiguration, router *mux.Router) error {
