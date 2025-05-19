@@ -6,69 +6,73 @@
 // - A Buildbarn scheduler, accessible at localhost:8984
 // - A Buildbarn frontend, accessible at localhost:8980
 
+// The application consists of 3 different services:
+//  - BesService: A service that provides access to Buildbarn Execution Service
+//    (BES) insights.
+//  - BrowserService: A service that allows you to browse the contents of the
+//    content addressable storage (CAS) and action cache.
+//  - SchedulerService: A service that shows the state of the Buildbarn
+//    scheduler
+//
+// Each service can be disabled by not setting the corresponding configuration.
+// At least one service should be configured, otherwise the portal will not
+// do anything useful.
+
 {
   frontendProxyUrl: 'http://localhost:3000',
   allowedOrigins: ['http://localhost:3000'],
 
-  serveFilesCasConfiguration: {
-    grpc: { address: 'localhost:8980' },
-  },
-  maximumMessageSizeBytes: 2 * 1024 * 1024,
-
   httpServers: [{
     listenAddresses: [':8081'],
-    authenticationPolicy: {
-      allow: {
-        public: {
-          user: 'FooBar',
-        },
-        private: {
-          groups: ['admin'],
-          instances: ['fuse', 'testingQueue'],
-          email: 'foo@example.com',
-        },
-      },
-    },
-  }],
-  grpcServers: [{
-    listenAddresses: [':8082'],
     authenticationPolicy: { allow: {} },
-    maximumReceivedMessageSizeBytes: 10 * 1024 * 1024,
   }],
 
   instanceNameAuthorizer: {
-    jmespathExpression: |||
-      contains(authenticationMetadata.private.instances, instanceName)
-      || instanceName == ''
-    |||,
+    allow: {},
   },
 
-  killOperationsAuthorizer: {
-    jmespathExpression: |||
-      contains(authenticationMetadata.private.instances, instanceName)
-      || instanceName == ''
-    |||,
+  maximumMessageSizeBytes: 2 * 1024 * 1024,
+
+  // The BesService can be disabled by not setting this field.
+  besServiceConfiguration: {
+    grpcServers: [{
+      listenAddresses: [':8082'],
+      authenticationPolicy: { allow: {} },
+      maximumReceivedMessageSizeBytes: 10 * 1024 * 1024,
+    }],
   },
 
-  buildQueueStateClient: {
-    address: 'localhost:8984',
+  // The BrowserService can be disabled by not setting this field.
+  browserServiceConfiguration: {
+    actionCacheClient: {
+      address: 'localhost:8980',
+    },
+
+    contentAddressableStorageClient: {
+      address: 'localhost:8980',
+    },
+
+    initialSizeClassCacheClient: {
+      address: 'localhost:8980',
+    },
+
+    fileSystemAccessCacheClient: {
+      address: 'localhost:8980',
+    },
+    serveFilesCasConfiguration: {
+      grpc: { address: 'localhost:8980' },
+    },
   },
 
-  actionCacheClient: {
-    address: 'localhost:8980',
+  // The SchedulerService can be disabled by not setting this field.
+  schedulerServiceConfiguration: {
+    buildQueueStateClient: {
+      address: 'localhost:8984',
+    },
+    killOperationsAuthorizer: {
+      allow: {},
+    },
+    listOperationsPageSize: 500,
   },
 
-  contentAddressableStorageClient: {
-    address: 'localhost:8980',
-  },
-
-  initialSizeClassCacheClient: {
-    address: 'localhost:8980',
-  },
-
-  fileSystemAccessCacheClient: {
-    address: 'localhost:8980',
-  },
-
-  listOperationsPageSize: 500,
 }

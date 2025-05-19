@@ -10,14 +10,10 @@ import (
 	"unicode/utf8"
 
 	"github.com/buildbarn/bb-portal/internal/api/common"
-	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-remote-execution/pkg/builder"
-	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
+	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/blobstore"
-	blobstore_configuration "github.com/buildbarn/bb-storage/pkg/blobstore/configuration"
 	"github.com/buildbarn/bb-storage/pkg/digest"
-	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
-	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/gorilla/mux"
 	"google.golang.org/grpc/codes"
@@ -65,31 +61,12 @@ type FileServerService struct {
 	maximumMessageSizeBytes   int
 }
 
-// NewFileServerServiceFromConfiguration creates a new ServeFilesService
+// NewFileServerService creates a new ServeFilesService
 // with an authorizing CAS if ServeFilesCasConfiguration is configured.
-func NewFileServerServiceFromConfiguration(dependenciesGroup program.Group, configuration *bb_portal.ApplicationConfiguration, grpcClientFactory bb_grpc.ClientFactory) *FileServerService {
-	if configuration.ServeFilesCasConfiguration == nil {
-		log.Printf("Did not start serving files from Content Addressable Storage because ServeFilesCasConfiguration is not configured")
-		return nil
-	}
-
-	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, grpcClientFactory)
-	if err != nil {
-		log.Fatalf("Failed to create InstanceNameAuthorizer: %v", err)
-	}
-
-	contentAddressableStorage, err := blobstore_configuration.NewBlobAccessFromConfiguration(
-		dependenciesGroup,
-		configuration.ServeFilesCasConfiguration,
-		blobstore_configuration.NewCASBlobAccessCreator(grpcClientFactory, int(configuration.MaximumMessageSizeBytes)),
-	)
-	if err != nil {
-		log.Fatalf("Failed to serve files from Content Addressable Storage: %v", err)
-	}
-
+func NewFileServerService(blobAccess blobstore.BlobAccess, instanceNameAuthorizer auth.Authorizer, maximumMessageSizeBytes int) *FileServerService {
 	return &FileServerService{
-		blobstore.NewAuthorizingBlobAccess(contentAddressableStorage.BlobAccess, instanceNameAuthorizer, nil, nil),
-		int(configuration.MaximumMessageSizeBytes),
+		blobstore.NewAuthorizingBlobAccess(blobAccess, instanceNameAuthorizer, nil, nil),
+		int(maximumMessageSizeBytes),
 	}
 }
 

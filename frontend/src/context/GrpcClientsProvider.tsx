@@ -28,7 +28,9 @@ export interface GrpcClientsProviderProps {
 }
 
 const GrpcClientsProvider = ({ children }: GrpcClientsProviderProps) => {
-  const grpcChannel = createChannel(env("NEXT_PUBLIC_BES_BACKEND_URL") || "");
+  const grpcChannel = createChannel(
+    `${env("NEXT_PUBLIC_BES_BACKEND_URL") || ""}/api/v1/grpcweb`,
+  );
 
   const buildQueueStateClient: BuildQueueStateClient = createClient(
     BuildQueueStateDefinition,

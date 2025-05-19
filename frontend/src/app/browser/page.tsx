@@ -3,12 +3,12 @@
 import Content from "@/components/Content";
 import PageDisabled from "@/components/PageDisabled";
 import PortalCard from "@/components/PortalCard";
+import { FeatureType, isFeatureEnabled } from "@/utils/isFeatureEnabled";
 import { LayoutOutlined } from "@ant-design/icons";
 import { Space, Typography } from "antd";
+import { notFound } from "next/navigation";
 import type React from "react";
 import styles from "./page.module.css";
-import { notFound } from 'next/navigation';
-import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
 
 const Page: React.FC = () => {
   if (!isFeatureEnabled(FeatureType.BROWSER)) {
@@ -81,7 +81,7 @@ const Page: React.FC = () => {
                   <p>
                     <pre>
                       {
-                        "/api/servefile/${instance_name}/blobs/${digest_function}/file/${hash}-${size_bytes}/${filename}"
+                        "/api/v1/servefile/${instance_name}/blobs/${digest_function}/file/${hash}-${size_bytes}/${filename}"
                       }
                     </pre>
                     Serves a file stored in the CAS.
