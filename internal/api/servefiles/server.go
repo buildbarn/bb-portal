@@ -11,7 +11,6 @@ import (
 
 	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-remote-execution/pkg/builder"
-	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/blobstore"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/util"
@@ -57,15 +56,15 @@ func getDigestFromRequest(req *http.Request) (digest.Digest, error) {
 // Addressable Storage (CAS) over HTTP. It also serves shell scripts generated
 // from Command messages, and directories as Tarballs.
 type FileServerService struct {
-	contentAddressableStorage blobstore.BlobAccess
-	maximumMessageSizeBytes   int
+	blobAccess              blobstore.BlobAccess
+	maximumMessageSizeBytes int
 }
 
 // NewFileServerService creates a new ServeFilesService
 // with an authorizing CAS if ServeFilesCasConfiguration is configured.
-func NewFileServerService(blobAccess blobstore.BlobAccess, instanceNameAuthorizer auth.Authorizer, maximumMessageSizeBytes int) *FileServerService {
+func NewFileServerService(blobAccess blobstore.BlobAccess, maximumMessageSizeBytes int) *FileServerService {
 	return &FileServerService{
-		blobstore.NewAuthorizingBlobAccess(blobAccess, instanceNameAuthorizer, nil, nil),
+		blobAccess,
 		int(maximumMessageSizeBytes),
 	}
 }
@@ -79,7 +78,7 @@ func (s FileServerService) HandleFile(w http.ResponseWriter, req *http.Request) 
 	}
 
 	ctx := common.ExtractContextFromRequest(req)
-	r := s.contentAddressableStorage.Get(ctx, digest).ToReader()
+	r := s.blobAccess.Get(ctx, digest).ToReader()
 	defer r.Close()
 
 	// Attempt to read the first chunk of data to see whether we can
@@ -122,7 +121,7 @@ func (s FileServerService) HandleCommand(w http.ResponseWriter, req *http.Reques
 	}
 	ctx := common.ExtractContextFromRequest(req)
 
-	commandMessage, err := s.contentAddressableStorage.Get(ctx, digest).ToProto(&remoteexecution.Command{}, s.maximumMessageSizeBytes)
+	commandMessage, err := s.blobAccess.Get(ctx, digest).ToProto(&remoteexecution.Command{}, s.maximumMessageSizeBytes)
 	if err != nil {
 		http.Error(w, "Not found", http.StatusNotFound)
 		return

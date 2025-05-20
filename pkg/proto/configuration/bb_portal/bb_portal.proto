@@ -16,17 +16,13 @@ message BuildEventStreamService {
 }
 
 message BrowserService {
-  buildbarn.configuration.grpc.ClientConfiguration action_cache_client = 1;
-  buildbarn.configuration.grpc.ClientConfiguration
-      content_addressable_storage_client = 2;
-  buildbarn.configuration.grpc.ClientConfiguration
-      initial_size_class_cache_client = 3;
-  buildbarn.configuration.grpc.ClientConfiguration
-      file_system_access_cache_client = 4;
-
-  // Configuration for serving files with Content Addressable Storage.
   buildbarn.configuration.blobstore.BlobAccessConfiguration
-      serve_files_cas_configuration = 5;
+      content_addressable_storage = 1;
+  buildbarn.configuration.blobstore.BlobAccessConfiguration action_cache = 2;
+  buildbarn.configuration.blobstore.BlobAccessConfiguration
+      initial_size_class_cache = 3;
+  buildbarn.configuration.blobstore.BlobAccessConfiguration
+      file_system_access_cache = 4;
 }
 
 message SchedulerService {

@@ -71,14 +71,13 @@ func (x *BuildEventStreamService) GetGrpcServers() []*grpc.ServerConfiguration {
 }
 
 type BrowserService struct {
-	state                           protoimpl.MessageState             `protogen:"open.v1"`
-	ActionCacheClient               *grpc.ClientConfiguration          `protobuf:"bytes,1,opt,name=action_cache_client,json=actionCacheClient,proto3" json:"action_cache_client,omitempty"`
-	ContentAddressableStorageClient *grpc.ClientConfiguration          `protobuf:"bytes,2,opt,name=content_addressable_storage_client,json=contentAddressableStorageClient,proto3" json:"content_addressable_storage_client,omitempty"`
-	InitialSizeClassCacheClient     *grpc.ClientConfiguration          `protobuf:"bytes,3,opt,name=initial_size_class_cache_client,json=initialSizeClassCacheClient,proto3" json:"initial_size_class_cache_client,omitempty"`
-	FileSystemAccessCacheClient     *grpc.ClientConfiguration          `protobuf:"bytes,4,opt,name=file_system_access_cache_client,json=fileSystemAccessCacheClient,proto3" json:"file_system_access_cache_client,omitempty"`
-	ServeFilesCasConfiguration      *blobstore.BlobAccessConfiguration `protobuf:"bytes,5,opt,name=serve_files_cas_configuration,json=serveFilesCasConfiguration,proto3" json:"serve_files_cas_configuration,omitempty"`
-	unknownFields                   protoimpl.UnknownFields
-	sizeCache                       protoimpl.SizeCache
+	state                     protoimpl.MessageState             `protogen:"open.v1"`
+	ContentAddressableStorage *blobstore.BlobAccessConfiguration `protobuf:"bytes,1,opt,name=content_addressable_storage,json=contentAddressableStorage,proto3" json:"content_addressable_storage,omitempty"`
+	ActionCache               *blobstore.BlobAccessConfiguration `protobuf:"bytes,2,opt,name=action_cache,json=actionCache,proto3" json:"action_cache,omitempty"`
+	InitialSizeClassCache     *blobstore.BlobAccessConfiguration `protobuf:"bytes,3,opt,name=initial_size_class_cache,json=initialSizeClassCache,proto3" json:"initial_size_class_cache,omitempty"`
+	FileSystemAccessCache     *blobstore.BlobAccessConfiguration `protobuf:"bytes,4,opt,name=file_system_access_cache,json=fileSystemAccessCache,proto3" json:"file_system_access_cache,omitempty"`
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *BrowserService) Reset() {
@@ -111,37 +110,30 @@ func (*BrowserService) Descriptor() ([]byte, []int) {
 	return file_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *BrowserService) GetActionCacheClient() *grpc.ClientConfiguration {
+func (x *BrowserService) GetContentAddressableStorage() *blobstore.BlobAccessConfiguration {
 	if x != nil {
-		return x.ActionCacheClient
+		return x.ContentAddressableStorage
 	}
 	return nil
 }
 
-func (x *BrowserService) GetContentAddressableStorageClient() *grpc.ClientConfiguration {
+func (x *BrowserService) GetActionCache() *blobstore.BlobAccessConfiguration {
 	if x != nil {
-		return x.ContentAddressableStorageClient
+		return x.ActionCache
 	}
 	return nil
 }
 
-func (x *BrowserService) GetInitialSizeClassCacheClient() *grpc.ClientConfiguration {
+func (x *BrowserService) GetInitialSizeClassCache() *blobstore.BlobAccessConfiguration {
 	if x != nil {
-		return x.InitialSizeClassCacheClient
+		return x.InitialSizeClassCache
 	}
 	return nil
 }
 
-func (x *BrowserService) GetFileSystemAccessCacheClient() *grpc.ClientConfiguration {
+func (x *BrowserService) GetFileSystemAccessCache() *blobstore.BlobAccessConfiguration {
 	if x != nil {
-		return x.FileSystemAccessCacheClient
-	}
-	return nil
-}
-
-func (x *BrowserService) GetServeFilesCasConfiguration() *blobstore.BlobAccessConfiguration {
-	if x != nil {
-		return x.ServeFilesCasConfiguration
+		return x.FileSystemAccessCache
 	}
 	return nil
 }
@@ -320,13 +312,12 @@ const file_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDesc = "" +
 	"\n" +
 	"1pkg/proto/configuration/bb_portal/bb_portal.proto\x12!buildbarn.configuration.bb_portal\x1a'pkg/proto/configuration/auth/auth.proto\x1a1pkg/proto/configuration/blobstore/blobstore.proto\x1a+pkg/proto/configuration/global/global.proto\x1a'pkg/proto/configuration/grpc/grpc.proto\x1a'pkg/proto/configuration/http/http.proto\"o\n" +
 	"\x17BuildEventStreamService\x12T\n" +
-	"\fgrpc_servers\x18\x01 \x03(\v21.buildbarn.configuration.grpc.ServerConfigurationR\vgrpcServers\"\xe4\x04\n" +
-	"\x0eBrowserService\x12a\n" +
-	"\x13action_cache_client\x18\x01 \x01(\v21.buildbarn.configuration.grpc.ClientConfigurationR\x11actionCacheClient\x12~\n" +
-	"\"content_addressable_storage_client\x18\x02 \x01(\v21.buildbarn.configuration.grpc.ClientConfigurationR\x1fcontentAddressableStorageClient\x12w\n" +
-	"\x1finitial_size_class_cache_client\x18\x03 \x01(\v21.buildbarn.configuration.grpc.ClientConfigurationR\x1binitialSizeClassCacheClient\x12w\n" +
-	"\x1ffile_system_access_cache_client\x18\x04 \x01(\v21.buildbarn.configuration.grpc.ClientConfigurationR\x1bfileSystemAccessCacheClient\x12}\n" +
-	"\x1dserve_files_cas_configuration\x18\x05 \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\x1aserveFilesCasConfiguration\"\xab\x02\n" +
+	"\fgrpc_servers\x18\x01 \x03(\v21.buildbarn.configuration.grpc.ServerConfigurationR\vgrpcServers\"\xd5\x03\n" +
+	"\x0eBrowserService\x12z\n" +
+	"\x1bcontent_addressable_storage\x18\x01 \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\x19contentAddressableStorage\x12]\n" +
+	"\faction_cache\x18\x02 \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\vactionCache\x12s\n" +
+	"\x18initial_size_class_cache\x18\x03 \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\x15initialSizeClassCache\x12s\n" +
+	"\x18file_system_access_cache\x18\x04 \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\x15fileSystemAccessCache\"\xab\x02\n" +
 	"\x10SchedulerService\x12j\n" +
 	"\x18build_queue_state_client\x18\x01 \x01(\v21.buildbarn.configuration.grpc.ClientConfigurationR\x15buildQueueStateClient\x12s\n" +
 	"\x1akill_operations_authorizer\x18\x02 \x01(\v25.buildbarn.configuration.auth.AuthorizerConfigurationR\x18killOperationsAuthorizer\x126\n" +
@@ -361,32 +352,31 @@ var file_pkg_proto_configuration_bb_portal_bb_portal_proto_goTypes = []any{
 	(*SchedulerService)(nil),                  // 2: buildbarn.configuration.bb_portal.SchedulerService
 	(*ApplicationConfiguration)(nil),          // 3: buildbarn.configuration.bb_portal.ApplicationConfiguration
 	(*grpc.ServerConfiguration)(nil),          // 4: buildbarn.configuration.grpc.ServerConfiguration
-	(*grpc.ClientConfiguration)(nil),          // 5: buildbarn.configuration.grpc.ClientConfiguration
-	(*blobstore.BlobAccessConfiguration)(nil), // 6: buildbarn.configuration.blobstore.BlobAccessConfiguration
+	(*blobstore.BlobAccessConfiguration)(nil), // 5: buildbarn.configuration.blobstore.BlobAccessConfiguration
+	(*grpc.ClientConfiguration)(nil),          // 6: buildbarn.configuration.grpc.ClientConfiguration
 	(*auth.AuthorizerConfiguration)(nil),      // 7: buildbarn.configuration.auth.AuthorizerConfiguration
 	(*http.ServerConfiguration)(nil),          // 8: buildbarn.configuration.http.ServerConfiguration
 	(*global.Configuration)(nil),              // 9: buildbarn.configuration.global.Configuration
 }
 var file_pkg_proto_configuration_bb_portal_bb_portal_proto_depIdxs = []int32{
 	4,  // 0: buildbarn.configuration.bb_portal.BuildEventStreamService.grpc_servers:type_name -> buildbarn.configuration.grpc.ServerConfiguration
-	5,  // 1: buildbarn.configuration.bb_portal.BrowserService.action_cache_client:type_name -> buildbarn.configuration.grpc.ClientConfiguration
-	5,  // 2: buildbarn.configuration.bb_portal.BrowserService.content_addressable_storage_client:type_name -> buildbarn.configuration.grpc.ClientConfiguration
-	5,  // 3: buildbarn.configuration.bb_portal.BrowserService.initial_size_class_cache_client:type_name -> buildbarn.configuration.grpc.ClientConfiguration
-	5,  // 4: buildbarn.configuration.bb_portal.BrowserService.file_system_access_cache_client:type_name -> buildbarn.configuration.grpc.ClientConfiguration
-	6,  // 5: buildbarn.configuration.bb_portal.BrowserService.serve_files_cas_configuration:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
-	5,  // 6: buildbarn.configuration.bb_portal.SchedulerService.build_queue_state_client:type_name -> buildbarn.configuration.grpc.ClientConfiguration
-	7,  // 7: buildbarn.configuration.bb_portal.SchedulerService.kill_operations_authorizer:type_name -> buildbarn.configuration.auth.AuthorizerConfiguration
-	8,  // 8: buildbarn.configuration.bb_portal.ApplicationConfiguration.http_servers:type_name -> buildbarn.configuration.http.ServerConfiguration
-	9,  // 9: buildbarn.configuration.bb_portal.ApplicationConfiguration.global:type_name -> buildbarn.configuration.global.Configuration
-	0,  // 10: buildbarn.configuration.bb_portal.ApplicationConfiguration.bes_service_configuration:type_name -> buildbarn.configuration.bb_portal.BuildEventStreamService
-	1,  // 11: buildbarn.configuration.bb_portal.ApplicationConfiguration.browser_service_configuration:type_name -> buildbarn.configuration.bb_portal.BrowserService
-	2,  // 12: buildbarn.configuration.bb_portal.ApplicationConfiguration.scheduler_service_configuration:type_name -> buildbarn.configuration.bb_portal.SchedulerService
-	7,  // 13: buildbarn.configuration.bb_portal.ApplicationConfiguration.instance_name_authorizer:type_name -> buildbarn.configuration.auth.AuthorizerConfiguration
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	5,  // 1: buildbarn.configuration.bb_portal.BrowserService.content_addressable_storage:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
+	5,  // 2: buildbarn.configuration.bb_portal.BrowserService.action_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
+	5,  // 3: buildbarn.configuration.bb_portal.BrowserService.initial_size_class_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
+	5,  // 4: buildbarn.configuration.bb_portal.BrowserService.file_system_access_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
+	6,  // 5: buildbarn.configuration.bb_portal.SchedulerService.build_queue_state_client:type_name -> buildbarn.configuration.grpc.ClientConfiguration
+	7,  // 6: buildbarn.configuration.bb_portal.SchedulerService.kill_operations_authorizer:type_name -> buildbarn.configuration.auth.AuthorizerConfiguration
+	8,  // 7: buildbarn.configuration.bb_portal.ApplicationConfiguration.http_servers:type_name -> buildbarn.configuration.http.ServerConfiguration
+	9,  // 8: buildbarn.configuration.bb_portal.ApplicationConfiguration.global:type_name -> buildbarn.configuration.global.Configuration
+	0,  // 9: buildbarn.configuration.bb_portal.ApplicationConfiguration.bes_service_configuration:type_name -> buildbarn.configuration.bb_portal.BuildEventStreamService
+	1,  // 10: buildbarn.configuration.bb_portal.ApplicationConfiguration.browser_service_configuration:type_name -> buildbarn.configuration.bb_portal.BrowserService
+	2,  // 11: buildbarn.configuration.bb_portal.ApplicationConfiguration.scheduler_service_configuration:type_name -> buildbarn.configuration.bb_portal.SchedulerService
+	7,  // 12: buildbarn.configuration.bb_portal.ApplicationConfiguration.instance_name_authorizer:type_name -> buildbarn.configuration.auth.AuthorizerConfiguration
+	13, // [13:13] is the sub-list for method output_type
+	13, // [13:13] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_configuration_bb_portal_bb_portal_proto_init() }
