@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/buildbarn/bb-portal/internal/api/grpcweb/isccproxy",
     visibility = ["//:__subpackages__"],
     deps = [
-        "//internal/api/grpcweb",
+        "//internal/api/common",
         "@com_github_buildbarn_bb_storage//pkg/auth",
         "@com_github_buildbarn_bb_storage//pkg/proto/iscc",
         "@org_golang_google_grpc//codes",

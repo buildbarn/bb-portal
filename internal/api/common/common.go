@@ -1,4 +1,4 @@
-package grpcweb
+package common
 
 import (
 	"context"
@@ -8,8 +8,8 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/digest"
 )
 
-// IsInstanceNameAllowed checks whether the given instance name is
-// allowed by the authorizer.
+// IsInstanceNameAllowed checks whether the given instance name is allowed by
+// the authorizer.
 func IsInstanceNameAllowed(ctx context.Context, authorizer auth.Authorizer, instanceNameString string) bool {
 	instanceName, err := digest.NewInstanceName(instanceNameString)
 	if err != nil {

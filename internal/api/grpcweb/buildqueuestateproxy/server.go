@@ -5,7 +5,7 @@ import (
 	"math"
 	"sort"
 
-	"github.com/buildbarn/bb-portal/internal/api/grpcweb"
+	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-remote-execution/pkg/proto/buildqueuestate"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"google.golang.org/grpc/codes"
@@ -35,7 +35,7 @@ func (s *BuildQueueStateServerImpl) GetOperation(ctx context.Context, req *build
 
 	platformQueueName := response.GetOperation().GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName()
 
-	if platformQueueName == nil || !grpcweb.IsInstanceNameAllowed(ctx, s.authorizer, platformQueueName.InstanceNamePrefix) {
+	if platformQueueName == nil || !common.IsInstanceNameAllowed(ctx, s.authorizer, platformQueueName.InstanceNamePrefix) {
 		return nil, status.Errorf(codes.NotFound, "Operation was not found")
 	}
 
@@ -101,7 +101,7 @@ func (s *BuildQueueStateServerImpl) ListWorkers(ctx context.Context, req *buildq
 		return nil, err
 	}
 
-	if !grpcweb.IsInstanceNameAllowed(ctx, s.authorizer, instanceNamePrefix) {
+	if !common.IsInstanceNameAllowed(ctx, s.authorizer, instanceNamePrefix) {
 		return nil, status.Errorf(codes.PermissionDenied, "Not allowed to list workers for instance name prefix %s", instanceNamePrefix)
 	}
 	return s.client.ListWorkers(ctx, req)
@@ -135,7 +135,7 @@ func filterPlatormQueues(ctx context.Context, response *buildqueuestate.ListPlat
 
 		name := queue.GetName()
 
-		if name != nil && grpcweb.IsInstanceNameAllowed(ctx, authorizer, name.InstanceNamePrefix) {
+		if name != nil && common.IsInstanceNameAllowed(ctx, authorizer, name.InstanceNamePrefix) {
 			allowedQueues = append(allowedQueues, queue)
 		}
 	}
@@ -150,7 +150,7 @@ func filterOperations(ctx context.Context, response *buildqueuestate.ListOperati
 
 		platformQueueName := operation.GetInvocationName().GetSizeClassQueueName().GetPlatformQueueName()
 
-		if platformQueueName != nil && grpcweb.IsInstanceNameAllowed(ctx, authorizer, platformQueueName.InstanceNamePrefix) {
+		if platformQueueName != nil && common.IsInstanceNameAllowed(ctx, authorizer, platformQueueName.InstanceNamePrefix) {
 			allowedOperations = append(allowedOperations, operation)
 		}
 	}

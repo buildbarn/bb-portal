@@ -3,7 +3,7 @@ package fsacproxy
 import (
 	"context"
 
-	"github.com/buildbarn/bb-portal/internal/api/grpcweb"
+	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/proto/fsac"
 	"google.golang.org/grpc/codes"
@@ -28,7 +28,7 @@ func (s *FsacServerImpl) GetFileSystemAccessProfile(ctx context.Context, req *fs
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
-	if !grpcweb.IsInstanceNameAllowed(ctx, s.authorizer, req.InstanceName) {
+	if !common.IsInstanceNameAllowed(ctx, s.authorizer, req.InstanceName) {
 		return nil, status.Errorf(codes.PermissionDenied, "Not authorized")
 	}
 	return s.client.GetFileSystemAccessProfile(ctx, req)

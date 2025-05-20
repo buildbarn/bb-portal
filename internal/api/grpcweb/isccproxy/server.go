@@ -3,7 +3,7 @@ package isccproxy
 import (
 	"context"
 
-	"github.com/buildbarn/bb-portal/internal/api/grpcweb"
+	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/proto/iscc"
 	"google.golang.org/grpc/codes"
@@ -28,7 +28,7 @@ func (s *IsccServerImpl) GetPreviousExecutionStats(ctx context.Context, req *isc
 		return nil, status.Errorf(codes.InvalidArgument, "Invalid request")
 	}
 
-	if !grpcweb.IsInstanceNameAllowed(ctx, s.authorizer, req.InstanceName) {
+	if !common.IsInstanceNameAllowed(ctx, s.authorizer, req.InstanceName) {
 		return nil, status.Errorf(codes.PermissionDenied, "Not authorized")
 	}
 	return s.client.GetPreviousExecutionStats(ctx, req)
