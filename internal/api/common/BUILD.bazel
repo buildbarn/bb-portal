@@ -1,9 +1,9 @@
 load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
-    name = "grpcweb",
+    name = "common",
     srcs = ["common.go"],
-    importpath = "github.com/buildbarn/bb-portal/internal/api/grpcweb",
+    importpath = "github.com/buildbarn/bb-portal/internal/api/common",
     visibility = ["//:__subpackages__"],
     deps = [
         "@com_github_buildbarn_bb_storage//pkg/auth",
@@ -12,9 +12,9 @@ go_library(
 )
 
 go_test(
-    name = "grpcweb_test",
+    name = "common_test",
     srcs = ["common_test.go"],
-    embed = [":grpcweb"],
+    embed = [":common"],
     deps = [
         "@com_github_buildbarn_bb_storage//pkg/auth",
         "@com_github_buildbarn_bb_storage//pkg/proto/auth",

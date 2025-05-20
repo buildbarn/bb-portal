@@ -5,7 +5,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/buildbarn/bb-portal/internal/api/grpcweb"
+	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"google.golang.org/genproto/googleapis/bytestream"
 	"google.golang.org/grpc/codes"
@@ -32,7 +32,7 @@ func (s *CasServerImpl) Read(req *bytestream.ReadRequest, stream bytestream.Byte
 	ctx := stream.Context()
 
 	instanceName := getInstanceName(req.ResourceName)
-	if !grpcweb.IsInstanceNameAllowed(ctx, s.authorizer, instanceName) {
+	if !common.IsInstanceNameAllowed(ctx, s.authorizer, instanceName) {
 		return status.Errorf(codes.PermissionDenied, "Not authorized")
 	}
 

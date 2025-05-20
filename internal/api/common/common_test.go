@@ -1,4 +1,4 @@
-package grpcweb
+package common
 
 import (
 	"context"
