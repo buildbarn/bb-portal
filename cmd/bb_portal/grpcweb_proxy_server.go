@@ -65,13 +65,17 @@ func StartGrpcWebProxyServer(
 	grpcServer := go_grpc.NewServer()
 
 	if configuration.BuildQueueStateClient != nil {
+		if configuration.ListOperationsPageSize <= 0 {
+			log.Fatalf("Error: ListOperationsPageSize is not configured (or is set to 0)")
+		}
+
 		initializeGrpcWebServer(
 			configuration.BuildQueueStateClient,
 			grpcClientFactory,
 			grpcServer,
 			func(grpcServer *go_grpc.Server, grpcClient go_grpc.ClientConnInterface) {
 				c := buildqueuestate.NewBuildQueueStateClient(grpcClient)
-				buildqueuestate.RegisterBuildQueueStateServer(grpcServer, buildqueuestateproxy.NewBuildQueueStateServerImpl(c, instanceNameAuthorizer))
+				buildqueuestate.RegisterBuildQueueStateServer(grpcServer, buildqueuestateproxy.NewBuildQueueStateServerImpl(c, instanceNameAuthorizer, configuration.ListOperationsPageSize))
 			},
 		)
 	} else {

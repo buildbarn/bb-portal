@@ -6,10 +6,14 @@ import (
 	"log"
 	"testing"
 
+	"github.com/buildbarn/bb-portal/internal/mock"
+	"github.com/stretchr/testify/require"
+
 	"github.com/buildbarn/bb-remote-execution/pkg/proto/buildqueuestate"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/auth"
 	"github.com/jmespath/go-jmespath"
+	"go.uber.org/mock/gomock"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -128,76 +132,70 @@ func TestFilterOperations(t *testing.T) {
 	}))
 
 	t.Run("NoOperations", func(t *testing.T) {
-		operations := buildqueuestate.ListOperationsResponse{
-			Operations: []*buildqueuestate.OperationState{},
-		}
-		allowedOperations := filterOperations(ctx, &operations, a)
+		operations := []*buildqueuestate.OperationState{}
+		allowedOperations := filterOperations(ctx, operations, a)
 		if len(allowedOperations) != 0 {
 			t.Errorf("Expected no operations, got %d", len(allowedOperations))
 		}
 	})
 
 	t.Run("FilterOperations", func(t *testing.T) {
-		operations := buildqueuestate.ListOperationsResponse{
-			Operations: []*buildqueuestate.OperationState{
-				{
-					InvocationName: &buildqueuestate.InvocationName{
-						SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
-							PlatformQueueName: &buildqueuestate.PlatformQueueName{
-								InstanceNamePrefix: "allowed",
-							},
+		operations := []*buildqueuestate.OperationState{
+			{
+				InvocationName: &buildqueuestate.InvocationName{
+					SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+						PlatformQueueName: &buildqueuestate.PlatformQueueName{
+							InstanceNamePrefix: "allowed",
 						},
 					},
 				},
-				{
-					InvocationName: &buildqueuestate.InvocationName{
-						SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
-							PlatformQueueName: &buildqueuestate.PlatformQueueName{
-								InstanceNamePrefix: "forbidden",
-							},
+			},
+			{
+				InvocationName: &buildqueuestate.InvocationName{
+					SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+						PlatformQueueName: &buildqueuestate.PlatformQueueName{
+							InstanceNamePrefix: "forbidden",
 						},
 					},
 				},
 			},
 		}
-		allowedOperations := filterOperations(ctx, &operations, a)
+		allowedOperations := filterOperations(ctx, operations, a)
 		if len(allowedOperations) != 1 {
 			t.Errorf("Expected one operation, got %d", len(allowedOperations))
 		}
-		expected := operations.Operations[0]
+		expected := operations[0]
 		if allowedOperations[0] != expected {
 			t.Errorf("Expected operation %+v, got %+v", expected, allowedOperations[0])
 		}
 	})
 
 	t.Run("AllowEmptyInstanceNames", func(t *testing.T) {
-		operations := buildqueuestate.ListOperationsResponse{
-			Operations: []*buildqueuestate.OperationState{
-				{
-					InvocationName: &buildqueuestate.InvocationName{
-						SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
-							PlatformQueueName: &buildqueuestate.PlatformQueueName{
-								InstanceNamePrefix: "",
-							},
+		operations := []*buildqueuestate.OperationState{
+			{
+				InvocationName: &buildqueuestate.InvocationName{
+					SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+						PlatformQueueName: &buildqueuestate.PlatformQueueName{
+							InstanceNamePrefix: "",
 						},
 					},
 				},
-				{
-					InvocationName: &buildqueuestate.InvocationName{
-						SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
-							PlatformQueueName: &buildqueuestate.PlatformQueueName{
-								InstanceNamePrefix: "forbidden",
-							},
+			},
+			{
+				InvocationName: &buildqueuestate.InvocationName{
+					SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+						PlatformQueueName: &buildqueuestate.PlatformQueueName{
+							InstanceNamePrefix: "forbidden",
 						},
 					},
 				},
 			},
 		}
-		allowedOperations := filterOperations(ctx, &operations, a)
+		allowedOperations := filterOperations(ctx, operations, a)
 		if len(allowedOperations) != 1 {
 			t.Errorf("Expected one operation, got %d", len(allowedOperations))
 		}
-		expected := operations.Operations[0]
+		expected := operations[0]
 		if allowedOperations[0] != expected {
 			t.Errorf("Expected operation %+v, got %+v", expected, allowedOperations[0])
 		}
@@ -205,20 +203,18 @@ func TestFilterOperations(t *testing.T) {
 
 	t.Run("InvalidOperation", func(t *testing.T) {
 		log.SetOutput(io.Discard)
-		operations := buildqueuestate.ListOperationsResponse{
-			Operations: []*buildqueuestate.OperationState{
-				{
-					InvocationName: &buildqueuestate.InvocationName{
-						SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
-							PlatformQueueName: &buildqueuestate.PlatformQueueName{
-								InstanceNamePrefix: "asdff//////DF////",
-							},
+		operations := []*buildqueuestate.OperationState{
+			{
+				InvocationName: &buildqueuestate.InvocationName{
+					SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+						PlatformQueueName: &buildqueuestate.PlatformQueueName{
+							InstanceNamePrefix: "asdff//////DF////",
 						},
 					},
 				},
 			},
 		}
-		allowedOperations := filterOperations(ctx, &operations, a)
+		allowedOperations := filterOperations(ctx, operations, a)
 		if len(allowedOperations) != 0 {
 			t.Errorf("Expected no operations, got %d", len(allowedOperations))
 		}
@@ -502,5 +498,319 @@ func TestCreatePaginatedListOperationsResponse(t *testing.T) {
 		if response.PaginationInfo.TotalEntries != 4 {
 			t.Errorf("Expected total entries 4, got %d", response.PaginationInfo.TotalEntries)
 		}
+	})
+}
+
+func TestListOperations(t *testing.T) {
+	ctrl, ctx := gomock.WithContext(auth.NewContextWithAuthenticationMetadata(context.Background(), auth.MustNewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
+		Private: structpb.NewStructValue(&structpb.Struct{
+			Fields: map[string]*structpb.Value{
+				"permittedInstanceNames": structpb.NewListValue(&structpb.ListValue{
+					Values: []*structpb.Value{
+						structpb.NewStringValue("allowed"),
+					},
+				}),
+			},
+		}),
+	})), t)
+	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
+	instanceNameAuthorizer := auth.NewJMESPathExpressionAuthorizer(
+		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
+	)
+
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, instanceNameAuthorizer, 2)
+
+	operations := []*buildqueuestate.OperationState{
+		{
+			Name: "op1",
+			InvocationName: &buildqueuestate.InvocationName{
+				SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+					PlatformQueueName: &buildqueuestate.PlatformQueueName{
+						InstanceNamePrefix: "allowed",
+					},
+				},
+			},
+		},
+		{
+			Name: "op2",
+			InvocationName: &buildqueuestate.InvocationName{
+				SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+					PlatformQueueName: &buildqueuestate.PlatformQueueName{
+						InstanceNamePrefix: "allowed",
+					},
+				},
+			},
+		},
+		{
+			Name: "op3",
+			InvocationName: &buildqueuestate.InvocationName{
+				SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+					PlatformQueueName: &buildqueuestate.PlatformQueueName{
+						InstanceNamePrefix: "allowed",
+					},
+				},
+			},
+		},
+		{
+			Name: "op4",
+			InvocationName: &buildqueuestate.InvocationName{
+				SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+					PlatformQueueName: &buildqueuestate.PlatformQueueName{
+						InstanceNamePrefix: "allowed",
+					},
+				},
+			},
+		},
+		{
+			Name: "op5",
+			InvocationName: &buildqueuestate.InvocationName{
+				SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+					PlatformQueueName: &buildqueuestate.PlatformQueueName{
+						InstanceNamePrefix: "allowed",
+					},
+				},
+			},
+		},
+	}
+
+	t.Run("NoOperations", func(t *testing.T) {
+		clientResponse := &buildqueuestate.ListOperationsResponse{
+			Operations: []*buildqueuestate.OperationState{},
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   0,
+				TotalEntries: 0,
+			},
+		}
+
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(clientResponse, nil)
+
+		resp, err := bqsServer.ListOperations(ctx, &buildqueuestate.ListOperationsRequest{
+			PageSize: 5,
+		})
+		require.NoError(t, err)
+		require.Equal(t, clientResponse, resp)
+	})
+
+	t.Run("FilterOperations", func(t *testing.T) {
+		clientResponse := &buildqueuestate.ListOperationsResponse{
+			Operations: []*buildqueuestate.OperationState{
+				{
+					InvocationName: &buildqueuestate.InvocationName{
+						SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+							PlatformQueueName: &buildqueuestate.PlatformQueueName{
+								InstanceNamePrefix: "allowed",
+							},
+						},
+					},
+				},
+				{
+					InvocationName: &buildqueuestate.InvocationName{
+						SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+							PlatformQueueName: &buildqueuestate.PlatformQueueName{
+								InstanceNamePrefix: "forbidden",
+							},
+						},
+					},
+				},
+			},
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   0,
+				TotalEntries: 2,
+			},
+		}
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(clientResponse, nil)
+
+		resp, err := bqsServer.ListOperations(ctx, &buildqueuestate.ListOperationsRequest{
+			PageSize: 5,
+		})
+		require.NoError(t, err)
+		require.Equal(t, clientResponse.Operations[0:1], resp.Operations)
+		require.Equal(t, uint32(0), resp.PaginationInfo.StartIndex)
+		require.Equal(t, uint32(1), resp.PaginationInfo.TotalEntries)
+	})
+
+	t.Run("AllowEmptyInstanceNames", func(t *testing.T) {
+		clientResponse := &buildqueuestate.ListOperationsResponse{
+			Operations: []*buildqueuestate.OperationState{
+				{
+					InvocationName: &buildqueuestate.InvocationName{
+						SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+							PlatformQueueName: &buildqueuestate.PlatformQueueName{
+								InstanceNamePrefix: "",
+							},
+						},
+					},
+				},
+				{
+					InvocationName: &buildqueuestate.InvocationName{
+						SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+							PlatformQueueName: &buildqueuestate.PlatformQueueName{
+								InstanceNamePrefix: "forbidden",
+							},
+						},
+					},
+				},
+			},
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   0,
+				TotalEntries: 2,
+			},
+		}
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(clientResponse, nil)
+		resp, err := bqsServer.ListOperations(ctx, &buildqueuestate.ListOperationsRequest{
+			PageSize: 5,
+		})
+		require.NoError(t, err)
+		require.Equal(t, clientResponse.Operations[0:1], resp.Operations)
+		require.Equal(t, uint32(0), resp.PaginationInfo.StartIndex)
+		require.Equal(t, uint32(1), resp.PaginationInfo.TotalEntries)
+	})
+
+	t.Run("InvalidOperation", func(t *testing.T) {
+		clientResponse := &buildqueuestate.ListOperationsResponse{
+			Operations: []*buildqueuestate.OperationState{
+				{
+					InvocationName: &buildqueuestate.InvocationName{
+						SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+							PlatformQueueName: &buildqueuestate.PlatformQueueName{
+								InstanceNamePrefix: "asdff//////DF////",
+							},
+						},
+					},
+				},
+			},
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   0,
+				TotalEntries: 1,
+			},
+		}
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(clientResponse, nil)
+		resp, err := bqsServer.ListOperations(ctx, &buildqueuestate.ListOperationsRequest{
+			PageSize: 5,
+		})
+		require.NoError(t, err)
+		require.Equal(t, []*buildqueuestate.OperationState{}, resp.Operations)
+		require.Equal(t, uint32(0), resp.PaginationInfo.StartIndex)
+		require.Equal(t, uint32(0), resp.PaginationInfo.TotalEntries)
+	})
+
+	t.Run("ClientPaginationWithNumOperationsMultipleOfClientPageSize", func(t *testing.T) {
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListOperationsResponse{
+			Operations: operations[0:2],
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   0,
+				TotalEntries: 4,
+			},
+		}, nil)
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListOperationsResponse{
+			Operations: operations[2:4],
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   2,
+				TotalEntries: 4,
+			},
+		}, nil)
+		resp, err := bqsServer.ListOperations(ctx, &buildqueuestate.ListOperationsRequest{
+			PageSize: 10,
+		})
+		require.NoError(t, err)
+		require.Equal(t, operations[0:4], resp.Operations)
+		require.Equal(t, uint32(0), resp.PaginationInfo.StartIndex)
+		require.Equal(t, uint32(4), resp.PaginationInfo.TotalEntries)
+	})
+
+	t.Run("ClientPaginationWithNumOperationsNotMultipleOfClientPageSize", func(t *testing.T) {
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListOperationsResponse{
+			Operations: operations[0:2],
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   0,
+				TotalEntries: 5,
+			},
+		}, nil)
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListOperationsResponse{
+			Operations: operations[2:4],
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   2,
+				TotalEntries: 5,
+			},
+		}, nil)
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListOperationsResponse{
+			Operations: operations[4:5],
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   4,
+				TotalEntries: 5,
+			},
+		}, nil)
+		resp, err := bqsServer.ListOperations(ctx, &buildqueuestate.ListOperationsRequest{
+			PageSize: 10,
+		})
+		require.NoError(t, err)
+		require.Equal(t, operations[0:5], resp.Operations)
+		require.Equal(t, uint32(0), resp.PaginationInfo.StartIndex)
+		require.Equal(t, uint32(5), resp.PaginationInfo.TotalEntries)
+	})
+
+	t.Run("ServerPaginationPageSize", func(t *testing.T) {
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListOperationsResponse{
+			Operations: operations[0:2],
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   0,
+				TotalEntries: 5,
+			},
+		}, nil)
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListOperationsResponse{
+			Operations: operations[2:4],
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   2,
+				TotalEntries: 5,
+			},
+		}, nil)
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListOperationsResponse{
+			Operations: operations[4:5],
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   4,
+				TotalEntries: 5,
+			},
+		}, nil)
+		resp, err := bqsServer.ListOperations(ctx, &buildqueuestate.ListOperationsRequest{
+			PageSize: 3,
+		})
+		require.NoError(t, err)
+		require.Equal(t, operations[0:3], resp.Operations)
+		require.Equal(t, uint32(0), resp.PaginationInfo.StartIndex)
+		require.Equal(t, uint32(5), resp.PaginationInfo.TotalEntries)
+	})
+
+	t.Run("ServerPaginationStartIndex", func(t *testing.T) {
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListOperationsResponse{
+			Operations: operations[0:2],
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   0,
+				TotalEntries: 5,
+			},
+		}, nil)
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListOperationsResponse{
+			Operations: operations[2:4],
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   2,
+				TotalEntries: 5,
+			},
+		}, nil)
+		bqsClient.EXPECT().ListOperations(gomock.Any(), gomock.Any()).Return(&buildqueuestate.ListOperationsResponse{
+			Operations: operations[4:5],
+			PaginationInfo: &buildqueuestate.PaginationInfo{
+				StartIndex:   4,
+				TotalEntries: 5,
+			},
+		}, nil)
+		resp, err := bqsServer.ListOperations(ctx, &buildqueuestate.ListOperationsRequest{
+			PageSize: 3,
+			StartAfter: &buildqueuestate.ListOperationsRequest_StartAfter{
+				OperationName: "op1",
+			},
+		})
+		require.NoError(t, err)
+		require.Equal(t, operations[1:4], resp.Operations)
+		require.Equal(t, uint32(1), resp.PaginationInfo.StartIndex)
+		require.Equal(t, uint32(5), resp.PaginationInfo.TotalEntries)
 	})
 }
