@@ -50,4 +50,9 @@ message ApplicationConfiguration {
   // Origins that are allowed to make requests to the backend. If this is not
   // configured correctly, it will cause CORS errors in the browser.
   repeated string allowed_origins = 13;
+
+  // Authorizer that is used to determine which instances the user is allowed
+  // to access.
+  buildbarn.configuration.auth.AuthorizerConfiguration
+      kill_operations_authorizer = 14;
 }

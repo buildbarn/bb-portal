@@ -8,6 +8,7 @@ go_library(
     deps = [
         "@com_github_buildbarn_bb_storage//pkg/auth",
         "@com_github_buildbarn_bb_storage//pkg/digest",
+        "@org_golang_google_grpc//metadata",
     ],
 )
 
