@@ -1,0 +1,33 @@
+load("@com_github_buildbarn_bb_storage//tools:container.bzl", "container_push_official", "multiarch_go_image")
+load("@rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+
+go_library(
+    name = "db_lib",
+    srcs = ["db_cleanup.go"],
+    importpath = "github.com/buildbarn/bb-portal/tools/db",
+    visibility = ["//visibility:private"],
+)
+
+go_binary(
+    name = "db",
+    embed = [":db_lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "db_test",
+    srcs = ["db_cleaup_test.go"],
+    embed = [":db_lib"],
+    deps = ["@com_github_stretchr_testify//assert"],
+)
+
+multiarch_go_image(
+    name = "bb_portal_db_cleanup_container",
+    binary = ":db",
+)
+
+container_push_official(
+    name = "bb_portal_container_push",
+    component = "bb-portal-cleanup",
+    image = ":bb_portal_db_cleanup_container",
+)
