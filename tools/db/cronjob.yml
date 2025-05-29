@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: bbportal-db-cleanup
+spec:
+  schedule: "*/10 * * * *"  # Runs every ten minutes
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          imagePullSecrets:
+            - name: your-private-registry-secret
+          containers:
+          - name: bbportal-db-cleanup
+            image: your.registry.io/docker/buildbarn/db-cleanup:v3
+            env:
+            - name: BASE_URL
+              value: "https://bbportal.exampleco.io"
+            - name: HOURS_TO_SUBTRACT
+              value: "1000"
+            - name: TIMEZONE
+              value: "EST"
+            - name: SSL_CERT_FILE
+              value: "/etc/ssl/certs/your-cert-bundle.crt"
+            volumeMounts:
+            - name: ssl-certs
+              mountPath: /etc/ssl/certs
+              readOnly: true
+          restartPolicy: OnFailure
+          volumes:
+          - name: ssl-certs
+            configMap:
+              name: your-cert-bundle.crt
+              items:
+              - key: your-cert-bundle.crt
+                path: your-cert-bundle.crt
