@@ -3,15 +3,16 @@ import themeStyles from "@/theme/theme.module.css";
 import { CloseCircleOutlined, CodeOutlined } from "@ant-design/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Space, Typography } from "antd";
+import { env } from "next-runtime-env";
 import { GrpcErrorCodes } from "../../utils/grpcErrorCodes";
 import ExecuteResponseDisplay from "../ExecutionResponseDisplay";
 import OperationStateDisplay from "../OperationStateDisplay";
 
 interface Props {
-  label: string;
+  operationID: string;
 }
 
-const OperationDetails: React.FC<Props> = ({ label }) => {
+const OperationDetails: React.FC<Props> = ({ operationID }) => {
   const { buildQueueStateClient } = useGrpcClients();
   const queryClient = useQueryClient();
 
@@ -19,7 +20,7 @@ const OperationDetails: React.FC<Props> = ({ label }) => {
     mutationFn: () => {
       return buildQueueStateClient.killOperations({
         filter: {
-          operationName: label,
+          operationName: operationID,
         },
         status: {
           code: GrpcErrorCodes.UNAVAILABLE,
@@ -29,19 +30,29 @@ const OperationDetails: React.FC<Props> = ({ label }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["operationDetails", label],
+        queryKey: ["operationDetails", operationID],
         exact: true,
       });
     },
   });
 
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["operationDetails", label],
+    queryKey: ["operationDetails", operationID],
     queryFn: buildQueueStateClient.getOperation.bind(window, {
-      operationName: label,
+      operationName: operationID,
     }),
     staleTime: Number.POSITIVE_INFINITY,
     refetchOnMount: "always",
+  });
+
+  const { data: allowedToKillOperation } = useQuery({
+    queryKey: ["killOperationsButtonState", operationID],
+    queryFn: async (): Promise<boolean> => {
+      const response = await fetch(
+        `${env("NEXT_PUBLIC_BES_BACKEND_URL") || ""}/api/checkPermissions/killOperation/${operationID}`,
+      );
+      return (await response.json()).allowed;
+    },
   });
 
   if (isError) {
@@ -77,13 +88,13 @@ const OperationDetails: React.FC<Props> = ({ label }) => {
   return (
     <Space direction="vertical" size="middle" style={{ display: "flex" }}>
       {data?.operation && <OperationStateDisplay operation={data.operation} />}
-      {data?.operation?.completed ? (
+      {data?.operation?.completed && (
         <ExecuteResponseDisplay executeResponse={data.operation.completed} />
-      ) : (
+      )}
+      {!data?.operation?.completed && (
         <Button
-          variant="filled"
-          color="red"
           danger
+          disabled={allowedToKillOperation === false}
           onClick={() => killOperationMutation.mutate()}
         >
           Kill operation

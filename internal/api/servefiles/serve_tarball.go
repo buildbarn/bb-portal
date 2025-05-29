@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	remoteexecution "github.com/bazelbuild/remote-apis/build/bazel/remote/execution/v2"
+	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	"github.com/buildbarn/bb-storage/pkg/filesystem/path"
 	"google.golang.org/grpc/codes"
@@ -164,7 +165,7 @@ func (s FileServerService) HandleDirectory(w http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	ctx := extractContextFromRequest(req)
+	ctx := common.ExtractContextFromRequest(req)
 	directoryMessage, err := s.contentAddressableStorage.Get(ctx, directoryDigest).ToProto(&remoteexecution.Directory{}, s.maximumMessageSizeBytes)
 	if err != nil {
 		http.Error(w, "Digest not found", http.StatusNotFound)

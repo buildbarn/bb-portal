@@ -4,13 +4,17 @@ import (
 	"context"
 	"io"
 	"log"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 
 	"github.com/buildbarn/bb-portal/internal/mock"
+	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 
 	"github.com/buildbarn/bb-remote-execution/pkg/proto/buildqueuestate"
 	"github.com/buildbarn/bb-storage/pkg/auth"
+	"github.com/buildbarn/bb-storage/pkg/digest"
 	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/auth"
 	"github.com/jmespath/go-jmespath"
 	"go.uber.org/mock/gomock"
@@ -517,8 +521,11 @@ func TestListOperations(t *testing.T) {
 	instanceNameAuthorizer := auth.NewJMESPathExpressionAuthorizer(
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
 	)
+	killOperationsAuthorizer := auth.NewJMESPathExpressionAuthorizer(
+		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
+	)
 
-	bqsServer := NewBuildQueueStateServerImpl(bqsClient, instanceNameAuthorizer, 2)
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, instanceNameAuthorizer, killOperationsAuthorizer, 2)
 
 	operations := []*buildqueuestate.OperationState{
 		{
@@ -812,5 +819,175 @@ func TestListOperations(t *testing.T) {
 		require.Equal(t, operations[1:4], resp.Operations)
 		require.Equal(t, uint32(1), resp.PaginationInfo.StartIndex)
 		require.Equal(t, uint32(5), resp.PaginationInfo.TotalEntries)
+	})
+}
+
+func TestIsAllowedToKillOperation(t *testing.T) {
+	ctrl, ctx := gomock.WithContext(auth.NewContextWithAuthenticationMetadata(context.Background(), auth.MustNewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
+		Private: structpb.NewStructValue(&structpb.Struct{
+			Fields: map[string]*structpb.Value{
+				"permittedInstanceNames": structpb.NewListValue(&structpb.ListValue{
+					Values: []*structpb.Value{
+						structpb.NewStringValue("allowed"),
+					},
+				}),
+			},
+		}),
+	})), t)
+	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
+	instanceNameAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })
+	killOperationsAuthorizer := auth.NewJMESPathExpressionAuthorizer(
+		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName)"),
+	)
+
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, instanceNameAuthorizer, killOperationsAuthorizer, 2)
+
+	t.Run("EmptyOperationName", func(t *testing.T) {
+		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(nil, status.Errorf(codes.NotFound, "Operation was not found"))
+		result := bqsServer.IsAllowedToKillOperation(ctx, "")
+		require.False(t, result)
+	})
+
+	t.Run("OperationNotFound", func(t *testing.T) {
+		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(nil, status.Errorf(codes.NotFound, "Operation was not found"))
+		result := bqsServer.IsAllowedToKillOperation(ctx, "not found")
+		require.False(t, result)
+	})
+
+	t.Run("OperationFoundButNotAllowedByAuthorizer", func(t *testing.T) {
+		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(&buildqueuestate.GetOperationResponse{
+			Operation: &buildqueuestate.OperationState{
+				Name: "op1",
+				InvocationName: &buildqueuestate.InvocationName{
+					SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+						PlatformQueueName: &buildqueuestate.PlatformQueueName{
+							InstanceNamePrefix: "forbidden",
+						},
+					},
+				},
+			},
+		}, nil)
+		result := bqsServer.IsAllowedToKillOperation(ctx, "op1")
+		require.False(t, result)
+	})
+
+	t.Run("OperationFoundButNotAllowedByAuthorizer", func(t *testing.T) {
+		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(&buildqueuestate.GetOperationResponse{
+			Operation: &buildqueuestate.OperationState{
+				Name: "op1",
+				InvocationName: &buildqueuestate.InvocationName{
+					SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+						PlatformQueueName: &buildqueuestate.PlatformQueueName{
+							InstanceNamePrefix: "allowed",
+						},
+					},
+				},
+			},
+		}, nil)
+		result := bqsServer.IsAllowedToKillOperation(ctx, "op1")
+		require.True(t, result)
+	})
+}
+
+func TestCheckKillOperationAuthorization(t *testing.T) {
+	ctrl, ctx := gomock.WithContext(auth.NewContextWithAuthenticationMetadata(context.Background(), auth.MustNewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
+		Private: structpb.NewStructValue(&structpb.Struct{
+			Fields: map[string]*structpb.Value{
+				"permittedInstanceNames": structpb.NewListValue(&structpb.ListValue{
+					Values: []*structpb.Value{
+						structpb.NewStringValue("allowed"),
+					},
+				}),
+			},
+		}),
+	})), t)
+
+	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
+	instanceNameAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })
+	killOperationsAuthorizer := auth.NewJMESPathExpressionAuthorizer(
+		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName)"),
+	)
+
+	bqsServer := NewBuildQueueStateServerImpl(bqsClient, instanceNameAuthorizer, killOperationsAuthorizer, 2)
+
+	t.Run("MethodNotAllowed", func(t *testing.T) {
+		req, err := http.NewRequest("POST", "/api/checkPermissions/killOperation/op1", nil)
+		require.NoError(t, err)
+
+		rr := httptest.NewRecorder()
+		bqsServer.CheckKillOperationAuthorization(rr, req)
+
+		require.Equal(t, http.StatusMethodNotAllowed, rr.Code)
+		require.Equal(t, "Method not allowed\n", rr.Body.String())
+	})
+
+	t.Run("AllowedToKillOperation", func(t *testing.T) {
+		req, err := http.NewRequest("GET", "/api/checkPermissions/killOperation/op1", nil)
+		require.NoError(t, err)
+
+		req = req.WithContext(ctx)
+		req = mux.SetURLVars(req, map[string]string{"operationName": "op1"})
+
+		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(&buildqueuestate.GetOperationResponse{
+			Operation: &buildqueuestate.OperationState{
+				Name: "op1",
+				InvocationName: &buildqueuestate.InvocationName{
+					SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+						PlatformQueueName: &buildqueuestate.PlatformQueueName{
+							InstanceNamePrefix: "allowed",
+						},
+					},
+				},
+			},
+		}, nil)
+
+		rr := httptest.NewRecorder()
+		bqsServer.CheckKillOperationAuthorization(rr, req)
+
+		require.Equal(t, http.StatusOK, rr.Code)
+		require.JSONEq(t, `{"allowed": true}`, rr.Body.String())
+	})
+
+	t.Run("NotAllowedToKillOperation", func(t *testing.T) {
+		req, err := http.NewRequest("GET", "/api/checkPermissions/killOperation/op2", nil)
+		require.NoError(t, err)
+
+		req = req.WithContext(ctx)
+		req = mux.SetURLVars(req, map[string]string{"operationName": "op2"})
+
+		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(&buildqueuestate.GetOperationResponse{
+			Operation: &buildqueuestate.OperationState{
+				Name: "op2",
+				InvocationName: &buildqueuestate.InvocationName{
+					SizeClassQueueName: &buildqueuestate.SizeClassQueueName{
+						PlatformQueueName: &buildqueuestate.PlatformQueueName{
+							InstanceNamePrefix: "forbidden",
+						},
+					},
+				},
+			},
+		}, nil)
+
+		rr := httptest.NewRecorder()
+		bqsServer.CheckKillOperationAuthorization(rr, req)
+
+		require.Equal(t, http.StatusOK, rr.Code)
+		require.JSONEq(t, `{"allowed": false}`, rr.Body.String())
+	})
+
+	t.Run("OperationNotFound", func(t *testing.T) {
+		req, err := http.NewRequest("GET", "/api/checkPermissions/killOperation/op3", nil)
+		require.NoError(t, err)
+
+		req = req.WithContext(ctx)
+		req = mux.SetURLVars(req, map[string]string{"operationName": "op3"})
+
+		bqsClient.EXPECT().GetOperation(gomock.Any(), gomock.Any()).Return(nil, status.Errorf(codes.NotFound, "Operation was not found"))
+
+		rr := httptest.NewRecorder()
+		bqsServer.CheckKillOperationAuthorization(rr, req)
+
+		require.Equal(t, http.StatusOK, rr.Code)
+		require.JSONEq(t, `{"allowed": false}`, rr.Body.String())
 	})
 }
