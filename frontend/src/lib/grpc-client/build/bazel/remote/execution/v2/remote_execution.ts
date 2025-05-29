@@ -2064,6 +2064,18 @@ export interface CacheCapabilities {
    * requests.
    */
   supportedBatchUpdateCompressors: Compressor_Value[];
+  /**
+   * The maximum blob size that the server will accept for CAS blob uploads.
+   * - If it is 0, it means there is no limit set. A client may assume
+   *   arbitrarily large blobs may be uploaded to and downloaded from the cache.
+   * - If it is larger than 0, implementations SHOULD NOT attempt to upload
+   *   blobs with size larger than the limit. Servers SHOULD reject blob
+   *   uploads over the `max_cas_blob_size_bytes` limit with response code
+   *   `INVALID_ARGUMENT`
+   * - If the cache implementation returns a given limit, it MAY still serve
+   *   blobs larger than this limit.
+   */
+  maxCasBlobSizeBytes: string;
 }
 
 /** Capabilities of the remote execution system. */
@@ -7025,6 +7037,7 @@ function createBaseCacheCapabilities(): CacheCapabilities {
     symlinkAbsolutePathStrategy: 0,
     supportedCompressors: [],
     supportedBatchUpdateCompressors: [],
+    maxCasBlobSizeBytes: "0",
   };
 }
 
@@ -7057,6 +7070,9 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
       writer.int32(v);
     }
     writer.join();
+    if (message.maxCasBlobSizeBytes !== "0") {
+      writer.uint32(64).int64(message.maxCasBlobSizeBytes);
+    }
     return writer;
   },
 
@@ -7153,6 +7169,14 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
 
           break;
         }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.maxCasBlobSizeBytes = reader.int64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7185,6 +7209,7 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
       supportedBatchUpdateCompressors: globalThis.Array.isArray(object?.supportedBatchUpdateCompressors)
         ? object.supportedBatchUpdateCompressors.map((e: any) => compressor_ValueFromJSON(e))
         : [],
+      maxCasBlobSizeBytes: isSet(object.maxCasBlobSizeBytes) ? globalThis.String(object.maxCasBlobSizeBytes) : "0",
     };
   },
 
@@ -7213,6 +7238,9 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
         compressor_ValueToJSON(e)
       );
     }
+    if (message.maxCasBlobSizeBytes !== "0") {
+      obj.maxCasBlobSizeBytes = message.maxCasBlobSizeBytes;
+    }
     return obj;
   },
 
@@ -7234,6 +7262,7 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
     message.symlinkAbsolutePathStrategy = object.symlinkAbsolutePathStrategy ?? 0;
     message.supportedCompressors = object.supportedCompressors?.map((e) => e) || [];
     message.supportedBatchUpdateCompressors = object.supportedBatchUpdateCompressors?.map((e) => e) || [];
+    message.maxCasBlobSizeBytes = object.maxCasBlobSizeBytes ?? "0";
     return message;
   },
 };
@@ -8563,6 +8592,15 @@ export interface ActionCacheClient<CallOptionsExt = {}> {
  * Servers MUST be able to provide data for all recently advertised blobs in
  * each of the compression formats that the server supports, as well as in
  * uncompressed form.
+ *
+ * Additionally, ByteStream requests MAY come with an additional plain text header
+ * that indicates the `resource_name` of the blob being sent.  The header, if
+ * present, MUST follow the following convention:
+ * * name: `build.bazel.remote.execution.v2.resource-name`.
+ * * contents: the plain text resource_name of the request message.
+ * If set, the contents of the header MUST match the `resource_name` of the request
+ * message.  Servers MAY use this header to assist in routing requests to the
+ * appropriate backend.
  *
  * The lifetime of entries in the CAS is implementation specific, but it SHOULD
  * be long enough to allow for newly-added and recently looked-up entries to be

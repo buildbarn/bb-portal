@@ -325,6 +325,15 @@ service ActionCache {
 // each of the compression formats that the server supports, as well as in
 // uncompressed form.
 //
+// Additionally, ByteStream requests MAY come with an additional plain text header
+// that indicates the `resource_name` of the blob being sent.  The header, if
+// present, MUST follow the following convention:
+// * name: `build.bazel.remote.execution.v2.resource-name`.
+// * contents: the plain text resource_name of the request message.
+// If set, the contents of the header MUST match the `resource_name` of the request
+// message.  Servers MAY use this header to assist in routing requests to the
+// appropriate backend.
+//
 // The lifetime of entries in the CAS is implementation specific, but it SHOULD
 // be long enough to allow for newly-added and recently looked-up entries to be
 // used in subsequent calls (e.g. to
@@ -2056,6 +2065,17 @@ message CacheCapabilities {
   // [BatchUpdateBlobs][build.bazel.remote.execution.v2.ContentAddressableStorage.BatchUpdateBlobs]
   // requests.
   repeated Compressor.Value supported_batch_update_compressors = 7;
+
+  // The maximum blob size that the server will accept for CAS blob uploads.
+  // - If it is 0, it means there is no limit set. A client may assume
+  //   arbitrarily large blobs may be uploaded to and downloaded from the cache.
+  // - If it is larger than 0, implementations SHOULD NOT attempt to upload
+  //   blobs with size larger than the limit. Servers SHOULD reject blob
+  //   uploads over the `max_cas_blob_size_bytes` limit with response code
+  //   `INVALID_ARGUMENT`
+  // - If the cache implementation returns a given limit, it MAY still serve
+  //   blobs larger than this limit.
+  int64 max_cas_blob_size_bytes = 8;
 }
 
 // Capabilities of the remote execution system.
