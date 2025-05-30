@@ -7,10 +7,11 @@ import styles from '@/components/AppBar/index.module.css';
 import { SIDER_BAR_MINIMUM_SCREEN_WIDTH } from '@/components/Content';
 import FooterBar from '@/components/FooterBar';
 import { getItem } from '@/components/Utilities/navigation';
+import { FeatureType, isFeatureEnabled } from '@/utils/isFeatureEnabled';
 import useScreenSize from '@/utils/screen';
 import { MenuOutlined } from '@ant-design/icons';
-import { Button, Divider, Drawer, Input, Layout } from 'antd';
-import type { ItemType } from 'antd/lib/menu/hooks/useItems';
+import { Button, Divider, Drawer, Layout } from 'antd';
+import type { ItemType } from 'antd/lib/menu/interface';
 import type React from 'react';
 import { createContext, useEffect, useState } from 'react';
 
@@ -19,18 +20,30 @@ export const SetExtraAppBarMenuItemsContext = createContext<
 >(undefined);
 
 const APP_BAR_MENU_ITEMS: ItemType[] = [
-  getItem({ depth: 0, href: '/builds', title: 'Builds' }),
-  getItem({ depth: 0, href: '/bazel-invocations', title: 'Invocations' }),
-  getItem({ depth: 0, href: '/trends', title: 'Trends' }),
-  getItem({ depth: 0, href: '/tests', title: 'Tests' }),
-  getItem({ depth: 0, href: '/targets', title: 'Targets' }),
-  getItem({ depth: 0, href: '/browser', title: 'Browser' }),
-  getItem({
-    depth: 0,
-    href: '/scheduler',
-    title: 'Scheduler',
-    children: [getItem({ depth: 0, href: '/operations', title: 'Operations' })],
-  }),
+  ...(isFeatureEnabled(FeatureType.BES)
+    ? [
+        getItem({ depth: 0, href: '/builds', title: 'Builds' }),
+        getItem({ depth: 0, href: '/bazel-invocations', title: 'Invocations' }),
+        getItem({ depth: 0, href: '/trends', title: 'Trends' }),
+        getItem({ depth: 0, href: '/tests', title: 'Tests' }),
+        getItem({ depth: 0, href: '/targets', title: 'Targets' }),
+      ]
+    : []),
+  ...(isFeatureEnabled(FeatureType.BROWSER)
+    ? [getItem({ depth: 0, href: '/browser', title: 'Browser' })]
+    : []),
+  ...(isFeatureEnabled(FeatureType.SCHEDULER)
+    ? [
+        getItem({
+          depth: 0,
+          href: '/scheduler',
+          title: 'Scheduler',
+          children: [
+            getItem({ depth: 0, href: '/operations', title: 'Operations' }),
+          ],
+        }),
+      ]
+    : []),
 ];
 
 type Props = {
@@ -45,50 +58,36 @@ const AppBar: React.FC<Props> = ({
   extraMenuItems,
 }) => {
   const screenSize = useScreenSize();
-  const showSiderBar = screenSize.width > SIDER_BAR_MINIMUM_SCREEN_WIDTH;
-
+  const showHeaderMenu = screenSize.width > SIDER_BAR_MINIMUM_SCREEN_WIDTH;
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const showDrawer = () => {
-    setIsDrawerOpen(true);
-  };
+
   useEffect(() => {
-    setIsDrawerOpen(false);
-  }, []);
-  useEffect(() => {
-    if (showSiderBar) {
+    if (showHeaderMenu) {
       setIsDrawerOpen(false);
     }
-  }, [showSiderBar]);
+  }, [showHeaderMenu]);
 
   return (
-    <div>
+    <>
       <Layout.Header className={styles.header}>
-        <div className={styles.appBar}>
-          <AppBarTitle />
-          {showSiderBar ? (
-            <>
-              <div className={styles.appBarMenuContainer}>
-                <AppBarMenu
-                  mode="horizontal"
-                  items={APP_BAR_MENU_ITEMS}
-                  className={styles.appBarMenu}
-                />
-              </div>
-              <div className={styles.buttons}>
-                <AppBarButtons
-                  toggleTheme={toggleTheme}
-                  prefersDark={prefersDark}
-                />
-              </div>
-            </>
-          ) : (
-            <div className={styles.menuButton}>
-              <Button type="text" onClick={showDrawer}>
-                <MenuOutlined />
-              </Button>
-            </div>
-          )}
-        </div>
+        <AppBarTitle />
+        {showHeaderMenu ? (
+          <>
+            <AppBarMenu mode="horizontal" items={APP_BAR_MENU_ITEMS} />
+            <AppBarButtons
+              toggleTheme={toggleTheme}
+              prefersDark={prefersDark}
+            />
+          </>
+        ) : (
+          <Button
+            type="text"
+            onClick={() => setIsDrawerOpen(true)}
+            className={styles.menuButton}
+          >
+            <MenuOutlined />
+          </Button>
+        )}
       </Layout.Header>
       <Drawer
         placement="right"
@@ -117,7 +116,7 @@ const AppBar: React.FC<Props> = ({
         ) : null}
         <AppBarButtons toggleTheme={toggleTheme} prefersDark={prefersDark} />
       </Drawer>
-    </div>
+    </>
   );
 };
 

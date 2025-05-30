@@ -7,6 +7,7 @@ import BrowserPreviousExecutionsPage from "@/components/BrowserPreviousExecution
 import Content from "@/components/Content";
 import PortalCard from "@/components/PortalCard";
 import { BrowserPageType } from "@/types/BrowserPageType";
+import { FeatureType, isFeatureEnabled } from "@/utils/isFeatureEnabled";
 import { parseBrowserPageSlug } from "@/utils/parseBrowserPageSlug";
 import {
   CalculatorOutlined,
@@ -26,6 +27,9 @@ interface PageParams {
 }
 
 const Page: React.FC<PageParams> = ({ params }) => {
+  if (!isFeatureEnabled(FeatureType.BROWSER)) {
+    return notFound();
+  }
   const browserPageParams = parseBrowserPageSlug(params.slug);
 
   if (browserPageParams === undefined) {

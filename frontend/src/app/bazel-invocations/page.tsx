@@ -6,8 +6,13 @@ import useScreenSize from '@/utils/screen';
 import PortalCard from '@/components/PortalCard';
 import { BuildFilled } from '@ant-design/icons';
 import BazelInvocationsTable from "@/components/BazelInvocationsTable";
+import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
+import { notFound } from 'next/navigation';
 
 const Page: React.FC = () => {
+  if (!isFeatureEnabled(FeatureType.BES)) {
+    return notFound();
+  }
   const screenSize = useScreenSize();
   return (
     <Content

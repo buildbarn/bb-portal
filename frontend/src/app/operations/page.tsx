@@ -3,12 +3,16 @@
 import Content from "@/components/Content";
 import OperationsGrid from "@/components/OperationsGrid";
 import PortalCard from "@/components/PortalCard";
-import useScreenSize from "@/utils/screen";
+import { FeatureType, isFeatureEnabled } from "@/utils/isFeatureEnabled";
 import { CodeFilled } from "@ant-design/icons";
+import { notFound } from "next/navigation";
 import type React from "react";
 
 const Page: React.FC = () => {
-  const screenSize = useScreenSize();
+  if (!isFeatureEnabled(FeatureType.SCHEDULER)) {
+    return notFound();
+  }
+
   return (
     <Content
       content={

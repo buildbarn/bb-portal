@@ -10,65 +10,54 @@
   frontendProxyUrl: 'http://localhost:3000',
   allowedOrigins: ['http://localhost:3000'],
 
-  serveFilesCasConfiguration: {
-    grpc: { address: 'localhost:8980' },
-  },
-  maximumMessageSizeBytes: 2 * 1024 * 1024,
-
   httpServers: [{
     listenAddresses: [':8081'],
-    authenticationPolicy: {
-      allow: {
-        public: {
-          user: 'FooBar',
-        },
-        private: {
-          groups: ['admin'],
-          instances: ['fuse', 'testingQueue'],
-          email: 'foo@example.com',
-        },
-      },
-    },
-  }],
-  grpcServers: [{
-    listenAddresses: [':8082'],
     authenticationPolicy: { allow: {} },
-    maximumReceivedMessageSizeBytes: 10 * 1024 * 1024,
   }],
 
   instanceNameAuthorizer: {
-    jmespathExpression: |||
-      contains(authenticationMetadata.private.instances, instanceName)
-      || instanceName == ''
-    |||,
+    allow: {},
   },
 
-  killOperationsAuthorizer: {
-    jmespathExpression: |||
-      contains(authenticationMetadata.private.instances, instanceName)
-      || instanceName == ''
-    |||,
+  maximumMessageSizeBytes: 2 * 1024 * 1024,
+
+  besServiceConfiguration: {
+    grpcServers: [{
+      listenAddresses: [':8082'],
+      authenticationPolicy: { allow: {} },
+      maximumReceivedMessageSizeBytes: 10 * 1024 * 1024,
+    }],
   },
 
-  buildQueueStateClient: {
-    address: 'localhost:8984',
+  browserServiceConfiguration: {
+    actionCacheClient: {
+      address: 'localhost:8980',
+    },
+
+    contentAddressableStorageClient: {
+      address: 'localhost:8980',
+    },
+
+    initialSizeClassCacheClient: {
+      address: 'localhost:8980',
+    },
+
+    fileSystemAccessCacheClient: {
+      address: 'localhost:8980',
+    },
+    serveFilesCasConfiguration: {
+      grpc: { address: 'localhost:8980' },
+    },
   },
 
-  actionCacheClient: {
-    address: 'localhost:8980',
+  schedulerServiceConfiguration: {
+    buildQueueStateClient: {
+      address: 'localhost:8984',
+    },
+    killOperationsAuthorizer: {
+      allow: {},
+    },
+    listOperationsPageSize: 500,
   },
 
-  contentAddressableStorageClient: {
-    address: 'localhost:8980',
-  },
-
-  initialSizeClassCacheClient: {
-    address: 'localhost:8980',
-  },
-
-  fileSystemAccessCacheClient: {
-    address: 'localhost:8980',
-  },
-
-  listOperationsPageSize: 500,
 }

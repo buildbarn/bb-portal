@@ -11,7 +11,6 @@ import (
 	"net/url"
 	"os"
 	"slices"
-	"strings"
 	"time"
 
 	_ "net/http/pprof"
@@ -34,8 +33,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
 	"github.com/buildbarn/bb-portal/internal/api"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
-	"github.com/buildbarn/bb-portal/internal/api/grpcweb/buildqueuestateproxy"
-	"github.com/buildbarn/bb-portal/internal/api/servefiles"
 	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
@@ -92,69 +89,33 @@ func main() {
 			return util.StatusWrap(err, "Failed to apply global configuration options")
 		}
 
-		var dbClient *ent.Client
-
-		if *dsDriver == "pgx" {
-			db, err := sql.Open("pgx", *dsURL)
-			if err != nil {
-				fatal("Failed to open pgx database", "err", err)
-			}
-			drv := entsql.OpenDB(dialect.Postgres, db)
-			dbClient = ent.NewClient(ent.Driver(drv))
-		} else {
-			dbClient, err = ent.Open(
-				*dsDriver,
-				*dsURL,
-			)
-		}
-
-		if err != nil {
-			return util.StatusWrapf(err, "Failed to open ent client")
-		}
-
-		if *dsDriver == "pgx" {
-			if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
-				return util.StatusWrapf(err, "Failed to run schema migration")
-			}
-		} else {
-			if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
-				return util.StatusWrapf(err, "Failed to run schema migration")
-			}
-		}
-
-		blobArchiver := processing.NewBlobMultiArchiver()
-		configureBlobArchiving(blobArchiver, *blobArchiveFolder)
-
-		// Create new watcher.
-		watcher, err := fsnotify.NewWatcher()
-		if err != nil {
-			return util.StatusWrapf(err, "Failed to create fsnotify.Watcher")
-		}
-		defer watcher.Close()
-		runWatcher(watcher, dbClient, *bepFolder, blobArchiver)
-
-		serveFileService := servefiles.NewFileServerServiceFromConfiguration(dependenciesGroup, &configuration, grpcClientFactory)
-		grpcwebProxyService, buildQueueStateServer, _ := StartGrpcWebProxyServer(&configuration, siblingsGroup, grpcClientFactory)
-
 		router := mux.NewRouter()
-		newPortalService(&configuration, blobArchiver, dbClient, serveFileService, grpcwebProxyService, buildQueueStateServer, router)
+
+		err = NewGrpcWebSchedulerService(&configuration, siblingsGroup, grpcClientFactory, router)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to create gRPC-Web Scheduler service")
+		}
+		err = NewGrpcWebBrowserService(&configuration, siblingsGroup, dependenciesGroup, grpcClientFactory, router)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to create gRPC-Web Browser service")
+		}
+		err = newBuildEventStreamService(&configuration, siblingsGroup, grpcClientFactory, router)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to create BES service")
+		}
+		// This must be the last service created for the router, as it will
+		// handle all unmatched requests.
+		err = newFrontendProxyService(&configuration, router)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to create frontend proxy service")
+		}
+
 		bb_http.NewServersFromConfigurationAndServe(
 			configuration.HttpServers,
-			bb_http.NewMetricsHandler(configureCors(configuration.AllowedOrigins, router), "PortalUI"),
+			bb_http.NewMetricsHandler(allowCorsWrapper(configuration.AllowedOrigins, router), "PortalUI"),
 			siblingsGroup,
 			grpcClientFactory,
 		)
-
-		if err := bb_grpc.NewServersFromConfigurationAndServe(
-			configuration.GrpcServers,
-			func(s go_grpc.ServiceRegistrar) {
-				build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), bes.NewBuildEventServer(dbClient, blobArchiver))
-			},
-			siblingsGroup,
-			grpcClientFactory,
-		); err != nil {
-			return util.StatusWrap(err, "gRPC server failure")
-		}
 
 		lifecycleState.MarkReadyAndWait(siblingsGroup)
 		return nil
@@ -218,49 +179,95 @@ func fatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func newPortalService(configuration *bb_portal.ApplicationConfiguration, archiver processing.BlobMultiArchiver, dbClient *ent.Client, serveFilesService *servefiles.FileServerService, grpcwebProxyService http.Handler, buildQueueStateServer *buildqueuestateproxy.BuildQueueStateServerImpl, router *mux.Router) {
+func newBuildEventStreamService(configuration *bb_portal.ApplicationConfiguration, siblingsGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, router *mux.Router) error {
+	besConfiguration := configuration.BesServiceConfiguration
+	if besConfiguration == nil {
+		log.Printf("Did not start BuildEventStream service because buildEventStreamConfiguration is not configured")
+		return nil
+	}
+
+	var dbClient *ent.Client
+	var err error
+
+	if *dsDriver == "pgx" {
+		db, err := sql.Open("pgx", *dsURL)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to open pgx database")
+		}
+		drv := entsql.OpenDB(dialect.Postgres, db)
+		dbClient = ent.NewClient(ent.Driver(drv))
+	} else {
+		dbClient, err = ent.Open(
+			*dsDriver,
+			*dsURL,
+		)
+	}
+
+	if err != nil {
+		return util.StatusWrap(err, "Failed to open ent client")
+	}
+
+	if *dsDriver == "pgx" {
+		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
+			return util.StatusWrap(err, "Failed to run schema migration")
+		}
+	} else {
+		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
+			return util.StatusWrap(err, "Failed to run schema migration")
+		}
+	}
+
+	blobArchiver := processing.NewBlobMultiArchiver()
+	configureBlobArchiving(blobArchiver, *blobArchiveFolder)
+
+	// Create new watcher.
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		return util.StatusWrap(err, "Failed to create fsnotify.Watcher")
+	}
+	defer watcher.Close()
+	runWatcher(watcher, dbClient, *bepFolder, blobArchiver)
+
 	srv := handler.NewDefaultServer(graphql.NewSchema(dbClient))
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})
 
 	router.PathPrefix("/graphql").Handler(srv)
 	router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
-	router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, archiver)).Methods("POST")
+	router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, blobArchiver)).Methods("POST")
 
-	// Proxy for grpc-web requests
-	if grpcwebProxyService != nil {
-		router.MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
-			return strings.HasPrefix(r.URL.Path, "/google.bytestream.ByteStream/") ||
-				strings.HasPrefix(r.URL.Path, "/buildbarn.iscc.InitialSizeClassCache/") ||
-				strings.HasPrefix(r.URL.Path, "/buildbarn.fsac.FileSystemAccessCache/") ||
-				strings.HasPrefix(r.URL.Path, "/buildbarn.buildqueuestate.BuildQueueState/") ||
-				strings.HasPrefix(r.URL.Path, "/build.bazel.remote.execution.v2.ActionCache/")
-		}).Handler(grpcwebProxyService)
-
-		router.HandleFunc("/api/checkPermissions/killOperation/{operationName}", buildQueueStateServer.CheckKillOperationAuthorization).Methods("GET")
+	if err := bb_grpc.NewServersFromConfigurationAndServe(
+		besConfiguration.GrpcServers,
+		func(s go_grpc.ServiceRegistrar) {
+			build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), bes.NewBuildEventServer(dbClient, blobArchiver))
+		},
+		siblingsGroup,
+		grpcClientFactory,
+	); err != nil {
+		return util.StatusWrap(err, "gRPC server failure")
 	}
 
-	if serveFilesService != nil {
-		router.HandleFunc("/api/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/file/{hash}-{sizeBytes}/{name}", serveFilesService.HandleFile).Methods("GET")
-		router.HandleFunc("/api/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/command/{hash}-{sizeBytes}/", serveFilesService.HandleCommand).Methods("GET")
-		router.HandleFunc("/api/servefile/{instanceName:(?:.*?/)?}blobs/{digestFunction}/directory/{hash}-{sizeBytes}/", serveFilesService.HandleDirectory).Methods("GET")
-	}
-	if configuration.FrontendProxyUrl != "" {
-		router.PathPrefix("/").Handler(frontendServer(configuration.FrontendProxyUrl))
-	}
+	return nil
 }
 
-func frontendServer(proxyURL string) http.Handler {
-	remote, err := url.Parse(proxyURL)
-	if err != nil {
-		log.Fatalf("Could not parse proxy URL: %v", err)
+func newFrontendProxyService(configuration *bb_portal.ApplicationConfiguration, router *mux.Router) error {
+	if configuration.FrontendProxyUrl == "" {
+		log.Println("No frontend proxy URL specified, skipping proxying")
+		return nil
 	}
+	remote, err := url.Parse(configuration.FrontendProxyUrl)
+	if err != nil {
+		return util.StatusWrapf(err, "Failed to parse frontend proxy URL")
+	}
+
+	// Return 404 for all API requests not already handled.
+	router.PathPrefix("/api/").Handler(router.NotFoundHandler)
 
 	log.Println("Proxying frontend to", remote)
-
-	return httputil.NewSingleHostReverseProxy(remote)
+	router.PathPrefix("/").Handler(httputil.NewSingleHostReverseProxy(remote))
+	return nil
 }
 
-func configureCors(allowedOrigins []string, httpHandler http.Handler) http.Handler {
+func allowCorsWrapper(allowedOrigins []string, httpHandler http.Handler) http.Handler {
 	if allowedOrigins == nil {
 		log.Println("No allowed origins specified, CORS disabled")
 		return httpHandler
