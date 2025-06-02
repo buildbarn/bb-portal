@@ -42,6 +42,7 @@
         "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
       ]
     },
+    "InstanceName": "",
     "Problems": [
       {
         "DetectedBlobs": null,

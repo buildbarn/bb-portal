@@ -25,6 +25,8 @@ const (
 	FieldReason = "reason"
 	// FieldArchiveURL holds the string denoting the archive_url field in the database.
 	FieldArchiveURL = "archive_url"
+	// FieldInstanceName holds the string denoting the instance_name field in the database.
+	FieldInstanceName = "instance_name"
 	// Table holds the table name of the blob in the database.
 	Table = "blobs"
 )
@@ -37,6 +39,7 @@ var Columns = []string{
 	FieldArchivingStatus,
 	FieldReason,
 	FieldArchiveURL,
+	FieldInstanceName,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -48,6 +51,11 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultInstanceName holds the default value on creation for the "instance_name" field.
+	DefaultInstanceName string
+)
 
 // ArchivingStatus defines the type for the "archiving_status" enum field.
 type ArchivingStatus string
@@ -109,6 +117,11 @@ func ByReason(opts ...sql.OrderTermOption) OrderOption {
 // ByArchiveURL orders the results by the archive_url field.
 func ByArchiveURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldArchiveURL, opts...).ToFunc()
+}
+
+// ByInstanceName orders the results by the instance_name field.
+func ByInstanceName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldInstanceName, opts...).ToFunc()
 }
 
 // MarshalGQL implements graphql.Marshaler interface.

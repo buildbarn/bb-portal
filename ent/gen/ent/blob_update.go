@@ -108,6 +108,20 @@ func (bu *BlobUpdate) ClearArchiveURL() *BlobUpdate {
 	return bu
 }
 
+// SetInstanceName sets the "instance_name" field.
+func (bu *BlobUpdate) SetInstanceName(s string) *BlobUpdate {
+	bu.mutation.SetInstanceName(s)
+	return bu
+}
+
+// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
+func (bu *BlobUpdate) SetNillableInstanceName(s *string) *BlobUpdate {
+	if s != nil {
+		bu.SetInstanceName(*s)
+	}
+	return bu
+}
+
 // Mutation returns the BlobMutation object of the builder.
 func (bu *BlobUpdate) Mutation() *BlobMutation {
 	return bu.mutation
@@ -185,6 +199,9 @@ func (bu *BlobUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if bu.mutation.ArchiveURLCleared() {
 		_spec.ClearField(blob.FieldArchiveURL, field.TypeString)
+	}
+	if value, ok := bu.mutation.InstanceName(); ok {
+		_spec.SetField(blob.FieldInstanceName, field.TypeString, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, bu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -284,6 +301,20 @@ func (buo *BlobUpdateOne) SetNillableArchiveURL(s *string) *BlobUpdateOne {
 // ClearArchiveURL clears the value of the "archive_url" field.
 func (buo *BlobUpdateOne) ClearArchiveURL() *BlobUpdateOne {
 	buo.mutation.ClearArchiveURL()
+	return buo
+}
+
+// SetInstanceName sets the "instance_name" field.
+func (buo *BlobUpdateOne) SetInstanceName(s string) *BlobUpdateOne {
+	buo.mutation.SetInstanceName(s)
+	return buo
+}
+
+// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
+func (buo *BlobUpdateOne) SetNillableInstanceName(s *string) *BlobUpdateOne {
+	if s != nil {
+		buo.SetInstanceName(*s)
+	}
 	return buo
 }
 
@@ -394,6 +425,9 @@ func (buo *BlobUpdateOne) sqlSave(ctx context.Context) (_node *Blob, err error) 
 	}
 	if buo.mutation.ArchiveURLCleared() {
 		_spec.ClearField(blob.FieldArchiveURL, field.TypeString)
+	}
+	if value, ok := buo.mutation.InstanceName(); ok {
+		_spec.SetField(blob.FieldInstanceName, field.TypeString, value)
 	}
 	_node = &Blob{config: buo.config}
 	_spec.Assign = _node.assignValues

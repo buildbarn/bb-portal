@@ -20,6 +20,7 @@ func (Blob) Fields() []ent.Field {
 			Default("QUEUED"),
 		field.String("reason").Optional(),
 		field.String("archive_url").Optional(),
+		field.String("instance_name").Default(""),
 	}
 }
 

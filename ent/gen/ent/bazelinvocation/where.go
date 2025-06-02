@@ -141,6 +141,11 @@ func ProfileName(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldProfileName, v))
 }
 
+// InstanceName applies equality check predicate on the "instance_name" field. It's identical to InstanceNameEQ.
+func InstanceName(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldInstanceName, v))
+}
+
 // InvocationIDEQ applies the EQ predicate on the "invocation_id" field.
 func InvocationIDEQ(v uuid.UUID) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldInvocationID, v))
@@ -1114,6 +1119,81 @@ func ProfileNameEqualFold(v string) predicate.BazelInvocation {
 // ProfileNameContainsFold applies the ContainsFold predicate on the "profile_name" field.
 func ProfileNameContainsFold(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldContainsFold(FieldProfileName, v))
+}
+
+// InstanceNameEQ applies the EQ predicate on the "instance_name" field.
+func InstanceNameEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldInstanceName, v))
+}
+
+// InstanceNameNEQ applies the NEQ predicate on the "instance_name" field.
+func InstanceNameNEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldInstanceName, v))
+}
+
+// InstanceNameIn applies the In predicate on the "instance_name" field.
+func InstanceNameIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldInstanceName, vs...))
+}
+
+// InstanceNameNotIn applies the NotIn predicate on the "instance_name" field.
+func InstanceNameNotIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldInstanceName, vs...))
+}
+
+// InstanceNameGT applies the GT predicate on the "instance_name" field.
+func InstanceNameGT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGT(FieldInstanceName, v))
+}
+
+// InstanceNameGTE applies the GTE predicate on the "instance_name" field.
+func InstanceNameGTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGTE(FieldInstanceName, v))
+}
+
+// InstanceNameLT applies the LT predicate on the "instance_name" field.
+func InstanceNameLT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLT(FieldInstanceName, v))
+}
+
+// InstanceNameLTE applies the LTE predicate on the "instance_name" field.
+func InstanceNameLTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLTE(FieldInstanceName, v))
+}
+
+// InstanceNameContains applies the Contains predicate on the "instance_name" field.
+func InstanceNameContains(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContains(FieldInstanceName, v))
+}
+
+// InstanceNameHasPrefix applies the HasPrefix predicate on the "instance_name" field.
+func InstanceNameHasPrefix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldInstanceName, v))
+}
+
+// InstanceNameHasSuffix applies the HasSuffix predicate on the "instance_name" field.
+func InstanceNameHasSuffix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldInstanceName, v))
+}
+
+// InstanceNameIsNil applies the IsNil predicate on the "instance_name" field.
+func InstanceNameIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldInstanceName))
+}
+
+// InstanceNameNotNil applies the NotNil predicate on the "instance_name" field.
+func InstanceNameNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldInstanceName))
+}
+
+// InstanceNameEqualFold applies the EqualFold predicate on the "instance_name" field.
+func InstanceNameEqualFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEqualFold(FieldInstanceName, v))
+}
+
+// InstanceNameContainsFold applies the ContainsFold predicate on the "instance_name" field.
+func InstanceNameContainsFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContainsFold(FieldInstanceName, v))
 }
 
 // HasEventFile applies the HasEdge predicate on the "event_file" edge.
