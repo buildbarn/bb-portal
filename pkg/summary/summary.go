@@ -168,6 +168,7 @@ func (r AbortReason) String() string {
 // Summary The Invocation Summary object holds details about an invocation.
 type Summary struct {
 	*InvocationSummary
+	InstanceName                          string
 	Problems                              []detectors.Problem
 	RelatedFiles                          map[string]string
 	EventFileURL                          string

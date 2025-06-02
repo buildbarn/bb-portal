@@ -63,6 +63,11 @@ func newSummarizer(eventFileURL string, problemDetector detectors.ProblemDetecto
 	}
 }
 
+// SetInstanceName function
+func (s Summarizer) SetInstanceName(instanceName string) {
+	s.summary.InstanceName = instanceName
+}
+
 // summarize
 func (s Summarizer) summarize(it *events.BuildEventIterator) (*Summary, error) {
 	for {

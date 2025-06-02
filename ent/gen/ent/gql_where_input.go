@@ -1749,6 +1749,23 @@ type BazelInvocationWhereInput struct {
 	ProfileNameEqualFold    *string  `json:"profileNameEqualFold,omitempty"`
 	ProfileNameContainsFold *string  `json:"profileNameContainsFold,omitempty"`
 
+	// "instance_name" field predicates.
+	InstanceName             *string  `json:"instanceName,omitempty"`
+	InstanceNameNEQ          *string  `json:"instanceNameNEQ,omitempty"`
+	InstanceNameIn           []string `json:"instanceNameIn,omitempty"`
+	InstanceNameNotIn        []string `json:"instanceNameNotIn,omitempty"`
+	InstanceNameGT           *string  `json:"instanceNameGT,omitempty"`
+	InstanceNameGTE          *string  `json:"instanceNameGTE,omitempty"`
+	InstanceNameLT           *string  `json:"instanceNameLT,omitempty"`
+	InstanceNameLTE          *string  `json:"instanceNameLTE,omitempty"`
+	InstanceNameContains     *string  `json:"instanceNameContains,omitempty"`
+	InstanceNameHasPrefix    *string  `json:"instanceNameHasPrefix,omitempty"`
+	InstanceNameHasSuffix    *string  `json:"instanceNameHasSuffix,omitempty"`
+	InstanceNameIsNil        bool     `json:"instanceNameIsNil,omitempty"`
+	InstanceNameNotNil       bool     `json:"instanceNameNotNil,omitempty"`
+	InstanceNameEqualFold    *string  `json:"instanceNameEqualFold,omitempty"`
+	InstanceNameContainsFold *string  `json:"instanceNameContainsFold,omitempty"`
+
 	// "event_file" edge predicates.
 	HasEventFile     *bool                  `json:"hasEventFile,omitempty"`
 	HasEventFileWith []*EventFileWhereInput `json:"hasEventFileWith,omitempty"`
@@ -2458,6 +2475,51 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 	if i.ProfileNameContainsFold != nil {
 		predicates = append(predicates, bazelinvocation.ProfileNameContainsFold(*i.ProfileNameContainsFold))
 	}
+	if i.InstanceName != nil {
+		predicates = append(predicates, bazelinvocation.InstanceNameEQ(*i.InstanceName))
+	}
+	if i.InstanceNameNEQ != nil {
+		predicates = append(predicates, bazelinvocation.InstanceNameNEQ(*i.InstanceNameNEQ))
+	}
+	if len(i.InstanceNameIn) > 0 {
+		predicates = append(predicates, bazelinvocation.InstanceNameIn(i.InstanceNameIn...))
+	}
+	if len(i.InstanceNameNotIn) > 0 {
+		predicates = append(predicates, bazelinvocation.InstanceNameNotIn(i.InstanceNameNotIn...))
+	}
+	if i.InstanceNameGT != nil {
+		predicates = append(predicates, bazelinvocation.InstanceNameGT(*i.InstanceNameGT))
+	}
+	if i.InstanceNameGTE != nil {
+		predicates = append(predicates, bazelinvocation.InstanceNameGTE(*i.InstanceNameGTE))
+	}
+	if i.InstanceNameLT != nil {
+		predicates = append(predicates, bazelinvocation.InstanceNameLT(*i.InstanceNameLT))
+	}
+	if i.InstanceNameLTE != nil {
+		predicates = append(predicates, bazelinvocation.InstanceNameLTE(*i.InstanceNameLTE))
+	}
+	if i.InstanceNameContains != nil {
+		predicates = append(predicates, bazelinvocation.InstanceNameContains(*i.InstanceNameContains))
+	}
+	if i.InstanceNameHasPrefix != nil {
+		predicates = append(predicates, bazelinvocation.InstanceNameHasPrefix(*i.InstanceNameHasPrefix))
+	}
+	if i.InstanceNameHasSuffix != nil {
+		predicates = append(predicates, bazelinvocation.InstanceNameHasSuffix(*i.InstanceNameHasSuffix))
+	}
+	if i.InstanceNameIsNil {
+		predicates = append(predicates, bazelinvocation.InstanceNameIsNil())
+	}
+	if i.InstanceNameNotNil {
+		predicates = append(predicates, bazelinvocation.InstanceNameNotNil())
+	}
+	if i.InstanceNameEqualFold != nil {
+		predicates = append(predicates, bazelinvocation.InstanceNameEqualFold(*i.InstanceNameEqualFold))
+	}
+	if i.InstanceNameContainsFold != nil {
+		predicates = append(predicates, bazelinvocation.InstanceNameContainsFold(*i.InstanceNameContainsFold))
+	}
 
 	if i.HasEventFile != nil {
 		p := bazelinvocation.HasEventFile()
@@ -2932,6 +2994,21 @@ type BlobWhereInput struct {
 	ArchiveURLNotNil       bool     `json:"archiveURLNotNil,omitempty"`
 	ArchiveURLEqualFold    *string  `json:"archiveURLEqualFold,omitempty"`
 	ArchiveURLContainsFold *string  `json:"archiveURLContainsFold,omitempty"`
+
+	// "instance_name" field predicates.
+	InstanceName             *string  `json:"instanceName,omitempty"`
+	InstanceNameNEQ          *string  `json:"instanceNameNEQ,omitempty"`
+	InstanceNameIn           []string `json:"instanceNameIn,omitempty"`
+	InstanceNameNotIn        []string `json:"instanceNameNotIn,omitempty"`
+	InstanceNameGT           *string  `json:"instanceNameGT,omitempty"`
+	InstanceNameGTE          *string  `json:"instanceNameGTE,omitempty"`
+	InstanceNameLT           *string  `json:"instanceNameLT,omitempty"`
+	InstanceNameLTE          *string  `json:"instanceNameLTE,omitempty"`
+	InstanceNameContains     *string  `json:"instanceNameContains,omitempty"`
+	InstanceNameHasPrefix    *string  `json:"instanceNameHasPrefix,omitempty"`
+	InstanceNameHasSuffix    *string  `json:"instanceNameHasSuffix,omitempty"`
+	InstanceNameEqualFold    *string  `json:"instanceNameEqualFold,omitempty"`
+	InstanceNameContainsFold *string  `json:"instanceNameContainsFold,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -3199,6 +3276,45 @@ func (i *BlobWhereInput) P() (predicate.Blob, error) {
 	}
 	if i.ArchiveURLContainsFold != nil {
 		predicates = append(predicates, blob.ArchiveURLContainsFold(*i.ArchiveURLContainsFold))
+	}
+	if i.InstanceName != nil {
+		predicates = append(predicates, blob.InstanceNameEQ(*i.InstanceName))
+	}
+	if i.InstanceNameNEQ != nil {
+		predicates = append(predicates, blob.InstanceNameNEQ(*i.InstanceNameNEQ))
+	}
+	if len(i.InstanceNameIn) > 0 {
+		predicates = append(predicates, blob.InstanceNameIn(i.InstanceNameIn...))
+	}
+	if len(i.InstanceNameNotIn) > 0 {
+		predicates = append(predicates, blob.InstanceNameNotIn(i.InstanceNameNotIn...))
+	}
+	if i.InstanceNameGT != nil {
+		predicates = append(predicates, blob.InstanceNameGT(*i.InstanceNameGT))
+	}
+	if i.InstanceNameGTE != nil {
+		predicates = append(predicates, blob.InstanceNameGTE(*i.InstanceNameGTE))
+	}
+	if i.InstanceNameLT != nil {
+		predicates = append(predicates, blob.InstanceNameLT(*i.InstanceNameLT))
+	}
+	if i.InstanceNameLTE != nil {
+		predicates = append(predicates, blob.InstanceNameLTE(*i.InstanceNameLTE))
+	}
+	if i.InstanceNameContains != nil {
+		predicates = append(predicates, blob.InstanceNameContains(*i.InstanceNameContains))
+	}
+	if i.InstanceNameHasPrefix != nil {
+		predicates = append(predicates, blob.InstanceNameHasPrefix(*i.InstanceNameHasPrefix))
+	}
+	if i.InstanceNameHasSuffix != nil {
+		predicates = append(predicates, blob.InstanceNameHasSuffix(*i.InstanceNameHasSuffix))
+	}
+	if i.InstanceNameEqualFold != nil {
+		predicates = append(predicates, blob.InstanceNameEqualFold(*i.InstanceNameEqualFold))
+	}
+	if i.InstanceNameContainsFold != nil {
+		predicates = append(predicates, blob.InstanceNameContainsFold(*i.InstanceNameContainsFold))
 	}
 
 	switch len(predicates) {

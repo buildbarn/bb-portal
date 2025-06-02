@@ -81,6 +81,20 @@ func (bc *BlobCreate) SetNillableArchiveURL(s *string) *BlobCreate {
 	return bc
 }
 
+// SetInstanceName sets the "instance_name" field.
+func (bc *BlobCreate) SetInstanceName(s string) *BlobCreate {
+	bc.mutation.SetInstanceName(s)
+	return bc
+}
+
+// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
+func (bc *BlobCreate) SetNillableInstanceName(s *string) *BlobCreate {
+	if s != nil {
+		bc.SetInstanceName(*s)
+	}
+	return bc
+}
+
 // Mutation returns the BlobMutation object of the builder.
 func (bc *BlobCreate) Mutation() *BlobMutation {
 	return bc.mutation
@@ -120,6 +134,10 @@ func (bc *BlobCreate) defaults() {
 		v := blob.DefaultArchivingStatus
 		bc.mutation.SetArchivingStatus(v)
 	}
+	if _, ok := bc.mutation.InstanceName(); !ok {
+		v := blob.DefaultInstanceName
+		bc.mutation.SetInstanceName(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -134,6 +152,9 @@ func (bc *BlobCreate) check() error {
 		if err := blob.ArchivingStatusValidator(v); err != nil {
 			return &ValidationError{Name: "archiving_status", err: fmt.Errorf(`ent: validator failed for field "Blob.archiving_status": %w`, err)}
 		}
+	}
+	if _, ok := bc.mutation.InstanceName(); !ok {
+		return &ValidationError{Name: "instance_name", err: errors.New(`ent: missing required field "Blob.instance_name"`)}
 	}
 	return nil
 }
@@ -180,6 +201,10 @@ func (bc *BlobCreate) createSpec() (*Blob, *sqlgraph.CreateSpec) {
 	if value, ok := bc.mutation.ArchiveURL(); ok {
 		_spec.SetField(blob.FieldArchiveURL, field.TypeString, value)
 		_node.ArchiveURL = value
+	}
+	if value, ok := bc.mutation.InstanceName(); ok {
+		_spec.SetField(blob.FieldInstanceName, field.TypeString, value)
+		_node.InstanceName = value
 	}
 	return _node, _spec
 }

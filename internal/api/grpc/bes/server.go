@@ -143,7 +143,7 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 
 			seqNrs = append(seqNrs, req.OrderedBuildEvent.GetSequenceNumber())
 
-			if err := eventCh.HandleBuildEvent(req.OrderedBuildEvent.Event); err != nil {
+			if err := eventCh.HandleBuildEvent(req.OrderedBuildEvent.Event, req.ProjectId); err != nil {
 				slog.ErrorContext(stream.Context(), "HandleBuildEvent failed", "err", err)
 				return err
 			}
