@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -162,7 +163,7 @@ func (asq *ActionSummaryQuery) QueryActionCacheStatistics() *ActionCacheStatisti
 // First returns the first ActionSummary entity from the query.
 // Returns a *NotFoundError when no ActionSummary was found.
 func (asq *ActionSummaryQuery) First(ctx context.Context) (*ActionSummary, error) {
-	nodes, err := asq.Limit(1).All(setContextOp(ctx, asq.ctx, "First"))
+	nodes, err := asq.Limit(1).All(setContextOp(ctx, asq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +186,7 @@ func (asq *ActionSummaryQuery) FirstX(ctx context.Context) *ActionSummary {
 // Returns a *NotFoundError when no ActionSummary ID was found.
 func (asq *ActionSummaryQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = asq.Limit(1).IDs(setContextOp(ctx, asq.ctx, "FirstID")); err != nil {
+	if ids, err = asq.Limit(1).IDs(setContextOp(ctx, asq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -208,7 +209,7 @@ func (asq *ActionSummaryQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one ActionSummary entity is found.
 // Returns a *NotFoundError when no ActionSummary entities are found.
 func (asq *ActionSummaryQuery) Only(ctx context.Context) (*ActionSummary, error) {
-	nodes, err := asq.Limit(2).All(setContextOp(ctx, asq.ctx, "Only"))
+	nodes, err := asq.Limit(2).All(setContextOp(ctx, asq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -236,7 +237,7 @@ func (asq *ActionSummaryQuery) OnlyX(ctx context.Context) *ActionSummary {
 // Returns a *NotFoundError when no entities are found.
 func (asq *ActionSummaryQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = asq.Limit(2).IDs(setContextOp(ctx, asq.ctx, "OnlyID")); err != nil {
+	if ids, err = asq.Limit(2).IDs(setContextOp(ctx, asq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -261,7 +262,7 @@ func (asq *ActionSummaryQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of ActionSummaries.
 func (asq *ActionSummaryQuery) All(ctx context.Context) ([]*ActionSummary, error) {
-	ctx = setContextOp(ctx, asq.ctx, "All")
+	ctx = setContextOp(ctx, asq.ctx, ent.OpQueryAll)
 	if err := asq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -283,7 +284,7 @@ func (asq *ActionSummaryQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if asq.ctx.Unique == nil && asq.path != nil {
 		asq.Unique(true)
 	}
-	ctx = setContextOp(ctx, asq.ctx, "IDs")
+	ctx = setContextOp(ctx, asq.ctx, ent.OpQueryIDs)
 	if err = asq.Select(actionsummary.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -301,7 +302,7 @@ func (asq *ActionSummaryQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (asq *ActionSummaryQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, asq.ctx, "Count")
+	ctx = setContextOp(ctx, asq.ctx, ent.OpQueryCount)
 	if err := asq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -319,7 +320,7 @@ func (asq *ActionSummaryQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (asq *ActionSummaryQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, asq.ctx, "Exist")
+	ctx = setContextOp(ctx, asq.ctx, ent.OpQueryExist)
 	switch _, err := asq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -815,7 +816,7 @@ func (asgb *ActionSummaryGroupBy) Aggregate(fns ...AggregateFunc) *ActionSummary
 
 // Scan applies the selector query and scans the result into the given value.
 func (asgb *ActionSummaryGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, asgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, asgb.build.ctx, ent.OpQueryGroupBy)
 	if err := asgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -863,7 +864,7 @@ func (ass *ActionSummarySelect) Aggregate(fns ...AggregateFunc) *ActionSummarySe
 
 // Scan applies the selector query and scans the result into the given value.
 func (ass *ActionSummarySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ass.ctx, "Select")
+	ctx = setContextOp(ctx, ass.ctx, ent.OpQuerySelect)
 	if err := ass.prepareQuery(ctx); err != nil {
 		return err
 	}

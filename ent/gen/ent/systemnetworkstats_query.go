@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (snsq *SystemNetworkStatsQuery) QueryNetworkMetrics() *NetworkMetricsQuery 
 // First returns the first SystemNetworkStats entity from the query.
 // Returns a *NotFoundError when no SystemNetworkStats was found.
 func (snsq *SystemNetworkStatsQuery) First(ctx context.Context) (*SystemNetworkStats, error) {
-	nodes, err := snsq.Limit(1).All(setContextOp(ctx, snsq.ctx, "First"))
+	nodes, err := snsq.Limit(1).All(setContextOp(ctx, snsq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (snsq *SystemNetworkStatsQuery) FirstX(ctx context.Context) *SystemNetworkS
 // Returns a *NotFoundError when no SystemNetworkStats ID was found.
 func (snsq *SystemNetworkStatsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = snsq.Limit(1).IDs(setContextOp(ctx, snsq.ctx, "FirstID")); err != nil {
+	if ids, err = snsq.Limit(1).IDs(setContextOp(ctx, snsq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (snsq *SystemNetworkStatsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one SystemNetworkStats entity is found.
 // Returns a *NotFoundError when no SystemNetworkStats entities are found.
 func (snsq *SystemNetworkStatsQuery) Only(ctx context.Context) (*SystemNetworkStats, error) {
-	nodes, err := snsq.Limit(2).All(setContextOp(ctx, snsq.ctx, "Only"))
+	nodes, err := snsq.Limit(2).All(setContextOp(ctx, snsq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (snsq *SystemNetworkStatsQuery) OnlyX(ctx context.Context) *SystemNetworkSt
 // Returns a *NotFoundError when no entities are found.
 func (snsq *SystemNetworkStatsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = snsq.Limit(2).IDs(setContextOp(ctx, snsq.ctx, "OnlyID")); err != nil {
+	if ids, err = snsq.Limit(2).IDs(setContextOp(ctx, snsq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (snsq *SystemNetworkStatsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of SystemNetworkStatsSlice.
 func (snsq *SystemNetworkStatsQuery) All(ctx context.Context) ([]*SystemNetworkStats, error) {
-	ctx = setContextOp(ctx, snsq.ctx, "All")
+	ctx = setContextOp(ctx, snsq.ctx, ent.OpQueryAll)
 	if err := snsq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (snsq *SystemNetworkStatsQuery) IDs(ctx context.Context) (ids []int, err er
 	if snsq.ctx.Unique == nil && snsq.path != nil {
 		snsq.Unique(true)
 	}
-	ctx = setContextOp(ctx, snsq.ctx, "IDs")
+	ctx = setContextOp(ctx, snsq.ctx, ent.OpQueryIDs)
 	if err = snsq.Select(systemnetworkstats.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (snsq *SystemNetworkStatsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (snsq *SystemNetworkStatsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, snsq.ctx, "Count")
+	ctx = setContextOp(ctx, snsq.ctx, ent.OpQueryCount)
 	if err := snsq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (snsq *SystemNetworkStatsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (snsq *SystemNetworkStatsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, snsq.ctx, "Exist")
+	ctx = setContextOp(ctx, snsq.ctx, ent.OpQueryExist)
 	switch _, err := snsq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (snsgb *SystemNetworkStatsGroupBy) Aggregate(fns ...AggregateFunc) *SystemN
 
 // Scan applies the selector query and scans the result into the given value.
 func (snsgb *SystemNetworkStatsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, snsgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, snsgb.build.ctx, ent.OpQueryGroupBy)
 	if err := snsgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (snss *SystemNetworkStatsSelect) Aggregate(fns ...AggregateFunc) *SystemNet
 
 // Scan applies the selector query and scans the result into the given value.
 func (snss *SystemNetworkStatsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, snss.ctx, "Select")
+	ctx = setContextOp(ctx, snss.ctx, ent.OpQuerySelect)
 	if err := snss.prepareQuery(ctx); err != nil {
 		return err
 	}

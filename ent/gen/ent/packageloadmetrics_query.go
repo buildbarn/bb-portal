@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (plmq *PackageLoadMetricsQuery) QueryPackageMetrics() *PackageMetricsQuery 
 // First returns the first PackageLoadMetrics entity from the query.
 // Returns a *NotFoundError when no PackageLoadMetrics was found.
 func (plmq *PackageLoadMetricsQuery) First(ctx context.Context) (*PackageLoadMetrics, error) {
-	nodes, err := plmq.Limit(1).All(setContextOp(ctx, plmq.ctx, "First"))
+	nodes, err := plmq.Limit(1).All(setContextOp(ctx, plmq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (plmq *PackageLoadMetricsQuery) FirstX(ctx context.Context) *PackageLoadMet
 // Returns a *NotFoundError when no PackageLoadMetrics ID was found.
 func (plmq *PackageLoadMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = plmq.Limit(1).IDs(setContextOp(ctx, plmq.ctx, "FirstID")); err != nil {
+	if ids, err = plmq.Limit(1).IDs(setContextOp(ctx, plmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (plmq *PackageLoadMetricsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one PackageLoadMetrics entity is found.
 // Returns a *NotFoundError when no PackageLoadMetrics entities are found.
 func (plmq *PackageLoadMetricsQuery) Only(ctx context.Context) (*PackageLoadMetrics, error) {
-	nodes, err := plmq.Limit(2).All(setContextOp(ctx, plmq.ctx, "Only"))
+	nodes, err := plmq.Limit(2).All(setContextOp(ctx, plmq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (plmq *PackageLoadMetricsQuery) OnlyX(ctx context.Context) *PackageLoadMetr
 // Returns a *NotFoundError when no entities are found.
 func (plmq *PackageLoadMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = plmq.Limit(2).IDs(setContextOp(ctx, plmq.ctx, "OnlyID")); err != nil {
+	if ids, err = plmq.Limit(2).IDs(setContextOp(ctx, plmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (plmq *PackageLoadMetricsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of PackageLoadMetricsSlice.
 func (plmq *PackageLoadMetricsQuery) All(ctx context.Context) ([]*PackageLoadMetrics, error) {
-	ctx = setContextOp(ctx, plmq.ctx, "All")
+	ctx = setContextOp(ctx, plmq.ctx, ent.OpQueryAll)
 	if err := plmq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (plmq *PackageLoadMetricsQuery) IDs(ctx context.Context) (ids []int, err er
 	if plmq.ctx.Unique == nil && plmq.path != nil {
 		plmq.Unique(true)
 	}
-	ctx = setContextOp(ctx, plmq.ctx, "IDs")
+	ctx = setContextOp(ctx, plmq.ctx, ent.OpQueryIDs)
 	if err = plmq.Select(packageloadmetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (plmq *PackageLoadMetricsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (plmq *PackageLoadMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, plmq.ctx, "Count")
+	ctx = setContextOp(ctx, plmq.ctx, ent.OpQueryCount)
 	if err := plmq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (plmq *PackageLoadMetricsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (plmq *PackageLoadMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, plmq.ctx, "Exist")
+	ctx = setContextOp(ctx, plmq.ctx, ent.OpQueryExist)
 	switch _, err := plmq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (plmgb *PackageLoadMetricsGroupBy) Aggregate(fns ...AggregateFunc) *Package
 
 // Scan applies the selector query and scans the result into the given value.
 func (plmgb *PackageLoadMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, plmgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, plmgb.build.ctx, ent.OpQueryGroupBy)
 	if err := plmgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (plms *PackageLoadMetricsSelect) Aggregate(fns ...AggregateFunc) *PackageLo
 
 // Scan applies the selector query and scans the result into the given value.
 func (plms *PackageLoadMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, plms.ctx, "Select")
+	ctx = setContextOp(ctx, plms.ctx, ent.OpQuerySelect)
 	if err := plms.prepareQuery(ctx); err != nil {
 		return err
 	}

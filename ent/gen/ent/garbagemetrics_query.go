@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (gmq *GarbageMetricsQuery) QueryMemoryMetrics() *MemoryMetricsQuery {
 // First returns the first GarbageMetrics entity from the query.
 // Returns a *NotFoundError when no GarbageMetrics was found.
 func (gmq *GarbageMetricsQuery) First(ctx context.Context) (*GarbageMetrics, error) {
-	nodes, err := gmq.Limit(1).All(setContextOp(ctx, gmq.ctx, "First"))
+	nodes, err := gmq.Limit(1).All(setContextOp(ctx, gmq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (gmq *GarbageMetricsQuery) FirstX(ctx context.Context) *GarbageMetrics {
 // Returns a *NotFoundError when no GarbageMetrics ID was found.
 func (gmq *GarbageMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = gmq.Limit(1).IDs(setContextOp(ctx, gmq.ctx, "FirstID")); err != nil {
+	if ids, err = gmq.Limit(1).IDs(setContextOp(ctx, gmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (gmq *GarbageMetricsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one GarbageMetrics entity is found.
 // Returns a *NotFoundError when no GarbageMetrics entities are found.
 func (gmq *GarbageMetricsQuery) Only(ctx context.Context) (*GarbageMetrics, error) {
-	nodes, err := gmq.Limit(2).All(setContextOp(ctx, gmq.ctx, "Only"))
+	nodes, err := gmq.Limit(2).All(setContextOp(ctx, gmq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (gmq *GarbageMetricsQuery) OnlyX(ctx context.Context) *GarbageMetrics {
 // Returns a *NotFoundError when no entities are found.
 func (gmq *GarbageMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = gmq.Limit(2).IDs(setContextOp(ctx, gmq.ctx, "OnlyID")); err != nil {
+	if ids, err = gmq.Limit(2).IDs(setContextOp(ctx, gmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (gmq *GarbageMetricsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of GarbageMetricsSlice.
 func (gmq *GarbageMetricsQuery) All(ctx context.Context) ([]*GarbageMetrics, error) {
-	ctx = setContextOp(ctx, gmq.ctx, "All")
+	ctx = setContextOp(ctx, gmq.ctx, ent.OpQueryAll)
 	if err := gmq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (gmq *GarbageMetricsQuery) IDs(ctx context.Context) (ids []int, err error) 
 	if gmq.ctx.Unique == nil && gmq.path != nil {
 		gmq.Unique(true)
 	}
-	ctx = setContextOp(ctx, gmq.ctx, "IDs")
+	ctx = setContextOp(ctx, gmq.ctx, ent.OpQueryIDs)
 	if err = gmq.Select(garbagemetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (gmq *GarbageMetricsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (gmq *GarbageMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, gmq.ctx, "Count")
+	ctx = setContextOp(ctx, gmq.ctx, ent.OpQueryCount)
 	if err := gmq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (gmq *GarbageMetricsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (gmq *GarbageMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, gmq.ctx, "Exist")
+	ctx = setContextOp(ctx, gmq.ctx, ent.OpQueryExist)
 	switch _, err := gmq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (gmgb *GarbageMetricsGroupBy) Aggregate(fns ...AggregateFunc) *GarbageMetri
 
 // Scan applies the selector query and scans the result into the given value.
 func (gmgb *GarbageMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, gmgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, gmgb.build.ctx, ent.OpQueryGroupBy)
 	if err := gmgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (gms *GarbageMetricsSelect) Aggregate(fns ...AggregateFunc) *GarbageMetrics
 
 // Scan applies the selector query and scans the result into the given value.
 func (gms *GarbageMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, gms.ctx, "Select")
+	ctx = setContextOp(ctx, gms.ctx, ent.OpQuerySelect)
 	if err := gms.prepareQuery(ctx); err != nil {
 		return err
 	}

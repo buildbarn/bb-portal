@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (esq *EvaluationStatQuery) QueryBuildGraphMetrics() *BuildGraphMetricsQuery
 // First returns the first EvaluationStat entity from the query.
 // Returns a *NotFoundError when no EvaluationStat was found.
 func (esq *EvaluationStatQuery) First(ctx context.Context) (*EvaluationStat, error) {
-	nodes, err := esq.Limit(1).All(setContextOp(ctx, esq.ctx, "First"))
+	nodes, err := esq.Limit(1).All(setContextOp(ctx, esq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (esq *EvaluationStatQuery) FirstX(ctx context.Context) *EvaluationStat {
 // Returns a *NotFoundError when no EvaluationStat ID was found.
 func (esq *EvaluationStatQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = esq.Limit(1).IDs(setContextOp(ctx, esq.ctx, "FirstID")); err != nil {
+	if ids, err = esq.Limit(1).IDs(setContextOp(ctx, esq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (esq *EvaluationStatQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one EvaluationStat entity is found.
 // Returns a *NotFoundError when no EvaluationStat entities are found.
 func (esq *EvaluationStatQuery) Only(ctx context.Context) (*EvaluationStat, error) {
-	nodes, err := esq.Limit(2).All(setContextOp(ctx, esq.ctx, "Only"))
+	nodes, err := esq.Limit(2).All(setContextOp(ctx, esq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (esq *EvaluationStatQuery) OnlyX(ctx context.Context) *EvaluationStat {
 // Returns a *NotFoundError when no entities are found.
 func (esq *EvaluationStatQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = esq.Limit(2).IDs(setContextOp(ctx, esq.ctx, "OnlyID")); err != nil {
+	if ids, err = esq.Limit(2).IDs(setContextOp(ctx, esq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (esq *EvaluationStatQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of EvaluationStats.
 func (esq *EvaluationStatQuery) All(ctx context.Context) ([]*EvaluationStat, error) {
-	ctx = setContextOp(ctx, esq.ctx, "All")
+	ctx = setContextOp(ctx, esq.ctx, ent.OpQueryAll)
 	if err := esq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (esq *EvaluationStatQuery) IDs(ctx context.Context) (ids []int, err error) 
 	if esq.ctx.Unique == nil && esq.path != nil {
 		esq.Unique(true)
 	}
-	ctx = setContextOp(ctx, esq.ctx, "IDs")
+	ctx = setContextOp(ctx, esq.ctx, ent.OpQueryIDs)
 	if err = esq.Select(evaluationstat.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (esq *EvaluationStatQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (esq *EvaluationStatQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, esq.ctx, "Count")
+	ctx = setContextOp(ctx, esq.ctx, ent.OpQueryCount)
 	if err := esq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (esq *EvaluationStatQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (esq *EvaluationStatQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, esq.ctx, "Exist")
+	ctx = setContextOp(ctx, esq.ctx, ent.OpQueryExist)
 	switch _, err := esq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (esgb *EvaluationStatGroupBy) Aggregate(fns ...AggregateFunc) *EvaluationSt
 
 // Scan applies the selector query and scans the result into the given value.
 func (esgb *EvaluationStatGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, esgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, esgb.build.ctx, ent.OpQueryGroupBy)
 	if err := esgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (ess *EvaluationStatSelect) Aggregate(fns ...AggregateFunc) *EvaluationStat
 
 // Scan applies the selector query and scans the result into the given value.
 func (ess *EvaluationStatSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ess.ctx, "Select")
+	ctx = setContextOp(ctx, ess.ctx, ent.OpQuerySelect)
 	if err := ess.prepareQuery(ctx); err != nil {
 		return err
 	}

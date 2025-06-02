@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -112,7 +113,7 @@ func (nmq *NetworkMetricsQuery) QuerySystemNetworkStats() *SystemNetworkStatsQue
 // First returns the first NetworkMetrics entity from the query.
 // Returns a *NotFoundError when no NetworkMetrics was found.
 func (nmq *NetworkMetricsQuery) First(ctx context.Context) (*NetworkMetrics, error) {
-	nodes, err := nmq.Limit(1).All(setContextOp(ctx, nmq.ctx, "First"))
+	nodes, err := nmq.Limit(1).All(setContextOp(ctx, nmq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +136,7 @@ func (nmq *NetworkMetricsQuery) FirstX(ctx context.Context) *NetworkMetrics {
 // Returns a *NotFoundError when no NetworkMetrics ID was found.
 func (nmq *NetworkMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = nmq.Limit(1).IDs(setContextOp(ctx, nmq.ctx, "FirstID")); err != nil {
+	if ids, err = nmq.Limit(1).IDs(setContextOp(ctx, nmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -158,7 +159,7 @@ func (nmq *NetworkMetricsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one NetworkMetrics entity is found.
 // Returns a *NotFoundError when no NetworkMetrics entities are found.
 func (nmq *NetworkMetricsQuery) Only(ctx context.Context) (*NetworkMetrics, error) {
-	nodes, err := nmq.Limit(2).All(setContextOp(ctx, nmq.ctx, "Only"))
+	nodes, err := nmq.Limit(2).All(setContextOp(ctx, nmq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +187,7 @@ func (nmq *NetworkMetricsQuery) OnlyX(ctx context.Context) *NetworkMetrics {
 // Returns a *NotFoundError when no entities are found.
 func (nmq *NetworkMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = nmq.Limit(2).IDs(setContextOp(ctx, nmq.ctx, "OnlyID")); err != nil {
+	if ids, err = nmq.Limit(2).IDs(setContextOp(ctx, nmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -211,7 +212,7 @@ func (nmq *NetworkMetricsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of NetworkMetricsSlice.
 func (nmq *NetworkMetricsQuery) All(ctx context.Context) ([]*NetworkMetrics, error) {
-	ctx = setContextOp(ctx, nmq.ctx, "All")
+	ctx = setContextOp(ctx, nmq.ctx, ent.OpQueryAll)
 	if err := nmq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -233,7 +234,7 @@ func (nmq *NetworkMetricsQuery) IDs(ctx context.Context) (ids []int, err error) 
 	if nmq.ctx.Unique == nil && nmq.path != nil {
 		nmq.Unique(true)
 	}
-	ctx = setContextOp(ctx, nmq.ctx, "IDs")
+	ctx = setContextOp(ctx, nmq.ctx, ent.OpQueryIDs)
 	if err = nmq.Select(networkmetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -251,7 +252,7 @@ func (nmq *NetworkMetricsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (nmq *NetworkMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, nmq.ctx, "Count")
+	ctx = setContextOp(ctx, nmq.ctx, ent.OpQueryCount)
 	if err := nmq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -269,7 +270,7 @@ func (nmq *NetworkMetricsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (nmq *NetworkMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, nmq.ctx, "Exist")
+	ctx = setContextOp(ctx, nmq.ctx, ent.OpQueryExist)
 	switch _, err := nmq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -599,7 +600,7 @@ func (nmgb *NetworkMetricsGroupBy) Aggregate(fns ...AggregateFunc) *NetworkMetri
 
 // Scan applies the selector query and scans the result into the given value.
 func (nmgb *NetworkMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nmgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, nmgb.build.ctx, ent.OpQueryGroupBy)
 	if err := nmgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -647,7 +648,7 @@ func (nms *NetworkMetricsSelect) Aggregate(fns ...AggregateFunc) *NetworkMetrics
 
 // Scan applies the selector query and scans the result into the given value.
 func (nms *NetworkMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nms.ctx, "Select")
+	ctx = setContextOp(ctx, nms.ctx, ent.OpQuerySelect)
 	if err := nms.prepareQuery(ctx); err != nil {
 		return err
 	}

@@ -613,7 +613,7 @@ func (biu *BazelInvocationUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (biu *BazelInvocationUpdate) check() error {
-	if _, ok := biu.mutation.EventFileID(); biu.mutation.EventFileCleared() && !ok {
+	if biu.mutation.EventFileCleared() && len(biu.mutation.EventFileIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "BazelInvocation.event_file"`)
 	}
 	return nil
@@ -1594,7 +1594,7 @@ func (biuo *BazelInvocationUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (biuo *BazelInvocationUpdateOne) check() error {
-	if _, ok := biuo.mutation.EventFileID(); biuo.mutation.EventFileCleared() && !ok {
+	if biuo.mutation.EventFileCleared() && len(biuo.mutation.EventFileIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "BazelInvocation.event_file"`)
 	}
 	return nil

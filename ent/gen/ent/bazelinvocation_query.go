@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -235,7 +236,7 @@ func (biq *BazelInvocationQuery) QuerySourceControl() *SourceControlQuery {
 // First returns the first BazelInvocation entity from the query.
 // Returns a *NotFoundError when no BazelInvocation was found.
 func (biq *BazelInvocationQuery) First(ctx context.Context) (*BazelInvocation, error) {
-	nodes, err := biq.Limit(1).All(setContextOp(ctx, biq.ctx, "First"))
+	nodes, err := biq.Limit(1).All(setContextOp(ctx, biq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -258,7 +259,7 @@ func (biq *BazelInvocationQuery) FirstX(ctx context.Context) *BazelInvocation {
 // Returns a *NotFoundError when no BazelInvocation ID was found.
 func (biq *BazelInvocationQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = biq.Limit(1).IDs(setContextOp(ctx, biq.ctx, "FirstID")); err != nil {
+	if ids, err = biq.Limit(1).IDs(setContextOp(ctx, biq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -281,7 +282,7 @@ func (biq *BazelInvocationQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one BazelInvocation entity is found.
 // Returns a *NotFoundError when no BazelInvocation entities are found.
 func (biq *BazelInvocationQuery) Only(ctx context.Context) (*BazelInvocation, error) {
-	nodes, err := biq.Limit(2).All(setContextOp(ctx, biq.ctx, "Only"))
+	nodes, err := biq.Limit(2).All(setContextOp(ctx, biq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -309,7 +310,7 @@ func (biq *BazelInvocationQuery) OnlyX(ctx context.Context) *BazelInvocation {
 // Returns a *NotFoundError when no entities are found.
 func (biq *BazelInvocationQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = biq.Limit(2).IDs(setContextOp(ctx, biq.ctx, "OnlyID")); err != nil {
+	if ids, err = biq.Limit(2).IDs(setContextOp(ctx, biq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -334,7 +335,7 @@ func (biq *BazelInvocationQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of BazelInvocations.
 func (biq *BazelInvocationQuery) All(ctx context.Context) ([]*BazelInvocation, error) {
-	ctx = setContextOp(ctx, biq.ctx, "All")
+	ctx = setContextOp(ctx, biq.ctx, ent.OpQueryAll)
 	if err := biq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -356,7 +357,7 @@ func (biq *BazelInvocationQuery) IDs(ctx context.Context) (ids []int, err error)
 	if biq.ctx.Unique == nil && biq.path != nil {
 		biq.Unique(true)
 	}
-	ctx = setContextOp(ctx, biq.ctx, "IDs")
+	ctx = setContextOp(ctx, biq.ctx, ent.OpQueryIDs)
 	if err = biq.Select(bazelinvocation.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -374,7 +375,7 @@ func (biq *BazelInvocationQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (biq *BazelInvocationQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, biq.ctx, "Count")
+	ctx = setContextOp(ctx, biq.ctx, ent.OpQueryCount)
 	if err := biq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -392,7 +393,7 @@ func (biq *BazelInvocationQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (biq *BazelInvocationQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, biq.ctx, "Exist")
+	ctx = setContextOp(ctx, biq.ctx, ent.OpQueryExist)
 	switch _, err := biq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -1060,7 +1061,7 @@ func (bigb *BazelInvocationGroupBy) Aggregate(fns ...AggregateFunc) *BazelInvoca
 
 // Scan applies the selector query and scans the result into the given value.
 func (bigb *BazelInvocationGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, bigb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, bigb.build.ctx, ent.OpQueryGroupBy)
 	if err := bigb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -1108,7 +1109,7 @@ func (bis *BazelInvocationSelect) Aggregate(fns ...AggregateFunc) *BazelInvocati
 
 // Scan applies the selector query and scans the result into the given value.
 func (bis *BazelInvocationSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, bis.ctx, "Select")
+	ctx = setContextOp(ctx, bis.ctx, ent.OpQuerySelect)
 	if err := bis.prepareQuery(ctx); err != nil {
 		return err
 	}

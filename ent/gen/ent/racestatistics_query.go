@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (rsq *RaceStatisticsQuery) QueryDynamicExecutionMetrics() *DynamicExecution
 // First returns the first RaceStatistics entity from the query.
 // Returns a *NotFoundError when no RaceStatistics was found.
 func (rsq *RaceStatisticsQuery) First(ctx context.Context) (*RaceStatistics, error) {
-	nodes, err := rsq.Limit(1).All(setContextOp(ctx, rsq.ctx, "First"))
+	nodes, err := rsq.Limit(1).All(setContextOp(ctx, rsq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (rsq *RaceStatisticsQuery) FirstX(ctx context.Context) *RaceStatistics {
 // Returns a *NotFoundError when no RaceStatistics ID was found.
 func (rsq *RaceStatisticsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = rsq.Limit(1).IDs(setContextOp(ctx, rsq.ctx, "FirstID")); err != nil {
+	if ids, err = rsq.Limit(1).IDs(setContextOp(ctx, rsq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (rsq *RaceStatisticsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one RaceStatistics entity is found.
 // Returns a *NotFoundError when no RaceStatistics entities are found.
 func (rsq *RaceStatisticsQuery) Only(ctx context.Context) (*RaceStatistics, error) {
-	nodes, err := rsq.Limit(2).All(setContextOp(ctx, rsq.ctx, "Only"))
+	nodes, err := rsq.Limit(2).All(setContextOp(ctx, rsq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (rsq *RaceStatisticsQuery) OnlyX(ctx context.Context) *RaceStatistics {
 // Returns a *NotFoundError when no entities are found.
 func (rsq *RaceStatisticsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = rsq.Limit(2).IDs(setContextOp(ctx, rsq.ctx, "OnlyID")); err != nil {
+	if ids, err = rsq.Limit(2).IDs(setContextOp(ctx, rsq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (rsq *RaceStatisticsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of RaceStatisticsSlice.
 func (rsq *RaceStatisticsQuery) All(ctx context.Context) ([]*RaceStatistics, error) {
-	ctx = setContextOp(ctx, rsq.ctx, "All")
+	ctx = setContextOp(ctx, rsq.ctx, ent.OpQueryAll)
 	if err := rsq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (rsq *RaceStatisticsQuery) IDs(ctx context.Context) (ids []int, err error) 
 	if rsq.ctx.Unique == nil && rsq.path != nil {
 		rsq.Unique(true)
 	}
-	ctx = setContextOp(ctx, rsq.ctx, "IDs")
+	ctx = setContextOp(ctx, rsq.ctx, ent.OpQueryIDs)
 	if err = rsq.Select(racestatistics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (rsq *RaceStatisticsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (rsq *RaceStatisticsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, rsq.ctx, "Count")
+	ctx = setContextOp(ctx, rsq.ctx, ent.OpQueryCount)
 	if err := rsq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (rsq *RaceStatisticsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (rsq *RaceStatisticsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, rsq.ctx, "Exist")
+	ctx = setContextOp(ctx, rsq.ctx, ent.OpQueryExist)
 	switch _, err := rsq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (rsgb *RaceStatisticsGroupBy) Aggregate(fns ...AggregateFunc) *RaceStatisti
 
 // Scan applies the selector query and scans the result into the given value.
 func (rsgb *RaceStatisticsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, rsgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, rsgb.build.ctx, ent.OpQueryGroupBy)
 	if err := rsgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (rss *RaceStatisticsSelect) Aggregate(fns ...AggregateFunc) *RaceStatistics
 
 // Scan applies the selector query and scans the result into the given value.
 func (rss *RaceStatisticsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, rss.ctx, "Select")
+	ctx = setContextOp(ctx, rss.ctx, ent.OpQuerySelect)
 	if err := rss.prepareQuery(ctx); err != nil {
 		return err
 	}

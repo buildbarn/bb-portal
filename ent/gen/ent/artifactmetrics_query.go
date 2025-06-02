@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -181,7 +182,7 @@ func (amq *ArtifactMetricsQuery) QueryTopLevelArtifacts() *FilesMetricQuery {
 // First returns the first ArtifactMetrics entity from the query.
 // Returns a *NotFoundError when no ArtifactMetrics was found.
 func (amq *ArtifactMetricsQuery) First(ctx context.Context) (*ArtifactMetrics, error) {
-	nodes, err := amq.Limit(1).All(setContextOp(ctx, amq.ctx, "First"))
+	nodes, err := amq.Limit(1).All(setContextOp(ctx, amq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -204,7 +205,7 @@ func (amq *ArtifactMetricsQuery) FirstX(ctx context.Context) *ArtifactMetrics {
 // Returns a *NotFoundError when no ArtifactMetrics ID was found.
 func (amq *ArtifactMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = amq.Limit(1).IDs(setContextOp(ctx, amq.ctx, "FirstID")); err != nil {
+	if ids, err = amq.Limit(1).IDs(setContextOp(ctx, amq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -227,7 +228,7 @@ func (amq *ArtifactMetricsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one ArtifactMetrics entity is found.
 // Returns a *NotFoundError when no ArtifactMetrics entities are found.
 func (amq *ArtifactMetricsQuery) Only(ctx context.Context) (*ArtifactMetrics, error) {
-	nodes, err := amq.Limit(2).All(setContextOp(ctx, amq.ctx, "Only"))
+	nodes, err := amq.Limit(2).All(setContextOp(ctx, amq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -255,7 +256,7 @@ func (amq *ArtifactMetricsQuery) OnlyX(ctx context.Context) *ArtifactMetrics {
 // Returns a *NotFoundError when no entities are found.
 func (amq *ArtifactMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = amq.Limit(2).IDs(setContextOp(ctx, amq.ctx, "OnlyID")); err != nil {
+	if ids, err = amq.Limit(2).IDs(setContextOp(ctx, amq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -280,7 +281,7 @@ func (amq *ArtifactMetricsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of ArtifactMetricsSlice.
 func (amq *ArtifactMetricsQuery) All(ctx context.Context) ([]*ArtifactMetrics, error) {
-	ctx = setContextOp(ctx, amq.ctx, "All")
+	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryAll)
 	if err := amq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -302,7 +303,7 @@ func (amq *ArtifactMetricsQuery) IDs(ctx context.Context) (ids []int, err error)
 	if amq.ctx.Unique == nil && amq.path != nil {
 		amq.Unique(true)
 	}
-	ctx = setContextOp(ctx, amq.ctx, "IDs")
+	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryIDs)
 	if err = amq.Select(artifactmetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -320,7 +321,7 @@ func (amq *ArtifactMetricsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (amq *ArtifactMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, amq.ctx, "Count")
+	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryCount)
 	if err := amq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -338,7 +339,7 @@ func (amq *ArtifactMetricsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (amq *ArtifactMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, amq.ctx, "Exist")
+	ctx = setContextOp(ctx, amq.ctx, ent.OpQueryExist)
 	switch _, err := amq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -821,7 +822,7 @@ func (amgb *ArtifactMetricsGroupBy) Aggregate(fns ...AggregateFunc) *ArtifactMet
 
 // Scan applies the selector query and scans the result into the given value.
 func (amgb *ArtifactMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, amgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, amgb.build.ctx, ent.OpQueryGroupBy)
 	if err := amgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -869,7 +870,7 @@ func (ams *ArtifactMetricsSelect) Aggregate(fns ...AggregateFunc) *ArtifactMetri
 
 // Scan applies the selector query and scans the result into the given value.
 func (ams *ArtifactMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ams.ctx, "Select")
+	ctx = setContextOp(ctx, ams.ctx, ent.OpQuerySelect)
 	if err := ams.prepareQuery(ctx); err != nil {
 		return err
 	}

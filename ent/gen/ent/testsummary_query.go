@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -137,7 +138,7 @@ func (tsq *TestSummaryQuery) QueryFailed() *TestFileQuery {
 // First returns the first TestSummary entity from the query.
 // Returns a *NotFoundError when no TestSummary was found.
 func (tsq *TestSummaryQuery) First(ctx context.Context) (*TestSummary, error) {
-	nodes, err := tsq.Limit(1).All(setContextOp(ctx, tsq.ctx, "First"))
+	nodes, err := tsq.Limit(1).All(setContextOp(ctx, tsq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (tsq *TestSummaryQuery) FirstX(ctx context.Context) *TestSummary {
 // Returns a *NotFoundError when no TestSummary ID was found.
 func (tsq *TestSummaryQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tsq.Limit(1).IDs(setContextOp(ctx, tsq.ctx, "FirstID")); err != nil {
+	if ids, err = tsq.Limit(1).IDs(setContextOp(ctx, tsq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -183,7 +184,7 @@ func (tsq *TestSummaryQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one TestSummary entity is found.
 // Returns a *NotFoundError when no TestSummary entities are found.
 func (tsq *TestSummaryQuery) Only(ctx context.Context) (*TestSummary, error) {
-	nodes, err := tsq.Limit(2).All(setContextOp(ctx, tsq.ctx, "Only"))
+	nodes, err := tsq.Limit(2).All(setContextOp(ctx, tsq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +212,7 @@ func (tsq *TestSummaryQuery) OnlyX(ctx context.Context) *TestSummary {
 // Returns a *NotFoundError when no entities are found.
 func (tsq *TestSummaryQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tsq.Limit(2).IDs(setContextOp(ctx, tsq.ctx, "OnlyID")); err != nil {
+	if ids, err = tsq.Limit(2).IDs(setContextOp(ctx, tsq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -236,7 +237,7 @@ func (tsq *TestSummaryQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of TestSummaries.
 func (tsq *TestSummaryQuery) All(ctx context.Context) ([]*TestSummary, error) {
-	ctx = setContextOp(ctx, tsq.ctx, "All")
+	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryAll)
 	if err := tsq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -258,7 +259,7 @@ func (tsq *TestSummaryQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if tsq.ctx.Unique == nil && tsq.path != nil {
 		tsq.Unique(true)
 	}
-	ctx = setContextOp(ctx, tsq.ctx, "IDs")
+	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryIDs)
 	if err = tsq.Select(testsummary.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -276,7 +277,7 @@ func (tsq *TestSummaryQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (tsq *TestSummaryQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tsq.ctx, "Count")
+	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryCount)
 	if err := tsq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -294,7 +295,7 @@ func (tsq *TestSummaryQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (tsq *TestSummaryQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tsq.ctx, "Exist")
+	ctx = setContextOp(ctx, tsq.ctx, ent.OpQueryExist)
 	switch _, err := tsq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -743,7 +744,7 @@ func (tsgb *TestSummaryGroupBy) Aggregate(fns ...AggregateFunc) *TestSummaryGrou
 
 // Scan applies the selector query and scans the result into the given value.
 func (tsgb *TestSummaryGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tsgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, tsgb.build.ctx, ent.OpQueryGroupBy)
 	if err := tsgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -791,7 +792,7 @@ func (tss *TestSummarySelect) Aggregate(fns ...AggregateFunc) *TestSummarySelect
 
 // Scan applies the selector query and scans the result into the given value.
 func (tss *TestSummarySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tss.ctx, "Select")
+	ctx = setContextOp(ctx, tss.ctx, ent.OpQuerySelect)
 	if err := tss.prepareQuery(ctx); err != nil {
 		return err
 	}

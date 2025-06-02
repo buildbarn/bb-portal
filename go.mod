@@ -4,13 +4,23 @@ go 1.24.0
 
 // Existing patches don't apply against newer go-fuse.
 replace github.com/hanwen/go-fuse/v2 => github.com/hanwen/go-fuse/v2 v2.5.1
+
 // rules_go doesn't support gomock's package mode.
 replace go.uber.org/mock => go.uber.org/mock v0.4.0
+
+replace (
+	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto => ./pkg/proto/bazelbuild/bazel/bes
+	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics => ./pkg/proto/bazelbuild/bazel/metrics
+	github.com/bazelbuild/bazel/src/main/protobuf => ./pkg/proto/bazelbuild/bazel/protobuf
+)
 
 require (
 	entgo.io/contrib v0.6.0
 	entgo.io/ent v0.14.4
 	github.com/99designs/gqlgen v0.17.68
+	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto v0.0.0
+	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics v0.0.0
+	github.com/bazelbuild/bazel/src/main/protobuf v0.0.0
 	github.com/bazelbuild/buildtools v0.0.0-20250410144851-f37c35dc3237
 	github.com/bazelbuild/remote-apis v0.0.0-20250311143718-2721568dea74
 	github.com/buildbarn/bb-remote-execution v0.0.0-20250227074154-20a2e6d4cc71

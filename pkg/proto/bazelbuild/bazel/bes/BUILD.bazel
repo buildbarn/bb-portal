@@ -1,0 +1,76 @@
+"""
+The .proto files have been downloaded from https://github.com/bazelbuild/bazel
+using ./download.sh. The Bazel targets has then been manually crafted
+to be able to keep the .proto files without modifications.
+"""
+# gazelle:ignore
+
+load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_file")
+load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//proto:def.bzl", "go_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+[copy_file(
+    name = name + "_proto_file",
+    src = "@bazel_protos//protobuf:%s.proto" % name,
+    out = name + ".proto",
+    visibility = ["//visibility:public"],
+) for name in [
+    "build_event_stream",
+]]
+
+proto_library(
+    name = "build_event_stream_proto",
+    srcs = [":build_event_stream_proto_file"],
+    import_prefix = "src/main/java/com/google/devtools/build/lib/buildeventstream/proto",
+    strip_import_prefix = "/pkg/proto/bazelbuild/bazel/bes/",
+    deps = [
+        "//pkg/proto/bazelbuild/bazel/metrics:package_load_metrics_proto",
+        "//pkg/proto/bazelbuild/bazel/protobuf:src_main_protobuf_proto",
+        "@protobuf//:any_proto",
+        "@protobuf//:duration_proto",
+        "@protobuf//:timestamp_proto",
+    ],
+)
+
+go_proto_library(
+    name = "build_event_stream_go_proto",
+    importpath = "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto",
+    proto = ":build_event_stream_proto",
+    deps = [
+        "//pkg/proto/bazelbuild/bazel/metrics:package_load_metrics",
+        "//pkg/proto/bazelbuild/bazel/protobuf:src_main_protobuf",
+    ],
+)
+
+go_library(
+    name = "build_event_stream",
+    embed = [":build_event_stream_go_proto"],
+    visibility = ["//visibility:public"],
+)
+
+ALL_FILES = [
+    "build_event_stream",
+]
+
+[filegroup(
+    name = s + "_go_proto_pb_go",
+    srcs = [":" + s + "_go_proto"],
+    output_group = "go_generated_srcs",
+) for s in ALL_FILES]
+
+[write_source_file(
+    name = s + "_pb_go",
+    in_file = ":" + s + "_go_proto_pb_go",
+    out_file = s + ".pb.go",
+    suggested_update_target = ":pb_go",
+) for s in ALL_FILES]
+
+write_source_file(
+    name = "pb_go",
+    additional_update_targets = [
+        ":" + s + "_pb_go"
+        for s in ALL_FILES
+    ],
+)

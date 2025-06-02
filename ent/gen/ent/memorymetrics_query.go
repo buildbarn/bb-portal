@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -113,7 +114,7 @@ func (mmq *MemoryMetricsQuery) QueryGarbageMetrics() *GarbageMetricsQuery {
 // First returns the first MemoryMetrics entity from the query.
 // Returns a *NotFoundError when no MemoryMetrics was found.
 func (mmq *MemoryMetricsQuery) First(ctx context.Context) (*MemoryMetrics, error) {
-	nodes, err := mmq.Limit(1).All(setContextOp(ctx, mmq.ctx, "First"))
+	nodes, err := mmq.Limit(1).All(setContextOp(ctx, mmq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +137,7 @@ func (mmq *MemoryMetricsQuery) FirstX(ctx context.Context) *MemoryMetrics {
 // Returns a *NotFoundError when no MemoryMetrics ID was found.
 func (mmq *MemoryMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = mmq.Limit(1).IDs(setContextOp(ctx, mmq.ctx, "FirstID")); err != nil {
+	if ids, err = mmq.Limit(1).IDs(setContextOp(ctx, mmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -159,7 +160,7 @@ func (mmq *MemoryMetricsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one MemoryMetrics entity is found.
 // Returns a *NotFoundError when no MemoryMetrics entities are found.
 func (mmq *MemoryMetricsQuery) Only(ctx context.Context) (*MemoryMetrics, error) {
-	nodes, err := mmq.Limit(2).All(setContextOp(ctx, mmq.ctx, "Only"))
+	nodes, err := mmq.Limit(2).All(setContextOp(ctx, mmq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -187,7 +188,7 @@ func (mmq *MemoryMetricsQuery) OnlyX(ctx context.Context) *MemoryMetrics {
 // Returns a *NotFoundError when no entities are found.
 func (mmq *MemoryMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = mmq.Limit(2).IDs(setContextOp(ctx, mmq.ctx, "OnlyID")); err != nil {
+	if ids, err = mmq.Limit(2).IDs(setContextOp(ctx, mmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -212,7 +213,7 @@ func (mmq *MemoryMetricsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of MemoryMetricsSlice.
 func (mmq *MemoryMetricsQuery) All(ctx context.Context) ([]*MemoryMetrics, error) {
-	ctx = setContextOp(ctx, mmq.ctx, "All")
+	ctx = setContextOp(ctx, mmq.ctx, ent.OpQueryAll)
 	if err := mmq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -234,7 +235,7 @@ func (mmq *MemoryMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if mmq.ctx.Unique == nil && mmq.path != nil {
 		mmq.Unique(true)
 	}
-	ctx = setContextOp(ctx, mmq.ctx, "IDs")
+	ctx = setContextOp(ctx, mmq.ctx, ent.OpQueryIDs)
 	if err = mmq.Select(memorymetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -252,7 +253,7 @@ func (mmq *MemoryMetricsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (mmq *MemoryMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, mmq.ctx, "Count")
+	ctx = setContextOp(ctx, mmq.ctx, ent.OpQueryCount)
 	if err := mmq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -270,7 +271,7 @@ func (mmq *MemoryMetricsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (mmq *MemoryMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, mmq.ctx, "Exist")
+	ctx = setContextOp(ctx, mmq.ctx, ent.OpQueryExist)
 	switch _, err := mmq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -647,7 +648,7 @@ func (mmgb *MemoryMetricsGroupBy) Aggregate(fns ...AggregateFunc) *MemoryMetrics
 
 // Scan applies the selector query and scans the result into the given value.
 func (mmgb *MemoryMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, mmgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, mmgb.build.ctx, ent.OpQueryGroupBy)
 	if err := mmgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -695,7 +696,7 @@ func (mms *MemoryMetricsSelect) Aggregate(fns ...AggregateFunc) *MemoryMetricsSe
 
 // Scan applies the selector query and scans the result into the given value.
 func (mms *MemoryMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, mms.ctx, "Select")
+	ctx = setContextOp(ctx, mms.ctx, ent.OpQuerySelect)
 	if err := mms.prepareQuery(ctx); err != nil {
 		return err
 	}

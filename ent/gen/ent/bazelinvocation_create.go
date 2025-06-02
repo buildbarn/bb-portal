@@ -412,7 +412,7 @@ func (bic *BazelInvocationCreate) check() error {
 	if _, ok := bic.mutation.ProfileName(); !ok {
 		return &ValidationError{Name: "profile_name", err: errors.New(`ent: missing required field "BazelInvocation.profile_name"`)}
 	}
-	if _, ok := bic.mutation.EventFileID(); !ok {
+	if len(bic.mutation.EventFileIDs()) == 0 {
 		return &ValidationError{Name: "event_file", err: errors.New(`ent: missing required edge "BazelInvocation.event_file"`)}
 	}
 	return nil

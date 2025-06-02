@@ -13,7 +13,7 @@ go_library(
         "//ent/gen/ent",
         "//pkg/events",
         "//pkg/processing",
-        "//pkg/proto/bazelbuild/bazel:build_event_stream",
+        "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
         "//pkg/summary",
         "@org_golang_google_genproto//googleapis/devtools/build/v1:build",
         "@org_golang_google_grpc//codes",

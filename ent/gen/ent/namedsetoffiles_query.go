@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -136,7 +137,7 @@ func (nsofq *NamedSetOfFilesQuery) QueryFileSets() *NamedSetOfFilesQuery {
 // First returns the first NamedSetOfFiles entity from the query.
 // Returns a *NotFoundError when no NamedSetOfFiles was found.
 func (nsofq *NamedSetOfFilesQuery) First(ctx context.Context) (*NamedSetOfFiles, error) {
-	nodes, err := nsofq.Limit(1).All(setContextOp(ctx, nsofq.ctx, "First"))
+	nodes, err := nsofq.Limit(1).All(setContextOp(ctx, nsofq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +160,7 @@ func (nsofq *NamedSetOfFilesQuery) FirstX(ctx context.Context) *NamedSetOfFiles 
 // Returns a *NotFoundError when no NamedSetOfFiles ID was found.
 func (nsofq *NamedSetOfFilesQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = nsofq.Limit(1).IDs(setContextOp(ctx, nsofq.ctx, "FirstID")); err != nil {
+	if ids, err = nsofq.Limit(1).IDs(setContextOp(ctx, nsofq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -182,7 +183,7 @@ func (nsofq *NamedSetOfFilesQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one NamedSetOfFiles entity is found.
 // Returns a *NotFoundError when no NamedSetOfFiles entities are found.
 func (nsofq *NamedSetOfFilesQuery) Only(ctx context.Context) (*NamedSetOfFiles, error) {
-	nodes, err := nsofq.Limit(2).All(setContextOp(ctx, nsofq.ctx, "Only"))
+	nodes, err := nsofq.Limit(2).All(setContextOp(ctx, nsofq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -210,7 +211,7 @@ func (nsofq *NamedSetOfFilesQuery) OnlyX(ctx context.Context) *NamedSetOfFiles {
 // Returns a *NotFoundError when no entities are found.
 func (nsofq *NamedSetOfFilesQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = nsofq.Limit(2).IDs(setContextOp(ctx, nsofq.ctx, "OnlyID")); err != nil {
+	if ids, err = nsofq.Limit(2).IDs(setContextOp(ctx, nsofq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -235,7 +236,7 @@ func (nsofq *NamedSetOfFilesQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of NamedSetOfFilesSlice.
 func (nsofq *NamedSetOfFilesQuery) All(ctx context.Context) ([]*NamedSetOfFiles, error) {
-	ctx = setContextOp(ctx, nsofq.ctx, "All")
+	ctx = setContextOp(ctx, nsofq.ctx, ent.OpQueryAll)
 	if err := nsofq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -257,7 +258,7 @@ func (nsofq *NamedSetOfFilesQuery) IDs(ctx context.Context) (ids []int, err erro
 	if nsofq.ctx.Unique == nil && nsofq.path != nil {
 		nsofq.Unique(true)
 	}
-	ctx = setContextOp(ctx, nsofq.ctx, "IDs")
+	ctx = setContextOp(ctx, nsofq.ctx, ent.OpQueryIDs)
 	if err = nsofq.Select(namedsetoffiles.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -275,7 +276,7 @@ func (nsofq *NamedSetOfFilesQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (nsofq *NamedSetOfFilesQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, nsofq.ctx, "Count")
+	ctx = setContextOp(ctx, nsofq.ctx, ent.OpQueryCount)
 	if err := nsofq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -293,7 +294,7 @@ func (nsofq *NamedSetOfFilesQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (nsofq *NamedSetOfFilesQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, nsofq.ctx, "Exist")
+	ctx = setContextOp(ctx, nsofq.ctx, ent.OpQueryExist)
 	switch _, err := nsofq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -699,7 +700,7 @@ func (nsofgb *NamedSetOfFilesGroupBy) Aggregate(fns ...AggregateFunc) *NamedSetO
 
 // Scan applies the selector query and scans the result into the given value.
 func (nsofgb *NamedSetOfFilesGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nsofgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, nsofgb.build.ctx, ent.OpQueryGroupBy)
 	if err := nsofgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -747,7 +748,7 @@ func (nsofs *NamedSetOfFilesSelect) Aggregate(fns ...AggregateFunc) *NamedSetOfF
 
 // Scan applies the selector query and scans the result into the given value.
 func (nsofs *NamedSetOfFilesSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nsofs.ctx, "Select")
+	ctx = setContextOp(ctx, nsofs.ctx, ent.OpQuerySelect)
 	if err := nsofs.prepareQuery(ctx); err != nil {
 		return err
 	}

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -113,7 +114,7 @@ func (tbq *TimingBreakdownQuery) QueryChild() *TimingChildQuery {
 // First returns the first TimingBreakdown entity from the query.
 // Returns a *NotFoundError when no TimingBreakdown was found.
 func (tbq *TimingBreakdownQuery) First(ctx context.Context) (*TimingBreakdown, error) {
-	nodes, err := tbq.Limit(1).All(setContextOp(ctx, tbq.ctx, "First"))
+	nodes, err := tbq.Limit(1).All(setContextOp(ctx, tbq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +137,7 @@ func (tbq *TimingBreakdownQuery) FirstX(ctx context.Context) *TimingBreakdown {
 // Returns a *NotFoundError when no TimingBreakdown ID was found.
 func (tbq *TimingBreakdownQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tbq.Limit(1).IDs(setContextOp(ctx, tbq.ctx, "FirstID")); err != nil {
+	if ids, err = tbq.Limit(1).IDs(setContextOp(ctx, tbq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -159,7 +160,7 @@ func (tbq *TimingBreakdownQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one TimingBreakdown entity is found.
 // Returns a *NotFoundError when no TimingBreakdown entities are found.
 func (tbq *TimingBreakdownQuery) Only(ctx context.Context) (*TimingBreakdown, error) {
-	nodes, err := tbq.Limit(2).All(setContextOp(ctx, tbq.ctx, "Only"))
+	nodes, err := tbq.Limit(2).All(setContextOp(ctx, tbq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -187,7 +188,7 @@ func (tbq *TimingBreakdownQuery) OnlyX(ctx context.Context) *TimingBreakdown {
 // Returns a *NotFoundError when no entities are found.
 func (tbq *TimingBreakdownQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tbq.Limit(2).IDs(setContextOp(ctx, tbq.ctx, "OnlyID")); err != nil {
+	if ids, err = tbq.Limit(2).IDs(setContextOp(ctx, tbq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -212,7 +213,7 @@ func (tbq *TimingBreakdownQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of TimingBreakdowns.
 func (tbq *TimingBreakdownQuery) All(ctx context.Context) ([]*TimingBreakdown, error) {
-	ctx = setContextOp(ctx, tbq.ctx, "All")
+	ctx = setContextOp(ctx, tbq.ctx, ent.OpQueryAll)
 	if err := tbq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -234,7 +235,7 @@ func (tbq *TimingBreakdownQuery) IDs(ctx context.Context) (ids []int, err error)
 	if tbq.ctx.Unique == nil && tbq.path != nil {
 		tbq.Unique(true)
 	}
-	ctx = setContextOp(ctx, tbq.ctx, "IDs")
+	ctx = setContextOp(ctx, tbq.ctx, ent.OpQueryIDs)
 	if err = tbq.Select(timingbreakdown.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -252,7 +253,7 @@ func (tbq *TimingBreakdownQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (tbq *TimingBreakdownQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tbq.ctx, "Count")
+	ctx = setContextOp(ctx, tbq.ctx, ent.OpQueryCount)
 	if err := tbq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -270,7 +271,7 @@ func (tbq *TimingBreakdownQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (tbq *TimingBreakdownQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tbq.ctx, "Exist")
+	ctx = setContextOp(ctx, tbq.ctx, ent.OpQueryExist)
 	switch _, err := tbq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -647,7 +648,7 @@ func (tbgb *TimingBreakdownGroupBy) Aggregate(fns ...AggregateFunc) *TimingBreak
 
 // Scan applies the selector query and scans the result into the given value.
 func (tbgb *TimingBreakdownGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tbgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, tbgb.build.ctx, ent.OpQueryGroupBy)
 	if err := tbgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -695,7 +696,7 @@ func (tbs *TimingBreakdownSelect) Aggregate(fns ...AggregateFunc) *TimingBreakdo
 
 // Scan applies the selector query and scans the result into the given value.
 func (tbs *TimingBreakdownSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tbs.ctx, "Select")
+	ctx = setContextOp(ctx, tbs.ctx, ent.OpQuerySelect)
 	if err := tbs.prepareQuery(ctx); err != nil {
 		return err
 	}

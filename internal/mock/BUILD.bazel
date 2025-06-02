@@ -1,3 +1,5 @@
+#gazelle:ignore
+
 load("@rules_go//extras:gomock.bzl", "gomock")
 load("@rules_go//go:def.bzl", "go_library")
 

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (fmq *FilesMetricQuery) QueryArtifactMetrics() *ArtifactMetricsQuery {
 // First returns the first FilesMetric entity from the query.
 // Returns a *NotFoundError when no FilesMetric was found.
 func (fmq *FilesMetricQuery) First(ctx context.Context) (*FilesMetric, error) {
-	nodes, err := fmq.Limit(1).All(setContextOp(ctx, fmq.ctx, "First"))
+	nodes, err := fmq.Limit(1).All(setContextOp(ctx, fmq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (fmq *FilesMetricQuery) FirstX(ctx context.Context) *FilesMetric {
 // Returns a *NotFoundError when no FilesMetric ID was found.
 func (fmq *FilesMetricQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fmq.Limit(1).IDs(setContextOp(ctx, fmq.ctx, "FirstID")); err != nil {
+	if ids, err = fmq.Limit(1).IDs(setContextOp(ctx, fmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (fmq *FilesMetricQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one FilesMetric entity is found.
 // Returns a *NotFoundError when no FilesMetric entities are found.
 func (fmq *FilesMetricQuery) Only(ctx context.Context) (*FilesMetric, error) {
-	nodes, err := fmq.Limit(2).All(setContextOp(ctx, fmq.ctx, "Only"))
+	nodes, err := fmq.Limit(2).All(setContextOp(ctx, fmq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (fmq *FilesMetricQuery) OnlyX(ctx context.Context) *FilesMetric {
 // Returns a *NotFoundError when no entities are found.
 func (fmq *FilesMetricQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fmq.Limit(2).IDs(setContextOp(ctx, fmq.ctx, "OnlyID")); err != nil {
+	if ids, err = fmq.Limit(2).IDs(setContextOp(ctx, fmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (fmq *FilesMetricQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of FilesMetrics.
 func (fmq *FilesMetricQuery) All(ctx context.Context) ([]*FilesMetric, error) {
-	ctx = setContextOp(ctx, fmq.ctx, "All")
+	ctx = setContextOp(ctx, fmq.ctx, ent.OpQueryAll)
 	if err := fmq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (fmq *FilesMetricQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if fmq.ctx.Unique == nil && fmq.path != nil {
 		fmq.Unique(true)
 	}
-	ctx = setContextOp(ctx, fmq.ctx, "IDs")
+	ctx = setContextOp(ctx, fmq.ctx, ent.OpQueryIDs)
 	if err = fmq.Select(filesmetric.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (fmq *FilesMetricQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (fmq *FilesMetricQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fmq.ctx, "Count")
+	ctx = setContextOp(ctx, fmq.ctx, ent.OpQueryCount)
 	if err := fmq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (fmq *FilesMetricQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fmq *FilesMetricQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fmq.ctx, "Exist")
+	ctx = setContextOp(ctx, fmq.ctx, ent.OpQueryExist)
 	switch _, err := fmq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (fmgb *FilesMetricGroupBy) Aggregate(fns ...AggregateFunc) *FilesMetricGrou
 
 // Scan applies the selector query and scans the result into the given value.
 func (fmgb *FilesMetricGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fmgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, fmgb.build.ctx, ent.OpQueryGroupBy)
 	if err := fmgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (fms *FilesMetricSelect) Aggregate(fns ...AggregateFunc) *FilesMetricSelect
 
 // Scan applies the selector query and scans the result into the given value.
 func (fms *FilesMetricSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fms.ctx, "Select")
+	ctx = setContextOp(ctx, fms.ctx, ent.OpQuerySelect)
 	if err := fms.prepareQuery(ctx); err != nil {
 		return err
 	}

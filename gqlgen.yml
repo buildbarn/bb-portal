@@ -88,7 +88,7 @@ models:
     extraFields:
       BESTestResult:
         description: "TestResult object from the Build Event Stream"
-        type: "*github.com/buildbarn/bb-portal/third_party/bazel/gen/bes.TestResult"
+        type: "*github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto.TestResult"
       TestResultID:
         description: "IDs extracted for later use"
         type: "github.com/buildbarn/bb-portal/internal/graphql/model.TestResultID"

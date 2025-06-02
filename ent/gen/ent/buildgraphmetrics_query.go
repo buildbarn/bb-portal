@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -204,7 +205,7 @@ func (bgmq *BuildGraphMetricsQuery) QueryEvaluatedValues() *EvaluationStatQuery 
 // First returns the first BuildGraphMetrics entity from the query.
 // Returns a *NotFoundError when no BuildGraphMetrics was found.
 func (bgmq *BuildGraphMetricsQuery) First(ctx context.Context) (*BuildGraphMetrics, error) {
-	nodes, err := bgmq.Limit(1).All(setContextOp(ctx, bgmq.ctx, "First"))
+	nodes, err := bgmq.Limit(1).All(setContextOp(ctx, bgmq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -227,7 +228,7 @@ func (bgmq *BuildGraphMetricsQuery) FirstX(ctx context.Context) *BuildGraphMetri
 // Returns a *NotFoundError when no BuildGraphMetrics ID was found.
 func (bgmq *BuildGraphMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = bgmq.Limit(1).IDs(setContextOp(ctx, bgmq.ctx, "FirstID")); err != nil {
+	if ids, err = bgmq.Limit(1).IDs(setContextOp(ctx, bgmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -250,7 +251,7 @@ func (bgmq *BuildGraphMetricsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one BuildGraphMetrics entity is found.
 // Returns a *NotFoundError when no BuildGraphMetrics entities are found.
 func (bgmq *BuildGraphMetricsQuery) Only(ctx context.Context) (*BuildGraphMetrics, error) {
-	nodes, err := bgmq.Limit(2).All(setContextOp(ctx, bgmq.ctx, "Only"))
+	nodes, err := bgmq.Limit(2).All(setContextOp(ctx, bgmq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -278,7 +279,7 @@ func (bgmq *BuildGraphMetricsQuery) OnlyX(ctx context.Context) *BuildGraphMetric
 // Returns a *NotFoundError when no entities are found.
 func (bgmq *BuildGraphMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = bgmq.Limit(2).IDs(setContextOp(ctx, bgmq.ctx, "OnlyID")); err != nil {
+	if ids, err = bgmq.Limit(2).IDs(setContextOp(ctx, bgmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -303,7 +304,7 @@ func (bgmq *BuildGraphMetricsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of BuildGraphMetricsSlice.
 func (bgmq *BuildGraphMetricsQuery) All(ctx context.Context) ([]*BuildGraphMetrics, error) {
-	ctx = setContextOp(ctx, bgmq.ctx, "All")
+	ctx = setContextOp(ctx, bgmq.ctx, ent.OpQueryAll)
 	if err := bgmq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -325,7 +326,7 @@ func (bgmq *BuildGraphMetricsQuery) IDs(ctx context.Context) (ids []int, err err
 	if bgmq.ctx.Unique == nil && bgmq.path != nil {
 		bgmq.Unique(true)
 	}
-	ctx = setContextOp(ctx, bgmq.ctx, "IDs")
+	ctx = setContextOp(ctx, bgmq.ctx, ent.OpQueryIDs)
 	if err = bgmq.Select(buildgraphmetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -343,7 +344,7 @@ func (bgmq *BuildGraphMetricsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (bgmq *BuildGraphMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, bgmq.ctx, "Count")
+	ctx = setContextOp(ctx, bgmq.ctx, ent.OpQueryCount)
 	if err := bgmq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -361,7 +362,7 @@ func (bgmq *BuildGraphMetricsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (bgmq *BuildGraphMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, bgmq.ctx, "Exist")
+	ctx = setContextOp(ctx, bgmq.ctx, ent.OpQueryExist)
 	switch _, err := bgmq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -917,7 +918,7 @@ func (bgmgb *BuildGraphMetricsGroupBy) Aggregate(fns ...AggregateFunc) *BuildGra
 
 // Scan applies the selector query and scans the result into the given value.
 func (bgmgb *BuildGraphMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, bgmgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, bgmgb.build.ctx, ent.OpQueryGroupBy)
 	if err := bgmgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -965,7 +966,7 @@ func (bgms *BuildGraphMetricsSelect) Aggregate(fns ...AggregateFunc) *BuildGraph
 
 // Scan applies the selector query and scans the result into the given value.
 func (bgms *BuildGraphMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, bgms.ctx, "Select")
+	ctx = setContextOp(ctx, bgms.ctx, ent.OpQuerySelect)
 	if err := bgms.prepareQuery(ctx); err != nil {
 		return err
 	}

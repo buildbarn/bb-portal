@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -137,7 +138,7 @@ func (eiq *ExectionInfoQuery) QueryResourceUsage() *ResourceUsageQuery {
 // First returns the first ExectionInfo entity from the query.
 // Returns a *NotFoundError when no ExectionInfo was found.
 func (eiq *ExectionInfoQuery) First(ctx context.Context) (*ExectionInfo, error) {
-	nodes, err := eiq.Limit(1).All(setContextOp(ctx, eiq.ctx, "First"))
+	nodes, err := eiq.Limit(1).All(setContextOp(ctx, eiq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (eiq *ExectionInfoQuery) FirstX(ctx context.Context) *ExectionInfo {
 // Returns a *NotFoundError when no ExectionInfo ID was found.
 func (eiq *ExectionInfoQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = eiq.Limit(1).IDs(setContextOp(ctx, eiq.ctx, "FirstID")); err != nil {
+	if ids, err = eiq.Limit(1).IDs(setContextOp(ctx, eiq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -183,7 +184,7 @@ func (eiq *ExectionInfoQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one ExectionInfo entity is found.
 // Returns a *NotFoundError when no ExectionInfo entities are found.
 func (eiq *ExectionInfoQuery) Only(ctx context.Context) (*ExectionInfo, error) {
-	nodes, err := eiq.Limit(2).All(setContextOp(ctx, eiq.ctx, "Only"))
+	nodes, err := eiq.Limit(2).All(setContextOp(ctx, eiq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +212,7 @@ func (eiq *ExectionInfoQuery) OnlyX(ctx context.Context) *ExectionInfo {
 // Returns a *NotFoundError when no entities are found.
 func (eiq *ExectionInfoQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = eiq.Limit(2).IDs(setContextOp(ctx, eiq.ctx, "OnlyID")); err != nil {
+	if ids, err = eiq.Limit(2).IDs(setContextOp(ctx, eiq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -236,7 +237,7 @@ func (eiq *ExectionInfoQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of ExectionInfos.
 func (eiq *ExectionInfoQuery) All(ctx context.Context) ([]*ExectionInfo, error) {
-	ctx = setContextOp(ctx, eiq.ctx, "All")
+	ctx = setContextOp(ctx, eiq.ctx, ent.OpQueryAll)
 	if err := eiq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -258,7 +259,7 @@ func (eiq *ExectionInfoQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if eiq.ctx.Unique == nil && eiq.path != nil {
 		eiq.Unique(true)
 	}
-	ctx = setContextOp(ctx, eiq.ctx, "IDs")
+	ctx = setContextOp(ctx, eiq.ctx, ent.OpQueryIDs)
 	if err = eiq.Select(exectioninfo.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -276,7 +277,7 @@ func (eiq *ExectionInfoQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (eiq *ExectionInfoQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, eiq.ctx, "Count")
+	ctx = setContextOp(ctx, eiq.ctx, ent.OpQueryCount)
 	if err := eiq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -294,7 +295,7 @@ func (eiq *ExectionInfoQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (eiq *ExectionInfoQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, eiq.ctx, "Exist")
+	ctx = setContextOp(ctx, eiq.ctx, ent.OpQueryExist)
 	switch _, err := eiq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -718,7 +719,7 @@ func (eigb *ExectionInfoGroupBy) Aggregate(fns ...AggregateFunc) *ExectionInfoGr
 
 // Scan applies the selector query and scans the result into the given value.
 func (eigb *ExectionInfoGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, eigb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, eigb.build.ctx, ent.OpQueryGroupBy)
 	if err := eigb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -766,7 +767,7 @@ func (eis *ExectionInfoSelect) Aggregate(fns ...AggregateFunc) *ExectionInfoSele
 
 // Scan applies the selector query and scans the result into the given value.
 func (eis *ExectionInfoSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, eis.ctx, "Select")
+	ctx = setContextOp(ctx, eis.ctx, ent.OpQuerySelect)
 	if err := eis.prepareQuery(ctx); err != nil {
 		return err
 	}
