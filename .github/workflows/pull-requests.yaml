@@ -16,6 +16,10 @@
                "run": "bazel mod tidy"
             },
             {
+               "name": "Go generate",
+               "run": "go generate"
+            },
+            {
                "name": "Gazelle",
                "run": "rm -f $(find . -name '*.pb.go' -not -path './pkg/proto/bazelbuild/*' | sed -e 's/[^/]*$/BUILD.bazel/') && bazel run //:gazelle"
             },
