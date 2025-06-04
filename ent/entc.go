@@ -26,13 +26,18 @@ func main() {
 	}
 	extensions := []entc.Extension{ex}
 	extensions = append(extensions, entviz.Extension{})
+	opts := []entc.Option{
+		entc.Extensions(extensions...),
+		entc.TemplateDir("./ent/template"),
+		entc.FeatureNames("intercept"),
+	}
 	if err := os.RemoveAll("./ent/gen"); err != nil {
 		log.Fatalf("failed to remove ./ent/gen: %v", err)
 	}
 	if err := entc.Generate("./ent/schema", &gen.Config{
 		Target:  "./ent/gen/ent",
 		Package: "github.com/buildbarn/bb-portal/ent/gen/ent",
-	}, entc.Extensions(extensions...), entc.TemplateDir("./ent/template")); err != nil {
+	}, opts...); err != nil {
 		log.Fatalf("running ent codegen: %v", err)
 	}
 }
