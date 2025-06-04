@@ -15,6 +15,9 @@ import (
 
 	_ "net/http/pprof"
 
+	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/interceptors#configuration)
+	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
+
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
@@ -35,6 +38,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/api"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/graphql"
+	"github.com/buildbarn/bb-portal/internal/graphql/auth"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
@@ -178,10 +182,16 @@ func newBuildEventStreamService(configuration *bb_portal.ApplicationConfiguratio
 		}
 	}
 
+	err = auth.AddDatabaseAuthInterceptors(configuration.InstanceNameAuthorizer, dbClient, grpcClientFactory)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to add database auth interceptors")
+	}
+
 	blobArchiveFolder := besConfiguration.BlobArchiveFolder
 	if blobArchiveFolder == "" {
 		return status.Error(codes.NotFound, "No blobArchiveFolder configured for besServiceConfiguration")
 	}
+
 	blobArchiver := processing.NewBlobMultiArchiver()
 	configureBlobArchiving(blobArchiver, blobArchiveFolder)
 

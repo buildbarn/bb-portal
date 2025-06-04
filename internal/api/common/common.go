@@ -27,7 +27,7 @@ func ExtractContextFromRequest(req *http.Request) context.Context {
 func IsInstanceNameAllowed(ctx context.Context, authorizer auth.Authorizer, instanceNameString string) bool {
 	instanceName, err := digest.NewInstanceName(instanceNameString)
 	if err != nil {
-		log.Println("Error parsing instance name from operation: ", err)
+		log.Println("Error parsing instance name from string: ", err)
 		return false
 	}
 	return auth.AuthorizeSingleInstanceName(ctx, authorizer, instanceName) == nil
