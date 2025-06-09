@@ -42,14 +42,12 @@
     }],
     database: {
       sqlite: {
-<<<<<<< HEAD
-        url: "file:buildportal.db?_journal=WAL&_fk=1"
-=======
         connectionString: 'file:buildportal.db?_journal=WAL&_fk=1',
->>>>>>> b6926ba (fixup! Move configuration from CLI args to jsonnet-file)
       },
     },
-    blobArchiveFolder: "./blob-archive/",
+    blobArchiveFolder: './blob-archive/',
+    enableBepFileUpload: true,
+    enableGraphqlPlayground: true,
   },
 
   // The BrowserService can be disabled by not setting this field.

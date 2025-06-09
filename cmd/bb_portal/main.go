@@ -190,7 +190,9 @@ func newBuildEventStreamService(configuration *bb_portal.ApplicationConfiguratio
 
 	router.PathPrefix("/graphql").Handler(srv)
 	router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
-	router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, blobArchiver)).Methods("POST")
+	if besConfiguration.EnableBepFileUpload {
+		router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, blobArchiver)).Methods("POST")
+	}
 
 	if err := bb_grpc.NewServersFromConfigurationAndServe(
 		besConfiguration.GrpcServers,
