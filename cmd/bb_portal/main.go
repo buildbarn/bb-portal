@@ -50,10 +50,6 @@ const (
 
 var (
 	configFile        = flag.String("config-file", "", "bb_portal config file")
-	dsDriver          = flag.String("datasource-driver", "sqlite3", "Data source driver to use")
-	dsURL             = flag.String("datasource-url", "file:buildportal.db?_journal=WAL&_fk=1", "Data source URL for the DB")
-	blobArchiveFolder = flag.String("blob-archive-folder", "./blob-archive/",
-		"Folder where blobs (log outputs, stdout, stderr, undeclared test outputs) referenced from failures are archived")
 )
 
 func main() {
@@ -149,36 +145,43 @@ func newBuildEventStreamService(configuration *bb_portal.ApplicationConfiguratio
 	var dbClient *ent.Client
 	var err error
 
-	if *dsDriver == "pgx" {
-		db, err := sql.Open("pgx", *dsURL)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to open pgx database")
+	switch dbConfig := besConfiguration.Database.Source.(type) {
+	case *bb_portal.Database_Sqlite:
+		if dbConfig.Sqlite.ConnectionString == "" {
+			return status.Error(codes.InvalidArgument, "Empty connection string for sqlite database")
 		}
-		drv := entsql.OpenDB(dialect.Postgres, db)
-		dbClient = ent.NewClient(ent.Driver(drv))
-	} else {
 		dbClient, err = ent.Open(
-			*dsDriver,
-			*dsURL,
+			"sqlite3",
+			dbConfig.Sqlite.ConnectionString,
 		)
-	}
-
-	if err != nil {
-		return util.StatusWrap(err, "Failed to open ent client")
-	}
-
-	if *dsDriver == "pgx" {
-		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
-			return util.StatusWrap(err, "Failed to run schema migration")
+		if err != nil {
+			return util.StatusWrap(err, "Failed to open sqlite database")
 		}
-	} else {
+
 		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
 			return util.StatusWrap(err, "Failed to run schema migration")
 		}
+	case *bb_portal.Database_Postgres:
+		if dbConfig.Postgres.ConnectionString == "" {
+			return status.Error(codes.InvalidArgument, "Empty connection string for postgres database")
+		}
+		db, err := sql.Open("pgx", dbConfig.Postgres.ConnectionString)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to open postgres database")
+		}
+		drv := entsql.OpenDB(dialect.Postgres, db)
+		dbClient = ent.NewClient(ent.Driver(drv))
+		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
+			return util.StatusWrap(err, "Failed to run schema migration")
+		}
 	}
 
+	blobArchiveFolder := besConfiguration.BlobArchiveFolder
+	if blobArchiveFolder == "" {
+		return status.Error(codes.NotFound, "No blobArchiveFolder configured for besServiceConfiguration")
+	}
 	blobArchiver := processing.NewBlobMultiArchiver()
-	configureBlobArchiving(blobArchiver, *blobArchiveFolder)
+	configureBlobArchiving(blobArchiver, blobArchiveFolder)
 
 	srv := handler.NewDefaultServer(graphql.NewSchema(dbClient))
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})

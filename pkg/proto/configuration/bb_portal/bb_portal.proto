@@ -10,9 +10,37 @@ import "pkg/proto/configuration/http/http.proto";
 
 option go_package = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal";
 
+// Postgres database source type.
+message PostgresSource {
+  // Database connection string for pgx, see:
+  // https://pkg.go.dev/github.com/jackc/pgx/v5
+  string connection_string = 1;
+}
+
+// SQLite database source type.
+message SqliteSource {
+  // Database connection string for go-sqlite3, see:
+  // https://pkg.go.dev/github.com/mattn/go-sqlite3#readme-connection-string
+  string connection_string = 1;
+}
+
+message Database {
+  // Database source type. Currently supported types are SQLite and Postgres.
+  oneof source {
+    SqliteSource sqlite = 1;
+    PostgresSource postgres = 2;
+  }
+}
+
 message BuildEventStreamService {
   // gRPC servers to spawn to listen for requests from clients.
   repeated buildbarn.configuration.grpc.ServerConfiguration grpc_servers = 1;
+
+  // Configures the database for BES information storage.
+  Database database = 2;
+
+  // Directory for blob archive.
+  string blob_archive_folder = 3;
 }
 
 message BrowserService {
