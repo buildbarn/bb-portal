@@ -44,6 +44,9 @@ message BuildEventStreamService {
 
   // Enables the BEP file upload endpoint.
   bool enable_bep_file_upload = 4;
+
+  // Enables the Graphql playground.
+  bool enable_graphql_playground = 5;
 }
 
 message BrowserService {

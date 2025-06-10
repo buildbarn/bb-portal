@@ -189,7 +189,9 @@ func newBuildEventStreamService(configuration *bb_portal.ApplicationConfiguratio
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})
 
 	router.PathPrefix("/graphql").Handler(srv)
-	router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
+	if besConfiguration.EnableGraphqlPlayground {
+		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
+	}
 	if besConfiguration.EnableBepFileUpload {
 		router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, blobArchiver)).Methods("POST")
 	}
