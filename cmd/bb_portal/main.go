@@ -20,7 +20,6 @@ import (
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/fsnotify/fsnotify"
 	"github.com/gorilla/mux"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/mattn/go-sqlite3"
@@ -53,7 +52,6 @@ var (
 	configFile        = flag.String("config-file", "", "bb_portal config file")
 	dsDriver          = flag.String("datasource-driver", "sqlite3", "Data source driver to use")
 	dsURL             = flag.String("datasource-url", "file:buildportal.db?_journal=WAL&_fk=1", "Data source URL for the DB")
-	bepFolder         = flag.String("bep-folder", "./bep-files/", "Folder to watch for new BEP files")
 	blobArchiveFolder = flag.String("blob-archive-folder", "./blob-archive/",
 		"Folder where blobs (log outputs, stdout, stderr, undeclared test outputs) referenced from failures are archived")
 )
@@ -135,44 +133,6 @@ func configureBlobArchiving(blobArchiver processing.BlobMultiArchiver, archiveFo
 	blobArchiver.RegisterArchiver("bytestream", noopArchiver)
 }
 
-func runWatcher(watcher *fsnotify.Watcher, client *ent.Client, bepFolder string, blobArchiver processing.BlobMultiArchiver) {
-	ctx := context.Background()
-	worker := processing.New(client, blobArchiver)
-	// Start listening for events.
-	go func() {
-		for {
-			select {
-			case event, ok := <-watcher.Events:
-				if !ok {
-					return
-				}
-				slog.Info("Received an event", "event", event)
-				if event.Has(fsnotify.Write) {
-					slog.Info("modified file", "name", event.Name)
-					if _, err := worker.ProcessFile(ctx, event.Name); err != nil {
-						slog.Error("Failed to process file", "file", event.Name, "err", err)
-					}
-				}
-			case err, ok := <-watcher.Errors:
-				if !ok {
-					return
-				}
-				slog.Error("Received an error from fsnotify", "err", err)
-			}
-		}
-	}()
-
-	// Add a path.
-	err := os.MkdirAll(bepFolder, folderPermission)
-	if err != nil {
-		fatal("failed to create BEP folder", "folder", bepFolder, "err", err)
-	}
-	err = watcher.Add(bepFolder)
-	if err != nil {
-		fatal("watched register BEP folder with fsnotify.Watcher", "folder", bepFolder, "err", err)
-	}
-}
-
 func fatal(msg string, args ...any) {
 	// Workaround: No slog.Fatal.
 	slog.Error(msg, args...)
@@ -219,14 +179,6 @@ func newBuildEventStreamService(configuration *bb_portal.ApplicationConfiguratio
 
 	blobArchiver := processing.NewBlobMultiArchiver()
 	configureBlobArchiving(blobArchiver, *blobArchiveFolder)
-
-	// Create new watcher.
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		return util.StatusWrap(err, "Failed to create fsnotify.Watcher")
-	}
-	defer watcher.Close()
-	runWatcher(watcher, dbClient, *bepFolder, blobArchiver)
 
 	srv := handler.NewDefaultServer(graphql.NewSchema(dbClient))
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})
