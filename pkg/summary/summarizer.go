@@ -841,6 +841,10 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 
 	// Set build URL and UUID
 	s.summary.BuildURL = s.summary.InvocationSummary.EnvVars["BUILD_URL"]
+	// Gitlab
+	if glBuVal, ok := s.summary.EnvVars["CI_PIPELINE_URL"]; ok && s.summary.BuildURL == "" {
+		s.summary.BuildURL = glBuVal
+	}
 	s.summary.BuildUUID = uuid.NewSHA1(uuid.NameSpaceURL, []byte(s.summary.BuildURL))
 
 	// Set Hostname
@@ -861,18 +865,26 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		}
 	}
 
-	// github actions default env var
+	// github/gitlab actions default env var
 	if isCiWorkerVal, ok := s.summary.EnvVars["CI"]; ok {
 		if isCiWorkerVal == "true" {
 			s.summary.IsCiWorker = true
 		}
 	}
 
-	// default step label to workfow + job
+	// Github default step label to workfow + job
 	if ghWfVal, ok := s.summary.EnvVars["GITHUB_WORKFLOW"]; ok {
 		s.summary.StepLabel = ghWfVal
 		if ghJobNameVal, ok := s.summary.EnvVars["GITHUB_JOB"]; ok {
 			s.summary.StepLabel += "+" + ghJobNameVal
+		}
+	}
+
+	// Gitlab default step label to workfow + job
+	if glWfVal, ok := s.summary.EnvVars["CI_JOB_STAGE"]; ok {
+		s.summary.StepLabel = glWfVal
+		if glJobNameVal, ok := s.summary.EnvVars["CI_JOB_NAME"]; ok {
+			s.summary.StepLabel += "+" + glJobNameVal
 		}
 	}
 
@@ -914,9 +926,14 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		}
 	}
 
-	// repo
+	// Github repo
 	if ghRepo, ok := s.summary.EnvVars["GITHUB_REPOSITORY"]; ok {
 		s.summary.SourceControlData.RepositoryURL = ghRepo
+	}
+
+	// Gitlab repo
+	if glProject, ok := s.summary.EnvVars["CI_PROJECT_URL"]; ok {
+		s.summary.SourceControlData.RepositoryURL = fmt.Sprintf("%s.git", glProject)
 	}
 
 	// head ref
@@ -924,12 +941,17 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		s.summary.SourceControlData.Branch = ghHeadRef
 	}
 
-	// commit sha
+	// Github commit sha
 	if ghSha, ok := s.summary.EnvVars["GITHUB_SHA"]; ok {
 		s.summary.SourceControlData.CommitSHA = ghSha
 	}
 
-	// actor
+	// Gitlab commit sha
+	if glSha, ok := s.summary.EnvVars["CI_COMMIT_SHA"]; ok {
+		s.summary.SourceControlData.CommitSHA = glSha
+	}
+
+	// Github actor
 	if ghActor, ok := s.summary.EnvVars["GITHUB_ACTOR"]; ok {
 		s.summary.SourceControlData.Actor = ghActor
 		if s.summary.UserLDAP == "" {
@@ -937,44 +959,106 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		}
 	}
 
-	// refs
+	// Gitlab actor
+	if glActor, ok := s.summary.EnvVars["GITLAB_USER_LOGIN"]; ok {
+		s.summary.SourceControlData.Actor = glActor
+		if s.summary.UserLDAP == "" {
+			s.summary.UserLDAP = glActor
+		}
+	}
+
+	// Gitlab actor mail
+	if glActorMail, ok := s.summary.EnvVars["GITLAB_USER_EMAIL"]; ok {
+		if s.summary.UserEmail == "" {
+			s.summary.UserEmail = glActorMail
+		}
+	}
+
+	// Github refs
 	if ghRefs, ok := s.summary.EnvVars["GITHUB_REF"]; ok {
 		s.summary.SourceControlData.Refs = ghRefs
 	}
 
-	// run id
+	// Gitlab refs
+	if glRefs, ok := s.summary.EnvVars["CI_COMMIT_REF_NAME"]; ok {
+		s.summary.SourceControlData.Refs = glRefs
+	}
+
+	// Github run id
 	if ghRunID, ok := s.summary.EnvVars["GITHUB_RUN_ID"]; ok {
 		s.summary.SourceControlData.RunID = ghRunID
 	}
 
-	// workflow
+	// Gitlab run id
+	if glRunID, ok := s.summary.EnvVars["CI_JOB_ID"]; ok {
+		s.summary.SourceControlData.RunID = glRunID
+	}
+
+	// Github workflow
 	if ghWorkflow, ok := s.summary.EnvVars["GITHUB_WORKFLOW"]; ok {
 		s.summary.SourceControlData.Workflow = ghWorkflow
 	}
 
-	// action
+	// Gitlab workflow
+	if glWorkflow, ok := s.summary.EnvVars["CI_PIPELINE_NAME"]; ok {
+		s.summary.SourceControlData.Workflow = glWorkflow
+	} else if glWorkflow, ok := s.summary.EnvVars["CI_JOB_STAGE"]; ok {
+		s.summary.SourceControlData.Workflow = glWorkflow
+	}
+
+	// Github action
 	if ghAction, ok := s.summary.EnvVars["GITHUB_ACTION"]; ok {
 		s.summary.SourceControlData.Action = ghAction
 	}
 
-	// workspace
+	// Gitlab action
+	if glAction, ok := s.summary.EnvVars["CI_JOB_STAGE"]; ok {
+		s.summary.SourceControlData.Action = glAction
+	}
+
+	// Github workspace
 	if ghWorkspace, ok := s.summary.EnvVars["GITHUB_WORKSPACE"]; ok {
 		s.summary.SourceControlData.Workspace = ghWorkspace
 	}
 
-	// event_name
+	// Gitlab workspace
+	if glWorkspace, ok := s.summary.EnvVars["CI_PROJECT_DIR"]; ok {
+		s.summary.SourceControlData.Workspace = glWorkspace
+	}
+
+	// Github event_name
 	if ghEventName, ok := s.summary.EnvVars["GITHUB_EVENT_NAME"]; ok {
 		s.summary.SourceControlData.EventName = ghEventName
 	}
 
-	// job
+	// Gitlab event_name
+	if glEventName, ok := s.summary.EnvVars["CI_PIPELINE_SOURCE"]; ok {
+		s.summary.SourceControlData.EventName = glEventName
+	}
+
+	// Github job
 	if ghJob, ok := s.summary.EnvVars["GITHUB_JOB"]; ok {
 		s.summary.SourceControlData.Job = ghJob
+	}
+
+	// Gitlab job
+	if ghJob, ok := s.summary.EnvVars["CI_JOB_NAME"]; ok {
+		s.summary.SourceControlData.Job = ghJob
+	}
+
+	// Gitlab runner arch
+	if runnerArch, ok := s.summary.EnvVars["CI_RUNNER_EXECUTABLE_ARCH"]; ok {
+		s.summary.SourceControlData.RunnerArch = runnerArch
 	}
 
 	// runner arch
 	if runnerArch, ok := s.summary.EnvVars["RUNNER_ARCH"]; ok {
 		s.summary.SourceControlData.RunnerArch = runnerArch
+	}
+
+	// Gitlab runner name
+	if runnerName, ok := s.summary.EnvVars["CI_RUNNER_DESCRIPTION"]; ok {
+		s.summary.SourceControlData.RunnerName = runnerName
 	}
 
 	// runner name
