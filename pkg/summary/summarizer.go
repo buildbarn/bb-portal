@@ -842,7 +842,7 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 	// Set build URL and UUID
 	s.summary.BuildURL = s.summary.InvocationSummary.EnvVars["BUILD_URL"]
 	// Gitlab
-	if glBuVal, ok := s.summary.EnvVars["CI_PIPELINE_URL"]; ok {
+	if glBuVal, ok := s.summary.EnvVars["CI_PIPELINE_URL"]; ok && s.summary.BuildURL == "" {
 		s.summary.BuildURL = glBuVal
 	}
 	s.summary.BuildUUID = uuid.NewSHA1(uuid.NameSpaceURL, []byte(s.summary.BuildURL))
