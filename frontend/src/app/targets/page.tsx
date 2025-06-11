@@ -6,8 +6,14 @@ import PortalCard from '@/components/PortalCard';
 import { Alert, Space } from 'antd';
 import { DeploymentUnitOutlined } from '@ant-design/icons';
 import TargetGrid from '@/components/Targets/TargetGrid';
+import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
+import PageDisabled from '@/components/PageDisabled';
 
 const Page: React.FC = () => {
+    if (!isFeatureEnabled(FeatureType.BES) || !isFeatureEnabled(FeatureType.BES_PAGE_TARGETS)) {
+        return <PageDisabled />;
+    }
+
     return (
         <Content
             content={

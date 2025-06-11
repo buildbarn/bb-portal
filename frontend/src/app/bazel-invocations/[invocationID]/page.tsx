@@ -11,13 +11,15 @@ import {
 import {
   BAZEL_INVOCATION_FRAGMENT,
   FULL_BAZEL_INVOCATION_DETAILS,
-  LOAD_FULL_BAZEL_INVOCATION_DETAILS, PROBLEM_INFO_FRAGMENT
+  LOAD_FULL_BAZEL_INVOCATION_DETAILS
 } from "@/app/bazel-invocations/[invocationID]/index.graphql";
 import { getFragmentData } from "@/graphql/__generated__";
 import { Spin } from "antd";
 import ErrorAlert from "@/components/ErrorAlert";
-import BuildProblems from "@/components/Problems";
 import BazelInvocation from "@/components/BazelInvocation";
+import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
+import { notFound } from 'next/navigation';
+
 interface PageParams {
   params: {
     invocationID: string
@@ -66,6 +68,13 @@ const shouldStopPolling = (invocation: FullBazelInvocationDetailsFragment | null
 }
 
 const Page: React.FC<PageParams> = ({ params }) => {
+  if (!isFeatureEnabled(FeatureType.BES)) {
+    return notFound();
+  }
+  return <PageContent params={params}/>
+}
+
+const PageContent: React.FC<PageParams> = ({ params }) => {
   const { data, error, loading, stopPolling, networkStatus } = useQuery<LoadFullBazelInvocationDetailsQuery>(
     LOAD_FULL_BAZEL_INVOCATION_DETAILS,
     {

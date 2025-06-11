@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Content from "@/components/Content";
 import PortalCard from "@/components/PortalCard";
 import { Space, Table, TableColumnsType, Typography } from "antd";
@@ -9,11 +9,6 @@ import {
   FilterOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import TargetDetails from "@/components/Targets/TargetDetails";
-import {
-  FindBuildByUuidQuery,
-  FindBuildByUuidQueryVariables,
-} from "@/graphql/__generated__/graphql";
 import { FIND_BUILD_BY_UUID_QUERY } from "./index.graphql";
 import { useQuery } from "@apollo/client";
 import PortalAlert from "@/components/PortalAlert";
@@ -25,11 +20,14 @@ import BuildStepResultTag, {
   BuildStepResultEnum,
 } from "@/components/BuildStepResultTag";
 import PortalDuration from "@/components/PortalDuration";
+import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
+import PageDisabled from "@/components/PageDisabled";
 
-interface StatusProps {
-  buildUUID: string;
+interface PageParams {
+  params: {
+    buildUUID: string;
+  }
 }
-
 interface BuildGridRowDataType {
   key: React.Key;
   user: string;
@@ -42,9 +40,15 @@ interface BuildGridRowDataType {
   job: string;
 }
 
-export default function Page({ params }: { params: { buildUUID: string } }) {
-  const [variables, setVariables] = useState<FindBuildByUuidQueryVariables>({});
 
+const Page: React.FC<PageParams> = ({ params }) => {
+  if (!isFeatureEnabled(FeatureType.BES)) {
+    return <PageDisabled />;
+  }
+  return <PageContent params={params}/>
+}
+
+const PageContent: React.FC<PageParams> = ({ params }) => {
   const {
     loading: loading,
     data: responseData,
@@ -290,3 +294,5 @@ export default function Page({ params }: { params: { buildUUID: string } }) {
     />
   );
 }
+
+export default Page;

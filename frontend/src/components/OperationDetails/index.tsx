@@ -49,7 +49,7 @@ const OperationDetails: React.FC<Props> = ({ operationID }) => {
     queryKey: ["killOperationsButtonState", operationID],
     queryFn: async (): Promise<boolean> => {
       const response = await fetch(
-        `${env("NEXT_PUBLIC_BES_BACKEND_URL") || ""}/api/checkPermissions/killOperation/${operationID}`,
+        `${env("NEXT_PUBLIC_BES_BACKEND_URL") || ""}/api/v1/checkPermissions/killOperation/${operationID}`,
       );
       return (await response.json()).allowed;
     },

@@ -6,6 +6,8 @@ import PortalCard from '@/components/PortalCard';
 import { Space } from 'antd';
 import { DeploymentUnitOutlined } from '@ant-design/icons';
 import TargetDetails from '@/components/Targets/TargetDetails';
+import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
+import PageDisabled from '@/components/PageDisabled';
 
 interface PageParams {
     params: {
@@ -14,6 +16,10 @@ interface PageParams {
 }
 
 const Page: React.FC<PageParams> = ({ params }) => {
+    if (!isFeatureEnabled(FeatureType.BES) || !isFeatureEnabled(FeatureType.BES_PAGE_TARGETS)) {
+        return <PageDisabled />;
+    }
+
     const label = decodeURIComponent(atob(decodeURIComponent(params.slug)))
     return (
         <Content

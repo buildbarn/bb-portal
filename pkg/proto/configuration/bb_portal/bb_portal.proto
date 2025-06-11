@@ -10,55 +10,73 @@ import "pkg/proto/configuration/http/http.proto";
 
 option go_package = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal";
 
-message ApplicationConfiguration {
-  // Configuration for HTTP servers that expose the web UI.
-  repeated buildbarn.configuration.http.ServerConfiguration http_servers = 1;
-
+message BuildEventStreamService {
   // gRPC servers to spawn to listen for requests from clients.
-  repeated buildbarn.configuration.grpc.ServerConfiguration grpc_servers = 2;
+  repeated buildbarn.configuration.grpc.ServerConfiguration grpc_servers = 1;
+}
 
-  // Common configuration options that apply to all Buildbarn binaries.
-  buildbarn.configuration.global.Configuration global = 3;
+message BrowserService {
+  buildbarn.configuration.grpc.ClientConfiguration action_cache_client = 1;
+  buildbarn.configuration.grpc.ClientConfiguration
+      content_addressable_storage_client = 2;
+  buildbarn.configuration.grpc.ClientConfiguration
+      initial_size_class_cache_client = 3;
+  buildbarn.configuration.grpc.ClientConfiguration
+      file_system_access_cache_client = 4;
+
+  // Configuration for serving files with Content Addressable Storage.
+  buildbarn.configuration.blobstore.BlobAccessConfiguration
+      serve_files_cas_configuration = 5;
+}
+
+message SchedulerService {
+  // Configures the gRPC-Web proxies that are used from the web UI to
+  // communicate with the Buildbarn.
+  buildbarn.configuration.grpc.ClientConfiguration build_queue_state_client = 1;
 
   // Authorizer that is used to determine which instances the user is allowed
   // to access.
   buildbarn.configuration.auth.AuthorizerConfiguration
-      instance_name_authorizer = 4;
-
-  // Configures the gRPC-Web proxies that are used from the web UI to
-  // communicate with the Buildbarn.
-  buildbarn.configuration.grpc.ClientConfiguration build_queue_state_client = 5;
-  buildbarn.configuration.grpc.ClientConfiguration action_cache_client = 6;
-  buildbarn.configuration.grpc.ClientConfiguration
-      content_addressable_storage_client = 7;
-  buildbarn.configuration.grpc.ClientConfiguration
-      initial_size_class_cache_client = 8;
-  buildbarn.configuration.grpc.ClientConfiguration
-      file_system_access_cache_client = 9;
-
-  // Configuration for serving files with Content Addressable Storage.
-  buildbarn.configuration.blobstore.BlobAccessConfiguration
-      serve_files_cas_configuration = 10;
-
-  // Maximum Protobuf message size to unmarshal.
-  int64 maximum_message_size_bytes = 11;
-
-  // URL to proxy frontend reqeusts to. If this is not set or it is an empty
-  // string, the proxy will not be started.
-  string frontend_proxy_url = 12;
-
-  // Origins that are allowed to make requests to the backend. If this is not
-  // configured correctly, it will cause CORS errors in the browser.
-  repeated string allowed_origins = 13;
+      kill_operations_authorizer = 2;
 
   // The page size with which the backend fetches operations from the
   // BuildQueueState API.
   //
   // Recommended value: 500
-  uint32 listOperationsPageSize = 14;
+  uint32 listOperationsPageSize = 3;
+}
+
+message ApplicationConfiguration {
+  // Configuration for the main HTTP server for the application. All HTTP
+  // traffic is routed through this server, including gRPC-Web traffic from the
+  // frontend, and the proxy for the frontend UI (if configured).
+  repeated buildbarn.configuration.http.ServerConfiguration http_servers = 1;
+
+  // Common configuration options that apply to all Buildbarn binaries.
+  buildbarn.configuration.global.Configuration global = 2;
+
+  // Configurations for the various services that are part of the application.
+  // If a service is not configured, it will not be started.
+  BuildEventStreamService bes_service_configuration = 3;
+  BrowserService browser_service_configuration = 4;
+  SchedulerService scheduler_service_configuration = 5;
+
+  // Maximum Protobuf message size to unmarshal.
+  int64 maximum_message_size_bytes = 6;
 
   // Authorizer that is used to determine which instances the user is allowed
-  // to kill operations on.
+  // to access resources from.
   buildbarn.configuration.auth.AuthorizerConfiguration
-      kill_operations_authorizer = 15;
+      instance_name_authorizer = 7;
+
+  // URL to proxy frontend reqeusts to. If this is not set or it is an empty
+  // string, the frontend proxy will not be started.
+  string frontend_proxy_url = 8;
+
+  // Origins that are allowed to make requests to the backend. If this is not
+  // configured correctly, it will cause CORS errors in the browser. If the
+  // frontend will exclusively be accessed from the same origin as
+  // the backend, this should be ignored.
+  // Set to "*" to allow all origins.
+  repeated string allowed_origins = 9;
 }
