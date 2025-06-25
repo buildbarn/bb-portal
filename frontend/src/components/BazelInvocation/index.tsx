@@ -33,7 +33,6 @@ import themeStyles from "@/theme/theme.module.css";
 import BuildStepResultTag, {
   BuildStepResultEnum,
 } from "@/components/BuildStepResultTag";
-import DownloadButton from "@/components/DownloadButton";
 import Link from "@/components/Link";
 import LogViewer from "../LogViewer";
 import TargetMetricsDisplay from "../TargetMetrics";
@@ -45,9 +44,8 @@ import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
 import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
 import BuildProblems from "../Problems";
-import { generateFileUrl } from "@/utils/urlGenerator";
-import { DigestFunction_Value } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import ActionStatisticsDisplay from "../ActionStatisticsDisplay";
+import ProfileDropdown from "../ProfileDropdown";
 import ansiRegex from 'ansi-regex';
 
 const ansiEscapeRegex = ansiRegex();
@@ -173,22 +171,12 @@ const BazelInvocation: React.FC<{
   ];
 
   if (profile) {
-    const url = generateFileUrl(
-      instanceName ?? undefined,
-      DigestFunction_Value.SHA256,
-      {
-        hash: profile.digest,
-        sizeBytes: profile.sizeInBytes.toString()
-      },
-      profile.name
-    )
     extraBits.push(
-      <DownloadButton
-        url={url}
-        fileName="profile"
-        buttonLabel="Profile"
-        enabled={true}
-      />
+      <ProfileDropdown
+        instanceName={instanceName ?? undefined}
+        profile={profile}
+        invocationID={invocationID}
+      />,
     );
   }
 
