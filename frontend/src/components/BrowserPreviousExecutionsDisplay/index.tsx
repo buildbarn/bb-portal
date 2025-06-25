@@ -31,6 +31,7 @@ const BrowserPreviousExecutionsDisplay: React.FC<Props> = ({
           )}/previous_execution_stats/${
             reducedActionDigest.hash
           }-${reducedActionDigest.sizeBytes}`}
+          style={{ textDecoration: "underline" }}
         >
           Previous execution stats
         </Link>
