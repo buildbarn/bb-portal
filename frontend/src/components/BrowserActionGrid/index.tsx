@@ -120,6 +120,7 @@ const BrowserActionGrid: React.FC<Params> = ({
                 )}/action/${data.actionDigest.hash}-${
                   data.actionDigest.sizeBytes
                 }`}
+                style={{ textDecoration: "underline" }}
               >
                 Action
               </Link>
@@ -205,6 +206,7 @@ const BrowserActionGrid: React.FC<Params> = ({
                   fileSystemAccessProfileReference,
                 ),
               }}
+              style={{ textDecoration: "underline" }}
             >
               Input files
             </Link>
