@@ -1,5 +1,5 @@
 import type { PerSizeClassStats } from "@/lib/grpc-client/buildbarn/iscc/iscc";
-import { formatDuration } from "@/utils/formatValues";
+import { readableDurationFromProtobufDuration } from "@/utils/time";
 import { Space, Typography } from "antd";
 import SizeClassOutcomeTag from "../SizeClassOutcomeTag";
 
@@ -16,7 +16,7 @@ const SizeClassOutcome: React.FC<Props> = ({ sizeClassStats }) => {
             return (
               // biome-ignore lint/suspicious/noArrayIndexKey: We have nothing better to use
               <SizeClassOutcomeTag color="success" key={index}>
-                Succeeded: {formatDuration(val.succeeded)}
+                Succeeded: {readableDurationFromProtobufDuration(val.succeeded)}
               </SizeClassOutcomeTag>
             );
           }
@@ -24,7 +24,7 @@ const SizeClassOutcome: React.FC<Props> = ({ sizeClassStats }) => {
             return (
               // biome-ignore lint/suspicious/noArrayIndexKey: We have nothing better to use
               <SizeClassOutcomeTag color="warning" key={index}>
-                Timed out: {formatDuration(val.timedOut)}
+                Timed out: {readableDurationFromProtobufDuration(val.timedOut)}
               </SizeClassOutcomeTag>
             );
           }

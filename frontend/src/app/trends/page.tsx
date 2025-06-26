@@ -11,6 +11,7 @@ import FIND_BUILD_DURATIONS from './index.graphql';
 import { AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Area } from 'recharts';
 import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
 import PageDisabled from '@/components/PageDisabled';
+import { readableDurationFromMilliseconds } from '@/utils/time';
 
 const Page: React.FC = () => {
     if (!isFeatureEnabled(FeatureType.BES)) {
@@ -95,10 +96,10 @@ const PageContent: React.FC = () => {
                             <Row>
                                 <Space size="large">
                                     <Statistic title="Total" value={data?.findBazelInvocations.totalCount} valueStyle={{ color: "#82ca9d" }} />
-                                    <Statistic title="Average" value={avg} valueStyle={{ color: "#82ca9d" }} />
-                                    <Statistic title="Median" value={median} valueStyle={{ color: "#8884d8" }} />
-                                    <Statistic title="Max" value={max} />
-                                    <Statistic title="Min" value={min} />
+                                    <Statistic title="Average" value={dataPoints.length == 0 ? "-" : readableDurationFromMilliseconds(avg, {smallestUnit: "ms"})} valueStyle={{ color: "#82ca9d" }} />
+                                    <Statistic title="Median" value={dataPoints.length == 0 ? "-" : readableDurationFromMilliseconds(median, {smallestUnit: "ms"})} valueStyle={{ color: "#8884d8" }} />
+                                    <Statistic title="Max" value={dataPoints.length == 0 ? "-" : readableDurationFromMilliseconds(max, {smallestUnit: "ms"})} />
+                                    <Statistic title="Min" value={dataPoints.length == 0 ? "-" : readableDurationFromMilliseconds(min, {smallestUnit: "ms"})} />
                                 </Space>
                             </Row>
                             <Row>

@@ -7,6 +7,7 @@ import PortalCard from "../PortalCard";
 import { PieChartOutlined, HddOutlined } from "@ant-design/icons";
 import { renderActiveShape, newColorFind } from "../Utilities/renderShape";
 import styles from "../../theme/theme.module.css";
+import { readableFileSize } from "@/utils/filesize";
 
 interface GarbageMetricDetailDisplayType {
   key: React.Key;
@@ -64,15 +65,15 @@ const MemoryMetricsDisplay: React.FC<{
           <Space size="large">
             <Statistic
               title="Peak Post GC Heap Size"
-              value={memoryMetrics?.peakPostGcHeapSize ?? 0}
+              value={readableFileSize(memoryMetrics?.peakPostGcHeapSize ?? 0)}
             />
             <Statistic
               title="Peak Post TC Tenured Space Heap Size"
-              value={memoryMetrics?.peakPostGcTenuredSpaceHeapSize ?? 0}
+              value={readableFileSize(memoryMetrics?.peakPostGcTenuredSpaceHeapSize ?? 0)}
             />
             <Statistic
               title="Used Heap Size Post Build"
-              value={memoryMetrics?.usedHeapSizePostBuild ?? 0}
+              value={readableFileSize(memoryMetrics?.usedHeapSizePostBuild ?? 0)}
             />
           </Space>
         </Row>

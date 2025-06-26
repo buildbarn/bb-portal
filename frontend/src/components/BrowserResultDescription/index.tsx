@@ -1,7 +1,7 @@
 import type { ExecuteResponse } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { POSIXResourceUsage } from "@/lib/grpc-client/buildbarn/resourceusage/resourceusage";
 import type { BrowserPageParams } from "@/types/BrowserPageType";
-import { formatFileSizeFromString } from "@/utils/formatValues";
+import { readableFileSizeFromString } from "@/utils/filesize";
 import { generateFileUrl } from "@/utils/urlGenerator";
 import { Descriptions, Space, Tag, Typography } from "antd";
 import Paragraph from "antd/es/typography/Paragraph";
@@ -81,7 +81,7 @@ const BrowserResultDescription: React.FC<Params> = ({
             <Typography.Text>
               The <Link href={logLinkHref}>log file</Link> for this action is to
               large to display (
-              {formatFileSizeFromString(consoleOutput.digest.sizeBytes)}).
+              {readableFileSizeFromString(consoleOutput.digest.sizeBytes)}).
             </Typography.Text>
           );
         }

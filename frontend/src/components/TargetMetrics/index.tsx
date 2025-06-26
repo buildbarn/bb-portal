@@ -8,8 +8,8 @@ import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
 import NullBooleanTag from "../NullableBooleanTag";
 import TargetAbortReasonTag, { AbortReasonsEnum } from "./targetAbortReasonTag";
 import styles from "../../theme/theme.module.css"
-import { millisecondsToTime } from "../Utilities/time";
 import Link from "next/link";
+import { readableDurationFromMilliseconds } from "@/utils/time";
 interface TargetDataType {
     key: React.Key;
     name: string;           //label
@@ -79,7 +79,7 @@ const TargetMetricsDisplay: React.FC<{
                 title: "Duration",
                 dataIndex: "value",
                 align: "right",
-                render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.value)}</span>,
+                render: (_, record) => <span className={styles.numberFormat}>{readableDurationFromMilliseconds(record.value, {smallestUnit: "ms"})}</span>,
                 sorter: (a, b) => a.value - b.value,
             },
             {

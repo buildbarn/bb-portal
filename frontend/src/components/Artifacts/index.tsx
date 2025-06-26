@@ -5,7 +5,7 @@ import { ArtifactMetrics } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { RadiusUprightOutlined } from "@ant-design/icons";
 import styles from "../../theme/theme.module.css"
-import { record } from "zod";
+import { readableFileSize } from "@/utils/filesize";
 
 
 const artifacts_columns: TableColumnsType<ArtifactMetricsTableData> = [
@@ -14,10 +14,10 @@ const artifacts_columns: TableColumnsType<ArtifactMetricsTableData> = [
         dataIndex: "name"
     },
     {
-        title: "Size (bytes)",
+        title: "Size",
         dataIndex: "sizeInBytes",
         align: "right",
-        render: (_, record) => <span className={styles.numberFormat} >{record.sizeInBytes}</span>,
+        render: (_, record) => <span className={styles.numberFormat} >{readableFileSize(record.sizeInBytes)}</span>,
         sorter: (a, b) => (a.sizeInBytes ?? 0) - (b.sizeInBytes ?? 0),
     },
     {

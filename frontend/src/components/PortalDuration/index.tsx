@@ -4,17 +4,16 @@ import { ClockCircleFilled } from '@ant-design/icons';
 import styles from './index.module.css';
 import themeStyles from '@/theme/theme.module.css';
 import dayjs from '@/lib/dayjs';
-import preciseTo from '@/components/Utilities/time';
+import { readableDurationFromDates } from '@/utils/time';
 
 interface Props {
   from?: string | null;
   to?: string | null;
-  includePlus?: boolean;
   includeIcon?: boolean;
   includePopover?: boolean;
 }
 
-const PortalDuration: React.FC<Props> = ({ from, to, includePlus, includeIcon, includePopover }) => {
+const PortalDuration: React.FC<Props> = ({ from, to, includeIcon, includePopover }) => {
   const [now, setNow] = useState(dayjs().toString());
   useEffect(() => {
     const intervalID = setInterval(() => {
@@ -27,8 +26,7 @@ const PortalDuration: React.FC<Props> = ({ from, to, includePlus, includeIcon, i
   const content = (
     <Tag icon={includeIcon && <ClockCircleFilled />} bordered={false} className={themeStyles.tagClickable}>
       <div className={styles.duration}>
-        {includePlus && '+'}
-        {preciseTo(dayjs(from), dayjs(actualTo))}
+        {readableDurationFromDates(new Date(from), new Date(actualTo))}
       </div>
     </Tag>
   );
