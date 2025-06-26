@@ -24,40 +24,31 @@ const CommandLineDisplay: React.FC<{ commandLineData: BazelCommand | undefined |
         <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
             <PortalCard type="inner" icon={<CodeOutlined />} titleBits={["Explicit Command Line:", cmdLine]}>
                 <Row>
-                    <Space size="large">
-                        <div>
-                            <List
-                                bordered
-                                header={<div><strong>Effective Command Line Options:</strong></div>}
-                                dataSource={commandLineData?.cmdLine?.filter(x => x !== undefined).toSorted() as string[]}
-                                renderItem={(item) => <List.Item>{item}</List.Item>}
-                            />
-                        </div>
-                    </Space>
+                    <List
+                        bordered
+                        size="small"
+                        header={<div><strong>Raw Command Line Options:</strong></div>}
+                        dataSource={commandLineData?.cmdLine?.filter(x => x !== undefined) as string[]}
+                        renderItem={(item) => <List.Item>{item}</List.Item>}
+                    />
                 </Row>
                 <Row>
-                    <Space size="large">
-                        <div>
-                            <List
-                                bordered
-                                header={<div><strong>Explicit Startup Options:</strong></div>}
-                                dataSource={commandLineData?.explicitStartupOptions?.filter(x => x !== undefined) as string[]}
-                                renderItem={(item) => <List.Item>{item}</List.Item>}
-                            />
-                        </div>
-                    </Space>
+                    <List
+                        bordered
+                        size="small"
+                        header={<div><strong>Explicit Startup Options:</strong></div>}
+                        dataSource={commandLineData?.explicitStartupOptions?.filter(x => x !== undefined) as string[]}
+                        renderItem={(item) => <List.Item>{item}</List.Item>}
+                    />
                 </Row>
                 <Row>
-                    <Space size="large">
-                        <div>
-                            <List
-                                bordered
-                                header={<div><strong>Effective Startup Options:</strong></div>}
-                                dataSource={commandLineData?.startupOptions?.filter(x => x !== undefined) as string[]}
-                                renderItem={(item) => <List.Item>{item}</List.Item>}
-                            />
-                        </div>
-                    </Space>
+                    <List
+                        bordered
+                        size="small"
+                        header={<div><strong>Effective Startup Options:</strong></div>}
+                        dataSource={commandLineData?.startupOptions?.filter(x => x !== undefined) as string[]}
+                        renderItem={(item) => <List.Item>{item}</List.Item>}
+                    />
                 </Row>
             </PortalCard>
         </Space>
