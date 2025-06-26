@@ -3,6 +3,8 @@ import type {
   Maybe,
 } from "@/graphql/__generated__/graphql";
 import { Space, Statistic } from "antd";
+import { readableFileSize } from "@/utils/filesize";
+import { readableDurationFromMilliseconds } from "@/utils/time";
 import { Bar, BarChart, LabelList, Legend } from "recharts";
 import { YAxis } from "recharts";
 import { nullPercent } from "../Utilities/nullPercent";
@@ -69,14 +71,23 @@ const ActionCacheOverview: React.FC<Props> = ({ acStatistics }) => {
         value={acStatistics?.misses ?? 0}
         valueStyle={{ color: MISS_COLOR }}
       />
-      <Statistic title="Size (bytes)" value={acStatistics?.sizeInBytes ?? 0} />
       <Statistic
-        title="Save Time(ms)"
-        value={acStatistics?.saveTimeInMs ?? 0}
+        title="Size"
+        value={readableFileSize(acStatistics?.sizeInBytes ?? 0)}
       />
       <Statistic
-        title="Load Time(ms)"
-        value={acStatistics?.loadTimeInMs ?? 0}
+        title="Save Time"
+        value={readableDurationFromMilliseconds(
+          acStatistics?.saveTimeInMs ?? 0,
+          { smallestUnit: "ms" },
+        )}
+      />
+      <Statistic
+        title="Load Time"
+        value={readableDurationFromMilliseconds(
+          acStatistics?.loadTimeInMs ?? 0,
+          { smallestUnit: "ms" },
+        )}
       />
     </Space>
   );

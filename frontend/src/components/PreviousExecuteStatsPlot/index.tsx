@@ -1,5 +1,6 @@
 import type { PreviousExecutionStats } from "@/lib/grpc-client/buildbarn/iscc/iscc";
-import { formatDurationFromSeconds } from "@/utils/formatValues";
+import { readableDurationFromSeconds } from "@/utils/time";
+import { protobufDurationToSeconds } from "@/utils/time";
 import {
   Legend,
   ReferenceArea,
@@ -9,7 +10,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { durationToSeconds } from "../Utilities/time";
 
 interface Props {
   prevStats: PreviousExecutionStats;
@@ -37,7 +37,7 @@ const PreviousExecutionsPlot: React.FC<Props> = ({ prevStats }) => {
       // TODO: Make random scatter deterministic for each data point
       const xValue = i + (Math.random() - 0.5) / 3;
       if (prevExec.succeeded) {
-        const time = durationToSeconds(prevExec.succeeded);
+        const time = protobufDurationToSeconds(prevExec.succeeded);
         succeeded.push({
           x: xValue,
           y: time,
@@ -45,7 +45,7 @@ const PreviousExecutionsPlot: React.FC<Props> = ({ prevStats }) => {
         });
       }
       if (prevExec.timedOut) {
-        const time = durationToSeconds(prevExec.timedOut);
+        const time = protobufDurationToSeconds(prevExec.timedOut);
         timedOut.push({
           x: xValue,
           y: time,
@@ -106,7 +106,10 @@ const PreviousExecutionsPlot: React.FC<Props> = ({ prevStats }) => {
               return [props.payload.sizeClass, name];
             }
             case "Execution time": {
-              return [formatDurationFromSeconds(props.payload.y, 10), name];
+              return [
+                readableDurationFromSeconds(props.payload.y, { precision: 5 }),
+                name,
+              ];
             }
             default: {
               return [value, name];

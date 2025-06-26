@@ -11,8 +11,9 @@ import {
   digestFunctionValueToString,
   getReducedActionDigest_SHA256,
 } from "@/utils/digestFunctionUtils";
-import { formatDuration, formatFileSizeFromString } from "@/utils/formatValues";
+import { readableFileSizeFromString } from "@/utils/filesize";
 import { generateDirectoryUrl } from "@/utils/urlGenerator";
+import { readableDurationFromProtobufDuration } from "@/utils/time";
 import { useQuery } from "@tanstack/react-query";
 import { Descriptions, Space, Spin, Typography } from "antd";
 import Link from "next/link";
@@ -135,7 +136,7 @@ const BrowserActionGrid: React.FC<Params> = ({
           >
             {data.action.timeout && (
               <Descriptions.Item label="Timeout:">
-                {formatDuration(data.action.timeout)}
+                {readableDurationFromProtobufDuration(data.action.timeout)}
               </Descriptions.Item>
             )}
             <Descriptions.Item label="Do not cache">
@@ -271,7 +272,7 @@ const BrowserActionGrid: React.FC<Params> = ({
             {data.executeResponse.result.executionMetadata
               .virtualExecutionDuration && (
               <Descriptions.Item label="Virtual execution duration">
-                {formatDuration(
+                {readableDurationFromProtobufDuration(
                   data.executeResponse.result.executionMetadata
                     .virtualExecutionDuration,
                 )}
@@ -349,15 +350,15 @@ const BrowserActionGrid: React.FC<Params> = ({
           >
             <Descriptions.Item label="CPU time">
               {data.posixResourceUsage.userTime &&
-                `${formatDuration(data.posixResourceUsage.userTime)} user`}
+                `${readableDurationFromProtobufDuration(data.posixResourceUsage.userTime)} user`}
               {data.posixResourceUsage.userTime &&
                 data.posixResourceUsage.systemTime &&
                 ","}{" "}
               {data.posixResourceUsage.systemTime &&
-                `${formatDuration(data.posixResourceUsage.systemTime)} system`}
+                `${readableDurationFromProtobufDuration(data.posixResourceUsage.systemTime)} system`}
             </Descriptions.Item>
             <Descriptions.Item label="Maximum resident set size">
-              {formatFileSizeFromString(
+              {readableFileSizeFromString(
                 data.posixResourceUsage.maximumResidentSetSize,
               )}
             </Descriptions.Item>
@@ -398,21 +399,21 @@ const BrowserActionGrid: React.FC<Params> = ({
             <Descriptions.Item label="Peak usage">
               {`${
                 data.filePoolResourceUsage.filesCountPeak
-              } files, having a total size of ${formatFileSizeFromString(
+              } files, having a total size of ${readableFileSizeFromString(
                 data.filePoolResourceUsage.filesSizeBytesPeak,
               )}`}
             </Descriptions.Item>
             <Descriptions.Item label="Reads">
               {`${
                 data.filePoolResourceUsage.readsCount
-              } operations, having a total size of ${formatFileSizeFromString(
+              } operations, having a total size of ${readableFileSizeFromString(
                 data.filePoolResourceUsage.readsSizeBytes,
               )}`}
             </Descriptions.Item>
             <Descriptions.Item label="Writes">
               {`${
                 data.filePoolResourceUsage.writesCount
-              } operations, having a total size of ${formatFileSizeFromString(
+              } operations, having a total size of ${readableFileSizeFromString(
                 data.filePoolResourceUsage.writesSizeBytes,
               )}`}
             </Descriptions.Item>
