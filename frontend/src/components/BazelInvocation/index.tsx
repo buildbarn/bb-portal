@@ -19,21 +19,14 @@ import { Space, Tabs, Tooltip, Typography } from "antd";
 import type { TabsProps } from "antd/lib";
 import {
   BuildOutlined,
-  FileSearchOutlined,
-  ClusterOutlined,
-  ExclamationCircleOutlined,
-  NodeCollapseOutlined,
-  DeploymentUnitOutlined,
+  FileSearchOutlined, ExclamationCircleOutlined, DeploymentUnitOutlined,
   ExperimentOutlined,
   RadiusUprightOutlined,
   AreaChartOutlined,
   FieldTimeOutlined,
-  WifiOutlined,
-  HddOutlined,
-  CodeOutlined,
+  WifiOutlined, CodeOutlined,
   BranchesOutlined,
-  InfoCircleOutlined,
-  CopyFilled,
+  InfoCircleOutlined, LineChartOutlined
 } from "@ant-design/icons";
 import themeStyles from "@/theme/theme.module.css";
 import BuildStepResultTag, {
@@ -42,10 +35,7 @@ import BuildStepResultTag, {
 import DownloadButton from "@/components/DownloadButton";
 import Link from "@/components/Link";
 import { LogViewerCard } from "../LogViewer";
-import RunnerMetrics from "../RunnerMetrics";
-import AcMetrics from "../ActionCacheMetrics";
 import TargetMetricsDisplay from "../TargetMetrics";
-import ActionDataMetrics from "../ActionDataMetrics";
 import ArtifactsDataMetrics from "../Artifacts";
 import MemoryMetricsDisplay from "../MemoryMetrics";
 import TimingMetricsDisplay from "../TimingMetrics";
@@ -56,6 +46,10 @@ import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
 import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
 import BuildProblems from "../Problems";
+import ansiRegex from 'ansi-regex';
+import ActionStatisticsDisplay from "../ActionStatisticsDisplay";
+
+const ansiEscapeRegex = ansiRegex();
 
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
@@ -219,11 +213,10 @@ const BazelInvocation: React.FC<{
     (artifactMetrics?.sourceArtifactsRead?.count ?? 0) == 0 &&
     (artifactMetrics?.outputArtifactsFromActionCache?.count ?? 0) == 0 &&
     (artifactMetrics?.topLevelArtifacts?.count ?? 0) == 0;
-  const hideActionsDataTab: boolean = acMetrics?.actionsExecuted == 0;
-  const hideActionCacheTab: boolean =
-    acMetrics?.actionCacheStatistics?.hits == 0 &&
-    acMetrics?.actionCacheStatistics?.misses == 0;
-  const hideRunnersTab: boolean = runnerMetrics.length == 0;
+  const hideActionsTab: boolean =
+    (acMetrics?.actionsExecuted == 0) &&
+    (acMetrics?.actionCacheStatistics?.hits == 0) &&
+    (acMetrics?.actionCacheStatistics?.misses == 0);
   const hideTimingTab: boolean =
     timingMetrics?.wallTimeInMs == 0 &&
     timingMetrics.executionPhaseTimeInMs == 0 &&
@@ -252,10 +245,8 @@ const BazelInvocation: React.FC<{
     { key: "BazelInvocationTabs-Memory", hide: hideMemoryTab },
     { key: "BazelInvocationTabs-Problems", hide: hideProblemsTab },
     { key: "BazelInvocationTabs-Artifacts", hide: hideArtifactsTab },
-    { key: "BazelInvocationTabs-ActionsData", hide: hideActionsDataTab },
-    { key: "BazelInvocationTabs-ActionCache", hide: hideActionCacheTab },
+    { key: "BazelInvocationTabs-ActionStatistics", hide: hideActionsTab},
     { key: "BazelInvocationTabs-Timing", hide: hideTimingTab },
-    { key: "BazelInvocationTabs-Runners", hide: hideRunnersTab },
   ];
 
   const [activeKey, setActiveKey] = useState(
@@ -310,6 +301,19 @@ const BazelInvocation: React.FC<{
       ),
     },
     {
+      key: "BazelInvocationTabs-ActionStatistics",
+      label: "Action Statistics",
+      icon: <LineChartOutlined />,
+      children: (
+        <Space direction="vertical" size="middle" className={themeStyles.space}>
+          <ActionStatisticsDisplay
+            actionData={acMetrics}
+            runnerMetrics={runnerMetrics}
+          />
+        </Space>
+      ),
+    },
+    {
       key: "BazelInvocationTabs-Logs",
       label: "Logs",
       icon: <FileSearchOutlined />,
@@ -327,36 +331,6 @@ const BazelInvocation: React.FC<{
           >
             <LogViewerCard log={logs} copyable={true} />
           </PortalCard>
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-Runners",
-      label: "Runners",
-      icon: <ClusterOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <RunnerMetrics runnerMetrics={runnerMetrics} />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-ActionCache",
-      label: "Action Cache",
-      icon: <HddOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <AcMetrics acMetrics={acMetrics} />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-ActionsData",
-      label: "Actions Data",
-      icon: <NodeCollapseOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <ActionDataMetrics acMetrics={acMetrics} />
         </Space>
       ),
     },
