@@ -12,7 +12,7 @@ export interface RequiredLinkProps {
 
 export type LinkProps = RequiredLinkProps & React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
-const EXTERNAL_LINK_PREFIXES = ['https://', 'http://', 'mailto:'];
+const EXTERNAL_LINK_PREFIXES = ['https://', 'http://', 'mailto:', 'data:'];
 
 const Link: React.FC<LinkProps> = ({ href, children, tooltipTitle, hideFlair, ...props }) => {
   const external = EXTERNAL_LINK_PREFIXES.some(prefix => href.startsWith(prefix));
