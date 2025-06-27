@@ -1,27 +1,19 @@
-import React, { RefAttributes, useState } from "react";
-import { Card, CardProps } from "antd";
+import PortalAlert from "@/components/PortalAlert";
 import { AnsiUp } from "ansi_up";
-import linkifyHtml from "linkify-html";
+import { Card, type CardProps } from "antd";
+import type React from "react";
+import type { RefAttributes } from "react";
 import { JSX } from "react/jsx-runtime";
 import styles from "./index.module.css";
-import PortalAlert from "@/components/PortalAlert";
 import IntrinsicAttributes = JSX.IntrinsicAttributes;
-import { GET_BUILD_LOGS } from "./graphql";
-import { GetBuildLogsQueryVariables } from "@/graphql/__generated__/graphql";
-import { useQuery } from "@apollo/client";
 
 const ansi = new AnsiUp();
-const MAX_LOG_LENGTH = 50000;
-
-const FILE_EXTENSIONS_IGNORE = [".py", ".so"];
 
 interface Props {
-  invocationId?: string | null;
   log?: string | null;
-  copyable?: boolean;
 }
 
-const LogViewer: React.FC<Props> = ({ log, invocationId }) => {
+const LogViewer: React.FC<Props> = ({ log }) => {
   if (!log) {
     return (
       <PortalAlert
@@ -44,14 +36,12 @@ type LogViewerCardProps = Props &
 
 export const LogViewerCard: React.FC<LogViewerCardProps> = ({
   log,
-  invocationId,
   bordered,
-  copyable,
   ...props
 }) => {
   return (
     <Card bordered={false} {...props}>
-      <LogViewer log={log} invocationId={invocationId} copyable={copyable} />
+      <LogViewer log={log} />
     </Card>
   );
 };

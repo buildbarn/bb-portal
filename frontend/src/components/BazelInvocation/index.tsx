@@ -40,7 +40,7 @@ import BuildStepResultTag, {
 } from "@/components/BuildStepResultTag";
 import DownloadButton from "@/components/DownloadButton";
 import Link from "@/components/Link";
-import { LogViewerCard } from "../LogViewer";
+import LogViewer from "../LogViewer";
 import RunnerMetrics from "../RunnerMetrics";
 import AcMetrics from "../ActionCacheMetrics";
 import TargetMetricsDisplay from "../TargetMetrics";
@@ -128,9 +128,6 @@ const BazelInvocation: React.FC<{
   targetData?.map((x) => {
     targetTimes.set(x.label ?? "", x.durationInMs ?? 0);
   });
-
-  //logs
-  const logs: string = buildLogs ?? "no build log data found...";
 
   //build the title
   let { exitCode } = state;
@@ -332,7 +329,7 @@ const BazelInvocation: React.FC<{
               </Tooltip>,
             ]}
           >
-            <LogViewerCard log={logs} copyable={true} />
+            <LogViewer log={buildLogs} />
           </PortalCard>
         </Space>
       ),
