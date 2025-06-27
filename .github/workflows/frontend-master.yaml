@@ -15,10 +15,14 @@ jobs:
         run: echo "${GITHUB_TOKEN}" | docker login ghcr.io -u $ --password-stdin
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Set frontend image tag variables
+        run: |
+          echo "TIMESTAMP=$(TZ=UTC date --date "@$(git show -s --format=%ct HEAD)" +%Y%m%dT%H%M%SZ)" >> $GITHUB_ENV
+          echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ghcr.io/buildbarn/bb-portal-frontend:${{ github.sha }}
+          tags: ghcr.io/buildbarn/bb-portal-frontend:${{ env.TIMESTAMP }}-${{ env.SHA_SHORT }}
