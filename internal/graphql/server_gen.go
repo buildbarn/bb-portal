@@ -1415,7 +1415,7 @@ func (e *executableSchema) Schema() *ast.Schema {
 	return parsedSchema
 }
 
-func (e *executableSchema) Complexity(typeName, field string, childComplexity int, rawArgs map[string]interface{}) (int, bool) {
+func (e *executableSchema) Complexity(typeName, field string, childComplexity int, rawArgs map[string]any) (int, bool) {
 	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
@@ -4739,8 +4739,8 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 }
 
 func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
-	rc := graphql.GetOperationContext(ctx)
-	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
+	opCtx := graphql.GetOperationContext(ctx)
+	ec := executionContext{opCtx, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputActionCacheStatisticsWhereInput,
 		ec.unmarshalInputActionDataWhereInput,
@@ -4788,7 +4788,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	)
 	first := true
 
-	switch rc.Operation.Operation {
+	switch opCtx.Operation.Operation {
 	case ast.Query:
 		return func(ctx context.Context) *graphql.Response {
 			var response graphql.Response
@@ -4796,7 +4796,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			if first {
 				first = false
 				ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
-				data = ec._Query(ctx, rc.Operation.SelectionSet)
+				data = ec._Query(ctx, opCtx.Operation.SelectionSet)
 			} else {
 				if atomic.LoadInt32(&ec.pendingDeferred) > 0 {
 					result := <-ec.deferredResults
@@ -4826,7 +4826,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			}
 			first = false
 			ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
-			data := ec._Mutation(ctx, rc.Operation.SelectionSet)
+			data := ec._Mutation(ctx, opCtx.Operation.SelectionSet)
 			var buf bytes.Buffer
 			data.MarshalGQL(&buf)
 
@@ -4903,9 +4903,9 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_deleteBuild_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_deleteBuild_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_deleteBuild_argsBuildUUID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -4915,13 +4915,9 @@ func (ec *executionContext) field_Mutation_deleteBuild_args(ctx context.Context,
 }
 func (ec *executionContext) field_Mutation_deleteBuild_argsBuildUUID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (uuid.UUID, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["buildUUID"]
-	if !ok {
+	if _, ok := rawArgs["buildUUID"]; !ok {
 		var zeroVal uuid.UUID
 		return zeroVal, nil
 	}
@@ -4935,9 +4931,9 @@ func (ec *executionContext) field_Mutation_deleteBuild_argsBuildUUID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteBuildsBefore_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_deleteBuildsBefore_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_deleteBuildsBefore_argsTime(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -4947,13 +4943,9 @@ func (ec *executionContext) field_Mutation_deleteBuildsBefore_args(ctx context.C
 }
 func (ec *executionContext) field_Mutation_deleteBuildsBefore_argsTime(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["time"]
-	if !ok {
+	if _, ok := rawArgs["time"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -4967,9 +4959,9 @@ func (ec *executionContext) field_Mutation_deleteBuildsBefore_argsTime(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteInvocation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_deleteInvocation_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_deleteInvocation_argsInvocationID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -4979,13 +4971,9 @@ func (ec *executionContext) field_Mutation_deleteInvocation_args(ctx context.Con
 }
 func (ec *executionContext) field_Mutation_deleteInvocation_argsInvocationID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (uuid.UUID, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["invocationId"]
-	if !ok {
+	if _, ok := rawArgs["invocationId"]; !ok {
 		var zeroVal uuid.UUID
 		return zeroVal, nil
 	}
@@ -4999,9 +4987,9 @@ func (ec *executionContext) field_Mutation_deleteInvocation_argsInvocationID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteInvocationsBefore_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_deleteInvocationsBefore_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_deleteInvocationsBefore_argsTime(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5011,13 +4999,9 @@ func (ec *executionContext) field_Mutation_deleteInvocationsBefore_args(ctx cont
 }
 func (ec *executionContext) field_Mutation_deleteInvocationsBefore_argsTime(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["time"]
-	if !ok {
+	if _, ok := rawArgs["time"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -5031,9 +5015,9 @@ func (ec *executionContext) field_Mutation_deleteInvocationsBefore_argsTime(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query___type_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5043,13 +5027,9 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 }
 func (ec *executionContext) field_Query___type_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -5063,9 +5043,9 @@ func (ec *executionContext) field_Query___type_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_bazelInvocation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_bazelInvocation_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_bazelInvocation_argsInvocationID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5075,13 +5055,9 @@ func (ec *executionContext) field_Query_bazelInvocation_args(ctx context.Context
 }
 func (ec *executionContext) field_Query_bazelInvocation_argsInvocationID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["invocationId"]
-	if !ok {
+	if _, ok := rawArgs["invocationId"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -5095,9 +5071,9 @@ func (ec *executionContext) field_Query_bazelInvocation_argsInvocationID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_findBazelInvocations_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_findBazelInvocations_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_findBazelInvocations_argsAfter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5132,13 +5108,9 @@ func (ec *executionContext) field_Query_findBazelInvocations_args(ctx context.Co
 }
 func (ec *executionContext) field_Query_findBazelInvocations_argsAfter(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["after"]
-	if !ok {
+	if _, ok := rawArgs["after"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5154,13 +5126,9 @@ func (ec *executionContext) field_Query_findBazelInvocations_argsAfter(
 
 func (ec *executionContext) field_Query_findBazelInvocations_argsFirst(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["first"]
-	if !ok {
+	if _, ok := rawArgs["first"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5176,13 +5144,9 @@ func (ec *executionContext) field_Query_findBazelInvocations_argsFirst(
 
 func (ec *executionContext) field_Query_findBazelInvocations_argsBefore(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["before"]
-	if !ok {
+	if _, ok := rawArgs["before"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5198,13 +5162,9 @@ func (ec *executionContext) field_Query_findBazelInvocations_argsBefore(
 
 func (ec *executionContext) field_Query_findBazelInvocations_argsLast(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["last"]
-	if !ok {
+	if _, ok := rawArgs["last"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5220,13 +5180,9 @@ func (ec *executionContext) field_Query_findBazelInvocations_argsLast(
 
 func (ec *executionContext) field_Query_findBazelInvocations_argsOrderBy(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*ent.BazelInvocationOrder, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["orderBy"]
-	if !ok {
+	if _, ok := rawArgs["orderBy"]; !ok {
 		var zeroVal *ent.BazelInvocationOrder
 		return zeroVal, nil
 	}
@@ -5242,13 +5198,9 @@ func (ec *executionContext) field_Query_findBazelInvocations_argsOrderBy(
 
 func (ec *executionContext) field_Query_findBazelInvocations_argsWhere(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*ent.BazelInvocationWhereInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["where"]
-	if !ok {
+	if _, ok := rawArgs["where"]; !ok {
 		var zeroVal *ent.BazelInvocationWhereInput
 		return zeroVal, nil
 	}
@@ -5262,9 +5214,9 @@ func (ec *executionContext) field_Query_findBazelInvocations_argsWhere(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_findBuilds_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_findBuilds_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_findBuilds_argsAfter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5294,13 +5246,9 @@ func (ec *executionContext) field_Query_findBuilds_args(ctx context.Context, raw
 }
 func (ec *executionContext) field_Query_findBuilds_argsAfter(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["after"]
-	if !ok {
+	if _, ok := rawArgs["after"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5316,13 +5264,9 @@ func (ec *executionContext) field_Query_findBuilds_argsAfter(
 
 func (ec *executionContext) field_Query_findBuilds_argsFirst(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["first"]
-	if !ok {
+	if _, ok := rawArgs["first"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5338,13 +5282,9 @@ func (ec *executionContext) field_Query_findBuilds_argsFirst(
 
 func (ec *executionContext) field_Query_findBuilds_argsBefore(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["before"]
-	if !ok {
+	if _, ok := rawArgs["before"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5360,13 +5300,9 @@ func (ec *executionContext) field_Query_findBuilds_argsBefore(
 
 func (ec *executionContext) field_Query_findBuilds_argsLast(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["last"]
-	if !ok {
+	if _, ok := rawArgs["last"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5382,13 +5318,9 @@ func (ec *executionContext) field_Query_findBuilds_argsLast(
 
 func (ec *executionContext) field_Query_findBuilds_argsWhere(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*ent.BuildWhereInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["where"]
-	if !ok {
+	if _, ok := rawArgs["where"]; !ok {
 		var zeroVal *ent.BuildWhereInput
 		return zeroVal, nil
 	}
@@ -5402,9 +5334,9 @@ func (ec *executionContext) field_Query_findBuilds_argsWhere(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_findMetrics_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_findMetrics_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_findMetrics_argsAfter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5434,13 +5366,9 @@ func (ec *executionContext) field_Query_findMetrics_args(ctx context.Context, ra
 }
 func (ec *executionContext) field_Query_findMetrics_argsAfter(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["after"]
-	if !ok {
+	if _, ok := rawArgs["after"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5456,13 +5384,9 @@ func (ec *executionContext) field_Query_findMetrics_argsAfter(
 
 func (ec *executionContext) field_Query_findMetrics_argsFirst(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["first"]
-	if !ok {
+	if _, ok := rawArgs["first"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5478,13 +5402,9 @@ func (ec *executionContext) field_Query_findMetrics_argsFirst(
 
 func (ec *executionContext) field_Query_findMetrics_argsBefore(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["before"]
-	if !ok {
+	if _, ok := rawArgs["before"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5500,13 +5420,9 @@ func (ec *executionContext) field_Query_findMetrics_argsBefore(
 
 func (ec *executionContext) field_Query_findMetrics_argsLast(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["last"]
-	if !ok {
+	if _, ok := rawArgs["last"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5522,13 +5438,9 @@ func (ec *executionContext) field_Query_findMetrics_argsLast(
 
 func (ec *executionContext) field_Query_findMetrics_argsWhere(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*ent.MetricsWhereInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["where"]
-	if !ok {
+	if _, ok := rawArgs["where"]; !ok {
 		var zeroVal *ent.MetricsWhereInput
 		return zeroVal, nil
 	}
@@ -5542,9 +5454,9 @@ func (ec *executionContext) field_Query_findMetrics_argsWhere(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_findRunnerCounts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_findRunnerCounts_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_findRunnerCounts_argsAfter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5574,13 +5486,9 @@ func (ec *executionContext) field_Query_findRunnerCounts_args(ctx context.Contex
 }
 func (ec *executionContext) field_Query_findRunnerCounts_argsAfter(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["after"]
-	if !ok {
+	if _, ok := rawArgs["after"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5596,13 +5504,9 @@ func (ec *executionContext) field_Query_findRunnerCounts_argsAfter(
 
 func (ec *executionContext) field_Query_findRunnerCounts_argsFirst(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["first"]
-	if !ok {
+	if _, ok := rawArgs["first"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5618,13 +5522,9 @@ func (ec *executionContext) field_Query_findRunnerCounts_argsFirst(
 
 func (ec *executionContext) field_Query_findRunnerCounts_argsBefore(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["before"]
-	if !ok {
+	if _, ok := rawArgs["before"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5640,13 +5540,9 @@ func (ec *executionContext) field_Query_findRunnerCounts_argsBefore(
 
 func (ec *executionContext) field_Query_findRunnerCounts_argsLast(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["last"]
-	if !ok {
+	if _, ok := rawArgs["last"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5662,13 +5558,9 @@ func (ec *executionContext) field_Query_findRunnerCounts_argsLast(
 
 func (ec *executionContext) field_Query_findRunnerCounts_argsWhere(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*ent.RunnerCountWhereInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["where"]
-	if !ok {
+	if _, ok := rawArgs["where"]; !ok {
 		var zeroVal *ent.RunnerCountWhereInput
 		return zeroVal, nil
 	}
@@ -5682,9 +5574,9 @@ func (ec *executionContext) field_Query_findRunnerCounts_argsWhere(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_findTargets_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_findTargets_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_findTargets_argsAfter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5719,13 +5611,9 @@ func (ec *executionContext) field_Query_findTargets_args(ctx context.Context, ra
 }
 func (ec *executionContext) field_Query_findTargets_argsAfter(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["after"]
-	if !ok {
+	if _, ok := rawArgs["after"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5741,13 +5629,9 @@ func (ec *executionContext) field_Query_findTargets_argsAfter(
 
 func (ec *executionContext) field_Query_findTargets_argsFirst(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["first"]
-	if !ok {
+	if _, ok := rawArgs["first"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5763,13 +5647,9 @@ func (ec *executionContext) field_Query_findTargets_argsFirst(
 
 func (ec *executionContext) field_Query_findTargets_argsBefore(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["before"]
-	if !ok {
+	if _, ok := rawArgs["before"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5785,13 +5665,9 @@ func (ec *executionContext) field_Query_findTargets_argsBefore(
 
 func (ec *executionContext) field_Query_findTargets_argsLast(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["last"]
-	if !ok {
+	if _, ok := rawArgs["last"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5807,13 +5683,9 @@ func (ec *executionContext) field_Query_findTargets_argsLast(
 
 func (ec *executionContext) field_Query_findTargets_argsOrderBy(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*ent.TargetPairOrder, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["orderBy"]
-	if !ok {
+	if _, ok := rawArgs["orderBy"]; !ok {
 		var zeroVal *ent.TargetPairOrder
 		return zeroVal, nil
 	}
@@ -5829,13 +5701,9 @@ func (ec *executionContext) field_Query_findTargets_argsOrderBy(
 
 func (ec *executionContext) field_Query_findTargets_argsWhere(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*ent.TargetPairWhereInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["where"]
-	if !ok {
+	if _, ok := rawArgs["where"]; !ok {
 		var zeroVal *ent.TargetPairWhereInput
 		return zeroVal, nil
 	}
@@ -5849,9 +5717,9 @@ func (ec *executionContext) field_Query_findTargets_argsWhere(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_findTests_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_findTests_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_findTests_argsAfter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5886,13 +5754,9 @@ func (ec *executionContext) field_Query_findTests_args(ctx context.Context, rawA
 }
 func (ec *executionContext) field_Query_findTests_argsAfter(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["after"]
-	if !ok {
+	if _, ok := rawArgs["after"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5908,13 +5772,9 @@ func (ec *executionContext) field_Query_findTests_argsAfter(
 
 func (ec *executionContext) field_Query_findTests_argsFirst(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["first"]
-	if !ok {
+	if _, ok := rawArgs["first"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5930,13 +5790,9 @@ func (ec *executionContext) field_Query_findTests_argsFirst(
 
 func (ec *executionContext) field_Query_findTests_argsBefore(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*entgql.Cursor[int], error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["before"]
-	if !ok {
+	if _, ok := rawArgs["before"]; !ok {
 		var zeroVal *entgql.Cursor[int]
 		return zeroVal, nil
 	}
@@ -5952,13 +5808,9 @@ func (ec *executionContext) field_Query_findTests_argsBefore(
 
 func (ec *executionContext) field_Query_findTests_argsLast(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["last"]
-	if !ok {
+	if _, ok := rawArgs["last"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -5974,13 +5826,9 @@ func (ec *executionContext) field_Query_findTests_argsLast(
 
 func (ec *executionContext) field_Query_findTests_argsOrderBy(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*ent.TestCollectionOrder, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["orderBy"]
-	if !ok {
+	if _, ok := rawArgs["orderBy"]; !ok {
 		var zeroVal *ent.TestCollectionOrder
 		return zeroVal, nil
 	}
@@ -5996,13 +5844,9 @@ func (ec *executionContext) field_Query_findTests_argsOrderBy(
 
 func (ec *executionContext) field_Query_findTests_argsWhere(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*ent.TestCollectionWhereInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["where"]
-	if !ok {
+	if _, ok := rawArgs["where"]; !ok {
 		var zeroVal *ent.TestCollectionWhereInput
 		return zeroVal, nil
 	}
@@ -6016,9 +5860,9 @@ func (ec *executionContext) field_Query_findTests_argsWhere(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getAveragePassPercentageForLabel_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getAveragePassPercentageForLabel_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_getAveragePassPercentageForLabel_argsLabel(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6028,13 +5872,9 @@ func (ec *executionContext) field_Query_getAveragePassPercentageForLabel_args(ct
 }
 func (ec *executionContext) field_Query_getAveragePassPercentageForLabel_argsLabel(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["label"]
-	if !ok {
+	if _, ok := rawArgs["label"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6048,9 +5888,9 @@ func (ec *executionContext) field_Query_getAveragePassPercentageForLabel_argsLab
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getBuild_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getBuild_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_getBuild_argsBuildURL(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6065,13 +5905,9 @@ func (ec *executionContext) field_Query_getBuild_args(ctx context.Context, rawAr
 }
 func (ec *executionContext) field_Query_getBuild_argsBuildURL(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["buildURL"]
-	if !ok {
+	if _, ok := rawArgs["buildURL"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6087,13 +5923,9 @@ func (ec *executionContext) field_Query_getBuild_argsBuildURL(
 
 func (ec *executionContext) field_Query_getBuild_argsBuildUUID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*uuid.UUID, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["buildUUID"]
-	if !ok {
+	if _, ok := rawArgs["buildUUID"]; !ok {
 		var zeroVal *uuid.UUID
 		return zeroVal, nil
 	}
@@ -6107,9 +5939,9 @@ func (ec *executionContext) field_Query_getBuild_argsBuildUUID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getTargetDurationAggregation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getTargetDurationAggregation_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_getTargetDurationAggregation_argsLabel(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6119,13 +5951,9 @@ func (ec *executionContext) field_Query_getTargetDurationAggregation_args(ctx co
 }
 func (ec *executionContext) field_Query_getTargetDurationAggregation_argsLabel(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["label"]
-	if !ok {
+	if _, ok := rawArgs["label"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6139,9 +5967,9 @@ func (ec *executionContext) field_Query_getTargetDurationAggregation_argsLabel(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getTargetPassAggregation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getTargetPassAggregation_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_getTargetPassAggregation_argsLabel(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6151,13 +5979,9 @@ func (ec *executionContext) field_Query_getTargetPassAggregation_args(ctx contex
 }
 func (ec *executionContext) field_Query_getTargetPassAggregation_argsLabel(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["label"]
-	if !ok {
+	if _, ok := rawArgs["label"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6171,9 +5995,9 @@ func (ec *executionContext) field_Query_getTargetPassAggregation_argsLabel(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getTargetsWithOffset_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getTargetsWithOffset_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_getTargetsWithOffset_argsLabel(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6203,13 +6027,9 @@ func (ec *executionContext) field_Query_getTargetsWithOffset_args(ctx context.Co
 }
 func (ec *executionContext) field_Query_getTargetsWithOffset_argsLabel(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["label"]
-	if !ok {
+	if _, ok := rawArgs["label"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6225,13 +6045,9 @@ func (ec *executionContext) field_Query_getTargetsWithOffset_argsLabel(
 
 func (ec *executionContext) field_Query_getTargetsWithOffset_argsOffset(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["offset"]
-	if !ok {
+	if _, ok := rawArgs["offset"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -6247,13 +6063,9 @@ func (ec *executionContext) field_Query_getTargetsWithOffset_argsOffset(
 
 func (ec *executionContext) field_Query_getTargetsWithOffset_argsLimit(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["limit"]
-	if !ok {
+	if _, ok := rawArgs["limit"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -6269,13 +6081,9 @@ func (ec *executionContext) field_Query_getTargetsWithOffset_argsLimit(
 
 func (ec *executionContext) field_Query_getTargetsWithOffset_argsSortBy(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["sortBy"]
-	if !ok {
+	if _, ok := rawArgs["sortBy"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6291,13 +6099,9 @@ func (ec *executionContext) field_Query_getTargetsWithOffset_argsSortBy(
 
 func (ec *executionContext) field_Query_getTargetsWithOffset_argsDirection(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["direction"]
-	if !ok {
+	if _, ok := rawArgs["direction"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6311,9 +6115,9 @@ func (ec *executionContext) field_Query_getTargetsWithOffset_argsDirection(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getTestDurationAggregation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getTestDurationAggregation_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_getTestDurationAggregation_argsLabel(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6323,13 +6127,9 @@ func (ec *executionContext) field_Query_getTestDurationAggregation_args(ctx cont
 }
 func (ec *executionContext) field_Query_getTestDurationAggregation_argsLabel(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["label"]
-	if !ok {
+	if _, ok := rawArgs["label"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6343,9 +6143,9 @@ func (ec *executionContext) field_Query_getTestDurationAggregation_argsLabel(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getTestPassAggregation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getTestPassAggregation_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_getTestPassAggregation_argsLabel(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6355,13 +6155,9 @@ func (ec *executionContext) field_Query_getTestPassAggregation_args(ctx context.
 }
 func (ec *executionContext) field_Query_getTestPassAggregation_argsLabel(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["label"]
-	if !ok {
+	if _, ok := rawArgs["label"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6375,9 +6171,9 @@ func (ec *executionContext) field_Query_getTestPassAggregation_argsLabel(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getTestsWithOffset_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getTestsWithOffset_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_getTestsWithOffset_argsLabel(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6407,13 +6203,9 @@ func (ec *executionContext) field_Query_getTestsWithOffset_args(ctx context.Cont
 }
 func (ec *executionContext) field_Query_getTestsWithOffset_argsLabel(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["label"]
-	if !ok {
+	if _, ok := rawArgs["label"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6429,13 +6221,9 @@ func (ec *executionContext) field_Query_getTestsWithOffset_argsLabel(
 
 func (ec *executionContext) field_Query_getTestsWithOffset_argsOffset(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["offset"]
-	if !ok {
+	if _, ok := rawArgs["offset"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -6451,13 +6239,9 @@ func (ec *executionContext) field_Query_getTestsWithOffset_argsOffset(
 
 func (ec *executionContext) field_Query_getTestsWithOffset_argsLimit(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["limit"]
-	if !ok {
+	if _, ok := rawArgs["limit"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -6473,13 +6257,9 @@ func (ec *executionContext) field_Query_getTestsWithOffset_argsLimit(
 
 func (ec *executionContext) field_Query_getTestsWithOffset_argsSortBy(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["sortBy"]
-	if !ok {
+	if _, ok := rawArgs["sortBy"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6495,13 +6275,9 @@ func (ec *executionContext) field_Query_getTestsWithOffset_argsSortBy(
 
 func (ec *executionContext) field_Query_getTestsWithOffset_argsDirection(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["direction"]
-	if !ok {
+	if _, ok := rawArgs["direction"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6515,9 +6291,9 @@ func (ec *executionContext) field_Query_getTestsWithOffset_argsDirection(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getUniqueTargetLabels_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getUniqueTargetLabels_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_getUniqueTargetLabels_argsParam(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6527,13 +6303,9 @@ func (ec *executionContext) field_Query_getUniqueTargetLabels_args(ctx context.C
 }
 func (ec *executionContext) field_Query_getUniqueTargetLabels_argsParam(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["param"]
-	if !ok {
+	if _, ok := rawArgs["param"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6547,9 +6319,9 @@ func (ec *executionContext) field_Query_getUniqueTargetLabels_argsParam(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_getUniqueTestLabels_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getUniqueTestLabels_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_getUniqueTestLabels_argsParam(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6559,13 +6331,9 @@ func (ec *executionContext) field_Query_getUniqueTestLabels_args(ctx context.Con
 }
 func (ec *executionContext) field_Query_getUniqueTestLabels_argsParam(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["param"]
-	if !ok {
+	if _, ok := rawArgs["param"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6579,9 +6347,9 @@ func (ec *executionContext) field_Query_getUniqueTestLabels_argsParam(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_node_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_node_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_node_argsID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6591,13 +6359,9 @@ func (ec *executionContext) field_Query_node_args(ctx context.Context, rawArgs m
 }
 func (ec *executionContext) field_Query_node_argsID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["id"]
-	if !ok {
+	if _, ok := rawArgs["id"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6611,9 +6375,9 @@ func (ec *executionContext) field_Query_node_argsID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_nodes_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_nodes_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_nodes_argsIds(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6623,13 +6387,9 @@ func (ec *executionContext) field_Query_nodes_args(ctx context.Context, rawArgs 
 }
 func (ec *executionContext) field_Query_nodes_argsIds(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) ([]string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["ids"]
-	if !ok {
+	if _, ok := rawArgs["ids"]; !ok {
 		var zeroVal []string
 		return zeroVal, nil
 	}
@@ -6643,9 +6403,65 @@ func (ec *executionContext) field_Query_nodes_argsIds(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field___Type_enumValues_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field___Directive_args_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
+	arg0, err := ec.field___Directive_args_argsIncludeDeprecated(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["includeDeprecated"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field___Directive_args_argsIncludeDeprecated(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*bool, error) {
+	if _, ok := rawArgs["includeDeprecated"]; !ok {
+		var zeroVal *bool
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("includeDeprecated"))
+	if tmp, ok := rawArgs["includeDeprecated"]; ok {
+		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+	}
+
+	var zeroVal *bool
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field___Field_args_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field___Field_args_argsIncludeDeprecated(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["includeDeprecated"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field___Field_args_argsIncludeDeprecated(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*bool, error) {
+	if _, ok := rawArgs["includeDeprecated"]; !ok {
+		var zeroVal *bool
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("includeDeprecated"))
+	if tmp, ok := rawArgs["includeDeprecated"]; ok {
+		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+	}
+
+	var zeroVal *bool
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field___Type_enumValues_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
 	arg0, err := ec.field___Type_enumValues_argsIncludeDeprecated(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6655,13 +6471,9 @@ func (ec *executionContext) field___Type_enumValues_args(ctx context.Context, ra
 }
 func (ec *executionContext) field___Type_enumValues_argsIncludeDeprecated(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (bool, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["includeDeprecated"]
-	if !ok {
+	if _, ok := rawArgs["includeDeprecated"]; !ok {
 		var zeroVal bool
 		return zeroVal, nil
 	}
@@ -6675,9 +6487,9 @@ func (ec *executionContext) field___Type_enumValues_argsIncludeDeprecated(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field___Type_fields_argsIncludeDeprecated(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6687,13 +6499,9 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 }
 func (ec *executionContext) field___Type_fields_argsIncludeDeprecated(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (bool, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["includeDeprecated"]
-	if !ok {
+	if _, ok := rawArgs["includeDeprecated"]; !ok {
 		var zeroVal bool
 		return zeroVal, nil
 	}
@@ -6727,7 +6535,7 @@ func (ec *executionContext) _ActionCacheStatistics_id(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.ActionCacheStatistics().ID(rctx, obj)
 	})
@@ -6771,7 +6579,7 @@ func (ec *executionContext) _ActionCacheStatistics_sizeInBytes(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SizeInBytes, nil
 	})
@@ -6812,7 +6620,7 @@ func (ec *executionContext) _ActionCacheStatistics_saveTimeInMs(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SaveTimeInMs, nil
 	})
@@ -6853,7 +6661,7 @@ func (ec *executionContext) _ActionCacheStatistics_loadTimeInMs(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LoadTimeInMs, nil
 	})
@@ -6894,7 +6702,7 @@ func (ec *executionContext) _ActionCacheStatistics_hits(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Hits, nil
 	})
@@ -6935,7 +6743,7 @@ func (ec *executionContext) _ActionCacheStatistics_misses(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Misses, nil
 	})
@@ -6976,7 +6784,7 @@ func (ec *executionContext) _ActionCacheStatistics_actionSummary(ctx context.Con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionSummary(ctx)
 	})
@@ -7037,7 +6845,7 @@ func (ec *executionContext) _ActionCacheStatistics_missDetails(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MissDetails(ctx)
 	})
@@ -7088,7 +6896,7 @@ func (ec *executionContext) _ActionData_id(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.ActionData().ID(rctx, obj)
 	})
@@ -7132,7 +6940,7 @@ func (ec *executionContext) _ActionData_mnemonic(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Mnemonic, nil
 	})
@@ -7173,7 +6981,7 @@ func (ec *executionContext) _ActionData_actionsExecuted(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionsExecuted, nil
 	})
@@ -7214,7 +7022,7 @@ func (ec *executionContext) _ActionData_actionsCreated(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionsCreated, nil
 	})
@@ -7255,7 +7063,7 @@ func (ec *executionContext) _ActionData_firstStartedMs(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FirstStartedMs, nil
 	})
@@ -7296,7 +7104,7 @@ func (ec *executionContext) _ActionData_lastEndedMs(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LastEndedMs, nil
 	})
@@ -7337,7 +7145,7 @@ func (ec *executionContext) _ActionData_systemTime(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SystemTime, nil
 	})
@@ -7378,7 +7186,7 @@ func (ec *executionContext) _ActionData_userTime(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UserTime, nil
 	})
@@ -7419,7 +7227,7 @@ func (ec *executionContext) _ActionData_actionSummary(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionSummary(ctx)
 	})
@@ -7480,7 +7288,7 @@ func (ec *executionContext) _ActionProblem_id(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -7524,7 +7332,7 @@ func (ec *executionContext) _ActionProblem_label(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -7568,7 +7376,7 @@ func (ec *executionContext) _ActionProblem_type(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Type, nil
 	})
@@ -7612,7 +7420,7 @@ func (ec *executionContext) _ActionProblem_stdout(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.ActionProblem().Stdout(rctx, obj)
 	})
@@ -7665,7 +7473,7 @@ func (ec *executionContext) _ActionProblem_stderr(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.ActionProblem().Stderr(rctx, obj)
 	})
@@ -7718,7 +7526,7 @@ func (ec *executionContext) _ActionSummary_id(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.ActionSummary().ID(rctx, obj)
 	})
@@ -7762,7 +7570,7 @@ func (ec *executionContext) _ActionSummary_actionsCreated(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionsCreated, nil
 	})
@@ -7803,7 +7611,7 @@ func (ec *executionContext) _ActionSummary_actionsCreatedNotIncludingAspects(ctx
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionsCreatedNotIncludingAspects, nil
 	})
@@ -7844,7 +7652,7 @@ func (ec *executionContext) _ActionSummary_actionsExecuted(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionsExecuted, nil
 	})
@@ -7885,7 +7693,7 @@ func (ec *executionContext) _ActionSummary_remoteCacheHits(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RemoteCacheHits, nil
 	})
@@ -7926,7 +7734,7 @@ func (ec *executionContext) _ActionSummary_metrics(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Metrics(ctx)
 	})
@@ -7993,7 +7801,7 @@ func (ec *executionContext) _ActionSummary_actionData(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionData(ctx)
 	})
@@ -8054,7 +7862,7 @@ func (ec *executionContext) _ActionSummary_runnerCount(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RunnerCount(ctx)
 	})
@@ -8107,7 +7915,7 @@ func (ec *executionContext) _ActionSummary_actionCacheStatistics(ctx context.Con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionCacheStatistics(ctx)
 	})
@@ -8166,7 +7974,7 @@ func (ec *executionContext) _ArtifactMetrics_id(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.ArtifactMetrics().ID(rctx, obj)
 	})
@@ -8210,7 +8018,7 @@ func (ec *executionContext) _ArtifactMetrics_metrics(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Metrics(ctx)
 	})
@@ -8277,7 +8085,7 @@ func (ec *executionContext) _ArtifactMetrics_sourceArtifactsRead(ctx context.Con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SourceArtifactsRead(ctx)
 	})
@@ -8328,7 +8136,7 @@ func (ec *executionContext) _ArtifactMetrics_outputArtifactsSeen(ctx context.Con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OutputArtifactsSeen(ctx)
 	})
@@ -8379,7 +8187,7 @@ func (ec *executionContext) _ArtifactMetrics_outputArtifactsFromActionCache(ctx 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OutputArtifactsFromActionCache(ctx)
 	})
@@ -8430,7 +8238,7 @@ func (ec *executionContext) _ArtifactMetrics_topLevelArtifacts(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TopLevelArtifacts(ctx)
 	})
@@ -8481,7 +8289,7 @@ func (ec *executionContext) _BazelCommand_id(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -8525,7 +8333,7 @@ func (ec *executionContext) _BazelCommand_command(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Command, nil
 	})
@@ -8569,7 +8377,7 @@ func (ec *executionContext) _BazelCommand_executable(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Executable, nil
 	})
@@ -8613,7 +8421,7 @@ func (ec *executionContext) _BazelCommand_residual(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Residual, nil
 	})
@@ -8657,7 +8465,7 @@ func (ec *executionContext) _BazelCommand_explicitCmdLine(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ExplicitCmdLine, nil
 	})
@@ -8701,7 +8509,7 @@ func (ec *executionContext) _BazelCommand_cmdLine(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CmdLine, nil
 	})
@@ -8742,7 +8550,7 @@ func (ec *executionContext) _BazelCommand_startupOptions(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StartupOptions, nil
 	})
@@ -8783,7 +8591,7 @@ func (ec *executionContext) _BazelCommand_explicitStartupOptions(ctx context.Con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ExplicitStartupOptions, nil
 	})
@@ -8824,7 +8632,7 @@ func (ec *executionContext) _BazelInvocation_id(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BazelInvocation().ID(rctx, obj)
 	})
@@ -8868,7 +8676,7 @@ func (ec *executionContext) _BazelInvocation_invocationID(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.InvocationID, nil
 	})
@@ -8912,7 +8720,7 @@ func (ec *executionContext) _BazelInvocation_startedAt(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StartedAt, nil
 	})
@@ -8956,7 +8764,7 @@ func (ec *executionContext) _BazelInvocation_endedAt(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.EndedAt, nil
 	})
@@ -8997,7 +8805,7 @@ func (ec *executionContext) _BazelInvocation_changeNumber(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ChangeNumber, nil
 	})
@@ -9038,7 +8846,7 @@ func (ec *executionContext) _BazelInvocation_patchsetNumber(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PatchsetNumber, nil
 	})
@@ -9079,7 +8887,7 @@ func (ec *executionContext) _BazelInvocation_bepCompleted(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BepCompleted, nil
 	})
@@ -9120,7 +8928,7 @@ func (ec *executionContext) _BazelInvocation_stepLabel(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StepLabel, nil
 	})
@@ -9164,7 +8972,7 @@ func (ec *executionContext) _BazelInvocation_userEmail(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UserEmail, nil
 	})
@@ -9205,7 +9013,7 @@ func (ec *executionContext) _BazelInvocation_userLdap(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UserLdap, nil
 	})
@@ -9246,7 +9054,7 @@ func (ec *executionContext) _BazelInvocation_buildLogs(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BuildLogs, nil
 	})
@@ -9287,7 +9095,7 @@ func (ec *executionContext) _BazelInvocation_cpu(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CPU, nil
 	})
@@ -9328,7 +9136,7 @@ func (ec *executionContext) _BazelInvocation_platformName(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PlatformName, nil
 	})
@@ -9369,7 +9177,7 @@ func (ec *executionContext) _BazelInvocation_hostname(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Hostname, nil
 	})
@@ -9410,7 +9218,7 @@ func (ec *executionContext) _BazelInvocation_isCiWorker(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.IsCiWorker, nil
 	})
@@ -9451,7 +9259,7 @@ func (ec *executionContext) _BazelInvocation_configurationMnemonic(ctx context.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ConfigurationMnemonic, nil
 	})
@@ -9492,7 +9300,7 @@ func (ec *executionContext) _BazelInvocation_numFetches(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.NumFetches, nil
 	})
@@ -9533,7 +9341,7 @@ func (ec *executionContext) _BazelInvocation_eventFile(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.EventFile(ctx)
 	})
@@ -9595,7 +9403,7 @@ func (ec *executionContext) _BazelInvocation_build(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Build(ctx)
 	})
@@ -9650,7 +9458,7 @@ func (ec *executionContext) _BazelInvocation_metrics(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Metrics(ctx)
 	})
@@ -9717,7 +9525,7 @@ func (ec *executionContext) _BazelInvocation_testCollection(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestCollection(ctx)
 	})
@@ -9782,7 +9590,7 @@ func (ec *executionContext) _BazelInvocation_targets(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Targets(ctx)
 	})
@@ -9845,7 +9653,7 @@ func (ec *executionContext) _BazelInvocation_sourceControl(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SourceControl(ctx)
 	})
@@ -9920,7 +9728,7 @@ func (ec *executionContext) _BazelInvocation_bazelCommand(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BazelInvocation().BazelCommand(rctx, obj)
 	})
@@ -9982,7 +9790,7 @@ func (ec *executionContext) _BazelInvocation_state(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BazelInvocation().State(rctx, obj)
 	})
@@ -10038,7 +9846,7 @@ func (ec *executionContext) _BazelInvocation_user(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BazelInvocation().User(rctx, obj)
 	})
@@ -10087,7 +9895,7 @@ func (ec *executionContext) _BazelInvocation_relatedFiles(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BazelInvocation().RelatedFiles(rctx, obj)
 	})
@@ -10137,7 +9945,7 @@ func (ec *executionContext) _BazelInvocation_problems(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BazelInvocation().Problems(rctx, obj)
 	})
@@ -10181,7 +9989,7 @@ func (ec *executionContext) _BazelInvocation_profile(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BazelInvocation().Profile(rctx, obj)
 	})
@@ -10232,7 +10040,7 @@ func (ec *executionContext) _BazelInvocationConnection_edges(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Edges, nil
 	})
@@ -10279,7 +10087,7 @@ func (ec *executionContext) _BazelInvocationConnection_pageInfo(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PageInfo, nil
 	})
@@ -10333,7 +10141,7 @@ func (ec *executionContext) _BazelInvocationConnection_totalCount(ctx context.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalCount, nil
 	})
@@ -10377,7 +10185,7 @@ func (ec *executionContext) _BazelInvocationEdge_node(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Node, nil
 	})
@@ -10478,7 +10286,7 @@ func (ec *executionContext) _BazelInvocationEdge_cursor(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Cursor, nil
 	})
@@ -10522,7 +10330,7 @@ func (ec *executionContext) _BazelInvocationProblem_id(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BazelInvocationProblem().ID(rctx, obj)
 	})
@@ -10566,7 +10374,7 @@ func (ec *executionContext) _BazelInvocationProblem_problemType(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ProblemType, nil
 	})
@@ -10610,7 +10418,7 @@ func (ec *executionContext) _BazelInvocationProblem_label(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -10654,7 +10462,7 @@ func (ec *executionContext) _BazelInvocationProblem_bazelInvocation(ctx context.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BazelInvocation(ctx)
 	})
@@ -10755,7 +10563,7 @@ func (ec *executionContext) _BazelInvocationState_id(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -10799,7 +10607,7 @@ func (ec *executionContext) _BazelInvocationState_buildEndTime(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BuildEndTime, nil
 	})
@@ -10843,7 +10651,7 @@ func (ec *executionContext) _BazelInvocationState_buildStartTime(ctx context.Con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BuildStartTime, nil
 	})
@@ -10887,7 +10695,7 @@ func (ec *executionContext) _BazelInvocationState_exitCode(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ExitCode, nil
 	})
@@ -10936,7 +10744,7 @@ func (ec *executionContext) _BazelInvocationState_bepCompleted(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BepCompleted, nil
 	})
@@ -10980,7 +10788,7 @@ func (ec *executionContext) _Blob_id(ctx context.Context, field graphql.Collecte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Blob().ID(rctx, obj)
 	})
@@ -11024,7 +10832,7 @@ func (ec *executionContext) _Blob_uri(ctx context.Context, field graphql.Collect
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.URI, nil
 	})
@@ -11068,7 +10876,7 @@ func (ec *executionContext) _Blob_sizeBytes(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SizeBytes, nil
 	})
@@ -11109,7 +10917,7 @@ func (ec *executionContext) _Blob_archivingStatus(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ArchivingStatus, nil
 	})
@@ -11153,7 +10961,7 @@ func (ec *executionContext) _Blob_reason(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Reason, nil
 	})
@@ -11194,7 +11002,7 @@ func (ec *executionContext) _Blob_archiveURL(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ArchiveURL, nil
 	})
@@ -11235,7 +11043,7 @@ func (ec *executionContext) _BlobReference_name(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -11279,7 +11087,7 @@ func (ec *executionContext) _BlobReference_downloadURL(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BlobReference().DownloadURL(rctx, obj)
 	})
@@ -11323,7 +11131,7 @@ func (ec *executionContext) _BlobReference_sizeInBytes(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BlobReference().SizeInBytes(rctx, obj)
 	})
@@ -11364,7 +11172,7 @@ func (ec *executionContext) _BlobReference_availabilityStatus(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BlobReference().AvailabilityStatus(rctx, obj)
 	})
@@ -11408,7 +11216,7 @@ func (ec *executionContext) _BlobReference_ephemeralURL(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BlobReference().EphemeralURL(rctx, obj)
 	})
@@ -11452,7 +11260,7 @@ func (ec *executionContext) _Build_id(ctx context.Context, field graphql.Collect
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Build().ID(rctx, obj)
 	})
@@ -11496,7 +11304,7 @@ func (ec *executionContext) _Build_buildURL(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BuildURL, nil
 	})
@@ -11540,7 +11348,7 @@ func (ec *executionContext) _Build_buildUUID(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BuildUUID, nil
 	})
@@ -11584,7 +11392,7 @@ func (ec *executionContext) _Build_timestamp(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Timestamp, nil
 	})
@@ -11625,7 +11433,7 @@ func (ec *executionContext) _Build_invocations(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Invocations(ctx)
 	})
@@ -11726,7 +11534,7 @@ func (ec *executionContext) _Build_env(ctx context.Context, field graphql.Collec
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Build().Env(rctx, obj)
 	})
@@ -11776,7 +11584,7 @@ func (ec *executionContext) _BuildConnection_edges(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Edges, nil
 	})
@@ -11823,7 +11631,7 @@ func (ec *executionContext) _BuildConnection_pageInfo(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PageInfo, nil
 	})
@@ -11877,7 +11685,7 @@ func (ec *executionContext) _BuildConnection_totalCount(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalCount, nil
 	})
@@ -11921,7 +11729,7 @@ func (ec *executionContext) _BuildEdge_node(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Node, nil
 	})
@@ -11976,7 +11784,7 @@ func (ec *executionContext) _BuildEdge_cursor(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Cursor, nil
 	})
@@ -12020,7 +11828,7 @@ func (ec *executionContext) _BuildGraphMetrics_id(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.BuildGraphMetrics().ID(rctx, obj)
 	})
@@ -12064,7 +11872,7 @@ func (ec *executionContext) _BuildGraphMetrics_actionLookupValueCount(ctx contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionLookupValueCount, nil
 	})
@@ -12105,7 +11913,7 @@ func (ec *executionContext) _BuildGraphMetrics_actionLookupValueCountNotIncludin
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionLookupValueCountNotIncludingAspects, nil
 	})
@@ -12146,7 +11954,7 @@ func (ec *executionContext) _BuildGraphMetrics_actionCount(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionCount, nil
 	})
@@ -12187,7 +11995,7 @@ func (ec *executionContext) _BuildGraphMetrics_actionCountNotIncludingAspects(ct
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionCountNotIncludingAspects, nil
 	})
@@ -12228,7 +12036,7 @@ func (ec *executionContext) _BuildGraphMetrics_inputFileConfiguredTargetCount(ct
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.InputFileConfiguredTargetCount, nil
 	})
@@ -12269,7 +12077,7 @@ func (ec *executionContext) _BuildGraphMetrics_outputFileConfiguredTargetCount(c
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OutputFileConfiguredTargetCount, nil
 	})
@@ -12310,7 +12118,7 @@ func (ec *executionContext) _BuildGraphMetrics_otherConfiguredTargetCount(ctx co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OtherConfiguredTargetCount, nil
 	})
@@ -12351,7 +12159,7 @@ func (ec *executionContext) _BuildGraphMetrics_outputArtifactCount(ctx context.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OutputArtifactCount, nil
 	})
@@ -12392,7 +12200,7 @@ func (ec *executionContext) _BuildGraphMetrics_postInvocationSkyframeNodeCount(c
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PostInvocationSkyframeNodeCount, nil
 	})
@@ -12433,7 +12241,7 @@ func (ec *executionContext) _BuildGraphMetrics_metrics(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Metrics(ctx)
 	})
@@ -12500,7 +12308,7 @@ func (ec *executionContext) _BuildGraphMetrics_dirtiedValues(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DirtiedValues(ctx)
 	})
@@ -12551,7 +12359,7 @@ func (ec *executionContext) _BuildGraphMetrics_changedValues(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ChangedValues(ctx)
 	})
@@ -12602,7 +12410,7 @@ func (ec *executionContext) _BuildGraphMetrics_builtValues(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BuiltValues(ctx)
 	})
@@ -12653,7 +12461,7 @@ func (ec *executionContext) _BuildGraphMetrics_cleanedValues(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CleanedValues(ctx)
 	})
@@ -12704,7 +12512,7 @@ func (ec *executionContext) _BuildGraphMetrics_evaluatedValues(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.EvaluatedValues(ctx)
 	})
@@ -12755,7 +12563,7 @@ func (ec *executionContext) _CumulativeMetrics_id(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.CumulativeMetrics().ID(rctx, obj)
 	})
@@ -12799,7 +12607,7 @@ func (ec *executionContext) _CumulativeMetrics_numAnalyses(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.NumAnalyses, nil
 	})
@@ -12840,7 +12648,7 @@ func (ec *executionContext) _CumulativeMetrics_numBuilds(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.NumBuilds, nil
 	})
@@ -12881,7 +12689,7 @@ func (ec *executionContext) _CumulativeMetrics_metrics(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Metrics(ctx)
 	})
@@ -12948,7 +12756,7 @@ func (ec *executionContext) _DeleteResult_deleted(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Deleted, nil
 	})
@@ -12992,7 +12800,7 @@ func (ec *executionContext) _DeleteResult_found(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Found, nil
 	})
@@ -13036,7 +12844,7 @@ func (ec *executionContext) _DeleteResult_successful(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Successful, nil
 	})
@@ -13080,7 +12888,7 @@ func (ec *executionContext) _DynamicExecutionMetrics_id(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.DynamicExecutionMetrics().ID(rctx, obj)
 	})
@@ -13124,7 +12932,7 @@ func (ec *executionContext) _DynamicExecutionMetrics_metrics(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Metrics(ctx)
 	})
@@ -13191,7 +12999,7 @@ func (ec *executionContext) _DynamicExecutionMetrics_raceStatistics(ctx context.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RaceStatistics(ctx)
 	})
@@ -13248,7 +13056,7 @@ func (ec *executionContext) _EnvVar_key(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Key, nil
 	})
@@ -13292,7 +13100,7 @@ func (ec *executionContext) _EnvVar_value(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Value, nil
 	})
@@ -13336,7 +13144,7 @@ func (ec *executionContext) _EvaluationStat_id(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.EvaluationStat().ID(rctx, obj)
 	})
@@ -13380,7 +13188,7 @@ func (ec *executionContext) _EvaluationStat_skyfunctionName(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SkyfunctionName, nil
 	})
@@ -13421,7 +13229,7 @@ func (ec *executionContext) _EvaluationStat_count(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Count, nil
 	})
@@ -13462,7 +13270,7 @@ func (ec *executionContext) _EvaluationStat_buildGraphMetrics(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BuildGraphMetrics(ctx)
 	})
@@ -13537,7 +13345,7 @@ func (ec *executionContext) _EventFile_id(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.EventFile().ID(rctx, obj)
 	})
@@ -13581,7 +13389,7 @@ func (ec *executionContext) _EventFile_url(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.URL, nil
 	})
@@ -13625,7 +13433,7 @@ func (ec *executionContext) _EventFile_modTime(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ModTime, nil
 	})
@@ -13669,7 +13477,7 @@ func (ec *executionContext) _EventFile_protocol(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Protocol, nil
 	})
@@ -13713,7 +13521,7 @@ func (ec *executionContext) _EventFile_mimeType(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MimeType, nil
 	})
@@ -13757,7 +13565,7 @@ func (ec *executionContext) _EventFile_status(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Status, nil
 	})
@@ -13801,7 +13609,7 @@ func (ec *executionContext) _EventFile_reason(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Reason, nil
 	})
@@ -13842,7 +13650,7 @@ func (ec *executionContext) _EventFile_bazelInvocation(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BazelInvocation(ctx)
 	})
@@ -13943,7 +13751,7 @@ func (ec *executionContext) _ExectionInfo_id(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.ExectionInfo().ID(rctx, obj)
 	})
@@ -13987,7 +13795,7 @@ func (ec *executionContext) _ExectionInfo_timeoutSeconds(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TimeoutSeconds, nil
 	})
@@ -14028,7 +13836,7 @@ func (ec *executionContext) _ExectionInfo_strategy(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Strategy, nil
 	})
@@ -14069,7 +13877,7 @@ func (ec *executionContext) _ExectionInfo_cachedRemotely(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CachedRemotely, nil
 	})
@@ -14110,7 +13918,7 @@ func (ec *executionContext) _ExectionInfo_exitCode(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ExitCode, nil
 	})
@@ -14151,7 +13959,7 @@ func (ec *executionContext) _ExectionInfo_hostname(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Hostname, nil
 	})
@@ -14192,7 +14000,7 @@ func (ec *executionContext) _ExectionInfo_testResult(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestResult(ctx)
 	})
@@ -14261,7 +14069,7 @@ func (ec *executionContext) _ExectionInfo_timingBreakdown(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TimingBreakdown(ctx)
 	})
@@ -14314,7 +14122,7 @@ func (ec *executionContext) _ExectionInfo_resourceUsage(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ResourceUsage(ctx)
 	})
@@ -14365,7 +14173,7 @@ func (ec *executionContext) _ExitCode_id(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -14409,7 +14217,7 @@ func (ec *executionContext) _ExitCode_code(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Code, nil
 	})
@@ -14453,7 +14261,7 @@ func (ec *executionContext) _ExitCode_name(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -14497,7 +14305,7 @@ func (ec *executionContext) _FilesMetric_id(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.FilesMetric().ID(rctx, obj)
 	})
@@ -14541,7 +14349,7 @@ func (ec *executionContext) _FilesMetric_sizeInBytes(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SizeInBytes, nil
 	})
@@ -14582,7 +14390,7 @@ func (ec *executionContext) _FilesMetric_count(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Count, nil
 	})
@@ -14623,7 +14431,7 @@ func (ec *executionContext) _FilesMetric_artifactMetrics(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ArtifactMetrics(ctx)
 	})
@@ -14678,7 +14486,7 @@ func (ec *executionContext) _GarbageMetrics_id(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.GarbageMetrics().ID(rctx, obj)
 	})
@@ -14722,7 +14530,7 @@ func (ec *executionContext) _GarbageMetrics_type(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Type, nil
 	})
@@ -14763,7 +14571,7 @@ func (ec *executionContext) _GarbageMetrics_garbageCollected(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.GarbageCollected, nil
 	})
@@ -14804,7 +14612,7 @@ func (ec *executionContext) _GarbageMetrics_memoryMetrics(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MemoryMetrics(ctx)
 	})
@@ -14859,7 +14667,7 @@ func (ec *executionContext) _MemoryMetrics_id(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MemoryMetrics().ID(rctx, obj)
 	})
@@ -14903,7 +14711,7 @@ func (ec *executionContext) _MemoryMetrics_peakPostGcHeapSize(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PeakPostGcHeapSize, nil
 	})
@@ -14944,7 +14752,7 @@ func (ec *executionContext) _MemoryMetrics_usedHeapSizePostBuild(ctx context.Con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UsedHeapSizePostBuild, nil
 	})
@@ -14985,7 +14793,7 @@ func (ec *executionContext) _MemoryMetrics_peakPostGcTenuredSpaceHeapSize(ctx co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PeakPostGcTenuredSpaceHeapSize, nil
 	})
@@ -15026,7 +14834,7 @@ func (ec *executionContext) _MemoryMetrics_metrics(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Metrics(ctx)
 	})
@@ -15093,7 +14901,7 @@ func (ec *executionContext) _MemoryMetrics_garbageMetrics(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.GarbageMetrics(ctx)
 	})
@@ -15144,7 +14952,7 @@ func (ec *executionContext) _Metrics_id(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Metrics().ID(rctx, obj)
 	})
@@ -15188,7 +14996,7 @@ func (ec *executionContext) _Metrics_bazelInvocation(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BazelInvocation(ctx)
 	})
@@ -15289,7 +15097,7 @@ func (ec *executionContext) _Metrics_actionSummary(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionSummary(ctx)
 	})
@@ -15350,7 +15158,7 @@ func (ec *executionContext) _Metrics_memoryMetrics(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MemoryMetrics(ctx)
 	})
@@ -15405,7 +15213,7 @@ func (ec *executionContext) _Metrics_targetMetrics(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TargetMetrics(ctx)
 	})
@@ -15458,7 +15266,7 @@ func (ec *executionContext) _Metrics_packageMetrics(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PackageMetrics(ctx)
 	})
@@ -15509,7 +15317,7 @@ func (ec *executionContext) _Metrics_timingMetrics(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TimingMetrics(ctx)
 	})
@@ -15566,7 +15374,7 @@ func (ec *executionContext) _Metrics_cumulativeMetrics(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CumulativeMetrics(ctx)
 	})
@@ -15617,7 +15425,7 @@ func (ec *executionContext) _Metrics_artifactMetrics(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ArtifactMetrics(ctx)
 	})
@@ -15672,7 +15480,7 @@ func (ec *executionContext) _Metrics_networkMetrics(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.NetworkMetrics(ctx)
 	})
@@ -15721,7 +15529,7 @@ func (ec *executionContext) _Metrics_dynamicExecutionMetrics(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DynamicExecutionMetrics(ctx)
 	})
@@ -15770,7 +15578,7 @@ func (ec *executionContext) _Metrics_buildGraphMetrics(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BuildGraphMetrics(ctx)
 	})
@@ -15845,7 +15653,7 @@ func (ec *executionContext) _MetricsConnection_edges(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Edges, nil
 	})
@@ -15892,7 +15700,7 @@ func (ec *executionContext) _MetricsConnection_pageInfo(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PageInfo, nil
 	})
@@ -15946,7 +15754,7 @@ func (ec *executionContext) _MetricsConnection_totalCount(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalCount, nil
 	})
@@ -15990,7 +15798,7 @@ func (ec *executionContext) _MetricsEdge_node(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Node, nil
 	})
@@ -16057,7 +15865,7 @@ func (ec *executionContext) _MetricsEdge_cursor(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Cursor, nil
 	})
@@ -16101,7 +15909,7 @@ func (ec *executionContext) _MissDetail_id(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MissDetail().ID(rctx, obj)
 	})
@@ -16145,7 +15953,7 @@ func (ec *executionContext) _MissDetail_reason(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Reason, nil
 	})
@@ -16186,7 +15994,7 @@ func (ec *executionContext) _MissDetail_count(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Count, nil
 	})
@@ -16227,7 +16035,7 @@ func (ec *executionContext) _MissDetail_actionCacheStatistics(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionCacheStatistics(ctx)
 	})
@@ -16286,7 +16094,7 @@ func (ec *executionContext) _Mutation_deleteInvocation(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().DeleteInvocation(rctx, fc.Args["invocationId"].(uuid.UUID))
 	})
@@ -16341,7 +16149,7 @@ func (ec *executionContext) _Mutation_deleteBuild(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().DeleteBuild(rctx, fc.Args["buildUUID"].(uuid.UUID))
 	})
@@ -16396,7 +16204,7 @@ func (ec *executionContext) _Mutation_deleteInvocationsBefore(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().DeleteInvocationsBefore(rctx, fc.Args["time"].(time.Time))
 	})
@@ -16459,7 +16267,7 @@ func (ec *executionContext) _Mutation_deleteBuildsBefore(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().DeleteBuildsBefore(rctx, fc.Args["time"].(time.Time))
 	})
@@ -16522,7 +16330,7 @@ func (ec *executionContext) _NamedFile_name(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -16566,7 +16374,7 @@ func (ec *executionContext) _NamedFile_url(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.URL, nil
 	})
@@ -16610,7 +16418,7 @@ func (ec *executionContext) _NamedSetOfFiles_id(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.NamedSetOfFiles().ID(rctx, obj)
 	})
@@ -16654,7 +16462,7 @@ func (ec *executionContext) _NamedSetOfFiles_outputGroup(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OutputGroup(ctx)
 	})
@@ -16709,7 +16517,7 @@ func (ec *executionContext) _NamedSetOfFiles_files(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Files(ctx)
 	})
@@ -16766,7 +16574,7 @@ func (ec *executionContext) _NamedSetOfFiles_fileSets(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FileSets(ctx)
 	})
@@ -16817,7 +16625,7 @@ func (ec *executionContext) _NetworkMetrics_id(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.NetworkMetrics().ID(rctx, obj)
 	})
@@ -16861,7 +16669,7 @@ func (ec *executionContext) _NetworkMetrics_metrics(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Metrics(ctx)
 	})
@@ -16928,7 +16736,7 @@ func (ec *executionContext) _NetworkMetrics_systemNetworkStats(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SystemNetworkStats(ctx)
 	})
@@ -16991,7 +16799,7 @@ func (ec *executionContext) _OutputGroup_id(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.OutputGroup().ID(rctx, obj)
 	})
@@ -17035,7 +16843,7 @@ func (ec *executionContext) _OutputGroup_name(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -17076,7 +16884,7 @@ func (ec *executionContext) _OutputGroup_incomplete(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Incomplete, nil
 	})
@@ -17117,7 +16925,7 @@ func (ec *executionContext) _OutputGroup_targetComplete(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TargetComplete(ctx)
 	})
@@ -17184,7 +16992,7 @@ func (ec *executionContext) _OutputGroup_inlineFiles(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.InlineFiles(ctx)
 	})
@@ -17241,7 +17049,7 @@ func (ec *executionContext) _OutputGroup_fileSets(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FileSets(ctx)
 	})
@@ -17292,7 +17100,7 @@ func (ec *executionContext) _PackageLoadMetrics_id(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.PackageLoadMetrics().ID(rctx, obj)
 	})
@@ -17336,7 +17144,7 @@ func (ec *executionContext) _PackageLoadMetrics_name(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -17377,7 +17185,7 @@ func (ec *executionContext) _PackageLoadMetrics_loadDuration(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LoadDuration, nil
 	})
@@ -17418,7 +17226,7 @@ func (ec *executionContext) _PackageLoadMetrics_numTargets(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.NumTargets, nil
 	})
@@ -17459,7 +17267,7 @@ func (ec *executionContext) _PackageLoadMetrics_computationSteps(ctx context.Con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ComputationSteps, nil
 	})
@@ -17500,7 +17308,7 @@ func (ec *executionContext) _PackageLoadMetrics_numTransitiveLoads(ctx context.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.NumTransitiveLoads, nil
 	})
@@ -17541,7 +17349,7 @@ func (ec *executionContext) _PackageLoadMetrics_packageOverhead(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PackageOverhead, nil
 	})
@@ -17582,7 +17390,7 @@ func (ec *executionContext) _PackageLoadMetrics_packageMetrics(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PackageMetrics(ctx)
 	})
@@ -17633,7 +17441,7 @@ func (ec *executionContext) _PackageMetrics_id(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.PackageMetrics().ID(rctx, obj)
 	})
@@ -17677,7 +17485,7 @@ func (ec *executionContext) _PackageMetrics_packagesLoaded(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PackagesLoaded, nil
 	})
@@ -17718,7 +17526,7 @@ func (ec *executionContext) _PackageMetrics_metrics(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Metrics(ctx)
 	})
@@ -17785,7 +17593,7 @@ func (ec *executionContext) _PackageMetrics_packageLoadMetrics(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PackageLoadMetrics(ctx)
 	})
@@ -17844,7 +17652,7 @@ func (ec *executionContext) _PageInfo_hasNextPage(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.HasNextPage, nil
 	})
@@ -17888,7 +17696,7 @@ func (ec *executionContext) _PageInfo_hasPreviousPage(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.HasPreviousPage, nil
 	})
@@ -17932,7 +17740,7 @@ func (ec *executionContext) _PageInfo_startCursor(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StartCursor, nil
 	})
@@ -17973,7 +17781,7 @@ func (ec *executionContext) _PageInfo_endCursor(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.EndCursor, nil
 	})
@@ -18014,7 +17822,7 @@ func (ec *executionContext) _Profile_id(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -18058,7 +17866,7 @@ func (ec *executionContext) _Profile_name(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -18102,7 +17910,7 @@ func (ec *executionContext) _Profile_digest(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Digest, nil
 	})
@@ -18146,7 +17954,7 @@ func (ec *executionContext) _Profile_sizeInBytes(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SizeInBytes, nil
 	})
@@ -18190,7 +17998,7 @@ func (ec *executionContext) _ProgressProblem_id(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -18234,7 +18042,7 @@ func (ec *executionContext) _ProgressProblem_label(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -18278,7 +18086,7 @@ func (ec *executionContext) _ProgressProblem_output(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Output, nil
 	})
@@ -18322,7 +18130,7 @@ func (ec *executionContext) _Query_node(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().Node(rctx, fc.Args["id"].(string))
 	})
@@ -18374,7 +18182,7 @@ func (ec *executionContext) _Query_nodes(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().Nodes(rctx, fc.Args["ids"].([]string))
 	})
@@ -18429,7 +18237,7 @@ func (ec *executionContext) _Query_findBazelInvocations(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().FindBazelInvocations(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.BazelInvocationOrder), fc.Args["where"].(*ent.BazelInvocationWhereInput))
 	})
@@ -18492,7 +18300,7 @@ func (ec *executionContext) _Query_findBuilds(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().FindBuilds(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["where"].(*ent.BuildWhereInput))
 	})
@@ -18555,7 +18363,7 @@ func (ec *executionContext) _Query_findMetrics(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().FindMetrics(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["where"].(*ent.MetricsWhereInput))
 	})
@@ -18618,7 +18426,7 @@ func (ec *executionContext) _Query_findRunnerCounts(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().FindRunnerCounts(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["where"].(*ent.RunnerCountWhereInput))
 	})
@@ -18681,7 +18489,7 @@ func (ec *executionContext) _Query_findTargets(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().FindTargets(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.TargetPairOrder), fc.Args["where"].(*ent.TargetPairWhereInput))
 	})
@@ -18744,7 +18552,7 @@ func (ec *executionContext) _Query_findTests(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().FindTests(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.TestCollectionOrder), fc.Args["where"].(*ent.TestCollectionWhereInput))
 	})
@@ -18807,7 +18615,7 @@ func (ec *executionContext) _Query_bazelInvocation(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().BazelInvocation(rctx, fc.Args["invocationId"].(string))
 	})
@@ -18922,7 +18730,7 @@ func (ec *executionContext) _Query_getBuild(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().GetBuild(rctx, fc.Args["buildURL"].(*string), fc.Args["buildUUID"].(*uuid.UUID))
 	})
@@ -18988,7 +18796,7 @@ func (ec *executionContext) _Query_getUniqueTestLabels(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().GetUniqueTestLabels(rctx, fc.Args["param"].(*string))
 	})
@@ -19040,7 +18848,7 @@ func (ec *executionContext) _Query_getUniqueTargetLabels(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().GetUniqueTargetLabels(rctx, fc.Args["param"].(*string))
 	})
@@ -19092,7 +18900,7 @@ func (ec *executionContext) _Query_getTestDurationAggregation(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().GetTestDurationAggregation(rctx, fc.Args["label"].(*string))
 	})
@@ -19160,7 +18968,7 @@ func (ec *executionContext) _Query_getTestPassAggregation(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().GetTestPassAggregation(rctx, fc.Args["label"].(*string))
 	})
@@ -19228,7 +19036,7 @@ func (ec *executionContext) _Query_getTargetDurationAggregation(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().GetTargetDurationAggregation(rctx, fc.Args["label"].(*string))
 	})
@@ -19296,7 +19104,7 @@ func (ec *executionContext) _Query_getTargetPassAggregation(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().GetTargetPassAggregation(rctx, fc.Args["label"].(*string))
 	})
@@ -19364,7 +19172,7 @@ func (ec *executionContext) _Query_getTestsWithOffset(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().GetTestsWithOffset(rctx, fc.Args["label"].(*string), fc.Args["offset"].(*int), fc.Args["limit"].(*int), fc.Args["sortBy"].(*string), fc.Args["direction"].(*string))
 	})
@@ -19422,7 +19230,7 @@ func (ec *executionContext) _Query_getTargetsWithOffset(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().GetTargetsWithOffset(rctx, fc.Args["label"].(*string), fc.Args["offset"].(*int), fc.Args["limit"].(*int), fc.Args["sortBy"].(*string), fc.Args["direction"].(*string))
 	})
@@ -19480,7 +19288,7 @@ func (ec *executionContext) _Query_getAveragePassPercentageForLabel(ctx context.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().GetAveragePassPercentageForLabel(rctx, fc.Args["label"].(string))
 	})
@@ -19532,7 +19340,7 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.introspectType(fc.Args["name"].(string))
 	})
@@ -19562,6 +19370,8 @@ func (ec *executionContext) fieldContext_Query___type(ctx context.Context, field
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -19574,8 +19384,8 @@ func (ec *executionContext) fieldContext_Query___type(ctx context.Context, field
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -19606,7 +19416,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.introspectSchema()
 	})
@@ -19661,7 +19471,7 @@ func (ec *executionContext) _RaceStatistics_id(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.RaceStatistics().ID(rctx, obj)
 	})
@@ -19705,7 +19515,7 @@ func (ec *executionContext) _RaceStatistics_mnemonic(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Mnemonic, nil
 	})
@@ -19746,7 +19556,7 @@ func (ec *executionContext) _RaceStatistics_localRunner(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LocalRunner, nil
 	})
@@ -19787,7 +19597,7 @@ func (ec *executionContext) _RaceStatistics_remoteRunner(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RemoteRunner, nil
 	})
@@ -19828,7 +19638,7 @@ func (ec *executionContext) _RaceStatistics_localWins(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LocalWins, nil
 	})
@@ -19869,7 +19679,7 @@ func (ec *executionContext) _RaceStatistics_renoteWins(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RenoteWins, nil
 	})
@@ -19910,7 +19720,7 @@ func (ec *executionContext) _RaceStatistics_dynamicExecutionMetrics(ctx context.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DynamicExecutionMetrics(ctx)
 	})
@@ -19959,7 +19769,7 @@ func (ec *executionContext) _ResourceUsage_id(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.ResourceUsage().ID(rctx, obj)
 	})
@@ -20003,7 +19813,7 @@ func (ec *executionContext) _ResourceUsage_name(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -20044,7 +19854,7 @@ func (ec *executionContext) _ResourceUsage_value(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Value, nil
 	})
@@ -20085,7 +19895,7 @@ func (ec *executionContext) _ResourceUsage_executionInfo(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ExecutionInfo(ctx)
 	})
@@ -20146,7 +19956,7 @@ func (ec *executionContext) _RunnerCount_id(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.RunnerCount().ID(rctx, obj)
 	})
@@ -20190,7 +20000,7 @@ func (ec *executionContext) _RunnerCount_name(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -20231,7 +20041,7 @@ func (ec *executionContext) _RunnerCount_execKind(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ExecKind, nil
 	})
@@ -20272,7 +20082,7 @@ func (ec *executionContext) _RunnerCount_actionsExecuted(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionsExecuted, nil
 	})
@@ -20313,7 +20123,7 @@ func (ec *executionContext) _RunnerCount_actionSummary(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionSummary(ctx)
 	})
@@ -20374,7 +20184,7 @@ func (ec *executionContext) _RunnerCountConnection_edges(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Edges, nil
 	})
@@ -20421,7 +20231,7 @@ func (ec *executionContext) _RunnerCountConnection_pageInfo(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PageInfo, nil
 	})
@@ -20475,7 +20285,7 @@ func (ec *executionContext) _RunnerCountConnection_totalCount(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalCount, nil
 	})
@@ -20519,7 +20329,7 @@ func (ec *executionContext) _RunnerCountEdge_node(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Node, nil
 	})
@@ -20572,7 +20382,7 @@ func (ec *executionContext) _RunnerCountEdge_cursor(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Cursor, nil
 	})
@@ -20616,7 +20426,7 @@ func (ec *executionContext) _SourceControl_id(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SourceControl().ID(rctx, obj)
 	})
@@ -20660,7 +20470,7 @@ func (ec *executionContext) _SourceControl_repoURL(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RepoURL, nil
 	})
@@ -20701,7 +20511,7 @@ func (ec *executionContext) _SourceControl_branch(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Branch, nil
 	})
@@ -20742,7 +20552,7 @@ func (ec *executionContext) _SourceControl_commitSha(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CommitSha, nil
 	})
@@ -20783,7 +20593,7 @@ func (ec *executionContext) _SourceControl_actor(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Actor, nil
 	})
@@ -20824,7 +20634,7 @@ func (ec *executionContext) _SourceControl_refs(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Refs, nil
 	})
@@ -20865,7 +20675,7 @@ func (ec *executionContext) _SourceControl_runID(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RunID, nil
 	})
@@ -20906,7 +20716,7 @@ func (ec *executionContext) _SourceControl_workflow(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Workflow, nil
 	})
@@ -20947,7 +20757,7 @@ func (ec *executionContext) _SourceControl_action(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Action, nil
 	})
@@ -20988,7 +20798,7 @@ func (ec *executionContext) _SourceControl_workspace(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Workspace, nil
 	})
@@ -21029,7 +20839,7 @@ func (ec *executionContext) _SourceControl_eventName(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.EventName, nil
 	})
@@ -21070,7 +20880,7 @@ func (ec *executionContext) _SourceControl_job(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Job, nil
 	})
@@ -21111,7 +20921,7 @@ func (ec *executionContext) _SourceControl_runnerName(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RunnerName, nil
 	})
@@ -21152,7 +20962,7 @@ func (ec *executionContext) _SourceControl_runnerArch(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RunnerArch, nil
 	})
@@ -21193,7 +21003,7 @@ func (ec *executionContext) _SourceControl_runnerOs(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RunnerOs, nil
 	})
@@ -21234,7 +21044,7 @@ func (ec *executionContext) _SourceControl_bazelInvocation(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BazelInvocation(ctx)
 	})
@@ -21335,7 +21145,7 @@ func (ec *executionContext) _SystemNetworkStats_id(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SystemNetworkStats().ID(rctx, obj)
 	})
@@ -21379,7 +21189,7 @@ func (ec *executionContext) _SystemNetworkStats_bytesSent(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BytesSent, nil
 	})
@@ -21420,7 +21230,7 @@ func (ec *executionContext) _SystemNetworkStats_bytesRecv(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BytesRecv, nil
 	})
@@ -21461,7 +21271,7 @@ func (ec *executionContext) _SystemNetworkStats_packetsSent(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PacketsSent, nil
 	})
@@ -21502,7 +21312,7 @@ func (ec *executionContext) _SystemNetworkStats_packetsRecv(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PacketsRecv, nil
 	})
@@ -21543,7 +21353,7 @@ func (ec *executionContext) _SystemNetworkStats_peakBytesSentPerSec(ctx context.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PeakBytesSentPerSec, nil
 	})
@@ -21584,7 +21394,7 @@ func (ec *executionContext) _SystemNetworkStats_peakBytesRecvPerSec(ctx context.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PeakBytesRecvPerSec, nil
 	})
@@ -21625,7 +21435,7 @@ func (ec *executionContext) _SystemNetworkStats_peakPacketsSentPerSec(ctx contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PeakPacketsSentPerSec, nil
 	})
@@ -21666,7 +21476,7 @@ func (ec *executionContext) _SystemNetworkStats_peakPacketsRecvPerSec(ctx contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PeakPacketsRecvPerSec, nil
 	})
@@ -21707,7 +21517,7 @@ func (ec *executionContext) _SystemNetworkStats_networkMetrics(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.NetworkMetrics(ctx)
 	})
@@ -21756,7 +21566,7 @@ func (ec *executionContext) _TargetAggregate_label(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -21797,7 +21607,7 @@ func (ec *executionContext) _TargetAggregate_count(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Count, nil
 	})
@@ -21838,7 +21648,7 @@ func (ec *executionContext) _TargetAggregate_sum(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Sum, nil
 	})
@@ -21879,7 +21689,7 @@ func (ec *executionContext) _TargetAggregate_min(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Min, nil
 	})
@@ -21920,7 +21730,7 @@ func (ec *executionContext) _TargetAggregate_max(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Max, nil
 	})
@@ -21961,7 +21771,7 @@ func (ec *executionContext) _TargetAggregate_avg(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Avg, nil
 	})
@@ -22002,7 +21812,7 @@ func (ec *executionContext) _TargetAggregate_pass(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Pass, nil
 	})
@@ -22043,7 +21853,7 @@ func (ec *executionContext) _TargetComplete_id(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TargetComplete().ID(rctx, obj)
 	})
@@ -22087,7 +21897,7 @@ func (ec *executionContext) _TargetComplete_success(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Success, nil
 	})
@@ -22128,7 +21938,7 @@ func (ec *executionContext) _TargetComplete_tag(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Tag, nil
 	})
@@ -22169,7 +21979,7 @@ func (ec *executionContext) _TargetComplete_targetKind(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TargetKind, nil
 	})
@@ -22210,7 +22020,7 @@ func (ec *executionContext) _TargetComplete_endTimeInMs(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.EndTimeInMs, nil
 	})
@@ -22251,7 +22061,7 @@ func (ec *executionContext) _TargetComplete_testTimeoutSeconds(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestTimeoutSeconds, nil
 	})
@@ -22292,7 +22102,7 @@ func (ec *executionContext) _TargetComplete_testTimeout(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestTimeout, nil
 	})
@@ -22333,7 +22143,7 @@ func (ec *executionContext) _TargetComplete_testSize(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestSize, nil
 	})
@@ -22374,7 +22184,7 @@ func (ec *executionContext) _TargetComplete_targetPair(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TargetPair(ctx)
 	})
@@ -22437,7 +22247,7 @@ func (ec *executionContext) _TargetComplete_importantOutput(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ImportantOutput(ctx)
 	})
@@ -22494,7 +22304,7 @@ func (ec *executionContext) _TargetComplete_directoryOutput(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DirectoryOutput(ctx)
 	})
@@ -22551,7 +22361,7 @@ func (ec *executionContext) _TargetComplete_outputGroup(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OutputGroup(ctx)
 	})
@@ -22606,7 +22416,7 @@ func (ec *executionContext) _TargetConfigured_id(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TargetConfigured().ID(rctx, obj)
 	})
@@ -22650,7 +22460,7 @@ func (ec *executionContext) _TargetConfigured_tag(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Tag, nil
 	})
@@ -22691,7 +22501,7 @@ func (ec *executionContext) _TargetConfigured_targetKind(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TargetKind, nil
 	})
@@ -22732,7 +22542,7 @@ func (ec *executionContext) _TargetConfigured_startTimeInMs(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StartTimeInMs, nil
 	})
@@ -22773,7 +22583,7 @@ func (ec *executionContext) _TargetConfigured_testSize(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestSize, nil
 	})
@@ -22814,7 +22624,7 @@ func (ec *executionContext) _TargetConfigured_targetPair(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TargetPair(ctx)
 	})
@@ -22877,7 +22687,7 @@ func (ec *executionContext) _TargetGridCell_invocationId(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.InvocationID, nil
 	})
@@ -22918,7 +22728,7 @@ func (ec *executionContext) _TargetGridCell_complete(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Complete, nil
 	})
@@ -22985,7 +22795,7 @@ func (ec *executionContext) _TargetGridCell_abortReason(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AbortReason, nil
 	})
@@ -23026,7 +22836,7 @@ func (ec *executionContext) _TargetGridResult_total(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Total, nil
 	})
@@ -23067,7 +22877,7 @@ func (ec *executionContext) _TargetGridResult_result(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Result, nil
 	})
@@ -23126,7 +22936,7 @@ func (ec *executionContext) _TargetGridRow_label(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -23167,7 +22977,7 @@ func (ec *executionContext) _TargetGridRow_count(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Count, nil
 	})
@@ -23208,7 +23018,7 @@ func (ec *executionContext) _TargetGridRow_sum(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Sum, nil
 	})
@@ -23249,7 +23059,7 @@ func (ec *executionContext) _TargetGridRow_min(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Min, nil
 	})
@@ -23290,7 +23100,7 @@ func (ec *executionContext) _TargetGridRow_max(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Max, nil
 	})
@@ -23331,7 +23141,7 @@ func (ec *executionContext) _TargetGridRow_avg(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Avg, nil
 	})
@@ -23372,7 +23182,7 @@ func (ec *executionContext) _TargetGridRow_passRate(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PassRate, nil
 	})
@@ -23413,7 +23223,7 @@ func (ec *executionContext) _TargetGridRow_cells(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Cells, nil
 	})
@@ -23462,7 +23272,7 @@ func (ec *executionContext) _TargetMetrics_id(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TargetMetrics().ID(rctx, obj)
 	})
@@ -23506,7 +23316,7 @@ func (ec *executionContext) _TargetMetrics_targetsLoaded(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TargetsLoaded, nil
 	})
@@ -23547,7 +23357,7 @@ func (ec *executionContext) _TargetMetrics_targetsConfigured(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TargetsConfigured, nil
 	})
@@ -23588,7 +23398,7 @@ func (ec *executionContext) _TargetMetrics_targetsConfiguredNotIncludingAspects(
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TargetsConfiguredNotIncludingAspects, nil
 	})
@@ -23629,7 +23439,7 @@ func (ec *executionContext) _TargetMetrics_metrics(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Metrics(ctx)
 	})
@@ -23696,7 +23506,7 @@ func (ec *executionContext) _TargetPair_id(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TargetPair().ID(rctx, obj)
 	})
@@ -23740,7 +23550,7 @@ func (ec *executionContext) _TargetPair_label(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -23781,7 +23591,7 @@ func (ec *executionContext) _TargetPair_durationInMs(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DurationInMs, nil
 	})
@@ -23822,7 +23632,7 @@ func (ec *executionContext) _TargetPair_success(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Success, nil
 	})
@@ -23863,7 +23673,7 @@ func (ec *executionContext) _TargetPair_targetKind(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TargetKind, nil
 	})
@@ -23904,7 +23714,7 @@ func (ec *executionContext) _TargetPair_testSize(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestSize, nil
 	})
@@ -23945,7 +23755,7 @@ func (ec *executionContext) _TargetPair_abortReason(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AbortReason, nil
 	})
@@ -23986,7 +23796,7 @@ func (ec *executionContext) _TargetPair_bazelInvocation(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BazelInvocation(ctx)
 	})
@@ -24087,7 +23897,7 @@ func (ec *executionContext) _TargetPair_configuration(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Configuration(ctx)
 	})
@@ -24142,7 +23952,7 @@ func (ec *executionContext) _TargetPair_completion(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Completion(ctx)
 	})
@@ -24209,7 +24019,7 @@ func (ec *executionContext) _TargetPairConnection_edges(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Edges, nil
 	})
@@ -24256,7 +24066,7 @@ func (ec *executionContext) _TargetPairConnection_pageInfo(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PageInfo, nil
 	})
@@ -24310,7 +24120,7 @@ func (ec *executionContext) _TargetPairConnection_totalCount(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalCount, nil
 	})
@@ -24354,7 +24164,7 @@ func (ec *executionContext) _TargetPairEdge_node(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Node, nil
 	})
@@ -24417,7 +24227,7 @@ func (ec *executionContext) _TargetPairEdge_cursor(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Cursor, nil
 	})
@@ -24461,7 +24271,7 @@ func (ec *executionContext) _TargetProblem_id(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -24505,7 +24315,7 @@ func (ec *executionContext) _TargetProblem_label(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -24549,7 +24359,7 @@ func (ec *executionContext) _TestCollection_id(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TestCollection().ID(rctx, obj)
 	})
@@ -24593,7 +24403,7 @@ func (ec *executionContext) _TestCollection_label(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -24634,7 +24444,7 @@ func (ec *executionContext) _TestCollection_overallStatus(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OverallStatus, nil
 	})
@@ -24675,7 +24485,7 @@ func (ec *executionContext) _TestCollection_strategy(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Strategy, nil
 	})
@@ -24716,7 +24526,7 @@ func (ec *executionContext) _TestCollection_cachedLocally(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CachedLocally, nil
 	})
@@ -24757,7 +24567,7 @@ func (ec *executionContext) _TestCollection_cachedRemotely(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CachedRemotely, nil
 	})
@@ -24798,7 +24608,7 @@ func (ec *executionContext) _TestCollection_firstSeen(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FirstSeen, nil
 	})
@@ -24839,7 +24649,7 @@ func (ec *executionContext) _TestCollection_durationMs(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DurationMs, nil
 	})
@@ -24880,7 +24690,7 @@ func (ec *executionContext) _TestCollection_bazelInvocation(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BazelInvocation(ctx)
 	})
@@ -24981,7 +24791,7 @@ func (ec *executionContext) _TestCollection_testSummary(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestSummary(ctx)
 	})
@@ -25052,7 +24862,7 @@ func (ec *executionContext) _TestCollection_testResults(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestResults(ctx)
 	})
@@ -25121,7 +24931,7 @@ func (ec *executionContext) _TestCollectionConnection_edges(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Edges, nil
 	})
@@ -25168,7 +24978,7 @@ func (ec *executionContext) _TestCollectionConnection_pageInfo(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PageInfo, nil
 	})
@@ -25222,7 +25032,7 @@ func (ec *executionContext) _TestCollectionConnection_totalCount(ctx context.Con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalCount, nil
 	})
@@ -25266,7 +25076,7 @@ func (ec *executionContext) _TestCollectionEdge_node(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Node, nil
 	})
@@ -25331,7 +25141,7 @@ func (ec *executionContext) _TestCollectionEdge_cursor(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Cursor, nil
 	})
@@ -25375,7 +25185,7 @@ func (ec *executionContext) _TestFile_id(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TestFile().ID(rctx, obj)
 	})
@@ -25419,7 +25229,7 @@ func (ec *executionContext) _TestFile_digest(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Digest, nil
 	})
@@ -25460,7 +25270,7 @@ func (ec *executionContext) _TestFile_file(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.File, nil
 	})
@@ -25501,7 +25311,7 @@ func (ec *executionContext) _TestFile_length(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Length, nil
 	})
@@ -25542,7 +25352,7 @@ func (ec *executionContext) _TestFile_name(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -25583,7 +25393,7 @@ func (ec *executionContext) _TestFile_prefix(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Prefix, nil
 	})
@@ -25624,7 +25434,7 @@ func (ec *executionContext) _TestFile_testResult(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestResult(ctx)
 	})
@@ -25693,7 +25503,7 @@ func (ec *executionContext) _TestGridCell_invocationId(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.InvocationID, nil
 	})
@@ -25734,7 +25544,7 @@ func (ec *executionContext) _TestGridCell_status(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Status, nil
 	})
@@ -25775,7 +25585,7 @@ func (ec *executionContext) _TestGridResult_total(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Total, nil
 	})
@@ -25816,7 +25626,7 @@ func (ec *executionContext) _TestGridResult_result(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Result, nil
 	})
@@ -25875,7 +25685,7 @@ func (ec *executionContext) _TestGridRow_label(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -25916,7 +25726,7 @@ func (ec *executionContext) _TestGridRow_count(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Count, nil
 	})
@@ -25957,7 +25767,7 @@ func (ec *executionContext) _TestGridRow_sum(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Sum, nil
 	})
@@ -25998,7 +25808,7 @@ func (ec *executionContext) _TestGridRow_min(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Min, nil
 	})
@@ -26039,7 +25849,7 @@ func (ec *executionContext) _TestGridRow_max(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Max, nil
 	})
@@ -26080,7 +25890,7 @@ func (ec *executionContext) _TestGridRow_avg(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Avg, nil
 	})
@@ -26121,7 +25931,7 @@ func (ec *executionContext) _TestGridRow_passRate(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PassRate, nil
 	})
@@ -26162,7 +25972,7 @@ func (ec *executionContext) _TestGridRow_cells(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Cells, nil
 	})
@@ -26209,7 +26019,7 @@ func (ec *executionContext) _TestProblem_id(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -26253,7 +26063,7 @@ func (ec *executionContext) _TestProblem_label(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -26297,7 +26107,7 @@ func (ec *executionContext) _TestProblem_status(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Status, nil
 	})
@@ -26341,7 +26151,7 @@ func (ec *executionContext) _TestProblem_results(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Results, nil
 	})
@@ -26401,7 +26211,7 @@ func (ec *executionContext) _TestResult_id(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -26445,7 +26255,7 @@ func (ec *executionContext) _TestResult_run(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Run, nil
 	})
@@ -26489,7 +26299,7 @@ func (ec *executionContext) _TestResult_shard(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Shard, nil
 	})
@@ -26533,7 +26343,7 @@ func (ec *executionContext) _TestResult_attempt(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Attempt, nil
 	})
@@ -26577,7 +26387,7 @@ func (ec *executionContext) _TestResult_status(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Status, nil
 	})
@@ -26621,7 +26431,7 @@ func (ec *executionContext) _TestResult_actionLogOutput(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TestResult().ActionLogOutput(rctx, obj)
 	})
@@ -26677,7 +26487,7 @@ func (ec *executionContext) _TestResult_undeclaredTestOutputs(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TestResult().UndeclaredTestOutputs(rctx, obj)
 	})
@@ -26730,7 +26540,7 @@ func (ec *executionContext) _TestResultBES_id(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TestResultBES().ID(rctx, obj)
 	})
@@ -26774,7 +26584,7 @@ func (ec *executionContext) _TestResultBES_testStatus(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestStatus, nil
 	})
@@ -26815,7 +26625,7 @@ func (ec *executionContext) _TestResultBES_statusDetails(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StatusDetails, nil
 	})
@@ -26856,7 +26666,7 @@ func (ec *executionContext) _TestResultBES_label(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -26897,7 +26707,7 @@ func (ec *executionContext) _TestResultBES_warning(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Warning, nil
 	})
@@ -26938,7 +26748,7 @@ func (ec *executionContext) _TestResultBES_cachedLocally(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CachedLocally, nil
 	})
@@ -26979,7 +26789,7 @@ func (ec *executionContext) _TestResultBES_testAttemptStartMillisEpoch(ctx conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestAttemptStartMillisEpoch, nil
 	})
@@ -27020,7 +26830,7 @@ func (ec *executionContext) _TestResultBES_testAttemptStart(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestAttemptStart, nil
 	})
@@ -27061,7 +26871,7 @@ func (ec *executionContext) _TestResultBES_testAttemptDurationMillis(ctx context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestAttemptDurationMillis, nil
 	})
@@ -27102,7 +26912,7 @@ func (ec *executionContext) _TestResultBES_testAttemptDuration(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestAttemptDuration, nil
 	})
@@ -27143,7 +26953,7 @@ func (ec *executionContext) _TestResultBES_testCollection(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestCollection(ctx)
 	})
@@ -27208,7 +27018,7 @@ func (ec *executionContext) _TestResultBES_testActionOutput(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestActionOutput(ctx)
 	})
@@ -27265,7 +27075,7 @@ func (ec *executionContext) _TestResultBES_executionInfo(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ExecutionInfo(ctx)
 	})
@@ -27326,7 +27136,7 @@ func (ec *executionContext) _TestSummary_id(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TestSummary().ID(rctx, obj)
 	})
@@ -27370,7 +27180,7 @@ func (ec *executionContext) _TestSummary_overallStatus(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OverallStatus, nil
 	})
@@ -27411,7 +27221,7 @@ func (ec *executionContext) _TestSummary_totalRunCount(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalRunCount, nil
 	})
@@ -27452,7 +27262,7 @@ func (ec *executionContext) _TestSummary_runCount(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RunCount, nil
 	})
@@ -27493,7 +27303,7 @@ func (ec *executionContext) _TestSummary_attemptCount(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AttemptCount, nil
 	})
@@ -27534,7 +27344,7 @@ func (ec *executionContext) _TestSummary_shardCount(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ShardCount, nil
 	})
@@ -27575,7 +27385,7 @@ func (ec *executionContext) _TestSummary_totalNumCached(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalNumCached, nil
 	})
@@ -27616,7 +27426,7 @@ func (ec *executionContext) _TestSummary_firstStartTime(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FirstStartTime, nil
 	})
@@ -27657,7 +27467,7 @@ func (ec *executionContext) _TestSummary_lastStopTime(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LastStopTime, nil
 	})
@@ -27698,7 +27508,7 @@ func (ec *executionContext) _TestSummary_totalRunDuration(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalRunDuration, nil
 	})
@@ -27739,7 +27549,7 @@ func (ec *executionContext) _TestSummary_label(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -27780,7 +27590,7 @@ func (ec *executionContext) _TestSummary_testCollection(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TestCollection(ctx)
 	})
@@ -27845,7 +27655,7 @@ func (ec *executionContext) _TestSummary_passed(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Passed(ctx)
 	})
@@ -27902,7 +27712,7 @@ func (ec *executionContext) _TestSummary_failed(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Failed(ctx)
 	})
@@ -27959,7 +27769,7 @@ func (ec *executionContext) _TimingBreakdown_id(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TimingBreakdown().ID(rctx, obj)
 	})
@@ -28003,7 +27813,7 @@ func (ec *executionContext) _TimingBreakdown_name(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -28044,7 +27854,7 @@ func (ec *executionContext) _TimingBreakdown_time(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Time, nil
 	})
@@ -28085,7 +27895,7 @@ func (ec *executionContext) _TimingBreakdown_executionInfo(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ExecutionInfo(ctx)
 	})
@@ -28146,7 +27956,7 @@ func (ec *executionContext) _TimingBreakdown_child(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Child(ctx)
 	})
@@ -28197,7 +28007,7 @@ func (ec *executionContext) _TimingChild_id(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TimingChild().ID(rctx, obj)
 	})
@@ -28241,7 +28051,7 @@ func (ec *executionContext) _TimingChild_name(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -28282,7 +28092,7 @@ func (ec *executionContext) _TimingChild_time(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Time, nil
 	})
@@ -28323,7 +28133,7 @@ func (ec *executionContext) _TimingChild_timingBreakdown(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TimingBreakdown(ctx)
 	})
@@ -28376,7 +28186,7 @@ func (ec *executionContext) _TimingMetrics_id(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TimingMetrics().ID(rctx, obj)
 	})
@@ -28420,7 +28230,7 @@ func (ec *executionContext) _TimingMetrics_cpuTimeInMs(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CPUTimeInMs, nil
 	})
@@ -28461,7 +28271,7 @@ func (ec *executionContext) _TimingMetrics_wallTimeInMs(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.WallTimeInMs, nil
 	})
@@ -28502,7 +28312,7 @@ func (ec *executionContext) _TimingMetrics_analysisPhaseTimeInMs(ctx context.Con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AnalysisPhaseTimeInMs, nil
 	})
@@ -28543,7 +28353,7 @@ func (ec *executionContext) _TimingMetrics_executionPhaseTimeInMs(ctx context.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ExecutionPhaseTimeInMs, nil
 	})
@@ -28584,7 +28394,7 @@ func (ec *executionContext) _TimingMetrics_actionsExecutionStartInMs(ctx context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActionsExecutionStartInMs, nil
 	})
@@ -28625,7 +28435,7 @@ func (ec *executionContext) _TimingMetrics_metrics(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Metrics(ctx)
 	})
@@ -28692,7 +28502,7 @@ func (ec *executionContext) _User_id(ctx context.Context, field graphql.Collecte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -28736,7 +28546,7 @@ func (ec *executionContext) _User_Email(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Email, nil
 	})
@@ -28780,7 +28590,7 @@ func (ec *executionContext) _User_LDAP(ctx context.Context, field graphql.Collec
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Ldap, nil
 	})
@@ -28824,7 +28634,7 @@ func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -28868,7 +28678,7 @@ func (ec *executionContext) ___Directive_description(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -28897,6 +28707,50 @@ func (ec *executionContext) fieldContext___Directive_description(_ context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) ___Directive_isRepeatable(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext___Directive_isRepeatable(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsRepeatable, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext___Directive_isRepeatable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "__Directive",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) ___Directive_locations(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext___Directive_locations(ctx, field)
 	if err != nil {
@@ -28909,7 +28763,7 @@ func (ec *executionContext) ___Directive_locations(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Locations, nil
 	})
@@ -28953,7 +28807,7 @@ func (ec *executionContext) ___Directive_args(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Args, nil
 	})
@@ -28972,7 +28826,7 @@ func (ec *executionContext) ___Directive_args(ctx context.Context, field graphql
 	return ec.marshalN__InputValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐInputValueᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Directive_args(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Directive_args(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Directive",
 		Field:      field,
@@ -28988,53 +28842,24 @@ func (ec *executionContext) fieldContext___Directive_args(_ context.Context, fie
 				return ec.fieldContext___InputValue_type(ctx, field)
 			case "defaultValue":
 				return ec.fieldContext___InputValue_defaultValue(ctx, field)
+			case "isDeprecated":
+				return ec.fieldContext___InputValue_isDeprecated(ctx, field)
+			case "deprecationReason":
+				return ec.fieldContext___InputValue_deprecationReason(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __InputValue", field.Name)
 		},
 	}
-	return fc, nil
-}
-
-func (ec *executionContext) ___Directive_isRepeatable(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext___Directive_isRepeatable(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
 	defer func() {
 		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.IsRepeatable, nil
-	})
-	if err != nil {
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field___Directive_args_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext___Directive_isRepeatable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "__Directive",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
+		return fc, err
 	}
 	return fc, nil
 }
@@ -29051,7 +28876,7 @@ func (ec *executionContext) ___EnumValue_name(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -29095,7 +28920,7 @@ func (ec *executionContext) ___EnumValue_description(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -29136,7 +28961,7 @@ func (ec *executionContext) ___EnumValue_isDeprecated(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.IsDeprecated(), nil
 	})
@@ -29180,7 +29005,7 @@ func (ec *executionContext) ___EnumValue_deprecationReason(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DeprecationReason(), nil
 	})
@@ -29221,7 +29046,7 @@ func (ec *executionContext) ___Field_name(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -29265,7 +29090,7 @@ func (ec *executionContext) ___Field_description(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -29306,7 +29131,7 @@ func (ec *executionContext) ___Field_args(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Args, nil
 	})
@@ -29325,7 +29150,7 @@ func (ec *executionContext) ___Field_args(ctx context.Context, field graphql.Col
 	return ec.marshalN__InputValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐInputValueᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Field_args(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Field_args(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Field",
 		Field:      field,
@@ -29341,9 +29166,24 @@ func (ec *executionContext) fieldContext___Field_args(_ context.Context, field g
 				return ec.fieldContext___InputValue_type(ctx, field)
 			case "defaultValue":
 				return ec.fieldContext___InputValue_defaultValue(ctx, field)
+			case "isDeprecated":
+				return ec.fieldContext___InputValue_isDeprecated(ctx, field)
+			case "deprecationReason":
+				return ec.fieldContext___InputValue_deprecationReason(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __InputValue", field.Name)
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field___Field_args_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -29360,7 +29200,7 @@ func (ec *executionContext) ___Field_type(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Type, nil
 	})
@@ -29393,6 +29233,8 @@ func (ec *executionContext) fieldContext___Field_type(_ context.Context, field g
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -29405,8 +29247,8 @@ func (ec *executionContext) fieldContext___Field_type(_ context.Context, field g
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -29426,7 +29268,7 @@ func (ec *executionContext) ___Field_isDeprecated(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.IsDeprecated(), nil
 	})
@@ -29470,7 +29312,7 @@ func (ec *executionContext) ___Field_deprecationReason(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DeprecationReason(), nil
 	})
@@ -29511,7 +29353,7 @@ func (ec *executionContext) ___InputValue_name(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -29555,7 +29397,7 @@ func (ec *executionContext) ___InputValue_description(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -29596,7 +29438,7 @@ func (ec *executionContext) ___InputValue_type(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Type, nil
 	})
@@ -29629,6 +29471,8 @@ func (ec *executionContext) fieldContext___InputValue_type(_ context.Context, fi
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -29641,8 +29485,8 @@ func (ec *executionContext) fieldContext___InputValue_type(_ context.Context, fi
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -29662,7 +29506,7 @@ func (ec *executionContext) ___InputValue_defaultValue(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DefaultValue, nil
 	})
@@ -29691,6 +29535,91 @@ func (ec *executionContext) fieldContext___InputValue_defaultValue(_ context.Con
 	return fc, nil
 }
 
+func (ec *executionContext) ___InputValue_isDeprecated(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext___InputValue_isDeprecated(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsDeprecated(), nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext___InputValue_isDeprecated(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "__InputValue",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) ___InputValue_deprecationReason(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext___InputValue_deprecationReason(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeprecationReason(), nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext___InputValue_deprecationReason(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "__InputValue",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) ___Schema_description(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext___Schema_description(ctx, field)
 	if err != nil {
@@ -29703,7 +29632,7 @@ func (ec *executionContext) ___Schema_description(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -29744,7 +29673,7 @@ func (ec *executionContext) ___Schema_types(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Types(), nil
 	})
@@ -29777,6 +29706,8 @@ func (ec *executionContext) fieldContext___Schema_types(_ context.Context, field
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -29789,8 +29720,8 @@ func (ec *executionContext) fieldContext___Schema_types(_ context.Context, field
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -29810,7 +29741,7 @@ func (ec *executionContext) ___Schema_queryType(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.QueryType(), nil
 	})
@@ -29843,6 +29774,8 @@ func (ec *executionContext) fieldContext___Schema_queryType(_ context.Context, f
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -29855,8 +29788,8 @@ func (ec *executionContext) fieldContext___Schema_queryType(_ context.Context, f
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -29876,7 +29809,7 @@ func (ec *executionContext) ___Schema_mutationType(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MutationType(), nil
 	})
@@ -29906,6 +29839,8 @@ func (ec *executionContext) fieldContext___Schema_mutationType(_ context.Context
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -29918,8 +29853,8 @@ func (ec *executionContext) fieldContext___Schema_mutationType(_ context.Context
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -29939,7 +29874,7 @@ func (ec *executionContext) ___Schema_subscriptionType(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SubscriptionType(), nil
 	})
@@ -29969,6 +29904,8 @@ func (ec *executionContext) fieldContext___Schema_subscriptionType(_ context.Con
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -29981,8 +29918,8 @@ func (ec *executionContext) fieldContext___Schema_subscriptionType(_ context.Con
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -30002,7 +29939,7 @@ func (ec *executionContext) ___Schema_directives(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Directives(), nil
 	})
@@ -30033,12 +29970,12 @@ func (ec *executionContext) fieldContext___Schema_directives(_ context.Context, 
 				return ec.fieldContext___Directive_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Directive_description(ctx, field)
+			case "isRepeatable":
+				return ec.fieldContext___Directive_isRepeatable(ctx, field)
 			case "locations":
 				return ec.fieldContext___Directive_locations(ctx, field)
 			case "args":
 				return ec.fieldContext___Directive_args(ctx, field)
-			case "isRepeatable":
-				return ec.fieldContext___Directive_isRepeatable(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Directive", field.Name)
 		},
@@ -30058,7 +29995,7 @@ func (ec *executionContext) ___Type_kind(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Kind(), nil
 	})
@@ -30102,7 +30039,7 @@ func (ec *executionContext) ___Type_name(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name(), nil
 	})
@@ -30143,7 +30080,7 @@ func (ec *executionContext) ___Type_description(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -30172,6 +30109,47 @@ func (ec *executionContext) fieldContext___Type_description(_ context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) ___Type_specifiedByURL(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext___Type_specifiedByURL(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpecifiedByURL(), nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "__Type",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) ___Type_fields(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext___Type_fields(ctx, field)
 	if err != nil {
@@ -30184,7 +30162,7 @@ func (ec *executionContext) ___Type_fields(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Fields(fc.Args["includeDeprecated"].(bool)), nil
 	})
@@ -30250,7 +30228,7 @@ func (ec *executionContext) ___Type_interfaces(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Interfaces(), nil
 	})
@@ -30280,6 +30258,8 @@ func (ec *executionContext) fieldContext___Type_interfaces(_ context.Context, fi
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -30292,8 +30272,8 @@ func (ec *executionContext) fieldContext___Type_interfaces(_ context.Context, fi
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -30313,7 +30293,7 @@ func (ec *executionContext) ___Type_possibleTypes(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PossibleTypes(), nil
 	})
@@ -30343,6 +30323,8 @@ func (ec *executionContext) fieldContext___Type_possibleTypes(_ context.Context,
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -30355,8 +30337,8 @@ func (ec *executionContext) fieldContext___Type_possibleTypes(_ context.Context,
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -30376,7 +30358,7 @@ func (ec *executionContext) ___Type_enumValues(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.EnumValues(fc.Args["includeDeprecated"].(bool)), nil
 	})
@@ -30438,7 +30420,7 @@ func (ec *executionContext) ___Type_inputFields(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.InputFields(), nil
 	})
@@ -30470,6 +30452,10 @@ func (ec *executionContext) fieldContext___Type_inputFields(_ context.Context, f
 				return ec.fieldContext___InputValue_type(ctx, field)
 			case "defaultValue":
 				return ec.fieldContext___InputValue_defaultValue(ctx, field)
+			case "isDeprecated":
+				return ec.fieldContext___InputValue_isDeprecated(ctx, field)
+			case "deprecationReason":
+				return ec.fieldContext___InputValue_deprecationReason(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __InputValue", field.Name)
 		},
@@ -30489,7 +30475,7 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OfType(), nil
 	})
@@ -30519,6 +30505,8 @@ func (ec *executionContext) fieldContext___Type_ofType(_ context.Context, field 
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -30531,8 +30519,8 @@ func (ec *executionContext) fieldContext___Type_ofType(_ context.Context, field 
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -30540,8 +30528,8 @@ func (ec *executionContext) fieldContext___Type_ofType(_ context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) ___Type_specifiedByURL(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext___Type_specifiedByURL(ctx, field)
+func (ec *executionContext) ___Type_isOneOf(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext___Type_isOneOf(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -30552,9 +30540,9 @@ func (ec *executionContext) ___Type_specifiedByURL(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.SpecifiedByURL(), nil
+		return obj.IsOneOf(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30563,19 +30551,19 @@ func (ec *executionContext) ___Type_specifiedByURL(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Type_isOneOf(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Type",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -30585,10 +30573,10 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputActionCacheStatisticsWhereInput(ctx context.Context, obj interface{}) (ent.ActionCacheStatisticsWhereInput, error) {
+func (ec *executionContext) unmarshalInputActionCacheStatisticsWhereInput(ctx context.Context, obj any) (ent.ActionCacheStatisticsWhereInput, error) {
 	var it ent.ActionCacheStatisticsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -31076,10 +31064,10 @@ func (ec *executionContext) unmarshalInputActionCacheStatisticsWhereInput(ctx co
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputActionDataWhereInput(ctx context.Context, obj interface{}) (ent.ActionDataWhereInput, error) {
+func (ec *executionContext) unmarshalInputActionDataWhereInput(ctx context.Context, obj any) (ent.ActionDataWhereInput, error) {
 	var it ent.ActionDataWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -31728,10 +31716,10 @@ func (ec *executionContext) unmarshalInputActionDataWhereInput(ctx context.Conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputActionSummaryWhereInput(ctx context.Context, obj interface{}) (ent.ActionSummaryWhereInput, error) {
+func (ec *executionContext) unmarshalInputActionSummaryWhereInput(ctx context.Context, obj any) (ent.ActionSummaryWhereInput, error) {
 	var it ent.ActionSummaryWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -32177,10 +32165,10 @@ func (ec *executionContext) unmarshalInputActionSummaryWhereInput(ctx context.Co
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputArtifactMetricsWhereInput(ctx context.Context, obj interface{}) (ent.ArtifactMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputArtifactMetricsWhereInput(ctx context.Context, obj any) (ent.ArtifactMetricsWhereInput, error) {
 	var it ent.ArtifactMetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -32360,10 +32348,10 @@ func (ec *executionContext) unmarshalInputArtifactMetricsWhereInput(ctx context.
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputBazelInvocationOrder(ctx context.Context, obj interface{}) (ent.BazelInvocationOrder, error) {
+func (ec *executionContext) unmarshalInputBazelInvocationOrder(ctx context.Context, obj any) (ent.BazelInvocationOrder, error) {
 	var it ent.BazelInvocationOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -32398,10 +32386,10 @@ func (ec *executionContext) unmarshalInputBazelInvocationOrder(ctx context.Conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputBazelInvocationProblemWhereInput(ctx context.Context, obj interface{}) (ent.BazelInvocationProblemWhereInput, error) {
+func (ec *executionContext) unmarshalInputBazelInvocationProblemWhereInput(ctx context.Context, obj any) (ent.BazelInvocationProblemWhereInput, error) {
 	var it ent.BazelInvocationProblemWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -32707,10 +32695,10 @@ func (ec *executionContext) unmarshalInputBazelInvocationProblemWhereInput(ctx c
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.Context, obj interface{}) (ent.BazelInvocationWhereInput, error) {
+func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.Context, obj any) (ent.BazelInvocationWhereInput, error) {
 	var it ent.BazelInvocationWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -34283,10 +34271,10 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputBlobWhereInput(ctx context.Context, obj interface{}) (ent.BlobWhereInput, error) {
+func (ec *executionContext) unmarshalInputBlobWhereInput(ctx context.Context, obj any) (ent.BlobWhereInput, error) {
 	var it ent.BlobWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -34795,10 +34783,10 @@ func (ec *executionContext) unmarshalInputBlobWhereInput(ctx context.Context, ob
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputBuildGraphMetricsWhereInput(ctx context.Context, obj interface{}) (ent.BuildGraphMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputBuildGraphMetricsWhereInput(ctx context.Context, obj any) (ent.BuildGraphMetricsWhereInput, error) {
 	var it ent.BuildGraphMetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -35622,10 +35610,10 @@ func (ec *executionContext) unmarshalInputBuildGraphMetricsWhereInput(ctx contex
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputBuildWhereInput(ctx context.Context, obj interface{}) (ent.BuildWhereInput, error) {
+func (ec *executionContext) unmarshalInputBuildWhereInput(ctx context.Context, obj any) (ent.BuildWhereInput, error) {
 	var it ent.BuildWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -35966,10 +35954,10 @@ func (ec *executionContext) unmarshalInputBuildWhereInput(ctx context.Context, o
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputCumulativeMetricsWhereInput(ctx context.Context, obj interface{}) (ent.CumulativeMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputCumulativeMetricsWhereInput(ctx context.Context, obj any) (ent.CumulativeMetricsWhereInput, error) {
 	var it ent.CumulativeMetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -36233,10 +36221,10 @@ func (ec *executionContext) unmarshalInputCumulativeMetricsWhereInput(ctx contex
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputDynamicExecutionMetricsWhereInput(ctx context.Context, obj interface{}) (ent.DynamicExecutionMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputDynamicExecutionMetricsWhereInput(ctx context.Context, obj any) (ent.DynamicExecutionMetricsWhereInput, error) {
 	var it ent.DynamicExecutionMetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -36374,10 +36362,10 @@ func (ec *executionContext) unmarshalInputDynamicExecutionMetricsWhereInput(ctx 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputEvaluationStatWhereInput(ctx context.Context, obj interface{}) (ent.EvaluationStatWhereInput, error) {
+func (ec *executionContext) unmarshalInputEvaluationStatWhereInput(ctx context.Context, obj any) (ent.EvaluationStatWhereInput, error) {
 	var it ent.EvaluationStatWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -36676,10 +36664,10 @@ func (ec *executionContext) unmarshalInputEvaluationStatWhereInput(ctx context.C
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputEventFileWhereInput(ctx context.Context, obj interface{}) (ent.EventFileWhereInput, error) {
+func (ec *executionContext) unmarshalInputEventFileWhereInput(ctx context.Context, obj any) (ent.EventFileWhereInput, error) {
 	var it ent.EventFileWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -37328,10 +37316,10 @@ func (ec *executionContext) unmarshalInputEventFileWhereInput(ctx context.Contex
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputExectionInfoWhereInput(ctx context.Context, obj interface{}) (ent.ExectionInfoWhereInput, error) {
+func (ec *executionContext) unmarshalInputExectionInfoWhereInput(ctx context.Context, obj any) (ent.ExectionInfoWhereInput, error) {
 	var it ent.ExectionInfoWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -37861,10 +37849,10 @@ func (ec *executionContext) unmarshalInputExectionInfoWhereInput(ctx context.Con
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFilesMetricWhereInput(ctx context.Context, obj interface{}) (ent.FilesMetricWhereInput, error) {
+func (ec *executionContext) unmarshalInputFilesMetricWhereInput(ctx context.Context, obj any) (ent.FilesMetricWhereInput, error) {
 	var it ent.FilesMetricWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -38128,10 +38116,10 @@ func (ec *executionContext) unmarshalInputFilesMetricWhereInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputGarbageMetricsWhereInput(ctx context.Context, obj interface{}) (ent.GarbageMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputGarbageMetricsWhereInput(ctx context.Context, obj any) (ent.GarbageMetricsWhereInput, error) {
 	var it ent.GarbageMetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -38430,10 +38418,10 @@ func (ec *executionContext) unmarshalInputGarbageMetricsWhereInput(ctx context.C
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputMemoryMetricsWhereInput(ctx context.Context, obj interface{}) (ent.MemoryMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputMemoryMetricsWhereInput(ctx context.Context, obj any) (ent.MemoryMetricsWhereInput, error) {
 	var it ent.MemoryMetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -38781,10 +38769,10 @@ func (ec *executionContext) unmarshalInputMemoryMetricsWhereInput(ctx context.Co
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputMetricsWhereInput(ctx context.Context, obj interface{}) (ent.MetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputMetricsWhereInput(ctx context.Context, obj any) (ent.MetricsWhereInput, error) {
 	var it ent.MetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -39048,10 +39036,10 @@ func (ec *executionContext) unmarshalInputMetricsWhereInput(ctx context.Context,
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputMissDetailWhereInput(ctx context.Context, obj interface{}) (ent.MissDetailWhereInput, error) {
+func (ec *executionContext) unmarshalInputMissDetailWhereInput(ctx context.Context, obj any) (ent.MissDetailWhereInput, error) {
 	var it ent.MissDetailWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -39287,10 +39275,10 @@ func (ec *executionContext) unmarshalInputMissDetailWhereInput(ctx context.Conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputNamedSetOfFilesWhereInput(ctx context.Context, obj interface{}) (ent.NamedSetOfFilesWhereInput, error) {
+func (ec *executionContext) unmarshalInputNamedSetOfFilesWhereInput(ctx context.Context, obj any) (ent.NamedSetOfFilesWhereInput, error) {
 	var it ent.NamedSetOfFilesWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -39442,10 +39430,10 @@ func (ec *executionContext) unmarshalInputNamedSetOfFilesWhereInput(ctx context.
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputNetworkMetricsWhereInput(ctx context.Context, obj interface{}) (ent.NetworkMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputNetworkMetricsWhereInput(ctx context.Context, obj any) (ent.NetworkMetricsWhereInput, error) {
 	var it ent.NetworkMetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -39583,10 +39571,10 @@ func (ec *executionContext) unmarshalInputNetworkMetricsWhereInput(ctx context.C
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputOutputGroupWhereInput(ctx context.Context, obj interface{}) (ent.OutputGroupWhereInput, error) {
+func (ec *executionContext) unmarshalInputOutputGroupWhereInput(ctx context.Context, obj any) (ent.OutputGroupWhereInput, error) {
 	var it ent.OutputGroupWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -39871,10 +39859,10 @@ func (ec *executionContext) unmarshalInputOutputGroupWhereInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputPackageLoadMetricsWhereInput(ctx context.Context, obj interface{}) (ent.PackageLoadMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputPackageLoadMetricsWhereInput(ctx context.Context, obj any) (ent.PackageLoadMetricsWhereInput, error) {
 	var it ent.PackageLoadMetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -40453,10 +40441,10 @@ func (ec *executionContext) unmarshalInputPackageLoadMetricsWhereInput(ctx conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputPackageMetricsWhereInput(ctx context.Context, obj interface{}) (ent.PackageMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputPackageMetricsWhereInput(ctx context.Context, obj any) (ent.PackageMetricsWhereInput, error) {
 	var it ent.PackageMetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -40664,10 +40652,10 @@ func (ec *executionContext) unmarshalInputPackageMetricsWhereInput(ctx context.C
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputRaceStatisticsWhereInput(ctx context.Context, obj interface{}) (ent.RaceStatisticsWhereInput, error) {
+func (ec *executionContext) unmarshalInputRaceStatisticsWhereInput(ctx context.Context, obj any) (ent.RaceStatisticsWhereInput, error) {
 	var it ent.RaceStatisticsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -41246,10 +41234,10 @@ func (ec *executionContext) unmarshalInputRaceStatisticsWhereInput(ctx context.C
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputResourceUsageWhereInput(ctx context.Context, obj interface{}) (ent.ResourceUsageWhereInput, error) {
+func (ec *executionContext) unmarshalInputResourceUsageWhereInput(ctx context.Context, obj any) (ent.ResourceUsageWhereInput, error) {
 	var it ent.ResourceUsageWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -41583,10 +41571,10 @@ func (ec *executionContext) unmarshalInputResourceUsageWhereInput(ctx context.Co
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputRunnerCountWhereInput(ctx context.Context, obj interface{}) (ent.RunnerCountWhereInput, error) {
+func (ec *executionContext) unmarshalInputRunnerCountWhereInput(ctx context.Context, obj any) (ent.RunnerCountWhereInput, error) {
 	var it ent.RunnerCountWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -41990,10 +41978,10 @@ func (ec *executionContext) unmarshalInputRunnerCountWhereInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputSourceControlWhereInput(ctx context.Context, obj interface{}) (ent.SourceControlWhereInput, error) {
+func (ec *executionContext) unmarshalInputSourceControlWhereInput(ctx context.Context, obj any) (ent.SourceControlWhereInput, error) {
 	var it ent.SourceControlWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -43587,10 +43575,10 @@ func (ec *executionContext) unmarshalInputSourceControlWhereInput(ctx context.Co
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputSystemNetworkStatsWhereInput(ctx context.Context, obj interface{}) (ent.SystemNetworkStatsWhereInput, error) {
+func (ec *executionContext) unmarshalInputSystemNetworkStatsWhereInput(ctx context.Context, obj any) (ent.SystemNetworkStatsWhereInput, error) {
 	var it ent.SystemNetworkStatsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -44274,10 +44262,10 @@ func (ec *executionContext) unmarshalInputSystemNetworkStatsWhereInput(ctx conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTargetCompleteWhereInput(ctx context.Context, obj interface{}) (ent.TargetCompleteWhereInput, error) {
+func (ec *executionContext) unmarshalInputTargetCompleteWhereInput(ctx context.Context, obj any) (ent.TargetCompleteWhereInput, error) {
 	var it ent.TargetCompleteWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -44828,10 +44816,10 @@ func (ec *executionContext) unmarshalInputTargetCompleteWhereInput(ctx context.C
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTargetConfiguredWhereInput(ctx context.Context, obj interface{}) (ent.TargetConfiguredWhereInput, error) {
+func (ec *executionContext) unmarshalInputTargetConfiguredWhereInput(ctx context.Context, obj any) (ent.TargetConfiguredWhereInput, error) {
 	var it ent.TargetConfiguredWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -45172,10 +45160,10 @@ func (ec *executionContext) unmarshalInputTargetConfiguredWhereInput(ctx context
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTargetMetricsWhereInput(ctx context.Context, obj interface{}) (ent.TargetMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputTargetMetricsWhereInput(ctx context.Context, obj any) (ent.TargetMetricsWhereInput, error) {
 	var it ent.TargetMetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -45509,10 +45497,10 @@ func (ec *executionContext) unmarshalInputTargetMetricsWhereInput(ctx context.Co
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTargetPairOrder(ctx context.Context, obj interface{}) (ent.TargetPairOrder, error) {
+func (ec *executionContext) unmarshalInputTargetPairOrder(ctx context.Context, obj any) (ent.TargetPairOrder, error) {
 	var it ent.TargetPairOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -45547,10 +45535,10 @@ func (ec *executionContext) unmarshalInputTargetPairOrder(ctx context.Context, o
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTargetPairWhereInput(ctx context.Context, obj interface{}) (ent.TargetPairWhereInput, error) {
+func (ec *executionContext) unmarshalInputTargetPairWhereInput(ctx context.Context, obj any) (ent.TargetPairWhereInput, error) {
 	var it ent.TargetPairWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -46094,10 +46082,10 @@ func (ec *executionContext) unmarshalInputTargetPairWhereInput(ctx context.Conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTestCollectionOrder(ctx context.Context, obj interface{}) (ent.TestCollectionOrder, error) {
+func (ec *executionContext) unmarshalInputTestCollectionOrder(ctx context.Context, obj any) (ent.TestCollectionOrder, error) {
 	var it ent.TestCollectionOrder
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -46132,10 +46120,10 @@ func (ec *executionContext) unmarshalInputTestCollectionOrder(ctx context.Contex
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTestCollectionWhereInput(ctx context.Context, obj interface{}) (ent.TestCollectionWhereInput, error) {
+func (ec *executionContext) unmarshalInputTestCollectionWhereInput(ctx context.Context, obj any) (ent.TestCollectionWhereInput, error) {
 	var it ent.TestCollectionWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -46735,10 +46723,10 @@ func (ec *executionContext) unmarshalInputTestCollectionWhereInput(ctx context.C
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTestFileWhereInput(ctx context.Context, obj interface{}) (ent.TestFileWhereInput, error) {
+func (ec *executionContext) unmarshalInputTestFileWhereInput(ctx context.Context, obj any) (ent.TestFileWhereInput, error) {
 	var it ent.TestFileWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -47247,10 +47235,10 @@ func (ec *executionContext) unmarshalInputTestFileWhereInput(ctx context.Context
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTestResultBESWhereInput(ctx context.Context, obj interface{}) (ent.TestResultBESWhereInput, error) {
+func (ec *executionContext) unmarshalInputTestResultBESWhereInput(ctx context.Context, obj any) (ent.TestResultBESWhereInput, error) {
 	var it ent.TestResultBESWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -47997,10 +47985,10 @@ func (ec *executionContext) unmarshalInputTestResultBESWhereInput(ctx context.Co
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTestSummaryWhereInput(ctx context.Context, obj interface{}) (ent.TestSummaryWhereInput, error) {
+func (ec *executionContext) unmarshalInputTestSummaryWhereInput(ctx context.Context, obj any) (ent.TestSummaryWhereInput, error) {
 	var it ent.TestSummaryWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -48859,10 +48847,10 @@ func (ec *executionContext) unmarshalInputTestSummaryWhereInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTimingBreakdownWhereInput(ctx context.Context, obj interface{}) (ent.TimingBreakdownWhereInput, error) {
+func (ec *executionContext) unmarshalInputTimingBreakdownWhereInput(ctx context.Context, obj any) (ent.TimingBreakdownWhereInput, error) {
 	var it ent.TimingBreakdownWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -49210,10 +49198,10 @@ func (ec *executionContext) unmarshalInputTimingBreakdownWhereInput(ctx context.
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTimingChildWhereInput(ctx context.Context, obj interface{}) (ent.TimingChildWhereInput, error) {
+func (ec *executionContext) unmarshalInputTimingChildWhereInput(ctx context.Context, obj any) (ent.TimingChildWhereInput, error) {
 	var it ent.TimingChildWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -49547,10 +49535,10 @@ func (ec *executionContext) unmarshalInputTimingChildWhereInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTimingMetricsWhereInput(ctx context.Context, obj interface{}) (ent.TimingMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalInputTimingMetricsWhereInput(ctx context.Context, obj any) (ent.TimingMetricsWhereInput, error) {
 	var it ent.TimingMetricsWhereInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -50041,13 +50029,6 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 	switch obj := (obj).(type) {
 	case nil:
 		return graphql.Null
-	case model.ActionProblem:
-		return ec._ActionProblem(ctx, sel, &obj)
-	case *model.ActionProblem:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._ActionProblem(ctx, sel, obj)
 	case model.TestProblem:
 		return ec._TestProblem(ctx, sel, &obj)
 	case *model.TestProblem:
@@ -50069,191 +50050,200 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._ProgressProblem(ctx, sel, obj)
-	case *ent.PackageLoadMetrics:
+	case model.ActionProblem:
+		return ec._ActionProblem(ctx, sel, &obj)
+	case *model.ActionProblem:
 		if obj == nil {
 			return graphql.Null
 		}
-		return ec._PackageLoadMetrics(ctx, sel, obj)
-	case *ent.EvaluationStat:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._EvaluationStat(ctx, sel, obj)
-	case *ent.RunnerCount:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._RunnerCount(ctx, sel, obj)
-	case *ent.Build:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._Build(ctx, sel, obj)
-	case *ent.BuildGraphMetrics:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._BuildGraphMetrics(ctx, sel, obj)
-	case *ent.CumulativeMetrics:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._CumulativeMetrics(ctx, sel, obj)
-	case *ent.DynamicExecutionMetrics:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._DynamicExecutionMetrics(ctx, sel, obj)
-	case *ent.ResourceUsage:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._ResourceUsage(ctx, sel, obj)
-	case *ent.EventFile:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._EventFile(ctx, sel, obj)
-	case *ent.ExectionInfo:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._ExectionInfo(ctx, sel, obj)
-	case *ent.FilesMetric:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._FilesMetric(ctx, sel, obj)
-	case *ent.GarbageMetrics:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._GarbageMetrics(ctx, sel, obj)
-	case *ent.RaceStatistics:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._RaceStatistics(ctx, sel, obj)
-	case *ent.Metrics:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._Metrics(ctx, sel, obj)
-	case *ent.MissDetail:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._MissDetail(ctx, sel, obj)
-	case *ent.NamedSetOfFiles:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._NamedSetOfFiles(ctx, sel, obj)
-	case *ent.NetworkMetrics:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._NetworkMetrics(ctx, sel, obj)
-	case *ent.OutputGroup:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._OutputGroup(ctx, sel, obj)
-	case *ent.ActionCacheStatistics:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._ActionCacheStatistics(ctx, sel, obj)
-	case *ent.PackageMetrics:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._PackageMetrics(ctx, sel, obj)
-	case *ent.MemoryMetrics:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._MemoryMetrics(ctx, sel, obj)
-	case *ent.BazelInvocationProblem:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._BazelInvocationProblem(ctx, sel, obj)
-	case *ent.Blob:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._Blob(ctx, sel, obj)
-	case *ent.SourceControl:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._SourceControl(ctx, sel, obj)
-	case *ent.SystemNetworkStats:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._SystemNetworkStats(ctx, sel, obj)
-	case *ent.TargetComplete:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._TargetComplete(ctx, sel, obj)
-	case *ent.TargetConfigured:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._TargetConfigured(ctx, sel, obj)
-	case *ent.TargetMetrics:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._TargetMetrics(ctx, sel, obj)
-	case *ent.TargetPair:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._TargetPair(ctx, sel, obj)
-	case *ent.TestCollection:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._TestCollection(ctx, sel, obj)
-	case *ent.TestFile:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._TestFile(ctx, sel, obj)
-	case *ent.TestResultBES:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._TestResultBES(ctx, sel, obj)
-	case *ent.TestSummary:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._TestSummary(ctx, sel, obj)
-	case *ent.TimingBreakdown:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._TimingBreakdown(ctx, sel, obj)
-	case *ent.TimingChild:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._TimingChild(ctx, sel, obj)
+		return ec._ActionProblem(ctx, sel, obj)
 	case *ent.TimingMetrics:
 		if obj == nil {
 			return graphql.Null
 		}
 		return ec._TimingMetrics(ctx, sel, obj)
+	case *ent.TimingChild:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TimingChild(ctx, sel, obj)
+	case *ent.TimingBreakdown:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TimingBreakdown(ctx, sel, obj)
+	case *ent.TestSummary:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TestSummary(ctx, sel, obj)
+	case *ent.TestResultBES:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TestResultBES(ctx, sel, obj)
+	case model.TestResult:
+		return ec._TestResult(ctx, sel, &obj)
+	case *model.TestResult:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TestResult(ctx, sel, obj)
+	case *ent.TestFile:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TestFile(ctx, sel, obj)
+	case *ent.TestCollection:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TestCollection(ctx, sel, obj)
+	case *ent.TargetPair:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TargetPair(ctx, sel, obj)
+	case *ent.TargetMetrics:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TargetMetrics(ctx, sel, obj)
+	case *ent.TargetConfigured:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TargetConfigured(ctx, sel, obj)
+	case *ent.TargetComplete:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TargetComplete(ctx, sel, obj)
+	case *ent.SystemNetworkStats:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._SystemNetworkStats(ctx, sel, obj)
+	case *ent.SourceControl:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._SourceControl(ctx, sel, obj)
+	case *ent.RunnerCount:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._RunnerCount(ctx, sel, obj)
+	case *ent.ResourceUsage:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ResourceUsage(ctx, sel, obj)
+	case *ent.RaceStatistics:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._RaceStatistics(ctx, sel, obj)
 	case model.Problem:
 		if obj == nil {
 			return graphql.Null
 		}
 		return ec._Problem(ctx, sel, obj)
+	case *ent.PackageMetrics:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._PackageMetrics(ctx, sel, obj)
+	case *ent.PackageLoadMetrics:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._PackageLoadMetrics(ctx, sel, obj)
+	case *ent.OutputGroup:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._OutputGroup(ctx, sel, obj)
+	case *ent.NetworkMetrics:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._NetworkMetrics(ctx, sel, obj)
+	case *ent.NamedSetOfFiles:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._NamedSetOfFiles(ctx, sel, obj)
+	case *ent.MissDetail:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._MissDetail(ctx, sel, obj)
+	case *ent.Metrics:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._Metrics(ctx, sel, obj)
+	case *ent.MemoryMetrics:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._MemoryMetrics(ctx, sel, obj)
+	case *ent.GarbageMetrics:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._GarbageMetrics(ctx, sel, obj)
+	case *ent.FilesMetric:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._FilesMetric(ctx, sel, obj)
+	case *ent.ExectionInfo:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ExectionInfo(ctx, sel, obj)
+	case *ent.EventFile:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._EventFile(ctx, sel, obj)
+	case *ent.EvaluationStat:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._EvaluationStat(ctx, sel, obj)
+	case *ent.DynamicExecutionMetrics:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._DynamicExecutionMetrics(ctx, sel, obj)
+	case *ent.CumulativeMetrics:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._CumulativeMetrics(ctx, sel, obj)
+	case *ent.BuildGraphMetrics:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._BuildGraphMetrics(ctx, sel, obj)
+	case *ent.Build:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._Build(ctx, sel, obj)
+	case *ent.Blob:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._Blob(ctx, sel, obj)
+	case *ent.BazelInvocationProblem:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._BazelInvocationProblem(ctx, sel, obj)
 	case *ent.BazelInvocation:
 		if obj == nil {
 			return graphql.Null
@@ -50274,13 +50264,11 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._ActionData(ctx, sel, obj)
-	case model.TestResult:
-		return ec._TestResult(ctx, sel, &obj)
-	case *model.TestResult:
+	case *ent.ActionCacheStatistics:
 		if obj == nil {
 			return graphql.Null
 		}
-		return ec._TestResult(ctx, sel, obj)
+		return ec._ActionCacheStatistics(ctx, sel, obj)
 	default:
 		panic(fmt.Errorf("unexpected type %T", obj))
 	}
@@ -50290,27 +50278,6 @@ func (ec *executionContext) _Problem(ctx context.Context, sel ast.SelectionSet, 
 	switch obj := (obj).(type) {
 	case nil:
 		return graphql.Null
-	case model.ActionProblem:
-		return ec._ActionProblem(ctx, sel, &obj)
-	case *model.ActionProblem:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._ActionProblem(ctx, sel, obj)
-	case model.ProgressProblem:
-		return ec._ProgressProblem(ctx, sel, &obj)
-	case *model.ProgressProblem:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._ProgressProblem(ctx, sel, obj)
-	case model.TargetProblem:
-		return ec._TargetProblem(ctx, sel, &obj)
-	case *model.TargetProblem:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._TargetProblem(ctx, sel, obj)
 	case model.TestProblem:
 		return ec._TestProblem(ctx, sel, &obj)
 	case *model.TestProblem:
@@ -50318,6 +50285,27 @@ func (ec *executionContext) _Problem(ctx context.Context, sel ast.SelectionSet, 
 			return graphql.Null
 		}
 		return ec._TestProblem(ctx, sel, obj)
+	case model.TargetProblem:
+		return ec._TargetProblem(ctx, sel, &obj)
+	case *model.TargetProblem:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._TargetProblem(ctx, sel, obj)
+	case model.ProgressProblem:
+		return ec._ProgressProblem(ctx, sel, &obj)
+	case *model.ProgressProblem:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ProgressProblem(ctx, sel, obj)
+	case model.ActionProblem:
+		return ec._ActionProblem(ctx, sel, &obj)
+	case *model.ActionProblem:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._ActionProblem(ctx, sel, obj)
 	default:
 		panic(fmt.Errorf("unexpected type %T", obj))
 	}
@@ -59082,6 +59070,11 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 			}
 		case "description":
 			out.Values[i] = ec.___Directive_description(ctx, field, obj)
+		case "isRepeatable":
+			out.Values[i] = ec.___Directive_isRepeatable(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "locations":
 			out.Values[i] = ec.___Directive_locations(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -59089,11 +59082,6 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 			}
 		case "args":
 			out.Values[i] = ec.___Directive_args(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "isRepeatable":
-			out.Values[i] = ec.___Directive_isRepeatable(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -59251,6 +59239,13 @@ func (ec *executionContext) ___InputValue(ctx context.Context, sel ast.Selection
 			}
 		case "defaultValue":
 			out.Values[i] = ec.___InputValue_defaultValue(ctx, field, obj)
+		case "isDeprecated":
+			out.Values[i] = ec.___InputValue_isDeprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deprecationReason":
+			out.Values[i] = ec.___InputValue_deprecationReason(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -59349,6 +59344,8 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = ec.___Type_name(ctx, field, obj)
 		case "description":
 			out.Values[i] = ec.___Type_description(ctx, field, obj)
+		case "specifiedByURL":
+			out.Values[i] = ec.___Type_specifiedByURL(ctx, field, obj)
 		case "fields":
 			out.Values[i] = ec.___Type_fields(ctx, field, obj)
 		case "interfaces":
@@ -59361,8 +59358,8 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = ec.___Type_inputFields(ctx, field, obj)
 		case "ofType":
 			out.Values[i] = ec.___Type_ofType(ctx, field, obj)
-		case "specifiedByURL":
-			out.Values[i] = ec.___Type_specifiedByURL(ctx, field, obj)
+		case "isOneOf":
+			out.Values[i] = ec.___Type_isOneOf(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -59390,7 +59387,7 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNActionCacheStatisticsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionCacheStatisticsWhereInput(ctx context.Context, v interface{}) (*ent.ActionCacheStatisticsWhereInput, error) {
+func (ec *executionContext) unmarshalNActionCacheStatisticsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionCacheStatisticsWhereInput(ctx context.Context, v any) (*ent.ActionCacheStatisticsWhereInput, error) {
 	res, err := ec.unmarshalInputActionCacheStatisticsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59405,12 +59402,12 @@ func (ec *executionContext) marshalNActionData2ᚖgithubᚗcomᚋbuildbarnᚋbb�
 	return ec._ActionData(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNActionDataWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionDataWhereInput(ctx context.Context, v interface{}) (*ent.ActionDataWhereInput, error) {
+func (ec *executionContext) unmarshalNActionDataWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionDataWhereInput(ctx context.Context, v any) (*ent.ActionDataWhereInput, error) {
 	res, err := ec.unmarshalInputActionDataWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNActionOutputStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐActionOutputStatus(ctx context.Context, v interface{}) (model.ActionOutputStatus, error) {
+func (ec *executionContext) unmarshalNActionOutputStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐActionOutputStatus(ctx context.Context, v any) (model.ActionOutputStatus, error) {
 	var res model.ActionOutputStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -59420,12 +59417,12 @@ func (ec *executionContext) marshalNActionOutputStatus2githubᚗcomᚋbuildbarn�
 	return v
 }
 
-func (ec *executionContext) unmarshalNActionSummaryWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionSummaryWhereInput(ctx context.Context, v interface{}) (*ent.ActionSummaryWhereInput, error) {
+func (ec *executionContext) unmarshalNActionSummaryWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionSummaryWhereInput(ctx context.Context, v any) (*ent.ActionSummaryWhereInput, error) {
 	res, err := ec.unmarshalInputActionSummaryWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNArtifactMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐArtifactMetricsWhereInput(ctx context.Context, v interface{}) (*ent.ArtifactMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNArtifactMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐArtifactMetricsWhereInput(ctx context.Context, v any) (*ent.ArtifactMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputArtifactMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59472,7 +59469,7 @@ func (ec *executionContext) marshalNBazelInvocationConnection2ᚖgithubᚗcomᚋ
 	return ec._BazelInvocationConnection(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNBazelInvocationOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationOrderField(ctx context.Context, v interface{}) (*ent.BazelInvocationOrderField, error) {
+func (ec *executionContext) unmarshalNBazelInvocationOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationOrderField(ctx context.Context, v any) (*ent.BazelInvocationOrderField, error) {
 	var res = new(ent.BazelInvocationOrderField)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -59488,7 +59485,7 @@ func (ec *executionContext) marshalNBazelInvocationOrderField2ᚖgithubᚗcomᚋ
 	return v
 }
 
-func (ec *executionContext) unmarshalNBazelInvocationProblemWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationProblemWhereInput(ctx context.Context, v interface{}) (*ent.BazelInvocationProblemWhereInput, error) {
+func (ec *executionContext) unmarshalNBazelInvocationProblemWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationProblemWhereInput(ctx context.Context, v any) (*ent.BazelInvocationProblemWhereInput, error) {
 	res, err := ec.unmarshalInputBazelInvocationProblemWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59507,12 +59504,12 @@ func (ec *executionContext) marshalNBazelInvocationState2ᚖgithubᚗcomᚋbuild
 	return ec._BazelInvocationState(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNBazelInvocationWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationWhereInput(ctx context.Context, v interface{}) (*ent.BazelInvocationWhereInput, error) {
+func (ec *executionContext) unmarshalNBazelInvocationWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationWhereInput(ctx context.Context, v any) (*ent.BazelInvocationWhereInput, error) {
 	res, err := ec.unmarshalInputBazelInvocationWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNBlobArchivingStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋblobᚐArchivingStatus(ctx context.Context, v interface{}) (blob.ArchivingStatus, error) {
+func (ec *executionContext) unmarshalNBlobArchivingStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋblobᚐArchivingStatus(ctx context.Context, v any) (blob.ArchivingStatus, error) {
 	var res blob.ArchivingStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -59536,12 +59533,12 @@ func (ec *executionContext) marshalNBlobReference2ᚖgithubᚗcomᚋbuildbarnᚋ
 	return ec._BlobReference(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNBlobWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBlobWhereInput(ctx context.Context, v interface{}) (*ent.BlobWhereInput, error) {
+func (ec *executionContext) unmarshalNBlobWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBlobWhereInput(ctx context.Context, v any) (*ent.BlobWhereInput, error) {
 	res, err := ec.unmarshalInputBlobWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
+func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v any) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59570,22 +59567,22 @@ func (ec *executionContext) marshalNBuildConnection2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._BuildConnection(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNBuildGraphMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildGraphMetricsWhereInput(ctx context.Context, v interface{}) (*ent.BuildGraphMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNBuildGraphMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildGraphMetricsWhereInput(ctx context.Context, v any) (*ent.BuildGraphMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputBuildGraphMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNBuildWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildWhereInput(ctx context.Context, v interface{}) (*ent.BuildWhereInput, error) {
+func (ec *executionContext) unmarshalNBuildWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildWhereInput(ctx context.Context, v any) (*ent.BuildWhereInput, error) {
 	res, err := ec.unmarshalInputBuildWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCumulativeMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐCumulativeMetricsWhereInput(ctx context.Context, v interface{}) (*ent.CumulativeMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNCumulativeMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐCumulativeMetricsWhereInput(ctx context.Context, v any) (*ent.CumulativeMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputCumulativeMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, v interface{}) (entgql.Cursor[int], error) {
+func (ec *executionContext) unmarshalNCursor2entgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, v any) (entgql.Cursor[int], error) {
 	var res entgql.Cursor[int]
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -59609,7 +59606,7 @@ func (ec *executionContext) marshalNDeleteResult2ᚖgithubᚗcomᚋbuildbarnᚋb
 	return ec._DeleteResult(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNDynamicExecutionMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐDynamicExecutionMetricsWhereInput(ctx context.Context, v interface{}) (*ent.DynamicExecutionMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNDynamicExecutionMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐDynamicExecutionMetricsWhereInput(ctx context.Context, v any) (*ent.DynamicExecutionMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputDynamicExecutionMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59668,7 +59665,7 @@ func (ec *executionContext) marshalNEnvVar2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑpo
 	return ec._EnvVar(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNEvaluationStatWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEvaluationStatWhereInput(ctx context.Context, v interface{}) (*ent.EvaluationStatWhereInput, error) {
+func (ec *executionContext) unmarshalNEvaluationStatWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEvaluationStatWhereInput(ctx context.Context, v any) (*ent.EvaluationStatWhereInput, error) {
 	res, err := ec.unmarshalInputEvaluationStatWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59683,17 +59680,17 @@ func (ec *executionContext) marshalNEventFile2ᚖgithubᚗcomᚋbuildbarnᚋbb�
 	return ec._EventFile(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNEventFileWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEventFileWhereInput(ctx context.Context, v interface{}) (*ent.EventFileWhereInput, error) {
+func (ec *executionContext) unmarshalNEventFileWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEventFileWhereInput(ctx context.Context, v any) (*ent.EventFileWhereInput, error) {
 	res, err := ec.unmarshalInputEventFileWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNExectionInfoWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐExectionInfoWhereInput(ctx context.Context, v interface{}) (*ent.ExectionInfoWhereInput, error) {
+func (ec *executionContext) unmarshalNExectionInfoWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐExectionInfoWhereInput(ctx context.Context, v any) (*ent.ExectionInfoWhereInput, error) {
 	res, err := ec.unmarshalInputExectionInfoWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNFilesMetricWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInput(ctx context.Context, v interface{}) (*ent.FilesMetricWhereInput, error) {
+func (ec *executionContext) unmarshalNFilesMetricWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInput(ctx context.Context, v any) (*ent.FilesMetricWhereInput, error) {
 	res, err := ec.unmarshalInputFilesMetricWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59708,12 +59705,12 @@ func (ec *executionContext) marshalNGarbageMetrics2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._GarbageMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNGarbageMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐGarbageMetricsWhereInput(ctx context.Context, v interface{}) (*ent.GarbageMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNGarbageMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐGarbageMetricsWhereInput(ctx context.Context, v any) (*ent.GarbageMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputGarbageMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
+func (ec *executionContext) unmarshalNID2string(ctx context.Context, v any) (string, error) {
 	res, err := graphql.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59728,11 +59725,9 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNID2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+func (ec *executionContext) unmarshalNID2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
@@ -59760,7 +59755,7 @@ func (ec *executionContext) marshalNID2ᚕstringᚄ(ctx context.Context, sel ast
 	return ret
 }
 
-func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v any) (int, error) {
 	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59775,7 +59770,7 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v interface{}) (int32, error) {
+func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v any) (int32, error) {
 	res, err := graphql.UnmarshalInt32(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59790,7 +59785,7 @@ func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt2int64(ctx context.Context, v interface{}) (int64, error) {
+func (ec *executionContext) unmarshalNInt2int64(ctx context.Context, v any) (int64, error) {
 	res, err := graphql.UnmarshalInt64(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59805,7 +59800,7 @@ func (ec *executionContext) marshalNInt2int64(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt2uint64(ctx context.Context, v interface{}) (uint64, error) {
+func (ec *executionContext) unmarshalNInt2uint64(ctx context.Context, v any) (uint64, error) {
 	res, err := graphql.UnmarshalUint64(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59820,7 +59815,7 @@ func (ec *executionContext) marshalNInt2uint64(ctx context.Context, sel ast.Sele
 	return res
 }
 
-func (ec *executionContext) unmarshalNMemoryMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMemoryMetricsWhereInput(ctx context.Context, v interface{}) (*ent.MemoryMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNMemoryMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMemoryMetricsWhereInput(ctx context.Context, v any) (*ent.MemoryMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputMemoryMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59839,7 +59834,7 @@ func (ec *executionContext) marshalNMetricsConnection2ᚖgithubᚗcomᚋbuildbar
 	return ec._MetricsConnection(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMetricsWhereInput(ctx context.Context, v interface{}) (*ent.MetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMetricsWhereInput(ctx context.Context, v any) (*ent.MetricsWhereInput, error) {
 	res, err := ec.unmarshalInputMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59854,7 +59849,7 @@ func (ec *executionContext) marshalNMissDetail2ᚖgithubᚗcomᚋbuildbarnᚋbb�
 	return ec._MissDetail(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMissDetailReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, v interface{}) (missdetail.Reason, error) {
+func (ec *executionContext) unmarshalNMissDetailReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, v any) (missdetail.Reason, error) {
 	var res missdetail.Reason
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -59864,7 +59859,7 @@ func (ec *executionContext) marshalNMissDetailReason2githubᚗcomᚋbuildbarnᚋ
 	return v
 }
 
-func (ec *executionContext) unmarshalNMissDetailWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMissDetailWhereInput(ctx context.Context, v interface{}) (*ent.MissDetailWhereInput, error) {
+func (ec *executionContext) unmarshalNMissDetailWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMissDetailWhereInput(ctx context.Context, v any) (*ent.MissDetailWhereInput, error) {
 	res, err := ec.unmarshalInputMissDetailWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59923,12 +59918,12 @@ func (ec *executionContext) marshalNNamedFile2ᚖgithubᚗcomᚋbuildbarnᚋbb�
 	return ec._NamedFile(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNNamedSetOfFilesWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNamedSetOfFilesWhereInput(ctx context.Context, v interface{}) (*ent.NamedSetOfFilesWhereInput, error) {
+func (ec *executionContext) unmarshalNNamedSetOfFilesWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNamedSetOfFilesWhereInput(ctx context.Context, v any) (*ent.NamedSetOfFilesWhereInput, error) {
 	res, err := ec.unmarshalInputNamedSetOfFilesWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNetworkMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNetworkMetricsWhereInput(ctx context.Context, v interface{}) (*ent.NetworkMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNNetworkMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNetworkMetricsWhereInput(ctx context.Context, v any) (*ent.NetworkMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputNetworkMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59971,7 +59966,7 @@ func (ec *executionContext) marshalNNode2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑport
 	return ret
 }
 
-func (ec *executionContext) unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx context.Context, v interface{}) (entgql.OrderDirection, error) {
+func (ec *executionContext) unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx context.Context, v any) (entgql.OrderDirection, error) {
 	var res entgql.OrderDirection
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -59981,7 +59976,7 @@ func (ec *executionContext) marshalNOrderDirection2entgoᚗioᚋcontribᚋentgql
 	return v
 }
 
-func (ec *executionContext) unmarshalNOutputGroupWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐOutputGroupWhereInput(ctx context.Context, v interface{}) (*ent.OutputGroupWhereInput, error) {
+func (ec *executionContext) unmarshalNOutputGroupWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐOutputGroupWhereInput(ctx context.Context, v any) (*ent.OutputGroupWhereInput, error) {
 	res, err := ec.unmarshalInputOutputGroupWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -59996,12 +59991,12 @@ func (ec *executionContext) marshalNPackageLoadMetrics2ᚖgithubᚗcomᚋbuildba
 	return ec._PackageLoadMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNPackageLoadMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageLoadMetricsWhereInput(ctx context.Context, v interface{}) (*ent.PackageLoadMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNPackageLoadMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageLoadMetricsWhereInput(ctx context.Context, v any) (*ent.PackageLoadMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputPackageLoadMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNPackageMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageMetricsWhereInput(ctx context.Context, v interface{}) (*ent.PackageMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNPackageMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageMetricsWhereInput(ctx context.Context, v any) (*ent.PackageMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputPackageMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60074,7 +60069,7 @@ func (ec *executionContext) marshalNRaceStatistics2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._RaceStatistics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNRaceStatisticsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRaceStatisticsWhereInput(ctx context.Context, v interface{}) (*ent.RaceStatisticsWhereInput, error) {
+func (ec *executionContext) unmarshalNRaceStatisticsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRaceStatisticsWhereInput(ctx context.Context, v any) (*ent.RaceStatisticsWhereInput, error) {
 	res, err := ec.unmarshalInputRaceStatisticsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60089,7 +60084,7 @@ func (ec *executionContext) marshalNResourceUsage2ᚖgithubᚗcomᚋbuildbarnᚋ
 	return ec._ResourceUsage(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNResourceUsageWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐResourceUsageWhereInput(ctx context.Context, v interface{}) (*ent.ResourceUsageWhereInput, error) {
+func (ec *executionContext) unmarshalNResourceUsageWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐResourceUsageWhereInput(ctx context.Context, v any) (*ent.ResourceUsageWhereInput, error) {
 	res, err := ec.unmarshalInputResourceUsageWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60118,17 +60113,17 @@ func (ec *executionContext) marshalNRunnerCountConnection2ᚖgithubᚗcomᚋbuil
 	return ec._RunnerCountConnection(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNRunnerCountWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRunnerCountWhereInput(ctx context.Context, v interface{}) (*ent.RunnerCountWhereInput, error) {
+func (ec *executionContext) unmarshalNRunnerCountWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRunnerCountWhereInput(ctx context.Context, v any) (*ent.RunnerCountWhereInput, error) {
 	res, err := ec.unmarshalInputRunnerCountWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNSourceControlWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSourceControlWhereInput(ctx context.Context, v interface{}) (*ent.SourceControlWhereInput, error) {
+func (ec *executionContext) unmarshalNSourceControlWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSourceControlWhereInput(ctx context.Context, v any) (*ent.SourceControlWhereInput, error) {
 	res, err := ec.unmarshalInputSourceControlWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
+func (ec *executionContext) unmarshalNString2string(ctx context.Context, v any) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60143,12 +60138,12 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) unmarshalNSystemNetworkStatsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSystemNetworkStatsWhereInput(ctx context.Context, v interface{}) (*ent.SystemNetworkStatsWhereInput, error) {
+func (ec *executionContext) unmarshalNSystemNetworkStatsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSystemNetworkStatsWhereInput(ctx context.Context, v any) (*ent.SystemNetworkStatsWhereInput, error) {
 	res, err := ec.unmarshalInputSystemNetworkStatsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNTargetCompleteTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetcompleteᚐTestSize(ctx context.Context, v interface{}) (targetcomplete.TestSize, error) {
+func (ec *executionContext) unmarshalNTargetCompleteTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetcompleteᚐTestSize(ctx context.Context, v any) (targetcomplete.TestSize, error) {
 	var res targetcomplete.TestSize
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -60158,12 +60153,12 @@ func (ec *executionContext) marshalNTargetCompleteTestSize2githubᚗcomᚋbuildb
 	return v
 }
 
-func (ec *executionContext) unmarshalNTargetCompleteWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetCompleteWhereInput(ctx context.Context, v interface{}) (*ent.TargetCompleteWhereInput, error) {
+func (ec *executionContext) unmarshalNTargetCompleteWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetCompleteWhereInput(ctx context.Context, v any) (*ent.TargetCompleteWhereInput, error) {
 	res, err := ec.unmarshalInputTargetCompleteWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNTargetConfiguredTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetconfiguredᚐTestSize(ctx context.Context, v interface{}) (targetconfigured.TestSize, error) {
+func (ec *executionContext) unmarshalNTargetConfiguredTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetconfiguredᚐTestSize(ctx context.Context, v any) (targetconfigured.TestSize, error) {
 	var res targetconfigured.TestSize
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -60173,12 +60168,12 @@ func (ec *executionContext) marshalNTargetConfiguredTestSize2githubᚗcomᚋbuil
 	return v
 }
 
-func (ec *executionContext) unmarshalNTargetConfiguredWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetConfiguredWhereInput(ctx context.Context, v interface{}) (*ent.TargetConfiguredWhereInput, error) {
+func (ec *executionContext) unmarshalNTargetConfiguredWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetConfiguredWhereInput(ctx context.Context, v any) (*ent.TargetConfiguredWhereInput, error) {
 	res, err := ec.unmarshalInputTargetConfiguredWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNTargetMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetMetricsWhereInput(ctx context.Context, v interface{}) (*ent.TargetMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNTargetMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetMetricsWhereInput(ctx context.Context, v any) (*ent.TargetMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputTargetMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60193,7 +60188,7 @@ func (ec *executionContext) marshalNTargetPair2ᚖgithubᚗcomᚋbuildbarnᚋbb�
 	return ec._TargetPair(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTargetPairAbortReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐAbortReason(ctx context.Context, v interface{}) (targetpair.AbortReason, error) {
+func (ec *executionContext) unmarshalNTargetPairAbortReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐAbortReason(ctx context.Context, v any) (targetpair.AbortReason, error) {
 	var res targetpair.AbortReason
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -60217,7 +60212,7 @@ func (ec *executionContext) marshalNTargetPairConnection2ᚖgithubᚗcomᚋbuild
 	return ec._TargetPairConnection(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTargetPairOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairOrderField(ctx context.Context, v interface{}) (*ent.TargetPairOrderField, error) {
+func (ec *executionContext) unmarshalNTargetPairOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairOrderField(ctx context.Context, v any) (*ent.TargetPairOrderField, error) {
 	var res = new(ent.TargetPairOrderField)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -60233,7 +60228,7 @@ func (ec *executionContext) marshalNTargetPairOrderField2ᚖgithubᚗcomᚋbuild
 	return v
 }
 
-func (ec *executionContext) unmarshalNTargetPairTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐTestSize(ctx context.Context, v interface{}) (targetpair.TestSize, error) {
+func (ec *executionContext) unmarshalNTargetPairTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐTestSize(ctx context.Context, v any) (targetpair.TestSize, error) {
 	var res targetpair.TestSize
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -60243,7 +60238,7 @@ func (ec *executionContext) marshalNTargetPairTestSize2githubᚗcomᚋbuildbarn�
 	return v
 }
 
-func (ec *executionContext) unmarshalNTargetPairWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairWhereInput(ctx context.Context, v interface{}) (*ent.TargetPairWhereInput, error) {
+func (ec *executionContext) unmarshalNTargetPairWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairWhereInput(ctx context.Context, v any) (*ent.TargetPairWhereInput, error) {
 	res, err := ec.unmarshalInputTargetPairWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60272,7 +60267,7 @@ func (ec *executionContext) marshalNTestCollectionConnection2ᚖgithubᚗcomᚋb
 	return ec._TestCollectionConnection(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTestCollectionOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestCollectionOrderField(ctx context.Context, v interface{}) (*ent.TestCollectionOrderField, error) {
+func (ec *executionContext) unmarshalNTestCollectionOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestCollectionOrderField(ctx context.Context, v any) (*ent.TestCollectionOrderField, error) {
 	var res = new(ent.TestCollectionOrderField)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -60288,7 +60283,7 @@ func (ec *executionContext) marshalNTestCollectionOrderField2ᚖgithubᚗcomᚋb
 	return v
 }
 
-func (ec *executionContext) unmarshalNTestCollectionOverallStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestcollectionᚐOverallStatus(ctx context.Context, v interface{}) (testcollection.OverallStatus, error) {
+func (ec *executionContext) unmarshalNTestCollectionOverallStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestcollectionᚐOverallStatus(ctx context.Context, v any) (testcollection.OverallStatus, error) {
 	var res testcollection.OverallStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -60298,7 +60293,7 @@ func (ec *executionContext) marshalNTestCollectionOverallStatus2githubᚗcomᚋb
 	return v
 }
 
-func (ec *executionContext) unmarshalNTestCollectionWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestCollectionWhereInput(ctx context.Context, v interface{}) (*ent.TestCollectionWhereInput, error) {
+func (ec *executionContext) unmarshalNTestCollectionWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestCollectionWhereInput(ctx context.Context, v any) (*ent.TestCollectionWhereInput, error) {
 	res, err := ec.unmarshalInputTestCollectionWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60313,7 +60308,7 @@ func (ec *executionContext) marshalNTestFile2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑ
 	return ec._TestFile(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTestFileWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestFileWhereInput(ctx context.Context, v interface{}) (*ent.TestFileWhereInput, error) {
+func (ec *executionContext) unmarshalNTestFileWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestFileWhereInput(ctx context.Context, v any) (*ent.TestFileWhereInput, error) {
 	res, err := ec.unmarshalInputTestFileWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60382,7 +60377,7 @@ func (ec *executionContext) marshalNTestResultBES2ᚖgithubᚗcomᚋbuildbarnᚋ
 	return ec._TestResultBES(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTestResultBESTestStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestresultbesᚐTestStatus(ctx context.Context, v interface{}) (testresultbes.TestStatus, error) {
+func (ec *executionContext) unmarshalNTestResultBESTestStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestresultbesᚐTestStatus(ctx context.Context, v any) (testresultbes.TestStatus, error) {
 	var res testresultbes.TestStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -60392,12 +60387,12 @@ func (ec *executionContext) marshalNTestResultBESTestStatus2githubᚗcomᚋbuild
 	return v
 }
 
-func (ec *executionContext) unmarshalNTestResultBESWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestResultBESWhereInput(ctx context.Context, v interface{}) (*ent.TestResultBESWhereInput, error) {
+func (ec *executionContext) unmarshalNTestResultBESWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestResultBESWhereInput(ctx context.Context, v any) (*ent.TestResultBESWhereInput, error) {
 	res, err := ec.unmarshalInputTestResultBESWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNTestSummaryOverallStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestsummaryᚐOverallStatus(ctx context.Context, v interface{}) (testsummary.OverallStatus, error) {
+func (ec *executionContext) unmarshalNTestSummaryOverallStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestsummaryᚐOverallStatus(ctx context.Context, v any) (testsummary.OverallStatus, error) {
 	var res testsummary.OverallStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -60407,12 +60402,12 @@ func (ec *executionContext) marshalNTestSummaryOverallStatus2githubᚗcomᚋbuil
 	return v
 }
 
-func (ec *executionContext) unmarshalNTestSummaryWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestSummaryWhereInput(ctx context.Context, v interface{}) (*ent.TestSummaryWhereInput, error) {
+func (ec *executionContext) unmarshalNTestSummaryWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestSummaryWhereInput(ctx context.Context, v any) (*ent.TestSummaryWhereInput, error) {
 	res, err := ec.unmarshalInputTestSummaryWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v any) (time.Time, error) {
 	res, err := graphql.UnmarshalTime(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60427,7 +60422,7 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalNTimingBreakdownWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingBreakdownWhereInput(ctx context.Context, v interface{}) (*ent.TimingBreakdownWhereInput, error) {
+func (ec *executionContext) unmarshalNTimingBreakdownWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingBreakdownWhereInput(ctx context.Context, v any) (*ent.TimingBreakdownWhereInput, error) {
 	res, err := ec.unmarshalInputTimingBreakdownWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60442,17 +60437,17 @@ func (ec *executionContext) marshalNTimingChild2ᚖgithubᚗcomᚋbuildbarnᚋbb
 	return ec._TimingChild(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTimingChildWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingChildWhereInput(ctx context.Context, v interface{}) (*ent.TimingChildWhereInput, error) {
+func (ec *executionContext) unmarshalNTimingChildWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingChildWhereInput(ctx context.Context, v any) (*ent.TimingChildWhereInput, error) {
 	res, err := ec.unmarshalInputTimingChildWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNTimingMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingMetricsWhereInput(ctx context.Context, v interface{}) (*ent.TimingMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalNTimingMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingMetricsWhereInput(ctx context.Context, v any) (*ent.TimingMetricsWhereInput, error) {
 	res, err := ec.unmarshalInputTimingMetricsWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNUUID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx context.Context, v interface{}) (uuid.UUID, error) {
+func (ec *executionContext) unmarshalNUUID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx context.Context, v any) (uuid.UUID, error) {
 	res, err := uuidgql.UnmarshalUUID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60515,7 +60510,7 @@ func (ec *executionContext) marshalN__Directive2ᚕgithubᚗcomᚋ99designsᚋgq
 	return ret
 }
 
-func (ec *executionContext) unmarshalN__DirectiveLocation2string(ctx context.Context, v interface{}) (string, error) {
+func (ec *executionContext) unmarshalN__DirectiveLocation2string(ctx context.Context, v any) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60530,11 +60525,9 @@ func (ec *executionContext) marshalN__DirectiveLocation2string(ctx context.Conte
 	return res
 }
 
-func (ec *executionContext) unmarshalN__DirectiveLocation2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+func (ec *executionContext) unmarshalN__DirectiveLocation2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
@@ -60705,7 +60698,7 @@ func (ec *executionContext) marshalN__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgen�
 	return ec.___Type(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalN__TypeKind2string(ctx context.Context, v interface{}) (string, error) {
+func (ec *executionContext) unmarshalN__TypeKind2string(ctx context.Context, v any) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -60727,14 +60720,12 @@ func (ec *executionContext) marshalOActionCacheStatistics2ᚖgithubᚗcomᚋbuil
 	return ec._ActionCacheStatistics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOActionCacheStatisticsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionCacheStatisticsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.ActionCacheStatisticsWhereInput, error) {
+func (ec *executionContext) unmarshalOActionCacheStatisticsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionCacheStatisticsWhereInputᚄ(ctx context.Context, v any) ([]*ent.ActionCacheStatisticsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.ActionCacheStatisticsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -60747,7 +60738,7 @@ func (ec *executionContext) unmarshalOActionCacheStatisticsWhereInput2ᚕᚖgith
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOActionCacheStatisticsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionCacheStatisticsWhereInput(ctx context.Context, v interface{}) (*ent.ActionCacheStatisticsWhereInput, error) {
+func (ec *executionContext) unmarshalOActionCacheStatisticsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionCacheStatisticsWhereInput(ctx context.Context, v any) (*ent.ActionCacheStatisticsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -60802,14 +60793,12 @@ func (ec *executionContext) marshalOActionData2ᚕᚖgithubᚗcomᚋbuildbarnᚋ
 	return ret
 }
 
-func (ec *executionContext) unmarshalOActionDataWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionDataWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.ActionDataWhereInput, error) {
+func (ec *executionContext) unmarshalOActionDataWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionDataWhereInputᚄ(ctx context.Context, v any) ([]*ent.ActionDataWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.ActionDataWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -60822,7 +60811,7 @@ func (ec *executionContext) unmarshalOActionDataWhereInput2ᚕᚖgithubᚗcomᚋ
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOActionDataWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionDataWhereInput(ctx context.Context, v interface{}) (*ent.ActionDataWhereInput, error) {
+func (ec *executionContext) unmarshalOActionDataWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionDataWhereInput(ctx context.Context, v any) (*ent.ActionDataWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -60837,14 +60826,12 @@ func (ec *executionContext) marshalOActionSummary2ᚖgithubᚗcomᚋbuildbarnᚋ
 	return ec._ActionSummary(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOActionSummaryWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionSummaryWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.ActionSummaryWhereInput, error) {
+func (ec *executionContext) unmarshalOActionSummaryWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionSummaryWhereInputᚄ(ctx context.Context, v any) ([]*ent.ActionSummaryWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.ActionSummaryWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -60857,7 +60844,7 @@ func (ec *executionContext) unmarshalOActionSummaryWhereInput2ᚕᚖgithubᚗcom
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOActionSummaryWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionSummaryWhereInput(ctx context.Context, v interface{}) (*ent.ActionSummaryWhereInput, error) {
+func (ec *executionContext) unmarshalOActionSummaryWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐActionSummaryWhereInput(ctx context.Context, v any) (*ent.ActionSummaryWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -60872,14 +60859,12 @@ func (ec *executionContext) marshalOArtifactMetrics2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._ArtifactMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOArtifactMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐArtifactMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.ArtifactMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOArtifactMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐArtifactMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.ArtifactMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.ArtifactMetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -60892,7 +60877,7 @@ func (ec *executionContext) unmarshalOArtifactMetricsWhereInput2ᚕᚖgithubᚗc
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOArtifactMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐArtifactMetricsWhereInput(ctx context.Context, v interface{}) (*ent.ArtifactMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOArtifactMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐArtifactMetricsWhereInput(ctx context.Context, v any) (*ent.ArtifactMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61002,7 +60987,7 @@ func (ec *executionContext) marshalOBazelInvocationEdge2ᚖgithubᚗcomᚋbuildb
 	return ec._BazelInvocationEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOBazelInvocationOrder2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationOrder(ctx context.Context, v interface{}) (*ent.BazelInvocationOrder, error) {
+func (ec *executionContext) unmarshalOBazelInvocationOrder2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationOrder(ctx context.Context, v any) (*ent.BazelInvocationOrder, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61010,14 +60995,12 @@ func (ec *executionContext) unmarshalOBazelInvocationOrder2ᚖgithubᚗcomᚋbui
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOBazelInvocationProblemWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationProblemWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.BazelInvocationProblemWhereInput, error) {
+func (ec *executionContext) unmarshalOBazelInvocationProblemWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationProblemWhereInputᚄ(ctx context.Context, v any) ([]*ent.BazelInvocationProblemWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.BazelInvocationProblemWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61030,7 +61013,7 @@ func (ec *executionContext) unmarshalOBazelInvocationProblemWhereInput2ᚕᚖgit
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOBazelInvocationProblemWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationProblemWhereInput(ctx context.Context, v interface{}) (*ent.BazelInvocationProblemWhereInput, error) {
+func (ec *executionContext) unmarshalOBazelInvocationProblemWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationProblemWhereInput(ctx context.Context, v any) (*ent.BazelInvocationProblemWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61038,14 +61021,12 @@ func (ec *executionContext) unmarshalOBazelInvocationProblemWhereInput2ᚖgithub
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOBazelInvocationWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.BazelInvocationWhereInput, error) {
+func (ec *executionContext) unmarshalOBazelInvocationWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationWhereInputᚄ(ctx context.Context, v any) ([]*ent.BazelInvocationWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.BazelInvocationWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61058,7 +61039,7 @@ func (ec *executionContext) unmarshalOBazelInvocationWhereInput2ᚕᚖgithubᚗc
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOBazelInvocationWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationWhereInput(ctx context.Context, v interface{}) (*ent.BazelInvocationWhereInput, error) {
+func (ec *executionContext) unmarshalOBazelInvocationWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationWhereInput(ctx context.Context, v any) (*ent.BazelInvocationWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61066,14 +61047,12 @@ func (ec *executionContext) unmarshalOBazelInvocationWhereInput2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOBlobArchivingStatus2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋblobᚐArchivingStatusᚄ(ctx context.Context, v interface{}) ([]blob.ArchivingStatus, error) {
+func (ec *executionContext) unmarshalOBlobArchivingStatus2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋblobᚐArchivingStatusᚄ(ctx context.Context, v any) ([]blob.ArchivingStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]blob.ArchivingStatus, len(vSlice))
 	for i := range vSlice {
@@ -61133,7 +61112,7 @@ func (ec *executionContext) marshalOBlobArchivingStatus2ᚕgithubᚗcomᚋbuildb
 	return ret
 }
 
-func (ec *executionContext) unmarshalOBlobArchivingStatus2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋblobᚐArchivingStatus(ctx context.Context, v interface{}) (*blob.ArchivingStatus, error) {
+func (ec *executionContext) unmarshalOBlobArchivingStatus2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋblobᚐArchivingStatus(ctx context.Context, v any) (*blob.ArchivingStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61156,14 +61135,12 @@ func (ec *executionContext) marshalOBlobReference2ᚖgithubᚗcomᚋbuildbarnᚋ
 	return ec._BlobReference(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOBlobWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBlobWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.BlobWhereInput, error) {
+func (ec *executionContext) unmarshalOBlobWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBlobWhereInputᚄ(ctx context.Context, v any) ([]*ent.BlobWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.BlobWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61176,7 +61153,7 @@ func (ec *executionContext) unmarshalOBlobWhereInput2ᚕᚖgithubᚗcomᚋbuildb
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOBlobWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBlobWhereInput(ctx context.Context, v interface{}) (*ent.BlobWhereInput, error) {
+func (ec *executionContext) unmarshalOBlobWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBlobWhereInput(ctx context.Context, v any) (*ent.BlobWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61184,7 +61161,7 @@ func (ec *executionContext) unmarshalOBlobWhereInput2ᚖgithubᚗcomᚋbuildbarn
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
+func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v any) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -61194,7 +61171,7 @@ func (ec *executionContext) marshalOBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalOBoolean2ᚖbool(ctx context.Context, v interface{}) (*bool, error) {
+func (ec *executionContext) unmarshalOBoolean2ᚖbool(ctx context.Context, v any) (*bool, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61272,14 +61249,12 @@ func (ec *executionContext) marshalOBuildGraphMetrics2ᚖgithubᚗcomᚋbuildbar
 	return ec._BuildGraphMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOBuildGraphMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildGraphMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.BuildGraphMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOBuildGraphMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildGraphMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.BuildGraphMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.BuildGraphMetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61292,7 +61267,7 @@ func (ec *executionContext) unmarshalOBuildGraphMetricsWhereInput2ᚕᚖgithub�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOBuildGraphMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildGraphMetricsWhereInput(ctx context.Context, v interface{}) (*ent.BuildGraphMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOBuildGraphMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildGraphMetricsWhereInput(ctx context.Context, v any) (*ent.BuildGraphMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61300,14 +61275,12 @@ func (ec *executionContext) unmarshalOBuildGraphMetricsWhereInput2ᚖgithubᚗco
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOBuildWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.BuildWhereInput, error) {
+func (ec *executionContext) unmarshalOBuildWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildWhereInputᚄ(ctx context.Context, v any) ([]*ent.BuildWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.BuildWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61320,7 +61293,7 @@ func (ec *executionContext) unmarshalOBuildWhereInput2ᚕᚖgithubᚗcomᚋbuild
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOBuildWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildWhereInput(ctx context.Context, v interface{}) (*ent.BuildWhereInput, error) {
+func (ec *executionContext) unmarshalOBuildWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildWhereInput(ctx context.Context, v any) (*ent.BuildWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61335,14 +61308,12 @@ func (ec *executionContext) marshalOCumulativeMetrics2ᚖgithubᚗcomᚋbuildbar
 	return ec._CumulativeMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOCumulativeMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐCumulativeMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.CumulativeMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOCumulativeMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐCumulativeMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.CumulativeMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.CumulativeMetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61355,7 +61326,7 @@ func (ec *executionContext) unmarshalOCumulativeMetricsWhereInput2ᚕᚖgithub�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOCumulativeMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐCumulativeMetricsWhereInput(ctx context.Context, v interface{}) (*ent.CumulativeMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOCumulativeMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐCumulativeMetricsWhereInput(ctx context.Context, v any) (*ent.CumulativeMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61363,7 +61334,7 @@ func (ec *executionContext) unmarshalOCumulativeMetricsWhereInput2ᚖgithubᚗco
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, v interface{}) (*entgql.Cursor[int], error) {
+func (ec *executionContext) unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx context.Context, v any) (*entgql.Cursor[int], error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61386,14 +61357,12 @@ func (ec *executionContext) marshalODynamicExecutionMetrics2ᚖgithubᚗcomᚋbu
 	return ec._DynamicExecutionMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalODynamicExecutionMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐDynamicExecutionMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.DynamicExecutionMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalODynamicExecutionMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐDynamicExecutionMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.DynamicExecutionMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.DynamicExecutionMetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61406,7 +61375,7 @@ func (ec *executionContext) unmarshalODynamicExecutionMetricsWhereInput2ᚕᚖgi
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalODynamicExecutionMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐDynamicExecutionMetricsWhereInput(ctx context.Context, v interface{}) (*ent.DynamicExecutionMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalODynamicExecutionMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐDynamicExecutionMetricsWhereInput(ctx context.Context, v any) (*ent.DynamicExecutionMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61421,14 +61390,12 @@ func (ec *executionContext) marshalOEvaluationStat2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._EvaluationStat(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOEvaluationStatWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEvaluationStatWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.EvaluationStatWhereInput, error) {
+func (ec *executionContext) unmarshalOEvaluationStatWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEvaluationStatWhereInputᚄ(ctx context.Context, v any) ([]*ent.EvaluationStatWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.EvaluationStatWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61441,7 +61408,7 @@ func (ec *executionContext) unmarshalOEvaluationStatWhereInput2ᚕᚖgithubᚗco
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOEvaluationStatWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEvaluationStatWhereInput(ctx context.Context, v interface{}) (*ent.EvaluationStatWhereInput, error) {
+func (ec *executionContext) unmarshalOEvaluationStatWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEvaluationStatWhereInput(ctx context.Context, v any) (*ent.EvaluationStatWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61449,14 +61416,12 @@ func (ec *executionContext) unmarshalOEvaluationStatWhereInput2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOEventFileWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEventFileWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.EventFileWhereInput, error) {
+func (ec *executionContext) unmarshalOEventFileWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEventFileWhereInputᚄ(ctx context.Context, v any) ([]*ent.EventFileWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.EventFileWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61469,7 +61434,7 @@ func (ec *executionContext) unmarshalOEventFileWhereInput2ᚕᚖgithubᚗcomᚋb
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOEventFileWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEventFileWhereInput(ctx context.Context, v interface{}) (*ent.EventFileWhereInput, error) {
+func (ec *executionContext) unmarshalOEventFileWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐEventFileWhereInput(ctx context.Context, v any) (*ent.EventFileWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61484,14 +61449,12 @@ func (ec *executionContext) marshalOExectionInfo2ᚖgithubᚗcomᚋbuildbarnᚋb
 	return ec._ExectionInfo(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOExectionInfoWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐExectionInfoWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.ExectionInfoWhereInput, error) {
+func (ec *executionContext) unmarshalOExectionInfoWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐExectionInfoWhereInputᚄ(ctx context.Context, v any) ([]*ent.ExectionInfoWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.ExectionInfoWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61504,7 +61467,7 @@ func (ec *executionContext) unmarshalOExectionInfoWhereInput2ᚕᚖgithubᚗcom�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOExectionInfoWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐExectionInfoWhereInput(ctx context.Context, v interface{}) (*ent.ExectionInfoWhereInput, error) {
+func (ec *executionContext) unmarshalOExectionInfoWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐExectionInfoWhereInput(ctx context.Context, v any) (*ent.ExectionInfoWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61526,14 +61489,12 @@ func (ec *executionContext) marshalOFilesMetric2ᚖgithubᚗcomᚋbuildbarnᚋbb
 	return ec._FilesMetric(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFilesMetricWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.FilesMetricWhereInput, error) {
+func (ec *executionContext) unmarshalOFilesMetricWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInputᚄ(ctx context.Context, v any) ([]*ent.FilesMetricWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.FilesMetricWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61546,7 +61507,7 @@ func (ec *executionContext) unmarshalOFilesMetricWhereInput2ᚕᚖgithubᚗcom�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOFilesMetricWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInput(ctx context.Context, v interface{}) (*ent.FilesMetricWhereInput, error) {
+func (ec *executionContext) unmarshalOFilesMetricWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInput(ctx context.Context, v any) (*ent.FilesMetricWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61554,7 +61515,7 @@ func (ec *executionContext) unmarshalOFilesMetricWhereInput2ᚖgithubᚗcomᚋbu
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOFloat2ᚖfloat64(ctx context.Context, v interface{}) (*float64, error) {
+func (ec *executionContext) unmarshalOFloat2ᚖfloat64(ctx context.Context, v any) (*float64, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61617,14 +61578,12 @@ func (ec *executionContext) marshalOGarbageMetrics2ᚕᚖgithubᚗcomᚋbuildbar
 	return ret
 }
 
-func (ec *executionContext) unmarshalOGarbageMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐGarbageMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.GarbageMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOGarbageMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐGarbageMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.GarbageMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.GarbageMetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61637,7 +61596,7 @@ func (ec *executionContext) unmarshalOGarbageMetricsWhereInput2ᚕᚖgithubᚗco
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOGarbageMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐGarbageMetricsWhereInput(ctx context.Context, v interface{}) (*ent.GarbageMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOGarbageMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐGarbageMetricsWhereInput(ctx context.Context, v any) (*ent.GarbageMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61645,14 +61604,12 @@ func (ec *executionContext) unmarshalOGarbageMetricsWhereInput2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOID2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+func (ec *executionContext) unmarshalOID2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
@@ -61683,7 +61640,7 @@ func (ec *executionContext) marshalOID2ᚕstringᚄ(ctx context.Context, sel ast
 	return ret
 }
 
-func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
+func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v any) (*string, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61699,7 +61656,7 @@ func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
+func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v any) (int, error) {
 	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -61709,7 +61666,7 @@ func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) unmarshalOInt2int32(ctx context.Context, v interface{}) (int32, error) {
+func (ec *executionContext) unmarshalOInt2int32(ctx context.Context, v any) (int32, error) {
 	res, err := graphql.UnmarshalInt32(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -61719,7 +61676,7 @@ func (ec *executionContext) marshalOInt2int32(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalOInt2int64(ctx context.Context, v interface{}) (int64, error) {
+func (ec *executionContext) unmarshalOInt2int64(ctx context.Context, v any) (int64, error) {
 	res, err := graphql.UnmarshalInt64(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -61729,7 +61686,7 @@ func (ec *executionContext) marshalOInt2int64(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalOInt2uint64(ctx context.Context, v interface{}) (uint64, error) {
+func (ec *executionContext) unmarshalOInt2uint64(ctx context.Context, v any) (uint64, error) {
 	res, err := graphql.UnmarshalUint64(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -61739,14 +61696,12 @@ func (ec *executionContext) marshalOInt2uint64(ctx context.Context, sel ast.Sele
 	return res
 }
 
-func (ec *executionContext) unmarshalOInt2ᚕint32ᚄ(ctx context.Context, v interface{}) ([]int32, error) {
+func (ec *executionContext) unmarshalOInt2ᚕint32ᚄ(ctx context.Context, v any) ([]int32, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]int32, len(vSlice))
 	for i := range vSlice {
@@ -61777,14 +61732,12 @@ func (ec *executionContext) marshalOInt2ᚕint32ᚄ(ctx context.Context, sel ast
 	return ret
 }
 
-func (ec *executionContext) unmarshalOInt2ᚕint64ᚄ(ctx context.Context, v interface{}) ([]int64, error) {
+func (ec *executionContext) unmarshalOInt2ᚕint64ᚄ(ctx context.Context, v any) ([]int64, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]int64, len(vSlice))
 	for i := range vSlice {
@@ -61815,14 +61768,12 @@ func (ec *executionContext) marshalOInt2ᚕint64ᚄ(ctx context.Context, sel ast
 	return ret
 }
 
-func (ec *executionContext) unmarshalOInt2ᚕintᚄ(ctx context.Context, v interface{}) ([]int, error) {
+func (ec *executionContext) unmarshalOInt2ᚕintᚄ(ctx context.Context, v any) ([]int, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]int, len(vSlice))
 	for i := range vSlice {
@@ -61853,14 +61804,12 @@ func (ec *executionContext) marshalOInt2ᚕintᚄ(ctx context.Context, sel ast.S
 	return ret
 }
 
-func (ec *executionContext) unmarshalOInt2ᚕuint64ᚄ(ctx context.Context, v interface{}) ([]uint64, error) {
+func (ec *executionContext) unmarshalOInt2ᚕuint64ᚄ(ctx context.Context, v any) ([]uint64, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]uint64, len(vSlice))
 	for i := range vSlice {
@@ -61891,7 +61840,7 @@ func (ec *executionContext) marshalOInt2ᚕuint64ᚄ(ctx context.Context, sel as
 	return ret
 }
 
-func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v any) (*int, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61907,7 +61856,7 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return res
 }
 
-func (ec *executionContext) unmarshalOInt2ᚖint32(ctx context.Context, v interface{}) (*int32, error) {
+func (ec *executionContext) unmarshalOInt2ᚖint32(ctx context.Context, v any) (*int32, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61923,7 +61872,7 @@ func (ec *executionContext) marshalOInt2ᚖint32(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalOInt2ᚖint64(ctx context.Context, v interface{}) (*int64, error) {
+func (ec *executionContext) unmarshalOInt2ᚖint64(ctx context.Context, v any) (*int64, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61939,7 +61888,7 @@ func (ec *executionContext) marshalOInt2ᚖint64(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalOInt2ᚖuint64(ctx context.Context, v interface{}) (*uint64, error) {
+func (ec *executionContext) unmarshalOInt2ᚖuint64(ctx context.Context, v any) (*uint64, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -61962,14 +61911,12 @@ func (ec *executionContext) marshalOMemoryMetrics2ᚖgithubᚗcomᚋbuildbarnᚋ
 	return ec._MemoryMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOMemoryMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMemoryMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.MemoryMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOMemoryMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMemoryMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.MemoryMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.MemoryMetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -61982,7 +61929,7 @@ func (ec *executionContext) unmarshalOMemoryMetricsWhereInput2ᚕᚖgithubᚗcom
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOMemoryMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMemoryMetricsWhereInput(ctx context.Context, v interface{}) (*ent.MemoryMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOMemoryMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMemoryMetricsWhereInput(ctx context.Context, v any) (*ent.MemoryMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62045,14 +61992,12 @@ func (ec *executionContext) marshalOMetricsEdge2ᚖgithubᚗcomᚋbuildbarnᚋbb
 	return ec._MetricsEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.MetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.MetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.MetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62065,7 +62010,7 @@ func (ec *executionContext) unmarshalOMetricsWhereInput2ᚕᚖgithubᚗcomᚋbui
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMetricsWhereInput(ctx context.Context, v interface{}) (*ent.MetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMetricsWhereInput(ctx context.Context, v any) (*ent.MetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62120,7 +62065,7 @@ func (ec *executionContext) marshalOMissDetail2ᚕᚖgithubᚗcomᚋbuildbarnᚋ
 	return ret
 }
 
-func (ec *executionContext) unmarshalOMissDetailReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, v interface{}) (missdetail.Reason, error) {
+func (ec *executionContext) unmarshalOMissDetailReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, v any) (missdetail.Reason, error) {
 	var res missdetail.Reason
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -62130,14 +62075,12 @@ func (ec *executionContext) marshalOMissDetailReason2githubᚗcomᚋbuildbarnᚋ
 	return v
 }
 
-func (ec *executionContext) unmarshalOMissDetailReason2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReasonᚄ(ctx context.Context, v interface{}) ([]missdetail.Reason, error) {
+func (ec *executionContext) unmarshalOMissDetailReason2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReasonᚄ(ctx context.Context, v any) ([]missdetail.Reason, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]missdetail.Reason, len(vSlice))
 	for i := range vSlice {
@@ -62197,7 +62140,7 @@ func (ec *executionContext) marshalOMissDetailReason2ᚕgithubᚗcomᚋbuildbarn
 	return ret
 }
 
-func (ec *executionContext) unmarshalOMissDetailReason2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, v interface{}) (*missdetail.Reason, error) {
+func (ec *executionContext) unmarshalOMissDetailReason2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, v any) (*missdetail.Reason, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62213,14 +62156,12 @@ func (ec *executionContext) marshalOMissDetailReason2ᚖgithubᚗcomᚋbuildbarn
 	return v
 }
 
-func (ec *executionContext) unmarshalOMissDetailWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMissDetailWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.MissDetailWhereInput, error) {
+func (ec *executionContext) unmarshalOMissDetailWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMissDetailWhereInputᚄ(ctx context.Context, v any) ([]*ent.MissDetailWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.MissDetailWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62233,7 +62174,7 @@ func (ec *executionContext) unmarshalOMissDetailWhereInput2ᚕᚖgithubᚗcomᚋ
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOMissDetailWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMissDetailWhereInput(ctx context.Context, v interface{}) (*ent.MissDetailWhereInput, error) {
+func (ec *executionContext) unmarshalOMissDetailWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMissDetailWhereInput(ctx context.Context, v any) (*ent.MissDetailWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62248,14 +62189,12 @@ func (ec *executionContext) marshalONamedSetOfFiles2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._NamedSetOfFiles(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalONamedSetOfFilesWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNamedSetOfFilesWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.NamedSetOfFilesWhereInput, error) {
+func (ec *executionContext) unmarshalONamedSetOfFilesWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNamedSetOfFilesWhereInputᚄ(ctx context.Context, v any) ([]*ent.NamedSetOfFilesWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.NamedSetOfFilesWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62268,7 +62207,7 @@ func (ec *executionContext) unmarshalONamedSetOfFilesWhereInput2ᚕᚖgithubᚗc
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalONamedSetOfFilesWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNamedSetOfFilesWhereInput(ctx context.Context, v interface{}) (*ent.NamedSetOfFilesWhereInput, error) {
+func (ec *executionContext) unmarshalONamedSetOfFilesWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNamedSetOfFilesWhereInput(ctx context.Context, v any) (*ent.NamedSetOfFilesWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62283,14 +62222,12 @@ func (ec *executionContext) marshalONetworkMetrics2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._NetworkMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalONetworkMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNetworkMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.NetworkMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalONetworkMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNetworkMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.NetworkMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.NetworkMetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62303,7 +62240,7 @@ func (ec *executionContext) unmarshalONetworkMetricsWhereInput2ᚕᚖgithubᚗco
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalONetworkMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNetworkMetricsWhereInput(ctx context.Context, v interface{}) (*ent.NetworkMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalONetworkMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐNetworkMetricsWhereInput(ctx context.Context, v any) (*ent.NetworkMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62325,14 +62262,12 @@ func (ec *executionContext) marshalOOutputGroup2ᚖgithubᚗcomᚋbuildbarnᚋbb
 	return ec._OutputGroup(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOOutputGroupWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐOutputGroupWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.OutputGroupWhereInput, error) {
+func (ec *executionContext) unmarshalOOutputGroupWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐOutputGroupWhereInputᚄ(ctx context.Context, v any) ([]*ent.OutputGroupWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.OutputGroupWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62345,7 +62280,7 @@ func (ec *executionContext) unmarshalOOutputGroupWhereInput2ᚕᚖgithubᚗcom�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOOutputGroupWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐOutputGroupWhereInput(ctx context.Context, v interface{}) (*ent.OutputGroupWhereInput, error) {
+func (ec *executionContext) unmarshalOOutputGroupWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐOutputGroupWhereInput(ctx context.Context, v any) (*ent.OutputGroupWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62400,14 +62335,12 @@ func (ec *executionContext) marshalOPackageLoadMetrics2ᚕᚖgithubᚗcomᚋbuil
 	return ret
 }
 
-func (ec *executionContext) unmarshalOPackageLoadMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageLoadMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.PackageLoadMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOPackageLoadMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageLoadMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.PackageLoadMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.PackageLoadMetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62420,7 +62353,7 @@ func (ec *executionContext) unmarshalOPackageLoadMetricsWhereInput2ᚕᚖgithub�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOPackageLoadMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageLoadMetricsWhereInput(ctx context.Context, v interface{}) (*ent.PackageLoadMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOPackageLoadMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageLoadMetricsWhereInput(ctx context.Context, v any) (*ent.PackageLoadMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62435,14 +62368,12 @@ func (ec *executionContext) marshalOPackageMetrics2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._PackageMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOPackageMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.PackageMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOPackageMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.PackageMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.PackageMetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62455,7 +62386,7 @@ func (ec *executionContext) unmarshalOPackageMetricsWhereInput2ᚕᚖgithubᚗco
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOPackageMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageMetricsWhereInput(ctx context.Context, v interface{}) (*ent.PackageMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOPackageMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐPackageMetricsWhereInput(ctx context.Context, v any) (*ent.PackageMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62517,14 +62448,12 @@ func (ec *executionContext) marshalORaceStatistics2ᚕᚖgithubᚗcomᚋbuildbar
 	return ret
 }
 
-func (ec *executionContext) unmarshalORaceStatisticsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRaceStatisticsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.RaceStatisticsWhereInput, error) {
+func (ec *executionContext) unmarshalORaceStatisticsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRaceStatisticsWhereInputᚄ(ctx context.Context, v any) ([]*ent.RaceStatisticsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.RaceStatisticsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62537,7 +62466,7 @@ func (ec *executionContext) unmarshalORaceStatisticsWhereInput2ᚕᚖgithubᚗco
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalORaceStatisticsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRaceStatisticsWhereInput(ctx context.Context, v interface{}) (*ent.RaceStatisticsWhereInput, error) {
+func (ec *executionContext) unmarshalORaceStatisticsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRaceStatisticsWhereInput(ctx context.Context, v any) (*ent.RaceStatisticsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62592,14 +62521,12 @@ func (ec *executionContext) marshalOResourceUsage2ᚕᚖgithubᚗcomᚋbuildbarn
 	return ret
 }
 
-func (ec *executionContext) unmarshalOResourceUsageWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐResourceUsageWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.ResourceUsageWhereInput, error) {
+func (ec *executionContext) unmarshalOResourceUsageWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐResourceUsageWhereInputᚄ(ctx context.Context, v any) ([]*ent.ResourceUsageWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.ResourceUsageWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62612,7 +62539,7 @@ func (ec *executionContext) unmarshalOResourceUsageWhereInput2ᚕᚖgithubᚗcom
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOResourceUsageWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐResourceUsageWhereInput(ctx context.Context, v interface{}) (*ent.ResourceUsageWhereInput, error) {
+func (ec *executionContext) unmarshalOResourceUsageWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐResourceUsageWhereInput(ctx context.Context, v any) (*ent.ResourceUsageWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62722,14 +62649,12 @@ func (ec *executionContext) marshalORunnerCountEdge2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._RunnerCountEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalORunnerCountWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRunnerCountWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.RunnerCountWhereInput, error) {
+func (ec *executionContext) unmarshalORunnerCountWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRunnerCountWhereInputᚄ(ctx context.Context, v any) ([]*ent.RunnerCountWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.RunnerCountWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62742,7 +62667,7 @@ func (ec *executionContext) unmarshalORunnerCountWhereInput2ᚕᚖgithubᚗcom�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalORunnerCountWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRunnerCountWhereInput(ctx context.Context, v interface{}) (*ent.RunnerCountWhereInput, error) {
+func (ec *executionContext) unmarshalORunnerCountWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐRunnerCountWhereInput(ctx context.Context, v any) (*ent.RunnerCountWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62757,14 +62682,12 @@ func (ec *executionContext) marshalOSourceControl2ᚖgithubᚗcomᚋbuildbarnᚋ
 	return ec._SourceControl(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOSourceControlWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSourceControlWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.SourceControlWhereInput, error) {
+func (ec *executionContext) unmarshalOSourceControlWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSourceControlWhereInputᚄ(ctx context.Context, v any) ([]*ent.SourceControlWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.SourceControlWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62777,7 +62700,7 @@ func (ec *executionContext) unmarshalOSourceControlWhereInput2ᚕᚖgithubᚗcom
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOSourceControlWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSourceControlWhereInput(ctx context.Context, v interface{}) (*ent.SourceControlWhereInput, error) {
+func (ec *executionContext) unmarshalOSourceControlWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSourceControlWhereInput(ctx context.Context, v any) (*ent.SourceControlWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62785,7 +62708,7 @@ func (ec *executionContext) unmarshalOSourceControlWhereInput2ᚖgithubᚗcomᚋ
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
+func (ec *executionContext) unmarshalOString2string(ctx context.Context, v any) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -62795,14 +62718,12 @@ func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
@@ -62833,14 +62754,12 @@ func (ec *executionContext) marshalOString2ᚕstringᚄ(ctx context.Context, sel
 	return ret
 }
 
-func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
+func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v any) ([]*string, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*string, len(vSlice))
 	for i := range vSlice {
@@ -62865,7 +62784,7 @@ func (ec *executionContext) marshalOString2ᚕᚖstring(ctx context.Context, sel
 	return ret
 }
 
-func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
+func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v any) (*string, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62888,14 +62807,12 @@ func (ec *executionContext) marshalOSystemNetworkStats2ᚖgithubᚗcomᚋbuildba
 	return ec._SystemNetworkStats(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOSystemNetworkStatsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSystemNetworkStatsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.SystemNetworkStatsWhereInput, error) {
+func (ec *executionContext) unmarshalOSystemNetworkStatsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSystemNetworkStatsWhereInputᚄ(ctx context.Context, v any) ([]*ent.SystemNetworkStatsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.SystemNetworkStatsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -62908,7 +62825,7 @@ func (ec *executionContext) unmarshalOSystemNetworkStatsWhereInput2ᚕᚖgithub�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOSystemNetworkStatsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSystemNetworkStatsWhereInput(ctx context.Context, v interface{}) (*ent.SystemNetworkStatsWhereInput, error) {
+func (ec *executionContext) unmarshalOSystemNetworkStatsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐSystemNetworkStatsWhereInput(ctx context.Context, v any) (*ent.SystemNetworkStatsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -62971,7 +62888,7 @@ func (ec *executionContext) marshalOTargetComplete2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._TargetComplete(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTargetCompleteTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetcompleteᚐTestSize(ctx context.Context, v interface{}) (targetcomplete.TestSize, error) {
+func (ec *executionContext) unmarshalOTargetCompleteTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetcompleteᚐTestSize(ctx context.Context, v any) (targetcomplete.TestSize, error) {
 	var res targetcomplete.TestSize
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -62981,14 +62898,12 @@ func (ec *executionContext) marshalOTargetCompleteTestSize2githubᚗcomᚋbuildb
 	return v
 }
 
-func (ec *executionContext) unmarshalOTargetCompleteTestSize2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetcompleteᚐTestSizeᚄ(ctx context.Context, v interface{}) ([]targetcomplete.TestSize, error) {
+func (ec *executionContext) unmarshalOTargetCompleteTestSize2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetcompleteᚐTestSizeᚄ(ctx context.Context, v any) ([]targetcomplete.TestSize, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]targetcomplete.TestSize, len(vSlice))
 	for i := range vSlice {
@@ -63048,7 +62963,7 @@ func (ec *executionContext) marshalOTargetCompleteTestSize2ᚕgithubᚗcomᚋbui
 	return ret
 }
 
-func (ec *executionContext) unmarshalOTargetCompleteTestSize2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetcompleteᚐTestSize(ctx context.Context, v interface{}) (*targetcomplete.TestSize, error) {
+func (ec *executionContext) unmarshalOTargetCompleteTestSize2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetcompleteᚐTestSize(ctx context.Context, v any) (*targetcomplete.TestSize, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63064,14 +62979,12 @@ func (ec *executionContext) marshalOTargetCompleteTestSize2ᚖgithubᚗcomᚋbui
 	return v
 }
 
-func (ec *executionContext) unmarshalOTargetCompleteWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetCompleteWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.TargetCompleteWhereInput, error) {
+func (ec *executionContext) unmarshalOTargetCompleteWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetCompleteWhereInputᚄ(ctx context.Context, v any) ([]*ent.TargetCompleteWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.TargetCompleteWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -63084,7 +62997,7 @@ func (ec *executionContext) unmarshalOTargetCompleteWhereInput2ᚕᚖgithubᚗco
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTargetCompleteWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetCompleteWhereInput(ctx context.Context, v interface{}) (*ent.TargetCompleteWhereInput, error) {
+func (ec *executionContext) unmarshalOTargetCompleteWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetCompleteWhereInput(ctx context.Context, v any) (*ent.TargetCompleteWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63099,7 +63012,7 @@ func (ec *executionContext) marshalOTargetConfigured2ᚖgithubᚗcomᚋbuildbarn
 	return ec._TargetConfigured(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTargetConfiguredTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetconfiguredᚐTestSize(ctx context.Context, v interface{}) (targetconfigured.TestSize, error) {
+func (ec *executionContext) unmarshalOTargetConfiguredTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetconfiguredᚐTestSize(ctx context.Context, v any) (targetconfigured.TestSize, error) {
 	var res targetconfigured.TestSize
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -63109,14 +63022,12 @@ func (ec *executionContext) marshalOTargetConfiguredTestSize2githubᚗcomᚋbuil
 	return v
 }
 
-func (ec *executionContext) unmarshalOTargetConfiguredTestSize2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetconfiguredᚐTestSizeᚄ(ctx context.Context, v interface{}) ([]targetconfigured.TestSize, error) {
+func (ec *executionContext) unmarshalOTargetConfiguredTestSize2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetconfiguredᚐTestSizeᚄ(ctx context.Context, v any) ([]targetconfigured.TestSize, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]targetconfigured.TestSize, len(vSlice))
 	for i := range vSlice {
@@ -63176,7 +63087,7 @@ func (ec *executionContext) marshalOTargetConfiguredTestSize2ᚕgithubᚗcomᚋb
 	return ret
 }
 
-func (ec *executionContext) unmarshalOTargetConfiguredTestSize2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetconfiguredᚐTestSize(ctx context.Context, v interface{}) (*targetconfigured.TestSize, error) {
+func (ec *executionContext) unmarshalOTargetConfiguredTestSize2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetconfiguredᚐTestSize(ctx context.Context, v any) (*targetconfigured.TestSize, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63192,14 +63103,12 @@ func (ec *executionContext) marshalOTargetConfiguredTestSize2ᚖgithubᚗcomᚋb
 	return v
 }
 
-func (ec *executionContext) unmarshalOTargetConfiguredWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetConfiguredWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.TargetConfiguredWhereInput, error) {
+func (ec *executionContext) unmarshalOTargetConfiguredWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetConfiguredWhereInputᚄ(ctx context.Context, v any) ([]*ent.TargetConfiguredWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.TargetConfiguredWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -63212,7 +63121,7 @@ func (ec *executionContext) unmarshalOTargetConfiguredWhereInput2ᚕᚖgithubᚗ
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTargetConfiguredWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetConfiguredWhereInput(ctx context.Context, v interface{}) (*ent.TargetConfiguredWhereInput, error) {
+func (ec *executionContext) unmarshalOTargetConfiguredWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetConfiguredWhereInput(ctx context.Context, v any) (*ent.TargetConfiguredWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63330,14 +63239,12 @@ func (ec *executionContext) marshalOTargetMetrics2ᚖgithubᚗcomᚋbuildbarnᚋ
 	return ec._TargetMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTargetMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.TargetMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOTargetMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.TargetMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.TargetMetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -63350,7 +63257,7 @@ func (ec *executionContext) unmarshalOTargetMetricsWhereInput2ᚕᚖgithubᚗcom
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTargetMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetMetricsWhereInput(ctx context.Context, v interface{}) (*ent.TargetMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOTargetMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetMetricsWhereInput(ctx context.Context, v any) (*ent.TargetMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63412,7 +63319,7 @@ func (ec *executionContext) marshalOTargetPair2ᚖgithubᚗcomᚋbuildbarnᚋbb�
 	return ec._TargetPair(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTargetPairAbortReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐAbortReason(ctx context.Context, v interface{}) (targetpair.AbortReason, error) {
+func (ec *executionContext) unmarshalOTargetPairAbortReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐAbortReason(ctx context.Context, v any) (targetpair.AbortReason, error) {
 	var res targetpair.AbortReason
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -63422,14 +63329,12 @@ func (ec *executionContext) marshalOTargetPairAbortReason2githubᚗcomᚋbuildba
 	return v
 }
 
-func (ec *executionContext) unmarshalOTargetPairAbortReason2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐAbortReasonᚄ(ctx context.Context, v interface{}) ([]targetpair.AbortReason, error) {
+func (ec *executionContext) unmarshalOTargetPairAbortReason2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐAbortReasonᚄ(ctx context.Context, v any) ([]targetpair.AbortReason, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]targetpair.AbortReason, len(vSlice))
 	for i := range vSlice {
@@ -63489,7 +63394,7 @@ func (ec *executionContext) marshalOTargetPairAbortReason2ᚕgithubᚗcomᚋbuil
 	return ret
 }
 
-func (ec *executionContext) unmarshalOTargetPairAbortReason2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐAbortReason(ctx context.Context, v interface{}) (*targetpair.AbortReason, error) {
+func (ec *executionContext) unmarshalOTargetPairAbortReason2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐAbortReason(ctx context.Context, v any) (*targetpair.AbortReason, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63553,7 +63458,7 @@ func (ec *executionContext) marshalOTargetPairEdge2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._TargetPairEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTargetPairOrder2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairOrder(ctx context.Context, v interface{}) (*ent.TargetPairOrder, error) {
+func (ec *executionContext) unmarshalOTargetPairOrder2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairOrder(ctx context.Context, v any) (*ent.TargetPairOrder, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63561,7 +63466,7 @@ func (ec *executionContext) unmarshalOTargetPairOrder2ᚖgithubᚗcomᚋbuildbar
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOTargetPairTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐTestSize(ctx context.Context, v interface{}) (targetpair.TestSize, error) {
+func (ec *executionContext) unmarshalOTargetPairTestSize2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐTestSize(ctx context.Context, v any) (targetpair.TestSize, error) {
 	var res targetpair.TestSize
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -63571,14 +63476,12 @@ func (ec *executionContext) marshalOTargetPairTestSize2githubᚗcomᚋbuildbarn�
 	return v
 }
 
-func (ec *executionContext) unmarshalOTargetPairTestSize2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐTestSizeᚄ(ctx context.Context, v interface{}) ([]targetpair.TestSize, error) {
+func (ec *executionContext) unmarshalOTargetPairTestSize2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐTestSizeᚄ(ctx context.Context, v any) ([]targetpair.TestSize, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]targetpair.TestSize, len(vSlice))
 	for i := range vSlice {
@@ -63638,7 +63541,7 @@ func (ec *executionContext) marshalOTargetPairTestSize2ᚕgithubᚗcomᚋbuildba
 	return ret
 }
 
-func (ec *executionContext) unmarshalOTargetPairTestSize2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐTestSize(ctx context.Context, v interface{}) (*targetpair.TestSize, error) {
+func (ec *executionContext) unmarshalOTargetPairTestSize2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtargetpairᚐTestSize(ctx context.Context, v any) (*targetpair.TestSize, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63654,14 +63557,12 @@ func (ec *executionContext) marshalOTargetPairTestSize2ᚖgithubᚗcomᚋbuildba
 	return v
 }
 
-func (ec *executionContext) unmarshalOTargetPairWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.TargetPairWhereInput, error) {
+func (ec *executionContext) unmarshalOTargetPairWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairWhereInputᚄ(ctx context.Context, v any) ([]*ent.TargetPairWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.TargetPairWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -63674,7 +63575,7 @@ func (ec *executionContext) unmarshalOTargetPairWhereInput2ᚕᚖgithubᚗcomᚋ
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTargetPairWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairWhereInput(ctx context.Context, v interface{}) (*ent.TargetPairWhereInput, error) {
+func (ec *executionContext) unmarshalOTargetPairWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTargetPairWhereInput(ctx context.Context, v any) (*ent.TargetPairWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63784,7 +63685,7 @@ func (ec *executionContext) marshalOTestCollectionEdge2ᚖgithubᚗcomᚋbuildba
 	return ec._TestCollectionEdge(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTestCollectionOrder2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestCollectionOrder(ctx context.Context, v interface{}) (*ent.TestCollectionOrder, error) {
+func (ec *executionContext) unmarshalOTestCollectionOrder2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestCollectionOrder(ctx context.Context, v any) (*ent.TestCollectionOrder, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63792,7 +63693,7 @@ func (ec *executionContext) unmarshalOTestCollectionOrder2ᚖgithubᚗcomᚋbuil
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOTestCollectionOverallStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestcollectionᚐOverallStatus(ctx context.Context, v interface{}) (testcollection.OverallStatus, error) {
+func (ec *executionContext) unmarshalOTestCollectionOverallStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestcollectionᚐOverallStatus(ctx context.Context, v any) (testcollection.OverallStatus, error) {
 	var res testcollection.OverallStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -63802,14 +63703,12 @@ func (ec *executionContext) marshalOTestCollectionOverallStatus2githubᚗcomᚋb
 	return v
 }
 
-func (ec *executionContext) unmarshalOTestCollectionOverallStatus2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestcollectionᚐOverallStatusᚄ(ctx context.Context, v interface{}) ([]testcollection.OverallStatus, error) {
+func (ec *executionContext) unmarshalOTestCollectionOverallStatus2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestcollectionᚐOverallStatusᚄ(ctx context.Context, v any) ([]testcollection.OverallStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]testcollection.OverallStatus, len(vSlice))
 	for i := range vSlice {
@@ -63869,7 +63768,7 @@ func (ec *executionContext) marshalOTestCollectionOverallStatus2ᚕgithubᚗcom�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOTestCollectionOverallStatus2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestcollectionᚐOverallStatus(ctx context.Context, v interface{}) (*testcollection.OverallStatus, error) {
+func (ec *executionContext) unmarshalOTestCollectionOverallStatus2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestcollectionᚐOverallStatus(ctx context.Context, v any) (*testcollection.OverallStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63885,14 +63784,12 @@ func (ec *executionContext) marshalOTestCollectionOverallStatus2ᚖgithubᚗcom�
 	return v
 }
 
-func (ec *executionContext) unmarshalOTestCollectionWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestCollectionWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.TestCollectionWhereInput, error) {
+func (ec *executionContext) unmarshalOTestCollectionWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestCollectionWhereInputᚄ(ctx context.Context, v any) ([]*ent.TestCollectionWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.TestCollectionWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -63905,7 +63802,7 @@ func (ec *executionContext) unmarshalOTestCollectionWhereInput2ᚕᚖgithubᚗco
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTestCollectionWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestCollectionWhereInput(ctx context.Context, v interface{}) (*ent.TestCollectionWhereInput, error) {
+func (ec *executionContext) unmarshalOTestCollectionWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestCollectionWhereInput(ctx context.Context, v any) (*ent.TestCollectionWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -63960,14 +63857,12 @@ func (ec *executionContext) marshalOTestFile2ᚕᚖgithubᚗcomᚋbuildbarnᚋbb
 	return ret
 }
 
-func (ec *executionContext) unmarshalOTestFileWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestFileWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.TestFileWhereInput, error) {
+func (ec *executionContext) unmarshalOTestFileWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestFileWhereInputᚄ(ctx context.Context, v any) ([]*ent.TestFileWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.TestFileWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -63980,7 +63875,7 @@ func (ec *executionContext) unmarshalOTestFileWhereInput2ᚕᚖgithubᚗcomᚋbu
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTestFileWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestFileWhereInput(ctx context.Context, v interface{}) (*ent.TestFileWhereInput, error) {
+func (ec *executionContext) unmarshalOTestFileWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestFileWhereInput(ctx context.Context, v any) (*ent.TestFileWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -64145,7 +64040,7 @@ func (ec *executionContext) marshalOTestResultBES2ᚖgithubᚗcomᚋbuildbarnᚋ
 	return ec._TestResultBES(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTestResultBESTestStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestresultbesᚐTestStatus(ctx context.Context, v interface{}) (testresultbes.TestStatus, error) {
+func (ec *executionContext) unmarshalOTestResultBESTestStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestresultbesᚐTestStatus(ctx context.Context, v any) (testresultbes.TestStatus, error) {
 	var res testresultbes.TestStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -64155,14 +64050,12 @@ func (ec *executionContext) marshalOTestResultBESTestStatus2githubᚗcomᚋbuild
 	return v
 }
 
-func (ec *executionContext) unmarshalOTestResultBESTestStatus2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestresultbesᚐTestStatusᚄ(ctx context.Context, v interface{}) ([]testresultbes.TestStatus, error) {
+func (ec *executionContext) unmarshalOTestResultBESTestStatus2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestresultbesᚐTestStatusᚄ(ctx context.Context, v any) ([]testresultbes.TestStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]testresultbes.TestStatus, len(vSlice))
 	for i := range vSlice {
@@ -64222,7 +64115,7 @@ func (ec *executionContext) marshalOTestResultBESTestStatus2ᚕgithubᚗcomᚋbu
 	return ret
 }
 
-func (ec *executionContext) unmarshalOTestResultBESTestStatus2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestresultbesᚐTestStatus(ctx context.Context, v interface{}) (*testresultbes.TestStatus, error) {
+func (ec *executionContext) unmarshalOTestResultBESTestStatus2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestresultbesᚐTestStatus(ctx context.Context, v any) (*testresultbes.TestStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -64238,14 +64131,12 @@ func (ec *executionContext) marshalOTestResultBESTestStatus2ᚖgithubᚗcomᚋbu
 	return v
 }
 
-func (ec *executionContext) unmarshalOTestResultBESWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestResultBESWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.TestResultBESWhereInput, error) {
+func (ec *executionContext) unmarshalOTestResultBESWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestResultBESWhereInputᚄ(ctx context.Context, v any) ([]*ent.TestResultBESWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.TestResultBESWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -64258,7 +64149,7 @@ func (ec *executionContext) unmarshalOTestResultBESWhereInput2ᚕᚖgithubᚗcom
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTestResultBESWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestResultBESWhereInput(ctx context.Context, v interface{}) (*ent.TestResultBESWhereInput, error) {
+func (ec *executionContext) unmarshalOTestResultBESWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestResultBESWhereInput(ctx context.Context, v any) (*ent.TestResultBESWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -64273,7 +64164,7 @@ func (ec *executionContext) marshalOTestSummary2ᚖgithubᚗcomᚋbuildbarnᚋbb
 	return ec._TestSummary(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTestSummaryOverallStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestsummaryᚐOverallStatus(ctx context.Context, v interface{}) (testsummary.OverallStatus, error) {
+func (ec *executionContext) unmarshalOTestSummaryOverallStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestsummaryᚐOverallStatus(ctx context.Context, v any) (testsummary.OverallStatus, error) {
 	var res testsummary.OverallStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -64283,14 +64174,12 @@ func (ec *executionContext) marshalOTestSummaryOverallStatus2githubᚗcomᚋbuil
 	return v
 }
 
-func (ec *executionContext) unmarshalOTestSummaryOverallStatus2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestsummaryᚐOverallStatusᚄ(ctx context.Context, v interface{}) ([]testsummary.OverallStatus, error) {
+func (ec *executionContext) unmarshalOTestSummaryOverallStatus2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestsummaryᚐOverallStatusᚄ(ctx context.Context, v any) ([]testsummary.OverallStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]testsummary.OverallStatus, len(vSlice))
 	for i := range vSlice {
@@ -64350,7 +64239,7 @@ func (ec *executionContext) marshalOTestSummaryOverallStatus2ᚕgithubᚗcomᚋb
 	return ret
 }
 
-func (ec *executionContext) unmarshalOTestSummaryOverallStatus2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestsummaryᚐOverallStatus(ctx context.Context, v interface{}) (*testsummary.OverallStatus, error) {
+func (ec *executionContext) unmarshalOTestSummaryOverallStatus2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋtestsummaryᚐOverallStatus(ctx context.Context, v any) (*testsummary.OverallStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -64366,14 +64255,12 @@ func (ec *executionContext) marshalOTestSummaryOverallStatus2ᚖgithubᚗcomᚋb
 	return v
 }
 
-func (ec *executionContext) unmarshalOTestSummaryWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestSummaryWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.TestSummaryWhereInput, error) {
+func (ec *executionContext) unmarshalOTestSummaryWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestSummaryWhereInputᚄ(ctx context.Context, v any) ([]*ent.TestSummaryWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.TestSummaryWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -64386,7 +64273,7 @@ func (ec *executionContext) unmarshalOTestSummaryWhereInput2ᚕᚖgithubᚗcom�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTestSummaryWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestSummaryWhereInput(ctx context.Context, v interface{}) (*ent.TestSummaryWhereInput, error) {
+func (ec *executionContext) unmarshalOTestSummaryWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTestSummaryWhereInput(ctx context.Context, v any) (*ent.TestSummaryWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -64394,7 +64281,7 @@ func (ec *executionContext) unmarshalOTestSummaryWhereInput2ᚖgithubᚗcomᚋbu
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+func (ec *executionContext) unmarshalOTime2timeᚐTime(ctx context.Context, v any) (time.Time, error) {
 	res, err := graphql.UnmarshalTime(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -64404,14 +64291,12 @@ func (ec *executionContext) marshalOTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx context.Context, v interface{}) ([]time.Time, error) {
+func (ec *executionContext) unmarshalOTime2ᚕtimeᚐTimeᚄ(ctx context.Context, v any) ([]time.Time, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]time.Time, len(vSlice))
 	for i := range vSlice {
@@ -64442,7 +64327,7 @@ func (ec *executionContext) marshalOTime2ᚕtimeᚐTimeᚄ(ctx context.Context, 
 	return ret
 }
 
-func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
+func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v any) (*time.Time, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -64465,14 +64350,12 @@ func (ec *executionContext) marshalOTimingBreakdown2ᚖgithubᚗcomᚋbuildbarn�
 	return ec._TimingBreakdown(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTimingBreakdownWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingBreakdownWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.TimingBreakdownWhereInput, error) {
+func (ec *executionContext) unmarshalOTimingBreakdownWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingBreakdownWhereInputᚄ(ctx context.Context, v any) ([]*ent.TimingBreakdownWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.TimingBreakdownWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -64485,7 +64368,7 @@ func (ec *executionContext) unmarshalOTimingBreakdownWhereInput2ᚕᚖgithubᚗc
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTimingBreakdownWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingBreakdownWhereInput(ctx context.Context, v interface{}) (*ent.TimingBreakdownWhereInput, error) {
+func (ec *executionContext) unmarshalOTimingBreakdownWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingBreakdownWhereInput(ctx context.Context, v any) (*ent.TimingBreakdownWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -64540,14 +64423,12 @@ func (ec *executionContext) marshalOTimingChild2ᚕᚖgithubᚗcomᚋbuildbarn�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOTimingChildWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingChildWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.TimingChildWhereInput, error) {
+func (ec *executionContext) unmarshalOTimingChildWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingChildWhereInputᚄ(ctx context.Context, v any) ([]*ent.TimingChildWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.TimingChildWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -64560,7 +64441,7 @@ func (ec *executionContext) unmarshalOTimingChildWhereInput2ᚕᚖgithubᚗcom�
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTimingChildWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingChildWhereInput(ctx context.Context, v interface{}) (*ent.TimingChildWhereInput, error) {
+func (ec *executionContext) unmarshalOTimingChildWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingChildWhereInput(ctx context.Context, v any) (*ent.TimingChildWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -64575,14 +64456,12 @@ func (ec *executionContext) marshalOTimingMetrics2ᚖgithubᚗcomᚋbuildbarnᚋ
 	return ec._TimingMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTimingMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingMetricsWhereInputᚄ(ctx context.Context, v interface{}) ([]*ent.TimingMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOTimingMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingMetricsWhereInputᚄ(ctx context.Context, v any) ([]*ent.TimingMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*ent.TimingMetricsWhereInput, len(vSlice))
 	for i := range vSlice {
@@ -64595,7 +64474,7 @@ func (ec *executionContext) unmarshalOTimingMetricsWhereInput2ᚕᚖgithubᚗcom
 	return res, nil
 }
 
-func (ec *executionContext) unmarshalOTimingMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingMetricsWhereInput(ctx context.Context, v interface{}) (*ent.TimingMetricsWhereInput, error) {
+func (ec *executionContext) unmarshalOTimingMetricsWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐTimingMetricsWhereInput(ctx context.Context, v any) (*ent.TimingMetricsWhereInput, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -64603,14 +64482,12 @@ func (ec *executionContext) unmarshalOTimingMetricsWhereInput2ᚖgithubᚗcomᚋ
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalOUUID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx context.Context, v interface{}) ([]uuid.UUID, error) {
+func (ec *executionContext) unmarshalOUUID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx context.Context, v any) ([]uuid.UUID, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]uuid.UUID, len(vSlice))
 	for i := range vSlice {
@@ -64641,7 +64518,7 @@ func (ec *executionContext) marshalOUUID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUID�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx context.Context, v interface{}) (*uuid.UUID, error) {
+func (ec *executionContext) unmarshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx context.Context, v any) (*uuid.UUID, error) {
 	if v == nil {
 		return nil, nil
 	}

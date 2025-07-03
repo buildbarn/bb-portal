@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (adq *ActionDataQuery) QueryActionSummary() *ActionSummaryQuery {
 // First returns the first ActionData entity from the query.
 // Returns a *NotFoundError when no ActionData was found.
 func (adq *ActionDataQuery) First(ctx context.Context) (*ActionData, error) {
-	nodes, err := adq.Limit(1).All(setContextOp(ctx, adq.ctx, "First"))
+	nodes, err := adq.Limit(1).All(setContextOp(ctx, adq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (adq *ActionDataQuery) FirstX(ctx context.Context) *ActionData {
 // Returns a *NotFoundError when no ActionData ID was found.
 func (adq *ActionDataQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = adq.Limit(1).IDs(setContextOp(ctx, adq.ctx, "FirstID")); err != nil {
+	if ids, err = adq.Limit(1).IDs(setContextOp(ctx, adq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (adq *ActionDataQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one ActionData entity is found.
 // Returns a *NotFoundError when no ActionData entities are found.
 func (adq *ActionDataQuery) Only(ctx context.Context) (*ActionData, error) {
-	nodes, err := adq.Limit(2).All(setContextOp(ctx, adq.ctx, "Only"))
+	nodes, err := adq.Limit(2).All(setContextOp(ctx, adq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (adq *ActionDataQuery) OnlyX(ctx context.Context) *ActionData {
 // Returns a *NotFoundError when no entities are found.
 func (adq *ActionDataQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = adq.Limit(2).IDs(setContextOp(ctx, adq.ctx, "OnlyID")); err != nil {
+	if ids, err = adq.Limit(2).IDs(setContextOp(ctx, adq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (adq *ActionDataQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of ActionDataSlice.
 func (adq *ActionDataQuery) All(ctx context.Context) ([]*ActionData, error) {
-	ctx = setContextOp(ctx, adq.ctx, "All")
+	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryAll)
 	if err := adq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (adq *ActionDataQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if adq.ctx.Unique == nil && adq.path != nil {
 		adq.Unique(true)
 	}
-	ctx = setContextOp(ctx, adq.ctx, "IDs")
+	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryIDs)
 	if err = adq.Select(actiondata.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (adq *ActionDataQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (adq *ActionDataQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, adq.ctx, "Count")
+	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryCount)
 	if err := adq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (adq *ActionDataQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (adq *ActionDataQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, adq.ctx, "Exist")
+	ctx = setContextOp(ctx, adq.ctx, ent.OpQueryExist)
 	switch _, err := adq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (adgb *ActionDataGroupBy) Aggregate(fns ...AggregateFunc) *ActionDataGroupB
 
 // Scan applies the selector query and scans the result into the given value.
 func (adgb *ActionDataGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, adgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, adgb.build.ctx, ent.OpQueryGroupBy)
 	if err := adgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (ads *ActionDataSelect) Aggregate(fns ...AggregateFunc) *ActionDataSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (ads *ActionDataSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ads.ctx, "Select")
+	ctx = setContextOp(ctx, ads.ctx, ent.OpQuerySelect)
 	if err := ads.prepareQuery(ctx); err != nil {
 		return err
 	}

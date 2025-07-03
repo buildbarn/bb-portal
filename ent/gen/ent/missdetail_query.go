@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (mdq *MissDetailQuery) QueryActionCacheStatistics() *ActionCacheStatisticsQ
 // First returns the first MissDetail entity from the query.
 // Returns a *NotFoundError when no MissDetail was found.
 func (mdq *MissDetailQuery) First(ctx context.Context) (*MissDetail, error) {
-	nodes, err := mdq.Limit(1).All(setContextOp(ctx, mdq.ctx, "First"))
+	nodes, err := mdq.Limit(1).All(setContextOp(ctx, mdq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (mdq *MissDetailQuery) FirstX(ctx context.Context) *MissDetail {
 // Returns a *NotFoundError when no MissDetail ID was found.
 func (mdq *MissDetailQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = mdq.Limit(1).IDs(setContextOp(ctx, mdq.ctx, "FirstID")); err != nil {
+	if ids, err = mdq.Limit(1).IDs(setContextOp(ctx, mdq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (mdq *MissDetailQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one MissDetail entity is found.
 // Returns a *NotFoundError when no MissDetail entities are found.
 func (mdq *MissDetailQuery) Only(ctx context.Context) (*MissDetail, error) {
-	nodes, err := mdq.Limit(2).All(setContextOp(ctx, mdq.ctx, "Only"))
+	nodes, err := mdq.Limit(2).All(setContextOp(ctx, mdq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (mdq *MissDetailQuery) OnlyX(ctx context.Context) *MissDetail {
 // Returns a *NotFoundError when no entities are found.
 func (mdq *MissDetailQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = mdq.Limit(2).IDs(setContextOp(ctx, mdq.ctx, "OnlyID")); err != nil {
+	if ids, err = mdq.Limit(2).IDs(setContextOp(ctx, mdq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (mdq *MissDetailQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of MissDetails.
 func (mdq *MissDetailQuery) All(ctx context.Context) ([]*MissDetail, error) {
-	ctx = setContextOp(ctx, mdq.ctx, "All")
+	ctx = setContextOp(ctx, mdq.ctx, ent.OpQueryAll)
 	if err := mdq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (mdq *MissDetailQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if mdq.ctx.Unique == nil && mdq.path != nil {
 		mdq.Unique(true)
 	}
-	ctx = setContextOp(ctx, mdq.ctx, "IDs")
+	ctx = setContextOp(ctx, mdq.ctx, ent.OpQueryIDs)
 	if err = mdq.Select(missdetail.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (mdq *MissDetailQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (mdq *MissDetailQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, mdq.ctx, "Count")
+	ctx = setContextOp(ctx, mdq.ctx, ent.OpQueryCount)
 	if err := mdq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (mdq *MissDetailQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (mdq *MissDetailQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, mdq.ctx, "Exist")
+	ctx = setContextOp(ctx, mdq.ctx, ent.OpQueryExist)
 	switch _, err := mdq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (mdgb *MissDetailGroupBy) Aggregate(fns ...AggregateFunc) *MissDetailGroupB
 
 // Scan applies the selector query and scans the result into the given value.
 func (mdgb *MissDetailGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, mdgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, mdgb.build.ctx, ent.OpQueryGroupBy)
 	if err := mdgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (mds *MissDetailSelect) Aggregate(fns ...AggregateFunc) *MissDetailSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (mds *MissDetailSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, mds.ctx, "Select")
+	ctx = setContextOp(ctx, mds.ctx, ent.OpQuerySelect)
 	if err := mds.prepareQuery(ctx); err != nil {
 		return err
 	}

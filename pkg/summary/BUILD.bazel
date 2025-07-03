@@ -18,9 +18,9 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/events",
-        "//pkg/proto/bazelbuild/bazel:build_event_stream",
-        "//pkg/proto/bazelbuild/bazel:package_load_metrics",
-        "//pkg/proto/bazelbuild/bazel:src_main_protobuf",
+        "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
+        "//pkg/proto/bazelbuild/bazel/metrics:package_load_metrics",
+        "//pkg/proto/bazelbuild/bazel/protobuf:src_main_protobuf",
         "//pkg/summary/detectors",
         "@com_github_google_uuid//:uuid",
         "@org_golang_google_api//iterator",

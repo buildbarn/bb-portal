@@ -31,7 +31,7 @@ go_library(
         "//ent/gen/ent/testsummary",
         "//internal/graphql/helpers",
         "//internal/graphql/model",
-        "//pkg/proto/bazelbuild/bazel:build_event_stream",
+        "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
         "//pkg/uuidgql",
         "@com_github_99designs_gqlgen//graphql",
         "@com_github_99designs_gqlgen//graphql/introspection",

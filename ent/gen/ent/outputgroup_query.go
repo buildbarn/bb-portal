@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -137,7 +138,7 @@ func (ogq *OutputGroupQuery) QueryFileSets() *NamedSetOfFilesQuery {
 // First returns the first OutputGroup entity from the query.
 // Returns a *NotFoundError when no OutputGroup was found.
 func (ogq *OutputGroupQuery) First(ctx context.Context) (*OutputGroup, error) {
-	nodes, err := ogq.Limit(1).All(setContextOp(ctx, ogq.ctx, "First"))
+	nodes, err := ogq.Limit(1).All(setContextOp(ctx, ogq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (ogq *OutputGroupQuery) FirstX(ctx context.Context) *OutputGroup {
 // Returns a *NotFoundError when no OutputGroup ID was found.
 func (ogq *OutputGroupQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = ogq.Limit(1).IDs(setContextOp(ctx, ogq.ctx, "FirstID")); err != nil {
+	if ids, err = ogq.Limit(1).IDs(setContextOp(ctx, ogq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -183,7 +184,7 @@ func (ogq *OutputGroupQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one OutputGroup entity is found.
 // Returns a *NotFoundError when no OutputGroup entities are found.
 func (ogq *OutputGroupQuery) Only(ctx context.Context) (*OutputGroup, error) {
-	nodes, err := ogq.Limit(2).All(setContextOp(ctx, ogq.ctx, "Only"))
+	nodes, err := ogq.Limit(2).All(setContextOp(ctx, ogq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +212,7 @@ func (ogq *OutputGroupQuery) OnlyX(ctx context.Context) *OutputGroup {
 // Returns a *NotFoundError when no entities are found.
 func (ogq *OutputGroupQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = ogq.Limit(2).IDs(setContextOp(ctx, ogq.ctx, "OnlyID")); err != nil {
+	if ids, err = ogq.Limit(2).IDs(setContextOp(ctx, ogq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -236,7 +237,7 @@ func (ogq *OutputGroupQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of OutputGroups.
 func (ogq *OutputGroupQuery) All(ctx context.Context) ([]*OutputGroup, error) {
-	ctx = setContextOp(ctx, ogq.ctx, "All")
+	ctx = setContextOp(ctx, ogq.ctx, ent.OpQueryAll)
 	if err := ogq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -258,7 +259,7 @@ func (ogq *OutputGroupQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if ogq.ctx.Unique == nil && ogq.path != nil {
 		ogq.Unique(true)
 	}
-	ctx = setContextOp(ctx, ogq.ctx, "IDs")
+	ctx = setContextOp(ctx, ogq.ctx, ent.OpQueryIDs)
 	if err = ogq.Select(outputgroup.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -276,7 +277,7 @@ func (ogq *OutputGroupQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (ogq *OutputGroupQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ogq.ctx, "Count")
+	ctx = setContextOp(ctx, ogq.ctx, ent.OpQueryCount)
 	if err := ogq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -294,7 +295,7 @@ func (ogq *OutputGroupQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (ogq *OutputGroupQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ogq.ctx, "Exist")
+	ctx = setContextOp(ctx, ogq.ctx, ent.OpQueryExist)
 	switch _, err := ogq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -718,7 +719,7 @@ func (oggb *OutputGroupGroupBy) Aggregate(fns ...AggregateFunc) *OutputGroupGrou
 
 // Scan applies the selector query and scans the result into the given value.
 func (oggb *OutputGroupGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, oggb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, oggb.build.ctx, ent.OpQueryGroupBy)
 	if err := oggb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -766,7 +767,7 @@ func (ogs *OutputGroupSelect) Aggregate(fns ...AggregateFunc) *OutputGroupSelect
 
 // Scan applies the selector query and scans the result into the given value.
 func (ogs *OutputGroupSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ogs.ctx, "Select")
+	ctx = setContextOp(ctx, ogs.ctx, ent.OpQuerySelect)
 	if err := ogs.prepareQuery(ctx); err != nil {
 		return err
 	}

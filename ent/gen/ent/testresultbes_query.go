@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -137,7 +138,7 @@ func (trbq *TestResultBESQuery) QueryExecutionInfo() *ExectionInfoQuery {
 // First returns the first TestResultBES entity from the query.
 // Returns a *NotFoundError when no TestResultBES was found.
 func (trbq *TestResultBESQuery) First(ctx context.Context) (*TestResultBES, error) {
-	nodes, err := trbq.Limit(1).All(setContextOp(ctx, trbq.ctx, "First"))
+	nodes, err := trbq.Limit(1).All(setContextOp(ctx, trbq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (trbq *TestResultBESQuery) FirstX(ctx context.Context) *TestResultBES {
 // Returns a *NotFoundError when no TestResultBES ID was found.
 func (trbq *TestResultBESQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = trbq.Limit(1).IDs(setContextOp(ctx, trbq.ctx, "FirstID")); err != nil {
+	if ids, err = trbq.Limit(1).IDs(setContextOp(ctx, trbq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -183,7 +184,7 @@ func (trbq *TestResultBESQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one TestResultBES entity is found.
 // Returns a *NotFoundError when no TestResultBES entities are found.
 func (trbq *TestResultBESQuery) Only(ctx context.Context) (*TestResultBES, error) {
-	nodes, err := trbq.Limit(2).All(setContextOp(ctx, trbq.ctx, "Only"))
+	nodes, err := trbq.Limit(2).All(setContextOp(ctx, trbq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +212,7 @@ func (trbq *TestResultBESQuery) OnlyX(ctx context.Context) *TestResultBES {
 // Returns a *NotFoundError when no entities are found.
 func (trbq *TestResultBESQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = trbq.Limit(2).IDs(setContextOp(ctx, trbq.ctx, "OnlyID")); err != nil {
+	if ids, err = trbq.Limit(2).IDs(setContextOp(ctx, trbq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -236,7 +237,7 @@ func (trbq *TestResultBESQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of TestResultBESs.
 func (trbq *TestResultBESQuery) All(ctx context.Context) ([]*TestResultBES, error) {
-	ctx = setContextOp(ctx, trbq.ctx, "All")
+	ctx = setContextOp(ctx, trbq.ctx, ent.OpQueryAll)
 	if err := trbq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -258,7 +259,7 @@ func (trbq *TestResultBESQuery) IDs(ctx context.Context) (ids []int, err error) 
 	if trbq.ctx.Unique == nil && trbq.path != nil {
 		trbq.Unique(true)
 	}
-	ctx = setContextOp(ctx, trbq.ctx, "IDs")
+	ctx = setContextOp(ctx, trbq.ctx, ent.OpQueryIDs)
 	if err = trbq.Select(testresultbes.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -276,7 +277,7 @@ func (trbq *TestResultBESQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (trbq *TestResultBESQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, trbq.ctx, "Count")
+	ctx = setContextOp(ctx, trbq.ctx, ent.OpQueryCount)
 	if err := trbq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -294,7 +295,7 @@ func (trbq *TestResultBESQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (trbq *TestResultBESQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, trbq.ctx, "Exist")
+	ctx = setContextOp(ctx, trbq.ctx, ent.OpQueryExist)
 	switch _, err := trbq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -718,7 +719,7 @@ func (trbgb *TestResultBESGroupBy) Aggregate(fns ...AggregateFunc) *TestResultBE
 
 // Scan applies the selector query and scans the result into the given value.
 func (trbgb *TestResultBESGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, trbgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, trbgb.build.ctx, ent.OpQueryGroupBy)
 	if err := trbgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -766,7 +767,7 @@ func (trbs *TestResultBESSelect) Aggregate(fns ...AggregateFunc) *TestResultBESS
 
 // Scan applies the selector query and scans the result into the given value.
 func (trbs *TestResultBESSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, trbs.ctx, "Select")
+	ctx = setContextOp(ctx, trbs.ctx, ent.OpQuerySelect)
 	if err := trbs.prepareQuery(ctx); err != nil {
 		return err
 	}

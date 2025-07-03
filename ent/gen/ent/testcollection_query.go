@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -137,7 +138,7 @@ func (tcq *TestCollectionQuery) QueryTestResults() *TestResultBESQuery {
 // First returns the first TestCollection entity from the query.
 // Returns a *NotFoundError when no TestCollection was found.
 func (tcq *TestCollectionQuery) First(ctx context.Context) (*TestCollection, error) {
-	nodes, err := tcq.Limit(1).All(setContextOp(ctx, tcq.ctx, "First"))
+	nodes, err := tcq.Limit(1).All(setContextOp(ctx, tcq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (tcq *TestCollectionQuery) FirstX(ctx context.Context) *TestCollection {
 // Returns a *NotFoundError when no TestCollection ID was found.
 func (tcq *TestCollectionQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tcq.Limit(1).IDs(setContextOp(ctx, tcq.ctx, "FirstID")); err != nil {
+	if ids, err = tcq.Limit(1).IDs(setContextOp(ctx, tcq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -183,7 +184,7 @@ func (tcq *TestCollectionQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one TestCollection entity is found.
 // Returns a *NotFoundError when no TestCollection entities are found.
 func (tcq *TestCollectionQuery) Only(ctx context.Context) (*TestCollection, error) {
-	nodes, err := tcq.Limit(2).All(setContextOp(ctx, tcq.ctx, "Only"))
+	nodes, err := tcq.Limit(2).All(setContextOp(ctx, tcq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +212,7 @@ func (tcq *TestCollectionQuery) OnlyX(ctx context.Context) *TestCollection {
 // Returns a *NotFoundError when no entities are found.
 func (tcq *TestCollectionQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tcq.Limit(2).IDs(setContextOp(ctx, tcq.ctx, "OnlyID")); err != nil {
+	if ids, err = tcq.Limit(2).IDs(setContextOp(ctx, tcq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -236,7 +237,7 @@ func (tcq *TestCollectionQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of TestCollections.
 func (tcq *TestCollectionQuery) All(ctx context.Context) ([]*TestCollection, error) {
-	ctx = setContextOp(ctx, tcq.ctx, "All")
+	ctx = setContextOp(ctx, tcq.ctx, ent.OpQueryAll)
 	if err := tcq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -258,7 +259,7 @@ func (tcq *TestCollectionQuery) IDs(ctx context.Context) (ids []int, err error) 
 	if tcq.ctx.Unique == nil && tcq.path != nil {
 		tcq.Unique(true)
 	}
-	ctx = setContextOp(ctx, tcq.ctx, "IDs")
+	ctx = setContextOp(ctx, tcq.ctx, ent.OpQueryIDs)
 	if err = tcq.Select(testcollection.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -276,7 +277,7 @@ func (tcq *TestCollectionQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (tcq *TestCollectionQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tcq.ctx, "Count")
+	ctx = setContextOp(ctx, tcq.ctx, ent.OpQueryCount)
 	if err := tcq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -294,7 +295,7 @@ func (tcq *TestCollectionQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (tcq *TestCollectionQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tcq.ctx, "Exist")
+	ctx = setContextOp(ctx, tcq.ctx, ent.OpQueryExist)
 	switch _, err := tcq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -718,7 +719,7 @@ func (tcgb *TestCollectionGroupBy) Aggregate(fns ...AggregateFunc) *TestCollecti
 
 // Scan applies the selector query and scans the result into the given value.
 func (tcgb *TestCollectionGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tcgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, tcgb.build.ctx, ent.OpQueryGroupBy)
 	if err := tcgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -766,7 +767,7 @@ func (tcs *TestCollectionSelect) Aggregate(fns ...AggregateFunc) *TestCollection
 
 // Scan applies the selector query and scans the result into the given value.
 func (tcs *TestCollectionSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tcs.ctx, "Select")
+	ctx = setContextOp(ctx, tcs.ctx, ent.OpQuerySelect)
 	if err := tcs.prepareQuery(ctx); err != nil {
 		return err
 	}

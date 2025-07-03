@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (scq *SourceControlQuery) QueryBazelInvocation() *BazelInvocationQuery {
 // First returns the first SourceControl entity from the query.
 // Returns a *NotFoundError when no SourceControl was found.
 func (scq *SourceControlQuery) First(ctx context.Context) (*SourceControl, error) {
-	nodes, err := scq.Limit(1).All(setContextOp(ctx, scq.ctx, "First"))
+	nodes, err := scq.Limit(1).All(setContextOp(ctx, scq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (scq *SourceControlQuery) FirstX(ctx context.Context) *SourceControl {
 // Returns a *NotFoundError when no SourceControl ID was found.
 func (scq *SourceControlQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = scq.Limit(1).IDs(setContextOp(ctx, scq.ctx, "FirstID")); err != nil {
+	if ids, err = scq.Limit(1).IDs(setContextOp(ctx, scq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (scq *SourceControlQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one SourceControl entity is found.
 // Returns a *NotFoundError when no SourceControl entities are found.
 func (scq *SourceControlQuery) Only(ctx context.Context) (*SourceControl, error) {
-	nodes, err := scq.Limit(2).All(setContextOp(ctx, scq.ctx, "Only"))
+	nodes, err := scq.Limit(2).All(setContextOp(ctx, scq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (scq *SourceControlQuery) OnlyX(ctx context.Context) *SourceControl {
 // Returns a *NotFoundError when no entities are found.
 func (scq *SourceControlQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = scq.Limit(2).IDs(setContextOp(ctx, scq.ctx, "OnlyID")); err != nil {
+	if ids, err = scq.Limit(2).IDs(setContextOp(ctx, scq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (scq *SourceControlQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of SourceControls.
 func (scq *SourceControlQuery) All(ctx context.Context) ([]*SourceControl, error) {
-	ctx = setContextOp(ctx, scq.ctx, "All")
+	ctx = setContextOp(ctx, scq.ctx, ent.OpQueryAll)
 	if err := scq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (scq *SourceControlQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if scq.ctx.Unique == nil && scq.path != nil {
 		scq.Unique(true)
 	}
-	ctx = setContextOp(ctx, scq.ctx, "IDs")
+	ctx = setContextOp(ctx, scq.ctx, ent.OpQueryIDs)
 	if err = scq.Select(sourcecontrol.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (scq *SourceControlQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (scq *SourceControlQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, scq.ctx, "Count")
+	ctx = setContextOp(ctx, scq.ctx, ent.OpQueryCount)
 	if err := scq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (scq *SourceControlQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (scq *SourceControlQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, scq.ctx, "Exist")
+	ctx = setContextOp(ctx, scq.ctx, ent.OpQueryExist)
 	switch _, err := scq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (scgb *SourceControlGroupBy) Aggregate(fns ...AggregateFunc) *SourceControl
 
 // Scan applies the selector query and scans the result into the given value.
 func (scgb *SourceControlGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, scgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, scgb.build.ctx, ent.OpQueryGroupBy)
 	if err := scgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (scs *SourceControlSelect) Aggregate(fns ...AggregateFunc) *SourceControlSe
 
 // Scan applies the selector query and scans the result into the given value.
 func (scs *SourceControlSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, scs.ctx, "Select")
+	ctx = setContextOp(ctx, scs.ctx, ent.OpQuerySelect)
 	if err := scs.prepareQuery(ctx); err != nil {
 		return err
 	}

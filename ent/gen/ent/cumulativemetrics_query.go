@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (cmq *CumulativeMetricsQuery) QueryMetrics() *MetricsQuery {
 // First returns the first CumulativeMetrics entity from the query.
 // Returns a *NotFoundError when no CumulativeMetrics was found.
 func (cmq *CumulativeMetricsQuery) First(ctx context.Context) (*CumulativeMetrics, error) {
-	nodes, err := cmq.Limit(1).All(setContextOp(ctx, cmq.ctx, "First"))
+	nodes, err := cmq.Limit(1).All(setContextOp(ctx, cmq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (cmq *CumulativeMetricsQuery) FirstX(ctx context.Context) *CumulativeMetric
 // Returns a *NotFoundError when no CumulativeMetrics ID was found.
 func (cmq *CumulativeMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = cmq.Limit(1).IDs(setContextOp(ctx, cmq.ctx, "FirstID")); err != nil {
+	if ids, err = cmq.Limit(1).IDs(setContextOp(ctx, cmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (cmq *CumulativeMetricsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one CumulativeMetrics entity is found.
 // Returns a *NotFoundError when no CumulativeMetrics entities are found.
 func (cmq *CumulativeMetricsQuery) Only(ctx context.Context) (*CumulativeMetrics, error) {
-	nodes, err := cmq.Limit(2).All(setContextOp(ctx, cmq.ctx, "Only"))
+	nodes, err := cmq.Limit(2).All(setContextOp(ctx, cmq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (cmq *CumulativeMetricsQuery) OnlyX(ctx context.Context) *CumulativeMetrics
 // Returns a *NotFoundError when no entities are found.
 func (cmq *CumulativeMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = cmq.Limit(2).IDs(setContextOp(ctx, cmq.ctx, "OnlyID")); err != nil {
+	if ids, err = cmq.Limit(2).IDs(setContextOp(ctx, cmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (cmq *CumulativeMetricsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of CumulativeMetricsSlice.
 func (cmq *CumulativeMetricsQuery) All(ctx context.Context) ([]*CumulativeMetrics, error) {
-	ctx = setContextOp(ctx, cmq.ctx, "All")
+	ctx = setContextOp(ctx, cmq.ctx, ent.OpQueryAll)
 	if err := cmq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (cmq *CumulativeMetricsQuery) IDs(ctx context.Context) (ids []int, err erro
 	if cmq.ctx.Unique == nil && cmq.path != nil {
 		cmq.Unique(true)
 	}
-	ctx = setContextOp(ctx, cmq.ctx, "IDs")
+	ctx = setContextOp(ctx, cmq.ctx, ent.OpQueryIDs)
 	if err = cmq.Select(cumulativemetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (cmq *CumulativeMetricsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (cmq *CumulativeMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, cmq.ctx, "Count")
+	ctx = setContextOp(ctx, cmq.ctx, ent.OpQueryCount)
 	if err := cmq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (cmq *CumulativeMetricsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (cmq *CumulativeMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, cmq.ctx, "Exist")
+	ctx = setContextOp(ctx, cmq.ctx, ent.OpQueryExist)
 	switch _, err := cmq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (cmgb *CumulativeMetricsGroupBy) Aggregate(fns ...AggregateFunc) *Cumulativ
 
 // Scan applies the selector query and scans the result into the given value.
 func (cmgb *CumulativeMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, cmgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, cmgb.build.ctx, ent.OpQueryGroupBy)
 	if err := cmgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (cms *CumulativeMetricsSelect) Aggregate(fns ...AggregateFunc) *CumulativeM
 
 // Scan applies the selector query and scans the result into the given value.
 func (cms *CumulativeMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, cms.ctx, "Select")
+	ctx = setContextOp(ctx, cms.ctx, ent.OpQuerySelect)
 	if err := cms.prepareQuery(ctx); err != nil {
 		return err
 	}

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (tfq *TestFileQuery) QueryTestResult() *TestResultBESQuery {
 // First returns the first TestFile entity from the query.
 // Returns a *NotFoundError when no TestFile was found.
 func (tfq *TestFileQuery) First(ctx context.Context) (*TestFile, error) {
-	nodes, err := tfq.Limit(1).All(setContextOp(ctx, tfq.ctx, "First"))
+	nodes, err := tfq.Limit(1).All(setContextOp(ctx, tfq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (tfq *TestFileQuery) FirstX(ctx context.Context) *TestFile {
 // Returns a *NotFoundError when no TestFile ID was found.
 func (tfq *TestFileQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tfq.Limit(1).IDs(setContextOp(ctx, tfq.ctx, "FirstID")); err != nil {
+	if ids, err = tfq.Limit(1).IDs(setContextOp(ctx, tfq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (tfq *TestFileQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one TestFile entity is found.
 // Returns a *NotFoundError when no TestFile entities are found.
 func (tfq *TestFileQuery) Only(ctx context.Context) (*TestFile, error) {
-	nodes, err := tfq.Limit(2).All(setContextOp(ctx, tfq.ctx, "Only"))
+	nodes, err := tfq.Limit(2).All(setContextOp(ctx, tfq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (tfq *TestFileQuery) OnlyX(ctx context.Context) *TestFile {
 // Returns a *NotFoundError when no entities are found.
 func (tfq *TestFileQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tfq.Limit(2).IDs(setContextOp(ctx, tfq.ctx, "OnlyID")); err != nil {
+	if ids, err = tfq.Limit(2).IDs(setContextOp(ctx, tfq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (tfq *TestFileQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of TestFiles.
 func (tfq *TestFileQuery) All(ctx context.Context) ([]*TestFile, error) {
-	ctx = setContextOp(ctx, tfq.ctx, "All")
+	ctx = setContextOp(ctx, tfq.ctx, ent.OpQueryAll)
 	if err := tfq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (tfq *TestFileQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if tfq.ctx.Unique == nil && tfq.path != nil {
 		tfq.Unique(true)
 	}
-	ctx = setContextOp(ctx, tfq.ctx, "IDs")
+	ctx = setContextOp(ctx, tfq.ctx, ent.OpQueryIDs)
 	if err = tfq.Select(testfile.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (tfq *TestFileQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (tfq *TestFileQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tfq.ctx, "Count")
+	ctx = setContextOp(ctx, tfq.ctx, ent.OpQueryCount)
 	if err := tfq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (tfq *TestFileQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (tfq *TestFileQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tfq.ctx, "Exist")
+	ctx = setContextOp(ctx, tfq.ctx, ent.OpQueryExist)
 	switch _, err := tfq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (tfgb *TestFileGroupBy) Aggregate(fns ...AggregateFunc) *TestFileGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (tfgb *TestFileGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tfgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, tfgb.build.ctx, ent.OpQueryGroupBy)
 	if err := tfgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (tfs *TestFileSelect) Aggregate(fns ...AggregateFunc) *TestFileSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (tfs *TestFileSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tfs.ctx, "Select")
+	ctx = setContextOp(ctx, tfs.ctx, ent.OpQuerySelect)
 	if err := tfs.prepareQuery(ctx); err != nil {
 		return err
 	}

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (efq *EventFileQuery) QueryBazelInvocation() *BazelInvocationQuery {
 // First returns the first EventFile entity from the query.
 // Returns a *NotFoundError when no EventFile was found.
 func (efq *EventFileQuery) First(ctx context.Context) (*EventFile, error) {
-	nodes, err := efq.Limit(1).All(setContextOp(ctx, efq.ctx, "First"))
+	nodes, err := efq.Limit(1).All(setContextOp(ctx, efq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (efq *EventFileQuery) FirstX(ctx context.Context) *EventFile {
 // Returns a *NotFoundError when no EventFile ID was found.
 func (efq *EventFileQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = efq.Limit(1).IDs(setContextOp(ctx, efq.ctx, "FirstID")); err != nil {
+	if ids, err = efq.Limit(1).IDs(setContextOp(ctx, efq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (efq *EventFileQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one EventFile entity is found.
 // Returns a *NotFoundError when no EventFile entities are found.
 func (efq *EventFileQuery) Only(ctx context.Context) (*EventFile, error) {
-	nodes, err := efq.Limit(2).All(setContextOp(ctx, efq.ctx, "Only"))
+	nodes, err := efq.Limit(2).All(setContextOp(ctx, efq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (efq *EventFileQuery) OnlyX(ctx context.Context) *EventFile {
 // Returns a *NotFoundError when no entities are found.
 func (efq *EventFileQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = efq.Limit(2).IDs(setContextOp(ctx, efq.ctx, "OnlyID")); err != nil {
+	if ids, err = efq.Limit(2).IDs(setContextOp(ctx, efq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (efq *EventFileQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of EventFiles.
 func (efq *EventFileQuery) All(ctx context.Context) ([]*EventFile, error) {
-	ctx = setContextOp(ctx, efq.ctx, "All")
+	ctx = setContextOp(ctx, efq.ctx, ent.OpQueryAll)
 	if err := efq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (efq *EventFileQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if efq.ctx.Unique == nil && efq.path != nil {
 		efq.Unique(true)
 	}
-	ctx = setContextOp(ctx, efq.ctx, "IDs")
+	ctx = setContextOp(ctx, efq.ctx, ent.OpQueryIDs)
 	if err = efq.Select(eventfile.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (efq *EventFileQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (efq *EventFileQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, efq.ctx, "Count")
+	ctx = setContextOp(ctx, efq.ctx, ent.OpQueryCount)
 	if err := efq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (efq *EventFileQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (efq *EventFileQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, efq.ctx, "Exist")
+	ctx = setContextOp(ctx, efq.ctx, ent.OpQueryExist)
 	switch _, err := efq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -538,7 +539,7 @@ func (efgb *EventFileGroupBy) Aggregate(fns ...AggregateFunc) *EventFileGroupBy 
 
 // Scan applies the selector query and scans the result into the given value.
 func (efgb *EventFileGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, efgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, efgb.build.ctx, ent.OpQueryGroupBy)
 	if err := efgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -586,7 +587,7 @@ func (efs *EventFileSelect) Aggregate(fns ...AggregateFunc) *EventFileSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (efs *EventFileSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, efs.ctx, "Select")
+	ctx = setContextOp(ctx, efs.ctx, ent.OpQuerySelect)
 	if err := efs.prepareQuery(ctx); err != nil {
 		return err
 	}

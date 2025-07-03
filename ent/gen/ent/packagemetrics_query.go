@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -113,7 +114,7 @@ func (pmq *PackageMetricsQuery) QueryPackageLoadMetrics() *PackageLoadMetricsQue
 // First returns the first PackageMetrics entity from the query.
 // Returns a *NotFoundError when no PackageMetrics was found.
 func (pmq *PackageMetricsQuery) First(ctx context.Context) (*PackageMetrics, error) {
-	nodes, err := pmq.Limit(1).All(setContextOp(ctx, pmq.ctx, "First"))
+	nodes, err := pmq.Limit(1).All(setContextOp(ctx, pmq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +137,7 @@ func (pmq *PackageMetricsQuery) FirstX(ctx context.Context) *PackageMetrics {
 // Returns a *NotFoundError when no PackageMetrics ID was found.
 func (pmq *PackageMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = pmq.Limit(1).IDs(setContextOp(ctx, pmq.ctx, "FirstID")); err != nil {
+	if ids, err = pmq.Limit(1).IDs(setContextOp(ctx, pmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -159,7 +160,7 @@ func (pmq *PackageMetricsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one PackageMetrics entity is found.
 // Returns a *NotFoundError when no PackageMetrics entities are found.
 func (pmq *PackageMetricsQuery) Only(ctx context.Context) (*PackageMetrics, error) {
-	nodes, err := pmq.Limit(2).All(setContextOp(ctx, pmq.ctx, "Only"))
+	nodes, err := pmq.Limit(2).All(setContextOp(ctx, pmq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -187,7 +188,7 @@ func (pmq *PackageMetricsQuery) OnlyX(ctx context.Context) *PackageMetrics {
 // Returns a *NotFoundError when no entities are found.
 func (pmq *PackageMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = pmq.Limit(2).IDs(setContextOp(ctx, pmq.ctx, "OnlyID")); err != nil {
+	if ids, err = pmq.Limit(2).IDs(setContextOp(ctx, pmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -212,7 +213,7 @@ func (pmq *PackageMetricsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of PackageMetricsSlice.
 func (pmq *PackageMetricsQuery) All(ctx context.Context) ([]*PackageMetrics, error) {
-	ctx = setContextOp(ctx, pmq.ctx, "All")
+	ctx = setContextOp(ctx, pmq.ctx, ent.OpQueryAll)
 	if err := pmq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -234,7 +235,7 @@ func (pmq *PackageMetricsQuery) IDs(ctx context.Context) (ids []int, err error) 
 	if pmq.ctx.Unique == nil && pmq.path != nil {
 		pmq.Unique(true)
 	}
-	ctx = setContextOp(ctx, pmq.ctx, "IDs")
+	ctx = setContextOp(ctx, pmq.ctx, ent.OpQueryIDs)
 	if err = pmq.Select(packagemetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -252,7 +253,7 @@ func (pmq *PackageMetricsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (pmq *PackageMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, pmq.ctx, "Count")
+	ctx = setContextOp(ctx, pmq.ctx, ent.OpQueryCount)
 	if err := pmq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -270,7 +271,7 @@ func (pmq *PackageMetricsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (pmq *PackageMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, pmq.ctx, "Exist")
+	ctx = setContextOp(ctx, pmq.ctx, ent.OpQueryExist)
 	switch _, err := pmq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -649,7 +650,7 @@ func (pmgb *PackageMetricsGroupBy) Aggregate(fns ...AggregateFunc) *PackageMetri
 
 // Scan applies the selector query and scans the result into the given value.
 func (pmgb *PackageMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, pmgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, pmgb.build.ctx, ent.OpQueryGroupBy)
 	if err := pmgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -697,7 +698,7 @@ func (pms *PackageMetricsSelect) Aggregate(fns ...AggregateFunc) *PackageMetrics
 
 // Scan applies the selector query and scans the result into the given value.
 func (pms *PackageMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, pms.ctx, "Select")
+	ctx = setContextOp(ctx, pms.ctx, ent.OpQuerySelect)
 	if err := pms.prepareQuery(ctx); err != nil {
 		return err
 	}

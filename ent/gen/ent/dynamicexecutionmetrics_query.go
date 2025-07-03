@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -113,7 +114,7 @@ func (demq *DynamicExecutionMetricsQuery) QueryRaceStatistics() *RaceStatisticsQ
 // First returns the first DynamicExecutionMetrics entity from the query.
 // Returns a *NotFoundError when no DynamicExecutionMetrics was found.
 func (demq *DynamicExecutionMetricsQuery) First(ctx context.Context) (*DynamicExecutionMetrics, error) {
-	nodes, err := demq.Limit(1).All(setContextOp(ctx, demq.ctx, "First"))
+	nodes, err := demq.Limit(1).All(setContextOp(ctx, demq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +137,7 @@ func (demq *DynamicExecutionMetricsQuery) FirstX(ctx context.Context) *DynamicEx
 // Returns a *NotFoundError when no DynamicExecutionMetrics ID was found.
 func (demq *DynamicExecutionMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = demq.Limit(1).IDs(setContextOp(ctx, demq.ctx, "FirstID")); err != nil {
+	if ids, err = demq.Limit(1).IDs(setContextOp(ctx, demq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -159,7 +160,7 @@ func (demq *DynamicExecutionMetricsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one DynamicExecutionMetrics entity is found.
 // Returns a *NotFoundError when no DynamicExecutionMetrics entities are found.
 func (demq *DynamicExecutionMetricsQuery) Only(ctx context.Context) (*DynamicExecutionMetrics, error) {
-	nodes, err := demq.Limit(2).All(setContextOp(ctx, demq.ctx, "Only"))
+	nodes, err := demq.Limit(2).All(setContextOp(ctx, demq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -187,7 +188,7 @@ func (demq *DynamicExecutionMetricsQuery) OnlyX(ctx context.Context) *DynamicExe
 // Returns a *NotFoundError when no entities are found.
 func (demq *DynamicExecutionMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = demq.Limit(2).IDs(setContextOp(ctx, demq.ctx, "OnlyID")); err != nil {
+	if ids, err = demq.Limit(2).IDs(setContextOp(ctx, demq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -212,7 +213,7 @@ func (demq *DynamicExecutionMetricsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of DynamicExecutionMetricsSlice.
 func (demq *DynamicExecutionMetricsQuery) All(ctx context.Context) ([]*DynamicExecutionMetrics, error) {
-	ctx = setContextOp(ctx, demq.ctx, "All")
+	ctx = setContextOp(ctx, demq.ctx, ent.OpQueryAll)
 	if err := demq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -234,7 +235,7 @@ func (demq *DynamicExecutionMetricsQuery) IDs(ctx context.Context) (ids []int, e
 	if demq.ctx.Unique == nil && demq.path != nil {
 		demq.Unique(true)
 	}
-	ctx = setContextOp(ctx, demq.ctx, "IDs")
+	ctx = setContextOp(ctx, demq.ctx, ent.OpQueryIDs)
 	if err = demq.Select(dynamicexecutionmetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -252,7 +253,7 @@ func (demq *DynamicExecutionMetricsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (demq *DynamicExecutionMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, demq.ctx, "Count")
+	ctx = setContextOp(ctx, demq.ctx, ent.OpQueryCount)
 	if err := demq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -270,7 +271,7 @@ func (demq *DynamicExecutionMetricsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (demq *DynamicExecutionMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, demq.ctx, "Exist")
+	ctx = setContextOp(ctx, demq.ctx, ent.OpQueryExist)
 	switch _, err := demq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -627,7 +628,7 @@ func (demgb *DynamicExecutionMetricsGroupBy) Aggregate(fns ...AggregateFunc) *Dy
 
 // Scan applies the selector query and scans the result into the given value.
 func (demgb *DynamicExecutionMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, demgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, demgb.build.ctx, ent.OpQueryGroupBy)
 	if err := demgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -675,7 +676,7 @@ func (dems *DynamicExecutionMetricsSelect) Aggregate(fns ...AggregateFunc) *Dyna
 
 // Scan applies the selector query and scans the result into the given value.
 func (dems *DynamicExecutionMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, dems.ctx, "Select")
+	ctx = setContextOp(ctx, dems.ctx, ent.OpQuerySelect)
 	if err := dems.prepareQuery(ctx); err != nil {
 		return err
 	}

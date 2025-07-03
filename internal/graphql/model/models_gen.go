@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
+	"github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
@@ -201,7 +201,7 @@ type TestResult struct {
 	ActionLogOutput       *BlobReference `json:"actionLogOutput"`
 	UndeclaredTestOutputs *BlobReference `json:"undeclaredTestOutputs,omitempty"`
 	// TestResult object from the Build Event Stream
-	BESTestResult *bes.TestResult `json:"-"`
+	BESTestResult *proto.TestResult `json:"-"`
 	// IDs extracted for later use
 	TestResultID TestResultID `json:"-"`
 }
@@ -242,7 +242,7 @@ func (e ActionOutputStatus) String() string {
 	return string(e)
 }
 
-func (e *ActionOutputStatus) UnmarshalGQL(v interface{}) error {
+func (e *ActionOutputStatus) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -287,7 +287,7 @@ func (e BuildStepStatus) String() string {
 	return string(e)
 }
 
-func (e *BuildStepStatus) UnmarshalGQL(v interface{}) error {
+func (e *BuildStepStatus) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")

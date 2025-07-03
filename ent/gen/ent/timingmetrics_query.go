@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (tmq *TimingMetricsQuery) QueryMetrics() *MetricsQuery {
 // First returns the first TimingMetrics entity from the query.
 // Returns a *NotFoundError when no TimingMetrics was found.
 func (tmq *TimingMetricsQuery) First(ctx context.Context) (*TimingMetrics, error) {
-	nodes, err := tmq.Limit(1).All(setContextOp(ctx, tmq.ctx, "First"))
+	nodes, err := tmq.Limit(1).All(setContextOp(ctx, tmq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (tmq *TimingMetricsQuery) FirstX(ctx context.Context) *TimingMetrics {
 // Returns a *NotFoundError when no TimingMetrics ID was found.
 func (tmq *TimingMetricsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tmq.Limit(1).IDs(setContextOp(ctx, tmq.ctx, "FirstID")); err != nil {
+	if ids, err = tmq.Limit(1).IDs(setContextOp(ctx, tmq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (tmq *TimingMetricsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one TimingMetrics entity is found.
 // Returns a *NotFoundError when no TimingMetrics entities are found.
 func (tmq *TimingMetricsQuery) Only(ctx context.Context) (*TimingMetrics, error) {
-	nodes, err := tmq.Limit(2).All(setContextOp(ctx, tmq.ctx, "Only"))
+	nodes, err := tmq.Limit(2).All(setContextOp(ctx, tmq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (tmq *TimingMetricsQuery) OnlyX(ctx context.Context) *TimingMetrics {
 // Returns a *NotFoundError when no entities are found.
 func (tmq *TimingMetricsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tmq.Limit(2).IDs(setContextOp(ctx, tmq.ctx, "OnlyID")); err != nil {
+	if ids, err = tmq.Limit(2).IDs(setContextOp(ctx, tmq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (tmq *TimingMetricsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of TimingMetricsSlice.
 func (tmq *TimingMetricsQuery) All(ctx context.Context) ([]*TimingMetrics, error) {
-	ctx = setContextOp(ctx, tmq.ctx, "All")
+	ctx = setContextOp(ctx, tmq.ctx, ent.OpQueryAll)
 	if err := tmq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (tmq *TimingMetricsQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if tmq.ctx.Unique == nil && tmq.path != nil {
 		tmq.Unique(true)
 	}
-	ctx = setContextOp(ctx, tmq.ctx, "IDs")
+	ctx = setContextOp(ctx, tmq.ctx, ent.OpQueryIDs)
 	if err = tmq.Select(timingmetrics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (tmq *TimingMetricsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (tmq *TimingMetricsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tmq.ctx, "Count")
+	ctx = setContextOp(ctx, tmq.ctx, ent.OpQueryCount)
 	if err := tmq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (tmq *TimingMetricsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (tmq *TimingMetricsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tmq.ctx, "Exist")
+	ctx = setContextOp(ctx, tmq.ctx, ent.OpQueryExist)
 	switch _, err := tmq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (tmgb *TimingMetricsGroupBy) Aggregate(fns ...AggregateFunc) *TimingMetrics
 
 // Scan applies the selector query and scans the result into the given value.
 func (tmgb *TimingMetricsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tmgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, tmgb.build.ctx, ent.OpQueryGroupBy)
 	if err := tmgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (tms *TimingMetricsSelect) Aggregate(fns ...AggregateFunc) *TimingMetricsSe
 
 // Scan applies the selector query and scans the result into the given value.
 func (tms *TimingMetricsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tms.ctx, "Select")
+	ctx = setContextOp(ctx, tms.ctx, ent.OpQuerySelect)
 	if err := tms.prepareQuery(ctx); err != nil {
 		return err
 	}

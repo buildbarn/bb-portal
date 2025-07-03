@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -136,7 +137,7 @@ func (tpq *TargetPairQuery) QueryCompletion() *TargetCompleteQuery {
 // First returns the first TargetPair entity from the query.
 // Returns a *NotFoundError when no TargetPair was found.
 func (tpq *TargetPairQuery) First(ctx context.Context) (*TargetPair, error) {
-	nodes, err := tpq.Limit(1).All(setContextOp(ctx, tpq.ctx, "First"))
+	nodes, err := tpq.Limit(1).All(setContextOp(ctx, tpq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +160,7 @@ func (tpq *TargetPairQuery) FirstX(ctx context.Context) *TargetPair {
 // Returns a *NotFoundError when no TargetPair ID was found.
 func (tpq *TargetPairQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tpq.Limit(1).IDs(setContextOp(ctx, tpq.ctx, "FirstID")); err != nil {
+	if ids, err = tpq.Limit(1).IDs(setContextOp(ctx, tpq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -182,7 +183,7 @@ func (tpq *TargetPairQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one TargetPair entity is found.
 // Returns a *NotFoundError when no TargetPair entities are found.
 func (tpq *TargetPairQuery) Only(ctx context.Context) (*TargetPair, error) {
-	nodes, err := tpq.Limit(2).All(setContextOp(ctx, tpq.ctx, "Only"))
+	nodes, err := tpq.Limit(2).All(setContextOp(ctx, tpq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -210,7 +211,7 @@ func (tpq *TargetPairQuery) OnlyX(ctx context.Context) *TargetPair {
 // Returns a *NotFoundError when no entities are found.
 func (tpq *TargetPairQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = tpq.Limit(2).IDs(setContextOp(ctx, tpq.ctx, "OnlyID")); err != nil {
+	if ids, err = tpq.Limit(2).IDs(setContextOp(ctx, tpq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -235,7 +236,7 @@ func (tpq *TargetPairQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of TargetPairs.
 func (tpq *TargetPairQuery) All(ctx context.Context) ([]*TargetPair, error) {
-	ctx = setContextOp(ctx, tpq.ctx, "All")
+	ctx = setContextOp(ctx, tpq.ctx, ent.OpQueryAll)
 	if err := tpq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -257,7 +258,7 @@ func (tpq *TargetPairQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if tpq.ctx.Unique == nil && tpq.path != nil {
 		tpq.Unique(true)
 	}
-	ctx = setContextOp(ctx, tpq.ctx, "IDs")
+	ctx = setContextOp(ctx, tpq.ctx, ent.OpQueryIDs)
 	if err = tpq.Select(targetpair.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -275,7 +276,7 @@ func (tpq *TargetPairQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (tpq *TargetPairQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, tpq.ctx, "Count")
+	ctx = setContextOp(ctx, tpq.ctx, ent.OpQueryCount)
 	if err := tpq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -293,7 +294,7 @@ func (tpq *TargetPairQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (tpq *TargetPairQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, tpq.ctx, "Exist")
+	ctx = setContextOp(ctx, tpq.ctx, ent.OpQueryExist)
 	switch _, err := tpq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -692,7 +693,7 @@ func (tpgb *TargetPairGroupBy) Aggregate(fns ...AggregateFunc) *TargetPairGroupB
 
 // Scan applies the selector query and scans the result into the given value.
 func (tpgb *TargetPairGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tpgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, tpgb.build.ctx, ent.OpQueryGroupBy)
 	if err := tpgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -740,7 +741,7 @@ func (tps *TargetPairSelect) Aggregate(fns ...AggregateFunc) *TargetPairSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (tps *TargetPairSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, tps.ctx, "Select")
+	ctx = setContextOp(ctx, tps.ctx, ent.OpQuerySelect)
 	if err := tps.prepareQuery(ctx); err != nil {
 		return err
 	}

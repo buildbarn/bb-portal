@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -87,7 +88,7 @@ func (rcq *RunnerCountQuery) QueryActionSummary() *ActionSummaryQuery {
 // First returns the first RunnerCount entity from the query.
 // Returns a *NotFoundError when no RunnerCount was found.
 func (rcq *RunnerCountQuery) First(ctx context.Context) (*RunnerCount, error) {
-	nodes, err := rcq.Limit(1).All(setContextOp(ctx, rcq.ctx, "First"))
+	nodes, err := rcq.Limit(1).All(setContextOp(ctx, rcq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (rcq *RunnerCountQuery) FirstX(ctx context.Context) *RunnerCount {
 // Returns a *NotFoundError when no RunnerCount ID was found.
 func (rcq *RunnerCountQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = rcq.Limit(1).IDs(setContextOp(ctx, rcq.ctx, "FirstID")); err != nil {
+	if ids, err = rcq.Limit(1).IDs(setContextOp(ctx, rcq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -133,7 +134,7 @@ func (rcq *RunnerCountQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one RunnerCount entity is found.
 // Returns a *NotFoundError when no RunnerCount entities are found.
 func (rcq *RunnerCountQuery) Only(ctx context.Context) (*RunnerCount, error) {
-	nodes, err := rcq.Limit(2).All(setContextOp(ctx, rcq.ctx, "Only"))
+	nodes, err := rcq.Limit(2).All(setContextOp(ctx, rcq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +162,7 @@ func (rcq *RunnerCountQuery) OnlyX(ctx context.Context) *RunnerCount {
 // Returns a *NotFoundError when no entities are found.
 func (rcq *RunnerCountQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = rcq.Limit(2).IDs(setContextOp(ctx, rcq.ctx, "OnlyID")); err != nil {
+	if ids, err = rcq.Limit(2).IDs(setContextOp(ctx, rcq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -186,7 +187,7 @@ func (rcq *RunnerCountQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of RunnerCounts.
 func (rcq *RunnerCountQuery) All(ctx context.Context) ([]*RunnerCount, error) {
-	ctx = setContextOp(ctx, rcq.ctx, "All")
+	ctx = setContextOp(ctx, rcq.ctx, ent.OpQueryAll)
 	if err := rcq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (rcq *RunnerCountQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if rcq.ctx.Unique == nil && rcq.path != nil {
 		rcq.Unique(true)
 	}
-	ctx = setContextOp(ctx, rcq.ctx, "IDs")
+	ctx = setContextOp(ctx, rcq.ctx, ent.OpQueryIDs)
 	if err = rcq.Select(runnercount.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -226,7 +227,7 @@ func (rcq *RunnerCountQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (rcq *RunnerCountQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, rcq.ctx, "Count")
+	ctx = setContextOp(ctx, rcq.ctx, ent.OpQueryCount)
 	if err := rcq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -244,7 +245,7 @@ func (rcq *RunnerCountQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (rcq *RunnerCountQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, rcq.ctx, "Exist")
+	ctx = setContextOp(ctx, rcq.ctx, ent.OpQueryExist)
 	switch _, err := rcq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -549,7 +550,7 @@ func (rcgb *RunnerCountGroupBy) Aggregate(fns ...AggregateFunc) *RunnerCountGrou
 
 // Scan applies the selector query and scans the result into the given value.
 func (rcgb *RunnerCountGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, rcgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, rcgb.build.ctx, ent.OpQueryGroupBy)
 	if err := rcgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -597,7 +598,7 @@ func (rcs *RunnerCountSelect) Aggregate(fns ...AggregateFunc) *RunnerCountSelect
 
 // Scan applies the selector query and scans the result into the given value.
 func (rcs *RunnerCountSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, rcs.ctx, "Select")
+	ctx = setContextOp(ctx, rcs.ctx, ent.OpQuerySelect)
 	if err := rcs.prepareQuery(ctx); err != nil {
 		return err
 	}

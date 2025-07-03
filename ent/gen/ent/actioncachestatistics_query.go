@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -113,7 +114,7 @@ func (acsq *ActionCacheStatisticsQuery) QueryMissDetails() *MissDetailQuery {
 // First returns the first ActionCacheStatistics entity from the query.
 // Returns a *NotFoundError when no ActionCacheStatistics was found.
 func (acsq *ActionCacheStatisticsQuery) First(ctx context.Context) (*ActionCacheStatistics, error) {
-	nodes, err := acsq.Limit(1).All(setContextOp(ctx, acsq.ctx, "First"))
+	nodes, err := acsq.Limit(1).All(setContextOp(ctx, acsq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +137,7 @@ func (acsq *ActionCacheStatisticsQuery) FirstX(ctx context.Context) *ActionCache
 // Returns a *NotFoundError when no ActionCacheStatistics ID was found.
 func (acsq *ActionCacheStatisticsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = acsq.Limit(1).IDs(setContextOp(ctx, acsq.ctx, "FirstID")); err != nil {
+	if ids, err = acsq.Limit(1).IDs(setContextOp(ctx, acsq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -159,7 +160,7 @@ func (acsq *ActionCacheStatisticsQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one ActionCacheStatistics entity is found.
 // Returns a *NotFoundError when no ActionCacheStatistics entities are found.
 func (acsq *ActionCacheStatisticsQuery) Only(ctx context.Context) (*ActionCacheStatistics, error) {
-	nodes, err := acsq.Limit(2).All(setContextOp(ctx, acsq.ctx, "Only"))
+	nodes, err := acsq.Limit(2).All(setContextOp(ctx, acsq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -187,7 +188,7 @@ func (acsq *ActionCacheStatisticsQuery) OnlyX(ctx context.Context) *ActionCacheS
 // Returns a *NotFoundError when no entities are found.
 func (acsq *ActionCacheStatisticsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = acsq.Limit(2).IDs(setContextOp(ctx, acsq.ctx, "OnlyID")); err != nil {
+	if ids, err = acsq.Limit(2).IDs(setContextOp(ctx, acsq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -212,7 +213,7 @@ func (acsq *ActionCacheStatisticsQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of ActionCacheStatisticsSlice.
 func (acsq *ActionCacheStatisticsQuery) All(ctx context.Context) ([]*ActionCacheStatistics, error) {
-	ctx = setContextOp(ctx, acsq.ctx, "All")
+	ctx = setContextOp(ctx, acsq.ctx, ent.OpQueryAll)
 	if err := acsq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -234,7 +235,7 @@ func (acsq *ActionCacheStatisticsQuery) IDs(ctx context.Context) (ids []int, err
 	if acsq.ctx.Unique == nil && acsq.path != nil {
 		acsq.Unique(true)
 	}
-	ctx = setContextOp(ctx, acsq.ctx, "IDs")
+	ctx = setContextOp(ctx, acsq.ctx, ent.OpQueryIDs)
 	if err = acsq.Select(actioncachestatistics.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -252,7 +253,7 @@ func (acsq *ActionCacheStatisticsQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (acsq *ActionCacheStatisticsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, acsq.ctx, "Count")
+	ctx = setContextOp(ctx, acsq.ctx, ent.OpQueryCount)
 	if err := acsq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -270,7 +271,7 @@ func (acsq *ActionCacheStatisticsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (acsq *ActionCacheStatisticsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, acsq.ctx, "Exist")
+	ctx = setContextOp(ctx, acsq.ctx, ent.OpQueryExist)
 	switch _, err := acsq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -647,7 +648,7 @@ func (acsgb *ActionCacheStatisticsGroupBy) Aggregate(fns ...AggregateFunc) *Acti
 
 // Scan applies the selector query and scans the result into the given value.
 func (acsgb *ActionCacheStatisticsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, acsgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, acsgb.build.ctx, ent.OpQueryGroupBy)
 	if err := acsgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -695,7 +696,7 @@ func (acss *ActionCacheStatisticsSelect) Aggregate(fns ...AggregateFunc) *Action
 
 // Scan applies the selector query and scans the result into the given value.
 func (acss *ActionCacheStatisticsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, acss.ctx, "Select")
+	ctx = setContextOp(ctx, acss.ctx, ent.OpQuerySelect)
 	if err := acss.prepareQuery(ctx); err != nil {
 		return err
 	}
