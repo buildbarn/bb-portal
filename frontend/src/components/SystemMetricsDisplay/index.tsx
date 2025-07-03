@@ -2,18 +2,19 @@ import React from "react";
 import { Statistic, Space, Row } from 'antd';
 import { FieldTimeOutlined, BuildOutlined, } from "@ant-design/icons";
 import type { StatisticProps } from "antd/lib";
-import { BuildGraphMetrics, TimingMetrics } from "@/graphql/__generated__/graphql";
+import { BuildGraphMetrics, NetworkMetrics, SystemNetworkStats, TimingMetrics } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 
-const TimingMetricsDisplay: React.FC<{
+const SystemMetricsDisplay: React.FC<{
     buildGraphMetrics: BuildGraphMetrics | undefined,
-    timingMetrics: TimingMetrics | undefined
+    timingMetrics: TimingMetrics | undefined,
+    systemNetworkStats: SystemNetworkStats | undefined
 }> = ({
     timingMetrics,
-    buildGraphMetrics
+    buildGraphMetrics,
+    systemNetworkStats
 }) => {
         return (
-
             <Space size={"large"} direction="vertical" style={{ display: 'flex' }}>
                 <PortalCard type="inner" titleBits={["Timing Metrics"]} icon={<FieldTimeOutlined />}>
                     <Row>
@@ -39,8 +40,22 @@ const TimingMetricsDisplay: React.FC<{
                         </Space>
                     </Row>
                 </PortalCard>
+                <PortalCard type="inner" titleBits={["System Network Metrics"]} icon={<FieldTimeOutlined />}>
+                    <Row>
+                        <Space size="large">
+                            <Statistic title="Bytes Recieved" value={systemNetworkStats?.bytesRecv ?? 0} />
+                            <Statistic title="Bytes Sent" value={systemNetworkStats?.bytesSent ?? 0} />
+                            <Statistic title="Packets Recieved" value={systemNetworkStats?.packetsRecv ?? 0} />
+                            <Statistic title="Packets Sent" value={systemNetworkStats?.packetsSent ?? 0} />
+                            <Statistic title="Peak Bytes Recieved(/s)" value={systemNetworkStats?.peakBytesRecvPerSec ?? 0} />
+                            <Statistic title="Peak Bytes Sent(/s)" value={systemNetworkStats?.peakBytesSentPerSec ?? 0} />
+                            <Statistic title="Peak Packets Recieved(/s)" value={systemNetworkStats?.peakPacketsRecvPerSec ?? 0} />
+                            <Statistic title="Peak Packets Sent(/s)" value={systemNetworkStats?.peakPacketsSentPerSec ?? 0} />
+                        </Space>
+                    </Row>
+                </PortalCard>
             </Space>
         )
     }
 
-export default TimingMetricsDisplay
+export default SystemMetricsDisplay;
