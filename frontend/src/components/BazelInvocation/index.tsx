@@ -10,6 +10,7 @@ import {
   TestCollection,
   TargetPair,
   BuildGraphMetrics,
+  SystemNetworkStats,
 } from "@/graphql/__generated__/graphql";
 import styles from "../AppBar/index.module.css";
 import React, { useState } from "react";
@@ -38,8 +39,7 @@ import LogViewer from "../LogViewer";
 import TargetMetricsDisplay from "../TargetMetrics";
 import ArtifactsDataMetrics from "../Artifacts";
 import MemoryMetricsDisplay from "../MemoryMetrics";
-import TimingMetricsDisplay from "../TimingMetrics";
-import NetworkMetricsDisplay from "../NetworkMetrics";
+import SystemMetricsDisplay from "../SystemMetricsDisplay";
 import TestMetricsDisplay from "../TestsMetrics";
 import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
@@ -104,10 +104,8 @@ const BazelInvocation: React.FC<{
     metrics?.timingMetrics ?? undefined;
 
   //netowrk metrics
-  var networkMetrics: NetworkMetrics | undefined =
-    metrics?.networkMetrics ?? undefined;
-  const bytesRecv = networkMetrics?.systemNetworkStats?.bytesRecv ?? 0;
-  const bytesSent = networkMetrics?.systemNetworkStats?.bytesSent ?? 0;
+  var systemNetworkStats: SystemNetworkStats | undefined =
+    metrics?.networkMetrics?.systemNetworkStats ?? undefined;
 
   //test data
   var testCollections: TestCollection[] | undefined | null = testCollection;
@@ -196,11 +194,10 @@ const BazelInvocation: React.FC<{
 
   const hideTestsTab: boolean = (testCollection?.length ?? 0) == 0;
   const hideTargetsTab: boolean = (targetData?.length ?? 0) == 0 ? true : false;
-  const hideNetworkTab: boolean = bytesRecv == 0 && bytesSent == 0;
   const hideSourceControlTab: boolean =
     sourceControl?.runID == undefined ||
-    sourceControl.runID == null ||
-    sourceControl.runID == ""
+      sourceControl.runID == null ||
+      sourceControl.runID == ""
       ? true
       : false;
   const hideLogsTab: boolean = false;
@@ -218,19 +215,30 @@ const BazelInvocation: React.FC<{
     (acMetrics?.actionsExecuted == 0) &&
     (acMetrics?.actionCacheStatistics?.hits == 0) &&
     (acMetrics?.actionCacheStatistics?.misses == 0);
-  const hideTimingTab: boolean =
-    timingMetrics?.wallTimeInMs == 0 &&
-    timingMetrics.executionPhaseTimeInMs == 0 &&
-    timingMetrics.analysisPhaseTimeInMs == 0 &&
-    timingMetrics.cpuTimeInMs == 0 &&
-    timingMetrics.actionsExecutionStartInMs == 0 &&
-    buildGraphMetrics?.actionCount == 0 &&
-    buildGraphMetrics.actionLookupValueCount == 0 &&
-    buildGraphMetrics.actionCountNotIncludingAspects == 0 &&
-    buildGraphMetrics.inputFileConfiguredTargetCount == 0 &&
-    buildGraphMetrics.outputArtifactCount == 0 &&
-    buildGraphMetrics.postInvocationSkyframeNodeCount == 0 &&
-    buildGraphMetrics.outputFileConfiguredTargetCount == 0;
+  const hideSystemMetricsTab: boolean =
+    (timingMetrics == undefined &&
+      systemNetworkStats == undefined) || (
+      timingMetrics?.wallTimeInMs == 0 &&
+      timingMetrics?.executionPhaseTimeInMs == 0 &&
+      timingMetrics?.analysisPhaseTimeInMs == 0 &&
+      timingMetrics?.cpuTimeInMs == 0 &&
+      timingMetrics?.actionsExecutionStartInMs == 0 &&
+      buildGraphMetrics?.actionCount == 0 &&
+      buildGraphMetrics.actionLookupValueCount == 0 &&
+      buildGraphMetrics.actionCountNotIncludingAspects == 0 &&
+      buildGraphMetrics.inputFileConfiguredTargetCount == 0 &&
+      buildGraphMetrics.outputArtifactCount == 0 &&
+      buildGraphMetrics.postInvocationSkyframeNodeCount == 0 &&
+      buildGraphMetrics.outputFileConfiguredTargetCount == 0 &&
+      systemNetworkStats?.bytesRecv == 0 &&
+      systemNetworkStats?.bytesSent == 0 &&
+      systemNetworkStats?.packetsRecv == 0 &&
+      systemNetworkStats?.packetsSent == 0 &&
+      systemNetworkStats?.peakBytesRecvPerSec == 0 &&
+      systemNetworkStats?.peakBytesSentPerSec == 0 &&
+      systemNetworkStats?.peakPacketsRecvPerSec == 0 &&
+      systemNetworkStats?.peakPacketsSentPerSec == 0
+    );
 
   interface TabShowHideDisplay {
     hide: boolean;
@@ -240,14 +248,13 @@ const BazelInvocation: React.FC<{
   const showHideTabs: TabShowHideDisplay[] = [
     { key: "BazelInvocationTabs-Tests", hide: hideTestsTab },
     { key: "BazelInvocationTabs-Targets", hide: hideTargetsTab },
-    { key: "BazelInvocationTabs-Network", hide: hideNetworkTab },
     { key: "BazelInvocationTabs-SourceControl", hide: hideSourceControlTab },
     { key: "BazelInvocationTabs-Logs", hide: hideLogsTab },
     { key: "BazelInvocationTabs-Memory", hide: hideMemoryTab },
     { key: "BazelInvocationTabs-Problems", hide: hideProblemsTab },
     { key: "BazelInvocationTabs-Artifacts", hide: hideArtifactsTab },
-    { key: "BazelInvocationTabs-ActionStatistics", hide: hideActionsTab},
-    { key: "BazelInvocationTabs-Timing", hide: hideTimingTab },
+    { key: "BazelInvocationTabs-ActionStatistics", hide: hideActionsTab },
+    { key: "BazelInvocationTabs-SystemMetrics", hide: hideSystemMetricsTab },
   ];
 
   const [activeKey, setActiveKey] = useState(
@@ -357,14 +364,15 @@ const BazelInvocation: React.FC<{
       ),
     },
     {
-      key: "BazelInvocationTabs-Timing",
-      label: "Timing",
+      key: "BazelInvocationTabs-SystemMetrics",
+      label: "System Metrics",
       icon: <FieldTimeOutlined />,
       children: (
         <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <TimingMetricsDisplay
+          <SystemMetricsDisplay
             timingMetrics={timingMetrics}
             buildGraphMetrics={buildGraphMetrics}
+            systemNetworkStats={systemNetworkStats}
           />
         </Space>
       ),
@@ -392,16 +400,6 @@ const BazelInvocation: React.FC<{
             testMetrics={testCollections}
             targetTimes={targetTimes}
           />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-Network",
-      label: "Network",
-      icon: <WifiOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <NetworkMetricsDisplay networkMetrics={networkMetrics} />
         </Space>
       ),
     },
