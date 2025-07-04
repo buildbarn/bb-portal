@@ -379,7 +379,7 @@ func (act SaveActor) saveTargets(ctx context.Context, summary *summary.Summary) 
 	if summary.SkipTargetData {
 		return []*ent.TargetPair{}, nil
 	}
-	return []*ent.TargetPair{}, nil
+	return result, nil
 }
 
 func (act SaveActor) saveTestSummary(ctx context.Context, testSummary summary.TestSummary, label string) (*ent.TestSummary, error) {
