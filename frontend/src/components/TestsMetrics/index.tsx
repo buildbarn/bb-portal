@@ -181,6 +181,7 @@ const TestMetricsDisplay: React.FC<{
         })
 
         var numPassed = test_data.filter(x => x.status == "PASSED").length
+        var numFlaky = test_data.filter(x => x.status == "FLAKY").length
         var numFailed = test_data.filter(x => x.status == "FAILED").length
         var numExecutedLocally = test_data.filter(x => x.strategy == "linux-sandbox").length
         var numExecutedRemotely = test_data.filter(x => x.strategy == "remote").length
@@ -194,6 +195,7 @@ const TestMetricsDisplay: React.FC<{
                         <Space size="large">
                             <Statistic title="Tests Completed" value={totalTests} />
                             <Statistic title="Passed" value={numPassed} />
+                            <Statistic title="Flaky" value={numFlaky} />
                             <Statistic title="Failed" value={numFailed} />
                             <Statistic title="Executed Locally" value={numExecutedLocally} />
                             <Statistic title="Executed Remotely" value={numExecutedRemotely} />
