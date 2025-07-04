@@ -3,9 +3,10 @@ import { gql } from "@/graphql/__generated__";
 const FIND_BAZEL_INVOCATIONS_QUERY = gql(/* GraphQL */ `
   query FindBazelInvocations(
     $first: Int!
+    $orderBy: BazelInvocationOrder
     $where: BazelInvocationWhereInput
   ) {
-    findBazelInvocations(first: $first, where: $where) {
+    findBazelInvocations(first: $first, orderBy: $orderBy, where: $where) {
       edges {
         node {
           ...BazelInvocationNode
