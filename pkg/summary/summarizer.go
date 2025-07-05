@@ -967,6 +967,13 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		}
 	}
 
+	// Local actor
+	if localActor, ok := s.summary.EnvVars["USER"]; ok {
+		if s.summary.UserLDAP == "" {
+			s.summary.UserLDAP = localActor
+		}
+	}
+
 	// Gitlab actor mail
 	if glActorMail, ok := s.summary.EnvVars["GITLAB_USER_EMAIL"]; ok {
 		if s.summary.UserEmail == "" {
