@@ -112,7 +112,14 @@ const userColumn: ColumnType<BazelInvocationNodeFragment> = {
   key: 'user',
   width: 120,
   title: "User",
-  render: (_, record) => <Link href={`mailto:${record.user?.Email}`}>{record.user?.LDAP}</Link>,
+  render: (_, record) => {
+    if (record.user?.Email) {
+      return (<Link href={`mailto:${record.user?.Email}`}>{record.user?.LDAP}</Link>)
+    }
+
+    return record.user?.LDAP
+
+  },
   filterDropdown: filterProps => (
     <SearchWidget placeholder="Provide a username..." {...filterProps} />
   ),
