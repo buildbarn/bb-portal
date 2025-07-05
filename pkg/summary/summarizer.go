@@ -428,7 +428,7 @@ func (s Summarizer) handleTestSummary(testSummary *bes.TestSummary, label string
 	tSummary.Status = TestStatus(testSummary.OverallStatus)
 	tSummary.TotalNumCached = testSummary.TotalNumCached
 	tSummary.TotalRunCount = testSummary.TotalRunCount
-	tSummary.TotalRunDuration = testSummary.TotalRunDuration.AsDuration().Microseconds()
+	tSummary.TotalRunDuration = testSummary.TotalRunDuration.AsDuration().Milliseconds()
 
 	testCollection.TestSummary = tSummary
 	testCollection.OverallStatus = tSummary.Status
