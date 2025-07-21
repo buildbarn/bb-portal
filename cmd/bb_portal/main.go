@@ -27,6 +27,8 @@ import (
 	"github.com/rs/cors"
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	go_grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
@@ -50,6 +52,10 @@ const (
 
 var (
 	configFile        = flag.String("config-file", "", "bb_portal config file")
+	dsDriver          = flag.String("datasource-driver", "sqlite3", "Data source driver to use")
+	dsURL             = flag.String("datasource-url", "file:buildportal.db?_journal=WAL&_fk=1", "Data source URL for the DB")
+	blobArchiveFolder = flag.String("blob-archive-folder", "./blob-archive/",
+		"Folder where blobs (log outputs, stdout, stderr, undeclared test outputs) referenced from failures are archived")
 )
 
 func main() {
@@ -67,17 +73,13 @@ func main() {
 	}()
 
 	program.RunMain(func(ctx context.Context, siblingsGroup, dependenciesGroup program.Group) error {
-		flag.Parse()
-
-		if *configFile == "" {
-			flag.Usage()
+		if len(os.Args) != 2 {
+			return status.Error(codes.InvalidArgument, "Usage: bb_portal bb_portal.jsonnet")
 		}
-
 		var configuration bb_portal.ApplicationConfiguration
-		if err := util.UnmarshalConfigurationFromFile(*configFile, &configuration); err != nil {
+		if err := util.UnmarshalConfigurationFromFile(os.Args[1], &configuration); err != nil {
 			return util.StatusWrapf(err, "Failed to read configuration from %s", os.Args[1])
 		}
-
 		lifecycleState, grpcClientFactory, err := global.ApplyConfiguration(configuration.Global)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to apply global configuration options")
