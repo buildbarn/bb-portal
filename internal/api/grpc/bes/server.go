@@ -14,7 +14,13 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-portal/pkg/processing"
+	"github.com/buildbarn/bb-storage/pkg/auth"
+	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
+	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
+	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/configuration/auth"
+	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
 // BuildEventServer implements the Build Event Service.
@@ -23,14 +29,24 @@ import (
 // tooling that reacts to build events, and it would be useful if this service could
 // forward events to those.
 type BuildEventServer struct {
-	handler *BuildEventHandler
+	handler                *BuildEventHandler
+	instanceNameAuthorizer auth.Authorizer
 }
 
 // NewBuildEventServer creates a new BuildEventServer
-func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiver) build.PublishBuildEventServer {
-	return &BuildEventServer{
-		handler: NewBuildEventHandler(processing.New(db, blobArchiver)),
+func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiver, authorizerConfiguration *auth_pb.AuthorizerConfiguration, grpcClientFactory bb_grpc.ClientFactory) (build.PublishBuildEventServer, error) {
+	if authorizerConfiguration == nil {
+		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
+	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(authorizerConfiguration, grpcClientFactory)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
+	}
+
+	return &BuildEventServer{
+		handler:                NewBuildEventHandler(processing.New(db, blobArchiver)),
+		instanceNameAuthorizer: instanceNameAuthorizer,
+	}, nil
 }
 
 // PublishLifecycleEvent handles life cycle events.
@@ -135,6 +151,10 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 			return err
 
 		case req := <-reqCh:
+			if !common.IsInstanceNameAllowed(stream.Context(), s.instanceNameAuthorizer, req.ProjectId) {
+				return status.Error(codes.PermissionDenied, fmt.Sprintf("Instance name %q is not allowed", req.ProjectId))
+			}
+
 			// First event
 			if streamID == nil {
 				streamID = req.OrderedBuildEvent.GetStreamId()

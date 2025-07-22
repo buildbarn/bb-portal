@@ -206,10 +206,14 @@ func newBuildEventStreamService(configuration *bb_portal.ApplicationConfiguratio
 		router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, blobArchiver)).Methods("POST")
 	}
 
+	builcEventServer, err := bes.NewBuildEventServer(dbClient, blobArchiver, configuration.InstanceNameAuthorizer, grpcClientFactory)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to create BuildEventServer")
+	}
 	if err := bb_grpc.NewServersFromConfigurationAndServe(
 		besConfiguration.GrpcServers,
 		func(s go_grpc.ServiceRegistrar) {
-			build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), bes.NewBuildEventServer(dbClient, blobArchiver))
+			build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), builcEventServer)
 		},
 		siblingsGroup,
 		grpcClientFactory,
