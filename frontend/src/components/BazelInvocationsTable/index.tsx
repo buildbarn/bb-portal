@@ -25,6 +25,10 @@ type Props = {
 const BazelInvocationsTable: React.FC<Props> = ({ height }) => {
   const [variables, setVariables] = useState<FindBazelInvocationsQueryVariables>({
     first: PAGE_SIZE,
+    orderBy: {
+      direction: 'DESC',
+      field: 'STARTED_AT'
+    }
   });
 
   const { loading, data, previousData, error } = useQuery(FIND_BAZEL_INVOCATIONS_QUERY, {
@@ -63,6 +67,10 @@ const BazelInvocationsTable: React.FC<Props> = ({ height }) => {
       setVariables({
         first: PAGE_SIZE,
         where: wheres.length ? { and: [...wheres] } : wheres[0],
+        orderBy: {
+          direction: 'DESC',
+          field: 'STARTED_AT'
+        }
       });
     },
     [],
