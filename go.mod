@@ -25,7 +25,6 @@ require (
 	github.com/bazelbuild/remote-apis v0.0.0-20250311143718-2721568dea74
 	github.com/buildbarn/bb-remote-execution v0.0.0-20250227074154-20a2e6d4cc71
 	github.com/buildbarn/bb-storage v0.0.0-20250319025836-ed3a308b8e16
-	github.com/fsnotify/fsnotify v1.9.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/hashicorp/go-multierror v1.1.1
@@ -98,6 +97,7 @@ require (
 	github.com/envoyproxy/go-control-plane/envoy v1.32.4 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.2.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
+	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/fxtlabs/primes v0.0.0-20150821004651-dad82d10a449 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect

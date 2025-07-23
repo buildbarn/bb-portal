@@ -20,7 +20,6 @@ import (
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/fsnotify/fsnotify"
 	"github.com/gorilla/mux"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/mattn/go-sqlite3"
@@ -28,6 +27,8 @@ import (
 	"github.com/rs/cors"
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	go_grpc "google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
@@ -53,7 +54,6 @@ var (
 	configFile        = flag.String("config-file", "", "bb_portal config file")
 	dsDriver          = flag.String("datasource-driver", "sqlite3", "Data source driver to use")
 	dsURL             = flag.String("datasource-url", "file:buildportal.db?_journal=WAL&_fk=1", "Data source URL for the DB")
-	bepFolder         = flag.String("bep-folder", "./bep-files/", "Folder to watch for new BEP files")
 	blobArchiveFolder = flag.String("blob-archive-folder", "./blob-archive/",
 		"Folder where blobs (log outputs, stdout, stderr, undeclared test outputs) referenced from failures are archived")
 )
@@ -73,17 +73,13 @@ func main() {
 	}()
 
 	program.RunMain(func(ctx context.Context, siblingsGroup, dependenciesGroup program.Group) error {
-		flag.Parse()
-
-		if *configFile == "" {
-			flag.Usage()
+		if len(os.Args) != 2 {
+			return status.Error(codes.InvalidArgument, "Usage: bb_portal bb_portal.jsonnet")
 		}
-
 		var configuration bb_portal.ApplicationConfiguration
-		if err := util.UnmarshalConfigurationFromFile(*configFile, &configuration); err != nil {
+		if err := util.UnmarshalConfigurationFromFile(os.Args[1], &configuration); err != nil {
 			return util.StatusWrapf(err, "Failed to read configuration from %s", os.Args[1])
 		}
-
 		lifecycleState, grpcClientFactory, err := global.ApplyConfiguration(configuration.Global)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to apply global configuration options")
@@ -135,44 +131,6 @@ func configureBlobArchiving(blobArchiver processing.BlobMultiArchiver, archiveFo
 	blobArchiver.RegisterArchiver("bytestream", noopArchiver)
 }
 
-func runWatcher(watcher *fsnotify.Watcher, client *ent.Client, bepFolder string, blobArchiver processing.BlobMultiArchiver) {
-	ctx := context.Background()
-	worker := processing.New(client, blobArchiver)
-	// Start listening for events.
-	go func() {
-		for {
-			select {
-			case event, ok := <-watcher.Events:
-				if !ok {
-					return
-				}
-				slog.Info("Received an event", "event", event)
-				if event.Has(fsnotify.Write) {
-					slog.Info("modified file", "name", event.Name)
-					if _, err := worker.ProcessFile(ctx, event.Name); err != nil {
-						slog.Error("Failed to process file", "file", event.Name, "err", err)
-					}
-				}
-			case err, ok := <-watcher.Errors:
-				if !ok {
-					return
-				}
-				slog.Error("Received an error from fsnotify", "err", err)
-			}
-		}
-	}()
-
-	// Add a path.
-	err := os.MkdirAll(bepFolder, folderPermission)
-	if err != nil {
-		fatal("failed to create BEP folder", "folder", bepFolder, "err", err)
-	}
-	err = watcher.Add(bepFolder)
-	if err != nil {
-		fatal("watched register BEP folder with fsnotify.Watcher", "folder", bepFolder, "err", err)
-	}
-}
-
 func fatal(msg string, args ...any) {
 	// Workaround: No slog.Fatal.
 	slog.Error(msg, args...)
@@ -189,51 +147,54 @@ func newBuildEventStreamService(configuration *bb_portal.ApplicationConfiguratio
 	var dbClient *ent.Client
 	var err error
 
-	if *dsDriver == "pgx" {
-		db, err := sql.Open("pgx", *dsURL)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to open pgx database")
+	switch dbConfig := besConfiguration.Database.Source.(type) {
+	case *bb_portal.Database_Sqlite:
+		if dbConfig.Sqlite.ConnectionString == "" {
+			return status.Error(codes.InvalidArgument, "Empty connection string for sqlite database")
 		}
-		drv := entsql.OpenDB(dialect.Postgres, db)
-		dbClient = ent.NewClient(ent.Driver(drv))
-	} else {
 		dbClient, err = ent.Open(
-			*dsDriver,
-			*dsURL,
+			"sqlite3",
+			dbConfig.Sqlite.ConnectionString,
 		)
-	}
-
-	if err != nil {
-		return util.StatusWrap(err, "Failed to open ent client")
-	}
-
-	if *dsDriver == "pgx" {
-		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
-			return util.StatusWrap(err, "Failed to run schema migration")
+		if err != nil {
+			return util.StatusWrap(err, "Failed to open sqlite database")
 		}
-	} else {
+
 		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
 			return util.StatusWrap(err, "Failed to run schema migration")
 		}
+	case *bb_portal.Database_Postgres:
+		if dbConfig.Postgres.ConnectionString == "" {
+			return status.Error(codes.InvalidArgument, "Empty connection string for postgres database")
+		}
+		db, err := sql.Open("pgx", dbConfig.Postgres.ConnectionString)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to open postgres database")
+		}
+		drv := entsql.OpenDB(dialect.Postgres, db)
+		dbClient = ent.NewClient(ent.Driver(drv))
+		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
+			return util.StatusWrap(err, "Failed to run schema migration")
+		}
 	}
 
+	blobArchiveFolder := besConfiguration.BlobArchiveFolder
+	if blobArchiveFolder == "" {
+		return status.Error(codes.NotFound, "No blobArchiveFolder configured for besServiceConfiguration")
+	}
 	blobArchiver := processing.NewBlobMultiArchiver()
-	configureBlobArchiving(blobArchiver, *blobArchiveFolder)
-
-	// Create new watcher.
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		return util.StatusWrap(err, "Failed to create fsnotify.Watcher")
-	}
-	defer watcher.Close()
-	runWatcher(watcher, dbClient, *bepFolder, blobArchiver)
+	configureBlobArchiving(blobArchiver, blobArchiveFolder)
 
 	srv := handler.NewDefaultServer(graphql.NewSchema(dbClient))
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})
 
 	router.PathPrefix("/graphql").Handler(srv)
-	router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
-	router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, blobArchiver)).Methods("POST")
+	if besConfiguration.EnableGraphqlPlayground {
+		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
+	}
+	if besConfiguration.EnableBepFileUpload {
+		router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, blobArchiver)).Methods("POST")
+	}
 
 	if err := bb_grpc.NewServersFromConfigurationAndServe(
 		besConfiguration.GrpcServers,

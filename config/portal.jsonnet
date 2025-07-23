@@ -40,6 +40,14 @@
       authenticationPolicy: { allow: {} },
       maximumReceivedMessageSizeBytes: 10 * 1024 * 1024,
     }],
+    database: {
+      sqlite: {
+        connectionString: 'file:buildportal.db?_journal=WAL&_fk=1',
+      },
+    },
+    blobArchiveFolder: './blob-archive/',
+    enableBepFileUpload: true,
+    enableGraphqlPlayground: true,
   },
 
   // The BrowserService can be disabled by not setting this field.
