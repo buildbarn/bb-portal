@@ -116,7 +116,7 @@ func (s FileServerService) generateTarballDirectory(ctx context.Context, w *tar.
 				return err
 			}
 
-			if err := s.contentAddressableStorage.Get(ctx, childDigest).IntoWriter(w); err != nil {
+			if err := s.blobAccess.Get(ctx, childDigest).IntoWriter(w); err != nil {
 				return err
 			}
 
@@ -166,7 +166,7 @@ func (s FileServerService) HandleDirectory(w http.ResponseWriter, req *http.Requ
 	}
 
 	ctx := common.ExtractContextFromRequest(req)
-	directoryMessage, err := s.contentAddressableStorage.Get(ctx, directoryDigest).ToProto(&remoteexecution.Directory{}, s.maximumMessageSizeBytes)
+	directoryMessage, err := s.blobAccess.Get(ctx, directoryDigest).ToProto(&remoteexecution.Directory{}, s.maximumMessageSizeBytes)
 	if err != nil {
 		http.Error(w, "Digest not found", http.StatusNotFound)
 		return
@@ -174,7 +174,7 @@ func (s FileServerService) HandleDirectory(w http.ResponseWriter, req *http.Requ
 	directory := directoryMessage.(*remoteexecution.Directory)
 
 	s.generateTarball(ctx, w, directoryDigest, directory, func(ctx context.Context, digest digest.Digest) (*remoteexecution.Directory, error) {
-		directoryMessage, err := s.contentAddressableStorage.Get(ctx, digest).ToProto(&remoteexecution.Directory{}, s.maximumMessageSizeBytes)
+		directoryMessage, err := s.blobAccess.Get(ctx, digest).ToProto(&remoteexecution.Directory{}, s.maximumMessageSizeBytes)
 		if err != nil {
 			return nil, err
 		}
