@@ -64,6 +64,7 @@ const BazelInvocation: React.FC<{
 }> = ({ invocationOverview, isNestedWithinBuildCard }) => {
   const {
     invocationID,
+    instanceName,
     build,
     state,
     bazelCommand,
@@ -178,7 +179,7 @@ const BazelInvocation: React.FC<{
 
   if (profile) {
     const url = generateFileUrl(
-      "", 
+      instanceName ?? undefined, 
       DigestFunction_Value.SHA256, 
       {
         hash: profile.digest,
@@ -465,6 +466,7 @@ const BazelInvocation: React.FC<{
         <Space direction="vertical" size="middle" className={themeStyles.space}>
           <BuildProblems
             invocationId={invocationID}
+            instanceName={instanceName ?? undefined}
             onTabChange={onTabChange}
           />
         </Space>

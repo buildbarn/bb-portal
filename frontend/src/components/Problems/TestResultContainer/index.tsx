@@ -10,10 +10,11 @@ interface Props {
   id: string;
   problemLabel: string;
   testProblem: TestProblem;
+  instanceName: string | undefined;
 }
 
 
-const TestResultContainer: React.FC<Props> = ({ id, problemLabel, testProblem }) => {
+const TestResultContainer: React.FC<Props> = ({ id, problemLabel, testProblem, instanceName}) => {
   const testResult = testProblem.results.find(r => r.id == id)
   if (!testResult) {
     return (
@@ -24,7 +25,7 @@ const TestResultContainer: React.FC<Props> = ({ id, problemLabel, testProblem })
     );
   }
 
-  var contents = <LogOutput blobReference={testResult.actionLogOutput} />
+  var contents = <LogOutput blobReference={testResult.actionLogOutput} instanceName={instanceName}/>
 
 
   return (

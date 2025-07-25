@@ -10,7 +10,7 @@ function getServeFileUrl(): string {
 }
 
 export function generateFileUrl(
-  instanceName: string,
+  instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
   digest: Digest,
   fileName: string,
@@ -21,7 +21,7 @@ export function generateFileUrl(
 }
 
 export function generateCommandShellScriptUrl(
-  instanceName: string,
+  instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
   digest: Digest,
 ): string {
@@ -41,7 +41,7 @@ export function generateDirectoryUrl(
 }
 
 export function generateDirectoryTarballUrl(
-  instanceName: string,
+  instanceName: string | undefined,
   digestFunction: DigestFunction_Value,
   digest: Digest,
 ): string {
