@@ -302,6 +302,7 @@ const BazelInvocation: React.FC<{
               cpu={cpu ?? ""}
               user={user?.LDAP ?? ""}
               invocationId={invocationID}
+              instanceName={instanceName ?? undefined}
               configuration={configurationMnemonic ?? ""}
               numFetches={numFetches ?? 0}
               startedAt={invocationOverview.startedAt}
