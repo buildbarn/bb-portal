@@ -181,6 +181,7 @@ fragment BazelInvocationInfo on BazelInvocation {
   }
   id
   invocationID
+  instanceName
   build {
     id
     buildUUID

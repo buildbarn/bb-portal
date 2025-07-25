@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 
 interface Props {
     blobReference: BlobReference;
+    instanceName: string | undefined;
     tailBytes?: number;
 }
 
@@ -17,7 +18,7 @@ const DEFAULT_TAIL_BYTES = 10_000;
 
 
 /* eslint-disable consistent-return */
-const LogOutput: React.FC<Props> = ({blobReference, tailBytes = DEFAULT_TAIL_BYTES}) => {
+const LogOutput: React.FC<Props> = ({blobReference, instanceName, tailBytes = DEFAULT_TAIL_BYTES}) => {
     const [contents, setContents] = useState<string>("");
     useEffect(() => {
         fetch(blobReference.downloadURL, {
@@ -46,7 +47,7 @@ const LogOutput: React.FC<Props> = ({blobReference, tailBytes = DEFAULT_TAIL_BYT
     }
 
     if (blobReference.ephemeralURL != "") {
-        const url = generateUrlFromEphemeralUrl("", blobReference.ephemeralURL);
+        const url = generateUrlFromEphemeralUrl(instanceName, blobReference.ephemeralURL);
         return <Space direction="horizontal" size="small">
             <Card>
                 <ButtonGroup>
