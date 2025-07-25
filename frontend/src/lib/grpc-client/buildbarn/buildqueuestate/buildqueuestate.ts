@@ -201,10 +201,13 @@ export interface PlatformQueueState {
 
 export interface InvocationState {
   /**
-   * The total number of operations associated with this platform queue
-   * and invocation that are in the QUEUED execution stage.
+   * The number of operations associated with this platform queue
+   * and invocation that are in the QUEUED execution stage, both directly
+   * and indirectly through descendant invocations.
    */
-  queuedOperationsCount: number;
+  queuedOperationsCount:
+    | InvocationState_InvocationObjectCount
+    | undefined;
   /**
    * The total number of workers for this size class queue that are
    * currently executing an operation belonging to this invocation. This
@@ -244,6 +247,17 @@ export interface InvocationState {
    * operations in the QUEUED execution stage exist.
    */
   queuedChildrenCount: number;
+}
+
+/** TODO: This message should be used for the other counts in InvocationState. */
+export interface InvocationState_InvocationObjectCount {
+  /** The number of objects that are part of this invocation. */
+  direct: number;
+  /**
+   * The number of objects that are part of all descendants of this
+   * invocation, not including the ones that are part of this invocation.
+   */
+  indirect: number;
 }
 
 export interface InvocationChildState {
@@ -1467,7 +1481,7 @@ export const PlatformQueueState: MessageFns<PlatformQueueState> = {
 
 function createBaseInvocationState(): InvocationState {
   return {
-    queuedOperationsCount: 0,
+    queuedOperationsCount: undefined,
     executingWorkersCount: 0,
     idleWorkersCount: 0,
     idleSynchronizingWorkersCount: 0,
@@ -1479,8 +1493,8 @@ function createBaseInvocationState(): InvocationState {
 
 export const InvocationState: MessageFns<InvocationState> = {
   encode(message: InvocationState, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.queuedOperationsCount !== 0) {
-      writer.uint32(16).uint32(message.queuedOperationsCount);
+    if (message.queuedOperationsCount !== undefined) {
+      InvocationState_InvocationObjectCount.encode(message.queuedOperationsCount, writer.uint32(18).fork()).join();
     }
     if (message.executingWorkersCount !== 0) {
       writer.uint32(32).uint32(message.executingWorkersCount);
@@ -1511,11 +1525,11 @@ export const InvocationState: MessageFns<InvocationState> = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2: {
-          if (tag !== 16) {
+          if (tag !== 18) {
             break;
           }
 
-          message.queuedOperationsCount = reader.uint32();
+          message.queuedOperationsCount = InvocationState_InvocationObjectCount.decode(reader, reader.uint32());
           continue;
         }
         case 4: {
@@ -1577,7 +1591,9 @@ export const InvocationState: MessageFns<InvocationState> = {
 
   fromJSON(object: any): InvocationState {
     return {
-      queuedOperationsCount: isSet(object.queuedOperationsCount) ? globalThis.Number(object.queuedOperationsCount) : 0,
+      queuedOperationsCount: isSet(object.queuedOperationsCount)
+        ? InvocationState_InvocationObjectCount.fromJSON(object.queuedOperationsCount)
+        : undefined,
       executingWorkersCount: isSet(object.executingWorkersCount) ? globalThis.Number(object.executingWorkersCount) : 0,
       idleWorkersCount: isSet(object.idleWorkersCount) ? globalThis.Number(object.idleWorkersCount) : 0,
       idleSynchronizingWorkersCount: isSet(object.idleSynchronizingWorkersCount)
@@ -1591,8 +1607,8 @@ export const InvocationState: MessageFns<InvocationState> = {
 
   toJSON(message: InvocationState): unknown {
     const obj: any = {};
-    if (message.queuedOperationsCount !== 0) {
-      obj.queuedOperationsCount = Math.round(message.queuedOperationsCount);
+    if (message.queuedOperationsCount !== undefined) {
+      obj.queuedOperationsCount = InvocationState_InvocationObjectCount.toJSON(message.queuedOperationsCount);
     }
     if (message.executingWorkersCount !== 0) {
       obj.executingWorkersCount = Math.round(message.executingWorkersCount);
@@ -1620,13 +1636,92 @@ export const InvocationState: MessageFns<InvocationState> = {
   },
   fromPartial(object: DeepPartial<InvocationState>): InvocationState {
     const message = createBaseInvocationState();
-    message.queuedOperationsCount = object.queuedOperationsCount ?? 0;
+    message.queuedOperationsCount =
+      (object.queuedOperationsCount !== undefined && object.queuedOperationsCount !== null)
+        ? InvocationState_InvocationObjectCount.fromPartial(object.queuedOperationsCount)
+        : undefined;
     message.executingWorkersCount = object.executingWorkersCount ?? 0;
     message.idleWorkersCount = object.idleWorkersCount ?? 0;
     message.idleSynchronizingWorkersCount = object.idleSynchronizingWorkersCount ?? 0;
     message.childrenCount = object.childrenCount ?? 0;
     message.activeChildrenCount = object.activeChildrenCount ?? 0;
     message.queuedChildrenCount = object.queuedChildrenCount ?? 0;
+    return message;
+  },
+};
+
+function createBaseInvocationState_InvocationObjectCount(): InvocationState_InvocationObjectCount {
+  return { direct: 0, indirect: 0 };
+}
+
+export const InvocationState_InvocationObjectCount: MessageFns<InvocationState_InvocationObjectCount> = {
+  encode(message: InvocationState_InvocationObjectCount, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.direct !== 0) {
+      writer.uint32(8).uint32(message.direct);
+    }
+    if (message.indirect !== 0) {
+      writer.uint32(16).uint32(message.indirect);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): InvocationState_InvocationObjectCount {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInvocationState_InvocationObjectCount();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.direct = reader.uint32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.indirect = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InvocationState_InvocationObjectCount {
+    return {
+      direct: isSet(object.direct) ? globalThis.Number(object.direct) : 0,
+      indirect: isSet(object.indirect) ? globalThis.Number(object.indirect) : 0,
+    };
+  },
+
+  toJSON(message: InvocationState_InvocationObjectCount): unknown {
+    const obj: any = {};
+    if (message.direct !== 0) {
+      obj.direct = Math.round(message.direct);
+    }
+    if (message.indirect !== 0) {
+      obj.indirect = Math.round(message.indirect);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InvocationState_InvocationObjectCount>): InvocationState_InvocationObjectCount {
+    return InvocationState_InvocationObjectCount.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InvocationState_InvocationObjectCount>): InvocationState_InvocationObjectCount {
+    const message = createBaseInvocationState_InvocationObjectCount();
+    message.direct = object.direct ?? 0;
+    message.indirect = object.indirect ?? 0;
     return message;
   },
 };

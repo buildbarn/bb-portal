@@ -76,6 +76,47 @@ export interface InstrumentationScope {
   droppedAttributesCount: number;
 }
 
+/**
+ * A reference to an Entity.
+ * Entity represents an object of interest associated with produced telemetry: e.g spans, metrics, profiles, or logs.
+ *
+ * Status: [Development]
+ */
+export interface EntityRef {
+  /**
+   * The Schema URL, if known. This is the identifier of the Schema that the entity data
+   * is recorded in. To learn more about Schema URL see
+   * https://opentelemetry.io/docs/specs/otel/schemas/#schema-url
+   *
+   * This schema_url applies to the data in this message and to the Resource attributes
+   * referenced by id_keys and description_keys.
+   * TODO: discuss if we are happy with this somewhat complicated definition of what
+   * the schema_url applies to.
+   *
+   * This field obsoletes the schema_url field in ResourceMetrics/ResourceSpans/ResourceLogs.
+   */
+  schemaUrl: string;
+  /**
+   * Defines the type of the entity. MUST not change during the lifetime of the entity.
+   * For example: "service" or "host". This field is required and MUST not be empty
+   * for valid entities.
+   */
+  type: string;
+  /**
+   * Attribute Keys that identify the entity.
+   * MUST not change during the lifetime of the entity. The Id must contain at least one attribute.
+   * These keys MUST exist in the containing {message}.attributes.
+   */
+  idKeys: string[];
+  /**
+   * Descriptive (non-identifying) attribute keys of the entity.
+   * MAY change over the lifetime of the entity. MAY be empty.
+   * These attribute keys are not part of entity's identity.
+   * These keys MUST exist in the containing {message}.attributes.
+   */
+  descriptionKeys: string[];
+}
+
 function createBaseAnyValue(): AnyValue {
   return {
     stringValue: undefined,
@@ -550,6 +591,116 @@ export const InstrumentationScope: MessageFns<InstrumentationScope> = {
     message.version = object.version ?? "";
     message.attributes = object.attributes?.map((e) => KeyValue.fromPartial(e)) || [];
     message.droppedAttributesCount = object.droppedAttributesCount ?? 0;
+    return message;
+  },
+};
+
+function createBaseEntityRef(): EntityRef {
+  return { schemaUrl: "", type: "", idKeys: [], descriptionKeys: [] };
+}
+
+export const EntityRef: MessageFns<EntityRef> = {
+  encode(message: EntityRef, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.schemaUrl !== "") {
+      writer.uint32(10).string(message.schemaUrl);
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    for (const v of message.idKeys) {
+      writer.uint32(26).string(v!);
+    }
+    for (const v of message.descriptionKeys) {
+      writer.uint32(34).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): EntityRef {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEntityRef();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.schemaUrl = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.type = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.idKeys.push(reader.string());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.descriptionKeys.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): EntityRef {
+    return {
+      schemaUrl: isSet(object.schemaUrl) ? globalThis.String(object.schemaUrl) : "",
+      type: isSet(object.type) ? globalThis.String(object.type) : "",
+      idKeys: globalThis.Array.isArray(object?.idKeys) ? object.idKeys.map((e: any) => globalThis.String(e)) : [],
+      descriptionKeys: globalThis.Array.isArray(object?.descriptionKeys)
+        ? object.descriptionKeys.map((e: any) => globalThis.String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: EntityRef): unknown {
+    const obj: any = {};
+    if (message.schemaUrl !== "") {
+      obj.schemaUrl = message.schemaUrl;
+    }
+    if (message.type !== "") {
+      obj.type = message.type;
+    }
+    if (message.idKeys?.length) {
+      obj.idKeys = message.idKeys;
+    }
+    if (message.descriptionKeys?.length) {
+      obj.descriptionKeys = message.descriptionKeys;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<EntityRef>): EntityRef {
+    return EntityRef.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<EntityRef>): EntityRef {
+    const message = createBaseEntityRef();
+    message.schemaUrl = object.schemaUrl ?? "";
+    message.type = object.type ?? "";
+    message.idKeys = object.idKeys?.map((e) => e) || [];
+    message.descriptionKeys = object.descriptionKeys?.map((e) => e) || [];
     return message;
   },
 };

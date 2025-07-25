@@ -346,6 +346,13 @@ export interface PythonSettings_ExperimentalFeatures {
    * packages.
    */
   protobufPythonicTypesEnabled: boolean;
+  /**
+   * Disables generation of an unversioned Python package for this client
+   * library. This means that the module names will need to be versioned in
+   * import statements. For example `import google.cloud.library_v2` instead
+   * of `import google.cloud.library`.
+   */
+  unversionedPackageDisabled: boolean;
 }
 
 /** Settings for Node client libraries. */
@@ -531,6 +538,15 @@ export interface SelectiveGapicGeneration {
    * on public client surfaces.
    */
   methods: string[];
+  /**
+   * Setting this to true indicates to the client generators that methods
+   * that would be excluded from the generation should instead be generated
+   * in a way that indicates these methods should not be consumed by
+   * end users. How this is expressed is up to individual language
+   * implementations to decide. Some examples may be: added annotations,
+   * obfuscated identifiers, or other language idiomatic patterns.
+   */
+  generateOmittedAsInternal: boolean;
 }
 
 function createBaseCommonLanguageSettings(): CommonLanguageSettings {
@@ -1529,7 +1545,7 @@ export const PythonSettings: MessageFns<PythonSettings> = {
 };
 
 function createBasePythonSettings_ExperimentalFeatures(): PythonSettings_ExperimentalFeatures {
-  return { restAsyncIoEnabled: false, protobufPythonicTypesEnabled: false };
+  return { restAsyncIoEnabled: false, protobufPythonicTypesEnabled: false, unversionedPackageDisabled: false };
 }
 
 export const PythonSettings_ExperimentalFeatures: MessageFns<PythonSettings_ExperimentalFeatures> = {
@@ -1539,6 +1555,9 @@ export const PythonSettings_ExperimentalFeatures: MessageFns<PythonSettings_Expe
     }
     if (message.protobufPythonicTypesEnabled !== false) {
       writer.uint32(16).bool(message.protobufPythonicTypesEnabled);
+    }
+    if (message.unversionedPackageDisabled !== false) {
+      writer.uint32(24).bool(message.unversionedPackageDisabled);
     }
     return writer;
   },
@@ -1566,6 +1585,14 @@ export const PythonSettings_ExperimentalFeatures: MessageFns<PythonSettings_Expe
           message.protobufPythonicTypesEnabled = reader.bool();
           continue;
         }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.unversionedPackageDisabled = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1581,6 +1608,9 @@ export const PythonSettings_ExperimentalFeatures: MessageFns<PythonSettings_Expe
       protobufPythonicTypesEnabled: isSet(object.protobufPythonicTypesEnabled)
         ? globalThis.Boolean(object.protobufPythonicTypesEnabled)
         : false,
+      unversionedPackageDisabled: isSet(object.unversionedPackageDisabled)
+        ? globalThis.Boolean(object.unversionedPackageDisabled)
+        : false,
     };
   },
 
@@ -1592,6 +1622,9 @@ export const PythonSettings_ExperimentalFeatures: MessageFns<PythonSettings_Expe
     if (message.protobufPythonicTypesEnabled !== false) {
       obj.protobufPythonicTypesEnabled = message.protobufPythonicTypesEnabled;
     }
+    if (message.unversionedPackageDisabled !== false) {
+      obj.unversionedPackageDisabled = message.unversionedPackageDisabled;
+    }
     return obj;
   },
 
@@ -1602,6 +1635,7 @@ export const PythonSettings_ExperimentalFeatures: MessageFns<PythonSettings_Expe
     const message = createBasePythonSettings_ExperimentalFeatures();
     message.restAsyncIoEnabled = object.restAsyncIoEnabled ?? false;
     message.protobufPythonicTypesEnabled = object.protobufPythonicTypesEnabled ?? false;
+    message.unversionedPackageDisabled = object.unversionedPackageDisabled ?? false;
     return message;
   },
 };
@@ -2464,13 +2498,16 @@ export const MethodSettings_LongRunning: MessageFns<MethodSettings_LongRunning> 
 };
 
 function createBaseSelectiveGapicGeneration(): SelectiveGapicGeneration {
-  return { methods: [] };
+  return { methods: [], generateOmittedAsInternal: false };
 }
 
 export const SelectiveGapicGeneration: MessageFns<SelectiveGapicGeneration> = {
   encode(message: SelectiveGapicGeneration, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     for (const v of message.methods) {
       writer.uint32(10).string(v!);
+    }
+    if (message.generateOmittedAsInternal !== false) {
+      writer.uint32(16).bool(message.generateOmittedAsInternal);
     }
     return writer;
   },
@@ -2490,6 +2527,14 @@ export const SelectiveGapicGeneration: MessageFns<SelectiveGapicGeneration> = {
           message.methods.push(reader.string());
           continue;
         }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.generateOmittedAsInternal = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -2502,6 +2547,9 @@ export const SelectiveGapicGeneration: MessageFns<SelectiveGapicGeneration> = {
   fromJSON(object: any): SelectiveGapicGeneration {
     return {
       methods: globalThis.Array.isArray(object?.methods) ? object.methods.map((e: any) => globalThis.String(e)) : [],
+      generateOmittedAsInternal: isSet(object.generateOmittedAsInternal)
+        ? globalThis.Boolean(object.generateOmittedAsInternal)
+        : false,
     };
   },
 
@@ -2509,6 +2557,9 @@ export const SelectiveGapicGeneration: MessageFns<SelectiveGapicGeneration> = {
     const obj: any = {};
     if (message.methods?.length) {
       obj.methods = message.methods;
+    }
+    if (message.generateOmittedAsInternal !== false) {
+      obj.generateOmittedAsInternal = message.generateOmittedAsInternal;
     }
     return obj;
   },
@@ -2519,6 +2570,7 @@ export const SelectiveGapicGeneration: MessageFns<SelectiveGapicGeneration> = {
   fromPartial(object: DeepPartial<SelectiveGapicGeneration>): SelectiveGapicGeneration {
     const message = createBaseSelectiveGapicGeneration();
     message.methods = object.methods?.map((e) => e) || [];
+    message.generateOmittedAsInternal = object.generateOmittedAsInternal ?? false;
     return message;
   },
 };

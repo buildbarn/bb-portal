@@ -62,7 +62,10 @@ const queuedOperationsColumn: ColumnType<PlatformQueueTableState> = {
   title: "Queued operations",
   render: (_, record) => (
     <Typography.Text>
-      {record.sizeClassQueues[0].rootInvocation?.queuedOperationsCount}
+      {(record.sizeClassQueues[0].rootInvocation?.queuedOperationsCount
+        ?.direct ?? 0) +
+        (record.sizeClassQueues[0].rootInvocation?.queuedOperationsCount
+          ?.indirect ?? 0)}
     </Typography.Text>
   ),
 };
