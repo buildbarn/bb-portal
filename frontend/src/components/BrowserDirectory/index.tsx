@@ -18,10 +18,9 @@ import {
   generateFileSystemReferenceQueryParams,
   readBloomFilter,
 } from "@/utils/bloomFilter";
-import { digestFunctionValueToString } from "@/utils/digestFunctionUtils";
 import { fetchCasObjectAndParse } from "@/utils/fetchCasObject";
 import { formatFileSizeFromString } from "@/utils/formatValues";
-import { generateFileUrl } from "@/utils/urlGenerator";
+import { generateDirectoryUrl, generateFileUrl } from "@/utils/urlGenerator";
 import { DownOutlined, RightOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Flex, Space, Spin, Typography } from "antd";
@@ -229,9 +228,11 @@ const RecursiveDirectoryNode: React.FC<{
           isDirectory={true}
           name={`${directoryName}/`}
           href={{
-            pathname: `/browser/${instanceName}/blobs/${digestFunctionValueToString(
+            pathname: generateDirectoryUrl(
+              instanceName,
               digestFunction,
-            )}/directory/${directoryDigest.hash}-${directoryDigest.sizeBytes}`,
+              directoryDigest,
+            ),
             query: generateFileSystemReferenceQueryParams(
               fileSystemAccessProfileRef,
               pathHashes,
