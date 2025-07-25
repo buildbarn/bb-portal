@@ -12,6 +12,7 @@ import {
   getReducedActionDigest_SHA256,
 } from "@/utils/digestFunctionUtils";
 import { formatDuration, formatFileSizeFromString } from "@/utils/formatValues";
+import { generateDirectoryUrl } from "@/utils/urlGenerator";
 import { useQuery } from "@tanstack/react-query";
 import { Descriptions, Space, Spin, Typography } from "antd";
 import Link from "next/link";
@@ -195,13 +196,11 @@ const BrowserActionGrid: React.FC<Params> = ({
           <Typography.Title level={2}>
             <Link
               href={{
-                pathname: `/browser/${
-                  browserPageParams.instanceName
-                }/blobs/${digestFunctionValueToString(
+                pathname: generateDirectoryUrl(
+                  browserPageParams.instanceName,
                   browserPageParams.digestFunction,
-                )}/directory/${data.action.inputRootDigest.hash}-${
-                  data.action.inputRootDigest.sizeBytes
-                }`,
+                  data.action.inputRootDigest,
+                ),
                 query: generateFileSystemReferenceQueryParams(
                   fileSystemAccessProfileReference,
                 ),
