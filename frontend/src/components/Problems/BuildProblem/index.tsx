@@ -68,12 +68,13 @@ export const SectionWithTestStatus: React.FC<{
 
 interface TestProblemPanelProps {
   testProblem: TestProblem;
+  instanceName: string | undefined;
 }
 
-const TestProblemPanel: React.FC<TestProblemPanelProps> = ({ testProblem }) => {
+const TestProblemPanel: React.FC<TestProblemPanelProps> = ({ testProblem, instanceName}) => {
   if (testProblem.results.length > 0) {
     return (
-      <TestResultContainer id={testProblem.results[0].id} problemLabel={testProblem.label} testProblem={testProblem} />
+      <TestResultContainer id={testProblem.results[0].id} problemLabel={testProblem.label} testProblem={testProblem} instanceName={instanceName}/>
     );
   }
 
@@ -106,15 +107,16 @@ const ProgressProblemPanel: React.FC<ProgressProblemPanelProps> = ({ progressPro
 
 interface Props {
   problem: Problem;
+  instanceName: string | undefined;
 }
 
-const BuildProblem: React.FC<Props> = ({ problem }) => {
+const BuildProblem: React.FC<Props> = ({ problem, instanceName }) => {
   // eslint-disable-next-line no-underscore-dangle
   switch (problem.__typename) {
     case 'ActionProblem':
-      return <ActionProblemContainer id={problem.id} />;
+      return <ActionProblemContainer id={problem.id} instanceName={instanceName} />;
     case 'TestProblem':
-      return <TestProblemPanel testProblem={problem as TestProblem} />;
+      return <TestProblemPanel testProblem={problem as TestProblem} instanceName={instanceName} />;
     case 'TargetProblem':
       return <TargetProblemPanel targetProblem={problem} />;
     case 'ProgressProblem':
