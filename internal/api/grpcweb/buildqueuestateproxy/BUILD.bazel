@@ -26,6 +26,7 @@ go_test(
         "@com_github_buildbarn_bb_storage//pkg/auth",
         "@com_github_buildbarn_bb_storage//pkg/digest",
         "@com_github_buildbarn_bb_storage//pkg/proto/auth",
+        "@com_github_buildbarn_bb_storage//pkg/util",
         "@com_github_gorilla_mux//:mux",
         "@com_github_jmespath_go_jmespath//:go-jmespath",
         "@com_github_stretchr_testify//require",

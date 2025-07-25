@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/digest"
 	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/auth"
+	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/jmespath/go-jmespath"
 	"go.uber.org/mock/gomock"
 	"google.golang.org/grpc/codes"
@@ -28,7 +29,7 @@ func TestFilterPlatformQueues(t *testing.T) {
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
 	)
 
-	ctx := auth.NewContextWithAuthenticationMetadata(context.Background(), auth.MustNewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
+	ctx := auth.NewContextWithAuthenticationMetadata(context.Background(), util.Must(auth.NewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
 		Private: structpb.NewStructValue(&structpb.Struct{
 			Fields: map[string]*structpb.Value{
 				"permittedInstanceNames": structpb.NewListValue(&structpb.ListValue{
@@ -38,7 +39,7 @@ func TestFilterPlatformQueues(t *testing.T) {
 				}),
 			},
 		}),
-	}))
+	})))
 
 	t.Run("NoPlatformQueues", func(t *testing.T) {
 		platformQueues := buildqueuestate.ListPlatformQueuesResponse{
@@ -123,7 +124,7 @@ func TestFilterOperations(t *testing.T) {
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
 	)
 
-	ctx := auth.NewContextWithAuthenticationMetadata(context.Background(), auth.MustNewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
+	ctx := auth.NewContextWithAuthenticationMetadata(context.Background(), util.Must(auth.NewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
 		Private: structpb.NewStructValue(&structpb.Struct{
 			Fields: map[string]*structpb.Value{
 				"permittedInstanceNames": structpb.NewListValue(&structpb.ListValue{
@@ -133,7 +134,7 @@ func TestFilterOperations(t *testing.T) {
 				}),
 			},
 		}),
-	}))
+	})))
 
 	t.Run("NoOperations", func(t *testing.T) {
 		operations := []*buildqueuestate.OperationState{}
@@ -506,7 +507,7 @@ func TestCreatePaginatedListOperationsResponse(t *testing.T) {
 }
 
 func TestListOperations(t *testing.T) {
-	ctrl, ctx := gomock.WithContext(auth.NewContextWithAuthenticationMetadata(context.Background(), auth.MustNewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
+	ctrl, ctx := gomock.WithContext(auth.NewContextWithAuthenticationMetadata(context.Background(), util.Must(auth.NewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
 		Private: structpb.NewStructValue(&structpb.Struct{
 			Fields: map[string]*structpb.Value{
 				"permittedInstanceNames": structpb.NewListValue(&structpb.ListValue{
@@ -516,7 +517,7 @@ func TestListOperations(t *testing.T) {
 				}),
 			},
 		}),
-	})), t)
+	}))), t)
 	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
 	instanceNameAuthorizer := auth.NewJMESPathExpressionAuthorizer(
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
@@ -823,7 +824,7 @@ func TestListOperations(t *testing.T) {
 }
 
 func TestIsAllowedToKillOperation(t *testing.T) {
-	ctrl, ctx := gomock.WithContext(auth.NewContextWithAuthenticationMetadata(context.Background(), auth.MustNewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
+	ctrl, ctx := gomock.WithContext(auth.NewContextWithAuthenticationMetadata(context.Background(), util.Must(auth.NewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
 		Private: structpb.NewStructValue(&structpb.Struct{
 			Fields: map[string]*structpb.Value{
 				"permittedInstanceNames": structpb.NewListValue(&structpb.ListValue{
@@ -833,7 +834,7 @@ func TestIsAllowedToKillOperation(t *testing.T) {
 				}),
 			},
 		}),
-	})), t)
+	}))), t)
 	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
 	instanceNameAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })
 	killOperationsAuthorizer := auth.NewJMESPathExpressionAuthorizer(
@@ -890,7 +891,7 @@ func TestIsAllowedToKillOperation(t *testing.T) {
 }
 
 func TestCheckKillOperationAuthorization(t *testing.T) {
-	ctrl, ctx := gomock.WithContext(auth.NewContextWithAuthenticationMetadata(context.Background(), auth.MustNewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
+	ctrl, ctx := gomock.WithContext(auth.NewContextWithAuthenticationMetadata(context.Background(), util.Must(auth.NewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
 		Private: structpb.NewStructValue(&structpb.Struct{
 			Fields: map[string]*structpb.Value{
 				"permittedInstanceNames": structpb.NewListValue(&structpb.ListValue{
@@ -900,7 +901,7 @@ func TestCheckKillOperationAuthorization(t *testing.T) {
 				}),
 			},
 		}),
-	})), t)
+	}))), t)
 
 	bqsClient := mock.NewMockBuildQueueStateClient(ctrl)
 	instanceNameAuthorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })

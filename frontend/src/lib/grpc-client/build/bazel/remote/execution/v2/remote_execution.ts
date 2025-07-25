@@ -1678,6 +1678,109 @@ export interface GetTreeResponse {
 
 /**
  * A request message for
+ * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob].
+ */
+export interface SplitBlobRequest {
+  /**
+   * The instance of the execution system to operate against. A server may
+   * support multiple instances of the execution system (with their own workers,
+   * storage, caches, etc.). The server MAY require use of this field to select
+   * between them in an implementation-defined fashion, otherwise it can be
+   * omitted.
+   */
+  instanceName: string;
+  /** The digest of the blob to be split. */
+  blobDigest:
+    | Digest
+    | undefined;
+  /**
+   * The digest function of the blob to be split.
+   *
+   * If the digest function used is one of MD5, MURMUR3, SHA1, SHA256,
+   * SHA384, SHA512, or VSO, the client MAY leave this field unset. In
+   * that case the server SHOULD infer the digest function using the
+   * length of the blob digest hashes and the digest functions announced
+   * in the server's capabilities.
+   */
+  digestFunction: DigestFunction_Value;
+}
+
+/**
+ * A response message for
+ * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob].
+ */
+export interface SplitBlobResponse {
+  /**
+   * The ordered list of digests of the chunks into which the blob was split.
+   * The original blob is assembled by concatenating the chunk data according to
+   * the order of the digests given by this list.
+   *
+   * The server MUST use the same digest function as the one explicitly or
+   * implicitly (through hash length) specified in the split request.
+   */
+  chunkDigests: Digest[];
+}
+
+/**
+ * A request message for
+ * [ContentAddressableStorage.SpliceBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SpliceBlob].
+ */
+export interface SpliceBlobRequest {
+  /**
+   * The instance of the execution system to operate against. A server may
+   * support multiple instances of the execution system (with their own workers,
+   * storage, caches, etc.). The server MAY require use of this field to select
+   * between them in an implementation-defined fashion, otherwise it can be
+   * omitted.
+   */
+  instanceName: string;
+  /**
+   * Expected digest of the spliced blob. The client SHOULD set this field due
+   * to the following reasons:
+   *  1. It allows the server to perform an early existence check of the blob
+   *     before spending the splicing effort, as described in the
+   *     [ContentAddressableStorage.SpliceBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SpliceBlob]
+   *     documentation.
+   *  2. It allows servers with different storage backends to dispatch the
+   *     request to the correct storage backend based on the size and/or the
+   *     hash of the blob.
+   */
+  blobDigest:
+    | Digest
+    | undefined;
+  /**
+   * The ordered list of digests of the chunks which need to be concatenated to
+   * assemble the original blob.
+   */
+  chunkDigests: Digest[];
+  /**
+   * The digest function of all chunks to be concatenated and of the blob to be
+   * spliced. The server MUST use the same digest function for both cases.
+   *
+   * If the digest function used is one of MD5, MURMUR3, SHA1, SHA256, SHA384,
+   * SHA512, or VSO, the client MAY leave this field unset. In that case the
+   * server SHOULD infer the digest function using the length of the blob digest
+   * hashes and the digest functions announced in the server's capabilities.
+   */
+  digestFunction: DigestFunction_Value;
+}
+
+/**
+ * A response message for
+ * [ContentAddressableStorage.SpliceBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SpliceBlob].
+ */
+export interface SpliceBlobResponse {
+  /**
+   * Computed digest of the spliced blob.
+   *
+   * The server MUST use the same digest function as the one explicitly or
+   * implicitly (through hash length) specified in the splice request.
+   */
+  blobDigest: Digest | undefined;
+}
+
+/**
+ * A request message for
  * [Capabilities.GetCapabilities][build.bazel.remote.execution.v2.Capabilities.GetCapabilities].
  */
 export interface GetCapabilitiesRequest {
@@ -2076,6 +2179,22 @@ export interface CacheCapabilities {
    *   blobs larger than this limit.
    */
   maxCasBlobSizeBytes: string;
+  /**
+   * Whether blob splitting is supported for the particular server/instance. If
+   * yes, the server/instance implements the specified behavior for blob
+   * splitting and a meaningful result can be expected from the
+   * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
+   * operation.
+   */
+  blobSplitSupport: boolean;
+  /**
+   * Whether blob splicing is supported for the particular server/instance. If
+   * yes, the server/instance implements the specified behavior for blob
+   * splicing and a meaningful result can be expected from the
+   * [ContentAddressableStorage.SpliceBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SpliceBlob]
+   * operation.
+   */
+  blobSpliceSupport: boolean;
 }
 
 /** Capabilities of the remote execution system. */
@@ -6498,6 +6617,334 @@ export const GetTreeResponse: MessageFns<GetTreeResponse> = {
   },
 };
 
+function createBaseSplitBlobRequest(): SplitBlobRequest {
+  return { instanceName: "", blobDigest: undefined, digestFunction: 0 };
+}
+
+export const SplitBlobRequest: MessageFns<SplitBlobRequest> = {
+  encode(message: SplitBlobRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.instanceName !== "") {
+      writer.uint32(10).string(message.instanceName);
+    }
+    if (message.blobDigest !== undefined) {
+      Digest.encode(message.blobDigest, writer.uint32(18).fork()).join();
+    }
+    if (message.digestFunction !== 0) {
+      writer.uint32(24).int32(message.digestFunction);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SplitBlobRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSplitBlobRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.instanceName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.blobDigest = Digest.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.digestFunction = reader.int32() as any;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SplitBlobRequest {
+    return {
+      instanceName: isSet(object.instanceName) ? globalThis.String(object.instanceName) : "",
+      blobDigest: isSet(object.blobDigest) ? Digest.fromJSON(object.blobDigest) : undefined,
+      digestFunction: isSet(object.digestFunction) ? digestFunction_ValueFromJSON(object.digestFunction) : 0,
+    };
+  },
+
+  toJSON(message: SplitBlobRequest): unknown {
+    const obj: any = {};
+    if (message.instanceName !== "") {
+      obj.instanceName = message.instanceName;
+    }
+    if (message.blobDigest !== undefined) {
+      obj.blobDigest = Digest.toJSON(message.blobDigest);
+    }
+    if (message.digestFunction !== 0) {
+      obj.digestFunction = digestFunction_ValueToJSON(message.digestFunction);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SplitBlobRequest>): SplitBlobRequest {
+    return SplitBlobRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SplitBlobRequest>): SplitBlobRequest {
+    const message = createBaseSplitBlobRequest();
+    message.instanceName = object.instanceName ?? "";
+    message.blobDigest = (object.blobDigest !== undefined && object.blobDigest !== null)
+      ? Digest.fromPartial(object.blobDigest)
+      : undefined;
+    message.digestFunction = object.digestFunction ?? 0;
+    return message;
+  },
+};
+
+function createBaseSplitBlobResponse(): SplitBlobResponse {
+  return { chunkDigests: [] };
+}
+
+export const SplitBlobResponse: MessageFns<SplitBlobResponse> = {
+  encode(message: SplitBlobResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.chunkDigests) {
+      Digest.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SplitBlobResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSplitBlobResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chunkDigests.push(Digest.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SplitBlobResponse {
+    return {
+      chunkDigests: globalThis.Array.isArray(object?.chunkDigests)
+        ? object.chunkDigests.map((e: any) => Digest.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: SplitBlobResponse): unknown {
+    const obj: any = {};
+    if (message.chunkDigests?.length) {
+      obj.chunkDigests = message.chunkDigests.map((e) => Digest.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SplitBlobResponse>): SplitBlobResponse {
+    return SplitBlobResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SplitBlobResponse>): SplitBlobResponse {
+    const message = createBaseSplitBlobResponse();
+    message.chunkDigests = object.chunkDigests?.map((e) => Digest.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseSpliceBlobRequest(): SpliceBlobRequest {
+  return { instanceName: "", blobDigest: undefined, chunkDigests: [], digestFunction: 0 };
+}
+
+export const SpliceBlobRequest: MessageFns<SpliceBlobRequest> = {
+  encode(message: SpliceBlobRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.instanceName !== "") {
+      writer.uint32(10).string(message.instanceName);
+    }
+    if (message.blobDigest !== undefined) {
+      Digest.encode(message.blobDigest, writer.uint32(18).fork()).join();
+    }
+    for (const v of message.chunkDigests) {
+      Digest.encode(v!, writer.uint32(26).fork()).join();
+    }
+    if (message.digestFunction !== 0) {
+      writer.uint32(32).int32(message.digestFunction);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SpliceBlobRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSpliceBlobRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.instanceName = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.blobDigest = Digest.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.chunkDigests.push(Digest.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.digestFunction = reader.int32() as any;
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SpliceBlobRequest {
+    return {
+      instanceName: isSet(object.instanceName) ? globalThis.String(object.instanceName) : "",
+      blobDigest: isSet(object.blobDigest) ? Digest.fromJSON(object.blobDigest) : undefined,
+      chunkDigests: globalThis.Array.isArray(object?.chunkDigests)
+        ? object.chunkDigests.map((e: any) => Digest.fromJSON(e))
+        : [],
+      digestFunction: isSet(object.digestFunction) ? digestFunction_ValueFromJSON(object.digestFunction) : 0,
+    };
+  },
+
+  toJSON(message: SpliceBlobRequest): unknown {
+    const obj: any = {};
+    if (message.instanceName !== "") {
+      obj.instanceName = message.instanceName;
+    }
+    if (message.blobDigest !== undefined) {
+      obj.blobDigest = Digest.toJSON(message.blobDigest);
+    }
+    if (message.chunkDigests?.length) {
+      obj.chunkDigests = message.chunkDigests.map((e) => Digest.toJSON(e));
+    }
+    if (message.digestFunction !== 0) {
+      obj.digestFunction = digestFunction_ValueToJSON(message.digestFunction);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SpliceBlobRequest>): SpliceBlobRequest {
+    return SpliceBlobRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SpliceBlobRequest>): SpliceBlobRequest {
+    const message = createBaseSpliceBlobRequest();
+    message.instanceName = object.instanceName ?? "";
+    message.blobDigest = (object.blobDigest !== undefined && object.blobDigest !== null)
+      ? Digest.fromPartial(object.blobDigest)
+      : undefined;
+    message.chunkDigests = object.chunkDigests?.map((e) => Digest.fromPartial(e)) || [];
+    message.digestFunction = object.digestFunction ?? 0;
+    return message;
+  },
+};
+
+function createBaseSpliceBlobResponse(): SpliceBlobResponse {
+  return { blobDigest: undefined };
+}
+
+export const SpliceBlobResponse: MessageFns<SpliceBlobResponse> = {
+  encode(message: SpliceBlobResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.blobDigest !== undefined) {
+      Digest.encode(message.blobDigest, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SpliceBlobResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSpliceBlobResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.blobDigest = Digest.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SpliceBlobResponse {
+    return { blobDigest: isSet(object.blobDigest) ? Digest.fromJSON(object.blobDigest) : undefined };
+  },
+
+  toJSON(message: SpliceBlobResponse): unknown {
+    const obj: any = {};
+    if (message.blobDigest !== undefined) {
+      obj.blobDigest = Digest.toJSON(message.blobDigest);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SpliceBlobResponse>): SpliceBlobResponse {
+    return SpliceBlobResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SpliceBlobResponse>): SpliceBlobResponse {
+    const message = createBaseSpliceBlobResponse();
+    message.blobDigest = (object.blobDigest !== undefined && object.blobDigest !== null)
+      ? Digest.fromPartial(object.blobDigest)
+      : undefined;
+    return message;
+  },
+};
+
 function createBaseGetCapabilitiesRequest(): GetCapabilitiesRequest {
   return { instanceName: "" };
 }
@@ -7038,6 +7485,8 @@ function createBaseCacheCapabilities(): CacheCapabilities {
     supportedCompressors: [],
     supportedBatchUpdateCompressors: [],
     maxCasBlobSizeBytes: "0",
+    blobSplitSupport: false,
+    blobSpliceSupport: false,
   };
 }
 
@@ -7072,6 +7521,12 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
     writer.join();
     if (message.maxCasBlobSizeBytes !== "0") {
       writer.uint32(64).int64(message.maxCasBlobSizeBytes);
+    }
+    if (message.blobSplitSupport !== false) {
+      writer.uint32(72).bool(message.blobSplitSupport);
+    }
+    if (message.blobSpliceSupport !== false) {
+      writer.uint32(80).bool(message.blobSpliceSupport);
     }
     return writer;
   },
@@ -7177,6 +7632,22 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
           message.maxCasBlobSizeBytes = reader.int64().toString();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.blobSplitSupport = reader.bool();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.blobSpliceSupport = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -7210,6 +7681,8 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
         ? object.supportedBatchUpdateCompressors.map((e: any) => compressor_ValueFromJSON(e))
         : [],
       maxCasBlobSizeBytes: isSet(object.maxCasBlobSizeBytes) ? globalThis.String(object.maxCasBlobSizeBytes) : "0",
+      blobSplitSupport: isSet(object.blobSplitSupport) ? globalThis.Boolean(object.blobSplitSupport) : false,
+      blobSpliceSupport: isSet(object.blobSpliceSupport) ? globalThis.Boolean(object.blobSpliceSupport) : false,
     };
   },
 
@@ -7241,6 +7714,12 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
     if (message.maxCasBlobSizeBytes !== "0") {
       obj.maxCasBlobSizeBytes = message.maxCasBlobSizeBytes;
     }
+    if (message.blobSplitSupport !== false) {
+      obj.blobSplitSupport = message.blobSplitSupport;
+    }
+    if (message.blobSpliceSupport !== false) {
+      obj.blobSpliceSupport = message.blobSpliceSupport;
+    }
     return obj;
   },
 
@@ -7263,6 +7742,8 @@ export const CacheCapabilities: MessageFns<CacheCapabilities> = {
     message.supportedCompressors = object.supportedCompressors?.map((e) => e) || [];
     message.supportedBatchUpdateCompressors = object.supportedBatchUpdateCompressors?.map((e) => e) || [];
     message.maxCasBlobSizeBytes = object.maxCasBlobSizeBytes ?? "0";
+    message.blobSplitSupport = object.blobSplitSupport ?? false;
+    message.blobSpliceSupport = object.blobSpliceSupport ?? false;
     return message;
   },
 };
@@ -8984,6 +9465,271 @@ export const ContentAddressableStorageDefinition = {
         },
       },
     },
+    /**
+     * Split a blob into chunks.
+     *
+     * This call splits a blob into chunks, stores the chunks in the CAS, and
+     * returns a list of the chunk digests. Using this list, a client can check
+     * which chunks are locally available and just fetch the missing ones. The
+     * desired blob can be assembled by concatenating the fetched chunks in the
+     * order of the digests from the list.
+     *
+     * This rpc can be used to reduce the required data to download a large blob
+     * from CAS if chunks from earlier downloads of a different version of this
+     * blob are locally available. For this procedure to work properly, blobs
+     * SHOULD be split in a content-defined way, rather than with fixed-sized
+     * chunking.
+     *
+     * If a split request is answered successfully, a client can expect the
+     * following guarantees from the server:
+     *  1. The blob chunks are stored in CAS.
+     *  2. Concatenating the blob chunks in the order of the digest list returned
+     *     by the server results in the original blob.
+     *
+     * Servers MAY implement this functionality, but MUST declare whether they
+     * support it or not by setting the
+     * [CacheCapabilities.blob_split_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_split_support]
+     * field accordingly.
+     *
+     * Clients MAY use this functionality, it is just an optimization to reduce
+     * download network traffic, when downloading large blobs from the CAS.
+     * However, clients MUST first check the server capabilities, whether blob
+     * splitting is supported by the server.
+     *
+     * Clients SHOULD verify whether the digest of the blob assembled by the
+     * fetched chunks results in the requested blob digest.
+     *
+     * Since the generated chunks are stored as blobs, they underlie the same
+     * lifetimes as other blobs. In particular, the chunk lifetimes are
+     * independent from the lifetime of the original blob:
+     *  * A blob and any chunk derived from it may be evicted from the CAS at
+     *    different times.
+     *  * A call to Split extends the lifetime of the original blob, and sets
+     *    the lifetimes of the resulting chunks (or extends the lifetimes of
+     *    already-existing chunks).
+     *  * Touching a chunk extends its lifetime, but does not extend the
+     *    lifetime of the original blob.
+     *  * Touching the original blob extends its lifetime, but does not extend
+     *    the lifetimes of chunks derived from it.
+     *
+     * When blob splitting and splicing is used at the same time, the clients and
+     * the server SHOULD agree out-of-band upon a chunking algorithm used by both
+     * parties to benefit from each others chunk data and avoid unnecessary data
+     * duplication.
+     *
+     * Errors:
+     *
+     * * `NOT_FOUND`: The requested blob is not present in the CAS.
+     * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the blob
+     *   chunks.
+     */
+    splitBlob: {
+      name: "SplitBlob",
+      requestType: SplitBlobRequest,
+      requestStream: false,
+      responseType: SplitBlobResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              84,
+              18,
+              82,
+              47,
+              118,
+              50,
+              47,
+              123,
+              105,
+              110,
+              115,
+              116,
+              97,
+              110,
+              99,
+              101,
+              95,
+              110,
+              97,
+              109,
+              101,
+              61,
+              42,
+              42,
+              125,
+              47,
+              98,
+              108,
+              111,
+              98,
+              115,
+              47,
+              123,
+              98,
+              108,
+              111,
+              98,
+              95,
+              100,
+              105,
+              103,
+              101,
+              115,
+              116,
+              46,
+              104,
+              97,
+              115,
+              104,
+              125,
+              47,
+              123,
+              98,
+              108,
+              111,
+              98,
+              95,
+              100,
+              105,
+              103,
+              101,
+              115,
+              116,
+              46,
+              115,
+              105,
+              122,
+              101,
+              95,
+              98,
+              121,
+              116,
+              101,
+              115,
+              125,
+              58,
+              115,
+              112,
+              108,
+              105,
+              116,
+              66,
+              108,
+              111,
+              98,
+            ]),
+          ],
+        },
+      },
+    },
+    /**
+     * Splice a blob from chunks.
+     *
+     * This is the complementary operation to the
+     * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
+     * function to handle the chunked upload of large blobs to save upload
+     * traffic.
+     *
+     * If a client needs to upload a large blob and is able to split a blob into
+     * chunks in such a way that reusable chunks are obtained, e.g., by means of
+     * content-defined chunking, it can first determine which parts of the blob
+     * are already available in the remote CAS and upload the missing chunks, and
+     * then use this API to instruct the server to splice the original blob from
+     * the remotely available blob chunks.
+     *
+     * Servers MAY implement this functionality, but MUST declare whether they
+     * support it or not by setting the
+     * [CacheCapabilities.blob_splice_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_splice_support]
+     * field accordingly.
+     *
+     * Clients MAY use this functionality, it is just an optimization to reduce
+     * upload traffic, when uploading large blobs to the CAS. However, clients
+     * MUST first check the server capabilities, whether blob splicing is
+     * supported by the server.
+     *
+     * In order to ensure data consistency of the CAS, the server MUST only add
+     * entries to the CAS under a hash the server verified itself. In particular,
+     * it MUST NOT trust the result hash provided by the client. The server MAY
+     * accept a request as no-op if the client-provided result hash is already in
+     * CAS; the life time of that blob is then extended as usual. If the
+     * client-provided result is not in CAS, the server SHOULD verify the result
+     * hash sent by the client and reject requests where a different splice result
+     * is obtained.
+     *
+     * When blob splitting and splicing is used at the same time, the clients and
+     * the server SHOULD agree out-of-band upon a chunking algorithm used by both
+     * parties to benefit from each others chunk data and avoid unnecessary data
+     * duplication.
+     *
+     * Errors:
+     *
+     * * `NOT_FOUND`: At least one of the blob chunks is not present in the CAS.
+     * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the
+     *   spliced blob.
+     * * `INVALID_ARGUMENT`: The digest of the spliced blob is different from the
+     *   provided expected digest.
+     */
+    spliceBlob: {
+      name: "SpliceBlob",
+      requestType: SpliceBlobRequest,
+      requestStream: false,
+      responseType: SpliceBlobResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              44,
+              34,
+              39,
+              47,
+              118,
+              50,
+              47,
+              123,
+              105,
+              110,
+              115,
+              116,
+              97,
+              110,
+              99,
+              101,
+              95,
+              110,
+              97,
+              109,
+              101,
+              61,
+              42,
+              42,
+              125,
+              47,
+              98,
+              108,
+              111,
+              98,
+              115,
+              58,
+              115,
+              112,
+              108,
+              105,
+              99,
+              101,
+              66,
+              108,
+              111,
+              98,
+              58,
+              1,
+              42,
+            ]),
+          ],
+        },
+      },
+    },
   },
 } as const;
 
@@ -9088,6 +9834,116 @@ export interface ContentAddressableStorageServiceImplementation<CallContextExt =
     request: GetTreeRequest,
     context: CallContext & CallContextExt,
   ): ServerStreamingMethodResult<DeepPartial<GetTreeResponse>>;
+  /**
+   * Split a blob into chunks.
+   *
+   * This call splits a blob into chunks, stores the chunks in the CAS, and
+   * returns a list of the chunk digests. Using this list, a client can check
+   * which chunks are locally available and just fetch the missing ones. The
+   * desired blob can be assembled by concatenating the fetched chunks in the
+   * order of the digests from the list.
+   *
+   * This rpc can be used to reduce the required data to download a large blob
+   * from CAS if chunks from earlier downloads of a different version of this
+   * blob are locally available. For this procedure to work properly, blobs
+   * SHOULD be split in a content-defined way, rather than with fixed-sized
+   * chunking.
+   *
+   * If a split request is answered successfully, a client can expect the
+   * following guarantees from the server:
+   *  1. The blob chunks are stored in CAS.
+   *  2. Concatenating the blob chunks in the order of the digest list returned
+   *     by the server results in the original blob.
+   *
+   * Servers MAY implement this functionality, but MUST declare whether they
+   * support it or not by setting the
+   * [CacheCapabilities.blob_split_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_split_support]
+   * field accordingly.
+   *
+   * Clients MAY use this functionality, it is just an optimization to reduce
+   * download network traffic, when downloading large blobs from the CAS.
+   * However, clients MUST first check the server capabilities, whether blob
+   * splitting is supported by the server.
+   *
+   * Clients SHOULD verify whether the digest of the blob assembled by the
+   * fetched chunks results in the requested blob digest.
+   *
+   * Since the generated chunks are stored as blobs, they underlie the same
+   * lifetimes as other blobs. In particular, the chunk lifetimes are
+   * independent from the lifetime of the original blob:
+   *  * A blob and any chunk derived from it may be evicted from the CAS at
+   *    different times.
+   *  * A call to Split extends the lifetime of the original blob, and sets
+   *    the lifetimes of the resulting chunks (or extends the lifetimes of
+   *    already-existing chunks).
+   *  * Touching a chunk extends its lifetime, but does not extend the
+   *    lifetime of the original blob.
+   *  * Touching the original blob extends its lifetime, but does not extend
+   *    the lifetimes of chunks derived from it.
+   *
+   * When blob splitting and splicing is used at the same time, the clients and
+   * the server SHOULD agree out-of-band upon a chunking algorithm used by both
+   * parties to benefit from each others chunk data and avoid unnecessary data
+   * duplication.
+   *
+   * Errors:
+   *
+   * * `NOT_FOUND`: The requested blob is not present in the CAS.
+   * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the blob
+   *   chunks.
+   */
+  splitBlob(request: SplitBlobRequest, context: CallContext & CallContextExt): Promise<DeepPartial<SplitBlobResponse>>;
+  /**
+   * Splice a blob from chunks.
+   *
+   * This is the complementary operation to the
+   * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
+   * function to handle the chunked upload of large blobs to save upload
+   * traffic.
+   *
+   * If a client needs to upload a large blob and is able to split a blob into
+   * chunks in such a way that reusable chunks are obtained, e.g., by means of
+   * content-defined chunking, it can first determine which parts of the blob
+   * are already available in the remote CAS and upload the missing chunks, and
+   * then use this API to instruct the server to splice the original blob from
+   * the remotely available blob chunks.
+   *
+   * Servers MAY implement this functionality, but MUST declare whether they
+   * support it or not by setting the
+   * [CacheCapabilities.blob_splice_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_splice_support]
+   * field accordingly.
+   *
+   * Clients MAY use this functionality, it is just an optimization to reduce
+   * upload traffic, when uploading large blobs to the CAS. However, clients
+   * MUST first check the server capabilities, whether blob splicing is
+   * supported by the server.
+   *
+   * In order to ensure data consistency of the CAS, the server MUST only add
+   * entries to the CAS under a hash the server verified itself. In particular,
+   * it MUST NOT trust the result hash provided by the client. The server MAY
+   * accept a request as no-op if the client-provided result hash is already in
+   * CAS; the life time of that blob is then extended as usual. If the
+   * client-provided result is not in CAS, the server SHOULD verify the result
+   * hash sent by the client and reject requests where a different splice result
+   * is obtained.
+   *
+   * When blob splitting and splicing is used at the same time, the clients and
+   * the server SHOULD agree out-of-band upon a chunking algorithm used by both
+   * parties to benefit from each others chunk data and avoid unnecessary data
+   * duplication.
+   *
+   * Errors:
+   *
+   * * `NOT_FOUND`: At least one of the blob chunks is not present in the CAS.
+   * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the
+   *   spliced blob.
+   * * `INVALID_ARGUMENT`: The digest of the spliced blob is different from the
+   *   provided expected digest.
+   */
+  spliceBlob(
+    request: SpliceBlobRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<SpliceBlobResponse>>;
 }
 
 export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
@@ -9188,6 +10044,116 @@ export interface ContentAddressableStorageClient<CallOptionsExt = {}> {
    * * `NOT_FOUND`: The requested tree root is not present in the CAS.
    */
   getTree(request: DeepPartial<GetTreeRequest>, options?: CallOptions & CallOptionsExt): AsyncIterable<GetTreeResponse>;
+  /**
+   * Split a blob into chunks.
+   *
+   * This call splits a blob into chunks, stores the chunks in the CAS, and
+   * returns a list of the chunk digests. Using this list, a client can check
+   * which chunks are locally available and just fetch the missing ones. The
+   * desired blob can be assembled by concatenating the fetched chunks in the
+   * order of the digests from the list.
+   *
+   * This rpc can be used to reduce the required data to download a large blob
+   * from CAS if chunks from earlier downloads of a different version of this
+   * blob are locally available. For this procedure to work properly, blobs
+   * SHOULD be split in a content-defined way, rather than with fixed-sized
+   * chunking.
+   *
+   * If a split request is answered successfully, a client can expect the
+   * following guarantees from the server:
+   *  1. The blob chunks are stored in CAS.
+   *  2. Concatenating the blob chunks in the order of the digest list returned
+   *     by the server results in the original blob.
+   *
+   * Servers MAY implement this functionality, but MUST declare whether they
+   * support it or not by setting the
+   * [CacheCapabilities.blob_split_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_split_support]
+   * field accordingly.
+   *
+   * Clients MAY use this functionality, it is just an optimization to reduce
+   * download network traffic, when downloading large blobs from the CAS.
+   * However, clients MUST first check the server capabilities, whether blob
+   * splitting is supported by the server.
+   *
+   * Clients SHOULD verify whether the digest of the blob assembled by the
+   * fetched chunks results in the requested blob digest.
+   *
+   * Since the generated chunks are stored as blobs, they underlie the same
+   * lifetimes as other blobs. In particular, the chunk lifetimes are
+   * independent from the lifetime of the original blob:
+   *  * A blob and any chunk derived from it may be evicted from the CAS at
+   *    different times.
+   *  * A call to Split extends the lifetime of the original blob, and sets
+   *    the lifetimes of the resulting chunks (or extends the lifetimes of
+   *    already-existing chunks).
+   *  * Touching a chunk extends its lifetime, but does not extend the
+   *    lifetime of the original blob.
+   *  * Touching the original blob extends its lifetime, but does not extend
+   *    the lifetimes of chunks derived from it.
+   *
+   * When blob splitting and splicing is used at the same time, the clients and
+   * the server SHOULD agree out-of-band upon a chunking algorithm used by both
+   * parties to benefit from each others chunk data and avoid unnecessary data
+   * duplication.
+   *
+   * Errors:
+   *
+   * * `NOT_FOUND`: The requested blob is not present in the CAS.
+   * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the blob
+   *   chunks.
+   */
+  splitBlob(request: DeepPartial<SplitBlobRequest>, options?: CallOptions & CallOptionsExt): Promise<SplitBlobResponse>;
+  /**
+   * Splice a blob from chunks.
+   *
+   * This is the complementary operation to the
+   * [ContentAddressableStorage.SplitBlob][build.bazel.remote.execution.v2.ContentAddressableStorage.SplitBlob]
+   * function to handle the chunked upload of large blobs to save upload
+   * traffic.
+   *
+   * If a client needs to upload a large blob and is able to split a blob into
+   * chunks in such a way that reusable chunks are obtained, e.g., by means of
+   * content-defined chunking, it can first determine which parts of the blob
+   * are already available in the remote CAS and upload the missing chunks, and
+   * then use this API to instruct the server to splice the original blob from
+   * the remotely available blob chunks.
+   *
+   * Servers MAY implement this functionality, but MUST declare whether they
+   * support it or not by setting the
+   * [CacheCapabilities.blob_splice_support][build.bazel.remote.execution.v2.CacheCapabilities.blob_splice_support]
+   * field accordingly.
+   *
+   * Clients MAY use this functionality, it is just an optimization to reduce
+   * upload traffic, when uploading large blobs to the CAS. However, clients
+   * MUST first check the server capabilities, whether blob splicing is
+   * supported by the server.
+   *
+   * In order to ensure data consistency of the CAS, the server MUST only add
+   * entries to the CAS under a hash the server verified itself. In particular,
+   * it MUST NOT trust the result hash provided by the client. The server MAY
+   * accept a request as no-op if the client-provided result hash is already in
+   * CAS; the life time of that blob is then extended as usual. If the
+   * client-provided result is not in CAS, the server SHOULD verify the result
+   * hash sent by the client and reject requests where a different splice result
+   * is obtained.
+   *
+   * When blob splitting and splicing is used at the same time, the clients and
+   * the server SHOULD agree out-of-band upon a chunking algorithm used by both
+   * parties to benefit from each others chunk data and avoid unnecessary data
+   * duplication.
+   *
+   * Errors:
+   *
+   * * `NOT_FOUND`: At least one of the blob chunks is not present in the CAS.
+   * * `RESOURCE_EXHAUSTED`: There is insufficient disk quota to store the
+   *   spliced blob.
+   * * `INVALID_ARGUMENT`: The digest of the spliced blob is different from the
+   *   provided expected digest.
+   */
+  spliceBlob(
+    request: DeepPartial<SpliceBlobRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<SpliceBlobResponse>;
 }
 
 /**

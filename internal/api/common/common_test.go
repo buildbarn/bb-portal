@@ -8,6 +8,7 @@ import (
 
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/auth"
+	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/jmespath/go-jmespath"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -73,7 +74,7 @@ func TestIsInstanceNameAllowed(t *testing.T) {
 		jmespath.MustCompile("contains(authenticationMetadata.private.permittedInstanceNames, instanceName) || instanceName == ''"),
 	)
 
-	ctx := auth.NewContextWithAuthenticationMetadata(context.Background(), auth.MustNewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
+	ctx := auth.NewContextWithAuthenticationMetadata(context.Background(), util.Must(auth.NewAuthenticationMetadataFromProto(&auth_pb.AuthenticationMetadata{
 		Private: structpb.NewStructValue(&structpb.Struct{
 			Fields: map[string]*structpb.Value{
 				"permittedInstanceNames": structpb.NewListValue(&structpb.ListValue{
@@ -84,7 +85,7 @@ func TestIsInstanceNameAllowed(t *testing.T) {
 				}),
 			},
 		}),
-	}))
+	})))
 
 	t.Run("ValidInstanceNames", func(t *testing.T) {
 		if !IsInstanceNameAllowed(ctx, a, "") {
