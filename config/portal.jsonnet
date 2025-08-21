@@ -19,6 +19,17 @@
 // do anything useful.
 
 {
+  global: {
+    diagnosticsHttpServer: {
+      httpServers: [{
+        listenAddresses: [':9980'],
+        authenticationPolicy: { allow: {} },
+      }],
+      enablePrometheus: true,
+      enablePprof: true,
+      enableActiveSpans: true,
+    },
+  },
   frontendProxyUrl: 'http://localhost:3000',
   allowedOrigins: ['http://localhost:3000'],
 
