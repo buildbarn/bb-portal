@@ -18,7 +18,7 @@ import { Spin } from "antd";
 import ErrorAlert from "@/components/ErrorAlert";
 import BazelInvocation from "@/components/BazelInvocation";
 import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
-import { notFound } from 'next/navigation';
+import PageDisabled from '@/components/PageDisabled';
 
 interface PageParams {
   params: {
@@ -68,8 +68,8 @@ const shouldStopPolling = (invocation: FullBazelInvocationDetailsFragment | null
 }
 
 const Page: React.FC<PageParams> = ({ params }) => {
-  if (!isFeatureEnabled(FeatureType.BES)) {
-    return notFound();
+  if (!isFeatureEnabled(FeatureType.BES) || !isFeatureEnabled(FeatureType.BES_PAGE_INVOCATIONS)) {
+    return <PageDisabled />;
   }
   return <PageContent params={params}/>
 }

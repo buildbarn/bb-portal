@@ -7,7 +7,7 @@ import styles from '@/components/AppBar/index.module.css';
 import { SIDER_BAR_MINIMUM_SCREEN_WIDTH } from '@/components/Content';
 import FooterBar from '@/components/FooterBar';
 import { getItem } from '@/components/Utilities/navigation';
-import { FeatureType, isFeatureEnabled } from '@/utils/isFeatureEnabled';
+import { FeatureType } from '@/utils/isFeatureEnabled';
 import useScreenSize from '@/utils/screen';
 import { MenuOutlined } from '@ant-design/icons';
 import { Button, Divider, Drawer, Layout } from 'antd';
@@ -20,9 +20,9 @@ export const SetExtraAppBarMenuItemsContext = createContext<
 >(undefined);
 
 const APP_BAR_MENU_ITEMS: ItemType[] = [
-  getItem({ depth: 0, href: '/builds', title: 'Builds', requiredFeatures: [FeatureType.BES] }),
-  getItem({ depth: 0, href: '/bazel-invocations', title: 'Invocations', requiredFeatures: [FeatureType.BES]}),
-  getItem({ depth: 0, href: '/trends', title: 'Trends', requiredFeatures: [FeatureType.BES]}),
+  getItem({ depth: 0, href: '/builds', title: 'Builds', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_BUILDS] }),
+  getItem({ depth: 0, href: '/bazel-invocations', title: 'Invocations', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_INVOCATIONS] }),
+  getItem({ depth: 0, href: '/trends', title: 'Trends', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_TRENDS] }),
   getItem({ depth: 0, href: '/tests', title: 'Tests', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_TESTS] }),
   getItem({ depth: 0, href: '/targets', title: 'Targets', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_TARGETS] }),
   getItem({ depth: 0, href: '/browser', title: 'Browser', requiredFeatures: [FeatureType.BROWSER] }),
