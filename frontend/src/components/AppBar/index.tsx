@@ -91,10 +91,7 @@ const AppBar: React.FC<Props> = ({
         }}
         open={isDrawerOpen}
         footer={
-          <FooterBar
-            className={styles.footerBar}
-            linkItemClassName={styles.linkItem}
-          />
+          <FooterBar className={styles.footerBar} />
         }
       >
         <AppBarMenu mode="inline" items={APP_BAR_MENU_ITEMS} />
