@@ -1,39 +1,87 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Layout, Popover, Space } from 'antd';
-import { SlackOutlined } from '@ant-design/icons';
-import Link from 'next/link';
-import styles from '@/components/FooterBar/index.module.css';
-import { env } from 'next-runtime-env';
+import styles from "@/components/FooterBar/index.module.css";
+import {
+  DisconnectOutlined,
+  GithubOutlined,
+  SlackOutlined,
+} from "@ant-design/icons";
+import { Layout, Space } from "antd";
+import { env } from "next-runtime-env";
+import Link from "next/link";
+import React from "react";
+
+interface FooterLinkProps {
+  text: string;
+  href?: string;
+  icon?: string;
+}
+
+const FooterLink: React.FC<FooterLinkProps> = ({ text, href, icon }) => {
+  let iconElement = undefined;
+  switch (icon) {
+    case "slack":
+      iconElement = <SlackOutlined />;
+      break;
+    case "github":
+      iconElement = <GithubOutlined />;
+      break;
+    case "discord":
+      iconElement = <DisconnectOutlined />;
+      break;
+    case undefined:
+      iconElement = undefined;
+      break;
+    default:
+      iconElement = <img src={icon} width={24} height={24} />;
+  }
+
+  if (!href) {
+    return (
+      <Space>
+        {iconElement}
+        {text}
+      </Space>
+    );
+  }
+
+  return (
+    <Link href={href} target="_blank">
+      <Space>
+        {iconElement}
+        {text}
+      </Space>
+    </Link>
+  );
+};
 
 interface Props {
   className?: string;
-  linkItemClassName?: string;
 }
 
+const FooterBar: React.FC<Props> = ({ className }) => {
+  const footerContent: Array<FooterLinkProps> = React.useMemo(() => {
+    const footerJson = env("NEXT_PUBLIC_FOOTER_CONTENT_JSON");
+    if (!footerJson) return [];
+    try {
+      return JSON.parse(footerJson);
+    } catch (error) {
+      console.error("Failed to parse NEXT_PUBLIC_FOOTER_CONTENT_JSON:", error);
+      return [];
+    }
+  }, []);
 
-const FooterBar: React.FC<Props> = ({ className, linkItemClassName }) => {
-  const linkClassName = linkItemClassName ? linkItemClassName : styles.footerLink;
   return (
     <Layout.Footer className={`${className} ${styles.footerBar}`}>
       <Space size="large">
-        <Popover content={"#" + env('NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME')} className={linkClassName}>
-          <Link href={env('NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_URL') ?? ""} target="_blank" hidden={env('NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME') == undefined}>
-            <Space>
-              <SlackOutlined />
-              {env('NEXT_PUBLIC_COMPANY_SLACK_CHANNEL_NAME')}
-            </Space>
-          </Link>
-        </Popover>
-        <Popover content="#buildteam" className={linkClassName}>
-          <Link href="https://buildteamworld.slack.com/archives/CD6HZC750" target="_blank">
-            <Space>
-              <SlackOutlined />
-              Buildteam
-            </Space>
-          </Link>
-        </Popover>
+        {footerContent.map((item: FooterLinkProps, index: number) => (
+          <FooterLink
+            key={index}
+            text={item.text}
+            href={item.href}
+            icon={item.icon}
+          />
+        ))}
       </Space>
     </Layout.Footer>
   );
