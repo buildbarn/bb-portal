@@ -17,7 +17,7 @@ const PageDisabled: React.FC = () => {
                 This page is currently disabled. If you are the system administrator, you can enable it by changing the environment variables of the portal frontend process.
               </Typography.Paragraph>
               <Typography.Paragraph>
-                Available environment variables can be found <Link href='https://github.com/buildbarn/bb-portal/blob/main/frontend/.env'>here</Link>.
+                Available environment variables can be found <Link href='https://github.com/buildbarn/bb-portal/blob/main/README.md'>here</Link>.
               </Typography.Paragraph>
             </div>
             <Link href="/">Go Back Home</Link>
