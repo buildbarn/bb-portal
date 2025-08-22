@@ -10,7 +10,7 @@ import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
 import PageDisabled from '@/components/PageDisabled';
 
 const Page: React.FC = () => {
-  if (!isFeatureEnabled(FeatureType.BES)) {
+  if (!isFeatureEnabled(FeatureType.BES) || !isFeatureEnabled(FeatureType.BES_PAGE_BUILDS)) {
     return <PageDisabled />;
   }
   const screenSize = useScreenSize();
