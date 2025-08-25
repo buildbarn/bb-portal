@@ -169,6 +169,8 @@ func (s Summarizer) ProcessEvent(buildEvent *events.BuildEvent) error {
 		}
 	case *bes.BuildEventId_Progress:
 		s.handleBuildProgress(buildEvent.GetProgress())
+	case *bes.BuildEventId_WorkspaceStatus:
+		s.handleWorkspaceStatus(buildEvent.GetWorkspaceStatus())
 	}
 
 	s.summary.BEPCompleted = buildEvent.GetLastMessage()
@@ -1069,6 +1071,27 @@ func (s Summarizer) handleStructuredCommandLine(structuredCommandLine *bescore.C
 		s.summary.SourceControlData.RunnerOs = runnerOs
 	}
 
+	return nil
+}
+
+// handleWorkspaceStatus
+func (s Summarizer) handleWorkspaceStatus(workspaceStatus *bes.WorkspaceStatus) error {
+	if workspaceStatus == nil {
+		return nil
+	}
+
+	for _, item := range workspaceStatus.GetItem() {
+		switch item.GetKey() {
+		case "BUILD_HOST":
+			if s.summary.Hostname == "" {
+				s.summary.Hostname = item.GetValue()
+			}
+		case "BUILD_USER":
+			if s.summary.UserLDAP == "" {
+				s.summary.UserLDAP = item.GetValue()
+			}
+		}
+	}
 	return nil
 }
 
