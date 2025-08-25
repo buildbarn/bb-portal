@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -159,6 +160,25 @@ func (act SaveActor) determineMissingBlobs(ctx context.Context, detectedBlobs []
 	return missingBlobs, nil
 }
 
+func removeTemporaryLogLines(log string) string {
+	result := []string{}
+	for _, line := range strings.Split(log, "\n") {
+		for {
+			// ANSI escape sequence for removing the previous line
+			index := strings.Index(line, "\r\x1b[1A\x1b[K")
+			if index == -1 {
+				break
+			}
+			line = line[index+8:]
+			if len(result) > 0 {
+				result = result[:len(result)-1]
+			}
+		}
+		result = append(result, line)
+	}
+	return strings.Join(result, "\n")
+}
+
 func (act SaveActor) saveBazelInvocation(
 	ctx context.Context,
 	summary *summary.Summary,
@@ -184,7 +204,7 @@ func (act SaveActor) saveBazelInvocation(
 		SetInstanceName(summary.InstanceName).
 		SetProfileName(summary.ProfileName).
 		SetStartedAt(summary.StartedAt).
-		SetBuildLogs(summary.BuildLogs.String()).
+		SetBuildLogs(removeTemporaryLogLines(summary.BuildLogs.String())).
 		SetNillableEndedAt(summary.EndedAt).
 		SetChangeNumber(summary.ChangeNumber).
 		SetPatchsetNumber(summary.PatchsetNumber).

@@ -12,7 +12,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode/utf8"
 
 	"github.com/google/uuid"
 	"google.golang.org/api/iterator"
@@ -178,25 +177,12 @@ func (s Summarizer) ProcessEvent(buildEvent *events.BuildEvent) error {
 
 // handleBuildProgress function to extract std out and std err from build progress event
 func (s Summarizer) handleBuildProgress(progress *bes.Progress) {
-	result := progress.GetStdout()
-	if progress.GetStderr() != progress.GetStdout() {
-		result += progress.GetStderr()
-	}
-	// remove duplicate lines from w/in the same screen of output
-	if result != "" {
-		result = strings.ReplaceAll(result, "\r", "")
-		lines := strings.Split(result, "\n")
-		uniqueLines := make(map[string]struct{})
-		for _, line := range lines {
-			if _, exists := uniqueLines[line]; !exists {
-				uniqueLines[line] = struct{}{}
-				if line != "" && line != "\n" {
-					if utf8.ValidString(line) {
-						s.summary.BuildLogs.WriteString(sanitizeUTF8(line) + "\n")
-					}
-				}
-			}
-		}
+	stdout := progress.GetStdout()
+	stderr := progress.GetStderr()
+
+	s.summary.BuildLogs.WriteString(stderr)
+	if stderr != stdout {
+		s.summary.BuildLogs.WriteString(stdout)
 	}
 }
 
