@@ -1,3 +1,5 @@
+import CodeLink from "@/components/CodeLink";
+import { operationsStateToActionPageUrl } from "@/components/OperationsGrid/utils";
 import type { WorkerState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
@@ -44,7 +46,15 @@ const operationNameColumn: ColumnType<WorkerState> = {
   title: "Operation name",
   onCell: (value, _) => ({ colSpan: value.currentOperation ? 1 : 0 }),
   render: (_, record) => (
-    <Typography.Text>{record.currentOperation?.name}</Typography.Text>
+    <CodeLink
+      text={`${record.currentOperation?.name}`}
+      url={
+        (record.currentOperation?.name &&
+          `/operations/${record.currentOperation?.name}`) ||
+        ""
+      }
+      abbreviate
+    />
   ),
 };
 
@@ -53,9 +63,15 @@ const actionDigestColumn: ColumnType<WorkerState> = {
   title: "Action digest",
   onCell: (value, _) => ({ colSpan: value.currentOperation ? 1 : 0 }),
   render: (_, record) => (
-    <Typography.Text>
-      {record.currentOperation?.actionDigest?.hash}
-    </Typography.Text>
+    <CodeLink
+      text={`${record.currentOperation?.actionDigest?.hash}`}
+      url={
+        (record.currentOperation &&
+          operationsStateToActionPageUrl(record.currentOperation)) ||
+        ""
+      }
+      abbreviate
+    />
   ),
 };
 

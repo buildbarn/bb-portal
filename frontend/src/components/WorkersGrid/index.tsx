@@ -103,7 +103,20 @@ const WorkersGrid: React.FC<Props> = ({
       <Row>
         <WorkersTable
           listWorkerFilterType={listWorkerFilterType}
-          data={data?.workers}
+          data={data?.workers.map((value: WorkerState) => {
+            // Size class queue is not included in
+            // workerState, so we set it manually.
+            return {
+              ...value,
+              currentOperation: value.currentOperation && {
+                ...value.currentOperation,
+                invocationName: {
+                  ...value.currentOperation?.invocationName,
+                  sizeClassQueueName: sizeClassQueueName,
+                },
+              },
+            };
+          })}
           paginationInfo={data?.paginationInfo}
           isLoading={isLoading}
           pageSize={LIST_WORKERS_PAGE_SIZE}
