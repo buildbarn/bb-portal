@@ -1,7 +1,10 @@
-import dayjs from "@/lib/dayjs";
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import themeStyles from "@/theme/theme.module.css";
 import { protobufToObjectWithTypeField } from "@/utils/protobufToObject";
+import {
+  readableDurationFromDates,
+  readableDurationFromSeconds,
+} from "@/utils/time";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { Descriptions, Space, Tag } from "antd";
 import Link from "next/link";
@@ -85,7 +88,10 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
           )}
         <Descriptions.Item label="Timeout">
           {operation.timeout &&
-            `${dayjs(operation.timeout).diff(undefined, "seconds")}s`}
+            readableDurationFromDates(new Date(), operation.timeout, {
+              precision: 1,
+              smallestUnit: "s",
+            })}
         </Descriptions.Item>
         <Descriptions.Item label="Target ID">
           {operation.targetId}
@@ -95,11 +101,17 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
         </Descriptions.Item>
         <Descriptions.Item label="Expected duration">
           {operation.expectedDuration &&
-            `${dayjs.duration(Number.parseInt(operation.expectedDuration.seconds), "seconds").asMinutes()}m`}
+            readableDurationFromSeconds(
+              Number.parseInt(operation.expectedDuration.seconds),
+              { precision: 1, smallestUnit: "s" },
+            )}
         </Descriptions.Item>
         <Descriptions.Item label="Age">
           {operation.queuedTimestamp &&
-            `${dayjs().diff(operation.queuedTimestamp, "seconds")}s`}
+            readableDurationFromDates(operation.queuedTimestamp, new Date(), {
+              precision: 1,
+              smallestUnit: "s",
+            })}
         </Descriptions.Item>
         <Descriptions.Item label="Stage">
           <OperationStatusTag operation={operation} />
