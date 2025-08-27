@@ -1,3 +1,4 @@
+import CodeLink from "@/components/CodeLink";
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import themeStyles from "@/theme/theme.module.css";
 import { protobufToObjectWithTypeField } from "@/utils/protobufToObject";
@@ -73,17 +74,19 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
         </Descriptions.Item>
         <Descriptions.Item label="Action digest">
           {operation.actionDigest && (
-            <Link
-              href={operationsStateToActionPageUrl(operation) || ""}
-            >{`${operation.actionDigest.hash}-${operation.actionDigest.sizeBytes}`}</Link>
+            <CodeLink
+              text={`${operation.actionDigest.hash}-${operation.actionDigest.sizeBytes}`}
+              url={operationsStateToActionPageUrl(operation) || ""}
+            />
           )}
         </Descriptions.Item>
         {historical_execute_response_url &&
           historical_execute_response_digest && (
             <Descriptions.Item label="Historical execute response digest">
-              <Link href={historical_execute_response_url}>
-                {historical_execute_response_digest}
-              </Link>
+              <CodeLink
+                text={historical_execute_response_digest}
+                url={historical_execute_response_url}
+              />
             </Descriptions.Item>
           )}
         <Descriptions.Item label="Timeout">
