@@ -1,8 +1,8 @@
+import CodeLink from "@/components/CodeLink";
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { readableDurationFromDates } from "@/utils/time";
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
-import Link from "next/link";
 import {
   historicalExecuteResponseDigestFromUrl,
   historicalExecuteResponseUrlFromOperation,
@@ -13,7 +13,9 @@ import { operationsStateToActionPageUrl } from "./utils";
 const operationNameColumn: ColumnType<OperationState> = {
   title: "Operation name",
   dataIndex: "name",
-  render: (value: string) => <Link href={`operations/${value}`}>{value}</Link>,
+  render: (value: string) => (
+    <CodeLink url={`/operations/${value}`} text={value} abbreviate />
+  ),
 };
 
 const timeoutColumn: ColumnType<OperationState> = {
@@ -42,16 +44,20 @@ const actionDigestColumn: ColumnType<OperationState> = {
 
     if (historical_execute_response_digest && historical_execute_response_url) {
       return (
-        <Link href={historical_execute_response_url}>
-          {historical_execute_response_digest}
-        </Link>
+        <CodeLink
+          text={historical_execute_response_digest}
+          url={historical_execute_response_url}
+          abbreviate
+        />
       );
     }
 
     return (
-      <Link
-        href={operationsStateToActionPageUrl(record) || ""}
-      >{`${record.actionDigest?.hash}-${record.actionDigest?.sizeBytes}`}</Link>
+      <CodeLink
+        text={`${record.actionDigest?.hash}`}
+        url={`${operationsStateToActionPageUrl(record)}`}
+        abbreviate
+      />
     );
   },
 };
