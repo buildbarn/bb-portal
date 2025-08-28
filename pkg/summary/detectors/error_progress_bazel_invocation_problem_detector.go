@@ -7,28 +7,20 @@ import (
 )
 
 // ErrorProgressBazelInvocationProblemDetector type
-type ErrorProgressBazelInvocationProblemDetector []*events.BuildEvent
+type ErrorProgressBazelInvocationProblemDetector struct{}
 
-// ProcessBEPEvent function
-func (e *ErrorProgressBazelInvocationProblemDetector) ProcessBEPEvent(event *events.BuildEvent) {
+// GetProblems implementation for ErrorProgressBazelInvocationProblemDetector
+func (ErrorProgressBazelInvocationProblemDetector) GetProblems(event *events.BuildEvent) ([]Problem, error) {
 	if event == nil || event.GetProgress() == nil {
-		return
+		return nil, nil
 	}
 	stderr := event.GetProgress().GetStderr()
 	if strings.HasPrefix(stderr, "ERROR: ") || strings.Contains(stderr, "\nERROR: ") {
-		*e = append(*e, event)
+		problem, err := createProblem(BazelInvocationProblemErrorProgress, "", []*events.BuildEvent{event})
+		if err != nil {
+			return nil, err
+		}
+		return []Problem{*problem}, nil
 	}
-}
-
-// Problems function
-func (e *ErrorProgressBazelInvocationProblemDetector) Problems() ([]Problem, error) {
-	if len(*e) == 0 {
-		return nil, nil
-	}
-	// Progress is not a labeled event.
-	problem, err := createProblem(BazelInvocationProblemErrorProgress, "", *e)
-	if err != nil {
-		return nil, err
-	}
-	return []Problem{*problem}, nil
+	return nil, nil
 }

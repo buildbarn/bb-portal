@@ -10,16 +10,20 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
-	"github.com/buildbarn/bb-portal/pkg/summary"
 )
 
 // BazelInvocationUpdate is the builder for updating BazelInvocation entities.
@@ -46,6 +50,12 @@ func (biu *BazelInvocationUpdate) SetNillableStartedAt(t *time.Time) *BazelInvoc
 	if t != nil {
 		biu.SetStartedAt(*t)
 	}
+	return biu
+}
+
+// ClearStartedAt clears the value of the "started_at" field.
+func (biu *BazelInvocationUpdate) ClearStartedAt() *BazelInvocationUpdate {
+	biu.mutation.ClearStartedAt()
 	return biu
 }
 
@@ -123,20 +133,6 @@ func (biu *BazelInvocationUpdate) ClearPatchsetNumber() *BazelInvocationUpdate {
 	return biu
 }
 
-// SetSummary sets the "summary" field.
-func (biu *BazelInvocationUpdate) SetSummary(ss summary.InvocationSummary) *BazelInvocationUpdate {
-	biu.mutation.SetSummary(ss)
-	return biu
-}
-
-// SetNillableSummary sets the "summary" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableSummary(ss *summary.InvocationSummary) *BazelInvocationUpdate {
-	if ss != nil {
-		biu.SetSummary(*ss)
-	}
-	return biu
-}
-
 // SetBepCompleted sets the "bep_completed" field.
 func (biu *BazelInvocationUpdate) SetBepCompleted(b bool) *BazelInvocationUpdate {
 	biu.mutation.SetBepCompleted(b)
@@ -148,12 +144,6 @@ func (biu *BazelInvocationUpdate) SetNillableBepCompleted(b *bool) *BazelInvocat
 	if b != nil {
 		biu.SetBepCompleted(*b)
 	}
-	return biu
-}
-
-// ClearBepCompleted clears the value of the "bep_completed" field.
-func (biu *BazelInvocationUpdate) ClearBepCompleted() *BazelInvocationUpdate {
-	biu.mutation.ClearBepCompleted()
 	return biu
 }
 
@@ -171,9 +161,9 @@ func (biu *BazelInvocationUpdate) SetNillableStepLabel(s *string) *BazelInvocati
 	return biu
 }
 
-// SetRelatedFiles sets the "related_files" field.
-func (biu *BazelInvocationUpdate) SetRelatedFiles(m map[string]string) *BazelInvocationUpdate {
-	biu.mutation.SetRelatedFiles(m)
+// ClearStepLabel clears the value of the "step_label" field.
+func (biu *BazelInvocationUpdate) ClearStepLabel() *BazelInvocationUpdate {
+	biu.mutation.ClearStepLabel()
 	return biu
 }
 
@@ -378,6 +368,12 @@ func (biu *BazelInvocationUpdate) SetNillableProfileName(s *string) *BazelInvoca
 	return biu
 }
 
+// ClearProfileName clears the value of the "profile_name" field.
+func (biu *BazelInvocationUpdate) ClearProfileName() *BazelInvocationUpdate {
+	biu.mutation.ClearProfileName()
+	return biu
+}
+
 // SetInstanceName sets the "instance_name" field.
 func (biu *BazelInvocationUpdate) SetInstanceName(s string) *BazelInvocationUpdate {
 	biu.mutation.SetInstanceName(s)
@@ -398,6 +394,289 @@ func (biu *BazelInvocationUpdate) ClearInstanceName() *BazelInvocationUpdate {
 	return biu
 }
 
+// SetBazelVersion sets the "bazel_version" field.
+func (biu *BazelInvocationUpdate) SetBazelVersion(s string) *BazelInvocationUpdate {
+	biu.mutation.SetBazelVersion(s)
+	return biu
+}
+
+// SetNillableBazelVersion sets the "bazel_version" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableBazelVersion(s *string) *BazelInvocationUpdate {
+	if s != nil {
+		biu.SetBazelVersion(*s)
+	}
+	return biu
+}
+
+// ClearBazelVersion clears the value of the "bazel_version" field.
+func (biu *BazelInvocationUpdate) ClearBazelVersion() *BazelInvocationUpdate {
+	biu.mutation.ClearBazelVersion()
+	return biu
+}
+
+// SetExitCodeName sets the "exit_code_name" field.
+func (biu *BazelInvocationUpdate) SetExitCodeName(s string) *BazelInvocationUpdate {
+	biu.mutation.SetExitCodeName(s)
+	return biu
+}
+
+// SetNillableExitCodeName sets the "exit_code_name" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableExitCodeName(s *string) *BazelInvocationUpdate {
+	if s != nil {
+		biu.SetExitCodeName(*s)
+	}
+	return biu
+}
+
+// ClearExitCodeName clears the value of the "exit_code_name" field.
+func (biu *BazelInvocationUpdate) ClearExitCodeName() *BazelInvocationUpdate {
+	biu.mutation.ClearExitCodeName()
+	return biu
+}
+
+// SetExitCodeCode sets the "exit_code_code" field.
+func (biu *BazelInvocationUpdate) SetExitCodeCode(i int32) *BazelInvocationUpdate {
+	biu.mutation.ResetExitCodeCode()
+	biu.mutation.SetExitCodeCode(i)
+	return biu
+}
+
+// SetNillableExitCodeCode sets the "exit_code_code" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableExitCodeCode(i *int32) *BazelInvocationUpdate {
+	if i != nil {
+		biu.SetExitCodeCode(*i)
+	}
+	return biu
+}
+
+// AddExitCodeCode adds i to the "exit_code_code" field.
+func (biu *BazelInvocationUpdate) AddExitCodeCode(i int32) *BazelInvocationUpdate {
+	biu.mutation.AddExitCodeCode(i)
+	return biu
+}
+
+// ClearExitCodeCode clears the value of the "exit_code_code" field.
+func (biu *BazelInvocationUpdate) ClearExitCodeCode() *BazelInvocationUpdate {
+	biu.mutation.ClearExitCodeCode()
+	return biu
+}
+
+// SetCommandLineCommand sets the "command_line_command" field.
+func (biu *BazelInvocationUpdate) SetCommandLineCommand(s string) *BazelInvocationUpdate {
+	biu.mutation.SetCommandLineCommand(s)
+	return biu
+}
+
+// SetNillableCommandLineCommand sets the "command_line_command" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableCommandLineCommand(s *string) *BazelInvocationUpdate {
+	if s != nil {
+		biu.SetCommandLineCommand(*s)
+	}
+	return biu
+}
+
+// ClearCommandLineCommand clears the value of the "command_line_command" field.
+func (biu *BazelInvocationUpdate) ClearCommandLineCommand() *BazelInvocationUpdate {
+	biu.mutation.ClearCommandLineCommand()
+	return biu
+}
+
+// SetCommandLineExecutable sets the "command_line_executable" field.
+func (biu *BazelInvocationUpdate) SetCommandLineExecutable(s string) *BazelInvocationUpdate {
+	biu.mutation.SetCommandLineExecutable(s)
+	return biu
+}
+
+// SetNillableCommandLineExecutable sets the "command_line_executable" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableCommandLineExecutable(s *string) *BazelInvocationUpdate {
+	if s != nil {
+		biu.SetCommandLineExecutable(*s)
+	}
+	return biu
+}
+
+// ClearCommandLineExecutable clears the value of the "command_line_executable" field.
+func (biu *BazelInvocationUpdate) ClearCommandLineExecutable() *BazelInvocationUpdate {
+	biu.mutation.ClearCommandLineExecutable()
+	return biu
+}
+
+// SetCommandLineResidual sets the "command_line_residual" field.
+func (biu *BazelInvocationUpdate) SetCommandLineResidual(s string) *BazelInvocationUpdate {
+	biu.mutation.SetCommandLineResidual(s)
+	return biu
+}
+
+// SetNillableCommandLineResidual sets the "command_line_residual" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableCommandLineResidual(s *string) *BazelInvocationUpdate {
+	if s != nil {
+		biu.SetCommandLineResidual(*s)
+	}
+	return biu
+}
+
+// ClearCommandLineResidual clears the value of the "command_line_residual" field.
+func (biu *BazelInvocationUpdate) ClearCommandLineResidual() *BazelInvocationUpdate {
+	biu.mutation.ClearCommandLineResidual()
+	return biu
+}
+
+// SetCommandLine sets the "command_line" field.
+func (biu *BazelInvocationUpdate) SetCommandLine(s []string) *BazelInvocationUpdate {
+	biu.mutation.SetCommandLine(s)
+	return biu
+}
+
+// AppendCommandLine appends s to the "command_line" field.
+func (biu *BazelInvocationUpdate) AppendCommandLine(s []string) *BazelInvocationUpdate {
+	biu.mutation.AppendCommandLine(s)
+	return biu
+}
+
+// ClearCommandLine clears the value of the "command_line" field.
+func (biu *BazelInvocationUpdate) ClearCommandLine() *BazelInvocationUpdate {
+	biu.mutation.ClearCommandLine()
+	return biu
+}
+
+// SetExplicitCommandLine sets the "explicit_command_line" field.
+func (biu *BazelInvocationUpdate) SetExplicitCommandLine(s []string) *BazelInvocationUpdate {
+	biu.mutation.SetExplicitCommandLine(s)
+	return biu
+}
+
+// AppendExplicitCommandLine appends s to the "explicit_command_line" field.
+func (biu *BazelInvocationUpdate) AppendExplicitCommandLine(s []string) *BazelInvocationUpdate {
+	biu.mutation.AppendExplicitCommandLine(s)
+	return biu
+}
+
+// ClearExplicitCommandLine clears the value of the "explicit_command_line" field.
+func (biu *BazelInvocationUpdate) ClearExplicitCommandLine() *BazelInvocationUpdate {
+	biu.mutation.ClearExplicitCommandLine()
+	return biu
+}
+
+// SetStartupOptions sets the "startup_options" field.
+func (biu *BazelInvocationUpdate) SetStartupOptions(s []string) *BazelInvocationUpdate {
+	biu.mutation.SetStartupOptions(s)
+	return biu
+}
+
+// AppendStartupOptions appends s to the "startup_options" field.
+func (biu *BazelInvocationUpdate) AppendStartupOptions(s []string) *BazelInvocationUpdate {
+	biu.mutation.AppendStartupOptions(s)
+	return biu
+}
+
+// ClearStartupOptions clears the value of the "startup_options" field.
+func (biu *BazelInvocationUpdate) ClearStartupOptions() *BazelInvocationUpdate {
+	biu.mutation.ClearStartupOptions()
+	return biu
+}
+
+// SetExplicitStartupOptions sets the "explicit_startup_options" field.
+func (biu *BazelInvocationUpdate) SetExplicitStartupOptions(s []string) *BazelInvocationUpdate {
+	biu.mutation.SetExplicitStartupOptions(s)
+	return biu
+}
+
+// AppendExplicitStartupOptions appends s to the "explicit_startup_options" field.
+func (biu *BazelInvocationUpdate) AppendExplicitStartupOptions(s []string) *BazelInvocationUpdate {
+	biu.mutation.AppendExplicitStartupOptions(s)
+	return biu
+}
+
+// ClearExplicitStartupOptions clears the value of the "explicit_startup_options" field.
+func (biu *BazelInvocationUpdate) ClearExplicitStartupOptions() *BazelInvocationUpdate {
+	biu.mutation.ClearExplicitStartupOptions()
+	return biu
+}
+
+// SetProcessedEventStarted sets the "processed_event_started" field.
+func (biu *BazelInvocationUpdate) SetProcessedEventStarted(b bool) *BazelInvocationUpdate {
+	biu.mutation.SetProcessedEventStarted(b)
+	return biu
+}
+
+// SetNillableProcessedEventStarted sets the "processed_event_started" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableProcessedEventStarted(b *bool) *BazelInvocationUpdate {
+	if b != nil {
+		biu.SetProcessedEventStarted(*b)
+	}
+	return biu
+}
+
+// SetProcessedEventBuildMetadata sets the "processed_event_build_metadata" field.
+func (biu *BazelInvocationUpdate) SetProcessedEventBuildMetadata(b bool) *BazelInvocationUpdate {
+	biu.mutation.SetProcessedEventBuildMetadata(b)
+	return biu
+}
+
+// SetNillableProcessedEventBuildMetadata sets the "processed_event_build_metadata" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableProcessedEventBuildMetadata(b *bool) *BazelInvocationUpdate {
+	if b != nil {
+		biu.SetProcessedEventBuildMetadata(*b)
+	}
+	return biu
+}
+
+// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
+func (biu *BazelInvocationUpdate) SetProcessedEventOptionsParsed(b bool) *BazelInvocationUpdate {
+	biu.mutation.SetProcessedEventOptionsParsed(b)
+	return biu
+}
+
+// SetNillableProcessedEventOptionsParsed sets the "processed_event_options_parsed" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableProcessedEventOptionsParsed(b *bool) *BazelInvocationUpdate {
+	if b != nil {
+		biu.SetProcessedEventOptionsParsed(*b)
+	}
+	return biu
+}
+
+// SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
+func (biu *BazelInvocationUpdate) SetProcessedEventBuildFinished(b bool) *BazelInvocationUpdate {
+	biu.mutation.SetProcessedEventBuildFinished(b)
+	return biu
+}
+
+// SetNillableProcessedEventBuildFinished sets the "processed_event_build_finished" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableProcessedEventBuildFinished(b *bool) *BazelInvocationUpdate {
+	if b != nil {
+		biu.SetProcessedEventBuildFinished(*b)
+	}
+	return biu
+}
+
+// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
+func (biu *BazelInvocationUpdate) SetProcessedEventStructuredCommandLine(b bool) *BazelInvocationUpdate {
+	biu.mutation.SetProcessedEventStructuredCommandLine(b)
+	return biu
+}
+
+// SetNillableProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableProcessedEventStructuredCommandLine(b *bool) *BazelInvocationUpdate {
+	if b != nil {
+		biu.SetProcessedEventStructuredCommandLine(*b)
+	}
+	return biu
+}
+
+// SetProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field.
+func (biu *BazelInvocationUpdate) SetProcessedEventWorkspaceStatus(b bool) *BazelInvocationUpdate {
+	biu.mutation.SetProcessedEventWorkspaceStatus(b)
+	return biu
+}
+
+// SetNillableProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableProcessedEventWorkspaceStatus(b *bool) *BazelInvocationUpdate {
+	if b != nil {
+		biu.SetProcessedEventWorkspaceStatus(*b)
+	}
+	return biu
+}
+
 // SetBuildID sets the "build" edge to the Build entity by ID.
 func (biu *BazelInvocationUpdate) SetBuildID(id int) *BazelInvocationUpdate {
 	biu.mutation.SetBuildID(id)
@@ -415,6 +694,36 @@ func (biu *BazelInvocationUpdate) SetNillableBuildID(id *int) *BazelInvocationUp
 // SetBuild sets the "build" edge to the Build entity.
 func (biu *BazelInvocationUpdate) SetBuild(b *Build) *BazelInvocationUpdate {
 	return biu.SetBuildID(b.ID)
+}
+
+// AddEventMetadatumIDs adds the "event_metadata" edge to the EventMetadata entity by IDs.
+func (biu *BazelInvocationUpdate) AddEventMetadatumIDs(ids ...int) *BazelInvocationUpdate {
+	biu.mutation.AddEventMetadatumIDs(ids...)
+	return biu
+}
+
+// AddEventMetadata adds the "event_metadata" edges to the EventMetadata entity.
+func (biu *BazelInvocationUpdate) AddEventMetadata(e ...*EventMetadata) *BazelInvocationUpdate {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return biu.AddEventMetadatumIDs(ids...)
+}
+
+// AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
+func (biu *BazelInvocationUpdate) AddConnectionMetadatumIDs(ids ...int) *BazelInvocationUpdate {
+	biu.mutation.AddConnectionMetadatumIDs(ids...)
+	return biu
+}
+
+// AddConnectionMetadata adds the "connection_metadata" edges to the ConnectionMetadata entity.
+func (biu *BazelInvocationUpdate) AddConnectionMetadata(c ...*ConnectionMetadata) *BazelInvocationUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return biu.AddConnectionMetadatumIDs(ids...)
 }
 
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
@@ -451,6 +760,36 @@ func (biu *BazelInvocationUpdate) SetMetrics(m *Metrics) *BazelInvocationUpdate 
 	return biu.SetMetricsID(m.ID)
 }
 
+// AddIncompleteBuildLogIDs adds the "incomplete_build_logs" edge to the IncompleteBuildLog entity by IDs.
+func (biu *BazelInvocationUpdate) AddIncompleteBuildLogIDs(ids ...int) *BazelInvocationUpdate {
+	biu.mutation.AddIncompleteBuildLogIDs(ids...)
+	return biu
+}
+
+// AddIncompleteBuildLogs adds the "incomplete_build_logs" edges to the IncompleteBuildLog entity.
+func (biu *BazelInvocationUpdate) AddIncompleteBuildLogs(i ...*IncompleteBuildLog) *BazelInvocationUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biu.AddIncompleteBuildLogIDs(ids...)
+}
+
+// AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
+func (biu *BazelInvocationUpdate) AddInvocationFileIDs(ids ...int) *BazelInvocationUpdate {
+	biu.mutation.AddInvocationFileIDs(ids...)
+	return biu
+}
+
+// AddInvocationFiles adds the "invocation_files" edges to the InvocationFiles entity.
+func (biu *BazelInvocationUpdate) AddInvocationFiles(i ...*InvocationFiles) *BazelInvocationUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biu.AddInvocationFileIDs(ids...)
+}
+
 // AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by IDs.
 func (biu *BazelInvocationUpdate) AddTestCollectionIDs(ids ...int) *BazelInvocationUpdate {
 	biu.mutation.AddTestCollectionIDs(ids...)
@@ -466,14 +805,14 @@ func (biu *BazelInvocationUpdate) AddTestCollection(t ...*TestCollection) *Bazel
 	return biu.AddTestCollectionIDs(ids...)
 }
 
-// AddTargetIDs adds the "targets" edge to the TargetPair entity by IDs.
+// AddTargetIDs adds the "targets" edge to the Target entity by IDs.
 func (biu *BazelInvocationUpdate) AddTargetIDs(ids ...int) *BazelInvocationUpdate {
 	biu.mutation.AddTargetIDs(ids...)
 	return biu
 }
 
-// AddTargets adds the "targets" edges to the TargetPair entity.
-func (biu *BazelInvocationUpdate) AddTargets(t ...*TargetPair) *BazelInvocationUpdate {
+// AddTargets adds the "targets" edges to the Target entity.
+func (biu *BazelInvocationUpdate) AddTargets(t ...*Target) *BazelInvocationUpdate {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -511,6 +850,48 @@ func (biu *BazelInvocationUpdate) ClearBuild() *BazelInvocationUpdate {
 	return biu
 }
 
+// ClearEventMetadata clears all "event_metadata" edges to the EventMetadata entity.
+func (biu *BazelInvocationUpdate) ClearEventMetadata() *BazelInvocationUpdate {
+	biu.mutation.ClearEventMetadata()
+	return biu
+}
+
+// RemoveEventMetadatumIDs removes the "event_metadata" edge to EventMetadata entities by IDs.
+func (biu *BazelInvocationUpdate) RemoveEventMetadatumIDs(ids ...int) *BazelInvocationUpdate {
+	biu.mutation.RemoveEventMetadatumIDs(ids...)
+	return biu
+}
+
+// RemoveEventMetadata removes "event_metadata" edges to EventMetadata entities.
+func (biu *BazelInvocationUpdate) RemoveEventMetadata(e ...*EventMetadata) *BazelInvocationUpdate {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return biu.RemoveEventMetadatumIDs(ids...)
+}
+
+// ClearConnectionMetadata clears all "connection_metadata" edges to the ConnectionMetadata entity.
+func (biu *BazelInvocationUpdate) ClearConnectionMetadata() *BazelInvocationUpdate {
+	biu.mutation.ClearConnectionMetadata()
+	return biu
+}
+
+// RemoveConnectionMetadatumIDs removes the "connection_metadata" edge to ConnectionMetadata entities by IDs.
+func (biu *BazelInvocationUpdate) RemoveConnectionMetadatumIDs(ids ...int) *BazelInvocationUpdate {
+	biu.mutation.RemoveConnectionMetadatumIDs(ids...)
+	return biu
+}
+
+// RemoveConnectionMetadata removes "connection_metadata" edges to ConnectionMetadata entities.
+func (biu *BazelInvocationUpdate) RemoveConnectionMetadata(c ...*ConnectionMetadata) *BazelInvocationUpdate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return biu.RemoveConnectionMetadatumIDs(ids...)
+}
+
 // ClearProblems clears all "problems" edges to the BazelInvocationProblem entity.
 func (biu *BazelInvocationUpdate) ClearProblems() *BazelInvocationUpdate {
 	biu.mutation.ClearProblems()
@@ -538,6 +919,48 @@ func (biu *BazelInvocationUpdate) ClearMetrics() *BazelInvocationUpdate {
 	return biu
 }
 
+// ClearIncompleteBuildLogs clears all "incomplete_build_logs" edges to the IncompleteBuildLog entity.
+func (biu *BazelInvocationUpdate) ClearIncompleteBuildLogs() *BazelInvocationUpdate {
+	biu.mutation.ClearIncompleteBuildLogs()
+	return biu
+}
+
+// RemoveIncompleteBuildLogIDs removes the "incomplete_build_logs" edge to IncompleteBuildLog entities by IDs.
+func (biu *BazelInvocationUpdate) RemoveIncompleteBuildLogIDs(ids ...int) *BazelInvocationUpdate {
+	biu.mutation.RemoveIncompleteBuildLogIDs(ids...)
+	return biu
+}
+
+// RemoveIncompleteBuildLogs removes "incomplete_build_logs" edges to IncompleteBuildLog entities.
+func (biu *BazelInvocationUpdate) RemoveIncompleteBuildLogs(i ...*IncompleteBuildLog) *BazelInvocationUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biu.RemoveIncompleteBuildLogIDs(ids...)
+}
+
+// ClearInvocationFiles clears all "invocation_files" edges to the InvocationFiles entity.
+func (biu *BazelInvocationUpdate) ClearInvocationFiles() *BazelInvocationUpdate {
+	biu.mutation.ClearInvocationFiles()
+	return biu
+}
+
+// RemoveInvocationFileIDs removes the "invocation_files" edge to InvocationFiles entities by IDs.
+func (biu *BazelInvocationUpdate) RemoveInvocationFileIDs(ids ...int) *BazelInvocationUpdate {
+	biu.mutation.RemoveInvocationFileIDs(ids...)
+	return biu
+}
+
+// RemoveInvocationFiles removes "invocation_files" edges to InvocationFiles entities.
+func (biu *BazelInvocationUpdate) RemoveInvocationFiles(i ...*InvocationFiles) *BazelInvocationUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biu.RemoveInvocationFileIDs(ids...)
+}
+
 // ClearTestCollection clears all "test_collection" edges to the TestCollection entity.
 func (biu *BazelInvocationUpdate) ClearTestCollection() *BazelInvocationUpdate {
 	biu.mutation.ClearTestCollection()
@@ -559,20 +982,20 @@ func (biu *BazelInvocationUpdate) RemoveTestCollection(t ...*TestCollection) *Ba
 	return biu.RemoveTestCollectionIDs(ids...)
 }
 
-// ClearTargets clears all "targets" edges to the TargetPair entity.
+// ClearTargets clears all "targets" edges to the Target entity.
 func (biu *BazelInvocationUpdate) ClearTargets() *BazelInvocationUpdate {
 	biu.mutation.ClearTargets()
 	return biu
 }
 
-// RemoveTargetIDs removes the "targets" edge to TargetPair entities by IDs.
+// RemoveTargetIDs removes the "targets" edge to Target entities by IDs.
 func (biu *BazelInvocationUpdate) RemoveTargetIDs(ids ...int) *BazelInvocationUpdate {
 	biu.mutation.RemoveTargetIDs(ids...)
 	return biu
 }
 
-// RemoveTargets removes "targets" edges to TargetPair entities.
-func (biu *BazelInvocationUpdate) RemoveTargets(t ...*TargetPair) *BazelInvocationUpdate {
+// RemoveTargets removes "targets" edges to Target entities.
+func (biu *BazelInvocationUpdate) RemoveTargets(t ...*Target) *BazelInvocationUpdate {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -625,6 +1048,9 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	if value, ok := biu.mutation.StartedAt(); ok {
 		_spec.SetField(bazelinvocation.FieldStartedAt, field.TypeTime, value)
 	}
+	if biu.mutation.StartedAtCleared() {
+		_spec.ClearField(bazelinvocation.FieldStartedAt, field.TypeTime)
+	}
 	if value, ok := biu.mutation.EndedAt(); ok {
 		_spec.SetField(bazelinvocation.FieldEndedAt, field.TypeTime, value)
 	}
@@ -649,20 +1075,14 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	if biu.mutation.PatchsetNumberCleared() {
 		_spec.ClearField(bazelinvocation.FieldPatchsetNumber, field.TypeInt)
 	}
-	if value, ok := biu.mutation.Summary(); ok {
-		_spec.SetField(bazelinvocation.FieldSummary, field.TypeJSON, value)
-	}
 	if value, ok := biu.mutation.BepCompleted(); ok {
 		_spec.SetField(bazelinvocation.FieldBepCompleted, field.TypeBool, value)
-	}
-	if biu.mutation.BepCompletedCleared() {
-		_spec.ClearField(bazelinvocation.FieldBepCompleted, field.TypeBool)
 	}
 	if value, ok := biu.mutation.StepLabel(); ok {
 		_spec.SetField(bazelinvocation.FieldStepLabel, field.TypeString, value)
 	}
-	if value, ok := biu.mutation.RelatedFiles(); ok {
-		_spec.SetField(bazelinvocation.FieldRelatedFiles, field.TypeJSON, value)
+	if biu.mutation.StepLabelCleared() {
+		_spec.ClearField(bazelinvocation.FieldStepLabel, field.TypeString)
 	}
 	if value, ok := biu.mutation.UserEmail(); ok {
 		_spec.SetField(bazelinvocation.FieldUserEmail, field.TypeString, value)
@@ -724,11 +1144,115 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	if value, ok := biu.mutation.ProfileName(); ok {
 		_spec.SetField(bazelinvocation.FieldProfileName, field.TypeString, value)
 	}
+	if biu.mutation.ProfileNameCleared() {
+		_spec.ClearField(bazelinvocation.FieldProfileName, field.TypeString)
+	}
 	if value, ok := biu.mutation.InstanceName(); ok {
 		_spec.SetField(bazelinvocation.FieldInstanceName, field.TypeString, value)
 	}
 	if biu.mutation.InstanceNameCleared() {
 		_spec.ClearField(bazelinvocation.FieldInstanceName, field.TypeString)
+	}
+	if value, ok := biu.mutation.BazelVersion(); ok {
+		_spec.SetField(bazelinvocation.FieldBazelVersion, field.TypeString, value)
+	}
+	if biu.mutation.BazelVersionCleared() {
+		_spec.ClearField(bazelinvocation.FieldBazelVersion, field.TypeString)
+	}
+	if value, ok := biu.mutation.ExitCodeName(); ok {
+		_spec.SetField(bazelinvocation.FieldExitCodeName, field.TypeString, value)
+	}
+	if biu.mutation.ExitCodeNameCleared() {
+		_spec.ClearField(bazelinvocation.FieldExitCodeName, field.TypeString)
+	}
+	if value, ok := biu.mutation.ExitCodeCode(); ok {
+		_spec.SetField(bazelinvocation.FieldExitCodeCode, field.TypeInt32, value)
+	}
+	if value, ok := biu.mutation.AddedExitCodeCode(); ok {
+		_spec.AddField(bazelinvocation.FieldExitCodeCode, field.TypeInt32, value)
+	}
+	if biu.mutation.ExitCodeCodeCleared() {
+		_spec.ClearField(bazelinvocation.FieldExitCodeCode, field.TypeInt32)
+	}
+	if value, ok := biu.mutation.CommandLineCommand(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLineCommand, field.TypeString, value)
+	}
+	if biu.mutation.CommandLineCommandCleared() {
+		_spec.ClearField(bazelinvocation.FieldCommandLineCommand, field.TypeString)
+	}
+	if value, ok := biu.mutation.CommandLineExecutable(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLineExecutable, field.TypeString, value)
+	}
+	if biu.mutation.CommandLineExecutableCleared() {
+		_spec.ClearField(bazelinvocation.FieldCommandLineExecutable, field.TypeString)
+	}
+	if value, ok := biu.mutation.CommandLineResidual(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLineResidual, field.TypeString, value)
+	}
+	if biu.mutation.CommandLineResidualCleared() {
+		_spec.ClearField(bazelinvocation.FieldCommandLineResidual, field.TypeString)
+	}
+	if value, ok := biu.mutation.CommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLine, field.TypeJSON, value)
+	}
+	if value, ok := biu.mutation.AppendedCommandLine(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, bazelinvocation.FieldCommandLine, value)
+		})
+	}
+	if biu.mutation.CommandLineCleared() {
+		_spec.ClearField(bazelinvocation.FieldCommandLine, field.TypeJSON)
+	}
+	if value, ok := biu.mutation.ExplicitCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldExplicitCommandLine, field.TypeJSON, value)
+	}
+	if value, ok := biu.mutation.AppendedExplicitCommandLine(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, bazelinvocation.FieldExplicitCommandLine, value)
+		})
+	}
+	if biu.mutation.ExplicitCommandLineCleared() {
+		_spec.ClearField(bazelinvocation.FieldExplicitCommandLine, field.TypeJSON)
+	}
+	if value, ok := biu.mutation.StartupOptions(); ok {
+		_spec.SetField(bazelinvocation.FieldStartupOptions, field.TypeJSON, value)
+	}
+	if value, ok := biu.mutation.AppendedStartupOptions(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, bazelinvocation.FieldStartupOptions, value)
+		})
+	}
+	if biu.mutation.StartupOptionsCleared() {
+		_spec.ClearField(bazelinvocation.FieldStartupOptions, field.TypeJSON)
+	}
+	if value, ok := biu.mutation.ExplicitStartupOptions(); ok {
+		_spec.SetField(bazelinvocation.FieldExplicitStartupOptions, field.TypeJSON, value)
+	}
+	if value, ok := biu.mutation.AppendedExplicitStartupOptions(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, bazelinvocation.FieldExplicitStartupOptions, value)
+		})
+	}
+	if biu.mutation.ExplicitStartupOptionsCleared() {
+		_spec.ClearField(bazelinvocation.FieldExplicitStartupOptions, field.TypeJSON)
+	}
+	if value, ok := biu.mutation.ProcessedEventStarted(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventStarted, field.TypeBool, value)
+	}
+	if value, ok := biu.mutation.ProcessedEventBuildMetadata(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventBuildMetadata, field.TypeBool, value)
+	}
+	if value, ok := biu.mutation.ProcessedEventOptionsParsed(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventOptionsParsed, field.TypeBool, value)
+	}
+	if value, ok := biu.mutation.ProcessedEventBuildFinished(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventBuildFinished, field.TypeBool, value)
+	}
+	if value, ok := biu.mutation.ProcessedEventStructuredCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventStructuredCommandLine, field.TypeBool, value)
+	}
+	if value, ok := biu.mutation.ProcessedEventWorkspaceStatus(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventWorkspaceStatus, field.TypeBool, value)
 	}
 	if biu.mutation.BuildCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -752,6 +1276,96 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biu.mutation.EventMetadataCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.EventMetadataTable,
+			Columns: []string{bazelinvocation.EventMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.RemovedEventMetadataIDs(); len(nodes) > 0 && !biu.mutation.EventMetadataCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.EventMetadataTable,
+			Columns: []string{bazelinvocation.EventMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.EventMetadataIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.EventMetadataTable,
+			Columns: []string{bazelinvocation.EventMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biu.mutation.ConnectionMetadataCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConnectionMetadataTable,
+			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.RemovedConnectionMetadataIDs(); len(nodes) > 0 && !biu.mutation.ConnectionMetadataCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConnectionMetadataTable,
+			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.ConnectionMetadataIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConnectionMetadataTable,
+			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -833,6 +1447,96 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if biu.mutation.IncompleteBuildLogsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteBuildLogsTable,
+			Columns: []string{bazelinvocation.IncompleteBuildLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.RemovedIncompleteBuildLogsIDs(); len(nodes) > 0 && !biu.mutation.IncompleteBuildLogsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteBuildLogsTable,
+			Columns: []string{bazelinvocation.IncompleteBuildLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.IncompleteBuildLogsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteBuildLogsTable,
+			Columns: []string{bazelinvocation.IncompleteBuildLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biu.mutation.InvocationFilesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.InvocationFilesTable,
+			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.RemovedInvocationFilesIDs(); len(nodes) > 0 && !biu.mutation.InvocationFilesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.InvocationFilesTable,
+			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.InvocationFilesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.InvocationFilesTable,
+			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if biu.mutation.TestCollectionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -886,7 +1590,7 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -899,7 +1603,7 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -915,7 +1619,7 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -983,6 +1687,12 @@ func (biuo *BazelInvocationUpdateOne) SetNillableStartedAt(t *time.Time) *BazelI
 	if t != nil {
 		biuo.SetStartedAt(*t)
 	}
+	return biuo
+}
+
+// ClearStartedAt clears the value of the "started_at" field.
+func (biuo *BazelInvocationUpdateOne) ClearStartedAt() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearStartedAt()
 	return biuo
 }
 
@@ -1060,20 +1770,6 @@ func (biuo *BazelInvocationUpdateOne) ClearPatchsetNumber() *BazelInvocationUpda
 	return biuo
 }
 
-// SetSummary sets the "summary" field.
-func (biuo *BazelInvocationUpdateOne) SetSummary(ss summary.InvocationSummary) *BazelInvocationUpdateOne {
-	biuo.mutation.SetSummary(ss)
-	return biuo
-}
-
-// SetNillableSummary sets the "summary" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableSummary(ss *summary.InvocationSummary) *BazelInvocationUpdateOne {
-	if ss != nil {
-		biuo.SetSummary(*ss)
-	}
-	return biuo
-}
-
 // SetBepCompleted sets the "bep_completed" field.
 func (biuo *BazelInvocationUpdateOne) SetBepCompleted(b bool) *BazelInvocationUpdateOne {
 	biuo.mutation.SetBepCompleted(b)
@@ -1085,12 +1781,6 @@ func (biuo *BazelInvocationUpdateOne) SetNillableBepCompleted(b *bool) *BazelInv
 	if b != nil {
 		biuo.SetBepCompleted(*b)
 	}
-	return biuo
-}
-
-// ClearBepCompleted clears the value of the "bep_completed" field.
-func (biuo *BazelInvocationUpdateOne) ClearBepCompleted() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearBepCompleted()
 	return biuo
 }
 
@@ -1108,9 +1798,9 @@ func (biuo *BazelInvocationUpdateOne) SetNillableStepLabel(s *string) *BazelInvo
 	return biuo
 }
 
-// SetRelatedFiles sets the "related_files" field.
-func (biuo *BazelInvocationUpdateOne) SetRelatedFiles(m map[string]string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetRelatedFiles(m)
+// ClearStepLabel clears the value of the "step_label" field.
+func (biuo *BazelInvocationUpdateOne) ClearStepLabel() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearStepLabel()
 	return biuo
 }
 
@@ -1315,6 +2005,12 @@ func (biuo *BazelInvocationUpdateOne) SetNillableProfileName(s *string) *BazelIn
 	return biuo
 }
 
+// ClearProfileName clears the value of the "profile_name" field.
+func (biuo *BazelInvocationUpdateOne) ClearProfileName() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearProfileName()
+	return biuo
+}
+
 // SetInstanceName sets the "instance_name" field.
 func (biuo *BazelInvocationUpdateOne) SetInstanceName(s string) *BazelInvocationUpdateOne {
 	biuo.mutation.SetInstanceName(s)
@@ -1335,6 +2031,289 @@ func (biuo *BazelInvocationUpdateOne) ClearInstanceName() *BazelInvocationUpdate
 	return biuo
 }
 
+// SetBazelVersion sets the "bazel_version" field.
+func (biuo *BazelInvocationUpdateOne) SetBazelVersion(s string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetBazelVersion(s)
+	return biuo
+}
+
+// SetNillableBazelVersion sets the "bazel_version" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableBazelVersion(s *string) *BazelInvocationUpdateOne {
+	if s != nil {
+		biuo.SetBazelVersion(*s)
+	}
+	return biuo
+}
+
+// ClearBazelVersion clears the value of the "bazel_version" field.
+func (biuo *BazelInvocationUpdateOne) ClearBazelVersion() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearBazelVersion()
+	return biuo
+}
+
+// SetExitCodeName sets the "exit_code_name" field.
+func (biuo *BazelInvocationUpdateOne) SetExitCodeName(s string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetExitCodeName(s)
+	return biuo
+}
+
+// SetNillableExitCodeName sets the "exit_code_name" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableExitCodeName(s *string) *BazelInvocationUpdateOne {
+	if s != nil {
+		biuo.SetExitCodeName(*s)
+	}
+	return biuo
+}
+
+// ClearExitCodeName clears the value of the "exit_code_name" field.
+func (biuo *BazelInvocationUpdateOne) ClearExitCodeName() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearExitCodeName()
+	return biuo
+}
+
+// SetExitCodeCode sets the "exit_code_code" field.
+func (biuo *BazelInvocationUpdateOne) SetExitCodeCode(i int32) *BazelInvocationUpdateOne {
+	biuo.mutation.ResetExitCodeCode()
+	biuo.mutation.SetExitCodeCode(i)
+	return biuo
+}
+
+// SetNillableExitCodeCode sets the "exit_code_code" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableExitCodeCode(i *int32) *BazelInvocationUpdateOne {
+	if i != nil {
+		biuo.SetExitCodeCode(*i)
+	}
+	return biuo
+}
+
+// AddExitCodeCode adds i to the "exit_code_code" field.
+func (biuo *BazelInvocationUpdateOne) AddExitCodeCode(i int32) *BazelInvocationUpdateOne {
+	biuo.mutation.AddExitCodeCode(i)
+	return biuo
+}
+
+// ClearExitCodeCode clears the value of the "exit_code_code" field.
+func (biuo *BazelInvocationUpdateOne) ClearExitCodeCode() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearExitCodeCode()
+	return biuo
+}
+
+// SetCommandLineCommand sets the "command_line_command" field.
+func (biuo *BazelInvocationUpdateOne) SetCommandLineCommand(s string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetCommandLineCommand(s)
+	return biuo
+}
+
+// SetNillableCommandLineCommand sets the "command_line_command" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableCommandLineCommand(s *string) *BazelInvocationUpdateOne {
+	if s != nil {
+		biuo.SetCommandLineCommand(*s)
+	}
+	return biuo
+}
+
+// ClearCommandLineCommand clears the value of the "command_line_command" field.
+func (biuo *BazelInvocationUpdateOne) ClearCommandLineCommand() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearCommandLineCommand()
+	return biuo
+}
+
+// SetCommandLineExecutable sets the "command_line_executable" field.
+func (biuo *BazelInvocationUpdateOne) SetCommandLineExecutable(s string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetCommandLineExecutable(s)
+	return biuo
+}
+
+// SetNillableCommandLineExecutable sets the "command_line_executable" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableCommandLineExecutable(s *string) *BazelInvocationUpdateOne {
+	if s != nil {
+		biuo.SetCommandLineExecutable(*s)
+	}
+	return biuo
+}
+
+// ClearCommandLineExecutable clears the value of the "command_line_executable" field.
+func (biuo *BazelInvocationUpdateOne) ClearCommandLineExecutable() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearCommandLineExecutable()
+	return biuo
+}
+
+// SetCommandLineResidual sets the "command_line_residual" field.
+func (biuo *BazelInvocationUpdateOne) SetCommandLineResidual(s string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetCommandLineResidual(s)
+	return biuo
+}
+
+// SetNillableCommandLineResidual sets the "command_line_residual" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableCommandLineResidual(s *string) *BazelInvocationUpdateOne {
+	if s != nil {
+		biuo.SetCommandLineResidual(*s)
+	}
+	return biuo
+}
+
+// ClearCommandLineResidual clears the value of the "command_line_residual" field.
+func (biuo *BazelInvocationUpdateOne) ClearCommandLineResidual() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearCommandLineResidual()
+	return biuo
+}
+
+// SetCommandLine sets the "command_line" field.
+func (biuo *BazelInvocationUpdateOne) SetCommandLine(s []string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetCommandLine(s)
+	return biuo
+}
+
+// AppendCommandLine appends s to the "command_line" field.
+func (biuo *BazelInvocationUpdateOne) AppendCommandLine(s []string) *BazelInvocationUpdateOne {
+	biuo.mutation.AppendCommandLine(s)
+	return biuo
+}
+
+// ClearCommandLine clears the value of the "command_line" field.
+func (biuo *BazelInvocationUpdateOne) ClearCommandLine() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearCommandLine()
+	return biuo
+}
+
+// SetExplicitCommandLine sets the "explicit_command_line" field.
+func (biuo *BazelInvocationUpdateOne) SetExplicitCommandLine(s []string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetExplicitCommandLine(s)
+	return biuo
+}
+
+// AppendExplicitCommandLine appends s to the "explicit_command_line" field.
+func (biuo *BazelInvocationUpdateOne) AppendExplicitCommandLine(s []string) *BazelInvocationUpdateOne {
+	biuo.mutation.AppendExplicitCommandLine(s)
+	return biuo
+}
+
+// ClearExplicitCommandLine clears the value of the "explicit_command_line" field.
+func (biuo *BazelInvocationUpdateOne) ClearExplicitCommandLine() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearExplicitCommandLine()
+	return biuo
+}
+
+// SetStartupOptions sets the "startup_options" field.
+func (biuo *BazelInvocationUpdateOne) SetStartupOptions(s []string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetStartupOptions(s)
+	return biuo
+}
+
+// AppendStartupOptions appends s to the "startup_options" field.
+func (biuo *BazelInvocationUpdateOne) AppendStartupOptions(s []string) *BazelInvocationUpdateOne {
+	biuo.mutation.AppendStartupOptions(s)
+	return biuo
+}
+
+// ClearStartupOptions clears the value of the "startup_options" field.
+func (biuo *BazelInvocationUpdateOne) ClearStartupOptions() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearStartupOptions()
+	return biuo
+}
+
+// SetExplicitStartupOptions sets the "explicit_startup_options" field.
+func (biuo *BazelInvocationUpdateOne) SetExplicitStartupOptions(s []string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetExplicitStartupOptions(s)
+	return biuo
+}
+
+// AppendExplicitStartupOptions appends s to the "explicit_startup_options" field.
+func (biuo *BazelInvocationUpdateOne) AppendExplicitStartupOptions(s []string) *BazelInvocationUpdateOne {
+	biuo.mutation.AppendExplicitStartupOptions(s)
+	return biuo
+}
+
+// ClearExplicitStartupOptions clears the value of the "explicit_startup_options" field.
+func (biuo *BazelInvocationUpdateOne) ClearExplicitStartupOptions() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearExplicitStartupOptions()
+	return biuo
+}
+
+// SetProcessedEventStarted sets the "processed_event_started" field.
+func (biuo *BazelInvocationUpdateOne) SetProcessedEventStarted(b bool) *BazelInvocationUpdateOne {
+	biuo.mutation.SetProcessedEventStarted(b)
+	return biuo
+}
+
+// SetNillableProcessedEventStarted sets the "processed_event_started" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableProcessedEventStarted(b *bool) *BazelInvocationUpdateOne {
+	if b != nil {
+		biuo.SetProcessedEventStarted(*b)
+	}
+	return biuo
+}
+
+// SetProcessedEventBuildMetadata sets the "processed_event_build_metadata" field.
+func (biuo *BazelInvocationUpdateOne) SetProcessedEventBuildMetadata(b bool) *BazelInvocationUpdateOne {
+	biuo.mutation.SetProcessedEventBuildMetadata(b)
+	return biuo
+}
+
+// SetNillableProcessedEventBuildMetadata sets the "processed_event_build_metadata" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableProcessedEventBuildMetadata(b *bool) *BazelInvocationUpdateOne {
+	if b != nil {
+		biuo.SetProcessedEventBuildMetadata(*b)
+	}
+	return biuo
+}
+
+// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
+func (biuo *BazelInvocationUpdateOne) SetProcessedEventOptionsParsed(b bool) *BazelInvocationUpdateOne {
+	biuo.mutation.SetProcessedEventOptionsParsed(b)
+	return biuo
+}
+
+// SetNillableProcessedEventOptionsParsed sets the "processed_event_options_parsed" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableProcessedEventOptionsParsed(b *bool) *BazelInvocationUpdateOne {
+	if b != nil {
+		biuo.SetProcessedEventOptionsParsed(*b)
+	}
+	return biuo
+}
+
+// SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
+func (biuo *BazelInvocationUpdateOne) SetProcessedEventBuildFinished(b bool) *BazelInvocationUpdateOne {
+	biuo.mutation.SetProcessedEventBuildFinished(b)
+	return biuo
+}
+
+// SetNillableProcessedEventBuildFinished sets the "processed_event_build_finished" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableProcessedEventBuildFinished(b *bool) *BazelInvocationUpdateOne {
+	if b != nil {
+		biuo.SetProcessedEventBuildFinished(*b)
+	}
+	return biuo
+}
+
+// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
+func (biuo *BazelInvocationUpdateOne) SetProcessedEventStructuredCommandLine(b bool) *BazelInvocationUpdateOne {
+	biuo.mutation.SetProcessedEventStructuredCommandLine(b)
+	return biuo
+}
+
+// SetNillableProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableProcessedEventStructuredCommandLine(b *bool) *BazelInvocationUpdateOne {
+	if b != nil {
+		biuo.SetProcessedEventStructuredCommandLine(*b)
+	}
+	return biuo
+}
+
+// SetProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field.
+func (biuo *BazelInvocationUpdateOne) SetProcessedEventWorkspaceStatus(b bool) *BazelInvocationUpdateOne {
+	biuo.mutation.SetProcessedEventWorkspaceStatus(b)
+	return biuo
+}
+
+// SetNillableProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableProcessedEventWorkspaceStatus(b *bool) *BazelInvocationUpdateOne {
+	if b != nil {
+		biuo.SetProcessedEventWorkspaceStatus(*b)
+	}
+	return biuo
+}
+
 // SetBuildID sets the "build" edge to the Build entity by ID.
 func (biuo *BazelInvocationUpdateOne) SetBuildID(id int) *BazelInvocationUpdateOne {
 	biuo.mutation.SetBuildID(id)
@@ -1352,6 +2331,36 @@ func (biuo *BazelInvocationUpdateOne) SetNillableBuildID(id *int) *BazelInvocati
 // SetBuild sets the "build" edge to the Build entity.
 func (biuo *BazelInvocationUpdateOne) SetBuild(b *Build) *BazelInvocationUpdateOne {
 	return biuo.SetBuildID(b.ID)
+}
+
+// AddEventMetadatumIDs adds the "event_metadata" edge to the EventMetadata entity by IDs.
+func (biuo *BazelInvocationUpdateOne) AddEventMetadatumIDs(ids ...int) *BazelInvocationUpdateOne {
+	biuo.mutation.AddEventMetadatumIDs(ids...)
+	return biuo
+}
+
+// AddEventMetadata adds the "event_metadata" edges to the EventMetadata entity.
+func (biuo *BazelInvocationUpdateOne) AddEventMetadata(e ...*EventMetadata) *BazelInvocationUpdateOne {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return biuo.AddEventMetadatumIDs(ids...)
+}
+
+// AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
+func (biuo *BazelInvocationUpdateOne) AddConnectionMetadatumIDs(ids ...int) *BazelInvocationUpdateOne {
+	biuo.mutation.AddConnectionMetadatumIDs(ids...)
+	return biuo
+}
+
+// AddConnectionMetadata adds the "connection_metadata" edges to the ConnectionMetadata entity.
+func (biuo *BazelInvocationUpdateOne) AddConnectionMetadata(c ...*ConnectionMetadata) *BazelInvocationUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return biuo.AddConnectionMetadatumIDs(ids...)
 }
 
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
@@ -1388,6 +2397,36 @@ func (biuo *BazelInvocationUpdateOne) SetMetrics(m *Metrics) *BazelInvocationUpd
 	return biuo.SetMetricsID(m.ID)
 }
 
+// AddIncompleteBuildLogIDs adds the "incomplete_build_logs" edge to the IncompleteBuildLog entity by IDs.
+func (biuo *BazelInvocationUpdateOne) AddIncompleteBuildLogIDs(ids ...int) *BazelInvocationUpdateOne {
+	biuo.mutation.AddIncompleteBuildLogIDs(ids...)
+	return biuo
+}
+
+// AddIncompleteBuildLogs adds the "incomplete_build_logs" edges to the IncompleteBuildLog entity.
+func (biuo *BazelInvocationUpdateOne) AddIncompleteBuildLogs(i ...*IncompleteBuildLog) *BazelInvocationUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biuo.AddIncompleteBuildLogIDs(ids...)
+}
+
+// AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
+func (biuo *BazelInvocationUpdateOne) AddInvocationFileIDs(ids ...int) *BazelInvocationUpdateOne {
+	biuo.mutation.AddInvocationFileIDs(ids...)
+	return biuo
+}
+
+// AddInvocationFiles adds the "invocation_files" edges to the InvocationFiles entity.
+func (biuo *BazelInvocationUpdateOne) AddInvocationFiles(i ...*InvocationFiles) *BazelInvocationUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biuo.AddInvocationFileIDs(ids...)
+}
+
 // AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by IDs.
 func (biuo *BazelInvocationUpdateOne) AddTestCollectionIDs(ids ...int) *BazelInvocationUpdateOne {
 	biuo.mutation.AddTestCollectionIDs(ids...)
@@ -1403,14 +2442,14 @@ func (biuo *BazelInvocationUpdateOne) AddTestCollection(t ...*TestCollection) *B
 	return biuo.AddTestCollectionIDs(ids...)
 }
 
-// AddTargetIDs adds the "targets" edge to the TargetPair entity by IDs.
+// AddTargetIDs adds the "targets" edge to the Target entity by IDs.
 func (biuo *BazelInvocationUpdateOne) AddTargetIDs(ids ...int) *BazelInvocationUpdateOne {
 	biuo.mutation.AddTargetIDs(ids...)
 	return biuo
 }
 
-// AddTargets adds the "targets" edges to the TargetPair entity.
-func (biuo *BazelInvocationUpdateOne) AddTargets(t ...*TargetPair) *BazelInvocationUpdateOne {
+// AddTargets adds the "targets" edges to the Target entity.
+func (biuo *BazelInvocationUpdateOne) AddTargets(t ...*Target) *BazelInvocationUpdateOne {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -1448,6 +2487,48 @@ func (biuo *BazelInvocationUpdateOne) ClearBuild() *BazelInvocationUpdateOne {
 	return biuo
 }
 
+// ClearEventMetadata clears all "event_metadata" edges to the EventMetadata entity.
+func (biuo *BazelInvocationUpdateOne) ClearEventMetadata() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearEventMetadata()
+	return biuo
+}
+
+// RemoveEventMetadatumIDs removes the "event_metadata" edge to EventMetadata entities by IDs.
+func (biuo *BazelInvocationUpdateOne) RemoveEventMetadatumIDs(ids ...int) *BazelInvocationUpdateOne {
+	biuo.mutation.RemoveEventMetadatumIDs(ids...)
+	return biuo
+}
+
+// RemoveEventMetadata removes "event_metadata" edges to EventMetadata entities.
+func (biuo *BazelInvocationUpdateOne) RemoveEventMetadata(e ...*EventMetadata) *BazelInvocationUpdateOne {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return biuo.RemoveEventMetadatumIDs(ids...)
+}
+
+// ClearConnectionMetadata clears all "connection_metadata" edges to the ConnectionMetadata entity.
+func (biuo *BazelInvocationUpdateOne) ClearConnectionMetadata() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearConnectionMetadata()
+	return biuo
+}
+
+// RemoveConnectionMetadatumIDs removes the "connection_metadata" edge to ConnectionMetadata entities by IDs.
+func (biuo *BazelInvocationUpdateOne) RemoveConnectionMetadatumIDs(ids ...int) *BazelInvocationUpdateOne {
+	biuo.mutation.RemoveConnectionMetadatumIDs(ids...)
+	return biuo
+}
+
+// RemoveConnectionMetadata removes "connection_metadata" edges to ConnectionMetadata entities.
+func (biuo *BazelInvocationUpdateOne) RemoveConnectionMetadata(c ...*ConnectionMetadata) *BazelInvocationUpdateOne {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return biuo.RemoveConnectionMetadatumIDs(ids...)
+}
+
 // ClearProblems clears all "problems" edges to the BazelInvocationProblem entity.
 func (biuo *BazelInvocationUpdateOne) ClearProblems() *BazelInvocationUpdateOne {
 	biuo.mutation.ClearProblems()
@@ -1475,6 +2556,48 @@ func (biuo *BazelInvocationUpdateOne) ClearMetrics() *BazelInvocationUpdateOne {
 	return biuo
 }
 
+// ClearIncompleteBuildLogs clears all "incomplete_build_logs" edges to the IncompleteBuildLog entity.
+func (biuo *BazelInvocationUpdateOne) ClearIncompleteBuildLogs() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearIncompleteBuildLogs()
+	return biuo
+}
+
+// RemoveIncompleteBuildLogIDs removes the "incomplete_build_logs" edge to IncompleteBuildLog entities by IDs.
+func (biuo *BazelInvocationUpdateOne) RemoveIncompleteBuildLogIDs(ids ...int) *BazelInvocationUpdateOne {
+	biuo.mutation.RemoveIncompleteBuildLogIDs(ids...)
+	return biuo
+}
+
+// RemoveIncompleteBuildLogs removes "incomplete_build_logs" edges to IncompleteBuildLog entities.
+func (biuo *BazelInvocationUpdateOne) RemoveIncompleteBuildLogs(i ...*IncompleteBuildLog) *BazelInvocationUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biuo.RemoveIncompleteBuildLogIDs(ids...)
+}
+
+// ClearInvocationFiles clears all "invocation_files" edges to the InvocationFiles entity.
+func (biuo *BazelInvocationUpdateOne) ClearInvocationFiles() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearInvocationFiles()
+	return biuo
+}
+
+// RemoveInvocationFileIDs removes the "invocation_files" edge to InvocationFiles entities by IDs.
+func (biuo *BazelInvocationUpdateOne) RemoveInvocationFileIDs(ids ...int) *BazelInvocationUpdateOne {
+	biuo.mutation.RemoveInvocationFileIDs(ids...)
+	return biuo
+}
+
+// RemoveInvocationFiles removes "invocation_files" edges to InvocationFiles entities.
+func (biuo *BazelInvocationUpdateOne) RemoveInvocationFiles(i ...*InvocationFiles) *BazelInvocationUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return biuo.RemoveInvocationFileIDs(ids...)
+}
+
 // ClearTestCollection clears all "test_collection" edges to the TestCollection entity.
 func (biuo *BazelInvocationUpdateOne) ClearTestCollection() *BazelInvocationUpdateOne {
 	biuo.mutation.ClearTestCollection()
@@ -1496,20 +2619,20 @@ func (biuo *BazelInvocationUpdateOne) RemoveTestCollection(t ...*TestCollection)
 	return biuo.RemoveTestCollectionIDs(ids...)
 }
 
-// ClearTargets clears all "targets" edges to the TargetPair entity.
+// ClearTargets clears all "targets" edges to the Target entity.
 func (biuo *BazelInvocationUpdateOne) ClearTargets() *BazelInvocationUpdateOne {
 	biuo.mutation.ClearTargets()
 	return biuo
 }
 
-// RemoveTargetIDs removes the "targets" edge to TargetPair entities by IDs.
+// RemoveTargetIDs removes the "targets" edge to Target entities by IDs.
 func (biuo *BazelInvocationUpdateOne) RemoveTargetIDs(ids ...int) *BazelInvocationUpdateOne {
 	biuo.mutation.RemoveTargetIDs(ids...)
 	return biuo
 }
 
-// RemoveTargets removes "targets" edges to TargetPair entities.
-func (biuo *BazelInvocationUpdateOne) RemoveTargets(t ...*TargetPair) *BazelInvocationUpdateOne {
+// RemoveTargets removes "targets" edges to Target entities.
+func (biuo *BazelInvocationUpdateOne) RemoveTargets(t ...*Target) *BazelInvocationUpdateOne {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -1592,6 +2715,9 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	if value, ok := biuo.mutation.StartedAt(); ok {
 		_spec.SetField(bazelinvocation.FieldStartedAt, field.TypeTime, value)
 	}
+	if biuo.mutation.StartedAtCleared() {
+		_spec.ClearField(bazelinvocation.FieldStartedAt, field.TypeTime)
+	}
 	if value, ok := biuo.mutation.EndedAt(); ok {
 		_spec.SetField(bazelinvocation.FieldEndedAt, field.TypeTime, value)
 	}
@@ -1616,20 +2742,14 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	if biuo.mutation.PatchsetNumberCleared() {
 		_spec.ClearField(bazelinvocation.FieldPatchsetNumber, field.TypeInt)
 	}
-	if value, ok := biuo.mutation.Summary(); ok {
-		_spec.SetField(bazelinvocation.FieldSummary, field.TypeJSON, value)
-	}
 	if value, ok := biuo.mutation.BepCompleted(); ok {
 		_spec.SetField(bazelinvocation.FieldBepCompleted, field.TypeBool, value)
-	}
-	if biuo.mutation.BepCompletedCleared() {
-		_spec.ClearField(bazelinvocation.FieldBepCompleted, field.TypeBool)
 	}
 	if value, ok := biuo.mutation.StepLabel(); ok {
 		_spec.SetField(bazelinvocation.FieldStepLabel, field.TypeString, value)
 	}
-	if value, ok := biuo.mutation.RelatedFiles(); ok {
-		_spec.SetField(bazelinvocation.FieldRelatedFiles, field.TypeJSON, value)
+	if biuo.mutation.StepLabelCleared() {
+		_spec.ClearField(bazelinvocation.FieldStepLabel, field.TypeString)
 	}
 	if value, ok := biuo.mutation.UserEmail(); ok {
 		_spec.SetField(bazelinvocation.FieldUserEmail, field.TypeString, value)
@@ -1691,11 +2811,115 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	if value, ok := biuo.mutation.ProfileName(); ok {
 		_spec.SetField(bazelinvocation.FieldProfileName, field.TypeString, value)
 	}
+	if biuo.mutation.ProfileNameCleared() {
+		_spec.ClearField(bazelinvocation.FieldProfileName, field.TypeString)
+	}
 	if value, ok := biuo.mutation.InstanceName(); ok {
 		_spec.SetField(bazelinvocation.FieldInstanceName, field.TypeString, value)
 	}
 	if biuo.mutation.InstanceNameCleared() {
 		_spec.ClearField(bazelinvocation.FieldInstanceName, field.TypeString)
+	}
+	if value, ok := biuo.mutation.BazelVersion(); ok {
+		_spec.SetField(bazelinvocation.FieldBazelVersion, field.TypeString, value)
+	}
+	if biuo.mutation.BazelVersionCleared() {
+		_spec.ClearField(bazelinvocation.FieldBazelVersion, field.TypeString)
+	}
+	if value, ok := biuo.mutation.ExitCodeName(); ok {
+		_spec.SetField(bazelinvocation.FieldExitCodeName, field.TypeString, value)
+	}
+	if biuo.mutation.ExitCodeNameCleared() {
+		_spec.ClearField(bazelinvocation.FieldExitCodeName, field.TypeString)
+	}
+	if value, ok := biuo.mutation.ExitCodeCode(); ok {
+		_spec.SetField(bazelinvocation.FieldExitCodeCode, field.TypeInt32, value)
+	}
+	if value, ok := biuo.mutation.AddedExitCodeCode(); ok {
+		_spec.AddField(bazelinvocation.FieldExitCodeCode, field.TypeInt32, value)
+	}
+	if biuo.mutation.ExitCodeCodeCleared() {
+		_spec.ClearField(bazelinvocation.FieldExitCodeCode, field.TypeInt32)
+	}
+	if value, ok := biuo.mutation.CommandLineCommand(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLineCommand, field.TypeString, value)
+	}
+	if biuo.mutation.CommandLineCommandCleared() {
+		_spec.ClearField(bazelinvocation.FieldCommandLineCommand, field.TypeString)
+	}
+	if value, ok := biuo.mutation.CommandLineExecutable(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLineExecutable, field.TypeString, value)
+	}
+	if biuo.mutation.CommandLineExecutableCleared() {
+		_spec.ClearField(bazelinvocation.FieldCommandLineExecutable, field.TypeString)
+	}
+	if value, ok := biuo.mutation.CommandLineResidual(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLineResidual, field.TypeString, value)
+	}
+	if biuo.mutation.CommandLineResidualCleared() {
+		_spec.ClearField(bazelinvocation.FieldCommandLineResidual, field.TypeString)
+	}
+	if value, ok := biuo.mutation.CommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLine, field.TypeJSON, value)
+	}
+	if value, ok := biuo.mutation.AppendedCommandLine(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, bazelinvocation.FieldCommandLine, value)
+		})
+	}
+	if biuo.mutation.CommandLineCleared() {
+		_spec.ClearField(bazelinvocation.FieldCommandLine, field.TypeJSON)
+	}
+	if value, ok := biuo.mutation.ExplicitCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldExplicitCommandLine, field.TypeJSON, value)
+	}
+	if value, ok := biuo.mutation.AppendedExplicitCommandLine(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, bazelinvocation.FieldExplicitCommandLine, value)
+		})
+	}
+	if biuo.mutation.ExplicitCommandLineCleared() {
+		_spec.ClearField(bazelinvocation.FieldExplicitCommandLine, field.TypeJSON)
+	}
+	if value, ok := biuo.mutation.StartupOptions(); ok {
+		_spec.SetField(bazelinvocation.FieldStartupOptions, field.TypeJSON, value)
+	}
+	if value, ok := biuo.mutation.AppendedStartupOptions(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, bazelinvocation.FieldStartupOptions, value)
+		})
+	}
+	if biuo.mutation.StartupOptionsCleared() {
+		_spec.ClearField(bazelinvocation.FieldStartupOptions, field.TypeJSON)
+	}
+	if value, ok := biuo.mutation.ExplicitStartupOptions(); ok {
+		_spec.SetField(bazelinvocation.FieldExplicitStartupOptions, field.TypeJSON, value)
+	}
+	if value, ok := biuo.mutation.AppendedExplicitStartupOptions(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, bazelinvocation.FieldExplicitStartupOptions, value)
+		})
+	}
+	if biuo.mutation.ExplicitStartupOptionsCleared() {
+		_spec.ClearField(bazelinvocation.FieldExplicitStartupOptions, field.TypeJSON)
+	}
+	if value, ok := biuo.mutation.ProcessedEventStarted(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventStarted, field.TypeBool, value)
+	}
+	if value, ok := biuo.mutation.ProcessedEventBuildMetadata(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventBuildMetadata, field.TypeBool, value)
+	}
+	if value, ok := biuo.mutation.ProcessedEventOptionsParsed(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventOptionsParsed, field.TypeBool, value)
+	}
+	if value, ok := biuo.mutation.ProcessedEventBuildFinished(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventBuildFinished, field.TypeBool, value)
+	}
+	if value, ok := biuo.mutation.ProcessedEventStructuredCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventStructuredCommandLine, field.TypeBool, value)
+	}
+	if value, ok := biuo.mutation.ProcessedEventWorkspaceStatus(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventWorkspaceStatus, field.TypeBool, value)
 	}
 	if biuo.mutation.BuildCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1719,6 +2943,96 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biuo.mutation.EventMetadataCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.EventMetadataTable,
+			Columns: []string{bazelinvocation.EventMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.RemovedEventMetadataIDs(); len(nodes) > 0 && !biuo.mutation.EventMetadataCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.EventMetadataTable,
+			Columns: []string{bazelinvocation.EventMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.EventMetadataIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.EventMetadataTable,
+			Columns: []string{bazelinvocation.EventMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biuo.mutation.ConnectionMetadataCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConnectionMetadataTable,
+			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.RemovedConnectionMetadataIDs(); len(nodes) > 0 && !biuo.mutation.ConnectionMetadataCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConnectionMetadataTable,
+			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.ConnectionMetadataIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConnectionMetadataTable,
+			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -1800,6 +3114,96 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if biuo.mutation.IncompleteBuildLogsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteBuildLogsTable,
+			Columns: []string{bazelinvocation.IncompleteBuildLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.RemovedIncompleteBuildLogsIDs(); len(nodes) > 0 && !biuo.mutation.IncompleteBuildLogsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteBuildLogsTable,
+			Columns: []string{bazelinvocation.IncompleteBuildLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.IncompleteBuildLogsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteBuildLogsTable,
+			Columns: []string{bazelinvocation.IncompleteBuildLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biuo.mutation.InvocationFilesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.InvocationFilesTable,
+			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.RemovedInvocationFilesIDs(); len(nodes) > 0 && !biuo.mutation.InvocationFilesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.InvocationFilesTable,
+			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.InvocationFilesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.InvocationFilesTable,
+			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if biuo.mutation.TestCollectionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1853,7 +3257,7 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1866,7 +3270,7 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -1882,7 +3286,7 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

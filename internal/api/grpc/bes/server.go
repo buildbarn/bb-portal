@@ -2,10 +2,10 @@ package bes
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log/slog"
-	"sort"
 
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	"google.golang.org/grpc/codes"
@@ -13,14 +13,16 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/emptypb"
 
+	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
-	"github.com/buildbarn/bb-portal/internal/api/common"
+	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
+	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/processing"
+	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/program"
-	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/configuration/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
@@ -30,23 +32,37 @@ import (
 // tooling that reacts to build events, and it would be useful if this service could
 // forward events to those.
 type BuildEventServer struct {
-	handler                *BuildEventHandler
+	db                     *ent.Client
 	instanceNameAuthorizer auth.Authorizer
+	blobArchiver           processing.BlobMultiArchiver
+	saveTargetDataLevel    *bb_portal.BuildEventStreamService_SaveTargetDataLevel
 }
 
 // NewBuildEventServer creates a new BuildEventServer
-func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiver, authorizerConfiguration *auth_pb.AuthorizerConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory) (build.PublishBuildEventServer, error) {
-	if authorizerConfiguration == nil {
+func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory) (*BuildEventServer, error) {
+	if configuration.InstanceNameAuthorizer == nil {
 		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
-	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(authorizerConfiguration, dependenciesGroup, grpcClientFactory)
+	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
 	}
 
+	besConfiguration := configuration.BesServiceConfiguration
+	if besConfiguration == nil {
+		return nil, fmt.Errorf("No BesServiceConfiguration configured")
+	}
+
+	saveTargetDataLevel := besConfiguration.SaveTargetDataLevel
+	if saveTargetDataLevel == nil || saveTargetDataLevel.Level == nil {
+		return nil, fmt.Errorf("No saveTargetDataLevel configured")
+	}
+
 	return &BuildEventServer{
-		handler:                NewBuildEventHandler(processing.New(db, blobArchiver)),
 		instanceNameAuthorizer: instanceNameAuthorizer,
+		db:                     db,
+		blobArchiver:           blobArchiver,
+		saveTargetDataLevel:    saveTargetDataLevel,
 	}, nil
 }
 
@@ -58,116 +74,79 @@ func (s BuildEventServer) PublishLifecycleEvent(ctx context.Context, request *bu
 
 // PublishBuildToolEventStream handles a build tool event stream.
 func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildEvent_PublishBuildToolEventStreamServer) error {
-	slog.InfoContext(stream.Context(), "Stream started", "event", stream.Context())
+	ctx := stream.Context()
+	slog.InfoContext(ctx, "Stream started", "event", ctx)
 
-	// List of SequenceIds we've received.
-	// We'll want to ack these once all events are received, as we don't support resumption.
-	seqNrs := make([]int64, 0)
-
-	ack := func(streamID *build.StreamId, sequenceNumber int64, isClosing bool) {
-		if err := stream.Send(&build.PublishBuildToolEventStreamResponse{
-			StreamId:       streamID,
-			SequenceNumber: sequenceNumber,
-		}); err != nil {
-
-			// with the option --bes_upload_mode=fully_async or nowait_for_upload_complete
-			// its not an error when the send fails. the bes gracefully terminated the close
-			// i.e. sent an EOF. for long running builds that take a while to save to the db (> 1s)
-			// the context is processed in the background, so by the time we are acknowledging these
-			// requests, the client connection may have already timed out and these errors can be
-			// safely ignored
-			grpcErr := status.Convert(err)
-			if isClosing &&
-				grpcErr.Code() == codes.Unavailable &&
-				grpcErr.Message() == "transport is closing" {
-				return
-			}
-
-			slog.ErrorContext(
-				stream.Context(),
-				"Send failed",
-				"err",
-				err,
-				"streamid",
-				streamID,
-				"sequenceNumber",
-				sequenceNumber,
-			)
-		}
-	}
-
-	var streamID *build.StreamId
-	reqCh := make(chan *build.PublishBuildToolEventStreamRequest)
-	errCh := make(chan error)
-	var eventCh BuildEventChannel
-
-	go func() {
-		for {
-			req, err := stream.Recv()
-			if err != nil {
-				errCh <- err
-				return
-			}
-			reqCh <- req
-		}
-	}()
+	var buildEventRecorder *buildeventrecorder.BuildEventRecorder = nil
 
 	for {
-		select {
-		case err := <-errCh:
+		req, err := stream.Recv()
+		if err != nil {
 			if err == io.EOF {
-				slog.InfoContext(stream.Context(), "Stream finished", "event", stream.Context())
-
-				if eventCh == nil {
-					slog.WarnContext(stream.Context(), "No event channel found for stream event", "event", stream.Context())
-					return nil
-				}
-
-				// Validate that all events were received
-				sort.Slice(seqNrs, func(i, j int) bool { return seqNrs[i] < seqNrs[j] })
-
-				// TODO: Find out if initial sequence number can be != 1
-				expected := int64(1)
-				for _, seqNr := range seqNrs {
-					if seqNr != expected {
-						return status.Error(codes.Unknown, fmt.Sprintf("received unexpected sequence number %d, expected %d", seqNr, expected))
-					}
-					expected++
-				}
-
-				err := eventCh.Finalize()
-				if err != nil {
-					return err
-				}
-
-				// Ack all events
-				for _, seqNr := range seqNrs {
-					ack(streamID, seqNr, true)
-				}
-
+				slog.InfoContext(ctx, "Stream finished", "event", ctx)
 				return nil
 			}
-
-			slog.ErrorContext(stream.Context(), "Recv failed", "err", err)
+			slog.ErrorContext(ctx, "Recv failed", "err", err)
 			return err
+		}
 
-		case req := <-reqCh:
-			if !common.IsInstanceNameAllowed(stream.Context(), s.instanceNameAuthorizer, req.ProjectId) {
-				return status.Error(codes.PermissionDenied, fmt.Sprintf("Instance name %q is not allowed", req.ProjectId))
+		if buildEventRecorder == nil {
+			buildEventRecorder, err = buildeventrecorder.NewBuildEventRecorder(
+				ctx,
+				s.db,
+				s.instanceNameAuthorizer,
+				s.blobArchiver,
+				s.saveTargetDataLevel,
+				req.GetProjectId(),
+				req.GetOrderedBuildEvent().GetStreamId().GetInvocationId(),
+				req.GetOrderedBuildEvent().GetStreamId().GetBuildId(),
+				true, // isRealTime
+			)
+			if err != nil {
+				return util.StatusWrap(err, "Failed to create BuildEventRecorder")
 			}
 
-			// First event
-			if streamID == nil {
-				streamID = req.OrderedBuildEvent.GetStreamId()
-				eventCh = s.handler.CreateEventChannel(stream.Context(), req.OrderedBuildEvent)
-			}
+			buildEventRecorder.StartLoggingConnectionMetadata(ctx)
+		}
 
-			seqNrs = append(seqNrs, req.OrderedBuildEvent.GetSequenceNumber())
+		err = s.handleBuildEvent(ctx, buildEventRecorder, req.OrderedBuildEvent.GetEvent(), req.OrderedBuildEvent.SequenceNumber)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to handle build event")
+		}
 
-			if err := eventCh.HandleBuildEvent(req.OrderedBuildEvent.Event, req.ProjectId); err != nil {
-				slog.ErrorContext(stream.Context(), "HandleBuildEvent failed", "err", err)
-				return err
-			}
+		err = ackBuildEventStreamMessage(ctx, stream, req.GetOrderedBuildEvent().GetStreamId(), req.GetOrderedBuildEvent().GetSequenceNumber())
+		if err != nil {
+			return util.StatusWrap(err, "Failed to ACK build event")
 		}
 	}
+}
+
+func (s BuildEventServer) handleBuildEvent(ctx context.Context, buildEventRecorder *buildeventrecorder.BuildEventRecorder, event *build.BuildEvent, sequenceNumber int64) error {
+	if event.GetBazelEvent() == nil {
+		return nil
+	}
+	var bazelEvent bes.BuildEvent
+	err := event.GetBazelEvent().UnmarshalTo(&bazelEvent)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to unmarshal BES event")
+	}
+	// TODO (isakstenstrom): Remove this and send the raw BES event instead. This can only be
+	// done when we no longer need JSON serialization of events, like we do for
+	// BazelInvocationProblems.
+	buildEvent := events.NewBuildEvent(&bazelEvent, json.RawMessage(protojson.Format(&bazelEvent)))
+	if err = buildEventRecorder.RecordEvent(ctx, &buildEvent, sequenceNumber); err != nil {
+		return util.StatusWrap(err, "Failed to record build event")
+	}
+	return nil
+}
+
+func ackBuildEventStreamMessage(ctx context.Context, stream build.PublishBuildEvent_PublishBuildToolEventStreamServer, streamID *build.StreamId, sequenceNumber int64) error {
+	err := stream.Send(&build.PublishBuildToolEventStreamResponse{
+		StreamId:       streamID,
+		SequenceNumber: sequenceNumber,
+	})
+	if err != nil {
+		return util.StatusWrap(err, "Failed to send ACK for build event")
+	}
+	return nil
 }

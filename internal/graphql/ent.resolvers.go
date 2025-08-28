@@ -88,6 +88,16 @@ func (r *garbageMetricsResolver) ID(ctx context.Context, obj *ent.GarbageMetrics
 }
 
 // ID is the resolver for the id field.
+func (r *incompleteBuildLogResolver) ID(ctx context.Context, obj *ent.IncompleteBuildLog) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("IncompleteBuildLog", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
+func (r *invocationFilesResolver) ID(ctx context.Context, obj *ent.InvocationFiles) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("InvocationFiles", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
 func (r *memoryMetricsResolver) ID(ctx context.Context, obj *ent.MemoryMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("MemoryMetrics", obj.ID), nil
 }
@@ -199,8 +209,8 @@ func (r *queryResolver) FindRunnerCounts(ctx context.Context, after *entgql.Curs
 }
 
 // FindTargets is the resolver for the findTargets field.
-func (r *queryResolver) FindTargets(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TargetPairOrder, where *ent.TargetPairWhereInput) (*ent.TargetPairConnection, error) {
-	return r.client.TargetPair.Query().Paginate(ctx, after, first, before, last, ent.WithTargetPairFilter(where.Filter), ent.WithTargetPairOrder(orderBy))
+func (r *queryResolver) FindTargets(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TargetOrder, where *ent.TargetWhereInput) (*ent.TargetConnection, error) {
+	return r.client.Target.Query().Paginate(ctx, after, first, before, last, ent.WithTargetFilter(where.Filter), ent.WithTargetOrder(orderBy))
 }
 
 // FindTests is the resolver for the findTests field.
@@ -229,23 +239,13 @@ func (r *systemNetworkStatsResolver) ID(ctx context.Context, obj *ent.SystemNetw
 }
 
 // ID is the resolver for the id field.
-func (r *targetCompleteResolver) ID(ctx context.Context, obj *ent.TargetComplete) (string, error) {
-	return helpers.GraphQLIDFromTypeAndID("TargetComplete", obj.ID), nil
-}
-
-// ID is the resolver for the id field.
-func (r *targetConfiguredResolver) ID(ctx context.Context, obj *ent.TargetConfigured) (string, error) {
-	return helpers.GraphQLIDFromTypeAndID("TargetConfigured", obj.ID), nil
+func (r *targetResolver) ID(ctx context.Context, obj *ent.Target) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("Target", obj.ID), nil
 }
 
 // ID is the resolver for the id field.
 func (r *targetMetricsResolver) ID(ctx context.Context, obj *ent.TargetMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("TargetMetrics", obj.ID), nil
-}
-
-// ID is the resolver for the id field.
-func (r *targetPairResolver) ID(ctx context.Context, obj *ent.TargetPair) (string, error) {
-	return helpers.GraphQLIDFromTypeAndID("TargetPair", obj.ID), nil
 }
 
 // ID is the resolver for the id field.
@@ -844,6 +844,86 @@ func (r *garbageMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.G
 }
 
 // ID is the resolver for the id field.
+func (r *incompleteBuildLogWhereInputResolver) ID(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *incompleteBuildLogWhereInputResolver) IDNeq(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *incompleteBuildLogWhereInputResolver) IDIn(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *incompleteBuildLogWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *incompleteBuildLogWhereInputResolver) IDGt(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *incompleteBuildLogWhereInputResolver) IDGte(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *incompleteBuildLogWhereInputResolver) IDLt(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *incompleteBuildLogWhereInputResolver) IDLte(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *invocationFilesWhereInputResolver) ID(ctx context.Context, obj *ent.InvocationFilesWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *invocationFilesWhereInputResolver) IDNeq(ctx context.Context, obj *ent.InvocationFilesWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *invocationFilesWhereInputResolver) IDIn(ctx context.Context, obj *ent.InvocationFilesWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *invocationFilesWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.InvocationFilesWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *invocationFilesWhereInputResolver) IDGt(ctx context.Context, obj *ent.InvocationFilesWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *invocationFilesWhereInputResolver) IDGte(ctx context.Context, obj *ent.InvocationFilesWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *invocationFilesWhereInputResolver) IDLt(ctx context.Context, obj *ent.InvocationFilesWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *invocationFilesWhereInputResolver) IDLte(ctx context.Context, obj *ent.InvocationFilesWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
 func (r *memoryMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.MemoryMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
@@ -1324,86 +1404,6 @@ func (r *systemNetworkStatsWhereInputResolver) IDLte(ctx context.Context, obj *e
 }
 
 // ID is the resolver for the id field.
-func (r *targetCompleteWhereInputResolver) ID(ctx context.Context, obj *ent.TargetCompleteWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
-}
-
-// IDNeq is the resolver for the idNEQ field.
-func (r *targetCompleteWhereInputResolver) IDNeq(ctx context.Context, obj *ent.TargetCompleteWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
-}
-
-// IDIn is the resolver for the idIn field.
-func (r *targetCompleteWhereInputResolver) IDIn(ctx context.Context, obj *ent.TargetCompleteWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDIn - idIn"))
-}
-
-// IDNotIn is the resolver for the idNotIn field.
-func (r *targetCompleteWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.TargetCompleteWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
-}
-
-// IDGt is the resolver for the idGT field.
-func (r *targetCompleteWhereInputResolver) IDGt(ctx context.Context, obj *ent.TargetCompleteWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGt - idGT"))
-}
-
-// IDGte is the resolver for the idGTE field.
-func (r *targetCompleteWhereInputResolver) IDGte(ctx context.Context, obj *ent.TargetCompleteWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
-}
-
-// IDLt is the resolver for the idLT field.
-func (r *targetCompleteWhereInputResolver) IDLt(ctx context.Context, obj *ent.TargetCompleteWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLt - idLT"))
-}
-
-// IDLte is the resolver for the idLTE field.
-func (r *targetCompleteWhereInputResolver) IDLte(ctx context.Context, obj *ent.TargetCompleteWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
-}
-
-// ID is the resolver for the id field.
-func (r *targetConfiguredWhereInputResolver) ID(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
-}
-
-// IDNeq is the resolver for the idNEQ field.
-func (r *targetConfiguredWhereInputResolver) IDNeq(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
-}
-
-// IDIn is the resolver for the idIn field.
-func (r *targetConfiguredWhereInputResolver) IDIn(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDIn - idIn"))
-}
-
-// IDNotIn is the resolver for the idNotIn field.
-func (r *targetConfiguredWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
-}
-
-// IDGt is the resolver for the idGT field.
-func (r *targetConfiguredWhereInputResolver) IDGt(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGt - idGT"))
-}
-
-// IDGte is the resolver for the idGTE field.
-func (r *targetConfiguredWhereInputResolver) IDGte(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
-}
-
-// IDLt is the resolver for the idLT field.
-func (r *targetConfiguredWhereInputResolver) IDLt(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLt - idLT"))
-}
-
-// IDLte is the resolver for the idLTE field.
-func (r *targetConfiguredWhereInputResolver) IDLte(ctx context.Context, obj *ent.TargetConfiguredWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
-}
-
-// ID is the resolver for the id field.
 func (r *targetMetricsWhereInputResolver) ID(ctx context.Context, obj *ent.TargetMetricsWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
@@ -1444,42 +1444,42 @@ func (r *targetMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.Ta
 }
 
 // ID is the resolver for the id field.
-func (r *targetPairWhereInputResolver) ID(ctx context.Context, obj *ent.TargetPairWhereInput, data *string) error {
+func (r *targetWhereInputResolver) ID(ctx context.Context, obj *ent.TargetWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
 
 // IDNeq is the resolver for the idNEQ field.
-func (r *targetPairWhereInputResolver) IDNeq(ctx context.Context, obj *ent.TargetPairWhereInput, data *string) error {
+func (r *targetWhereInputResolver) IDNeq(ctx context.Context, obj *ent.TargetWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
 }
 
 // IDIn is the resolver for the idIn field.
-func (r *targetPairWhereInputResolver) IDIn(ctx context.Context, obj *ent.TargetPairWhereInput, data []string) error {
+func (r *targetWhereInputResolver) IDIn(ctx context.Context, obj *ent.TargetWhereInput, data []string) error {
 	panic(fmt.Errorf("not implemented: IDIn - idIn"))
 }
 
 // IDNotIn is the resolver for the idNotIn field.
-func (r *targetPairWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.TargetPairWhereInput, data []string) error {
+func (r *targetWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.TargetWhereInput, data []string) error {
 	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
 }
 
 // IDGt is the resolver for the idGT field.
-func (r *targetPairWhereInputResolver) IDGt(ctx context.Context, obj *ent.TargetPairWhereInput, data *string) error {
+func (r *targetWhereInputResolver) IDGt(ctx context.Context, obj *ent.TargetWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDGt - idGT"))
 }
 
 // IDGte is the resolver for the idGTE field.
-func (r *targetPairWhereInputResolver) IDGte(ctx context.Context, obj *ent.TargetPairWhereInput, data *string) error {
+func (r *targetWhereInputResolver) IDGte(ctx context.Context, obj *ent.TargetWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
 }
 
 // IDLt is the resolver for the idLT field.
-func (r *targetPairWhereInputResolver) IDLt(ctx context.Context, obj *ent.TargetPairWhereInput, data *string) error {
+func (r *targetWhereInputResolver) IDLt(ctx context.Context, obj *ent.TargetWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLt - idLT"))
 }
 
 // IDLte is the resolver for the idLTE field.
-func (r *targetPairWhereInputResolver) IDLte(ctx context.Context, obj *ent.TargetPairWhereInput, data *string) error {
+func (r *targetWhereInputResolver) IDLte(ctx context.Context, obj *ent.TargetWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
@@ -1813,6 +1813,14 @@ func (r *Resolver) FilesMetric() FilesMetricResolver { return &filesMetricResolv
 // GarbageMetrics returns GarbageMetricsResolver implementation.
 func (r *Resolver) GarbageMetrics() GarbageMetricsResolver { return &garbageMetricsResolver{r} }
 
+// IncompleteBuildLog returns IncompleteBuildLogResolver implementation.
+func (r *Resolver) IncompleteBuildLog() IncompleteBuildLogResolver {
+	return &incompleteBuildLogResolver{r}
+}
+
+// InvocationFiles returns InvocationFilesResolver implementation.
+func (r *Resolver) InvocationFiles() InvocationFilesResolver { return &invocationFilesResolver{r} }
+
 // MemoryMetrics returns MemoryMetricsResolver implementation.
 func (r *Resolver) MemoryMetrics() MemoryMetricsResolver { return &memoryMetricsResolver{r} }
 
@@ -1856,17 +1864,11 @@ func (r *Resolver) SystemNetworkStats() SystemNetworkStatsResolver {
 	return &systemNetworkStatsResolver{r}
 }
 
-// TargetComplete returns TargetCompleteResolver implementation.
-func (r *Resolver) TargetComplete() TargetCompleteResolver { return &targetCompleteResolver{r} }
-
-// TargetConfigured returns TargetConfiguredResolver implementation.
-func (r *Resolver) TargetConfigured() TargetConfiguredResolver { return &targetConfiguredResolver{r} }
+// Target returns TargetResolver implementation.
+func (r *Resolver) Target() TargetResolver { return &targetResolver{r} }
 
 // TargetMetrics returns TargetMetricsResolver implementation.
 func (r *Resolver) TargetMetrics() TargetMetricsResolver { return &targetMetricsResolver{r} }
-
-// TargetPair returns TargetPairResolver implementation.
-func (r *Resolver) TargetPair() TargetPairResolver { return &targetPairResolver{r} }
 
 // TestCollection returns TestCollectionResolver implementation.
 func (r *Resolver) TestCollection() TestCollectionResolver { return &testCollectionResolver{r} }
@@ -1955,6 +1957,16 @@ func (r *Resolver) GarbageMetricsWhereInput() GarbageMetricsWhereInputResolver {
 	return &garbageMetricsWhereInputResolver{r}
 }
 
+// IncompleteBuildLogWhereInput returns IncompleteBuildLogWhereInputResolver implementation.
+func (r *Resolver) IncompleteBuildLogWhereInput() IncompleteBuildLogWhereInputResolver {
+	return &incompleteBuildLogWhereInputResolver{r}
+}
+
+// InvocationFilesWhereInput returns InvocationFilesWhereInputResolver implementation.
+func (r *Resolver) InvocationFilesWhereInput() InvocationFilesWhereInputResolver {
+	return &invocationFilesWhereInputResolver{r}
+}
+
 // MemoryMetricsWhereInput returns MemoryMetricsWhereInputResolver implementation.
 func (r *Resolver) MemoryMetricsWhereInput() MemoryMetricsWhereInputResolver {
 	return &memoryMetricsWhereInputResolver{r}
@@ -2015,25 +2027,13 @@ func (r *Resolver) SystemNetworkStatsWhereInput() SystemNetworkStatsWhereInputRe
 	return &systemNetworkStatsWhereInputResolver{r}
 }
 
-// TargetCompleteWhereInput returns TargetCompleteWhereInputResolver implementation.
-func (r *Resolver) TargetCompleteWhereInput() TargetCompleteWhereInputResolver {
-	return &targetCompleteWhereInputResolver{r}
-}
-
-// TargetConfiguredWhereInput returns TargetConfiguredWhereInputResolver implementation.
-func (r *Resolver) TargetConfiguredWhereInput() TargetConfiguredWhereInputResolver {
-	return &targetConfiguredWhereInputResolver{r}
-}
-
 // TargetMetricsWhereInput returns TargetMetricsWhereInputResolver implementation.
 func (r *Resolver) TargetMetricsWhereInput() TargetMetricsWhereInputResolver {
 	return &targetMetricsWhereInputResolver{r}
 }
 
-// TargetPairWhereInput returns TargetPairWhereInputResolver implementation.
-func (r *Resolver) TargetPairWhereInput() TargetPairWhereInputResolver {
-	return &targetPairWhereInputResolver{r}
-}
+// TargetWhereInput returns TargetWhereInputResolver implementation.
+func (r *Resolver) TargetWhereInput() TargetWhereInputResolver { return &targetWhereInputResolver{r} }
 
 // TestCollectionWhereInput returns TestCollectionWhereInputResolver implementation.
 func (r *Resolver) TestCollectionWhereInput() TestCollectionWhereInputResolver {
@@ -2085,6 +2085,8 @@ type (
 	exectionInfoResolver                     struct{ *Resolver }
 	filesMetricResolver                      struct{ *Resolver }
 	garbageMetricsResolver                   struct{ *Resolver }
+	incompleteBuildLogResolver               struct{ *Resolver }
+	invocationFilesResolver                  struct{ *Resolver }
 	memoryMetricsResolver                    struct{ *Resolver }
 	metricsResolver                          struct{ *Resolver }
 	missDetailResolver                       struct{ *Resolver }
@@ -2098,10 +2100,8 @@ type (
 	runnerCountResolver                      struct{ *Resolver }
 	sourceControlResolver                    struct{ *Resolver }
 	systemNetworkStatsResolver               struct{ *Resolver }
-	targetCompleteResolver                   struct{ *Resolver }
-	targetConfiguredResolver                 struct{ *Resolver }
+	targetResolver                           struct{ *Resolver }
 	targetMetricsResolver                    struct{ *Resolver }
-	targetPairResolver                       struct{ *Resolver }
 	testCollectionResolver                   struct{ *Resolver }
 	testFileResolver                         struct{ *Resolver }
 	testResultBESResolver                    struct{ *Resolver }
@@ -2123,6 +2123,8 @@ type (
 	exectionInfoWhereInputResolver           struct{ *Resolver }
 	filesMetricWhereInputResolver            struct{ *Resolver }
 	garbageMetricsWhereInputResolver         struct{ *Resolver }
+	incompleteBuildLogWhereInputResolver     struct{ *Resolver }
+	invocationFilesWhereInputResolver        struct{ *Resolver }
 	memoryMetricsWhereInputResolver          struct{ *Resolver }
 	metricsWhereInputResolver                struct{ *Resolver }
 	missDetailWhereInputResolver             struct{ *Resolver }
@@ -2135,10 +2137,8 @@ type (
 	runnerCountWhereInputResolver            struct{ *Resolver }
 	sourceControlWhereInputResolver          struct{ *Resolver }
 	systemNetworkStatsWhereInputResolver     struct{ *Resolver }
-	targetCompleteWhereInputResolver         struct{ *Resolver }
-	targetConfiguredWhereInputResolver       struct{ *Resolver }
 	targetMetricsWhereInputResolver          struct{ *Resolver }
-	targetPairWhereInputResolver             struct{ *Resolver }
+	targetWhereInputResolver                 struct{ *Resolver }
 	testCollectionWhereInputResolver         struct{ *Resolver }
 	testFileWhereInputResolver               struct{ *Resolver }
 	testResultBESWhereInputResolver          struct{ *Resolver }

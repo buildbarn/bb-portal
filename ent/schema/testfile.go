@@ -6,6 +6,8 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
+// TODO: Unused. Either delete or implement properly.
+
 // TestFile holds the schema definition for the TestFile entity.
 type TestFile struct {
 	ent.Schema

@@ -33,11 +33,17 @@ type Build func(*sql.Selector)
 // BuildGraphMetrics is the predicate function for buildgraphmetrics builders.
 type BuildGraphMetrics func(*sql.Selector)
 
+// ConnectionMetadata is the predicate function for connectionmetadata builders.
+type ConnectionMetadata func(*sql.Selector)
+
 // CumulativeMetrics is the predicate function for cumulativemetrics builders.
 type CumulativeMetrics func(*sql.Selector)
 
 // EvaluationStat is the predicate function for evaluationstat builders.
 type EvaluationStat func(*sql.Selector)
+
+// EventMetadata is the predicate function for eventmetadata builders.
+type EventMetadata func(*sql.Selector)
 
 // ExectionInfo is the predicate function for exectioninfo builders.
 type ExectionInfo func(*sql.Selector)
@@ -47,6 +53,12 @@ type FilesMetric func(*sql.Selector)
 
 // GarbageMetrics is the predicate function for garbagemetrics builders.
 type GarbageMetrics func(*sql.Selector)
+
+// IncompleteBuildLog is the predicate function for incompletebuildlog builders.
+type IncompleteBuildLog func(*sql.Selector)
+
+// InvocationFiles is the predicate function for invocationfiles builders.
+type InvocationFiles func(*sql.Selector)
 
 // MemoryMetrics is the predicate function for memorymetrics builders.
 type MemoryMetrics func(*sql.Selector)
@@ -84,17 +96,11 @@ type SourceControl func(*sql.Selector)
 // SystemNetworkStats is the predicate function for systemnetworkstats builders.
 type SystemNetworkStats func(*sql.Selector)
 
-// TargetComplete is the predicate function for targetcomplete builders.
-type TargetComplete func(*sql.Selector)
-
-// TargetConfigured is the predicate function for targetconfigured builders.
-type TargetConfigured func(*sql.Selector)
+// Target is the predicate function for target builders.
+type Target func(*sql.Selector)
 
 // TargetMetrics is the predicate function for targetmetrics builders.
 type TargetMetrics func(*sql.Selector)
-
-// TargetPair is the predicate function for targetpair builders.
-type TargetPair func(*sql.Selector)
 
 // TestCollection is the predicate function for testcollection builders.
 type TestCollection func(*sql.Selector)

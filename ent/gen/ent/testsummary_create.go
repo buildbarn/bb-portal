@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
@@ -18,6 +20,7 @@ type TestSummaryCreate struct {
 	config
 	mutation *TestSummaryMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetOverallStatus sets the "overall_status" field.
@@ -283,6 +286,7 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 		_node = &TestSummary{config: tsc.config}
 		_spec = sqlgraph.NewCreateSpec(testsummary.Table, sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = tsc.conflict
 	if value, ok := tsc.mutation.OverallStatus(); ok {
 		_spec.SetField(testsummary.FieldOverallStatus, field.TypeEnum, value)
 		_node.OverallStatus = value
@@ -375,11 +379,628 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TestSummary.Create().
+//		SetOverallStatus(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TestSummaryUpsert) {
+//			SetOverallStatus(v+v).
+//		}).
+//		Exec(ctx)
+func (tsc *TestSummaryCreate) OnConflict(opts ...sql.ConflictOption) *TestSummaryUpsertOne {
+	tsc.conflict = opts
+	return &TestSummaryUpsertOne{
+		create: tsc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TestSummary.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (tsc *TestSummaryCreate) OnConflictColumns(columns ...string) *TestSummaryUpsertOne {
+	tsc.conflict = append(tsc.conflict, sql.ConflictColumns(columns...))
+	return &TestSummaryUpsertOne{
+		create: tsc,
+	}
+}
+
+type (
+	// TestSummaryUpsertOne is the builder for "upsert"-ing
+	//  one TestSummary node.
+	TestSummaryUpsertOne struct {
+		create *TestSummaryCreate
+	}
+
+	// TestSummaryUpsert is the "OnConflict" setter.
+	TestSummaryUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetOverallStatus sets the "overall_status" field.
+func (u *TestSummaryUpsert) SetOverallStatus(v testsummary.OverallStatus) *TestSummaryUpsert {
+	u.Set(testsummary.FieldOverallStatus, v)
+	return u
+}
+
+// UpdateOverallStatus sets the "overall_status" field to the value that was provided on create.
+func (u *TestSummaryUpsert) UpdateOverallStatus() *TestSummaryUpsert {
+	u.SetExcluded(testsummary.FieldOverallStatus)
+	return u
+}
+
+// ClearOverallStatus clears the value of the "overall_status" field.
+func (u *TestSummaryUpsert) ClearOverallStatus() *TestSummaryUpsert {
+	u.SetNull(testsummary.FieldOverallStatus)
+	return u
+}
+
+// SetTotalRunCount sets the "total_run_count" field.
+func (u *TestSummaryUpsert) SetTotalRunCount(v int32) *TestSummaryUpsert {
+	u.Set(testsummary.FieldTotalRunCount, v)
+	return u
+}
+
+// UpdateTotalRunCount sets the "total_run_count" field to the value that was provided on create.
+func (u *TestSummaryUpsert) UpdateTotalRunCount() *TestSummaryUpsert {
+	u.SetExcluded(testsummary.FieldTotalRunCount)
+	return u
+}
+
+// AddTotalRunCount adds v to the "total_run_count" field.
+func (u *TestSummaryUpsert) AddTotalRunCount(v int32) *TestSummaryUpsert {
+	u.Add(testsummary.FieldTotalRunCount, v)
+	return u
+}
+
+// ClearTotalRunCount clears the value of the "total_run_count" field.
+func (u *TestSummaryUpsert) ClearTotalRunCount() *TestSummaryUpsert {
+	u.SetNull(testsummary.FieldTotalRunCount)
+	return u
+}
+
+// SetRunCount sets the "run_count" field.
+func (u *TestSummaryUpsert) SetRunCount(v int32) *TestSummaryUpsert {
+	u.Set(testsummary.FieldRunCount, v)
+	return u
+}
+
+// UpdateRunCount sets the "run_count" field to the value that was provided on create.
+func (u *TestSummaryUpsert) UpdateRunCount() *TestSummaryUpsert {
+	u.SetExcluded(testsummary.FieldRunCount)
+	return u
+}
+
+// AddRunCount adds v to the "run_count" field.
+func (u *TestSummaryUpsert) AddRunCount(v int32) *TestSummaryUpsert {
+	u.Add(testsummary.FieldRunCount, v)
+	return u
+}
+
+// ClearRunCount clears the value of the "run_count" field.
+func (u *TestSummaryUpsert) ClearRunCount() *TestSummaryUpsert {
+	u.SetNull(testsummary.FieldRunCount)
+	return u
+}
+
+// SetAttemptCount sets the "attempt_count" field.
+func (u *TestSummaryUpsert) SetAttemptCount(v int32) *TestSummaryUpsert {
+	u.Set(testsummary.FieldAttemptCount, v)
+	return u
+}
+
+// UpdateAttemptCount sets the "attempt_count" field to the value that was provided on create.
+func (u *TestSummaryUpsert) UpdateAttemptCount() *TestSummaryUpsert {
+	u.SetExcluded(testsummary.FieldAttemptCount)
+	return u
+}
+
+// AddAttemptCount adds v to the "attempt_count" field.
+func (u *TestSummaryUpsert) AddAttemptCount(v int32) *TestSummaryUpsert {
+	u.Add(testsummary.FieldAttemptCount, v)
+	return u
+}
+
+// ClearAttemptCount clears the value of the "attempt_count" field.
+func (u *TestSummaryUpsert) ClearAttemptCount() *TestSummaryUpsert {
+	u.SetNull(testsummary.FieldAttemptCount)
+	return u
+}
+
+// SetShardCount sets the "shard_count" field.
+func (u *TestSummaryUpsert) SetShardCount(v int32) *TestSummaryUpsert {
+	u.Set(testsummary.FieldShardCount, v)
+	return u
+}
+
+// UpdateShardCount sets the "shard_count" field to the value that was provided on create.
+func (u *TestSummaryUpsert) UpdateShardCount() *TestSummaryUpsert {
+	u.SetExcluded(testsummary.FieldShardCount)
+	return u
+}
+
+// AddShardCount adds v to the "shard_count" field.
+func (u *TestSummaryUpsert) AddShardCount(v int32) *TestSummaryUpsert {
+	u.Add(testsummary.FieldShardCount, v)
+	return u
+}
+
+// ClearShardCount clears the value of the "shard_count" field.
+func (u *TestSummaryUpsert) ClearShardCount() *TestSummaryUpsert {
+	u.SetNull(testsummary.FieldShardCount)
+	return u
+}
+
+// SetTotalNumCached sets the "total_num_cached" field.
+func (u *TestSummaryUpsert) SetTotalNumCached(v int32) *TestSummaryUpsert {
+	u.Set(testsummary.FieldTotalNumCached, v)
+	return u
+}
+
+// UpdateTotalNumCached sets the "total_num_cached" field to the value that was provided on create.
+func (u *TestSummaryUpsert) UpdateTotalNumCached() *TestSummaryUpsert {
+	u.SetExcluded(testsummary.FieldTotalNumCached)
+	return u
+}
+
+// AddTotalNumCached adds v to the "total_num_cached" field.
+func (u *TestSummaryUpsert) AddTotalNumCached(v int32) *TestSummaryUpsert {
+	u.Add(testsummary.FieldTotalNumCached, v)
+	return u
+}
+
+// ClearTotalNumCached clears the value of the "total_num_cached" field.
+func (u *TestSummaryUpsert) ClearTotalNumCached() *TestSummaryUpsert {
+	u.SetNull(testsummary.FieldTotalNumCached)
+	return u
+}
+
+// SetFirstStartTime sets the "first_start_time" field.
+func (u *TestSummaryUpsert) SetFirstStartTime(v int64) *TestSummaryUpsert {
+	u.Set(testsummary.FieldFirstStartTime, v)
+	return u
+}
+
+// UpdateFirstStartTime sets the "first_start_time" field to the value that was provided on create.
+func (u *TestSummaryUpsert) UpdateFirstStartTime() *TestSummaryUpsert {
+	u.SetExcluded(testsummary.FieldFirstStartTime)
+	return u
+}
+
+// AddFirstStartTime adds v to the "first_start_time" field.
+func (u *TestSummaryUpsert) AddFirstStartTime(v int64) *TestSummaryUpsert {
+	u.Add(testsummary.FieldFirstStartTime, v)
+	return u
+}
+
+// ClearFirstStartTime clears the value of the "first_start_time" field.
+func (u *TestSummaryUpsert) ClearFirstStartTime() *TestSummaryUpsert {
+	u.SetNull(testsummary.FieldFirstStartTime)
+	return u
+}
+
+// SetLastStopTime sets the "last_stop_time" field.
+func (u *TestSummaryUpsert) SetLastStopTime(v int64) *TestSummaryUpsert {
+	u.Set(testsummary.FieldLastStopTime, v)
+	return u
+}
+
+// UpdateLastStopTime sets the "last_stop_time" field to the value that was provided on create.
+func (u *TestSummaryUpsert) UpdateLastStopTime() *TestSummaryUpsert {
+	u.SetExcluded(testsummary.FieldLastStopTime)
+	return u
+}
+
+// AddLastStopTime adds v to the "last_stop_time" field.
+func (u *TestSummaryUpsert) AddLastStopTime(v int64) *TestSummaryUpsert {
+	u.Add(testsummary.FieldLastStopTime, v)
+	return u
+}
+
+// ClearLastStopTime clears the value of the "last_stop_time" field.
+func (u *TestSummaryUpsert) ClearLastStopTime() *TestSummaryUpsert {
+	u.SetNull(testsummary.FieldLastStopTime)
+	return u
+}
+
+// SetTotalRunDuration sets the "total_run_duration" field.
+func (u *TestSummaryUpsert) SetTotalRunDuration(v int64) *TestSummaryUpsert {
+	u.Set(testsummary.FieldTotalRunDuration, v)
+	return u
+}
+
+// UpdateTotalRunDuration sets the "total_run_duration" field to the value that was provided on create.
+func (u *TestSummaryUpsert) UpdateTotalRunDuration() *TestSummaryUpsert {
+	u.SetExcluded(testsummary.FieldTotalRunDuration)
+	return u
+}
+
+// AddTotalRunDuration adds v to the "total_run_duration" field.
+func (u *TestSummaryUpsert) AddTotalRunDuration(v int64) *TestSummaryUpsert {
+	u.Add(testsummary.FieldTotalRunDuration, v)
+	return u
+}
+
+// ClearTotalRunDuration clears the value of the "total_run_duration" field.
+func (u *TestSummaryUpsert) ClearTotalRunDuration() *TestSummaryUpsert {
+	u.SetNull(testsummary.FieldTotalRunDuration)
+	return u
+}
+
+// SetLabel sets the "label" field.
+func (u *TestSummaryUpsert) SetLabel(v string) *TestSummaryUpsert {
+	u.Set(testsummary.FieldLabel, v)
+	return u
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *TestSummaryUpsert) UpdateLabel() *TestSummaryUpsert {
+	u.SetExcluded(testsummary.FieldLabel)
+	return u
+}
+
+// ClearLabel clears the value of the "label" field.
+func (u *TestSummaryUpsert) ClearLabel() *TestSummaryUpsert {
+	u.SetNull(testsummary.FieldLabel)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.TestSummary.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TestSummaryUpsertOne) UpdateNewValues() *TestSummaryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TestSummary.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *TestSummaryUpsertOne) Ignore() *TestSummaryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TestSummaryUpsertOne) DoNothing() *TestSummaryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TestSummaryCreate.OnConflict
+// documentation for more info.
+func (u *TestSummaryUpsertOne) Update(set func(*TestSummaryUpsert)) *TestSummaryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TestSummaryUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetOverallStatus sets the "overall_status" field.
+func (u *TestSummaryUpsertOne) SetOverallStatus(v testsummary.OverallStatus) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetOverallStatus(v)
+	})
+}
+
+// UpdateOverallStatus sets the "overall_status" field to the value that was provided on create.
+func (u *TestSummaryUpsertOne) UpdateOverallStatus() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateOverallStatus()
+	})
+}
+
+// ClearOverallStatus clears the value of the "overall_status" field.
+func (u *TestSummaryUpsertOne) ClearOverallStatus() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearOverallStatus()
+	})
+}
+
+// SetTotalRunCount sets the "total_run_count" field.
+func (u *TestSummaryUpsertOne) SetTotalRunCount(v int32) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetTotalRunCount(v)
+	})
+}
+
+// AddTotalRunCount adds v to the "total_run_count" field.
+func (u *TestSummaryUpsertOne) AddTotalRunCount(v int32) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddTotalRunCount(v)
+	})
+}
+
+// UpdateTotalRunCount sets the "total_run_count" field to the value that was provided on create.
+func (u *TestSummaryUpsertOne) UpdateTotalRunCount() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateTotalRunCount()
+	})
+}
+
+// ClearTotalRunCount clears the value of the "total_run_count" field.
+func (u *TestSummaryUpsertOne) ClearTotalRunCount() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearTotalRunCount()
+	})
+}
+
+// SetRunCount sets the "run_count" field.
+func (u *TestSummaryUpsertOne) SetRunCount(v int32) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetRunCount(v)
+	})
+}
+
+// AddRunCount adds v to the "run_count" field.
+func (u *TestSummaryUpsertOne) AddRunCount(v int32) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddRunCount(v)
+	})
+}
+
+// UpdateRunCount sets the "run_count" field to the value that was provided on create.
+func (u *TestSummaryUpsertOne) UpdateRunCount() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateRunCount()
+	})
+}
+
+// ClearRunCount clears the value of the "run_count" field.
+func (u *TestSummaryUpsertOne) ClearRunCount() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearRunCount()
+	})
+}
+
+// SetAttemptCount sets the "attempt_count" field.
+func (u *TestSummaryUpsertOne) SetAttemptCount(v int32) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetAttemptCount(v)
+	})
+}
+
+// AddAttemptCount adds v to the "attempt_count" field.
+func (u *TestSummaryUpsertOne) AddAttemptCount(v int32) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddAttemptCount(v)
+	})
+}
+
+// UpdateAttemptCount sets the "attempt_count" field to the value that was provided on create.
+func (u *TestSummaryUpsertOne) UpdateAttemptCount() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateAttemptCount()
+	})
+}
+
+// ClearAttemptCount clears the value of the "attempt_count" field.
+func (u *TestSummaryUpsertOne) ClearAttemptCount() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearAttemptCount()
+	})
+}
+
+// SetShardCount sets the "shard_count" field.
+func (u *TestSummaryUpsertOne) SetShardCount(v int32) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetShardCount(v)
+	})
+}
+
+// AddShardCount adds v to the "shard_count" field.
+func (u *TestSummaryUpsertOne) AddShardCount(v int32) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddShardCount(v)
+	})
+}
+
+// UpdateShardCount sets the "shard_count" field to the value that was provided on create.
+func (u *TestSummaryUpsertOne) UpdateShardCount() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateShardCount()
+	})
+}
+
+// ClearShardCount clears the value of the "shard_count" field.
+func (u *TestSummaryUpsertOne) ClearShardCount() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearShardCount()
+	})
+}
+
+// SetTotalNumCached sets the "total_num_cached" field.
+func (u *TestSummaryUpsertOne) SetTotalNumCached(v int32) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetTotalNumCached(v)
+	})
+}
+
+// AddTotalNumCached adds v to the "total_num_cached" field.
+func (u *TestSummaryUpsertOne) AddTotalNumCached(v int32) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddTotalNumCached(v)
+	})
+}
+
+// UpdateTotalNumCached sets the "total_num_cached" field to the value that was provided on create.
+func (u *TestSummaryUpsertOne) UpdateTotalNumCached() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateTotalNumCached()
+	})
+}
+
+// ClearTotalNumCached clears the value of the "total_num_cached" field.
+func (u *TestSummaryUpsertOne) ClearTotalNumCached() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearTotalNumCached()
+	})
+}
+
+// SetFirstStartTime sets the "first_start_time" field.
+func (u *TestSummaryUpsertOne) SetFirstStartTime(v int64) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetFirstStartTime(v)
+	})
+}
+
+// AddFirstStartTime adds v to the "first_start_time" field.
+func (u *TestSummaryUpsertOne) AddFirstStartTime(v int64) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddFirstStartTime(v)
+	})
+}
+
+// UpdateFirstStartTime sets the "first_start_time" field to the value that was provided on create.
+func (u *TestSummaryUpsertOne) UpdateFirstStartTime() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateFirstStartTime()
+	})
+}
+
+// ClearFirstStartTime clears the value of the "first_start_time" field.
+func (u *TestSummaryUpsertOne) ClearFirstStartTime() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearFirstStartTime()
+	})
+}
+
+// SetLastStopTime sets the "last_stop_time" field.
+func (u *TestSummaryUpsertOne) SetLastStopTime(v int64) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetLastStopTime(v)
+	})
+}
+
+// AddLastStopTime adds v to the "last_stop_time" field.
+func (u *TestSummaryUpsertOne) AddLastStopTime(v int64) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddLastStopTime(v)
+	})
+}
+
+// UpdateLastStopTime sets the "last_stop_time" field to the value that was provided on create.
+func (u *TestSummaryUpsertOne) UpdateLastStopTime() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateLastStopTime()
+	})
+}
+
+// ClearLastStopTime clears the value of the "last_stop_time" field.
+func (u *TestSummaryUpsertOne) ClearLastStopTime() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearLastStopTime()
+	})
+}
+
+// SetTotalRunDuration sets the "total_run_duration" field.
+func (u *TestSummaryUpsertOne) SetTotalRunDuration(v int64) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetTotalRunDuration(v)
+	})
+}
+
+// AddTotalRunDuration adds v to the "total_run_duration" field.
+func (u *TestSummaryUpsertOne) AddTotalRunDuration(v int64) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddTotalRunDuration(v)
+	})
+}
+
+// UpdateTotalRunDuration sets the "total_run_duration" field to the value that was provided on create.
+func (u *TestSummaryUpsertOne) UpdateTotalRunDuration() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateTotalRunDuration()
+	})
+}
+
+// ClearTotalRunDuration clears the value of the "total_run_duration" field.
+func (u *TestSummaryUpsertOne) ClearTotalRunDuration() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearTotalRunDuration()
+	})
+}
+
+// SetLabel sets the "label" field.
+func (u *TestSummaryUpsertOne) SetLabel(v string) *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetLabel(v)
+	})
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *TestSummaryUpsertOne) UpdateLabel() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateLabel()
+	})
+}
+
+// ClearLabel clears the value of the "label" field.
+func (u *TestSummaryUpsertOne) ClearLabel() *TestSummaryUpsertOne {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearLabel()
+	})
+}
+
+// Exec executes the query.
+func (u *TestSummaryUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TestSummaryCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TestSummaryUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *TestSummaryUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *TestSummaryUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // TestSummaryCreateBulk is the builder for creating many TestSummary entities in bulk.
 type TestSummaryCreateBulk struct {
 	config
 	err      error
 	builders []*TestSummaryCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the TestSummary entities in the database.
@@ -409,6 +1030,7 @@ func (tscb *TestSummaryCreateBulk) Save(ctx context.Context) ([]*TestSummary, er
 					_, err = mutators[i+1].Mutate(root, tscb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = tscb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, tscb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -459,6 +1081,376 @@ func (tscb *TestSummaryCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (tscb *TestSummaryCreateBulk) ExecX(ctx context.Context) {
 	if err := tscb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TestSummary.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TestSummaryUpsert) {
+//			SetOverallStatus(v+v).
+//		}).
+//		Exec(ctx)
+func (tscb *TestSummaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestSummaryUpsertBulk {
+	tscb.conflict = opts
+	return &TestSummaryUpsertBulk{
+		create: tscb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TestSummary.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (tscb *TestSummaryCreateBulk) OnConflictColumns(columns ...string) *TestSummaryUpsertBulk {
+	tscb.conflict = append(tscb.conflict, sql.ConflictColumns(columns...))
+	return &TestSummaryUpsertBulk{
+		create: tscb,
+	}
+}
+
+// TestSummaryUpsertBulk is the builder for "upsert"-ing
+// a bulk of TestSummary nodes.
+type TestSummaryUpsertBulk struct {
+	create *TestSummaryCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.TestSummary.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TestSummaryUpsertBulk) UpdateNewValues() *TestSummaryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TestSummary.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *TestSummaryUpsertBulk) Ignore() *TestSummaryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TestSummaryUpsertBulk) DoNothing() *TestSummaryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TestSummaryCreateBulk.OnConflict
+// documentation for more info.
+func (u *TestSummaryUpsertBulk) Update(set func(*TestSummaryUpsert)) *TestSummaryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TestSummaryUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetOverallStatus sets the "overall_status" field.
+func (u *TestSummaryUpsertBulk) SetOverallStatus(v testsummary.OverallStatus) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetOverallStatus(v)
+	})
+}
+
+// UpdateOverallStatus sets the "overall_status" field to the value that was provided on create.
+func (u *TestSummaryUpsertBulk) UpdateOverallStatus() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateOverallStatus()
+	})
+}
+
+// ClearOverallStatus clears the value of the "overall_status" field.
+func (u *TestSummaryUpsertBulk) ClearOverallStatus() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearOverallStatus()
+	})
+}
+
+// SetTotalRunCount sets the "total_run_count" field.
+func (u *TestSummaryUpsertBulk) SetTotalRunCount(v int32) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetTotalRunCount(v)
+	})
+}
+
+// AddTotalRunCount adds v to the "total_run_count" field.
+func (u *TestSummaryUpsertBulk) AddTotalRunCount(v int32) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddTotalRunCount(v)
+	})
+}
+
+// UpdateTotalRunCount sets the "total_run_count" field to the value that was provided on create.
+func (u *TestSummaryUpsertBulk) UpdateTotalRunCount() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateTotalRunCount()
+	})
+}
+
+// ClearTotalRunCount clears the value of the "total_run_count" field.
+func (u *TestSummaryUpsertBulk) ClearTotalRunCount() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearTotalRunCount()
+	})
+}
+
+// SetRunCount sets the "run_count" field.
+func (u *TestSummaryUpsertBulk) SetRunCount(v int32) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetRunCount(v)
+	})
+}
+
+// AddRunCount adds v to the "run_count" field.
+func (u *TestSummaryUpsertBulk) AddRunCount(v int32) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddRunCount(v)
+	})
+}
+
+// UpdateRunCount sets the "run_count" field to the value that was provided on create.
+func (u *TestSummaryUpsertBulk) UpdateRunCount() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateRunCount()
+	})
+}
+
+// ClearRunCount clears the value of the "run_count" field.
+func (u *TestSummaryUpsertBulk) ClearRunCount() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearRunCount()
+	})
+}
+
+// SetAttemptCount sets the "attempt_count" field.
+func (u *TestSummaryUpsertBulk) SetAttemptCount(v int32) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetAttemptCount(v)
+	})
+}
+
+// AddAttemptCount adds v to the "attempt_count" field.
+func (u *TestSummaryUpsertBulk) AddAttemptCount(v int32) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddAttemptCount(v)
+	})
+}
+
+// UpdateAttemptCount sets the "attempt_count" field to the value that was provided on create.
+func (u *TestSummaryUpsertBulk) UpdateAttemptCount() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateAttemptCount()
+	})
+}
+
+// ClearAttemptCount clears the value of the "attempt_count" field.
+func (u *TestSummaryUpsertBulk) ClearAttemptCount() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearAttemptCount()
+	})
+}
+
+// SetShardCount sets the "shard_count" field.
+func (u *TestSummaryUpsertBulk) SetShardCount(v int32) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetShardCount(v)
+	})
+}
+
+// AddShardCount adds v to the "shard_count" field.
+func (u *TestSummaryUpsertBulk) AddShardCount(v int32) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddShardCount(v)
+	})
+}
+
+// UpdateShardCount sets the "shard_count" field to the value that was provided on create.
+func (u *TestSummaryUpsertBulk) UpdateShardCount() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateShardCount()
+	})
+}
+
+// ClearShardCount clears the value of the "shard_count" field.
+func (u *TestSummaryUpsertBulk) ClearShardCount() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearShardCount()
+	})
+}
+
+// SetTotalNumCached sets the "total_num_cached" field.
+func (u *TestSummaryUpsertBulk) SetTotalNumCached(v int32) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetTotalNumCached(v)
+	})
+}
+
+// AddTotalNumCached adds v to the "total_num_cached" field.
+func (u *TestSummaryUpsertBulk) AddTotalNumCached(v int32) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddTotalNumCached(v)
+	})
+}
+
+// UpdateTotalNumCached sets the "total_num_cached" field to the value that was provided on create.
+func (u *TestSummaryUpsertBulk) UpdateTotalNumCached() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateTotalNumCached()
+	})
+}
+
+// ClearTotalNumCached clears the value of the "total_num_cached" field.
+func (u *TestSummaryUpsertBulk) ClearTotalNumCached() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearTotalNumCached()
+	})
+}
+
+// SetFirstStartTime sets the "first_start_time" field.
+func (u *TestSummaryUpsertBulk) SetFirstStartTime(v int64) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetFirstStartTime(v)
+	})
+}
+
+// AddFirstStartTime adds v to the "first_start_time" field.
+func (u *TestSummaryUpsertBulk) AddFirstStartTime(v int64) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddFirstStartTime(v)
+	})
+}
+
+// UpdateFirstStartTime sets the "first_start_time" field to the value that was provided on create.
+func (u *TestSummaryUpsertBulk) UpdateFirstStartTime() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateFirstStartTime()
+	})
+}
+
+// ClearFirstStartTime clears the value of the "first_start_time" field.
+func (u *TestSummaryUpsertBulk) ClearFirstStartTime() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearFirstStartTime()
+	})
+}
+
+// SetLastStopTime sets the "last_stop_time" field.
+func (u *TestSummaryUpsertBulk) SetLastStopTime(v int64) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetLastStopTime(v)
+	})
+}
+
+// AddLastStopTime adds v to the "last_stop_time" field.
+func (u *TestSummaryUpsertBulk) AddLastStopTime(v int64) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddLastStopTime(v)
+	})
+}
+
+// UpdateLastStopTime sets the "last_stop_time" field to the value that was provided on create.
+func (u *TestSummaryUpsertBulk) UpdateLastStopTime() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateLastStopTime()
+	})
+}
+
+// ClearLastStopTime clears the value of the "last_stop_time" field.
+func (u *TestSummaryUpsertBulk) ClearLastStopTime() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearLastStopTime()
+	})
+}
+
+// SetTotalRunDuration sets the "total_run_duration" field.
+func (u *TestSummaryUpsertBulk) SetTotalRunDuration(v int64) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetTotalRunDuration(v)
+	})
+}
+
+// AddTotalRunDuration adds v to the "total_run_duration" field.
+func (u *TestSummaryUpsertBulk) AddTotalRunDuration(v int64) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.AddTotalRunDuration(v)
+	})
+}
+
+// UpdateTotalRunDuration sets the "total_run_duration" field to the value that was provided on create.
+func (u *TestSummaryUpsertBulk) UpdateTotalRunDuration() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateTotalRunDuration()
+	})
+}
+
+// ClearTotalRunDuration clears the value of the "total_run_duration" field.
+func (u *TestSummaryUpsertBulk) ClearTotalRunDuration() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearTotalRunDuration()
+	})
+}
+
+// SetLabel sets the "label" field.
+func (u *TestSummaryUpsertBulk) SetLabel(v string) *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.SetLabel(v)
+	})
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *TestSummaryUpsertBulk) UpdateLabel() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.UpdateLabel()
+	})
+}
+
+// ClearLabel clears the value of the "label" field.
+func (u *TestSummaryUpsertBulk) ClearLabel() *TestSummaryUpsertBulk {
+	return u.Update(func(s *TestSummaryUpsert) {
+		s.ClearLabel()
+	})
+}
+
+// Exec executes the query.
+func (u *TestSummaryUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the TestSummaryCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TestSummaryCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TestSummaryUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

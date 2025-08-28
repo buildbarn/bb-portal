@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
@@ -17,32 +19,61 @@ type SourceControlCreate struct {
 	config
 	mutation *SourceControlMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
-// SetRepoURL sets the "repo_url" field.
-func (scc *SourceControlCreate) SetRepoURL(s string) *SourceControlCreate {
-	scc.mutation.SetRepoURL(s)
+// SetProvider sets the "provider" field.
+func (scc *SourceControlCreate) SetProvider(s sourcecontrol.Provider) *SourceControlCreate {
+	scc.mutation.SetProvider(s)
 	return scc
 }
 
-// SetNillableRepoURL sets the "repo_url" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRepoURL(s *string) *SourceControlCreate {
+// SetNillableProvider sets the "provider" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableProvider(s *sourcecontrol.Provider) *SourceControlCreate {
 	if s != nil {
-		scc.SetRepoURL(*s)
+		scc.SetProvider(*s)
 	}
 	return scc
 }
 
-// SetBranch sets the "branch" field.
-func (scc *SourceControlCreate) SetBranch(s string) *SourceControlCreate {
-	scc.mutation.SetBranch(s)
+// SetInstanceURL sets the "instance_url" field.
+func (scc *SourceControlCreate) SetInstanceURL(s string) *SourceControlCreate {
+	scc.mutation.SetInstanceURL(s)
 	return scc
 }
 
-// SetNillableBranch sets the "branch" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableBranch(s *string) *SourceControlCreate {
+// SetNillableInstanceURL sets the "instance_url" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableInstanceURL(s *string) *SourceControlCreate {
 	if s != nil {
-		scc.SetBranch(*s)
+		scc.SetInstanceURL(*s)
+	}
+	return scc
+}
+
+// SetRepo sets the "repo" field.
+func (scc *SourceControlCreate) SetRepo(s string) *SourceControlCreate {
+	scc.mutation.SetRepo(s)
+	return scc
+}
+
+// SetNillableRepo sets the "repo" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRepo(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetRepo(*s)
+	}
+	return scc
+}
+
+// SetRefs sets the "refs" field.
+func (scc *SourceControlCreate) SetRefs(s string) *SourceControlCreate {
+	scc.mutation.SetRefs(s)
+	return scc
+}
+
+// SetNillableRefs sets the "refs" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRefs(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetRefs(*s)
 	}
 	return scc
 }
@@ -75,30 +106,16 @@ func (scc *SourceControlCreate) SetNillableActor(s *string) *SourceControlCreate
 	return scc
 }
 
-// SetRefs sets the "refs" field.
-func (scc *SourceControlCreate) SetRefs(s string) *SourceControlCreate {
-	scc.mutation.SetRefs(s)
+// SetEventName sets the "event_name" field.
+func (scc *SourceControlCreate) SetEventName(s string) *SourceControlCreate {
+	scc.mutation.SetEventName(s)
 	return scc
 }
 
-// SetNillableRefs sets the "refs" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRefs(s *string) *SourceControlCreate {
+// SetNillableEventName sets the "event_name" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableEventName(s *string) *SourceControlCreate {
 	if s != nil {
-		scc.SetRefs(*s)
-	}
-	return scc
-}
-
-// SetRunID sets the "run_id" field.
-func (scc *SourceControlCreate) SetRunID(s string) *SourceControlCreate {
-	scc.mutation.SetRunID(s)
-	return scc
-}
-
-// SetNillableRunID sets the "run_id" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableRunID(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetRunID(*s)
+		scc.SetEventName(*s)
 	}
 	return scc
 }
@@ -117,44 +134,30 @@ func (scc *SourceControlCreate) SetNillableWorkflow(s *string) *SourceControlCre
 	return scc
 }
 
-// SetAction sets the "action" field.
-func (scc *SourceControlCreate) SetAction(s string) *SourceControlCreate {
-	scc.mutation.SetAction(s)
+// SetRunID sets the "run_id" field.
+func (scc *SourceControlCreate) SetRunID(s string) *SourceControlCreate {
+	scc.mutation.SetRunID(s)
 	return scc
 }
 
-// SetNillableAction sets the "action" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableAction(s *string) *SourceControlCreate {
+// SetNillableRunID sets the "run_id" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRunID(s *string) *SourceControlCreate {
 	if s != nil {
-		scc.SetAction(*s)
+		scc.SetRunID(*s)
 	}
 	return scc
 }
 
-// SetWorkspace sets the "workspace" field.
-func (scc *SourceControlCreate) SetWorkspace(s string) *SourceControlCreate {
-	scc.mutation.SetWorkspace(s)
+// SetRunNumber sets the "run_number" field.
+func (scc *SourceControlCreate) SetRunNumber(s string) *SourceControlCreate {
+	scc.mutation.SetRunNumber(s)
 	return scc
 }
 
-// SetNillableWorkspace sets the "workspace" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableWorkspace(s *string) *SourceControlCreate {
+// SetNillableRunNumber sets the "run_number" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableRunNumber(s *string) *SourceControlCreate {
 	if s != nil {
-		scc.SetWorkspace(*s)
-	}
-	return scc
-}
-
-// SetEventName sets the "event_name" field.
-func (scc *SourceControlCreate) SetEventName(s string) *SourceControlCreate {
-	scc.mutation.SetEventName(s)
-	return scc
-}
-
-// SetNillableEventName sets the "event_name" field if the given value is not nil.
-func (scc *SourceControlCreate) SetNillableEventName(s *string) *SourceControlCreate {
-	if s != nil {
-		scc.SetEventName(*s)
+		scc.SetRunNumber(*s)
 	}
 	return scc
 }
@@ -169,6 +172,20 @@ func (scc *SourceControlCreate) SetJob(s string) *SourceControlCreate {
 func (scc *SourceControlCreate) SetNillableJob(s *string) *SourceControlCreate {
 	if s != nil {
 		scc.SetJob(*s)
+	}
+	return scc
+}
+
+// SetAction sets the "action" field.
+func (scc *SourceControlCreate) SetAction(s string) *SourceControlCreate {
+	scc.mutation.SetAction(s)
+	return scc
+}
+
+// SetNillableAction sets the "action" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableAction(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetAction(*s)
 	}
 	return scc
 }
@@ -211,6 +228,20 @@ func (scc *SourceControlCreate) SetRunnerOs(s string) *SourceControlCreate {
 func (scc *SourceControlCreate) SetNillableRunnerOs(s *string) *SourceControlCreate {
 	if s != nil {
 		scc.SetRunnerOs(*s)
+	}
+	return scc
+}
+
+// SetWorkspace sets the "workspace" field.
+func (scc *SourceControlCreate) SetWorkspace(s string) *SourceControlCreate {
+	scc.mutation.SetWorkspace(s)
+	return scc
+}
+
+// SetNillableWorkspace sets the "workspace" field if the given value is not nil.
+func (scc *SourceControlCreate) SetNillableWorkspace(s *string) *SourceControlCreate {
+	if s != nil {
+		scc.SetWorkspace(*s)
 	}
 	return scc
 }
@@ -268,6 +299,11 @@ func (scc *SourceControlCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (scc *SourceControlCreate) check() error {
+	if v, ok := scc.mutation.Provider(); ok {
+		if err := sourcecontrol.ProviderValidator(v); err != nil {
+			return &ValidationError{Name: "provider", err: fmt.Errorf(`ent: validator failed for field "SourceControl.provider": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -294,13 +330,22 @@ func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSp
 		_node = &SourceControl{config: scc.config}
 		_spec = sqlgraph.NewCreateSpec(sourcecontrol.Table, sqlgraph.NewFieldSpec(sourcecontrol.FieldID, field.TypeInt))
 	)
-	if value, ok := scc.mutation.RepoURL(); ok {
-		_spec.SetField(sourcecontrol.FieldRepoURL, field.TypeString, value)
-		_node.RepoURL = value
+	_spec.OnConflict = scc.conflict
+	if value, ok := scc.mutation.Provider(); ok {
+		_spec.SetField(sourcecontrol.FieldProvider, field.TypeEnum, value)
+		_node.Provider = value
 	}
-	if value, ok := scc.mutation.Branch(); ok {
-		_spec.SetField(sourcecontrol.FieldBranch, field.TypeString, value)
-		_node.Branch = value
+	if value, ok := scc.mutation.InstanceURL(); ok {
+		_spec.SetField(sourcecontrol.FieldInstanceURL, field.TypeString, value)
+		_node.InstanceURL = value
+	}
+	if value, ok := scc.mutation.Repo(); ok {
+		_spec.SetField(sourcecontrol.FieldRepo, field.TypeString, value)
+		_node.Repo = value
+	}
+	if value, ok := scc.mutation.Refs(); ok {
+		_spec.SetField(sourcecontrol.FieldRefs, field.TypeString, value)
+		_node.Refs = value
 	}
 	if value, ok := scc.mutation.CommitSha(); ok {
 		_spec.SetField(sourcecontrol.FieldCommitSha, field.TypeString, value)
@@ -310,33 +355,29 @@ func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSp
 		_spec.SetField(sourcecontrol.FieldActor, field.TypeString, value)
 		_node.Actor = value
 	}
-	if value, ok := scc.mutation.Refs(); ok {
-		_spec.SetField(sourcecontrol.FieldRefs, field.TypeString, value)
-		_node.Refs = value
-	}
-	if value, ok := scc.mutation.RunID(); ok {
-		_spec.SetField(sourcecontrol.FieldRunID, field.TypeString, value)
-		_node.RunID = value
+	if value, ok := scc.mutation.EventName(); ok {
+		_spec.SetField(sourcecontrol.FieldEventName, field.TypeString, value)
+		_node.EventName = value
 	}
 	if value, ok := scc.mutation.Workflow(); ok {
 		_spec.SetField(sourcecontrol.FieldWorkflow, field.TypeString, value)
 		_node.Workflow = value
 	}
-	if value, ok := scc.mutation.Action(); ok {
-		_spec.SetField(sourcecontrol.FieldAction, field.TypeString, value)
-		_node.Action = value
+	if value, ok := scc.mutation.RunID(); ok {
+		_spec.SetField(sourcecontrol.FieldRunID, field.TypeString, value)
+		_node.RunID = value
 	}
-	if value, ok := scc.mutation.Workspace(); ok {
-		_spec.SetField(sourcecontrol.FieldWorkspace, field.TypeString, value)
-		_node.Workspace = value
-	}
-	if value, ok := scc.mutation.EventName(); ok {
-		_spec.SetField(sourcecontrol.FieldEventName, field.TypeString, value)
-		_node.EventName = value
+	if value, ok := scc.mutation.RunNumber(); ok {
+		_spec.SetField(sourcecontrol.FieldRunNumber, field.TypeString, value)
+		_node.RunNumber = value
 	}
 	if value, ok := scc.mutation.Job(); ok {
 		_spec.SetField(sourcecontrol.FieldJob, field.TypeString, value)
 		_node.Job = value
+	}
+	if value, ok := scc.mutation.Action(); ok {
+		_spec.SetField(sourcecontrol.FieldAction, field.TypeString, value)
+		_node.Action = value
 	}
 	if value, ok := scc.mutation.RunnerName(); ok {
 		_spec.SetField(sourcecontrol.FieldRunnerName, field.TypeString, value)
@@ -349,6 +390,10 @@ func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSp
 	if value, ok := scc.mutation.RunnerOs(); ok {
 		_spec.SetField(sourcecontrol.FieldRunnerOs, field.TypeString, value)
 		_node.RunnerOs = value
+	}
+	if value, ok := scc.mutation.Workspace(); ok {
+		_spec.SetField(sourcecontrol.FieldWorkspace, field.TypeString, value)
+		_node.Workspace = value
 	}
 	if nodes := scc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -370,11 +415,758 @@ func (scc *SourceControlCreate) createSpec() (*SourceControl, *sqlgraph.CreateSp
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.SourceControl.Create().
+//		SetProvider(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.SourceControlUpsert) {
+//			SetProvider(v+v).
+//		}).
+//		Exec(ctx)
+func (scc *SourceControlCreate) OnConflict(opts ...sql.ConflictOption) *SourceControlUpsertOne {
+	scc.conflict = opts
+	return &SourceControlUpsertOne{
+		create: scc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.SourceControl.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (scc *SourceControlCreate) OnConflictColumns(columns ...string) *SourceControlUpsertOne {
+	scc.conflict = append(scc.conflict, sql.ConflictColumns(columns...))
+	return &SourceControlUpsertOne{
+		create: scc,
+	}
+}
+
+type (
+	// SourceControlUpsertOne is the builder for "upsert"-ing
+	//  one SourceControl node.
+	SourceControlUpsertOne struct {
+		create *SourceControlCreate
+	}
+
+	// SourceControlUpsert is the "OnConflict" setter.
+	SourceControlUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetProvider sets the "provider" field.
+func (u *SourceControlUpsert) SetProvider(v sourcecontrol.Provider) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldProvider, v)
+	return u
+}
+
+// UpdateProvider sets the "provider" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateProvider() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldProvider)
+	return u
+}
+
+// ClearProvider clears the value of the "provider" field.
+func (u *SourceControlUpsert) ClearProvider() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldProvider)
+	return u
+}
+
+// SetInstanceURL sets the "instance_url" field.
+func (u *SourceControlUpsert) SetInstanceURL(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldInstanceURL, v)
+	return u
+}
+
+// UpdateInstanceURL sets the "instance_url" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateInstanceURL() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldInstanceURL)
+	return u
+}
+
+// ClearInstanceURL clears the value of the "instance_url" field.
+func (u *SourceControlUpsert) ClearInstanceURL() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldInstanceURL)
+	return u
+}
+
+// SetRepo sets the "repo" field.
+func (u *SourceControlUpsert) SetRepo(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldRepo, v)
+	return u
+}
+
+// UpdateRepo sets the "repo" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateRepo() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldRepo)
+	return u
+}
+
+// ClearRepo clears the value of the "repo" field.
+func (u *SourceControlUpsert) ClearRepo() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldRepo)
+	return u
+}
+
+// SetRefs sets the "refs" field.
+func (u *SourceControlUpsert) SetRefs(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldRefs, v)
+	return u
+}
+
+// UpdateRefs sets the "refs" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateRefs() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldRefs)
+	return u
+}
+
+// ClearRefs clears the value of the "refs" field.
+func (u *SourceControlUpsert) ClearRefs() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldRefs)
+	return u
+}
+
+// SetCommitSha sets the "commit_sha" field.
+func (u *SourceControlUpsert) SetCommitSha(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldCommitSha, v)
+	return u
+}
+
+// UpdateCommitSha sets the "commit_sha" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateCommitSha() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldCommitSha)
+	return u
+}
+
+// ClearCommitSha clears the value of the "commit_sha" field.
+func (u *SourceControlUpsert) ClearCommitSha() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldCommitSha)
+	return u
+}
+
+// SetActor sets the "actor" field.
+func (u *SourceControlUpsert) SetActor(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldActor, v)
+	return u
+}
+
+// UpdateActor sets the "actor" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateActor() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldActor)
+	return u
+}
+
+// ClearActor clears the value of the "actor" field.
+func (u *SourceControlUpsert) ClearActor() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldActor)
+	return u
+}
+
+// SetEventName sets the "event_name" field.
+func (u *SourceControlUpsert) SetEventName(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldEventName, v)
+	return u
+}
+
+// UpdateEventName sets the "event_name" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateEventName() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldEventName)
+	return u
+}
+
+// ClearEventName clears the value of the "event_name" field.
+func (u *SourceControlUpsert) ClearEventName() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldEventName)
+	return u
+}
+
+// SetWorkflow sets the "workflow" field.
+func (u *SourceControlUpsert) SetWorkflow(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldWorkflow, v)
+	return u
+}
+
+// UpdateWorkflow sets the "workflow" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateWorkflow() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldWorkflow)
+	return u
+}
+
+// ClearWorkflow clears the value of the "workflow" field.
+func (u *SourceControlUpsert) ClearWorkflow() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldWorkflow)
+	return u
+}
+
+// SetRunID sets the "run_id" field.
+func (u *SourceControlUpsert) SetRunID(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldRunID, v)
+	return u
+}
+
+// UpdateRunID sets the "run_id" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateRunID() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldRunID)
+	return u
+}
+
+// ClearRunID clears the value of the "run_id" field.
+func (u *SourceControlUpsert) ClearRunID() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldRunID)
+	return u
+}
+
+// SetRunNumber sets the "run_number" field.
+func (u *SourceControlUpsert) SetRunNumber(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldRunNumber, v)
+	return u
+}
+
+// UpdateRunNumber sets the "run_number" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateRunNumber() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldRunNumber)
+	return u
+}
+
+// ClearRunNumber clears the value of the "run_number" field.
+func (u *SourceControlUpsert) ClearRunNumber() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldRunNumber)
+	return u
+}
+
+// SetJob sets the "job" field.
+func (u *SourceControlUpsert) SetJob(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldJob, v)
+	return u
+}
+
+// UpdateJob sets the "job" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateJob() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldJob)
+	return u
+}
+
+// ClearJob clears the value of the "job" field.
+func (u *SourceControlUpsert) ClearJob() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldJob)
+	return u
+}
+
+// SetAction sets the "action" field.
+func (u *SourceControlUpsert) SetAction(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldAction, v)
+	return u
+}
+
+// UpdateAction sets the "action" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateAction() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldAction)
+	return u
+}
+
+// ClearAction clears the value of the "action" field.
+func (u *SourceControlUpsert) ClearAction() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldAction)
+	return u
+}
+
+// SetRunnerName sets the "runner_name" field.
+func (u *SourceControlUpsert) SetRunnerName(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldRunnerName, v)
+	return u
+}
+
+// UpdateRunnerName sets the "runner_name" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateRunnerName() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldRunnerName)
+	return u
+}
+
+// ClearRunnerName clears the value of the "runner_name" field.
+func (u *SourceControlUpsert) ClearRunnerName() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldRunnerName)
+	return u
+}
+
+// SetRunnerArch sets the "runner_arch" field.
+func (u *SourceControlUpsert) SetRunnerArch(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldRunnerArch, v)
+	return u
+}
+
+// UpdateRunnerArch sets the "runner_arch" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateRunnerArch() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldRunnerArch)
+	return u
+}
+
+// ClearRunnerArch clears the value of the "runner_arch" field.
+func (u *SourceControlUpsert) ClearRunnerArch() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldRunnerArch)
+	return u
+}
+
+// SetRunnerOs sets the "runner_os" field.
+func (u *SourceControlUpsert) SetRunnerOs(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldRunnerOs, v)
+	return u
+}
+
+// UpdateRunnerOs sets the "runner_os" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateRunnerOs() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldRunnerOs)
+	return u
+}
+
+// ClearRunnerOs clears the value of the "runner_os" field.
+func (u *SourceControlUpsert) ClearRunnerOs() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldRunnerOs)
+	return u
+}
+
+// SetWorkspace sets the "workspace" field.
+func (u *SourceControlUpsert) SetWorkspace(v string) *SourceControlUpsert {
+	u.Set(sourcecontrol.FieldWorkspace, v)
+	return u
+}
+
+// UpdateWorkspace sets the "workspace" field to the value that was provided on create.
+func (u *SourceControlUpsert) UpdateWorkspace() *SourceControlUpsert {
+	u.SetExcluded(sourcecontrol.FieldWorkspace)
+	return u
+}
+
+// ClearWorkspace clears the value of the "workspace" field.
+func (u *SourceControlUpsert) ClearWorkspace() *SourceControlUpsert {
+	u.SetNull(sourcecontrol.FieldWorkspace)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.SourceControl.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *SourceControlUpsertOne) UpdateNewValues() *SourceControlUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.SourceControl.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *SourceControlUpsertOne) Ignore() *SourceControlUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *SourceControlUpsertOne) DoNothing() *SourceControlUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the SourceControlCreate.OnConflict
+// documentation for more info.
+func (u *SourceControlUpsertOne) Update(set func(*SourceControlUpsert)) *SourceControlUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&SourceControlUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetProvider sets the "provider" field.
+func (u *SourceControlUpsertOne) SetProvider(v sourcecontrol.Provider) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetProvider(v)
+	})
+}
+
+// UpdateProvider sets the "provider" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateProvider() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateProvider()
+	})
+}
+
+// ClearProvider clears the value of the "provider" field.
+func (u *SourceControlUpsertOne) ClearProvider() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearProvider()
+	})
+}
+
+// SetInstanceURL sets the "instance_url" field.
+func (u *SourceControlUpsertOne) SetInstanceURL(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetInstanceURL(v)
+	})
+}
+
+// UpdateInstanceURL sets the "instance_url" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateInstanceURL() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateInstanceURL()
+	})
+}
+
+// ClearInstanceURL clears the value of the "instance_url" field.
+func (u *SourceControlUpsertOne) ClearInstanceURL() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearInstanceURL()
+	})
+}
+
+// SetRepo sets the "repo" field.
+func (u *SourceControlUpsertOne) SetRepo(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRepo(v)
+	})
+}
+
+// UpdateRepo sets the "repo" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateRepo() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRepo()
+	})
+}
+
+// ClearRepo clears the value of the "repo" field.
+func (u *SourceControlUpsertOne) ClearRepo() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRepo()
+	})
+}
+
+// SetRefs sets the "refs" field.
+func (u *SourceControlUpsertOne) SetRefs(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRefs(v)
+	})
+}
+
+// UpdateRefs sets the "refs" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateRefs() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRefs()
+	})
+}
+
+// ClearRefs clears the value of the "refs" field.
+func (u *SourceControlUpsertOne) ClearRefs() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRefs()
+	})
+}
+
+// SetCommitSha sets the "commit_sha" field.
+func (u *SourceControlUpsertOne) SetCommitSha(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetCommitSha(v)
+	})
+}
+
+// UpdateCommitSha sets the "commit_sha" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateCommitSha() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateCommitSha()
+	})
+}
+
+// ClearCommitSha clears the value of the "commit_sha" field.
+func (u *SourceControlUpsertOne) ClearCommitSha() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearCommitSha()
+	})
+}
+
+// SetActor sets the "actor" field.
+func (u *SourceControlUpsertOne) SetActor(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetActor(v)
+	})
+}
+
+// UpdateActor sets the "actor" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateActor() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateActor()
+	})
+}
+
+// ClearActor clears the value of the "actor" field.
+func (u *SourceControlUpsertOne) ClearActor() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearActor()
+	})
+}
+
+// SetEventName sets the "event_name" field.
+func (u *SourceControlUpsertOne) SetEventName(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetEventName(v)
+	})
+}
+
+// UpdateEventName sets the "event_name" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateEventName() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateEventName()
+	})
+}
+
+// ClearEventName clears the value of the "event_name" field.
+func (u *SourceControlUpsertOne) ClearEventName() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearEventName()
+	})
+}
+
+// SetWorkflow sets the "workflow" field.
+func (u *SourceControlUpsertOne) SetWorkflow(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetWorkflow(v)
+	})
+}
+
+// UpdateWorkflow sets the "workflow" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateWorkflow() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateWorkflow()
+	})
+}
+
+// ClearWorkflow clears the value of the "workflow" field.
+func (u *SourceControlUpsertOne) ClearWorkflow() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearWorkflow()
+	})
+}
+
+// SetRunID sets the "run_id" field.
+func (u *SourceControlUpsertOne) SetRunID(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRunID(v)
+	})
+}
+
+// UpdateRunID sets the "run_id" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateRunID() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRunID()
+	})
+}
+
+// ClearRunID clears the value of the "run_id" field.
+func (u *SourceControlUpsertOne) ClearRunID() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRunID()
+	})
+}
+
+// SetRunNumber sets the "run_number" field.
+func (u *SourceControlUpsertOne) SetRunNumber(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRunNumber(v)
+	})
+}
+
+// UpdateRunNumber sets the "run_number" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateRunNumber() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRunNumber()
+	})
+}
+
+// ClearRunNumber clears the value of the "run_number" field.
+func (u *SourceControlUpsertOne) ClearRunNumber() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRunNumber()
+	})
+}
+
+// SetJob sets the "job" field.
+func (u *SourceControlUpsertOne) SetJob(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetJob(v)
+	})
+}
+
+// UpdateJob sets the "job" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateJob() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateJob()
+	})
+}
+
+// ClearJob clears the value of the "job" field.
+func (u *SourceControlUpsertOne) ClearJob() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearJob()
+	})
+}
+
+// SetAction sets the "action" field.
+func (u *SourceControlUpsertOne) SetAction(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetAction(v)
+	})
+}
+
+// UpdateAction sets the "action" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateAction() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateAction()
+	})
+}
+
+// ClearAction clears the value of the "action" field.
+func (u *SourceControlUpsertOne) ClearAction() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearAction()
+	})
+}
+
+// SetRunnerName sets the "runner_name" field.
+func (u *SourceControlUpsertOne) SetRunnerName(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRunnerName(v)
+	})
+}
+
+// UpdateRunnerName sets the "runner_name" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateRunnerName() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRunnerName()
+	})
+}
+
+// ClearRunnerName clears the value of the "runner_name" field.
+func (u *SourceControlUpsertOne) ClearRunnerName() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRunnerName()
+	})
+}
+
+// SetRunnerArch sets the "runner_arch" field.
+func (u *SourceControlUpsertOne) SetRunnerArch(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRunnerArch(v)
+	})
+}
+
+// UpdateRunnerArch sets the "runner_arch" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateRunnerArch() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRunnerArch()
+	})
+}
+
+// ClearRunnerArch clears the value of the "runner_arch" field.
+func (u *SourceControlUpsertOne) ClearRunnerArch() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRunnerArch()
+	})
+}
+
+// SetRunnerOs sets the "runner_os" field.
+func (u *SourceControlUpsertOne) SetRunnerOs(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRunnerOs(v)
+	})
+}
+
+// UpdateRunnerOs sets the "runner_os" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateRunnerOs() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRunnerOs()
+	})
+}
+
+// ClearRunnerOs clears the value of the "runner_os" field.
+func (u *SourceControlUpsertOne) ClearRunnerOs() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRunnerOs()
+	})
+}
+
+// SetWorkspace sets the "workspace" field.
+func (u *SourceControlUpsertOne) SetWorkspace(v string) *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetWorkspace(v)
+	})
+}
+
+// UpdateWorkspace sets the "workspace" field to the value that was provided on create.
+func (u *SourceControlUpsertOne) UpdateWorkspace() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateWorkspace()
+	})
+}
+
+// ClearWorkspace clears the value of the "workspace" field.
+func (u *SourceControlUpsertOne) ClearWorkspace() *SourceControlUpsertOne {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearWorkspace()
+	})
+}
+
+// Exec executes the query.
+func (u *SourceControlUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for SourceControlCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *SourceControlUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *SourceControlUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *SourceControlUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // SourceControlCreateBulk is the builder for creating many SourceControl entities in bulk.
 type SourceControlCreateBulk struct {
 	config
 	err      error
 	builders []*SourceControlCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the SourceControl entities in the database.
@@ -403,6 +1195,7 @@ func (sccb *SourceControlCreateBulk) Save(ctx context.Context) ([]*SourceControl
 					_, err = mutators[i+1].Mutate(root, sccb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = sccb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, sccb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -453,6 +1246,446 @@ func (sccb *SourceControlCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (sccb *SourceControlCreateBulk) ExecX(ctx context.Context) {
 	if err := sccb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.SourceControl.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.SourceControlUpsert) {
+//			SetProvider(v+v).
+//		}).
+//		Exec(ctx)
+func (sccb *SourceControlCreateBulk) OnConflict(opts ...sql.ConflictOption) *SourceControlUpsertBulk {
+	sccb.conflict = opts
+	return &SourceControlUpsertBulk{
+		create: sccb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.SourceControl.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (sccb *SourceControlCreateBulk) OnConflictColumns(columns ...string) *SourceControlUpsertBulk {
+	sccb.conflict = append(sccb.conflict, sql.ConflictColumns(columns...))
+	return &SourceControlUpsertBulk{
+		create: sccb,
+	}
+}
+
+// SourceControlUpsertBulk is the builder for "upsert"-ing
+// a bulk of SourceControl nodes.
+type SourceControlUpsertBulk struct {
+	create *SourceControlCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.SourceControl.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *SourceControlUpsertBulk) UpdateNewValues() *SourceControlUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.SourceControl.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *SourceControlUpsertBulk) Ignore() *SourceControlUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *SourceControlUpsertBulk) DoNothing() *SourceControlUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the SourceControlCreateBulk.OnConflict
+// documentation for more info.
+func (u *SourceControlUpsertBulk) Update(set func(*SourceControlUpsert)) *SourceControlUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&SourceControlUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetProvider sets the "provider" field.
+func (u *SourceControlUpsertBulk) SetProvider(v sourcecontrol.Provider) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetProvider(v)
+	})
+}
+
+// UpdateProvider sets the "provider" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateProvider() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateProvider()
+	})
+}
+
+// ClearProvider clears the value of the "provider" field.
+func (u *SourceControlUpsertBulk) ClearProvider() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearProvider()
+	})
+}
+
+// SetInstanceURL sets the "instance_url" field.
+func (u *SourceControlUpsertBulk) SetInstanceURL(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetInstanceURL(v)
+	})
+}
+
+// UpdateInstanceURL sets the "instance_url" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateInstanceURL() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateInstanceURL()
+	})
+}
+
+// ClearInstanceURL clears the value of the "instance_url" field.
+func (u *SourceControlUpsertBulk) ClearInstanceURL() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearInstanceURL()
+	})
+}
+
+// SetRepo sets the "repo" field.
+func (u *SourceControlUpsertBulk) SetRepo(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRepo(v)
+	})
+}
+
+// UpdateRepo sets the "repo" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateRepo() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRepo()
+	})
+}
+
+// ClearRepo clears the value of the "repo" field.
+func (u *SourceControlUpsertBulk) ClearRepo() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRepo()
+	})
+}
+
+// SetRefs sets the "refs" field.
+func (u *SourceControlUpsertBulk) SetRefs(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRefs(v)
+	})
+}
+
+// UpdateRefs sets the "refs" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateRefs() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRefs()
+	})
+}
+
+// ClearRefs clears the value of the "refs" field.
+func (u *SourceControlUpsertBulk) ClearRefs() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRefs()
+	})
+}
+
+// SetCommitSha sets the "commit_sha" field.
+func (u *SourceControlUpsertBulk) SetCommitSha(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetCommitSha(v)
+	})
+}
+
+// UpdateCommitSha sets the "commit_sha" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateCommitSha() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateCommitSha()
+	})
+}
+
+// ClearCommitSha clears the value of the "commit_sha" field.
+func (u *SourceControlUpsertBulk) ClearCommitSha() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearCommitSha()
+	})
+}
+
+// SetActor sets the "actor" field.
+func (u *SourceControlUpsertBulk) SetActor(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetActor(v)
+	})
+}
+
+// UpdateActor sets the "actor" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateActor() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateActor()
+	})
+}
+
+// ClearActor clears the value of the "actor" field.
+func (u *SourceControlUpsertBulk) ClearActor() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearActor()
+	})
+}
+
+// SetEventName sets the "event_name" field.
+func (u *SourceControlUpsertBulk) SetEventName(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetEventName(v)
+	})
+}
+
+// UpdateEventName sets the "event_name" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateEventName() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateEventName()
+	})
+}
+
+// ClearEventName clears the value of the "event_name" field.
+func (u *SourceControlUpsertBulk) ClearEventName() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearEventName()
+	})
+}
+
+// SetWorkflow sets the "workflow" field.
+func (u *SourceControlUpsertBulk) SetWorkflow(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetWorkflow(v)
+	})
+}
+
+// UpdateWorkflow sets the "workflow" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateWorkflow() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateWorkflow()
+	})
+}
+
+// ClearWorkflow clears the value of the "workflow" field.
+func (u *SourceControlUpsertBulk) ClearWorkflow() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearWorkflow()
+	})
+}
+
+// SetRunID sets the "run_id" field.
+func (u *SourceControlUpsertBulk) SetRunID(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRunID(v)
+	})
+}
+
+// UpdateRunID sets the "run_id" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateRunID() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRunID()
+	})
+}
+
+// ClearRunID clears the value of the "run_id" field.
+func (u *SourceControlUpsertBulk) ClearRunID() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRunID()
+	})
+}
+
+// SetRunNumber sets the "run_number" field.
+func (u *SourceControlUpsertBulk) SetRunNumber(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRunNumber(v)
+	})
+}
+
+// UpdateRunNumber sets the "run_number" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateRunNumber() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRunNumber()
+	})
+}
+
+// ClearRunNumber clears the value of the "run_number" field.
+func (u *SourceControlUpsertBulk) ClearRunNumber() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRunNumber()
+	})
+}
+
+// SetJob sets the "job" field.
+func (u *SourceControlUpsertBulk) SetJob(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetJob(v)
+	})
+}
+
+// UpdateJob sets the "job" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateJob() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateJob()
+	})
+}
+
+// ClearJob clears the value of the "job" field.
+func (u *SourceControlUpsertBulk) ClearJob() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearJob()
+	})
+}
+
+// SetAction sets the "action" field.
+func (u *SourceControlUpsertBulk) SetAction(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetAction(v)
+	})
+}
+
+// UpdateAction sets the "action" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateAction() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateAction()
+	})
+}
+
+// ClearAction clears the value of the "action" field.
+func (u *SourceControlUpsertBulk) ClearAction() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearAction()
+	})
+}
+
+// SetRunnerName sets the "runner_name" field.
+func (u *SourceControlUpsertBulk) SetRunnerName(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRunnerName(v)
+	})
+}
+
+// UpdateRunnerName sets the "runner_name" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateRunnerName() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRunnerName()
+	})
+}
+
+// ClearRunnerName clears the value of the "runner_name" field.
+func (u *SourceControlUpsertBulk) ClearRunnerName() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRunnerName()
+	})
+}
+
+// SetRunnerArch sets the "runner_arch" field.
+func (u *SourceControlUpsertBulk) SetRunnerArch(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRunnerArch(v)
+	})
+}
+
+// UpdateRunnerArch sets the "runner_arch" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateRunnerArch() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRunnerArch()
+	})
+}
+
+// ClearRunnerArch clears the value of the "runner_arch" field.
+func (u *SourceControlUpsertBulk) ClearRunnerArch() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRunnerArch()
+	})
+}
+
+// SetRunnerOs sets the "runner_os" field.
+func (u *SourceControlUpsertBulk) SetRunnerOs(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetRunnerOs(v)
+	})
+}
+
+// UpdateRunnerOs sets the "runner_os" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateRunnerOs() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateRunnerOs()
+	})
+}
+
+// ClearRunnerOs clears the value of the "runner_os" field.
+func (u *SourceControlUpsertBulk) ClearRunnerOs() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearRunnerOs()
+	})
+}
+
+// SetWorkspace sets the "workspace" field.
+func (u *SourceControlUpsertBulk) SetWorkspace(v string) *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.SetWorkspace(v)
+	})
+}
+
+// UpdateWorkspace sets the "workspace" field to the value that was provided on create.
+func (u *SourceControlUpsertBulk) UpdateWorkspace() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.UpdateWorkspace()
+	})
+}
+
+// ClearWorkspace clears the value of the "workspace" field.
+func (u *SourceControlUpsertBulk) ClearWorkspace() *SourceControlUpsertBulk {
+	return u.Update(func(s *SourceControlUpsert) {
+		s.ClearWorkspace()
+	})
+}
+
+// Exec executes the query.
+func (u *SourceControlUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the SourceControlCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for SourceControlCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *SourceControlUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

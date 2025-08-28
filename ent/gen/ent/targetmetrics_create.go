@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -17,6 +19,7 @@ type TargetMetricsCreate struct {
 	config
 	mutation *TargetMetricsMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetTargetsLoaded sets the "targets_loaded" field.
@@ -140,6 +143,7 @@ func (tmc *TargetMetricsCreate) createSpec() (*TargetMetrics, *sqlgraph.CreateSp
 		_node = &TargetMetrics{config: tmc.config}
 		_spec = sqlgraph.NewCreateSpec(targetmetrics.Table, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = tmc.conflict
 	if value, ok := tmc.mutation.TargetsLoaded(); ok {
 		_spec.SetField(targetmetrics.FieldTargetsLoaded, field.TypeInt64, value)
 		_node.TargetsLoaded = value
@@ -172,11 +176,290 @@ func (tmc *TargetMetricsCreate) createSpec() (*TargetMetrics, *sqlgraph.CreateSp
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TargetMetrics.Create().
+//		SetTargetsLoaded(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TargetMetricsUpsert) {
+//			SetTargetsLoaded(v+v).
+//		}).
+//		Exec(ctx)
+func (tmc *TargetMetricsCreate) OnConflict(opts ...sql.ConflictOption) *TargetMetricsUpsertOne {
+	tmc.conflict = opts
+	return &TargetMetricsUpsertOne{
+		create: tmc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TargetMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (tmc *TargetMetricsCreate) OnConflictColumns(columns ...string) *TargetMetricsUpsertOne {
+	tmc.conflict = append(tmc.conflict, sql.ConflictColumns(columns...))
+	return &TargetMetricsUpsertOne{
+		create: tmc,
+	}
+}
+
+type (
+	// TargetMetricsUpsertOne is the builder for "upsert"-ing
+	//  one TargetMetrics node.
+	TargetMetricsUpsertOne struct {
+		create *TargetMetricsCreate
+	}
+
+	// TargetMetricsUpsert is the "OnConflict" setter.
+	TargetMetricsUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetTargetsLoaded sets the "targets_loaded" field.
+func (u *TargetMetricsUpsert) SetTargetsLoaded(v int64) *TargetMetricsUpsert {
+	u.Set(targetmetrics.FieldTargetsLoaded, v)
+	return u
+}
+
+// UpdateTargetsLoaded sets the "targets_loaded" field to the value that was provided on create.
+func (u *TargetMetricsUpsert) UpdateTargetsLoaded() *TargetMetricsUpsert {
+	u.SetExcluded(targetmetrics.FieldTargetsLoaded)
+	return u
+}
+
+// AddTargetsLoaded adds v to the "targets_loaded" field.
+func (u *TargetMetricsUpsert) AddTargetsLoaded(v int64) *TargetMetricsUpsert {
+	u.Add(targetmetrics.FieldTargetsLoaded, v)
+	return u
+}
+
+// ClearTargetsLoaded clears the value of the "targets_loaded" field.
+func (u *TargetMetricsUpsert) ClearTargetsLoaded() *TargetMetricsUpsert {
+	u.SetNull(targetmetrics.FieldTargetsLoaded)
+	return u
+}
+
+// SetTargetsConfigured sets the "targets_configured" field.
+func (u *TargetMetricsUpsert) SetTargetsConfigured(v int64) *TargetMetricsUpsert {
+	u.Set(targetmetrics.FieldTargetsConfigured, v)
+	return u
+}
+
+// UpdateTargetsConfigured sets the "targets_configured" field to the value that was provided on create.
+func (u *TargetMetricsUpsert) UpdateTargetsConfigured() *TargetMetricsUpsert {
+	u.SetExcluded(targetmetrics.FieldTargetsConfigured)
+	return u
+}
+
+// AddTargetsConfigured adds v to the "targets_configured" field.
+func (u *TargetMetricsUpsert) AddTargetsConfigured(v int64) *TargetMetricsUpsert {
+	u.Add(targetmetrics.FieldTargetsConfigured, v)
+	return u
+}
+
+// ClearTargetsConfigured clears the value of the "targets_configured" field.
+func (u *TargetMetricsUpsert) ClearTargetsConfigured() *TargetMetricsUpsert {
+	u.SetNull(targetmetrics.FieldTargetsConfigured)
+	return u
+}
+
+// SetTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field.
+func (u *TargetMetricsUpsert) SetTargetsConfiguredNotIncludingAspects(v int64) *TargetMetricsUpsert {
+	u.Set(targetmetrics.FieldTargetsConfiguredNotIncludingAspects, v)
+	return u
+}
+
+// UpdateTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field to the value that was provided on create.
+func (u *TargetMetricsUpsert) UpdateTargetsConfiguredNotIncludingAspects() *TargetMetricsUpsert {
+	u.SetExcluded(targetmetrics.FieldTargetsConfiguredNotIncludingAspects)
+	return u
+}
+
+// AddTargetsConfiguredNotIncludingAspects adds v to the "targets_configured_not_including_aspects" field.
+func (u *TargetMetricsUpsert) AddTargetsConfiguredNotIncludingAspects(v int64) *TargetMetricsUpsert {
+	u.Add(targetmetrics.FieldTargetsConfiguredNotIncludingAspects, v)
+	return u
+}
+
+// ClearTargetsConfiguredNotIncludingAspects clears the value of the "targets_configured_not_including_aspects" field.
+func (u *TargetMetricsUpsert) ClearTargetsConfiguredNotIncludingAspects() *TargetMetricsUpsert {
+	u.SetNull(targetmetrics.FieldTargetsConfiguredNotIncludingAspects)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.TargetMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TargetMetricsUpsertOne) UpdateNewValues() *TargetMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TargetMetrics.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *TargetMetricsUpsertOne) Ignore() *TargetMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TargetMetricsUpsertOne) DoNothing() *TargetMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TargetMetricsCreate.OnConflict
+// documentation for more info.
+func (u *TargetMetricsUpsertOne) Update(set func(*TargetMetricsUpsert)) *TargetMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TargetMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetTargetsLoaded sets the "targets_loaded" field.
+func (u *TargetMetricsUpsertOne) SetTargetsLoaded(v int64) *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.SetTargetsLoaded(v)
+	})
+}
+
+// AddTargetsLoaded adds v to the "targets_loaded" field.
+func (u *TargetMetricsUpsertOne) AddTargetsLoaded(v int64) *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.AddTargetsLoaded(v)
+	})
+}
+
+// UpdateTargetsLoaded sets the "targets_loaded" field to the value that was provided on create.
+func (u *TargetMetricsUpsertOne) UpdateTargetsLoaded() *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.UpdateTargetsLoaded()
+	})
+}
+
+// ClearTargetsLoaded clears the value of the "targets_loaded" field.
+func (u *TargetMetricsUpsertOne) ClearTargetsLoaded() *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.ClearTargetsLoaded()
+	})
+}
+
+// SetTargetsConfigured sets the "targets_configured" field.
+func (u *TargetMetricsUpsertOne) SetTargetsConfigured(v int64) *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.SetTargetsConfigured(v)
+	})
+}
+
+// AddTargetsConfigured adds v to the "targets_configured" field.
+func (u *TargetMetricsUpsertOne) AddTargetsConfigured(v int64) *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.AddTargetsConfigured(v)
+	})
+}
+
+// UpdateTargetsConfigured sets the "targets_configured" field to the value that was provided on create.
+func (u *TargetMetricsUpsertOne) UpdateTargetsConfigured() *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.UpdateTargetsConfigured()
+	})
+}
+
+// ClearTargetsConfigured clears the value of the "targets_configured" field.
+func (u *TargetMetricsUpsertOne) ClearTargetsConfigured() *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.ClearTargetsConfigured()
+	})
+}
+
+// SetTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field.
+func (u *TargetMetricsUpsertOne) SetTargetsConfiguredNotIncludingAspects(v int64) *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.SetTargetsConfiguredNotIncludingAspects(v)
+	})
+}
+
+// AddTargetsConfiguredNotIncludingAspects adds v to the "targets_configured_not_including_aspects" field.
+func (u *TargetMetricsUpsertOne) AddTargetsConfiguredNotIncludingAspects(v int64) *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.AddTargetsConfiguredNotIncludingAspects(v)
+	})
+}
+
+// UpdateTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field to the value that was provided on create.
+func (u *TargetMetricsUpsertOne) UpdateTargetsConfiguredNotIncludingAspects() *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.UpdateTargetsConfiguredNotIncludingAspects()
+	})
+}
+
+// ClearTargetsConfiguredNotIncludingAspects clears the value of the "targets_configured_not_including_aspects" field.
+func (u *TargetMetricsUpsertOne) ClearTargetsConfiguredNotIncludingAspects() *TargetMetricsUpsertOne {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.ClearTargetsConfiguredNotIncludingAspects()
+	})
+}
+
+// Exec executes the query.
+func (u *TargetMetricsUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TargetMetricsCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TargetMetricsUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *TargetMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *TargetMetricsUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // TargetMetricsCreateBulk is the builder for creating many TargetMetrics entities in bulk.
 type TargetMetricsCreateBulk struct {
 	config
 	err      error
 	builders []*TargetMetricsCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the TargetMetrics entities in the database.
@@ -205,6 +488,7 @@ func (tmcb *TargetMetricsCreateBulk) Save(ctx context.Context) ([]*TargetMetrics
 					_, err = mutators[i+1].Mutate(root, tmcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = tmcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, tmcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -255,6 +539,194 @@ func (tmcb *TargetMetricsCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (tmcb *TargetMetricsCreateBulk) ExecX(ctx context.Context) {
 	if err := tmcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TargetMetrics.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TargetMetricsUpsert) {
+//			SetTargetsLoaded(v+v).
+//		}).
+//		Exec(ctx)
+func (tmcb *TargetMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *TargetMetricsUpsertBulk {
+	tmcb.conflict = opts
+	return &TargetMetricsUpsertBulk{
+		create: tmcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TargetMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (tmcb *TargetMetricsCreateBulk) OnConflictColumns(columns ...string) *TargetMetricsUpsertBulk {
+	tmcb.conflict = append(tmcb.conflict, sql.ConflictColumns(columns...))
+	return &TargetMetricsUpsertBulk{
+		create: tmcb,
+	}
+}
+
+// TargetMetricsUpsertBulk is the builder for "upsert"-ing
+// a bulk of TargetMetrics nodes.
+type TargetMetricsUpsertBulk struct {
+	create *TargetMetricsCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.TargetMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TargetMetricsUpsertBulk) UpdateNewValues() *TargetMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TargetMetrics.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *TargetMetricsUpsertBulk) Ignore() *TargetMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TargetMetricsUpsertBulk) DoNothing() *TargetMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TargetMetricsCreateBulk.OnConflict
+// documentation for more info.
+func (u *TargetMetricsUpsertBulk) Update(set func(*TargetMetricsUpsert)) *TargetMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TargetMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetTargetsLoaded sets the "targets_loaded" field.
+func (u *TargetMetricsUpsertBulk) SetTargetsLoaded(v int64) *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.SetTargetsLoaded(v)
+	})
+}
+
+// AddTargetsLoaded adds v to the "targets_loaded" field.
+func (u *TargetMetricsUpsertBulk) AddTargetsLoaded(v int64) *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.AddTargetsLoaded(v)
+	})
+}
+
+// UpdateTargetsLoaded sets the "targets_loaded" field to the value that was provided on create.
+func (u *TargetMetricsUpsertBulk) UpdateTargetsLoaded() *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.UpdateTargetsLoaded()
+	})
+}
+
+// ClearTargetsLoaded clears the value of the "targets_loaded" field.
+func (u *TargetMetricsUpsertBulk) ClearTargetsLoaded() *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.ClearTargetsLoaded()
+	})
+}
+
+// SetTargetsConfigured sets the "targets_configured" field.
+func (u *TargetMetricsUpsertBulk) SetTargetsConfigured(v int64) *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.SetTargetsConfigured(v)
+	})
+}
+
+// AddTargetsConfigured adds v to the "targets_configured" field.
+func (u *TargetMetricsUpsertBulk) AddTargetsConfigured(v int64) *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.AddTargetsConfigured(v)
+	})
+}
+
+// UpdateTargetsConfigured sets the "targets_configured" field to the value that was provided on create.
+func (u *TargetMetricsUpsertBulk) UpdateTargetsConfigured() *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.UpdateTargetsConfigured()
+	})
+}
+
+// ClearTargetsConfigured clears the value of the "targets_configured" field.
+func (u *TargetMetricsUpsertBulk) ClearTargetsConfigured() *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.ClearTargetsConfigured()
+	})
+}
+
+// SetTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field.
+func (u *TargetMetricsUpsertBulk) SetTargetsConfiguredNotIncludingAspects(v int64) *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.SetTargetsConfiguredNotIncludingAspects(v)
+	})
+}
+
+// AddTargetsConfiguredNotIncludingAspects adds v to the "targets_configured_not_including_aspects" field.
+func (u *TargetMetricsUpsertBulk) AddTargetsConfiguredNotIncludingAspects(v int64) *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.AddTargetsConfiguredNotIncludingAspects(v)
+	})
+}
+
+// UpdateTargetsConfiguredNotIncludingAspects sets the "targets_configured_not_including_aspects" field to the value that was provided on create.
+func (u *TargetMetricsUpsertBulk) UpdateTargetsConfiguredNotIncludingAspects() *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.UpdateTargetsConfiguredNotIncludingAspects()
+	})
+}
+
+// ClearTargetsConfiguredNotIncludingAspects clears the value of the "targets_configured_not_including_aspects" field.
+func (u *TargetMetricsUpsertBulk) ClearTargetsConfiguredNotIncludingAspects() *TargetMetricsUpsertBulk {
+	return u.Update(func(s *TargetMetricsUpsert) {
+		s.ClearTargetsConfiguredNotIncludingAspects()
+	})
+}
+
+// Exec executes the query.
+func (u *TargetMetricsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the TargetMetricsCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TargetMetricsCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TargetMetricsUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

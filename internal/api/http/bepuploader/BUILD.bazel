@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "bepuploader",
+    srcs = ["bepuploader.go"],
+    importpath = "github.com/buildbarn/bb-portal/internal/api/http/bepuploader",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//ent/gen/ent",
+        "//internal/database/buildeventrecorder",
+        "//pkg/events",
+        "//pkg/processing",
+        "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
+        "//pkg/proto/configuration/bb_portal",
+        "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@com_github_buildbarn_bb_storage//pkg/auth/configuration",
+        "@com_github_buildbarn_bb_storage//pkg/grpc",
+        "@com_github_buildbarn_bb_storage//pkg/program",
+        "@com_github_buildbarn_bb_storage//pkg/util",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+        "@org_golang_google_protobuf//encoding/protojson",
+    ],
+)

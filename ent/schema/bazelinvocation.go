@@ -9,8 +9,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"github.com/google/uuid"
-
-	"github.com/buildbarn/bb-portal/pkg/summary"
 )
 
 // BazelInvocation holds the schema definition for the BazelInvocation entity.
@@ -25,7 +23,7 @@ func (BazelInvocation) Fields() []ent.Field {
 		field.UUID("invocation_id", uuid.UUID{}).Unique().Immutable(),
 
 		// Time the event started.
-		field.Time("started_at").Annotations(entgql.OrderField("STARTED_AT")),
+		field.Time("started_at").Optional().Annotations(entgql.OrderField("STARTED_AT")),
 
 		// Time the event ended
 		field.Time("ended_at").Optional(),
@@ -36,20 +34,12 @@ func (BazelInvocation) Fields() []ent.Field {
 		// Rethink? Keep for now.
 		field.Int("patchset_number").Optional(),
 
-		// NOTE: Internal model, not exposed to API.
-		// contains invocation information
-		field.JSON("summary", summary.InvocationSummary{}).Annotations(entgql.Skip()),
-
 		// Build Event Protocol completed successfuly.
-		field.Bool("bep_completed").Optional(),
+		field.Bool("bep_completed").Default(false),
 
 		// Rethink, keep for now.
 		// A step label pulled from the metada
-		field.String("step_label"),
-
-		// NOTE: Uses custom resolver.
-		// Log snippets of error saved to disk.  Rethink and store in db?
-		field.JSON("related_files", map[string]string{}).Annotations(entgql.Skip()),
+		field.String("step_label").Optional(),
 
 		// Email address of the user who launched the invocation if provided.
 		field.String("user_email").Optional(),
@@ -58,7 +48,7 @@ func (BazelInvocation) Fields() []ent.Field {
 		field.String("user_ldap").Optional().Annotations(entgql.OrderField("USER_LDAP")),
 
 		// The full logs from the build..
-		field.String("build_logs").Optional(),
+		field.String("build_logs").Optional().Annotations(entgql.Skip(entgql.SkipType)),
 
 		// The cpu type from the configuration event(s).
 		field.String("cpu").Optional(),
@@ -79,10 +69,33 @@ func (BazelInvocation) Fields() []ent.Field {
 		field.Int64("num_fetches").Optional(),
 
 		// The name of the build profile.
-		field.String("profile_name").Annotations(entgql.Skip(entgql.SkipType)),
+		field.String("profile_name").Optional().Annotations(entgql.Skip(entgql.SkipType)),
 
 		// The instance name for the invocation.
 		field.String("instance_name").Optional(),
+
+		field.String("bazel_version").Optional(),
+
+		field.String("exit_code_name").Optional(),
+
+		field.Int32("exit_code_code").Optional(),
+
+		field.String("command_line_command").Optional().Annotations(entgql.Skip()),
+		field.String("command_line_executable").Optional().Annotations(entgql.Skip()),
+		field.String("command_line_residual").Optional().Annotations(entgql.Skip()),
+		field.Strings("command_line").Optional().Annotations(entgql.Skip()),
+		field.Strings("explicit_command_line").Optional().Annotations(entgql.Skip()),
+		field.Strings("startup_options").Optional().Annotations(entgql.Skip()),
+		field.Strings("explicit_startup_options").Optional().Annotations(entgql.Skip()),
+
+		// Track which event types have been processed. Used to block duplicate
+		// events.
+		field.Bool("processed_event_started").Default(false).Annotations(entgql.Skip()),
+		field.Bool("processed_event_build_metadata").Default(false).Annotations(entgql.Skip()),
+		field.Bool("processed_event_options_parsed").Default(false).Annotations(entgql.Skip()),
+		field.Bool("processed_event_build_finished").Default(false).Annotations(entgql.Skip()),
+		field.Bool("processed_event_structured_command_line").Default(false).Annotations(entgql.Skip()),
+		field.Bool("processed_event_workspace_status").Default(false).Annotations(entgql.Skip()),
 	}
 }
 
@@ -93,6 +106,20 @@ func (BazelInvocation) Edges() []ent.Edge {
 		edge.From("build", Build.Type).
 			Ref("invocations").
 			Unique(),
+
+		// Event metadata for all events processed for this invocation.
+		edge.To("event_metadata", EventMetadata.Type).
+			Annotations(
+				entgql.Skip(entgql.SkipType),
+				entsql.OnDelete(entsql.Cascade),
+			),
+
+		// Info about the grpc connection that this event was sent over.
+		edge.To("connection_metadata", ConnectionMetadata.Type).
+			Annotations(
+				entgql.Skip(entgql.SkipType),
+				entsql.OnDelete(entsql.Cascade),
+			),
 
 		// Edge to any probles detected.
 		// NOTE: Uses custom resolver / types.
@@ -109,6 +136,18 @@ func (BazelInvocation) Edges() []ent.Edge {
 			).
 			Unique(),
 
+		// Incomplete Build Log snippets for the Invocation
+		edge.To("incomplete_build_logs", IncompleteBuildLog.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
+		// Files for the Invocation
+		edge.To("invocation_files", InvocationFiles.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
 		// Test Data for the completed Invocation
 		edge.To("test_collection", TestCollection.Type).
 			Annotations(
@@ -116,7 +155,7 @@ func (BazelInvocation) Edges() []ent.Edge {
 			),
 
 		// Target Data for the completed Invocation
-		edge.To("targets", TargetPair.Type).
+		edge.To("targets", Target.Type).
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
@@ -133,6 +172,7 @@ func (BazelInvocation) Edges() []ent.Edge {
 // Indexes for Bazel Invocation.
 func (BazelInvocation) Indexes() []ent.Index {
 	return []ent.Index{
+		index.Fields("invocation_id"),
 		index.Fields("change_number", "patchset_number"),
 	}
 }

@@ -117,6 +117,18 @@ func (f BuildGraphMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildGraphMetricsMutation", m)
 }
 
+// The ConnectionMetadataFunc type is an adapter to allow the use of ordinary
+// function as ConnectionMetadata mutator.
+type ConnectionMetadataFunc func(context.Context, *ent.ConnectionMetadataMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ConnectionMetadataFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ConnectionMetadataMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ConnectionMetadataMutation", m)
+}
+
 // The CumulativeMetricsFunc type is an adapter to allow the use of ordinary
 // function as CumulativeMetrics mutator.
 type CumulativeMetricsFunc func(context.Context, *ent.CumulativeMetricsMutation) (ent.Value, error)
@@ -139,6 +151,18 @@ func (f EvaluationStatFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EvaluationStatMutation", m)
+}
+
+// The EventMetadataFunc type is an adapter to allow the use of ordinary
+// function as EventMetadata mutator.
+type EventMetadataFunc func(context.Context, *ent.EventMetadataMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f EventMetadataFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.EventMetadataMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EventMetadataMutation", m)
 }
 
 // The ExectionInfoFunc type is an adapter to allow the use of ordinary
@@ -175,6 +199,30 @@ func (f GarbageMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.GarbageMetricsMutation", m)
+}
+
+// The IncompleteBuildLogFunc type is an adapter to allow the use of ordinary
+// function as IncompleteBuildLog mutator.
+type IncompleteBuildLogFunc func(context.Context, *ent.IncompleteBuildLogMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f IncompleteBuildLogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.IncompleteBuildLogMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.IncompleteBuildLogMutation", m)
+}
+
+// The InvocationFilesFunc type is an adapter to allow the use of ordinary
+// function as InvocationFiles mutator.
+type InvocationFilesFunc func(context.Context, *ent.InvocationFilesMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f InvocationFilesFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.InvocationFilesMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InvocationFilesMutation", m)
 }
 
 // The MemoryMetricsFunc type is an adapter to allow the use of ordinary
@@ -321,28 +369,16 @@ func (f SystemNetworkStatsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SystemNetworkStatsMutation", m)
 }
 
-// The TargetCompleteFunc type is an adapter to allow the use of ordinary
-// function as TargetComplete mutator.
-type TargetCompleteFunc func(context.Context, *ent.TargetCompleteMutation) (ent.Value, error)
+// The TargetFunc type is an adapter to allow the use of ordinary
+// function as Target mutator.
+type TargetFunc func(context.Context, *ent.TargetMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f TargetCompleteFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.TargetCompleteMutation); ok {
+func (f TargetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TargetMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TargetCompleteMutation", m)
-}
-
-// The TargetConfiguredFunc type is an adapter to allow the use of ordinary
-// function as TargetConfigured mutator.
-type TargetConfiguredFunc func(context.Context, *ent.TargetConfiguredMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f TargetConfiguredFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.TargetConfiguredMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TargetConfiguredMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TargetMutation", m)
 }
 
 // The TargetMetricsFunc type is an adapter to allow the use of ordinary
@@ -355,18 +391,6 @@ func (f TargetMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Valu
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TargetMetricsMutation", m)
-}
-
-// The TargetPairFunc type is an adapter to allow the use of ordinary
-// function as TargetPair mutator.
-type TargetPairFunc func(context.Context, *ent.TargetPairMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f TargetPairFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.TargetPairMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TargetPairMutation", m)
 }
 
 // The TestCollectionFunc type is an adapter to allow the use of ordinary

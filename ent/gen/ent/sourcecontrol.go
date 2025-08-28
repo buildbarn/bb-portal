@@ -17,34 +17,38 @@ type SourceControl struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// RepoURL holds the value of the "repo_url" field.
-	RepoURL string `json:"repo_url,omitempty"`
-	// Branch holds the value of the "branch" field.
-	Branch string `json:"branch,omitempty"`
+	// Provider holds the value of the "provider" field.
+	Provider sourcecontrol.Provider `json:"provider,omitempty"`
+	// InstanceURL holds the value of the "instance_url" field.
+	InstanceURL string `json:"instance_url,omitempty"`
+	// Repo holds the value of the "repo" field.
+	Repo string `json:"repo,omitempty"`
+	// Refs holds the value of the "refs" field.
+	Refs string `json:"refs,omitempty"`
 	// CommitSha holds the value of the "commit_sha" field.
 	CommitSha string `json:"commit_sha,omitempty"`
 	// Actor holds the value of the "actor" field.
 	Actor string `json:"actor,omitempty"`
-	// Refs holds the value of the "refs" field.
-	Refs string `json:"refs,omitempty"`
-	// RunID holds the value of the "run_id" field.
-	RunID string `json:"run_id,omitempty"`
-	// Workflow holds the value of the "workflow" field.
-	Workflow string `json:"workflow,omitempty"`
-	// Action holds the value of the "action" field.
-	Action string `json:"action,omitempty"`
-	// Workspace holds the value of the "workspace" field.
-	Workspace string `json:"workspace,omitempty"`
 	// EventName holds the value of the "event_name" field.
 	EventName string `json:"event_name,omitempty"`
+	// Workflow holds the value of the "workflow" field.
+	Workflow string `json:"workflow,omitempty"`
+	// RunID holds the value of the "run_id" field.
+	RunID string `json:"run_id,omitempty"`
+	// RunNumber holds the value of the "run_number" field.
+	RunNumber string `json:"run_number,omitempty"`
 	// Job holds the value of the "job" field.
 	Job string `json:"job,omitempty"`
+	// Action holds the value of the "action" field.
+	Action string `json:"action,omitempty"`
 	// RunnerName holds the value of the "runner_name" field.
 	RunnerName string `json:"runner_name,omitempty"`
 	// RunnerArch holds the value of the "runner_arch" field.
 	RunnerArch string `json:"runner_arch,omitempty"`
 	// RunnerOs holds the value of the "runner_os" field.
 	RunnerOs string `json:"runner_os,omitempty"`
+	// Workspace holds the value of the "workspace" field.
+	Workspace string `json:"workspace,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SourceControlQuery when eager-loading is set.
 	Edges                           SourceControlEdges `json:"edges"`
@@ -81,7 +85,7 @@ func (*SourceControl) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sourcecontrol.FieldID:
 			values[i] = new(sql.NullInt64)
-		case sourcecontrol.FieldRepoURL, sourcecontrol.FieldBranch, sourcecontrol.FieldCommitSha, sourcecontrol.FieldActor, sourcecontrol.FieldRefs, sourcecontrol.FieldRunID, sourcecontrol.FieldWorkflow, sourcecontrol.FieldAction, sourcecontrol.FieldWorkspace, sourcecontrol.FieldEventName, sourcecontrol.FieldJob, sourcecontrol.FieldRunnerName, sourcecontrol.FieldRunnerArch, sourcecontrol.FieldRunnerOs:
+		case sourcecontrol.FieldProvider, sourcecontrol.FieldInstanceURL, sourcecontrol.FieldRepo, sourcecontrol.FieldRefs, sourcecontrol.FieldCommitSha, sourcecontrol.FieldActor, sourcecontrol.FieldEventName, sourcecontrol.FieldWorkflow, sourcecontrol.FieldRunID, sourcecontrol.FieldRunNumber, sourcecontrol.FieldJob, sourcecontrol.FieldAction, sourcecontrol.FieldRunnerName, sourcecontrol.FieldRunnerArch, sourcecontrol.FieldRunnerOs, sourcecontrol.FieldWorkspace:
 			values[i] = new(sql.NullString)
 		case sourcecontrol.ForeignKeys[0]: // bazel_invocation_source_control
 			values[i] = new(sql.NullInt64)
@@ -106,17 +110,29 @@ func (sc *SourceControl) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			sc.ID = int(value.Int64)
-		case sourcecontrol.FieldRepoURL:
+		case sourcecontrol.FieldProvider:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field repo_url", values[i])
+				return fmt.Errorf("unexpected type %T for field provider", values[i])
 			} else if value.Valid {
-				sc.RepoURL = value.String
+				sc.Provider = sourcecontrol.Provider(value.String)
 			}
-		case sourcecontrol.FieldBranch:
+		case sourcecontrol.FieldInstanceURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field branch", values[i])
+				return fmt.Errorf("unexpected type %T for field instance_url", values[i])
 			} else if value.Valid {
-				sc.Branch = value.String
+				sc.InstanceURL = value.String
+			}
+		case sourcecontrol.FieldRepo:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field repo", values[i])
+			} else if value.Valid {
+				sc.Repo = value.String
+			}
+		case sourcecontrol.FieldRefs:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field refs", values[i])
+			} else if value.Valid {
+				sc.Refs = value.String
 			}
 		case sourcecontrol.FieldCommitSha:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -130,17 +146,11 @@ func (sc *SourceControl) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				sc.Actor = value.String
 			}
-		case sourcecontrol.FieldRefs:
+		case sourcecontrol.FieldEventName:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field refs", values[i])
+				return fmt.Errorf("unexpected type %T for field event_name", values[i])
 			} else if value.Valid {
-				sc.Refs = value.String
-			}
-		case sourcecontrol.FieldRunID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field run_id", values[i])
-			} else if value.Valid {
-				sc.RunID = value.String
+				sc.EventName = value.String
 			}
 		case sourcecontrol.FieldWorkflow:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -148,29 +158,29 @@ func (sc *SourceControl) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				sc.Workflow = value.String
 			}
-		case sourcecontrol.FieldAction:
+		case sourcecontrol.FieldRunID:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field action", values[i])
+				return fmt.Errorf("unexpected type %T for field run_id", values[i])
 			} else if value.Valid {
-				sc.Action = value.String
+				sc.RunID = value.String
 			}
-		case sourcecontrol.FieldWorkspace:
+		case sourcecontrol.FieldRunNumber:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field workspace", values[i])
+				return fmt.Errorf("unexpected type %T for field run_number", values[i])
 			} else if value.Valid {
-				sc.Workspace = value.String
-			}
-		case sourcecontrol.FieldEventName:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field event_name", values[i])
-			} else if value.Valid {
-				sc.EventName = value.String
+				sc.RunNumber = value.String
 			}
 		case sourcecontrol.FieldJob:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field job", values[i])
 			} else if value.Valid {
 				sc.Job = value.String
+			}
+		case sourcecontrol.FieldAction:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field action", values[i])
+			} else if value.Valid {
+				sc.Action = value.String
 			}
 		case sourcecontrol.FieldRunnerName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -189,6 +199,12 @@ func (sc *SourceControl) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field runner_os", values[i])
 			} else if value.Valid {
 				sc.RunnerOs = value.String
+			}
+		case sourcecontrol.FieldWorkspace:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field workspace", values[i])
+			} else if value.Valid {
+				sc.Workspace = value.String
 			}
 		case sourcecontrol.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -238,11 +254,17 @@ func (sc *SourceControl) String() string {
 	var builder strings.Builder
 	builder.WriteString("SourceControl(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", sc.ID))
-	builder.WriteString("repo_url=")
-	builder.WriteString(sc.RepoURL)
+	builder.WriteString("provider=")
+	builder.WriteString(fmt.Sprintf("%v", sc.Provider))
 	builder.WriteString(", ")
-	builder.WriteString("branch=")
-	builder.WriteString(sc.Branch)
+	builder.WriteString("instance_url=")
+	builder.WriteString(sc.InstanceURL)
+	builder.WriteString(", ")
+	builder.WriteString("repo=")
+	builder.WriteString(sc.Repo)
+	builder.WriteString(", ")
+	builder.WriteString("refs=")
+	builder.WriteString(sc.Refs)
 	builder.WriteString(", ")
 	builder.WriteString("commit_sha=")
 	builder.WriteString(sc.CommitSha)
@@ -250,26 +272,23 @@ func (sc *SourceControl) String() string {
 	builder.WriteString("actor=")
 	builder.WriteString(sc.Actor)
 	builder.WriteString(", ")
-	builder.WriteString("refs=")
-	builder.WriteString(sc.Refs)
-	builder.WriteString(", ")
-	builder.WriteString("run_id=")
-	builder.WriteString(sc.RunID)
+	builder.WriteString("event_name=")
+	builder.WriteString(sc.EventName)
 	builder.WriteString(", ")
 	builder.WriteString("workflow=")
 	builder.WriteString(sc.Workflow)
 	builder.WriteString(", ")
-	builder.WriteString("action=")
-	builder.WriteString(sc.Action)
+	builder.WriteString("run_id=")
+	builder.WriteString(sc.RunID)
 	builder.WriteString(", ")
-	builder.WriteString("workspace=")
-	builder.WriteString(sc.Workspace)
-	builder.WriteString(", ")
-	builder.WriteString("event_name=")
-	builder.WriteString(sc.EventName)
+	builder.WriteString("run_number=")
+	builder.WriteString(sc.RunNumber)
 	builder.WriteString(", ")
 	builder.WriteString("job=")
 	builder.WriteString(sc.Job)
+	builder.WriteString(", ")
+	builder.WriteString("action=")
+	builder.WriteString(sc.Action)
 	builder.WriteString(", ")
 	builder.WriteString("runner_name=")
 	builder.WriteString(sc.RunnerName)
@@ -279,6 +298,9 @@ func (sc *SourceControl) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("runner_os=")
 	builder.WriteString(sc.RunnerOs)
+	builder.WriteString(", ")
+	builder.WriteString("workspace=")
+	builder.WriteString(sc.Workspace)
 	builder.WriteByte(')')
 	return builder.String()
 }

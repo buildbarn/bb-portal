@@ -1,43 +1,16 @@
-load("@rules_go//go:def.bzl", "go_library", "go_test")
+load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "processing",
     srcs = [
         "archive.go",
         "doc.go",
-        "save.go",
-        "summarize.go",
-        "workflow.go",
     ],
     importpath = "github.com/buildbarn/bb-portal/pkg/processing",
     visibility = ["//visibility:public"],
     deps = [
         "//ent/gen/ent",
         "//ent/gen/ent/blob",
-        "//ent/gen/ent/build",
-        "//ent/gen/ent/missdetail",
-        "//ent/gen/ent/targetcomplete",
-        "//ent/gen/ent/targetconfigured",
-        "//ent/gen/ent/targetpair",
-        "//ent/gen/ent/testcollection",
-        "//ent/gen/ent/testresultbes",
-        "//ent/gen/ent/testsummary",
-        "//pkg/prometheus_metrics",
-        "//pkg/summary",
         "//pkg/summary/detectors",
-        "@com_github_google_uuid//:uuid",
-    ],
-)
-
-go_test(
-    name = "processing_test",
-    srcs = ["workflow_test.go"],
-    data = ["//pkg/summary:testdata"],
-    deps = [
-        ":processing",
-        "//ent/gen/ent/enttest",
-        "//pkg/prometheus_metrics",
-        "@com_github_mattn_go_sqlite3//:go-sqlite3",
-        "@com_github_stretchr_testify//require",
     ],
 )

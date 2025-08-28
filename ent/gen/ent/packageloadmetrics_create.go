@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
@@ -17,6 +19,7 @@ type PackageLoadMetricsCreate struct {
 	config
 	mutation *PackageLoadMetricsMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetName sets the "name" field.
@@ -182,6 +185,7 @@ func (plmc *PackageLoadMetricsCreate) createSpec() (*PackageLoadMetrics, *sqlgra
 		_node = &PackageLoadMetrics{config: plmc.config}
 		_spec = sqlgraph.NewCreateSpec(packageloadmetrics.Table, sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = plmc.conflict
 	if value, ok := plmc.mutation.Name(); ok {
 		_spec.SetField(packageloadmetrics.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -226,11 +230,433 @@ func (plmc *PackageLoadMetricsCreate) createSpec() (*PackageLoadMetrics, *sqlgra
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.PackageLoadMetrics.Create().
+//		SetName(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.PackageLoadMetricsUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (plmc *PackageLoadMetricsCreate) OnConflict(opts ...sql.ConflictOption) *PackageLoadMetricsUpsertOne {
+	plmc.conflict = opts
+	return &PackageLoadMetricsUpsertOne{
+		create: plmc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.PackageLoadMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (plmc *PackageLoadMetricsCreate) OnConflictColumns(columns ...string) *PackageLoadMetricsUpsertOne {
+	plmc.conflict = append(plmc.conflict, sql.ConflictColumns(columns...))
+	return &PackageLoadMetricsUpsertOne{
+		create: plmc,
+	}
+}
+
+type (
+	// PackageLoadMetricsUpsertOne is the builder for "upsert"-ing
+	//  one PackageLoadMetrics node.
+	PackageLoadMetricsUpsertOne struct {
+		create *PackageLoadMetricsCreate
+	}
+
+	// PackageLoadMetricsUpsert is the "OnConflict" setter.
+	PackageLoadMetricsUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetName sets the "name" field.
+func (u *PackageLoadMetricsUpsert) SetName(v string) *PackageLoadMetricsUpsert {
+	u.Set(packageloadmetrics.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsert) UpdateName() *PackageLoadMetricsUpsert {
+	u.SetExcluded(packageloadmetrics.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *PackageLoadMetricsUpsert) ClearName() *PackageLoadMetricsUpsert {
+	u.SetNull(packageloadmetrics.FieldName)
+	return u
+}
+
+// SetLoadDuration sets the "load_duration" field.
+func (u *PackageLoadMetricsUpsert) SetLoadDuration(v int64) *PackageLoadMetricsUpsert {
+	u.Set(packageloadmetrics.FieldLoadDuration, v)
+	return u
+}
+
+// UpdateLoadDuration sets the "load_duration" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsert) UpdateLoadDuration() *PackageLoadMetricsUpsert {
+	u.SetExcluded(packageloadmetrics.FieldLoadDuration)
+	return u
+}
+
+// AddLoadDuration adds v to the "load_duration" field.
+func (u *PackageLoadMetricsUpsert) AddLoadDuration(v int64) *PackageLoadMetricsUpsert {
+	u.Add(packageloadmetrics.FieldLoadDuration, v)
+	return u
+}
+
+// ClearLoadDuration clears the value of the "load_duration" field.
+func (u *PackageLoadMetricsUpsert) ClearLoadDuration() *PackageLoadMetricsUpsert {
+	u.SetNull(packageloadmetrics.FieldLoadDuration)
+	return u
+}
+
+// SetNumTargets sets the "num_targets" field.
+func (u *PackageLoadMetricsUpsert) SetNumTargets(v uint64) *PackageLoadMetricsUpsert {
+	u.Set(packageloadmetrics.FieldNumTargets, v)
+	return u
+}
+
+// UpdateNumTargets sets the "num_targets" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsert) UpdateNumTargets() *PackageLoadMetricsUpsert {
+	u.SetExcluded(packageloadmetrics.FieldNumTargets)
+	return u
+}
+
+// AddNumTargets adds v to the "num_targets" field.
+func (u *PackageLoadMetricsUpsert) AddNumTargets(v uint64) *PackageLoadMetricsUpsert {
+	u.Add(packageloadmetrics.FieldNumTargets, v)
+	return u
+}
+
+// ClearNumTargets clears the value of the "num_targets" field.
+func (u *PackageLoadMetricsUpsert) ClearNumTargets() *PackageLoadMetricsUpsert {
+	u.SetNull(packageloadmetrics.FieldNumTargets)
+	return u
+}
+
+// SetComputationSteps sets the "computation_steps" field.
+func (u *PackageLoadMetricsUpsert) SetComputationSteps(v uint64) *PackageLoadMetricsUpsert {
+	u.Set(packageloadmetrics.FieldComputationSteps, v)
+	return u
+}
+
+// UpdateComputationSteps sets the "computation_steps" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsert) UpdateComputationSteps() *PackageLoadMetricsUpsert {
+	u.SetExcluded(packageloadmetrics.FieldComputationSteps)
+	return u
+}
+
+// AddComputationSteps adds v to the "computation_steps" field.
+func (u *PackageLoadMetricsUpsert) AddComputationSteps(v uint64) *PackageLoadMetricsUpsert {
+	u.Add(packageloadmetrics.FieldComputationSteps, v)
+	return u
+}
+
+// ClearComputationSteps clears the value of the "computation_steps" field.
+func (u *PackageLoadMetricsUpsert) ClearComputationSteps() *PackageLoadMetricsUpsert {
+	u.SetNull(packageloadmetrics.FieldComputationSteps)
+	return u
+}
+
+// SetNumTransitiveLoads sets the "num_transitive_loads" field.
+func (u *PackageLoadMetricsUpsert) SetNumTransitiveLoads(v uint64) *PackageLoadMetricsUpsert {
+	u.Set(packageloadmetrics.FieldNumTransitiveLoads, v)
+	return u
+}
+
+// UpdateNumTransitiveLoads sets the "num_transitive_loads" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsert) UpdateNumTransitiveLoads() *PackageLoadMetricsUpsert {
+	u.SetExcluded(packageloadmetrics.FieldNumTransitiveLoads)
+	return u
+}
+
+// AddNumTransitiveLoads adds v to the "num_transitive_loads" field.
+func (u *PackageLoadMetricsUpsert) AddNumTransitiveLoads(v uint64) *PackageLoadMetricsUpsert {
+	u.Add(packageloadmetrics.FieldNumTransitiveLoads, v)
+	return u
+}
+
+// ClearNumTransitiveLoads clears the value of the "num_transitive_loads" field.
+func (u *PackageLoadMetricsUpsert) ClearNumTransitiveLoads() *PackageLoadMetricsUpsert {
+	u.SetNull(packageloadmetrics.FieldNumTransitiveLoads)
+	return u
+}
+
+// SetPackageOverhead sets the "package_overhead" field.
+func (u *PackageLoadMetricsUpsert) SetPackageOverhead(v uint64) *PackageLoadMetricsUpsert {
+	u.Set(packageloadmetrics.FieldPackageOverhead, v)
+	return u
+}
+
+// UpdatePackageOverhead sets the "package_overhead" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsert) UpdatePackageOverhead() *PackageLoadMetricsUpsert {
+	u.SetExcluded(packageloadmetrics.FieldPackageOverhead)
+	return u
+}
+
+// AddPackageOverhead adds v to the "package_overhead" field.
+func (u *PackageLoadMetricsUpsert) AddPackageOverhead(v uint64) *PackageLoadMetricsUpsert {
+	u.Add(packageloadmetrics.FieldPackageOverhead, v)
+	return u
+}
+
+// ClearPackageOverhead clears the value of the "package_overhead" field.
+func (u *PackageLoadMetricsUpsert) ClearPackageOverhead() *PackageLoadMetricsUpsert {
+	u.SetNull(packageloadmetrics.FieldPackageOverhead)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.PackageLoadMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *PackageLoadMetricsUpsertOne) UpdateNewValues() *PackageLoadMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.PackageLoadMetrics.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *PackageLoadMetricsUpsertOne) Ignore() *PackageLoadMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *PackageLoadMetricsUpsertOne) DoNothing() *PackageLoadMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the PackageLoadMetricsCreate.OnConflict
+// documentation for more info.
+func (u *PackageLoadMetricsUpsertOne) Update(set func(*PackageLoadMetricsUpsert)) *PackageLoadMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&PackageLoadMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *PackageLoadMetricsUpsertOne) SetName(v string) *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertOne) UpdateName() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *PackageLoadMetricsUpsertOne) ClearName() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetLoadDuration sets the "load_duration" field.
+func (u *PackageLoadMetricsUpsertOne) SetLoadDuration(v int64) *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetLoadDuration(v)
+	})
+}
+
+// AddLoadDuration adds v to the "load_duration" field.
+func (u *PackageLoadMetricsUpsertOne) AddLoadDuration(v int64) *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.AddLoadDuration(v)
+	})
+}
+
+// UpdateLoadDuration sets the "load_duration" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertOne) UpdateLoadDuration() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdateLoadDuration()
+	})
+}
+
+// ClearLoadDuration clears the value of the "load_duration" field.
+func (u *PackageLoadMetricsUpsertOne) ClearLoadDuration() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearLoadDuration()
+	})
+}
+
+// SetNumTargets sets the "num_targets" field.
+func (u *PackageLoadMetricsUpsertOne) SetNumTargets(v uint64) *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetNumTargets(v)
+	})
+}
+
+// AddNumTargets adds v to the "num_targets" field.
+func (u *PackageLoadMetricsUpsertOne) AddNumTargets(v uint64) *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.AddNumTargets(v)
+	})
+}
+
+// UpdateNumTargets sets the "num_targets" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertOne) UpdateNumTargets() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdateNumTargets()
+	})
+}
+
+// ClearNumTargets clears the value of the "num_targets" field.
+func (u *PackageLoadMetricsUpsertOne) ClearNumTargets() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearNumTargets()
+	})
+}
+
+// SetComputationSteps sets the "computation_steps" field.
+func (u *PackageLoadMetricsUpsertOne) SetComputationSteps(v uint64) *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetComputationSteps(v)
+	})
+}
+
+// AddComputationSteps adds v to the "computation_steps" field.
+func (u *PackageLoadMetricsUpsertOne) AddComputationSteps(v uint64) *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.AddComputationSteps(v)
+	})
+}
+
+// UpdateComputationSteps sets the "computation_steps" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertOne) UpdateComputationSteps() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdateComputationSteps()
+	})
+}
+
+// ClearComputationSteps clears the value of the "computation_steps" field.
+func (u *PackageLoadMetricsUpsertOne) ClearComputationSteps() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearComputationSteps()
+	})
+}
+
+// SetNumTransitiveLoads sets the "num_transitive_loads" field.
+func (u *PackageLoadMetricsUpsertOne) SetNumTransitiveLoads(v uint64) *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetNumTransitiveLoads(v)
+	})
+}
+
+// AddNumTransitiveLoads adds v to the "num_transitive_loads" field.
+func (u *PackageLoadMetricsUpsertOne) AddNumTransitiveLoads(v uint64) *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.AddNumTransitiveLoads(v)
+	})
+}
+
+// UpdateNumTransitiveLoads sets the "num_transitive_loads" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertOne) UpdateNumTransitiveLoads() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdateNumTransitiveLoads()
+	})
+}
+
+// ClearNumTransitiveLoads clears the value of the "num_transitive_loads" field.
+func (u *PackageLoadMetricsUpsertOne) ClearNumTransitiveLoads() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearNumTransitiveLoads()
+	})
+}
+
+// SetPackageOverhead sets the "package_overhead" field.
+func (u *PackageLoadMetricsUpsertOne) SetPackageOverhead(v uint64) *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetPackageOverhead(v)
+	})
+}
+
+// AddPackageOverhead adds v to the "package_overhead" field.
+func (u *PackageLoadMetricsUpsertOne) AddPackageOverhead(v uint64) *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.AddPackageOverhead(v)
+	})
+}
+
+// UpdatePackageOverhead sets the "package_overhead" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertOne) UpdatePackageOverhead() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdatePackageOverhead()
+	})
+}
+
+// ClearPackageOverhead clears the value of the "package_overhead" field.
+func (u *PackageLoadMetricsUpsertOne) ClearPackageOverhead() *PackageLoadMetricsUpsertOne {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearPackageOverhead()
+	})
+}
+
+// Exec executes the query.
+func (u *PackageLoadMetricsUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for PackageLoadMetricsCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *PackageLoadMetricsUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *PackageLoadMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *PackageLoadMetricsUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // PackageLoadMetricsCreateBulk is the builder for creating many PackageLoadMetrics entities in bulk.
 type PackageLoadMetricsCreateBulk struct {
 	config
 	err      error
 	builders []*PackageLoadMetricsCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the PackageLoadMetrics entities in the database.
@@ -259,6 +685,7 @@ func (plmcb *PackageLoadMetricsCreateBulk) Save(ctx context.Context) ([]*Package
 					_, err = mutators[i+1].Mutate(root, plmcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = plmcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, plmcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -309,6 +736,271 @@ func (plmcb *PackageLoadMetricsCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (plmcb *PackageLoadMetricsCreateBulk) ExecX(ctx context.Context) {
 	if err := plmcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.PackageLoadMetrics.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.PackageLoadMetricsUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (plmcb *PackageLoadMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *PackageLoadMetricsUpsertBulk {
+	plmcb.conflict = opts
+	return &PackageLoadMetricsUpsertBulk{
+		create: plmcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.PackageLoadMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (plmcb *PackageLoadMetricsCreateBulk) OnConflictColumns(columns ...string) *PackageLoadMetricsUpsertBulk {
+	plmcb.conflict = append(plmcb.conflict, sql.ConflictColumns(columns...))
+	return &PackageLoadMetricsUpsertBulk{
+		create: plmcb,
+	}
+}
+
+// PackageLoadMetricsUpsertBulk is the builder for "upsert"-ing
+// a bulk of PackageLoadMetrics nodes.
+type PackageLoadMetricsUpsertBulk struct {
+	create *PackageLoadMetricsCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.PackageLoadMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *PackageLoadMetricsUpsertBulk) UpdateNewValues() *PackageLoadMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.PackageLoadMetrics.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *PackageLoadMetricsUpsertBulk) Ignore() *PackageLoadMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *PackageLoadMetricsUpsertBulk) DoNothing() *PackageLoadMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the PackageLoadMetricsCreateBulk.OnConflict
+// documentation for more info.
+func (u *PackageLoadMetricsUpsertBulk) Update(set func(*PackageLoadMetricsUpsert)) *PackageLoadMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&PackageLoadMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *PackageLoadMetricsUpsertBulk) SetName(v string) *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertBulk) UpdateName() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *PackageLoadMetricsUpsertBulk) ClearName() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetLoadDuration sets the "load_duration" field.
+func (u *PackageLoadMetricsUpsertBulk) SetLoadDuration(v int64) *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetLoadDuration(v)
+	})
+}
+
+// AddLoadDuration adds v to the "load_duration" field.
+func (u *PackageLoadMetricsUpsertBulk) AddLoadDuration(v int64) *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.AddLoadDuration(v)
+	})
+}
+
+// UpdateLoadDuration sets the "load_duration" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertBulk) UpdateLoadDuration() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdateLoadDuration()
+	})
+}
+
+// ClearLoadDuration clears the value of the "load_duration" field.
+func (u *PackageLoadMetricsUpsertBulk) ClearLoadDuration() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearLoadDuration()
+	})
+}
+
+// SetNumTargets sets the "num_targets" field.
+func (u *PackageLoadMetricsUpsertBulk) SetNumTargets(v uint64) *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetNumTargets(v)
+	})
+}
+
+// AddNumTargets adds v to the "num_targets" field.
+func (u *PackageLoadMetricsUpsertBulk) AddNumTargets(v uint64) *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.AddNumTargets(v)
+	})
+}
+
+// UpdateNumTargets sets the "num_targets" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertBulk) UpdateNumTargets() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdateNumTargets()
+	})
+}
+
+// ClearNumTargets clears the value of the "num_targets" field.
+func (u *PackageLoadMetricsUpsertBulk) ClearNumTargets() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearNumTargets()
+	})
+}
+
+// SetComputationSteps sets the "computation_steps" field.
+func (u *PackageLoadMetricsUpsertBulk) SetComputationSteps(v uint64) *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetComputationSteps(v)
+	})
+}
+
+// AddComputationSteps adds v to the "computation_steps" field.
+func (u *PackageLoadMetricsUpsertBulk) AddComputationSteps(v uint64) *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.AddComputationSteps(v)
+	})
+}
+
+// UpdateComputationSteps sets the "computation_steps" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertBulk) UpdateComputationSteps() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdateComputationSteps()
+	})
+}
+
+// ClearComputationSteps clears the value of the "computation_steps" field.
+func (u *PackageLoadMetricsUpsertBulk) ClearComputationSteps() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearComputationSteps()
+	})
+}
+
+// SetNumTransitiveLoads sets the "num_transitive_loads" field.
+func (u *PackageLoadMetricsUpsertBulk) SetNumTransitiveLoads(v uint64) *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetNumTransitiveLoads(v)
+	})
+}
+
+// AddNumTransitiveLoads adds v to the "num_transitive_loads" field.
+func (u *PackageLoadMetricsUpsertBulk) AddNumTransitiveLoads(v uint64) *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.AddNumTransitiveLoads(v)
+	})
+}
+
+// UpdateNumTransitiveLoads sets the "num_transitive_loads" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertBulk) UpdateNumTransitiveLoads() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdateNumTransitiveLoads()
+	})
+}
+
+// ClearNumTransitiveLoads clears the value of the "num_transitive_loads" field.
+func (u *PackageLoadMetricsUpsertBulk) ClearNumTransitiveLoads() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearNumTransitiveLoads()
+	})
+}
+
+// SetPackageOverhead sets the "package_overhead" field.
+func (u *PackageLoadMetricsUpsertBulk) SetPackageOverhead(v uint64) *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.SetPackageOverhead(v)
+	})
+}
+
+// AddPackageOverhead adds v to the "package_overhead" field.
+func (u *PackageLoadMetricsUpsertBulk) AddPackageOverhead(v uint64) *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.AddPackageOverhead(v)
+	})
+}
+
+// UpdatePackageOverhead sets the "package_overhead" field to the value that was provided on create.
+func (u *PackageLoadMetricsUpsertBulk) UpdatePackageOverhead() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.UpdatePackageOverhead()
+	})
+}
+
+// ClearPackageOverhead clears the value of the "package_overhead" field.
+func (u *PackageLoadMetricsUpsertBulk) ClearPackageOverhead() *PackageLoadMetricsUpsertBulk {
+	return u.Update(func(s *PackageLoadMetricsUpsert) {
+		s.ClearPackageOverhead()
+	})
+}
+
+// Exec executes the query.
+func (u *PackageLoadMetricsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the PackageLoadMetricsCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for PackageLoadMetricsCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *PackageLoadMetricsUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { Space, Table, Row, Col, Statistic } from 'antd';
 import { DeploymentUnitOutlined, SearchOutlined } from '@ant-design/icons';
 import type { StatisticProps, TableColumnsType } from "antd/lib";
-import { TargetMetrics, TargetPair } from "@/graphql/__generated__/graphql";
+import { Target, TargetMetrics } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
 import NullBooleanTag from "../NullableBooleanTag";
@@ -21,7 +21,7 @@ interface TargetDataType {
 
 const TargetMetricsDisplay: React.FC<{
     targetMetrics: TargetMetrics | undefined | null,
-    targetData: TargetPair[] | undefined | null,
+    targetData: Target[] | undefined | null,
 }> = ({
     targetMetrics,
     targetData,

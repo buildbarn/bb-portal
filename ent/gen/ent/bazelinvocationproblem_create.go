@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
@@ -19,6 +20,7 @@ type BazelInvocationProblemCreate struct {
 	config
 	mutation *BazelInvocationProblemMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetProblemType sets the "problem_type" field.
@@ -127,6 +129,7 @@ func (bipc *BazelInvocationProblemCreate) createSpec() (*BazelInvocationProblem,
 		_node = &BazelInvocationProblem{config: bipc.config}
 		_spec = sqlgraph.NewCreateSpec(bazelinvocationproblem.Table, sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = bipc.conflict
 	if value, ok := bipc.mutation.ProblemType(); ok {
 		_spec.SetField(bazelinvocationproblem.FieldProblemType, field.TypeString, value)
 		_node.ProblemType = value
@@ -159,11 +162,212 @@ func (bipc *BazelInvocationProblemCreate) createSpec() (*BazelInvocationProblem,
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.BazelInvocationProblem.Create().
+//		SetProblemType(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BazelInvocationProblemUpsert) {
+//			SetProblemType(v+v).
+//		}).
+//		Exec(ctx)
+func (bipc *BazelInvocationProblemCreate) OnConflict(opts ...sql.ConflictOption) *BazelInvocationProblemUpsertOne {
+	bipc.conflict = opts
+	return &BazelInvocationProblemUpsertOne{
+		create: bipc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.BazelInvocationProblem.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (bipc *BazelInvocationProblemCreate) OnConflictColumns(columns ...string) *BazelInvocationProblemUpsertOne {
+	bipc.conflict = append(bipc.conflict, sql.ConflictColumns(columns...))
+	return &BazelInvocationProblemUpsertOne{
+		create: bipc,
+	}
+}
+
+type (
+	// BazelInvocationProblemUpsertOne is the builder for "upsert"-ing
+	//  one BazelInvocationProblem node.
+	BazelInvocationProblemUpsertOne struct {
+		create *BazelInvocationProblemCreate
+	}
+
+	// BazelInvocationProblemUpsert is the "OnConflict" setter.
+	BazelInvocationProblemUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetProblemType sets the "problem_type" field.
+func (u *BazelInvocationProblemUpsert) SetProblemType(v string) *BazelInvocationProblemUpsert {
+	u.Set(bazelinvocationproblem.FieldProblemType, v)
+	return u
+}
+
+// UpdateProblemType sets the "problem_type" field to the value that was provided on create.
+func (u *BazelInvocationProblemUpsert) UpdateProblemType() *BazelInvocationProblemUpsert {
+	u.SetExcluded(bazelinvocationproblem.FieldProblemType)
+	return u
+}
+
+// SetLabel sets the "label" field.
+func (u *BazelInvocationProblemUpsert) SetLabel(v string) *BazelInvocationProblemUpsert {
+	u.Set(bazelinvocationproblem.FieldLabel, v)
+	return u
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *BazelInvocationProblemUpsert) UpdateLabel() *BazelInvocationProblemUpsert {
+	u.SetExcluded(bazelinvocationproblem.FieldLabel)
+	return u
+}
+
+// SetBepEvents sets the "bep_events" field.
+func (u *BazelInvocationProblemUpsert) SetBepEvents(v json.RawMessage) *BazelInvocationProblemUpsert {
+	u.Set(bazelinvocationproblem.FieldBepEvents, v)
+	return u
+}
+
+// UpdateBepEvents sets the "bep_events" field to the value that was provided on create.
+func (u *BazelInvocationProblemUpsert) UpdateBepEvents() *BazelInvocationProblemUpsert {
+	u.SetExcluded(bazelinvocationproblem.FieldBepEvents)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.BazelInvocationProblem.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BazelInvocationProblemUpsertOne) UpdateNewValues() *BazelInvocationProblemUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.BazelInvocationProblem.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *BazelInvocationProblemUpsertOne) Ignore() *BazelInvocationProblemUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BazelInvocationProblemUpsertOne) DoNothing() *BazelInvocationProblemUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BazelInvocationProblemCreate.OnConflict
+// documentation for more info.
+func (u *BazelInvocationProblemUpsertOne) Update(set func(*BazelInvocationProblemUpsert)) *BazelInvocationProblemUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BazelInvocationProblemUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetProblemType sets the "problem_type" field.
+func (u *BazelInvocationProblemUpsertOne) SetProblemType(v string) *BazelInvocationProblemUpsertOne {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.SetProblemType(v)
+	})
+}
+
+// UpdateProblemType sets the "problem_type" field to the value that was provided on create.
+func (u *BazelInvocationProblemUpsertOne) UpdateProblemType() *BazelInvocationProblemUpsertOne {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.UpdateProblemType()
+	})
+}
+
+// SetLabel sets the "label" field.
+func (u *BazelInvocationProblemUpsertOne) SetLabel(v string) *BazelInvocationProblemUpsertOne {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.SetLabel(v)
+	})
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *BazelInvocationProblemUpsertOne) UpdateLabel() *BazelInvocationProblemUpsertOne {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.UpdateLabel()
+	})
+}
+
+// SetBepEvents sets the "bep_events" field.
+func (u *BazelInvocationProblemUpsertOne) SetBepEvents(v json.RawMessage) *BazelInvocationProblemUpsertOne {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.SetBepEvents(v)
+	})
+}
+
+// UpdateBepEvents sets the "bep_events" field to the value that was provided on create.
+func (u *BazelInvocationProblemUpsertOne) UpdateBepEvents() *BazelInvocationProblemUpsertOne {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.UpdateBepEvents()
+	})
+}
+
+// Exec executes the query.
+func (u *BazelInvocationProblemUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BazelInvocationProblemCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BazelInvocationProblemUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *BazelInvocationProblemUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *BazelInvocationProblemUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // BazelInvocationProblemCreateBulk is the builder for creating many BazelInvocationProblem entities in bulk.
 type BazelInvocationProblemCreateBulk struct {
 	config
 	err      error
 	builders []*BazelInvocationProblemCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the BazelInvocationProblem entities in the database.
@@ -192,6 +396,7 @@ func (bipcb *BazelInvocationProblemCreateBulk) Save(ctx context.Context) ([]*Baz
 					_, err = mutators[i+1].Mutate(root, bipcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = bipcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, bipcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -242,6 +447,152 @@ func (bipcb *BazelInvocationProblemCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (bipcb *BazelInvocationProblemCreateBulk) ExecX(ctx context.Context) {
 	if err := bipcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.BazelInvocationProblem.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BazelInvocationProblemUpsert) {
+//			SetProblemType(v+v).
+//		}).
+//		Exec(ctx)
+func (bipcb *BazelInvocationProblemCreateBulk) OnConflict(opts ...sql.ConflictOption) *BazelInvocationProblemUpsertBulk {
+	bipcb.conflict = opts
+	return &BazelInvocationProblemUpsertBulk{
+		create: bipcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.BazelInvocationProblem.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (bipcb *BazelInvocationProblemCreateBulk) OnConflictColumns(columns ...string) *BazelInvocationProblemUpsertBulk {
+	bipcb.conflict = append(bipcb.conflict, sql.ConflictColumns(columns...))
+	return &BazelInvocationProblemUpsertBulk{
+		create: bipcb,
+	}
+}
+
+// BazelInvocationProblemUpsertBulk is the builder for "upsert"-ing
+// a bulk of BazelInvocationProblem nodes.
+type BazelInvocationProblemUpsertBulk struct {
+	create *BazelInvocationProblemCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.BazelInvocationProblem.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BazelInvocationProblemUpsertBulk) UpdateNewValues() *BazelInvocationProblemUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.BazelInvocationProblem.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *BazelInvocationProblemUpsertBulk) Ignore() *BazelInvocationProblemUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BazelInvocationProblemUpsertBulk) DoNothing() *BazelInvocationProblemUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BazelInvocationProblemCreateBulk.OnConflict
+// documentation for more info.
+func (u *BazelInvocationProblemUpsertBulk) Update(set func(*BazelInvocationProblemUpsert)) *BazelInvocationProblemUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BazelInvocationProblemUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetProblemType sets the "problem_type" field.
+func (u *BazelInvocationProblemUpsertBulk) SetProblemType(v string) *BazelInvocationProblemUpsertBulk {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.SetProblemType(v)
+	})
+}
+
+// UpdateProblemType sets the "problem_type" field to the value that was provided on create.
+func (u *BazelInvocationProblemUpsertBulk) UpdateProblemType() *BazelInvocationProblemUpsertBulk {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.UpdateProblemType()
+	})
+}
+
+// SetLabel sets the "label" field.
+func (u *BazelInvocationProblemUpsertBulk) SetLabel(v string) *BazelInvocationProblemUpsertBulk {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.SetLabel(v)
+	})
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *BazelInvocationProblemUpsertBulk) UpdateLabel() *BazelInvocationProblemUpsertBulk {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.UpdateLabel()
+	})
+}
+
+// SetBepEvents sets the "bep_events" field.
+func (u *BazelInvocationProblemUpsertBulk) SetBepEvents(v json.RawMessage) *BazelInvocationProblemUpsertBulk {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.SetBepEvents(v)
+	})
+}
+
+// UpdateBepEvents sets the "bep_events" field to the value that was provided on create.
+func (u *BazelInvocationProblemUpsertBulk) UpdateBepEvents() *BazelInvocationProblemUpsertBulk {
+	return u.Update(func(s *BazelInvocationProblemUpsert) {
+		s.UpdateBepEvents()
+	})
+}
+
+// Exec executes the query.
+func (u *BazelInvocationProblemUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the BazelInvocationProblemCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BazelInvocationProblemCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BazelInvocationProblemUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

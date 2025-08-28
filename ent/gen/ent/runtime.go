@@ -3,8 +3,9 @@
 package ent
 
 import (
+	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/schema"
 )
 
@@ -12,6 +13,36 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	bazelinvocationFields := schema.BazelInvocation{}.Fields()
+	_ = bazelinvocationFields
+	// bazelinvocationDescBepCompleted is the schema descriptor for bep_completed field.
+	bazelinvocationDescBepCompleted := bazelinvocationFields[5].Descriptor()
+	// bazelinvocation.DefaultBepCompleted holds the default value on creation for the bep_completed field.
+	bazelinvocation.DefaultBepCompleted = bazelinvocationDescBepCompleted.Default.(bool)
+	// bazelinvocationDescProcessedEventStarted is the schema descriptor for processed_event_started field.
+	bazelinvocationDescProcessedEventStarted := bazelinvocationFields[28].Descriptor()
+	// bazelinvocation.DefaultProcessedEventStarted holds the default value on creation for the processed_event_started field.
+	bazelinvocation.DefaultProcessedEventStarted = bazelinvocationDescProcessedEventStarted.Default.(bool)
+	// bazelinvocationDescProcessedEventBuildMetadata is the schema descriptor for processed_event_build_metadata field.
+	bazelinvocationDescProcessedEventBuildMetadata := bazelinvocationFields[29].Descriptor()
+	// bazelinvocation.DefaultProcessedEventBuildMetadata holds the default value on creation for the processed_event_build_metadata field.
+	bazelinvocation.DefaultProcessedEventBuildMetadata = bazelinvocationDescProcessedEventBuildMetadata.Default.(bool)
+	// bazelinvocationDescProcessedEventOptionsParsed is the schema descriptor for processed_event_options_parsed field.
+	bazelinvocationDescProcessedEventOptionsParsed := bazelinvocationFields[30].Descriptor()
+	// bazelinvocation.DefaultProcessedEventOptionsParsed holds the default value on creation for the processed_event_options_parsed field.
+	bazelinvocation.DefaultProcessedEventOptionsParsed = bazelinvocationDescProcessedEventOptionsParsed.Default.(bool)
+	// bazelinvocationDescProcessedEventBuildFinished is the schema descriptor for processed_event_build_finished field.
+	bazelinvocationDescProcessedEventBuildFinished := bazelinvocationFields[31].Descriptor()
+	// bazelinvocation.DefaultProcessedEventBuildFinished holds the default value on creation for the processed_event_build_finished field.
+	bazelinvocation.DefaultProcessedEventBuildFinished = bazelinvocationDescProcessedEventBuildFinished.Default.(bool)
+	// bazelinvocationDescProcessedEventStructuredCommandLine is the schema descriptor for processed_event_structured_command_line field.
+	bazelinvocationDescProcessedEventStructuredCommandLine := bazelinvocationFields[32].Descriptor()
+	// bazelinvocation.DefaultProcessedEventStructuredCommandLine holds the default value on creation for the processed_event_structured_command_line field.
+	bazelinvocation.DefaultProcessedEventStructuredCommandLine = bazelinvocationDescProcessedEventStructuredCommandLine.Default.(bool)
+	// bazelinvocationDescProcessedEventWorkspaceStatus is the schema descriptor for processed_event_workspace_status field.
+	bazelinvocationDescProcessedEventWorkspaceStatus := bazelinvocationFields[33].Descriptor()
+	// bazelinvocation.DefaultProcessedEventWorkspaceStatus holds the default value on creation for the processed_event_workspace_status field.
+	bazelinvocation.DefaultProcessedEventWorkspaceStatus = bazelinvocationDescProcessedEventWorkspaceStatus.Default.(bool)
 	blobFields := schema.Blob{}.Fields()
 	_ = blobFields
 	// blobDescInstanceName is the schema descriptor for instance_name field.
@@ -20,12 +51,12 @@ func init() {
 	blob.DefaultInstanceName = blobDescInstanceName.Default.(string)
 	missdetailFields := schema.MissDetail{}.Fields()
 	_ = missdetailFields
-	targetpairFields := schema.TargetPair{}.Fields()
-	_ = targetpairFields
-	// targetpairDescSuccess is the schema descriptor for success field.
-	targetpairDescSuccess := targetpairFields[2].Descriptor()
-	// targetpair.DefaultSuccess holds the default value on creation for the success field.
-	targetpair.DefaultSuccess = targetpairDescSuccess.Default.(bool)
+	targetFields := schema.Target{}.Fields()
+	_ = targetFields
+	// targetDescSuccess is the schema descriptor for success field.
+	targetDescSuccess := targetFields[4].Descriptor()
+	// target.DefaultSuccess holds the default value on creation for the success field.
+	target.DefaultSuccess = targetDescSuccess.Default.(bool)
 	testcollectionFields := schema.TestCollection{}.Fields()
 	_ = testcollectionFields
 	testresultbesFields := schema.TestResultBES{}.Fields()

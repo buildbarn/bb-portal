@@ -81,8 +81,8 @@ type TestGridRow {
 
 type TargetGridCell {
   invocationId: UUID
-  complete: TargetComplete
-  abortReason: TargetPairAbortReason
+  complete: Target
+  abortReason: TargetAbortReason
 }
 
 type TestGridCell {
@@ -113,8 +113,8 @@ type ExitCode {
 
 type BazelInvocationState {
   id: ID!
-  buildEndTime: Time!
-  buildStartTime: Time!
+  buildEndTime: Time
+  buildStartTime: Time
   exitCode: ExitCode
   bepCompleted: Boolean!
 }
@@ -131,15 +131,6 @@ type User {
 
 extend type BazelInvocation {
   user: User
-}
-
-type NamedFile {
-  name: String!
-  url: String!
-}
-
-extend type BazelInvocation {
-  relatedFiles: [NamedFile!]!
 }
 
 interface Problem implements Node {
@@ -216,22 +207,18 @@ interface BuildStep {
   buildStepStatus: BuildStepStatus!
 }
 
-type EnvVar {
-  key: String!
-  value: String!
-}
-
-extend type Build {
-  env: [EnvVar!]!
-}
-
 type Profile {
   id: ID!
   name: String!
   digest: String!
   sizeInBytes: Int!
+  digestFunction: String!
 }
 
 extend type BazelInvocation {
   profile: Profile
+}
+
+extend type BazelInvocation {
+  buildLogs: String @goField(forceResolver: true)
 }

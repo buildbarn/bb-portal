@@ -6,41 +6,31 @@ import (
 )
 
 // ActionProblemDetector struct
-type ActionProblemDetector struct {
-	actionsCompleted map[labelKey]*events.BuildEvent
-	outputBlobs      map[labelKey][]BlobURI
-}
+type ActionProblemDetector struct{}
 
-// NewActionProblemDetector function
-func NewActionProblemDetector() ActionProblemDetector {
-	return ActionProblemDetector{
-		actionsCompleted: map[labelKey]*events.BuildEvent{},
-		outputBlobs:      map[labelKey][]BlobURI{},
-	}
-}
-
-// ProcessBEPEvent function
-func (a ActionProblemDetector) ProcessBEPEvent(event *events.BuildEvent) {
+// GetProblems implementation for ActionProblemDetector
+func (a ActionProblemDetector) GetProblems(event *events.BuildEvent) ([]Problem, error) {
 	if event == nil || !isFailedAction(event) {
-		return
+		return nil, nil
 	}
 	label := event.GetActionCompletedLabel()
 	if label == "" {
-		return
+		return nil, nil
 	}
 
 	// Ignore actions that don't have any output.
-	outputs := getActionOutputs(event)
-	if len(outputs) == 0 {
-		return
+	output := getActionOutputs(event)
+	if len(output) == 0 {
+		return nil, nil
 	}
+	outputs := map[labelKey][]BlobURI{}
+	outputs[labelKey(label)] = getOutputsBlobs(output)
 
-	key := labelKey(label)
-	// Save action.
-	a.actionsCompleted[key] = event
-
-	// Save action's blobs.
-	a.outputBlobs[key] = getOutputsBlobs(outputs)
+	problem, err := createProblemWithBlobs(BazelInvocationActionProblem, labelKey(label), []*events.BuildEvent{event}, outputs)
+	if err != nil {
+		return nil, err
+	}
+	return []Problem{*problem}, nil
 }
 
 // getActionOutputs
@@ -69,25 +59,6 @@ func getOutputsBlobs(outputs []*bes.File) []BlobURI {
 		blobs = append(blobs, BlobURI(output.GetUri()))
 	}
 	return blobs
-}
-
-// Problems function
-func (a ActionProblemDetector) Problems() ([]Problem, error) {
-	if len(a.actionsCompleted) == 0 {
-		return nil, nil
-	}
-	problems := make([]Problem, 0, len(a.actionsCompleted))
-	for labelKey, event := range a.actionsCompleted {
-		// Create problem.
-		buildEvents := []*events.BuildEvent{event}
-		problem, err := createProblemWithBlobs(BazelInvocationActionProblem, labelKey, buildEvents, a.outputBlobs)
-		if err != nil {
-			return nil, err
-		}
-
-		problems = append(problems, *problem)
-	}
-	return problems, nil
 }
 
 // isFailedAction

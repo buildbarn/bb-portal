@@ -158,29 +158,6 @@ func IncompleteNotNil() predicate.OutputGroup {
 	return predicate.OutputGroup(sql.FieldNotNull(FieldIncomplete))
 }
 
-// HasTargetComplete applies the HasEdge predicate on the "target_complete" edge.
-func HasTargetComplete() predicate.OutputGroup {
-	return predicate.OutputGroup(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, TargetCompleteTable, TargetCompleteColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasTargetCompleteWith applies the HasEdge predicate on the "target_complete" edge with a given conditions (other predicates).
-func HasTargetCompleteWith(preds ...predicate.TargetComplete) predicate.OutputGroup {
-	return predicate.OutputGroup(func(s *sql.Selector) {
-		step := newTargetCompleteStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // HasInlineFiles applies the HasEdge predicate on the "inline_files" edge.
 func HasInlineFiles() predicate.OutputGroup {
 	return predicate.OutputGroup(func(s *sql.Selector) {

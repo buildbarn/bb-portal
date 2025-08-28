@@ -29,12 +29,6 @@ func (bu *BuildUpdate) Where(ps ...predicate.Build) *BuildUpdate {
 	return bu
 }
 
-// SetEnv sets the "env" field.
-func (bu *BuildUpdate) SetEnv(m map[string]string) *BuildUpdate {
-	bu.mutation.SetEnv(m)
-	return bu
-}
-
 // SetTimestamp sets the "timestamp" field.
 func (bu *BuildUpdate) SetTimestamp(t time.Time) *BuildUpdate {
 	bu.mutation.SetTimestamp(t)
@@ -46,12 +40,6 @@ func (bu *BuildUpdate) SetNillableTimestamp(t *time.Time) *BuildUpdate {
 	if t != nil {
 		bu.SetTimestamp(*t)
 	}
-	return bu
-}
-
-// ClearTimestamp clears the value of the "timestamp" field.
-func (bu *BuildUpdate) ClearTimestamp() *BuildUpdate {
-	bu.mutation.ClearTimestamp()
 	return bu
 }
 
@@ -132,14 +120,8 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := bu.mutation.Env(); ok {
-		_spec.SetField(build.FieldEnv, field.TypeJSON, value)
-	}
 	if value, ok := bu.mutation.Timestamp(); ok {
 		_spec.SetField(build.FieldTimestamp, field.TypeTime, value)
-	}
-	if bu.mutation.TimestampCleared() {
-		_spec.ClearField(build.FieldTimestamp, field.TypeTime)
 	}
 	if bu.mutation.InvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -206,12 +188,6 @@ type BuildUpdateOne struct {
 	mutation *BuildMutation
 }
 
-// SetEnv sets the "env" field.
-func (buo *BuildUpdateOne) SetEnv(m map[string]string) *BuildUpdateOne {
-	buo.mutation.SetEnv(m)
-	return buo
-}
-
 // SetTimestamp sets the "timestamp" field.
 func (buo *BuildUpdateOne) SetTimestamp(t time.Time) *BuildUpdateOne {
 	buo.mutation.SetTimestamp(t)
@@ -223,12 +199,6 @@ func (buo *BuildUpdateOne) SetNillableTimestamp(t *time.Time) *BuildUpdateOne {
 	if t != nil {
 		buo.SetTimestamp(*t)
 	}
-	return buo
-}
-
-// ClearTimestamp clears the value of the "timestamp" field.
-func (buo *BuildUpdateOne) ClearTimestamp() *BuildUpdateOne {
-	buo.mutation.ClearTimestamp()
 	return buo
 }
 
@@ -339,14 +309,8 @@ func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error
 			}
 		}
 	}
-	if value, ok := buo.mutation.Env(); ok {
-		_spec.SetField(build.FieldEnv, field.TypeJSON, value)
-	}
 	if value, ok := buo.mutation.Timestamp(); ok {
 		_spec.SetField(build.FieldTimestamp, field.TypeTime, value)
-	}
-	if buo.mutation.TimestampCleared() {
-		_spec.ClearField(build.FieldTimestamp, field.TypeTime)
 	}
 	if buo.mutation.InvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{

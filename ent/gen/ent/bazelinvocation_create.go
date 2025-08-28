@@ -8,16 +8,20 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
-	"github.com/buildbarn/bb-portal/pkg/summary"
 	"github.com/google/uuid"
 )
 
@@ -26,6 +30,7 @@ type BazelInvocationCreate struct {
 	config
 	mutation *BazelInvocationMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetInvocationID sets the "invocation_id" field.
@@ -37,6 +42,14 @@ func (bic *BazelInvocationCreate) SetInvocationID(u uuid.UUID) *BazelInvocationC
 // SetStartedAt sets the "started_at" field.
 func (bic *BazelInvocationCreate) SetStartedAt(t time.Time) *BazelInvocationCreate {
 	bic.mutation.SetStartedAt(t)
+	return bic
+}
+
+// SetNillableStartedAt sets the "started_at" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableStartedAt(t *time.Time) *BazelInvocationCreate {
+	if t != nil {
+		bic.SetStartedAt(*t)
+	}
 	return bic
 }
 
@@ -82,12 +95,6 @@ func (bic *BazelInvocationCreate) SetNillablePatchsetNumber(i *int) *BazelInvoca
 	return bic
 }
 
-// SetSummary sets the "summary" field.
-func (bic *BazelInvocationCreate) SetSummary(ss summary.InvocationSummary) *BazelInvocationCreate {
-	bic.mutation.SetSummary(ss)
-	return bic
-}
-
 // SetBepCompleted sets the "bep_completed" field.
 func (bic *BazelInvocationCreate) SetBepCompleted(b bool) *BazelInvocationCreate {
 	bic.mutation.SetBepCompleted(b)
@@ -108,9 +115,11 @@ func (bic *BazelInvocationCreate) SetStepLabel(s string) *BazelInvocationCreate 
 	return bic
 }
 
-// SetRelatedFiles sets the "related_files" field.
-func (bic *BazelInvocationCreate) SetRelatedFiles(m map[string]string) *BazelInvocationCreate {
-	bic.mutation.SetRelatedFiles(m)
+// SetNillableStepLabel sets the "step_label" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableStepLabel(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetStepLabel(*s)
+	}
 	return bic
 }
 
@@ -246,6 +255,14 @@ func (bic *BazelInvocationCreate) SetProfileName(s string) *BazelInvocationCreat
 	return bic
 }
 
+// SetNillableProfileName sets the "profile_name" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableProfileName(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetProfileName(*s)
+	}
+	return bic
+}
+
 // SetInstanceName sets the "instance_name" field.
 func (bic *BazelInvocationCreate) SetInstanceName(s string) *BazelInvocationCreate {
 	bic.mutation.SetInstanceName(s)
@@ -256,6 +273,198 @@ func (bic *BazelInvocationCreate) SetInstanceName(s string) *BazelInvocationCrea
 func (bic *BazelInvocationCreate) SetNillableInstanceName(s *string) *BazelInvocationCreate {
 	if s != nil {
 		bic.SetInstanceName(*s)
+	}
+	return bic
+}
+
+// SetBazelVersion sets the "bazel_version" field.
+func (bic *BazelInvocationCreate) SetBazelVersion(s string) *BazelInvocationCreate {
+	bic.mutation.SetBazelVersion(s)
+	return bic
+}
+
+// SetNillableBazelVersion sets the "bazel_version" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableBazelVersion(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetBazelVersion(*s)
+	}
+	return bic
+}
+
+// SetExitCodeName sets the "exit_code_name" field.
+func (bic *BazelInvocationCreate) SetExitCodeName(s string) *BazelInvocationCreate {
+	bic.mutation.SetExitCodeName(s)
+	return bic
+}
+
+// SetNillableExitCodeName sets the "exit_code_name" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableExitCodeName(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetExitCodeName(*s)
+	}
+	return bic
+}
+
+// SetExitCodeCode sets the "exit_code_code" field.
+func (bic *BazelInvocationCreate) SetExitCodeCode(i int32) *BazelInvocationCreate {
+	bic.mutation.SetExitCodeCode(i)
+	return bic
+}
+
+// SetNillableExitCodeCode sets the "exit_code_code" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableExitCodeCode(i *int32) *BazelInvocationCreate {
+	if i != nil {
+		bic.SetExitCodeCode(*i)
+	}
+	return bic
+}
+
+// SetCommandLineCommand sets the "command_line_command" field.
+func (bic *BazelInvocationCreate) SetCommandLineCommand(s string) *BazelInvocationCreate {
+	bic.mutation.SetCommandLineCommand(s)
+	return bic
+}
+
+// SetNillableCommandLineCommand sets the "command_line_command" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableCommandLineCommand(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetCommandLineCommand(*s)
+	}
+	return bic
+}
+
+// SetCommandLineExecutable sets the "command_line_executable" field.
+func (bic *BazelInvocationCreate) SetCommandLineExecutable(s string) *BazelInvocationCreate {
+	bic.mutation.SetCommandLineExecutable(s)
+	return bic
+}
+
+// SetNillableCommandLineExecutable sets the "command_line_executable" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableCommandLineExecutable(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetCommandLineExecutable(*s)
+	}
+	return bic
+}
+
+// SetCommandLineResidual sets the "command_line_residual" field.
+func (bic *BazelInvocationCreate) SetCommandLineResidual(s string) *BazelInvocationCreate {
+	bic.mutation.SetCommandLineResidual(s)
+	return bic
+}
+
+// SetNillableCommandLineResidual sets the "command_line_residual" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableCommandLineResidual(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetCommandLineResidual(*s)
+	}
+	return bic
+}
+
+// SetCommandLine sets the "command_line" field.
+func (bic *BazelInvocationCreate) SetCommandLine(s []string) *BazelInvocationCreate {
+	bic.mutation.SetCommandLine(s)
+	return bic
+}
+
+// SetExplicitCommandLine sets the "explicit_command_line" field.
+func (bic *BazelInvocationCreate) SetExplicitCommandLine(s []string) *BazelInvocationCreate {
+	bic.mutation.SetExplicitCommandLine(s)
+	return bic
+}
+
+// SetStartupOptions sets the "startup_options" field.
+func (bic *BazelInvocationCreate) SetStartupOptions(s []string) *BazelInvocationCreate {
+	bic.mutation.SetStartupOptions(s)
+	return bic
+}
+
+// SetExplicitStartupOptions sets the "explicit_startup_options" field.
+func (bic *BazelInvocationCreate) SetExplicitStartupOptions(s []string) *BazelInvocationCreate {
+	bic.mutation.SetExplicitStartupOptions(s)
+	return bic
+}
+
+// SetProcessedEventStarted sets the "processed_event_started" field.
+func (bic *BazelInvocationCreate) SetProcessedEventStarted(b bool) *BazelInvocationCreate {
+	bic.mutation.SetProcessedEventStarted(b)
+	return bic
+}
+
+// SetNillableProcessedEventStarted sets the "processed_event_started" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableProcessedEventStarted(b *bool) *BazelInvocationCreate {
+	if b != nil {
+		bic.SetProcessedEventStarted(*b)
+	}
+	return bic
+}
+
+// SetProcessedEventBuildMetadata sets the "processed_event_build_metadata" field.
+func (bic *BazelInvocationCreate) SetProcessedEventBuildMetadata(b bool) *BazelInvocationCreate {
+	bic.mutation.SetProcessedEventBuildMetadata(b)
+	return bic
+}
+
+// SetNillableProcessedEventBuildMetadata sets the "processed_event_build_metadata" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableProcessedEventBuildMetadata(b *bool) *BazelInvocationCreate {
+	if b != nil {
+		bic.SetProcessedEventBuildMetadata(*b)
+	}
+	return bic
+}
+
+// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
+func (bic *BazelInvocationCreate) SetProcessedEventOptionsParsed(b bool) *BazelInvocationCreate {
+	bic.mutation.SetProcessedEventOptionsParsed(b)
+	return bic
+}
+
+// SetNillableProcessedEventOptionsParsed sets the "processed_event_options_parsed" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableProcessedEventOptionsParsed(b *bool) *BazelInvocationCreate {
+	if b != nil {
+		bic.SetProcessedEventOptionsParsed(*b)
+	}
+	return bic
+}
+
+// SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
+func (bic *BazelInvocationCreate) SetProcessedEventBuildFinished(b bool) *BazelInvocationCreate {
+	bic.mutation.SetProcessedEventBuildFinished(b)
+	return bic
+}
+
+// SetNillableProcessedEventBuildFinished sets the "processed_event_build_finished" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableProcessedEventBuildFinished(b *bool) *BazelInvocationCreate {
+	if b != nil {
+		bic.SetProcessedEventBuildFinished(*b)
+	}
+	return bic
+}
+
+// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
+func (bic *BazelInvocationCreate) SetProcessedEventStructuredCommandLine(b bool) *BazelInvocationCreate {
+	bic.mutation.SetProcessedEventStructuredCommandLine(b)
+	return bic
+}
+
+// SetNillableProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableProcessedEventStructuredCommandLine(b *bool) *BazelInvocationCreate {
+	if b != nil {
+		bic.SetProcessedEventStructuredCommandLine(*b)
+	}
+	return bic
+}
+
+// SetProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field.
+func (bic *BazelInvocationCreate) SetProcessedEventWorkspaceStatus(b bool) *BazelInvocationCreate {
+	bic.mutation.SetProcessedEventWorkspaceStatus(b)
+	return bic
+}
+
+// SetNillableProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableProcessedEventWorkspaceStatus(b *bool) *BazelInvocationCreate {
+	if b != nil {
+		bic.SetProcessedEventWorkspaceStatus(*b)
 	}
 	return bic
 }
@@ -277,6 +486,36 @@ func (bic *BazelInvocationCreate) SetNillableBuildID(id *int) *BazelInvocationCr
 // SetBuild sets the "build" edge to the Build entity.
 func (bic *BazelInvocationCreate) SetBuild(b *Build) *BazelInvocationCreate {
 	return bic.SetBuildID(b.ID)
+}
+
+// AddEventMetadatumIDs adds the "event_metadata" edge to the EventMetadata entity by IDs.
+func (bic *BazelInvocationCreate) AddEventMetadatumIDs(ids ...int) *BazelInvocationCreate {
+	bic.mutation.AddEventMetadatumIDs(ids...)
+	return bic
+}
+
+// AddEventMetadata adds the "event_metadata" edges to the EventMetadata entity.
+func (bic *BazelInvocationCreate) AddEventMetadata(e ...*EventMetadata) *BazelInvocationCreate {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return bic.AddEventMetadatumIDs(ids...)
+}
+
+// AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
+func (bic *BazelInvocationCreate) AddConnectionMetadatumIDs(ids ...int) *BazelInvocationCreate {
+	bic.mutation.AddConnectionMetadatumIDs(ids...)
+	return bic
+}
+
+// AddConnectionMetadata adds the "connection_metadata" edges to the ConnectionMetadata entity.
+func (bic *BazelInvocationCreate) AddConnectionMetadata(c ...*ConnectionMetadata) *BazelInvocationCreate {
+	ids := make([]int, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return bic.AddConnectionMetadatumIDs(ids...)
 }
 
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
@@ -313,6 +552,36 @@ func (bic *BazelInvocationCreate) SetMetrics(m *Metrics) *BazelInvocationCreate 
 	return bic.SetMetricsID(m.ID)
 }
 
+// AddIncompleteBuildLogIDs adds the "incomplete_build_logs" edge to the IncompleteBuildLog entity by IDs.
+func (bic *BazelInvocationCreate) AddIncompleteBuildLogIDs(ids ...int) *BazelInvocationCreate {
+	bic.mutation.AddIncompleteBuildLogIDs(ids...)
+	return bic
+}
+
+// AddIncompleteBuildLogs adds the "incomplete_build_logs" edges to the IncompleteBuildLog entity.
+func (bic *BazelInvocationCreate) AddIncompleteBuildLogs(i ...*IncompleteBuildLog) *BazelInvocationCreate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return bic.AddIncompleteBuildLogIDs(ids...)
+}
+
+// AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
+func (bic *BazelInvocationCreate) AddInvocationFileIDs(ids ...int) *BazelInvocationCreate {
+	bic.mutation.AddInvocationFileIDs(ids...)
+	return bic
+}
+
+// AddInvocationFiles adds the "invocation_files" edges to the InvocationFiles entity.
+func (bic *BazelInvocationCreate) AddInvocationFiles(i ...*InvocationFiles) *BazelInvocationCreate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return bic.AddInvocationFileIDs(ids...)
+}
+
 // AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by IDs.
 func (bic *BazelInvocationCreate) AddTestCollectionIDs(ids ...int) *BazelInvocationCreate {
 	bic.mutation.AddTestCollectionIDs(ids...)
@@ -328,14 +597,14 @@ func (bic *BazelInvocationCreate) AddTestCollection(t ...*TestCollection) *Bazel
 	return bic.AddTestCollectionIDs(ids...)
 }
 
-// AddTargetIDs adds the "targets" edge to the TargetPair entity by IDs.
+// AddTargetIDs adds the "targets" edge to the Target entity by IDs.
 func (bic *BazelInvocationCreate) AddTargetIDs(ids ...int) *BazelInvocationCreate {
 	bic.mutation.AddTargetIDs(ids...)
 	return bic
 }
 
-// AddTargets adds the "targets" edges to the TargetPair entity.
-func (bic *BazelInvocationCreate) AddTargets(t ...*TargetPair) *BazelInvocationCreate {
+// AddTargets adds the "targets" edges to the Target entity.
+func (bic *BazelInvocationCreate) AddTargets(t ...*Target) *BazelInvocationCreate {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
@@ -369,6 +638,7 @@ func (bic *BazelInvocationCreate) Mutation() *BazelInvocationMutation {
 
 // Save creates the BazelInvocation in the database.
 func (bic *BazelInvocationCreate) Save(ctx context.Context) (*BazelInvocation, error) {
+	bic.defaults()
 	return withHooks(ctx, bic.sqlSave, bic.mutation, bic.hooks)
 }
 
@@ -394,25 +664,63 @@ func (bic *BazelInvocationCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (bic *BazelInvocationCreate) defaults() {
+	if _, ok := bic.mutation.BepCompleted(); !ok {
+		v := bazelinvocation.DefaultBepCompleted
+		bic.mutation.SetBepCompleted(v)
+	}
+	if _, ok := bic.mutation.ProcessedEventStarted(); !ok {
+		v := bazelinvocation.DefaultProcessedEventStarted
+		bic.mutation.SetProcessedEventStarted(v)
+	}
+	if _, ok := bic.mutation.ProcessedEventBuildMetadata(); !ok {
+		v := bazelinvocation.DefaultProcessedEventBuildMetadata
+		bic.mutation.SetProcessedEventBuildMetadata(v)
+	}
+	if _, ok := bic.mutation.ProcessedEventOptionsParsed(); !ok {
+		v := bazelinvocation.DefaultProcessedEventOptionsParsed
+		bic.mutation.SetProcessedEventOptionsParsed(v)
+	}
+	if _, ok := bic.mutation.ProcessedEventBuildFinished(); !ok {
+		v := bazelinvocation.DefaultProcessedEventBuildFinished
+		bic.mutation.SetProcessedEventBuildFinished(v)
+	}
+	if _, ok := bic.mutation.ProcessedEventStructuredCommandLine(); !ok {
+		v := bazelinvocation.DefaultProcessedEventStructuredCommandLine
+		bic.mutation.SetProcessedEventStructuredCommandLine(v)
+	}
+	if _, ok := bic.mutation.ProcessedEventWorkspaceStatus(); !ok {
+		v := bazelinvocation.DefaultProcessedEventWorkspaceStatus
+		bic.mutation.SetProcessedEventWorkspaceStatus(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (bic *BazelInvocationCreate) check() error {
 	if _, ok := bic.mutation.InvocationID(); !ok {
 		return &ValidationError{Name: "invocation_id", err: errors.New(`ent: missing required field "BazelInvocation.invocation_id"`)}
 	}
-	if _, ok := bic.mutation.StartedAt(); !ok {
-		return &ValidationError{Name: "started_at", err: errors.New(`ent: missing required field "BazelInvocation.started_at"`)}
+	if _, ok := bic.mutation.BepCompleted(); !ok {
+		return &ValidationError{Name: "bep_completed", err: errors.New(`ent: missing required field "BazelInvocation.bep_completed"`)}
 	}
-	if _, ok := bic.mutation.Summary(); !ok {
-		return &ValidationError{Name: "summary", err: errors.New(`ent: missing required field "BazelInvocation.summary"`)}
+	if _, ok := bic.mutation.ProcessedEventStarted(); !ok {
+		return &ValidationError{Name: "processed_event_started", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_started"`)}
 	}
-	if _, ok := bic.mutation.StepLabel(); !ok {
-		return &ValidationError{Name: "step_label", err: errors.New(`ent: missing required field "BazelInvocation.step_label"`)}
+	if _, ok := bic.mutation.ProcessedEventBuildMetadata(); !ok {
+		return &ValidationError{Name: "processed_event_build_metadata", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_build_metadata"`)}
 	}
-	if _, ok := bic.mutation.RelatedFiles(); !ok {
-		return &ValidationError{Name: "related_files", err: errors.New(`ent: missing required field "BazelInvocation.related_files"`)}
+	if _, ok := bic.mutation.ProcessedEventOptionsParsed(); !ok {
+		return &ValidationError{Name: "processed_event_options_parsed", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_options_parsed"`)}
 	}
-	if _, ok := bic.mutation.ProfileName(); !ok {
-		return &ValidationError{Name: "profile_name", err: errors.New(`ent: missing required field "BazelInvocation.profile_name"`)}
+	if _, ok := bic.mutation.ProcessedEventBuildFinished(); !ok {
+		return &ValidationError{Name: "processed_event_build_finished", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_build_finished"`)}
+	}
+	if _, ok := bic.mutation.ProcessedEventStructuredCommandLine(); !ok {
+		return &ValidationError{Name: "processed_event_structured_command_line", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_structured_command_line"`)}
+	}
+	if _, ok := bic.mutation.ProcessedEventWorkspaceStatus(); !ok {
+		return &ValidationError{Name: "processed_event_workspace_status", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_workspace_status"`)}
 	}
 	return nil
 }
@@ -440,6 +748,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_node = &BazelInvocation{config: bic.config}
 		_spec = sqlgraph.NewCreateSpec(bazelinvocation.Table, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = bic.conflict
 	if value, ok := bic.mutation.InvocationID(); ok {
 		_spec.SetField(bazelinvocation.FieldInvocationID, field.TypeUUID, value)
 		_node.InvocationID = value
@@ -460,10 +769,6 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_spec.SetField(bazelinvocation.FieldPatchsetNumber, field.TypeInt, value)
 		_node.PatchsetNumber = value
 	}
-	if value, ok := bic.mutation.Summary(); ok {
-		_spec.SetField(bazelinvocation.FieldSummary, field.TypeJSON, value)
-		_node.Summary = value
-	}
 	if value, ok := bic.mutation.BepCompleted(); ok {
 		_spec.SetField(bazelinvocation.FieldBepCompleted, field.TypeBool, value)
 		_node.BepCompleted = value
@@ -471,10 +776,6 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	if value, ok := bic.mutation.StepLabel(); ok {
 		_spec.SetField(bazelinvocation.FieldStepLabel, field.TypeString, value)
 		_node.StepLabel = value
-	}
-	if value, ok := bic.mutation.RelatedFiles(); ok {
-		_spec.SetField(bazelinvocation.FieldRelatedFiles, field.TypeJSON, value)
-		_node.RelatedFiles = value
 	}
 	if value, ok := bic.mutation.UserEmail(); ok {
 		_spec.SetField(bazelinvocation.FieldUserEmail, field.TypeString, value)
@@ -520,6 +821,70 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_spec.SetField(bazelinvocation.FieldInstanceName, field.TypeString, value)
 		_node.InstanceName = value
 	}
+	if value, ok := bic.mutation.BazelVersion(); ok {
+		_spec.SetField(bazelinvocation.FieldBazelVersion, field.TypeString, value)
+		_node.BazelVersion = value
+	}
+	if value, ok := bic.mutation.ExitCodeName(); ok {
+		_spec.SetField(bazelinvocation.FieldExitCodeName, field.TypeString, value)
+		_node.ExitCodeName = value
+	}
+	if value, ok := bic.mutation.ExitCodeCode(); ok {
+		_spec.SetField(bazelinvocation.FieldExitCodeCode, field.TypeInt32, value)
+		_node.ExitCodeCode = value
+	}
+	if value, ok := bic.mutation.CommandLineCommand(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLineCommand, field.TypeString, value)
+		_node.CommandLineCommand = value
+	}
+	if value, ok := bic.mutation.CommandLineExecutable(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLineExecutable, field.TypeString, value)
+		_node.CommandLineExecutable = value
+	}
+	if value, ok := bic.mutation.CommandLineResidual(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLineResidual, field.TypeString, value)
+		_node.CommandLineResidual = value
+	}
+	if value, ok := bic.mutation.CommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldCommandLine, field.TypeJSON, value)
+		_node.CommandLine = value
+	}
+	if value, ok := bic.mutation.ExplicitCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldExplicitCommandLine, field.TypeJSON, value)
+		_node.ExplicitCommandLine = value
+	}
+	if value, ok := bic.mutation.StartupOptions(); ok {
+		_spec.SetField(bazelinvocation.FieldStartupOptions, field.TypeJSON, value)
+		_node.StartupOptions = value
+	}
+	if value, ok := bic.mutation.ExplicitStartupOptions(); ok {
+		_spec.SetField(bazelinvocation.FieldExplicitStartupOptions, field.TypeJSON, value)
+		_node.ExplicitStartupOptions = value
+	}
+	if value, ok := bic.mutation.ProcessedEventStarted(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventStarted, field.TypeBool, value)
+		_node.ProcessedEventStarted = value
+	}
+	if value, ok := bic.mutation.ProcessedEventBuildMetadata(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventBuildMetadata, field.TypeBool, value)
+		_node.ProcessedEventBuildMetadata = value
+	}
+	if value, ok := bic.mutation.ProcessedEventOptionsParsed(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventOptionsParsed, field.TypeBool, value)
+		_node.ProcessedEventOptionsParsed = value
+	}
+	if value, ok := bic.mutation.ProcessedEventBuildFinished(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventBuildFinished, field.TypeBool, value)
+		_node.ProcessedEventBuildFinished = value
+	}
+	if value, ok := bic.mutation.ProcessedEventStructuredCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventStructuredCommandLine, field.TypeBool, value)
+		_node.ProcessedEventStructuredCommandLine = value
+	}
+	if value, ok := bic.mutation.ProcessedEventWorkspaceStatus(); ok {
+		_spec.SetField(bazelinvocation.FieldProcessedEventWorkspaceStatus, field.TypeBool, value)
+		_node.ProcessedEventWorkspaceStatus = value
+	}
 	if nodes := bic.mutation.BuildIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -535,6 +900,38 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.build_invocations = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.EventMetadataIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.EventMetadataTable,
+			Columns: []string{bazelinvocation.EventMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.ConnectionMetadataIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConnectionMetadataTable,
+			Columns: []string{bazelinvocation.ConnectionMetadataColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := bic.mutation.ProblemsIDs(); len(nodes) > 0 {
@@ -569,6 +966,38 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
+	if nodes := bic.mutation.IncompleteBuildLogsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.IncompleteBuildLogsTable,
+			Columns: []string{bazelinvocation.IncompleteBuildLogsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.InvocationFilesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.InvocationFilesTable,
+			Columns: []string{bazelinvocation.InvocationFilesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := bic.mutation.TestCollectionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -593,7 +1022,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Columns: []string{bazelinvocation.TargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetpair.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -620,11 +1049,1387 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.BazelInvocation.Create().
+//		SetInvocationID(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BazelInvocationUpsert) {
+//			SetInvocationID(v+v).
+//		}).
+//		Exec(ctx)
+func (bic *BazelInvocationCreate) OnConflict(opts ...sql.ConflictOption) *BazelInvocationUpsertOne {
+	bic.conflict = opts
+	return &BazelInvocationUpsertOne{
+		create: bic,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.BazelInvocation.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (bic *BazelInvocationCreate) OnConflictColumns(columns ...string) *BazelInvocationUpsertOne {
+	bic.conflict = append(bic.conflict, sql.ConflictColumns(columns...))
+	return &BazelInvocationUpsertOne{
+		create: bic,
+	}
+}
+
+type (
+	// BazelInvocationUpsertOne is the builder for "upsert"-ing
+	//  one BazelInvocation node.
+	BazelInvocationUpsertOne struct {
+		create *BazelInvocationCreate
+	}
+
+	// BazelInvocationUpsert is the "OnConflict" setter.
+	BazelInvocationUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetStartedAt sets the "started_at" field.
+func (u *BazelInvocationUpsert) SetStartedAt(v time.Time) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldStartedAt, v)
+	return u
+}
+
+// UpdateStartedAt sets the "started_at" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateStartedAt() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldStartedAt)
+	return u
+}
+
+// ClearStartedAt clears the value of the "started_at" field.
+func (u *BazelInvocationUpsert) ClearStartedAt() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldStartedAt)
+	return u
+}
+
+// SetEndedAt sets the "ended_at" field.
+func (u *BazelInvocationUpsert) SetEndedAt(v time.Time) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldEndedAt, v)
+	return u
+}
+
+// UpdateEndedAt sets the "ended_at" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateEndedAt() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldEndedAt)
+	return u
+}
+
+// ClearEndedAt clears the value of the "ended_at" field.
+func (u *BazelInvocationUpsert) ClearEndedAt() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldEndedAt)
+	return u
+}
+
+// SetChangeNumber sets the "change_number" field.
+func (u *BazelInvocationUpsert) SetChangeNumber(v int) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldChangeNumber, v)
+	return u
+}
+
+// UpdateChangeNumber sets the "change_number" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateChangeNumber() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldChangeNumber)
+	return u
+}
+
+// AddChangeNumber adds v to the "change_number" field.
+func (u *BazelInvocationUpsert) AddChangeNumber(v int) *BazelInvocationUpsert {
+	u.Add(bazelinvocation.FieldChangeNumber, v)
+	return u
+}
+
+// ClearChangeNumber clears the value of the "change_number" field.
+func (u *BazelInvocationUpsert) ClearChangeNumber() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldChangeNumber)
+	return u
+}
+
+// SetPatchsetNumber sets the "patchset_number" field.
+func (u *BazelInvocationUpsert) SetPatchsetNumber(v int) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldPatchsetNumber, v)
+	return u
+}
+
+// UpdatePatchsetNumber sets the "patchset_number" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdatePatchsetNumber() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldPatchsetNumber)
+	return u
+}
+
+// AddPatchsetNumber adds v to the "patchset_number" field.
+func (u *BazelInvocationUpsert) AddPatchsetNumber(v int) *BazelInvocationUpsert {
+	u.Add(bazelinvocation.FieldPatchsetNumber, v)
+	return u
+}
+
+// ClearPatchsetNumber clears the value of the "patchset_number" field.
+func (u *BazelInvocationUpsert) ClearPatchsetNumber() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldPatchsetNumber)
+	return u
+}
+
+// SetBepCompleted sets the "bep_completed" field.
+func (u *BazelInvocationUpsert) SetBepCompleted(v bool) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldBepCompleted, v)
+	return u
+}
+
+// UpdateBepCompleted sets the "bep_completed" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateBepCompleted() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldBepCompleted)
+	return u
+}
+
+// SetStepLabel sets the "step_label" field.
+func (u *BazelInvocationUpsert) SetStepLabel(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldStepLabel, v)
+	return u
+}
+
+// UpdateStepLabel sets the "step_label" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateStepLabel() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldStepLabel)
+	return u
+}
+
+// ClearStepLabel clears the value of the "step_label" field.
+func (u *BazelInvocationUpsert) ClearStepLabel() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldStepLabel)
+	return u
+}
+
+// SetUserEmail sets the "user_email" field.
+func (u *BazelInvocationUpsert) SetUserEmail(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldUserEmail, v)
+	return u
+}
+
+// UpdateUserEmail sets the "user_email" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateUserEmail() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldUserEmail)
+	return u
+}
+
+// ClearUserEmail clears the value of the "user_email" field.
+func (u *BazelInvocationUpsert) ClearUserEmail() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldUserEmail)
+	return u
+}
+
+// SetUserLdap sets the "user_ldap" field.
+func (u *BazelInvocationUpsert) SetUserLdap(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldUserLdap, v)
+	return u
+}
+
+// UpdateUserLdap sets the "user_ldap" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateUserLdap() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldUserLdap)
+	return u
+}
+
+// ClearUserLdap clears the value of the "user_ldap" field.
+func (u *BazelInvocationUpsert) ClearUserLdap() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldUserLdap)
+	return u
+}
+
+// SetBuildLogs sets the "build_logs" field.
+func (u *BazelInvocationUpsert) SetBuildLogs(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldBuildLogs, v)
+	return u
+}
+
+// UpdateBuildLogs sets the "build_logs" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateBuildLogs() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldBuildLogs)
+	return u
+}
+
+// ClearBuildLogs clears the value of the "build_logs" field.
+func (u *BazelInvocationUpsert) ClearBuildLogs() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldBuildLogs)
+	return u
+}
+
+// SetCPU sets the "cpu" field.
+func (u *BazelInvocationUpsert) SetCPU(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldCPU, v)
+	return u
+}
+
+// UpdateCPU sets the "cpu" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateCPU() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldCPU)
+	return u
+}
+
+// ClearCPU clears the value of the "cpu" field.
+func (u *BazelInvocationUpsert) ClearCPU() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldCPU)
+	return u
+}
+
+// SetPlatformName sets the "platform_name" field.
+func (u *BazelInvocationUpsert) SetPlatformName(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldPlatformName, v)
+	return u
+}
+
+// UpdatePlatformName sets the "platform_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdatePlatformName() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldPlatformName)
+	return u
+}
+
+// ClearPlatformName clears the value of the "platform_name" field.
+func (u *BazelInvocationUpsert) ClearPlatformName() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldPlatformName)
+	return u
+}
+
+// SetHostname sets the "hostname" field.
+func (u *BazelInvocationUpsert) SetHostname(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldHostname, v)
+	return u
+}
+
+// UpdateHostname sets the "hostname" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateHostname() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldHostname)
+	return u
+}
+
+// ClearHostname clears the value of the "hostname" field.
+func (u *BazelInvocationUpsert) ClearHostname() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldHostname)
+	return u
+}
+
+// SetIsCiWorker sets the "is_ci_worker" field.
+func (u *BazelInvocationUpsert) SetIsCiWorker(v bool) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldIsCiWorker, v)
+	return u
+}
+
+// UpdateIsCiWorker sets the "is_ci_worker" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateIsCiWorker() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldIsCiWorker)
+	return u
+}
+
+// ClearIsCiWorker clears the value of the "is_ci_worker" field.
+func (u *BazelInvocationUpsert) ClearIsCiWorker() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldIsCiWorker)
+	return u
+}
+
+// SetConfigurationMnemonic sets the "configuration_mnemonic" field.
+func (u *BazelInvocationUpsert) SetConfigurationMnemonic(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldConfigurationMnemonic, v)
+	return u
+}
+
+// UpdateConfigurationMnemonic sets the "configuration_mnemonic" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateConfigurationMnemonic() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldConfigurationMnemonic)
+	return u
+}
+
+// ClearConfigurationMnemonic clears the value of the "configuration_mnemonic" field.
+func (u *BazelInvocationUpsert) ClearConfigurationMnemonic() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldConfigurationMnemonic)
+	return u
+}
+
+// SetNumFetches sets the "num_fetches" field.
+func (u *BazelInvocationUpsert) SetNumFetches(v int64) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldNumFetches, v)
+	return u
+}
+
+// UpdateNumFetches sets the "num_fetches" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateNumFetches() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldNumFetches)
+	return u
+}
+
+// AddNumFetches adds v to the "num_fetches" field.
+func (u *BazelInvocationUpsert) AddNumFetches(v int64) *BazelInvocationUpsert {
+	u.Add(bazelinvocation.FieldNumFetches, v)
+	return u
+}
+
+// ClearNumFetches clears the value of the "num_fetches" field.
+func (u *BazelInvocationUpsert) ClearNumFetches() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldNumFetches)
+	return u
+}
+
+// SetProfileName sets the "profile_name" field.
+func (u *BazelInvocationUpsert) SetProfileName(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldProfileName, v)
+	return u
+}
+
+// UpdateProfileName sets the "profile_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateProfileName() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldProfileName)
+	return u
+}
+
+// ClearProfileName clears the value of the "profile_name" field.
+func (u *BazelInvocationUpsert) ClearProfileName() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldProfileName)
+	return u
+}
+
+// SetInstanceName sets the "instance_name" field.
+func (u *BazelInvocationUpsert) SetInstanceName(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldInstanceName, v)
+	return u
+}
+
+// UpdateInstanceName sets the "instance_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateInstanceName() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldInstanceName)
+	return u
+}
+
+// ClearInstanceName clears the value of the "instance_name" field.
+func (u *BazelInvocationUpsert) ClearInstanceName() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldInstanceName)
+	return u
+}
+
+// SetBazelVersion sets the "bazel_version" field.
+func (u *BazelInvocationUpsert) SetBazelVersion(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldBazelVersion, v)
+	return u
+}
+
+// UpdateBazelVersion sets the "bazel_version" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateBazelVersion() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldBazelVersion)
+	return u
+}
+
+// ClearBazelVersion clears the value of the "bazel_version" field.
+func (u *BazelInvocationUpsert) ClearBazelVersion() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldBazelVersion)
+	return u
+}
+
+// SetExitCodeName sets the "exit_code_name" field.
+func (u *BazelInvocationUpsert) SetExitCodeName(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldExitCodeName, v)
+	return u
+}
+
+// UpdateExitCodeName sets the "exit_code_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateExitCodeName() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldExitCodeName)
+	return u
+}
+
+// ClearExitCodeName clears the value of the "exit_code_name" field.
+func (u *BazelInvocationUpsert) ClearExitCodeName() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldExitCodeName)
+	return u
+}
+
+// SetExitCodeCode sets the "exit_code_code" field.
+func (u *BazelInvocationUpsert) SetExitCodeCode(v int32) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldExitCodeCode, v)
+	return u
+}
+
+// UpdateExitCodeCode sets the "exit_code_code" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateExitCodeCode() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldExitCodeCode)
+	return u
+}
+
+// AddExitCodeCode adds v to the "exit_code_code" field.
+func (u *BazelInvocationUpsert) AddExitCodeCode(v int32) *BazelInvocationUpsert {
+	u.Add(bazelinvocation.FieldExitCodeCode, v)
+	return u
+}
+
+// ClearExitCodeCode clears the value of the "exit_code_code" field.
+func (u *BazelInvocationUpsert) ClearExitCodeCode() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldExitCodeCode)
+	return u
+}
+
+// SetCommandLineCommand sets the "command_line_command" field.
+func (u *BazelInvocationUpsert) SetCommandLineCommand(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldCommandLineCommand, v)
+	return u
+}
+
+// UpdateCommandLineCommand sets the "command_line_command" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateCommandLineCommand() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldCommandLineCommand)
+	return u
+}
+
+// ClearCommandLineCommand clears the value of the "command_line_command" field.
+func (u *BazelInvocationUpsert) ClearCommandLineCommand() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldCommandLineCommand)
+	return u
+}
+
+// SetCommandLineExecutable sets the "command_line_executable" field.
+func (u *BazelInvocationUpsert) SetCommandLineExecutable(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldCommandLineExecutable, v)
+	return u
+}
+
+// UpdateCommandLineExecutable sets the "command_line_executable" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateCommandLineExecutable() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldCommandLineExecutable)
+	return u
+}
+
+// ClearCommandLineExecutable clears the value of the "command_line_executable" field.
+func (u *BazelInvocationUpsert) ClearCommandLineExecutable() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldCommandLineExecutable)
+	return u
+}
+
+// SetCommandLineResidual sets the "command_line_residual" field.
+func (u *BazelInvocationUpsert) SetCommandLineResidual(v string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldCommandLineResidual, v)
+	return u
+}
+
+// UpdateCommandLineResidual sets the "command_line_residual" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateCommandLineResidual() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldCommandLineResidual)
+	return u
+}
+
+// ClearCommandLineResidual clears the value of the "command_line_residual" field.
+func (u *BazelInvocationUpsert) ClearCommandLineResidual() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldCommandLineResidual)
+	return u
+}
+
+// SetCommandLine sets the "command_line" field.
+func (u *BazelInvocationUpsert) SetCommandLine(v []string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldCommandLine, v)
+	return u
+}
+
+// UpdateCommandLine sets the "command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateCommandLine() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldCommandLine)
+	return u
+}
+
+// ClearCommandLine clears the value of the "command_line" field.
+func (u *BazelInvocationUpsert) ClearCommandLine() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldCommandLine)
+	return u
+}
+
+// SetExplicitCommandLine sets the "explicit_command_line" field.
+func (u *BazelInvocationUpsert) SetExplicitCommandLine(v []string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldExplicitCommandLine, v)
+	return u
+}
+
+// UpdateExplicitCommandLine sets the "explicit_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateExplicitCommandLine() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldExplicitCommandLine)
+	return u
+}
+
+// ClearExplicitCommandLine clears the value of the "explicit_command_line" field.
+func (u *BazelInvocationUpsert) ClearExplicitCommandLine() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldExplicitCommandLine)
+	return u
+}
+
+// SetStartupOptions sets the "startup_options" field.
+func (u *BazelInvocationUpsert) SetStartupOptions(v []string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldStartupOptions, v)
+	return u
+}
+
+// UpdateStartupOptions sets the "startup_options" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateStartupOptions() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldStartupOptions)
+	return u
+}
+
+// ClearStartupOptions clears the value of the "startup_options" field.
+func (u *BazelInvocationUpsert) ClearStartupOptions() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldStartupOptions)
+	return u
+}
+
+// SetExplicitStartupOptions sets the "explicit_startup_options" field.
+func (u *BazelInvocationUpsert) SetExplicitStartupOptions(v []string) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldExplicitStartupOptions, v)
+	return u
+}
+
+// UpdateExplicitStartupOptions sets the "explicit_startup_options" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateExplicitStartupOptions() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldExplicitStartupOptions)
+	return u
+}
+
+// ClearExplicitStartupOptions clears the value of the "explicit_startup_options" field.
+func (u *BazelInvocationUpsert) ClearExplicitStartupOptions() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldExplicitStartupOptions)
+	return u
+}
+
+// SetProcessedEventStarted sets the "processed_event_started" field.
+func (u *BazelInvocationUpsert) SetProcessedEventStarted(v bool) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldProcessedEventStarted, v)
+	return u
+}
+
+// UpdateProcessedEventStarted sets the "processed_event_started" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateProcessedEventStarted() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldProcessedEventStarted)
+	return u
+}
+
+// SetProcessedEventBuildMetadata sets the "processed_event_build_metadata" field.
+func (u *BazelInvocationUpsert) SetProcessedEventBuildMetadata(v bool) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldProcessedEventBuildMetadata, v)
+	return u
+}
+
+// UpdateProcessedEventBuildMetadata sets the "processed_event_build_metadata" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateProcessedEventBuildMetadata() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldProcessedEventBuildMetadata)
+	return u
+}
+
+// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
+func (u *BazelInvocationUpsert) SetProcessedEventOptionsParsed(v bool) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldProcessedEventOptionsParsed, v)
+	return u
+}
+
+// UpdateProcessedEventOptionsParsed sets the "processed_event_options_parsed" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateProcessedEventOptionsParsed() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldProcessedEventOptionsParsed)
+	return u
+}
+
+// SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
+func (u *BazelInvocationUpsert) SetProcessedEventBuildFinished(v bool) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldProcessedEventBuildFinished, v)
+	return u
+}
+
+// UpdateProcessedEventBuildFinished sets the "processed_event_build_finished" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateProcessedEventBuildFinished() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldProcessedEventBuildFinished)
+	return u
+}
+
+// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
+func (u *BazelInvocationUpsert) SetProcessedEventStructuredCommandLine(v bool) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldProcessedEventStructuredCommandLine, v)
+	return u
+}
+
+// UpdateProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateProcessedEventStructuredCommandLine() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldProcessedEventStructuredCommandLine)
+	return u
+}
+
+// SetProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field.
+func (u *BazelInvocationUpsert) SetProcessedEventWorkspaceStatus(v bool) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldProcessedEventWorkspaceStatus, v)
+	return u
+}
+
+// UpdateProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateProcessedEventWorkspaceStatus() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldProcessedEventWorkspaceStatus)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.BazelInvocation.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BazelInvocationUpsertOne) UpdateNewValues() *BazelInvocationUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.InvocationID(); exists {
+			s.SetIgnore(bazelinvocation.FieldInvocationID)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.BazelInvocation.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *BazelInvocationUpsertOne) Ignore() *BazelInvocationUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BazelInvocationUpsertOne) DoNothing() *BazelInvocationUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BazelInvocationCreate.OnConflict
+// documentation for more info.
+func (u *BazelInvocationUpsertOne) Update(set func(*BazelInvocationUpsert)) *BazelInvocationUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BazelInvocationUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetStartedAt sets the "started_at" field.
+func (u *BazelInvocationUpsertOne) SetStartedAt(v time.Time) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetStartedAt(v)
+	})
+}
+
+// UpdateStartedAt sets the "started_at" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateStartedAt() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateStartedAt()
+	})
+}
+
+// ClearStartedAt clears the value of the "started_at" field.
+func (u *BazelInvocationUpsertOne) ClearStartedAt() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearStartedAt()
+	})
+}
+
+// SetEndedAt sets the "ended_at" field.
+func (u *BazelInvocationUpsertOne) SetEndedAt(v time.Time) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetEndedAt(v)
+	})
+}
+
+// UpdateEndedAt sets the "ended_at" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateEndedAt() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateEndedAt()
+	})
+}
+
+// ClearEndedAt clears the value of the "ended_at" field.
+func (u *BazelInvocationUpsertOne) ClearEndedAt() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearEndedAt()
+	})
+}
+
+// SetChangeNumber sets the "change_number" field.
+func (u *BazelInvocationUpsertOne) SetChangeNumber(v int) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetChangeNumber(v)
+	})
+}
+
+// AddChangeNumber adds v to the "change_number" field.
+func (u *BazelInvocationUpsertOne) AddChangeNumber(v int) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.AddChangeNumber(v)
+	})
+}
+
+// UpdateChangeNumber sets the "change_number" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateChangeNumber() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateChangeNumber()
+	})
+}
+
+// ClearChangeNumber clears the value of the "change_number" field.
+func (u *BazelInvocationUpsertOne) ClearChangeNumber() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearChangeNumber()
+	})
+}
+
+// SetPatchsetNumber sets the "patchset_number" field.
+func (u *BazelInvocationUpsertOne) SetPatchsetNumber(v int) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetPatchsetNumber(v)
+	})
+}
+
+// AddPatchsetNumber adds v to the "patchset_number" field.
+func (u *BazelInvocationUpsertOne) AddPatchsetNumber(v int) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.AddPatchsetNumber(v)
+	})
+}
+
+// UpdatePatchsetNumber sets the "patchset_number" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdatePatchsetNumber() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdatePatchsetNumber()
+	})
+}
+
+// ClearPatchsetNumber clears the value of the "patchset_number" field.
+func (u *BazelInvocationUpsertOne) ClearPatchsetNumber() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearPatchsetNumber()
+	})
+}
+
+// SetBepCompleted sets the "bep_completed" field.
+func (u *BazelInvocationUpsertOne) SetBepCompleted(v bool) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetBepCompleted(v)
+	})
+}
+
+// UpdateBepCompleted sets the "bep_completed" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateBepCompleted() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateBepCompleted()
+	})
+}
+
+// SetStepLabel sets the "step_label" field.
+func (u *BazelInvocationUpsertOne) SetStepLabel(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetStepLabel(v)
+	})
+}
+
+// UpdateStepLabel sets the "step_label" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateStepLabel() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateStepLabel()
+	})
+}
+
+// ClearStepLabel clears the value of the "step_label" field.
+func (u *BazelInvocationUpsertOne) ClearStepLabel() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearStepLabel()
+	})
+}
+
+// SetUserEmail sets the "user_email" field.
+func (u *BazelInvocationUpsertOne) SetUserEmail(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetUserEmail(v)
+	})
+}
+
+// UpdateUserEmail sets the "user_email" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateUserEmail() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateUserEmail()
+	})
+}
+
+// ClearUserEmail clears the value of the "user_email" field.
+func (u *BazelInvocationUpsertOne) ClearUserEmail() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearUserEmail()
+	})
+}
+
+// SetUserLdap sets the "user_ldap" field.
+func (u *BazelInvocationUpsertOne) SetUserLdap(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetUserLdap(v)
+	})
+}
+
+// UpdateUserLdap sets the "user_ldap" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateUserLdap() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateUserLdap()
+	})
+}
+
+// ClearUserLdap clears the value of the "user_ldap" field.
+func (u *BazelInvocationUpsertOne) ClearUserLdap() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearUserLdap()
+	})
+}
+
+// SetBuildLogs sets the "build_logs" field.
+func (u *BazelInvocationUpsertOne) SetBuildLogs(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetBuildLogs(v)
+	})
+}
+
+// UpdateBuildLogs sets the "build_logs" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateBuildLogs() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateBuildLogs()
+	})
+}
+
+// ClearBuildLogs clears the value of the "build_logs" field.
+func (u *BazelInvocationUpsertOne) ClearBuildLogs() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearBuildLogs()
+	})
+}
+
+// SetCPU sets the "cpu" field.
+func (u *BazelInvocationUpsertOne) SetCPU(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetCPU(v)
+	})
+}
+
+// UpdateCPU sets the "cpu" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateCPU() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateCPU()
+	})
+}
+
+// ClearCPU clears the value of the "cpu" field.
+func (u *BazelInvocationUpsertOne) ClearCPU() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearCPU()
+	})
+}
+
+// SetPlatformName sets the "platform_name" field.
+func (u *BazelInvocationUpsertOne) SetPlatformName(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetPlatformName(v)
+	})
+}
+
+// UpdatePlatformName sets the "platform_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdatePlatformName() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdatePlatformName()
+	})
+}
+
+// ClearPlatformName clears the value of the "platform_name" field.
+func (u *BazelInvocationUpsertOne) ClearPlatformName() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearPlatformName()
+	})
+}
+
+// SetHostname sets the "hostname" field.
+func (u *BazelInvocationUpsertOne) SetHostname(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetHostname(v)
+	})
+}
+
+// UpdateHostname sets the "hostname" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateHostname() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateHostname()
+	})
+}
+
+// ClearHostname clears the value of the "hostname" field.
+func (u *BazelInvocationUpsertOne) ClearHostname() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearHostname()
+	})
+}
+
+// SetIsCiWorker sets the "is_ci_worker" field.
+func (u *BazelInvocationUpsertOne) SetIsCiWorker(v bool) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetIsCiWorker(v)
+	})
+}
+
+// UpdateIsCiWorker sets the "is_ci_worker" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateIsCiWorker() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateIsCiWorker()
+	})
+}
+
+// ClearIsCiWorker clears the value of the "is_ci_worker" field.
+func (u *BazelInvocationUpsertOne) ClearIsCiWorker() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearIsCiWorker()
+	})
+}
+
+// SetConfigurationMnemonic sets the "configuration_mnemonic" field.
+func (u *BazelInvocationUpsertOne) SetConfigurationMnemonic(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetConfigurationMnemonic(v)
+	})
+}
+
+// UpdateConfigurationMnemonic sets the "configuration_mnemonic" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateConfigurationMnemonic() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateConfigurationMnemonic()
+	})
+}
+
+// ClearConfigurationMnemonic clears the value of the "configuration_mnemonic" field.
+func (u *BazelInvocationUpsertOne) ClearConfigurationMnemonic() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearConfigurationMnemonic()
+	})
+}
+
+// SetNumFetches sets the "num_fetches" field.
+func (u *BazelInvocationUpsertOne) SetNumFetches(v int64) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetNumFetches(v)
+	})
+}
+
+// AddNumFetches adds v to the "num_fetches" field.
+func (u *BazelInvocationUpsertOne) AddNumFetches(v int64) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.AddNumFetches(v)
+	})
+}
+
+// UpdateNumFetches sets the "num_fetches" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateNumFetches() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateNumFetches()
+	})
+}
+
+// ClearNumFetches clears the value of the "num_fetches" field.
+func (u *BazelInvocationUpsertOne) ClearNumFetches() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearNumFetches()
+	})
+}
+
+// SetProfileName sets the "profile_name" field.
+func (u *BazelInvocationUpsertOne) SetProfileName(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProfileName(v)
+	})
+}
+
+// UpdateProfileName sets the "profile_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateProfileName() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProfileName()
+	})
+}
+
+// ClearProfileName clears the value of the "profile_name" field.
+func (u *BazelInvocationUpsertOne) ClearProfileName() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearProfileName()
+	})
+}
+
+// SetInstanceName sets the "instance_name" field.
+func (u *BazelInvocationUpsertOne) SetInstanceName(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetInstanceName(v)
+	})
+}
+
+// UpdateInstanceName sets the "instance_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateInstanceName() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateInstanceName()
+	})
+}
+
+// ClearInstanceName clears the value of the "instance_name" field.
+func (u *BazelInvocationUpsertOne) ClearInstanceName() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearInstanceName()
+	})
+}
+
+// SetBazelVersion sets the "bazel_version" field.
+func (u *BazelInvocationUpsertOne) SetBazelVersion(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetBazelVersion(v)
+	})
+}
+
+// UpdateBazelVersion sets the "bazel_version" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateBazelVersion() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateBazelVersion()
+	})
+}
+
+// ClearBazelVersion clears the value of the "bazel_version" field.
+func (u *BazelInvocationUpsertOne) ClearBazelVersion() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearBazelVersion()
+	})
+}
+
+// SetExitCodeName sets the "exit_code_name" field.
+func (u *BazelInvocationUpsertOne) SetExitCodeName(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetExitCodeName(v)
+	})
+}
+
+// UpdateExitCodeName sets the "exit_code_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateExitCodeName() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateExitCodeName()
+	})
+}
+
+// ClearExitCodeName clears the value of the "exit_code_name" field.
+func (u *BazelInvocationUpsertOne) ClearExitCodeName() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearExitCodeName()
+	})
+}
+
+// SetExitCodeCode sets the "exit_code_code" field.
+func (u *BazelInvocationUpsertOne) SetExitCodeCode(v int32) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetExitCodeCode(v)
+	})
+}
+
+// AddExitCodeCode adds v to the "exit_code_code" field.
+func (u *BazelInvocationUpsertOne) AddExitCodeCode(v int32) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.AddExitCodeCode(v)
+	})
+}
+
+// UpdateExitCodeCode sets the "exit_code_code" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateExitCodeCode() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateExitCodeCode()
+	})
+}
+
+// ClearExitCodeCode clears the value of the "exit_code_code" field.
+func (u *BazelInvocationUpsertOne) ClearExitCodeCode() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearExitCodeCode()
+	})
+}
+
+// SetCommandLineCommand sets the "command_line_command" field.
+func (u *BazelInvocationUpsertOne) SetCommandLineCommand(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetCommandLineCommand(v)
+	})
+}
+
+// UpdateCommandLineCommand sets the "command_line_command" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateCommandLineCommand() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateCommandLineCommand()
+	})
+}
+
+// ClearCommandLineCommand clears the value of the "command_line_command" field.
+func (u *BazelInvocationUpsertOne) ClearCommandLineCommand() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearCommandLineCommand()
+	})
+}
+
+// SetCommandLineExecutable sets the "command_line_executable" field.
+func (u *BazelInvocationUpsertOne) SetCommandLineExecutable(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetCommandLineExecutable(v)
+	})
+}
+
+// UpdateCommandLineExecutable sets the "command_line_executable" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateCommandLineExecutable() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateCommandLineExecutable()
+	})
+}
+
+// ClearCommandLineExecutable clears the value of the "command_line_executable" field.
+func (u *BazelInvocationUpsertOne) ClearCommandLineExecutable() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearCommandLineExecutable()
+	})
+}
+
+// SetCommandLineResidual sets the "command_line_residual" field.
+func (u *BazelInvocationUpsertOne) SetCommandLineResidual(v string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetCommandLineResidual(v)
+	})
+}
+
+// UpdateCommandLineResidual sets the "command_line_residual" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateCommandLineResidual() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateCommandLineResidual()
+	})
+}
+
+// ClearCommandLineResidual clears the value of the "command_line_residual" field.
+func (u *BazelInvocationUpsertOne) ClearCommandLineResidual() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearCommandLineResidual()
+	})
+}
+
+// SetCommandLine sets the "command_line" field.
+func (u *BazelInvocationUpsertOne) SetCommandLine(v []string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetCommandLine(v)
+	})
+}
+
+// UpdateCommandLine sets the "command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateCommandLine() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateCommandLine()
+	})
+}
+
+// ClearCommandLine clears the value of the "command_line" field.
+func (u *BazelInvocationUpsertOne) ClearCommandLine() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearCommandLine()
+	})
+}
+
+// SetExplicitCommandLine sets the "explicit_command_line" field.
+func (u *BazelInvocationUpsertOne) SetExplicitCommandLine(v []string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetExplicitCommandLine(v)
+	})
+}
+
+// UpdateExplicitCommandLine sets the "explicit_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateExplicitCommandLine() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateExplicitCommandLine()
+	})
+}
+
+// ClearExplicitCommandLine clears the value of the "explicit_command_line" field.
+func (u *BazelInvocationUpsertOne) ClearExplicitCommandLine() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearExplicitCommandLine()
+	})
+}
+
+// SetStartupOptions sets the "startup_options" field.
+func (u *BazelInvocationUpsertOne) SetStartupOptions(v []string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetStartupOptions(v)
+	})
+}
+
+// UpdateStartupOptions sets the "startup_options" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateStartupOptions() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateStartupOptions()
+	})
+}
+
+// ClearStartupOptions clears the value of the "startup_options" field.
+func (u *BazelInvocationUpsertOne) ClearStartupOptions() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearStartupOptions()
+	})
+}
+
+// SetExplicitStartupOptions sets the "explicit_startup_options" field.
+func (u *BazelInvocationUpsertOne) SetExplicitStartupOptions(v []string) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetExplicitStartupOptions(v)
+	})
+}
+
+// UpdateExplicitStartupOptions sets the "explicit_startup_options" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateExplicitStartupOptions() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateExplicitStartupOptions()
+	})
+}
+
+// ClearExplicitStartupOptions clears the value of the "explicit_startup_options" field.
+func (u *BazelInvocationUpsertOne) ClearExplicitStartupOptions() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearExplicitStartupOptions()
+	})
+}
+
+// SetProcessedEventStarted sets the "processed_event_started" field.
+func (u *BazelInvocationUpsertOne) SetProcessedEventStarted(v bool) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventStarted(v)
+	})
+}
+
+// UpdateProcessedEventStarted sets the "processed_event_started" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateProcessedEventStarted() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventStarted()
+	})
+}
+
+// SetProcessedEventBuildMetadata sets the "processed_event_build_metadata" field.
+func (u *BazelInvocationUpsertOne) SetProcessedEventBuildMetadata(v bool) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventBuildMetadata(v)
+	})
+}
+
+// UpdateProcessedEventBuildMetadata sets the "processed_event_build_metadata" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateProcessedEventBuildMetadata() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventBuildMetadata()
+	})
+}
+
+// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
+func (u *BazelInvocationUpsertOne) SetProcessedEventOptionsParsed(v bool) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventOptionsParsed(v)
+	})
+}
+
+// UpdateProcessedEventOptionsParsed sets the "processed_event_options_parsed" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateProcessedEventOptionsParsed() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventOptionsParsed()
+	})
+}
+
+// SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
+func (u *BazelInvocationUpsertOne) SetProcessedEventBuildFinished(v bool) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventBuildFinished(v)
+	})
+}
+
+// UpdateProcessedEventBuildFinished sets the "processed_event_build_finished" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateProcessedEventBuildFinished() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventBuildFinished()
+	})
+}
+
+// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
+func (u *BazelInvocationUpsertOne) SetProcessedEventStructuredCommandLine(v bool) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventStructuredCommandLine(v)
+	})
+}
+
+// UpdateProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateProcessedEventStructuredCommandLine() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventStructuredCommandLine()
+	})
+}
+
+// SetProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field.
+func (u *BazelInvocationUpsertOne) SetProcessedEventWorkspaceStatus(v bool) *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventWorkspaceStatus(v)
+	})
+}
+
+// UpdateProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateProcessedEventWorkspaceStatus() *BazelInvocationUpsertOne {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventWorkspaceStatus()
+	})
+}
+
+// Exec executes the query.
+func (u *BazelInvocationUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BazelInvocationCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BazelInvocationUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *BazelInvocationUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *BazelInvocationUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // BazelInvocationCreateBulk is the builder for creating many BazelInvocation entities in bulk.
 type BazelInvocationCreateBulk struct {
 	config
 	err      error
 	builders []*BazelInvocationCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the BazelInvocation entities in the database.
@@ -638,6 +2443,7 @@ func (bicb *BazelInvocationCreateBulk) Save(ctx context.Context) ([]*BazelInvoca
 	for i := range bicb.builders {
 		func(i int, root context.Context) {
 			builder := bicb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*BazelInvocationMutation)
 				if !ok {
@@ -653,6 +2459,7 @@ func (bicb *BazelInvocationCreateBulk) Save(ctx context.Context) ([]*BazelInvoca
 					_, err = mutators[i+1].Mutate(root, bicb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = bicb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, bicb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -703,6 +2510,789 @@ func (bicb *BazelInvocationCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (bicb *BazelInvocationCreateBulk) ExecX(ctx context.Context) {
 	if err := bicb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.BazelInvocation.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BazelInvocationUpsert) {
+//			SetInvocationID(v+v).
+//		}).
+//		Exec(ctx)
+func (bicb *BazelInvocationCreateBulk) OnConflict(opts ...sql.ConflictOption) *BazelInvocationUpsertBulk {
+	bicb.conflict = opts
+	return &BazelInvocationUpsertBulk{
+		create: bicb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.BazelInvocation.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (bicb *BazelInvocationCreateBulk) OnConflictColumns(columns ...string) *BazelInvocationUpsertBulk {
+	bicb.conflict = append(bicb.conflict, sql.ConflictColumns(columns...))
+	return &BazelInvocationUpsertBulk{
+		create: bicb,
+	}
+}
+
+// BazelInvocationUpsertBulk is the builder for "upsert"-ing
+// a bulk of BazelInvocation nodes.
+type BazelInvocationUpsertBulk struct {
+	create *BazelInvocationCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.BazelInvocation.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BazelInvocationUpsertBulk) UpdateNewValues() *BazelInvocationUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.InvocationID(); exists {
+				s.SetIgnore(bazelinvocation.FieldInvocationID)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.BazelInvocation.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *BazelInvocationUpsertBulk) Ignore() *BazelInvocationUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BazelInvocationUpsertBulk) DoNothing() *BazelInvocationUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BazelInvocationCreateBulk.OnConflict
+// documentation for more info.
+func (u *BazelInvocationUpsertBulk) Update(set func(*BazelInvocationUpsert)) *BazelInvocationUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BazelInvocationUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetStartedAt sets the "started_at" field.
+func (u *BazelInvocationUpsertBulk) SetStartedAt(v time.Time) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetStartedAt(v)
+	})
+}
+
+// UpdateStartedAt sets the "started_at" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateStartedAt() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateStartedAt()
+	})
+}
+
+// ClearStartedAt clears the value of the "started_at" field.
+func (u *BazelInvocationUpsertBulk) ClearStartedAt() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearStartedAt()
+	})
+}
+
+// SetEndedAt sets the "ended_at" field.
+func (u *BazelInvocationUpsertBulk) SetEndedAt(v time.Time) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetEndedAt(v)
+	})
+}
+
+// UpdateEndedAt sets the "ended_at" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateEndedAt() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateEndedAt()
+	})
+}
+
+// ClearEndedAt clears the value of the "ended_at" field.
+func (u *BazelInvocationUpsertBulk) ClearEndedAt() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearEndedAt()
+	})
+}
+
+// SetChangeNumber sets the "change_number" field.
+func (u *BazelInvocationUpsertBulk) SetChangeNumber(v int) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetChangeNumber(v)
+	})
+}
+
+// AddChangeNumber adds v to the "change_number" field.
+func (u *BazelInvocationUpsertBulk) AddChangeNumber(v int) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.AddChangeNumber(v)
+	})
+}
+
+// UpdateChangeNumber sets the "change_number" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateChangeNumber() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateChangeNumber()
+	})
+}
+
+// ClearChangeNumber clears the value of the "change_number" field.
+func (u *BazelInvocationUpsertBulk) ClearChangeNumber() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearChangeNumber()
+	})
+}
+
+// SetPatchsetNumber sets the "patchset_number" field.
+func (u *BazelInvocationUpsertBulk) SetPatchsetNumber(v int) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetPatchsetNumber(v)
+	})
+}
+
+// AddPatchsetNumber adds v to the "patchset_number" field.
+func (u *BazelInvocationUpsertBulk) AddPatchsetNumber(v int) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.AddPatchsetNumber(v)
+	})
+}
+
+// UpdatePatchsetNumber sets the "patchset_number" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdatePatchsetNumber() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdatePatchsetNumber()
+	})
+}
+
+// ClearPatchsetNumber clears the value of the "patchset_number" field.
+func (u *BazelInvocationUpsertBulk) ClearPatchsetNumber() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearPatchsetNumber()
+	})
+}
+
+// SetBepCompleted sets the "bep_completed" field.
+func (u *BazelInvocationUpsertBulk) SetBepCompleted(v bool) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetBepCompleted(v)
+	})
+}
+
+// UpdateBepCompleted sets the "bep_completed" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateBepCompleted() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateBepCompleted()
+	})
+}
+
+// SetStepLabel sets the "step_label" field.
+func (u *BazelInvocationUpsertBulk) SetStepLabel(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetStepLabel(v)
+	})
+}
+
+// UpdateStepLabel sets the "step_label" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateStepLabel() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateStepLabel()
+	})
+}
+
+// ClearStepLabel clears the value of the "step_label" field.
+func (u *BazelInvocationUpsertBulk) ClearStepLabel() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearStepLabel()
+	})
+}
+
+// SetUserEmail sets the "user_email" field.
+func (u *BazelInvocationUpsertBulk) SetUserEmail(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetUserEmail(v)
+	})
+}
+
+// UpdateUserEmail sets the "user_email" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateUserEmail() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateUserEmail()
+	})
+}
+
+// ClearUserEmail clears the value of the "user_email" field.
+func (u *BazelInvocationUpsertBulk) ClearUserEmail() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearUserEmail()
+	})
+}
+
+// SetUserLdap sets the "user_ldap" field.
+func (u *BazelInvocationUpsertBulk) SetUserLdap(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetUserLdap(v)
+	})
+}
+
+// UpdateUserLdap sets the "user_ldap" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateUserLdap() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateUserLdap()
+	})
+}
+
+// ClearUserLdap clears the value of the "user_ldap" field.
+func (u *BazelInvocationUpsertBulk) ClearUserLdap() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearUserLdap()
+	})
+}
+
+// SetBuildLogs sets the "build_logs" field.
+func (u *BazelInvocationUpsertBulk) SetBuildLogs(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetBuildLogs(v)
+	})
+}
+
+// UpdateBuildLogs sets the "build_logs" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateBuildLogs() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateBuildLogs()
+	})
+}
+
+// ClearBuildLogs clears the value of the "build_logs" field.
+func (u *BazelInvocationUpsertBulk) ClearBuildLogs() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearBuildLogs()
+	})
+}
+
+// SetCPU sets the "cpu" field.
+func (u *BazelInvocationUpsertBulk) SetCPU(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetCPU(v)
+	})
+}
+
+// UpdateCPU sets the "cpu" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateCPU() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateCPU()
+	})
+}
+
+// ClearCPU clears the value of the "cpu" field.
+func (u *BazelInvocationUpsertBulk) ClearCPU() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearCPU()
+	})
+}
+
+// SetPlatformName sets the "platform_name" field.
+func (u *BazelInvocationUpsertBulk) SetPlatformName(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetPlatformName(v)
+	})
+}
+
+// UpdatePlatformName sets the "platform_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdatePlatformName() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdatePlatformName()
+	})
+}
+
+// ClearPlatformName clears the value of the "platform_name" field.
+func (u *BazelInvocationUpsertBulk) ClearPlatformName() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearPlatformName()
+	})
+}
+
+// SetHostname sets the "hostname" field.
+func (u *BazelInvocationUpsertBulk) SetHostname(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetHostname(v)
+	})
+}
+
+// UpdateHostname sets the "hostname" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateHostname() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateHostname()
+	})
+}
+
+// ClearHostname clears the value of the "hostname" field.
+func (u *BazelInvocationUpsertBulk) ClearHostname() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearHostname()
+	})
+}
+
+// SetIsCiWorker sets the "is_ci_worker" field.
+func (u *BazelInvocationUpsertBulk) SetIsCiWorker(v bool) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetIsCiWorker(v)
+	})
+}
+
+// UpdateIsCiWorker sets the "is_ci_worker" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateIsCiWorker() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateIsCiWorker()
+	})
+}
+
+// ClearIsCiWorker clears the value of the "is_ci_worker" field.
+func (u *BazelInvocationUpsertBulk) ClearIsCiWorker() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearIsCiWorker()
+	})
+}
+
+// SetConfigurationMnemonic sets the "configuration_mnemonic" field.
+func (u *BazelInvocationUpsertBulk) SetConfigurationMnemonic(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetConfigurationMnemonic(v)
+	})
+}
+
+// UpdateConfigurationMnemonic sets the "configuration_mnemonic" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateConfigurationMnemonic() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateConfigurationMnemonic()
+	})
+}
+
+// ClearConfigurationMnemonic clears the value of the "configuration_mnemonic" field.
+func (u *BazelInvocationUpsertBulk) ClearConfigurationMnemonic() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearConfigurationMnemonic()
+	})
+}
+
+// SetNumFetches sets the "num_fetches" field.
+func (u *BazelInvocationUpsertBulk) SetNumFetches(v int64) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetNumFetches(v)
+	})
+}
+
+// AddNumFetches adds v to the "num_fetches" field.
+func (u *BazelInvocationUpsertBulk) AddNumFetches(v int64) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.AddNumFetches(v)
+	})
+}
+
+// UpdateNumFetches sets the "num_fetches" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateNumFetches() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateNumFetches()
+	})
+}
+
+// ClearNumFetches clears the value of the "num_fetches" field.
+func (u *BazelInvocationUpsertBulk) ClearNumFetches() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearNumFetches()
+	})
+}
+
+// SetProfileName sets the "profile_name" field.
+func (u *BazelInvocationUpsertBulk) SetProfileName(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProfileName(v)
+	})
+}
+
+// UpdateProfileName sets the "profile_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateProfileName() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProfileName()
+	})
+}
+
+// ClearProfileName clears the value of the "profile_name" field.
+func (u *BazelInvocationUpsertBulk) ClearProfileName() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearProfileName()
+	})
+}
+
+// SetInstanceName sets the "instance_name" field.
+func (u *BazelInvocationUpsertBulk) SetInstanceName(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetInstanceName(v)
+	})
+}
+
+// UpdateInstanceName sets the "instance_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateInstanceName() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateInstanceName()
+	})
+}
+
+// ClearInstanceName clears the value of the "instance_name" field.
+func (u *BazelInvocationUpsertBulk) ClearInstanceName() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearInstanceName()
+	})
+}
+
+// SetBazelVersion sets the "bazel_version" field.
+func (u *BazelInvocationUpsertBulk) SetBazelVersion(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetBazelVersion(v)
+	})
+}
+
+// UpdateBazelVersion sets the "bazel_version" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateBazelVersion() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateBazelVersion()
+	})
+}
+
+// ClearBazelVersion clears the value of the "bazel_version" field.
+func (u *BazelInvocationUpsertBulk) ClearBazelVersion() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearBazelVersion()
+	})
+}
+
+// SetExitCodeName sets the "exit_code_name" field.
+func (u *BazelInvocationUpsertBulk) SetExitCodeName(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetExitCodeName(v)
+	})
+}
+
+// UpdateExitCodeName sets the "exit_code_name" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateExitCodeName() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateExitCodeName()
+	})
+}
+
+// ClearExitCodeName clears the value of the "exit_code_name" field.
+func (u *BazelInvocationUpsertBulk) ClearExitCodeName() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearExitCodeName()
+	})
+}
+
+// SetExitCodeCode sets the "exit_code_code" field.
+func (u *BazelInvocationUpsertBulk) SetExitCodeCode(v int32) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetExitCodeCode(v)
+	})
+}
+
+// AddExitCodeCode adds v to the "exit_code_code" field.
+func (u *BazelInvocationUpsertBulk) AddExitCodeCode(v int32) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.AddExitCodeCode(v)
+	})
+}
+
+// UpdateExitCodeCode sets the "exit_code_code" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateExitCodeCode() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateExitCodeCode()
+	})
+}
+
+// ClearExitCodeCode clears the value of the "exit_code_code" field.
+func (u *BazelInvocationUpsertBulk) ClearExitCodeCode() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearExitCodeCode()
+	})
+}
+
+// SetCommandLineCommand sets the "command_line_command" field.
+func (u *BazelInvocationUpsertBulk) SetCommandLineCommand(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetCommandLineCommand(v)
+	})
+}
+
+// UpdateCommandLineCommand sets the "command_line_command" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateCommandLineCommand() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateCommandLineCommand()
+	})
+}
+
+// ClearCommandLineCommand clears the value of the "command_line_command" field.
+func (u *BazelInvocationUpsertBulk) ClearCommandLineCommand() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearCommandLineCommand()
+	})
+}
+
+// SetCommandLineExecutable sets the "command_line_executable" field.
+func (u *BazelInvocationUpsertBulk) SetCommandLineExecutable(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetCommandLineExecutable(v)
+	})
+}
+
+// UpdateCommandLineExecutable sets the "command_line_executable" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateCommandLineExecutable() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateCommandLineExecutable()
+	})
+}
+
+// ClearCommandLineExecutable clears the value of the "command_line_executable" field.
+func (u *BazelInvocationUpsertBulk) ClearCommandLineExecutable() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearCommandLineExecutable()
+	})
+}
+
+// SetCommandLineResidual sets the "command_line_residual" field.
+func (u *BazelInvocationUpsertBulk) SetCommandLineResidual(v string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetCommandLineResidual(v)
+	})
+}
+
+// UpdateCommandLineResidual sets the "command_line_residual" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateCommandLineResidual() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateCommandLineResidual()
+	})
+}
+
+// ClearCommandLineResidual clears the value of the "command_line_residual" field.
+func (u *BazelInvocationUpsertBulk) ClearCommandLineResidual() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearCommandLineResidual()
+	})
+}
+
+// SetCommandLine sets the "command_line" field.
+func (u *BazelInvocationUpsertBulk) SetCommandLine(v []string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetCommandLine(v)
+	})
+}
+
+// UpdateCommandLine sets the "command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateCommandLine() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateCommandLine()
+	})
+}
+
+// ClearCommandLine clears the value of the "command_line" field.
+func (u *BazelInvocationUpsertBulk) ClearCommandLine() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearCommandLine()
+	})
+}
+
+// SetExplicitCommandLine sets the "explicit_command_line" field.
+func (u *BazelInvocationUpsertBulk) SetExplicitCommandLine(v []string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetExplicitCommandLine(v)
+	})
+}
+
+// UpdateExplicitCommandLine sets the "explicit_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateExplicitCommandLine() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateExplicitCommandLine()
+	})
+}
+
+// ClearExplicitCommandLine clears the value of the "explicit_command_line" field.
+func (u *BazelInvocationUpsertBulk) ClearExplicitCommandLine() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearExplicitCommandLine()
+	})
+}
+
+// SetStartupOptions sets the "startup_options" field.
+func (u *BazelInvocationUpsertBulk) SetStartupOptions(v []string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetStartupOptions(v)
+	})
+}
+
+// UpdateStartupOptions sets the "startup_options" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateStartupOptions() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateStartupOptions()
+	})
+}
+
+// ClearStartupOptions clears the value of the "startup_options" field.
+func (u *BazelInvocationUpsertBulk) ClearStartupOptions() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearStartupOptions()
+	})
+}
+
+// SetExplicitStartupOptions sets the "explicit_startup_options" field.
+func (u *BazelInvocationUpsertBulk) SetExplicitStartupOptions(v []string) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetExplicitStartupOptions(v)
+	})
+}
+
+// UpdateExplicitStartupOptions sets the "explicit_startup_options" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateExplicitStartupOptions() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateExplicitStartupOptions()
+	})
+}
+
+// ClearExplicitStartupOptions clears the value of the "explicit_startup_options" field.
+func (u *BazelInvocationUpsertBulk) ClearExplicitStartupOptions() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.ClearExplicitStartupOptions()
+	})
+}
+
+// SetProcessedEventStarted sets the "processed_event_started" field.
+func (u *BazelInvocationUpsertBulk) SetProcessedEventStarted(v bool) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventStarted(v)
+	})
+}
+
+// UpdateProcessedEventStarted sets the "processed_event_started" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateProcessedEventStarted() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventStarted()
+	})
+}
+
+// SetProcessedEventBuildMetadata sets the "processed_event_build_metadata" field.
+func (u *BazelInvocationUpsertBulk) SetProcessedEventBuildMetadata(v bool) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventBuildMetadata(v)
+	})
+}
+
+// UpdateProcessedEventBuildMetadata sets the "processed_event_build_metadata" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateProcessedEventBuildMetadata() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventBuildMetadata()
+	})
+}
+
+// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
+func (u *BazelInvocationUpsertBulk) SetProcessedEventOptionsParsed(v bool) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventOptionsParsed(v)
+	})
+}
+
+// UpdateProcessedEventOptionsParsed sets the "processed_event_options_parsed" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateProcessedEventOptionsParsed() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventOptionsParsed()
+	})
+}
+
+// SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
+func (u *BazelInvocationUpsertBulk) SetProcessedEventBuildFinished(v bool) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventBuildFinished(v)
+	})
+}
+
+// UpdateProcessedEventBuildFinished sets the "processed_event_build_finished" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateProcessedEventBuildFinished() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventBuildFinished()
+	})
+}
+
+// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
+func (u *BazelInvocationUpsertBulk) SetProcessedEventStructuredCommandLine(v bool) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventStructuredCommandLine(v)
+	})
+}
+
+// UpdateProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateProcessedEventStructuredCommandLine() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventStructuredCommandLine()
+	})
+}
+
+// SetProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field.
+func (u *BazelInvocationUpsertBulk) SetProcessedEventWorkspaceStatus(v bool) *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.SetProcessedEventWorkspaceStatus(v)
+	})
+}
+
+// UpdateProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateProcessedEventWorkspaceStatus() *BazelInvocationUpsertBulk {
+	return u.Update(func(s *BazelInvocationUpsert) {
+		s.UpdateProcessedEventWorkspaceStatus()
+	})
+}
+
+// Exec executes the query.
+func (u *BazelInvocationUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the BazelInvocationCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BazelInvocationCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BazelInvocationUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

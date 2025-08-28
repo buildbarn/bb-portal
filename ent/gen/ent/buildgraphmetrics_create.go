@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
@@ -18,6 +20,7 @@ type BuildGraphMetricsCreate struct {
 	config
 	mutation *BuildGraphMetricsMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetActionLookupValueCount sets the "action_lookup_value_count" field.
@@ -320,6 +323,7 @@ func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph
 		_node = &BuildGraphMetrics{config: bgmc.config}
 		_spec = sqlgraph.NewCreateSpec(buildgraphmetrics.Table, sqlgraph.NewFieldSpec(buildgraphmetrics.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = bgmc.conflict
 	if value, ok := bgmc.mutation.ActionLookupValueCount(); ok {
 		_spec.SetField(buildgraphmetrics.FieldActionLookupValueCount, field.TypeInt32, value)
 		_node.ActionLookupValueCount = value
@@ -460,11 +464,602 @@ func (bgmc *BuildGraphMetricsCreate) createSpec() (*BuildGraphMetrics, *sqlgraph
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.BuildGraphMetrics.Create().
+//		SetActionLookupValueCount(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BuildGraphMetricsUpsert) {
+//			SetActionLookupValueCount(v+v).
+//		}).
+//		Exec(ctx)
+func (bgmc *BuildGraphMetricsCreate) OnConflict(opts ...sql.ConflictOption) *BuildGraphMetricsUpsertOne {
+	bgmc.conflict = opts
+	return &BuildGraphMetricsUpsertOne{
+		create: bgmc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.BuildGraphMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (bgmc *BuildGraphMetricsCreate) OnConflictColumns(columns ...string) *BuildGraphMetricsUpsertOne {
+	bgmc.conflict = append(bgmc.conflict, sql.ConflictColumns(columns...))
+	return &BuildGraphMetricsUpsertOne{
+		create: bgmc,
+	}
+}
+
+type (
+	// BuildGraphMetricsUpsertOne is the builder for "upsert"-ing
+	//  one BuildGraphMetrics node.
+	BuildGraphMetricsUpsertOne struct {
+		create *BuildGraphMetricsCreate
+	}
+
+	// BuildGraphMetricsUpsert is the "OnConflict" setter.
+	BuildGraphMetricsUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetActionLookupValueCount sets the "action_lookup_value_count" field.
+func (u *BuildGraphMetricsUpsert) SetActionLookupValueCount(v int32) *BuildGraphMetricsUpsert {
+	u.Set(buildgraphmetrics.FieldActionLookupValueCount, v)
+	return u
+}
+
+// UpdateActionLookupValueCount sets the "action_lookup_value_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsert) UpdateActionLookupValueCount() *BuildGraphMetricsUpsert {
+	u.SetExcluded(buildgraphmetrics.FieldActionLookupValueCount)
+	return u
+}
+
+// AddActionLookupValueCount adds v to the "action_lookup_value_count" field.
+func (u *BuildGraphMetricsUpsert) AddActionLookupValueCount(v int32) *BuildGraphMetricsUpsert {
+	u.Add(buildgraphmetrics.FieldActionLookupValueCount, v)
+	return u
+}
+
+// ClearActionLookupValueCount clears the value of the "action_lookup_value_count" field.
+func (u *BuildGraphMetricsUpsert) ClearActionLookupValueCount() *BuildGraphMetricsUpsert {
+	u.SetNull(buildgraphmetrics.FieldActionLookupValueCount)
+	return u
+}
+
+// SetActionLookupValueCountNotIncludingAspects sets the "action_lookup_value_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsert) SetActionLookupValueCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsert {
+	u.Set(buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects, v)
+	return u
+}
+
+// UpdateActionLookupValueCountNotIncludingAspects sets the "action_lookup_value_count_not_including_aspects" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsert) UpdateActionLookupValueCountNotIncludingAspects() *BuildGraphMetricsUpsert {
+	u.SetExcluded(buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects)
+	return u
+}
+
+// AddActionLookupValueCountNotIncludingAspects adds v to the "action_lookup_value_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsert) AddActionLookupValueCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsert {
+	u.Add(buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects, v)
+	return u
+}
+
+// ClearActionLookupValueCountNotIncludingAspects clears the value of the "action_lookup_value_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsert) ClearActionLookupValueCountNotIncludingAspects() *BuildGraphMetricsUpsert {
+	u.SetNull(buildgraphmetrics.FieldActionLookupValueCountNotIncludingAspects)
+	return u
+}
+
+// SetActionCount sets the "action_count" field.
+func (u *BuildGraphMetricsUpsert) SetActionCount(v int32) *BuildGraphMetricsUpsert {
+	u.Set(buildgraphmetrics.FieldActionCount, v)
+	return u
+}
+
+// UpdateActionCount sets the "action_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsert) UpdateActionCount() *BuildGraphMetricsUpsert {
+	u.SetExcluded(buildgraphmetrics.FieldActionCount)
+	return u
+}
+
+// AddActionCount adds v to the "action_count" field.
+func (u *BuildGraphMetricsUpsert) AddActionCount(v int32) *BuildGraphMetricsUpsert {
+	u.Add(buildgraphmetrics.FieldActionCount, v)
+	return u
+}
+
+// ClearActionCount clears the value of the "action_count" field.
+func (u *BuildGraphMetricsUpsert) ClearActionCount() *BuildGraphMetricsUpsert {
+	u.SetNull(buildgraphmetrics.FieldActionCount)
+	return u
+}
+
+// SetActionCountNotIncludingAspects sets the "action_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsert) SetActionCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsert {
+	u.Set(buildgraphmetrics.FieldActionCountNotIncludingAspects, v)
+	return u
+}
+
+// UpdateActionCountNotIncludingAspects sets the "action_count_not_including_aspects" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsert) UpdateActionCountNotIncludingAspects() *BuildGraphMetricsUpsert {
+	u.SetExcluded(buildgraphmetrics.FieldActionCountNotIncludingAspects)
+	return u
+}
+
+// AddActionCountNotIncludingAspects adds v to the "action_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsert) AddActionCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsert {
+	u.Add(buildgraphmetrics.FieldActionCountNotIncludingAspects, v)
+	return u
+}
+
+// ClearActionCountNotIncludingAspects clears the value of the "action_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsert) ClearActionCountNotIncludingAspects() *BuildGraphMetricsUpsert {
+	u.SetNull(buildgraphmetrics.FieldActionCountNotIncludingAspects)
+	return u
+}
+
+// SetInputFileConfiguredTargetCount sets the "input_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsert) SetInputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsert {
+	u.Set(buildgraphmetrics.FieldInputFileConfiguredTargetCount, v)
+	return u
+}
+
+// UpdateInputFileConfiguredTargetCount sets the "input_file_configured_target_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsert) UpdateInputFileConfiguredTargetCount() *BuildGraphMetricsUpsert {
+	u.SetExcluded(buildgraphmetrics.FieldInputFileConfiguredTargetCount)
+	return u
+}
+
+// AddInputFileConfiguredTargetCount adds v to the "input_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsert) AddInputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsert {
+	u.Add(buildgraphmetrics.FieldInputFileConfiguredTargetCount, v)
+	return u
+}
+
+// ClearInputFileConfiguredTargetCount clears the value of the "input_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsert) ClearInputFileConfiguredTargetCount() *BuildGraphMetricsUpsert {
+	u.SetNull(buildgraphmetrics.FieldInputFileConfiguredTargetCount)
+	return u
+}
+
+// SetOutputFileConfiguredTargetCount sets the "output_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsert) SetOutputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsert {
+	u.Set(buildgraphmetrics.FieldOutputFileConfiguredTargetCount, v)
+	return u
+}
+
+// UpdateOutputFileConfiguredTargetCount sets the "output_file_configured_target_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsert) UpdateOutputFileConfiguredTargetCount() *BuildGraphMetricsUpsert {
+	u.SetExcluded(buildgraphmetrics.FieldOutputFileConfiguredTargetCount)
+	return u
+}
+
+// AddOutputFileConfiguredTargetCount adds v to the "output_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsert) AddOutputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsert {
+	u.Add(buildgraphmetrics.FieldOutputFileConfiguredTargetCount, v)
+	return u
+}
+
+// ClearOutputFileConfiguredTargetCount clears the value of the "output_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsert) ClearOutputFileConfiguredTargetCount() *BuildGraphMetricsUpsert {
+	u.SetNull(buildgraphmetrics.FieldOutputFileConfiguredTargetCount)
+	return u
+}
+
+// SetOtherConfiguredTargetCount sets the "other_configured_target_count" field.
+func (u *BuildGraphMetricsUpsert) SetOtherConfiguredTargetCount(v int32) *BuildGraphMetricsUpsert {
+	u.Set(buildgraphmetrics.FieldOtherConfiguredTargetCount, v)
+	return u
+}
+
+// UpdateOtherConfiguredTargetCount sets the "other_configured_target_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsert) UpdateOtherConfiguredTargetCount() *BuildGraphMetricsUpsert {
+	u.SetExcluded(buildgraphmetrics.FieldOtherConfiguredTargetCount)
+	return u
+}
+
+// AddOtherConfiguredTargetCount adds v to the "other_configured_target_count" field.
+func (u *BuildGraphMetricsUpsert) AddOtherConfiguredTargetCount(v int32) *BuildGraphMetricsUpsert {
+	u.Add(buildgraphmetrics.FieldOtherConfiguredTargetCount, v)
+	return u
+}
+
+// ClearOtherConfiguredTargetCount clears the value of the "other_configured_target_count" field.
+func (u *BuildGraphMetricsUpsert) ClearOtherConfiguredTargetCount() *BuildGraphMetricsUpsert {
+	u.SetNull(buildgraphmetrics.FieldOtherConfiguredTargetCount)
+	return u
+}
+
+// SetOutputArtifactCount sets the "output_artifact_count" field.
+func (u *BuildGraphMetricsUpsert) SetOutputArtifactCount(v int32) *BuildGraphMetricsUpsert {
+	u.Set(buildgraphmetrics.FieldOutputArtifactCount, v)
+	return u
+}
+
+// UpdateOutputArtifactCount sets the "output_artifact_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsert) UpdateOutputArtifactCount() *BuildGraphMetricsUpsert {
+	u.SetExcluded(buildgraphmetrics.FieldOutputArtifactCount)
+	return u
+}
+
+// AddOutputArtifactCount adds v to the "output_artifact_count" field.
+func (u *BuildGraphMetricsUpsert) AddOutputArtifactCount(v int32) *BuildGraphMetricsUpsert {
+	u.Add(buildgraphmetrics.FieldOutputArtifactCount, v)
+	return u
+}
+
+// ClearOutputArtifactCount clears the value of the "output_artifact_count" field.
+func (u *BuildGraphMetricsUpsert) ClearOutputArtifactCount() *BuildGraphMetricsUpsert {
+	u.SetNull(buildgraphmetrics.FieldOutputArtifactCount)
+	return u
+}
+
+// SetPostInvocationSkyframeNodeCount sets the "post_invocation_skyframe_node_count" field.
+func (u *BuildGraphMetricsUpsert) SetPostInvocationSkyframeNodeCount(v int32) *BuildGraphMetricsUpsert {
+	u.Set(buildgraphmetrics.FieldPostInvocationSkyframeNodeCount, v)
+	return u
+}
+
+// UpdatePostInvocationSkyframeNodeCount sets the "post_invocation_skyframe_node_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsert) UpdatePostInvocationSkyframeNodeCount() *BuildGraphMetricsUpsert {
+	u.SetExcluded(buildgraphmetrics.FieldPostInvocationSkyframeNodeCount)
+	return u
+}
+
+// AddPostInvocationSkyframeNodeCount adds v to the "post_invocation_skyframe_node_count" field.
+func (u *BuildGraphMetricsUpsert) AddPostInvocationSkyframeNodeCount(v int32) *BuildGraphMetricsUpsert {
+	u.Add(buildgraphmetrics.FieldPostInvocationSkyframeNodeCount, v)
+	return u
+}
+
+// ClearPostInvocationSkyframeNodeCount clears the value of the "post_invocation_skyframe_node_count" field.
+func (u *BuildGraphMetricsUpsert) ClearPostInvocationSkyframeNodeCount() *BuildGraphMetricsUpsert {
+	u.SetNull(buildgraphmetrics.FieldPostInvocationSkyframeNodeCount)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.BuildGraphMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BuildGraphMetricsUpsertOne) UpdateNewValues() *BuildGraphMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.BuildGraphMetrics.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *BuildGraphMetricsUpsertOne) Ignore() *BuildGraphMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BuildGraphMetricsUpsertOne) DoNothing() *BuildGraphMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BuildGraphMetricsCreate.OnConflict
+// documentation for more info.
+func (u *BuildGraphMetricsUpsertOne) Update(set func(*BuildGraphMetricsUpsert)) *BuildGraphMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BuildGraphMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetActionLookupValueCount sets the "action_lookup_value_count" field.
+func (u *BuildGraphMetricsUpsertOne) SetActionLookupValueCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetActionLookupValueCount(v)
+	})
+}
+
+// AddActionLookupValueCount adds v to the "action_lookup_value_count" field.
+func (u *BuildGraphMetricsUpsertOne) AddActionLookupValueCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddActionLookupValueCount(v)
+	})
+}
+
+// UpdateActionLookupValueCount sets the "action_lookup_value_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertOne) UpdateActionLookupValueCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateActionLookupValueCount()
+	})
+}
+
+// ClearActionLookupValueCount clears the value of the "action_lookup_value_count" field.
+func (u *BuildGraphMetricsUpsertOne) ClearActionLookupValueCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearActionLookupValueCount()
+	})
+}
+
+// SetActionLookupValueCountNotIncludingAspects sets the "action_lookup_value_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertOne) SetActionLookupValueCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetActionLookupValueCountNotIncludingAspects(v)
+	})
+}
+
+// AddActionLookupValueCountNotIncludingAspects adds v to the "action_lookup_value_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertOne) AddActionLookupValueCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddActionLookupValueCountNotIncludingAspects(v)
+	})
+}
+
+// UpdateActionLookupValueCountNotIncludingAspects sets the "action_lookup_value_count_not_including_aspects" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertOne) UpdateActionLookupValueCountNotIncludingAspects() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateActionLookupValueCountNotIncludingAspects()
+	})
+}
+
+// ClearActionLookupValueCountNotIncludingAspects clears the value of the "action_lookup_value_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertOne) ClearActionLookupValueCountNotIncludingAspects() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearActionLookupValueCountNotIncludingAspects()
+	})
+}
+
+// SetActionCount sets the "action_count" field.
+func (u *BuildGraphMetricsUpsertOne) SetActionCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetActionCount(v)
+	})
+}
+
+// AddActionCount adds v to the "action_count" field.
+func (u *BuildGraphMetricsUpsertOne) AddActionCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddActionCount(v)
+	})
+}
+
+// UpdateActionCount sets the "action_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertOne) UpdateActionCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateActionCount()
+	})
+}
+
+// ClearActionCount clears the value of the "action_count" field.
+func (u *BuildGraphMetricsUpsertOne) ClearActionCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearActionCount()
+	})
+}
+
+// SetActionCountNotIncludingAspects sets the "action_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertOne) SetActionCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetActionCountNotIncludingAspects(v)
+	})
+}
+
+// AddActionCountNotIncludingAspects adds v to the "action_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertOne) AddActionCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddActionCountNotIncludingAspects(v)
+	})
+}
+
+// UpdateActionCountNotIncludingAspects sets the "action_count_not_including_aspects" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertOne) UpdateActionCountNotIncludingAspects() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateActionCountNotIncludingAspects()
+	})
+}
+
+// ClearActionCountNotIncludingAspects clears the value of the "action_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertOne) ClearActionCountNotIncludingAspects() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearActionCountNotIncludingAspects()
+	})
+}
+
+// SetInputFileConfiguredTargetCount sets the "input_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertOne) SetInputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetInputFileConfiguredTargetCount(v)
+	})
+}
+
+// AddInputFileConfiguredTargetCount adds v to the "input_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertOne) AddInputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddInputFileConfiguredTargetCount(v)
+	})
+}
+
+// UpdateInputFileConfiguredTargetCount sets the "input_file_configured_target_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertOne) UpdateInputFileConfiguredTargetCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateInputFileConfiguredTargetCount()
+	})
+}
+
+// ClearInputFileConfiguredTargetCount clears the value of the "input_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertOne) ClearInputFileConfiguredTargetCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearInputFileConfiguredTargetCount()
+	})
+}
+
+// SetOutputFileConfiguredTargetCount sets the "output_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertOne) SetOutputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetOutputFileConfiguredTargetCount(v)
+	})
+}
+
+// AddOutputFileConfiguredTargetCount adds v to the "output_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertOne) AddOutputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddOutputFileConfiguredTargetCount(v)
+	})
+}
+
+// UpdateOutputFileConfiguredTargetCount sets the "output_file_configured_target_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertOne) UpdateOutputFileConfiguredTargetCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateOutputFileConfiguredTargetCount()
+	})
+}
+
+// ClearOutputFileConfiguredTargetCount clears the value of the "output_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertOne) ClearOutputFileConfiguredTargetCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearOutputFileConfiguredTargetCount()
+	})
+}
+
+// SetOtherConfiguredTargetCount sets the "other_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertOne) SetOtherConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetOtherConfiguredTargetCount(v)
+	})
+}
+
+// AddOtherConfiguredTargetCount adds v to the "other_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertOne) AddOtherConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddOtherConfiguredTargetCount(v)
+	})
+}
+
+// UpdateOtherConfiguredTargetCount sets the "other_configured_target_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertOne) UpdateOtherConfiguredTargetCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateOtherConfiguredTargetCount()
+	})
+}
+
+// ClearOtherConfiguredTargetCount clears the value of the "other_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertOne) ClearOtherConfiguredTargetCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearOtherConfiguredTargetCount()
+	})
+}
+
+// SetOutputArtifactCount sets the "output_artifact_count" field.
+func (u *BuildGraphMetricsUpsertOne) SetOutputArtifactCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetOutputArtifactCount(v)
+	})
+}
+
+// AddOutputArtifactCount adds v to the "output_artifact_count" field.
+func (u *BuildGraphMetricsUpsertOne) AddOutputArtifactCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddOutputArtifactCount(v)
+	})
+}
+
+// UpdateOutputArtifactCount sets the "output_artifact_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertOne) UpdateOutputArtifactCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateOutputArtifactCount()
+	})
+}
+
+// ClearOutputArtifactCount clears the value of the "output_artifact_count" field.
+func (u *BuildGraphMetricsUpsertOne) ClearOutputArtifactCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearOutputArtifactCount()
+	})
+}
+
+// SetPostInvocationSkyframeNodeCount sets the "post_invocation_skyframe_node_count" field.
+func (u *BuildGraphMetricsUpsertOne) SetPostInvocationSkyframeNodeCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetPostInvocationSkyframeNodeCount(v)
+	})
+}
+
+// AddPostInvocationSkyframeNodeCount adds v to the "post_invocation_skyframe_node_count" field.
+func (u *BuildGraphMetricsUpsertOne) AddPostInvocationSkyframeNodeCount(v int32) *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddPostInvocationSkyframeNodeCount(v)
+	})
+}
+
+// UpdatePostInvocationSkyframeNodeCount sets the "post_invocation_skyframe_node_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertOne) UpdatePostInvocationSkyframeNodeCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdatePostInvocationSkyframeNodeCount()
+	})
+}
+
+// ClearPostInvocationSkyframeNodeCount clears the value of the "post_invocation_skyframe_node_count" field.
+func (u *BuildGraphMetricsUpsertOne) ClearPostInvocationSkyframeNodeCount() *BuildGraphMetricsUpsertOne {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearPostInvocationSkyframeNodeCount()
+	})
+}
+
+// Exec executes the query.
+func (u *BuildGraphMetricsUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BuildGraphMetricsCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BuildGraphMetricsUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *BuildGraphMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *BuildGraphMetricsUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // BuildGraphMetricsCreateBulk is the builder for creating many BuildGraphMetrics entities in bulk.
 type BuildGraphMetricsCreateBulk struct {
 	config
 	err      error
 	builders []*BuildGraphMetricsCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the BuildGraphMetrics entities in the database.
@@ -493,6 +1088,7 @@ func (bgmcb *BuildGraphMetricsCreateBulk) Save(ctx context.Context) ([]*BuildGra
 					_, err = mutators[i+1].Mutate(root, bgmcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = bgmcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, bgmcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -543,6 +1139,362 @@ func (bgmcb *BuildGraphMetricsCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (bgmcb *BuildGraphMetricsCreateBulk) ExecX(ctx context.Context) {
 	if err := bgmcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.BuildGraphMetrics.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BuildGraphMetricsUpsert) {
+//			SetActionLookupValueCount(v+v).
+//		}).
+//		Exec(ctx)
+func (bgmcb *BuildGraphMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildGraphMetricsUpsertBulk {
+	bgmcb.conflict = opts
+	return &BuildGraphMetricsUpsertBulk{
+		create: bgmcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.BuildGraphMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (bgmcb *BuildGraphMetricsCreateBulk) OnConflictColumns(columns ...string) *BuildGraphMetricsUpsertBulk {
+	bgmcb.conflict = append(bgmcb.conflict, sql.ConflictColumns(columns...))
+	return &BuildGraphMetricsUpsertBulk{
+		create: bgmcb,
+	}
+}
+
+// BuildGraphMetricsUpsertBulk is the builder for "upsert"-ing
+// a bulk of BuildGraphMetrics nodes.
+type BuildGraphMetricsUpsertBulk struct {
+	create *BuildGraphMetricsCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.BuildGraphMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BuildGraphMetricsUpsertBulk) UpdateNewValues() *BuildGraphMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.BuildGraphMetrics.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *BuildGraphMetricsUpsertBulk) Ignore() *BuildGraphMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BuildGraphMetricsUpsertBulk) DoNothing() *BuildGraphMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BuildGraphMetricsCreateBulk.OnConflict
+// documentation for more info.
+func (u *BuildGraphMetricsUpsertBulk) Update(set func(*BuildGraphMetricsUpsert)) *BuildGraphMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BuildGraphMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetActionLookupValueCount sets the "action_lookup_value_count" field.
+func (u *BuildGraphMetricsUpsertBulk) SetActionLookupValueCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetActionLookupValueCount(v)
+	})
+}
+
+// AddActionLookupValueCount adds v to the "action_lookup_value_count" field.
+func (u *BuildGraphMetricsUpsertBulk) AddActionLookupValueCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddActionLookupValueCount(v)
+	})
+}
+
+// UpdateActionLookupValueCount sets the "action_lookup_value_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertBulk) UpdateActionLookupValueCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateActionLookupValueCount()
+	})
+}
+
+// ClearActionLookupValueCount clears the value of the "action_lookup_value_count" field.
+func (u *BuildGraphMetricsUpsertBulk) ClearActionLookupValueCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearActionLookupValueCount()
+	})
+}
+
+// SetActionLookupValueCountNotIncludingAspects sets the "action_lookup_value_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertBulk) SetActionLookupValueCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetActionLookupValueCountNotIncludingAspects(v)
+	})
+}
+
+// AddActionLookupValueCountNotIncludingAspects adds v to the "action_lookup_value_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertBulk) AddActionLookupValueCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddActionLookupValueCountNotIncludingAspects(v)
+	})
+}
+
+// UpdateActionLookupValueCountNotIncludingAspects sets the "action_lookup_value_count_not_including_aspects" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertBulk) UpdateActionLookupValueCountNotIncludingAspects() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateActionLookupValueCountNotIncludingAspects()
+	})
+}
+
+// ClearActionLookupValueCountNotIncludingAspects clears the value of the "action_lookup_value_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertBulk) ClearActionLookupValueCountNotIncludingAspects() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearActionLookupValueCountNotIncludingAspects()
+	})
+}
+
+// SetActionCount sets the "action_count" field.
+func (u *BuildGraphMetricsUpsertBulk) SetActionCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetActionCount(v)
+	})
+}
+
+// AddActionCount adds v to the "action_count" field.
+func (u *BuildGraphMetricsUpsertBulk) AddActionCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddActionCount(v)
+	})
+}
+
+// UpdateActionCount sets the "action_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertBulk) UpdateActionCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateActionCount()
+	})
+}
+
+// ClearActionCount clears the value of the "action_count" field.
+func (u *BuildGraphMetricsUpsertBulk) ClearActionCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearActionCount()
+	})
+}
+
+// SetActionCountNotIncludingAspects sets the "action_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertBulk) SetActionCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetActionCountNotIncludingAspects(v)
+	})
+}
+
+// AddActionCountNotIncludingAspects adds v to the "action_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertBulk) AddActionCountNotIncludingAspects(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddActionCountNotIncludingAspects(v)
+	})
+}
+
+// UpdateActionCountNotIncludingAspects sets the "action_count_not_including_aspects" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertBulk) UpdateActionCountNotIncludingAspects() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateActionCountNotIncludingAspects()
+	})
+}
+
+// ClearActionCountNotIncludingAspects clears the value of the "action_count_not_including_aspects" field.
+func (u *BuildGraphMetricsUpsertBulk) ClearActionCountNotIncludingAspects() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearActionCountNotIncludingAspects()
+	})
+}
+
+// SetInputFileConfiguredTargetCount sets the "input_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertBulk) SetInputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetInputFileConfiguredTargetCount(v)
+	})
+}
+
+// AddInputFileConfiguredTargetCount adds v to the "input_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertBulk) AddInputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddInputFileConfiguredTargetCount(v)
+	})
+}
+
+// UpdateInputFileConfiguredTargetCount sets the "input_file_configured_target_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertBulk) UpdateInputFileConfiguredTargetCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateInputFileConfiguredTargetCount()
+	})
+}
+
+// ClearInputFileConfiguredTargetCount clears the value of the "input_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertBulk) ClearInputFileConfiguredTargetCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearInputFileConfiguredTargetCount()
+	})
+}
+
+// SetOutputFileConfiguredTargetCount sets the "output_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertBulk) SetOutputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetOutputFileConfiguredTargetCount(v)
+	})
+}
+
+// AddOutputFileConfiguredTargetCount adds v to the "output_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertBulk) AddOutputFileConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddOutputFileConfiguredTargetCount(v)
+	})
+}
+
+// UpdateOutputFileConfiguredTargetCount sets the "output_file_configured_target_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertBulk) UpdateOutputFileConfiguredTargetCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateOutputFileConfiguredTargetCount()
+	})
+}
+
+// ClearOutputFileConfiguredTargetCount clears the value of the "output_file_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertBulk) ClearOutputFileConfiguredTargetCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearOutputFileConfiguredTargetCount()
+	})
+}
+
+// SetOtherConfiguredTargetCount sets the "other_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertBulk) SetOtherConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetOtherConfiguredTargetCount(v)
+	})
+}
+
+// AddOtherConfiguredTargetCount adds v to the "other_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertBulk) AddOtherConfiguredTargetCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddOtherConfiguredTargetCount(v)
+	})
+}
+
+// UpdateOtherConfiguredTargetCount sets the "other_configured_target_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertBulk) UpdateOtherConfiguredTargetCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateOtherConfiguredTargetCount()
+	})
+}
+
+// ClearOtherConfiguredTargetCount clears the value of the "other_configured_target_count" field.
+func (u *BuildGraphMetricsUpsertBulk) ClearOtherConfiguredTargetCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearOtherConfiguredTargetCount()
+	})
+}
+
+// SetOutputArtifactCount sets the "output_artifact_count" field.
+func (u *BuildGraphMetricsUpsertBulk) SetOutputArtifactCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetOutputArtifactCount(v)
+	})
+}
+
+// AddOutputArtifactCount adds v to the "output_artifact_count" field.
+func (u *BuildGraphMetricsUpsertBulk) AddOutputArtifactCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddOutputArtifactCount(v)
+	})
+}
+
+// UpdateOutputArtifactCount sets the "output_artifact_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertBulk) UpdateOutputArtifactCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdateOutputArtifactCount()
+	})
+}
+
+// ClearOutputArtifactCount clears the value of the "output_artifact_count" field.
+func (u *BuildGraphMetricsUpsertBulk) ClearOutputArtifactCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearOutputArtifactCount()
+	})
+}
+
+// SetPostInvocationSkyframeNodeCount sets the "post_invocation_skyframe_node_count" field.
+func (u *BuildGraphMetricsUpsertBulk) SetPostInvocationSkyframeNodeCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.SetPostInvocationSkyframeNodeCount(v)
+	})
+}
+
+// AddPostInvocationSkyframeNodeCount adds v to the "post_invocation_skyframe_node_count" field.
+func (u *BuildGraphMetricsUpsertBulk) AddPostInvocationSkyframeNodeCount(v int32) *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.AddPostInvocationSkyframeNodeCount(v)
+	})
+}
+
+// UpdatePostInvocationSkyframeNodeCount sets the "post_invocation_skyframe_node_count" field to the value that was provided on create.
+func (u *BuildGraphMetricsUpsertBulk) UpdatePostInvocationSkyframeNodeCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.UpdatePostInvocationSkyframeNodeCount()
+	})
+}
+
+// ClearPostInvocationSkyframeNodeCount clears the value of the "post_invocation_skyframe_node_count" field.
+func (u *BuildGraphMetricsUpsertBulk) ClearPostInvocationSkyframeNodeCount() *BuildGraphMetricsUpsertBulk {
+	return u.Update(func(s *BuildGraphMetricsUpsert) {
+		s.ClearPostInvocationSkyframeNodeCount()
+	})
+}
+
+// Exec executes the query.
+func (u *BuildGraphMetricsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the BuildGraphMetricsCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BuildGraphMetricsCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BuildGraphMetricsUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

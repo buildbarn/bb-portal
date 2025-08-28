@@ -11,7 +11,7 @@ go_library(
     visibility = ["//:__subpackages__"],
     deps = [
         "//ent/gen/ent",
-        "//ent/gen/ent/targetpair",
+        "//ent/gen/ent/target",
         "//ent/gen/ent/testcollection",
         "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
         "@com_github_google_uuid//:uuid",

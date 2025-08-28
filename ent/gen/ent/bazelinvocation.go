@@ -14,7 +14,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
-	"github.com/buildbarn/bb-portal/pkg/summary"
 	"github.com/google/uuid"
 )
 
@@ -33,14 +32,10 @@ type BazelInvocation struct {
 	ChangeNumber int `json:"change_number,omitempty"`
 	// PatchsetNumber holds the value of the "patchset_number" field.
 	PatchsetNumber int `json:"patchset_number,omitempty"`
-	// Summary holds the value of the "summary" field.
-	Summary summary.InvocationSummary `json:"summary,omitempty"`
 	// BepCompleted holds the value of the "bep_completed" field.
 	BepCompleted bool `json:"bep_completed,omitempty"`
 	// StepLabel holds the value of the "step_label" field.
 	StepLabel string `json:"step_label,omitempty"`
-	// RelatedFiles holds the value of the "related_files" field.
-	RelatedFiles map[string]string `json:"related_files,omitempty"`
 	// UserEmail holds the value of the "user_email" field.
 	UserEmail string `json:"user_email,omitempty"`
 	// UserLdap holds the value of the "user_ldap" field.
@@ -63,6 +58,38 @@ type BazelInvocation struct {
 	ProfileName string `json:"profile_name,omitempty"`
 	// InstanceName holds the value of the "instance_name" field.
 	InstanceName string `json:"instance_name,omitempty"`
+	// BazelVersion holds the value of the "bazel_version" field.
+	BazelVersion string `json:"bazel_version,omitempty"`
+	// ExitCodeName holds the value of the "exit_code_name" field.
+	ExitCodeName string `json:"exit_code_name,omitempty"`
+	// ExitCodeCode holds the value of the "exit_code_code" field.
+	ExitCodeCode int32 `json:"exit_code_code,omitempty"`
+	// CommandLineCommand holds the value of the "command_line_command" field.
+	CommandLineCommand string `json:"command_line_command,omitempty"`
+	// CommandLineExecutable holds the value of the "command_line_executable" field.
+	CommandLineExecutable string `json:"command_line_executable,omitempty"`
+	// CommandLineResidual holds the value of the "command_line_residual" field.
+	CommandLineResidual string `json:"command_line_residual,omitempty"`
+	// CommandLine holds the value of the "command_line" field.
+	CommandLine []string `json:"command_line,omitempty"`
+	// ExplicitCommandLine holds the value of the "explicit_command_line" field.
+	ExplicitCommandLine []string `json:"explicit_command_line,omitempty"`
+	// StartupOptions holds the value of the "startup_options" field.
+	StartupOptions []string `json:"startup_options,omitempty"`
+	// ExplicitStartupOptions holds the value of the "explicit_startup_options" field.
+	ExplicitStartupOptions []string `json:"explicit_startup_options,omitempty"`
+	// ProcessedEventStarted holds the value of the "processed_event_started" field.
+	ProcessedEventStarted bool `json:"processed_event_started,omitempty"`
+	// ProcessedEventBuildMetadata holds the value of the "processed_event_build_metadata" field.
+	ProcessedEventBuildMetadata bool `json:"processed_event_build_metadata,omitempty"`
+	// ProcessedEventOptionsParsed holds the value of the "processed_event_options_parsed" field.
+	ProcessedEventOptionsParsed bool `json:"processed_event_options_parsed,omitempty"`
+	// ProcessedEventBuildFinished holds the value of the "processed_event_build_finished" field.
+	ProcessedEventBuildFinished bool `json:"processed_event_build_finished,omitempty"`
+	// ProcessedEventStructuredCommandLine holds the value of the "processed_event_structured_command_line" field.
+	ProcessedEventStructuredCommandLine bool `json:"processed_event_structured_command_line,omitempty"`
+	// ProcessedEventWorkspaceStatus holds the value of the "processed_event_workspace_status" field.
+	ProcessedEventWorkspaceStatus bool `json:"processed_event_workspace_status,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BazelInvocationQuery when eager-loading is set.
 	Edges             BazelInvocationEdges `json:"edges"`
@@ -74,25 +101,37 @@ type BazelInvocation struct {
 type BazelInvocationEdges struct {
 	// Build holds the value of the build edge.
 	Build *Build `json:"build,omitempty"`
+	// EventMetadata holds the value of the event_metadata edge.
+	EventMetadata []*EventMetadata `json:"event_metadata,omitempty"`
+	// ConnectionMetadata holds the value of the connection_metadata edge.
+	ConnectionMetadata []*ConnectionMetadata `json:"connection_metadata,omitempty"`
 	// Problems holds the value of the problems edge.
 	Problems []*BazelInvocationProblem `json:"problems,omitempty"`
 	// Metrics holds the value of the metrics edge.
 	Metrics *Metrics `json:"metrics,omitempty"`
+	// IncompleteBuildLogs holds the value of the incomplete_build_logs edge.
+	IncompleteBuildLogs []*IncompleteBuildLog `json:"incomplete_build_logs,omitempty"`
+	// InvocationFiles holds the value of the invocation_files edge.
+	InvocationFiles []*InvocationFiles `json:"invocation_files,omitempty"`
 	// TestCollection holds the value of the test_collection edge.
 	TestCollection []*TestCollection `json:"test_collection,omitempty"`
 	// Targets holds the value of the targets edge.
-	Targets []*TargetPair `json:"targets,omitempty"`
+	Targets []*Target `json:"targets,omitempty"`
 	// SourceControl holds the value of the source_control edge.
 	SourceControl *SourceControl `json:"source_control,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [6]bool
+	loadedTypes [10]bool
 	// totalCount holds the count of the edges above.
-	totalCount [5]map[string]int
+	totalCount [7]map[string]int
 
-	namedProblems       map[string][]*BazelInvocationProblem
-	namedTestCollection map[string][]*TestCollection
-	namedTargets        map[string][]*TargetPair
+	namedEventMetadata       map[string][]*EventMetadata
+	namedConnectionMetadata  map[string][]*ConnectionMetadata
+	namedProblems            map[string][]*BazelInvocationProblem
+	namedIncompleteBuildLogs map[string][]*IncompleteBuildLog
+	namedInvocationFiles     map[string][]*InvocationFiles
+	namedTestCollection      map[string][]*TestCollection
+	namedTargets             map[string][]*Target
 }
 
 // BuildOrErr returns the Build value or an error if the edge
@@ -106,10 +145,28 @@ func (e BazelInvocationEdges) BuildOrErr() (*Build, error) {
 	return nil, &NotLoadedError{edge: "build"}
 }
 
+// EventMetadataOrErr returns the EventMetadata value or an error if the edge
+// was not loaded in eager-loading.
+func (e BazelInvocationEdges) EventMetadataOrErr() ([]*EventMetadata, error) {
+	if e.loadedTypes[1] {
+		return e.EventMetadata, nil
+	}
+	return nil, &NotLoadedError{edge: "event_metadata"}
+}
+
+// ConnectionMetadataOrErr returns the ConnectionMetadata value or an error if the edge
+// was not loaded in eager-loading.
+func (e BazelInvocationEdges) ConnectionMetadataOrErr() ([]*ConnectionMetadata, error) {
+	if e.loadedTypes[2] {
+		return e.ConnectionMetadata, nil
+	}
+	return nil, &NotLoadedError{edge: "connection_metadata"}
+}
+
 // ProblemsOrErr returns the Problems value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) ProblemsOrErr() ([]*BazelInvocationProblem, error) {
-	if e.loadedTypes[1] {
+	if e.loadedTypes[3] {
 		return e.Problems, nil
 	}
 	return nil, &NotLoadedError{edge: "problems"}
@@ -120,16 +177,34 @@ func (e BazelInvocationEdges) ProblemsOrErr() ([]*BazelInvocationProblem, error)
 func (e BazelInvocationEdges) MetricsOrErr() (*Metrics, error) {
 	if e.Metrics != nil {
 		return e.Metrics, nil
-	} else if e.loadedTypes[2] {
+	} else if e.loadedTypes[4] {
 		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
 }
 
+// IncompleteBuildLogsOrErr returns the IncompleteBuildLogs value or an error if the edge
+// was not loaded in eager-loading.
+func (e BazelInvocationEdges) IncompleteBuildLogsOrErr() ([]*IncompleteBuildLog, error) {
+	if e.loadedTypes[5] {
+		return e.IncompleteBuildLogs, nil
+	}
+	return nil, &NotLoadedError{edge: "incomplete_build_logs"}
+}
+
+// InvocationFilesOrErr returns the InvocationFiles value or an error if the edge
+// was not loaded in eager-loading.
+func (e BazelInvocationEdges) InvocationFilesOrErr() ([]*InvocationFiles, error) {
+	if e.loadedTypes[6] {
+		return e.InvocationFiles, nil
+	}
+	return nil, &NotLoadedError{edge: "invocation_files"}
+}
+
 // TestCollectionOrErr returns the TestCollection value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
-	if e.loadedTypes[3] {
+	if e.loadedTypes[7] {
 		return e.TestCollection, nil
 	}
 	return nil, &NotLoadedError{edge: "test_collection"}
@@ -137,8 +212,8 @@ func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
 
 // TargetsOrErr returns the Targets value or an error if the edge
 // was not loaded in eager-loading.
-func (e BazelInvocationEdges) TargetsOrErr() ([]*TargetPair, error) {
-	if e.loadedTypes[4] {
+func (e BazelInvocationEdges) TargetsOrErr() ([]*Target, error) {
+	if e.loadedTypes[8] {
 		return e.Targets, nil
 	}
 	return nil, &NotLoadedError{edge: "targets"}
@@ -149,7 +224,7 @@ func (e BazelInvocationEdges) TargetsOrErr() ([]*TargetPair, error) {
 func (e BazelInvocationEdges) SourceControlOrErr() (*SourceControl, error) {
 	if e.SourceControl != nil {
 		return e.SourceControl, nil
-	} else if e.loadedTypes[5] {
+	} else if e.loadedTypes[9] {
 		return nil, &NotFoundError{label: sourcecontrol.Label}
 	}
 	return nil, &NotLoadedError{edge: "source_control"}
@@ -160,13 +235,13 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case bazelinvocation.FieldSummary, bazelinvocation.FieldRelatedFiles:
+		case bazelinvocation.FieldCommandLine, bazelinvocation.FieldExplicitCommandLine, bazelinvocation.FieldStartupOptions, bazelinvocation.FieldExplicitStartupOptions:
 			values[i] = new([]byte)
-		case bazelinvocation.FieldBepCompleted, bazelinvocation.FieldIsCiWorker:
+		case bazelinvocation.FieldBepCompleted, bazelinvocation.FieldIsCiWorker, bazelinvocation.FieldProcessedEventStarted, bazelinvocation.FieldProcessedEventBuildMetadata, bazelinvocation.FieldProcessedEventOptionsParsed, bazelinvocation.FieldProcessedEventBuildFinished, bazelinvocation.FieldProcessedEventStructuredCommandLine, bazelinvocation.FieldProcessedEventWorkspaceStatus:
 			values[i] = new(sql.NullBool)
-		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber, bazelinvocation.FieldNumFetches:
+		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber, bazelinvocation.FieldNumFetches, bazelinvocation.FieldExitCodeCode:
 			values[i] = new(sql.NullInt64)
-		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldBuildLogs, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldHostname, bazelinvocation.FieldConfigurationMnemonic, bazelinvocation.FieldProfileName, bazelinvocation.FieldInstanceName:
+		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldBuildLogs, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldHostname, bazelinvocation.FieldConfigurationMnemonic, bazelinvocation.FieldProfileName, bazelinvocation.FieldInstanceName, bazelinvocation.FieldBazelVersion, bazelinvocation.FieldExitCodeName, bazelinvocation.FieldCommandLineCommand, bazelinvocation.FieldCommandLineExecutable, bazelinvocation.FieldCommandLineResidual:
 			values[i] = new(sql.NullString)
 		case bazelinvocation.FieldStartedAt, bazelinvocation.FieldEndedAt:
 			values[i] = new(sql.NullTime)
@@ -225,14 +300,6 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				bi.PatchsetNumber = int(value.Int64)
 			}
-		case bazelinvocation.FieldSummary:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field summary", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &bi.Summary); err != nil {
-					return fmt.Errorf("unmarshal field summary: %w", err)
-				}
-			}
 		case bazelinvocation.FieldBepCompleted:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field bep_completed", values[i])
@@ -244,14 +311,6 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field step_label", values[i])
 			} else if value.Valid {
 				bi.StepLabel = value.String
-			}
-		case bazelinvocation.FieldRelatedFiles:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field related_files", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &bi.RelatedFiles); err != nil {
-					return fmt.Errorf("unmarshal field related_files: %w", err)
-				}
 			}
 		case bazelinvocation.FieldUserEmail:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -319,6 +378,110 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				bi.InstanceName = value.String
 			}
+		case bazelinvocation.FieldBazelVersion:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field bazel_version", values[i])
+			} else if value.Valid {
+				bi.BazelVersion = value.String
+			}
+		case bazelinvocation.FieldExitCodeName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field exit_code_name", values[i])
+			} else if value.Valid {
+				bi.ExitCodeName = value.String
+			}
+		case bazelinvocation.FieldExitCodeCode:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field exit_code_code", values[i])
+			} else if value.Valid {
+				bi.ExitCodeCode = int32(value.Int64)
+			}
+		case bazelinvocation.FieldCommandLineCommand:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field command_line_command", values[i])
+			} else if value.Valid {
+				bi.CommandLineCommand = value.String
+			}
+		case bazelinvocation.FieldCommandLineExecutable:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field command_line_executable", values[i])
+			} else if value.Valid {
+				bi.CommandLineExecutable = value.String
+			}
+		case bazelinvocation.FieldCommandLineResidual:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field command_line_residual", values[i])
+			} else if value.Valid {
+				bi.CommandLineResidual = value.String
+			}
+		case bazelinvocation.FieldCommandLine:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field command_line", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &bi.CommandLine); err != nil {
+					return fmt.Errorf("unmarshal field command_line: %w", err)
+				}
+			}
+		case bazelinvocation.FieldExplicitCommandLine:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field explicit_command_line", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &bi.ExplicitCommandLine); err != nil {
+					return fmt.Errorf("unmarshal field explicit_command_line: %w", err)
+				}
+			}
+		case bazelinvocation.FieldStartupOptions:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field startup_options", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &bi.StartupOptions); err != nil {
+					return fmt.Errorf("unmarshal field startup_options: %w", err)
+				}
+			}
+		case bazelinvocation.FieldExplicitStartupOptions:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field explicit_startup_options", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &bi.ExplicitStartupOptions); err != nil {
+					return fmt.Errorf("unmarshal field explicit_startup_options: %w", err)
+				}
+			}
+		case bazelinvocation.FieldProcessedEventStarted:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field processed_event_started", values[i])
+			} else if value.Valid {
+				bi.ProcessedEventStarted = value.Bool
+			}
+		case bazelinvocation.FieldProcessedEventBuildMetadata:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field processed_event_build_metadata", values[i])
+			} else if value.Valid {
+				bi.ProcessedEventBuildMetadata = value.Bool
+			}
+		case bazelinvocation.FieldProcessedEventOptionsParsed:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field processed_event_options_parsed", values[i])
+			} else if value.Valid {
+				bi.ProcessedEventOptionsParsed = value.Bool
+			}
+		case bazelinvocation.FieldProcessedEventBuildFinished:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field processed_event_build_finished", values[i])
+			} else if value.Valid {
+				bi.ProcessedEventBuildFinished = value.Bool
+			}
+		case bazelinvocation.FieldProcessedEventStructuredCommandLine:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field processed_event_structured_command_line", values[i])
+			} else if value.Valid {
+				bi.ProcessedEventStructuredCommandLine = value.Bool
+			}
+		case bazelinvocation.FieldProcessedEventWorkspaceStatus:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field processed_event_workspace_status", values[i])
+			} else if value.Valid {
+				bi.ProcessedEventWorkspaceStatus = value.Bool
+			}
 		case bazelinvocation.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_invocations", value)
@@ -344,6 +507,16 @@ func (bi *BazelInvocation) QueryBuild() *BuildQuery {
 	return NewBazelInvocationClient(bi.config).QueryBuild(bi)
 }
 
+// QueryEventMetadata queries the "event_metadata" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryEventMetadata() *EventMetadataQuery {
+	return NewBazelInvocationClient(bi.config).QueryEventMetadata(bi)
+}
+
+// QueryConnectionMetadata queries the "connection_metadata" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryConnectionMetadata() *ConnectionMetadataQuery {
+	return NewBazelInvocationClient(bi.config).QueryConnectionMetadata(bi)
+}
+
 // QueryProblems queries the "problems" edge of the BazelInvocation entity.
 func (bi *BazelInvocation) QueryProblems() *BazelInvocationProblemQuery {
 	return NewBazelInvocationClient(bi.config).QueryProblems(bi)
@@ -354,13 +527,23 @@ func (bi *BazelInvocation) QueryMetrics() *MetricsQuery {
 	return NewBazelInvocationClient(bi.config).QueryMetrics(bi)
 }
 
+// QueryIncompleteBuildLogs queries the "incomplete_build_logs" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryIncompleteBuildLogs() *IncompleteBuildLogQuery {
+	return NewBazelInvocationClient(bi.config).QueryIncompleteBuildLogs(bi)
+}
+
+// QueryInvocationFiles queries the "invocation_files" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryInvocationFiles() *InvocationFilesQuery {
+	return NewBazelInvocationClient(bi.config).QueryInvocationFiles(bi)
+}
+
 // QueryTestCollection queries the "test_collection" edge of the BazelInvocation entity.
 func (bi *BazelInvocation) QueryTestCollection() *TestCollectionQuery {
 	return NewBazelInvocationClient(bi.config).QueryTestCollection(bi)
 }
 
 // QueryTargets queries the "targets" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryTargets() *TargetPairQuery {
+func (bi *BazelInvocation) QueryTargets() *TargetQuery {
 	return NewBazelInvocationClient(bi.config).QueryTargets(bi)
 }
 
@@ -407,17 +590,11 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString("patchset_number=")
 	builder.WriteString(fmt.Sprintf("%v", bi.PatchsetNumber))
 	builder.WriteString(", ")
-	builder.WriteString("summary=")
-	builder.WriteString(fmt.Sprintf("%v", bi.Summary))
-	builder.WriteString(", ")
 	builder.WriteString("bep_completed=")
 	builder.WriteString(fmt.Sprintf("%v", bi.BepCompleted))
 	builder.WriteString(", ")
 	builder.WriteString("step_label=")
 	builder.WriteString(bi.StepLabel)
-	builder.WriteString(", ")
-	builder.WriteString("related_files=")
-	builder.WriteString(fmt.Sprintf("%v", bi.RelatedFiles))
 	builder.WriteString(", ")
 	builder.WriteString("user_email=")
 	builder.WriteString(bi.UserEmail)
@@ -451,8 +628,104 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("instance_name=")
 	builder.WriteString(bi.InstanceName)
+	builder.WriteString(", ")
+	builder.WriteString("bazel_version=")
+	builder.WriteString(bi.BazelVersion)
+	builder.WriteString(", ")
+	builder.WriteString("exit_code_name=")
+	builder.WriteString(bi.ExitCodeName)
+	builder.WriteString(", ")
+	builder.WriteString("exit_code_code=")
+	builder.WriteString(fmt.Sprintf("%v", bi.ExitCodeCode))
+	builder.WriteString(", ")
+	builder.WriteString("command_line_command=")
+	builder.WriteString(bi.CommandLineCommand)
+	builder.WriteString(", ")
+	builder.WriteString("command_line_executable=")
+	builder.WriteString(bi.CommandLineExecutable)
+	builder.WriteString(", ")
+	builder.WriteString("command_line_residual=")
+	builder.WriteString(bi.CommandLineResidual)
+	builder.WriteString(", ")
+	builder.WriteString("command_line=")
+	builder.WriteString(fmt.Sprintf("%v", bi.CommandLine))
+	builder.WriteString(", ")
+	builder.WriteString("explicit_command_line=")
+	builder.WriteString(fmt.Sprintf("%v", bi.ExplicitCommandLine))
+	builder.WriteString(", ")
+	builder.WriteString("startup_options=")
+	builder.WriteString(fmt.Sprintf("%v", bi.StartupOptions))
+	builder.WriteString(", ")
+	builder.WriteString("explicit_startup_options=")
+	builder.WriteString(fmt.Sprintf("%v", bi.ExplicitStartupOptions))
+	builder.WriteString(", ")
+	builder.WriteString("processed_event_started=")
+	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventStarted))
+	builder.WriteString(", ")
+	builder.WriteString("processed_event_build_metadata=")
+	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventBuildMetadata))
+	builder.WriteString(", ")
+	builder.WriteString("processed_event_options_parsed=")
+	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventOptionsParsed))
+	builder.WriteString(", ")
+	builder.WriteString("processed_event_build_finished=")
+	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventBuildFinished))
+	builder.WriteString(", ")
+	builder.WriteString("processed_event_structured_command_line=")
+	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventStructuredCommandLine))
+	builder.WriteString(", ")
+	builder.WriteString("processed_event_workspace_status=")
+	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventWorkspaceStatus))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedEventMetadata returns the EventMetadata named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (bi *BazelInvocation) NamedEventMetadata(name string) ([]*EventMetadata, error) {
+	if bi.Edges.namedEventMetadata == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := bi.Edges.namedEventMetadata[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (bi *BazelInvocation) appendNamedEventMetadata(name string, edges ...*EventMetadata) {
+	if bi.Edges.namedEventMetadata == nil {
+		bi.Edges.namedEventMetadata = make(map[string][]*EventMetadata)
+	}
+	if len(edges) == 0 {
+		bi.Edges.namedEventMetadata[name] = []*EventMetadata{}
+	} else {
+		bi.Edges.namedEventMetadata[name] = append(bi.Edges.namedEventMetadata[name], edges...)
+	}
+}
+
+// NamedConnectionMetadata returns the ConnectionMetadata named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (bi *BazelInvocation) NamedConnectionMetadata(name string) ([]*ConnectionMetadata, error) {
+	if bi.Edges.namedConnectionMetadata == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := bi.Edges.namedConnectionMetadata[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (bi *BazelInvocation) appendNamedConnectionMetadata(name string, edges ...*ConnectionMetadata) {
+	if bi.Edges.namedConnectionMetadata == nil {
+		bi.Edges.namedConnectionMetadata = make(map[string][]*ConnectionMetadata)
+	}
+	if len(edges) == 0 {
+		bi.Edges.namedConnectionMetadata[name] = []*ConnectionMetadata{}
+	} else {
+		bi.Edges.namedConnectionMetadata[name] = append(bi.Edges.namedConnectionMetadata[name], edges...)
+	}
 }
 
 // NamedProblems returns the Problems named value or an error if the edge was not
@@ -476,6 +749,54 @@ func (bi *BazelInvocation) appendNamedProblems(name string, edges ...*BazelInvoc
 		bi.Edges.namedProblems[name] = []*BazelInvocationProblem{}
 	} else {
 		bi.Edges.namedProblems[name] = append(bi.Edges.namedProblems[name], edges...)
+	}
+}
+
+// NamedIncompleteBuildLogs returns the IncompleteBuildLogs named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (bi *BazelInvocation) NamedIncompleteBuildLogs(name string) ([]*IncompleteBuildLog, error) {
+	if bi.Edges.namedIncompleteBuildLogs == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := bi.Edges.namedIncompleteBuildLogs[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (bi *BazelInvocation) appendNamedIncompleteBuildLogs(name string, edges ...*IncompleteBuildLog) {
+	if bi.Edges.namedIncompleteBuildLogs == nil {
+		bi.Edges.namedIncompleteBuildLogs = make(map[string][]*IncompleteBuildLog)
+	}
+	if len(edges) == 0 {
+		bi.Edges.namedIncompleteBuildLogs[name] = []*IncompleteBuildLog{}
+	} else {
+		bi.Edges.namedIncompleteBuildLogs[name] = append(bi.Edges.namedIncompleteBuildLogs[name], edges...)
+	}
+}
+
+// NamedInvocationFiles returns the InvocationFiles named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (bi *BazelInvocation) NamedInvocationFiles(name string) ([]*InvocationFiles, error) {
+	if bi.Edges.namedInvocationFiles == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := bi.Edges.namedInvocationFiles[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (bi *BazelInvocation) appendNamedInvocationFiles(name string, edges ...*InvocationFiles) {
+	if bi.Edges.namedInvocationFiles == nil {
+		bi.Edges.namedInvocationFiles = make(map[string][]*InvocationFiles)
+	}
+	if len(edges) == 0 {
+		bi.Edges.namedInvocationFiles[name] = []*InvocationFiles{}
+	} else {
+		bi.Edges.namedInvocationFiles[name] = append(bi.Edges.namedInvocationFiles[name], edges...)
 	}
 }
 
@@ -505,7 +826,7 @@ func (bi *BazelInvocation) appendNamedTestCollection(name string, edges ...*Test
 
 // NamedTargets returns the Targets named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedTargets(name string) ([]*TargetPair, error) {
+func (bi *BazelInvocation) NamedTargets(name string) ([]*Target, error) {
 	if bi.Edges.namedTargets == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
@@ -516,12 +837,12 @@ func (bi *BazelInvocation) NamedTargets(name string) ([]*TargetPair, error) {
 	return nodes, nil
 }
 
-func (bi *BazelInvocation) appendNamedTargets(name string, edges ...*TargetPair) {
+func (bi *BazelInvocation) appendNamedTargets(name string, edges ...*Target) {
 	if bi.Edges.namedTargets == nil {
-		bi.Edges.namedTargets = make(map[string][]*TargetPair)
+		bi.Edges.namedTargets = make(map[string][]*Target)
 	}
 	if len(edges) == 0 {
-		bi.Edges.namedTargets[name] = []*TargetPair{}
+		bi.Edges.namedTargets[name] = []*Target{}
 	} else {
 		bi.Edges.namedTargets[name] = append(bi.Edges.namedTargets[name], edges...)
 	}

@@ -9,6 +9,7 @@ import (
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
@@ -16,7 +17,6 @@ import (
 
 // Error helpers.
 var (
-	ErrOnlyURLOrUUID      = errors.New("either buildURL or buildUUID variable must be used, but not both")
 	ErrWrongType          = errors.New("received unexpected type while trying to convert node to *ent.BazelInvocationProblem")
 	errUnknownProblemType = errors.New("unknown problem type")
 	errActionNotFound     = errors.New("action not found")
@@ -35,11 +35,6 @@ func StringSliceArrayToPointerArray(strings []string) []*string {
 // GetFloatPointer returns a pointer to a float
 func GetFloatPointer(f *float64) *float64 {
 	return f
-}
-
-// GetInt64Pointer returns a pointer to an int64
-func GetInt64Pointer(i *int64) *int64 {
-	return i
 }
 
 // Helper A Helper struct.
@@ -65,8 +60,9 @@ func (ph problemHelper) DBProblemsToAPIProblems(ctx context.Context, dbProblems 
 		if err != nil {
 			return nil, err
 		}
-
-		problems = append(problems, problem)
+		if problem != nil {
+			problems = append(problems, problem)
+		}
 	}
 	return problems, nil
 }
@@ -83,9 +79,12 @@ func (ph problemHelper) DBProblemToAPIProblem(ctx context.Context, problem *ent.
 
 	case detectors.BazelInvocationTestProblem:
 		helper := testProblemHelper{BazelInvocationProblem: problem}
-		status, err := helper.Status()
+		status, err := helper.Status(ctx)
 		if err != nil {
 			return nil, fmt.Errorf("could not get status: %w", err)
+		}
+		if status == testsummary.OverallStatusPASSED {
+			return nil, nil
 		}
 		results, err := helper.Results()
 		if err != nil {
@@ -94,7 +93,7 @@ func (ph problemHelper) DBProblemToAPIProblem(ctx context.Context, problem *ent.
 		return &model.TestProblem{
 			ID:      GraphQLIDFromTypeAndID("TestProblem", problem.ID),
 			Label:   problem.Label,
-			Status:  status,
+			Status:  status.String(),
 			Results: results,
 		}, nil
 
@@ -166,17 +165,9 @@ func (problem testProblemHelper) GraphQLID() string {
 }
 
 // get the status of the problm helper.
-func (problem testProblemHelper) Status() (string, error) {
-	bepEvents, err := events.FromJSONArray(problem.BepEvents)
-	if err != nil {
-		return "", fmt.Errorf("failed to create test problem results: %w", err)
-	}
-	for _, event := range bepEvents {
-		if event.IsTestSummary() {
-			return event.GetTestSummary().GetOverallStatus().String(), nil
-		}
-	}
-	return "", errStatusNotFound
+func (problem testProblemHelper) Status(ctx context.Context) (testsummary.OverallStatus, error) {
+	testSummary, err := problem.QueryBazelInvocation().QueryTestCollection().QueryTestSummary().Where(testsummary.LabelEQ(problem.Label)).Select(testsummary.FieldOverallStatus).Only(ctx)
+	return testSummary.OverallStatus, err
 }
 
 // The results.

@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
@@ -18,6 +20,7 @@ type ActionCacheStatisticsCreate struct {
 	config
 	mutation *ActionCacheStatisticsMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetSizeInBytes sets the "size_in_bytes" field.
@@ -184,6 +187,7 @@ func (acsc *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *
 		_node = &ActionCacheStatistics{config: acsc.config}
 		_spec = sqlgraph.NewCreateSpec(actioncachestatistics.Table, sqlgraph.NewFieldSpec(actioncachestatistics.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = acsc.conflict
 	if value, ok := acsc.mutation.SizeInBytes(); ok {
 		_spec.SetField(actioncachestatistics.FieldSizeInBytes, field.TypeUint64, value)
 		_node.SizeInBytes = value
@@ -240,11 +244,394 @@ func (acsc *ActionCacheStatisticsCreate) createSpec() (*ActionCacheStatistics, *
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ActionCacheStatistics.Create().
+//		SetSizeInBytes(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ActionCacheStatisticsUpsert) {
+//			SetSizeInBytes(v+v).
+//		}).
+//		Exec(ctx)
+func (acsc *ActionCacheStatisticsCreate) OnConflict(opts ...sql.ConflictOption) *ActionCacheStatisticsUpsertOne {
+	acsc.conflict = opts
+	return &ActionCacheStatisticsUpsertOne{
+		create: acsc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ActionCacheStatistics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (acsc *ActionCacheStatisticsCreate) OnConflictColumns(columns ...string) *ActionCacheStatisticsUpsertOne {
+	acsc.conflict = append(acsc.conflict, sql.ConflictColumns(columns...))
+	return &ActionCacheStatisticsUpsertOne{
+		create: acsc,
+	}
+}
+
+type (
+	// ActionCacheStatisticsUpsertOne is the builder for "upsert"-ing
+	//  one ActionCacheStatistics node.
+	ActionCacheStatisticsUpsertOne struct {
+		create *ActionCacheStatisticsCreate
+	}
+
+	// ActionCacheStatisticsUpsert is the "OnConflict" setter.
+	ActionCacheStatisticsUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetSizeInBytes sets the "size_in_bytes" field.
+func (u *ActionCacheStatisticsUpsert) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpsert {
+	u.Set(actioncachestatistics.FieldSizeInBytes, v)
+	return u
+}
+
+// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsert) UpdateSizeInBytes() *ActionCacheStatisticsUpsert {
+	u.SetExcluded(actioncachestatistics.FieldSizeInBytes)
+	return u
+}
+
+// AddSizeInBytes adds v to the "size_in_bytes" field.
+func (u *ActionCacheStatisticsUpsert) AddSizeInBytes(v uint64) *ActionCacheStatisticsUpsert {
+	u.Add(actioncachestatistics.FieldSizeInBytes, v)
+	return u
+}
+
+// ClearSizeInBytes clears the value of the "size_in_bytes" field.
+func (u *ActionCacheStatisticsUpsert) ClearSizeInBytes() *ActionCacheStatisticsUpsert {
+	u.SetNull(actioncachestatistics.FieldSizeInBytes)
+	return u
+}
+
+// SetSaveTimeInMs sets the "save_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsert) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsert {
+	u.Set(actioncachestatistics.FieldSaveTimeInMs, v)
+	return u
+}
+
+// UpdateSaveTimeInMs sets the "save_time_in_ms" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsert) UpdateSaveTimeInMs() *ActionCacheStatisticsUpsert {
+	u.SetExcluded(actioncachestatistics.FieldSaveTimeInMs)
+	return u
+}
+
+// AddSaveTimeInMs adds v to the "save_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsert) AddSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsert {
+	u.Add(actioncachestatistics.FieldSaveTimeInMs, v)
+	return u
+}
+
+// ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsert) ClearSaveTimeInMs() *ActionCacheStatisticsUpsert {
+	u.SetNull(actioncachestatistics.FieldSaveTimeInMs)
+	return u
+}
+
+// SetLoadTimeInMs sets the "load_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsert) SetLoadTimeInMs(v int64) *ActionCacheStatisticsUpsert {
+	u.Set(actioncachestatistics.FieldLoadTimeInMs, v)
+	return u
+}
+
+// UpdateLoadTimeInMs sets the "load_time_in_ms" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsert) UpdateLoadTimeInMs() *ActionCacheStatisticsUpsert {
+	u.SetExcluded(actioncachestatistics.FieldLoadTimeInMs)
+	return u
+}
+
+// AddLoadTimeInMs adds v to the "load_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsert) AddLoadTimeInMs(v int64) *ActionCacheStatisticsUpsert {
+	u.Add(actioncachestatistics.FieldLoadTimeInMs, v)
+	return u
+}
+
+// ClearLoadTimeInMs clears the value of the "load_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsert) ClearLoadTimeInMs() *ActionCacheStatisticsUpsert {
+	u.SetNull(actioncachestatistics.FieldLoadTimeInMs)
+	return u
+}
+
+// SetHits sets the "hits" field.
+func (u *ActionCacheStatisticsUpsert) SetHits(v int32) *ActionCacheStatisticsUpsert {
+	u.Set(actioncachestatistics.FieldHits, v)
+	return u
+}
+
+// UpdateHits sets the "hits" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsert) UpdateHits() *ActionCacheStatisticsUpsert {
+	u.SetExcluded(actioncachestatistics.FieldHits)
+	return u
+}
+
+// AddHits adds v to the "hits" field.
+func (u *ActionCacheStatisticsUpsert) AddHits(v int32) *ActionCacheStatisticsUpsert {
+	u.Add(actioncachestatistics.FieldHits, v)
+	return u
+}
+
+// ClearHits clears the value of the "hits" field.
+func (u *ActionCacheStatisticsUpsert) ClearHits() *ActionCacheStatisticsUpsert {
+	u.SetNull(actioncachestatistics.FieldHits)
+	return u
+}
+
+// SetMisses sets the "misses" field.
+func (u *ActionCacheStatisticsUpsert) SetMisses(v int32) *ActionCacheStatisticsUpsert {
+	u.Set(actioncachestatistics.FieldMisses, v)
+	return u
+}
+
+// UpdateMisses sets the "misses" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsert) UpdateMisses() *ActionCacheStatisticsUpsert {
+	u.SetExcluded(actioncachestatistics.FieldMisses)
+	return u
+}
+
+// AddMisses adds v to the "misses" field.
+func (u *ActionCacheStatisticsUpsert) AddMisses(v int32) *ActionCacheStatisticsUpsert {
+	u.Add(actioncachestatistics.FieldMisses, v)
+	return u
+}
+
+// ClearMisses clears the value of the "misses" field.
+func (u *ActionCacheStatisticsUpsert) ClearMisses() *ActionCacheStatisticsUpsert {
+	u.SetNull(actioncachestatistics.FieldMisses)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.ActionCacheStatistics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ActionCacheStatisticsUpsertOne) UpdateNewValues() *ActionCacheStatisticsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ActionCacheStatistics.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *ActionCacheStatisticsUpsertOne) Ignore() *ActionCacheStatisticsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ActionCacheStatisticsUpsertOne) DoNothing() *ActionCacheStatisticsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ActionCacheStatisticsCreate.OnConflict
+// documentation for more info.
+func (u *ActionCacheStatisticsUpsertOne) Update(set func(*ActionCacheStatisticsUpsert)) *ActionCacheStatisticsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ActionCacheStatisticsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSizeInBytes sets the "size_in_bytes" field.
+func (u *ActionCacheStatisticsUpsertOne) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetSizeInBytes(v)
+	})
+}
+
+// AddSizeInBytes adds v to the "size_in_bytes" field.
+func (u *ActionCacheStatisticsUpsertOne) AddSizeInBytes(v uint64) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddSizeInBytes(v)
+	})
+}
+
+// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertOne) UpdateSizeInBytes() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateSizeInBytes()
+	})
+}
+
+// ClearSizeInBytes clears the value of the "size_in_bytes" field.
+func (u *ActionCacheStatisticsUpsertOne) ClearSizeInBytes() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearSizeInBytes()
+	})
+}
+
+// SetSaveTimeInMs sets the "save_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertOne) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetSaveTimeInMs(v)
+	})
+}
+
+// AddSaveTimeInMs adds v to the "save_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertOne) AddSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddSaveTimeInMs(v)
+	})
+}
+
+// UpdateSaveTimeInMs sets the "save_time_in_ms" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertOne) UpdateSaveTimeInMs() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateSaveTimeInMs()
+	})
+}
+
+// ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertOne) ClearSaveTimeInMs() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearSaveTimeInMs()
+	})
+}
+
+// SetLoadTimeInMs sets the "load_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertOne) SetLoadTimeInMs(v int64) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetLoadTimeInMs(v)
+	})
+}
+
+// AddLoadTimeInMs adds v to the "load_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertOne) AddLoadTimeInMs(v int64) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddLoadTimeInMs(v)
+	})
+}
+
+// UpdateLoadTimeInMs sets the "load_time_in_ms" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertOne) UpdateLoadTimeInMs() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateLoadTimeInMs()
+	})
+}
+
+// ClearLoadTimeInMs clears the value of the "load_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertOne) ClearLoadTimeInMs() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearLoadTimeInMs()
+	})
+}
+
+// SetHits sets the "hits" field.
+func (u *ActionCacheStatisticsUpsertOne) SetHits(v int32) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetHits(v)
+	})
+}
+
+// AddHits adds v to the "hits" field.
+func (u *ActionCacheStatisticsUpsertOne) AddHits(v int32) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddHits(v)
+	})
+}
+
+// UpdateHits sets the "hits" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertOne) UpdateHits() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateHits()
+	})
+}
+
+// ClearHits clears the value of the "hits" field.
+func (u *ActionCacheStatisticsUpsertOne) ClearHits() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearHits()
+	})
+}
+
+// SetMisses sets the "misses" field.
+func (u *ActionCacheStatisticsUpsertOne) SetMisses(v int32) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetMisses(v)
+	})
+}
+
+// AddMisses adds v to the "misses" field.
+func (u *ActionCacheStatisticsUpsertOne) AddMisses(v int32) *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddMisses(v)
+	})
+}
+
+// UpdateMisses sets the "misses" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertOne) UpdateMisses() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateMisses()
+	})
+}
+
+// ClearMisses clears the value of the "misses" field.
+func (u *ActionCacheStatisticsUpsertOne) ClearMisses() *ActionCacheStatisticsUpsertOne {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearMisses()
+	})
+}
+
+// Exec executes the query.
+func (u *ActionCacheStatisticsUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ActionCacheStatisticsCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ActionCacheStatisticsUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *ActionCacheStatisticsUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *ActionCacheStatisticsUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // ActionCacheStatisticsCreateBulk is the builder for creating many ActionCacheStatistics entities in bulk.
 type ActionCacheStatisticsCreateBulk struct {
 	config
 	err      error
 	builders []*ActionCacheStatisticsCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the ActionCacheStatistics entities in the database.
@@ -273,6 +660,7 @@ func (acscb *ActionCacheStatisticsCreateBulk) Save(ctx context.Context) ([]*Acti
 					_, err = mutators[i+1].Mutate(root, acscb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = acscb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, acscb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -323,6 +711,250 @@ func (acscb *ActionCacheStatisticsCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (acscb *ActionCacheStatisticsCreateBulk) ExecX(ctx context.Context) {
 	if err := acscb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ActionCacheStatistics.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ActionCacheStatisticsUpsert) {
+//			SetSizeInBytes(v+v).
+//		}).
+//		Exec(ctx)
+func (acscb *ActionCacheStatisticsCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActionCacheStatisticsUpsertBulk {
+	acscb.conflict = opts
+	return &ActionCacheStatisticsUpsertBulk{
+		create: acscb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ActionCacheStatistics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (acscb *ActionCacheStatisticsCreateBulk) OnConflictColumns(columns ...string) *ActionCacheStatisticsUpsertBulk {
+	acscb.conflict = append(acscb.conflict, sql.ConflictColumns(columns...))
+	return &ActionCacheStatisticsUpsertBulk{
+		create: acscb,
+	}
+}
+
+// ActionCacheStatisticsUpsertBulk is the builder for "upsert"-ing
+// a bulk of ActionCacheStatistics nodes.
+type ActionCacheStatisticsUpsertBulk struct {
+	create *ActionCacheStatisticsCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.ActionCacheStatistics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ActionCacheStatisticsUpsertBulk) UpdateNewValues() *ActionCacheStatisticsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ActionCacheStatistics.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *ActionCacheStatisticsUpsertBulk) Ignore() *ActionCacheStatisticsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ActionCacheStatisticsUpsertBulk) DoNothing() *ActionCacheStatisticsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ActionCacheStatisticsCreateBulk.OnConflict
+// documentation for more info.
+func (u *ActionCacheStatisticsUpsertBulk) Update(set func(*ActionCacheStatisticsUpsert)) *ActionCacheStatisticsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ActionCacheStatisticsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSizeInBytes sets the "size_in_bytes" field.
+func (u *ActionCacheStatisticsUpsertBulk) SetSizeInBytes(v uint64) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetSizeInBytes(v)
+	})
+}
+
+// AddSizeInBytes adds v to the "size_in_bytes" field.
+func (u *ActionCacheStatisticsUpsertBulk) AddSizeInBytes(v uint64) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddSizeInBytes(v)
+	})
+}
+
+// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertBulk) UpdateSizeInBytes() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateSizeInBytes()
+	})
+}
+
+// ClearSizeInBytes clears the value of the "size_in_bytes" field.
+func (u *ActionCacheStatisticsUpsertBulk) ClearSizeInBytes() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearSizeInBytes()
+	})
+}
+
+// SetSaveTimeInMs sets the "save_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertBulk) SetSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetSaveTimeInMs(v)
+	})
+}
+
+// AddSaveTimeInMs adds v to the "save_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertBulk) AddSaveTimeInMs(v uint64) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddSaveTimeInMs(v)
+	})
+}
+
+// UpdateSaveTimeInMs sets the "save_time_in_ms" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertBulk) UpdateSaveTimeInMs() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateSaveTimeInMs()
+	})
+}
+
+// ClearSaveTimeInMs clears the value of the "save_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertBulk) ClearSaveTimeInMs() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearSaveTimeInMs()
+	})
+}
+
+// SetLoadTimeInMs sets the "load_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertBulk) SetLoadTimeInMs(v int64) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetLoadTimeInMs(v)
+	})
+}
+
+// AddLoadTimeInMs adds v to the "load_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertBulk) AddLoadTimeInMs(v int64) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddLoadTimeInMs(v)
+	})
+}
+
+// UpdateLoadTimeInMs sets the "load_time_in_ms" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertBulk) UpdateLoadTimeInMs() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateLoadTimeInMs()
+	})
+}
+
+// ClearLoadTimeInMs clears the value of the "load_time_in_ms" field.
+func (u *ActionCacheStatisticsUpsertBulk) ClearLoadTimeInMs() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearLoadTimeInMs()
+	})
+}
+
+// SetHits sets the "hits" field.
+func (u *ActionCacheStatisticsUpsertBulk) SetHits(v int32) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetHits(v)
+	})
+}
+
+// AddHits adds v to the "hits" field.
+func (u *ActionCacheStatisticsUpsertBulk) AddHits(v int32) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddHits(v)
+	})
+}
+
+// UpdateHits sets the "hits" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertBulk) UpdateHits() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateHits()
+	})
+}
+
+// ClearHits clears the value of the "hits" field.
+func (u *ActionCacheStatisticsUpsertBulk) ClearHits() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearHits()
+	})
+}
+
+// SetMisses sets the "misses" field.
+func (u *ActionCacheStatisticsUpsertBulk) SetMisses(v int32) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.SetMisses(v)
+	})
+}
+
+// AddMisses adds v to the "misses" field.
+func (u *ActionCacheStatisticsUpsertBulk) AddMisses(v int32) *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.AddMisses(v)
+	})
+}
+
+// UpdateMisses sets the "misses" field to the value that was provided on create.
+func (u *ActionCacheStatisticsUpsertBulk) UpdateMisses() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.UpdateMisses()
+	})
+}
+
+// ClearMisses clears the value of the "misses" field.
+func (u *ActionCacheStatisticsUpsertBulk) ClearMisses() *ActionCacheStatisticsUpsertBulk {
+	return u.Update(func(s *ActionCacheStatisticsUpsert) {
+		s.ClearMisses()
+	})
+}
+
+// Exec executes the query.
+func (u *ActionCacheStatisticsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the ActionCacheStatisticsCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ActionCacheStatisticsCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ActionCacheStatisticsUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
