@@ -15,7 +15,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -30,7 +29,6 @@ type BazelInvocationQuery struct {
 	order                   []bazelinvocation.OrderOption
 	inters                  []Interceptor
 	predicates              []predicate.BazelInvocation
-	withEventFile           *EventFileQuery
 	withBuild               *BuildQuery
 	withProblems            *BazelInvocationProblemQuery
 	withMetrics             *MetricsQuery
@@ -77,28 +75,6 @@ func (biq *BazelInvocationQuery) Unique(unique bool) *BazelInvocationQuery {
 func (biq *BazelInvocationQuery) Order(o ...bazelinvocation.OrderOption) *BazelInvocationQuery {
 	biq.order = append(biq.order, o...)
 	return biq
-}
-
-// QueryEventFile chains the current query on the "event_file" edge.
-func (biq *BazelInvocationQuery) QueryEventFile() *EventFileQuery {
-	query := (&EventFileClient{config: biq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := biq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := biq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
-			sqlgraph.To(eventfile.Table, eventfile.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, bazelinvocation.EventFileTable, bazelinvocation.EventFileColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
 }
 
 // QueryBuild chains the current query on the "build" edge.
@@ -425,7 +401,6 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		order:              append([]bazelinvocation.OrderOption{}, biq.order...),
 		inters:             append([]Interceptor{}, biq.inters...),
 		predicates:         append([]predicate.BazelInvocation{}, biq.predicates...),
-		withEventFile:      biq.withEventFile.Clone(),
 		withBuild:          biq.withBuild.Clone(),
 		withProblems:       biq.withProblems.Clone(),
 		withMetrics:        biq.withMetrics.Clone(),
@@ -436,17 +411,6 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		sql:  biq.sql.Clone(),
 		path: biq.path,
 	}
-}
-
-// WithEventFile tells the query-builder to eager-load the nodes that are connected to
-// the "event_file" edge. The optional arguments are used to configure the query builder of the edge.
-func (biq *BazelInvocationQuery) WithEventFile(opts ...func(*EventFileQuery)) *BazelInvocationQuery {
-	query := (&EventFileClient{config: biq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	biq.withEventFile = query
-	return biq
 }
 
 // WithBuild tells the query-builder to eager-load the nodes that are connected to
@@ -594,8 +558,7 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*BazelInvocation{}
 		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
-		loadedTypes = [7]bool{
-			biq.withEventFile != nil,
+		loadedTypes = [6]bool{
 			biq.withBuild != nil,
 			biq.withProblems != nil,
 			biq.withMetrics != nil,
@@ -604,7 +567,7 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			biq.withSourceControl != nil,
 		}
 	)
-	if biq.withEventFile != nil || biq.withBuild != nil {
+	if biq.withBuild != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -630,12 +593,6 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
-	}
-	if query := biq.withEventFile; query != nil {
-		if err := biq.loadEventFile(ctx, query, nodes, nil,
-			func(n *BazelInvocation, e *EventFile) { n.Edges.EventFile = e }); err != nil {
-			return nil, err
-		}
 	}
 	if query := biq.withBuild; query != nil {
 		if err := biq.loadBuild(ctx, query, nodes, nil,
@@ -707,38 +664,6 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	return nodes, nil
 }
 
-func (biq *BazelInvocationQuery) loadEventFile(ctx context.Context, query *EventFileQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *EventFile)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*BazelInvocation)
-	for i := range nodes {
-		if nodes[i].event_file_bazel_invocation == nil {
-			continue
-		}
-		fk := *nodes[i].event_file_bazel_invocation
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(eventfile.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "event_file_bazel_invocation" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
-}
 func (biq *BazelInvocationQuery) loadBuild(ctx context.Context, query *BuildQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *Build)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*BazelInvocation)

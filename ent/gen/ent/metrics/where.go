@@ -260,29 +260,6 @@ func HasNetworkMetricsWith(preds ...predicate.NetworkMetrics) predicate.Metrics 
 	})
 }
 
-// HasDynamicExecutionMetrics applies the HasEdge predicate on the "dynamic_execution_metrics" edge.
-func HasDynamicExecutionMetrics() predicate.Metrics {
-	return predicate.Metrics(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, DynamicExecutionMetricsTable, DynamicExecutionMetricsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasDynamicExecutionMetricsWith applies the HasEdge predicate on the "dynamic_execution_metrics" edge with a given conditions (other predicates).
-func HasDynamicExecutionMetricsWith(preds ...predicate.DynamicExecutionMetrics) predicate.Metrics {
-	return predicate.Metrics(func(s *sql.Selector) {
-		step := newDynamicExecutionMetricsStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // HasBuildGraphMetrics applies the HasEdge predicate on the "build_graph_metrics" edge.
 func HasBuildGraphMetrics() predicate.Metrics {
 	return predicate.Metrics(func(s *sql.Selector) {

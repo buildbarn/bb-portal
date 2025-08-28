@@ -129,18 +129,6 @@ func (f CumulativeMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CumulativeMetricsMutation", m)
 }
 
-// The DynamicExecutionMetricsFunc type is an adapter to allow the use of ordinary
-// function as DynamicExecutionMetrics mutator.
-type DynamicExecutionMetricsFunc func(context.Context, *ent.DynamicExecutionMetricsMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f DynamicExecutionMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.DynamicExecutionMetricsMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DynamicExecutionMetricsMutation", m)
-}
-
 // The EvaluationStatFunc type is an adapter to allow the use of ordinary
 // function as EvaluationStat mutator.
 type EvaluationStatFunc func(context.Context, *ent.EvaluationStatMutation) (ent.Value, error)
@@ -151,18 +139,6 @@ func (f EvaluationStatFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EvaluationStatMutation", m)
-}
-
-// The EventFileFunc type is an adapter to allow the use of ordinary
-// function as EventFile mutator.
-type EventFileFunc func(context.Context, *ent.EventFileMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f EventFileFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.EventFileMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.EventFileMutation", m)
 }
 
 // The ExectionInfoFunc type is an adapter to allow the use of ordinary
@@ -295,18 +271,6 @@ func (f PackageMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PackageMetricsMutation", m)
-}
-
-// The RaceStatisticsFunc type is an adapter to allow the use of ordinary
-// function as RaceStatistics mutator.
-type RaceStatisticsFunc func(context.Context, *ent.RaceStatisticsMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f RaceStatisticsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.RaceStatisticsMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RaceStatisticsMutation", m)
 }
 
 // The ResourceUsageFunc type is an adapter to allow the use of ordinary

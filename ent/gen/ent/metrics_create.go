@@ -13,7 +13,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
@@ -198,25 +197,6 @@ func (mc *MetricsCreate) SetNillableNetworkMetricsID(id *int) *MetricsCreate {
 // SetNetworkMetrics sets the "network_metrics" edge to the NetworkMetrics entity.
 func (mc *MetricsCreate) SetNetworkMetrics(n *NetworkMetrics) *MetricsCreate {
 	return mc.SetNetworkMetricsID(n.ID)
-}
-
-// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID.
-func (mc *MetricsCreate) SetDynamicExecutionMetricsID(id int) *MetricsCreate {
-	mc.mutation.SetDynamicExecutionMetricsID(id)
-	return mc
-}
-
-// SetNillableDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by ID if the given value is not nil.
-func (mc *MetricsCreate) SetNillableDynamicExecutionMetricsID(id *int) *MetricsCreate {
-	if id != nil {
-		mc = mc.SetDynamicExecutionMetricsID(*id)
-	}
-	return mc
-}
-
-// SetDynamicExecutionMetrics sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
-func (mc *MetricsCreate) SetDynamicExecutionMetrics(d *DynamicExecutionMetrics) *MetricsCreate {
-	return mc.SetDynamicExecutionMetricsID(d.ID)
 }
 
 // SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by ID.
@@ -436,22 +416,6 @@ func (mc *MetricsCreate) createSpec() (*Metrics, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(networkmetrics.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := mc.mutation.DynamicExecutionMetricsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   metrics.DynamicExecutionMetricsTable,
-			Columns: []string{metrics.DynamicExecutionMetricsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(dynamicexecutionmetrics.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

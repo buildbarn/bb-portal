@@ -48,7 +48,6 @@
       "command.profile.gz": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/command.profile.gz",
       "nextjs_test.bep.ndjson": "testdata/nextjs_test.bep.ndjson"
     },
-    "EventFileURL": "testdata/nextjs_test.bep.ndjson",
     "BEPCompleted": true,
     "StartedAt": "2024-05-03T00:23:37.843Z",
     "InvocationID": "10a37e86-6e2b-4adb-83dd-c2906f42bdd6",
@@ -221,9 +220,6 @@
       },
       "NetworkMetrics": {
         "SystemNetworkStats": null
-      },
-      "DynamicExecutionMetrics": {
-        "RaceStatistics": null
       }
     },
     "Tests": {
@@ -319,7 +315,7 @@
         "CachedLocally": false,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-08-28T09:10:02.686174456+02:00"
+        "FirstSeen": "2025-09-02T16:15:23.674992607+02:00"
       },
       "//next.js:build_smoke_test": {
         "TestSummary": {
@@ -380,7 +376,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-08-28T09:10:02.685447911+02:00"
+        "FirstSeen": "2025-09-02T16:15:23.674215599+02:00"
       },
       "//next.js:build_test": {
         "TestSummary": {
@@ -441,7 +437,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-08-28T09:10:02.68564966+02:00"
+        "FirstSeen": "2025-09-02T16:15:23.674431243+02:00"
       },
       "//react-webpack:build_smoke_test": {
         "TestSummary": {
@@ -502,7 +498,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-08-28T09:10:02.685693593+02:00"
+        "FirstSeen": "2025-09-02T16:15:23.674476749+02:00"
       },
       "//react/src:lint": {
         "TestSummary": {
@@ -563,7 +559,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-08-28T09:10:02.685945045+02:00"
+        "FirstSeen": "2025-09-02T16:15:23.674748138+02:00"
       },
       "//react/src:src_typecheck_test": {
         "TestSummary": {
@@ -624,7 +620,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-08-28T09:10:02.685505469+02:00"
+        "FirstSeen": "2025-09-02T16:15:23.674282995+02:00"
       },
       "//react/src:test": {
         "TestSummary": {
@@ -685,7 +681,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-08-28T09:10:02.685902174+02:00"
+        "FirstSeen": "2025-09-02T16:15:23.674703064+02:00"
       },
       "//react/src:test_lib_typecheck_test": {
         "TestSummary": {
@@ -746,7 +742,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-08-28T09:10:02.685603413+02:00"
+        "FirstSeen": "2025-09-02T16:15:23.674382011+02:00"
       },
       "//react:build_smoke_test": {
         "TestSummary": {
@@ -807,7 +803,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-08-28T09:10:02.68574548+02:00"
+        "FirstSeen": "2025-09-02T16:15:23.674534147+02:00"
       },
       "//vue:build_test": {
         "TestSummary": {
@@ -868,7 +864,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-08-28T09:10:02.685779354+02:00"
+        "FirstSeen": "2025-09-02T16:15:23.674574522+02:00"
       },
       "//vue:type-check": {
         "TestSummary": {
@@ -929,7 +925,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-08-28T09:10:02.685812476+02:00"
+        "FirstSeen": "2025-09-02T16:15:23.674611943+02:00"
       }
     },
     "Targets": {

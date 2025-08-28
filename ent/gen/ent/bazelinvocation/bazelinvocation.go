@@ -52,8 +52,6 @@ const (
 	FieldProfileName = "profile_name"
 	// FieldInstanceName holds the string denoting the instance_name field in the database.
 	FieldInstanceName = "instance_name"
-	// EdgeEventFile holds the string denoting the event_file edge name in mutations.
-	EdgeEventFile = "event_file"
 	// EdgeBuild holds the string denoting the build edge name in mutations.
 	EdgeBuild = "build"
 	// EdgeProblems holds the string denoting the problems edge name in mutations.
@@ -68,13 +66,6 @@ const (
 	EdgeSourceControl = "source_control"
 	// Table holds the table name of the bazelinvocation in the database.
 	Table = "bazel_invocations"
-	// EventFileTable is the table that holds the event_file relation/edge.
-	EventFileTable = "bazel_invocations"
-	// EventFileInverseTable is the table name for the EventFile entity.
-	// It exists in this package in order to avoid circular dependency with the "eventfile" package.
-	EventFileInverseTable = "event_files"
-	// EventFileColumn is the table column denoting the event_file relation/edge.
-	EventFileColumn = "event_file_bazel_invocation"
 	// BuildTable is the table that holds the build relation/edge.
 	BuildTable = "bazel_invocations"
 	// BuildInverseTable is the table name for the Build entity.
@@ -148,7 +139,6 @@ var Columns = []string{
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"build_invocations",
-	"event_file_bazel_invocation",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -264,13 +254,6 @@ func ByInstanceName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldInstanceName, opts...).ToFunc()
 }
 
-// ByEventFileField orders the results by event_file field.
-func ByEventFileField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newEventFileStep(), sql.OrderByField(field, opts...))
-	}
-}
-
 // ByBuildField orders the results by build field.
 func ByBuildField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -332,13 +315,6 @@ func BySourceControlField(field string, opts ...sql.OrderTermOption) OrderOption
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newSourceControlStep(), sql.OrderByField(field, opts...))
 	}
-}
-func newEventFileStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(EventFileInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2O, true, EventFileTable, EventFileColumn),
-	)
 }
 func newBuildStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(

@@ -18,9 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
@@ -33,7 +31,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -377,33 +374,6 @@ func (f TraverseCumulativeMetrics) Traverse(ctx context.Context, q ent.Query) er
 	return fmt.Errorf("unexpected query type %T. expect *ent.CumulativeMetricsQuery", q)
 }
 
-// The DynamicExecutionMetricsFunc type is an adapter to allow the use of ordinary function as a Querier.
-type DynamicExecutionMetricsFunc func(context.Context, *ent.DynamicExecutionMetricsQuery) (ent.Value, error)
-
-// Query calls f(ctx, q).
-func (f DynamicExecutionMetricsFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.DynamicExecutionMetricsQuery); ok {
-		return f(ctx, q)
-	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.DynamicExecutionMetricsQuery", q)
-}
-
-// The TraverseDynamicExecutionMetrics type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseDynamicExecutionMetrics func(context.Context, *ent.DynamicExecutionMetricsQuery) error
-
-// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseDynamicExecutionMetrics) Intercept(next ent.Querier) ent.Querier {
-	return next
-}
-
-// Traverse calls f(ctx, q).
-func (f TraverseDynamicExecutionMetrics) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.DynamicExecutionMetricsQuery); ok {
-		return f(ctx, q)
-	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.DynamicExecutionMetricsQuery", q)
-}
-
 // The EvaluationStatFunc type is an adapter to allow the use of ordinary function as a Querier.
 type EvaluationStatFunc func(context.Context, *ent.EvaluationStatQuery) (ent.Value, error)
 
@@ -429,33 +399,6 @@ func (f TraverseEvaluationStat) Traverse(ctx context.Context, q ent.Query) error
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.EvaluationStatQuery", q)
-}
-
-// The EventFileFunc type is an adapter to allow the use of ordinary function as a Querier.
-type EventFileFunc func(context.Context, *ent.EventFileQuery) (ent.Value, error)
-
-// Query calls f(ctx, q).
-func (f EventFileFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.EventFileQuery); ok {
-		return f(ctx, q)
-	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.EventFileQuery", q)
-}
-
-// The TraverseEventFile type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseEventFile func(context.Context, *ent.EventFileQuery) error
-
-// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseEventFile) Intercept(next ent.Querier) ent.Querier {
-	return next
-}
-
-// Traverse calls f(ctx, q).
-func (f TraverseEventFile) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.EventFileQuery); ok {
-		return f(ctx, q)
-	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.EventFileQuery", q)
 }
 
 // The ExectionInfoFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -753,33 +696,6 @@ func (f TraversePackageMetrics) Traverse(ctx context.Context, q ent.Query) error
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.PackageMetricsQuery", q)
-}
-
-// The RaceStatisticsFunc type is an adapter to allow the use of ordinary function as a Querier.
-type RaceStatisticsFunc func(context.Context, *ent.RaceStatisticsQuery) (ent.Value, error)
-
-// Query calls f(ctx, q).
-func (f RaceStatisticsFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.RaceStatisticsQuery); ok {
-		return f(ctx, q)
-	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.RaceStatisticsQuery", q)
-}
-
-// The TraverseRaceStatistics type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseRaceStatistics func(context.Context, *ent.RaceStatisticsQuery) error
-
-// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseRaceStatistics) Intercept(next ent.Querier) ent.Querier {
-	return next
-}
-
-// Traverse calls f(ctx, q).
-func (f TraverseRaceStatistics) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.RaceStatisticsQuery); ok {
-		return f(ctx, q)
-	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.RaceStatisticsQuery", q)
 }
 
 // The ResourceUsageFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -1210,12 +1126,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.BuildGraphMetricsQuery, predicate.BuildGraphMetrics, buildgraphmetrics.OrderOption]{typ: ent.TypeBuildGraphMetrics, tq: q}, nil
 	case *ent.CumulativeMetricsQuery:
 		return &query[*ent.CumulativeMetricsQuery, predicate.CumulativeMetrics, cumulativemetrics.OrderOption]{typ: ent.TypeCumulativeMetrics, tq: q}, nil
-	case *ent.DynamicExecutionMetricsQuery:
-		return &query[*ent.DynamicExecutionMetricsQuery, predicate.DynamicExecutionMetrics, dynamicexecutionmetrics.OrderOption]{typ: ent.TypeDynamicExecutionMetrics, tq: q}, nil
 	case *ent.EvaluationStatQuery:
 		return &query[*ent.EvaluationStatQuery, predicate.EvaluationStat, evaluationstat.OrderOption]{typ: ent.TypeEvaluationStat, tq: q}, nil
-	case *ent.EventFileQuery:
-		return &query[*ent.EventFileQuery, predicate.EventFile, eventfile.OrderOption]{typ: ent.TypeEventFile, tq: q}, nil
 	case *ent.ExectionInfoQuery:
 		return &query[*ent.ExectionInfoQuery, predicate.ExectionInfo, exectioninfo.OrderOption]{typ: ent.TypeExectionInfo, tq: q}, nil
 	case *ent.FilesMetricQuery:
@@ -1238,8 +1150,6 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.PackageLoadMetricsQuery, predicate.PackageLoadMetrics, packageloadmetrics.OrderOption]{typ: ent.TypePackageLoadMetrics, tq: q}, nil
 	case *ent.PackageMetricsQuery:
 		return &query[*ent.PackageMetricsQuery, predicate.PackageMetrics, packagemetrics.OrderOption]{typ: ent.TypePackageMetrics, tq: q}, nil
-	case *ent.RaceStatisticsQuery:
-		return &query[*ent.RaceStatisticsQuery, predicate.RaceStatistics, racestatistics.OrderOption]{typ: ent.TypeRaceStatistics, tq: q}, nil
 	case *ent.ResourceUsageQuery:
 		return &query[*ent.ResourceUsageQuery, predicate.ResourceUsage, resourceusage.OrderOption]{typ: ent.TypeResourceUsage, tq: q}, nil
 	case *ent.RunnerCountQuery:

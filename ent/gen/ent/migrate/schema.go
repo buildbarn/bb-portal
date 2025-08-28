@@ -145,7 +145,6 @@ var (
 		{Name: "profile_name", Type: field.TypeString},
 		{Name: "instance_name", Type: field.TypeString, Nullable: true},
 		{Name: "build_invocations", Type: field.TypeInt, Nullable: true},
-		{Name: "event_file_bazel_invocation", Type: field.TypeInt, Unique: true},
 	}
 	// BazelInvocationsTable holds the schema information for the "bazel_invocations" table.
 	BazelInvocationsTable = &schema.Table{
@@ -158,12 +157,6 @@ var (
 				Columns:    []*schema.Column{BazelInvocationsColumns[21]},
 				RefColumns: []*schema.Column{BuildsColumns[0]},
 				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "bazel_invocations_event_files_bazel_invocation",
-				Columns:    []*schema.Column{BazelInvocationsColumns[22]},
-				RefColumns: []*schema.Column{EventFilesColumns[0]},
-				OnDelete:   schema.NoAction,
 			},
 		},
 		Indexes: []*schema.Index{
@@ -310,25 +303,6 @@ var (
 			},
 		},
 	}
-	// DynamicExecutionMetricsColumns holds the columns for the "dynamic_execution_metrics" table.
-	DynamicExecutionMetricsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "metrics_dynamic_execution_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
-	}
-	// DynamicExecutionMetricsTable holds the schema information for the "dynamic_execution_metrics" table.
-	DynamicExecutionMetricsTable = &schema.Table{
-		Name:       "dynamic_execution_metrics",
-		Columns:    DynamicExecutionMetricsColumns,
-		PrimaryKey: []*schema.Column{DynamicExecutionMetricsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "dynamic_execution_metrics_metrics_dynamic_execution_metrics",
-				Columns:    []*schema.Column{DynamicExecutionMetricsColumns[1]},
-				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
 	// EvaluationStatsColumns holds the columns for the "evaluation_stats" table.
 	EvaluationStatsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -347,29 +321,6 @@ var (
 				Columns:    []*schema.Column{EvaluationStatsColumns[3]},
 				RefColumns: []*schema.Column{BuildGraphMetricsColumns[0]},
 				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// EventFilesColumns holds the columns for the "event_files" table.
-	EventFilesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "url", Type: field.TypeString},
-		{Name: "mod_time", Type: field.TypeTime},
-		{Name: "protocol", Type: field.TypeString},
-		{Name: "mime_type", Type: field.TypeString},
-		{Name: "status", Type: field.TypeString, Default: "DETECTED"},
-		{Name: "reason", Type: field.TypeString, Nullable: true},
-	}
-	// EventFilesTable holds the schema information for the "event_files" table.
-	EventFilesTable = &schema.Table{
-		Name:       "event_files",
-		Columns:    EventFilesColumns,
-		PrimaryKey: []*schema.Column{EventFilesColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "eventfile_status",
-				Unique:  false,
-				Columns: []*schema.Column{EventFilesColumns[5]},
 			},
 		},
 	}
@@ -608,30 +559,6 @@ var (
 				Symbol:     "package_metrics_metrics_package_metrics",
 				Columns:    []*schema.Column{PackageMetricsColumns[2]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// RaceStatisticsColumns holds the columns for the "race_statistics" table.
-	RaceStatisticsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "mnemonic", Type: field.TypeString, Nullable: true},
-		{Name: "local_runner", Type: field.TypeString, Nullable: true},
-		{Name: "remote_runner", Type: field.TypeString, Nullable: true},
-		{Name: "local_wins", Type: field.TypeInt64, Nullable: true},
-		{Name: "renote_wins", Type: field.TypeInt64, Nullable: true},
-		{Name: "dynamic_execution_metrics_race_statistics", Type: field.TypeInt, Nullable: true},
-	}
-	// RaceStatisticsTable holds the schema information for the "race_statistics" table.
-	RaceStatisticsTable = &schema.Table{
-		Name:       "race_statistics",
-		Columns:    RaceStatisticsColumns,
-		PrimaryKey: []*schema.Column{RaceStatisticsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "race_statistics_dynamic_execution_metrics_race_statistics",
-				Columns:    []*schema.Column{RaceStatisticsColumns[6]},
-				RefColumns: []*schema.Column{DynamicExecutionMetricsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 		},
@@ -1076,9 +1003,7 @@ var (
 		BuildsTable,
 		BuildGraphMetricsTable,
 		CumulativeMetricsTable,
-		DynamicExecutionMetricsTable,
 		EvaluationStatsTable,
-		EventFilesTable,
 		ExectionInfosTable,
 		FilesMetricsTable,
 		GarbageMetricsTable,
@@ -1090,7 +1015,6 @@ var (
 		OutputGroupsTable,
 		PackageLoadMetricsTable,
 		PackageMetricsTable,
-		RaceStatisticsTable,
 		ResourceUsagesTable,
 		RunnerCountsTable,
 		SourceControlsTable,
@@ -1118,7 +1042,6 @@ func init() {
 	ArtifactMetricsTable.ForeignKeys[2].RefTable = FilesMetricsTable
 	ArtifactMetricsTable.ForeignKeys[3].RefTable = MetricsTable
 	BazelInvocationsTable.ForeignKeys[0].RefTable = BuildsTable
-	BazelInvocationsTable.ForeignKeys[1].RefTable = EventFilesTable
 	BazelInvocationProblemsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	BuildGraphMetricsTable.ForeignKeys[0].RefTable = EvaluationStatsTable
 	BuildGraphMetricsTable.ForeignKeys[1].RefTable = EvaluationStatsTable
@@ -1126,7 +1049,6 @@ func init() {
 	BuildGraphMetricsTable.ForeignKeys[3].RefTable = EvaluationStatsTable
 	BuildGraphMetricsTable.ForeignKeys[4].RefTable = MetricsTable
 	CumulativeMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	DynamicExecutionMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	EvaluationStatsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
 	ExectionInfosTable.ForeignKeys[0].RefTable = TestResultBeSsTable
 	FilesMetricsTable.ForeignKeys[0].RefTable = ArtifactMetricsTable
@@ -1140,7 +1062,6 @@ func init() {
 	OutputGroupsTable.ForeignKeys[0].RefTable = TargetCompletesTable
 	PackageLoadMetricsTable.ForeignKeys[0].RefTable = PackageMetricsTable
 	PackageMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	RaceStatisticsTable.ForeignKeys[0].RefTable = DynamicExecutionMetricsTable
 	ResourceUsagesTable.ForeignKeys[0].RefTable = ExectionInfosTable
 	RunnerCountsTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	SourceControlsTable.ForeignKeys[0].RefTable = BazelInvocationsTable

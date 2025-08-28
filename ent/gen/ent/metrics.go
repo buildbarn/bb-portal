@@ -13,7 +13,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
@@ -54,15 +53,13 @@ type MetricsEdges struct {
 	ArtifactMetrics *ArtifactMetrics `json:"artifact_metrics,omitempty"`
 	// NetworkMetrics holds the value of the network_metrics edge.
 	NetworkMetrics *NetworkMetrics `json:"network_metrics,omitempty"`
-	// DynamicExecutionMetrics holds the value of the dynamic_execution_metrics edge.
-	DynamicExecutionMetrics *DynamicExecutionMetrics `json:"dynamic_execution_metrics,omitempty"`
 	// BuildGraphMetrics holds the value of the build_graph_metrics edge.
 	BuildGraphMetrics *BuildGraphMetrics `json:"build_graph_metrics,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [11]bool
+	loadedTypes [10]bool
 	// totalCount holds the count of the edges above.
-	totalCount [11]map[string]int
+	totalCount [10]map[string]int
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
@@ -164,23 +161,12 @@ func (e MetricsEdges) NetworkMetricsOrErr() (*NetworkMetrics, error) {
 	return nil, &NotLoadedError{edge: "network_metrics"}
 }
 
-// DynamicExecutionMetricsOrErr returns the DynamicExecutionMetrics value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e MetricsEdges) DynamicExecutionMetricsOrErr() (*DynamicExecutionMetrics, error) {
-	if e.DynamicExecutionMetrics != nil {
-		return e.DynamicExecutionMetrics, nil
-	} else if e.loadedTypes[9] {
-		return nil, &NotFoundError{label: dynamicexecutionmetrics.Label}
-	}
-	return nil, &NotLoadedError{edge: "dynamic_execution_metrics"}
-}
-
 // BuildGraphMetricsOrErr returns the BuildGraphMetrics value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e MetricsEdges) BuildGraphMetricsOrErr() (*BuildGraphMetrics, error) {
 	if e.BuildGraphMetrics != nil {
 		return e.BuildGraphMetrics, nil
-	} else if e.loadedTypes[10] {
+	} else if e.loadedTypes[9] {
 		return nil, &NotFoundError{label: buildgraphmetrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "build_graph_metrics"}
@@ -279,11 +265,6 @@ func (m *Metrics) QueryArtifactMetrics() *ArtifactMetricsQuery {
 // QueryNetworkMetrics queries the "network_metrics" edge of the Metrics entity.
 func (m *Metrics) QueryNetworkMetrics() *NetworkMetricsQuery {
 	return NewMetricsClient(m.config).QueryNetworkMetrics(m)
-}
-
-// QueryDynamicExecutionMetrics queries the "dynamic_execution_metrics" edge of the Metrics entity.
-func (m *Metrics) QueryDynamicExecutionMetrics() *DynamicExecutionMetricsQuery {
-	return NewMetricsClient(m.config).QueryDynamicExecutionMetrics(m)
 }
 
 // QueryBuildGraphMetrics queries the "build_graph_metrics" edge of the Metrics entity.

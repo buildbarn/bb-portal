@@ -23,9 +23,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
@@ -37,7 +35,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -112,20 +109,10 @@ var cumulativemetricsImplementors = []string{"CumulativeMetrics", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*CumulativeMetrics) IsNode() {}
 
-var dynamicexecutionmetricsImplementors = []string{"DynamicExecutionMetrics", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*DynamicExecutionMetrics) IsNode() {}
-
 var evaluationstatImplementors = []string{"EvaluationStat", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*EvaluationStat) IsNode() {}
-
-var eventfileImplementors = []string{"EventFile", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*EventFile) IsNode() {}
 
 var exectioninfoImplementors = []string{"ExectionInfo", "Node"}
 
@@ -181,11 +168,6 @@ var packagemetricsImplementors = []string{"PackageMetrics", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*PackageMetrics) IsNode() {}
-
-var racestatisticsImplementors = []string{"RaceStatistics", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*RaceStatistics) IsNode() {}
 
 var resourceusageImplementors = []string{"ResourceUsage", "Node"}
 
@@ -410,29 +392,11 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(ctx)
-	case dynamicexecutionmetrics.Table:
-		query := c.DynamicExecutionMetrics.Query().
-			Where(dynamicexecutionmetrics.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, dynamicexecutionmetricsImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
 	case evaluationstat.Table:
 		query := c.EvaluationStat.Query().
 			Where(evaluationstat.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, evaluationstatImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
-	case eventfile.Table:
-		query := c.EventFile.Query().
-			Where(eventfile.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, eventfileImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -532,15 +496,6 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			Where(packagemetrics.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, packagemetricsImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
-	case racestatistics.Table:
-		query := c.RaceStatistics.Query().
-			Where(racestatistics.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, racestatisticsImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -913,42 +868,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case dynamicexecutionmetrics.Table:
-		query := c.DynamicExecutionMetrics.Query().
-			Where(dynamicexecutionmetrics.IDIn(ids...))
-		query, err := query.CollectFields(ctx, dynamicexecutionmetricsImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
 	case evaluationstat.Table:
 		query := c.EvaluationStat.Query().
 			Where(evaluationstat.IDIn(ids...))
 		query, err := query.CollectFields(ctx, evaluationstatImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
-	case eventfile.Table:
-		query := c.EventFile.Query().
-			Where(eventfile.IDIn(ids...))
-		query, err := query.CollectFields(ctx, eventfileImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1125,22 +1048,6 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.PackageMetrics.Query().
 			Where(packagemetrics.IDIn(ids...))
 		query, err := query.CollectFields(ctx, packagemetricsImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
-	case racestatistics.Table:
-		query := c.RaceStatistics.Query().
-			Where(racestatistics.IDIn(ids...))
-		query, err := query.CollectFields(ctx, racestatisticsImplementors...)
 		if err != nil {
 			return nil, err
 		}

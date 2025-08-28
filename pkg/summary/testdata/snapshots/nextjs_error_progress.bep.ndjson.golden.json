@@ -91,7 +91,6 @@
       "command.profile.gz": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/command.profile.gz",
       "nextjs_error_progress.bep.ndjson": "testdata/nextjs_error_progress.bep.ndjson"
     },
-    "EventFileURL": "testdata/nextjs_error_progress.bep.ndjson",
     "BEPCompleted": true,
     "StartedAt": "2024-05-03T00:29:47.443Z",
     "InvocationID": "df7178e2-a815-4654-a409-d18e845d1e35",
@@ -230,9 +229,6 @@
       },
       "NetworkMetrics": {
         "SystemNetworkStats": null
-      },
-      "DynamicExecutionMetrics": {
-        "RaceStatistics": null
       }
     },
     "Tests": null,

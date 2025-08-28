@@ -116,14 +116,6 @@ func (am *ArtifactMetrics) TopLevelArtifacts(ctx context.Context) (*FilesMetric,
 	return result, MaskNotFound(err)
 }
 
-func (bi *BazelInvocation) EventFile(ctx context.Context) (*EventFile, error) {
-	result, err := bi.Edges.EventFileOrErr()
-	if IsNotLoaded(err) {
-		result, err = bi.QueryEventFile().Only(ctx)
-	}
-	return result, err
-}
-
 func (bi *BazelInvocation) Build(ctx context.Context) (*Build, error) {
 	result, err := bi.Edges.BuildOrErr()
 	if IsNotLoaded(err) {
@@ -248,38 +240,10 @@ func (cm *CumulativeMetrics) Metrics(ctx context.Context) (*Metrics, error) {
 	return result, MaskNotFound(err)
 }
 
-func (dem *DynamicExecutionMetrics) Metrics(ctx context.Context) (*Metrics, error) {
-	result, err := dem.Edges.MetricsOrErr()
-	if IsNotLoaded(err) {
-		result, err = dem.QueryMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (dem *DynamicExecutionMetrics) RaceStatistics(ctx context.Context) (result []*RaceStatistics, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = dem.NamedRaceStatistics(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = dem.Edges.RaceStatisticsOrErr()
-	}
-	if IsNotLoaded(err) {
-		result, err = dem.QueryRaceStatistics().All(ctx)
-	}
-	return result, err
-}
-
 func (es *EvaluationStat) BuildGraphMetrics(ctx context.Context) (*BuildGraphMetrics, error) {
 	result, err := es.Edges.BuildGraphMetricsOrErr()
 	if IsNotLoaded(err) {
 		result, err = es.QueryBuildGraphMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (ef *EventFile) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := ef.Edges.BazelInvocationOrErr()
-	if IsNotLoaded(err) {
-		result, err = ef.QueryBazelInvocation().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
@@ -420,14 +384,6 @@ func (m *Metrics) NetworkMetrics(ctx context.Context) (*NetworkMetrics, error) {
 	return result, MaskNotFound(err)
 }
 
-func (m *Metrics) DynamicExecutionMetrics(ctx context.Context) (*DynamicExecutionMetrics, error) {
-	result, err := m.Edges.DynamicExecutionMetricsOrErr()
-	if IsNotLoaded(err) {
-		result, err = m.QueryDynamicExecutionMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
 func (m *Metrics) BuildGraphMetrics(ctx context.Context) (*BuildGraphMetrics, error) {
 	result, err := m.Edges.BuildGraphMetricsOrErr()
 	if IsNotLoaded(err) {
@@ -542,14 +498,6 @@ func (pm *PackageMetrics) PackageLoadMetrics(ctx context.Context) (result []*Pac
 		result, err = pm.QueryPackageLoadMetrics().All(ctx)
 	}
 	return result, err
-}
-
-func (rs *RaceStatistics) DynamicExecutionMetrics(ctx context.Context) (*DynamicExecutionMetrics, error) {
-	result, err := rs.Edges.DynamicExecutionMetricsOrErr()
-	if IsNotLoaded(err) {
-		result, err = rs.QueryDynamicExecutionMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
 }
 
 func (ru *ResourceUsage) ExecutionInfo(ctx context.Context) (*ExectionInfo, error) {

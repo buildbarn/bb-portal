@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/pkg/summary"
@@ -66,16 +65,13 @@ type BazelInvocation struct {
 	InstanceName string `json:"instance_name,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BazelInvocationQuery when eager-loading is set.
-	Edges                       BazelInvocationEdges `json:"edges"`
-	build_invocations           *int
-	event_file_bazel_invocation *int
-	selectValues                sql.SelectValues
+	Edges             BazelInvocationEdges `json:"edges"`
+	build_invocations *int
+	selectValues      sql.SelectValues
 }
 
 // BazelInvocationEdges holds the relations/edges for other nodes in the graph.
 type BazelInvocationEdges struct {
-	// EventFile holds the value of the event_file edge.
-	EventFile *EventFile `json:"event_file,omitempty"`
 	// Build holds the value of the build edge.
 	Build *Build `json:"build,omitempty"`
 	// Problems holds the value of the problems edge.
@@ -90,24 +86,13 @@ type BazelInvocationEdges struct {
 	SourceControl *SourceControl `json:"source_control,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [7]bool
+	loadedTypes [6]bool
 	// totalCount holds the count of the edges above.
-	totalCount [6]map[string]int
+	totalCount [5]map[string]int
 
 	namedProblems       map[string][]*BazelInvocationProblem
 	namedTestCollection map[string][]*TestCollection
 	namedTargets        map[string][]*TargetPair
-}
-
-// EventFileOrErr returns the EventFile value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e BazelInvocationEdges) EventFileOrErr() (*EventFile, error) {
-	if e.EventFile != nil {
-		return e.EventFile, nil
-	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: eventfile.Label}
-	}
-	return nil, &NotLoadedError{edge: "event_file"}
 }
 
 // BuildOrErr returns the Build value or an error if the edge
@@ -115,7 +100,7 @@ func (e BazelInvocationEdges) EventFileOrErr() (*EventFile, error) {
 func (e BazelInvocationEdges) BuildOrErr() (*Build, error) {
 	if e.Build != nil {
 		return e.Build, nil
-	} else if e.loadedTypes[1] {
+	} else if e.loadedTypes[0] {
 		return nil, &NotFoundError{label: build.Label}
 	}
 	return nil, &NotLoadedError{edge: "build"}
@@ -124,7 +109,7 @@ func (e BazelInvocationEdges) BuildOrErr() (*Build, error) {
 // ProblemsOrErr returns the Problems value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) ProblemsOrErr() ([]*BazelInvocationProblem, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[1] {
 		return e.Problems, nil
 	}
 	return nil, &NotLoadedError{edge: "problems"}
@@ -135,7 +120,7 @@ func (e BazelInvocationEdges) ProblemsOrErr() ([]*BazelInvocationProblem, error)
 func (e BazelInvocationEdges) MetricsOrErr() (*Metrics, error) {
 	if e.Metrics != nil {
 		return e.Metrics, nil
-	} else if e.loadedTypes[3] {
+	} else if e.loadedTypes[2] {
 		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
@@ -144,7 +129,7 @@ func (e BazelInvocationEdges) MetricsOrErr() (*Metrics, error) {
 // TestCollectionOrErr returns the TestCollection value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
-	if e.loadedTypes[4] {
+	if e.loadedTypes[3] {
 		return e.TestCollection, nil
 	}
 	return nil, &NotLoadedError{edge: "test_collection"}
@@ -153,7 +138,7 @@ func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
 // TargetsOrErr returns the Targets value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) TargetsOrErr() ([]*TargetPair, error) {
-	if e.loadedTypes[5] {
+	if e.loadedTypes[4] {
 		return e.Targets, nil
 	}
 	return nil, &NotLoadedError{edge: "targets"}
@@ -164,7 +149,7 @@ func (e BazelInvocationEdges) TargetsOrErr() ([]*TargetPair, error) {
 func (e BazelInvocationEdges) SourceControlOrErr() (*SourceControl, error) {
 	if e.SourceControl != nil {
 		return e.SourceControl, nil
-	} else if e.loadedTypes[6] {
+	} else if e.loadedTypes[5] {
 		return nil, &NotFoundError{label: sourcecontrol.Label}
 	}
 	return nil, &NotLoadedError{edge: "source_control"}
@@ -188,8 +173,6 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 		case bazelinvocation.FieldInvocationID:
 			values[i] = new(uuid.UUID)
 		case bazelinvocation.ForeignKeys[0]: // build_invocations
-			values[i] = new(sql.NullInt64)
-		case bazelinvocation.ForeignKeys[1]: // event_file_bazel_invocation
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -343,13 +326,6 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 				bi.build_invocations = new(int)
 				*bi.build_invocations = int(value.Int64)
 			}
-		case bazelinvocation.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field event_file_bazel_invocation", value)
-			} else if value.Valid {
-				bi.event_file_bazel_invocation = new(int)
-				*bi.event_file_bazel_invocation = int(value.Int64)
-			}
 		default:
 			bi.selectValues.Set(columns[i], values[i])
 		}
@@ -361,11 +337,6 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (bi *BazelInvocation) Value(name string) (ent.Value, error) {
 	return bi.selectValues.Get(name)
-}
-
-// QueryEventFile queries the "event_file" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryEventFile() *EventFileQuery {
-	return NewBazelInvocationClient(bi.config).QueryEventFile(bi)
 }
 
 // QueryBuild queries the "build" edge of the BazelInvocation entity.
