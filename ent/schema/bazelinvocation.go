@@ -89,12 +89,6 @@ func (BazelInvocation) Fields() []ent.Field {
 // Edges of the BazelInvocation.
 func (BazelInvocation) Edges() []ent.Edge {
 	return []ent.Edge{
-		// Edge back from the Event Files.
-		edge.From("event_file", EventFile.Type).
-			Ref("bazel_invocation").
-			Unique().
-			Required(),
-
 		// Edge back from the Build.
 		edge.From("build", Build.Type).
 			Ref("invocations").

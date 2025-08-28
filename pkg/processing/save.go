@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"strings"
-	"time"
 
 	"github.com/google/uuid"
 
@@ -64,10 +63,6 @@ func (act SaveActor) saveSummary(ctx context.Context, summary *summary.Summary) 
 		slog.ErrorContext(ctx, "No Invocation ID Found on summary", "ctx.Err()", ctx.Err())
 		return nil, fmt.Errorf("no Invocation ID Found on summary")
 	}
-	eventFile, err := act.saveEventFile(ctx, summary)
-	if err != nil {
-		slog.ErrorContext(ctx, "failed to save event file", "id", summary.InvocationID, "err", err)
-	}
 	buildRecord, err := act.findOrCreateBuild(ctx, summary)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to find or create build", "summary.InvocationId", summary.InvocationID, "err", err)
@@ -89,7 +84,7 @@ func (act SaveActor) saveSummary(ctx context.Context, summary *summary.Summary) 
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to save source control information", "id", summary.InvocationID, "err", err)
 	}
-	bazelInvocation, err := act.saveBazelInvocation(ctx, summary, eventFile, buildRecord, metrics, tests, targets, sourcecontrol)
+	bazelInvocation, err := act.saveBazelInvocation(ctx, summary, buildRecord, metrics, tests, targets, sourcecontrol)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to save bazel invocation", "id", summary.InvocationID, "err", err)
 		return nil, fmt.Errorf("could not save BazelInvocation: %w", err)
@@ -182,7 +177,6 @@ func removeTemporaryLogLines(log string) string {
 func (act SaveActor) saveBazelInvocation(
 	ctx context.Context,
 	summary *summary.Summary,
-	eventFile *ent.EventFile,
 	buildRecord *ent.Build,
 	metrics *ent.Metrics,
 	tests []*ent.TestCollection,
@@ -220,9 +214,6 @@ func (act SaveActor) saveBazelInvocation(
 		SetHostname(summary.Hostname).
 		SetRelatedFiles(summary.RelatedFiles)
 
-	if eventFile != nil {
-		create = create.SetEventFile(eventFile)
-	}
 	if metrics != nil {
 		create = create.SetMetrics(metrics)
 	}
@@ -241,17 +232,6 @@ func (act SaveActor) saveBazelInvocation(
 
 	return create.
 		Save(ctx)
-}
-
-func (act SaveActor) saveEventFile(ctx context.Context, summary *summary.Summary) (*ent.EventFile, error) {
-	eventFile, err := act.db.EventFile.Create().
-		SetURL(summary.EventFileURL).
-		SetModTime(time.Now()).              // TODO: Save modTime in summary?
-		SetProtocol("BEP").                  // Legacy: used to detect other protocols, e.g. for codechecks.
-		SetMimeType("application/x-ndjson"). // NOTE: Only ndjson supported right now, but we should be able to add binary support.
-		SetStatus("SUCCESS").                // TODO: Keep workflow of DETECTED->IMPORTING->...?
-		Save(ctx)
-	return eventFile, err
 }
 
 // do we even really need these in the database?

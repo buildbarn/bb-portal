@@ -94,17 +94,6 @@ fragment BazelInvocationInfo on BazelInvocation {
       numBuilds
       numAnalyses
     }
-    dynamicExecutionMetrics {
-      id
-      raceStatistics {
-        id
-        localWins
-        mnemonic
-        renoteWins
-        localRunner
-        remoteRunner
-      }
-    }
     memoryMetrics {
       id
       usedHeapSizePostBuild

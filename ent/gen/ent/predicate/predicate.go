@@ -36,14 +36,8 @@ type BuildGraphMetrics func(*sql.Selector)
 // CumulativeMetrics is the predicate function for cumulativemetrics builders.
 type CumulativeMetrics func(*sql.Selector)
 
-// DynamicExecutionMetrics is the predicate function for dynamicexecutionmetrics builders.
-type DynamicExecutionMetrics func(*sql.Selector)
-
 // EvaluationStat is the predicate function for evaluationstat builders.
 type EvaluationStat func(*sql.Selector)
-
-// EventFile is the predicate function for eventfile builders.
-type EventFile func(*sql.Selector)
 
 // ExectionInfo is the predicate function for exectioninfo builders.
 type ExectionInfo func(*sql.Selector)
@@ -77,9 +71,6 @@ type PackageLoadMetrics func(*sql.Selector)
 
 // PackageMetrics is the predicate function for packagemetrics builders.
 type PackageMetrics func(*sql.Selector)
-
-// RaceStatistics is the predicate function for racestatistics builders.
-type RaceStatistics func(*sql.Selector)
 
 // ResourceUsage is the predicate function for resourceusage builders.
 type ResourceUsage func(*sql.Selector)

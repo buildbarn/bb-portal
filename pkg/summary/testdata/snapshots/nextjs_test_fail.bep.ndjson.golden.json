@@ -160,7 +160,6 @@
       "command.profile.gz": "file:///private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/command.profile.gz",
       "nextjs_test_fail.bep.ndjson": "testdata/nextjs_test_fail.bep.ndjson"
     },
-    "EventFileURL": "testdata/nextjs_test_fail.bep.ndjson",
     "BEPCompleted": true,
     "StartedAt": "2024-05-13T23:43:23.045Z",
     "InvocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
@@ -312,9 +311,6 @@
       },
       "NetworkMetrics": {
         "SystemNetworkStats": null
-      },
-      "DynamicExecutionMetrics": {
-        "RaceStatistics": null
       }
     },
     "Tests": {
@@ -410,7 +406,7 @@
         "CachedLocally": false,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-11-03T08:33:52.406359536+01:00"
+        "FirstSeen": "2026-01-21T16:04:15.909253305+01:00"
       },
       "//next.js:build_smoke_test": {
         "TestSummary": {
@@ -471,7 +467,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-11-03T08:33:52.406241513+01:00"
+        "FirstSeen": "2026-01-21T16:04:15.909129432+01:00"
       },
       "//next.js:build_test": {
         "TestSummary": {
@@ -532,7 +528,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-11-03T08:33:52.406227447+01:00"
+        "FirstSeen": "2026-01-21T16:04:15.909114554+01:00"
       }
     },
     "Targets": {

@@ -21,7 +21,6 @@ go_library(
         "//ent/gen/ent/bazelinvocationproblem",
         "//ent/gen/ent/blob",
         "//ent/gen/ent/build",
-        "//ent/gen/ent/eventfile",
         "//ent/gen/ent/missdetail",
         "//ent/gen/ent/targetcomplete",
         "//ent/gen/ent/targetconfigured",

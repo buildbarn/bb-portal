@@ -22,9 +22,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
@@ -36,7 +34,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -112,46 +109,43 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			actioncachestatistics.Table:   actioncachestatistics.ValidColumn,
-			actiondata.Table:              actiondata.ValidColumn,
-			actionsummary.Table:           actionsummary.ValidColumn,
-			artifactmetrics.Table:         artifactmetrics.ValidColumn,
-			bazelinvocation.Table:         bazelinvocation.ValidColumn,
-			bazelinvocationproblem.Table:  bazelinvocationproblem.ValidColumn,
-			blob.Table:                    blob.ValidColumn,
-			build.Table:                   build.ValidColumn,
-			buildgraphmetrics.Table:       buildgraphmetrics.ValidColumn,
-			cumulativemetrics.Table:       cumulativemetrics.ValidColumn,
-			dynamicexecutionmetrics.Table: dynamicexecutionmetrics.ValidColumn,
-			evaluationstat.Table:          evaluationstat.ValidColumn,
-			eventfile.Table:               eventfile.ValidColumn,
-			exectioninfo.Table:            exectioninfo.ValidColumn,
-			filesmetric.Table:             filesmetric.ValidColumn,
-			garbagemetrics.Table:          garbagemetrics.ValidColumn,
-			memorymetrics.Table:           memorymetrics.ValidColumn,
-			metrics.Table:                 metrics.ValidColumn,
-			missdetail.Table:              missdetail.ValidColumn,
-			namedsetoffiles.Table:         namedsetoffiles.ValidColumn,
-			networkmetrics.Table:          networkmetrics.ValidColumn,
-			outputgroup.Table:             outputgroup.ValidColumn,
-			packageloadmetrics.Table:      packageloadmetrics.ValidColumn,
-			packagemetrics.Table:          packagemetrics.ValidColumn,
-			racestatistics.Table:          racestatistics.ValidColumn,
-			resourceusage.Table:           resourceusage.ValidColumn,
-			runnercount.Table:             runnercount.ValidColumn,
-			sourcecontrol.Table:           sourcecontrol.ValidColumn,
-			systemnetworkstats.Table:      systemnetworkstats.ValidColumn,
-			targetcomplete.Table:          targetcomplete.ValidColumn,
-			targetconfigured.Table:        targetconfigured.ValidColumn,
-			targetmetrics.Table:           targetmetrics.ValidColumn,
-			targetpair.Table:              targetpair.ValidColumn,
-			testcollection.Table:          testcollection.ValidColumn,
-			testfile.Table:                testfile.ValidColumn,
-			testresultbes.Table:           testresultbes.ValidColumn,
-			testsummary.Table:             testsummary.ValidColumn,
-			timingbreakdown.Table:         timingbreakdown.ValidColumn,
-			timingchild.Table:             timingchild.ValidColumn,
-			timingmetrics.Table:           timingmetrics.ValidColumn,
+			actioncachestatistics.Table:  actioncachestatistics.ValidColumn,
+			actiondata.Table:             actiondata.ValidColumn,
+			actionsummary.Table:          actionsummary.ValidColumn,
+			artifactmetrics.Table:        artifactmetrics.ValidColumn,
+			bazelinvocation.Table:        bazelinvocation.ValidColumn,
+			bazelinvocationproblem.Table: bazelinvocationproblem.ValidColumn,
+			blob.Table:                   blob.ValidColumn,
+			build.Table:                  build.ValidColumn,
+			buildgraphmetrics.Table:      buildgraphmetrics.ValidColumn,
+			cumulativemetrics.Table:      cumulativemetrics.ValidColumn,
+			evaluationstat.Table:         evaluationstat.ValidColumn,
+			exectioninfo.Table:           exectioninfo.ValidColumn,
+			filesmetric.Table:            filesmetric.ValidColumn,
+			garbagemetrics.Table:         garbagemetrics.ValidColumn,
+			memorymetrics.Table:          memorymetrics.ValidColumn,
+			metrics.Table:                metrics.ValidColumn,
+			missdetail.Table:             missdetail.ValidColumn,
+			namedsetoffiles.Table:        namedsetoffiles.ValidColumn,
+			networkmetrics.Table:         networkmetrics.ValidColumn,
+			outputgroup.Table:            outputgroup.ValidColumn,
+			packageloadmetrics.Table:     packageloadmetrics.ValidColumn,
+			packagemetrics.Table:         packagemetrics.ValidColumn,
+			resourceusage.Table:          resourceusage.ValidColumn,
+			runnercount.Table:            runnercount.ValidColumn,
+			sourcecontrol.Table:          sourcecontrol.ValidColumn,
+			systemnetworkstats.Table:     systemnetworkstats.ValidColumn,
+			targetcomplete.Table:         targetcomplete.ValidColumn,
+			targetconfigured.Table:       targetconfigured.ValidColumn,
+			targetmetrics.Table:          targetmetrics.ValidColumn,
+			targetpair.Table:             targetpair.ValidColumn,
+			testcollection.Table:         testcollection.ValidColumn,
+			testfile.Table:               testfile.ValidColumn,
+			testresultbes.Table:          testresultbes.ValidColumn,
+			testsummary.Table:            testsummary.ValidColumn,
+			timingbreakdown.Table:        timingbreakdown.ValidColumn,
+			timingchild.Table:            timingchild.ValidColumn,
+			timingmetrics.Table:          timingmetrics.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

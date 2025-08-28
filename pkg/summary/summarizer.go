@@ -53,7 +53,6 @@ func newSummarizer(eventFileURL string, problemDetector detectors.ProblemDetecto
 	return &Summarizer{
 		summary: &Summary{
 			InvocationSummary: &InvocationSummary{},
-			EventFileURL:      eventFileURL,
 			RelatedFiles: map[string]string{
 				filepath.Base(eventFileURL): eventFileURL,
 			},
@@ -486,7 +485,6 @@ func (s Summarizer) handleBuildMetrics(metrics *bes.BuildMetrics) {
 		CumulativeMetrics: cumulativeMetrics,
 		NetworkMetrics:    networkMetrics,
 		BuildGraphMetrics: buildGraphMetrics,
-		// DynamicExecutionMetrics: dynamicMetrics,
 	}
 
 	s.summary.Metrics = summaryMetrics

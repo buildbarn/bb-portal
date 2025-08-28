@@ -13,7 +13,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
@@ -261,17 +260,6 @@ func (bic *BazelInvocationCreate) SetNillableInstanceName(s *string) *BazelInvoc
 	return bic
 }
 
-// SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
-func (bic *BazelInvocationCreate) SetEventFileID(id int) *BazelInvocationCreate {
-	bic.mutation.SetEventFileID(id)
-	return bic
-}
-
-// SetEventFile sets the "event_file" edge to the EventFile entity.
-func (bic *BazelInvocationCreate) SetEventFile(e *EventFile) *BazelInvocationCreate {
-	return bic.SetEventFileID(e.ID)
-}
-
 // SetBuildID sets the "build" edge to the Build entity by ID.
 func (bic *BazelInvocationCreate) SetBuildID(id int) *BazelInvocationCreate {
 	bic.mutation.SetBuildID(id)
@@ -426,9 +414,6 @@ func (bic *BazelInvocationCreate) check() error {
 	if _, ok := bic.mutation.ProfileName(); !ok {
 		return &ValidationError{Name: "profile_name", err: errors.New(`ent: missing required field "BazelInvocation.profile_name"`)}
 	}
-	if len(bic.mutation.EventFileIDs()) == 0 {
-		return &ValidationError{Name: "event_file", err: errors.New(`ent: missing required edge "BazelInvocation.event_file"`)}
-	}
 	return nil
 }
 
@@ -534,23 +519,6 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	if value, ok := bic.mutation.InstanceName(); ok {
 		_spec.SetField(bazelinvocation.FieldInstanceName, field.TypeString, value)
 		_node.InstanceName = value
-	}
-	if nodes := bic.mutation.EventFileIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   bazelinvocation.EventFileTable,
-			Columns: []string{bazelinvocation.EventFileColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(eventfile.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.event_file_bazel_invocation = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := bic.mutation.BuildIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

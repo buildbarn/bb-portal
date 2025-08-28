@@ -14,7 +14,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -399,17 +398,6 @@ func (biu *BazelInvocationUpdate) ClearInstanceName() *BazelInvocationUpdate {
 	return biu
 }
 
-// SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
-func (biu *BazelInvocationUpdate) SetEventFileID(id int) *BazelInvocationUpdate {
-	biu.mutation.SetEventFileID(id)
-	return biu
-}
-
-// SetEventFile sets the "event_file" edge to the EventFile entity.
-func (biu *BazelInvocationUpdate) SetEventFile(e *EventFile) *BazelInvocationUpdate {
-	return biu.SetEventFileID(e.ID)
-}
-
 // SetBuildID sets the "build" edge to the Build entity by ID.
 func (biu *BazelInvocationUpdate) SetBuildID(id int) *BazelInvocationUpdate {
 	biu.mutation.SetBuildID(id)
@@ -515,12 +503,6 @@ func (biu *BazelInvocationUpdate) SetSourceControl(s *SourceControl) *BazelInvoc
 // Mutation returns the BazelInvocationMutation object of the builder.
 func (biu *BazelInvocationUpdate) Mutation() *BazelInvocationMutation {
 	return biu.mutation
-}
-
-// ClearEventFile clears the "event_file" edge to the EventFile entity.
-func (biu *BazelInvocationUpdate) ClearEventFile() *BazelInvocationUpdate {
-	biu.mutation.ClearEventFile()
-	return biu
 }
 
 // ClearBuild clears the "build" edge to the Build entity.
@@ -631,18 +613,7 @@ func (biu *BazelInvocationUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (biu *BazelInvocationUpdate) check() error {
-	if biu.mutation.EventFileCleared() && len(biu.mutation.EventFileIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "BazelInvocation.event_file"`)
-	}
-	return nil
-}
-
 func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := biu.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(bazelinvocation.Table, bazelinvocation.Columns, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt))
 	if ps := biu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -758,35 +729,6 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.InstanceNameCleared() {
 		_spec.ClearField(bazelinvocation.FieldInstanceName, field.TypeString)
-	}
-	if biu.mutation.EventFileCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   bazelinvocation.EventFileTable,
-			Columns: []string{bazelinvocation.EventFileColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(eventfile.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := biu.mutation.EventFileIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   bazelinvocation.EventFileTable,
-			Columns: []string{bazelinvocation.EventFileColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(eventfile.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if biu.mutation.BuildCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1393,17 +1335,6 @@ func (biuo *BazelInvocationUpdateOne) ClearInstanceName() *BazelInvocationUpdate
 	return biuo
 }
 
-// SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
-func (biuo *BazelInvocationUpdateOne) SetEventFileID(id int) *BazelInvocationUpdateOne {
-	biuo.mutation.SetEventFileID(id)
-	return biuo
-}
-
-// SetEventFile sets the "event_file" edge to the EventFile entity.
-func (biuo *BazelInvocationUpdateOne) SetEventFile(e *EventFile) *BazelInvocationUpdateOne {
-	return biuo.SetEventFileID(e.ID)
-}
-
 // SetBuildID sets the "build" edge to the Build entity by ID.
 func (biuo *BazelInvocationUpdateOne) SetBuildID(id int) *BazelInvocationUpdateOne {
 	biuo.mutation.SetBuildID(id)
@@ -1509,12 +1440,6 @@ func (biuo *BazelInvocationUpdateOne) SetSourceControl(s *SourceControl) *BazelI
 // Mutation returns the BazelInvocationMutation object of the builder.
 func (biuo *BazelInvocationUpdateOne) Mutation() *BazelInvocationMutation {
 	return biuo.mutation
-}
-
-// ClearEventFile clears the "event_file" edge to the EventFile entity.
-func (biuo *BazelInvocationUpdateOne) ClearEventFile() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearEventFile()
-	return biuo
 }
 
 // ClearBuild clears the "build" edge to the Build entity.
@@ -1638,18 +1563,7 @@ func (biuo *BazelInvocationUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (biuo *BazelInvocationUpdateOne) check() error {
-	if biuo.mutation.EventFileCleared() && len(biuo.mutation.EventFileIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "BazelInvocation.event_file"`)
-	}
-	return nil
-}
-
 func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *BazelInvocation, err error) {
-	if err := biuo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(bazelinvocation.Table, bazelinvocation.Columns, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt))
 	id, ok := biuo.mutation.ID()
 	if !ok {
@@ -1782,35 +1696,6 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.InstanceNameCleared() {
 		_spec.ClearField(bazelinvocation.FieldInstanceName, field.TypeString)
-	}
-	if biuo.mutation.EventFileCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   bazelinvocation.EventFileTable,
-			Columns: []string{bazelinvocation.EventFileColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(eventfile.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := biuo.mutation.EventFileIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   bazelinvocation.EventFileTable,
-			Columns: []string{bazelinvocation.EventFileColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(eventfile.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if biuo.mutation.BuildCleared() {
 		edge := &sqlgraph.EdgeSpec{

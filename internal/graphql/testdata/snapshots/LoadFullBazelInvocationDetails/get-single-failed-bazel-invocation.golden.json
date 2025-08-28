@@ -172,7 +172,6 @@
         "numAnalyses": 10,
         "numBuilds": 10
       },
-      "dynamicExecutionMetrics": null,
       "id": "TWV0cmljczoy",
       "memoryMetrics": {
         "garbageMetrics": [],
