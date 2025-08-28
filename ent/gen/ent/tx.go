@@ -4,6 +4,8 @@ package ent
 
 import (
 	"context"
+	stdsql "database/sql"
+	"fmt"
 	"sync"
 
 	"entgo.io/ent/dialect"
@@ -30,16 +32,24 @@ type Tx struct {
 	Build *BuildClient
 	// BuildGraphMetrics is the client for interacting with the BuildGraphMetrics builders.
 	BuildGraphMetrics *BuildGraphMetricsClient
+	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
+	ConnectionMetadata *ConnectionMetadataClient
 	// CumulativeMetrics is the client for interacting with the CumulativeMetrics builders.
 	CumulativeMetrics *CumulativeMetricsClient
 	// EvaluationStat is the client for interacting with the EvaluationStat builders.
 	EvaluationStat *EvaluationStatClient
+	// EventMetadata is the client for interacting with the EventMetadata builders.
+	EventMetadata *EventMetadataClient
 	// ExectionInfo is the client for interacting with the ExectionInfo builders.
 	ExectionInfo *ExectionInfoClient
 	// FilesMetric is the client for interacting with the FilesMetric builders.
 	FilesMetric *FilesMetricClient
 	// GarbageMetrics is the client for interacting with the GarbageMetrics builders.
 	GarbageMetrics *GarbageMetricsClient
+	// IncompleteBuildLog is the client for interacting with the IncompleteBuildLog builders.
+	IncompleteBuildLog *IncompleteBuildLogClient
+	// InvocationFiles is the client for interacting with the InvocationFiles builders.
+	InvocationFiles *InvocationFilesClient
 	// MemoryMetrics is the client for interacting with the MemoryMetrics builders.
 	MemoryMetrics *MemoryMetricsClient
 	// Metrics is the client for interacting with the Metrics builders.
@@ -64,14 +74,10 @@ type Tx struct {
 	SourceControl *SourceControlClient
 	// SystemNetworkStats is the client for interacting with the SystemNetworkStats builders.
 	SystemNetworkStats *SystemNetworkStatsClient
-	// TargetComplete is the client for interacting with the TargetComplete builders.
-	TargetComplete *TargetCompleteClient
-	// TargetConfigured is the client for interacting with the TargetConfigured builders.
-	TargetConfigured *TargetConfiguredClient
+	// Target is the client for interacting with the Target builders.
+	Target *TargetClient
 	// TargetMetrics is the client for interacting with the TargetMetrics builders.
 	TargetMetrics *TargetMetricsClient
-	// TargetPair is the client for interacting with the TargetPair builders.
-	TargetPair *TargetPairClient
 	// TestCollection is the client for interacting with the TestCollection builders.
 	TestCollection *TestCollectionClient
 	// TestFile is the client for interacting with the TestFile builders.
@@ -226,11 +232,15 @@ func (tx *Tx) init() {
 	tx.Blob = NewBlobClient(tx.config)
 	tx.Build = NewBuildClient(tx.config)
 	tx.BuildGraphMetrics = NewBuildGraphMetricsClient(tx.config)
+	tx.ConnectionMetadata = NewConnectionMetadataClient(tx.config)
 	tx.CumulativeMetrics = NewCumulativeMetricsClient(tx.config)
 	tx.EvaluationStat = NewEvaluationStatClient(tx.config)
+	tx.EventMetadata = NewEventMetadataClient(tx.config)
 	tx.ExectionInfo = NewExectionInfoClient(tx.config)
 	tx.FilesMetric = NewFilesMetricClient(tx.config)
 	tx.GarbageMetrics = NewGarbageMetricsClient(tx.config)
+	tx.IncompleteBuildLog = NewIncompleteBuildLogClient(tx.config)
+	tx.InvocationFiles = NewInvocationFilesClient(tx.config)
 	tx.MemoryMetrics = NewMemoryMetricsClient(tx.config)
 	tx.Metrics = NewMetricsClient(tx.config)
 	tx.MissDetail = NewMissDetailClient(tx.config)
@@ -243,10 +253,8 @@ func (tx *Tx) init() {
 	tx.RunnerCount = NewRunnerCountClient(tx.config)
 	tx.SourceControl = NewSourceControlClient(tx.config)
 	tx.SystemNetworkStats = NewSystemNetworkStatsClient(tx.config)
-	tx.TargetComplete = NewTargetCompleteClient(tx.config)
-	tx.TargetConfigured = NewTargetConfiguredClient(tx.config)
+	tx.Target = NewTargetClient(tx.config)
 	tx.TargetMetrics = NewTargetMetricsClient(tx.config)
-	tx.TargetPair = NewTargetPairClient(tx.config)
 	tx.TestCollection = NewTestCollectionClient(tx.config)
 	tx.TestFile = NewTestFileClient(tx.config)
 	tx.TestResultBES = NewTestResultBESClient(tx.config)
@@ -316,3 +324,27 @@ func (tx *txDriver) Query(ctx context.Context, query string, args, v any) error 
 }
 
 var _ dialect.Driver = (*txDriver)(nil)
+
+// ExecContext allows calling the underlying ExecContext method of the transaction if it is supported by it.
+// See, database/sql#Tx.ExecContext for more information.
+func (tx *txDriver) ExecContext(ctx context.Context, query string, args ...any) (stdsql.Result, error) {
+	ex, ok := tx.tx.(interface {
+		ExecContext(context.Context, string, ...any) (stdsql.Result, error)
+	})
+	if !ok {
+		return nil, fmt.Errorf("Tx.ExecContext is not supported")
+	}
+	return ex.ExecContext(ctx, query, args...)
+}
+
+// QueryContext allows calling the underlying QueryContext method of the transaction if it is supported by it.
+// See, database/sql#Tx.QueryContext for more information.
+func (tx *txDriver) QueryContext(ctx context.Context, query string, args ...any) (*stdsql.Rows, error) {
+	q, ok := tx.tx.(interface {
+		QueryContext(context.Context, string, ...any) (*stdsql.Rows, error)
+	})
+	if !ok {
+		return nil, fmt.Errorf("Tx.QueryContext is not supported")
+	}
+	return q.QueryContext(ctx, query, args...)
+}

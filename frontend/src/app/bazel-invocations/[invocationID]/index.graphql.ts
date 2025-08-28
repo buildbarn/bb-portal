@@ -160,6 +160,7 @@ fragment BazelInvocationInfo on BazelInvocation {
   id
   invocationID
   instanceName
+  bazelVersion
   build {
     id
     buildUUID
@@ -169,6 +170,7 @@ fragment BazelInvocationInfo on BazelInvocation {
     name
     digest
     sizeInBytes
+    digestFunction
   }
   targets {
     id
@@ -187,10 +189,6 @@ fragment BazelInvocationInfo on BazelInvocation {
     overallStatus
     cachedLocally
     cachedRemotely
-  }
-  relatedFiles {
-    name
-    url
   }
   user {
     Email
@@ -217,17 +215,18 @@ fragment BazelInvocationInfo on BazelInvocation {
   isCiWorker
   sourceControl {
     id
+    provider
+    instanceURL
+    repo
+    refs
     commitSha
     actor
-    branch
-    repoURL
-    refs
-    runID
-    workflow
-    workspace
-    action
     eventName
+    workflow
+    runID
+    runNumber
     job
+    action
     runnerName
     runnerArch
     runnerOs

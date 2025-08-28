@@ -132,6 +132,30 @@ func (bi *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
 	return result, MaskNotFound(err)
 }
 
+func (bi *BazelInvocation) IncompleteBuildLogs(ctx context.Context) (result []*IncompleteBuildLog, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = bi.NamedIncompleteBuildLogs(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = bi.Edges.IncompleteBuildLogsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = bi.QueryIncompleteBuildLogs().All(ctx)
+	}
+	return result, err
+}
+
+func (bi *BazelInvocation) InvocationFiles(ctx context.Context) (result []*InvocationFiles, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = bi.NamedInvocationFiles(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = bi.Edges.InvocationFilesOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = bi.QueryInvocationFiles().All(ctx)
+	}
+	return result, err
+}
+
 func (bi *BazelInvocation) TestCollection(ctx context.Context) (result []*TestCollection, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = bi.NamedTestCollection(graphql.GetFieldContext(ctx).Field.Alias)
@@ -144,7 +168,7 @@ func (bi *BazelInvocation) TestCollection(ctx context.Context) (result []*TestCo
 	return result, err
 }
 
-func (bi *BazelInvocation) Targets(ctx context.Context) (result []*TargetPair, err error) {
+func (bi *BazelInvocation) Targets(ctx context.Context) (result []*Target, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = bi.NamedTargets(graphql.GetFieldContext(ctx).Field.Alias)
 	} else {
@@ -288,6 +312,22 @@ func (gm *GarbageMetrics) MemoryMetrics(ctx context.Context) (*MemoryMetrics, er
 	result, err := gm.Edges.MemoryMetricsOrErr()
 	if IsNotLoaded(err) {
 		result, err = gm.QueryMemoryMetrics().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (ibl *IncompleteBuildLog) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := ibl.Edges.BazelInvocationOrErr()
+	if IsNotLoaded(err) {
+		result, err = ibl.QueryBazelInvocation().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (_if *InvocationFiles) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := _if.Edges.BazelInvocationOrErr()
+	if IsNotLoaded(err) {
+		result, err = _if.QueryBazelInvocation().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
@@ -444,14 +484,6 @@ func (nm *NetworkMetrics) SystemNetworkStats(ctx context.Context) (*SystemNetwor
 	return result, MaskNotFound(err)
 }
 
-func (og *OutputGroup) TargetComplete(ctx context.Context) (*TargetComplete, error) {
-	result, err := og.Edges.TargetCompleteOrErr()
-	if IsNotLoaded(err) {
-		result, err = og.QueryTargetComplete().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
 func (og *OutputGroup) InlineFiles(ctx context.Context) (result []*TestFile, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = og.NamedInlineFiles(graphql.GetFieldContext(ctx).Field.Alias)
@@ -532,50 +564,10 @@ func (sns *SystemNetworkStats) NetworkMetrics(ctx context.Context) (*NetworkMetr
 	return result, MaskNotFound(err)
 }
 
-func (tc *TargetComplete) TargetPair(ctx context.Context) (*TargetPair, error) {
-	result, err := tc.Edges.TargetPairOrErr()
+func (t *Target) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := t.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
-		result, err = tc.QueryTargetPair().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (tc *TargetComplete) ImportantOutput(ctx context.Context) (result []*TestFile, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = tc.NamedImportantOutput(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = tc.Edges.ImportantOutputOrErr()
-	}
-	if IsNotLoaded(err) {
-		result, err = tc.QueryImportantOutput().All(ctx)
-	}
-	return result, err
-}
-
-func (tc *TargetComplete) DirectoryOutput(ctx context.Context) (result []*TestFile, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = tc.NamedDirectoryOutput(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = tc.Edges.DirectoryOutputOrErr()
-	}
-	if IsNotLoaded(err) {
-		result, err = tc.QueryDirectoryOutput().All(ctx)
-	}
-	return result, err
-}
-
-func (tc *TargetComplete) OutputGroup(ctx context.Context) (*OutputGroup, error) {
-	result, err := tc.Edges.OutputGroupOrErr()
-	if IsNotLoaded(err) {
-		result, err = tc.QueryOutputGroup().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (tc *TargetConfigured) TargetPair(ctx context.Context) (*TargetPair, error) {
-	result, err := tc.Edges.TargetPairOrErr()
-	if IsNotLoaded(err) {
-		result, err = tc.QueryTargetPair().Only(ctx)
+		result, err = t.QueryBazelInvocation().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
@@ -584,30 +576,6 @@ func (tm *TargetMetrics) Metrics(ctx context.Context) (*Metrics, error) {
 	result, err := tm.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
 		result, err = tm.QueryMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (tp *TargetPair) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := tp.Edges.BazelInvocationOrErr()
-	if IsNotLoaded(err) {
-		result, err = tp.QueryBazelInvocation().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (tp *TargetPair) Configuration(ctx context.Context) (*TargetConfigured, error) {
-	result, err := tp.Edges.ConfigurationOrErr()
-	if IsNotLoaded(err) {
-		result, err = tp.QueryConfiguration().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (tp *TargetPair) Completion(ctx context.Context) (*TargetComplete, error) {
-	result, err := tp.Edges.CompletionOrErr()
-	if IsNotLoaded(err) {
-		result, err = tp.QueryCompletion().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }

@@ -1,8 +1,8 @@
-import { gql } from '@/graphql/__generated__';
+import { gql } from "@/graphql/__generated__";
 
 export const FIND_BUILD_BY_UUID_QUERY = gql(/* GraphQL */ `
-  query FindBuildByUUID($url: String, $uuid: UUID) {
-    getBuild(buildURL: $url, buildUUID: $uuid) {
+  query FindBuildByUUID($uuid: UUID) {
+    getBuild(buildUUID: $uuid) {
       id
       buildURL
       buildUUID
@@ -28,5 +28,3 @@ export const FIND_BUILD_BY_UUID_QUERY = gql(/* GraphQL */ `
     }
   }
 `);
-
-

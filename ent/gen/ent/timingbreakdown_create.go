@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
@@ -18,6 +20,7 @@ type TimingBreakdownCreate struct {
 	config
 	mutation *TimingBreakdownMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetName sets the "name" field.
@@ -142,6 +145,7 @@ func (tbc *TimingBreakdownCreate) createSpec() (*TimingBreakdown, *sqlgraph.Crea
 		_node = &TimingBreakdown{config: tbc.config}
 		_spec = sqlgraph.NewCreateSpec(timingbreakdown.Table, sqlgraph.NewFieldSpec(timingbreakdown.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = tbc.conflict
 	if value, ok := tbc.mutation.Name(); ok {
 		_spec.SetField(timingbreakdown.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -186,11 +190,212 @@ func (tbc *TimingBreakdownCreate) createSpec() (*TimingBreakdown, *sqlgraph.Crea
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TimingBreakdown.Create().
+//		SetName(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TimingBreakdownUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (tbc *TimingBreakdownCreate) OnConflict(opts ...sql.ConflictOption) *TimingBreakdownUpsertOne {
+	tbc.conflict = opts
+	return &TimingBreakdownUpsertOne{
+		create: tbc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TimingBreakdown.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (tbc *TimingBreakdownCreate) OnConflictColumns(columns ...string) *TimingBreakdownUpsertOne {
+	tbc.conflict = append(tbc.conflict, sql.ConflictColumns(columns...))
+	return &TimingBreakdownUpsertOne{
+		create: tbc,
+	}
+}
+
+type (
+	// TimingBreakdownUpsertOne is the builder for "upsert"-ing
+	//  one TimingBreakdown node.
+	TimingBreakdownUpsertOne struct {
+		create *TimingBreakdownCreate
+	}
+
+	// TimingBreakdownUpsert is the "OnConflict" setter.
+	TimingBreakdownUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetName sets the "name" field.
+func (u *TimingBreakdownUpsert) SetName(v string) *TimingBreakdownUpsert {
+	u.Set(timingbreakdown.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *TimingBreakdownUpsert) UpdateName() *TimingBreakdownUpsert {
+	u.SetExcluded(timingbreakdown.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *TimingBreakdownUpsert) ClearName() *TimingBreakdownUpsert {
+	u.SetNull(timingbreakdown.FieldName)
+	return u
+}
+
+// SetTime sets the "time" field.
+func (u *TimingBreakdownUpsert) SetTime(v string) *TimingBreakdownUpsert {
+	u.Set(timingbreakdown.FieldTime, v)
+	return u
+}
+
+// UpdateTime sets the "time" field to the value that was provided on create.
+func (u *TimingBreakdownUpsert) UpdateTime() *TimingBreakdownUpsert {
+	u.SetExcluded(timingbreakdown.FieldTime)
+	return u
+}
+
+// ClearTime clears the value of the "time" field.
+func (u *TimingBreakdownUpsert) ClearTime() *TimingBreakdownUpsert {
+	u.SetNull(timingbreakdown.FieldTime)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.TimingBreakdown.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TimingBreakdownUpsertOne) UpdateNewValues() *TimingBreakdownUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TimingBreakdown.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *TimingBreakdownUpsertOne) Ignore() *TimingBreakdownUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TimingBreakdownUpsertOne) DoNothing() *TimingBreakdownUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TimingBreakdownCreate.OnConflict
+// documentation for more info.
+func (u *TimingBreakdownUpsertOne) Update(set func(*TimingBreakdownUpsert)) *TimingBreakdownUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TimingBreakdownUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *TimingBreakdownUpsertOne) SetName(v string) *TimingBreakdownUpsertOne {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *TimingBreakdownUpsertOne) UpdateName() *TimingBreakdownUpsertOne {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *TimingBreakdownUpsertOne) ClearName() *TimingBreakdownUpsertOne {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetTime sets the "time" field.
+func (u *TimingBreakdownUpsertOne) SetTime(v string) *TimingBreakdownUpsertOne {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.SetTime(v)
+	})
+}
+
+// UpdateTime sets the "time" field to the value that was provided on create.
+func (u *TimingBreakdownUpsertOne) UpdateTime() *TimingBreakdownUpsertOne {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.UpdateTime()
+	})
+}
+
+// ClearTime clears the value of the "time" field.
+func (u *TimingBreakdownUpsertOne) ClearTime() *TimingBreakdownUpsertOne {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.ClearTime()
+	})
+}
+
+// Exec executes the query.
+func (u *TimingBreakdownUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TimingBreakdownCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TimingBreakdownUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *TimingBreakdownUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *TimingBreakdownUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // TimingBreakdownCreateBulk is the builder for creating many TimingBreakdown entities in bulk.
 type TimingBreakdownCreateBulk struct {
 	config
 	err      error
 	builders []*TimingBreakdownCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the TimingBreakdown entities in the database.
@@ -219,6 +424,7 @@ func (tbcb *TimingBreakdownCreateBulk) Save(ctx context.Context) ([]*TimingBreak
 					_, err = mutators[i+1].Mutate(root, tbcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = tbcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, tbcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -269,6 +475,152 @@ func (tbcb *TimingBreakdownCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (tbcb *TimingBreakdownCreateBulk) ExecX(ctx context.Context) {
 	if err := tbcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TimingBreakdown.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TimingBreakdownUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (tbcb *TimingBreakdownCreateBulk) OnConflict(opts ...sql.ConflictOption) *TimingBreakdownUpsertBulk {
+	tbcb.conflict = opts
+	return &TimingBreakdownUpsertBulk{
+		create: tbcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TimingBreakdown.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (tbcb *TimingBreakdownCreateBulk) OnConflictColumns(columns ...string) *TimingBreakdownUpsertBulk {
+	tbcb.conflict = append(tbcb.conflict, sql.ConflictColumns(columns...))
+	return &TimingBreakdownUpsertBulk{
+		create: tbcb,
+	}
+}
+
+// TimingBreakdownUpsertBulk is the builder for "upsert"-ing
+// a bulk of TimingBreakdown nodes.
+type TimingBreakdownUpsertBulk struct {
+	create *TimingBreakdownCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.TimingBreakdown.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TimingBreakdownUpsertBulk) UpdateNewValues() *TimingBreakdownUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TimingBreakdown.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *TimingBreakdownUpsertBulk) Ignore() *TimingBreakdownUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TimingBreakdownUpsertBulk) DoNothing() *TimingBreakdownUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TimingBreakdownCreateBulk.OnConflict
+// documentation for more info.
+func (u *TimingBreakdownUpsertBulk) Update(set func(*TimingBreakdownUpsert)) *TimingBreakdownUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TimingBreakdownUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *TimingBreakdownUpsertBulk) SetName(v string) *TimingBreakdownUpsertBulk {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *TimingBreakdownUpsertBulk) UpdateName() *TimingBreakdownUpsertBulk {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *TimingBreakdownUpsertBulk) ClearName() *TimingBreakdownUpsertBulk {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetTime sets the "time" field.
+func (u *TimingBreakdownUpsertBulk) SetTime(v string) *TimingBreakdownUpsertBulk {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.SetTime(v)
+	})
+}
+
+// UpdateTime sets the "time" field to the value that was provided on create.
+func (u *TimingBreakdownUpsertBulk) UpdateTime() *TimingBreakdownUpsertBulk {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.UpdateTime()
+	})
+}
+
+// ClearTime clears the value of the "time" field.
+func (u *TimingBreakdownUpsertBulk) ClearTime() *TimingBreakdownUpsertBulk {
+	return u.Update(func(s *TimingBreakdownUpsert) {
+		s.ClearTime()
+	})
+}
+
+// Exec executes the query.
+func (u *TimingBreakdownUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the TimingBreakdownCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TimingBreakdownCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TimingBreakdownUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

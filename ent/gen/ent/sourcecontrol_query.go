@@ -301,12 +301,12 @@ func (scq *SourceControlQuery) WithBazelInvocation(opts ...func(*BazelInvocation
 // Example:
 //
 //	var v []struct {
-//		RepoURL string `json:"repo_url,omitempty"`
+//		Provider sourcecontrol.Provider `json:"provider,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.SourceControl.Query().
-//		GroupBy(sourcecontrol.FieldRepoURL).
+//		GroupBy(sourcecontrol.FieldProvider).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (scq *SourceControlQuery) GroupBy(field string, fields ...string) *SourceControlGroupBy {
@@ -324,11 +324,11 @@ func (scq *SourceControlQuery) GroupBy(field string, fields ...string) *SourceCo
 // Example:
 //
 //	var v []struct {
-//		RepoURL string `json:"repo_url,omitempty"`
+//		Provider sourcecontrol.Provider `json:"provider,omitempty"`
 //	}
 //
 //	client.SourceControl.Query().
-//		Select(sourcecontrol.FieldRepoURL).
+//		Select(sourcecontrol.FieldProvider).
 //		Scan(ctx, &v)
 func (scq *SourceControlQuery) Select(fields ...string) *SourceControlSelect {
 	scq.ctx.Fields = append(scq.ctx.Fields, fields...)

@@ -25,6 +25,7 @@ type Props = {
 const BazelInvocationsTable: React.FC<Props> = ({ height }) => {
   const [variables, setVariables] = useState<FindBazelInvocationsQueryVariables>({
     first: PAGE_SIZE,
+    where: {startedAtNotNil: true},
     orderBy: {
       direction: 'DESC',
       field: 'STARTED_AT'
@@ -57,16 +58,11 @@ const BazelInvocationsTable: React.FC<Props> = ({ height }) => {
       if (filters["user"]?.length){
         wheres.push({ userLdapContains: filters['user'][0].toString() });
       }
-
-      //TODO extend where inputs to allow querying by result
-      //for now, this is a filter performed on pre-fetched results
-      // if (filters['result']?.length) {
-      //   wheres.push({ })
-      // }
+      wheres.push({startedAtNotNil: true})
 
       setVariables({
         first: PAGE_SIZE,
-        where: wheres.length ? { and: [...wheres] } : wheres[0],
+        where: wheres.length ? { and: [...wheres] } : undefined,
         orderBy: {
           direction: 'DESC',
           field: 'STARTED_AT'

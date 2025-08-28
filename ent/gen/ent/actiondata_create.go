@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
@@ -17,6 +19,7 @@ type ActionDataCreate struct {
 	config
 	mutation *ActionDataMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetMnemonic sets the "mnemonic" field.
@@ -196,6 +199,7 @@ func (adc *ActionDataCreate) createSpec() (*ActionData, *sqlgraph.CreateSpec) {
 		_node = &ActionData{config: adc.config}
 		_spec = sqlgraph.NewCreateSpec(actiondata.Table, sqlgraph.NewFieldSpec(actiondata.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = adc.conflict
 	if value, ok := adc.mutation.Mnemonic(); ok {
 		_spec.SetField(actiondata.FieldMnemonic, field.TypeString, value)
 		_node.Mnemonic = value
@@ -244,11 +248,485 @@ func (adc *ActionDataCreate) createSpec() (*ActionData, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ActionData.Create().
+//		SetMnemonic(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ActionDataUpsert) {
+//			SetMnemonic(v+v).
+//		}).
+//		Exec(ctx)
+func (adc *ActionDataCreate) OnConflict(opts ...sql.ConflictOption) *ActionDataUpsertOne {
+	adc.conflict = opts
+	return &ActionDataUpsertOne{
+		create: adc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ActionData.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (adc *ActionDataCreate) OnConflictColumns(columns ...string) *ActionDataUpsertOne {
+	adc.conflict = append(adc.conflict, sql.ConflictColumns(columns...))
+	return &ActionDataUpsertOne{
+		create: adc,
+	}
+}
+
+type (
+	// ActionDataUpsertOne is the builder for "upsert"-ing
+	//  one ActionData node.
+	ActionDataUpsertOne struct {
+		create *ActionDataCreate
+	}
+
+	// ActionDataUpsert is the "OnConflict" setter.
+	ActionDataUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetMnemonic sets the "mnemonic" field.
+func (u *ActionDataUpsert) SetMnemonic(v string) *ActionDataUpsert {
+	u.Set(actiondata.FieldMnemonic, v)
+	return u
+}
+
+// UpdateMnemonic sets the "mnemonic" field to the value that was provided on create.
+func (u *ActionDataUpsert) UpdateMnemonic() *ActionDataUpsert {
+	u.SetExcluded(actiondata.FieldMnemonic)
+	return u
+}
+
+// ClearMnemonic clears the value of the "mnemonic" field.
+func (u *ActionDataUpsert) ClearMnemonic() *ActionDataUpsert {
+	u.SetNull(actiondata.FieldMnemonic)
+	return u
+}
+
+// SetActionsExecuted sets the "actions_executed" field.
+func (u *ActionDataUpsert) SetActionsExecuted(v int64) *ActionDataUpsert {
+	u.Set(actiondata.FieldActionsExecuted, v)
+	return u
+}
+
+// UpdateActionsExecuted sets the "actions_executed" field to the value that was provided on create.
+func (u *ActionDataUpsert) UpdateActionsExecuted() *ActionDataUpsert {
+	u.SetExcluded(actiondata.FieldActionsExecuted)
+	return u
+}
+
+// AddActionsExecuted adds v to the "actions_executed" field.
+func (u *ActionDataUpsert) AddActionsExecuted(v int64) *ActionDataUpsert {
+	u.Add(actiondata.FieldActionsExecuted, v)
+	return u
+}
+
+// ClearActionsExecuted clears the value of the "actions_executed" field.
+func (u *ActionDataUpsert) ClearActionsExecuted() *ActionDataUpsert {
+	u.SetNull(actiondata.FieldActionsExecuted)
+	return u
+}
+
+// SetActionsCreated sets the "actions_created" field.
+func (u *ActionDataUpsert) SetActionsCreated(v int64) *ActionDataUpsert {
+	u.Set(actiondata.FieldActionsCreated, v)
+	return u
+}
+
+// UpdateActionsCreated sets the "actions_created" field to the value that was provided on create.
+func (u *ActionDataUpsert) UpdateActionsCreated() *ActionDataUpsert {
+	u.SetExcluded(actiondata.FieldActionsCreated)
+	return u
+}
+
+// AddActionsCreated adds v to the "actions_created" field.
+func (u *ActionDataUpsert) AddActionsCreated(v int64) *ActionDataUpsert {
+	u.Add(actiondata.FieldActionsCreated, v)
+	return u
+}
+
+// ClearActionsCreated clears the value of the "actions_created" field.
+func (u *ActionDataUpsert) ClearActionsCreated() *ActionDataUpsert {
+	u.SetNull(actiondata.FieldActionsCreated)
+	return u
+}
+
+// SetFirstStartedMs sets the "first_started_ms" field.
+func (u *ActionDataUpsert) SetFirstStartedMs(v int64) *ActionDataUpsert {
+	u.Set(actiondata.FieldFirstStartedMs, v)
+	return u
+}
+
+// UpdateFirstStartedMs sets the "first_started_ms" field to the value that was provided on create.
+func (u *ActionDataUpsert) UpdateFirstStartedMs() *ActionDataUpsert {
+	u.SetExcluded(actiondata.FieldFirstStartedMs)
+	return u
+}
+
+// AddFirstStartedMs adds v to the "first_started_ms" field.
+func (u *ActionDataUpsert) AddFirstStartedMs(v int64) *ActionDataUpsert {
+	u.Add(actiondata.FieldFirstStartedMs, v)
+	return u
+}
+
+// ClearFirstStartedMs clears the value of the "first_started_ms" field.
+func (u *ActionDataUpsert) ClearFirstStartedMs() *ActionDataUpsert {
+	u.SetNull(actiondata.FieldFirstStartedMs)
+	return u
+}
+
+// SetLastEndedMs sets the "last_ended_ms" field.
+func (u *ActionDataUpsert) SetLastEndedMs(v int64) *ActionDataUpsert {
+	u.Set(actiondata.FieldLastEndedMs, v)
+	return u
+}
+
+// UpdateLastEndedMs sets the "last_ended_ms" field to the value that was provided on create.
+func (u *ActionDataUpsert) UpdateLastEndedMs() *ActionDataUpsert {
+	u.SetExcluded(actiondata.FieldLastEndedMs)
+	return u
+}
+
+// AddLastEndedMs adds v to the "last_ended_ms" field.
+func (u *ActionDataUpsert) AddLastEndedMs(v int64) *ActionDataUpsert {
+	u.Add(actiondata.FieldLastEndedMs, v)
+	return u
+}
+
+// ClearLastEndedMs clears the value of the "last_ended_ms" field.
+func (u *ActionDataUpsert) ClearLastEndedMs() *ActionDataUpsert {
+	u.SetNull(actiondata.FieldLastEndedMs)
+	return u
+}
+
+// SetSystemTime sets the "system_time" field.
+func (u *ActionDataUpsert) SetSystemTime(v int64) *ActionDataUpsert {
+	u.Set(actiondata.FieldSystemTime, v)
+	return u
+}
+
+// UpdateSystemTime sets the "system_time" field to the value that was provided on create.
+func (u *ActionDataUpsert) UpdateSystemTime() *ActionDataUpsert {
+	u.SetExcluded(actiondata.FieldSystemTime)
+	return u
+}
+
+// AddSystemTime adds v to the "system_time" field.
+func (u *ActionDataUpsert) AddSystemTime(v int64) *ActionDataUpsert {
+	u.Add(actiondata.FieldSystemTime, v)
+	return u
+}
+
+// ClearSystemTime clears the value of the "system_time" field.
+func (u *ActionDataUpsert) ClearSystemTime() *ActionDataUpsert {
+	u.SetNull(actiondata.FieldSystemTime)
+	return u
+}
+
+// SetUserTime sets the "user_time" field.
+func (u *ActionDataUpsert) SetUserTime(v int64) *ActionDataUpsert {
+	u.Set(actiondata.FieldUserTime, v)
+	return u
+}
+
+// UpdateUserTime sets the "user_time" field to the value that was provided on create.
+func (u *ActionDataUpsert) UpdateUserTime() *ActionDataUpsert {
+	u.SetExcluded(actiondata.FieldUserTime)
+	return u
+}
+
+// AddUserTime adds v to the "user_time" field.
+func (u *ActionDataUpsert) AddUserTime(v int64) *ActionDataUpsert {
+	u.Add(actiondata.FieldUserTime, v)
+	return u
+}
+
+// ClearUserTime clears the value of the "user_time" field.
+func (u *ActionDataUpsert) ClearUserTime() *ActionDataUpsert {
+	u.SetNull(actiondata.FieldUserTime)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.ActionData.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ActionDataUpsertOne) UpdateNewValues() *ActionDataUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ActionData.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *ActionDataUpsertOne) Ignore() *ActionDataUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ActionDataUpsertOne) DoNothing() *ActionDataUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ActionDataCreate.OnConflict
+// documentation for more info.
+func (u *ActionDataUpsertOne) Update(set func(*ActionDataUpsert)) *ActionDataUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ActionDataUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetMnemonic sets the "mnemonic" field.
+func (u *ActionDataUpsertOne) SetMnemonic(v string) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetMnemonic(v)
+	})
+}
+
+// UpdateMnemonic sets the "mnemonic" field to the value that was provided on create.
+func (u *ActionDataUpsertOne) UpdateMnemonic() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateMnemonic()
+	})
+}
+
+// ClearMnemonic clears the value of the "mnemonic" field.
+func (u *ActionDataUpsertOne) ClearMnemonic() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearMnemonic()
+	})
+}
+
+// SetActionsExecuted sets the "actions_executed" field.
+func (u *ActionDataUpsertOne) SetActionsExecuted(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetActionsExecuted(v)
+	})
+}
+
+// AddActionsExecuted adds v to the "actions_executed" field.
+func (u *ActionDataUpsertOne) AddActionsExecuted(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddActionsExecuted(v)
+	})
+}
+
+// UpdateActionsExecuted sets the "actions_executed" field to the value that was provided on create.
+func (u *ActionDataUpsertOne) UpdateActionsExecuted() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateActionsExecuted()
+	})
+}
+
+// ClearActionsExecuted clears the value of the "actions_executed" field.
+func (u *ActionDataUpsertOne) ClearActionsExecuted() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearActionsExecuted()
+	})
+}
+
+// SetActionsCreated sets the "actions_created" field.
+func (u *ActionDataUpsertOne) SetActionsCreated(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetActionsCreated(v)
+	})
+}
+
+// AddActionsCreated adds v to the "actions_created" field.
+func (u *ActionDataUpsertOne) AddActionsCreated(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddActionsCreated(v)
+	})
+}
+
+// UpdateActionsCreated sets the "actions_created" field to the value that was provided on create.
+func (u *ActionDataUpsertOne) UpdateActionsCreated() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateActionsCreated()
+	})
+}
+
+// ClearActionsCreated clears the value of the "actions_created" field.
+func (u *ActionDataUpsertOne) ClearActionsCreated() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearActionsCreated()
+	})
+}
+
+// SetFirstStartedMs sets the "first_started_ms" field.
+func (u *ActionDataUpsertOne) SetFirstStartedMs(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetFirstStartedMs(v)
+	})
+}
+
+// AddFirstStartedMs adds v to the "first_started_ms" field.
+func (u *ActionDataUpsertOne) AddFirstStartedMs(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddFirstStartedMs(v)
+	})
+}
+
+// UpdateFirstStartedMs sets the "first_started_ms" field to the value that was provided on create.
+func (u *ActionDataUpsertOne) UpdateFirstStartedMs() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateFirstStartedMs()
+	})
+}
+
+// ClearFirstStartedMs clears the value of the "first_started_ms" field.
+func (u *ActionDataUpsertOne) ClearFirstStartedMs() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearFirstStartedMs()
+	})
+}
+
+// SetLastEndedMs sets the "last_ended_ms" field.
+func (u *ActionDataUpsertOne) SetLastEndedMs(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetLastEndedMs(v)
+	})
+}
+
+// AddLastEndedMs adds v to the "last_ended_ms" field.
+func (u *ActionDataUpsertOne) AddLastEndedMs(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddLastEndedMs(v)
+	})
+}
+
+// UpdateLastEndedMs sets the "last_ended_ms" field to the value that was provided on create.
+func (u *ActionDataUpsertOne) UpdateLastEndedMs() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateLastEndedMs()
+	})
+}
+
+// ClearLastEndedMs clears the value of the "last_ended_ms" field.
+func (u *ActionDataUpsertOne) ClearLastEndedMs() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearLastEndedMs()
+	})
+}
+
+// SetSystemTime sets the "system_time" field.
+func (u *ActionDataUpsertOne) SetSystemTime(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetSystemTime(v)
+	})
+}
+
+// AddSystemTime adds v to the "system_time" field.
+func (u *ActionDataUpsertOne) AddSystemTime(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddSystemTime(v)
+	})
+}
+
+// UpdateSystemTime sets the "system_time" field to the value that was provided on create.
+func (u *ActionDataUpsertOne) UpdateSystemTime() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateSystemTime()
+	})
+}
+
+// ClearSystemTime clears the value of the "system_time" field.
+func (u *ActionDataUpsertOne) ClearSystemTime() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearSystemTime()
+	})
+}
+
+// SetUserTime sets the "user_time" field.
+func (u *ActionDataUpsertOne) SetUserTime(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetUserTime(v)
+	})
+}
+
+// AddUserTime adds v to the "user_time" field.
+func (u *ActionDataUpsertOne) AddUserTime(v int64) *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddUserTime(v)
+	})
+}
+
+// UpdateUserTime sets the "user_time" field to the value that was provided on create.
+func (u *ActionDataUpsertOne) UpdateUserTime() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateUserTime()
+	})
+}
+
+// ClearUserTime clears the value of the "user_time" field.
+func (u *ActionDataUpsertOne) ClearUserTime() *ActionDataUpsertOne {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearUserTime()
+	})
+}
+
+// Exec executes the query.
+func (u *ActionDataUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ActionDataCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ActionDataUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *ActionDataUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *ActionDataUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // ActionDataCreateBulk is the builder for creating many ActionData entities in bulk.
 type ActionDataCreateBulk struct {
 	config
 	err      error
 	builders []*ActionDataCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the ActionData entities in the database.
@@ -277,6 +755,7 @@ func (adcb *ActionDataCreateBulk) Save(ctx context.Context) ([]*ActionData, erro
 					_, err = mutators[i+1].Mutate(root, adcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = adcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, adcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -327,6 +806,299 @@ func (adcb *ActionDataCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (adcb *ActionDataCreateBulk) ExecX(ctx context.Context) {
 	if err := adcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ActionData.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ActionDataUpsert) {
+//			SetMnemonic(v+v).
+//		}).
+//		Exec(ctx)
+func (adcb *ActionDataCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActionDataUpsertBulk {
+	adcb.conflict = opts
+	return &ActionDataUpsertBulk{
+		create: adcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ActionData.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (adcb *ActionDataCreateBulk) OnConflictColumns(columns ...string) *ActionDataUpsertBulk {
+	adcb.conflict = append(adcb.conflict, sql.ConflictColumns(columns...))
+	return &ActionDataUpsertBulk{
+		create: adcb,
+	}
+}
+
+// ActionDataUpsertBulk is the builder for "upsert"-ing
+// a bulk of ActionData nodes.
+type ActionDataUpsertBulk struct {
+	create *ActionDataCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.ActionData.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ActionDataUpsertBulk) UpdateNewValues() *ActionDataUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ActionData.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *ActionDataUpsertBulk) Ignore() *ActionDataUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ActionDataUpsertBulk) DoNothing() *ActionDataUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ActionDataCreateBulk.OnConflict
+// documentation for more info.
+func (u *ActionDataUpsertBulk) Update(set func(*ActionDataUpsert)) *ActionDataUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ActionDataUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetMnemonic sets the "mnemonic" field.
+func (u *ActionDataUpsertBulk) SetMnemonic(v string) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetMnemonic(v)
+	})
+}
+
+// UpdateMnemonic sets the "mnemonic" field to the value that was provided on create.
+func (u *ActionDataUpsertBulk) UpdateMnemonic() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateMnemonic()
+	})
+}
+
+// ClearMnemonic clears the value of the "mnemonic" field.
+func (u *ActionDataUpsertBulk) ClearMnemonic() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearMnemonic()
+	})
+}
+
+// SetActionsExecuted sets the "actions_executed" field.
+func (u *ActionDataUpsertBulk) SetActionsExecuted(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetActionsExecuted(v)
+	})
+}
+
+// AddActionsExecuted adds v to the "actions_executed" field.
+func (u *ActionDataUpsertBulk) AddActionsExecuted(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddActionsExecuted(v)
+	})
+}
+
+// UpdateActionsExecuted sets the "actions_executed" field to the value that was provided on create.
+func (u *ActionDataUpsertBulk) UpdateActionsExecuted() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateActionsExecuted()
+	})
+}
+
+// ClearActionsExecuted clears the value of the "actions_executed" field.
+func (u *ActionDataUpsertBulk) ClearActionsExecuted() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearActionsExecuted()
+	})
+}
+
+// SetActionsCreated sets the "actions_created" field.
+func (u *ActionDataUpsertBulk) SetActionsCreated(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetActionsCreated(v)
+	})
+}
+
+// AddActionsCreated adds v to the "actions_created" field.
+func (u *ActionDataUpsertBulk) AddActionsCreated(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddActionsCreated(v)
+	})
+}
+
+// UpdateActionsCreated sets the "actions_created" field to the value that was provided on create.
+func (u *ActionDataUpsertBulk) UpdateActionsCreated() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateActionsCreated()
+	})
+}
+
+// ClearActionsCreated clears the value of the "actions_created" field.
+func (u *ActionDataUpsertBulk) ClearActionsCreated() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearActionsCreated()
+	})
+}
+
+// SetFirstStartedMs sets the "first_started_ms" field.
+func (u *ActionDataUpsertBulk) SetFirstStartedMs(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetFirstStartedMs(v)
+	})
+}
+
+// AddFirstStartedMs adds v to the "first_started_ms" field.
+func (u *ActionDataUpsertBulk) AddFirstStartedMs(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddFirstStartedMs(v)
+	})
+}
+
+// UpdateFirstStartedMs sets the "first_started_ms" field to the value that was provided on create.
+func (u *ActionDataUpsertBulk) UpdateFirstStartedMs() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateFirstStartedMs()
+	})
+}
+
+// ClearFirstStartedMs clears the value of the "first_started_ms" field.
+func (u *ActionDataUpsertBulk) ClearFirstStartedMs() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearFirstStartedMs()
+	})
+}
+
+// SetLastEndedMs sets the "last_ended_ms" field.
+func (u *ActionDataUpsertBulk) SetLastEndedMs(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetLastEndedMs(v)
+	})
+}
+
+// AddLastEndedMs adds v to the "last_ended_ms" field.
+func (u *ActionDataUpsertBulk) AddLastEndedMs(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddLastEndedMs(v)
+	})
+}
+
+// UpdateLastEndedMs sets the "last_ended_ms" field to the value that was provided on create.
+func (u *ActionDataUpsertBulk) UpdateLastEndedMs() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateLastEndedMs()
+	})
+}
+
+// ClearLastEndedMs clears the value of the "last_ended_ms" field.
+func (u *ActionDataUpsertBulk) ClearLastEndedMs() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearLastEndedMs()
+	})
+}
+
+// SetSystemTime sets the "system_time" field.
+func (u *ActionDataUpsertBulk) SetSystemTime(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetSystemTime(v)
+	})
+}
+
+// AddSystemTime adds v to the "system_time" field.
+func (u *ActionDataUpsertBulk) AddSystemTime(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddSystemTime(v)
+	})
+}
+
+// UpdateSystemTime sets the "system_time" field to the value that was provided on create.
+func (u *ActionDataUpsertBulk) UpdateSystemTime() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateSystemTime()
+	})
+}
+
+// ClearSystemTime clears the value of the "system_time" field.
+func (u *ActionDataUpsertBulk) ClearSystemTime() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearSystemTime()
+	})
+}
+
+// SetUserTime sets the "user_time" field.
+func (u *ActionDataUpsertBulk) SetUserTime(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.SetUserTime(v)
+	})
+}
+
+// AddUserTime adds v to the "user_time" field.
+func (u *ActionDataUpsertBulk) AddUserTime(v int64) *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.AddUserTime(v)
+	})
+}
+
+// UpdateUserTime sets the "user_time" field to the value that was provided on create.
+func (u *ActionDataUpsertBulk) UpdateUserTime() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.UpdateUserTime()
+	})
+}
+
+// ClearUserTime clears the value of the "user_time" field.
+func (u *ActionDataUpsertBulk) ClearUserTime() *ActionDataUpsertBulk {
+	return u.Update(func(s *ActionDataUpsert) {
+		s.ClearUserTime()
+	})
+}
+
+// Exec executes the query.
+func (u *ActionDataUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the ActionDataCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ActionDataCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ActionDataUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

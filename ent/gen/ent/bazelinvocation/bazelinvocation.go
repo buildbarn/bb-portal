@@ -22,14 +22,10 @@ const (
 	FieldChangeNumber = "change_number"
 	// FieldPatchsetNumber holds the string denoting the patchset_number field in the database.
 	FieldPatchsetNumber = "patchset_number"
-	// FieldSummary holds the string denoting the summary field in the database.
-	FieldSummary = "summary"
 	// FieldBepCompleted holds the string denoting the bep_completed field in the database.
 	FieldBepCompleted = "bep_completed"
 	// FieldStepLabel holds the string denoting the step_label field in the database.
 	FieldStepLabel = "step_label"
-	// FieldRelatedFiles holds the string denoting the related_files field in the database.
-	FieldRelatedFiles = "related_files"
 	// FieldUserEmail holds the string denoting the user_email field in the database.
 	FieldUserEmail = "user_email"
 	// FieldUserLdap holds the string denoting the user_ldap field in the database.
@@ -52,12 +48,52 @@ const (
 	FieldProfileName = "profile_name"
 	// FieldInstanceName holds the string denoting the instance_name field in the database.
 	FieldInstanceName = "instance_name"
+	// FieldBazelVersion holds the string denoting the bazel_version field in the database.
+	FieldBazelVersion = "bazel_version"
+	// FieldExitCodeName holds the string denoting the exit_code_name field in the database.
+	FieldExitCodeName = "exit_code_name"
+	// FieldExitCodeCode holds the string denoting the exit_code_code field in the database.
+	FieldExitCodeCode = "exit_code_code"
+	// FieldCommandLineCommand holds the string denoting the command_line_command field in the database.
+	FieldCommandLineCommand = "command_line_command"
+	// FieldCommandLineExecutable holds the string denoting the command_line_executable field in the database.
+	FieldCommandLineExecutable = "command_line_executable"
+	// FieldCommandLineResidual holds the string denoting the command_line_residual field in the database.
+	FieldCommandLineResidual = "command_line_residual"
+	// FieldCommandLine holds the string denoting the command_line field in the database.
+	FieldCommandLine = "command_line"
+	// FieldExplicitCommandLine holds the string denoting the explicit_command_line field in the database.
+	FieldExplicitCommandLine = "explicit_command_line"
+	// FieldStartupOptions holds the string denoting the startup_options field in the database.
+	FieldStartupOptions = "startup_options"
+	// FieldExplicitStartupOptions holds the string denoting the explicit_startup_options field in the database.
+	FieldExplicitStartupOptions = "explicit_startup_options"
+	// FieldProcessedEventStarted holds the string denoting the processed_event_started field in the database.
+	FieldProcessedEventStarted = "processed_event_started"
+	// FieldProcessedEventBuildMetadata holds the string denoting the processed_event_build_metadata field in the database.
+	FieldProcessedEventBuildMetadata = "processed_event_build_metadata"
+	// FieldProcessedEventOptionsParsed holds the string denoting the processed_event_options_parsed field in the database.
+	FieldProcessedEventOptionsParsed = "processed_event_options_parsed"
+	// FieldProcessedEventBuildFinished holds the string denoting the processed_event_build_finished field in the database.
+	FieldProcessedEventBuildFinished = "processed_event_build_finished"
+	// FieldProcessedEventStructuredCommandLine holds the string denoting the processed_event_structured_command_line field in the database.
+	FieldProcessedEventStructuredCommandLine = "processed_event_structured_command_line"
+	// FieldProcessedEventWorkspaceStatus holds the string denoting the processed_event_workspace_status field in the database.
+	FieldProcessedEventWorkspaceStatus = "processed_event_workspace_status"
 	// EdgeBuild holds the string denoting the build edge name in mutations.
 	EdgeBuild = "build"
+	// EdgeEventMetadata holds the string denoting the event_metadata edge name in mutations.
+	EdgeEventMetadata = "event_metadata"
+	// EdgeConnectionMetadata holds the string denoting the connection_metadata edge name in mutations.
+	EdgeConnectionMetadata = "connection_metadata"
 	// EdgeProblems holds the string denoting the problems edge name in mutations.
 	EdgeProblems = "problems"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
+	// EdgeIncompleteBuildLogs holds the string denoting the incomplete_build_logs edge name in mutations.
+	EdgeIncompleteBuildLogs = "incomplete_build_logs"
+	// EdgeInvocationFiles holds the string denoting the invocation_files edge name in mutations.
+	EdgeInvocationFiles = "invocation_files"
 	// EdgeTestCollection holds the string denoting the test_collection edge name in mutations.
 	EdgeTestCollection = "test_collection"
 	// EdgeTargets holds the string denoting the targets edge name in mutations.
@@ -73,6 +109,20 @@ const (
 	BuildInverseTable = "builds"
 	// BuildColumn is the table column denoting the build relation/edge.
 	BuildColumn = "build_invocations"
+	// EventMetadataTable is the table that holds the event_metadata relation/edge.
+	EventMetadataTable = "event_metadata"
+	// EventMetadataInverseTable is the table name for the EventMetadata entity.
+	// It exists in this package in order to avoid circular dependency with the "eventmetadata" package.
+	EventMetadataInverseTable = "event_metadata"
+	// EventMetadataColumn is the table column denoting the event_metadata relation/edge.
+	EventMetadataColumn = "bazel_invocation_event_metadata"
+	// ConnectionMetadataTable is the table that holds the connection_metadata relation/edge.
+	ConnectionMetadataTable = "connection_metadata"
+	// ConnectionMetadataInverseTable is the table name for the ConnectionMetadata entity.
+	// It exists in this package in order to avoid circular dependency with the "connectionmetadata" package.
+	ConnectionMetadataInverseTable = "connection_metadata"
+	// ConnectionMetadataColumn is the table column denoting the connection_metadata relation/edge.
+	ConnectionMetadataColumn = "bazel_invocation_connection_metadata"
 	// ProblemsTable is the table that holds the problems relation/edge.
 	ProblemsTable = "bazel_invocation_problems"
 	// ProblemsInverseTable is the table name for the BazelInvocationProblem entity.
@@ -87,6 +137,20 @@ const (
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
 	MetricsColumn = "bazel_invocation_metrics"
+	// IncompleteBuildLogsTable is the table that holds the incomplete_build_logs relation/edge.
+	IncompleteBuildLogsTable = "incomplete_build_logs"
+	// IncompleteBuildLogsInverseTable is the table name for the IncompleteBuildLog entity.
+	// It exists in this package in order to avoid circular dependency with the "incompletebuildlog" package.
+	IncompleteBuildLogsInverseTable = "incomplete_build_logs"
+	// IncompleteBuildLogsColumn is the table column denoting the incomplete_build_logs relation/edge.
+	IncompleteBuildLogsColumn = "bazel_invocation_incomplete_build_logs"
+	// InvocationFilesTable is the table that holds the invocation_files relation/edge.
+	InvocationFilesTable = "invocation_files"
+	// InvocationFilesInverseTable is the table name for the InvocationFiles entity.
+	// It exists in this package in order to avoid circular dependency with the "invocationfiles" package.
+	InvocationFilesInverseTable = "invocation_files"
+	// InvocationFilesColumn is the table column denoting the invocation_files relation/edge.
+	InvocationFilesColumn = "bazel_invocation_invocation_files"
 	// TestCollectionTable is the table that holds the test_collection relation/edge.
 	TestCollectionTable = "test_collections"
 	// TestCollectionInverseTable is the table name for the TestCollection entity.
@@ -95,10 +159,10 @@ const (
 	// TestCollectionColumn is the table column denoting the test_collection relation/edge.
 	TestCollectionColumn = "bazel_invocation_test_collection"
 	// TargetsTable is the table that holds the targets relation/edge.
-	TargetsTable = "target_pairs"
-	// TargetsInverseTable is the table name for the TargetPair entity.
-	// It exists in this package in order to avoid circular dependency with the "targetpair" package.
-	TargetsInverseTable = "target_pairs"
+	TargetsTable = "targets"
+	// TargetsInverseTable is the table name for the Target entity.
+	// It exists in this package in order to avoid circular dependency with the "target" package.
+	TargetsInverseTable = "targets"
 	// TargetsColumn is the table column denoting the targets relation/edge.
 	TargetsColumn = "bazel_invocation_targets"
 	// SourceControlTable is the table that holds the source_control relation/edge.
@@ -118,10 +182,8 @@ var Columns = []string{
 	FieldEndedAt,
 	FieldChangeNumber,
 	FieldPatchsetNumber,
-	FieldSummary,
 	FieldBepCompleted,
 	FieldStepLabel,
-	FieldRelatedFiles,
 	FieldUserEmail,
 	FieldUserLdap,
 	FieldBuildLogs,
@@ -133,6 +195,22 @@ var Columns = []string{
 	FieldNumFetches,
 	FieldProfileName,
 	FieldInstanceName,
+	FieldBazelVersion,
+	FieldExitCodeName,
+	FieldExitCodeCode,
+	FieldCommandLineCommand,
+	FieldCommandLineExecutable,
+	FieldCommandLineResidual,
+	FieldCommandLine,
+	FieldExplicitCommandLine,
+	FieldStartupOptions,
+	FieldExplicitStartupOptions,
+	FieldProcessedEventStarted,
+	FieldProcessedEventBuildMetadata,
+	FieldProcessedEventOptionsParsed,
+	FieldProcessedEventBuildFinished,
+	FieldProcessedEventStructuredCommandLine,
+	FieldProcessedEventWorkspaceStatus,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "bazel_invocations"
@@ -155,6 +233,23 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultBepCompleted holds the default value on creation for the "bep_completed" field.
+	DefaultBepCompleted bool
+	// DefaultProcessedEventStarted holds the default value on creation for the "processed_event_started" field.
+	DefaultProcessedEventStarted bool
+	// DefaultProcessedEventBuildMetadata holds the default value on creation for the "processed_event_build_metadata" field.
+	DefaultProcessedEventBuildMetadata bool
+	// DefaultProcessedEventOptionsParsed holds the default value on creation for the "processed_event_options_parsed" field.
+	DefaultProcessedEventOptionsParsed bool
+	// DefaultProcessedEventBuildFinished holds the default value on creation for the "processed_event_build_finished" field.
+	DefaultProcessedEventBuildFinished bool
+	// DefaultProcessedEventStructuredCommandLine holds the default value on creation for the "processed_event_structured_command_line" field.
+	DefaultProcessedEventStructuredCommandLine bool
+	// DefaultProcessedEventWorkspaceStatus holds the default value on creation for the "processed_event_workspace_status" field.
+	DefaultProcessedEventWorkspaceStatus bool
+)
 
 // OrderOption defines the ordering options for the BazelInvocation queries.
 type OrderOption func(*sql.Selector)
@@ -254,10 +349,98 @@ func ByInstanceName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldInstanceName, opts...).ToFunc()
 }
 
+// ByBazelVersion orders the results by the bazel_version field.
+func ByBazelVersion(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBazelVersion, opts...).ToFunc()
+}
+
+// ByExitCodeName orders the results by the exit_code_name field.
+func ByExitCodeName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldExitCodeName, opts...).ToFunc()
+}
+
+// ByExitCodeCode orders the results by the exit_code_code field.
+func ByExitCodeCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldExitCodeCode, opts...).ToFunc()
+}
+
+// ByCommandLineCommand orders the results by the command_line_command field.
+func ByCommandLineCommand(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCommandLineCommand, opts...).ToFunc()
+}
+
+// ByCommandLineExecutable orders the results by the command_line_executable field.
+func ByCommandLineExecutable(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCommandLineExecutable, opts...).ToFunc()
+}
+
+// ByCommandLineResidual orders the results by the command_line_residual field.
+func ByCommandLineResidual(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCommandLineResidual, opts...).ToFunc()
+}
+
+// ByProcessedEventStarted orders the results by the processed_event_started field.
+func ByProcessedEventStarted(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProcessedEventStarted, opts...).ToFunc()
+}
+
+// ByProcessedEventBuildMetadata orders the results by the processed_event_build_metadata field.
+func ByProcessedEventBuildMetadata(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProcessedEventBuildMetadata, opts...).ToFunc()
+}
+
+// ByProcessedEventOptionsParsed orders the results by the processed_event_options_parsed field.
+func ByProcessedEventOptionsParsed(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProcessedEventOptionsParsed, opts...).ToFunc()
+}
+
+// ByProcessedEventBuildFinished orders the results by the processed_event_build_finished field.
+func ByProcessedEventBuildFinished(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProcessedEventBuildFinished, opts...).ToFunc()
+}
+
+// ByProcessedEventStructuredCommandLine orders the results by the processed_event_structured_command_line field.
+func ByProcessedEventStructuredCommandLine(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProcessedEventStructuredCommandLine, opts...).ToFunc()
+}
+
+// ByProcessedEventWorkspaceStatus orders the results by the processed_event_workspace_status field.
+func ByProcessedEventWorkspaceStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProcessedEventWorkspaceStatus, opts...).ToFunc()
+}
+
 // ByBuildField orders the results by build field.
 func ByBuildField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newBuildStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByEventMetadataCount orders the results by event_metadata count.
+func ByEventMetadataCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newEventMetadataStep(), opts...)
+	}
+}
+
+// ByEventMetadata orders the results by event_metadata terms.
+func ByEventMetadata(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newEventMetadataStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByConnectionMetadataCount orders the results by connection_metadata count.
+func ByConnectionMetadataCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newConnectionMetadataStep(), opts...)
+	}
+}
+
+// ByConnectionMetadata orders the results by connection_metadata terms.
+func ByConnectionMetadata(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newConnectionMetadataStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -279,6 +462,34 @@ func ByProblems(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByIncompleteBuildLogsCount orders the results by incomplete_build_logs count.
+func ByIncompleteBuildLogsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newIncompleteBuildLogsStep(), opts...)
+	}
+}
+
+// ByIncompleteBuildLogs orders the results by incomplete_build_logs terms.
+func ByIncompleteBuildLogs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newIncompleteBuildLogsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByInvocationFilesCount orders the results by invocation_files count.
+func ByInvocationFilesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newInvocationFilesStep(), opts...)
+	}
+}
+
+// ByInvocationFiles orders the results by invocation_files terms.
+func ByInvocationFiles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newInvocationFilesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -323,6 +534,20 @@ func newBuildStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2O, true, BuildTable, BuildColumn),
 	)
 }
+func newEventMetadataStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(EventMetadataInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, EventMetadataTable, EventMetadataColumn),
+	)
+}
+func newConnectionMetadataStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ConnectionMetadataInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ConnectionMetadataTable, ConnectionMetadataColumn),
+	)
+}
 func newProblemsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -335,6 +560,20 @@ func newMetricsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2O, false, MetricsTable, MetricsColumn),
+	)
+}
+func newIncompleteBuildLogsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(IncompleteBuildLogsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, IncompleteBuildLogsTable, IncompleteBuildLogsColumn),
+	)
+}
+func newInvocationFilesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(InvocationFilesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, InvocationFilesTable, InvocationFilesColumn),
 	)
 }
 func newTestCollectionStep() *sqlgraph.Step {

@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // TestResultBES holds the schema definition for the TestResultBES entity.
@@ -89,5 +90,12 @@ func (TestResultBES) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+	}
+}
+
+// Indexes of the TestResultBES.
+func (TestResultBES) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("label"),
 	}
 }

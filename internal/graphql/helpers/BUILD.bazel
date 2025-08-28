@@ -13,6 +13,7 @@ go_library(
     deps = [
         "//ent/gen/ent",
         "//ent/gen/ent/blob",
+        "//ent/gen/ent/testsummary",
         "//internal/graphql/model",
         "//pkg/events",
         "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",

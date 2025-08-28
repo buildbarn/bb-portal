@@ -1,39 +1,5 @@
-load("@rules_go//go:def.bzl", "go_library", "go_test")
-
 filegroup(
     name = "testdata",
     srcs = glob(["testdata/**"]),
     visibility = ["//pkg:__subpackages__"],
-)
-
-go_library(
-    name = "summary",
-    srcs = [
-        "doc.go",
-        "env.go",
-        "summarizer.go",
-        "summary.go",
-    ],
-    importpath = "github.com/buildbarn/bb-portal/pkg/summary",
-    visibility = ["//visibility:public"],
-    deps = [
-        "//pkg/events",
-        "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
-        "//pkg/proto/bazelbuild/bazel/metrics:package_load_metrics",
-        "//pkg/proto/bazelbuild/bazel/protobuf:src_main_protobuf",
-        "//pkg/summary/detectors",
-        "@com_github_google_uuid//:uuid",
-        "@org_golang_google_api//iterator",
-    ],
-)
-
-go_test(
-    name = "summary_test",
-    srcs = ["summarizer_test.go"],
-    data = [":testdata"],
-    deps = [
-        ":summary",
-        "//pkg/testkit",
-        "@com_github_stretchr_testify//require",
-    ],
 )

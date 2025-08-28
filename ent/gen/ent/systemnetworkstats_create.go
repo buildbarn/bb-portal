@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
@@ -17,6 +19,7 @@ type SystemNetworkStatsCreate struct {
 	config
 	mutation *SystemNetworkStatsMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetBytesSent sets the "bytes_sent" field.
@@ -210,6 +213,7 @@ func (snsc *SystemNetworkStatsCreate) createSpec() (*SystemNetworkStats, *sqlgra
 		_node = &SystemNetworkStats{config: snsc.config}
 		_spec = sqlgraph.NewCreateSpec(systemnetworkstats.Table, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = snsc.conflict
 	if value, ok := snsc.mutation.BytesSent(); ok {
 		_spec.SetField(systemnetworkstats.FieldBytesSent, field.TypeUint64, value)
 		_node.BytesSent = value
@@ -262,11 +266,550 @@ func (snsc *SystemNetworkStatsCreate) createSpec() (*SystemNetworkStats, *sqlgra
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.SystemNetworkStats.Create().
+//		SetBytesSent(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.SystemNetworkStatsUpsert) {
+//			SetBytesSent(v+v).
+//		}).
+//		Exec(ctx)
+func (snsc *SystemNetworkStatsCreate) OnConflict(opts ...sql.ConflictOption) *SystemNetworkStatsUpsertOne {
+	snsc.conflict = opts
+	return &SystemNetworkStatsUpsertOne{
+		create: snsc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.SystemNetworkStats.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (snsc *SystemNetworkStatsCreate) OnConflictColumns(columns ...string) *SystemNetworkStatsUpsertOne {
+	snsc.conflict = append(snsc.conflict, sql.ConflictColumns(columns...))
+	return &SystemNetworkStatsUpsertOne{
+		create: snsc,
+	}
+}
+
+type (
+	// SystemNetworkStatsUpsertOne is the builder for "upsert"-ing
+	//  one SystemNetworkStats node.
+	SystemNetworkStatsUpsertOne struct {
+		create *SystemNetworkStatsCreate
+	}
+
+	// SystemNetworkStatsUpsert is the "OnConflict" setter.
+	SystemNetworkStatsUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetBytesSent sets the "bytes_sent" field.
+func (u *SystemNetworkStatsUpsert) SetBytesSent(v uint64) *SystemNetworkStatsUpsert {
+	u.Set(systemnetworkstats.FieldBytesSent, v)
+	return u
+}
+
+// UpdateBytesSent sets the "bytes_sent" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsert) UpdateBytesSent() *SystemNetworkStatsUpsert {
+	u.SetExcluded(systemnetworkstats.FieldBytesSent)
+	return u
+}
+
+// AddBytesSent adds v to the "bytes_sent" field.
+func (u *SystemNetworkStatsUpsert) AddBytesSent(v uint64) *SystemNetworkStatsUpsert {
+	u.Add(systemnetworkstats.FieldBytesSent, v)
+	return u
+}
+
+// ClearBytesSent clears the value of the "bytes_sent" field.
+func (u *SystemNetworkStatsUpsert) ClearBytesSent() *SystemNetworkStatsUpsert {
+	u.SetNull(systemnetworkstats.FieldBytesSent)
+	return u
+}
+
+// SetBytesRecv sets the "bytes_recv" field.
+func (u *SystemNetworkStatsUpsert) SetBytesRecv(v uint64) *SystemNetworkStatsUpsert {
+	u.Set(systemnetworkstats.FieldBytesRecv, v)
+	return u
+}
+
+// UpdateBytesRecv sets the "bytes_recv" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsert) UpdateBytesRecv() *SystemNetworkStatsUpsert {
+	u.SetExcluded(systemnetworkstats.FieldBytesRecv)
+	return u
+}
+
+// AddBytesRecv adds v to the "bytes_recv" field.
+func (u *SystemNetworkStatsUpsert) AddBytesRecv(v uint64) *SystemNetworkStatsUpsert {
+	u.Add(systemnetworkstats.FieldBytesRecv, v)
+	return u
+}
+
+// ClearBytesRecv clears the value of the "bytes_recv" field.
+func (u *SystemNetworkStatsUpsert) ClearBytesRecv() *SystemNetworkStatsUpsert {
+	u.SetNull(systemnetworkstats.FieldBytesRecv)
+	return u
+}
+
+// SetPacketsSent sets the "packets_sent" field.
+func (u *SystemNetworkStatsUpsert) SetPacketsSent(v uint64) *SystemNetworkStatsUpsert {
+	u.Set(systemnetworkstats.FieldPacketsSent, v)
+	return u
+}
+
+// UpdatePacketsSent sets the "packets_sent" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsert) UpdatePacketsSent() *SystemNetworkStatsUpsert {
+	u.SetExcluded(systemnetworkstats.FieldPacketsSent)
+	return u
+}
+
+// AddPacketsSent adds v to the "packets_sent" field.
+func (u *SystemNetworkStatsUpsert) AddPacketsSent(v uint64) *SystemNetworkStatsUpsert {
+	u.Add(systemnetworkstats.FieldPacketsSent, v)
+	return u
+}
+
+// ClearPacketsSent clears the value of the "packets_sent" field.
+func (u *SystemNetworkStatsUpsert) ClearPacketsSent() *SystemNetworkStatsUpsert {
+	u.SetNull(systemnetworkstats.FieldPacketsSent)
+	return u
+}
+
+// SetPacketsRecv sets the "packets_recv" field.
+func (u *SystemNetworkStatsUpsert) SetPacketsRecv(v uint64) *SystemNetworkStatsUpsert {
+	u.Set(systemnetworkstats.FieldPacketsRecv, v)
+	return u
+}
+
+// UpdatePacketsRecv sets the "packets_recv" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsert) UpdatePacketsRecv() *SystemNetworkStatsUpsert {
+	u.SetExcluded(systemnetworkstats.FieldPacketsRecv)
+	return u
+}
+
+// AddPacketsRecv adds v to the "packets_recv" field.
+func (u *SystemNetworkStatsUpsert) AddPacketsRecv(v uint64) *SystemNetworkStatsUpsert {
+	u.Add(systemnetworkstats.FieldPacketsRecv, v)
+	return u
+}
+
+// ClearPacketsRecv clears the value of the "packets_recv" field.
+func (u *SystemNetworkStatsUpsert) ClearPacketsRecv() *SystemNetworkStatsUpsert {
+	u.SetNull(systemnetworkstats.FieldPacketsRecv)
+	return u
+}
+
+// SetPeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsert) SetPeakBytesSentPerSec(v uint64) *SystemNetworkStatsUpsert {
+	u.Set(systemnetworkstats.FieldPeakBytesSentPerSec, v)
+	return u
+}
+
+// UpdatePeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsert) UpdatePeakBytesSentPerSec() *SystemNetworkStatsUpsert {
+	u.SetExcluded(systemnetworkstats.FieldPeakBytesSentPerSec)
+	return u
+}
+
+// AddPeakBytesSentPerSec adds v to the "peak_bytes_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsert) AddPeakBytesSentPerSec(v uint64) *SystemNetworkStatsUpsert {
+	u.Add(systemnetworkstats.FieldPeakBytesSentPerSec, v)
+	return u
+}
+
+// ClearPeakBytesSentPerSec clears the value of the "peak_bytes_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsert) ClearPeakBytesSentPerSec() *SystemNetworkStatsUpsert {
+	u.SetNull(systemnetworkstats.FieldPeakBytesSentPerSec)
+	return u
+}
+
+// SetPeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsert) SetPeakBytesRecvPerSec(v uint64) *SystemNetworkStatsUpsert {
+	u.Set(systemnetworkstats.FieldPeakBytesRecvPerSec, v)
+	return u
+}
+
+// UpdatePeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsert) UpdatePeakBytesRecvPerSec() *SystemNetworkStatsUpsert {
+	u.SetExcluded(systemnetworkstats.FieldPeakBytesRecvPerSec)
+	return u
+}
+
+// AddPeakBytesRecvPerSec adds v to the "peak_bytes_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsert) AddPeakBytesRecvPerSec(v uint64) *SystemNetworkStatsUpsert {
+	u.Add(systemnetworkstats.FieldPeakBytesRecvPerSec, v)
+	return u
+}
+
+// ClearPeakBytesRecvPerSec clears the value of the "peak_bytes_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsert) ClearPeakBytesRecvPerSec() *SystemNetworkStatsUpsert {
+	u.SetNull(systemnetworkstats.FieldPeakBytesRecvPerSec)
+	return u
+}
+
+// SetPeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsert) SetPeakPacketsSentPerSec(v uint64) *SystemNetworkStatsUpsert {
+	u.Set(systemnetworkstats.FieldPeakPacketsSentPerSec, v)
+	return u
+}
+
+// UpdatePeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsert) UpdatePeakPacketsSentPerSec() *SystemNetworkStatsUpsert {
+	u.SetExcluded(systemnetworkstats.FieldPeakPacketsSentPerSec)
+	return u
+}
+
+// AddPeakPacketsSentPerSec adds v to the "peak_packets_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsert) AddPeakPacketsSentPerSec(v uint64) *SystemNetworkStatsUpsert {
+	u.Add(systemnetworkstats.FieldPeakPacketsSentPerSec, v)
+	return u
+}
+
+// ClearPeakPacketsSentPerSec clears the value of the "peak_packets_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsert) ClearPeakPacketsSentPerSec() *SystemNetworkStatsUpsert {
+	u.SetNull(systemnetworkstats.FieldPeakPacketsSentPerSec)
+	return u
+}
+
+// SetPeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsert) SetPeakPacketsRecvPerSec(v uint64) *SystemNetworkStatsUpsert {
+	u.Set(systemnetworkstats.FieldPeakPacketsRecvPerSec, v)
+	return u
+}
+
+// UpdatePeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsert) UpdatePeakPacketsRecvPerSec() *SystemNetworkStatsUpsert {
+	u.SetExcluded(systemnetworkstats.FieldPeakPacketsRecvPerSec)
+	return u
+}
+
+// AddPeakPacketsRecvPerSec adds v to the "peak_packets_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsert) AddPeakPacketsRecvPerSec(v uint64) *SystemNetworkStatsUpsert {
+	u.Add(systemnetworkstats.FieldPeakPacketsRecvPerSec, v)
+	return u
+}
+
+// ClearPeakPacketsRecvPerSec clears the value of the "peak_packets_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsert) ClearPeakPacketsRecvPerSec() *SystemNetworkStatsUpsert {
+	u.SetNull(systemnetworkstats.FieldPeakPacketsRecvPerSec)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.SystemNetworkStats.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *SystemNetworkStatsUpsertOne) UpdateNewValues() *SystemNetworkStatsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.SystemNetworkStats.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *SystemNetworkStatsUpsertOne) Ignore() *SystemNetworkStatsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *SystemNetworkStatsUpsertOne) DoNothing() *SystemNetworkStatsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the SystemNetworkStatsCreate.OnConflict
+// documentation for more info.
+func (u *SystemNetworkStatsUpsertOne) Update(set func(*SystemNetworkStatsUpsert)) *SystemNetworkStatsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&SystemNetworkStatsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetBytesSent sets the "bytes_sent" field.
+func (u *SystemNetworkStatsUpsertOne) SetBytesSent(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetBytesSent(v)
+	})
+}
+
+// AddBytesSent adds v to the "bytes_sent" field.
+func (u *SystemNetworkStatsUpsertOne) AddBytesSent(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddBytesSent(v)
+	})
+}
+
+// UpdateBytesSent sets the "bytes_sent" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertOne) UpdateBytesSent() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdateBytesSent()
+	})
+}
+
+// ClearBytesSent clears the value of the "bytes_sent" field.
+func (u *SystemNetworkStatsUpsertOne) ClearBytesSent() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearBytesSent()
+	})
+}
+
+// SetBytesRecv sets the "bytes_recv" field.
+func (u *SystemNetworkStatsUpsertOne) SetBytesRecv(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetBytesRecv(v)
+	})
+}
+
+// AddBytesRecv adds v to the "bytes_recv" field.
+func (u *SystemNetworkStatsUpsertOne) AddBytesRecv(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddBytesRecv(v)
+	})
+}
+
+// UpdateBytesRecv sets the "bytes_recv" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertOne) UpdateBytesRecv() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdateBytesRecv()
+	})
+}
+
+// ClearBytesRecv clears the value of the "bytes_recv" field.
+func (u *SystemNetworkStatsUpsertOne) ClearBytesRecv() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearBytesRecv()
+	})
+}
+
+// SetPacketsSent sets the "packets_sent" field.
+func (u *SystemNetworkStatsUpsertOne) SetPacketsSent(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPacketsSent(v)
+	})
+}
+
+// AddPacketsSent adds v to the "packets_sent" field.
+func (u *SystemNetworkStatsUpsertOne) AddPacketsSent(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPacketsSent(v)
+	})
+}
+
+// UpdatePacketsSent sets the "packets_sent" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertOne) UpdatePacketsSent() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePacketsSent()
+	})
+}
+
+// ClearPacketsSent clears the value of the "packets_sent" field.
+func (u *SystemNetworkStatsUpsertOne) ClearPacketsSent() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPacketsSent()
+	})
+}
+
+// SetPacketsRecv sets the "packets_recv" field.
+func (u *SystemNetworkStatsUpsertOne) SetPacketsRecv(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPacketsRecv(v)
+	})
+}
+
+// AddPacketsRecv adds v to the "packets_recv" field.
+func (u *SystemNetworkStatsUpsertOne) AddPacketsRecv(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPacketsRecv(v)
+	})
+}
+
+// UpdatePacketsRecv sets the "packets_recv" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertOne) UpdatePacketsRecv() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePacketsRecv()
+	})
+}
+
+// ClearPacketsRecv clears the value of the "packets_recv" field.
+func (u *SystemNetworkStatsUpsertOne) ClearPacketsRecv() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPacketsRecv()
+	})
+}
+
+// SetPeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) SetPeakBytesSentPerSec(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPeakBytesSentPerSec(v)
+	})
+}
+
+// AddPeakBytesSentPerSec adds v to the "peak_bytes_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) AddPeakBytesSentPerSec(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPeakBytesSentPerSec(v)
+	})
+}
+
+// UpdatePeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertOne) UpdatePeakBytesSentPerSec() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePeakBytesSentPerSec()
+	})
+}
+
+// ClearPeakBytesSentPerSec clears the value of the "peak_bytes_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) ClearPeakBytesSentPerSec() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPeakBytesSentPerSec()
+	})
+}
+
+// SetPeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) SetPeakBytesRecvPerSec(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPeakBytesRecvPerSec(v)
+	})
+}
+
+// AddPeakBytesRecvPerSec adds v to the "peak_bytes_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) AddPeakBytesRecvPerSec(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPeakBytesRecvPerSec(v)
+	})
+}
+
+// UpdatePeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertOne) UpdatePeakBytesRecvPerSec() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePeakBytesRecvPerSec()
+	})
+}
+
+// ClearPeakBytesRecvPerSec clears the value of the "peak_bytes_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) ClearPeakBytesRecvPerSec() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPeakBytesRecvPerSec()
+	})
+}
+
+// SetPeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) SetPeakPacketsSentPerSec(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPeakPacketsSentPerSec(v)
+	})
+}
+
+// AddPeakPacketsSentPerSec adds v to the "peak_packets_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) AddPeakPacketsSentPerSec(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPeakPacketsSentPerSec(v)
+	})
+}
+
+// UpdatePeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertOne) UpdatePeakPacketsSentPerSec() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePeakPacketsSentPerSec()
+	})
+}
+
+// ClearPeakPacketsSentPerSec clears the value of the "peak_packets_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) ClearPeakPacketsSentPerSec() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPeakPacketsSentPerSec()
+	})
+}
+
+// SetPeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) SetPeakPacketsRecvPerSec(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPeakPacketsRecvPerSec(v)
+	})
+}
+
+// AddPeakPacketsRecvPerSec adds v to the "peak_packets_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) AddPeakPacketsRecvPerSec(v uint64) *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPeakPacketsRecvPerSec(v)
+	})
+}
+
+// UpdatePeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertOne) UpdatePeakPacketsRecvPerSec() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePeakPacketsRecvPerSec()
+	})
+}
+
+// ClearPeakPacketsRecvPerSec clears the value of the "peak_packets_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertOne) ClearPeakPacketsRecvPerSec() *SystemNetworkStatsUpsertOne {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPeakPacketsRecvPerSec()
+	})
+}
+
+// Exec executes the query.
+func (u *SystemNetworkStatsUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for SystemNetworkStatsCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *SystemNetworkStatsUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *SystemNetworkStatsUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *SystemNetworkStatsUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // SystemNetworkStatsCreateBulk is the builder for creating many SystemNetworkStats entities in bulk.
 type SystemNetworkStatsCreateBulk struct {
 	config
 	err      error
 	builders []*SystemNetworkStatsCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the SystemNetworkStats entities in the database.
@@ -295,6 +838,7 @@ func (snscb *SystemNetworkStatsCreateBulk) Save(ctx context.Context) ([]*SystemN
 					_, err = mutators[i+1].Mutate(root, snscb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = snscb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, snscb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -345,6 +889,334 @@ func (snscb *SystemNetworkStatsCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (snscb *SystemNetworkStatsCreateBulk) ExecX(ctx context.Context) {
 	if err := snscb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.SystemNetworkStats.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.SystemNetworkStatsUpsert) {
+//			SetBytesSent(v+v).
+//		}).
+//		Exec(ctx)
+func (snscb *SystemNetworkStatsCreateBulk) OnConflict(opts ...sql.ConflictOption) *SystemNetworkStatsUpsertBulk {
+	snscb.conflict = opts
+	return &SystemNetworkStatsUpsertBulk{
+		create: snscb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.SystemNetworkStats.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (snscb *SystemNetworkStatsCreateBulk) OnConflictColumns(columns ...string) *SystemNetworkStatsUpsertBulk {
+	snscb.conflict = append(snscb.conflict, sql.ConflictColumns(columns...))
+	return &SystemNetworkStatsUpsertBulk{
+		create: snscb,
+	}
+}
+
+// SystemNetworkStatsUpsertBulk is the builder for "upsert"-ing
+// a bulk of SystemNetworkStats nodes.
+type SystemNetworkStatsUpsertBulk struct {
+	create *SystemNetworkStatsCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.SystemNetworkStats.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *SystemNetworkStatsUpsertBulk) UpdateNewValues() *SystemNetworkStatsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.SystemNetworkStats.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *SystemNetworkStatsUpsertBulk) Ignore() *SystemNetworkStatsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *SystemNetworkStatsUpsertBulk) DoNothing() *SystemNetworkStatsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the SystemNetworkStatsCreateBulk.OnConflict
+// documentation for more info.
+func (u *SystemNetworkStatsUpsertBulk) Update(set func(*SystemNetworkStatsUpsert)) *SystemNetworkStatsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&SystemNetworkStatsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetBytesSent sets the "bytes_sent" field.
+func (u *SystemNetworkStatsUpsertBulk) SetBytesSent(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetBytesSent(v)
+	})
+}
+
+// AddBytesSent adds v to the "bytes_sent" field.
+func (u *SystemNetworkStatsUpsertBulk) AddBytesSent(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddBytesSent(v)
+	})
+}
+
+// UpdateBytesSent sets the "bytes_sent" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertBulk) UpdateBytesSent() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdateBytesSent()
+	})
+}
+
+// ClearBytesSent clears the value of the "bytes_sent" field.
+func (u *SystemNetworkStatsUpsertBulk) ClearBytesSent() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearBytesSent()
+	})
+}
+
+// SetBytesRecv sets the "bytes_recv" field.
+func (u *SystemNetworkStatsUpsertBulk) SetBytesRecv(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetBytesRecv(v)
+	})
+}
+
+// AddBytesRecv adds v to the "bytes_recv" field.
+func (u *SystemNetworkStatsUpsertBulk) AddBytesRecv(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddBytesRecv(v)
+	})
+}
+
+// UpdateBytesRecv sets the "bytes_recv" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertBulk) UpdateBytesRecv() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdateBytesRecv()
+	})
+}
+
+// ClearBytesRecv clears the value of the "bytes_recv" field.
+func (u *SystemNetworkStatsUpsertBulk) ClearBytesRecv() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearBytesRecv()
+	})
+}
+
+// SetPacketsSent sets the "packets_sent" field.
+func (u *SystemNetworkStatsUpsertBulk) SetPacketsSent(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPacketsSent(v)
+	})
+}
+
+// AddPacketsSent adds v to the "packets_sent" field.
+func (u *SystemNetworkStatsUpsertBulk) AddPacketsSent(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPacketsSent(v)
+	})
+}
+
+// UpdatePacketsSent sets the "packets_sent" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertBulk) UpdatePacketsSent() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePacketsSent()
+	})
+}
+
+// ClearPacketsSent clears the value of the "packets_sent" field.
+func (u *SystemNetworkStatsUpsertBulk) ClearPacketsSent() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPacketsSent()
+	})
+}
+
+// SetPacketsRecv sets the "packets_recv" field.
+func (u *SystemNetworkStatsUpsertBulk) SetPacketsRecv(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPacketsRecv(v)
+	})
+}
+
+// AddPacketsRecv adds v to the "packets_recv" field.
+func (u *SystemNetworkStatsUpsertBulk) AddPacketsRecv(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPacketsRecv(v)
+	})
+}
+
+// UpdatePacketsRecv sets the "packets_recv" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertBulk) UpdatePacketsRecv() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePacketsRecv()
+	})
+}
+
+// ClearPacketsRecv clears the value of the "packets_recv" field.
+func (u *SystemNetworkStatsUpsertBulk) ClearPacketsRecv() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPacketsRecv()
+	})
+}
+
+// SetPeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) SetPeakBytesSentPerSec(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPeakBytesSentPerSec(v)
+	})
+}
+
+// AddPeakBytesSentPerSec adds v to the "peak_bytes_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) AddPeakBytesSentPerSec(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPeakBytesSentPerSec(v)
+	})
+}
+
+// UpdatePeakBytesSentPerSec sets the "peak_bytes_sent_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertBulk) UpdatePeakBytesSentPerSec() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePeakBytesSentPerSec()
+	})
+}
+
+// ClearPeakBytesSentPerSec clears the value of the "peak_bytes_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) ClearPeakBytesSentPerSec() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPeakBytesSentPerSec()
+	})
+}
+
+// SetPeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) SetPeakBytesRecvPerSec(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPeakBytesRecvPerSec(v)
+	})
+}
+
+// AddPeakBytesRecvPerSec adds v to the "peak_bytes_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) AddPeakBytesRecvPerSec(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPeakBytesRecvPerSec(v)
+	})
+}
+
+// UpdatePeakBytesRecvPerSec sets the "peak_bytes_recv_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertBulk) UpdatePeakBytesRecvPerSec() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePeakBytesRecvPerSec()
+	})
+}
+
+// ClearPeakBytesRecvPerSec clears the value of the "peak_bytes_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) ClearPeakBytesRecvPerSec() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPeakBytesRecvPerSec()
+	})
+}
+
+// SetPeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) SetPeakPacketsSentPerSec(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPeakPacketsSentPerSec(v)
+	})
+}
+
+// AddPeakPacketsSentPerSec adds v to the "peak_packets_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) AddPeakPacketsSentPerSec(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPeakPacketsSentPerSec(v)
+	})
+}
+
+// UpdatePeakPacketsSentPerSec sets the "peak_packets_sent_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertBulk) UpdatePeakPacketsSentPerSec() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePeakPacketsSentPerSec()
+	})
+}
+
+// ClearPeakPacketsSentPerSec clears the value of the "peak_packets_sent_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) ClearPeakPacketsSentPerSec() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPeakPacketsSentPerSec()
+	})
+}
+
+// SetPeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) SetPeakPacketsRecvPerSec(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.SetPeakPacketsRecvPerSec(v)
+	})
+}
+
+// AddPeakPacketsRecvPerSec adds v to the "peak_packets_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) AddPeakPacketsRecvPerSec(v uint64) *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.AddPeakPacketsRecvPerSec(v)
+	})
+}
+
+// UpdatePeakPacketsRecvPerSec sets the "peak_packets_recv_per_sec" field to the value that was provided on create.
+func (u *SystemNetworkStatsUpsertBulk) UpdatePeakPacketsRecvPerSec() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.UpdatePeakPacketsRecvPerSec()
+	})
+}
+
+// ClearPeakPacketsRecvPerSec clears the value of the "peak_packets_recv_per_sec" field.
+func (u *SystemNetworkStatsUpsertBulk) ClearPeakPacketsRecvPerSec() *SystemNetworkStatsUpsertBulk {
+	return u.Update(func(s *SystemNetworkStatsUpsert) {
+		s.ClearPeakPacketsRecvPerSec()
+	})
+}
+
+// Exec executes the query.
+func (u *SystemNetworkStatsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the SystemNetworkStatsCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for SystemNetworkStatsCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *SystemNetworkStatsUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

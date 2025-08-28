@@ -59,6 +59,7 @@
     blobArchiveFolder: './blob-archive/',
     enableBepFileUpload: true,
     enableGraphqlPlayground: true,
+    saveTargetDataLevel: { enriched: {} },
   },
 
   // The BrowserService can be disabled by not setting this field.

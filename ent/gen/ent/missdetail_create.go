@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
@@ -17,6 +19,7 @@ type MissDetailCreate struct {
 	config
 	mutation *MissDetailMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetReason sets the "reason" field.
@@ -140,6 +143,7 @@ func (mdc *MissDetailCreate) createSpec() (*MissDetail, *sqlgraph.CreateSpec) {
 		_node = &MissDetail{config: mdc.config}
 		_spec = sqlgraph.NewCreateSpec(missdetail.Table, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = mdc.conflict
 	if value, ok := mdc.mutation.Reason(); ok {
 		_spec.SetField(missdetail.FieldReason, field.TypeEnum, value)
 		_node.Reason = value
@@ -168,11 +172,225 @@ func (mdc *MissDetailCreate) createSpec() (*MissDetail, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.MissDetail.Create().
+//		SetReason(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.MissDetailUpsert) {
+//			SetReason(v+v).
+//		}).
+//		Exec(ctx)
+func (mdc *MissDetailCreate) OnConflict(opts ...sql.ConflictOption) *MissDetailUpsertOne {
+	mdc.conflict = opts
+	return &MissDetailUpsertOne{
+		create: mdc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.MissDetail.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (mdc *MissDetailCreate) OnConflictColumns(columns ...string) *MissDetailUpsertOne {
+	mdc.conflict = append(mdc.conflict, sql.ConflictColumns(columns...))
+	return &MissDetailUpsertOne{
+		create: mdc,
+	}
+}
+
+type (
+	// MissDetailUpsertOne is the builder for "upsert"-ing
+	//  one MissDetail node.
+	MissDetailUpsertOne struct {
+		create *MissDetailCreate
+	}
+
+	// MissDetailUpsert is the "OnConflict" setter.
+	MissDetailUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetReason sets the "reason" field.
+func (u *MissDetailUpsert) SetReason(v missdetail.Reason) *MissDetailUpsert {
+	u.Set(missdetail.FieldReason, v)
+	return u
+}
+
+// UpdateReason sets the "reason" field to the value that was provided on create.
+func (u *MissDetailUpsert) UpdateReason() *MissDetailUpsert {
+	u.SetExcluded(missdetail.FieldReason)
+	return u
+}
+
+// ClearReason clears the value of the "reason" field.
+func (u *MissDetailUpsert) ClearReason() *MissDetailUpsert {
+	u.SetNull(missdetail.FieldReason)
+	return u
+}
+
+// SetCount sets the "count" field.
+func (u *MissDetailUpsert) SetCount(v int32) *MissDetailUpsert {
+	u.Set(missdetail.FieldCount, v)
+	return u
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *MissDetailUpsert) UpdateCount() *MissDetailUpsert {
+	u.SetExcluded(missdetail.FieldCount)
+	return u
+}
+
+// AddCount adds v to the "count" field.
+func (u *MissDetailUpsert) AddCount(v int32) *MissDetailUpsert {
+	u.Add(missdetail.FieldCount, v)
+	return u
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *MissDetailUpsert) ClearCount() *MissDetailUpsert {
+	u.SetNull(missdetail.FieldCount)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.MissDetail.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *MissDetailUpsertOne) UpdateNewValues() *MissDetailUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.MissDetail.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *MissDetailUpsertOne) Ignore() *MissDetailUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *MissDetailUpsertOne) DoNothing() *MissDetailUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the MissDetailCreate.OnConflict
+// documentation for more info.
+func (u *MissDetailUpsertOne) Update(set func(*MissDetailUpsert)) *MissDetailUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&MissDetailUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetReason sets the "reason" field.
+func (u *MissDetailUpsertOne) SetReason(v missdetail.Reason) *MissDetailUpsertOne {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.SetReason(v)
+	})
+}
+
+// UpdateReason sets the "reason" field to the value that was provided on create.
+func (u *MissDetailUpsertOne) UpdateReason() *MissDetailUpsertOne {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.UpdateReason()
+	})
+}
+
+// ClearReason clears the value of the "reason" field.
+func (u *MissDetailUpsertOne) ClearReason() *MissDetailUpsertOne {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.ClearReason()
+	})
+}
+
+// SetCount sets the "count" field.
+func (u *MissDetailUpsertOne) SetCount(v int32) *MissDetailUpsertOne {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.SetCount(v)
+	})
+}
+
+// AddCount adds v to the "count" field.
+func (u *MissDetailUpsertOne) AddCount(v int32) *MissDetailUpsertOne {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.AddCount(v)
+	})
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *MissDetailUpsertOne) UpdateCount() *MissDetailUpsertOne {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.UpdateCount()
+	})
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *MissDetailUpsertOne) ClearCount() *MissDetailUpsertOne {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.ClearCount()
+	})
+}
+
+// Exec executes the query.
+func (u *MissDetailUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for MissDetailCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *MissDetailUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *MissDetailUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *MissDetailUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // MissDetailCreateBulk is the builder for creating many MissDetail entities in bulk.
 type MissDetailCreateBulk struct {
 	config
 	err      error
 	builders []*MissDetailCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the MissDetail entities in the database.
@@ -202,6 +420,7 @@ func (mdcb *MissDetailCreateBulk) Save(ctx context.Context) ([]*MissDetail, erro
 					_, err = mutators[i+1].Mutate(root, mdcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = mdcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, mdcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -252,6 +471,159 @@ func (mdcb *MissDetailCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (mdcb *MissDetailCreateBulk) ExecX(ctx context.Context) {
 	if err := mdcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.MissDetail.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.MissDetailUpsert) {
+//			SetReason(v+v).
+//		}).
+//		Exec(ctx)
+func (mdcb *MissDetailCreateBulk) OnConflict(opts ...sql.ConflictOption) *MissDetailUpsertBulk {
+	mdcb.conflict = opts
+	return &MissDetailUpsertBulk{
+		create: mdcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.MissDetail.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (mdcb *MissDetailCreateBulk) OnConflictColumns(columns ...string) *MissDetailUpsertBulk {
+	mdcb.conflict = append(mdcb.conflict, sql.ConflictColumns(columns...))
+	return &MissDetailUpsertBulk{
+		create: mdcb,
+	}
+}
+
+// MissDetailUpsertBulk is the builder for "upsert"-ing
+// a bulk of MissDetail nodes.
+type MissDetailUpsertBulk struct {
+	create *MissDetailCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.MissDetail.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *MissDetailUpsertBulk) UpdateNewValues() *MissDetailUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.MissDetail.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *MissDetailUpsertBulk) Ignore() *MissDetailUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *MissDetailUpsertBulk) DoNothing() *MissDetailUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the MissDetailCreateBulk.OnConflict
+// documentation for more info.
+func (u *MissDetailUpsertBulk) Update(set func(*MissDetailUpsert)) *MissDetailUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&MissDetailUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetReason sets the "reason" field.
+func (u *MissDetailUpsertBulk) SetReason(v missdetail.Reason) *MissDetailUpsertBulk {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.SetReason(v)
+	})
+}
+
+// UpdateReason sets the "reason" field to the value that was provided on create.
+func (u *MissDetailUpsertBulk) UpdateReason() *MissDetailUpsertBulk {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.UpdateReason()
+	})
+}
+
+// ClearReason clears the value of the "reason" field.
+func (u *MissDetailUpsertBulk) ClearReason() *MissDetailUpsertBulk {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.ClearReason()
+	})
+}
+
+// SetCount sets the "count" field.
+func (u *MissDetailUpsertBulk) SetCount(v int32) *MissDetailUpsertBulk {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.SetCount(v)
+	})
+}
+
+// AddCount adds v to the "count" field.
+func (u *MissDetailUpsertBulk) AddCount(v int32) *MissDetailUpsertBulk {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.AddCount(v)
+	})
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *MissDetailUpsertBulk) UpdateCount() *MissDetailUpsertBulk {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.UpdateCount()
+	})
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *MissDetailUpsertBulk) ClearCount() *MissDetailUpsertBulk {
+	return u.Update(func(s *MissDetailUpsert) {
+		s.ClearCount()
+	})
+}
+
+// Exec executes the query.
+func (u *MissDetailUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the MissDetailCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for MissDetailCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *MissDetailUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

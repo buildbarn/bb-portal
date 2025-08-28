@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
@@ -18,6 +20,7 @@ type MemoryMetricsCreate struct {
 	config
 	mutation *MemoryMetricsMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetPeakPostGcHeapSize sets the "peak_post_gc_heap_size" field.
@@ -156,6 +159,7 @@ func (mmc *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSp
 		_node = &MemoryMetrics{config: mmc.config}
 		_spec = sqlgraph.NewCreateSpec(memorymetrics.Table, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = mmc.conflict
 	if value, ok := mmc.mutation.PeakPostGcHeapSize(); ok {
 		_spec.SetField(memorymetrics.FieldPeakPostGcHeapSize, field.TypeInt64, value)
 		_node.PeakPostGcHeapSize = value
@@ -204,11 +208,290 @@ func (mmc *MemoryMetricsCreate) createSpec() (*MemoryMetrics, *sqlgraph.CreateSp
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.MemoryMetrics.Create().
+//		SetPeakPostGcHeapSize(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.MemoryMetricsUpsert) {
+//			SetPeakPostGcHeapSize(v+v).
+//		}).
+//		Exec(ctx)
+func (mmc *MemoryMetricsCreate) OnConflict(opts ...sql.ConflictOption) *MemoryMetricsUpsertOne {
+	mmc.conflict = opts
+	return &MemoryMetricsUpsertOne{
+		create: mmc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.MemoryMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (mmc *MemoryMetricsCreate) OnConflictColumns(columns ...string) *MemoryMetricsUpsertOne {
+	mmc.conflict = append(mmc.conflict, sql.ConflictColumns(columns...))
+	return &MemoryMetricsUpsertOne{
+		create: mmc,
+	}
+}
+
+type (
+	// MemoryMetricsUpsertOne is the builder for "upsert"-ing
+	//  one MemoryMetrics node.
+	MemoryMetricsUpsertOne struct {
+		create *MemoryMetricsCreate
+	}
+
+	// MemoryMetricsUpsert is the "OnConflict" setter.
+	MemoryMetricsUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetPeakPostGcHeapSize sets the "peak_post_gc_heap_size" field.
+func (u *MemoryMetricsUpsert) SetPeakPostGcHeapSize(v int64) *MemoryMetricsUpsert {
+	u.Set(memorymetrics.FieldPeakPostGcHeapSize, v)
+	return u
+}
+
+// UpdatePeakPostGcHeapSize sets the "peak_post_gc_heap_size" field to the value that was provided on create.
+func (u *MemoryMetricsUpsert) UpdatePeakPostGcHeapSize() *MemoryMetricsUpsert {
+	u.SetExcluded(memorymetrics.FieldPeakPostGcHeapSize)
+	return u
+}
+
+// AddPeakPostGcHeapSize adds v to the "peak_post_gc_heap_size" field.
+func (u *MemoryMetricsUpsert) AddPeakPostGcHeapSize(v int64) *MemoryMetricsUpsert {
+	u.Add(memorymetrics.FieldPeakPostGcHeapSize, v)
+	return u
+}
+
+// ClearPeakPostGcHeapSize clears the value of the "peak_post_gc_heap_size" field.
+func (u *MemoryMetricsUpsert) ClearPeakPostGcHeapSize() *MemoryMetricsUpsert {
+	u.SetNull(memorymetrics.FieldPeakPostGcHeapSize)
+	return u
+}
+
+// SetUsedHeapSizePostBuild sets the "used_heap_size_post_build" field.
+func (u *MemoryMetricsUpsert) SetUsedHeapSizePostBuild(v int64) *MemoryMetricsUpsert {
+	u.Set(memorymetrics.FieldUsedHeapSizePostBuild, v)
+	return u
+}
+
+// UpdateUsedHeapSizePostBuild sets the "used_heap_size_post_build" field to the value that was provided on create.
+func (u *MemoryMetricsUpsert) UpdateUsedHeapSizePostBuild() *MemoryMetricsUpsert {
+	u.SetExcluded(memorymetrics.FieldUsedHeapSizePostBuild)
+	return u
+}
+
+// AddUsedHeapSizePostBuild adds v to the "used_heap_size_post_build" field.
+func (u *MemoryMetricsUpsert) AddUsedHeapSizePostBuild(v int64) *MemoryMetricsUpsert {
+	u.Add(memorymetrics.FieldUsedHeapSizePostBuild, v)
+	return u
+}
+
+// ClearUsedHeapSizePostBuild clears the value of the "used_heap_size_post_build" field.
+func (u *MemoryMetricsUpsert) ClearUsedHeapSizePostBuild() *MemoryMetricsUpsert {
+	u.SetNull(memorymetrics.FieldUsedHeapSizePostBuild)
+	return u
+}
+
+// SetPeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field.
+func (u *MemoryMetricsUpsert) SetPeakPostGcTenuredSpaceHeapSize(v int64) *MemoryMetricsUpsert {
+	u.Set(memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize, v)
+	return u
+}
+
+// UpdatePeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field to the value that was provided on create.
+func (u *MemoryMetricsUpsert) UpdatePeakPostGcTenuredSpaceHeapSize() *MemoryMetricsUpsert {
+	u.SetExcluded(memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize)
+	return u
+}
+
+// AddPeakPostGcTenuredSpaceHeapSize adds v to the "peak_post_gc_tenured_space_heap_size" field.
+func (u *MemoryMetricsUpsert) AddPeakPostGcTenuredSpaceHeapSize(v int64) *MemoryMetricsUpsert {
+	u.Add(memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize, v)
+	return u
+}
+
+// ClearPeakPostGcTenuredSpaceHeapSize clears the value of the "peak_post_gc_tenured_space_heap_size" field.
+func (u *MemoryMetricsUpsert) ClearPeakPostGcTenuredSpaceHeapSize() *MemoryMetricsUpsert {
+	u.SetNull(memorymetrics.FieldPeakPostGcTenuredSpaceHeapSize)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.MemoryMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *MemoryMetricsUpsertOne) UpdateNewValues() *MemoryMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.MemoryMetrics.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *MemoryMetricsUpsertOne) Ignore() *MemoryMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *MemoryMetricsUpsertOne) DoNothing() *MemoryMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the MemoryMetricsCreate.OnConflict
+// documentation for more info.
+func (u *MemoryMetricsUpsertOne) Update(set func(*MemoryMetricsUpsert)) *MemoryMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&MemoryMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetPeakPostGcHeapSize sets the "peak_post_gc_heap_size" field.
+func (u *MemoryMetricsUpsertOne) SetPeakPostGcHeapSize(v int64) *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.SetPeakPostGcHeapSize(v)
+	})
+}
+
+// AddPeakPostGcHeapSize adds v to the "peak_post_gc_heap_size" field.
+func (u *MemoryMetricsUpsertOne) AddPeakPostGcHeapSize(v int64) *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.AddPeakPostGcHeapSize(v)
+	})
+}
+
+// UpdatePeakPostGcHeapSize sets the "peak_post_gc_heap_size" field to the value that was provided on create.
+func (u *MemoryMetricsUpsertOne) UpdatePeakPostGcHeapSize() *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.UpdatePeakPostGcHeapSize()
+	})
+}
+
+// ClearPeakPostGcHeapSize clears the value of the "peak_post_gc_heap_size" field.
+func (u *MemoryMetricsUpsertOne) ClearPeakPostGcHeapSize() *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.ClearPeakPostGcHeapSize()
+	})
+}
+
+// SetUsedHeapSizePostBuild sets the "used_heap_size_post_build" field.
+func (u *MemoryMetricsUpsertOne) SetUsedHeapSizePostBuild(v int64) *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.SetUsedHeapSizePostBuild(v)
+	})
+}
+
+// AddUsedHeapSizePostBuild adds v to the "used_heap_size_post_build" field.
+func (u *MemoryMetricsUpsertOne) AddUsedHeapSizePostBuild(v int64) *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.AddUsedHeapSizePostBuild(v)
+	})
+}
+
+// UpdateUsedHeapSizePostBuild sets the "used_heap_size_post_build" field to the value that was provided on create.
+func (u *MemoryMetricsUpsertOne) UpdateUsedHeapSizePostBuild() *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.UpdateUsedHeapSizePostBuild()
+	})
+}
+
+// ClearUsedHeapSizePostBuild clears the value of the "used_heap_size_post_build" field.
+func (u *MemoryMetricsUpsertOne) ClearUsedHeapSizePostBuild() *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.ClearUsedHeapSizePostBuild()
+	})
+}
+
+// SetPeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field.
+func (u *MemoryMetricsUpsertOne) SetPeakPostGcTenuredSpaceHeapSize(v int64) *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.SetPeakPostGcTenuredSpaceHeapSize(v)
+	})
+}
+
+// AddPeakPostGcTenuredSpaceHeapSize adds v to the "peak_post_gc_tenured_space_heap_size" field.
+func (u *MemoryMetricsUpsertOne) AddPeakPostGcTenuredSpaceHeapSize(v int64) *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.AddPeakPostGcTenuredSpaceHeapSize(v)
+	})
+}
+
+// UpdatePeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field to the value that was provided on create.
+func (u *MemoryMetricsUpsertOne) UpdatePeakPostGcTenuredSpaceHeapSize() *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.UpdatePeakPostGcTenuredSpaceHeapSize()
+	})
+}
+
+// ClearPeakPostGcTenuredSpaceHeapSize clears the value of the "peak_post_gc_tenured_space_heap_size" field.
+func (u *MemoryMetricsUpsertOne) ClearPeakPostGcTenuredSpaceHeapSize() *MemoryMetricsUpsertOne {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.ClearPeakPostGcTenuredSpaceHeapSize()
+	})
+}
+
+// Exec executes the query.
+func (u *MemoryMetricsUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for MemoryMetricsCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *MemoryMetricsUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *MemoryMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *MemoryMetricsUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // MemoryMetricsCreateBulk is the builder for creating many MemoryMetrics entities in bulk.
 type MemoryMetricsCreateBulk struct {
 	config
 	err      error
 	builders []*MemoryMetricsCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the MemoryMetrics entities in the database.
@@ -237,6 +520,7 @@ func (mmcb *MemoryMetricsCreateBulk) Save(ctx context.Context) ([]*MemoryMetrics
 					_, err = mutators[i+1].Mutate(root, mmcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = mmcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, mmcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -287,6 +571,194 @@ func (mmcb *MemoryMetricsCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (mmcb *MemoryMetricsCreateBulk) ExecX(ctx context.Context) {
 	if err := mmcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.MemoryMetrics.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.MemoryMetricsUpsert) {
+//			SetPeakPostGcHeapSize(v+v).
+//		}).
+//		Exec(ctx)
+func (mmcb *MemoryMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *MemoryMetricsUpsertBulk {
+	mmcb.conflict = opts
+	return &MemoryMetricsUpsertBulk{
+		create: mmcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.MemoryMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (mmcb *MemoryMetricsCreateBulk) OnConflictColumns(columns ...string) *MemoryMetricsUpsertBulk {
+	mmcb.conflict = append(mmcb.conflict, sql.ConflictColumns(columns...))
+	return &MemoryMetricsUpsertBulk{
+		create: mmcb,
+	}
+}
+
+// MemoryMetricsUpsertBulk is the builder for "upsert"-ing
+// a bulk of MemoryMetrics nodes.
+type MemoryMetricsUpsertBulk struct {
+	create *MemoryMetricsCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.MemoryMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *MemoryMetricsUpsertBulk) UpdateNewValues() *MemoryMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.MemoryMetrics.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *MemoryMetricsUpsertBulk) Ignore() *MemoryMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *MemoryMetricsUpsertBulk) DoNothing() *MemoryMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the MemoryMetricsCreateBulk.OnConflict
+// documentation for more info.
+func (u *MemoryMetricsUpsertBulk) Update(set func(*MemoryMetricsUpsert)) *MemoryMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&MemoryMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetPeakPostGcHeapSize sets the "peak_post_gc_heap_size" field.
+func (u *MemoryMetricsUpsertBulk) SetPeakPostGcHeapSize(v int64) *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.SetPeakPostGcHeapSize(v)
+	})
+}
+
+// AddPeakPostGcHeapSize adds v to the "peak_post_gc_heap_size" field.
+func (u *MemoryMetricsUpsertBulk) AddPeakPostGcHeapSize(v int64) *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.AddPeakPostGcHeapSize(v)
+	})
+}
+
+// UpdatePeakPostGcHeapSize sets the "peak_post_gc_heap_size" field to the value that was provided on create.
+func (u *MemoryMetricsUpsertBulk) UpdatePeakPostGcHeapSize() *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.UpdatePeakPostGcHeapSize()
+	})
+}
+
+// ClearPeakPostGcHeapSize clears the value of the "peak_post_gc_heap_size" field.
+func (u *MemoryMetricsUpsertBulk) ClearPeakPostGcHeapSize() *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.ClearPeakPostGcHeapSize()
+	})
+}
+
+// SetUsedHeapSizePostBuild sets the "used_heap_size_post_build" field.
+func (u *MemoryMetricsUpsertBulk) SetUsedHeapSizePostBuild(v int64) *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.SetUsedHeapSizePostBuild(v)
+	})
+}
+
+// AddUsedHeapSizePostBuild adds v to the "used_heap_size_post_build" field.
+func (u *MemoryMetricsUpsertBulk) AddUsedHeapSizePostBuild(v int64) *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.AddUsedHeapSizePostBuild(v)
+	})
+}
+
+// UpdateUsedHeapSizePostBuild sets the "used_heap_size_post_build" field to the value that was provided on create.
+func (u *MemoryMetricsUpsertBulk) UpdateUsedHeapSizePostBuild() *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.UpdateUsedHeapSizePostBuild()
+	})
+}
+
+// ClearUsedHeapSizePostBuild clears the value of the "used_heap_size_post_build" field.
+func (u *MemoryMetricsUpsertBulk) ClearUsedHeapSizePostBuild() *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.ClearUsedHeapSizePostBuild()
+	})
+}
+
+// SetPeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field.
+func (u *MemoryMetricsUpsertBulk) SetPeakPostGcTenuredSpaceHeapSize(v int64) *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.SetPeakPostGcTenuredSpaceHeapSize(v)
+	})
+}
+
+// AddPeakPostGcTenuredSpaceHeapSize adds v to the "peak_post_gc_tenured_space_heap_size" field.
+func (u *MemoryMetricsUpsertBulk) AddPeakPostGcTenuredSpaceHeapSize(v int64) *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.AddPeakPostGcTenuredSpaceHeapSize(v)
+	})
+}
+
+// UpdatePeakPostGcTenuredSpaceHeapSize sets the "peak_post_gc_tenured_space_heap_size" field to the value that was provided on create.
+func (u *MemoryMetricsUpsertBulk) UpdatePeakPostGcTenuredSpaceHeapSize() *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.UpdatePeakPostGcTenuredSpaceHeapSize()
+	})
+}
+
+// ClearPeakPostGcTenuredSpaceHeapSize clears the value of the "peak_post_gc_tenured_space_heap_size" field.
+func (u *MemoryMetricsUpsertBulk) ClearPeakPostGcTenuredSpaceHeapSize() *MemoryMetricsUpsertBulk {
+	return u.Update(func(s *MemoryMetricsUpsert) {
+		s.ClearPeakPostGcTenuredSpaceHeapSize()
+	})
+}
+
+// Exec executes the query.
+func (u *MemoryMetricsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the MemoryMetricsCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for MemoryMetricsCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *MemoryMetricsUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -15,7 +15,6 @@ import { domainToASCII } from 'url';
 interface Props {
   invocationId: string;
   instanceName: string | undefined;
-  onTabChange: any;
   //problems?: ProblemInfoFragment[];
 }
 
@@ -25,7 +24,7 @@ export const CopyAllProblemLabels: React.FC<{ problems: ProblemInfoFragment[] }>
   return <CopyTextButton buttonText="Copy Problems" copyText={problems.map(problem => problem.label).join(' ')} />;
 };
 
-const BuildProblems: React.FC<Props> = ({ invocationId, instanceName, onTabChange }) => {
+const BuildProblems: React.FC<Props> = ({ invocationId, instanceName }) => {
 
   var { loading, data, previousData, error } = useQuery(GET_PROBLEM_DETAILS, {
     variables: {

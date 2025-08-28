@@ -15,32 +15,44 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 )
 
 // BazelInvocationQuery is the builder for querying BazelInvocation entities.
 type BazelInvocationQuery struct {
 	config
-	ctx                     *QueryContext
-	order                   []bazelinvocation.OrderOption
-	inters                  []Interceptor
-	predicates              []predicate.BazelInvocation
-	withBuild               *BuildQuery
-	withProblems            *BazelInvocationProblemQuery
-	withMetrics             *MetricsQuery
-	withTestCollection      *TestCollectionQuery
-	withTargets             *TargetPairQuery
-	withSourceControl       *SourceControlQuery
-	withFKs                 bool
-	modifiers               []func(*sql.Selector)
-	loadTotal               []func(context.Context, []*BazelInvocation) error
-	withNamedProblems       map[string]*BazelInvocationProblemQuery
-	withNamedTestCollection map[string]*TestCollectionQuery
-	withNamedTargets        map[string]*TargetPairQuery
+	ctx                          *QueryContext
+	order                        []bazelinvocation.OrderOption
+	inters                       []Interceptor
+	predicates                   []predicate.BazelInvocation
+	withBuild                    *BuildQuery
+	withEventMetadata            *EventMetadataQuery
+	withConnectionMetadata       *ConnectionMetadataQuery
+	withProblems                 *BazelInvocationProblemQuery
+	withMetrics                  *MetricsQuery
+	withIncompleteBuildLogs      *IncompleteBuildLogQuery
+	withInvocationFiles          *InvocationFilesQuery
+	withTestCollection           *TestCollectionQuery
+	withTargets                  *TargetQuery
+	withSourceControl            *SourceControlQuery
+	withFKs                      bool
+	modifiers                    []func(*sql.Selector)
+	loadTotal                    []func(context.Context, []*BazelInvocation) error
+	withNamedEventMetadata       map[string]*EventMetadataQuery
+	withNamedConnectionMetadata  map[string]*ConnectionMetadataQuery
+	withNamedProblems            map[string]*BazelInvocationProblemQuery
+	withNamedIncompleteBuildLogs map[string]*IncompleteBuildLogQuery
+	withNamedInvocationFiles     map[string]*InvocationFilesQuery
+	withNamedTestCollection      map[string]*TestCollectionQuery
+	withNamedTargets             map[string]*TargetQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -99,6 +111,50 @@ func (biq *BazelInvocationQuery) QueryBuild() *BuildQuery {
 	return query
 }
 
+// QueryEventMetadata chains the current query on the "event_metadata" edge.
+func (biq *BazelInvocationQuery) QueryEventMetadata() *EventMetadataQuery {
+	query := (&EventMetadataClient{config: biq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := biq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := biq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(eventmetadata.Table, eventmetadata.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.EventMetadataTable, bazelinvocation.EventMetadataColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryConnectionMetadata chains the current query on the "connection_metadata" edge.
+func (biq *BazelInvocationQuery) QueryConnectionMetadata() *ConnectionMetadataQuery {
+	query := (&ConnectionMetadataClient{config: biq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := biq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := biq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(connectionmetadata.Table, connectionmetadata.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ConnectionMetadataTable, bazelinvocation.ConnectionMetadataColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryProblems chains the current query on the "problems" edge.
 func (biq *BazelInvocationQuery) QueryProblems() *BazelInvocationProblemQuery {
 	query := (&BazelInvocationProblemClient{config: biq.config}).Query()
@@ -143,6 +199,50 @@ func (biq *BazelInvocationQuery) QueryMetrics() *MetricsQuery {
 	return query
 }
 
+// QueryIncompleteBuildLogs chains the current query on the "incomplete_build_logs" edge.
+func (biq *BazelInvocationQuery) QueryIncompleteBuildLogs() *IncompleteBuildLogQuery {
+	query := (&IncompleteBuildLogClient{config: biq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := biq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := biq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(incompletebuildlog.Table, incompletebuildlog.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.IncompleteBuildLogsTable, bazelinvocation.IncompleteBuildLogsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryInvocationFiles chains the current query on the "invocation_files" edge.
+func (biq *BazelInvocationQuery) QueryInvocationFiles() *InvocationFilesQuery {
+	query := (&InvocationFilesClient{config: biq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := biq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := biq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(invocationfiles.Table, invocationfiles.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.InvocationFilesTable, bazelinvocation.InvocationFilesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryTestCollection chains the current query on the "test_collection" edge.
 func (biq *BazelInvocationQuery) QueryTestCollection() *TestCollectionQuery {
 	query := (&TestCollectionClient{config: biq.config}).Query()
@@ -166,8 +266,8 @@ func (biq *BazelInvocationQuery) QueryTestCollection() *TestCollectionQuery {
 }
 
 // QueryTargets chains the current query on the "targets" edge.
-func (biq *BazelInvocationQuery) QueryTargets() *TargetPairQuery {
-	query := (&TargetPairClient{config: biq.config}).Query()
+func (biq *BazelInvocationQuery) QueryTargets() *TargetQuery {
+	query := (&TargetClient{config: biq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := biq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -178,7 +278,7 @@ func (biq *BazelInvocationQuery) QueryTargets() *TargetPairQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
-			sqlgraph.To(targetpair.Table, targetpair.FieldID),
+			sqlgraph.To(target.Table, target.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.TargetsTable, bazelinvocation.TargetsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
@@ -396,17 +496,21 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		return nil
 	}
 	return &BazelInvocationQuery{
-		config:             biq.config,
-		ctx:                biq.ctx.Clone(),
-		order:              append([]bazelinvocation.OrderOption{}, biq.order...),
-		inters:             append([]Interceptor{}, biq.inters...),
-		predicates:         append([]predicate.BazelInvocation{}, biq.predicates...),
-		withBuild:          biq.withBuild.Clone(),
-		withProblems:       biq.withProblems.Clone(),
-		withMetrics:        biq.withMetrics.Clone(),
-		withTestCollection: biq.withTestCollection.Clone(),
-		withTargets:        biq.withTargets.Clone(),
-		withSourceControl:  biq.withSourceControl.Clone(),
+		config:                  biq.config,
+		ctx:                     biq.ctx.Clone(),
+		order:                   append([]bazelinvocation.OrderOption{}, biq.order...),
+		inters:                  append([]Interceptor{}, biq.inters...),
+		predicates:              append([]predicate.BazelInvocation{}, biq.predicates...),
+		withBuild:               biq.withBuild.Clone(),
+		withEventMetadata:       biq.withEventMetadata.Clone(),
+		withConnectionMetadata:  biq.withConnectionMetadata.Clone(),
+		withProblems:            biq.withProblems.Clone(),
+		withMetrics:             biq.withMetrics.Clone(),
+		withIncompleteBuildLogs: biq.withIncompleteBuildLogs.Clone(),
+		withInvocationFiles:     biq.withInvocationFiles.Clone(),
+		withTestCollection:      biq.withTestCollection.Clone(),
+		withTargets:             biq.withTargets.Clone(),
+		withSourceControl:       biq.withSourceControl.Clone(),
 		// clone intermediate query.
 		sql:  biq.sql.Clone(),
 		path: biq.path,
@@ -421,6 +525,28 @@ func (biq *BazelInvocationQuery) WithBuild(opts ...func(*BuildQuery)) *BazelInvo
 		opt(query)
 	}
 	biq.withBuild = query
+	return biq
+}
+
+// WithEventMetadata tells the query-builder to eager-load the nodes that are connected to
+// the "event_metadata" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithEventMetadata(opts ...func(*EventMetadataQuery)) *BazelInvocationQuery {
+	query := (&EventMetadataClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	biq.withEventMetadata = query
+	return biq
+}
+
+// WithConnectionMetadata tells the query-builder to eager-load the nodes that are connected to
+// the "connection_metadata" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithConnectionMetadata(opts ...func(*ConnectionMetadataQuery)) *BazelInvocationQuery {
+	query := (&ConnectionMetadataClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	biq.withConnectionMetadata = query
 	return biq
 }
 
@@ -446,6 +572,28 @@ func (biq *BazelInvocationQuery) WithMetrics(opts ...func(*MetricsQuery)) *Bazel
 	return biq
 }
 
+// WithIncompleteBuildLogs tells the query-builder to eager-load the nodes that are connected to
+// the "incomplete_build_logs" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithIncompleteBuildLogs(opts ...func(*IncompleteBuildLogQuery)) *BazelInvocationQuery {
+	query := (&IncompleteBuildLogClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	biq.withIncompleteBuildLogs = query
+	return biq
+}
+
+// WithInvocationFiles tells the query-builder to eager-load the nodes that are connected to
+// the "invocation_files" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithInvocationFiles(opts ...func(*InvocationFilesQuery)) *BazelInvocationQuery {
+	query := (&InvocationFilesClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	biq.withInvocationFiles = query
+	return biq
+}
+
 // WithTestCollection tells the query-builder to eager-load the nodes that are connected to
 // the "test_collection" edge. The optional arguments are used to configure the query builder of the edge.
 func (biq *BazelInvocationQuery) WithTestCollection(opts ...func(*TestCollectionQuery)) *BazelInvocationQuery {
@@ -459,8 +607,8 @@ func (biq *BazelInvocationQuery) WithTestCollection(opts ...func(*TestCollection
 
 // WithTargets tells the query-builder to eager-load the nodes that are connected to
 // the "targets" edge. The optional arguments are used to configure the query builder of the edge.
-func (biq *BazelInvocationQuery) WithTargets(opts ...func(*TargetPairQuery)) *BazelInvocationQuery {
-	query := (&TargetPairClient{config: biq.config}).Query()
+func (biq *BazelInvocationQuery) WithTargets(opts ...func(*TargetQuery)) *BazelInvocationQuery {
+	query := (&TargetClient{config: biq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -558,10 +706,14 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*BazelInvocation{}
 		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
-		loadedTypes = [6]bool{
+		loadedTypes = [10]bool{
 			biq.withBuild != nil,
+			biq.withEventMetadata != nil,
+			biq.withConnectionMetadata != nil,
 			biq.withProblems != nil,
 			biq.withMetrics != nil,
+			biq.withIncompleteBuildLogs != nil,
+			biq.withInvocationFiles != nil,
 			biq.withTestCollection != nil,
 			biq.withTargets != nil,
 			biq.withSourceControl != nil,
@@ -600,6 +752,22 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			return nil, err
 		}
 	}
+	if query := biq.withEventMetadata; query != nil {
+		if err := biq.loadEventMetadata(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.EventMetadata = []*EventMetadata{} },
+			func(n *BazelInvocation, e *EventMetadata) { n.Edges.EventMetadata = append(n.Edges.EventMetadata, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := biq.withConnectionMetadata; query != nil {
+		if err := biq.loadConnectionMetadata(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.ConnectionMetadata = []*ConnectionMetadata{} },
+			func(n *BazelInvocation, e *ConnectionMetadata) {
+				n.Edges.ConnectionMetadata = append(n.Edges.ConnectionMetadata, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
 	if query := biq.withProblems; query != nil {
 		if err := biq.loadProblems(ctx, query, nodes,
 			func(n *BazelInvocation) { n.Edges.Problems = []*BazelInvocationProblem{} },
@@ -610,6 +778,24 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	if query := biq.withMetrics; query != nil {
 		if err := biq.loadMetrics(ctx, query, nodes, nil,
 			func(n *BazelInvocation, e *Metrics) { n.Edges.Metrics = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := biq.withIncompleteBuildLogs; query != nil {
+		if err := biq.loadIncompleteBuildLogs(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.IncompleteBuildLogs = []*IncompleteBuildLog{} },
+			func(n *BazelInvocation, e *IncompleteBuildLog) {
+				n.Edges.IncompleteBuildLogs = append(n.Edges.IncompleteBuildLogs, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
+	if query := biq.withInvocationFiles; query != nil {
+		if err := biq.loadInvocationFiles(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.InvocationFiles = []*InvocationFiles{} },
+			func(n *BazelInvocation, e *InvocationFiles) {
+				n.Edges.InvocationFiles = append(n.Edges.InvocationFiles, e)
+			}); err != nil {
 			return nil, err
 		}
 	}
@@ -624,8 +810,8 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	}
 	if query := biq.withTargets; query != nil {
 		if err := biq.loadTargets(ctx, query, nodes,
-			func(n *BazelInvocation) { n.Edges.Targets = []*TargetPair{} },
-			func(n *BazelInvocation, e *TargetPair) { n.Edges.Targets = append(n.Edges.Targets, e) }); err != nil {
+			func(n *BazelInvocation) { n.Edges.Targets = []*Target{} },
+			func(n *BazelInvocation, e *Target) { n.Edges.Targets = append(n.Edges.Targets, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -635,10 +821,38 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			return nil, err
 		}
 	}
+	for name, query := range biq.withNamedEventMetadata {
+		if err := biq.loadEventMetadata(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedEventMetadata(name) },
+			func(n *BazelInvocation, e *EventMetadata) { n.appendNamedEventMetadata(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range biq.withNamedConnectionMetadata {
+		if err := biq.loadConnectionMetadata(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedConnectionMetadata(name) },
+			func(n *BazelInvocation, e *ConnectionMetadata) { n.appendNamedConnectionMetadata(name, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for name, query := range biq.withNamedProblems {
 		if err := biq.loadProblems(ctx, query, nodes,
 			func(n *BazelInvocation) { n.appendNamedProblems(name) },
 			func(n *BazelInvocation, e *BazelInvocationProblem) { n.appendNamedProblems(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range biq.withNamedIncompleteBuildLogs {
+		if err := biq.loadIncompleteBuildLogs(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedIncompleteBuildLogs(name) },
+			func(n *BazelInvocation, e *IncompleteBuildLog) { n.appendNamedIncompleteBuildLogs(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range biq.withNamedInvocationFiles {
+		if err := biq.loadInvocationFiles(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedInvocationFiles(name) },
+			func(n *BazelInvocation, e *InvocationFiles) { n.appendNamedInvocationFiles(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -652,7 +866,7 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	for name, query := range biq.withNamedTargets {
 		if err := biq.loadTargets(ctx, query, nodes,
 			func(n *BazelInvocation) { n.appendNamedTargets(name) },
-			func(n *BazelInvocation, e *TargetPair) { n.appendNamedTargets(name, e) }); err != nil {
+			func(n *BazelInvocation, e *Target) { n.appendNamedTargets(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -693,6 +907,68 @@ func (biq *BazelInvocationQuery) loadBuild(ctx context.Context, query *BuildQuer
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (biq *BazelInvocationQuery) loadEventMetadata(ctx context.Context, query *EventMetadataQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *EventMetadata)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*BazelInvocation)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.EventMetadata(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.EventMetadataColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.bazel_invocation_event_metadata
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "bazel_invocation_event_metadata" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_event_metadata" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (biq *BazelInvocationQuery) loadConnectionMetadata(ctx context.Context, query *ConnectionMetadataQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *ConnectionMetadata)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*BazelInvocation)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.ConnectionMetadata(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.ConnectionMetadataColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.bazel_invocation_connection_metadata
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "bazel_invocation_connection_metadata" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_connection_metadata" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -755,6 +1031,68 @@ func (biq *BazelInvocationQuery) loadMetrics(ctx context.Context, query *Metrics
 	}
 	return nil
 }
+func (biq *BazelInvocationQuery) loadIncompleteBuildLogs(ctx context.Context, query *IncompleteBuildLogQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *IncompleteBuildLog)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*BazelInvocation)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.IncompleteBuildLog(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.IncompleteBuildLogsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.bazel_invocation_incomplete_build_logs
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "bazel_invocation_incomplete_build_logs" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_incomplete_build_logs" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (biq *BazelInvocationQuery) loadInvocationFiles(ctx context.Context, query *InvocationFilesQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *InvocationFiles)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*BazelInvocation)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.InvocationFiles(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.InvocationFilesColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.bazel_invocation_invocation_files
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "bazel_invocation_invocation_files" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_invocation_files" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 func (biq *BazelInvocationQuery) loadTestCollection(ctx context.Context, query *TestCollectionQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *TestCollection)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*BazelInvocation)
@@ -786,7 +1124,7 @@ func (biq *BazelInvocationQuery) loadTestCollection(ctx context.Context, query *
 	}
 	return nil
 }
-func (biq *BazelInvocationQuery) loadTargets(ctx context.Context, query *TargetPairQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *TargetPair)) error {
+func (biq *BazelInvocationQuery) loadTargets(ctx context.Context, query *TargetQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *Target)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*BazelInvocation)
 	for i := range nodes {
@@ -797,7 +1135,7 @@ func (biq *BazelInvocationQuery) loadTargets(ctx context.Context, query *TargetP
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.TargetPair(func(s *sql.Selector) {
+	query.Where(predicate.Target(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(bazelinvocation.TargetsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
@@ -930,6 +1268,34 @@ func (biq *BazelInvocationQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
+// WithNamedEventMetadata tells the query-builder to eager-load the nodes that are connected to the "event_metadata"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithNamedEventMetadata(name string, opts ...func(*EventMetadataQuery)) *BazelInvocationQuery {
+	query := (&EventMetadataClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if biq.withNamedEventMetadata == nil {
+		biq.withNamedEventMetadata = make(map[string]*EventMetadataQuery)
+	}
+	biq.withNamedEventMetadata[name] = query
+	return biq
+}
+
+// WithNamedConnectionMetadata tells the query-builder to eager-load the nodes that are connected to the "connection_metadata"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithNamedConnectionMetadata(name string, opts ...func(*ConnectionMetadataQuery)) *BazelInvocationQuery {
+	query := (&ConnectionMetadataClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if biq.withNamedConnectionMetadata == nil {
+		biq.withNamedConnectionMetadata = make(map[string]*ConnectionMetadataQuery)
+	}
+	biq.withNamedConnectionMetadata[name] = query
+	return biq
+}
+
 // WithNamedProblems tells the query-builder to eager-load the nodes that are connected to the "problems"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
 func (biq *BazelInvocationQuery) WithNamedProblems(name string, opts ...func(*BazelInvocationProblemQuery)) *BazelInvocationQuery {
@@ -941,6 +1307,34 @@ func (biq *BazelInvocationQuery) WithNamedProblems(name string, opts ...func(*Ba
 		biq.withNamedProblems = make(map[string]*BazelInvocationProblemQuery)
 	}
 	biq.withNamedProblems[name] = query
+	return biq
+}
+
+// WithNamedIncompleteBuildLogs tells the query-builder to eager-load the nodes that are connected to the "incomplete_build_logs"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithNamedIncompleteBuildLogs(name string, opts ...func(*IncompleteBuildLogQuery)) *BazelInvocationQuery {
+	query := (&IncompleteBuildLogClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if biq.withNamedIncompleteBuildLogs == nil {
+		biq.withNamedIncompleteBuildLogs = make(map[string]*IncompleteBuildLogQuery)
+	}
+	biq.withNamedIncompleteBuildLogs[name] = query
+	return biq
+}
+
+// WithNamedInvocationFiles tells the query-builder to eager-load the nodes that are connected to the "invocation_files"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithNamedInvocationFiles(name string, opts ...func(*InvocationFilesQuery)) *BazelInvocationQuery {
+	query := (&InvocationFilesClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if biq.withNamedInvocationFiles == nil {
+		biq.withNamedInvocationFiles = make(map[string]*InvocationFilesQuery)
+	}
+	biq.withNamedInvocationFiles[name] = query
 	return biq
 }
 
@@ -960,13 +1354,13 @@ func (biq *BazelInvocationQuery) WithNamedTestCollection(name string, opts ...fu
 
 // WithNamedTargets tells the query-builder to eager-load the nodes that are connected to the "targets"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (biq *BazelInvocationQuery) WithNamedTargets(name string, opts ...func(*TargetPairQuery)) *BazelInvocationQuery {
-	query := (&TargetPairClient{config: biq.config}).Query()
+func (biq *BazelInvocationQuery) WithNamedTargets(name string, opts ...func(*TargetQuery)) *BazelInvocationQuery {
+	query := (&TargetClient{config: biq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
 	if biq.withNamedTargets == nil {
-		biq.withNamedTargets = make(map[string]*TargetPairQuery)
+		biq.withNamedTargets = make(map[string]*TargetQuery)
 	}
 	biq.withNamedTargets[name] = query
 	return biq
