@@ -17,7 +17,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
@@ -26,7 +25,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -519,17 +517,6 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
-
-		case "eventFile":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&EventFileClient{config: bi.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, eventfileImplementors)...); err != nil {
-				return err
-			}
-			bi.withEventFile = query
 
 		case "build":
 			var (
@@ -1259,80 +1246,6 @@ func newCumulativeMetricsPaginateArgs(rv map[string]any) *cumulativemetricsPagin
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (dem *DynamicExecutionMetricsQuery) CollectFields(ctx context.Context, satisfies ...string) (*DynamicExecutionMetricsQuery, error) {
-	fc := graphql.GetFieldContext(ctx)
-	if fc == nil {
-		return dem, nil
-	}
-	if err := dem.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
-		return nil, err
-	}
-	return dem, nil
-}
-
-func (dem *DynamicExecutionMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
-	path = append([]string(nil), path...)
-	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
-		switch field.Name {
-
-		case "metrics":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&MetricsClient{config: dem.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, metricsImplementors)...); err != nil {
-				return err
-			}
-			dem.withMetrics = query
-
-		case "raceStatistics":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&RaceStatisticsClient{config: dem.config}).Query()
-			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, racestatisticsImplementors)...); err != nil {
-				return err
-			}
-			dem.WithNamedRaceStatistics(alias, func(wq *RaceStatisticsQuery) {
-				*wq = *query
-			})
-		}
-	}
-	return nil
-}
-
-type dynamicexecutionmetricsPaginateArgs struct {
-	first, last   *int
-	after, before *Cursor
-	opts          []DynamicExecutionMetricsPaginateOption
-}
-
-func newDynamicExecutionMetricsPaginateArgs(rv map[string]any) *dynamicexecutionmetricsPaginateArgs {
-	args := &dynamicexecutionmetricsPaginateArgs{}
-	if rv == nil {
-		return args
-	}
-	if v := rv[firstField]; v != nil {
-		args.first = v.(*int)
-	}
-	if v := rv[lastField]; v != nil {
-		args.last = v.(*int)
-	}
-	if v := rv[afterField]; v != nil {
-		args.after = v.(*Cursor)
-	}
-	if v := rv[beforeField]; v != nil {
-		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[whereField].(*DynamicExecutionMetricsWhereInput); ok {
-		args.opts = append(args.opts, WithDynamicExecutionMetricsFilter(v.Filter))
-	}
-	return args
-}
-
-// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (es *EvaluationStatQuery) CollectFields(ctx context.Context, satisfies ...string) (*EvaluationStatQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
@@ -1411,109 +1324,6 @@ func newEvaluationStatPaginateArgs(rv map[string]any) *evaluationstatPaginateArg
 	}
 	if v, ok := rv[whereField].(*EvaluationStatWhereInput); ok {
 		args.opts = append(args.opts, WithEvaluationStatFilter(v.Filter))
-	}
-	return args
-}
-
-// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (ef *EventFileQuery) CollectFields(ctx context.Context, satisfies ...string) (*EventFileQuery, error) {
-	fc := graphql.GetFieldContext(ctx)
-	if fc == nil {
-		return ef, nil
-	}
-	if err := ef.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
-		return nil, err
-	}
-	return ef, nil
-}
-
-func (ef *EventFileQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
-	path = append([]string(nil), path...)
-	var (
-		unknownSeen    bool
-		fieldSeen      = make(map[string]struct{}, len(eventfile.Columns))
-		selectedFields = []string{eventfile.FieldID}
-	)
-	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
-		switch field.Name {
-
-		case "bazelInvocation":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: ef.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
-				return err
-			}
-			ef.withBazelInvocation = query
-		case "url":
-			if _, ok := fieldSeen[eventfile.FieldURL]; !ok {
-				selectedFields = append(selectedFields, eventfile.FieldURL)
-				fieldSeen[eventfile.FieldURL] = struct{}{}
-			}
-		case "modTime":
-			if _, ok := fieldSeen[eventfile.FieldModTime]; !ok {
-				selectedFields = append(selectedFields, eventfile.FieldModTime)
-				fieldSeen[eventfile.FieldModTime] = struct{}{}
-			}
-		case "protocol":
-			if _, ok := fieldSeen[eventfile.FieldProtocol]; !ok {
-				selectedFields = append(selectedFields, eventfile.FieldProtocol)
-				fieldSeen[eventfile.FieldProtocol] = struct{}{}
-			}
-		case "mimeType":
-			if _, ok := fieldSeen[eventfile.FieldMimeType]; !ok {
-				selectedFields = append(selectedFields, eventfile.FieldMimeType)
-				fieldSeen[eventfile.FieldMimeType] = struct{}{}
-			}
-		case "status":
-			if _, ok := fieldSeen[eventfile.FieldStatus]; !ok {
-				selectedFields = append(selectedFields, eventfile.FieldStatus)
-				fieldSeen[eventfile.FieldStatus] = struct{}{}
-			}
-		case "reason":
-			if _, ok := fieldSeen[eventfile.FieldReason]; !ok {
-				selectedFields = append(selectedFields, eventfile.FieldReason)
-				fieldSeen[eventfile.FieldReason] = struct{}{}
-			}
-		case "id":
-		case "__typename":
-		default:
-			unknownSeen = true
-		}
-	}
-	if !unknownSeen {
-		ef.Select(selectedFields...)
-	}
-	return nil
-}
-
-type eventfilePaginateArgs struct {
-	first, last   *int
-	after, before *Cursor
-	opts          []EventFilePaginateOption
-}
-
-func newEventFilePaginateArgs(rv map[string]any) *eventfilePaginateArgs {
-	args := &eventfilePaginateArgs{}
-	if rv == nil {
-		return args
-	}
-	if v := rv[firstField]; v != nil {
-		args.first = v.(*int)
-	}
-	if v := rv[lastField]; v != nil {
-		args.last = v.(*int)
-	}
-	if v := rv[afterField]; v != nil {
-		args.after = v.(*Cursor)
-	}
-	if v := rv[beforeField]; v != nil {
-		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[whereField].(*EventFileWhereInput); ok {
-		args.opts = append(args.opts, WithEventFileFilter(v.Filter))
 	}
 	return args
 }
@@ -2022,17 +1832,6 @@ func (m *MetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *gr
 				return err
 			}
 			m.withNetworkMetrics = query
-
-		case "dynamicExecutionMetrics":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&DynamicExecutionMetricsClient{config: m.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, dynamicexecutionmetricsImplementors)...); err != nil {
-				return err
-			}
-			m.withDynamicExecutionMetrics = query
 
 		case "buildGraphMetrics":
 			var (
@@ -2615,104 +2414,6 @@ func newPackageMetricsPaginateArgs(rv map[string]any) *packagemetricsPaginateArg
 	}
 	if v, ok := rv[whereField].(*PackageMetricsWhereInput); ok {
 		args.opts = append(args.opts, WithPackageMetricsFilter(v.Filter))
-	}
-	return args
-}
-
-// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (rs *RaceStatisticsQuery) CollectFields(ctx context.Context, satisfies ...string) (*RaceStatisticsQuery, error) {
-	fc := graphql.GetFieldContext(ctx)
-	if fc == nil {
-		return rs, nil
-	}
-	if err := rs.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
-		return nil, err
-	}
-	return rs, nil
-}
-
-func (rs *RaceStatisticsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
-	path = append([]string(nil), path...)
-	var (
-		unknownSeen    bool
-		fieldSeen      = make(map[string]struct{}, len(racestatistics.Columns))
-		selectedFields = []string{racestatistics.FieldID}
-	)
-	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
-		switch field.Name {
-
-		case "dynamicExecutionMetrics":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&DynamicExecutionMetricsClient{config: rs.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, dynamicexecutionmetricsImplementors)...); err != nil {
-				return err
-			}
-			rs.withDynamicExecutionMetrics = query
-		case "mnemonic":
-			if _, ok := fieldSeen[racestatistics.FieldMnemonic]; !ok {
-				selectedFields = append(selectedFields, racestatistics.FieldMnemonic)
-				fieldSeen[racestatistics.FieldMnemonic] = struct{}{}
-			}
-		case "localRunner":
-			if _, ok := fieldSeen[racestatistics.FieldLocalRunner]; !ok {
-				selectedFields = append(selectedFields, racestatistics.FieldLocalRunner)
-				fieldSeen[racestatistics.FieldLocalRunner] = struct{}{}
-			}
-		case "remoteRunner":
-			if _, ok := fieldSeen[racestatistics.FieldRemoteRunner]; !ok {
-				selectedFields = append(selectedFields, racestatistics.FieldRemoteRunner)
-				fieldSeen[racestatistics.FieldRemoteRunner] = struct{}{}
-			}
-		case "localWins":
-			if _, ok := fieldSeen[racestatistics.FieldLocalWins]; !ok {
-				selectedFields = append(selectedFields, racestatistics.FieldLocalWins)
-				fieldSeen[racestatistics.FieldLocalWins] = struct{}{}
-			}
-		case "renoteWins":
-			if _, ok := fieldSeen[racestatistics.FieldRenoteWins]; !ok {
-				selectedFields = append(selectedFields, racestatistics.FieldRenoteWins)
-				fieldSeen[racestatistics.FieldRenoteWins] = struct{}{}
-			}
-		case "id":
-		case "__typename":
-		default:
-			unknownSeen = true
-		}
-	}
-	if !unknownSeen {
-		rs.Select(selectedFields...)
-	}
-	return nil
-}
-
-type racestatisticsPaginateArgs struct {
-	first, last   *int
-	after, before *Cursor
-	opts          []RaceStatisticsPaginateOption
-}
-
-func newRaceStatisticsPaginateArgs(rv map[string]any) *racestatisticsPaginateArgs {
-	args := &racestatisticsPaginateArgs{}
-	if rv == nil {
-		return args
-	}
-	if v := rv[firstField]; v != nil {
-		args.first = v.(*int)
-	}
-	if v := rv[lastField]; v != nil {
-		args.last = v.(*int)
-	}
-	if v := rv[afterField]; v != nil {
-		args.after = v.(*Cursor)
-	}
-	if v := rv[beforeField]; v != nil {
-		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[whereField].(*RaceStatisticsWhereInput); ok {
-		args.opts = append(args.opts, WithRaceStatisticsFilter(v.Filter))
 	}
 	return args
 }

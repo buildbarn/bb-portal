@@ -25,9 +25,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
@@ -39,7 +37,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -82,12 +79,8 @@ type Client struct {
 	BuildGraphMetrics *BuildGraphMetricsClient
 	// CumulativeMetrics is the client for interacting with the CumulativeMetrics builders.
 	CumulativeMetrics *CumulativeMetricsClient
-	// DynamicExecutionMetrics is the client for interacting with the DynamicExecutionMetrics builders.
-	DynamicExecutionMetrics *DynamicExecutionMetricsClient
 	// EvaluationStat is the client for interacting with the EvaluationStat builders.
 	EvaluationStat *EvaluationStatClient
-	// EventFile is the client for interacting with the EventFile builders.
-	EventFile *EventFileClient
 	// ExectionInfo is the client for interacting with the ExectionInfo builders.
 	ExectionInfo *ExectionInfoClient
 	// FilesMetric is the client for interacting with the FilesMetric builders.
@@ -110,8 +103,6 @@ type Client struct {
 	PackageLoadMetrics *PackageLoadMetricsClient
 	// PackageMetrics is the client for interacting with the PackageMetrics builders.
 	PackageMetrics *PackageMetricsClient
-	// RaceStatistics is the client for interacting with the RaceStatistics builders.
-	RaceStatistics *RaceStatisticsClient
 	// ResourceUsage is the client for interacting with the ResourceUsage builders.
 	ResourceUsage *ResourceUsageClient
 	// RunnerCount is the client for interacting with the RunnerCount builders.
@@ -165,9 +156,7 @@ func (c *Client) init() {
 	c.Build = NewBuildClient(c.config)
 	c.BuildGraphMetrics = NewBuildGraphMetricsClient(c.config)
 	c.CumulativeMetrics = NewCumulativeMetricsClient(c.config)
-	c.DynamicExecutionMetrics = NewDynamicExecutionMetricsClient(c.config)
 	c.EvaluationStat = NewEvaluationStatClient(c.config)
-	c.EventFile = NewEventFileClient(c.config)
 	c.ExectionInfo = NewExectionInfoClient(c.config)
 	c.FilesMetric = NewFilesMetricClient(c.config)
 	c.GarbageMetrics = NewGarbageMetricsClient(c.config)
@@ -179,7 +168,6 @@ func (c *Client) init() {
 	c.OutputGroup = NewOutputGroupClient(c.config)
 	c.PackageLoadMetrics = NewPackageLoadMetricsClient(c.config)
 	c.PackageMetrics = NewPackageMetricsClient(c.config)
-	c.RaceStatistics = NewRaceStatisticsClient(c.config)
 	c.ResourceUsage = NewResourceUsageClient(c.config)
 	c.RunnerCount = NewRunnerCountClient(c.config)
 	c.SourceControl = NewSourceControlClient(c.config)
@@ -285,48 +273,45 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                     ctx,
-		config:                  cfg,
-		ActionCacheStatistics:   NewActionCacheStatisticsClient(cfg),
-		ActionData:              NewActionDataClient(cfg),
-		ActionSummary:           NewActionSummaryClient(cfg),
-		ArtifactMetrics:         NewArtifactMetricsClient(cfg),
-		BazelInvocation:         NewBazelInvocationClient(cfg),
-		BazelInvocationProblem:  NewBazelInvocationProblemClient(cfg),
-		Blob:                    NewBlobClient(cfg),
-		Build:                   NewBuildClient(cfg),
-		BuildGraphMetrics:       NewBuildGraphMetricsClient(cfg),
-		CumulativeMetrics:       NewCumulativeMetricsClient(cfg),
-		DynamicExecutionMetrics: NewDynamicExecutionMetricsClient(cfg),
-		EvaluationStat:          NewEvaluationStatClient(cfg),
-		EventFile:               NewEventFileClient(cfg),
-		ExectionInfo:            NewExectionInfoClient(cfg),
-		FilesMetric:             NewFilesMetricClient(cfg),
-		GarbageMetrics:          NewGarbageMetricsClient(cfg),
-		MemoryMetrics:           NewMemoryMetricsClient(cfg),
-		Metrics:                 NewMetricsClient(cfg),
-		MissDetail:              NewMissDetailClient(cfg),
-		NamedSetOfFiles:         NewNamedSetOfFilesClient(cfg),
-		NetworkMetrics:          NewNetworkMetricsClient(cfg),
-		OutputGroup:             NewOutputGroupClient(cfg),
-		PackageLoadMetrics:      NewPackageLoadMetricsClient(cfg),
-		PackageMetrics:          NewPackageMetricsClient(cfg),
-		RaceStatistics:          NewRaceStatisticsClient(cfg),
-		ResourceUsage:           NewResourceUsageClient(cfg),
-		RunnerCount:             NewRunnerCountClient(cfg),
-		SourceControl:           NewSourceControlClient(cfg),
-		SystemNetworkStats:      NewSystemNetworkStatsClient(cfg),
-		TargetComplete:          NewTargetCompleteClient(cfg),
-		TargetConfigured:        NewTargetConfiguredClient(cfg),
-		TargetMetrics:           NewTargetMetricsClient(cfg),
-		TargetPair:              NewTargetPairClient(cfg),
-		TestCollection:          NewTestCollectionClient(cfg),
-		TestFile:                NewTestFileClient(cfg),
-		TestResultBES:           NewTestResultBESClient(cfg),
-		TestSummary:             NewTestSummaryClient(cfg),
-		TimingBreakdown:         NewTimingBreakdownClient(cfg),
-		TimingChild:             NewTimingChildClient(cfg),
-		TimingMetrics:           NewTimingMetricsClient(cfg),
+		ctx:                    ctx,
+		config:                 cfg,
+		ActionCacheStatistics:  NewActionCacheStatisticsClient(cfg),
+		ActionData:             NewActionDataClient(cfg),
+		ActionSummary:          NewActionSummaryClient(cfg),
+		ArtifactMetrics:        NewArtifactMetricsClient(cfg),
+		BazelInvocation:        NewBazelInvocationClient(cfg),
+		BazelInvocationProblem: NewBazelInvocationProblemClient(cfg),
+		Blob:                   NewBlobClient(cfg),
+		Build:                  NewBuildClient(cfg),
+		BuildGraphMetrics:      NewBuildGraphMetricsClient(cfg),
+		CumulativeMetrics:      NewCumulativeMetricsClient(cfg),
+		EvaluationStat:         NewEvaluationStatClient(cfg),
+		ExectionInfo:           NewExectionInfoClient(cfg),
+		FilesMetric:            NewFilesMetricClient(cfg),
+		GarbageMetrics:         NewGarbageMetricsClient(cfg),
+		MemoryMetrics:          NewMemoryMetricsClient(cfg),
+		Metrics:                NewMetricsClient(cfg),
+		MissDetail:             NewMissDetailClient(cfg),
+		NamedSetOfFiles:        NewNamedSetOfFilesClient(cfg),
+		NetworkMetrics:         NewNetworkMetricsClient(cfg),
+		OutputGroup:            NewOutputGroupClient(cfg),
+		PackageLoadMetrics:     NewPackageLoadMetricsClient(cfg),
+		PackageMetrics:         NewPackageMetricsClient(cfg),
+		ResourceUsage:          NewResourceUsageClient(cfg),
+		RunnerCount:            NewRunnerCountClient(cfg),
+		SourceControl:          NewSourceControlClient(cfg),
+		SystemNetworkStats:     NewSystemNetworkStatsClient(cfg),
+		TargetComplete:         NewTargetCompleteClient(cfg),
+		TargetConfigured:       NewTargetConfiguredClient(cfg),
+		TargetMetrics:          NewTargetMetricsClient(cfg),
+		TargetPair:             NewTargetPairClient(cfg),
+		TestCollection:         NewTestCollectionClient(cfg),
+		TestFile:               NewTestFileClient(cfg),
+		TestResultBES:          NewTestResultBESClient(cfg),
+		TestSummary:            NewTestSummaryClient(cfg),
+		TimingBreakdown:        NewTimingBreakdownClient(cfg),
+		TimingChild:            NewTimingChildClient(cfg),
+		TimingMetrics:          NewTimingMetricsClient(cfg),
 	}, nil
 }
 
@@ -344,48 +329,45 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                     ctx,
-		config:                  cfg,
-		ActionCacheStatistics:   NewActionCacheStatisticsClient(cfg),
-		ActionData:              NewActionDataClient(cfg),
-		ActionSummary:           NewActionSummaryClient(cfg),
-		ArtifactMetrics:         NewArtifactMetricsClient(cfg),
-		BazelInvocation:         NewBazelInvocationClient(cfg),
-		BazelInvocationProblem:  NewBazelInvocationProblemClient(cfg),
-		Blob:                    NewBlobClient(cfg),
-		Build:                   NewBuildClient(cfg),
-		BuildGraphMetrics:       NewBuildGraphMetricsClient(cfg),
-		CumulativeMetrics:       NewCumulativeMetricsClient(cfg),
-		DynamicExecutionMetrics: NewDynamicExecutionMetricsClient(cfg),
-		EvaluationStat:          NewEvaluationStatClient(cfg),
-		EventFile:               NewEventFileClient(cfg),
-		ExectionInfo:            NewExectionInfoClient(cfg),
-		FilesMetric:             NewFilesMetricClient(cfg),
-		GarbageMetrics:          NewGarbageMetricsClient(cfg),
-		MemoryMetrics:           NewMemoryMetricsClient(cfg),
-		Metrics:                 NewMetricsClient(cfg),
-		MissDetail:              NewMissDetailClient(cfg),
-		NamedSetOfFiles:         NewNamedSetOfFilesClient(cfg),
-		NetworkMetrics:          NewNetworkMetricsClient(cfg),
-		OutputGroup:             NewOutputGroupClient(cfg),
-		PackageLoadMetrics:      NewPackageLoadMetricsClient(cfg),
-		PackageMetrics:          NewPackageMetricsClient(cfg),
-		RaceStatistics:          NewRaceStatisticsClient(cfg),
-		ResourceUsage:           NewResourceUsageClient(cfg),
-		RunnerCount:             NewRunnerCountClient(cfg),
-		SourceControl:           NewSourceControlClient(cfg),
-		SystemNetworkStats:      NewSystemNetworkStatsClient(cfg),
-		TargetComplete:          NewTargetCompleteClient(cfg),
-		TargetConfigured:        NewTargetConfiguredClient(cfg),
-		TargetMetrics:           NewTargetMetricsClient(cfg),
-		TargetPair:              NewTargetPairClient(cfg),
-		TestCollection:          NewTestCollectionClient(cfg),
-		TestFile:                NewTestFileClient(cfg),
-		TestResultBES:           NewTestResultBESClient(cfg),
-		TestSummary:             NewTestSummaryClient(cfg),
-		TimingBreakdown:         NewTimingBreakdownClient(cfg),
-		TimingChild:             NewTimingChildClient(cfg),
-		TimingMetrics:           NewTimingMetricsClient(cfg),
+		ctx:                    ctx,
+		config:                 cfg,
+		ActionCacheStatistics:  NewActionCacheStatisticsClient(cfg),
+		ActionData:             NewActionDataClient(cfg),
+		ActionSummary:          NewActionSummaryClient(cfg),
+		ArtifactMetrics:        NewArtifactMetricsClient(cfg),
+		BazelInvocation:        NewBazelInvocationClient(cfg),
+		BazelInvocationProblem: NewBazelInvocationProblemClient(cfg),
+		Blob:                   NewBlobClient(cfg),
+		Build:                  NewBuildClient(cfg),
+		BuildGraphMetrics:      NewBuildGraphMetricsClient(cfg),
+		CumulativeMetrics:      NewCumulativeMetricsClient(cfg),
+		EvaluationStat:         NewEvaluationStatClient(cfg),
+		ExectionInfo:           NewExectionInfoClient(cfg),
+		FilesMetric:            NewFilesMetricClient(cfg),
+		GarbageMetrics:         NewGarbageMetricsClient(cfg),
+		MemoryMetrics:          NewMemoryMetricsClient(cfg),
+		Metrics:                NewMetricsClient(cfg),
+		MissDetail:             NewMissDetailClient(cfg),
+		NamedSetOfFiles:        NewNamedSetOfFilesClient(cfg),
+		NetworkMetrics:         NewNetworkMetricsClient(cfg),
+		OutputGroup:            NewOutputGroupClient(cfg),
+		PackageLoadMetrics:     NewPackageLoadMetricsClient(cfg),
+		PackageMetrics:         NewPackageMetricsClient(cfg),
+		ResourceUsage:          NewResourceUsageClient(cfg),
+		RunnerCount:            NewRunnerCountClient(cfg),
+		SourceControl:          NewSourceControlClient(cfg),
+		SystemNetworkStats:     NewSystemNetworkStatsClient(cfg),
+		TargetComplete:         NewTargetCompleteClient(cfg),
+		TargetConfigured:       NewTargetConfiguredClient(cfg),
+		TargetMetrics:          NewTargetMetricsClient(cfg),
+		TargetPair:             NewTargetPairClient(cfg),
+		TestCollection:         NewTestCollectionClient(cfg),
+		TestFile:               NewTestFileClient(cfg),
+		TestResultBES:          NewTestResultBESClient(cfg),
+		TestSummary:            NewTestSummaryClient(cfg),
+		TimingBreakdown:        NewTimingBreakdownClient(cfg),
+		TimingChild:            NewTimingChildClient(cfg),
+		TimingMetrics:          NewTimingMetricsClient(cfg),
 	}, nil
 }
 
@@ -417,13 +399,12 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
 		c.BazelInvocation, c.BazelInvocationProblem, c.Blob, c.Build,
-		c.BuildGraphMetrics, c.CumulativeMetrics, c.DynamicExecutionMetrics,
-		c.EvaluationStat, c.EventFile, c.ExectionInfo, c.FilesMetric, c.GarbageMetrics,
-		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics,
-		c.OutputGroup, c.PackageLoadMetrics, c.PackageMetrics, c.RaceStatistics,
-		c.ResourceUsage, c.RunnerCount, c.SourceControl, c.SystemNetworkStats,
-		c.TargetComplete, c.TargetConfigured, c.TargetMetrics, c.TargetPair,
-		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
+		c.BuildGraphMetrics, c.CumulativeMetrics, c.EvaluationStat, c.ExectionInfo,
+		c.FilesMetric, c.GarbageMetrics, c.MemoryMetrics, c.Metrics, c.MissDetail,
+		c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup, c.PackageLoadMetrics,
+		c.PackageMetrics, c.ResourceUsage, c.RunnerCount, c.SourceControl,
+		c.SystemNetworkStats, c.TargetComplete, c.TargetConfigured, c.TargetMetrics,
+		c.TargetPair, c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
 		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
 	} {
 		n.Use(hooks...)
@@ -436,13 +417,12 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
 		c.BazelInvocation, c.BazelInvocationProblem, c.Blob, c.Build,
-		c.BuildGraphMetrics, c.CumulativeMetrics, c.DynamicExecutionMetrics,
-		c.EvaluationStat, c.EventFile, c.ExectionInfo, c.FilesMetric, c.GarbageMetrics,
-		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics,
-		c.OutputGroup, c.PackageLoadMetrics, c.PackageMetrics, c.RaceStatistics,
-		c.ResourceUsage, c.RunnerCount, c.SourceControl, c.SystemNetworkStats,
-		c.TargetComplete, c.TargetConfigured, c.TargetMetrics, c.TargetPair,
-		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
+		c.BuildGraphMetrics, c.CumulativeMetrics, c.EvaluationStat, c.ExectionInfo,
+		c.FilesMetric, c.GarbageMetrics, c.MemoryMetrics, c.Metrics, c.MissDetail,
+		c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup, c.PackageLoadMetrics,
+		c.PackageMetrics, c.ResourceUsage, c.RunnerCount, c.SourceControl,
+		c.SystemNetworkStats, c.TargetComplete, c.TargetConfigured, c.TargetMetrics,
+		c.TargetPair, c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
 		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
 	} {
 		n.Intercept(interceptors...)
@@ -472,12 +452,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.BuildGraphMetrics.mutate(ctx, m)
 	case *CumulativeMetricsMutation:
 		return c.CumulativeMetrics.mutate(ctx, m)
-	case *DynamicExecutionMetricsMutation:
-		return c.DynamicExecutionMetrics.mutate(ctx, m)
 	case *EvaluationStatMutation:
 		return c.EvaluationStat.mutate(ctx, m)
-	case *EventFileMutation:
-		return c.EventFile.mutate(ctx, m)
 	case *ExectionInfoMutation:
 		return c.ExectionInfo.mutate(ctx, m)
 	case *FilesMetricMutation:
@@ -500,8 +476,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.PackageLoadMetrics.mutate(ctx, m)
 	case *PackageMetricsMutation:
 		return c.PackageMetrics.mutate(ctx, m)
-	case *RaceStatisticsMutation:
-		return c.RaceStatistics.mutate(ctx, m)
 	case *ResourceUsageMutation:
 		return c.ResourceUsage.mutate(ctx, m)
 	case *RunnerCountMutation:
@@ -1367,22 +1341,6 @@ func (c *BazelInvocationClient) GetX(ctx context.Context, id int) *BazelInvocati
 		panic(err)
 	}
 	return obj
-}
-
-// QueryEventFile queries the event_file edge of a BazelInvocation.
-func (c *BazelInvocationClient) QueryEventFile(bi *BazelInvocation) *EventFileQuery {
-	query := (&EventFileClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := bi.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
-			sqlgraph.To(eventfile.Table, eventfile.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, bazelinvocation.EventFileTable, bazelinvocation.EventFileColumn),
-		)
-		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
 }
 
 // QueryBuild queries the build edge of a BazelInvocation.
@@ -2315,171 +2273,6 @@ func (c *CumulativeMetricsClient) mutate(ctx context.Context, m *CumulativeMetri
 	}
 }
 
-// DynamicExecutionMetricsClient is a client for the DynamicExecutionMetrics schema.
-type DynamicExecutionMetricsClient struct {
-	config
-}
-
-// NewDynamicExecutionMetricsClient returns a client for the DynamicExecutionMetrics from the given config.
-func NewDynamicExecutionMetricsClient(c config) *DynamicExecutionMetricsClient {
-	return &DynamicExecutionMetricsClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `dynamicexecutionmetrics.Hooks(f(g(h())))`.
-func (c *DynamicExecutionMetricsClient) Use(hooks ...Hook) {
-	c.hooks.DynamicExecutionMetrics = append(c.hooks.DynamicExecutionMetrics, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `dynamicexecutionmetrics.Intercept(f(g(h())))`.
-func (c *DynamicExecutionMetricsClient) Intercept(interceptors ...Interceptor) {
-	c.inters.DynamicExecutionMetrics = append(c.inters.DynamicExecutionMetrics, interceptors...)
-}
-
-// Create returns a builder for creating a DynamicExecutionMetrics entity.
-func (c *DynamicExecutionMetricsClient) Create() *DynamicExecutionMetricsCreate {
-	mutation := newDynamicExecutionMetricsMutation(c.config, OpCreate)
-	return &DynamicExecutionMetricsCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of DynamicExecutionMetrics entities.
-func (c *DynamicExecutionMetricsClient) CreateBulk(builders ...*DynamicExecutionMetricsCreate) *DynamicExecutionMetricsCreateBulk {
-	return &DynamicExecutionMetricsCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *DynamicExecutionMetricsClient) MapCreateBulk(slice any, setFunc func(*DynamicExecutionMetricsCreate, int)) *DynamicExecutionMetricsCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &DynamicExecutionMetricsCreateBulk{err: fmt.Errorf("calling to DynamicExecutionMetricsClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*DynamicExecutionMetricsCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &DynamicExecutionMetricsCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for DynamicExecutionMetrics.
-func (c *DynamicExecutionMetricsClient) Update() *DynamicExecutionMetricsUpdate {
-	mutation := newDynamicExecutionMetricsMutation(c.config, OpUpdate)
-	return &DynamicExecutionMetricsUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *DynamicExecutionMetricsClient) UpdateOne(dem *DynamicExecutionMetrics) *DynamicExecutionMetricsUpdateOne {
-	mutation := newDynamicExecutionMetricsMutation(c.config, OpUpdateOne, withDynamicExecutionMetrics(dem))
-	return &DynamicExecutionMetricsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *DynamicExecutionMetricsClient) UpdateOneID(id int) *DynamicExecutionMetricsUpdateOne {
-	mutation := newDynamicExecutionMetricsMutation(c.config, OpUpdateOne, withDynamicExecutionMetricsID(id))
-	return &DynamicExecutionMetricsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for DynamicExecutionMetrics.
-func (c *DynamicExecutionMetricsClient) Delete() *DynamicExecutionMetricsDelete {
-	mutation := newDynamicExecutionMetricsMutation(c.config, OpDelete)
-	return &DynamicExecutionMetricsDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *DynamicExecutionMetricsClient) DeleteOne(dem *DynamicExecutionMetrics) *DynamicExecutionMetricsDeleteOne {
-	return c.DeleteOneID(dem.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *DynamicExecutionMetricsClient) DeleteOneID(id int) *DynamicExecutionMetricsDeleteOne {
-	builder := c.Delete().Where(dynamicexecutionmetrics.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &DynamicExecutionMetricsDeleteOne{builder}
-}
-
-// Query returns a query builder for DynamicExecutionMetrics.
-func (c *DynamicExecutionMetricsClient) Query() *DynamicExecutionMetricsQuery {
-	return &DynamicExecutionMetricsQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeDynamicExecutionMetrics},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a DynamicExecutionMetrics entity by its id.
-func (c *DynamicExecutionMetricsClient) Get(ctx context.Context, id int) (*DynamicExecutionMetrics, error) {
-	return c.Query().Where(dynamicexecutionmetrics.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *DynamicExecutionMetricsClient) GetX(ctx context.Context, id int) *DynamicExecutionMetrics {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryMetrics queries the metrics edge of a DynamicExecutionMetrics.
-func (c *DynamicExecutionMetricsClient) QueryMetrics(dem *DynamicExecutionMetrics) *MetricsQuery {
-	query := (&MetricsClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := dem.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID, id),
-			sqlgraph.To(metrics.Table, metrics.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, dynamicexecutionmetrics.MetricsTable, dynamicexecutionmetrics.MetricsColumn),
-		)
-		fromV = sqlgraph.Neighbors(dem.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryRaceStatistics queries the race_statistics edge of a DynamicExecutionMetrics.
-func (c *DynamicExecutionMetricsClient) QueryRaceStatistics(dem *DynamicExecutionMetrics) *RaceStatisticsQuery {
-	query := (&RaceStatisticsClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := dem.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID, id),
-			sqlgraph.To(racestatistics.Table, racestatistics.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, dynamicexecutionmetrics.RaceStatisticsTable, dynamicexecutionmetrics.RaceStatisticsColumn),
-		)
-		fromV = sqlgraph.Neighbors(dem.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *DynamicExecutionMetricsClient) Hooks() []Hook {
-	return c.hooks.DynamicExecutionMetrics
-}
-
-// Interceptors returns the client interceptors.
-func (c *DynamicExecutionMetricsClient) Interceptors() []Interceptor {
-	return c.inters.DynamicExecutionMetrics
-}
-
-func (c *DynamicExecutionMetricsClient) mutate(ctx context.Context, m *DynamicExecutionMetricsMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&DynamicExecutionMetricsCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&DynamicExecutionMetricsUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&DynamicExecutionMetricsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&DynamicExecutionMetricsDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown DynamicExecutionMetrics mutation op: %q", m.Op())
-	}
-}
-
 // EvaluationStatClient is a client for the EvaluationStat schema.
 type EvaluationStatClient struct {
 	config
@@ -2626,155 +2419,6 @@ func (c *EvaluationStatClient) mutate(ctx context.Context, m *EvaluationStatMuta
 		return (&EvaluationStatDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown EvaluationStat mutation op: %q", m.Op())
-	}
-}
-
-// EventFileClient is a client for the EventFile schema.
-type EventFileClient struct {
-	config
-}
-
-// NewEventFileClient returns a client for the EventFile from the given config.
-func NewEventFileClient(c config) *EventFileClient {
-	return &EventFileClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `eventfile.Hooks(f(g(h())))`.
-func (c *EventFileClient) Use(hooks ...Hook) {
-	c.hooks.EventFile = append(c.hooks.EventFile, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `eventfile.Intercept(f(g(h())))`.
-func (c *EventFileClient) Intercept(interceptors ...Interceptor) {
-	c.inters.EventFile = append(c.inters.EventFile, interceptors...)
-}
-
-// Create returns a builder for creating a EventFile entity.
-func (c *EventFileClient) Create() *EventFileCreate {
-	mutation := newEventFileMutation(c.config, OpCreate)
-	return &EventFileCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of EventFile entities.
-func (c *EventFileClient) CreateBulk(builders ...*EventFileCreate) *EventFileCreateBulk {
-	return &EventFileCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *EventFileClient) MapCreateBulk(slice any, setFunc func(*EventFileCreate, int)) *EventFileCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &EventFileCreateBulk{err: fmt.Errorf("calling to EventFileClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*EventFileCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &EventFileCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for EventFile.
-func (c *EventFileClient) Update() *EventFileUpdate {
-	mutation := newEventFileMutation(c.config, OpUpdate)
-	return &EventFileUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *EventFileClient) UpdateOne(ef *EventFile) *EventFileUpdateOne {
-	mutation := newEventFileMutation(c.config, OpUpdateOne, withEventFile(ef))
-	return &EventFileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *EventFileClient) UpdateOneID(id int) *EventFileUpdateOne {
-	mutation := newEventFileMutation(c.config, OpUpdateOne, withEventFileID(id))
-	return &EventFileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for EventFile.
-func (c *EventFileClient) Delete() *EventFileDelete {
-	mutation := newEventFileMutation(c.config, OpDelete)
-	return &EventFileDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *EventFileClient) DeleteOne(ef *EventFile) *EventFileDeleteOne {
-	return c.DeleteOneID(ef.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *EventFileClient) DeleteOneID(id int) *EventFileDeleteOne {
-	builder := c.Delete().Where(eventfile.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &EventFileDeleteOne{builder}
-}
-
-// Query returns a query builder for EventFile.
-func (c *EventFileClient) Query() *EventFileQuery {
-	return &EventFileQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeEventFile},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a EventFile entity by its id.
-func (c *EventFileClient) Get(ctx context.Context, id int) (*EventFile, error) {
-	return c.Query().Where(eventfile.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *EventFileClient) GetX(ctx context.Context, id int) *EventFile {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryBazelInvocation queries the bazel_invocation edge of a EventFile.
-func (c *EventFileClient) QueryBazelInvocation(ef *EventFile) *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ef.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(eventfile.Table, eventfile.FieldID, id),
-			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, eventfile.BazelInvocationTable, eventfile.BazelInvocationColumn),
-		)
-		fromV = sqlgraph.Neighbors(ef.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *EventFileClient) Hooks() []Hook {
-	return c.hooks.EventFile
-}
-
-// Interceptors returns the client interceptors.
-func (c *EventFileClient) Interceptors() []Interceptor {
-	return c.inters.EventFile
-}
-
-func (c *EventFileClient) mutate(ctx context.Context, m *EventFileMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&EventFileCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&EventFileUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&EventFileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&EventFileDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown EventFile mutation op: %q", m.Op())
 	}
 }
 
@@ -3667,22 +3311,6 @@ func (c *MetricsClient) QueryNetworkMetrics(m *Metrics) *NetworkMetricsQuery {
 			sqlgraph.From(metrics.Table, metrics.FieldID, id),
 			sqlgraph.To(networkmetrics.Table, networkmetrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, false, metrics.NetworkMetricsTable, metrics.NetworkMetricsColumn),
-		)
-		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryDynamicExecutionMetrics queries the dynamic_execution_metrics edge of a Metrics.
-func (c *MetricsClient) QueryDynamicExecutionMetrics(m *Metrics) *DynamicExecutionMetricsQuery {
-	query := (&DynamicExecutionMetricsClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(metrics.Table, metrics.FieldID, id),
-			sqlgraph.To(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, metrics.DynamicExecutionMetricsTable, metrics.DynamicExecutionMetricsColumn),
 		)
 		fromV = sqlgraph.Neighbors(m.driver.Dialect(), step)
 		return fromV, nil
@@ -4718,155 +4346,6 @@ func (c *PackageMetricsClient) mutate(ctx context.Context, m *PackageMetricsMuta
 		return (&PackageMetricsDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown PackageMetrics mutation op: %q", m.Op())
-	}
-}
-
-// RaceStatisticsClient is a client for the RaceStatistics schema.
-type RaceStatisticsClient struct {
-	config
-}
-
-// NewRaceStatisticsClient returns a client for the RaceStatistics from the given config.
-func NewRaceStatisticsClient(c config) *RaceStatisticsClient {
-	return &RaceStatisticsClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `racestatistics.Hooks(f(g(h())))`.
-func (c *RaceStatisticsClient) Use(hooks ...Hook) {
-	c.hooks.RaceStatistics = append(c.hooks.RaceStatistics, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `racestatistics.Intercept(f(g(h())))`.
-func (c *RaceStatisticsClient) Intercept(interceptors ...Interceptor) {
-	c.inters.RaceStatistics = append(c.inters.RaceStatistics, interceptors...)
-}
-
-// Create returns a builder for creating a RaceStatistics entity.
-func (c *RaceStatisticsClient) Create() *RaceStatisticsCreate {
-	mutation := newRaceStatisticsMutation(c.config, OpCreate)
-	return &RaceStatisticsCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of RaceStatistics entities.
-func (c *RaceStatisticsClient) CreateBulk(builders ...*RaceStatisticsCreate) *RaceStatisticsCreateBulk {
-	return &RaceStatisticsCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *RaceStatisticsClient) MapCreateBulk(slice any, setFunc func(*RaceStatisticsCreate, int)) *RaceStatisticsCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &RaceStatisticsCreateBulk{err: fmt.Errorf("calling to RaceStatisticsClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*RaceStatisticsCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &RaceStatisticsCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for RaceStatistics.
-func (c *RaceStatisticsClient) Update() *RaceStatisticsUpdate {
-	mutation := newRaceStatisticsMutation(c.config, OpUpdate)
-	return &RaceStatisticsUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *RaceStatisticsClient) UpdateOne(rs *RaceStatistics) *RaceStatisticsUpdateOne {
-	mutation := newRaceStatisticsMutation(c.config, OpUpdateOne, withRaceStatistics(rs))
-	return &RaceStatisticsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *RaceStatisticsClient) UpdateOneID(id int) *RaceStatisticsUpdateOne {
-	mutation := newRaceStatisticsMutation(c.config, OpUpdateOne, withRaceStatisticsID(id))
-	return &RaceStatisticsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for RaceStatistics.
-func (c *RaceStatisticsClient) Delete() *RaceStatisticsDelete {
-	mutation := newRaceStatisticsMutation(c.config, OpDelete)
-	return &RaceStatisticsDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *RaceStatisticsClient) DeleteOne(rs *RaceStatistics) *RaceStatisticsDeleteOne {
-	return c.DeleteOneID(rs.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *RaceStatisticsClient) DeleteOneID(id int) *RaceStatisticsDeleteOne {
-	builder := c.Delete().Where(racestatistics.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &RaceStatisticsDeleteOne{builder}
-}
-
-// Query returns a query builder for RaceStatistics.
-func (c *RaceStatisticsClient) Query() *RaceStatisticsQuery {
-	return &RaceStatisticsQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeRaceStatistics},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a RaceStatistics entity by its id.
-func (c *RaceStatisticsClient) Get(ctx context.Context, id int) (*RaceStatistics, error) {
-	return c.Query().Where(racestatistics.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *RaceStatisticsClient) GetX(ctx context.Context, id int) *RaceStatistics {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryDynamicExecutionMetrics queries the dynamic_execution_metrics edge of a RaceStatistics.
-func (c *RaceStatisticsClient) QueryDynamicExecutionMetrics(rs *RaceStatistics) *DynamicExecutionMetricsQuery {
-	query := (&DynamicExecutionMetricsClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := rs.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(racestatistics.Table, racestatistics.FieldID, id),
-			sqlgraph.To(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, racestatistics.DynamicExecutionMetricsTable, racestatistics.DynamicExecutionMetricsColumn),
-		)
-		fromV = sqlgraph.Neighbors(rs.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *RaceStatisticsClient) Hooks() []Hook {
-	return c.hooks.RaceStatistics
-}
-
-// Interceptors returns the client interceptors.
-func (c *RaceStatisticsClient) Interceptors() []Interceptor {
-	return c.inters.RaceStatistics
-}
-
-func (c *RaceStatisticsClient) mutate(ctx context.Context, m *RaceStatisticsMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&RaceStatisticsCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&RaceStatisticsUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&RaceStatisticsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&RaceStatisticsDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown RaceStatistics mutation op: %q", m.Op())
 	}
 }
 
@@ -7302,23 +6781,21 @@ type (
 	hooks struct {
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		BazelInvocation, BazelInvocationProblem, Blob, Build, BuildGraphMetrics,
-		CumulativeMetrics, DynamicExecutionMetrics, EvaluationStat, EventFile,
-		ExectionInfo, FilesMetric, GarbageMetrics, MemoryMetrics, Metrics, MissDetail,
-		NamedSetOfFiles, NetworkMetrics, OutputGroup, PackageLoadMetrics,
-		PackageMetrics, RaceStatistics, ResourceUsage, RunnerCount, SourceControl,
-		SystemNetworkStats, TargetComplete, TargetConfigured, TargetMetrics,
-		TargetPair, TestCollection, TestFile, TestResultBES, TestSummary,
-		TimingBreakdown, TimingChild, TimingMetrics []ent.Hook
+		CumulativeMetrics, EvaluationStat, ExectionInfo, FilesMetric, GarbageMetrics,
+		MemoryMetrics, Metrics, MissDetail, NamedSetOfFiles, NetworkMetrics,
+		OutputGroup, PackageLoadMetrics, PackageMetrics, ResourceUsage, RunnerCount,
+		SourceControl, SystemNetworkStats, TargetComplete, TargetConfigured,
+		TargetMetrics, TargetPair, TestCollection, TestFile, TestResultBES,
+		TestSummary, TimingBreakdown, TimingChild, TimingMetrics []ent.Hook
 	}
 	inters struct {
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		BazelInvocation, BazelInvocationProblem, Blob, Build, BuildGraphMetrics,
-		CumulativeMetrics, DynamicExecutionMetrics, EvaluationStat, EventFile,
-		ExectionInfo, FilesMetric, GarbageMetrics, MemoryMetrics, Metrics, MissDetail,
-		NamedSetOfFiles, NetworkMetrics, OutputGroup, PackageLoadMetrics,
-		PackageMetrics, RaceStatistics, ResourceUsage, RunnerCount, SourceControl,
-		SystemNetworkStats, TargetComplete, TargetConfigured, TargetMetrics,
-		TargetPair, TestCollection, TestFile, TestResultBES, TestSummary,
-		TimingBreakdown, TimingChild, TimingMetrics []ent.Interceptor
+		CumulativeMetrics, EvaluationStat, ExectionInfo, FilesMetric, GarbageMetrics,
+		MemoryMetrics, Metrics, MissDetail, NamedSetOfFiles, NetworkMetrics,
+		OutputGroup, PackageLoadMetrics, PackageMetrics, ResourceUsage, RunnerCount,
+		SourceControl, SystemNetworkStats, TargetComplete, TargetConfigured,
+		TargetMetrics, TargetPair, TestCollection, TestFile, TestResultBES,
+		TestSummary, TimingBreakdown, TimingChild, TimingMetrics []ent.Interceptor
 	}
 )

@@ -170,7 +170,6 @@ type Summary struct {
 	InstanceName                          string
 	Problems                              []detectors.Problem
 	RelatedFiles                          map[string]string
-	EventFileURL                          string
 	BEPCompleted                          bool
 	StartedAt                             time.Time
 	InvocationID                          string
@@ -205,16 +204,15 @@ type Summary struct {
 // This aligngs with data found in the ent schema
 // https://github.com/bazelbuild/bazel/blob/master/src/main/java/com/google/devtools/build/lib/buildeventstream/proto/build_event_stream.proto#L900
 type Metrics struct {
-	ActionSummary           ActionSummary
-	MemoryMetrics           MemoryMetrics
-	TargetMetrics           TargetMetrics
-	PackageMetrics          PackageMetrics
-	TimingMetrics           TimingMetrics
-	CumulativeMetrics       CumulativeMetrics
-	ArtifactMetrics         ArtifactMetrics
-	BuildGraphMetrics       BuildGraphMetrics
-	NetworkMetrics          NetworkMetrics
-	DynamicExecutionMetrics DynamicExecutionMetrics
+	ActionSummary     ActionSummary
+	MemoryMetrics     MemoryMetrics
+	TargetMetrics     TargetMetrics
+	PackageMetrics    PackageMetrics
+	TimingMetrics     TimingMetrics
+	CumulativeMetrics CumulativeMetrics
+	ArtifactMetrics   ArtifactMetrics
+	BuildGraphMetrics BuildGraphMetrics
+	NetworkMetrics    NetworkMetrics
 }
 
 // InvocationSummary struct.
@@ -377,20 +375,6 @@ type PackageLoadMetrics struct {
 	ComputationSteps   uint64
 	NumTransitiveLoads uint64
 	PackageOverhead    uint64
-}
-
-// DynamicExecutionMetrics struct
-type DynamicExecutionMetrics struct {
-	RaceStatistics []RaceStatistics
-}
-
-// RaceStatistics struct
-type RaceStatistics struct {
-	Mnemonic     string
-	LocalRunner  string
-	RemoteRunner string
-	LocalWins    int64
-	RemoteWins   int64
 }
 
 // EvaluationStat struct

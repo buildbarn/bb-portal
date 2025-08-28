@@ -82,13 +82,6 @@ func (Metrics) Edges() []ent.Edge {
 				entsql.OnDelete(entsql.Cascade),
 			),
 
-		// Dynamic execution metrics if available.
-		edge.To("dynamic_execution_metrics", DynamicExecutionMetrics.Type).
-			Unique().
-			Annotations(
-				entsql.OnDelete(entsql.Cascade),
-			),
-
 		// Build graph metrics.
 		edge.To("build_graph_metrics", BuildGraphMetrics.Type).
 			Unique().

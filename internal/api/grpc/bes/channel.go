@@ -65,11 +65,6 @@ func (c *buildEventChannel) Finalize() error {
 		cancel()
 		return err
 	}
-	// Hack for eventFile being required
-	summaryReport.EventFileURL = fmt.Sprintf(
-		"grpc://localhost:8082/google.devtools.build.v1/PublishLifecycleEvent?invocationId=%s&buildID=%s&component=%s",
-		c.streamID.GetInvocationId(), c.streamID.GetBuildId(), c.streamID.GetComponent(),
-	)
 	slog.InfoContext(c.ctx, "Saving invocation",
 		"InvocationId", c.streamID.GetInvocationId(),
 		"BuildId", c.streamID.GetBuildId(),

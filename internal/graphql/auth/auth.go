@@ -70,9 +70,7 @@ func AddDatabaseAuthInterceptors(authorizerConfiguration *auth_pb.AuthorizerConf
 	dbClient.Build.Intercept(createInterceptor(instanceNameAuthorizer, isBuildAllowed))
 	dbClient.BuildGraphMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isBuildGraphMetricsAllowed))
 	dbClient.CumulativeMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isCumulativeMetricsAllowed))
-	dbClient.DynamicExecutionMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isDynamicExecutionMetricsAllowed))
 	dbClient.EvaluationStat.Intercept(createInterceptor(instanceNameAuthorizer, isEvaluationStatAllowed))
-	dbClient.EventFile.Intercept(createInterceptor(instanceNameAuthorizer, isEventFileAllowed))
 	dbClient.ExectionInfo.Intercept(createInterceptor(instanceNameAuthorizer, isExectionInfoAllowed))
 	dbClient.FilesMetric.Intercept(createInterceptor(instanceNameAuthorizer, isFilesMetricAllowed))
 	dbClient.GarbageMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isGarbageMetricsAllowed))
@@ -84,7 +82,6 @@ func AddDatabaseAuthInterceptors(authorizerConfiguration *auth_pb.AuthorizerConf
 	dbClient.OutputGroup.Intercept(createInterceptor(instanceNameAuthorizer, isOutputGroupAllowed))
 	dbClient.PackageLoadMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isPackageLoadMetricsAllowed))
 	dbClient.PackageMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isPackageMetricsAllowed))
-	dbClient.RaceStatistics.Intercept(createInterceptor(instanceNameAuthorizer, isRaceStatisticsAllowed))
 	dbClient.ResourceUsage.Intercept(createInterceptor(instanceNameAuthorizer, isResourceUsageAllowed))
 	dbClient.RunnerCount.Intercept(createInterceptor(instanceNameAuthorizer, isRunnerCountAllowed))
 	dbClient.SourceControl.Intercept(createInterceptor(instanceNameAuthorizer, isSourceControlAllowed))
@@ -151,19 +148,9 @@ func isCumulativeMetricsAllowed(ctx context.Context, instanceNameAuthorizer auth
 	return err == nil && metrics != nil
 }
 
-func isDynamicExecutionMetricsAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, dynamicExecutionMetrics *ent.DynamicExecutionMetrics) bool {
-	metrics, err := dynamicExecutionMetrics.Metrics(ctx)
-	return err == nil && metrics != nil
-}
-
 func isEvaluationStatAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, evaluationStat *ent.EvaluationStat) bool {
 	buildGraphMetrics, err := evaluationStat.BuildGraphMetrics(ctx)
 	return err == nil && buildGraphMetrics != nil
-}
-
-func isEventFileAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, eventFile *ent.EventFile) bool {
-	invocation, err := eventFile.BazelInvocation(ctx)
-	return err == nil && invocation != nil
 }
 
 func isExectionInfoAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, exectionInfo *ent.ExectionInfo) bool {
@@ -219,11 +206,6 @@ func isPackageLoadMetricsAllowed(ctx context.Context, instanceNameAuthorizer aut
 func isPackageMetricsAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, packageMetrics *ent.PackageMetrics) bool {
 	metrics, err := packageMetrics.Metrics(ctx)
 	return err == nil && metrics != nil
-}
-
-func isRaceStatisticsAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, raceStatistics *ent.RaceStatistics) bool {
-	dynamicExecutionMetrics, err := raceStatistics.DynamicExecutionMetrics(ctx)
-	return err == nil && dynamicExecutionMetrics != nil
 }
 
 func isResourceUsageAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, resourceUsage *ent.ResourceUsage) bool {

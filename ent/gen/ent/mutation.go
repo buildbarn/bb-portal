@@ -22,9 +22,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
@@ -37,7 +35,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -66,46 +63,43 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeActionCacheStatistics   = "ActionCacheStatistics"
-	TypeActionData              = "ActionData"
-	TypeActionSummary           = "ActionSummary"
-	TypeArtifactMetrics         = "ArtifactMetrics"
-	TypeBazelInvocation         = "BazelInvocation"
-	TypeBazelInvocationProblem  = "BazelInvocationProblem"
-	TypeBlob                    = "Blob"
-	TypeBuild                   = "Build"
-	TypeBuildGraphMetrics       = "BuildGraphMetrics"
-	TypeCumulativeMetrics       = "CumulativeMetrics"
-	TypeDynamicExecutionMetrics = "DynamicExecutionMetrics"
-	TypeEvaluationStat          = "EvaluationStat"
-	TypeEventFile               = "EventFile"
-	TypeExectionInfo            = "ExectionInfo"
-	TypeFilesMetric             = "FilesMetric"
-	TypeGarbageMetrics          = "GarbageMetrics"
-	TypeMemoryMetrics           = "MemoryMetrics"
-	TypeMetrics                 = "Metrics"
-	TypeMissDetail              = "MissDetail"
-	TypeNamedSetOfFiles         = "NamedSetOfFiles"
-	TypeNetworkMetrics          = "NetworkMetrics"
-	TypeOutputGroup             = "OutputGroup"
-	TypePackageLoadMetrics      = "PackageLoadMetrics"
-	TypePackageMetrics          = "PackageMetrics"
-	TypeRaceStatistics          = "RaceStatistics"
-	TypeResourceUsage           = "ResourceUsage"
-	TypeRunnerCount             = "RunnerCount"
-	TypeSourceControl           = "SourceControl"
-	TypeSystemNetworkStats      = "SystemNetworkStats"
-	TypeTargetComplete          = "TargetComplete"
-	TypeTargetConfigured        = "TargetConfigured"
-	TypeTargetMetrics           = "TargetMetrics"
-	TypeTargetPair              = "TargetPair"
-	TypeTestCollection          = "TestCollection"
-	TypeTestFile                = "TestFile"
-	TypeTestResultBES           = "TestResultBES"
-	TypeTestSummary             = "TestSummary"
-	TypeTimingBreakdown         = "TimingBreakdown"
-	TypeTimingChild             = "TimingChild"
-	TypeTimingMetrics           = "TimingMetrics"
+	TypeActionCacheStatistics  = "ActionCacheStatistics"
+	TypeActionData             = "ActionData"
+	TypeActionSummary          = "ActionSummary"
+	TypeArtifactMetrics        = "ArtifactMetrics"
+	TypeBazelInvocation        = "BazelInvocation"
+	TypeBazelInvocationProblem = "BazelInvocationProblem"
+	TypeBlob                   = "Blob"
+	TypeBuild                  = "Build"
+	TypeBuildGraphMetrics      = "BuildGraphMetrics"
+	TypeCumulativeMetrics      = "CumulativeMetrics"
+	TypeEvaluationStat         = "EvaluationStat"
+	TypeExectionInfo           = "ExectionInfo"
+	TypeFilesMetric            = "FilesMetric"
+	TypeGarbageMetrics         = "GarbageMetrics"
+	TypeMemoryMetrics          = "MemoryMetrics"
+	TypeMetrics                = "Metrics"
+	TypeMissDetail             = "MissDetail"
+	TypeNamedSetOfFiles        = "NamedSetOfFiles"
+	TypeNetworkMetrics         = "NetworkMetrics"
+	TypeOutputGroup            = "OutputGroup"
+	TypePackageLoadMetrics     = "PackageLoadMetrics"
+	TypePackageMetrics         = "PackageMetrics"
+	TypeResourceUsage          = "ResourceUsage"
+	TypeRunnerCount            = "RunnerCount"
+	TypeSourceControl          = "SourceControl"
+	TypeSystemNetworkStats     = "SystemNetworkStats"
+	TypeTargetComplete         = "TargetComplete"
+	TypeTargetConfigured       = "TargetConfigured"
+	TypeTargetMetrics          = "TargetMetrics"
+	TypeTargetPair             = "TargetPair"
+	TypeTestCollection         = "TestCollection"
+	TypeTestFile               = "TestFile"
+	TypeTestResultBES          = "TestResultBES"
+	TypeTestSummary            = "TestSummary"
+	TypeTimingBreakdown        = "TimingBreakdown"
+	TypeTimingChild            = "TimingChild"
+	TypeTimingMetrics          = "TimingMetrics"
 )
 
 // ActionCacheStatisticsMutation represents an operation that mutates the ActionCacheStatistics nodes in the graph.
@@ -3730,8 +3724,6 @@ type BazelInvocationMutation struct {
 	profile_name           *string
 	instance_name          *string
 	clearedFields          map[string]struct{}
-	event_file             *int
-	clearedevent_file      bool
 	build                  *int
 	clearedbuild           bool
 	problems               map[int]struct{}
@@ -4815,45 +4807,6 @@ func (m *BazelInvocationMutation) ResetInstanceName() {
 	delete(m.clearedFields, bazelinvocation.FieldInstanceName)
 }
 
-// SetEventFileID sets the "event_file" edge to the EventFile entity by id.
-func (m *BazelInvocationMutation) SetEventFileID(id int) {
-	m.event_file = &id
-}
-
-// ClearEventFile clears the "event_file" edge to the EventFile entity.
-func (m *BazelInvocationMutation) ClearEventFile() {
-	m.clearedevent_file = true
-}
-
-// EventFileCleared reports if the "event_file" edge to the EventFile entity was cleared.
-func (m *BazelInvocationMutation) EventFileCleared() bool {
-	return m.clearedevent_file
-}
-
-// EventFileID returns the "event_file" edge ID in the mutation.
-func (m *BazelInvocationMutation) EventFileID() (id int, exists bool) {
-	if m.event_file != nil {
-		return *m.event_file, true
-	}
-	return
-}
-
-// EventFileIDs returns the "event_file" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// EventFileID instead. It exists only for internal usage by the builders.
-func (m *BazelInvocationMutation) EventFileIDs() (ids []int) {
-	if id := m.event_file; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetEventFile resets all changes to the "event_file" edge.
-func (m *BazelInvocationMutation) ResetEventFile() {
-	m.event_file = nil
-	m.clearedevent_file = false
-}
-
 // SetBuildID sets the "build" edge to the Build entity by id.
 func (m *BazelInvocationMutation) SetBuildID(id int) {
 	m.build = &id
@@ -5715,10 +5668,7 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 7)
-	if m.event_file != nil {
-		edges = append(edges, bazelinvocation.EdgeEventFile)
-	}
+	edges := make([]string, 0, 6)
 	if m.build != nil {
 		edges = append(edges, bazelinvocation.EdgeBuild)
 	}
@@ -5744,10 +5694,6 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case bazelinvocation.EdgeEventFile:
-		if id := m.event_file; id != nil {
-			return []ent.Value{*id}
-		}
 	case bazelinvocation.EdgeBuild:
 		if id := m.build; id != nil {
 			return []ent.Value{*id}
@@ -5784,7 +5730,7 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 7)
+	edges := make([]string, 0, 6)
 	if m.removedproblems != nil {
 		edges = append(edges, bazelinvocation.EdgeProblems)
 	}
@@ -5825,10 +5771,7 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 7)
-	if m.clearedevent_file {
-		edges = append(edges, bazelinvocation.EdgeEventFile)
-	}
+	edges := make([]string, 0, 6)
 	if m.clearedbuild {
 		edges = append(edges, bazelinvocation.EdgeBuild)
 	}
@@ -5854,8 +5797,6 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 	switch name {
-	case bazelinvocation.EdgeEventFile:
-		return m.clearedevent_file
 	case bazelinvocation.EdgeBuild:
 		return m.clearedbuild
 	case bazelinvocation.EdgeProblems:
@@ -5876,9 +5817,6 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *BazelInvocationMutation) ClearEdge(name string) error {
 	switch name {
-	case bazelinvocation.EdgeEventFile:
-		m.ClearEventFile()
-		return nil
 	case bazelinvocation.EdgeBuild:
 		m.ClearBuild()
 		return nil
@@ -5896,9 +5834,6 @@ func (m *BazelInvocationMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *BazelInvocationMutation) ResetEdge(name string) error {
 	switch name {
-	case bazelinvocation.EdgeEventFile:
-		m.ResetEventFile()
-		return nil
 	case bazelinvocation.EdgeBuild:
 		m.ResetBuild()
 		return nil
@@ -9896,422 +9831,6 @@ func (m *CumulativeMetricsMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown CumulativeMetrics edge %s", name)
 }
 
-// DynamicExecutionMetricsMutation represents an operation that mutates the DynamicExecutionMetrics nodes in the graph.
-type DynamicExecutionMetricsMutation struct {
-	config
-	op                     Op
-	typ                    string
-	id                     *int
-	clearedFields          map[string]struct{}
-	metrics                *int
-	clearedmetrics         bool
-	race_statistics        map[int]struct{}
-	removedrace_statistics map[int]struct{}
-	clearedrace_statistics bool
-	done                   bool
-	oldValue               func(context.Context) (*DynamicExecutionMetrics, error)
-	predicates             []predicate.DynamicExecutionMetrics
-}
-
-var _ ent.Mutation = (*DynamicExecutionMetricsMutation)(nil)
-
-// dynamicexecutionmetricsOption allows management of the mutation configuration using functional options.
-type dynamicexecutionmetricsOption func(*DynamicExecutionMetricsMutation)
-
-// newDynamicExecutionMetricsMutation creates new mutation for the DynamicExecutionMetrics entity.
-func newDynamicExecutionMetricsMutation(c config, op Op, opts ...dynamicexecutionmetricsOption) *DynamicExecutionMetricsMutation {
-	m := &DynamicExecutionMetricsMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeDynamicExecutionMetrics,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withDynamicExecutionMetricsID sets the ID field of the mutation.
-func withDynamicExecutionMetricsID(id int) dynamicexecutionmetricsOption {
-	return func(m *DynamicExecutionMetricsMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *DynamicExecutionMetrics
-		)
-		m.oldValue = func(ctx context.Context) (*DynamicExecutionMetrics, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().DynamicExecutionMetrics.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withDynamicExecutionMetrics sets the old DynamicExecutionMetrics of the mutation.
-func withDynamicExecutionMetrics(node *DynamicExecutionMetrics) dynamicexecutionmetricsOption {
-	return func(m *DynamicExecutionMetricsMutation) {
-		m.oldValue = func(context.Context) (*DynamicExecutionMetrics, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m DynamicExecutionMetricsMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m DynamicExecutionMetricsMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *DynamicExecutionMetricsMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *DynamicExecutionMetricsMutation) IDs(ctx context.Context) ([]int, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().DynamicExecutionMetrics.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetMetricsID sets the "metrics" edge to the Metrics entity by id.
-func (m *DynamicExecutionMetricsMutation) SetMetricsID(id int) {
-	m.metrics = &id
-}
-
-// ClearMetrics clears the "metrics" edge to the Metrics entity.
-func (m *DynamicExecutionMetricsMutation) ClearMetrics() {
-	m.clearedmetrics = true
-}
-
-// MetricsCleared reports if the "metrics" edge to the Metrics entity was cleared.
-func (m *DynamicExecutionMetricsMutation) MetricsCleared() bool {
-	return m.clearedmetrics
-}
-
-// MetricsID returns the "metrics" edge ID in the mutation.
-func (m *DynamicExecutionMetricsMutation) MetricsID() (id int, exists bool) {
-	if m.metrics != nil {
-		return *m.metrics, true
-	}
-	return
-}
-
-// MetricsIDs returns the "metrics" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// MetricsID instead. It exists only for internal usage by the builders.
-func (m *DynamicExecutionMetricsMutation) MetricsIDs() (ids []int) {
-	if id := m.metrics; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetMetrics resets all changes to the "metrics" edge.
-func (m *DynamicExecutionMetricsMutation) ResetMetrics() {
-	m.metrics = nil
-	m.clearedmetrics = false
-}
-
-// AddRaceStatisticIDs adds the "race_statistics" edge to the RaceStatistics entity by ids.
-func (m *DynamicExecutionMetricsMutation) AddRaceStatisticIDs(ids ...int) {
-	if m.race_statistics == nil {
-		m.race_statistics = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.race_statistics[ids[i]] = struct{}{}
-	}
-}
-
-// ClearRaceStatistics clears the "race_statistics" edge to the RaceStatistics entity.
-func (m *DynamicExecutionMetricsMutation) ClearRaceStatistics() {
-	m.clearedrace_statistics = true
-}
-
-// RaceStatisticsCleared reports if the "race_statistics" edge to the RaceStatistics entity was cleared.
-func (m *DynamicExecutionMetricsMutation) RaceStatisticsCleared() bool {
-	return m.clearedrace_statistics
-}
-
-// RemoveRaceStatisticIDs removes the "race_statistics" edge to the RaceStatistics entity by IDs.
-func (m *DynamicExecutionMetricsMutation) RemoveRaceStatisticIDs(ids ...int) {
-	if m.removedrace_statistics == nil {
-		m.removedrace_statistics = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.race_statistics, ids[i])
-		m.removedrace_statistics[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedRaceStatistics returns the removed IDs of the "race_statistics" edge to the RaceStatistics entity.
-func (m *DynamicExecutionMetricsMutation) RemovedRaceStatisticsIDs() (ids []int) {
-	for id := range m.removedrace_statistics {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// RaceStatisticsIDs returns the "race_statistics" edge IDs in the mutation.
-func (m *DynamicExecutionMetricsMutation) RaceStatisticsIDs() (ids []int) {
-	for id := range m.race_statistics {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetRaceStatistics resets all changes to the "race_statistics" edge.
-func (m *DynamicExecutionMetricsMutation) ResetRaceStatistics() {
-	m.race_statistics = nil
-	m.clearedrace_statistics = false
-	m.removedrace_statistics = nil
-}
-
-// Where appends a list predicates to the DynamicExecutionMetricsMutation builder.
-func (m *DynamicExecutionMetricsMutation) Where(ps ...predicate.DynamicExecutionMetrics) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the DynamicExecutionMetricsMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *DynamicExecutionMetricsMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.DynamicExecutionMetrics, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *DynamicExecutionMetricsMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *DynamicExecutionMetricsMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (DynamicExecutionMetrics).
-func (m *DynamicExecutionMetricsMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *DynamicExecutionMetricsMutation) Fields() []string {
-	fields := make([]string, 0, 0)
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *DynamicExecutionMetricsMutation) Field(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *DynamicExecutionMetricsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	return nil, fmt.Errorf("unknown DynamicExecutionMetrics field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *DynamicExecutionMetricsMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown DynamicExecutionMetrics field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *DynamicExecutionMetricsMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *DynamicExecutionMetricsMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *DynamicExecutionMetricsMutation) AddField(name string, value ent.Value) error {
-	return fmt.Errorf("unknown DynamicExecutionMetrics numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *DynamicExecutionMetricsMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *DynamicExecutionMetricsMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *DynamicExecutionMetricsMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown DynamicExecutionMetrics nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *DynamicExecutionMetricsMutation) ResetField(name string) error {
-	return fmt.Errorf("unknown DynamicExecutionMetrics field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *DynamicExecutionMetricsMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.metrics != nil {
-		edges = append(edges, dynamicexecutionmetrics.EdgeMetrics)
-	}
-	if m.race_statistics != nil {
-		edges = append(edges, dynamicexecutionmetrics.EdgeRaceStatistics)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *DynamicExecutionMetricsMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case dynamicexecutionmetrics.EdgeMetrics:
-		if id := m.metrics; id != nil {
-			return []ent.Value{*id}
-		}
-	case dynamicexecutionmetrics.EdgeRaceStatistics:
-		ids := make([]ent.Value, 0, len(m.race_statistics))
-		for id := range m.race_statistics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *DynamicExecutionMetricsMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.removedrace_statistics != nil {
-		edges = append(edges, dynamicexecutionmetrics.EdgeRaceStatistics)
-	}
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *DynamicExecutionMetricsMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case dynamicexecutionmetrics.EdgeRaceStatistics:
-		ids := make([]ent.Value, 0, len(m.removedrace_statistics))
-		for id := range m.removedrace_statistics {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *DynamicExecutionMetricsMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.clearedmetrics {
-		edges = append(edges, dynamicexecutionmetrics.EdgeMetrics)
-	}
-	if m.clearedrace_statistics {
-		edges = append(edges, dynamicexecutionmetrics.EdgeRaceStatistics)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *DynamicExecutionMetricsMutation) EdgeCleared(name string) bool {
-	switch name {
-	case dynamicexecutionmetrics.EdgeMetrics:
-		return m.clearedmetrics
-	case dynamicexecutionmetrics.EdgeRaceStatistics:
-		return m.clearedrace_statistics
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *DynamicExecutionMetricsMutation) ClearEdge(name string) error {
-	switch name {
-	case dynamicexecutionmetrics.EdgeMetrics:
-		m.ClearMetrics()
-		return nil
-	}
-	return fmt.Errorf("unknown DynamicExecutionMetrics unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *DynamicExecutionMetricsMutation) ResetEdge(name string) error {
-	switch name {
-	case dynamicexecutionmetrics.EdgeMetrics:
-		m.ResetMetrics()
-		return nil
-	case dynamicexecutionmetrics.EdgeRaceStatistics:
-		m.ResetRaceStatistics()
-		return nil
-	}
-	return fmt.Errorf("unknown DynamicExecutionMetrics edge %s", name)
-}
-
 // EvaluationStatMutation represents an operation that mutates the EvaluationStat nodes in the graph.
 type EvaluationStatMutation struct {
 	config
@@ -10835,691 +10354,6 @@ func (m *EvaluationStatMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown EvaluationStat edge %s", name)
-}
-
-// EventFileMutation represents an operation that mutates the EventFile nodes in the graph.
-type EventFileMutation struct {
-	config
-	op                      Op
-	typ                     string
-	id                      *int
-	url                     *string
-	mod_time                *time.Time
-	protocol                *string
-	mime_type               *string
-	status                  *string
-	reason                  *string
-	clearedFields           map[string]struct{}
-	bazel_invocation        *int
-	clearedbazel_invocation bool
-	done                    bool
-	oldValue                func(context.Context) (*EventFile, error)
-	predicates              []predicate.EventFile
-}
-
-var _ ent.Mutation = (*EventFileMutation)(nil)
-
-// eventfileOption allows management of the mutation configuration using functional options.
-type eventfileOption func(*EventFileMutation)
-
-// newEventFileMutation creates new mutation for the EventFile entity.
-func newEventFileMutation(c config, op Op, opts ...eventfileOption) *EventFileMutation {
-	m := &EventFileMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeEventFile,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withEventFileID sets the ID field of the mutation.
-func withEventFileID(id int) eventfileOption {
-	return func(m *EventFileMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *EventFile
-		)
-		m.oldValue = func(ctx context.Context) (*EventFile, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().EventFile.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withEventFile sets the old EventFile of the mutation.
-func withEventFile(node *EventFile) eventfileOption {
-	return func(m *EventFileMutation) {
-		m.oldValue = func(context.Context) (*EventFile, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m EventFileMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m EventFileMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *EventFileMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *EventFileMutation) IDs(ctx context.Context) ([]int, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().EventFile.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetURL sets the "url" field.
-func (m *EventFileMutation) SetURL(s string) {
-	m.url = &s
-}
-
-// URL returns the value of the "url" field in the mutation.
-func (m *EventFileMutation) URL() (r string, exists bool) {
-	v := m.url
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldURL returns the old "url" field's value of the EventFile entity.
-// If the EventFile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EventFileMutation) OldURL(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldURL is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldURL requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldURL: %w", err)
-	}
-	return oldValue.URL, nil
-}
-
-// ResetURL resets all changes to the "url" field.
-func (m *EventFileMutation) ResetURL() {
-	m.url = nil
-}
-
-// SetModTime sets the "mod_time" field.
-func (m *EventFileMutation) SetModTime(t time.Time) {
-	m.mod_time = &t
-}
-
-// ModTime returns the value of the "mod_time" field in the mutation.
-func (m *EventFileMutation) ModTime() (r time.Time, exists bool) {
-	v := m.mod_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldModTime returns the old "mod_time" field's value of the EventFile entity.
-// If the EventFile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EventFileMutation) OldModTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldModTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldModTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldModTime: %w", err)
-	}
-	return oldValue.ModTime, nil
-}
-
-// ResetModTime resets all changes to the "mod_time" field.
-func (m *EventFileMutation) ResetModTime() {
-	m.mod_time = nil
-}
-
-// SetProtocol sets the "protocol" field.
-func (m *EventFileMutation) SetProtocol(s string) {
-	m.protocol = &s
-}
-
-// Protocol returns the value of the "protocol" field in the mutation.
-func (m *EventFileMutation) Protocol() (r string, exists bool) {
-	v := m.protocol
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldProtocol returns the old "protocol" field's value of the EventFile entity.
-// If the EventFile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EventFileMutation) OldProtocol(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProtocol is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProtocol requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProtocol: %w", err)
-	}
-	return oldValue.Protocol, nil
-}
-
-// ResetProtocol resets all changes to the "protocol" field.
-func (m *EventFileMutation) ResetProtocol() {
-	m.protocol = nil
-}
-
-// SetMimeType sets the "mime_type" field.
-func (m *EventFileMutation) SetMimeType(s string) {
-	m.mime_type = &s
-}
-
-// MimeType returns the value of the "mime_type" field in the mutation.
-func (m *EventFileMutation) MimeType() (r string, exists bool) {
-	v := m.mime_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldMimeType returns the old "mime_type" field's value of the EventFile entity.
-// If the EventFile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EventFileMutation) OldMimeType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMimeType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMimeType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMimeType: %w", err)
-	}
-	return oldValue.MimeType, nil
-}
-
-// ResetMimeType resets all changes to the "mime_type" field.
-func (m *EventFileMutation) ResetMimeType() {
-	m.mime_type = nil
-}
-
-// SetStatus sets the "status" field.
-func (m *EventFileMutation) SetStatus(s string) {
-	m.status = &s
-}
-
-// Status returns the value of the "status" field in the mutation.
-func (m *EventFileMutation) Status() (r string, exists bool) {
-	v := m.status
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStatus returns the old "status" field's value of the EventFile entity.
-// If the EventFile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EventFileMutation) OldStatus(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStatus requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
-	}
-	return oldValue.Status, nil
-}
-
-// ResetStatus resets all changes to the "status" field.
-func (m *EventFileMutation) ResetStatus() {
-	m.status = nil
-}
-
-// SetReason sets the "reason" field.
-func (m *EventFileMutation) SetReason(s string) {
-	m.reason = &s
-}
-
-// Reason returns the value of the "reason" field in the mutation.
-func (m *EventFileMutation) Reason() (r string, exists bool) {
-	v := m.reason
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldReason returns the old "reason" field's value of the EventFile entity.
-// If the EventFile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EventFileMutation) OldReason(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldReason is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldReason requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldReason: %w", err)
-	}
-	return oldValue.Reason, nil
-}
-
-// ClearReason clears the value of the "reason" field.
-func (m *EventFileMutation) ClearReason() {
-	m.reason = nil
-	m.clearedFields[eventfile.FieldReason] = struct{}{}
-}
-
-// ReasonCleared returns if the "reason" field was cleared in this mutation.
-func (m *EventFileMutation) ReasonCleared() bool {
-	_, ok := m.clearedFields[eventfile.FieldReason]
-	return ok
-}
-
-// ResetReason resets all changes to the "reason" field.
-func (m *EventFileMutation) ResetReason() {
-	m.reason = nil
-	delete(m.clearedFields, eventfile.FieldReason)
-}
-
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *EventFileMutation) SetBazelInvocationID(id int) {
-	m.bazel_invocation = &id
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (m *EventFileMutation) ClearBazelInvocation() {
-	m.clearedbazel_invocation = true
-}
-
-// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
-func (m *EventFileMutation) BazelInvocationCleared() bool {
-	return m.clearedbazel_invocation
-}
-
-// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *EventFileMutation) BazelInvocationID() (id int, exists bool) {
-	if m.bazel_invocation != nil {
-		return *m.bazel_invocation, true
-	}
-	return
-}
-
-// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *EventFileMutation) BazelInvocationIDs() (ids []int) {
-	if id := m.bazel_invocation; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
-func (m *EventFileMutation) ResetBazelInvocation() {
-	m.bazel_invocation = nil
-	m.clearedbazel_invocation = false
-}
-
-// Where appends a list predicates to the EventFileMutation builder.
-func (m *EventFileMutation) Where(ps ...predicate.EventFile) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the EventFileMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *EventFileMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.EventFile, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *EventFileMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *EventFileMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (EventFile).
-func (m *EventFileMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *EventFileMutation) Fields() []string {
-	fields := make([]string, 0, 6)
-	if m.url != nil {
-		fields = append(fields, eventfile.FieldURL)
-	}
-	if m.mod_time != nil {
-		fields = append(fields, eventfile.FieldModTime)
-	}
-	if m.protocol != nil {
-		fields = append(fields, eventfile.FieldProtocol)
-	}
-	if m.mime_type != nil {
-		fields = append(fields, eventfile.FieldMimeType)
-	}
-	if m.status != nil {
-		fields = append(fields, eventfile.FieldStatus)
-	}
-	if m.reason != nil {
-		fields = append(fields, eventfile.FieldReason)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *EventFileMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case eventfile.FieldURL:
-		return m.URL()
-	case eventfile.FieldModTime:
-		return m.ModTime()
-	case eventfile.FieldProtocol:
-		return m.Protocol()
-	case eventfile.FieldMimeType:
-		return m.MimeType()
-	case eventfile.FieldStatus:
-		return m.Status()
-	case eventfile.FieldReason:
-		return m.Reason()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *EventFileMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case eventfile.FieldURL:
-		return m.OldURL(ctx)
-	case eventfile.FieldModTime:
-		return m.OldModTime(ctx)
-	case eventfile.FieldProtocol:
-		return m.OldProtocol(ctx)
-	case eventfile.FieldMimeType:
-		return m.OldMimeType(ctx)
-	case eventfile.FieldStatus:
-		return m.OldStatus(ctx)
-	case eventfile.FieldReason:
-		return m.OldReason(ctx)
-	}
-	return nil, fmt.Errorf("unknown EventFile field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *EventFileMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case eventfile.FieldURL:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetURL(v)
-		return nil
-	case eventfile.FieldModTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetModTime(v)
-		return nil
-	case eventfile.FieldProtocol:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetProtocol(v)
-		return nil
-	case eventfile.FieldMimeType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetMimeType(v)
-		return nil
-	case eventfile.FieldStatus:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStatus(v)
-		return nil
-	case eventfile.FieldReason:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetReason(v)
-		return nil
-	}
-	return fmt.Errorf("unknown EventFile field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *EventFileMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *EventFileMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *EventFileMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown EventFile numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *EventFileMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(eventfile.FieldReason) {
-		fields = append(fields, eventfile.FieldReason)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *EventFileMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *EventFileMutation) ClearField(name string) error {
-	switch name {
-	case eventfile.FieldReason:
-		m.ClearReason()
-		return nil
-	}
-	return fmt.Errorf("unknown EventFile nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *EventFileMutation) ResetField(name string) error {
-	switch name {
-	case eventfile.FieldURL:
-		m.ResetURL()
-		return nil
-	case eventfile.FieldModTime:
-		m.ResetModTime()
-		return nil
-	case eventfile.FieldProtocol:
-		m.ResetProtocol()
-		return nil
-	case eventfile.FieldMimeType:
-		m.ResetMimeType()
-		return nil
-	case eventfile.FieldStatus:
-		m.ResetStatus()
-		return nil
-	case eventfile.FieldReason:
-		m.ResetReason()
-		return nil
-	}
-	return fmt.Errorf("unknown EventFile field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *EventFileMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.bazel_invocation != nil {
-		edges = append(edges, eventfile.EdgeBazelInvocation)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *EventFileMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case eventfile.EdgeBazelInvocation:
-		if id := m.bazel_invocation; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *EventFileMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *EventFileMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *EventFileMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedbazel_invocation {
-		edges = append(edges, eventfile.EdgeBazelInvocation)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *EventFileMutation) EdgeCleared(name string) bool {
-	switch name {
-	case eventfile.EdgeBazelInvocation:
-		return m.clearedbazel_invocation
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *EventFileMutation) ClearEdge(name string) error {
-	switch name {
-	case eventfile.EdgeBazelInvocation:
-		m.ClearBazelInvocation()
-		return nil
-	}
-	return fmt.Errorf("unknown EventFile unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *EventFileMutation) ResetEdge(name string) error {
-	switch name {
-	case eventfile.EdgeBazelInvocation:
-		m.ResetBazelInvocation()
-		return nil
-	}
-	return fmt.Errorf("unknown EventFile edge %s", name)
 }
 
 // ExectionInfoMutation represents an operation that mutates the ExectionInfo nodes in the graph.
@@ -14282,35 +13116,33 @@ func (m *MemoryMetricsMutation) ResetEdge(name string) error {
 // MetricsMutation represents an operation that mutates the Metrics nodes in the graph.
 type MetricsMutation struct {
 	config
-	op                               Op
-	typ                              string
-	id                               *int
-	clearedFields                    map[string]struct{}
-	bazel_invocation                 *int
-	clearedbazel_invocation          bool
-	action_summary                   *int
-	clearedaction_summary            bool
-	memory_metrics                   *int
-	clearedmemory_metrics            bool
-	target_metrics                   *int
-	clearedtarget_metrics            bool
-	package_metrics                  *int
-	clearedpackage_metrics           bool
-	timing_metrics                   *int
-	clearedtiming_metrics            bool
-	cumulative_metrics               *int
-	clearedcumulative_metrics        bool
-	artifact_metrics                 *int
-	clearedartifact_metrics          bool
-	network_metrics                  *int
-	clearednetwork_metrics           bool
-	dynamic_execution_metrics        *int
-	cleareddynamic_execution_metrics bool
-	build_graph_metrics              *int
-	clearedbuild_graph_metrics       bool
-	done                             bool
-	oldValue                         func(context.Context) (*Metrics, error)
-	predicates                       []predicate.Metrics
+	op                         Op
+	typ                        string
+	id                         *int
+	clearedFields              map[string]struct{}
+	bazel_invocation           *int
+	clearedbazel_invocation    bool
+	action_summary             *int
+	clearedaction_summary      bool
+	memory_metrics             *int
+	clearedmemory_metrics      bool
+	target_metrics             *int
+	clearedtarget_metrics      bool
+	package_metrics            *int
+	clearedpackage_metrics     bool
+	timing_metrics             *int
+	clearedtiming_metrics      bool
+	cumulative_metrics         *int
+	clearedcumulative_metrics  bool
+	artifact_metrics           *int
+	clearedartifact_metrics    bool
+	network_metrics            *int
+	clearednetwork_metrics     bool
+	build_graph_metrics        *int
+	clearedbuild_graph_metrics bool
+	done                       bool
+	oldValue                   func(context.Context) (*Metrics, error)
+	predicates                 []predicate.Metrics
 }
 
 var _ ent.Mutation = (*MetricsMutation)(nil)
@@ -14762,45 +13594,6 @@ func (m *MetricsMutation) ResetNetworkMetrics() {
 	m.clearednetwork_metrics = false
 }
 
-// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by id.
-func (m *MetricsMutation) SetDynamicExecutionMetricsID(id int) {
-	m.dynamic_execution_metrics = &id
-}
-
-// ClearDynamicExecutionMetrics clears the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
-func (m *MetricsMutation) ClearDynamicExecutionMetrics() {
-	m.cleareddynamic_execution_metrics = true
-}
-
-// DynamicExecutionMetricsCleared reports if the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity was cleared.
-func (m *MetricsMutation) DynamicExecutionMetricsCleared() bool {
-	return m.cleareddynamic_execution_metrics
-}
-
-// DynamicExecutionMetricsID returns the "dynamic_execution_metrics" edge ID in the mutation.
-func (m *MetricsMutation) DynamicExecutionMetricsID() (id int, exists bool) {
-	if m.dynamic_execution_metrics != nil {
-		return *m.dynamic_execution_metrics, true
-	}
-	return
-}
-
-// DynamicExecutionMetricsIDs returns the "dynamic_execution_metrics" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// DynamicExecutionMetricsID instead. It exists only for internal usage by the builders.
-func (m *MetricsMutation) DynamicExecutionMetricsIDs() (ids []int) {
-	if id := m.dynamic_execution_metrics; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetDynamicExecutionMetrics resets all changes to the "dynamic_execution_metrics" edge.
-func (m *MetricsMutation) ResetDynamicExecutionMetrics() {
-	m.dynamic_execution_metrics = nil
-	m.cleareddynamic_execution_metrics = false
-}
-
 // SetBuildGraphMetricsID sets the "build_graph_metrics" edge to the BuildGraphMetrics entity by id.
 func (m *MetricsMutation) SetBuildGraphMetricsID(id int) {
 	m.build_graph_metrics = &id
@@ -14948,7 +13741,7 @@ func (m *MetricsMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *MetricsMutation) AddedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 10)
 	if m.bazel_invocation != nil {
 		edges = append(edges, metrics.EdgeBazelInvocation)
 	}
@@ -14975,9 +13768,6 @@ func (m *MetricsMutation) AddedEdges() []string {
 	}
 	if m.network_metrics != nil {
 		edges = append(edges, metrics.EdgeNetworkMetrics)
-	}
-	if m.dynamic_execution_metrics != nil {
-		edges = append(edges, metrics.EdgeDynamicExecutionMetrics)
 	}
 	if m.build_graph_metrics != nil {
 		edges = append(edges, metrics.EdgeBuildGraphMetrics)
@@ -15025,10 +13815,6 @@ func (m *MetricsMutation) AddedIDs(name string) []ent.Value {
 		if id := m.network_metrics; id != nil {
 			return []ent.Value{*id}
 		}
-	case metrics.EdgeDynamicExecutionMetrics:
-		if id := m.dynamic_execution_metrics; id != nil {
-			return []ent.Value{*id}
-		}
 	case metrics.EdgeBuildGraphMetrics:
 		if id := m.build_graph_metrics; id != nil {
 			return []ent.Value{*id}
@@ -15039,7 +13825,7 @@ func (m *MetricsMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *MetricsMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 10)
 	return edges
 }
 
@@ -15051,7 +13837,7 @@ func (m *MetricsMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *MetricsMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 10)
 	if m.clearedbazel_invocation {
 		edges = append(edges, metrics.EdgeBazelInvocation)
 	}
@@ -15078,9 +13864,6 @@ func (m *MetricsMutation) ClearedEdges() []string {
 	}
 	if m.clearednetwork_metrics {
 		edges = append(edges, metrics.EdgeNetworkMetrics)
-	}
-	if m.cleareddynamic_execution_metrics {
-		edges = append(edges, metrics.EdgeDynamicExecutionMetrics)
 	}
 	if m.clearedbuild_graph_metrics {
 		edges = append(edges, metrics.EdgeBuildGraphMetrics)
@@ -15110,8 +13893,6 @@ func (m *MetricsMutation) EdgeCleared(name string) bool {
 		return m.clearedartifact_metrics
 	case metrics.EdgeNetworkMetrics:
 		return m.clearednetwork_metrics
-	case metrics.EdgeDynamicExecutionMetrics:
-		return m.cleareddynamic_execution_metrics
 	case metrics.EdgeBuildGraphMetrics:
 		return m.clearedbuild_graph_metrics
 	}
@@ -15148,9 +13929,6 @@ func (m *MetricsMutation) ClearEdge(name string) error {
 		return nil
 	case metrics.EdgeNetworkMetrics:
 		m.ClearNetworkMetrics()
-		return nil
-	case metrics.EdgeDynamicExecutionMetrics:
-		m.ClearDynamicExecutionMetrics()
 		return nil
 	case metrics.EdgeBuildGraphMetrics:
 		m.ClearBuildGraphMetrics()
@@ -15189,9 +13967,6 @@ func (m *MetricsMutation) ResetEdge(name string) error {
 		return nil
 	case metrics.EdgeNetworkMetrics:
 		m.ResetNetworkMetrics()
-		return nil
-	case metrics.EdgeDynamicExecutionMetrics:
-		m.ResetDynamicExecutionMetrics()
 		return nil
 	case metrics.EdgeBuildGraphMetrics:
 		m.ResetBuildGraphMetrics()
@@ -18710,784 +17485,6 @@ func (m *PackageMetricsMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown PackageMetrics edge %s", name)
-}
-
-// RaceStatisticsMutation represents an operation that mutates the RaceStatistics nodes in the graph.
-type RaceStatisticsMutation struct {
-	config
-	op                               Op
-	typ                              string
-	id                               *int
-	mnemonic                         *string
-	local_runner                     *string
-	remote_runner                    *string
-	local_wins                       *int64
-	addlocal_wins                    *int64
-	renote_wins                      *int64
-	addrenote_wins                   *int64
-	clearedFields                    map[string]struct{}
-	dynamic_execution_metrics        *int
-	cleareddynamic_execution_metrics bool
-	done                             bool
-	oldValue                         func(context.Context) (*RaceStatistics, error)
-	predicates                       []predicate.RaceStatistics
-}
-
-var _ ent.Mutation = (*RaceStatisticsMutation)(nil)
-
-// racestatisticsOption allows management of the mutation configuration using functional options.
-type racestatisticsOption func(*RaceStatisticsMutation)
-
-// newRaceStatisticsMutation creates new mutation for the RaceStatistics entity.
-func newRaceStatisticsMutation(c config, op Op, opts ...racestatisticsOption) *RaceStatisticsMutation {
-	m := &RaceStatisticsMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeRaceStatistics,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withRaceStatisticsID sets the ID field of the mutation.
-func withRaceStatisticsID(id int) racestatisticsOption {
-	return func(m *RaceStatisticsMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *RaceStatistics
-		)
-		m.oldValue = func(ctx context.Context) (*RaceStatistics, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().RaceStatistics.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withRaceStatistics sets the old RaceStatistics of the mutation.
-func withRaceStatistics(node *RaceStatistics) racestatisticsOption {
-	return func(m *RaceStatisticsMutation) {
-		m.oldValue = func(context.Context) (*RaceStatistics, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m RaceStatisticsMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m RaceStatisticsMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *RaceStatisticsMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *RaceStatisticsMutation) IDs(ctx context.Context) ([]int, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().RaceStatistics.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetMnemonic sets the "mnemonic" field.
-func (m *RaceStatisticsMutation) SetMnemonic(s string) {
-	m.mnemonic = &s
-}
-
-// Mnemonic returns the value of the "mnemonic" field in the mutation.
-func (m *RaceStatisticsMutation) Mnemonic() (r string, exists bool) {
-	v := m.mnemonic
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldMnemonic returns the old "mnemonic" field's value of the RaceStatistics entity.
-// If the RaceStatistics object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RaceStatisticsMutation) OldMnemonic(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMnemonic is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMnemonic requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMnemonic: %w", err)
-	}
-	return oldValue.Mnemonic, nil
-}
-
-// ClearMnemonic clears the value of the "mnemonic" field.
-func (m *RaceStatisticsMutation) ClearMnemonic() {
-	m.mnemonic = nil
-	m.clearedFields[racestatistics.FieldMnemonic] = struct{}{}
-}
-
-// MnemonicCleared returns if the "mnemonic" field was cleared in this mutation.
-func (m *RaceStatisticsMutation) MnemonicCleared() bool {
-	_, ok := m.clearedFields[racestatistics.FieldMnemonic]
-	return ok
-}
-
-// ResetMnemonic resets all changes to the "mnemonic" field.
-func (m *RaceStatisticsMutation) ResetMnemonic() {
-	m.mnemonic = nil
-	delete(m.clearedFields, racestatistics.FieldMnemonic)
-}
-
-// SetLocalRunner sets the "local_runner" field.
-func (m *RaceStatisticsMutation) SetLocalRunner(s string) {
-	m.local_runner = &s
-}
-
-// LocalRunner returns the value of the "local_runner" field in the mutation.
-func (m *RaceStatisticsMutation) LocalRunner() (r string, exists bool) {
-	v := m.local_runner
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLocalRunner returns the old "local_runner" field's value of the RaceStatistics entity.
-// If the RaceStatistics object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RaceStatisticsMutation) OldLocalRunner(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLocalRunner is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLocalRunner requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLocalRunner: %w", err)
-	}
-	return oldValue.LocalRunner, nil
-}
-
-// ClearLocalRunner clears the value of the "local_runner" field.
-func (m *RaceStatisticsMutation) ClearLocalRunner() {
-	m.local_runner = nil
-	m.clearedFields[racestatistics.FieldLocalRunner] = struct{}{}
-}
-
-// LocalRunnerCleared returns if the "local_runner" field was cleared in this mutation.
-func (m *RaceStatisticsMutation) LocalRunnerCleared() bool {
-	_, ok := m.clearedFields[racestatistics.FieldLocalRunner]
-	return ok
-}
-
-// ResetLocalRunner resets all changes to the "local_runner" field.
-func (m *RaceStatisticsMutation) ResetLocalRunner() {
-	m.local_runner = nil
-	delete(m.clearedFields, racestatistics.FieldLocalRunner)
-}
-
-// SetRemoteRunner sets the "remote_runner" field.
-func (m *RaceStatisticsMutation) SetRemoteRunner(s string) {
-	m.remote_runner = &s
-}
-
-// RemoteRunner returns the value of the "remote_runner" field in the mutation.
-func (m *RaceStatisticsMutation) RemoteRunner() (r string, exists bool) {
-	v := m.remote_runner
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRemoteRunner returns the old "remote_runner" field's value of the RaceStatistics entity.
-// If the RaceStatistics object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RaceStatisticsMutation) OldRemoteRunner(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRemoteRunner is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRemoteRunner requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRemoteRunner: %w", err)
-	}
-	return oldValue.RemoteRunner, nil
-}
-
-// ClearRemoteRunner clears the value of the "remote_runner" field.
-func (m *RaceStatisticsMutation) ClearRemoteRunner() {
-	m.remote_runner = nil
-	m.clearedFields[racestatistics.FieldRemoteRunner] = struct{}{}
-}
-
-// RemoteRunnerCleared returns if the "remote_runner" field was cleared in this mutation.
-func (m *RaceStatisticsMutation) RemoteRunnerCleared() bool {
-	_, ok := m.clearedFields[racestatistics.FieldRemoteRunner]
-	return ok
-}
-
-// ResetRemoteRunner resets all changes to the "remote_runner" field.
-func (m *RaceStatisticsMutation) ResetRemoteRunner() {
-	m.remote_runner = nil
-	delete(m.clearedFields, racestatistics.FieldRemoteRunner)
-}
-
-// SetLocalWins sets the "local_wins" field.
-func (m *RaceStatisticsMutation) SetLocalWins(i int64) {
-	m.local_wins = &i
-	m.addlocal_wins = nil
-}
-
-// LocalWins returns the value of the "local_wins" field in the mutation.
-func (m *RaceStatisticsMutation) LocalWins() (r int64, exists bool) {
-	v := m.local_wins
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLocalWins returns the old "local_wins" field's value of the RaceStatistics entity.
-// If the RaceStatistics object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RaceStatisticsMutation) OldLocalWins(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLocalWins is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLocalWins requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLocalWins: %w", err)
-	}
-	return oldValue.LocalWins, nil
-}
-
-// AddLocalWins adds i to the "local_wins" field.
-func (m *RaceStatisticsMutation) AddLocalWins(i int64) {
-	if m.addlocal_wins != nil {
-		*m.addlocal_wins += i
-	} else {
-		m.addlocal_wins = &i
-	}
-}
-
-// AddedLocalWins returns the value that was added to the "local_wins" field in this mutation.
-func (m *RaceStatisticsMutation) AddedLocalWins() (r int64, exists bool) {
-	v := m.addlocal_wins
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearLocalWins clears the value of the "local_wins" field.
-func (m *RaceStatisticsMutation) ClearLocalWins() {
-	m.local_wins = nil
-	m.addlocal_wins = nil
-	m.clearedFields[racestatistics.FieldLocalWins] = struct{}{}
-}
-
-// LocalWinsCleared returns if the "local_wins" field was cleared in this mutation.
-func (m *RaceStatisticsMutation) LocalWinsCleared() bool {
-	_, ok := m.clearedFields[racestatistics.FieldLocalWins]
-	return ok
-}
-
-// ResetLocalWins resets all changes to the "local_wins" field.
-func (m *RaceStatisticsMutation) ResetLocalWins() {
-	m.local_wins = nil
-	m.addlocal_wins = nil
-	delete(m.clearedFields, racestatistics.FieldLocalWins)
-}
-
-// SetRenoteWins sets the "renote_wins" field.
-func (m *RaceStatisticsMutation) SetRenoteWins(i int64) {
-	m.renote_wins = &i
-	m.addrenote_wins = nil
-}
-
-// RenoteWins returns the value of the "renote_wins" field in the mutation.
-func (m *RaceStatisticsMutation) RenoteWins() (r int64, exists bool) {
-	v := m.renote_wins
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRenoteWins returns the old "renote_wins" field's value of the RaceStatistics entity.
-// If the RaceStatistics object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RaceStatisticsMutation) OldRenoteWins(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRenoteWins is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRenoteWins requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRenoteWins: %w", err)
-	}
-	return oldValue.RenoteWins, nil
-}
-
-// AddRenoteWins adds i to the "renote_wins" field.
-func (m *RaceStatisticsMutation) AddRenoteWins(i int64) {
-	if m.addrenote_wins != nil {
-		*m.addrenote_wins += i
-	} else {
-		m.addrenote_wins = &i
-	}
-}
-
-// AddedRenoteWins returns the value that was added to the "renote_wins" field in this mutation.
-func (m *RaceStatisticsMutation) AddedRenoteWins() (r int64, exists bool) {
-	v := m.addrenote_wins
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearRenoteWins clears the value of the "renote_wins" field.
-func (m *RaceStatisticsMutation) ClearRenoteWins() {
-	m.renote_wins = nil
-	m.addrenote_wins = nil
-	m.clearedFields[racestatistics.FieldRenoteWins] = struct{}{}
-}
-
-// RenoteWinsCleared returns if the "renote_wins" field was cleared in this mutation.
-func (m *RaceStatisticsMutation) RenoteWinsCleared() bool {
-	_, ok := m.clearedFields[racestatistics.FieldRenoteWins]
-	return ok
-}
-
-// ResetRenoteWins resets all changes to the "renote_wins" field.
-func (m *RaceStatisticsMutation) ResetRenoteWins() {
-	m.renote_wins = nil
-	m.addrenote_wins = nil
-	delete(m.clearedFields, racestatistics.FieldRenoteWins)
-}
-
-// SetDynamicExecutionMetricsID sets the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity by id.
-func (m *RaceStatisticsMutation) SetDynamicExecutionMetricsID(id int) {
-	m.dynamic_execution_metrics = &id
-}
-
-// ClearDynamicExecutionMetrics clears the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity.
-func (m *RaceStatisticsMutation) ClearDynamicExecutionMetrics() {
-	m.cleareddynamic_execution_metrics = true
-}
-
-// DynamicExecutionMetricsCleared reports if the "dynamic_execution_metrics" edge to the DynamicExecutionMetrics entity was cleared.
-func (m *RaceStatisticsMutation) DynamicExecutionMetricsCleared() bool {
-	return m.cleareddynamic_execution_metrics
-}
-
-// DynamicExecutionMetricsID returns the "dynamic_execution_metrics" edge ID in the mutation.
-func (m *RaceStatisticsMutation) DynamicExecutionMetricsID() (id int, exists bool) {
-	if m.dynamic_execution_metrics != nil {
-		return *m.dynamic_execution_metrics, true
-	}
-	return
-}
-
-// DynamicExecutionMetricsIDs returns the "dynamic_execution_metrics" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// DynamicExecutionMetricsID instead. It exists only for internal usage by the builders.
-func (m *RaceStatisticsMutation) DynamicExecutionMetricsIDs() (ids []int) {
-	if id := m.dynamic_execution_metrics; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetDynamicExecutionMetrics resets all changes to the "dynamic_execution_metrics" edge.
-func (m *RaceStatisticsMutation) ResetDynamicExecutionMetrics() {
-	m.dynamic_execution_metrics = nil
-	m.cleareddynamic_execution_metrics = false
-}
-
-// Where appends a list predicates to the RaceStatisticsMutation builder.
-func (m *RaceStatisticsMutation) Where(ps ...predicate.RaceStatistics) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the RaceStatisticsMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *RaceStatisticsMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.RaceStatistics, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *RaceStatisticsMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *RaceStatisticsMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (RaceStatistics).
-func (m *RaceStatisticsMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *RaceStatisticsMutation) Fields() []string {
-	fields := make([]string, 0, 5)
-	if m.mnemonic != nil {
-		fields = append(fields, racestatistics.FieldMnemonic)
-	}
-	if m.local_runner != nil {
-		fields = append(fields, racestatistics.FieldLocalRunner)
-	}
-	if m.remote_runner != nil {
-		fields = append(fields, racestatistics.FieldRemoteRunner)
-	}
-	if m.local_wins != nil {
-		fields = append(fields, racestatistics.FieldLocalWins)
-	}
-	if m.renote_wins != nil {
-		fields = append(fields, racestatistics.FieldRenoteWins)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *RaceStatisticsMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case racestatistics.FieldMnemonic:
-		return m.Mnemonic()
-	case racestatistics.FieldLocalRunner:
-		return m.LocalRunner()
-	case racestatistics.FieldRemoteRunner:
-		return m.RemoteRunner()
-	case racestatistics.FieldLocalWins:
-		return m.LocalWins()
-	case racestatistics.FieldRenoteWins:
-		return m.RenoteWins()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *RaceStatisticsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case racestatistics.FieldMnemonic:
-		return m.OldMnemonic(ctx)
-	case racestatistics.FieldLocalRunner:
-		return m.OldLocalRunner(ctx)
-	case racestatistics.FieldRemoteRunner:
-		return m.OldRemoteRunner(ctx)
-	case racestatistics.FieldLocalWins:
-		return m.OldLocalWins(ctx)
-	case racestatistics.FieldRenoteWins:
-		return m.OldRenoteWins(ctx)
-	}
-	return nil, fmt.Errorf("unknown RaceStatistics field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *RaceStatisticsMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case racestatistics.FieldMnemonic:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetMnemonic(v)
-		return nil
-	case racestatistics.FieldLocalRunner:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLocalRunner(v)
-		return nil
-	case racestatistics.FieldRemoteRunner:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRemoteRunner(v)
-		return nil
-	case racestatistics.FieldLocalWins:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLocalWins(v)
-		return nil
-	case racestatistics.FieldRenoteWins:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRenoteWins(v)
-		return nil
-	}
-	return fmt.Errorf("unknown RaceStatistics field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *RaceStatisticsMutation) AddedFields() []string {
-	var fields []string
-	if m.addlocal_wins != nil {
-		fields = append(fields, racestatistics.FieldLocalWins)
-	}
-	if m.addrenote_wins != nil {
-		fields = append(fields, racestatistics.FieldRenoteWins)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *RaceStatisticsMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case racestatistics.FieldLocalWins:
-		return m.AddedLocalWins()
-	case racestatistics.FieldRenoteWins:
-		return m.AddedRenoteWins()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *RaceStatisticsMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case racestatistics.FieldLocalWins:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddLocalWins(v)
-		return nil
-	case racestatistics.FieldRenoteWins:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddRenoteWins(v)
-		return nil
-	}
-	return fmt.Errorf("unknown RaceStatistics numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *RaceStatisticsMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(racestatistics.FieldMnemonic) {
-		fields = append(fields, racestatistics.FieldMnemonic)
-	}
-	if m.FieldCleared(racestatistics.FieldLocalRunner) {
-		fields = append(fields, racestatistics.FieldLocalRunner)
-	}
-	if m.FieldCleared(racestatistics.FieldRemoteRunner) {
-		fields = append(fields, racestatistics.FieldRemoteRunner)
-	}
-	if m.FieldCleared(racestatistics.FieldLocalWins) {
-		fields = append(fields, racestatistics.FieldLocalWins)
-	}
-	if m.FieldCleared(racestatistics.FieldRenoteWins) {
-		fields = append(fields, racestatistics.FieldRenoteWins)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *RaceStatisticsMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *RaceStatisticsMutation) ClearField(name string) error {
-	switch name {
-	case racestatistics.FieldMnemonic:
-		m.ClearMnemonic()
-		return nil
-	case racestatistics.FieldLocalRunner:
-		m.ClearLocalRunner()
-		return nil
-	case racestatistics.FieldRemoteRunner:
-		m.ClearRemoteRunner()
-		return nil
-	case racestatistics.FieldLocalWins:
-		m.ClearLocalWins()
-		return nil
-	case racestatistics.FieldRenoteWins:
-		m.ClearRenoteWins()
-		return nil
-	}
-	return fmt.Errorf("unknown RaceStatistics nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *RaceStatisticsMutation) ResetField(name string) error {
-	switch name {
-	case racestatistics.FieldMnemonic:
-		m.ResetMnemonic()
-		return nil
-	case racestatistics.FieldLocalRunner:
-		m.ResetLocalRunner()
-		return nil
-	case racestatistics.FieldRemoteRunner:
-		m.ResetRemoteRunner()
-		return nil
-	case racestatistics.FieldLocalWins:
-		m.ResetLocalWins()
-		return nil
-	case racestatistics.FieldRenoteWins:
-		m.ResetRenoteWins()
-		return nil
-	}
-	return fmt.Errorf("unknown RaceStatistics field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *RaceStatisticsMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.dynamic_execution_metrics != nil {
-		edges = append(edges, racestatistics.EdgeDynamicExecutionMetrics)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *RaceStatisticsMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case racestatistics.EdgeDynamicExecutionMetrics:
-		if id := m.dynamic_execution_metrics; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *RaceStatisticsMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *RaceStatisticsMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *RaceStatisticsMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.cleareddynamic_execution_metrics {
-		edges = append(edges, racestatistics.EdgeDynamicExecutionMetrics)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *RaceStatisticsMutation) EdgeCleared(name string) bool {
-	switch name {
-	case racestatistics.EdgeDynamicExecutionMetrics:
-		return m.cleareddynamic_execution_metrics
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *RaceStatisticsMutation) ClearEdge(name string) error {
-	switch name {
-	case racestatistics.EdgeDynamicExecutionMetrics:
-		m.ClearDynamicExecutionMetrics()
-		return nil
-	}
-	return fmt.Errorf("unknown RaceStatistics unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *RaceStatisticsMutation) ResetEdge(name string) error {
-	switch name {
-	case racestatistics.EdgeDynamicExecutionMetrics:
-		m.ResetDynamicExecutionMetrics()
-		return nil
-	}
-	return fmt.Errorf("unknown RaceStatistics edge %s", name)
 }
 
 // ResourceUsageMutation represents an operation that mutates the ResourceUsage nodes in the graph.

@@ -1196,29 +1196,6 @@ func InstanceNameContainsFold(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldContainsFold(FieldInstanceName, v))
 }
 
-// HasEventFile applies the HasEdge predicate on the "event_file" edge.
-func HasEventFile() predicate.BazelInvocation {
-	return predicate.BazelInvocation(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, EventFileTable, EventFileColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasEventFileWith applies the HasEdge predicate on the "event_file" edge with a given conditions (other predicates).
-func HasEventFileWith(preds ...predicate.EventFile) predicate.BazelInvocation {
-	return predicate.BazelInvocation(func(s *sql.Selector) {
-		step := newEventFileStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // HasBuild applies the HasEdge predicate on the "build" edge.
 func HasBuild() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
