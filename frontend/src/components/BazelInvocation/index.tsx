@@ -1,38 +1,6 @@
-import {
-  ActionSummary,
-  ArtifactMetrics,
-  BazelInvocationInfoFragment,
-  RunnerCount,
-  TargetMetrics,
-  MemoryMetrics,
-  TimingMetrics,
-  NetworkMetrics,
-  TestCollection,
-  TargetPair,
-  SystemNetworkStats,
-} from "@/graphql/__generated__/graphql";
-import styles from "../AppBar/index.module.css";
-import React, { useMemo, useState } from "react";
-import PortalDuration from "@/components/PortalDuration";
-import PortalCard from "@/components/PortalCard";
-import { Space, Tabs, Tooltip, Typography } from "antd";
-import type { TabsProps } from "antd/lib";
-import {
-  BuildOutlined,
-  FileSearchOutlined, ExclamationCircleOutlined, DeploymentUnitOutlined,
-  ExperimentOutlined,
-  RadiusUprightOutlined,
-  AreaChartOutlined,
-  FieldTimeOutlined,
-  WifiOutlined, CodeOutlined,
-  BranchesOutlined,
-  InfoCircleOutlined, LineChartOutlined
-} from "@ant-design/icons";
-import themeStyles from "@/theme/theme.module.css";
 import BuildStepResultTag, {
   BuildStepResultEnum,
 } from "@/components/BuildStepResultTag";
-import DownloadButton from "@/components/DownloadButton";
 import Link from "@/components/Link";
 import TargetMetricsDisplay from "../TargetMetrics";
 import ArtifactsDataMetrics from "../Artifacts";
@@ -43,25 +11,43 @@ import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
 import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
 import BuildProblems from "../Problems";
+import PortalCard from "@/components/PortalCard";
+import PortalDuration from "@/components/PortalDuration";
+import {
+  BazelInvocationInfoFragment,
+  RunnerCount
+} from "@/graphql/__generated__/graphql";
+import themeStyles from "@/theme/theme.module.css";
+import {
+  AreaChartOutlined,
+  BranchesOutlined,
+  BuildOutlined,
+  CodeOutlined,
+  DeploymentUnitOutlined,
+  ExclamationCircleOutlined,
+  ExperimentOutlined,
+  FieldTimeOutlined,
+  FileSearchOutlined,
+  InfoCircleOutlined, LineChartOutlined,
+  RadiusUprightOutlined
+} from "@ant-design/icons";
+import { Space, Tabs, Typography } from "antd";
+import type { TabsProps } from "antd/lib";
+import React, { useMemo, useState } from "react";
 import ActionStatisticsDisplay from "../ActionStatisticsDisplay";
-import ProfileDropdown from "../ProfileDropdown";
-import ansiRegex from 'ansi-regex';
+import styles from "../AppBar/index.module.css";
 import BuildLogsDisplay from "../BuildLogsDisplay";
+import ProfileDropdown from "../ProfileDropdown";
 
-const ansiEscapeRegex = ansiRegex();
+const DEFAULT_TAB_KEY = "BazelInvocationTabs-Overview";
 
-const BazelInvocation: React.FC<{
-  invocationOverview: BazelInvocationInfoFragment;
-  isNestedWithinBuildCard?: boolean;
-  collapsed?: boolean;
-}> = ({ invocationOverview, isNestedWithinBuildCard }) => {
+const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps["items"] => {
   const {
     invocationID,
     instanceName,
-    build,
     state,
     bazelCommand,
-    profile,
+    bazelVersion,
     sourceControl,
     user,
     metrics,
@@ -73,103 +59,247 @@ const BazelInvocation: React.FC<{
     stepLabel,
     hostname,
     isCiWorker,
-
-    //relatedFiles,
   } = invocationOverview;
 
-  //data for runner metrics
   var runnerMetrics: RunnerCount[] = [];
   metrics?.actionSummary?.runnerCount?.map((item: RunnerCount) =>
     runnerMetrics.push(item)
   );
 
-  //data for ac metrics
-  var acMetrics: ActionSummary | undefined =
-    metrics?.actionSummary ?? undefined;
-
-  //artifact metrics
-  var artifactMetrics: ArtifactMetrics | undefined =
-    metrics?.artifactMetrics ?? undefined;
-
-  //memory metrics
-  var memoryMetrics: MemoryMetrics | undefined =
-    metrics?.memoryMetrics ?? undefined;
-
-  //timing metrics
-  var timingMetrics: TimingMetrics | undefined =
-    metrics?.timingMetrics ?? undefined;
-
-  //netowrk metrics
-  var systemNetworkStats: SystemNetworkStats | undefined =
-    metrics?.networkMetrics?.systemNetworkStats ?? undefined;
-
-  //test data
-  var testCollections: TestCollection[] | undefined | null = testCollection;
-
-  //data for target metrics
-  var targetMetrics: TargetMetrics | undefined | null =
-    metrics?.targetMetrics ?? undefined;
-  var targetData: TargetPair[] | undefined | null = targets;
   var targetTimes: Map<string, number> = new Map<string, number>();
-  targetData?.map((x) => {
+  targets?.map((x) => {
     targetTimes.set(x.label ?? "", x.durationInMs ?? 0);
   });
 
-  //build the title
-  let { exitCode } = state;
-  exitCode = exitCode ?? null;
-  const titleBits: React.ReactNode[] = [
+  const hideActionsTab: boolean = metrics?.actionSummary == undefined || metrics?.actionSummary == null;
+  const hideLogsTab: boolean = false;
+  const hideArtifactsTab: boolean = metrics?.artifactMetrics == undefined || metrics?.artifactMetrics == null;
+  const hideMemoryTab: boolean = metrics?.memoryMetrics == undefined || metrics?.memoryMetrics == null;
+  const hideSystemMetricsTab: boolean =
+    (metrics?.timingMetrics == undefined || metrics?.timingMetrics == null)
+    && (metrics?.networkMetrics == undefined || metrics?.networkMetrics == null);
+  const hideTargetsTab: boolean = (targets == undefined || targets == null || targets.length == 0) && (metrics?.targetMetrics == undefined || metrics?.targetMetrics == null);
+  const hideTestsTab: boolean = (testCollection == undefined || testCollection == null || testCollection.length == 0)
+  const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null;
+  const hideProblemsTab: boolean = state.exitCode?.name == "SUCCESS";
+
+  const items: TabsProps["items"] = [];
+  items.push({
+    key: "BazelInvocationTabs-Overview",
+    label: "Overview",
+    icon: <InfoCircleOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <PortalCard
+          type="inner"
+          icon={<FileSearchOutlined />}
+          titleBits={["Invocation Overview"]}
+        >
+          <InvocationOverviewDisplay
+            command={[
+              bazelCommand.executable,
+              bazelCommand.command,
+              bazelCommand.residual,
+              bazelCommand.explicitCmdLine,
+            ].join(" ").trim()}
+            cpu={cpu ?? ""}
+            user={user?.LDAP ?? ""}
+            invocationId={invocationID}
+            instanceName={instanceName ?? undefined}
+            configuration={configurationMnemonic ?? ""}
+            numFetches={numFetches ?? 0}
+            startedAt={invocationOverview.startedAt}
+            endedAt={invocationOverview.endedAt}
+            hostname={hostname ?? ""}
+            isCiWorker={isCiWorker ?? false}
+            stepLabel={stepLabel ?? ""}
+            status={state.exitCode?.name ?? ""}
+            bazelVersion={bazelVersion ?? ""}
+          />
+        </PortalCard>
+      </Space>
+    ),
+  });
+  if (!hideActionsTab) items.push({
+    key: "BazelInvocationTabs-ActionStatistics",
+    label: "Action Statistics",
+    icon: <LineChartOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <ActionStatisticsDisplay
+          actionData={metrics?.actionSummary ?? undefined}
+          runnerMetrics={runnerMetrics}
+        />
+      </Space>
+    ),
+  });
+  if (!hideLogsTab) items.push({
+    key: "BazelInvocationTabs-Logs",
+    label: "Logs",
+    icon: <FileSearchOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <BuildLogsDisplay invocationId={invocationID} />
+      </Space>
+    ),
+  });
+  if (!hideArtifactsTab) items.push({
+    key: "BazelInvocationTabs-Artifacts",
+    label: "Artifacts",
+    icon: <RadiusUprightOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <ArtifactsDataMetrics artifactMetrics={metrics?.artifactMetrics ?? undefined} />
+      </Space>
+    ),
+  });
+  if (!hideMemoryTab) items.push({
+    key: "BazelInvocationTabs-Memory",
+    label: "Memory",
+    icon: <AreaChartOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <MemoryMetricsDisplay memoryMetrics={metrics?.memoryMetrics ?? undefined} />
+      </Space>
+    ),
+  });
+  if (!hideSystemMetricsTab) items.push({
+    key: "BazelInvocationTabs-SystemMetrics",
+    label: "System Metrics",
+    icon: <FieldTimeOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <SystemMetricsDisplay
+          timingMetrics={metrics?.timingMetrics ?? undefined}
+          systemNetworkStats={metrics?.networkMetrics?.systemNetworkStats ?? undefined}
+        />
+      </Space>
+    ),
+  });
+  if (!hideTargetsTab) items.push({
+    key: "BazelInvocationTabs-Targets",
+    label: "Targets",
+    icon: <DeploymentUnitOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <TargetMetricsDisplay
+          targetMetrics={metrics?.targetMetrics ?? undefined}
+          targetData={targets ?? undefined}
+        />
+      </Space>
+    ),
+  });
+  if (!hideTestsTab) items.push({
+    key: "BazelInvocationTabs-Tests",
+    label: "Tests",
+    icon: <ExperimentOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <TestMetricsDisplay
+          testMetrics={testCollection ?? undefined}
+          targetTimes={targetTimes}
+        />
+      </Space>
+    ),
+  });
+  items.push({
+    key: "BazelInvocationTabs-CommandLine",
+    label: "Command Line",
+    icon: <CodeOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <CommandLineDisplay commandLineData={bazelCommand ?? undefined} />
+      </Space>
+    ),
+  });
+  if (!hideSourceControlTab) items.push({
+    key: "BazelInvocationTabs-SourceControl",
+    label: "Source Control",
+    icon: <BranchesOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <SourceControlDisplay
+          sourceControlData={sourceControl}
+          stepLabel={stepLabel}
+        />
+      </Space>
+    ),
+  });
+  if (!hideProblemsTab) items.push({
+    key: "BazelInvocationTabs-Problems",
+    label: "Problems",
+    icon: <ExclamationCircleOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <BuildProblems
+          invocationId={invocationID}
+          instanceName={instanceName ?? undefined}
+        />
+      </Space>
+    ),
+  });
+
+  return items;
+}
+
+const getTitleBits = (invocationOverview: BazelInvocationInfoFragment): React.ReactNode[] => {
+  const {
+    invocationID,
+    state,
+    user,
+  } = invocationOverview;
+
+  const titleBits: React.ReactNode[] = []
+  if (user?.LDAP && user?.LDAP != "") titleBits.push(
     <span key="label">
       User:{" "}
       <Typography.Text type="secondary" className={styles.normalWeight}>
         {user?.LDAP}
       </Typography.Text>
-    </span>,
-  ];
-  titleBits.push(
+    </span>
+  );
+  if (invocationID && invocationID != "") titleBits.push(
     <span key="label">
       Invocation ID:{" "}
-      <Typography.Text type="secondary" className={styles.normalWeight}>
+      <Typography.Text type="secondary" className={styles.normalWeight} copyable={{ text: invocationID ?? "Copy" }}>
         {invocationID}
       </Typography.Text>{" "}
     </span>
   );
-  titleBits.push(
-    <span className={styles.copyIcon}>
-      <Typography.Text
-        copyable={{ text: invocationID ?? "Copy" }}
-      ></Typography.Text>
-    </span>
+  if (state.exitCode?.name) titleBits.push(
+    <BuildStepResultTag
+      key="result"
+      result={state.exitCode?.name as BuildStepResultEnum}
+    />
   );
-  if (exitCode?.name) {
-    titleBits.push(
-      <BuildStepResultTag
-        key="result"
-        result={exitCode?.name as BuildStepResultEnum}
-      />
-    );
-  }
+  return titleBits;
+}
 
-  const extraBits: React.ReactNode[] = [
+const getExtraBits = (invocationOverview: BazelInvocationInfoFragment, isNestedWithinBuildCard?: boolean): React.ReactNode[] => {
+  const {
+    invocationID,
+    instanceName,
+    build,
+    profile,
+  } = invocationOverview;
+
+  const extraBits: React.ReactNode[] = [];
+  extraBits.push(
     <PortalDuration
       key="duration"
       from={invocationOverview.startedAt}
       to={invocationOverview.endedAt}
       includeIcon
       includePopover
+    />
+  )
+  if (profile) extraBits.push(
+    <ProfileDropdown
+      instanceName={instanceName ?? undefined}
+      profile={profile}
+      invocationID={invocationID}
     />,
-  ];
-
-  if (profile) {
-    extraBits.push(
-      <ProfileDropdown
-        instanceName={instanceName ?? undefined}
-        profile={profile}
-        invocationID={invocationID}
-      />,
-    );
-  }
-
+  );
   if (!isNestedWithinBuildCard && build?.buildUUID) {
     extraBits.unshift(
       <span key="build">
@@ -177,247 +307,43 @@ const BazelInvocation: React.FC<{
       </span>
     );
   }
+  return extraBits;
+}
 
-  const hideTestsTab: boolean = (testCollection?.length ?? 0) == 0;
-  const hideTargetsTab: boolean = (targetData?.length ?? 0) == 0 ? true : false;
-  const hideSourceControlTab: boolean =
-    sourceControl?.runID == undefined ||
-      sourceControl.runID == null ||
-      sourceControl.runID == ""
-      ? true
-      : false;
-  const hideLogsTab: boolean = false;
-  const hideMemoryTab: boolean =
-    (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 &&
-    (memoryMetrics?.peakPostGcHeapSize ?? 0) == 0 &&
-    (memoryMetrics?.usedHeapSizePostBuild ?? 0) == 0;
-  const hideProblemsTab: boolean = exitCode?.name == "SUCCESS";
-  const hideArtifactsTab: boolean =
-    (artifactMetrics?.outputArtifactsSeen?.count ?? 0) == 0 &&
-    (artifactMetrics?.sourceArtifactsRead?.count ?? 0) == 0 &&
-    (artifactMetrics?.outputArtifactsFromActionCache?.count ?? 0) == 0 &&
-    (artifactMetrics?.topLevelArtifacts?.count ?? 0) == 0;
-  const hideActionsTab: boolean =
-    (acMetrics?.actionsExecuted == 0) &&
-    (acMetrics?.actionCacheStatistics?.hits == 0) &&
-    (acMetrics?.actionCacheStatistics?.misses == 0);
-  const hideSystemMetricsTab: boolean =
-    (timingMetrics == undefined &&
-      systemNetworkStats == undefined) || (
-      timingMetrics?.wallTimeInMs == 0 &&
-      timingMetrics?.executionPhaseTimeInMs == 0 &&
-      timingMetrics?.analysisPhaseTimeInMs == 0 &&
-      timingMetrics?.cpuTimeInMs == 0 &&
-      timingMetrics?.actionsExecutionStartInMs == 0 &&
-      systemNetworkStats?.bytesRecv == 0 &&
-      systemNetworkStats?.bytesSent == 0 &&
-      systemNetworkStats?.packetsRecv == 0 &&
-      systemNetworkStats?.packetsSent == 0 &&
-      systemNetworkStats?.peakBytesRecvPerSec == 0 &&
-      systemNetworkStats?.peakBytesSentPerSec == 0 &&
-      systemNetworkStats?.peakPacketsRecvPerSec == 0 &&
-      systemNetworkStats?.peakPacketsSentPerSec == 0
-    );
-  interface TabShowHideDisplay {
-    hide: boolean;
-    key: string;
-  }
 
-  const showHideTabs: TabShowHideDisplay[] = [
-    { key: "BazelInvocationTabs-Tests", hide: hideTestsTab },
-    { key: "BazelInvocationTabs-Targets", hide: hideTargetsTab },
-    { key: "BazelInvocationTabs-SourceControl", hide: hideSourceControlTab },
-    { key: "BazelInvocationTabs-Logs", hide: hideLogsTab },
-    { key: "BazelInvocationTabs-Memory", hide: hideMemoryTab },
-    { key: "BazelInvocationTabs-Problems", hide: hideProblemsTab },
-    { key: "BazelInvocationTabs-Artifacts", hide: hideArtifactsTab },
-    { key: "BazelInvocationTabs-ActionStatistics", hide: hideActionsTab },
-    { key: "BazelInvocationTabs-SystemMetrics", hide: hideSystemMetricsTab },
-  ];
-
+const BazelInvocation: React.FC<{
+  invocationOverview: BazelInvocationInfoFragment;
+  isNestedWithinBuildCard?: boolean;
+  collapsed?: boolean;
+}> = ({ invocationOverview, isNestedWithinBuildCard }) => {
   const [activeKey, setActiveKey] = useState(
     localStorage.getItem("bazelInvocationViewActiveTabKey") ??
-      "BazelInvocationTabs-Overview"
+    "BazelInvocationTabs-Overview"
   );
-  function checkIfNotHidden(key: string) {
-    var hidden: boolean =
-      showHideTabs.filter((x) => x.key == key).at(0)?.hide ?? false;
-    return hidden ? "BazelInvocationTabs-Overview" : key;
-  }
+
   const onTabChange = (key: string) => {
     setActiveKey(key);
     localStorage.setItem("bazelInvocationViewActiveTabKey", key);
   };
 
-  //tabs
-  var items: TabsProps["items"] = [
-    {
-      key: "BazelInvocationTabs-Overview",
-      label: "Overview",
-      icon: <InfoCircleOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <PortalCard
-            type="inner"
-            icon={<FileSearchOutlined />}
-            titleBits={["Invocation Overview"]}
-          >
-            <InvocationOverviewDisplay
-              command={[
-                bazelCommand.executable,
-                bazelCommand.command,
-                bazelCommand.residual,
-                bazelCommand.explicitCmdLine,
-              ].join(" ")}
-              targets={targetTimes.size}
-              cpu={cpu ?? ""}
-              user={user?.LDAP ?? ""}
-              invocationId={invocationID}
-              instanceName={instanceName ?? undefined}
-              configuration={configurationMnemonic ?? ""}
-              numFetches={numFetches ?? 0}
-              startedAt={invocationOverview.startedAt}
-              endedAt={invocationOverview.endedAt}
-              hostname={hostname ?? ""}
-              isCiWorker={isCiWorker ?? false}
-              stepLabel={stepLabel ?? ""}
-              status={state.exitCode?.name ?? ""}
-            />
-          </PortalCard>
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-ActionStatistics",
-      label: "Action Statistics",
-      icon: <LineChartOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <ActionStatisticsDisplay
-            actionData={acMetrics}
-            runnerMetrics={runnerMetrics}
-          />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-Logs",
-      label: "Logs",
-      icon: <FileSearchOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <BuildLogsDisplay invocationId={invocationID} />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-Artifacts",
-      label: "Artifacts",
-      icon: <RadiusUprightOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <ArtifactsDataMetrics artifactMetrics={artifactMetrics} />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-Memory",
-      label: "Memory",
-      icon: <AreaChartOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <MemoryMetricsDisplay memoryMetrics={memoryMetrics} />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-SystemMetrics",
-      label: "System Metrics",
-      icon: <FieldTimeOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <SystemMetricsDisplay
-            timingMetrics={timingMetrics}
-            systemNetworkStats={systemNetworkStats}
-          />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-Targets",
-      label: "Targets",
-      icon: <DeploymentUnitOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <TargetMetricsDisplay
-            targetMetrics={targetMetrics}
-            targetData={targetData}
-          />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-Tests",
-      label: "Tests",
-      icon: <ExperimentOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <TestMetricsDisplay
-            testMetrics={testCollections}
-            targetTimes={targetTimes}
-          />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-CommandLine",
-      label: "Command Line",
-      icon: <CodeOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <CommandLineDisplay commandLineData={bazelCommand ?? undefined} />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-SourceControl",
-      label: "Source Control",
-      icon: <BranchesOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <SourceControlDisplay
-            sourceControlData={sourceControl}
-            stepLabel={stepLabel}
-          />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-Problems",
-      label: "Problems",
-      icon: <ExclamationCircleOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <BuildProblems
-            invocationId={invocationID}
-            instanceName={instanceName ?? undefined}
-            onTabChange={onTabChange}
-          />
-        </Space>
-      ),
-    },
-  ];
+  const titleBits = useMemo(
+    () => getTitleBits(invocationOverview),
+    [invocationOverview]
+  );
 
-  //show/hide tabs
+  const extraBits = useMemo(
+    () => getExtraBits(invocationOverview, isNestedWithinBuildCard),
+    [invocationOverview, isNestedWithinBuildCard]
+  );
 
-  for (var i in showHideTabs) {
-    var tab = showHideTabs[i];
-    if (tab.hide == true) {
-      var idx = items.findIndex((x, _) => x.key == tab.key);
-      if (idx > -1) {
-        items.splice(idx, 1);
-      }
-    }
+  const items = useMemo(
+    () => getTabItems(invocationOverview),
+    [invocationOverview, isNestedWithinBuildCard]
+  );
+
+  function checkIfNotHidden(key: string) {
+    const hidden = items?.findIndex((x) => x.key == key) == -1
+    return hidden ? DEFAULT_TAB_KEY : key;
   }
 
   return (
@@ -431,7 +357,7 @@ const BazelInvocation: React.FC<{
         items={items}
         activeKey={checkIfNotHidden(activeKey)}
         onChange={onTabChange}
-        defaultActiveKey="BazelInvocationTabs-Overview"
+        defaultActiveKey={DEFAULT_TAB_KEY}
       />
     </PortalCard>
   );

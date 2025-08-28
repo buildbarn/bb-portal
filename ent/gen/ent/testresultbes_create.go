@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
@@ -19,6 +21,7 @@ type TestResultBESCreate struct {
 	config
 	mutation *TestResultBESMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetTestStatus sets the "test_status" field.
@@ -266,6 +269,7 @@ func (trbc *TestResultBESCreate) createSpec() (*TestResultBES, *sqlgraph.CreateS
 		_node = &TestResultBES{config: trbc.config}
 		_spec = sqlgraph.NewCreateSpec(testresultbes.Table, sqlgraph.NewFieldSpec(testresultbes.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = trbc.conflict
 	if value, ok := trbc.mutation.TestStatus(); ok {
 		_spec.SetField(testresultbes.FieldTestStatus, field.TypeEnum, value)
 		_node.TestStatus = value
@@ -354,11 +358,524 @@ func (trbc *TestResultBESCreate) createSpec() (*TestResultBES, *sqlgraph.CreateS
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TestResultBES.Create().
+//		SetTestStatus(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TestResultBESUpsert) {
+//			SetTestStatus(v+v).
+//		}).
+//		Exec(ctx)
+func (trbc *TestResultBESCreate) OnConflict(opts ...sql.ConflictOption) *TestResultBESUpsertOne {
+	trbc.conflict = opts
+	return &TestResultBESUpsertOne{
+		create: trbc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TestResultBES.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (trbc *TestResultBESCreate) OnConflictColumns(columns ...string) *TestResultBESUpsertOne {
+	trbc.conflict = append(trbc.conflict, sql.ConflictColumns(columns...))
+	return &TestResultBESUpsertOne{
+		create: trbc,
+	}
+}
+
+type (
+	// TestResultBESUpsertOne is the builder for "upsert"-ing
+	//  one TestResultBES node.
+	TestResultBESUpsertOne struct {
+		create *TestResultBESCreate
+	}
+
+	// TestResultBESUpsert is the "OnConflict" setter.
+	TestResultBESUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetTestStatus sets the "test_status" field.
+func (u *TestResultBESUpsert) SetTestStatus(v testresultbes.TestStatus) *TestResultBESUpsert {
+	u.Set(testresultbes.FieldTestStatus, v)
+	return u
+}
+
+// UpdateTestStatus sets the "test_status" field to the value that was provided on create.
+func (u *TestResultBESUpsert) UpdateTestStatus() *TestResultBESUpsert {
+	u.SetExcluded(testresultbes.FieldTestStatus)
+	return u
+}
+
+// ClearTestStatus clears the value of the "test_status" field.
+func (u *TestResultBESUpsert) ClearTestStatus() *TestResultBESUpsert {
+	u.SetNull(testresultbes.FieldTestStatus)
+	return u
+}
+
+// SetStatusDetails sets the "status_details" field.
+func (u *TestResultBESUpsert) SetStatusDetails(v string) *TestResultBESUpsert {
+	u.Set(testresultbes.FieldStatusDetails, v)
+	return u
+}
+
+// UpdateStatusDetails sets the "status_details" field to the value that was provided on create.
+func (u *TestResultBESUpsert) UpdateStatusDetails() *TestResultBESUpsert {
+	u.SetExcluded(testresultbes.FieldStatusDetails)
+	return u
+}
+
+// ClearStatusDetails clears the value of the "status_details" field.
+func (u *TestResultBESUpsert) ClearStatusDetails() *TestResultBESUpsert {
+	u.SetNull(testresultbes.FieldStatusDetails)
+	return u
+}
+
+// SetLabel sets the "label" field.
+func (u *TestResultBESUpsert) SetLabel(v string) *TestResultBESUpsert {
+	u.Set(testresultbes.FieldLabel, v)
+	return u
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *TestResultBESUpsert) UpdateLabel() *TestResultBESUpsert {
+	u.SetExcluded(testresultbes.FieldLabel)
+	return u
+}
+
+// ClearLabel clears the value of the "label" field.
+func (u *TestResultBESUpsert) ClearLabel() *TestResultBESUpsert {
+	u.SetNull(testresultbes.FieldLabel)
+	return u
+}
+
+// SetWarning sets the "warning" field.
+func (u *TestResultBESUpsert) SetWarning(v []string) *TestResultBESUpsert {
+	u.Set(testresultbes.FieldWarning, v)
+	return u
+}
+
+// UpdateWarning sets the "warning" field to the value that was provided on create.
+func (u *TestResultBESUpsert) UpdateWarning() *TestResultBESUpsert {
+	u.SetExcluded(testresultbes.FieldWarning)
+	return u
+}
+
+// ClearWarning clears the value of the "warning" field.
+func (u *TestResultBESUpsert) ClearWarning() *TestResultBESUpsert {
+	u.SetNull(testresultbes.FieldWarning)
+	return u
+}
+
+// SetCachedLocally sets the "cached_locally" field.
+func (u *TestResultBESUpsert) SetCachedLocally(v bool) *TestResultBESUpsert {
+	u.Set(testresultbes.FieldCachedLocally, v)
+	return u
+}
+
+// UpdateCachedLocally sets the "cached_locally" field to the value that was provided on create.
+func (u *TestResultBESUpsert) UpdateCachedLocally() *TestResultBESUpsert {
+	u.SetExcluded(testresultbes.FieldCachedLocally)
+	return u
+}
+
+// ClearCachedLocally clears the value of the "cached_locally" field.
+func (u *TestResultBESUpsert) ClearCachedLocally() *TestResultBESUpsert {
+	u.SetNull(testresultbes.FieldCachedLocally)
+	return u
+}
+
+// SetTestAttemptStartMillisEpoch sets the "test_attempt_start_millis_epoch" field.
+func (u *TestResultBESUpsert) SetTestAttemptStartMillisEpoch(v int64) *TestResultBESUpsert {
+	u.Set(testresultbes.FieldTestAttemptStartMillisEpoch, v)
+	return u
+}
+
+// UpdateTestAttemptStartMillisEpoch sets the "test_attempt_start_millis_epoch" field to the value that was provided on create.
+func (u *TestResultBESUpsert) UpdateTestAttemptStartMillisEpoch() *TestResultBESUpsert {
+	u.SetExcluded(testresultbes.FieldTestAttemptStartMillisEpoch)
+	return u
+}
+
+// AddTestAttemptStartMillisEpoch adds v to the "test_attempt_start_millis_epoch" field.
+func (u *TestResultBESUpsert) AddTestAttemptStartMillisEpoch(v int64) *TestResultBESUpsert {
+	u.Add(testresultbes.FieldTestAttemptStartMillisEpoch, v)
+	return u
+}
+
+// ClearTestAttemptStartMillisEpoch clears the value of the "test_attempt_start_millis_epoch" field.
+func (u *TestResultBESUpsert) ClearTestAttemptStartMillisEpoch() *TestResultBESUpsert {
+	u.SetNull(testresultbes.FieldTestAttemptStartMillisEpoch)
+	return u
+}
+
+// SetTestAttemptStart sets the "test_attempt_start" field.
+func (u *TestResultBESUpsert) SetTestAttemptStart(v string) *TestResultBESUpsert {
+	u.Set(testresultbes.FieldTestAttemptStart, v)
+	return u
+}
+
+// UpdateTestAttemptStart sets the "test_attempt_start" field to the value that was provided on create.
+func (u *TestResultBESUpsert) UpdateTestAttemptStart() *TestResultBESUpsert {
+	u.SetExcluded(testresultbes.FieldTestAttemptStart)
+	return u
+}
+
+// ClearTestAttemptStart clears the value of the "test_attempt_start" field.
+func (u *TestResultBESUpsert) ClearTestAttemptStart() *TestResultBESUpsert {
+	u.SetNull(testresultbes.FieldTestAttemptStart)
+	return u
+}
+
+// SetTestAttemptDurationMillis sets the "test_attempt_duration_millis" field.
+func (u *TestResultBESUpsert) SetTestAttemptDurationMillis(v int64) *TestResultBESUpsert {
+	u.Set(testresultbes.FieldTestAttemptDurationMillis, v)
+	return u
+}
+
+// UpdateTestAttemptDurationMillis sets the "test_attempt_duration_millis" field to the value that was provided on create.
+func (u *TestResultBESUpsert) UpdateTestAttemptDurationMillis() *TestResultBESUpsert {
+	u.SetExcluded(testresultbes.FieldTestAttemptDurationMillis)
+	return u
+}
+
+// AddTestAttemptDurationMillis adds v to the "test_attempt_duration_millis" field.
+func (u *TestResultBESUpsert) AddTestAttemptDurationMillis(v int64) *TestResultBESUpsert {
+	u.Add(testresultbes.FieldTestAttemptDurationMillis, v)
+	return u
+}
+
+// ClearTestAttemptDurationMillis clears the value of the "test_attempt_duration_millis" field.
+func (u *TestResultBESUpsert) ClearTestAttemptDurationMillis() *TestResultBESUpsert {
+	u.SetNull(testresultbes.FieldTestAttemptDurationMillis)
+	return u
+}
+
+// SetTestAttemptDuration sets the "test_attempt_duration" field.
+func (u *TestResultBESUpsert) SetTestAttemptDuration(v int64) *TestResultBESUpsert {
+	u.Set(testresultbes.FieldTestAttemptDuration, v)
+	return u
+}
+
+// UpdateTestAttemptDuration sets the "test_attempt_duration" field to the value that was provided on create.
+func (u *TestResultBESUpsert) UpdateTestAttemptDuration() *TestResultBESUpsert {
+	u.SetExcluded(testresultbes.FieldTestAttemptDuration)
+	return u
+}
+
+// AddTestAttemptDuration adds v to the "test_attempt_duration" field.
+func (u *TestResultBESUpsert) AddTestAttemptDuration(v int64) *TestResultBESUpsert {
+	u.Add(testresultbes.FieldTestAttemptDuration, v)
+	return u
+}
+
+// ClearTestAttemptDuration clears the value of the "test_attempt_duration" field.
+func (u *TestResultBESUpsert) ClearTestAttemptDuration() *TestResultBESUpsert {
+	u.SetNull(testresultbes.FieldTestAttemptDuration)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.TestResultBES.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TestResultBESUpsertOne) UpdateNewValues() *TestResultBESUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TestResultBES.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *TestResultBESUpsertOne) Ignore() *TestResultBESUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TestResultBESUpsertOne) DoNothing() *TestResultBESUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TestResultBESCreate.OnConflict
+// documentation for more info.
+func (u *TestResultBESUpsertOne) Update(set func(*TestResultBESUpsert)) *TestResultBESUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TestResultBESUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetTestStatus sets the "test_status" field.
+func (u *TestResultBESUpsertOne) SetTestStatus(v testresultbes.TestStatus) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetTestStatus(v)
+	})
+}
+
+// UpdateTestStatus sets the "test_status" field to the value that was provided on create.
+func (u *TestResultBESUpsertOne) UpdateTestStatus() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateTestStatus()
+	})
+}
+
+// ClearTestStatus clears the value of the "test_status" field.
+func (u *TestResultBESUpsertOne) ClearTestStatus() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearTestStatus()
+	})
+}
+
+// SetStatusDetails sets the "status_details" field.
+func (u *TestResultBESUpsertOne) SetStatusDetails(v string) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetStatusDetails(v)
+	})
+}
+
+// UpdateStatusDetails sets the "status_details" field to the value that was provided on create.
+func (u *TestResultBESUpsertOne) UpdateStatusDetails() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateStatusDetails()
+	})
+}
+
+// ClearStatusDetails clears the value of the "status_details" field.
+func (u *TestResultBESUpsertOne) ClearStatusDetails() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearStatusDetails()
+	})
+}
+
+// SetLabel sets the "label" field.
+func (u *TestResultBESUpsertOne) SetLabel(v string) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetLabel(v)
+	})
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *TestResultBESUpsertOne) UpdateLabel() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateLabel()
+	})
+}
+
+// ClearLabel clears the value of the "label" field.
+func (u *TestResultBESUpsertOne) ClearLabel() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearLabel()
+	})
+}
+
+// SetWarning sets the "warning" field.
+func (u *TestResultBESUpsertOne) SetWarning(v []string) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetWarning(v)
+	})
+}
+
+// UpdateWarning sets the "warning" field to the value that was provided on create.
+func (u *TestResultBESUpsertOne) UpdateWarning() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateWarning()
+	})
+}
+
+// ClearWarning clears the value of the "warning" field.
+func (u *TestResultBESUpsertOne) ClearWarning() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearWarning()
+	})
+}
+
+// SetCachedLocally sets the "cached_locally" field.
+func (u *TestResultBESUpsertOne) SetCachedLocally(v bool) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetCachedLocally(v)
+	})
+}
+
+// UpdateCachedLocally sets the "cached_locally" field to the value that was provided on create.
+func (u *TestResultBESUpsertOne) UpdateCachedLocally() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateCachedLocally()
+	})
+}
+
+// ClearCachedLocally clears the value of the "cached_locally" field.
+func (u *TestResultBESUpsertOne) ClearCachedLocally() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearCachedLocally()
+	})
+}
+
+// SetTestAttemptStartMillisEpoch sets the "test_attempt_start_millis_epoch" field.
+func (u *TestResultBESUpsertOne) SetTestAttemptStartMillisEpoch(v int64) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetTestAttemptStartMillisEpoch(v)
+	})
+}
+
+// AddTestAttemptStartMillisEpoch adds v to the "test_attempt_start_millis_epoch" field.
+func (u *TestResultBESUpsertOne) AddTestAttemptStartMillisEpoch(v int64) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.AddTestAttemptStartMillisEpoch(v)
+	})
+}
+
+// UpdateTestAttemptStartMillisEpoch sets the "test_attempt_start_millis_epoch" field to the value that was provided on create.
+func (u *TestResultBESUpsertOne) UpdateTestAttemptStartMillisEpoch() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateTestAttemptStartMillisEpoch()
+	})
+}
+
+// ClearTestAttemptStartMillisEpoch clears the value of the "test_attempt_start_millis_epoch" field.
+func (u *TestResultBESUpsertOne) ClearTestAttemptStartMillisEpoch() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearTestAttemptStartMillisEpoch()
+	})
+}
+
+// SetTestAttemptStart sets the "test_attempt_start" field.
+func (u *TestResultBESUpsertOne) SetTestAttemptStart(v string) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetTestAttemptStart(v)
+	})
+}
+
+// UpdateTestAttemptStart sets the "test_attempt_start" field to the value that was provided on create.
+func (u *TestResultBESUpsertOne) UpdateTestAttemptStart() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateTestAttemptStart()
+	})
+}
+
+// ClearTestAttemptStart clears the value of the "test_attempt_start" field.
+func (u *TestResultBESUpsertOne) ClearTestAttemptStart() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearTestAttemptStart()
+	})
+}
+
+// SetTestAttemptDurationMillis sets the "test_attempt_duration_millis" field.
+func (u *TestResultBESUpsertOne) SetTestAttemptDurationMillis(v int64) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetTestAttemptDurationMillis(v)
+	})
+}
+
+// AddTestAttemptDurationMillis adds v to the "test_attempt_duration_millis" field.
+func (u *TestResultBESUpsertOne) AddTestAttemptDurationMillis(v int64) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.AddTestAttemptDurationMillis(v)
+	})
+}
+
+// UpdateTestAttemptDurationMillis sets the "test_attempt_duration_millis" field to the value that was provided on create.
+func (u *TestResultBESUpsertOne) UpdateTestAttemptDurationMillis() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateTestAttemptDurationMillis()
+	})
+}
+
+// ClearTestAttemptDurationMillis clears the value of the "test_attempt_duration_millis" field.
+func (u *TestResultBESUpsertOne) ClearTestAttemptDurationMillis() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearTestAttemptDurationMillis()
+	})
+}
+
+// SetTestAttemptDuration sets the "test_attempt_duration" field.
+func (u *TestResultBESUpsertOne) SetTestAttemptDuration(v int64) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetTestAttemptDuration(v)
+	})
+}
+
+// AddTestAttemptDuration adds v to the "test_attempt_duration" field.
+func (u *TestResultBESUpsertOne) AddTestAttemptDuration(v int64) *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.AddTestAttemptDuration(v)
+	})
+}
+
+// UpdateTestAttemptDuration sets the "test_attempt_duration" field to the value that was provided on create.
+func (u *TestResultBESUpsertOne) UpdateTestAttemptDuration() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateTestAttemptDuration()
+	})
+}
+
+// ClearTestAttemptDuration clears the value of the "test_attempt_duration" field.
+func (u *TestResultBESUpsertOne) ClearTestAttemptDuration() *TestResultBESUpsertOne {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearTestAttemptDuration()
+	})
+}
+
+// Exec executes the query.
+func (u *TestResultBESUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TestResultBESCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TestResultBESUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *TestResultBESUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *TestResultBESUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // TestResultBESCreateBulk is the builder for creating many TestResultBES entities in bulk.
 type TestResultBESCreateBulk struct {
 	config
 	err      error
 	builders []*TestResultBESCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the TestResultBES entities in the database.
@@ -388,6 +905,7 @@ func (trbcb *TestResultBESCreateBulk) Save(ctx context.Context) ([]*TestResultBE
 					_, err = mutators[i+1].Mutate(root, trbcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = trbcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, trbcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -438,6 +956,320 @@ func (trbcb *TestResultBESCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (trbcb *TestResultBESCreateBulk) ExecX(ctx context.Context) {
 	if err := trbcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TestResultBES.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TestResultBESUpsert) {
+//			SetTestStatus(v+v).
+//		}).
+//		Exec(ctx)
+func (trbcb *TestResultBESCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestResultBESUpsertBulk {
+	trbcb.conflict = opts
+	return &TestResultBESUpsertBulk{
+		create: trbcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TestResultBES.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (trbcb *TestResultBESCreateBulk) OnConflictColumns(columns ...string) *TestResultBESUpsertBulk {
+	trbcb.conflict = append(trbcb.conflict, sql.ConflictColumns(columns...))
+	return &TestResultBESUpsertBulk{
+		create: trbcb,
+	}
+}
+
+// TestResultBESUpsertBulk is the builder for "upsert"-ing
+// a bulk of TestResultBES nodes.
+type TestResultBESUpsertBulk struct {
+	create *TestResultBESCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.TestResultBES.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TestResultBESUpsertBulk) UpdateNewValues() *TestResultBESUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TestResultBES.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *TestResultBESUpsertBulk) Ignore() *TestResultBESUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TestResultBESUpsertBulk) DoNothing() *TestResultBESUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TestResultBESCreateBulk.OnConflict
+// documentation for more info.
+func (u *TestResultBESUpsertBulk) Update(set func(*TestResultBESUpsert)) *TestResultBESUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TestResultBESUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetTestStatus sets the "test_status" field.
+func (u *TestResultBESUpsertBulk) SetTestStatus(v testresultbes.TestStatus) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetTestStatus(v)
+	})
+}
+
+// UpdateTestStatus sets the "test_status" field to the value that was provided on create.
+func (u *TestResultBESUpsertBulk) UpdateTestStatus() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateTestStatus()
+	})
+}
+
+// ClearTestStatus clears the value of the "test_status" field.
+func (u *TestResultBESUpsertBulk) ClearTestStatus() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearTestStatus()
+	})
+}
+
+// SetStatusDetails sets the "status_details" field.
+func (u *TestResultBESUpsertBulk) SetStatusDetails(v string) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetStatusDetails(v)
+	})
+}
+
+// UpdateStatusDetails sets the "status_details" field to the value that was provided on create.
+func (u *TestResultBESUpsertBulk) UpdateStatusDetails() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateStatusDetails()
+	})
+}
+
+// ClearStatusDetails clears the value of the "status_details" field.
+func (u *TestResultBESUpsertBulk) ClearStatusDetails() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearStatusDetails()
+	})
+}
+
+// SetLabel sets the "label" field.
+func (u *TestResultBESUpsertBulk) SetLabel(v string) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetLabel(v)
+	})
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *TestResultBESUpsertBulk) UpdateLabel() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateLabel()
+	})
+}
+
+// ClearLabel clears the value of the "label" field.
+func (u *TestResultBESUpsertBulk) ClearLabel() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearLabel()
+	})
+}
+
+// SetWarning sets the "warning" field.
+func (u *TestResultBESUpsertBulk) SetWarning(v []string) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetWarning(v)
+	})
+}
+
+// UpdateWarning sets the "warning" field to the value that was provided on create.
+func (u *TestResultBESUpsertBulk) UpdateWarning() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateWarning()
+	})
+}
+
+// ClearWarning clears the value of the "warning" field.
+func (u *TestResultBESUpsertBulk) ClearWarning() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearWarning()
+	})
+}
+
+// SetCachedLocally sets the "cached_locally" field.
+func (u *TestResultBESUpsertBulk) SetCachedLocally(v bool) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetCachedLocally(v)
+	})
+}
+
+// UpdateCachedLocally sets the "cached_locally" field to the value that was provided on create.
+func (u *TestResultBESUpsertBulk) UpdateCachedLocally() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateCachedLocally()
+	})
+}
+
+// ClearCachedLocally clears the value of the "cached_locally" field.
+func (u *TestResultBESUpsertBulk) ClearCachedLocally() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearCachedLocally()
+	})
+}
+
+// SetTestAttemptStartMillisEpoch sets the "test_attempt_start_millis_epoch" field.
+func (u *TestResultBESUpsertBulk) SetTestAttemptStartMillisEpoch(v int64) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetTestAttemptStartMillisEpoch(v)
+	})
+}
+
+// AddTestAttemptStartMillisEpoch adds v to the "test_attempt_start_millis_epoch" field.
+func (u *TestResultBESUpsertBulk) AddTestAttemptStartMillisEpoch(v int64) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.AddTestAttemptStartMillisEpoch(v)
+	})
+}
+
+// UpdateTestAttemptStartMillisEpoch sets the "test_attempt_start_millis_epoch" field to the value that was provided on create.
+func (u *TestResultBESUpsertBulk) UpdateTestAttemptStartMillisEpoch() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateTestAttemptStartMillisEpoch()
+	})
+}
+
+// ClearTestAttemptStartMillisEpoch clears the value of the "test_attempt_start_millis_epoch" field.
+func (u *TestResultBESUpsertBulk) ClearTestAttemptStartMillisEpoch() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearTestAttemptStartMillisEpoch()
+	})
+}
+
+// SetTestAttemptStart sets the "test_attempt_start" field.
+func (u *TestResultBESUpsertBulk) SetTestAttemptStart(v string) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetTestAttemptStart(v)
+	})
+}
+
+// UpdateTestAttemptStart sets the "test_attempt_start" field to the value that was provided on create.
+func (u *TestResultBESUpsertBulk) UpdateTestAttemptStart() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateTestAttemptStart()
+	})
+}
+
+// ClearTestAttemptStart clears the value of the "test_attempt_start" field.
+func (u *TestResultBESUpsertBulk) ClearTestAttemptStart() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearTestAttemptStart()
+	})
+}
+
+// SetTestAttemptDurationMillis sets the "test_attempt_duration_millis" field.
+func (u *TestResultBESUpsertBulk) SetTestAttemptDurationMillis(v int64) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetTestAttemptDurationMillis(v)
+	})
+}
+
+// AddTestAttemptDurationMillis adds v to the "test_attempt_duration_millis" field.
+func (u *TestResultBESUpsertBulk) AddTestAttemptDurationMillis(v int64) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.AddTestAttemptDurationMillis(v)
+	})
+}
+
+// UpdateTestAttemptDurationMillis sets the "test_attempt_duration_millis" field to the value that was provided on create.
+func (u *TestResultBESUpsertBulk) UpdateTestAttemptDurationMillis() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateTestAttemptDurationMillis()
+	})
+}
+
+// ClearTestAttemptDurationMillis clears the value of the "test_attempt_duration_millis" field.
+func (u *TestResultBESUpsertBulk) ClearTestAttemptDurationMillis() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearTestAttemptDurationMillis()
+	})
+}
+
+// SetTestAttemptDuration sets the "test_attempt_duration" field.
+func (u *TestResultBESUpsertBulk) SetTestAttemptDuration(v int64) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.SetTestAttemptDuration(v)
+	})
+}
+
+// AddTestAttemptDuration adds v to the "test_attempt_duration" field.
+func (u *TestResultBESUpsertBulk) AddTestAttemptDuration(v int64) *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.AddTestAttemptDuration(v)
+	})
+}
+
+// UpdateTestAttemptDuration sets the "test_attempt_duration" field to the value that was provided on create.
+func (u *TestResultBESUpsertBulk) UpdateTestAttemptDuration() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.UpdateTestAttemptDuration()
+	})
+}
+
+// ClearTestAttemptDuration clears the value of the "test_attempt_duration" field.
+func (u *TestResultBESUpsertBulk) ClearTestAttemptDuration() *TestResultBESUpsertBulk {
+	return u.Update(func(s *TestResultBESUpsert) {
+		s.ClearTestAttemptDuration()
+	})
+}
+
+// Exec executes the query.
+func (u *TestResultBESUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the TestResultBESCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TestResultBESCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TestResultBESUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

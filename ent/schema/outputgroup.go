@@ -7,6 +7,8 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
+// TODO: Unused. Either delete or implement properly.
+
 // OutputGroup holds the schema definition for the OutputGroup entity.
 type OutputGroup struct {
 	ent.Schema
@@ -28,10 +30,11 @@ func (OutputGroup) Fields() []ent.Field {
 // Edges of the OutputGroup.
 func (OutputGroup) Edges() []ent.Edge {
 	return []ent.Edge{
-		// Edge back to the target completion object.
-		edge.From("target_complete", TargetComplete.Type).
-			Ref("output_group").
-			Unique(),
+		// TODO: Add this back with Target.
+		// // Edge back to the target completion object.
+		// edge.From("target_complete", TargetComplete.Type).
+		// 	Ref("output_group").
+		// 	Unique(),
 
 		// Inline Files.
 		// Inlined files that belong to this output group, requested via

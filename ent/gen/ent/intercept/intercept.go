@@ -17,11 +17,15 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
@@ -35,10 +39,8 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
@@ -347,6 +349,33 @@ func (f TraverseBuildGraphMetrics) Traverse(ctx context.Context, q ent.Query) er
 	return fmt.Errorf("unexpected query type %T. expect *ent.BuildGraphMetricsQuery", q)
 }
 
+// The ConnectionMetadataFunc type is an adapter to allow the use of ordinary function as a Querier.
+type ConnectionMetadataFunc func(context.Context, *ent.ConnectionMetadataQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f ConnectionMetadataFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.ConnectionMetadataQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.ConnectionMetadataQuery", q)
+}
+
+// The TraverseConnectionMetadata type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseConnectionMetadata func(context.Context, *ent.ConnectionMetadataQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseConnectionMetadata) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseConnectionMetadata) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.ConnectionMetadataQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.ConnectionMetadataQuery", q)
+}
+
 // The CumulativeMetricsFunc type is an adapter to allow the use of ordinary function as a Querier.
 type CumulativeMetricsFunc func(context.Context, *ent.CumulativeMetricsQuery) (ent.Value, error)
 
@@ -399,6 +428,33 @@ func (f TraverseEvaluationStat) Traverse(ctx context.Context, q ent.Query) error
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.EvaluationStatQuery", q)
+}
+
+// The EventMetadataFunc type is an adapter to allow the use of ordinary function as a Querier.
+type EventMetadataFunc func(context.Context, *ent.EventMetadataQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f EventMetadataFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.EventMetadataQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.EventMetadataQuery", q)
+}
+
+// The TraverseEventMetadata type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseEventMetadata func(context.Context, *ent.EventMetadataQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseEventMetadata) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseEventMetadata) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.EventMetadataQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.EventMetadataQuery", q)
 }
 
 // The ExectionInfoFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -480,6 +536,60 @@ func (f TraverseGarbageMetrics) Traverse(ctx context.Context, q ent.Query) error
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.GarbageMetricsQuery", q)
+}
+
+// The IncompleteBuildLogFunc type is an adapter to allow the use of ordinary function as a Querier.
+type IncompleteBuildLogFunc func(context.Context, *ent.IncompleteBuildLogQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f IncompleteBuildLogFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.IncompleteBuildLogQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.IncompleteBuildLogQuery", q)
+}
+
+// The TraverseIncompleteBuildLog type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseIncompleteBuildLog func(context.Context, *ent.IncompleteBuildLogQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseIncompleteBuildLog) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseIncompleteBuildLog) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.IncompleteBuildLogQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.IncompleteBuildLogQuery", q)
+}
+
+// The InvocationFilesFunc type is an adapter to allow the use of ordinary function as a Querier.
+type InvocationFilesFunc func(context.Context, *ent.InvocationFilesQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f InvocationFilesFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.InvocationFilesQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.InvocationFilesQuery", q)
+}
+
+// The TraverseInvocationFiles type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseInvocationFiles func(context.Context, *ent.InvocationFilesQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseInvocationFiles) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseInvocationFiles) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.InvocationFilesQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.InvocationFilesQuery", q)
 }
 
 // The MemoryMetricsFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -806,58 +916,31 @@ func (f TraverseSystemNetworkStats) Traverse(ctx context.Context, q ent.Query) e
 	return fmt.Errorf("unexpected query type %T. expect *ent.SystemNetworkStatsQuery", q)
 }
 
-// The TargetCompleteFunc type is an adapter to allow the use of ordinary function as a Querier.
-type TargetCompleteFunc func(context.Context, *ent.TargetCompleteQuery) (ent.Value, error)
+// The TargetFunc type is an adapter to allow the use of ordinary function as a Querier.
+type TargetFunc func(context.Context, *ent.TargetQuery) (ent.Value, error)
 
 // Query calls f(ctx, q).
-func (f TargetCompleteFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.TargetCompleteQuery); ok {
+func (f TargetFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.TargetQuery); ok {
 		return f(ctx, q)
 	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.TargetCompleteQuery", q)
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.TargetQuery", q)
 }
 
-// The TraverseTargetComplete type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseTargetComplete func(context.Context, *ent.TargetCompleteQuery) error
+// The TraverseTarget type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseTarget func(context.Context, *ent.TargetQuery) error
 
 // Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseTargetComplete) Intercept(next ent.Querier) ent.Querier {
+func (f TraverseTarget) Intercept(next ent.Querier) ent.Querier {
 	return next
 }
 
 // Traverse calls f(ctx, q).
-func (f TraverseTargetComplete) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.TargetCompleteQuery); ok {
+func (f TraverseTarget) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.TargetQuery); ok {
 		return f(ctx, q)
 	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.TargetCompleteQuery", q)
-}
-
-// The TargetConfiguredFunc type is an adapter to allow the use of ordinary function as a Querier.
-type TargetConfiguredFunc func(context.Context, *ent.TargetConfiguredQuery) (ent.Value, error)
-
-// Query calls f(ctx, q).
-func (f TargetConfiguredFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.TargetConfiguredQuery); ok {
-		return f(ctx, q)
-	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.TargetConfiguredQuery", q)
-}
-
-// The TraverseTargetConfigured type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseTargetConfigured func(context.Context, *ent.TargetConfiguredQuery) error
-
-// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseTargetConfigured) Intercept(next ent.Querier) ent.Querier {
-	return next
-}
-
-// Traverse calls f(ctx, q).
-func (f TraverseTargetConfigured) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.TargetConfiguredQuery); ok {
-		return f(ctx, q)
-	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.TargetConfiguredQuery", q)
+	return fmt.Errorf("unexpected query type %T. expect *ent.TargetQuery", q)
 }
 
 // The TargetMetricsFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -885,33 +968,6 @@ func (f TraverseTargetMetrics) Traverse(ctx context.Context, q ent.Query) error 
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.TargetMetricsQuery", q)
-}
-
-// The TargetPairFunc type is an adapter to allow the use of ordinary function as a Querier.
-type TargetPairFunc func(context.Context, *ent.TargetPairQuery) (ent.Value, error)
-
-// Query calls f(ctx, q).
-func (f TargetPairFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.TargetPairQuery); ok {
-		return f(ctx, q)
-	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.TargetPairQuery", q)
-}
-
-// The TraverseTargetPair type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseTargetPair func(context.Context, *ent.TargetPairQuery) error
-
-// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseTargetPair) Intercept(next ent.Querier) ent.Querier {
-	return next
-}
-
-// Traverse calls f(ctx, q).
-func (f TraverseTargetPair) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.TargetPairQuery); ok {
-		return f(ctx, q)
-	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.TargetPairQuery", q)
 }
 
 // The TestCollectionFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -1124,16 +1180,24 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.BuildQuery, predicate.Build, build.OrderOption]{typ: ent.TypeBuild, tq: q}, nil
 	case *ent.BuildGraphMetricsQuery:
 		return &query[*ent.BuildGraphMetricsQuery, predicate.BuildGraphMetrics, buildgraphmetrics.OrderOption]{typ: ent.TypeBuildGraphMetrics, tq: q}, nil
+	case *ent.ConnectionMetadataQuery:
+		return &query[*ent.ConnectionMetadataQuery, predicate.ConnectionMetadata, connectionmetadata.OrderOption]{typ: ent.TypeConnectionMetadata, tq: q}, nil
 	case *ent.CumulativeMetricsQuery:
 		return &query[*ent.CumulativeMetricsQuery, predicate.CumulativeMetrics, cumulativemetrics.OrderOption]{typ: ent.TypeCumulativeMetrics, tq: q}, nil
 	case *ent.EvaluationStatQuery:
 		return &query[*ent.EvaluationStatQuery, predicate.EvaluationStat, evaluationstat.OrderOption]{typ: ent.TypeEvaluationStat, tq: q}, nil
+	case *ent.EventMetadataQuery:
+		return &query[*ent.EventMetadataQuery, predicate.EventMetadata, eventmetadata.OrderOption]{typ: ent.TypeEventMetadata, tq: q}, nil
 	case *ent.ExectionInfoQuery:
 		return &query[*ent.ExectionInfoQuery, predicate.ExectionInfo, exectioninfo.OrderOption]{typ: ent.TypeExectionInfo, tq: q}, nil
 	case *ent.FilesMetricQuery:
 		return &query[*ent.FilesMetricQuery, predicate.FilesMetric, filesmetric.OrderOption]{typ: ent.TypeFilesMetric, tq: q}, nil
 	case *ent.GarbageMetricsQuery:
 		return &query[*ent.GarbageMetricsQuery, predicate.GarbageMetrics, garbagemetrics.OrderOption]{typ: ent.TypeGarbageMetrics, tq: q}, nil
+	case *ent.IncompleteBuildLogQuery:
+		return &query[*ent.IncompleteBuildLogQuery, predicate.IncompleteBuildLog, incompletebuildlog.OrderOption]{typ: ent.TypeIncompleteBuildLog, tq: q}, nil
+	case *ent.InvocationFilesQuery:
+		return &query[*ent.InvocationFilesQuery, predicate.InvocationFiles, invocationfiles.OrderOption]{typ: ent.TypeInvocationFiles, tq: q}, nil
 	case *ent.MemoryMetricsQuery:
 		return &query[*ent.MemoryMetricsQuery, predicate.MemoryMetrics, memorymetrics.OrderOption]{typ: ent.TypeMemoryMetrics, tq: q}, nil
 	case *ent.MetricsQuery:
@@ -1158,14 +1222,10 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.SourceControlQuery, predicate.SourceControl, sourcecontrol.OrderOption]{typ: ent.TypeSourceControl, tq: q}, nil
 	case *ent.SystemNetworkStatsQuery:
 		return &query[*ent.SystemNetworkStatsQuery, predicate.SystemNetworkStats, systemnetworkstats.OrderOption]{typ: ent.TypeSystemNetworkStats, tq: q}, nil
-	case *ent.TargetCompleteQuery:
-		return &query[*ent.TargetCompleteQuery, predicate.TargetComplete, targetcomplete.OrderOption]{typ: ent.TypeTargetComplete, tq: q}, nil
-	case *ent.TargetConfiguredQuery:
-		return &query[*ent.TargetConfiguredQuery, predicate.TargetConfigured, targetconfigured.OrderOption]{typ: ent.TypeTargetConfigured, tq: q}, nil
+	case *ent.TargetQuery:
+		return &query[*ent.TargetQuery, predicate.Target, target.OrderOption]{typ: ent.TypeTarget, tq: q}, nil
 	case *ent.TargetMetricsQuery:
 		return &query[*ent.TargetMetricsQuery, predicate.TargetMetrics, targetmetrics.OrderOption]{typ: ent.TypeTargetMetrics, tq: q}, nil
-	case *ent.TargetPairQuery:
-		return &query[*ent.TargetPairQuery, predicate.TargetPair, targetpair.OrderOption]{typ: ent.TypeTargetPair, tq: q}, nil
 	case *ent.TestCollectionQuery:
 		return &query[*ent.TestCollectionQuery, predicate.TestCollection, testcollection.OrderOption]{typ: ent.TypeTestCollection, tq: q}, nil
 	case *ent.TestFileQuery:

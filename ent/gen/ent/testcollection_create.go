@@ -4,9 +4,11 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
@@ -20,6 +22,7 @@ type TestCollectionCreate struct {
 	config
 	mutation *TestCollectionMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetLabel sets the "label" field.
@@ -247,6 +250,7 @@ func (tcc *TestCollectionCreate) createSpec() (*TestCollection, *sqlgraph.Create
 		_node = &TestCollection{config: tcc.config}
 		_spec = sqlgraph.NewCreateSpec(testcollection.Table, sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = tcc.conflict
 	if value, ok := tcc.mutation.Label(); ok {
 		_spec.SetField(testcollection.FieldLabel, field.TypeString, value)
 		_node.Label = value
@@ -327,11 +331,420 @@ func (tcc *TestCollectionCreate) createSpec() (*TestCollection, *sqlgraph.Create
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TestCollection.Create().
+//		SetLabel(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TestCollectionUpsert) {
+//			SetLabel(v+v).
+//		}).
+//		Exec(ctx)
+func (tcc *TestCollectionCreate) OnConflict(opts ...sql.ConflictOption) *TestCollectionUpsertOne {
+	tcc.conflict = opts
+	return &TestCollectionUpsertOne{
+		create: tcc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TestCollection.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (tcc *TestCollectionCreate) OnConflictColumns(columns ...string) *TestCollectionUpsertOne {
+	tcc.conflict = append(tcc.conflict, sql.ConflictColumns(columns...))
+	return &TestCollectionUpsertOne{
+		create: tcc,
+	}
+}
+
+type (
+	// TestCollectionUpsertOne is the builder for "upsert"-ing
+	//  one TestCollection node.
+	TestCollectionUpsertOne struct {
+		create *TestCollectionCreate
+	}
+
+	// TestCollectionUpsert is the "OnConflict" setter.
+	TestCollectionUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetLabel sets the "label" field.
+func (u *TestCollectionUpsert) SetLabel(v string) *TestCollectionUpsert {
+	u.Set(testcollection.FieldLabel, v)
+	return u
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *TestCollectionUpsert) UpdateLabel() *TestCollectionUpsert {
+	u.SetExcluded(testcollection.FieldLabel)
+	return u
+}
+
+// ClearLabel clears the value of the "label" field.
+func (u *TestCollectionUpsert) ClearLabel() *TestCollectionUpsert {
+	u.SetNull(testcollection.FieldLabel)
+	return u
+}
+
+// SetOverallStatus sets the "overall_status" field.
+func (u *TestCollectionUpsert) SetOverallStatus(v testcollection.OverallStatus) *TestCollectionUpsert {
+	u.Set(testcollection.FieldOverallStatus, v)
+	return u
+}
+
+// UpdateOverallStatus sets the "overall_status" field to the value that was provided on create.
+func (u *TestCollectionUpsert) UpdateOverallStatus() *TestCollectionUpsert {
+	u.SetExcluded(testcollection.FieldOverallStatus)
+	return u
+}
+
+// ClearOverallStatus clears the value of the "overall_status" field.
+func (u *TestCollectionUpsert) ClearOverallStatus() *TestCollectionUpsert {
+	u.SetNull(testcollection.FieldOverallStatus)
+	return u
+}
+
+// SetStrategy sets the "strategy" field.
+func (u *TestCollectionUpsert) SetStrategy(v string) *TestCollectionUpsert {
+	u.Set(testcollection.FieldStrategy, v)
+	return u
+}
+
+// UpdateStrategy sets the "strategy" field to the value that was provided on create.
+func (u *TestCollectionUpsert) UpdateStrategy() *TestCollectionUpsert {
+	u.SetExcluded(testcollection.FieldStrategy)
+	return u
+}
+
+// ClearStrategy clears the value of the "strategy" field.
+func (u *TestCollectionUpsert) ClearStrategy() *TestCollectionUpsert {
+	u.SetNull(testcollection.FieldStrategy)
+	return u
+}
+
+// SetCachedLocally sets the "cached_locally" field.
+func (u *TestCollectionUpsert) SetCachedLocally(v bool) *TestCollectionUpsert {
+	u.Set(testcollection.FieldCachedLocally, v)
+	return u
+}
+
+// UpdateCachedLocally sets the "cached_locally" field to the value that was provided on create.
+func (u *TestCollectionUpsert) UpdateCachedLocally() *TestCollectionUpsert {
+	u.SetExcluded(testcollection.FieldCachedLocally)
+	return u
+}
+
+// ClearCachedLocally clears the value of the "cached_locally" field.
+func (u *TestCollectionUpsert) ClearCachedLocally() *TestCollectionUpsert {
+	u.SetNull(testcollection.FieldCachedLocally)
+	return u
+}
+
+// SetCachedRemotely sets the "cached_remotely" field.
+func (u *TestCollectionUpsert) SetCachedRemotely(v bool) *TestCollectionUpsert {
+	u.Set(testcollection.FieldCachedRemotely, v)
+	return u
+}
+
+// UpdateCachedRemotely sets the "cached_remotely" field to the value that was provided on create.
+func (u *TestCollectionUpsert) UpdateCachedRemotely() *TestCollectionUpsert {
+	u.SetExcluded(testcollection.FieldCachedRemotely)
+	return u
+}
+
+// ClearCachedRemotely clears the value of the "cached_remotely" field.
+func (u *TestCollectionUpsert) ClearCachedRemotely() *TestCollectionUpsert {
+	u.SetNull(testcollection.FieldCachedRemotely)
+	return u
+}
+
+// SetFirstSeen sets the "first_seen" field.
+func (u *TestCollectionUpsert) SetFirstSeen(v time.Time) *TestCollectionUpsert {
+	u.Set(testcollection.FieldFirstSeen, v)
+	return u
+}
+
+// UpdateFirstSeen sets the "first_seen" field to the value that was provided on create.
+func (u *TestCollectionUpsert) UpdateFirstSeen() *TestCollectionUpsert {
+	u.SetExcluded(testcollection.FieldFirstSeen)
+	return u
+}
+
+// ClearFirstSeen clears the value of the "first_seen" field.
+func (u *TestCollectionUpsert) ClearFirstSeen() *TestCollectionUpsert {
+	u.SetNull(testcollection.FieldFirstSeen)
+	return u
+}
+
+// SetDurationMs sets the "duration_ms" field.
+func (u *TestCollectionUpsert) SetDurationMs(v int64) *TestCollectionUpsert {
+	u.Set(testcollection.FieldDurationMs, v)
+	return u
+}
+
+// UpdateDurationMs sets the "duration_ms" field to the value that was provided on create.
+func (u *TestCollectionUpsert) UpdateDurationMs() *TestCollectionUpsert {
+	u.SetExcluded(testcollection.FieldDurationMs)
+	return u
+}
+
+// AddDurationMs adds v to the "duration_ms" field.
+func (u *TestCollectionUpsert) AddDurationMs(v int64) *TestCollectionUpsert {
+	u.Add(testcollection.FieldDurationMs, v)
+	return u
+}
+
+// ClearDurationMs clears the value of the "duration_ms" field.
+func (u *TestCollectionUpsert) ClearDurationMs() *TestCollectionUpsert {
+	u.SetNull(testcollection.FieldDurationMs)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.TestCollection.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TestCollectionUpsertOne) UpdateNewValues() *TestCollectionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TestCollection.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *TestCollectionUpsertOne) Ignore() *TestCollectionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TestCollectionUpsertOne) DoNothing() *TestCollectionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TestCollectionCreate.OnConflict
+// documentation for more info.
+func (u *TestCollectionUpsertOne) Update(set func(*TestCollectionUpsert)) *TestCollectionUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TestCollectionUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetLabel sets the "label" field.
+func (u *TestCollectionUpsertOne) SetLabel(v string) *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetLabel(v)
+	})
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *TestCollectionUpsertOne) UpdateLabel() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateLabel()
+	})
+}
+
+// ClearLabel clears the value of the "label" field.
+func (u *TestCollectionUpsertOne) ClearLabel() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearLabel()
+	})
+}
+
+// SetOverallStatus sets the "overall_status" field.
+func (u *TestCollectionUpsertOne) SetOverallStatus(v testcollection.OverallStatus) *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetOverallStatus(v)
+	})
+}
+
+// UpdateOverallStatus sets the "overall_status" field to the value that was provided on create.
+func (u *TestCollectionUpsertOne) UpdateOverallStatus() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateOverallStatus()
+	})
+}
+
+// ClearOverallStatus clears the value of the "overall_status" field.
+func (u *TestCollectionUpsertOne) ClearOverallStatus() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearOverallStatus()
+	})
+}
+
+// SetStrategy sets the "strategy" field.
+func (u *TestCollectionUpsertOne) SetStrategy(v string) *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetStrategy(v)
+	})
+}
+
+// UpdateStrategy sets the "strategy" field to the value that was provided on create.
+func (u *TestCollectionUpsertOne) UpdateStrategy() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateStrategy()
+	})
+}
+
+// ClearStrategy clears the value of the "strategy" field.
+func (u *TestCollectionUpsertOne) ClearStrategy() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearStrategy()
+	})
+}
+
+// SetCachedLocally sets the "cached_locally" field.
+func (u *TestCollectionUpsertOne) SetCachedLocally(v bool) *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetCachedLocally(v)
+	})
+}
+
+// UpdateCachedLocally sets the "cached_locally" field to the value that was provided on create.
+func (u *TestCollectionUpsertOne) UpdateCachedLocally() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateCachedLocally()
+	})
+}
+
+// ClearCachedLocally clears the value of the "cached_locally" field.
+func (u *TestCollectionUpsertOne) ClearCachedLocally() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearCachedLocally()
+	})
+}
+
+// SetCachedRemotely sets the "cached_remotely" field.
+func (u *TestCollectionUpsertOne) SetCachedRemotely(v bool) *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetCachedRemotely(v)
+	})
+}
+
+// UpdateCachedRemotely sets the "cached_remotely" field to the value that was provided on create.
+func (u *TestCollectionUpsertOne) UpdateCachedRemotely() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateCachedRemotely()
+	})
+}
+
+// ClearCachedRemotely clears the value of the "cached_remotely" field.
+func (u *TestCollectionUpsertOne) ClearCachedRemotely() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearCachedRemotely()
+	})
+}
+
+// SetFirstSeen sets the "first_seen" field.
+func (u *TestCollectionUpsertOne) SetFirstSeen(v time.Time) *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetFirstSeen(v)
+	})
+}
+
+// UpdateFirstSeen sets the "first_seen" field to the value that was provided on create.
+func (u *TestCollectionUpsertOne) UpdateFirstSeen() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateFirstSeen()
+	})
+}
+
+// ClearFirstSeen clears the value of the "first_seen" field.
+func (u *TestCollectionUpsertOne) ClearFirstSeen() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearFirstSeen()
+	})
+}
+
+// SetDurationMs sets the "duration_ms" field.
+func (u *TestCollectionUpsertOne) SetDurationMs(v int64) *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetDurationMs(v)
+	})
+}
+
+// AddDurationMs adds v to the "duration_ms" field.
+func (u *TestCollectionUpsertOne) AddDurationMs(v int64) *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.AddDurationMs(v)
+	})
+}
+
+// UpdateDurationMs sets the "duration_ms" field to the value that was provided on create.
+func (u *TestCollectionUpsertOne) UpdateDurationMs() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateDurationMs()
+	})
+}
+
+// ClearDurationMs clears the value of the "duration_ms" field.
+func (u *TestCollectionUpsertOne) ClearDurationMs() *TestCollectionUpsertOne {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearDurationMs()
+	})
+}
+
+// Exec executes the query.
+func (u *TestCollectionUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TestCollectionCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TestCollectionUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *TestCollectionUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *TestCollectionUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // TestCollectionCreateBulk is the builder for creating many TestCollection entities in bulk.
 type TestCollectionCreateBulk struct {
 	config
 	err      error
 	builders []*TestCollectionCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the TestCollection entities in the database.
@@ -361,6 +774,7 @@ func (tccb *TestCollectionCreateBulk) Save(ctx context.Context) ([]*TestCollecti
 					_, err = mutators[i+1].Mutate(root, tccb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = tccb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, tccb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -411,6 +825,264 @@ func (tccb *TestCollectionCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (tccb *TestCollectionCreateBulk) ExecX(ctx context.Context) {
 	if err := tccb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TestCollection.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TestCollectionUpsert) {
+//			SetLabel(v+v).
+//		}).
+//		Exec(ctx)
+func (tccb *TestCollectionCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestCollectionUpsertBulk {
+	tccb.conflict = opts
+	return &TestCollectionUpsertBulk{
+		create: tccb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TestCollection.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (tccb *TestCollectionCreateBulk) OnConflictColumns(columns ...string) *TestCollectionUpsertBulk {
+	tccb.conflict = append(tccb.conflict, sql.ConflictColumns(columns...))
+	return &TestCollectionUpsertBulk{
+		create: tccb,
+	}
+}
+
+// TestCollectionUpsertBulk is the builder for "upsert"-ing
+// a bulk of TestCollection nodes.
+type TestCollectionUpsertBulk struct {
+	create *TestCollectionCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.TestCollection.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TestCollectionUpsertBulk) UpdateNewValues() *TestCollectionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TestCollection.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *TestCollectionUpsertBulk) Ignore() *TestCollectionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TestCollectionUpsertBulk) DoNothing() *TestCollectionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TestCollectionCreateBulk.OnConflict
+// documentation for more info.
+func (u *TestCollectionUpsertBulk) Update(set func(*TestCollectionUpsert)) *TestCollectionUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TestCollectionUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetLabel sets the "label" field.
+func (u *TestCollectionUpsertBulk) SetLabel(v string) *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetLabel(v)
+	})
+}
+
+// UpdateLabel sets the "label" field to the value that was provided on create.
+func (u *TestCollectionUpsertBulk) UpdateLabel() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateLabel()
+	})
+}
+
+// ClearLabel clears the value of the "label" field.
+func (u *TestCollectionUpsertBulk) ClearLabel() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearLabel()
+	})
+}
+
+// SetOverallStatus sets the "overall_status" field.
+func (u *TestCollectionUpsertBulk) SetOverallStatus(v testcollection.OverallStatus) *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetOverallStatus(v)
+	})
+}
+
+// UpdateOverallStatus sets the "overall_status" field to the value that was provided on create.
+func (u *TestCollectionUpsertBulk) UpdateOverallStatus() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateOverallStatus()
+	})
+}
+
+// ClearOverallStatus clears the value of the "overall_status" field.
+func (u *TestCollectionUpsertBulk) ClearOverallStatus() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearOverallStatus()
+	})
+}
+
+// SetStrategy sets the "strategy" field.
+func (u *TestCollectionUpsertBulk) SetStrategy(v string) *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetStrategy(v)
+	})
+}
+
+// UpdateStrategy sets the "strategy" field to the value that was provided on create.
+func (u *TestCollectionUpsertBulk) UpdateStrategy() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateStrategy()
+	})
+}
+
+// ClearStrategy clears the value of the "strategy" field.
+func (u *TestCollectionUpsertBulk) ClearStrategy() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearStrategy()
+	})
+}
+
+// SetCachedLocally sets the "cached_locally" field.
+func (u *TestCollectionUpsertBulk) SetCachedLocally(v bool) *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetCachedLocally(v)
+	})
+}
+
+// UpdateCachedLocally sets the "cached_locally" field to the value that was provided on create.
+func (u *TestCollectionUpsertBulk) UpdateCachedLocally() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateCachedLocally()
+	})
+}
+
+// ClearCachedLocally clears the value of the "cached_locally" field.
+func (u *TestCollectionUpsertBulk) ClearCachedLocally() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearCachedLocally()
+	})
+}
+
+// SetCachedRemotely sets the "cached_remotely" field.
+func (u *TestCollectionUpsertBulk) SetCachedRemotely(v bool) *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetCachedRemotely(v)
+	})
+}
+
+// UpdateCachedRemotely sets the "cached_remotely" field to the value that was provided on create.
+func (u *TestCollectionUpsertBulk) UpdateCachedRemotely() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateCachedRemotely()
+	})
+}
+
+// ClearCachedRemotely clears the value of the "cached_remotely" field.
+func (u *TestCollectionUpsertBulk) ClearCachedRemotely() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearCachedRemotely()
+	})
+}
+
+// SetFirstSeen sets the "first_seen" field.
+func (u *TestCollectionUpsertBulk) SetFirstSeen(v time.Time) *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetFirstSeen(v)
+	})
+}
+
+// UpdateFirstSeen sets the "first_seen" field to the value that was provided on create.
+func (u *TestCollectionUpsertBulk) UpdateFirstSeen() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateFirstSeen()
+	})
+}
+
+// ClearFirstSeen clears the value of the "first_seen" field.
+func (u *TestCollectionUpsertBulk) ClearFirstSeen() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearFirstSeen()
+	})
+}
+
+// SetDurationMs sets the "duration_ms" field.
+func (u *TestCollectionUpsertBulk) SetDurationMs(v int64) *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.SetDurationMs(v)
+	})
+}
+
+// AddDurationMs adds v to the "duration_ms" field.
+func (u *TestCollectionUpsertBulk) AddDurationMs(v int64) *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.AddDurationMs(v)
+	})
+}
+
+// UpdateDurationMs sets the "duration_ms" field to the value that was provided on create.
+func (u *TestCollectionUpsertBulk) UpdateDurationMs() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.UpdateDurationMs()
+	})
+}
+
+// ClearDurationMs clears the value of the "duration_ms" field.
+func (u *TestCollectionUpsertBulk) ClearDurationMs() *TestCollectionUpsertBulk {
+	return u.Update(func(s *TestCollectionUpsert) {
+		s.ClearDurationMs()
+	})
+}
+
+// Exec executes the query.
+func (u *TestCollectionUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the TestCollectionCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TestCollectionCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TestCollectionUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

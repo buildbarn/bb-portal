@@ -396,15 +396,14 @@ input ArtifactMetricsWhereInput {
 type BazelInvocation implements Node {
   id: ID!
   invocationID: UUID!
-  startedAt: Time!
+  startedAt: Time
   endedAt: Time
   changeNumber: Int
   patchsetNumber: Int
-  bepCompleted: Boolean
-  stepLabel: String!
+  bepCompleted: Boolean!
+  stepLabel: String
   userEmail: String
   userLdap: String
-  buildLogs: String
   cpu: String
   platformName: String
   hostname: String
@@ -412,10 +411,15 @@ type BazelInvocation implements Node {
   configurationMnemonic: String
   numFetches: Int
   instanceName: String
+  bazelVersion: String
+  exitCodeName: String
+  exitCodeCode: Int
   build: Build
   metrics: Metrics
+  incompleteBuildLogs: [IncompleteBuildLog!]
+  invocationFiles: [InvocationFiles!]
   testCollection: [TestCollection!]
-  targets: [TargetPair!]
+  targets: [Target!]
   sourceControl: SourceControl
 }
 """
@@ -572,6 +576,8 @@ input BazelInvocationWhereInput {
   startedAtGTE: Time
   startedAtLT: Time
   startedAtLTE: Time
+  startedAtIsNil: Boolean
+  startedAtNotNil: Boolean
   """
   ended_at field predicates
   """
@@ -616,8 +622,6 @@ input BazelInvocationWhereInput {
   """
   bepCompleted: Boolean
   bepCompletedNEQ: Boolean
-  bepCompletedIsNil: Boolean
-  bepCompletedNotNil: Boolean
   """
   step_label field predicates
   """
@@ -632,6 +636,8 @@ input BazelInvocationWhereInput {
   stepLabelContains: String
   stepLabelHasPrefix: String
   stepLabelHasSuffix: String
+  stepLabelIsNil: Boolean
+  stepLabelNotNil: Boolean
   stepLabelEqualFold: String
   stepLabelContainsFold: String
   """
@@ -794,6 +800,8 @@ input BazelInvocationWhereInput {
   profileNameContains: String
   profileNameHasPrefix: String
   profileNameHasSuffix: String
+  profileNameIsNil: Boolean
+  profileNameNotNil: Boolean
   profileNameEqualFold: String
   profileNameContainsFold: String
   """
@@ -815,6 +823,55 @@ input BazelInvocationWhereInput {
   instanceNameEqualFold: String
   instanceNameContainsFold: String
   """
+  bazel_version field predicates
+  """
+  bazelVersion: String
+  bazelVersionNEQ: String
+  bazelVersionIn: [String!]
+  bazelVersionNotIn: [String!]
+  bazelVersionGT: String
+  bazelVersionGTE: String
+  bazelVersionLT: String
+  bazelVersionLTE: String
+  bazelVersionContains: String
+  bazelVersionHasPrefix: String
+  bazelVersionHasSuffix: String
+  bazelVersionIsNil: Boolean
+  bazelVersionNotNil: Boolean
+  bazelVersionEqualFold: String
+  bazelVersionContainsFold: String
+  """
+  exit_code_name field predicates
+  """
+  exitCodeName: String
+  exitCodeNameNEQ: String
+  exitCodeNameIn: [String!]
+  exitCodeNameNotIn: [String!]
+  exitCodeNameGT: String
+  exitCodeNameGTE: String
+  exitCodeNameLT: String
+  exitCodeNameLTE: String
+  exitCodeNameContains: String
+  exitCodeNameHasPrefix: String
+  exitCodeNameHasSuffix: String
+  exitCodeNameIsNil: Boolean
+  exitCodeNameNotNil: Boolean
+  exitCodeNameEqualFold: String
+  exitCodeNameContainsFold: String
+  """
+  exit_code_code field predicates
+  """
+  exitCodeCode: Int
+  exitCodeCodeNEQ: Int
+  exitCodeCodeIn: [Int!]
+  exitCodeCodeNotIn: [Int!]
+  exitCodeCodeGT: Int
+  exitCodeCodeGTE: Int
+  exitCodeCodeLT: Int
+  exitCodeCodeLTE: Int
+  exitCodeCodeIsNil: Boolean
+  exitCodeCodeNotNil: Boolean
+  """
   build edge predicates
   """
   hasBuild: Boolean
@@ -830,6 +887,16 @@ input BazelInvocationWhereInput {
   hasMetrics: Boolean
   hasMetricsWith: [MetricsWhereInput!]
   """
+  incomplete_build_logs edge predicates
+  """
+  hasIncompleteBuildLogs: Boolean
+  hasIncompleteBuildLogsWith: [IncompleteBuildLogWhereInput!]
+  """
+  invocation_files edge predicates
+  """
+  hasInvocationFiles: Boolean
+  hasInvocationFilesWith: [InvocationFilesWhereInput!]
+  """
   test_collection edge predicates
   """
   hasTestCollection: Boolean
@@ -838,7 +905,7 @@ input BazelInvocationWhereInput {
   targets edge predicates
   """
   hasTargets: Boolean
-  hasTargetsWith: [TargetPairWhereInput!]
+  hasTargetsWith: [TargetWhereInput!]
   """
   source_control edge predicates
   """
@@ -976,7 +1043,8 @@ type Build implements Node {
   id: ID!
   buildURL: String!
   buildUUID: UUID!
-  timestamp: Time
+  instanceName: String!
+  timestamp: Time!
   invocations: [BazelInvocation!]
 }
 """
@@ -1241,6 +1309,22 @@ input BuildWhereInput {
   buildUUIDLT: UUID
   buildUUIDLTE: UUID
   """
+  instance_name field predicates
+  """
+  instanceName: String
+  instanceNameNEQ: String
+  instanceNameIn: [String!]
+  instanceNameNotIn: [String!]
+  instanceNameGT: String
+  instanceNameGTE: String
+  instanceNameLT: String
+  instanceNameLTE: String
+  instanceNameContains: String
+  instanceNameHasPrefix: String
+  instanceNameHasSuffix: String
+  instanceNameEqualFold: String
+  instanceNameContainsFold: String
+  """
   timestamp field predicates
   """
   timestamp: Time
@@ -1251,8 +1335,6 @@ input BuildWhereInput {
   timestampGTE: Time
   timestampLT: Time
   timestampLTE: Time
-  timestampIsNil: Boolean
-  timestampNotNil: Boolean
   """
   invocations edge predicates
   """
@@ -1617,6 +1699,181 @@ input GarbageMetricsWhereInput {
   hasMemoryMetrics: Boolean
   hasMemoryMetricsWith: [MemoryMetricsWhereInput!]
 }
+type IncompleteBuildLog implements Node {
+  id: ID!
+  snippetID: Int!
+  logSnippet: String!
+  bazelInvocation: BazelInvocation
+}
+"""
+IncompleteBuildLogWhereInput is used for filtering IncompleteBuildLog objects.
+Input was generated by ent.
+"""
+input IncompleteBuildLogWhereInput {
+  not: IncompleteBuildLogWhereInput
+  and: [IncompleteBuildLogWhereInput!]
+  or: [IncompleteBuildLogWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  snippet_id field predicates
+  """
+  snippetID: Int
+  snippetIDNEQ: Int
+  snippetIDIn: [Int!]
+  snippetIDNotIn: [Int!]
+  snippetIDGT: Int
+  snippetIDGTE: Int
+  snippetIDLT: Int
+  snippetIDLTE: Int
+  """
+  log_snippet field predicates
+  """
+  logSnippet: String
+  logSnippetNEQ: String
+  logSnippetIn: [String!]
+  logSnippetNotIn: [String!]
+  logSnippetGT: String
+  logSnippetGTE: String
+  logSnippetLT: String
+  logSnippetLTE: String
+  logSnippetContains: String
+  logSnippetHasPrefix: String
+  logSnippetHasSuffix: String
+  logSnippetEqualFold: String
+  logSnippetContainsFold: String
+  """
+  bazel_invocation edge predicates
+  """
+  hasBazelInvocation: Boolean
+  hasBazelInvocationWith: [BazelInvocationWhereInput!]
+}
+type InvocationFiles implements Node {
+  id: ID!
+  name: String!
+  content: String
+  digest: String
+  sizeBytes: Int
+  digestFunction: String
+  bazelInvocation: BazelInvocation
+}
+"""
+InvocationFilesWhereInput is used for filtering InvocationFiles objects.
+Input was generated by ent.
+"""
+input InvocationFilesWhereInput {
+  not: InvocationFilesWhereInput
+  and: [InvocationFilesWhereInput!]
+  or: [InvocationFilesWhereInput!]
+  """
+  id field predicates
+  """
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  """
+  name field predicates
+  """
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  """
+  content field predicates
+  """
+  content: String
+  contentNEQ: String
+  contentIn: [String!]
+  contentNotIn: [String!]
+  contentGT: String
+  contentGTE: String
+  contentLT: String
+  contentLTE: String
+  contentContains: String
+  contentHasPrefix: String
+  contentHasSuffix: String
+  contentIsNil: Boolean
+  contentNotNil: Boolean
+  contentEqualFold: String
+  contentContainsFold: String
+  """
+  digest field predicates
+  """
+  digest: String
+  digestNEQ: String
+  digestIn: [String!]
+  digestNotIn: [String!]
+  digestGT: String
+  digestGTE: String
+  digestLT: String
+  digestLTE: String
+  digestContains: String
+  digestHasPrefix: String
+  digestHasSuffix: String
+  digestIsNil: Boolean
+  digestNotNil: Boolean
+  digestEqualFold: String
+  digestContainsFold: String
+  """
+  size_bytes field predicates
+  """
+  sizeBytes: Int
+  sizeBytesNEQ: Int
+  sizeBytesIn: [Int!]
+  sizeBytesNotIn: [Int!]
+  sizeBytesGT: Int
+  sizeBytesGTE: Int
+  sizeBytesLT: Int
+  sizeBytesLTE: Int
+  sizeBytesIsNil: Boolean
+  sizeBytesNotNil: Boolean
+  """
+  digest_function field predicates
+  """
+  digestFunction: String
+  digestFunctionNEQ: String
+  digestFunctionIn: [String!]
+  digestFunctionNotIn: [String!]
+  digestFunctionGT: String
+  digestFunctionGTE: String
+  digestFunctionLT: String
+  digestFunctionLTE: String
+  digestFunctionContains: String
+  digestFunctionHasPrefix: String
+  digestFunctionHasSuffix: String
+  digestFunctionIsNil: Boolean
+  digestFunctionNotNil: Boolean
+  digestFunctionEqualFold: String
+  digestFunctionContainsFold: String
+  """
+  bazel_invocation edge predicates
+  """
+  hasBazelInvocation: Boolean
+  hasBazelInvocationWith: [BazelInvocationWhereInput!]
+}
 type MemoryMetrics implements Node {
   id: ID!
   peakPostGcHeapSize: Int
@@ -1976,7 +2233,6 @@ type OutputGroup implements Node {
   id: ID!
   name: String
   incomplete: Boolean
-  targetComplete: TargetComplete
   inlineFiles: [TestFile!]
   fileSets: NamedSetOfFiles
 }
@@ -2024,11 +2280,6 @@ input OutputGroupWhereInput {
   incompleteNEQ: Boolean
   incompleteIsNil: Boolean
   incompleteNotNil: Boolean
-  """
-  target_complete edge predicates
-  """
-  hasTargetComplete: Boolean
-  hasTargetCompleteWith: [TargetCompleteWhereInput!]
   """
   inline_files edge predicates
   """
@@ -2379,15 +2630,15 @@ type Query {
     last: Int
 
     """
-    Ordering options for TargetPairs returned from the connection.
+    Ordering options for Targets returned from the connection.
     """
-    orderBy: TargetPairOrder
+    orderBy: TargetOrder
 
     """
-    Filtering options for TargetPairs returned from the connection.
+    Filtering options for Targets returned from the connection.
     """
-    where: TargetPairWhereInput
-  ): TargetPairConnection!
+    where: TargetWhereInput
+  ): TargetConnection!
   findTests(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -2600,21 +2851,30 @@ input RunnerCountWhereInput {
 }
 type SourceControl implements Node {
   id: ID!
-  repoURL: String
-  branch: String
+  provider: SourceControlProvider
+  instanceURL: String
+  repo: String
+  refs: String
   commitSha: String
   actor: String
-  refs: String
-  runID: String
-  workflow: String
-  action: String
-  workspace: String
   eventName: String
+  workflow: String
+  runID: String
+  runNumber: String
   job: String
+  action: String
   runnerName: String
   runnerArch: String
   runnerOs: String
+  workspace: String
   bazelInvocation: BazelInvocation
+}
+"""
+SourceControlProvider is enum for the field provider
+"""
+enum SourceControlProvider @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol.Provider") {
+  GITHUB
+  GITLAB
 }
 """
 SourceControlWhereInput is used for filtering SourceControl objects.
@@ -2636,41 +2896,68 @@ input SourceControlWhereInput {
   idLT: ID
   idLTE: ID
   """
-  repo_url field predicates
+  provider field predicates
   """
-  repoURL: String
-  repoURLNEQ: String
-  repoURLIn: [String!]
-  repoURLNotIn: [String!]
-  repoURLGT: String
-  repoURLGTE: String
-  repoURLLT: String
-  repoURLLTE: String
-  repoURLContains: String
-  repoURLHasPrefix: String
-  repoURLHasSuffix: String
-  repoURLIsNil: Boolean
-  repoURLNotNil: Boolean
-  repoURLEqualFold: String
-  repoURLContainsFold: String
+  provider: SourceControlProvider
+  providerNEQ: SourceControlProvider
+  providerIn: [SourceControlProvider!]
+  providerNotIn: [SourceControlProvider!]
+  providerIsNil: Boolean
+  providerNotNil: Boolean
   """
-  branch field predicates
+  instance_url field predicates
   """
-  branch: String
-  branchNEQ: String
-  branchIn: [String!]
-  branchNotIn: [String!]
-  branchGT: String
-  branchGTE: String
-  branchLT: String
-  branchLTE: String
-  branchContains: String
-  branchHasPrefix: String
-  branchHasSuffix: String
-  branchIsNil: Boolean
-  branchNotNil: Boolean
-  branchEqualFold: String
-  branchContainsFold: String
+  instanceURL: String
+  instanceURLNEQ: String
+  instanceURLIn: [String!]
+  instanceURLNotIn: [String!]
+  instanceURLGT: String
+  instanceURLGTE: String
+  instanceURLLT: String
+  instanceURLLTE: String
+  instanceURLContains: String
+  instanceURLHasPrefix: String
+  instanceURLHasSuffix: String
+  instanceURLIsNil: Boolean
+  instanceURLNotNil: Boolean
+  instanceURLEqualFold: String
+  instanceURLContainsFold: String
+  """
+  repo field predicates
+  """
+  repo: String
+  repoNEQ: String
+  repoIn: [String!]
+  repoNotIn: [String!]
+  repoGT: String
+  repoGTE: String
+  repoLT: String
+  repoLTE: String
+  repoContains: String
+  repoHasPrefix: String
+  repoHasSuffix: String
+  repoIsNil: Boolean
+  repoNotNil: Boolean
+  repoEqualFold: String
+  repoContainsFold: String
+  """
+  refs field predicates
+  """
+  refs: String
+  refsNEQ: String
+  refsIn: [String!]
+  refsNotIn: [String!]
+  refsGT: String
+  refsGTE: String
+  refsLT: String
+  refsLTE: String
+  refsContains: String
+  refsHasPrefix: String
+  refsHasSuffix: String
+  refsIsNil: Boolean
+  refsNotNil: Boolean
+  refsEqualFold: String
+  refsContainsFold: String
   """
   commit_sha field predicates
   """
@@ -2708,41 +2995,23 @@ input SourceControlWhereInput {
   actorEqualFold: String
   actorContainsFold: String
   """
-  refs field predicates
+  event_name field predicates
   """
-  refs: String
-  refsNEQ: String
-  refsIn: [String!]
-  refsNotIn: [String!]
-  refsGT: String
-  refsGTE: String
-  refsLT: String
-  refsLTE: String
-  refsContains: String
-  refsHasPrefix: String
-  refsHasSuffix: String
-  refsIsNil: Boolean
-  refsNotNil: Boolean
-  refsEqualFold: String
-  refsContainsFold: String
-  """
-  run_id field predicates
-  """
-  runID: String
-  runIDNEQ: String
-  runIDIn: [String!]
-  runIDNotIn: [String!]
-  runIDGT: String
-  runIDGTE: String
-  runIDLT: String
-  runIDLTE: String
-  runIDContains: String
-  runIDHasPrefix: String
-  runIDHasSuffix: String
-  runIDIsNil: Boolean
-  runIDNotNil: Boolean
-  runIDEqualFold: String
-  runIDContainsFold: String
+  eventName: String
+  eventNameNEQ: String
+  eventNameIn: [String!]
+  eventNameNotIn: [String!]
+  eventNameGT: String
+  eventNameGTE: String
+  eventNameLT: String
+  eventNameLTE: String
+  eventNameContains: String
+  eventNameHasPrefix: String
+  eventNameHasSuffix: String
+  eventNameIsNil: Boolean
+  eventNameNotNil: Boolean
+  eventNameEqualFold: String
+  eventNameContainsFold: String
   """
   workflow field predicates
   """
@@ -2762,59 +3031,41 @@ input SourceControlWhereInput {
   workflowEqualFold: String
   workflowContainsFold: String
   """
-  action field predicates
+  run_id field predicates
   """
-  action: String
-  actionNEQ: String
-  actionIn: [String!]
-  actionNotIn: [String!]
-  actionGT: String
-  actionGTE: String
-  actionLT: String
-  actionLTE: String
-  actionContains: String
-  actionHasPrefix: String
-  actionHasSuffix: String
-  actionIsNil: Boolean
-  actionNotNil: Boolean
-  actionEqualFold: String
-  actionContainsFold: String
+  runID: String
+  runIDNEQ: String
+  runIDIn: [String!]
+  runIDNotIn: [String!]
+  runIDGT: String
+  runIDGTE: String
+  runIDLT: String
+  runIDLTE: String
+  runIDContains: String
+  runIDHasPrefix: String
+  runIDHasSuffix: String
+  runIDIsNil: Boolean
+  runIDNotNil: Boolean
+  runIDEqualFold: String
+  runIDContainsFold: String
   """
-  workspace field predicates
+  run_number field predicates
   """
-  workspace: String
-  workspaceNEQ: String
-  workspaceIn: [String!]
-  workspaceNotIn: [String!]
-  workspaceGT: String
-  workspaceGTE: String
-  workspaceLT: String
-  workspaceLTE: String
-  workspaceContains: String
-  workspaceHasPrefix: String
-  workspaceHasSuffix: String
-  workspaceIsNil: Boolean
-  workspaceNotNil: Boolean
-  workspaceEqualFold: String
-  workspaceContainsFold: String
-  """
-  event_name field predicates
-  """
-  eventName: String
-  eventNameNEQ: String
-  eventNameIn: [String!]
-  eventNameNotIn: [String!]
-  eventNameGT: String
-  eventNameGTE: String
-  eventNameLT: String
-  eventNameLTE: String
-  eventNameContains: String
-  eventNameHasPrefix: String
-  eventNameHasSuffix: String
-  eventNameIsNil: Boolean
-  eventNameNotNil: Boolean
-  eventNameEqualFold: String
-  eventNameContainsFold: String
+  runNumber: String
+  runNumberNEQ: String
+  runNumberIn: [String!]
+  runNumberNotIn: [String!]
+  runNumberGT: String
+  runNumberGTE: String
+  runNumberLT: String
+  runNumberLTE: String
+  runNumberContains: String
+  runNumberHasPrefix: String
+  runNumberHasSuffix: String
+  runNumberIsNil: Boolean
+  runNumberNotNil: Boolean
+  runNumberEqualFold: String
+  runNumberContainsFold: String
   """
   job field predicates
   """
@@ -2833,6 +3084,24 @@ input SourceControlWhereInput {
   jobNotNil: Boolean
   jobEqualFold: String
   jobContainsFold: String
+  """
+  action field predicates
+  """
+  action: String
+  actionNEQ: String
+  actionIn: [String!]
+  actionNotIn: [String!]
+  actionGT: String
+  actionGTE: String
+  actionLT: String
+  actionLTE: String
+  actionContains: String
+  actionHasPrefix: String
+  actionHasSuffix: String
+  actionIsNil: Boolean
+  actionNotNil: Boolean
+  actionEqualFold: String
+  actionContainsFold: String
   """
   runner_name field predicates
   """
@@ -2887,6 +3156,24 @@ input SourceControlWhereInput {
   runnerOsNotNil: Boolean
   runnerOsEqualFold: String
   runnerOsContainsFold: String
+  """
+  workspace field predicates
+  """
+  workspace: String
+  workspaceNEQ: String
+  workspaceIn: [String!]
+  workspaceNotIn: [String!]
+  workspaceGT: String
+  workspaceGTE: String
+  workspaceLT: String
+  workspaceLTE: String
+  workspaceContains: String
+  workspaceHasPrefix: String
+  workspaceHasSuffix: String
+  workspaceIsNil: Boolean
+  workspaceNotNil: Boolean
+  workspaceEqualFold: String
+  workspaceContainsFold: String
   """
   bazel_invocation edge predicates
   """
@@ -3034,225 +3321,66 @@ input SystemNetworkStatsWhereInput {
   hasNetworkMetrics: Boolean
   hasNetworkMetricsWith: [NetworkMetricsWhereInput!]
 }
-type TargetComplete implements Node {
+type Target implements Node {
   id: ID!
-  success: Boolean
+  label: String!
   tag: [String!]
   targetKind: String
-  endTimeInMs: Int
-  testTimeoutSeconds: Int
-  testTimeout: Int
-  testSize: TargetCompleteTestSize
-  targetPair: TargetPair
-  importantOutput: [TestFile!]
-  directoryOutput: [TestFile!]
-  outputGroup: OutputGroup
-}
-"""
-TargetCompleteTestSize is enum for the field test_size
-"""
-enum TargetCompleteTestSize @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete.TestSize") {
-  UNKNOWN
-  SMALL
-  MEDIUM
-  LARGE
-  ENORMOUS
-}
-"""
-TargetCompleteWhereInput is used for filtering TargetComplete objects.
-Input was generated by ent.
-"""
-input TargetCompleteWhereInput {
-  not: TargetCompleteWhereInput
-  and: [TargetCompleteWhereInput!]
-  or: [TargetCompleteWhereInput!]
-  """
-  id field predicates
-  """
-  id: ID
-  idNEQ: ID
-  idIn: [ID!]
-  idNotIn: [ID!]
-  idGT: ID
-  idGTE: ID
-  idLT: ID
-  idLTE: ID
-  """
-  success field predicates
-  """
+  testSize: TargetTestSize
   success: Boolean
-  successNEQ: Boolean
-  successIsNil: Boolean
-  successNotNil: Boolean
-  """
-  target_kind field predicates
-  """
-  targetKind: String
-  targetKindNEQ: String
-  targetKindIn: [String!]
-  targetKindNotIn: [String!]
-  targetKindGT: String
-  targetKindGTE: String
-  targetKindLT: String
-  targetKindLTE: String
-  targetKindContains: String
-  targetKindHasPrefix: String
-  targetKindHasSuffix: String
-  targetKindIsNil: Boolean
-  targetKindNotNil: Boolean
-  targetKindEqualFold: String
-  targetKindContainsFold: String
-  """
-  end_time_in_ms field predicates
-  """
-  endTimeInMs: Int
-  endTimeInMsNEQ: Int
-  endTimeInMsIn: [Int!]
-  endTimeInMsNotIn: [Int!]
-  endTimeInMsGT: Int
-  endTimeInMsGTE: Int
-  endTimeInMsLT: Int
-  endTimeInMsLTE: Int
-  endTimeInMsIsNil: Boolean
-  endTimeInMsNotNil: Boolean
-  """
-  test_timeout_seconds field predicates
-  """
-  testTimeoutSeconds: Int
-  testTimeoutSecondsNEQ: Int
-  testTimeoutSecondsIn: [Int!]
-  testTimeoutSecondsNotIn: [Int!]
-  testTimeoutSecondsGT: Int
-  testTimeoutSecondsGTE: Int
-  testTimeoutSecondsLT: Int
-  testTimeoutSecondsLTE: Int
-  testTimeoutSecondsIsNil: Boolean
-  testTimeoutSecondsNotNil: Boolean
-  """
-  test_timeout field predicates
-  """
   testTimeout: Int
-  testTimeoutNEQ: Int
-  testTimeoutIn: [Int!]
-  testTimeoutNotIn: [Int!]
-  testTimeoutGT: Int
-  testTimeoutGTE: Int
-  testTimeoutLT: Int
-  testTimeoutLTE: Int
-  testTimeoutIsNil: Boolean
-  testTimeoutNotNil: Boolean
-  """
-  test_size field predicates
-  """
-  testSize: TargetCompleteTestSize
-  testSizeNEQ: TargetCompleteTestSize
-  testSizeIn: [TargetCompleteTestSize!]
-  testSizeNotIn: [TargetCompleteTestSize!]
-  testSizeIsNil: Boolean
-  testSizeNotNil: Boolean
-  """
-  target_pair edge predicates
-  """
-  hasTargetPair: Boolean
-  hasTargetPairWith: [TargetPairWhereInput!]
-  """
-  important_output edge predicates
-  """
-  hasImportantOutput: Boolean
-  hasImportantOutputWith: [TestFileWhereInput!]
-  """
-  directory_output edge predicates
-  """
-  hasDirectoryOutput: Boolean
-  hasDirectoryOutputWith: [TestFileWhereInput!]
-  """
-  output_group edge predicates
-  """
-  hasOutputGroup: Boolean
-  hasOutputGroupWith: [OutputGroupWhereInput!]
-}
-type TargetConfigured implements Node {
-  id: ID!
-  tag: [String!]
-  targetKind: String
   startTimeInMs: Int
-  testSize: TargetConfiguredTestSize
-  targetPair: TargetPair
+  endTimeInMs: Int
+  durationInMs: Int
+  abortReason: TargetAbortReason
+  bazelInvocation: BazelInvocation
 }
 """
-TargetConfiguredTestSize is enum for the field test_size
+TargetAbortReason is enum for the field abort_reason
 """
-enum TargetConfiguredTestSize @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured.TestSize") {
+enum TargetAbortReason @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/target.AbortReason") {
   UNKNOWN
-  SMALL
-  MEDIUM
-  LARGE
-  ENORMOUS
+  USER_INTERRUPTED
+  NO_ANALYZE
+  NO_BUILD
+  TIME_OUT
+  REMOTE_ENVIRONMENT_FAILURE
+  INTERNAL
+  LOADING_FAILURE
+  ANALYSIS_FAILURE
+  SKIPPED
+  INCOMPLETE
+  OUT_OF_MEMORY
 }
 """
-TargetConfiguredWhereInput is used for filtering TargetConfigured objects.
-Input was generated by ent.
+A connection to a list of items.
 """
-input TargetConfiguredWhereInput {
-  not: TargetConfiguredWhereInput
-  and: [TargetConfiguredWhereInput!]
-  or: [TargetConfiguredWhereInput!]
+type TargetConnection {
   """
-  id field predicates
+  A list of edges.
   """
-  id: ID
-  idNEQ: ID
-  idIn: [ID!]
-  idNotIn: [ID!]
-  idGT: ID
-  idGTE: ID
-  idLT: ID
-  idLTE: ID
+  edges: [TargetEdge]
   """
-  target_kind field predicates
+  Information to aid in pagination.
   """
-  targetKind: String
-  targetKindNEQ: String
-  targetKindIn: [String!]
-  targetKindNotIn: [String!]
-  targetKindGT: String
-  targetKindGTE: String
-  targetKindLT: String
-  targetKindLTE: String
-  targetKindContains: String
-  targetKindHasPrefix: String
-  targetKindHasSuffix: String
-  targetKindIsNil: Boolean
-  targetKindNotNil: Boolean
-  targetKindEqualFold: String
-  targetKindContainsFold: String
+  pageInfo: PageInfo!
   """
-  start_time_in_ms field predicates
+  Identifies the total count of items in the connection.
   """
-  startTimeInMs: Int
-  startTimeInMsNEQ: Int
-  startTimeInMsIn: [Int!]
-  startTimeInMsNotIn: [Int!]
-  startTimeInMsGT: Int
-  startTimeInMsGTE: Int
-  startTimeInMsLT: Int
-  startTimeInMsLTE: Int
-  startTimeInMsIsNil: Boolean
-  startTimeInMsNotNil: Boolean
+  totalCount: Int!
+}
+"""
+An edge in a connection.
+"""
+type TargetEdge {
   """
-  test_size field predicates
+  The item at the end of the edge.
   """
-  testSize: TargetConfiguredTestSize
-  testSizeNEQ: TargetConfiguredTestSize
-  testSizeIn: [TargetConfiguredTestSize!]
-  testSizeNotIn: [TargetConfiguredTestSize!]
-  testSizeIsNil: Boolean
-  testSizeNotNil: Boolean
+  node: Target
   """
-  target_pair edge predicates
+  A cursor for use in pagination.
   """
-  hasTargetPair: Boolean
-  hasTargetPairWith: [TargetPairWhereInput!]
+  cursor: Cursor!
 }
 type TargetMetrics implements Node {
   id: ID!
@@ -3325,88 +3453,29 @@ input TargetMetricsWhereInput {
   hasMetrics: Boolean
   hasMetricsWith: [MetricsWhereInput!]
 }
-type TargetPair implements Node {
-  id: ID!
-  label: String
-  durationInMs: Int
-  success: Boolean
-  targetKind: String
-  testSize: TargetPairTestSize
-  abortReason: TargetPairAbortReason
-  bazelInvocation: BazelInvocation
-  configuration: TargetConfigured
-  completion: TargetComplete
-}
 """
-TargetPairAbortReason is enum for the field abort_reason
+Ordering options for Target connections
 """
-enum TargetPairAbortReason @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetpair.AbortReason") {
-  UNKNOWN
-  USER_INTERRUPTED
-  NO_ANALYZE
-  NO_BUILD
-  TIME_OUT
-  REMOTE_ENVIRONMENT_FAILURE
-  INTERNAL
-  LOADING_FAILURE
-  ANALYSIS_FAILURE
-  SKIPPED
-  INCOMPLETE
-  OUT_OF_MEMORY
-}
-"""
-A connection to a list of items.
-"""
-type TargetPairConnection {
-  """
-  A list of edges.
-  """
-  edges: [TargetPairEdge]
-  """
-  Information to aid in pagination.
-  """
-  pageInfo: PageInfo!
-  """
-  Identifies the total count of items in the connection.
-  """
-  totalCount: Int!
-}
-"""
-An edge in a connection.
-"""
-type TargetPairEdge {
-  """
-  The item at the end of the edge.
-  """
-  node: TargetPair
-  """
-  A cursor for use in pagination.
-  """
-  cursor: Cursor!
-}
-"""
-Ordering options for TargetPair connections
-"""
-input TargetPairOrder {
+input TargetOrder {
   """
   The ordering direction.
   """
   direction: OrderDirection! = ASC
   """
-  The field by which to order TargetPairs.
+  The field by which to order Targets.
   """
-  field: TargetPairOrderField!
+  field: TargetOrderField!
 }
 """
-Properties by which TargetPair connections can be ordered.
+Properties by which Target connections can be ordered.
 """
-enum TargetPairOrderField {
+enum TargetOrderField {
   DURATION
 }
 """
-TargetPairTestSize is enum for the field test_size
+TargetTestSize is enum for the field test_size
 """
-enum TargetPairTestSize @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/targetpair.TestSize") {
+enum TargetTestSize @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/target.TestSize") {
   UNKNOWN
   SMALL
   MEDIUM
@@ -3414,13 +3483,13 @@ enum TargetPairTestSize @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/
   ENORMOUS
 }
 """
-TargetPairWhereInput is used for filtering TargetPair objects.
+TargetWhereInput is used for filtering Target objects.
 Input was generated by ent.
 """
-input TargetPairWhereInput {
-  not: TargetPairWhereInput
-  and: [TargetPairWhereInput!]
-  or: [TargetPairWhereInput!]
+input TargetWhereInput {
+  not: TargetWhereInput
+  and: [TargetWhereInput!]
+  or: [TargetWhereInput!]
   """
   id field predicates
   """
@@ -3446,30 +3515,8 @@ input TargetPairWhereInput {
   labelContains: String
   labelHasPrefix: String
   labelHasSuffix: String
-  labelIsNil: Boolean
-  labelNotNil: Boolean
   labelEqualFold: String
   labelContainsFold: String
-  """
-  duration_in_ms field predicates
-  """
-  durationInMs: Int
-  durationInMsNEQ: Int
-  durationInMsIn: [Int!]
-  durationInMsNotIn: [Int!]
-  durationInMsGT: Int
-  durationInMsGTE: Int
-  durationInMsLT: Int
-  durationInMsLTE: Int
-  durationInMsIsNil: Boolean
-  durationInMsNotNil: Boolean
-  """
-  success field predicates
-  """
-  success: Boolean
-  successNEQ: Boolean
-  successIsNil: Boolean
-  successNotNil: Boolean
   """
   target_kind field predicates
   """
@@ -3491,19 +3538,78 @@ input TargetPairWhereInput {
   """
   test_size field predicates
   """
-  testSize: TargetPairTestSize
-  testSizeNEQ: TargetPairTestSize
-  testSizeIn: [TargetPairTestSize!]
-  testSizeNotIn: [TargetPairTestSize!]
+  testSize: TargetTestSize
+  testSizeNEQ: TargetTestSize
+  testSizeIn: [TargetTestSize!]
+  testSizeNotIn: [TargetTestSize!]
   testSizeIsNil: Boolean
   testSizeNotNil: Boolean
   """
+  success field predicates
+  """
+  success: Boolean
+  successNEQ: Boolean
+  successIsNil: Boolean
+  successNotNil: Boolean
+  """
+  test_timeout field predicates
+  """
+  testTimeout: Int
+  testTimeoutNEQ: Int
+  testTimeoutIn: [Int!]
+  testTimeoutNotIn: [Int!]
+  testTimeoutGT: Int
+  testTimeoutGTE: Int
+  testTimeoutLT: Int
+  testTimeoutLTE: Int
+  testTimeoutIsNil: Boolean
+  testTimeoutNotNil: Boolean
+  """
+  start_time_in_ms field predicates
+  """
+  startTimeInMs: Int
+  startTimeInMsNEQ: Int
+  startTimeInMsIn: [Int!]
+  startTimeInMsNotIn: [Int!]
+  startTimeInMsGT: Int
+  startTimeInMsGTE: Int
+  startTimeInMsLT: Int
+  startTimeInMsLTE: Int
+  startTimeInMsIsNil: Boolean
+  startTimeInMsNotNil: Boolean
+  """
+  end_time_in_ms field predicates
+  """
+  endTimeInMs: Int
+  endTimeInMsNEQ: Int
+  endTimeInMsIn: [Int!]
+  endTimeInMsNotIn: [Int!]
+  endTimeInMsGT: Int
+  endTimeInMsGTE: Int
+  endTimeInMsLT: Int
+  endTimeInMsLTE: Int
+  endTimeInMsIsNil: Boolean
+  endTimeInMsNotNil: Boolean
+  """
+  duration_in_ms field predicates
+  """
+  durationInMs: Int
+  durationInMsNEQ: Int
+  durationInMsIn: [Int!]
+  durationInMsNotIn: [Int!]
+  durationInMsGT: Int
+  durationInMsGTE: Int
+  durationInMsLT: Int
+  durationInMsLTE: Int
+  durationInMsIsNil: Boolean
+  durationInMsNotNil: Boolean
+  """
   abort_reason field predicates
   """
-  abortReason: TargetPairAbortReason
-  abortReasonNEQ: TargetPairAbortReason
-  abortReasonIn: [TargetPairAbortReason!]
-  abortReasonNotIn: [TargetPairAbortReason!]
+  abortReason: TargetAbortReason
+  abortReasonNEQ: TargetAbortReason
+  abortReasonIn: [TargetAbortReason!]
+  abortReasonNotIn: [TargetAbortReason!]
   abortReasonIsNil: Boolean
   abortReasonNotNil: Boolean
   """
@@ -3511,16 +3617,6 @@ input TargetPairWhereInput {
   """
   hasBazelInvocation: Boolean
   hasBazelInvocationWith: [BazelInvocationWhereInput!]
-  """
-  configuration edge predicates
-  """
-  hasConfiguration: Boolean
-  hasConfigurationWith: [TargetConfiguredWhereInput!]
-  """
-  completion edge predicates
-  """
-  hasCompletion: Boolean
-  hasCompletionWith: [TargetCompleteWhereInput!]
 }
 type TestCollection implements Node {
   id: ID!

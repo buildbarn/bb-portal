@@ -4,13 +4,14 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/namedsetoffiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
 )
 
@@ -19,6 +20,7 @@ type OutputGroupCreate struct {
 	config
 	mutation *OutputGroupMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetName sets the "name" field.
@@ -47,25 +49,6 @@ func (ogc *OutputGroupCreate) SetNillableIncomplete(b *bool) *OutputGroupCreate 
 		ogc.SetIncomplete(*b)
 	}
 	return ogc
-}
-
-// SetTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID.
-func (ogc *OutputGroupCreate) SetTargetCompleteID(id int) *OutputGroupCreate {
-	ogc.mutation.SetTargetCompleteID(id)
-	return ogc
-}
-
-// SetNillableTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID if the given value is not nil.
-func (ogc *OutputGroupCreate) SetNillableTargetCompleteID(id *int) *OutputGroupCreate {
-	if id != nil {
-		ogc = ogc.SetTargetCompleteID(*id)
-	}
-	return ogc
-}
-
-// SetTargetComplete sets the "target_complete" edge to the TargetComplete entity.
-func (ogc *OutputGroupCreate) SetTargetComplete(t *TargetComplete) *OutputGroupCreate {
-	return ogc.SetTargetCompleteID(t.ID)
 }
 
 // AddInlineFileIDs adds the "inline_files" edge to the TestFile entity by IDs.
@@ -162,6 +145,7 @@ func (ogc *OutputGroupCreate) createSpec() (*OutputGroup, *sqlgraph.CreateSpec) 
 		_node = &OutputGroup{config: ogc.config}
 		_spec = sqlgraph.NewCreateSpec(outputgroup.Table, sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = ogc.conflict
 	if value, ok := ogc.mutation.Name(); ok {
 		_spec.SetField(outputgroup.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -169,23 +153,6 @@ func (ogc *OutputGroupCreate) createSpec() (*OutputGroup, *sqlgraph.CreateSpec) 
 	if value, ok := ogc.mutation.Incomplete(); ok {
 		_spec.SetField(outputgroup.FieldIncomplete, field.TypeBool, value)
 		_node.Incomplete = value
-	}
-	if nodes := ogc.mutation.TargetCompleteIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   outputgroup.TargetCompleteTable,
-			Columns: []string{outputgroup.TargetCompleteColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetcomplete.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.target_complete_output_group = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := ogc.mutation.InlineFilesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -222,11 +189,212 @@ func (ogc *OutputGroupCreate) createSpec() (*OutputGroup, *sqlgraph.CreateSpec) 
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.OutputGroup.Create().
+//		SetName(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.OutputGroupUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (ogc *OutputGroupCreate) OnConflict(opts ...sql.ConflictOption) *OutputGroupUpsertOne {
+	ogc.conflict = opts
+	return &OutputGroupUpsertOne{
+		create: ogc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.OutputGroup.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (ogc *OutputGroupCreate) OnConflictColumns(columns ...string) *OutputGroupUpsertOne {
+	ogc.conflict = append(ogc.conflict, sql.ConflictColumns(columns...))
+	return &OutputGroupUpsertOne{
+		create: ogc,
+	}
+}
+
+type (
+	// OutputGroupUpsertOne is the builder for "upsert"-ing
+	//  one OutputGroup node.
+	OutputGroupUpsertOne struct {
+		create *OutputGroupCreate
+	}
+
+	// OutputGroupUpsert is the "OnConflict" setter.
+	OutputGroupUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetName sets the "name" field.
+func (u *OutputGroupUpsert) SetName(v string) *OutputGroupUpsert {
+	u.Set(outputgroup.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *OutputGroupUpsert) UpdateName() *OutputGroupUpsert {
+	u.SetExcluded(outputgroup.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *OutputGroupUpsert) ClearName() *OutputGroupUpsert {
+	u.SetNull(outputgroup.FieldName)
+	return u
+}
+
+// SetIncomplete sets the "incomplete" field.
+func (u *OutputGroupUpsert) SetIncomplete(v bool) *OutputGroupUpsert {
+	u.Set(outputgroup.FieldIncomplete, v)
+	return u
+}
+
+// UpdateIncomplete sets the "incomplete" field to the value that was provided on create.
+func (u *OutputGroupUpsert) UpdateIncomplete() *OutputGroupUpsert {
+	u.SetExcluded(outputgroup.FieldIncomplete)
+	return u
+}
+
+// ClearIncomplete clears the value of the "incomplete" field.
+func (u *OutputGroupUpsert) ClearIncomplete() *OutputGroupUpsert {
+	u.SetNull(outputgroup.FieldIncomplete)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.OutputGroup.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *OutputGroupUpsertOne) UpdateNewValues() *OutputGroupUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.OutputGroup.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *OutputGroupUpsertOne) Ignore() *OutputGroupUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *OutputGroupUpsertOne) DoNothing() *OutputGroupUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the OutputGroupCreate.OnConflict
+// documentation for more info.
+func (u *OutputGroupUpsertOne) Update(set func(*OutputGroupUpsert)) *OutputGroupUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&OutputGroupUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *OutputGroupUpsertOne) SetName(v string) *OutputGroupUpsertOne {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *OutputGroupUpsertOne) UpdateName() *OutputGroupUpsertOne {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *OutputGroupUpsertOne) ClearName() *OutputGroupUpsertOne {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetIncomplete sets the "incomplete" field.
+func (u *OutputGroupUpsertOne) SetIncomplete(v bool) *OutputGroupUpsertOne {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.SetIncomplete(v)
+	})
+}
+
+// UpdateIncomplete sets the "incomplete" field to the value that was provided on create.
+func (u *OutputGroupUpsertOne) UpdateIncomplete() *OutputGroupUpsertOne {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.UpdateIncomplete()
+	})
+}
+
+// ClearIncomplete clears the value of the "incomplete" field.
+func (u *OutputGroupUpsertOne) ClearIncomplete() *OutputGroupUpsertOne {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.ClearIncomplete()
+	})
+}
+
+// Exec executes the query.
+func (u *OutputGroupUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for OutputGroupCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *OutputGroupUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *OutputGroupUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *OutputGroupUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // OutputGroupCreateBulk is the builder for creating many OutputGroup entities in bulk.
 type OutputGroupCreateBulk struct {
 	config
 	err      error
 	builders []*OutputGroupCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the OutputGroup entities in the database.
@@ -255,6 +423,7 @@ func (ogcb *OutputGroupCreateBulk) Save(ctx context.Context) ([]*OutputGroup, er
 					_, err = mutators[i+1].Mutate(root, ogcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = ogcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, ogcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -305,6 +474,152 @@ func (ogcb *OutputGroupCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (ogcb *OutputGroupCreateBulk) ExecX(ctx context.Context) {
 	if err := ogcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.OutputGroup.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.OutputGroupUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (ogcb *OutputGroupCreateBulk) OnConflict(opts ...sql.ConflictOption) *OutputGroupUpsertBulk {
+	ogcb.conflict = opts
+	return &OutputGroupUpsertBulk{
+		create: ogcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.OutputGroup.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (ogcb *OutputGroupCreateBulk) OnConflictColumns(columns ...string) *OutputGroupUpsertBulk {
+	ogcb.conflict = append(ogcb.conflict, sql.ConflictColumns(columns...))
+	return &OutputGroupUpsertBulk{
+		create: ogcb,
+	}
+}
+
+// OutputGroupUpsertBulk is the builder for "upsert"-ing
+// a bulk of OutputGroup nodes.
+type OutputGroupUpsertBulk struct {
+	create *OutputGroupCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.OutputGroup.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *OutputGroupUpsertBulk) UpdateNewValues() *OutputGroupUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.OutputGroup.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *OutputGroupUpsertBulk) Ignore() *OutputGroupUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *OutputGroupUpsertBulk) DoNothing() *OutputGroupUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the OutputGroupCreateBulk.OnConflict
+// documentation for more info.
+func (u *OutputGroupUpsertBulk) Update(set func(*OutputGroupUpsert)) *OutputGroupUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&OutputGroupUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *OutputGroupUpsertBulk) SetName(v string) *OutputGroupUpsertBulk {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *OutputGroupUpsertBulk) UpdateName() *OutputGroupUpsertBulk {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *OutputGroupUpsertBulk) ClearName() *OutputGroupUpsertBulk {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetIncomplete sets the "incomplete" field.
+func (u *OutputGroupUpsertBulk) SetIncomplete(v bool) *OutputGroupUpsertBulk {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.SetIncomplete(v)
+	})
+}
+
+// UpdateIncomplete sets the "incomplete" field to the value that was provided on create.
+func (u *OutputGroupUpsertBulk) UpdateIncomplete() *OutputGroupUpsertBulk {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.UpdateIncomplete()
+	})
+}
+
+// ClearIncomplete clears the value of the "incomplete" field.
+func (u *OutputGroupUpsertBulk) ClearIncomplete() *OutputGroupUpsertBulk {
+	return u.Update(func(s *OutputGroupUpsert) {
+		s.ClearIncomplete()
+	})
+}
+
+// Exec executes the query.
+func (u *OutputGroupUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the OutputGroupCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for OutputGroupCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *OutputGroupUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

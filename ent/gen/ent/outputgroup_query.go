@@ -15,7 +15,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/namedsetoffiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
 )
 
@@ -26,10 +25,8 @@ type OutputGroupQuery struct {
 	order                []outputgroup.OrderOption
 	inters               []Interceptor
 	predicates           []predicate.OutputGroup
-	withTargetComplete   *TargetCompleteQuery
 	withInlineFiles      *TestFileQuery
 	withFileSets         *NamedSetOfFilesQuery
-	withFKs              bool
 	modifiers            []func(*sql.Selector)
 	loadTotal            []func(context.Context, []*OutputGroup) error
 	withNamedInlineFiles map[string]*TestFileQuery
@@ -67,28 +64,6 @@ func (ogq *OutputGroupQuery) Unique(unique bool) *OutputGroupQuery {
 func (ogq *OutputGroupQuery) Order(o ...outputgroup.OrderOption) *OutputGroupQuery {
 	ogq.order = append(ogq.order, o...)
 	return ogq
-}
-
-// QueryTargetComplete chains the current query on the "target_complete" edge.
-func (ogq *OutputGroupQuery) QueryTargetComplete() *TargetCompleteQuery {
-	query := (&TargetCompleteClient{config: ogq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := ogq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := ogq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(outputgroup.Table, outputgroup.FieldID, selector),
-			sqlgraph.To(targetcomplete.Table, targetcomplete.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, outputgroup.TargetCompleteTable, outputgroup.TargetCompleteColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(ogq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
 }
 
 // QueryInlineFiles chains the current query on the "inline_files" edge.
@@ -322,29 +297,17 @@ func (ogq *OutputGroupQuery) Clone() *OutputGroupQuery {
 		return nil
 	}
 	return &OutputGroupQuery{
-		config:             ogq.config,
-		ctx:                ogq.ctx.Clone(),
-		order:              append([]outputgroup.OrderOption{}, ogq.order...),
-		inters:             append([]Interceptor{}, ogq.inters...),
-		predicates:         append([]predicate.OutputGroup{}, ogq.predicates...),
-		withTargetComplete: ogq.withTargetComplete.Clone(),
-		withInlineFiles:    ogq.withInlineFiles.Clone(),
-		withFileSets:       ogq.withFileSets.Clone(),
+		config:          ogq.config,
+		ctx:             ogq.ctx.Clone(),
+		order:           append([]outputgroup.OrderOption{}, ogq.order...),
+		inters:          append([]Interceptor{}, ogq.inters...),
+		predicates:      append([]predicate.OutputGroup{}, ogq.predicates...),
+		withInlineFiles: ogq.withInlineFiles.Clone(),
+		withFileSets:    ogq.withFileSets.Clone(),
 		// clone intermediate query.
 		sql:  ogq.sql.Clone(),
 		path: ogq.path,
 	}
-}
-
-// WithTargetComplete tells the query-builder to eager-load the nodes that are connected to
-// the "target_complete" edge. The optional arguments are used to configure the query builder of the edge.
-func (ogq *OutputGroupQuery) WithTargetComplete(opts ...func(*TargetCompleteQuery)) *OutputGroupQuery {
-	query := (&TargetCompleteClient{config: ogq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	ogq.withTargetComplete = query
-	return ogq
 }
 
 // WithInlineFiles tells the query-builder to eager-load the nodes that are connected to
@@ -446,20 +409,12 @@ func (ogq *OutputGroupQuery) prepareQuery(ctx context.Context) error {
 func (ogq *OutputGroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*OutputGroup, error) {
 	var (
 		nodes       = []*OutputGroup{}
-		withFKs     = ogq.withFKs
 		_spec       = ogq.querySpec()
-		loadedTypes = [3]bool{
-			ogq.withTargetComplete != nil,
+		loadedTypes = [2]bool{
 			ogq.withInlineFiles != nil,
 			ogq.withFileSets != nil,
 		}
 	)
-	if ogq.withTargetComplete != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, outputgroup.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*OutputGroup).scanValues(nil, columns)
 	}
@@ -480,12 +435,6 @@ func (ogq *OutputGroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
-	}
-	if query := ogq.withTargetComplete; query != nil {
-		if err := ogq.loadTargetComplete(ctx, query, nodes, nil,
-			func(n *OutputGroup, e *TargetComplete) { n.Edges.TargetComplete = e }); err != nil {
-			return nil, err
-		}
 	}
 	if query := ogq.withInlineFiles; query != nil {
 		if err := ogq.loadInlineFiles(ctx, query, nodes,
@@ -515,38 +464,6 @@ func (ogq *OutputGroupQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	return nodes, nil
 }
 
-func (ogq *OutputGroupQuery) loadTargetComplete(ctx context.Context, query *TargetCompleteQuery, nodes []*OutputGroup, init func(*OutputGroup), assign func(*OutputGroup, *TargetComplete)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*OutputGroup)
-	for i := range nodes {
-		if nodes[i].target_complete_output_group == nil {
-			continue
-		}
-		fk := *nodes[i].target_complete_output_group
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(targetcomplete.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "target_complete_output_group" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
-}
 func (ogq *OutputGroupQuery) loadInlineFiles(ctx context.Context, query *TestFileQuery, nodes []*OutputGroup, init func(*OutputGroup), assign func(*OutputGroup, *TestFile)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*OutputGroup)

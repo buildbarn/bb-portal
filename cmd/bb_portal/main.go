@@ -33,8 +33,8 @@ import (
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
-	"github.com/buildbarn/bb-portal/internal/api"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
+	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
 	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/internal/graphql/auth"
 	"github.com/buildbarn/bb-portal/pkg/processing"
@@ -188,25 +188,31 @@ func newBuildEventStreamService(
 	if besConfiguration.EnableGraphqlPlayground {
 		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
 	}
+
+	// Handle BEP file uploads over HTTP.
 	if besConfiguration.EnableBepFileUpload {
-		router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, blobArchiver)).Methods("POST")
+		bepUploader, err := bepuploader.NewBepUploader(dbClient, blobArchiver, configuration, dependenciesGroup, grpcClientFactory)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to create BEP file upload handler")
+		}
+		router.Path("/api/v1/bep/upload").Methods("POST").Handler(bepUploader)
 	}
 
-	builcEventServer, err := bes.NewBuildEventServer(dbClient, blobArchiver, configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
+	// Handle the build event stream gRPC strem.
+	buildEventServer, err := bes.NewBuildEventServer(dbClient, blobArchiver, configuration, dependenciesGroup, grpcClientFactory)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create BuildEventServer")
 	}
 	if err := bb_grpc.NewServersFromConfigurationAndServe(
 		besConfiguration.GrpcServers,
 		func(s go_grpc.ServiceRegistrar) {
-			build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), builcEventServer)
+			build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), buildEventServer)
 		},
 		siblingsGroup,
 		grpcClientFactory,
 	); err != nil {
 		return util.StatusWrap(err, "gRPC server failure")
 	}
-
 	return nil
 }
 

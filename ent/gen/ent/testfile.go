@@ -33,8 +33,6 @@ type TestFile struct {
 	Edges                              TestFileEdges `json:"edges"`
 	named_set_of_files_files           *int
 	output_group_inline_files          *int
-	target_complete_important_output   *int
-	target_complete_directory_output   *int
 	test_result_bes_test_action_output *int
 	test_summary_passed                *int
 	test_summary_failed                *int
@@ -78,15 +76,11 @@ func (*TestFile) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case testfile.ForeignKeys[1]: // output_group_inline_files
 			values[i] = new(sql.NullInt64)
-		case testfile.ForeignKeys[2]: // target_complete_important_output
+		case testfile.ForeignKeys[2]: // test_result_bes_test_action_output
 			values[i] = new(sql.NullInt64)
-		case testfile.ForeignKeys[3]: // target_complete_directory_output
+		case testfile.ForeignKeys[3]: // test_summary_passed
 			values[i] = new(sql.NullInt64)
-		case testfile.ForeignKeys[4]: // test_result_bes_test_action_output
-			values[i] = new(sql.NullInt64)
-		case testfile.ForeignKeys[5]: // test_summary_passed
-			values[i] = new(sql.NullInt64)
-		case testfile.ForeignKeys[6]: // test_summary_failed
+		case testfile.ForeignKeys[4]: // test_summary_failed
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -157,33 +151,19 @@ func (tf *TestFile) assignValues(columns []string, values []any) error {
 			}
 		case testfile.ForeignKeys[2]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field target_complete_important_output", value)
-			} else if value.Valid {
-				tf.target_complete_important_output = new(int)
-				*tf.target_complete_important_output = int(value.Int64)
-			}
-		case testfile.ForeignKeys[3]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field target_complete_directory_output", value)
-			} else if value.Valid {
-				tf.target_complete_directory_output = new(int)
-				*tf.target_complete_directory_output = int(value.Int64)
-			}
-		case testfile.ForeignKeys[4]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_result_bes_test_action_output", value)
 			} else if value.Valid {
 				tf.test_result_bes_test_action_output = new(int)
 				*tf.test_result_bes_test_action_output = int(value.Int64)
 			}
-		case testfile.ForeignKeys[5]:
+		case testfile.ForeignKeys[3]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_summary_passed", value)
 			} else if value.Valid {
 				tf.test_summary_passed = new(int)
 				*tf.test_summary_passed = int(value.Int64)
 			}
-		case testfile.ForeignKeys[6]:
+		case testfile.ForeignKeys[4]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field test_summary_failed", value)
 			} else if value.Valid {

@@ -6,6 +6,8 @@ import (
 	"entgo.io/ent/schema/edge"
 )
 
+// TODO: Unused. Either delete or implement properly.
+
 // NamedSetOfFiles holds the schema definition for the NamedSetOfFiles entity.
 type NamedSetOfFiles struct {
 	ent.Schema

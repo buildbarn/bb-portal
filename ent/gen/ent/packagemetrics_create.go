@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -18,6 +20,7 @@ type PackageMetricsCreate struct {
 	config
 	mutation *PackageMetricsMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetPackagesLoaded sets the "packages_loaded" field.
@@ -128,6 +131,7 @@ func (pmc *PackageMetricsCreate) createSpec() (*PackageMetrics, *sqlgraph.Create
 		_node = &PackageMetrics{config: pmc.config}
 		_spec = sqlgraph.NewCreateSpec(packagemetrics.Table, sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = pmc.conflict
 	if value, ok := pmc.mutation.PackagesLoaded(); ok {
 		_spec.SetField(packagemetrics.FieldPackagesLoaded, field.TypeInt64, value)
 		_node.PackagesLoaded = value
@@ -168,11 +172,186 @@ func (pmc *PackageMetricsCreate) createSpec() (*PackageMetrics, *sqlgraph.Create
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.PackageMetrics.Create().
+//		SetPackagesLoaded(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.PackageMetricsUpsert) {
+//			SetPackagesLoaded(v+v).
+//		}).
+//		Exec(ctx)
+func (pmc *PackageMetricsCreate) OnConflict(opts ...sql.ConflictOption) *PackageMetricsUpsertOne {
+	pmc.conflict = opts
+	return &PackageMetricsUpsertOne{
+		create: pmc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.PackageMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (pmc *PackageMetricsCreate) OnConflictColumns(columns ...string) *PackageMetricsUpsertOne {
+	pmc.conflict = append(pmc.conflict, sql.ConflictColumns(columns...))
+	return &PackageMetricsUpsertOne{
+		create: pmc,
+	}
+}
+
+type (
+	// PackageMetricsUpsertOne is the builder for "upsert"-ing
+	//  one PackageMetrics node.
+	PackageMetricsUpsertOne struct {
+		create *PackageMetricsCreate
+	}
+
+	// PackageMetricsUpsert is the "OnConflict" setter.
+	PackageMetricsUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetPackagesLoaded sets the "packages_loaded" field.
+func (u *PackageMetricsUpsert) SetPackagesLoaded(v int64) *PackageMetricsUpsert {
+	u.Set(packagemetrics.FieldPackagesLoaded, v)
+	return u
+}
+
+// UpdatePackagesLoaded sets the "packages_loaded" field to the value that was provided on create.
+func (u *PackageMetricsUpsert) UpdatePackagesLoaded() *PackageMetricsUpsert {
+	u.SetExcluded(packagemetrics.FieldPackagesLoaded)
+	return u
+}
+
+// AddPackagesLoaded adds v to the "packages_loaded" field.
+func (u *PackageMetricsUpsert) AddPackagesLoaded(v int64) *PackageMetricsUpsert {
+	u.Add(packagemetrics.FieldPackagesLoaded, v)
+	return u
+}
+
+// ClearPackagesLoaded clears the value of the "packages_loaded" field.
+func (u *PackageMetricsUpsert) ClearPackagesLoaded() *PackageMetricsUpsert {
+	u.SetNull(packagemetrics.FieldPackagesLoaded)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.PackageMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *PackageMetricsUpsertOne) UpdateNewValues() *PackageMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.PackageMetrics.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *PackageMetricsUpsertOne) Ignore() *PackageMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *PackageMetricsUpsertOne) DoNothing() *PackageMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the PackageMetricsCreate.OnConflict
+// documentation for more info.
+func (u *PackageMetricsUpsertOne) Update(set func(*PackageMetricsUpsert)) *PackageMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&PackageMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetPackagesLoaded sets the "packages_loaded" field.
+func (u *PackageMetricsUpsertOne) SetPackagesLoaded(v int64) *PackageMetricsUpsertOne {
+	return u.Update(func(s *PackageMetricsUpsert) {
+		s.SetPackagesLoaded(v)
+	})
+}
+
+// AddPackagesLoaded adds v to the "packages_loaded" field.
+func (u *PackageMetricsUpsertOne) AddPackagesLoaded(v int64) *PackageMetricsUpsertOne {
+	return u.Update(func(s *PackageMetricsUpsert) {
+		s.AddPackagesLoaded(v)
+	})
+}
+
+// UpdatePackagesLoaded sets the "packages_loaded" field to the value that was provided on create.
+func (u *PackageMetricsUpsertOne) UpdatePackagesLoaded() *PackageMetricsUpsertOne {
+	return u.Update(func(s *PackageMetricsUpsert) {
+		s.UpdatePackagesLoaded()
+	})
+}
+
+// ClearPackagesLoaded clears the value of the "packages_loaded" field.
+func (u *PackageMetricsUpsertOne) ClearPackagesLoaded() *PackageMetricsUpsertOne {
+	return u.Update(func(s *PackageMetricsUpsert) {
+		s.ClearPackagesLoaded()
+	})
+}
+
+// Exec executes the query.
+func (u *PackageMetricsUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for PackageMetricsCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *PackageMetricsUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *PackageMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *PackageMetricsUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // PackageMetricsCreateBulk is the builder for creating many PackageMetrics entities in bulk.
 type PackageMetricsCreateBulk struct {
 	config
 	err      error
 	builders []*PackageMetricsCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the PackageMetrics entities in the database.
@@ -201,6 +380,7 @@ func (pmcb *PackageMetricsCreateBulk) Save(ctx context.Context) ([]*PackageMetri
 					_, err = mutators[i+1].Mutate(root, pmcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = pmcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, pmcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -251,6 +431,138 @@ func (pmcb *PackageMetricsCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (pmcb *PackageMetricsCreateBulk) ExecX(ctx context.Context) {
 	if err := pmcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.PackageMetrics.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.PackageMetricsUpsert) {
+//			SetPackagesLoaded(v+v).
+//		}).
+//		Exec(ctx)
+func (pmcb *PackageMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *PackageMetricsUpsertBulk {
+	pmcb.conflict = opts
+	return &PackageMetricsUpsertBulk{
+		create: pmcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.PackageMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (pmcb *PackageMetricsCreateBulk) OnConflictColumns(columns ...string) *PackageMetricsUpsertBulk {
+	pmcb.conflict = append(pmcb.conflict, sql.ConflictColumns(columns...))
+	return &PackageMetricsUpsertBulk{
+		create: pmcb,
+	}
+}
+
+// PackageMetricsUpsertBulk is the builder for "upsert"-ing
+// a bulk of PackageMetrics nodes.
+type PackageMetricsUpsertBulk struct {
+	create *PackageMetricsCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.PackageMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *PackageMetricsUpsertBulk) UpdateNewValues() *PackageMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.PackageMetrics.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *PackageMetricsUpsertBulk) Ignore() *PackageMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *PackageMetricsUpsertBulk) DoNothing() *PackageMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the PackageMetricsCreateBulk.OnConflict
+// documentation for more info.
+func (u *PackageMetricsUpsertBulk) Update(set func(*PackageMetricsUpsert)) *PackageMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&PackageMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetPackagesLoaded sets the "packages_loaded" field.
+func (u *PackageMetricsUpsertBulk) SetPackagesLoaded(v int64) *PackageMetricsUpsertBulk {
+	return u.Update(func(s *PackageMetricsUpsert) {
+		s.SetPackagesLoaded(v)
+	})
+}
+
+// AddPackagesLoaded adds v to the "packages_loaded" field.
+func (u *PackageMetricsUpsertBulk) AddPackagesLoaded(v int64) *PackageMetricsUpsertBulk {
+	return u.Update(func(s *PackageMetricsUpsert) {
+		s.AddPackagesLoaded(v)
+	})
+}
+
+// UpdatePackagesLoaded sets the "packages_loaded" field to the value that was provided on create.
+func (u *PackageMetricsUpsertBulk) UpdatePackagesLoaded() *PackageMetricsUpsertBulk {
+	return u.Update(func(s *PackageMetricsUpsert) {
+		s.UpdatePackagesLoaded()
+	})
+}
+
+// ClearPackagesLoaded clears the value of the "packages_loaded" field.
+func (u *PackageMetricsUpsertBulk) ClearPackagesLoaded() *PackageMetricsUpsertBulk {
+	return u.Update(func(s *PackageMetricsUpsert) {
+		s.ClearPackagesLoaded()
+	})
+}
+
+// Exec executes the query.
+func (u *PackageMetricsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the PackageMetricsCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for PackageMetricsCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *PackageMetricsUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
@@ -17,6 +19,7 @@ type FilesMetricCreate struct {
 	config
 	mutation *FilesMetricMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetSizeInBytes sets the "size_in_bytes" field.
@@ -126,6 +129,7 @@ func (fmc *FilesMetricCreate) createSpec() (*FilesMetric, *sqlgraph.CreateSpec) 
 		_node = &FilesMetric{config: fmc.config}
 		_spec = sqlgraph.NewCreateSpec(filesmetric.Table, sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = fmc.conflict
 	if value, ok := fmc.mutation.SizeInBytes(); ok {
 		_spec.SetField(filesmetric.FieldSizeInBytes, field.TypeInt64, value)
 		_node.SizeInBytes = value
@@ -154,11 +158,238 @@ func (fmc *FilesMetricCreate) createSpec() (*FilesMetric, *sqlgraph.CreateSpec) 
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.FilesMetric.Create().
+//		SetSizeInBytes(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.FilesMetricUpsert) {
+//			SetSizeInBytes(v+v).
+//		}).
+//		Exec(ctx)
+func (fmc *FilesMetricCreate) OnConflict(opts ...sql.ConflictOption) *FilesMetricUpsertOne {
+	fmc.conflict = opts
+	return &FilesMetricUpsertOne{
+		create: fmc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.FilesMetric.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (fmc *FilesMetricCreate) OnConflictColumns(columns ...string) *FilesMetricUpsertOne {
+	fmc.conflict = append(fmc.conflict, sql.ConflictColumns(columns...))
+	return &FilesMetricUpsertOne{
+		create: fmc,
+	}
+}
+
+type (
+	// FilesMetricUpsertOne is the builder for "upsert"-ing
+	//  one FilesMetric node.
+	FilesMetricUpsertOne struct {
+		create *FilesMetricCreate
+	}
+
+	// FilesMetricUpsert is the "OnConflict" setter.
+	FilesMetricUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetSizeInBytes sets the "size_in_bytes" field.
+func (u *FilesMetricUpsert) SetSizeInBytes(v int64) *FilesMetricUpsert {
+	u.Set(filesmetric.FieldSizeInBytes, v)
+	return u
+}
+
+// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
+func (u *FilesMetricUpsert) UpdateSizeInBytes() *FilesMetricUpsert {
+	u.SetExcluded(filesmetric.FieldSizeInBytes)
+	return u
+}
+
+// AddSizeInBytes adds v to the "size_in_bytes" field.
+func (u *FilesMetricUpsert) AddSizeInBytes(v int64) *FilesMetricUpsert {
+	u.Add(filesmetric.FieldSizeInBytes, v)
+	return u
+}
+
+// ClearSizeInBytes clears the value of the "size_in_bytes" field.
+func (u *FilesMetricUpsert) ClearSizeInBytes() *FilesMetricUpsert {
+	u.SetNull(filesmetric.FieldSizeInBytes)
+	return u
+}
+
+// SetCount sets the "count" field.
+func (u *FilesMetricUpsert) SetCount(v int32) *FilesMetricUpsert {
+	u.Set(filesmetric.FieldCount, v)
+	return u
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *FilesMetricUpsert) UpdateCount() *FilesMetricUpsert {
+	u.SetExcluded(filesmetric.FieldCount)
+	return u
+}
+
+// AddCount adds v to the "count" field.
+func (u *FilesMetricUpsert) AddCount(v int32) *FilesMetricUpsert {
+	u.Add(filesmetric.FieldCount, v)
+	return u
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *FilesMetricUpsert) ClearCount() *FilesMetricUpsert {
+	u.SetNull(filesmetric.FieldCount)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.FilesMetric.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *FilesMetricUpsertOne) UpdateNewValues() *FilesMetricUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.FilesMetric.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *FilesMetricUpsertOne) Ignore() *FilesMetricUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *FilesMetricUpsertOne) DoNothing() *FilesMetricUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the FilesMetricCreate.OnConflict
+// documentation for more info.
+func (u *FilesMetricUpsertOne) Update(set func(*FilesMetricUpsert)) *FilesMetricUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&FilesMetricUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSizeInBytes sets the "size_in_bytes" field.
+func (u *FilesMetricUpsertOne) SetSizeInBytes(v int64) *FilesMetricUpsertOne {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.SetSizeInBytes(v)
+	})
+}
+
+// AddSizeInBytes adds v to the "size_in_bytes" field.
+func (u *FilesMetricUpsertOne) AddSizeInBytes(v int64) *FilesMetricUpsertOne {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.AddSizeInBytes(v)
+	})
+}
+
+// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
+func (u *FilesMetricUpsertOne) UpdateSizeInBytes() *FilesMetricUpsertOne {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.UpdateSizeInBytes()
+	})
+}
+
+// ClearSizeInBytes clears the value of the "size_in_bytes" field.
+func (u *FilesMetricUpsertOne) ClearSizeInBytes() *FilesMetricUpsertOne {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.ClearSizeInBytes()
+	})
+}
+
+// SetCount sets the "count" field.
+func (u *FilesMetricUpsertOne) SetCount(v int32) *FilesMetricUpsertOne {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.SetCount(v)
+	})
+}
+
+// AddCount adds v to the "count" field.
+func (u *FilesMetricUpsertOne) AddCount(v int32) *FilesMetricUpsertOne {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.AddCount(v)
+	})
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *FilesMetricUpsertOne) UpdateCount() *FilesMetricUpsertOne {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.UpdateCount()
+	})
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *FilesMetricUpsertOne) ClearCount() *FilesMetricUpsertOne {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.ClearCount()
+	})
+}
+
+// Exec executes the query.
+func (u *FilesMetricUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for FilesMetricCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *FilesMetricUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *FilesMetricUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *FilesMetricUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // FilesMetricCreateBulk is the builder for creating many FilesMetric entities in bulk.
 type FilesMetricCreateBulk struct {
 	config
 	err      error
 	builders []*FilesMetricCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the FilesMetric entities in the database.
@@ -187,6 +418,7 @@ func (fmcb *FilesMetricCreateBulk) Save(ctx context.Context) ([]*FilesMetric, er
 					_, err = mutators[i+1].Mutate(root, fmcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = fmcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, fmcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -237,6 +469,166 @@ func (fmcb *FilesMetricCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (fmcb *FilesMetricCreateBulk) ExecX(ctx context.Context) {
 	if err := fmcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.FilesMetric.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.FilesMetricUpsert) {
+//			SetSizeInBytes(v+v).
+//		}).
+//		Exec(ctx)
+func (fmcb *FilesMetricCreateBulk) OnConflict(opts ...sql.ConflictOption) *FilesMetricUpsertBulk {
+	fmcb.conflict = opts
+	return &FilesMetricUpsertBulk{
+		create: fmcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.FilesMetric.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (fmcb *FilesMetricCreateBulk) OnConflictColumns(columns ...string) *FilesMetricUpsertBulk {
+	fmcb.conflict = append(fmcb.conflict, sql.ConflictColumns(columns...))
+	return &FilesMetricUpsertBulk{
+		create: fmcb,
+	}
+}
+
+// FilesMetricUpsertBulk is the builder for "upsert"-ing
+// a bulk of FilesMetric nodes.
+type FilesMetricUpsertBulk struct {
+	create *FilesMetricCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.FilesMetric.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *FilesMetricUpsertBulk) UpdateNewValues() *FilesMetricUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.FilesMetric.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *FilesMetricUpsertBulk) Ignore() *FilesMetricUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *FilesMetricUpsertBulk) DoNothing() *FilesMetricUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the FilesMetricCreateBulk.OnConflict
+// documentation for more info.
+func (u *FilesMetricUpsertBulk) Update(set func(*FilesMetricUpsert)) *FilesMetricUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&FilesMetricUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSizeInBytes sets the "size_in_bytes" field.
+func (u *FilesMetricUpsertBulk) SetSizeInBytes(v int64) *FilesMetricUpsertBulk {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.SetSizeInBytes(v)
+	})
+}
+
+// AddSizeInBytes adds v to the "size_in_bytes" field.
+func (u *FilesMetricUpsertBulk) AddSizeInBytes(v int64) *FilesMetricUpsertBulk {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.AddSizeInBytes(v)
+	})
+}
+
+// UpdateSizeInBytes sets the "size_in_bytes" field to the value that was provided on create.
+func (u *FilesMetricUpsertBulk) UpdateSizeInBytes() *FilesMetricUpsertBulk {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.UpdateSizeInBytes()
+	})
+}
+
+// ClearSizeInBytes clears the value of the "size_in_bytes" field.
+func (u *FilesMetricUpsertBulk) ClearSizeInBytes() *FilesMetricUpsertBulk {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.ClearSizeInBytes()
+	})
+}
+
+// SetCount sets the "count" field.
+func (u *FilesMetricUpsertBulk) SetCount(v int32) *FilesMetricUpsertBulk {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.SetCount(v)
+	})
+}
+
+// AddCount adds v to the "count" field.
+func (u *FilesMetricUpsertBulk) AddCount(v int32) *FilesMetricUpsertBulk {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.AddCount(v)
+	})
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *FilesMetricUpsertBulk) UpdateCount() *FilesMetricUpsertBulk {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.UpdateCount()
+	})
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *FilesMetricUpsertBulk) ClearCount() *FilesMetricUpsertBulk {
+	return u.Update(func(s *FilesMetricUpsert) {
+		s.ClearCount()
+	})
+}
+
+// Exec executes the query.
+func (u *FilesMetricUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the FilesMetricCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for FilesMetricCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *FilesMetricUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

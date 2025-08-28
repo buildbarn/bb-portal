@@ -5,36 +5,23 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/events"
 )
 
-// FailedTargetBazelInvocationProblemDetector map
-type FailedTargetBazelInvocationProblemDetector map[string]*events.BuildEvent
+// FailedTargetBazelInvocationProblemDetector struct
+type FailedTargetBazelInvocationProblemDetector struct{}
 
-// ProcessBEPEvent function
-func (f FailedTargetBazelInvocationProblemDetector) ProcessBEPEvent(event *events.BuildEvent) {
+// GetProblems implementation for FailedTargetBazelInvocationProblemDetector
+func (FailedTargetBazelInvocationProblemDetector) GetProblems(event *events.BuildEvent) ([]Problem, error) {
 	if event == nil || !isFailedTarget(event) {
-		return
+		return nil, nil
 	}
 	label := event.GetTargetCompletedLabel()
 	if label == "" {
-		return
-	}
-	f[label] = event
-}
-
-// Problems function
-func (f FailedTargetBazelInvocationProblemDetector) Problems() ([]Problem, error) {
-	if len(f) == 0 {
 		return nil, nil
 	}
-	problems := make([]Problem, 0, len(f))
-	for label, event := range f {
-		buildEvents := []*events.BuildEvent{event}
-		problem, err := createProblem(BazelInvocationProblemFailedTarget, label, buildEvents)
-		if err != nil {
-			return nil, err
-		}
-		problems = append(problems, *problem)
+	problems, err := createProblem(BazelInvocationProblemFailedTarget, label, []*events.BuildEvent{event})
+	if err != nil {
+		return nil, err
 	}
-	return problems, nil
+	return []Problem{*problems}, nil
 }
 
 // isFailedTarget

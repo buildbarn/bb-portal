@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import FIND_TESTS from '@/app/tests/index.graphql';
-import { FindTestsQueryVariables, OrderDirection, TargetPair, TargetPairOrderField, TestCollection, TestCollectionOrderField, TestSummary } from '@/graphql/__generated__/graphql';
+import { FindTestsQueryVariables, OrderDirection, Target, TargetOrderField, TestCollection, TestCollectionOrderField, TestSummary } from '@/graphql/__generated__/graphql';
 import { TargetStatusType } from '../TargetGrid'
 import { Space, Row, Statistic, Table } from 'antd';
 import { TestStatusEnum } from '../../TestStatusTag';
@@ -24,19 +24,19 @@ const TargetGridRow: React.FC<Props> = ({ rowLabel, first, reverseOrder }) => {
             where: { label: rowLabel },
             orderBy: {
                 direction: OrderDirection.Desc,
-                field: TargetPairOrderField.Duration
+                field: TargetOrderField.Duration
             }
         }, fetchPolicy: 'cache-and-network'
     });
 
     var activeData = loading ? previousData : data;
-    let rowDataSrc: TargetPair[] = []
+    let rowDataSrc: Target[] = []
 
     if (error) {
         rowDataSrc = [];
     } else {
         const rowTestData = activeData?.findTargets.edges?.flatMap(edge => edge?.node) ?? [];
-        rowDataSrc = rowTestData.filter((x): x is TargetPair => !!x);
+        rowDataSrc = rowTestData.filter((x): x is Target => !!x);
         if (reverseOrder) {
             rowDataSrc.reverse();
         }

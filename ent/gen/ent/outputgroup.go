@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/namedsetoffiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 )
 
 // OutputGroup is the model entity for the OutputGroup schema.
@@ -24,43 +23,29 @@ type OutputGroup struct {
 	Incomplete bool `json:"incomplete,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the OutputGroupQuery when eager-loading is set.
-	Edges                        OutputGroupEdges `json:"edges"`
-	target_complete_output_group *int
-	selectValues                 sql.SelectValues
+	Edges        OutputGroupEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // OutputGroupEdges holds the relations/edges for other nodes in the graph.
 type OutputGroupEdges struct {
-	// TargetComplete holds the value of the target_complete edge.
-	TargetComplete *TargetComplete `json:"target_complete,omitempty"`
 	// InlineFiles holds the value of the inline_files edge.
 	InlineFiles []*TestFile `json:"inline_files,omitempty"`
 	// FileSets holds the value of the file_sets edge.
 	FileSets *NamedSetOfFiles `json:"file_sets,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
+	totalCount [2]map[string]int
 
 	namedInlineFiles map[string][]*TestFile
-}
-
-// TargetCompleteOrErr returns the TargetComplete value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e OutputGroupEdges) TargetCompleteOrErr() (*TargetComplete, error) {
-	if e.TargetComplete != nil {
-		return e.TargetComplete, nil
-	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: targetcomplete.Label}
-	}
-	return nil, &NotLoadedError{edge: "target_complete"}
 }
 
 // InlineFilesOrErr returns the InlineFiles value or an error if the edge
 // was not loaded in eager-loading.
 func (e OutputGroupEdges) InlineFilesOrErr() ([]*TestFile, error) {
-	if e.loadedTypes[1] {
+	if e.loadedTypes[0] {
 		return e.InlineFiles, nil
 	}
 	return nil, &NotLoadedError{edge: "inline_files"}
@@ -71,7 +56,7 @@ func (e OutputGroupEdges) InlineFilesOrErr() ([]*TestFile, error) {
 func (e OutputGroupEdges) FileSetsOrErr() (*NamedSetOfFiles, error) {
 	if e.FileSets != nil {
 		return e.FileSets, nil
-	} else if e.loadedTypes[2] {
+	} else if e.loadedTypes[1] {
 		return nil, &NotFoundError{label: namedsetoffiles.Label}
 	}
 	return nil, &NotLoadedError{edge: "file_sets"}
@@ -88,8 +73,6 @@ func (*OutputGroup) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case outputgroup.FieldName:
 			values[i] = new(sql.NullString)
-		case outputgroup.ForeignKeys[0]: // target_complete_output_group
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -123,13 +106,6 @@ func (og *OutputGroup) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				og.Incomplete = value.Bool
 			}
-		case outputgroup.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field target_complete_output_group", value)
-			} else if value.Valid {
-				og.target_complete_output_group = new(int)
-				*og.target_complete_output_group = int(value.Int64)
-			}
 		default:
 			og.selectValues.Set(columns[i], values[i])
 		}
@@ -141,11 +117,6 @@ func (og *OutputGroup) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (og *OutputGroup) Value(name string) (ent.Value, error) {
 	return og.selectValues.Get(name)
-}
-
-// QueryTargetComplete queries the "target_complete" edge of the OutputGroup entity.
-func (og *OutputGroup) QueryTargetComplete() *TargetCompleteQuery {
-	return NewOutputGroupClient(og.config).QueryTargetComplete(og)
 }
 
 // QueryInlineFiles queries the "inline_files" edge of the OutputGroup entity.

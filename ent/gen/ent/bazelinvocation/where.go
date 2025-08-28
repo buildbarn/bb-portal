@@ -146,6 +146,66 @@ func InstanceName(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldInstanceName, v))
 }
 
+// BazelVersion applies equality check predicate on the "bazel_version" field. It's identical to BazelVersionEQ.
+func BazelVersion(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldBazelVersion, v))
+}
+
+// ExitCodeName applies equality check predicate on the "exit_code_name" field. It's identical to ExitCodeNameEQ.
+func ExitCodeName(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldExitCodeName, v))
+}
+
+// ExitCodeCode applies equality check predicate on the "exit_code_code" field. It's identical to ExitCodeCodeEQ.
+func ExitCodeCode(v int32) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldExitCodeCode, v))
+}
+
+// CommandLineCommand applies equality check predicate on the "command_line_command" field. It's identical to CommandLineCommandEQ.
+func CommandLineCommand(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldCommandLineCommand, v))
+}
+
+// CommandLineExecutable applies equality check predicate on the "command_line_executable" field. It's identical to CommandLineExecutableEQ.
+func CommandLineExecutable(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldCommandLineExecutable, v))
+}
+
+// CommandLineResidual applies equality check predicate on the "command_line_residual" field. It's identical to CommandLineResidualEQ.
+func CommandLineResidual(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldCommandLineResidual, v))
+}
+
+// ProcessedEventStarted applies equality check predicate on the "processed_event_started" field. It's identical to ProcessedEventStartedEQ.
+func ProcessedEventStarted(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventStarted, v))
+}
+
+// ProcessedEventBuildMetadata applies equality check predicate on the "processed_event_build_metadata" field. It's identical to ProcessedEventBuildMetadataEQ.
+func ProcessedEventBuildMetadata(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventBuildMetadata, v))
+}
+
+// ProcessedEventOptionsParsed applies equality check predicate on the "processed_event_options_parsed" field. It's identical to ProcessedEventOptionsParsedEQ.
+func ProcessedEventOptionsParsed(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventOptionsParsed, v))
+}
+
+// ProcessedEventBuildFinished applies equality check predicate on the "processed_event_build_finished" field. It's identical to ProcessedEventBuildFinishedEQ.
+func ProcessedEventBuildFinished(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventBuildFinished, v))
+}
+
+// ProcessedEventStructuredCommandLine applies equality check predicate on the "processed_event_structured_command_line" field. It's identical to ProcessedEventStructuredCommandLineEQ.
+func ProcessedEventStructuredCommandLine(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventStructuredCommandLine, v))
+}
+
+// ProcessedEventWorkspaceStatus applies equality check predicate on the "processed_event_workspace_status" field. It's identical to ProcessedEventWorkspaceStatusEQ.
+func ProcessedEventWorkspaceStatus(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventWorkspaceStatus, v))
+}
+
 // InvocationIDEQ applies the EQ predicate on the "invocation_id" field.
 func InvocationIDEQ(v uuid.UUID) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldInvocationID, v))
@@ -224,6 +284,16 @@ func StartedAtLT(v time.Time) predicate.BazelInvocation {
 // StartedAtLTE applies the LTE predicate on the "started_at" field.
 func StartedAtLTE(v time.Time) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldLTE(FieldStartedAt, v))
+}
+
+// StartedAtIsNil applies the IsNil predicate on the "started_at" field.
+func StartedAtIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldStartedAt))
+}
+
+// StartedAtNotNil applies the NotNil predicate on the "started_at" field.
+func StartedAtNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldStartedAt))
 }
 
 // EndedAtEQ applies the EQ predicate on the "ended_at" field.
@@ -386,16 +456,6 @@ func BepCompletedNEQ(v bool) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldNEQ(FieldBepCompleted, v))
 }
 
-// BepCompletedIsNil applies the IsNil predicate on the "bep_completed" field.
-func BepCompletedIsNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIsNull(FieldBepCompleted))
-}
-
-// BepCompletedNotNil applies the NotNil predicate on the "bep_completed" field.
-func BepCompletedNotNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotNull(FieldBepCompleted))
-}
-
 // StepLabelEQ applies the EQ predicate on the "step_label" field.
 func StepLabelEQ(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldStepLabel, v))
@@ -449,6 +509,16 @@ func StepLabelHasPrefix(v string) predicate.BazelInvocation {
 // StepLabelHasSuffix applies the HasSuffix predicate on the "step_label" field.
 func StepLabelHasSuffix(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldStepLabel, v))
+}
+
+// StepLabelIsNil applies the IsNil predicate on the "step_label" field.
+func StepLabelIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldStepLabel))
+}
+
+// StepLabelNotNil applies the NotNil predicate on the "step_label" field.
+func StepLabelNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldStepLabel))
 }
 
 // StepLabelEqualFold applies the EqualFold predicate on the "step_label" field.
@@ -1111,6 +1181,16 @@ func ProfileNameHasSuffix(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldProfileName, v))
 }
 
+// ProfileNameIsNil applies the IsNil predicate on the "profile_name" field.
+func ProfileNameIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldProfileName))
+}
+
+// ProfileNameNotNil applies the NotNil predicate on the "profile_name" field.
+func ProfileNameNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldProfileName))
+}
+
 // ProfileNameEqualFold applies the EqualFold predicate on the "profile_name" field.
 func ProfileNameEqualFold(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEqualFold(FieldProfileName, v))
@@ -1196,6 +1276,531 @@ func InstanceNameContainsFold(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldContainsFold(FieldInstanceName, v))
 }
 
+// BazelVersionEQ applies the EQ predicate on the "bazel_version" field.
+func BazelVersionEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldBazelVersion, v))
+}
+
+// BazelVersionNEQ applies the NEQ predicate on the "bazel_version" field.
+func BazelVersionNEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldBazelVersion, v))
+}
+
+// BazelVersionIn applies the In predicate on the "bazel_version" field.
+func BazelVersionIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldBazelVersion, vs...))
+}
+
+// BazelVersionNotIn applies the NotIn predicate on the "bazel_version" field.
+func BazelVersionNotIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldBazelVersion, vs...))
+}
+
+// BazelVersionGT applies the GT predicate on the "bazel_version" field.
+func BazelVersionGT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGT(FieldBazelVersion, v))
+}
+
+// BazelVersionGTE applies the GTE predicate on the "bazel_version" field.
+func BazelVersionGTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGTE(FieldBazelVersion, v))
+}
+
+// BazelVersionLT applies the LT predicate on the "bazel_version" field.
+func BazelVersionLT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLT(FieldBazelVersion, v))
+}
+
+// BazelVersionLTE applies the LTE predicate on the "bazel_version" field.
+func BazelVersionLTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLTE(FieldBazelVersion, v))
+}
+
+// BazelVersionContains applies the Contains predicate on the "bazel_version" field.
+func BazelVersionContains(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContains(FieldBazelVersion, v))
+}
+
+// BazelVersionHasPrefix applies the HasPrefix predicate on the "bazel_version" field.
+func BazelVersionHasPrefix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldBazelVersion, v))
+}
+
+// BazelVersionHasSuffix applies the HasSuffix predicate on the "bazel_version" field.
+func BazelVersionHasSuffix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldBazelVersion, v))
+}
+
+// BazelVersionIsNil applies the IsNil predicate on the "bazel_version" field.
+func BazelVersionIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldBazelVersion))
+}
+
+// BazelVersionNotNil applies the NotNil predicate on the "bazel_version" field.
+func BazelVersionNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldBazelVersion))
+}
+
+// BazelVersionEqualFold applies the EqualFold predicate on the "bazel_version" field.
+func BazelVersionEqualFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEqualFold(FieldBazelVersion, v))
+}
+
+// BazelVersionContainsFold applies the ContainsFold predicate on the "bazel_version" field.
+func BazelVersionContainsFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContainsFold(FieldBazelVersion, v))
+}
+
+// ExitCodeNameEQ applies the EQ predicate on the "exit_code_name" field.
+func ExitCodeNameEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldExitCodeName, v))
+}
+
+// ExitCodeNameNEQ applies the NEQ predicate on the "exit_code_name" field.
+func ExitCodeNameNEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldExitCodeName, v))
+}
+
+// ExitCodeNameIn applies the In predicate on the "exit_code_name" field.
+func ExitCodeNameIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldExitCodeName, vs...))
+}
+
+// ExitCodeNameNotIn applies the NotIn predicate on the "exit_code_name" field.
+func ExitCodeNameNotIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldExitCodeName, vs...))
+}
+
+// ExitCodeNameGT applies the GT predicate on the "exit_code_name" field.
+func ExitCodeNameGT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGT(FieldExitCodeName, v))
+}
+
+// ExitCodeNameGTE applies the GTE predicate on the "exit_code_name" field.
+func ExitCodeNameGTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGTE(FieldExitCodeName, v))
+}
+
+// ExitCodeNameLT applies the LT predicate on the "exit_code_name" field.
+func ExitCodeNameLT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLT(FieldExitCodeName, v))
+}
+
+// ExitCodeNameLTE applies the LTE predicate on the "exit_code_name" field.
+func ExitCodeNameLTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLTE(FieldExitCodeName, v))
+}
+
+// ExitCodeNameContains applies the Contains predicate on the "exit_code_name" field.
+func ExitCodeNameContains(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContains(FieldExitCodeName, v))
+}
+
+// ExitCodeNameHasPrefix applies the HasPrefix predicate on the "exit_code_name" field.
+func ExitCodeNameHasPrefix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldExitCodeName, v))
+}
+
+// ExitCodeNameHasSuffix applies the HasSuffix predicate on the "exit_code_name" field.
+func ExitCodeNameHasSuffix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldExitCodeName, v))
+}
+
+// ExitCodeNameIsNil applies the IsNil predicate on the "exit_code_name" field.
+func ExitCodeNameIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldExitCodeName))
+}
+
+// ExitCodeNameNotNil applies the NotNil predicate on the "exit_code_name" field.
+func ExitCodeNameNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldExitCodeName))
+}
+
+// ExitCodeNameEqualFold applies the EqualFold predicate on the "exit_code_name" field.
+func ExitCodeNameEqualFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEqualFold(FieldExitCodeName, v))
+}
+
+// ExitCodeNameContainsFold applies the ContainsFold predicate on the "exit_code_name" field.
+func ExitCodeNameContainsFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContainsFold(FieldExitCodeName, v))
+}
+
+// ExitCodeCodeEQ applies the EQ predicate on the "exit_code_code" field.
+func ExitCodeCodeEQ(v int32) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldExitCodeCode, v))
+}
+
+// ExitCodeCodeNEQ applies the NEQ predicate on the "exit_code_code" field.
+func ExitCodeCodeNEQ(v int32) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldExitCodeCode, v))
+}
+
+// ExitCodeCodeIn applies the In predicate on the "exit_code_code" field.
+func ExitCodeCodeIn(vs ...int32) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldExitCodeCode, vs...))
+}
+
+// ExitCodeCodeNotIn applies the NotIn predicate on the "exit_code_code" field.
+func ExitCodeCodeNotIn(vs ...int32) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldExitCodeCode, vs...))
+}
+
+// ExitCodeCodeGT applies the GT predicate on the "exit_code_code" field.
+func ExitCodeCodeGT(v int32) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGT(FieldExitCodeCode, v))
+}
+
+// ExitCodeCodeGTE applies the GTE predicate on the "exit_code_code" field.
+func ExitCodeCodeGTE(v int32) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGTE(FieldExitCodeCode, v))
+}
+
+// ExitCodeCodeLT applies the LT predicate on the "exit_code_code" field.
+func ExitCodeCodeLT(v int32) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLT(FieldExitCodeCode, v))
+}
+
+// ExitCodeCodeLTE applies the LTE predicate on the "exit_code_code" field.
+func ExitCodeCodeLTE(v int32) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLTE(FieldExitCodeCode, v))
+}
+
+// ExitCodeCodeIsNil applies the IsNil predicate on the "exit_code_code" field.
+func ExitCodeCodeIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldExitCodeCode))
+}
+
+// ExitCodeCodeNotNil applies the NotNil predicate on the "exit_code_code" field.
+func ExitCodeCodeNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldExitCodeCode))
+}
+
+// CommandLineCommandEQ applies the EQ predicate on the "command_line_command" field.
+func CommandLineCommandEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldCommandLineCommand, v))
+}
+
+// CommandLineCommandNEQ applies the NEQ predicate on the "command_line_command" field.
+func CommandLineCommandNEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldCommandLineCommand, v))
+}
+
+// CommandLineCommandIn applies the In predicate on the "command_line_command" field.
+func CommandLineCommandIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldCommandLineCommand, vs...))
+}
+
+// CommandLineCommandNotIn applies the NotIn predicate on the "command_line_command" field.
+func CommandLineCommandNotIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldCommandLineCommand, vs...))
+}
+
+// CommandLineCommandGT applies the GT predicate on the "command_line_command" field.
+func CommandLineCommandGT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGT(FieldCommandLineCommand, v))
+}
+
+// CommandLineCommandGTE applies the GTE predicate on the "command_line_command" field.
+func CommandLineCommandGTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGTE(FieldCommandLineCommand, v))
+}
+
+// CommandLineCommandLT applies the LT predicate on the "command_line_command" field.
+func CommandLineCommandLT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLT(FieldCommandLineCommand, v))
+}
+
+// CommandLineCommandLTE applies the LTE predicate on the "command_line_command" field.
+func CommandLineCommandLTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLTE(FieldCommandLineCommand, v))
+}
+
+// CommandLineCommandContains applies the Contains predicate on the "command_line_command" field.
+func CommandLineCommandContains(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContains(FieldCommandLineCommand, v))
+}
+
+// CommandLineCommandHasPrefix applies the HasPrefix predicate on the "command_line_command" field.
+func CommandLineCommandHasPrefix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldCommandLineCommand, v))
+}
+
+// CommandLineCommandHasSuffix applies the HasSuffix predicate on the "command_line_command" field.
+func CommandLineCommandHasSuffix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldCommandLineCommand, v))
+}
+
+// CommandLineCommandIsNil applies the IsNil predicate on the "command_line_command" field.
+func CommandLineCommandIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldCommandLineCommand))
+}
+
+// CommandLineCommandNotNil applies the NotNil predicate on the "command_line_command" field.
+func CommandLineCommandNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldCommandLineCommand))
+}
+
+// CommandLineCommandEqualFold applies the EqualFold predicate on the "command_line_command" field.
+func CommandLineCommandEqualFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEqualFold(FieldCommandLineCommand, v))
+}
+
+// CommandLineCommandContainsFold applies the ContainsFold predicate on the "command_line_command" field.
+func CommandLineCommandContainsFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContainsFold(FieldCommandLineCommand, v))
+}
+
+// CommandLineExecutableEQ applies the EQ predicate on the "command_line_executable" field.
+func CommandLineExecutableEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldCommandLineExecutable, v))
+}
+
+// CommandLineExecutableNEQ applies the NEQ predicate on the "command_line_executable" field.
+func CommandLineExecutableNEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldCommandLineExecutable, v))
+}
+
+// CommandLineExecutableIn applies the In predicate on the "command_line_executable" field.
+func CommandLineExecutableIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldCommandLineExecutable, vs...))
+}
+
+// CommandLineExecutableNotIn applies the NotIn predicate on the "command_line_executable" field.
+func CommandLineExecutableNotIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldCommandLineExecutable, vs...))
+}
+
+// CommandLineExecutableGT applies the GT predicate on the "command_line_executable" field.
+func CommandLineExecutableGT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGT(FieldCommandLineExecutable, v))
+}
+
+// CommandLineExecutableGTE applies the GTE predicate on the "command_line_executable" field.
+func CommandLineExecutableGTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGTE(FieldCommandLineExecutable, v))
+}
+
+// CommandLineExecutableLT applies the LT predicate on the "command_line_executable" field.
+func CommandLineExecutableLT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLT(FieldCommandLineExecutable, v))
+}
+
+// CommandLineExecutableLTE applies the LTE predicate on the "command_line_executable" field.
+func CommandLineExecutableLTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLTE(FieldCommandLineExecutable, v))
+}
+
+// CommandLineExecutableContains applies the Contains predicate on the "command_line_executable" field.
+func CommandLineExecutableContains(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContains(FieldCommandLineExecutable, v))
+}
+
+// CommandLineExecutableHasPrefix applies the HasPrefix predicate on the "command_line_executable" field.
+func CommandLineExecutableHasPrefix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldCommandLineExecutable, v))
+}
+
+// CommandLineExecutableHasSuffix applies the HasSuffix predicate on the "command_line_executable" field.
+func CommandLineExecutableHasSuffix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldCommandLineExecutable, v))
+}
+
+// CommandLineExecutableIsNil applies the IsNil predicate on the "command_line_executable" field.
+func CommandLineExecutableIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldCommandLineExecutable))
+}
+
+// CommandLineExecutableNotNil applies the NotNil predicate on the "command_line_executable" field.
+func CommandLineExecutableNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldCommandLineExecutable))
+}
+
+// CommandLineExecutableEqualFold applies the EqualFold predicate on the "command_line_executable" field.
+func CommandLineExecutableEqualFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEqualFold(FieldCommandLineExecutable, v))
+}
+
+// CommandLineExecutableContainsFold applies the ContainsFold predicate on the "command_line_executable" field.
+func CommandLineExecutableContainsFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContainsFold(FieldCommandLineExecutable, v))
+}
+
+// CommandLineResidualEQ applies the EQ predicate on the "command_line_residual" field.
+func CommandLineResidualEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldCommandLineResidual, v))
+}
+
+// CommandLineResidualNEQ applies the NEQ predicate on the "command_line_residual" field.
+func CommandLineResidualNEQ(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldCommandLineResidual, v))
+}
+
+// CommandLineResidualIn applies the In predicate on the "command_line_residual" field.
+func CommandLineResidualIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIn(FieldCommandLineResidual, vs...))
+}
+
+// CommandLineResidualNotIn applies the NotIn predicate on the "command_line_residual" field.
+func CommandLineResidualNotIn(vs ...string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotIn(FieldCommandLineResidual, vs...))
+}
+
+// CommandLineResidualGT applies the GT predicate on the "command_line_residual" field.
+func CommandLineResidualGT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGT(FieldCommandLineResidual, v))
+}
+
+// CommandLineResidualGTE applies the GTE predicate on the "command_line_residual" field.
+func CommandLineResidualGTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldGTE(FieldCommandLineResidual, v))
+}
+
+// CommandLineResidualLT applies the LT predicate on the "command_line_residual" field.
+func CommandLineResidualLT(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLT(FieldCommandLineResidual, v))
+}
+
+// CommandLineResidualLTE applies the LTE predicate on the "command_line_residual" field.
+func CommandLineResidualLTE(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldLTE(FieldCommandLineResidual, v))
+}
+
+// CommandLineResidualContains applies the Contains predicate on the "command_line_residual" field.
+func CommandLineResidualContains(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContains(FieldCommandLineResidual, v))
+}
+
+// CommandLineResidualHasPrefix applies the HasPrefix predicate on the "command_line_residual" field.
+func CommandLineResidualHasPrefix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldCommandLineResidual, v))
+}
+
+// CommandLineResidualHasSuffix applies the HasSuffix predicate on the "command_line_residual" field.
+func CommandLineResidualHasSuffix(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldCommandLineResidual, v))
+}
+
+// CommandLineResidualIsNil applies the IsNil predicate on the "command_line_residual" field.
+func CommandLineResidualIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldCommandLineResidual))
+}
+
+// CommandLineResidualNotNil applies the NotNil predicate on the "command_line_residual" field.
+func CommandLineResidualNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldCommandLineResidual))
+}
+
+// CommandLineResidualEqualFold applies the EqualFold predicate on the "command_line_residual" field.
+func CommandLineResidualEqualFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEqualFold(FieldCommandLineResidual, v))
+}
+
+// CommandLineResidualContainsFold applies the ContainsFold predicate on the "command_line_residual" field.
+func CommandLineResidualContainsFold(v string) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldContainsFold(FieldCommandLineResidual, v))
+}
+
+// CommandLineIsNil applies the IsNil predicate on the "command_line" field.
+func CommandLineIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldCommandLine))
+}
+
+// CommandLineNotNil applies the NotNil predicate on the "command_line" field.
+func CommandLineNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldCommandLine))
+}
+
+// ExplicitCommandLineIsNil applies the IsNil predicate on the "explicit_command_line" field.
+func ExplicitCommandLineIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldExplicitCommandLine))
+}
+
+// ExplicitCommandLineNotNil applies the NotNil predicate on the "explicit_command_line" field.
+func ExplicitCommandLineNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldExplicitCommandLine))
+}
+
+// StartupOptionsIsNil applies the IsNil predicate on the "startup_options" field.
+func StartupOptionsIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldStartupOptions))
+}
+
+// StartupOptionsNotNil applies the NotNil predicate on the "startup_options" field.
+func StartupOptionsNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldStartupOptions))
+}
+
+// ExplicitStartupOptionsIsNil applies the IsNil predicate on the "explicit_startup_options" field.
+func ExplicitStartupOptionsIsNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldIsNull(FieldExplicitStartupOptions))
+}
+
+// ExplicitStartupOptionsNotNil applies the NotNil predicate on the "explicit_startup_options" field.
+func ExplicitStartupOptionsNotNil() predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNotNull(FieldExplicitStartupOptions))
+}
+
+// ProcessedEventStartedEQ applies the EQ predicate on the "processed_event_started" field.
+func ProcessedEventStartedEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventStarted, v))
+}
+
+// ProcessedEventStartedNEQ applies the NEQ predicate on the "processed_event_started" field.
+func ProcessedEventStartedNEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldProcessedEventStarted, v))
+}
+
+// ProcessedEventBuildMetadataEQ applies the EQ predicate on the "processed_event_build_metadata" field.
+func ProcessedEventBuildMetadataEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventBuildMetadata, v))
+}
+
+// ProcessedEventBuildMetadataNEQ applies the NEQ predicate on the "processed_event_build_metadata" field.
+func ProcessedEventBuildMetadataNEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldProcessedEventBuildMetadata, v))
+}
+
+// ProcessedEventOptionsParsedEQ applies the EQ predicate on the "processed_event_options_parsed" field.
+func ProcessedEventOptionsParsedEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventOptionsParsed, v))
+}
+
+// ProcessedEventOptionsParsedNEQ applies the NEQ predicate on the "processed_event_options_parsed" field.
+func ProcessedEventOptionsParsedNEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldProcessedEventOptionsParsed, v))
+}
+
+// ProcessedEventBuildFinishedEQ applies the EQ predicate on the "processed_event_build_finished" field.
+func ProcessedEventBuildFinishedEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventBuildFinished, v))
+}
+
+// ProcessedEventBuildFinishedNEQ applies the NEQ predicate on the "processed_event_build_finished" field.
+func ProcessedEventBuildFinishedNEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldProcessedEventBuildFinished, v))
+}
+
+// ProcessedEventStructuredCommandLineEQ applies the EQ predicate on the "processed_event_structured_command_line" field.
+func ProcessedEventStructuredCommandLineEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventStructuredCommandLine, v))
+}
+
+// ProcessedEventStructuredCommandLineNEQ applies the NEQ predicate on the "processed_event_structured_command_line" field.
+func ProcessedEventStructuredCommandLineNEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldProcessedEventStructuredCommandLine, v))
+}
+
+// ProcessedEventWorkspaceStatusEQ applies the EQ predicate on the "processed_event_workspace_status" field.
+func ProcessedEventWorkspaceStatusEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldEQ(FieldProcessedEventWorkspaceStatus, v))
+}
+
+// ProcessedEventWorkspaceStatusNEQ applies the NEQ predicate on the "processed_event_workspace_status" field.
+func ProcessedEventWorkspaceStatusNEQ(v bool) predicate.BazelInvocation {
+	return predicate.BazelInvocation(sql.FieldNEQ(FieldProcessedEventWorkspaceStatus, v))
+}
+
 // HasBuild applies the HasEdge predicate on the "build" edge.
 func HasBuild() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
@@ -1211,6 +1816,52 @@ func HasBuild() predicate.BazelInvocation {
 func HasBuildWith(preds ...predicate.Build) predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := newBuildStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasEventMetadata applies the HasEdge predicate on the "event_metadata" edge.
+func HasEventMetadata() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, EventMetadataTable, EventMetadataColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasEventMetadataWith applies the HasEdge predicate on the "event_metadata" edge with a given conditions (other predicates).
+func HasEventMetadataWith(preds ...predicate.EventMetadata) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newEventMetadataStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasConnectionMetadata applies the HasEdge predicate on the "connection_metadata" edge.
+func HasConnectionMetadata() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ConnectionMetadataTable, ConnectionMetadataColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasConnectionMetadataWith applies the HasEdge predicate on the "connection_metadata" edge with a given conditions (other predicates).
+func HasConnectionMetadataWith(preds ...predicate.ConnectionMetadata) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newConnectionMetadataStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -1265,6 +1916,52 @@ func HasMetricsWith(preds ...predicate.Metrics) predicate.BazelInvocation {
 	})
 }
 
+// HasIncompleteBuildLogs applies the HasEdge predicate on the "incomplete_build_logs" edge.
+func HasIncompleteBuildLogs() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, IncompleteBuildLogsTable, IncompleteBuildLogsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasIncompleteBuildLogsWith applies the HasEdge predicate on the "incomplete_build_logs" edge with a given conditions (other predicates).
+func HasIncompleteBuildLogsWith(preds ...predicate.IncompleteBuildLog) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newIncompleteBuildLogsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasInvocationFiles applies the HasEdge predicate on the "invocation_files" edge.
+func HasInvocationFiles() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, InvocationFilesTable, InvocationFilesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasInvocationFilesWith applies the HasEdge predicate on the "invocation_files" edge with a given conditions (other predicates).
+func HasInvocationFilesWith(preds ...predicate.InvocationFiles) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newInvocationFilesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasTestCollection applies the HasEdge predicate on the "test_collection" edge.
 func HasTestCollection() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
@@ -1300,7 +1997,7 @@ func HasTargets() predicate.BazelInvocation {
 }
 
 // HasTargetsWith applies the HasEdge predicate on the "targets" edge with a given conditions (other predicates).
-func HasTargetsWith(preds ...predicate.TargetPair) predicate.BazelInvocation {
+func HasTargetsWith(preds ...predicate.Target) predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := newTargetsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package buildbarn.configuration.bb_portal;
 
+import "google/protobuf/empty.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/auth/auth.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/blobstore/blobstore.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/global/global.proto";
@@ -47,6 +48,24 @@ message BuildEventStreamService {
 
   // Enables the Graphql playground.
   bool enable_graphql_playground = 5;
+
+  message SaveTargetDataLevel {
+    oneof level {
+      // Do not save any target data.
+      google.protobuf.Empty none = 1;
+      // Save basic target data.
+      google.protobuf.Empty basic = 2;
+      // Save enriched target data.
+      google.protobuf.Empty enriched = 3;
+    }
+  }
+
+  // Controls whether target data should be saved, and if so, to what extent.
+  // NOTE: This is a beta feature, and it will likely change in the future,
+  // including what data is stored at each level.
+  // NOTE: This does not work correctly with authentication enabled
+  // (instanceNameAuthorizer).
+  SaveTargetDataLevel save_target_data_level = 6;
 }
 
 message BrowserService {

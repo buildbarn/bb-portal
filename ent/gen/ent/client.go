@@ -24,11 +24,15 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
@@ -41,10 +45,8 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
@@ -52,6 +54,8 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingbreakdown"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingchild"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
+
+	stdsql "database/sql"
 )
 
 // Client is the client that holds all ent builders.
@@ -77,16 +81,24 @@ type Client struct {
 	Build *BuildClient
 	// BuildGraphMetrics is the client for interacting with the BuildGraphMetrics builders.
 	BuildGraphMetrics *BuildGraphMetricsClient
+	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
+	ConnectionMetadata *ConnectionMetadataClient
 	// CumulativeMetrics is the client for interacting with the CumulativeMetrics builders.
 	CumulativeMetrics *CumulativeMetricsClient
 	// EvaluationStat is the client for interacting with the EvaluationStat builders.
 	EvaluationStat *EvaluationStatClient
+	// EventMetadata is the client for interacting with the EventMetadata builders.
+	EventMetadata *EventMetadataClient
 	// ExectionInfo is the client for interacting with the ExectionInfo builders.
 	ExectionInfo *ExectionInfoClient
 	// FilesMetric is the client for interacting with the FilesMetric builders.
 	FilesMetric *FilesMetricClient
 	// GarbageMetrics is the client for interacting with the GarbageMetrics builders.
 	GarbageMetrics *GarbageMetricsClient
+	// IncompleteBuildLog is the client for interacting with the IncompleteBuildLog builders.
+	IncompleteBuildLog *IncompleteBuildLogClient
+	// InvocationFiles is the client for interacting with the InvocationFiles builders.
+	InvocationFiles *InvocationFilesClient
 	// MemoryMetrics is the client for interacting with the MemoryMetrics builders.
 	MemoryMetrics *MemoryMetricsClient
 	// Metrics is the client for interacting with the Metrics builders.
@@ -111,14 +123,10 @@ type Client struct {
 	SourceControl *SourceControlClient
 	// SystemNetworkStats is the client for interacting with the SystemNetworkStats builders.
 	SystemNetworkStats *SystemNetworkStatsClient
-	// TargetComplete is the client for interacting with the TargetComplete builders.
-	TargetComplete *TargetCompleteClient
-	// TargetConfigured is the client for interacting with the TargetConfigured builders.
-	TargetConfigured *TargetConfiguredClient
+	// Target is the client for interacting with the Target builders.
+	Target *TargetClient
 	// TargetMetrics is the client for interacting with the TargetMetrics builders.
 	TargetMetrics *TargetMetricsClient
-	// TargetPair is the client for interacting with the TargetPair builders.
-	TargetPair *TargetPairClient
 	// TestCollection is the client for interacting with the TestCollection builders.
 	TestCollection *TestCollectionClient
 	// TestFile is the client for interacting with the TestFile builders.
@@ -155,11 +163,15 @@ func (c *Client) init() {
 	c.Blob = NewBlobClient(c.config)
 	c.Build = NewBuildClient(c.config)
 	c.BuildGraphMetrics = NewBuildGraphMetricsClient(c.config)
+	c.ConnectionMetadata = NewConnectionMetadataClient(c.config)
 	c.CumulativeMetrics = NewCumulativeMetricsClient(c.config)
 	c.EvaluationStat = NewEvaluationStatClient(c.config)
+	c.EventMetadata = NewEventMetadataClient(c.config)
 	c.ExectionInfo = NewExectionInfoClient(c.config)
 	c.FilesMetric = NewFilesMetricClient(c.config)
 	c.GarbageMetrics = NewGarbageMetricsClient(c.config)
+	c.IncompleteBuildLog = NewIncompleteBuildLogClient(c.config)
+	c.InvocationFiles = NewInvocationFilesClient(c.config)
 	c.MemoryMetrics = NewMemoryMetricsClient(c.config)
 	c.Metrics = NewMetricsClient(c.config)
 	c.MissDetail = NewMissDetailClient(c.config)
@@ -172,10 +184,8 @@ func (c *Client) init() {
 	c.RunnerCount = NewRunnerCountClient(c.config)
 	c.SourceControl = NewSourceControlClient(c.config)
 	c.SystemNetworkStats = NewSystemNetworkStatsClient(c.config)
-	c.TargetComplete = NewTargetCompleteClient(c.config)
-	c.TargetConfigured = NewTargetConfiguredClient(c.config)
+	c.Target = NewTargetClient(c.config)
 	c.TargetMetrics = NewTargetMetricsClient(c.config)
-	c.TargetPair = NewTargetPairClient(c.config)
 	c.TestCollection = NewTestCollectionClient(c.config)
 	c.TestFile = NewTestFileClient(c.config)
 	c.TestResultBES = NewTestResultBESClient(c.config)
@@ -284,11 +294,15 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Blob:                   NewBlobClient(cfg),
 		Build:                  NewBuildClient(cfg),
 		BuildGraphMetrics:      NewBuildGraphMetricsClient(cfg),
+		ConnectionMetadata:     NewConnectionMetadataClient(cfg),
 		CumulativeMetrics:      NewCumulativeMetricsClient(cfg),
 		EvaluationStat:         NewEvaluationStatClient(cfg),
+		EventMetadata:          NewEventMetadataClient(cfg),
 		ExectionInfo:           NewExectionInfoClient(cfg),
 		FilesMetric:            NewFilesMetricClient(cfg),
 		GarbageMetrics:         NewGarbageMetricsClient(cfg),
+		IncompleteBuildLog:     NewIncompleteBuildLogClient(cfg),
+		InvocationFiles:        NewInvocationFilesClient(cfg),
 		MemoryMetrics:          NewMemoryMetricsClient(cfg),
 		Metrics:                NewMetricsClient(cfg),
 		MissDetail:             NewMissDetailClient(cfg),
@@ -301,10 +315,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		RunnerCount:            NewRunnerCountClient(cfg),
 		SourceControl:          NewSourceControlClient(cfg),
 		SystemNetworkStats:     NewSystemNetworkStatsClient(cfg),
-		TargetComplete:         NewTargetCompleteClient(cfg),
-		TargetConfigured:       NewTargetConfiguredClient(cfg),
+		Target:                 NewTargetClient(cfg),
 		TargetMetrics:          NewTargetMetricsClient(cfg),
-		TargetPair:             NewTargetPairClient(cfg),
 		TestCollection:         NewTestCollectionClient(cfg),
 		TestFile:               NewTestFileClient(cfg),
 		TestResultBES:          NewTestResultBESClient(cfg),
@@ -340,11 +352,15 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Blob:                   NewBlobClient(cfg),
 		Build:                  NewBuildClient(cfg),
 		BuildGraphMetrics:      NewBuildGraphMetricsClient(cfg),
+		ConnectionMetadata:     NewConnectionMetadataClient(cfg),
 		CumulativeMetrics:      NewCumulativeMetricsClient(cfg),
 		EvaluationStat:         NewEvaluationStatClient(cfg),
+		EventMetadata:          NewEventMetadataClient(cfg),
 		ExectionInfo:           NewExectionInfoClient(cfg),
 		FilesMetric:            NewFilesMetricClient(cfg),
 		GarbageMetrics:         NewGarbageMetricsClient(cfg),
+		IncompleteBuildLog:     NewIncompleteBuildLogClient(cfg),
+		InvocationFiles:        NewInvocationFilesClient(cfg),
 		MemoryMetrics:          NewMemoryMetricsClient(cfg),
 		Metrics:                NewMetricsClient(cfg),
 		MissDetail:             NewMissDetailClient(cfg),
@@ -357,10 +373,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		RunnerCount:            NewRunnerCountClient(cfg),
 		SourceControl:          NewSourceControlClient(cfg),
 		SystemNetworkStats:     NewSystemNetworkStatsClient(cfg),
-		TargetComplete:         NewTargetCompleteClient(cfg),
-		TargetConfigured:       NewTargetConfiguredClient(cfg),
+		Target:                 NewTargetClient(cfg),
 		TargetMetrics:          NewTargetMetricsClient(cfg),
-		TargetPair:             NewTargetPairClient(cfg),
 		TestCollection:         NewTestCollectionClient(cfg),
 		TestFile:               NewTestFileClient(cfg),
 		TestResultBES:          NewTestResultBESClient(cfg),
@@ -399,12 +413,13 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
 		c.BazelInvocation, c.BazelInvocationProblem, c.Blob, c.Build,
-		c.BuildGraphMetrics, c.CumulativeMetrics, c.EvaluationStat, c.ExectionInfo,
-		c.FilesMetric, c.GarbageMetrics, c.MemoryMetrics, c.Metrics, c.MissDetail,
-		c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup, c.PackageLoadMetrics,
-		c.PackageMetrics, c.ResourceUsage, c.RunnerCount, c.SourceControl,
-		c.SystemNetworkStats, c.TargetComplete, c.TargetConfigured, c.TargetMetrics,
-		c.TargetPair, c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
+		c.BuildGraphMetrics, c.ConnectionMetadata, c.CumulativeMetrics,
+		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.FilesMetric,
+		c.GarbageMetrics, c.IncompleteBuildLog, c.InvocationFiles, c.MemoryMetrics,
+		c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup,
+		c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage, c.RunnerCount,
+		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetMetrics,
+		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
 		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
 	} {
 		n.Use(hooks...)
@@ -417,12 +432,13 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
 		c.BazelInvocation, c.BazelInvocationProblem, c.Blob, c.Build,
-		c.BuildGraphMetrics, c.CumulativeMetrics, c.EvaluationStat, c.ExectionInfo,
-		c.FilesMetric, c.GarbageMetrics, c.MemoryMetrics, c.Metrics, c.MissDetail,
-		c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup, c.PackageLoadMetrics,
-		c.PackageMetrics, c.ResourceUsage, c.RunnerCount, c.SourceControl,
-		c.SystemNetworkStats, c.TargetComplete, c.TargetConfigured, c.TargetMetrics,
-		c.TargetPair, c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
+		c.BuildGraphMetrics, c.ConnectionMetadata, c.CumulativeMetrics,
+		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.FilesMetric,
+		c.GarbageMetrics, c.IncompleteBuildLog, c.InvocationFiles, c.MemoryMetrics,
+		c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup,
+		c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage, c.RunnerCount,
+		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetMetrics,
+		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
 		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
 	} {
 		n.Intercept(interceptors...)
@@ -450,16 +466,24 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Build.mutate(ctx, m)
 	case *BuildGraphMetricsMutation:
 		return c.BuildGraphMetrics.mutate(ctx, m)
+	case *ConnectionMetadataMutation:
+		return c.ConnectionMetadata.mutate(ctx, m)
 	case *CumulativeMetricsMutation:
 		return c.CumulativeMetrics.mutate(ctx, m)
 	case *EvaluationStatMutation:
 		return c.EvaluationStat.mutate(ctx, m)
+	case *EventMetadataMutation:
+		return c.EventMetadata.mutate(ctx, m)
 	case *ExectionInfoMutation:
 		return c.ExectionInfo.mutate(ctx, m)
 	case *FilesMetricMutation:
 		return c.FilesMetric.mutate(ctx, m)
 	case *GarbageMetricsMutation:
 		return c.GarbageMetrics.mutate(ctx, m)
+	case *IncompleteBuildLogMutation:
+		return c.IncompleteBuildLog.mutate(ctx, m)
+	case *InvocationFilesMutation:
+		return c.InvocationFiles.mutate(ctx, m)
 	case *MemoryMetricsMutation:
 		return c.MemoryMetrics.mutate(ctx, m)
 	case *MetricsMutation:
@@ -484,14 +508,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.SourceControl.mutate(ctx, m)
 	case *SystemNetworkStatsMutation:
 		return c.SystemNetworkStats.mutate(ctx, m)
-	case *TargetCompleteMutation:
-		return c.TargetComplete.mutate(ctx, m)
-	case *TargetConfiguredMutation:
-		return c.TargetConfigured.mutate(ctx, m)
+	case *TargetMutation:
+		return c.Target.mutate(ctx, m)
 	case *TargetMetricsMutation:
 		return c.TargetMetrics.mutate(ctx, m)
-	case *TargetPairMutation:
-		return c.TargetPair.mutate(ctx, m)
 	case *TestCollectionMutation:
 		return c.TestCollection.mutate(ctx, m)
 	case *TestFileMutation:
@@ -1359,6 +1379,38 @@ func (c *BazelInvocationClient) QueryBuild(bi *BazelInvocation) *BuildQuery {
 	return query
 }
 
+// QueryEventMetadata queries the event_metadata edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryEventMetadata(bi *BazelInvocation) *EventMetadataQuery {
+	query := (&EventMetadataClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := bi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(eventmetadata.Table, eventmetadata.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.EventMetadataTable, bazelinvocation.EventMetadataColumn),
+		)
+		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryConnectionMetadata queries the connection_metadata edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryConnectionMetadata(bi *BazelInvocation) *ConnectionMetadataQuery {
+	query := (&ConnectionMetadataClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := bi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(connectionmetadata.Table, connectionmetadata.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ConnectionMetadataTable, bazelinvocation.ConnectionMetadataColumn),
+		)
+		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryProblems queries the problems edge of a BazelInvocation.
 func (c *BazelInvocationClient) QueryProblems(bi *BazelInvocation) *BazelInvocationProblemQuery {
 	query := (&BazelInvocationProblemClient{config: c.config}).Query()
@@ -1391,6 +1443,38 @@ func (c *BazelInvocationClient) QueryMetrics(bi *BazelInvocation) *MetricsQuery 
 	return query
 }
 
+// QueryIncompleteBuildLogs queries the incomplete_build_logs edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryIncompleteBuildLogs(bi *BazelInvocation) *IncompleteBuildLogQuery {
+	query := (&IncompleteBuildLogClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := bi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(incompletebuildlog.Table, incompletebuildlog.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.IncompleteBuildLogsTable, bazelinvocation.IncompleteBuildLogsColumn),
+		)
+		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryInvocationFiles queries the invocation_files edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryInvocationFiles(bi *BazelInvocation) *InvocationFilesQuery {
+	query := (&InvocationFilesClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := bi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(invocationfiles.Table, invocationfiles.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.InvocationFilesTable, bazelinvocation.InvocationFilesColumn),
+		)
+		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryTestCollection queries the test_collection edge of a BazelInvocation.
 func (c *BazelInvocationClient) QueryTestCollection(bi *BazelInvocation) *TestCollectionQuery {
 	query := (&TestCollectionClient{config: c.config}).Query()
@@ -1408,13 +1492,13 @@ func (c *BazelInvocationClient) QueryTestCollection(bi *BazelInvocation) *TestCo
 }
 
 // QueryTargets queries the targets edge of a BazelInvocation.
-func (c *BazelInvocationClient) QueryTargets(bi *BazelInvocation) *TargetPairQuery {
-	query := (&TargetPairClient{config: c.config}).Query()
+func (c *BazelInvocationClient) QueryTargets(bi *BazelInvocation) *TargetQuery {
+	query := (&TargetClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := bi.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
-			sqlgraph.To(targetpair.Table, targetpair.FieldID),
+			sqlgraph.To(target.Table, target.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.TargetsTable, bazelinvocation.TargetsColumn),
 		)
 		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
@@ -2124,6 +2208,155 @@ func (c *BuildGraphMetricsClient) mutate(ctx context.Context, m *BuildGraphMetri
 	}
 }
 
+// ConnectionMetadataClient is a client for the ConnectionMetadata schema.
+type ConnectionMetadataClient struct {
+	config
+}
+
+// NewConnectionMetadataClient returns a client for the ConnectionMetadata from the given config.
+func NewConnectionMetadataClient(c config) *ConnectionMetadataClient {
+	return &ConnectionMetadataClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `connectionmetadata.Hooks(f(g(h())))`.
+func (c *ConnectionMetadataClient) Use(hooks ...Hook) {
+	c.hooks.ConnectionMetadata = append(c.hooks.ConnectionMetadata, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `connectionmetadata.Intercept(f(g(h())))`.
+func (c *ConnectionMetadataClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ConnectionMetadata = append(c.inters.ConnectionMetadata, interceptors...)
+}
+
+// Create returns a builder for creating a ConnectionMetadata entity.
+func (c *ConnectionMetadataClient) Create() *ConnectionMetadataCreate {
+	mutation := newConnectionMetadataMutation(c.config, OpCreate)
+	return &ConnectionMetadataCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ConnectionMetadata entities.
+func (c *ConnectionMetadataClient) CreateBulk(builders ...*ConnectionMetadataCreate) *ConnectionMetadataCreateBulk {
+	return &ConnectionMetadataCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ConnectionMetadataClient) MapCreateBulk(slice any, setFunc func(*ConnectionMetadataCreate, int)) *ConnectionMetadataCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ConnectionMetadataCreateBulk{err: fmt.Errorf("calling to ConnectionMetadataClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ConnectionMetadataCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ConnectionMetadataCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ConnectionMetadata.
+func (c *ConnectionMetadataClient) Update() *ConnectionMetadataUpdate {
+	mutation := newConnectionMetadataMutation(c.config, OpUpdate)
+	return &ConnectionMetadataUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ConnectionMetadataClient) UpdateOne(cm *ConnectionMetadata) *ConnectionMetadataUpdateOne {
+	mutation := newConnectionMetadataMutation(c.config, OpUpdateOne, withConnectionMetadata(cm))
+	return &ConnectionMetadataUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ConnectionMetadataClient) UpdateOneID(id int) *ConnectionMetadataUpdateOne {
+	mutation := newConnectionMetadataMutation(c.config, OpUpdateOne, withConnectionMetadataID(id))
+	return &ConnectionMetadataUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ConnectionMetadata.
+func (c *ConnectionMetadataClient) Delete() *ConnectionMetadataDelete {
+	mutation := newConnectionMetadataMutation(c.config, OpDelete)
+	return &ConnectionMetadataDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ConnectionMetadataClient) DeleteOne(cm *ConnectionMetadata) *ConnectionMetadataDeleteOne {
+	return c.DeleteOneID(cm.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ConnectionMetadataClient) DeleteOneID(id int) *ConnectionMetadataDeleteOne {
+	builder := c.Delete().Where(connectionmetadata.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ConnectionMetadataDeleteOne{builder}
+}
+
+// Query returns a query builder for ConnectionMetadata.
+func (c *ConnectionMetadataClient) Query() *ConnectionMetadataQuery {
+	return &ConnectionMetadataQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeConnectionMetadata},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ConnectionMetadata entity by its id.
+func (c *ConnectionMetadataClient) Get(ctx context.Context, id int) (*ConnectionMetadata, error) {
+	return c.Query().Where(connectionmetadata.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ConnectionMetadataClient) GetX(ctx context.Context, id int) *ConnectionMetadata {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a ConnectionMetadata.
+func (c *ConnectionMetadataClient) QueryBazelInvocation(cm *ConnectionMetadata) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := cm.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(connectionmetadata.Table, connectionmetadata.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, connectionmetadata.BazelInvocationTable, connectionmetadata.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(cm.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ConnectionMetadataClient) Hooks() []Hook {
+	return c.hooks.ConnectionMetadata
+}
+
+// Interceptors returns the client interceptors.
+func (c *ConnectionMetadataClient) Interceptors() []Interceptor {
+	return c.inters.ConnectionMetadata
+}
+
+func (c *ConnectionMetadataClient) mutate(ctx context.Context, m *ConnectionMetadataMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ConnectionMetadataCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ConnectionMetadataUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ConnectionMetadataUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ConnectionMetadataDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ConnectionMetadata mutation op: %q", m.Op())
+	}
+}
+
 // CumulativeMetricsClient is a client for the CumulativeMetrics schema.
 type CumulativeMetricsClient struct {
 	config
@@ -2419,6 +2652,155 @@ func (c *EvaluationStatClient) mutate(ctx context.Context, m *EvaluationStatMuta
 		return (&EvaluationStatDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown EvaluationStat mutation op: %q", m.Op())
+	}
+}
+
+// EventMetadataClient is a client for the EventMetadata schema.
+type EventMetadataClient struct {
+	config
+}
+
+// NewEventMetadataClient returns a client for the EventMetadata from the given config.
+func NewEventMetadataClient(c config) *EventMetadataClient {
+	return &EventMetadataClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `eventmetadata.Hooks(f(g(h())))`.
+func (c *EventMetadataClient) Use(hooks ...Hook) {
+	c.hooks.EventMetadata = append(c.hooks.EventMetadata, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `eventmetadata.Intercept(f(g(h())))`.
+func (c *EventMetadataClient) Intercept(interceptors ...Interceptor) {
+	c.inters.EventMetadata = append(c.inters.EventMetadata, interceptors...)
+}
+
+// Create returns a builder for creating a EventMetadata entity.
+func (c *EventMetadataClient) Create() *EventMetadataCreate {
+	mutation := newEventMetadataMutation(c.config, OpCreate)
+	return &EventMetadataCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of EventMetadata entities.
+func (c *EventMetadataClient) CreateBulk(builders ...*EventMetadataCreate) *EventMetadataCreateBulk {
+	return &EventMetadataCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *EventMetadataClient) MapCreateBulk(slice any, setFunc func(*EventMetadataCreate, int)) *EventMetadataCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &EventMetadataCreateBulk{err: fmt.Errorf("calling to EventMetadataClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*EventMetadataCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &EventMetadataCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for EventMetadata.
+func (c *EventMetadataClient) Update() *EventMetadataUpdate {
+	mutation := newEventMetadataMutation(c.config, OpUpdate)
+	return &EventMetadataUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *EventMetadataClient) UpdateOne(em *EventMetadata) *EventMetadataUpdateOne {
+	mutation := newEventMetadataMutation(c.config, OpUpdateOne, withEventMetadata(em))
+	return &EventMetadataUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *EventMetadataClient) UpdateOneID(id int) *EventMetadataUpdateOne {
+	mutation := newEventMetadataMutation(c.config, OpUpdateOne, withEventMetadataID(id))
+	return &EventMetadataUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for EventMetadata.
+func (c *EventMetadataClient) Delete() *EventMetadataDelete {
+	mutation := newEventMetadataMutation(c.config, OpDelete)
+	return &EventMetadataDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *EventMetadataClient) DeleteOne(em *EventMetadata) *EventMetadataDeleteOne {
+	return c.DeleteOneID(em.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *EventMetadataClient) DeleteOneID(id int) *EventMetadataDeleteOne {
+	builder := c.Delete().Where(eventmetadata.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &EventMetadataDeleteOne{builder}
+}
+
+// Query returns a query builder for EventMetadata.
+func (c *EventMetadataClient) Query() *EventMetadataQuery {
+	return &EventMetadataQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeEventMetadata},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a EventMetadata entity by its id.
+func (c *EventMetadataClient) Get(ctx context.Context, id int) (*EventMetadata, error) {
+	return c.Query().Where(eventmetadata.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *EventMetadataClient) GetX(ctx context.Context, id int) *EventMetadata {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a EventMetadata.
+func (c *EventMetadataClient) QueryBazelInvocation(em *EventMetadata) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := em.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(eventmetadata.Table, eventmetadata.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, eventmetadata.BazelInvocationTable, eventmetadata.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(em.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *EventMetadataClient) Hooks() []Hook {
+	return c.hooks.EventMetadata
+}
+
+// Interceptors returns the client interceptors.
+func (c *EventMetadataClient) Interceptors() []Interceptor {
+	return c.inters.EventMetadata
+}
+
+func (c *EventMetadataClient) mutate(ctx context.Context, m *EventMetadataMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&EventMetadataCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&EventMetadataUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&EventMetadataUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&EventMetadataDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown EventMetadata mutation op: %q", m.Op())
 	}
 }
 
@@ -2898,6 +3280,304 @@ func (c *GarbageMetricsClient) mutate(ctx context.Context, m *GarbageMetricsMuta
 		return (&GarbageMetricsDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown GarbageMetrics mutation op: %q", m.Op())
+	}
+}
+
+// IncompleteBuildLogClient is a client for the IncompleteBuildLog schema.
+type IncompleteBuildLogClient struct {
+	config
+}
+
+// NewIncompleteBuildLogClient returns a client for the IncompleteBuildLog from the given config.
+func NewIncompleteBuildLogClient(c config) *IncompleteBuildLogClient {
+	return &IncompleteBuildLogClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `incompletebuildlog.Hooks(f(g(h())))`.
+func (c *IncompleteBuildLogClient) Use(hooks ...Hook) {
+	c.hooks.IncompleteBuildLog = append(c.hooks.IncompleteBuildLog, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `incompletebuildlog.Intercept(f(g(h())))`.
+func (c *IncompleteBuildLogClient) Intercept(interceptors ...Interceptor) {
+	c.inters.IncompleteBuildLog = append(c.inters.IncompleteBuildLog, interceptors...)
+}
+
+// Create returns a builder for creating a IncompleteBuildLog entity.
+func (c *IncompleteBuildLogClient) Create() *IncompleteBuildLogCreate {
+	mutation := newIncompleteBuildLogMutation(c.config, OpCreate)
+	return &IncompleteBuildLogCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of IncompleteBuildLog entities.
+func (c *IncompleteBuildLogClient) CreateBulk(builders ...*IncompleteBuildLogCreate) *IncompleteBuildLogCreateBulk {
+	return &IncompleteBuildLogCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *IncompleteBuildLogClient) MapCreateBulk(slice any, setFunc func(*IncompleteBuildLogCreate, int)) *IncompleteBuildLogCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &IncompleteBuildLogCreateBulk{err: fmt.Errorf("calling to IncompleteBuildLogClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*IncompleteBuildLogCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &IncompleteBuildLogCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for IncompleteBuildLog.
+func (c *IncompleteBuildLogClient) Update() *IncompleteBuildLogUpdate {
+	mutation := newIncompleteBuildLogMutation(c.config, OpUpdate)
+	return &IncompleteBuildLogUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *IncompleteBuildLogClient) UpdateOne(ibl *IncompleteBuildLog) *IncompleteBuildLogUpdateOne {
+	mutation := newIncompleteBuildLogMutation(c.config, OpUpdateOne, withIncompleteBuildLog(ibl))
+	return &IncompleteBuildLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *IncompleteBuildLogClient) UpdateOneID(id int) *IncompleteBuildLogUpdateOne {
+	mutation := newIncompleteBuildLogMutation(c.config, OpUpdateOne, withIncompleteBuildLogID(id))
+	return &IncompleteBuildLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for IncompleteBuildLog.
+func (c *IncompleteBuildLogClient) Delete() *IncompleteBuildLogDelete {
+	mutation := newIncompleteBuildLogMutation(c.config, OpDelete)
+	return &IncompleteBuildLogDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *IncompleteBuildLogClient) DeleteOne(ibl *IncompleteBuildLog) *IncompleteBuildLogDeleteOne {
+	return c.DeleteOneID(ibl.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *IncompleteBuildLogClient) DeleteOneID(id int) *IncompleteBuildLogDeleteOne {
+	builder := c.Delete().Where(incompletebuildlog.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &IncompleteBuildLogDeleteOne{builder}
+}
+
+// Query returns a query builder for IncompleteBuildLog.
+func (c *IncompleteBuildLogClient) Query() *IncompleteBuildLogQuery {
+	return &IncompleteBuildLogQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeIncompleteBuildLog},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a IncompleteBuildLog entity by its id.
+func (c *IncompleteBuildLogClient) Get(ctx context.Context, id int) (*IncompleteBuildLog, error) {
+	return c.Query().Where(incompletebuildlog.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *IncompleteBuildLogClient) GetX(ctx context.Context, id int) *IncompleteBuildLog {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a IncompleteBuildLog.
+func (c *IncompleteBuildLogClient) QueryBazelInvocation(ibl *IncompleteBuildLog) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ibl.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(incompletebuildlog.Table, incompletebuildlog.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, incompletebuildlog.BazelInvocationTable, incompletebuildlog.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(ibl.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *IncompleteBuildLogClient) Hooks() []Hook {
+	return c.hooks.IncompleteBuildLog
+}
+
+// Interceptors returns the client interceptors.
+func (c *IncompleteBuildLogClient) Interceptors() []Interceptor {
+	return c.inters.IncompleteBuildLog
+}
+
+func (c *IncompleteBuildLogClient) mutate(ctx context.Context, m *IncompleteBuildLogMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&IncompleteBuildLogCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&IncompleteBuildLogUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&IncompleteBuildLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&IncompleteBuildLogDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown IncompleteBuildLog mutation op: %q", m.Op())
+	}
+}
+
+// InvocationFilesClient is a client for the InvocationFiles schema.
+type InvocationFilesClient struct {
+	config
+}
+
+// NewInvocationFilesClient returns a client for the InvocationFiles from the given config.
+func NewInvocationFilesClient(c config) *InvocationFilesClient {
+	return &InvocationFilesClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `invocationfiles.Hooks(f(g(h())))`.
+func (c *InvocationFilesClient) Use(hooks ...Hook) {
+	c.hooks.InvocationFiles = append(c.hooks.InvocationFiles, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `invocationfiles.Intercept(f(g(h())))`.
+func (c *InvocationFilesClient) Intercept(interceptors ...Interceptor) {
+	c.inters.InvocationFiles = append(c.inters.InvocationFiles, interceptors...)
+}
+
+// Create returns a builder for creating a InvocationFiles entity.
+func (c *InvocationFilesClient) Create() *InvocationFilesCreate {
+	mutation := newInvocationFilesMutation(c.config, OpCreate)
+	return &InvocationFilesCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of InvocationFiles entities.
+func (c *InvocationFilesClient) CreateBulk(builders ...*InvocationFilesCreate) *InvocationFilesCreateBulk {
+	return &InvocationFilesCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *InvocationFilesClient) MapCreateBulk(slice any, setFunc func(*InvocationFilesCreate, int)) *InvocationFilesCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &InvocationFilesCreateBulk{err: fmt.Errorf("calling to InvocationFilesClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*InvocationFilesCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &InvocationFilesCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for InvocationFiles.
+func (c *InvocationFilesClient) Update() *InvocationFilesUpdate {
+	mutation := newInvocationFilesMutation(c.config, OpUpdate)
+	return &InvocationFilesUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *InvocationFilesClient) UpdateOne(_if *InvocationFiles) *InvocationFilesUpdateOne {
+	mutation := newInvocationFilesMutation(c.config, OpUpdateOne, withInvocationFiles(_if))
+	return &InvocationFilesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *InvocationFilesClient) UpdateOneID(id int) *InvocationFilesUpdateOne {
+	mutation := newInvocationFilesMutation(c.config, OpUpdateOne, withInvocationFilesID(id))
+	return &InvocationFilesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for InvocationFiles.
+func (c *InvocationFilesClient) Delete() *InvocationFilesDelete {
+	mutation := newInvocationFilesMutation(c.config, OpDelete)
+	return &InvocationFilesDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *InvocationFilesClient) DeleteOne(_if *InvocationFiles) *InvocationFilesDeleteOne {
+	return c.DeleteOneID(_if.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *InvocationFilesClient) DeleteOneID(id int) *InvocationFilesDeleteOne {
+	builder := c.Delete().Where(invocationfiles.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &InvocationFilesDeleteOne{builder}
+}
+
+// Query returns a query builder for InvocationFiles.
+func (c *InvocationFilesClient) Query() *InvocationFilesQuery {
+	return &InvocationFilesQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeInvocationFiles},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a InvocationFiles entity by its id.
+func (c *InvocationFilesClient) Get(ctx context.Context, id int) (*InvocationFiles, error) {
+	return c.Query().Where(invocationfiles.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *InvocationFilesClient) GetX(ctx context.Context, id int) *InvocationFiles {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a InvocationFiles.
+func (c *InvocationFilesClient) QueryBazelInvocation(_if *InvocationFiles) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _if.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(invocationfiles.Table, invocationfiles.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, invocationfiles.BazelInvocationTable, invocationfiles.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(_if.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *InvocationFilesClient) Hooks() []Hook {
+	return c.hooks.InvocationFiles
+}
+
+// Interceptors returns the client interceptors.
+func (c *InvocationFilesClient) Interceptors() []Interceptor {
+	return c.inters.InvocationFiles
+}
+
+func (c *InvocationFilesClient) mutate(ctx context.Context, m *InvocationFilesMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&InvocationFilesCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&InvocationFilesUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&InvocationFilesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&InvocationFilesDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown InvocationFiles mutation op: %q", m.Op())
 	}
 }
 
@@ -3962,22 +4642,6 @@ func (c *OutputGroupClient) GetX(ctx context.Context, id int) *OutputGroup {
 	return obj
 }
 
-// QueryTargetComplete queries the target_complete edge of a OutputGroup.
-func (c *OutputGroupClient) QueryTargetComplete(og *OutputGroup) *TargetCompleteQuery {
-	query := (&TargetCompleteClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := og.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(outputgroup.Table, outputgroup.FieldID, id),
-			sqlgraph.To(targetcomplete.Table, targetcomplete.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, outputgroup.TargetCompleteTable, outputgroup.TargetCompleteColumn),
-		)
-		fromV = sqlgraph.Neighbors(og.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // QueryInlineFiles queries the inline_files edge of a OutputGroup.
 func (c *OutputGroupClient) QueryInlineFiles(og *OutputGroup) *TestFileQuery {
 	query := (&TestFileClient{config: c.config}).Query()
@@ -4945,107 +5609,107 @@ func (c *SystemNetworkStatsClient) mutate(ctx context.Context, m *SystemNetworkS
 	}
 }
 
-// TargetCompleteClient is a client for the TargetComplete schema.
-type TargetCompleteClient struct {
+// TargetClient is a client for the Target schema.
+type TargetClient struct {
 	config
 }
 
-// NewTargetCompleteClient returns a client for the TargetComplete from the given config.
-func NewTargetCompleteClient(c config) *TargetCompleteClient {
-	return &TargetCompleteClient{config: c}
+// NewTargetClient returns a client for the Target from the given config.
+func NewTargetClient(c config) *TargetClient {
+	return &TargetClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `targetcomplete.Hooks(f(g(h())))`.
-func (c *TargetCompleteClient) Use(hooks ...Hook) {
-	c.hooks.TargetComplete = append(c.hooks.TargetComplete, hooks...)
+// A call to `Use(f, g, h)` equals to `target.Hooks(f(g(h())))`.
+func (c *TargetClient) Use(hooks ...Hook) {
+	c.hooks.Target = append(c.hooks.Target, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `targetcomplete.Intercept(f(g(h())))`.
-func (c *TargetCompleteClient) Intercept(interceptors ...Interceptor) {
-	c.inters.TargetComplete = append(c.inters.TargetComplete, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `target.Intercept(f(g(h())))`.
+func (c *TargetClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Target = append(c.inters.Target, interceptors...)
 }
 
-// Create returns a builder for creating a TargetComplete entity.
-func (c *TargetCompleteClient) Create() *TargetCompleteCreate {
-	mutation := newTargetCompleteMutation(c.config, OpCreate)
-	return &TargetCompleteCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Target entity.
+func (c *TargetClient) Create() *TargetCreate {
+	mutation := newTargetMutation(c.config, OpCreate)
+	return &TargetCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of TargetComplete entities.
-func (c *TargetCompleteClient) CreateBulk(builders ...*TargetCompleteCreate) *TargetCompleteCreateBulk {
-	return &TargetCompleteCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Target entities.
+func (c *TargetClient) CreateBulk(builders ...*TargetCreate) *TargetCreateBulk {
+	return &TargetCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *TargetCompleteClient) MapCreateBulk(slice any, setFunc func(*TargetCompleteCreate, int)) *TargetCompleteCreateBulk {
+func (c *TargetClient) MapCreateBulk(slice any, setFunc func(*TargetCreate, int)) *TargetCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &TargetCompleteCreateBulk{err: fmt.Errorf("calling to TargetCompleteClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &TargetCreateBulk{err: fmt.Errorf("calling to TargetClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*TargetCompleteCreate, rv.Len())
+	builders := make([]*TargetCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &TargetCompleteCreateBulk{config: c.config, builders: builders}
+	return &TargetCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for TargetComplete.
-func (c *TargetCompleteClient) Update() *TargetCompleteUpdate {
-	mutation := newTargetCompleteMutation(c.config, OpUpdate)
-	return &TargetCompleteUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Target.
+func (c *TargetClient) Update() *TargetUpdate {
+	mutation := newTargetMutation(c.config, OpUpdate)
+	return &TargetUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *TargetCompleteClient) UpdateOne(tc *TargetComplete) *TargetCompleteUpdateOne {
-	mutation := newTargetCompleteMutation(c.config, OpUpdateOne, withTargetComplete(tc))
-	return &TargetCompleteUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *TargetClient) UpdateOne(t *Target) *TargetUpdateOne {
+	mutation := newTargetMutation(c.config, OpUpdateOne, withTarget(t))
+	return &TargetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *TargetCompleteClient) UpdateOneID(id int) *TargetCompleteUpdateOne {
-	mutation := newTargetCompleteMutation(c.config, OpUpdateOne, withTargetCompleteID(id))
-	return &TargetCompleteUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *TargetClient) UpdateOneID(id int) *TargetUpdateOne {
+	mutation := newTargetMutation(c.config, OpUpdateOne, withTargetID(id))
+	return &TargetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for TargetComplete.
-func (c *TargetCompleteClient) Delete() *TargetCompleteDelete {
-	mutation := newTargetCompleteMutation(c.config, OpDelete)
-	return &TargetCompleteDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Target.
+func (c *TargetClient) Delete() *TargetDelete {
+	mutation := newTargetMutation(c.config, OpDelete)
+	return &TargetDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *TargetCompleteClient) DeleteOne(tc *TargetComplete) *TargetCompleteDeleteOne {
-	return c.DeleteOneID(tc.ID)
+func (c *TargetClient) DeleteOne(t *Target) *TargetDeleteOne {
+	return c.DeleteOneID(t.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *TargetCompleteClient) DeleteOneID(id int) *TargetCompleteDeleteOne {
-	builder := c.Delete().Where(targetcomplete.ID(id))
+func (c *TargetClient) DeleteOneID(id int) *TargetDeleteOne {
+	builder := c.Delete().Where(target.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &TargetCompleteDeleteOne{builder}
+	return &TargetDeleteOne{builder}
 }
 
-// Query returns a query builder for TargetComplete.
-func (c *TargetCompleteClient) Query() *TargetCompleteQuery {
-	return &TargetCompleteQuery{
+// Query returns a query builder for Target.
+func (c *TargetClient) Query() *TargetQuery {
+	return &TargetQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeTargetComplete},
+		ctx:    &QueryContext{Type: TypeTarget},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a TargetComplete entity by its id.
-func (c *TargetCompleteClient) Get(ctx context.Context, id int) (*TargetComplete, error) {
-	return c.Query().Where(targetcomplete.ID(id)).Only(ctx)
+// Get returns a Target entity by its id.
+func (c *TargetClient) Get(ctx context.Context, id int) (*Target, error) {
+	return c.Query().Where(target.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *TargetCompleteClient) GetX(ctx context.Context, id int) *TargetComplete {
+func (c *TargetClient) GetX(ctx context.Context, id int) *Target {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -5053,241 +5717,44 @@ func (c *TargetCompleteClient) GetX(ctx context.Context, id int) *TargetComplete
 	return obj
 }
 
-// QueryTargetPair queries the target_pair edge of a TargetComplete.
-func (c *TargetCompleteClient) QueryTargetPair(tc *TargetComplete) *TargetPairQuery {
-	query := (&TargetPairClient{config: c.config}).Query()
+// QueryBazelInvocation queries the bazel_invocation edge of a Target.
+func (c *TargetClient) QueryBazelInvocation(t *Target) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := tc.ID
+		id := t.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(targetcomplete.Table, targetcomplete.FieldID, id),
-			sqlgraph.To(targetpair.Table, targetpair.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, targetcomplete.TargetPairTable, targetcomplete.TargetPairColumn),
+			sqlgraph.From(target.Table, target.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, target.BazelInvocationTable, target.BazelInvocationColumn),
 		)
-		fromV = sqlgraph.Neighbors(tc.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryImportantOutput queries the important_output edge of a TargetComplete.
-func (c *TargetCompleteClient) QueryImportantOutput(tc *TargetComplete) *TestFileQuery {
-	query := (&TestFileClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := tc.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(targetcomplete.Table, targetcomplete.FieldID, id),
-			sqlgraph.To(testfile.Table, testfile.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, targetcomplete.ImportantOutputTable, targetcomplete.ImportantOutputColumn),
-		)
-		fromV = sqlgraph.Neighbors(tc.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryDirectoryOutput queries the directory_output edge of a TargetComplete.
-func (c *TargetCompleteClient) QueryDirectoryOutput(tc *TargetComplete) *TestFileQuery {
-	query := (&TestFileClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := tc.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(targetcomplete.Table, targetcomplete.FieldID, id),
-			sqlgraph.To(testfile.Table, testfile.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, targetcomplete.DirectoryOutputTable, targetcomplete.DirectoryOutputColumn),
-		)
-		fromV = sqlgraph.Neighbors(tc.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryOutputGroup queries the output_group edge of a TargetComplete.
-func (c *TargetCompleteClient) QueryOutputGroup(tc *TargetComplete) *OutputGroupQuery {
-	query := (&OutputGroupClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := tc.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(targetcomplete.Table, targetcomplete.FieldID, id),
-			sqlgraph.To(outputgroup.Table, outputgroup.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, targetcomplete.OutputGroupTable, targetcomplete.OutputGroupColumn),
-		)
-		fromV = sqlgraph.Neighbors(tc.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // Hooks returns the client hooks.
-func (c *TargetCompleteClient) Hooks() []Hook {
-	return c.hooks.TargetComplete
+func (c *TargetClient) Hooks() []Hook {
+	return c.hooks.Target
 }
 
 // Interceptors returns the client interceptors.
-func (c *TargetCompleteClient) Interceptors() []Interceptor {
-	return c.inters.TargetComplete
+func (c *TargetClient) Interceptors() []Interceptor {
+	return c.inters.Target
 }
 
-func (c *TargetCompleteClient) mutate(ctx context.Context, m *TargetCompleteMutation) (Value, error) {
+func (c *TargetClient) mutate(ctx context.Context, m *TargetMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&TargetCompleteCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TargetCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&TargetCompleteUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TargetUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&TargetCompleteUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TargetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&TargetCompleteDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&TargetDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown TargetComplete mutation op: %q", m.Op())
-	}
-}
-
-// TargetConfiguredClient is a client for the TargetConfigured schema.
-type TargetConfiguredClient struct {
-	config
-}
-
-// NewTargetConfiguredClient returns a client for the TargetConfigured from the given config.
-func NewTargetConfiguredClient(c config) *TargetConfiguredClient {
-	return &TargetConfiguredClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `targetconfigured.Hooks(f(g(h())))`.
-func (c *TargetConfiguredClient) Use(hooks ...Hook) {
-	c.hooks.TargetConfigured = append(c.hooks.TargetConfigured, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `targetconfigured.Intercept(f(g(h())))`.
-func (c *TargetConfiguredClient) Intercept(interceptors ...Interceptor) {
-	c.inters.TargetConfigured = append(c.inters.TargetConfigured, interceptors...)
-}
-
-// Create returns a builder for creating a TargetConfigured entity.
-func (c *TargetConfiguredClient) Create() *TargetConfiguredCreate {
-	mutation := newTargetConfiguredMutation(c.config, OpCreate)
-	return &TargetConfiguredCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of TargetConfigured entities.
-func (c *TargetConfiguredClient) CreateBulk(builders ...*TargetConfiguredCreate) *TargetConfiguredCreateBulk {
-	return &TargetConfiguredCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *TargetConfiguredClient) MapCreateBulk(slice any, setFunc func(*TargetConfiguredCreate, int)) *TargetConfiguredCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &TargetConfiguredCreateBulk{err: fmt.Errorf("calling to TargetConfiguredClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*TargetConfiguredCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &TargetConfiguredCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for TargetConfigured.
-func (c *TargetConfiguredClient) Update() *TargetConfiguredUpdate {
-	mutation := newTargetConfiguredMutation(c.config, OpUpdate)
-	return &TargetConfiguredUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *TargetConfiguredClient) UpdateOne(tc *TargetConfigured) *TargetConfiguredUpdateOne {
-	mutation := newTargetConfiguredMutation(c.config, OpUpdateOne, withTargetConfigured(tc))
-	return &TargetConfiguredUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *TargetConfiguredClient) UpdateOneID(id int) *TargetConfiguredUpdateOne {
-	mutation := newTargetConfiguredMutation(c.config, OpUpdateOne, withTargetConfiguredID(id))
-	return &TargetConfiguredUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for TargetConfigured.
-func (c *TargetConfiguredClient) Delete() *TargetConfiguredDelete {
-	mutation := newTargetConfiguredMutation(c.config, OpDelete)
-	return &TargetConfiguredDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *TargetConfiguredClient) DeleteOne(tc *TargetConfigured) *TargetConfiguredDeleteOne {
-	return c.DeleteOneID(tc.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *TargetConfiguredClient) DeleteOneID(id int) *TargetConfiguredDeleteOne {
-	builder := c.Delete().Where(targetconfigured.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &TargetConfiguredDeleteOne{builder}
-}
-
-// Query returns a query builder for TargetConfigured.
-func (c *TargetConfiguredClient) Query() *TargetConfiguredQuery {
-	return &TargetConfiguredQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeTargetConfigured},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a TargetConfigured entity by its id.
-func (c *TargetConfiguredClient) Get(ctx context.Context, id int) (*TargetConfigured, error) {
-	return c.Query().Where(targetconfigured.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *TargetConfiguredClient) GetX(ctx context.Context, id int) *TargetConfigured {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryTargetPair queries the target_pair edge of a TargetConfigured.
-func (c *TargetConfiguredClient) QueryTargetPair(tc *TargetConfigured) *TargetPairQuery {
-	query := (&TargetPairClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := tc.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(targetconfigured.Table, targetconfigured.FieldID, id),
-			sqlgraph.To(targetpair.Table, targetpair.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, targetconfigured.TargetPairTable, targetconfigured.TargetPairColumn),
-		)
-		fromV = sqlgraph.Neighbors(tc.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *TargetConfiguredClient) Hooks() []Hook {
-	return c.hooks.TargetConfigured
-}
-
-// Interceptors returns the client interceptors.
-func (c *TargetConfiguredClient) Interceptors() []Interceptor {
-	return c.inters.TargetConfigured
-}
-
-func (c *TargetConfiguredClient) mutate(ctx context.Context, m *TargetConfiguredMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&TargetConfiguredCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&TargetConfiguredUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&TargetConfiguredUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&TargetConfiguredDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown TargetConfigured mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Target mutation op: %q", m.Op())
 	}
 }
 
@@ -5437,187 +5904,6 @@ func (c *TargetMetricsClient) mutate(ctx context.Context, m *TargetMetricsMutati
 		return (&TargetMetricsDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown TargetMetrics mutation op: %q", m.Op())
-	}
-}
-
-// TargetPairClient is a client for the TargetPair schema.
-type TargetPairClient struct {
-	config
-}
-
-// NewTargetPairClient returns a client for the TargetPair from the given config.
-func NewTargetPairClient(c config) *TargetPairClient {
-	return &TargetPairClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `targetpair.Hooks(f(g(h())))`.
-func (c *TargetPairClient) Use(hooks ...Hook) {
-	c.hooks.TargetPair = append(c.hooks.TargetPair, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `targetpair.Intercept(f(g(h())))`.
-func (c *TargetPairClient) Intercept(interceptors ...Interceptor) {
-	c.inters.TargetPair = append(c.inters.TargetPair, interceptors...)
-}
-
-// Create returns a builder for creating a TargetPair entity.
-func (c *TargetPairClient) Create() *TargetPairCreate {
-	mutation := newTargetPairMutation(c.config, OpCreate)
-	return &TargetPairCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of TargetPair entities.
-func (c *TargetPairClient) CreateBulk(builders ...*TargetPairCreate) *TargetPairCreateBulk {
-	return &TargetPairCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *TargetPairClient) MapCreateBulk(slice any, setFunc func(*TargetPairCreate, int)) *TargetPairCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &TargetPairCreateBulk{err: fmt.Errorf("calling to TargetPairClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*TargetPairCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &TargetPairCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for TargetPair.
-func (c *TargetPairClient) Update() *TargetPairUpdate {
-	mutation := newTargetPairMutation(c.config, OpUpdate)
-	return &TargetPairUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *TargetPairClient) UpdateOne(tp *TargetPair) *TargetPairUpdateOne {
-	mutation := newTargetPairMutation(c.config, OpUpdateOne, withTargetPair(tp))
-	return &TargetPairUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *TargetPairClient) UpdateOneID(id int) *TargetPairUpdateOne {
-	mutation := newTargetPairMutation(c.config, OpUpdateOne, withTargetPairID(id))
-	return &TargetPairUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for TargetPair.
-func (c *TargetPairClient) Delete() *TargetPairDelete {
-	mutation := newTargetPairMutation(c.config, OpDelete)
-	return &TargetPairDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *TargetPairClient) DeleteOne(tp *TargetPair) *TargetPairDeleteOne {
-	return c.DeleteOneID(tp.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *TargetPairClient) DeleteOneID(id int) *TargetPairDeleteOne {
-	builder := c.Delete().Where(targetpair.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &TargetPairDeleteOne{builder}
-}
-
-// Query returns a query builder for TargetPair.
-func (c *TargetPairClient) Query() *TargetPairQuery {
-	return &TargetPairQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeTargetPair},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a TargetPair entity by its id.
-func (c *TargetPairClient) Get(ctx context.Context, id int) (*TargetPair, error) {
-	return c.Query().Where(targetpair.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *TargetPairClient) GetX(ctx context.Context, id int) *TargetPair {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryBazelInvocation queries the bazel_invocation edge of a TargetPair.
-func (c *TargetPairClient) QueryBazelInvocation(tp *TargetPair) *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := tp.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(targetpair.Table, targetpair.FieldID, id),
-			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, targetpair.BazelInvocationTable, targetpair.BazelInvocationColumn),
-		)
-		fromV = sqlgraph.Neighbors(tp.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryConfiguration queries the configuration edge of a TargetPair.
-func (c *TargetPairClient) QueryConfiguration(tp *TargetPair) *TargetConfiguredQuery {
-	query := (&TargetConfiguredClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := tp.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(targetpair.Table, targetpair.FieldID, id),
-			sqlgraph.To(targetconfigured.Table, targetconfigured.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, targetpair.ConfigurationTable, targetpair.ConfigurationColumn),
-		)
-		fromV = sqlgraph.Neighbors(tp.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryCompletion queries the completion edge of a TargetPair.
-func (c *TargetPairClient) QueryCompletion(tp *TargetPair) *TargetCompleteQuery {
-	query := (&TargetCompleteClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := tp.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(targetpair.Table, targetpair.FieldID, id),
-			sqlgraph.To(targetcomplete.Table, targetcomplete.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, targetpair.CompletionTable, targetpair.CompletionColumn),
-		)
-		fromV = sqlgraph.Neighbors(tp.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *TargetPairClient) Hooks() []Hook {
-	return c.hooks.TargetPair
-}
-
-// Interceptors returns the client interceptors.
-func (c *TargetPairClient) Interceptors() []Interceptor {
-	return c.inters.TargetPair
-}
-
-func (c *TargetPairClient) mutate(ctx context.Context, m *TargetPairMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&TargetPairCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&TargetPairUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&TargetPairUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&TargetPairDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown TargetPair mutation op: %q", m.Op())
 	}
 }
 
@@ -6781,21 +7067,47 @@ type (
 	hooks struct {
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		BazelInvocation, BazelInvocationProblem, Blob, Build, BuildGraphMetrics,
-		CumulativeMetrics, EvaluationStat, ExectionInfo, FilesMetric, GarbageMetrics,
+		ConnectionMetadata, CumulativeMetrics, EvaluationStat, EventMetadata,
+		ExectionInfo, FilesMetric, GarbageMetrics, IncompleteBuildLog, InvocationFiles,
 		MemoryMetrics, Metrics, MissDetail, NamedSetOfFiles, NetworkMetrics,
 		OutputGroup, PackageLoadMetrics, PackageMetrics, ResourceUsage, RunnerCount,
-		SourceControl, SystemNetworkStats, TargetComplete, TargetConfigured,
-		TargetMetrics, TargetPair, TestCollection, TestFile, TestResultBES,
-		TestSummary, TimingBreakdown, TimingChild, TimingMetrics []ent.Hook
+		SourceControl, SystemNetworkStats, Target, TargetMetrics, TestCollection,
+		TestFile, TestResultBES, TestSummary, TimingBreakdown, TimingChild,
+		TimingMetrics []ent.Hook
 	}
 	inters struct {
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		BazelInvocation, BazelInvocationProblem, Blob, Build, BuildGraphMetrics,
-		CumulativeMetrics, EvaluationStat, ExectionInfo, FilesMetric, GarbageMetrics,
+		ConnectionMetadata, CumulativeMetrics, EvaluationStat, EventMetadata,
+		ExectionInfo, FilesMetric, GarbageMetrics, IncompleteBuildLog, InvocationFiles,
 		MemoryMetrics, Metrics, MissDetail, NamedSetOfFiles, NetworkMetrics,
 		OutputGroup, PackageLoadMetrics, PackageMetrics, ResourceUsage, RunnerCount,
-		SourceControl, SystemNetworkStats, TargetComplete, TargetConfigured,
-		TargetMetrics, TargetPair, TestCollection, TestFile, TestResultBES,
-		TestSummary, TimingBreakdown, TimingChild, TimingMetrics []ent.Interceptor
+		SourceControl, SystemNetworkStats, Target, TargetMetrics, TestCollection,
+		TestFile, TestResultBES, TestSummary, TimingBreakdown, TimingChild,
+		TimingMetrics []ent.Interceptor
 	}
 )
+
+// ExecContext allows calling the underlying ExecContext method of the driver if it is supported by it.
+// See, database/sql#DB.ExecContext for more information.
+func (c *config) ExecContext(ctx context.Context, query string, args ...any) (stdsql.Result, error) {
+	ex, ok := c.driver.(interface {
+		ExecContext(context.Context, string, ...any) (stdsql.Result, error)
+	})
+	if !ok {
+		return nil, fmt.Errorf("Driver.ExecContext is not supported")
+	}
+	return ex.ExecContext(ctx, query, args...)
+}
+
+// QueryContext allows calling the underlying QueryContext method of the driver if it is supported by it.
+// See, database/sql#DB.QueryContext for more information.
+func (c *config) QueryContext(ctx context.Context, query string, args ...any) (*stdsql.Rows, error) {
+	q, ok := c.driver.(interface {
+		QueryContext(context.Context, string, ...any) (*stdsql.Rows, error)
+	})
+	if !ok {
+		return nil, fmt.Errorf("Driver.QueryContext is not supported")
+	}
+	return q.QueryContext(ctx, query, args...)
+}

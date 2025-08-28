@@ -21,11 +21,15 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
@@ -38,10 +42,8 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
@@ -118,11 +120,15 @@ func checkColumn(table, column string) error {
 			blob.Table:                   blob.ValidColumn,
 			build.Table:                  build.ValidColumn,
 			buildgraphmetrics.Table:      buildgraphmetrics.ValidColumn,
+			connectionmetadata.Table:     connectionmetadata.ValidColumn,
 			cumulativemetrics.Table:      cumulativemetrics.ValidColumn,
 			evaluationstat.Table:         evaluationstat.ValidColumn,
+			eventmetadata.Table:          eventmetadata.ValidColumn,
 			exectioninfo.Table:           exectioninfo.ValidColumn,
 			filesmetric.Table:            filesmetric.ValidColumn,
 			garbagemetrics.Table:         garbagemetrics.ValidColumn,
+			incompletebuildlog.Table:     incompletebuildlog.ValidColumn,
+			invocationfiles.Table:        invocationfiles.ValidColumn,
 			memorymetrics.Table:          memorymetrics.ValidColumn,
 			metrics.Table:                metrics.ValidColumn,
 			missdetail.Table:             missdetail.ValidColumn,
@@ -135,10 +141,8 @@ func checkColumn(table, column string) error {
 			runnercount.Table:            runnercount.ValidColumn,
 			sourcecontrol.Table:          sourcecontrol.ValidColumn,
 			systemnetworkstats.Table:     systemnetworkstats.ValidColumn,
-			targetcomplete.Table:         targetcomplete.ValidColumn,
-			targetconfigured.Table:       targetconfigured.ValidColumn,
+			target.Table:                 target.ValidColumn,
 			targetmetrics.Table:          targetmetrics.ValidColumn,
-			targetpair.Table:             targetpair.ValidColumn,
 			testcollection.Table:         testcollection.ValidColumn,
 			testfile.Table:               testfile.ValidColumn,
 			testresultbes.Table:          testresultbes.ValidColumn,
