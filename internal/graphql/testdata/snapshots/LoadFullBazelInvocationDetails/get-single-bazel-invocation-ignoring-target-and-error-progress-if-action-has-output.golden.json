@@ -142,17 +142,6 @@
           "sizeInBytes": 0
         }
       },
-      "buildGraphMetrics": {
-        "actionCount": 0,
-        "actionLookupValueCount": 0,
-        "actionLookupValueCountNotIncludingAspects": 0,
-        "id": "QnVpbGRHcmFwaE1ldHJpY3M6Mw==",
-        "inputFileConfiguredTargetCount": 0,
-        "otherConfiguredTargetCount": 0,
-        "outputArtifactCount": 0,
-        "outputFileConfiguredTargetCount": 0,
-        "postInvocationSkyframeNodeCount": 117503
-      },
       "cumulativeMetrics": {
         "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6Mw==",
         "numAnalyses": 13,
