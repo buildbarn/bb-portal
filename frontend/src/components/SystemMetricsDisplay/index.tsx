@@ -2,18 +2,16 @@ import React from "react";
 import { Statistic, Space, Row } from 'antd';
 import { FieldTimeOutlined, BuildOutlined, } from "@ant-design/icons";
 import type { StatisticProps } from "antd/lib";
-import { BuildGraphMetrics, NetworkMetrics, SystemNetworkStats, TimingMetrics } from "@/graphql/__generated__/graphql";
+import { NetworkMetrics, SystemNetworkStats, TimingMetrics } from "@/graphql/__generated__/graphql";
 import PortalCard from "../PortalCard";
 import { readableDurationFromMilliseconds } from "@/utils/time";
 import { readableFileSize } from "@/utils/filesize";
 
 const SystemMetricsDisplay: React.FC<{
-    buildGraphMetrics: BuildGraphMetrics | undefined,
     timingMetrics: TimingMetrics | undefined,
     systemNetworkStats: SystemNetworkStats | undefined
 }> = ({
     timingMetrics,
-    buildGraphMetrics,
     systemNetworkStats
 }) => {
         return (
@@ -26,19 +24,6 @@ const SystemMetricsDisplay: React.FC<{
                             <Statistic title="CPU Time" value={readableDurationFromMilliseconds(timingMetrics?.cpuTimeInMs ?? 0, {smallestUnit: "ms"})} />
                             <Statistic title="Execution" value={readableDurationFromMilliseconds(timingMetrics?.executionPhaseTimeInMs ?? 0, {smallestUnit: "ms"})} />
                             <Statistic title="Actions Execution Start" value={readableDurationFromMilliseconds(timingMetrics?.actionsExecutionStartInMs ?? 0, {smallestUnit: "ms"})} />
-                        </Space>
-                    </Row>
-                </PortalCard>
-                <PortalCard type="inner" titleBits={["Build Graph Metrics"]} icon={<BuildOutlined />}>
-                    <Row>
-                        <Space size={"large"}>
-                            <Statistic title="Action Count" value={buildGraphMetrics?.actionCount ?? 0} />
-                            <Statistic title="Action Lookup Value Count" value={buildGraphMetrics?.actionLookupValueCount ?? 0} />
-                            <Statistic title="Action Lookup Value Not Including Aspects" value={buildGraphMetrics?.actionLookupValueCountNotIncludingAspects ?? 0} />
-                            <Statistic title="Input File Configured Target Count" value={buildGraphMetrics?.inputFileConfiguredTargetCount ?? 0} />
-                            <Statistic title="Output Artifact Count" value={buildGraphMetrics?.outputArtifactCount ?? 0} />
-                            <Statistic title="Output File Configured Target Count" value={buildGraphMetrics?.outputFileConfiguredTargetCount ?? 0} />
-                            <Statistic title="Post Invocation Skyframe Node Count" value={buildGraphMetrics?.postInvocationSkyframeNodeCount ?? 0} />
                         </Space>
                     </Row>
                 </PortalCard>
