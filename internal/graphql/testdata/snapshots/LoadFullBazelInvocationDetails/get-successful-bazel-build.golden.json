@@ -174,17 +174,6 @@
           "sizeInBytes": 5731462997
         }
       },
-      "buildGraphMetrics": {
-        "actionCount": 0,
-        "actionLookupValueCount": 0,
-        "actionLookupValueCountNotIncludingAspects": 0,
-        "id": "QnVpbGRHcmFwaE1ldHJpY3M6MQ==",
-        "inputFileConfiguredTargetCount": 0,
-        "otherConfiguredTargetCount": 0,
-        "outputArtifactCount": 0,
-        "outputFileConfiguredTargetCount": 0,
-        "postInvocationSkyframeNodeCount": 117836
-      },
       "cumulativeMetrics": {
         "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6MQ==",
         "numAnalyses": 11,
