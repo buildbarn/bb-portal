@@ -1,8 +1,8 @@
 diff --git MODULE.bazel MODULE.bazel
-index 4555ccc..767125c 100644
+index 42c11e5..cefd86d 100644
 --- MODULE.bazel
 +++ MODULE.bazel
-@@ -157,3 +157,19 @@ use_repo(
+@@ -161,3 +161,19 @@ use_repo(
      "distroless_static_linux_amd64",
      "distroless_static_linux_arm64_v8",
  )
@@ -23,7 +23,7 @@ index 4555ccc..767125c 100644
 +    "distroless_base_linux_arm64_v8",
 +)
 diff --git tools/container.bzl tools/container.bzl
-index 5b4f54d..155e290 100644
+index 3f33c42..266cbc7 100644
 --- tools/container.bzl
 +++ tools/container.bzl
 @@ -21,7 +21,7 @@ def multiarch_go_image(name, binary):
@@ -45,12 +45,13 @@ index 5b4f54d..155e290 100644
 +            "@rules_go//go/toolchain:linux_arm64_cgo",
          ],
          visibility = ["//visibility:public"],
-     )
-@@ -43,6 +43,6 @@ def container_push_official(name, image, component):
+         target_compatible_with = select({
+@@ -47,7 +47,7 @@ def container_push_official(name, image, component):
      oci_push(
          name = name,
          image = image,
 -        repository = "ghcr.io/buildbarn/" + component,
 +        repository = "ghcr.io/buildbarn/" + component + "-backend",
          remote_tags = "@com_github_buildbarn_bb_storage//tools:stamped_tags",
-     )
+         target_compatible_with = select({
+             Label("@platforms//os:windows"): [Label("@platforms//:incompatible")],
