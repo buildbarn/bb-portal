@@ -10,6 +10,7 @@ export enum FeatureType {
   BES_PAGE_TRENDS = "bes_page_trends",
   BROWSER = "browser",
   SCHEDULER = "scheduler",
+  OPERATIONS = "operations",
 }
 
 export const isFeatureEnabled = (featureType: FeatureType): boolean => {
@@ -21,7 +22,9 @@ export const isFeatureEnabled = (featureType: FeatureType): boolean => {
     case FeatureType.BES_PAGE_BUILDS:
       return env("NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_BUILDS") === "true";
     case FeatureType.BES_PAGE_INVOCATIONS:
-      return env("NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_INVOCATIONS") === "true";
+      return (
+        env("NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_INVOCATIONS") === "true"
+      );
     case FeatureType.BES_PAGE_TRENDS:
       return env("NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_TRENDS") === "true";
     case FeatureType.BES_PAGE_TARGETS:
@@ -30,6 +33,8 @@ export const isFeatureEnabled = (featureType: FeatureType): boolean => {
       return env("NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_TESTS") === "true";
     case FeatureType.SCHEDULER:
       return env("NEXT_PUBLIC_ENABLED_FEATURES_SCHEDULER") === "true";
+    case FeatureType.OPERATIONS:
+      return env("NEXT_PUBLIC_ENABLED_FEATURES_OPERATIONS") === "true";
     case FeatureType.BROWSER:
       return env("NEXT_PUBLIC_ENABLED_FEATURES_BROWSER") === "true";
   }

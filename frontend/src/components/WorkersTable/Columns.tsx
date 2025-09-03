@@ -1,5 +1,6 @@
 import type { WorkerState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { readableDurationFromDates } from "@/utils/time";
+import { FeatureType, isFeatureEnabled } from "@/utils/isFeatureEnabled";
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
 import PropertyTagList from "../PropertyTagList";
@@ -83,14 +84,17 @@ const targetIdColumn: ColumnType<WorkerState> = {
 };
 
 const getColumns = (): TableColumnsType<WorkerState> => {
-  return [
+  const columns = [
     workerIdColumn,
     workerTimeoutColumn,
-    operationTimeoutColumn,
-    operationNameColumn,
     actionDigestColumn,
     targetIdColumn,
   ];
+
+  if (isFeatureEnabled(FeatureType.OPERATIONS))
+    columns.splice(2, 0, operationTimeoutColumn, operationNameColumn);
+
+  return columns;
 };
 
 export default getColumns;

@@ -26,15 +26,8 @@ const APP_BAR_MENU_ITEMS: ItemType[] = [
   getItem({ depth: 0, href: '/tests', title: 'Tests', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_TESTS] }),
   getItem({ depth: 0, href: '/targets', title: 'Targets', requiredFeatures: [FeatureType.BES, FeatureType.BES_PAGE_TARGETS] }),
   getItem({ depth: 0, href: '/browser', title: 'Browser', requiredFeatures: [FeatureType.BROWSER] }),
-  getItem({
-    depth: 0,
-    href: '/scheduler',
-    title: 'Scheduler',
-    children: [
-      getItem({ depth: 0, href: '/operations', title: 'Operations' }),
-    ],
-    requiredFeatures: [FeatureType.SCHEDULER],
-  }),
+  getItem({ depth: 0, href: '/scheduler', title: 'Scheduler', requiredFeatures: [FeatureType.SCHEDULER] }),
+  getItem({ depth: 0, href: '/operations', title: 'Operations', requiredFeatures: [FeatureType.OPERATIONS] }),
 ].filter(item => item !== undefined);
 
 type Props = {
