@@ -50,7 +50,7 @@ func NewGrpcWebBrowserService(
 	if configuration.InstanceNameAuthorizer == nil {
 		return status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
-	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, grpcClientFactory)
+	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
 	}
@@ -58,7 +58,7 @@ func NewGrpcWebBrowserService(
 	// Authorizer used to deny all write requests.
 	denyAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(&auth_proto.AuthorizerConfiguration{
 		Policy: &auth_proto.AuthorizerConfiguration_Deny{},
-	}, grpcClientFactory)
+	}, dependenciesGroup, grpcClientFactory)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
 	}
@@ -156,6 +156,7 @@ func NewGrpcWebBrowserService(
 func NewGrpcWebSchedulerService(
 	configuration *bb_portal.ApplicationConfiguration,
 	siblingsGroup program.Group,
+	dependenciesGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
 	router *mux.Router,
 ) error {
@@ -174,11 +175,11 @@ func NewGrpcWebSchedulerService(
 		return status.Error(codes.NotFound, "No ListOperationsPageSize configured (or it is set to 0)")
 	}
 
-	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, grpcClientFactory)
+	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
 	}
-	killOperationsAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(schedulerConfiguration.KillOperationsAuthorizer, grpcClientFactory)
+	killOperationsAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(schedulerConfiguration.KillOperationsAuthorizer, dependenciesGroup, grpcClientFactory)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create KillOperationsAuthorizer")
 	}
@@ -186,7 +187,7 @@ func NewGrpcWebSchedulerService(
 	if schedulerConfiguration.BuildQueueStateClient == nil {
 		return util.StatusWrap(err, "No buildQueueStateClient configured")
 	}
-	grpcClient, err := grpcClientFactory.NewClientFromConfiguration(schedulerConfiguration.BuildQueueStateClient)
+	grpcClient, err := grpcClientFactory.NewClientFromConfiguration(schedulerConfiguration.BuildQueueStateClient, dependenciesGroup)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create gRPC client for BuildQueueState")
 	}

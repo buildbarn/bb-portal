@@ -18,9 +18,9 @@ go_test(
     embed = [":common"],
     deps = [
         "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@com_github_buildbarn_bb_storage//pkg/jmespath",
         "@com_github_buildbarn_bb_storage//pkg/proto/auth",
         "@com_github_buildbarn_bb_storage//pkg/util",
-        "@com_github_jmespath_go_jmespath//:go-jmespath",
         "@org_golang_google_grpc//metadata",
         "@org_golang_google_protobuf//types/known/structpb",
     ],

@@ -60,14 +60,14 @@ func main() {
 
 		prometheusmetrics.RegisterMetrics()
 
-		lifecycleState, grpcClientFactory, err := global.ApplyConfiguration(configuration.Global)
+		lifecycleState, grpcClientFactory, err := global.ApplyConfiguration(configuration.Global, dependenciesGroup)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to apply global configuration options")
 		}
 
 		router := mux.NewRouter()
 
-		err = NewGrpcWebSchedulerService(&configuration, siblingsGroup, grpcClientFactory, router)
+		err = NewGrpcWebSchedulerService(&configuration, siblingsGroup, dependenciesGroup, grpcClientFactory, router)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create gRPC-Web Scheduler service")
 		}
@@ -75,7 +75,7 @@ func main() {
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create gRPC-Web Browser service")
 		}
-		err = newBuildEventStreamService(&configuration, siblingsGroup, grpcClientFactory, router)
+		err = newBuildEventStreamService(&configuration, siblingsGroup, dependenciesGroup, grpcClientFactory, router)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create BES service")
 		}
@@ -117,7 +117,13 @@ func fatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func newBuildEventStreamService(configuration *bb_portal.ApplicationConfiguration, siblingsGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, router *mux.Router) error {
+func newBuildEventStreamService(
+	configuration *bb_portal.ApplicationConfiguration,
+	siblingsGroup program.Group,
+	dependenciesGroup program.Group,
+	grpcClientFactory bb_grpc.ClientFactory,
+	router *mux.Router,
+) error {
 	besConfiguration := configuration.BesServiceConfiguration
 	if besConfiguration == nil {
 		log.Printf("Did not start BuildEventStream service because buildEventStreamConfiguration is not configured")

@@ -1,51 +1,64 @@
 diff --git tools/github_workflows/workflows_template.libsonnet tools/github_workflows/workflows_template.libsonnet
-index 89861ab..20855a7 100644
+index ef2bfb9..4956c7e 100644
 --- tools/github_workflows/workflows_template.libsonnet
 +++ tools/github_workflows/workflows_template.libsonnet
-@@ -6,18 +6,6 @@
-       buildJustBinaries: false,
+@@ -4,15 +4,6 @@
+       name: 'linux_amd64',
        extension: '',
      },
 -    {
 -      name: 'linux_386',
--      buildAndTestCommand: 'test --test_output=errors',
--      buildJustBinaries: false,
 -      extension: '',
+-      testPlatform: 'linux_amd64',
 -    },
 -    {
 -      name: 'linux_arm',
--      buildAndTestCommand: 'build',
--      buildJustBinaries: false,
 -      extension: '',
 -    },
      {
        name: 'linux_arm64',
-       buildAndTestCommand: 'build',
-@@ -72,9 +60,13 @@
-           name: 'Bazel mod tidy',
+       extension: '',
+@@ -48,14 +39,6 @@
+               platform_name: 'linux_amd64',
+               upload: true,
+             },
+-            {
+-              bazel_os: 'windows',
+-              cross_compile: false,
+-              lint: false,
+-              os: 'windows-latest',
+-              platform_name: 'windows_amd64',
+-              upload: false,
+-            },
+           ],
+         },
+       },
+@@ -86,9 +69,14 @@
            run: 'bazel mod tidy',
+           'if': 'matrix.host.lint',
          },
 +        {
 +          name: 'Go generate',
 +          run: 'go generate',
++          'if': 'matrix.host.lint',
 +        },
          {
            name: 'Gazelle',
 -          run: "rm -f $(find . -name '*.pb.go' | sed -e 's/[^/]*$/BUILD.bazel/') && bazel run //:gazelle",
 +          run: "rm -f $(find . -name '*.pb.go' -not -path './pkg/proto/bazelbuild/*' | sed -e 's/[^/]*$/BUILD.bazel/') && bazel run //:gazelle",
+           'if': 'matrix.host.lint',
          },
          {
-           name: 'Buildifier',
-@@ -86,7 +78,7 @@
+@@ -103,7 +91,7 @@
          },
          {
            name: 'Clang format',
 -          run: "find . -name '*.proto' -exec bazel run @llvm_toolchain_llvm//:bin/clang-format -- -i {} +",
 +          run: "find . -name '*.proto' -not -path './frontend/*' -exec bazel run @llvm_toolchain_llvm//:bin/clang-format -- -i {} +",
+           'if': 'matrix.host.lint',
          },
          {
-           name: 'GitHub workflows',
-@@ -98,8 +90,9 @@
+@@ -117,8 +105,9 @@
              if [ -d pkg/proto ]; then
                find . bazel-bin/pkg/proto -name '*.pb.go' -delete || true
                bazel build $(bazel query --output=label 'kind("go_proto_library", //...)')
@@ -56,18 +69,18 @@ index 89861ab..20855a7 100644
                done
              fi
            |||,
-@@ -192,12 +185,12 @@
+@@ -217,12 +206,12 @@
      'master.yaml': {
        name: 'master',
        on: { push: { branches: ['main', 'master'] } },
--      jobs: getJobs(binaries, containers, true, false),
-+      jobs: getJobs(binaries, containers, true, true),
+-      jobs: getJobs(binaries, containers, setupSteps, extraSteps, true, false),
++      jobs: getJobs(binaries, containers, setupSteps, extraSteps, true, true),
      },
      'pull-requests.yaml': {
        name: 'pull-requests',
        on: { pull_request: { branches: ['main', 'master'] } },
--      jobs: getJobs(binaries, containers, false, false),
-+      jobs: getJobs(binaries, containers, false, true),
+-      jobs: getJobs(binaries, containers, setupSteps, extraSteps, false, false),
++      jobs: getJobs(binaries, containers, setupSteps, extraSteps, false, true),
      },
    },
  }
