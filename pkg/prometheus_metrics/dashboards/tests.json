@@ -1,4 +1,38 @@
 {
+  "__inputs": [],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.3.0"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -19,10 +53,11 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 673529,
+  "id": null,
   "links": [],
   "panels": [
     {
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -30,14 +65,11 @@
         "y": 0
       },
       "id": 9,
+      "panels": [],
       "title": "Breakdowns",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "Cached test results are ignored, and we count the number of unique targets executed within the time range",
       "fieldConfig": {
         "defaults": {
@@ -75,7 +107,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -83,15 +117,11 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count((group( buildbarn_bb_portal_uncached_test_durations ) by (Target) ))",
+          "expr": "count((group( buildbarn_portal_uncached_test_durations ) by (Target) ))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -102,10 +132,6 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "Shows a count of tests by outcome status",
       "fieldConfig": {
         "defaults": {
@@ -136,11 +162,15 @@
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": false,
-          "values": ["percent"]
+          "values": [
+            "percent"
+          ]
         },
         "pieType": "donut",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -149,27 +179,19 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_uncached_test_durations{Status=\"PASSED\"})",
+          "expr": "count(buildbarn_portal_uncached_test_durations{Status=\"PASSED\"})",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_uncached_test_durations{Status=\"FAILED\"})",
+          "expr": "count(buildbarn_portal_uncached_test_durations{Status=\"FAILED\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -177,12 +199,8 @@
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_uncached_test_durations{Status=\"FLAKY\"})",
+          "expr": "count(buildbarn_portal_uncached_test_durations{Status=\"FLAKY\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -190,12 +208,8 @@
           "refId": "C"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_uncached_test_durations{Status=\"TIMEOUT\"})",
+          "expr": "count(buildbarn_portal_uncached_test_durations{Status=\"TIMEOUT\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -203,12 +217,8 @@
           "refId": "D"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_uncached_test_durations{Status=\"NO_STATUS\"})",
+          "expr": "count(buildbarn_portal_uncached_test_durations{Status=\"NO_STATUS\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -220,10 +230,6 @@
       "type": "piechart"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "Breakdown of tests by where they ran/execution strategy",
       "fieldConfig": {
         "defaults": {
@@ -254,11 +260,15 @@
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": false,
-          "values": ["percent"]
+          "values": [
+            "percent"
+          ]
         },
         "pieType": "donut",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -267,27 +277,19 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_uncached_test_durations{Strategy=\"indeterminate\"})",
+          "expr": "count(buildbarn_portal_uncached_test_durations{Strategy=\"indeterminate\"})",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_uncached_test_durations{Strategy=\"linux-sandbox\"})",
+          "expr": "count(buildbarn_portal_uncached_test_durations{Strategy=\"linux-sandbox\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -295,12 +297,8 @@
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_uncached_test_durations{Strategy=\"local\"})",
+          "expr": "count(buildbarn_portal_uncached_test_durations{Strategy=\"local\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -308,12 +306,8 @@
           "refId": "C"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_uncached_test_durations{Strategy=\"remote\"})",
+          "expr": "count(buildbarn_portal_uncached_test_durations{Strategy=\"remote\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -325,10 +319,6 @@
       "type": "piechart"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "Across all tests",
       "fieldConfig": {
         "defaults": {
@@ -366,7 +356,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -374,15 +366,11 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_uncached_test_durations) * .000001",
+          "expr": "avg(buildbarn_portal_uncached_test_durations) * .000001",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -406,10 +394,6 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "This is a measure of the test duration for test executions that did not return a cached response during the time window",
       "fieldConfig": {
         "defaults": {
@@ -489,7 +473,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -500,15 +486,11 @@
           }
         ]
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "topk(10, buildbarn_bb_portal_uncached_test_durations)",
+          "expr": "topk(10, buildbarn_portal_uncached_test_durations)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -576,10 +558,6 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -659,7 +637,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -670,15 +650,11 @@
           }
         ]
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "topk(10, buildbarn_bb_portal_uncached_test_durations{Strategy=\"remote\"})",
+          "expr": "topk(10, buildbarn_portal_uncached_test_durations{Strategy=\"remote\"})",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -759,10 +735,6 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -841,7 +813,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -852,15 +826,11 @@
           }
         ]
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "buildbarn_bb_portal_uncached_test_durations{Status=\"TIMEOUT\"}",
+          "expr": "buildbarn_portal_uncached_test_durations{Status=\"TIMEOUT\"}",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -916,10 +886,6 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -998,7 +964,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -1009,15 +977,11 @@
           }
         ]
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "buildbarn_bb_portal_uncached_test_durations{Status=\"FLAKY\"}",
+          "expr": "buildbarn_portal_uncached_test_durations{Status=\"FLAKY\"}",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1083,11 +1047,11 @@
       "id": 13,
       "panels": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "description": "Information about this dashboard",
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
           "gridPos": {
             "h": 8,
             "w": 12,
@@ -1113,8 +1077,12 @@
       "type": "row"
     }
   ],
-  "schemaVersion": 39,
-  "tags": ["RBE", "BB-Portal"],
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [
+    "RBE",
+    "BB-Portal"
+  ],
   "templating": {
     "list": []
   },
@@ -1126,6 +1094,6 @@
   "timezone": "browser",
   "title": "BB Portal - Tests",
   "uid": "fejbefgy77aioe",
-  "version": 37,
+  "version": 1,
   "weekStart": ""
 }

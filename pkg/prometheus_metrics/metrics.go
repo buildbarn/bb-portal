@@ -35,7 +35,7 @@ var (
 func RegisterMetrics() {
 	CacheHitRate = promauto.NewHistogramVec(prometheus.HistogramOpts{
 		Namespace: "buildbarn",
-		Subsystem: "bb-portal",
+		Subsystem: "portal",
 		Name:      "remote_cache_hit_rate",
 		Help:      "Cache hit rate for action cache or content addressable storage across all invocations",
 		Buckets:   []float64{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0},
@@ -43,21 +43,21 @@ func RegisterMetrics() {
 
 	Invocations = promauto.NewCounterVec(prometheus.CounterOpts{
 		Namespace: "buildbarn",
-		Subsystem: "bb-portal",
+		Subsystem: "portal",
 		Name:      "invocation_counts",
 		Help:      "Number of Invocations Per Host, User and Step Label",
 	}, []string{"Host", "User", "StepLabel"})
 
 	TargetDurations = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace: "buildbarn",
-		Subsystem: "bb-portal",
+		Subsystem: "portal",
 		Name:      "slow_target_durations",
 		Help:      "Duration of targets that took greater than 2 seconds to complete",
 	}, []string{"Target"})
 
 	TestDurations = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace: "buildbarn",
-		Subsystem: "bb-portal",
+		Subsystem: "portal",
 		Name:      "uncached_test_durations",
 		Help:      "Durations of tests by target and status",
 	}, []string{"Target", "Status", "Strategy"})

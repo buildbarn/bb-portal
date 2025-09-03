@@ -22,7 +22,6 @@ import (
 	"github.com/gorilla/mux"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/cors"
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	go_grpc "google.golang.org/grpc"
@@ -50,19 +49,6 @@ const (
 )
 
 func main() {
-	go func() {
-		pprof := http.ListenAndServe("localhost:8083", nil)
-		slog.Info(pprof.Error())
-	}()
-
-	go func() {
-		// initialize prometheus metrics
-		prometheusmetrics.RegisterMetrics()
-		slog.Info("Starting metrics server on :8112")
-		http.Handle("/metrics", promhttp.Handler())
-		http.ListenAndServe(":8112", nil)
-	}()
-
 	program.RunMain(func(ctx context.Context, siblingsGroup, dependenciesGroup program.Group) error {
 		if len(os.Args) != 2 {
 			return status.Error(codes.InvalidArgument, "Usage: bb_portal bb_portal.jsonnet")
@@ -71,6 +57,9 @@ func main() {
 		if err := util.UnmarshalConfigurationFromFile(os.Args[1], &configuration); err != nil {
 			return util.StatusWrapf(err, "Failed to read configuration from %s", os.Args[1])
 		}
+
+		prometheusmetrics.RegisterMetrics()
+
 		lifecycleState, grpcClientFactory, err := global.ApplyConfiguration(configuration.Global)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to apply global configuration options")

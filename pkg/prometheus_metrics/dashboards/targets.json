@@ -1,4 +1,32 @@
 {
+  "__inputs": [],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.3.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -19,10 +47,11 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 673528,
+  "id": null,
   "links": [],
   "panels": [
     {
+      "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -30,14 +59,11 @@
         "y": 0
       },
       "id": 7,
+      "panels": [],
       "title": "Metrics",
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "A breakdown of reported build durations per top level target",
       "fieldConfig": {
         "defaults": {
@@ -51,6 +77,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 36,
             "gradientMode": "none",
@@ -102,7 +129,11 @@
       "id": 3,
       "options": {
         "legend": {
-          "calcs": ["min", "max", "mean"],
+          "calcs": [
+            "min",
+            "max",
+            "mean"
+          ],
           "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
@@ -112,26 +143,19 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//autonomy/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//autonomy/.*\"})",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//docs/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//docs/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -139,12 +163,8 @@
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//examples/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//examples/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -152,12 +172,8 @@
           "refId": "C"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//experimental/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//experimental/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -165,12 +181,8 @@
           "refId": "D"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//firmware/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//firmware/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -178,12 +190,8 @@
           "refId": "E"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//hardware/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//hardware/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -191,12 +199,8 @@
           "refId": "F"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//jewels/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//jewels/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -204,12 +208,8 @@
           "refId": "G"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//kits/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//kits/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -217,12 +217,8 @@
           "refId": "H"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//platforms/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//platforms/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -230,12 +226,8 @@
           "refId": "I"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//ros/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//ros/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -243,12 +235,8 @@
           "refId": "J"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//services/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//services/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -256,12 +244,8 @@
           "refId": "K"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//sim/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//sim/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -269,12 +253,8 @@
           "refId": "L"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//system/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//system/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -282,12 +262,8 @@
           "refId": "M"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//third_party/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//third_party/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -295,12 +271,8 @@
           "refId": "N"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg(buildbarn_bb_portal_slow_target_durations{Target=~\"//tools/.*\"})",
+          "expr": "avg(buildbarn_portal_slow_target_durations{Target=~\"//tools/.*\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -312,10 +284,6 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "Chose a specific target you want to analyze using the dropdown variable",
       "fieldConfig": {
         "defaults": {
@@ -329,6 +297,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -390,14 +359,11 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "avg( buildbarn_bb_portal_slow_target_durations {Target=~\"$target\"}) by (Target)",
+          "expr": "avg( buildbarn_portal_slow_target_durations {Target=~\"$target\"}) by (Target)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -408,10 +374,6 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "The targets with the longest execution durations",
       "fieldConfig": {
         "defaults": {
@@ -492,7 +454,9 @@
           "countRows": false,
           "enablePagination": true,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 1,
@@ -504,16 +468,12 @@
           }
         ]
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "topk(10, buildbarn_bb_portal_slow_target_durations)",
+          "expr": "topk(10, buildbarn_portal_slow_target_durations)",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -592,9 +552,9 @@
       "id": 6,
       "panels": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
           },
           "gridPos": {
             "h": 9,
@@ -621,23 +581,18 @@
       "type": "row"
     }
   ],
-  "schemaVersion": 39,
-  "tags": ["RBE", "BB-Portal"],
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [
+    "RBE",
+    "BB-Portal"
+  ],
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": true,
-          "text": ["//:go"],
-          "value": ["//:go"]
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "mimir"
-        },
+        "current": {},
         "definition": "label_values(Target)",
         "description": "bazel target",
-        "hide": 0,
         "includeAll": false,
         "label": "target",
         "multi": true,
@@ -650,8 +605,6 @@
         },
         "refresh": 1,
         "regex": "^(?!.*Only one).*",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -664,6 +617,6 @@
   "timezone": "browser",
   "title": "BB Portal - Targets",
   "uid": "cejb2nrz4qry8d",
-  "version": 44,
+  "version": 1,
   "weekStart": ""
 }

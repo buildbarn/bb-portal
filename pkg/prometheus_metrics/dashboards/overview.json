@@ -1,4 +1,44 @@
 {
+  "__inputs": [],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.3.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -19,7 +59,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 673525,
+  "id": null,
   "links": [],
   "panels": [
     {
@@ -36,10 +76,6 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "Count the number of unique test targets seen during the time period.  Does not include cached results.",
       "fieldConfig": {
         "defaults": {
@@ -77,7 +113,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -85,15 +123,11 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count( group (buildbarn_bb_portal_uncached_test_durations) by (Target))",
+          "expr": "count( group (buildbarn_portal_uncached_test_durations) by (Target))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -104,10 +138,6 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "Current average across invocations",
       "fieldConfig": {
         "defaults": {
@@ -152,7 +182,9 @@
         "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -160,15 +192,11 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "100 * (histogram_quantile(.9, sum by (le) (rate(buildbarn_bb_portal_remote_cache_hit_rate_bucket[10m]))))",
+          "expr": "100 * (histogram_quantile(.9, sum by (le) (rate(buildbarn_portal_remote_cache_hit_rate_bucket[10m]))))",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -180,10 +208,6 @@
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "the number of hosts sending invocations to bbportal",
       "fieldConfig": {
         "defaults": {
@@ -221,7 +245,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -229,15 +255,11 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count( (group( buildbarn_bb_portal_invocation_counts ) by (User)))",
+          "expr": "count( (group( buildbarn_portal_invocation_counts ) by (User)))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -248,86 +270,6 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
-      "description": "number of active bb-portal pods during the time period",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 3
-              },
-              {
-                "color": "red",
-                "value": 4
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 2,
-        "x": 8,
-        "y": 1
-      },
-      "id": 12,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.1.4",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "expr": "count(kube_pod_info{namespace=\"swe\", pod=~\"bb-portal-.*-.*\", pod!~\"bb-portal-db-cleanup-.*\", __tenant_id__=\"swe01-qas-prod\"})",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        }
-      ],
-      "title": "# bb-portal pods",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "These build target durations took the longest to execute during the time period.  Can include tests",
       "fieldConfig": {
         "defaults": {
@@ -408,7 +350,9 @@
           "countRows": false,
           "enablePagination": true,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "frameIndex": 1,
@@ -420,16 +364,12 @@
           }
         ]
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "topk(10, buildbarn_bb_portal_slow_target_durations)",
+          "expr": "topk(10, buildbarn_portal_slow_target_durations)",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -487,10 +427,6 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "Count of targets seen during the time period, excludes any targets that completed with a duration of less than 2 seconds",
       "fieldConfig": {
         "defaults": {
@@ -528,7 +464,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -536,15 +474,11 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count( group( buildbarn_bb_portal_slow_target_durations) by (Target))",
+          "expr": "count( group( buildbarn_portal_slow_target_durations) by (Target))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -555,10 +489,6 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "Number of host machines sending invocations to bbportal. ",
       "fieldConfig": {
         "defaults": {
@@ -600,7 +530,9 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
@@ -608,15 +540,11 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(group(buildbarn_bb_portal_invocation_counts) by (Host))",
+          "expr": "count(group(buildbarn_portal_invocation_counts) by (Host))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -627,10 +555,6 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "Rate of tests with a failed status over a 10minute period",
       "fieldConfig": {
         "defaults": {
@@ -644,6 +568,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -705,15 +630,11 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "topk(10,rate( buildbarn_bb_portal_uncached_test_durations{Status=\"FAILED\"}[10m]))",
+          "expr": "topk(10,rate( buildbarn_portal_uncached_test_durations{Status=\"FAILED\"}[10m]))",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -724,10 +645,6 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "Top longest test duration executions with a status of failed",
       "fieldConfig": {
         "defaults": {
@@ -807,7 +724,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -818,15 +737,11 @@
           }
         ]
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "topk(10, buildbarn_bb_portal_uncached_test_durations{Status=\"FAILED\"})",
+          "expr": "topk(10, buildbarn_portal_uncached_test_durations{Status=\"FAILED\"})",
           "hide": true,
           "instant": false,
           "legendFormat": "__auto",
@@ -834,12 +749,8 @@
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "topk(10, buildbarn_bb_portal_uncached_test_durations{Status=\"FAILED\"})",
+          "expr": "topk(10, buildbarn_portal_uncached_test_durations{Status=\"FAILED\"})",
           "hide": false,
           "instant": false,
           "legendFormat": "__auto",
@@ -911,10 +822,6 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "the rate of invocations over a 10 minute period",
       "fieldConfig": {
         "defaults": {
@@ -928,6 +835,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -989,14 +897,11 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "rate(buildbarn_bb_portal_invocation_counts{Host=~\"$Host\"}[10m])",
+          "expr": "rate(buildbarn_portal_invocation_counts{Host=~\"$Host\"}[10m])",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1007,10 +912,6 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "A count of invocations by Host",
       "fieldConfig": {
         "defaults": {
@@ -1050,7 +951,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -1061,15 +964,11 @@
           }
         ]
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_invocation_counts) by (Host)",
+          "expr": "count(buildbarn_portal_invocation_counts) by (Host)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1109,10 +1008,6 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "A count of invocations by Step Label",
       "fieldConfig": {
         "defaults": {
@@ -1131,7 +1026,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1154,7 +1050,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -1165,15 +1063,11 @@
           }
         ]
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_invocation_counts) by (StepLabel)",
+          "expr": "count(buildbarn_portal_invocation_counts) by (StepLabel)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1214,10 +1108,6 @@
       "type": "table"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "mimir"
-      },
       "description": "A count of invocations by User",
       "fieldConfig": {
         "defaults": {
@@ -1236,7 +1126,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1259,7 +1150,9 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": ["sum"],
+          "reducer": [
+            "sum"
+          ],
           "show": false
         },
         "showHeader": true,
@@ -1270,15 +1163,11 @@
           }
         ]
       },
-      "pluginVersion": "11.1.4",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
-          },
           "editorMode": "code",
-          "expr": "count(buildbarn_bb_portal_invocation_counts) by (User)",
+          "expr": "count(buildbarn_portal_invocation_counts) by (User)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1329,9 +1218,9 @@
       "id": 20,
       "panels": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "mimir"
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
           },
           "gridPos": {
             "h": 8,
@@ -1358,24 +1247,19 @@
       "type": "row"
     }
   ],
-  "schemaVersion": 39,
-  "tags": ["RBE", "BB-Portal"],
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [
+    "RBE",
+    "BB-Portal"
+  ],
   "templating": {
     "list": [
       {
         "allValue": ".*",
-        "current": {
-          "selected": true,
-          "text": ["All"],
-          "value": ["$__all"]
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "mimir"
-        },
+        "current": {},
         "definition": "label_values(Host)",
         "description": "Hostname",
-        "hide": 0,
         "includeAll": true,
         "label": "Host",
         "multi": true,
@@ -1388,8 +1272,6 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -1402,6 +1284,6 @@
   "timezone": "browser",
   "title": "BB Portal - Overview",
   "uid": "cej7nflp46sxsc",
-  "version": 128,
+  "version": 1,
   "weekStart": ""
 }
