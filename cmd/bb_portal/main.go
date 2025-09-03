@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"database/sql"
-	"flag"
 	"log"
 	"log/slog"
 	"net/http"
@@ -48,14 +47,6 @@ import (
 const (
 	readHeaderTimeout = 3 * time.Second
 	folderPermission  = 0o750
-)
-
-var (
-	configFile        = flag.String("config-file", "", "bb_portal config file")
-	dsDriver          = flag.String("datasource-driver", "sqlite3", "Data source driver to use")
-	dsURL             = flag.String("datasource-url", "file:buildportal.db?_journal=WAL&_fk=1", "Data source URL for the DB")
-	blobArchiveFolder = flag.String("blob-archive-folder", "./blob-archive/",
-		"Folder where blobs (log outputs, stdout, stderr, undeclared test outputs) referenced from failures are archived")
 )
 
 func main() {
