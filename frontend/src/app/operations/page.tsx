@@ -9,7 +9,7 @@ import { CodeFilled } from "@ant-design/icons";
 import type React from "react";
 
 const Page: React.FC = () => {
-  if (!isFeatureEnabled(FeatureType.SCHEDULER)) {
+  if (!isFeatureEnabled(FeatureType.OPERATIONS)) {
     return <PageDisabled />;
   }
 
