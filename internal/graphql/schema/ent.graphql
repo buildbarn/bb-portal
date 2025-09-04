@@ -411,6 +411,7 @@ type BazelInvocation implements Node {
   isCiWorker: Boolean
   configurationMnemonic: String
   numFetches: Int
+  instanceName: String
   eventFile: EventFile!
   build: Build
   metrics: Metrics
@@ -797,6 +798,24 @@ input BazelInvocationWhereInput {
   profileNameEqualFold: String
   profileNameContainsFold: String
   """
+  instance_name field predicates
+  """
+  instanceName: String
+  instanceNameNEQ: String
+  instanceNameIn: [String!]
+  instanceNameNotIn: [String!]
+  instanceNameGT: String
+  instanceNameGTE: String
+  instanceNameLT: String
+  instanceNameLTE: String
+  instanceNameContains: String
+  instanceNameHasPrefix: String
+  instanceNameHasSuffix: String
+  instanceNameIsNil: Boolean
+  instanceNameNotNil: Boolean
+  instanceNameEqualFold: String
+  instanceNameContainsFold: String
+  """
   event_file edge predicates
   """
   hasEventFile: Boolean
@@ -839,6 +858,7 @@ type Blob implements Node {
   archivingStatus: BlobArchivingStatus!
   reason: String
   archiveURL: String
+  instanceName: String!
 }
 """
 BlobArchivingStatus is enum for the field archiving_status
@@ -941,6 +961,22 @@ input BlobWhereInput {
   archiveURLNotNil: Boolean
   archiveURLEqualFold: String
   archiveURLContainsFold: String
+  """
+  instance_name field predicates
+  """
+  instanceName: String
+  instanceNameNEQ: String
+  instanceNameIn: [String!]
+  instanceNameNotIn: [String!]
+  instanceNameGT: String
+  instanceNameGTE: String
+  instanceNameLT: String
+  instanceNameLTE: String
+  instanceNameContains: String
+  instanceNameHasPrefix: String
+  instanceNameHasSuffix: String
+  instanceNameEqualFold: String
+  instanceNameContainsFold: String
 }
 type Build implements Node {
   id: ID!

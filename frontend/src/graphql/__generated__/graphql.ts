@@ -409,6 +409,7 @@ export type BazelInvocation = Node & {
   eventFile: EventFile;
   hostname?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  instanceName?: Maybe<Scalars['String']['output']>;
   invocationID: Scalars['UUID']['output'];
   isCiWorker?: Maybe<Scalars['Boolean']['output']>;
   metrics?: Maybe<Metrics>;
@@ -657,6 +658,22 @@ export type BazelInvocationWhereInput = {
   idLTE?: InputMaybe<Scalars['ID']['input']>;
   idNEQ?: InputMaybe<Scalars['ID']['input']>;
   idNotIn?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** instance_name field predicates */
+  instanceName?: InputMaybe<Scalars['String']['input']>;
+  instanceNameContains?: InputMaybe<Scalars['String']['input']>;
+  instanceNameContainsFold?: InputMaybe<Scalars['String']['input']>;
+  instanceNameEqualFold?: InputMaybe<Scalars['String']['input']>;
+  instanceNameGT?: InputMaybe<Scalars['String']['input']>;
+  instanceNameGTE?: InputMaybe<Scalars['String']['input']>;
+  instanceNameHasPrefix?: InputMaybe<Scalars['String']['input']>;
+  instanceNameHasSuffix?: InputMaybe<Scalars['String']['input']>;
+  instanceNameIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  instanceNameIsNil?: InputMaybe<Scalars['Boolean']['input']>;
+  instanceNameLT?: InputMaybe<Scalars['String']['input']>;
+  instanceNameLTE?: InputMaybe<Scalars['String']['input']>;
+  instanceNameNEQ?: InputMaybe<Scalars['String']['input']>;
+  instanceNameNotIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  instanceNameNotNil?: InputMaybe<Scalars['Boolean']['input']>;
   /** invocation_id field predicates */
   invocationID?: InputMaybe<Scalars['UUID']['input']>;
   invocationIDGT?: InputMaybe<Scalars['UUID']['input']>;
@@ -787,6 +804,7 @@ export type Blob = Node & {
   archiveURL?: Maybe<Scalars['String']['output']>;
   archivingStatus: BlobArchivingStatus;
   id: Scalars['ID']['output'];
+  instanceName: Scalars['String']['output'];
   reason?: Maybe<Scalars['String']['output']>;
   sizeBytes?: Maybe<Scalars['Int']['output']>;
   uri: Scalars['String']['output'];
@@ -846,6 +864,20 @@ export type BlobWhereInput = {
   idLTE?: InputMaybe<Scalars['ID']['input']>;
   idNEQ?: InputMaybe<Scalars['ID']['input']>;
   idNotIn?: InputMaybe<Array<Scalars['ID']['input']>>;
+  /** instance_name field predicates */
+  instanceName?: InputMaybe<Scalars['String']['input']>;
+  instanceNameContains?: InputMaybe<Scalars['String']['input']>;
+  instanceNameContainsFold?: InputMaybe<Scalars['String']['input']>;
+  instanceNameEqualFold?: InputMaybe<Scalars['String']['input']>;
+  instanceNameGT?: InputMaybe<Scalars['String']['input']>;
+  instanceNameGTE?: InputMaybe<Scalars['String']['input']>;
+  instanceNameHasPrefix?: InputMaybe<Scalars['String']['input']>;
+  instanceNameHasSuffix?: InputMaybe<Scalars['String']['input']>;
+  instanceNameIn?: InputMaybe<Array<Scalars['String']['input']>>;
+  instanceNameLT?: InputMaybe<Scalars['String']['input']>;
+  instanceNameLTE?: InputMaybe<Scalars['String']['input']>;
+  instanceNameNEQ?: InputMaybe<Scalars['String']['input']>;
+  instanceNameNotIn?: InputMaybe<Array<Scalars['String']['input']>>;
   not?: InputMaybe<BlobWhereInput>;
   or?: InputMaybe<Array<BlobWhereInput>>;
   /** reason field predicates */

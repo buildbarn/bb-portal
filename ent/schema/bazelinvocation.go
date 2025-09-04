@@ -80,6 +80,9 @@ func (BazelInvocation) Fields() []ent.Field {
 
 		// The name of the build profile.
 		field.String("profile_name").Annotations(entgql.Skip(entgql.SkipType)),
+
+		// The instance name for the invocation.
+		field.String("instance_name").Optional(),
 	}
 }
 

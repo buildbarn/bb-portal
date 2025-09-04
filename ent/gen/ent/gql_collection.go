@@ -669,6 +669,11 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				selectedFields = append(selectedFields, bazelinvocation.FieldNumFetches)
 				fieldSeen[bazelinvocation.FieldNumFetches] = struct{}{}
 			}
+		case "instanceName":
+			if _, ok := fieldSeen[bazelinvocation.FieldInstanceName]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldInstanceName)
+				fieldSeen[bazelinvocation.FieldInstanceName] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:
@@ -860,6 +865,11 @@ func (b *BlobQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 			if _, ok := fieldSeen[blob.FieldArchiveURL]; !ok {
 				selectedFields = append(selectedFields, blob.FieldArchiveURL)
 				fieldSeen[blob.FieldArchiveURL] = struct{}{}
+			}
+		case "instanceName":
+			if _, ok := fieldSeen[blob.FieldInstanceName]; !ok {
+				selectedFields = append(selectedFields, blob.FieldInstanceName)
+				fieldSeen[blob.FieldInstanceName] = struct{}{}
 			}
 		case "id":
 		case "__typename":

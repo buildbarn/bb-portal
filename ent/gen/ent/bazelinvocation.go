@@ -62,6 +62,8 @@ type BazelInvocation struct {
 	NumFetches int64 `json:"num_fetches,omitempty"`
 	// ProfileName holds the value of the "profile_name" field.
 	ProfileName string `json:"profile_name,omitempty"`
+	// InstanceName holds the value of the "instance_name" field.
+	InstanceName string `json:"instance_name,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BazelInvocationQuery when eager-loading is set.
 	Edges                       BazelInvocationEdges `json:"edges"`
@@ -179,7 +181,7 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber, bazelinvocation.FieldNumFetches:
 			values[i] = new(sql.NullInt64)
-		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldBuildLogs, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldHostname, bazelinvocation.FieldConfigurationMnemonic, bazelinvocation.FieldProfileName:
+		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldBuildLogs, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldHostname, bazelinvocation.FieldConfigurationMnemonic, bazelinvocation.FieldProfileName, bazelinvocation.FieldInstanceName:
 			values[i] = new(sql.NullString)
 		case bazelinvocation.FieldStartedAt, bazelinvocation.FieldEndedAt:
 			values[i] = new(sql.NullTime)
@@ -328,6 +330,12 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				bi.ProfileName = value.String
 			}
+		case bazelinvocation.FieldInstanceName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field instance_name", values[i])
+			} else if value.Valid {
+				bi.InstanceName = value.String
+			}
 		case bazelinvocation.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_invocations", value)
@@ -469,6 +477,9 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("profile_name=")
 	builder.WriteString(bi.ProfileName)
+	builder.WriteString(", ")
+	builder.WriteString("instance_name=")
+	builder.WriteString(bi.InstanceName)
 	builder.WriteByte(')')
 	return builder.String()
 }

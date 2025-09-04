@@ -50,6 +50,8 @@ const (
 	FieldNumFetches = "num_fetches"
 	// FieldProfileName holds the string denoting the profile_name field in the database.
 	FieldProfileName = "profile_name"
+	// FieldInstanceName holds the string denoting the instance_name field in the database.
+	FieldInstanceName = "instance_name"
 	// EdgeEventFile holds the string denoting the event_file edge name in mutations.
 	EdgeEventFile = "event_file"
 	// EdgeBuild holds the string denoting the build edge name in mutations.
@@ -139,6 +141,7 @@ var Columns = []string{
 	FieldConfigurationMnemonic,
 	FieldNumFetches,
 	FieldProfileName,
+	FieldInstanceName,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "bazel_invocations"
@@ -254,6 +257,11 @@ func ByNumFetches(opts ...sql.OrderTermOption) OrderOption {
 // ByProfileName orders the results by the profile_name field.
 func ByProfileName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProfileName, opts...).ToFunc()
+}
+
+// ByInstanceName orders the results by the instance_name field.
+func ByInstanceName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldInstanceName, opts...).ToFunc()
 }
 
 // ByEventFileField orders the results by event_file field.

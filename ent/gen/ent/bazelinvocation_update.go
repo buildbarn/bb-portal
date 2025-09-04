@@ -379,6 +379,26 @@ func (biu *BazelInvocationUpdate) SetNillableProfileName(s *string) *BazelInvoca
 	return biu
 }
 
+// SetInstanceName sets the "instance_name" field.
+func (biu *BazelInvocationUpdate) SetInstanceName(s string) *BazelInvocationUpdate {
+	biu.mutation.SetInstanceName(s)
+	return biu
+}
+
+// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableInstanceName(s *string) *BazelInvocationUpdate {
+	if s != nil {
+		biu.SetInstanceName(*s)
+	}
+	return biu
+}
+
+// ClearInstanceName clears the value of the "instance_name" field.
+func (biu *BazelInvocationUpdate) ClearInstanceName() *BazelInvocationUpdate {
+	biu.mutation.ClearInstanceName()
+	return biu
+}
+
 // SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
 func (biu *BazelInvocationUpdate) SetEventFileID(id int) *BazelInvocationUpdate {
 	biu.mutation.SetEventFileID(id)
@@ -732,6 +752,12 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if value, ok := biu.mutation.ProfileName(); ok {
 		_spec.SetField(bazelinvocation.FieldProfileName, field.TypeString, value)
+	}
+	if value, ok := biu.mutation.InstanceName(); ok {
+		_spec.SetField(bazelinvocation.FieldInstanceName, field.TypeString, value)
+	}
+	if biu.mutation.InstanceNameCleared() {
+		_spec.ClearField(bazelinvocation.FieldInstanceName, field.TypeString)
 	}
 	if biu.mutation.EventFileCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1347,6 +1373,26 @@ func (biuo *BazelInvocationUpdateOne) SetNillableProfileName(s *string) *BazelIn
 	return biuo
 }
 
+// SetInstanceName sets the "instance_name" field.
+func (biuo *BazelInvocationUpdateOne) SetInstanceName(s string) *BazelInvocationUpdateOne {
+	biuo.mutation.SetInstanceName(s)
+	return biuo
+}
+
+// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableInstanceName(s *string) *BazelInvocationUpdateOne {
+	if s != nil {
+		biuo.SetInstanceName(*s)
+	}
+	return biuo
+}
+
+// ClearInstanceName clears the value of the "instance_name" field.
+func (biuo *BazelInvocationUpdateOne) ClearInstanceName() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearInstanceName()
+	return biuo
+}
+
 // SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
 func (biuo *BazelInvocationUpdateOne) SetEventFileID(id int) *BazelInvocationUpdateOne {
 	biuo.mutation.SetEventFileID(id)
@@ -1730,6 +1776,12 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if value, ok := biuo.mutation.ProfileName(); ok {
 		_spec.SetField(bazelinvocation.FieldProfileName, field.TypeString, value)
+	}
+	if value, ok := biuo.mutation.InstanceName(); ok {
+		_spec.SetField(bazelinvocation.FieldInstanceName, field.TypeString, value)
+	}
+	if biuo.mutation.InstanceNameCleared() {
+		_spec.ClearField(bazelinvocation.FieldInstanceName, field.TypeString)
 	}
 	if biuo.mutation.EventFileCleared() {
 		edge := &sqlgraph.EdgeSpec{

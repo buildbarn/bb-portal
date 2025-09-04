@@ -247,6 +247,20 @@ func (bic *BazelInvocationCreate) SetProfileName(s string) *BazelInvocationCreat
 	return bic
 }
 
+// SetInstanceName sets the "instance_name" field.
+func (bic *BazelInvocationCreate) SetInstanceName(s string) *BazelInvocationCreate {
+	bic.mutation.SetInstanceName(s)
+	return bic
+}
+
+// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableInstanceName(s *string) *BazelInvocationCreate {
+	if s != nil {
+		bic.SetInstanceName(*s)
+	}
+	return bic
+}
+
 // SetEventFileID sets the "event_file" edge to the EventFile entity by ID.
 func (bic *BazelInvocationCreate) SetEventFileID(id int) *BazelInvocationCreate {
 	bic.mutation.SetEventFileID(id)
@@ -516,6 +530,10 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	if value, ok := bic.mutation.ProfileName(); ok {
 		_spec.SetField(bazelinvocation.FieldProfileName, field.TypeString, value)
 		_node.ProfileName = value
+	}
+	if value, ok := bic.mutation.InstanceName(); ok {
+		_spec.SetField(bazelinvocation.FieldInstanceName, field.TypeString, value)
+		_node.InstanceName = value
 	}
 	if nodes := bic.mutation.EventFileIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

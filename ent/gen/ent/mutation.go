@@ -3728,6 +3728,7 @@ type BazelInvocationMutation struct {
 	num_fetches            *int64
 	addnum_fetches         *int64
 	profile_name           *string
+	instance_name          *string
 	clearedFields          map[string]struct{}
 	event_file             *int
 	clearedevent_file      bool
@@ -4765,6 +4766,55 @@ func (m *BazelInvocationMutation) ResetProfileName() {
 	m.profile_name = nil
 }
 
+// SetInstanceName sets the "instance_name" field.
+func (m *BazelInvocationMutation) SetInstanceName(s string) {
+	m.instance_name = &s
+}
+
+// InstanceName returns the value of the "instance_name" field in the mutation.
+func (m *BazelInvocationMutation) InstanceName() (r string, exists bool) {
+	v := m.instance_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInstanceName returns the old "instance_name" field's value of the BazelInvocation entity.
+// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BazelInvocationMutation) OldInstanceName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInstanceName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInstanceName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInstanceName: %w", err)
+	}
+	return oldValue.InstanceName, nil
+}
+
+// ClearInstanceName clears the value of the "instance_name" field.
+func (m *BazelInvocationMutation) ClearInstanceName() {
+	m.instance_name = nil
+	m.clearedFields[bazelinvocation.FieldInstanceName] = struct{}{}
+}
+
+// InstanceNameCleared returns if the "instance_name" field was cleared in this mutation.
+func (m *BazelInvocationMutation) InstanceNameCleared() bool {
+	_, ok := m.clearedFields[bazelinvocation.FieldInstanceName]
+	return ok
+}
+
+// ResetInstanceName resets all changes to the "instance_name" field.
+func (m *BazelInvocationMutation) ResetInstanceName() {
+	m.instance_name = nil
+	delete(m.clearedFields, bazelinvocation.FieldInstanceName)
+}
+
 // SetEventFileID sets the "event_file" edge to the EventFile entity by id.
 func (m *BazelInvocationMutation) SetEventFileID(id int) {
 	m.event_file = &id
@@ -5117,7 +5167,7 @@ func (m *BazelInvocationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BazelInvocationMutation) Fields() []string {
-	fields := make([]string, 0, 19)
+	fields := make([]string, 0, 20)
 	if m.invocation_id != nil {
 		fields = append(fields, bazelinvocation.FieldInvocationID)
 	}
@@ -5175,6 +5225,9 @@ func (m *BazelInvocationMutation) Fields() []string {
 	if m.profile_name != nil {
 		fields = append(fields, bazelinvocation.FieldProfileName)
 	}
+	if m.instance_name != nil {
+		fields = append(fields, bazelinvocation.FieldInstanceName)
+	}
 	return fields
 }
 
@@ -5221,6 +5274,8 @@ func (m *BazelInvocationMutation) Field(name string) (ent.Value, bool) {
 		return m.NumFetches()
 	case bazelinvocation.FieldProfileName:
 		return m.ProfileName()
+	case bazelinvocation.FieldInstanceName:
+		return m.InstanceName()
 	}
 	return nil, false
 }
@@ -5268,6 +5323,8 @@ func (m *BazelInvocationMutation) OldField(ctx context.Context, name string) (en
 		return m.OldNumFetches(ctx)
 	case bazelinvocation.FieldProfileName:
 		return m.OldProfileName(ctx)
+	case bazelinvocation.FieldInstanceName:
+		return m.OldInstanceName(ctx)
 	}
 	return nil, fmt.Errorf("unknown BazelInvocation field %s", name)
 }
@@ -5410,6 +5467,13 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetProfileName(v)
 		return nil
+	case bazelinvocation.FieldInstanceName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInstanceName(v)
+		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation field %s", name)
 }
@@ -5518,6 +5582,9 @@ func (m *BazelInvocationMutation) ClearedFields() []string {
 	if m.FieldCleared(bazelinvocation.FieldNumFetches) {
 		fields = append(fields, bazelinvocation.FieldNumFetches)
 	}
+	if m.FieldCleared(bazelinvocation.FieldInstanceName) {
+		fields = append(fields, bazelinvocation.FieldInstanceName)
+	}
 	return fields
 }
 
@@ -5570,6 +5637,9 @@ func (m *BazelInvocationMutation) ClearField(name string) error {
 		return nil
 	case bazelinvocation.FieldNumFetches:
 		m.ClearNumFetches()
+		return nil
+	case bazelinvocation.FieldInstanceName:
+		m.ClearInstanceName()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation nullable field %s", name)
@@ -5635,6 +5705,9 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 		return nil
 	case bazelinvocation.FieldProfileName:
 		m.ResetProfileName()
+		return nil
+	case bazelinvocation.FieldInstanceName:
+		m.ResetInstanceName()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation field %s", name)
@@ -6377,6 +6450,7 @@ type BlobMutation struct {
 	archiving_status *blob.ArchivingStatus
 	reason           *string
 	archive_url      *string
+	instance_name    *string
 	clearedFields    map[string]struct{}
 	done             bool
 	oldValue         func(context.Context) (*Blob, error)
@@ -6721,6 +6795,42 @@ func (m *BlobMutation) ResetArchiveURL() {
 	delete(m.clearedFields, blob.FieldArchiveURL)
 }
 
+// SetInstanceName sets the "instance_name" field.
+func (m *BlobMutation) SetInstanceName(s string) {
+	m.instance_name = &s
+}
+
+// InstanceName returns the value of the "instance_name" field in the mutation.
+func (m *BlobMutation) InstanceName() (r string, exists bool) {
+	v := m.instance_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInstanceName returns the old "instance_name" field's value of the Blob entity.
+// If the Blob object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BlobMutation) OldInstanceName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInstanceName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInstanceName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInstanceName: %w", err)
+	}
+	return oldValue.InstanceName, nil
+}
+
+// ResetInstanceName resets all changes to the "instance_name" field.
+func (m *BlobMutation) ResetInstanceName() {
+	m.instance_name = nil
+}
+
 // Where appends a list predicates to the BlobMutation builder.
 func (m *BlobMutation) Where(ps ...predicate.Blob) {
 	m.predicates = append(m.predicates, ps...)
@@ -6755,7 +6865,7 @@ func (m *BlobMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BlobMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.uri != nil {
 		fields = append(fields, blob.FieldURI)
 	}
@@ -6770,6 +6880,9 @@ func (m *BlobMutation) Fields() []string {
 	}
 	if m.archive_url != nil {
 		fields = append(fields, blob.FieldArchiveURL)
+	}
+	if m.instance_name != nil {
+		fields = append(fields, blob.FieldInstanceName)
 	}
 	return fields
 }
@@ -6789,6 +6902,8 @@ func (m *BlobMutation) Field(name string) (ent.Value, bool) {
 		return m.Reason()
 	case blob.FieldArchiveURL:
 		return m.ArchiveURL()
+	case blob.FieldInstanceName:
+		return m.InstanceName()
 	}
 	return nil, false
 }
@@ -6808,6 +6923,8 @@ func (m *BlobMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldReason(ctx)
 	case blob.FieldArchiveURL:
 		return m.OldArchiveURL(ctx)
+	case blob.FieldInstanceName:
+		return m.OldInstanceName(ctx)
 	}
 	return nil, fmt.Errorf("unknown Blob field %s", name)
 }
@@ -6851,6 +6968,13 @@ func (m *BlobMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetArchiveURL(v)
+		return nil
+	case blob.FieldInstanceName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInstanceName(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Blob field %s", name)
@@ -6951,6 +7075,9 @@ func (m *BlobMutation) ResetField(name string) error {
 		return nil
 	case blob.FieldArchiveURL:
 		m.ResetArchiveURL()
+		return nil
+	case blob.FieldInstanceName:
+		m.ResetInstanceName()
 		return nil
 	}
 	return fmt.Errorf("unknown Blob field %s", name)

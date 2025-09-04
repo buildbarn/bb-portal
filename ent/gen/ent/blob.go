@@ -25,7 +25,9 @@ type Blob struct {
 	// Reason holds the value of the "reason" field.
 	Reason string `json:"reason,omitempty"`
 	// ArchiveURL holds the value of the "archive_url" field.
-	ArchiveURL   string `json:"archive_url,omitempty"`
+	ArchiveURL string `json:"archive_url,omitempty"`
+	// InstanceName holds the value of the "instance_name" field.
+	InstanceName string `json:"instance_name,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -36,7 +38,7 @@ func (*Blob) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case blob.FieldID, blob.FieldSizeBytes:
 			values[i] = new(sql.NullInt64)
-		case blob.FieldURI, blob.FieldArchivingStatus, blob.FieldReason, blob.FieldArchiveURL:
+		case blob.FieldURI, blob.FieldArchivingStatus, blob.FieldReason, blob.FieldArchiveURL, blob.FieldInstanceName:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -89,6 +91,12 @@ func (b *Blob) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				b.ArchiveURL = value.String
 			}
+		case blob.FieldInstanceName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field instance_name", values[i])
+			} else if value.Valid {
+				b.InstanceName = value.String
+			}
 		default:
 			b.selectValues.Set(columns[i], values[i])
 		}
@@ -139,6 +147,9 @@ func (b *Blob) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("archive_url=")
 	builder.WriteString(b.ArchiveURL)
+	builder.WriteString(", ")
+	builder.WriteString("instance_name=")
+	builder.WriteString(b.InstanceName)
 	builder.WriteByte(')')
 	return builder.String()
 }

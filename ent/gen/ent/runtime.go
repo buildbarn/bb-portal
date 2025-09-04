@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 	"github.com/buildbarn/bb-portal/ent/schema"
@@ -14,6 +15,10 @@ import (
 func init() {
 	blobFields := schema.Blob{}.Fields()
 	_ = blobFields
+	// blobDescInstanceName is the schema descriptor for instance_name field.
+	blobDescInstanceName := blobFields[5].Descriptor()
+	// blob.DefaultInstanceName holds the default value on creation for the instance_name field.
+	blob.DefaultInstanceName = blobDescInstanceName.Default.(string)
 	eventfileFields := schema.EventFile{}.Fields()
 	_ = eventfileFields
 	// eventfileDescStatus is the schema descriptor for status field.

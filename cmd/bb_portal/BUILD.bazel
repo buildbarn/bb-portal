@@ -12,11 +12,13 @@ go_library(
     deps = [
         "//ent/gen/ent",
         "//ent/gen/ent/migrate",
+        "//ent/gen/ent/runtime",
         "//internal/api",
         "//internal/api/grpc/bes",
         "//internal/api/grpcweb/buildqueuestateproxy",
         "//internal/api/servefiles:servefiles_lib",
         "//internal/graphql",
+        "//internal/graphql/auth",
         "//pkg/processing",
         "//pkg/prometheus_metrics",
         "//pkg/proto/configuration/bb_portal",
