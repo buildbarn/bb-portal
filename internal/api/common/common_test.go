@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"github.com/buildbarn/bb-storage/pkg/auth"
+	"github.com/buildbarn/bb-storage/pkg/jmespath"
 	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
-	"github.com/jmespath/go-jmespath"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/structpb"
 )
