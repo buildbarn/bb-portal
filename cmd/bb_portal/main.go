@@ -168,7 +168,7 @@ func newBuildEventStreamService(
 		}
 	}
 
-	err = auth.AddDatabaseAuthInterceptors(configuration.InstanceNameAuthorizer, dbClient, grpcClientFactory)
+	err = auth.AddDatabaseAuthInterceptors(configuration.InstanceNameAuthorizer, dbClient, dependenciesGroup, grpcClientFactory)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to add database auth interceptors")
 	}
@@ -192,7 +192,7 @@ func newBuildEventStreamService(
 		router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, blobArchiver)).Methods("POST")
 	}
 
-	builcEventServer, err := bes.NewBuildEventServer(dbClient, blobArchiver, configuration.InstanceNameAuthorizer, grpcClientFactory)
+	builcEventServer, err := bes.NewBuildEventServer(dbClient, blobArchiver, configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create BuildEventServer")
 	}
