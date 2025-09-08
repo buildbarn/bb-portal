@@ -9,6 +9,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
+	"github.com/buildbarn/bb-storage/pkg/program"
 	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/configuration/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"google.golang.org/grpc/codes"
@@ -45,7 +46,7 @@ func createInterceptor[T any](
 
 // AddDatabaseAuthInterceptors adds interceptors to the ent.Client for filtering
 // database queries based on the instanceNameAuthorizer.
-func AddDatabaseAuthInterceptors(authorizerConfiguration *auth_pb.AuthorizerConfiguration, dbClient *ent.Client, grpcClientFactory bb_grpc.ClientFactory) error {
+func AddDatabaseAuthInterceptors(authorizerConfiguration *auth_pb.AuthorizerConfiguration, dbClient *ent.Client, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory) error {
 	if authorizerConfiguration == nil {
 		return status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
@@ -54,7 +55,7 @@ func AddDatabaseAuthInterceptors(authorizerConfiguration *auth_pb.AuthorizerConf
 		// will just slow everything down.
 		return nil
 	}
-	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(authorizerConfiguration, grpcClientFactory)
+	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(authorizerConfiguration, dependenciesGroup, grpcClientFactory)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
 	}

@@ -11,6 +11,7 @@ go_library(
         "@com_github_buildbarn_bb_storage//pkg/auth",
         "@com_github_buildbarn_bb_storage//pkg/auth/configuration",
         "@com_github_buildbarn_bb_storage//pkg/grpc",
+        "@com_github_buildbarn_bb_storage//pkg/program",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/auth",
         "@com_github_buildbarn_bb_storage//pkg/util",
         "@org_golang_google_grpc//codes",
