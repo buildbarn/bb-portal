@@ -1,30 +1,19 @@
 load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "bes",
-    srcs = [
-        "channel.go",
-        "handler.go",
-        "server.go",
-    ],
-    importpath = "github.com/buildbarn/bb-portal/internal/api/grpc/bes",
+    name = "auth",
+    srcs = ["auth.go"],
+    importpath = "github.com/buildbarn/bb-portal/internal/graphql/auth",
     visibility = ["//:__subpackages__"],
     deps = [
         "//ent/gen/ent",
         "//internal/api/common",
-        "//pkg/events",
-        "//pkg/processing",
-        "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
-        "//pkg/summary",
         "@com_github_buildbarn_bb_storage//pkg/auth",
         "@com_github_buildbarn_bb_storage//pkg/auth/configuration",
         "@com_github_buildbarn_bb_storage//pkg/grpc",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/auth",
         "@com_github_buildbarn_bb_storage//pkg/util",
-        "@org_golang_google_genproto//googleapis/devtools/build/v1:build",
         "@org_golang_google_grpc//codes",
         "@org_golang_google_grpc//status",
-        "@org_golang_google_protobuf//encoding/protojson",
-        "@org_golang_google_protobuf//types/known/emptypb",
     ],
 )

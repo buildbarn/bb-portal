@@ -114,7 +114,9 @@ func (act SaveActor) saveSummary(ctx context.Context, summary *summary.Summary) 
 	}
 	err = act.db.Blob.MapCreateBulk(missingBlobs, func(create *ent.BlobCreate, i int) {
 		b := missingBlobs[i]
-		create.SetURI(string(b))
+		create.
+			SetURI(string(b)).
+			SetInstanceName(summary.InstanceName)
 	}).Exec(ctx)
 	if err != nil {
 		slog.ErrorContext(ctx, "failed to save blobs", "id", summary.InvocationID, "err", err)
@@ -179,6 +181,7 @@ func (act SaveActor) saveBazelInvocation(
 
 	create := act.db.BazelInvocation.Create().
 		SetInvocationID(uniqueID).
+		SetInstanceName(summary.InstanceName).
 		SetProfileName(summary.ProfileName).
 		SetStartedAt(summary.StartedAt).
 		SetBuildLogs(summary.BuildLogs.String()).

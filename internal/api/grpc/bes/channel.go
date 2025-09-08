@@ -20,7 +20,7 @@ import (
 type BuildEventChannel interface {
 	// HandleBuildEvent processes a single BuildEvent
 	// This method should be called for each received event.
-	HandleBuildEvent(event *build.BuildEvent) error
+	HandleBuildEvent(event *build.BuildEvent, instanceName string) error
 
 	// Finalize does post-processing of a stream of BuildEvents.
 	// This method should be called after receiving the EOF event.
@@ -35,7 +35,7 @@ type buildEventChannel struct {
 }
 
 // HandleBuildEvent implements BuildEventChannel.HandleBuildEvent.
-func (c *buildEventChannel) HandleBuildEvent(event *build.BuildEvent) error {
+func (c *buildEventChannel) HandleBuildEvent(event *build.BuildEvent, instanceName string) error {
 	if event.GetBazelEvent() == nil {
 		return nil
 	}
@@ -50,6 +50,7 @@ func (c *buildEventChannel) HandleBuildEvent(event *build.BuildEvent) error {
 		slog.ErrorContext(c.ctx, "ProcessEvent failed", "err", err)
 		return fmt.Errorf("could not process event (%s): , %w", buildEvent, err)
 	}
+	c.summarizer.SetInstanceName(instanceName)
 	return nil
 }
 
@@ -100,7 +101,7 @@ func (c *buildEventChannel) Finalize() error {
 type noOpBuildEventChannel struct{}
 
 // HandleBuildEvent implements BuildEventChannel.HandleBuildEvent.
-func (c *noOpBuildEventChannel) HandleBuildEvent(event *build.BuildEvent) error {
+func (c *noOpBuildEventChannel) HandleBuildEvent(event *build.BuildEvent, instanceName string) error {
 	return nil
 }
 

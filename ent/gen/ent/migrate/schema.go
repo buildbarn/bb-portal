@@ -143,6 +143,7 @@ var (
 		{Name: "configuration_mnemonic", Type: field.TypeString, Nullable: true},
 		{Name: "num_fetches", Type: field.TypeInt64, Nullable: true},
 		{Name: "profile_name", Type: field.TypeString},
+		{Name: "instance_name", Type: field.TypeString, Nullable: true},
 		{Name: "build_invocations", Type: field.TypeInt, Nullable: true},
 		{Name: "event_file_bazel_invocation", Type: field.TypeInt, Unique: true},
 	}
@@ -154,13 +155,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "bazel_invocations_builds_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[20]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[21]},
 				RefColumns: []*schema.Column{BuildsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "bazel_invocations_event_files_bazel_invocation",
-				Columns:    []*schema.Column{BazelInvocationsColumns[21]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[22]},
 				RefColumns: []*schema.Column{EventFilesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -203,6 +204,7 @@ var (
 		{Name: "archiving_status", Type: field.TypeEnum, Enums: []string{"QUEUED", "ARCHIVING", "SUCCESS", "FAILED", "BYTESTREAM"}, Default: "QUEUED"},
 		{Name: "reason", Type: field.TypeString, Nullable: true},
 		{Name: "archive_url", Type: field.TypeString, Nullable: true},
+		{Name: "instance_name", Type: field.TypeString, Default: ""},
 	}
 	// BlobsTable holds the schema information for the "blobs" table.
 	BlobsTable = &schema.Table{
