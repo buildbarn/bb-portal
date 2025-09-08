@@ -19,6 +19,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
+	"github.com/buildbarn/bb-storage/pkg/program"
 	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/configuration/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
@@ -34,11 +35,11 @@ type BuildEventServer struct {
 }
 
 // NewBuildEventServer creates a new BuildEventServer
-func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiver, authorizerConfiguration *auth_pb.AuthorizerConfiguration, grpcClientFactory bb_grpc.ClientFactory) (build.PublishBuildEventServer, error) {
+func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiver, authorizerConfiguration *auth_pb.AuthorizerConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory) (build.PublishBuildEventServer, error) {
 	if authorizerConfiguration == nil {
 		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
-	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(authorizerConfiguration, grpcClientFactory)
+	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(authorizerConfiguration, dependenciesGroup, grpcClientFactory)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
 	}
