@@ -32,8 +32,7 @@ import {
   HddOutlined,
   CodeOutlined,
   BranchesOutlined,
-  InfoCircleOutlined,
-  CopyFilled,
+  InfoCircleOutlined
 } from "@ant-design/icons";
 import themeStyles from "@/theme/theme.module.css";
 import BuildStepResultTag, {
@@ -51,11 +50,12 @@ import MemoryMetricsDisplay from "../MemoryMetrics";
 import TimingMetricsDisplay from "../TimingMetrics";
 import NetworkMetricsDisplay from "../NetworkMetrics";
 import TestMetricsDisplay from "../TestsMetrics";
-import { env } from "next-runtime-env";
 import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
 import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
 import BuildProblems from "../Problems";
+import { generateFileUrl } from "@/utils/urlGenerator";
+import { DigestFunction_Value } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
@@ -64,6 +64,7 @@ const BazelInvocation: React.FC<{
 }> = ({ invocationOverview, isNestedWithinBuildCard }) => {
   const {
     invocationID,
+    instanceName,
     build,
     state,
     bazelCommand,
@@ -176,14 +177,19 @@ const BazelInvocation: React.FC<{
     />,
   ];
 
-  if (env("NEXT_PUBLIC_BROWSER_URL") && profile) {
-    var url = new URL(
-      `blobs/sha256/file/${profile.digest}-${profile.sizeInBytes}/${profile.name}`,
-      env("NEXT_PUBLIC_BROWSER_URL")
-    );
+  if (profile) {
+    const url = generateFileUrl(
+      instanceName ?? undefined, 
+      DigestFunction_Value.SHA256, 
+      {
+        hash: profile.digest,
+        sizeBytes: profile.sizeInBytes.toString()
+      },
+      profile.name
+    )
     extraBits.push(
       <DownloadButton
-        url={url.toString()}
+        url={url}
         fileName="profile"
         buttonLabel="Profile"
         enabled={true}
@@ -296,6 +302,7 @@ const BazelInvocation: React.FC<{
               cpu={cpu ?? ""}
               user={user?.LDAP ?? ""}
               invocationId={invocationID}
+              instanceName={instanceName ?? undefined}
               configuration={configurationMnemonic ?? ""}
               numFetches={numFetches ?? 0}
               startedAt={invocationOverview.startedAt}
@@ -460,6 +467,7 @@ const BazelInvocation: React.FC<{
         <Space direction="vertical" size="middle" className={themeStyles.space}>
           <BuildProblems
             invocationId={invocationID}
+            instanceName={instanceName ?? undefined}
             onTabChange={onTabChange}
           />
         </Space>

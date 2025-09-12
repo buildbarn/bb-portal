@@ -29,27 +29,27 @@ function isStillProcessing(actionProblem: ActionProblem): boolean {
   return stderrProcessing || stdoutProcessing;
 }
 
-const ActionOutputPanel: React.FC<{ blobReference: BlobReference; spin: boolean }> = ({ blobReference, spin }) => {
+const ActionOutputPanel: React.FC<{ blobReference: BlobReference; instanceName: string | undefined; spin: boolean }> = ({ blobReference, instanceName, spin }) => {
   return (
     <Space direction="vertical" size="middle" className={themeStyles.space}>
       {/* Display spin behind the actions, making UI stable when query is being executed. */}
       <div className={themeStyles.flex}>
         {spin && <Spin />}
       </div>
-      <LogOutput blobReference={blobReference} />
+      <LogOutput blobReference={blobReference} instanceName={instanceName} />
     </Space>
   );
 };
 
-const ActionProblemPanel: React.FC<{ actionProblem: ActionProblem; spin: boolean }> = ({ actionProblem, spin }) => {
+const ActionProblemPanel: React.FC<{ actionProblem: ActionProblem; instanceName: string | undefined; spin: boolean }> = ({ actionProblem, instanceName, spin }) => {
   const empty = <Empty description="No action output." />;
   const { stderr, stdout } = actionProblem;
 
   if (!stderr && !stdout) {
     return empty;
   }
-  const stderrPanel = stderr && <ActionOutputPanel blobReference={stderr} spin={spin} />;
-  const stdoutPanel = stdout && <ActionOutputPanel blobReference={stdout} spin={spin} />;
+  const stderrPanel = stderr && <ActionOutputPanel blobReference={stderr} instanceName={instanceName} spin={spin} />;
+  const stdoutPanel = stdout && <ActionOutputPanel blobReference={stdout} instanceName={instanceName} spin={spin} />;
 
   if (stderr && !stdout) {
     return stderrPanel ?? null;
@@ -74,10 +74,11 @@ const ActionProblemPanel: React.FC<{ actionProblem: ActionProblem; spin: boolean
 
 interface Props {
   id: string;
+  instanceName: string | undefined;
 }
 
 
-const ActionProblemContainer: React.FC<Props> = ({ id }) => {
+const ActionProblemContainer: React.FC<Props> = ({ id, instanceName }) => {
   const { data, error, loading, stopPolling, networkStatus } = useQuery<GetActionProblemQuery>(GET_ACTION_PROBLEM, {
     variables: { id },
     fetchPolicy: 'cache-and-network',
@@ -105,7 +106,7 @@ const ActionProblemContainer: React.FC<Props> = ({ id }) => {
     return <ErrorAlert error={new Error('Expected action problem but server returned something else')} />;
   }
 
-  return <ActionProblemPanel actionProblem={actionProblem} spin={networkStatus === NetworkStatus.poll} />;
+  return <ActionProblemPanel actionProblem={actionProblem} instanceName={instanceName} spin={networkStatus === NetworkStatus.poll} />;
 };
 
 export default ActionProblemContainer;

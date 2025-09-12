@@ -7,8 +7,7 @@ import type {
   OutputFile,
   OutputSymlink,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import { digestFunctionValueToString } from "@/utils/digestFunctionUtils";
-import { generateFileUrl } from "@/utils/urlGenerator";
+import { generateDirectoryUrl, generateFileUrl } from "@/utils/urlGenerator";
 import type { FilesTableEntry } from "./Columns";
 
 export function filesTableEntryFromOutputDirectory(
@@ -24,9 +23,9 @@ export function filesTableEntryFromOutputDirectory(
     mode: "drwxr-xr-x",
     size: digest?.sizeBytes,
     filename: outputDirectory.path,
-    href: `/${instanceName}/blobs/${digestFunctionValueToString(
-      digestFunction,
-    )}/directory/${digest?.hash}-${digest?.sizeBytes}`,
+    href: digest
+      ? generateDirectoryUrl(instanceName, digestFunction, digest)
+      : undefined,
   };
 }
 
