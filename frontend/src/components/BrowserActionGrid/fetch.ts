@@ -168,7 +168,7 @@ export const getActionConsoleOutput = async (
     return undefined;
   }
 
-  const MAX_CONSOLE_OUTPUT_SIZE = 10000;
+  const MAX_CONSOLE_OUTPUT_SIZE = 100000;
   if (Number.parseInt(digest.sizeBytes) > MAX_CONSOLE_OUTPUT_SIZE) {
     return {
       name,
