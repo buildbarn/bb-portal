@@ -8,6 +8,10 @@ import Link from "next/link";
 import OperationStatusTag from "../OperationStatusTag";
 import { operationsStateToActionPageUrl } from "../OperationsGrid/utils";
 import PropertyTagList from "../PropertyTagList";
+import {
+  historicalExecuteResponseDigestFromUrl,
+  historicalExecuteResponseUrlFromOperation,
+} from "./utils";
 
 interface Props {
   operation: OperationState;
@@ -17,6 +21,11 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
   const invocationMetadata = operation.invocationName?.ids?.map((value) => {
     return JSON.stringify(protobufToObjectWithTypeField(value, false));
   });
+
+  const historical_execute_response_url =
+    historicalExecuteResponseUrlFromOperation(operation);
+  const historical_execute_response_digest =
+    historicalExecuteResponseDigestFromUrl(historical_execute_response_url);
 
   return (
     <Space direction="vertical" size="middle" style={{ display: "flex" }}>
@@ -66,6 +75,14 @@ const OperationStateDisplay: React.FC<Props> = ({ operation }) => {
             >{`${operation.actionDigest.hash}-${operation.actionDigest.sizeBytes}`}</Link>
           )}
         </Descriptions.Item>
+        {historical_execute_response_url &&
+          historical_execute_response_digest && (
+            <Descriptions.Item label="Historical execute response digest">
+              <Link href={historical_execute_response_url}>
+                {historical_execute_response_digest}
+              </Link>
+            </Descriptions.Item>
+          )}
         <Descriptions.Item label="Timeout">
           {operation.timeout &&
             `${dayjs(operation.timeout).diff(undefined, "seconds")}s`}

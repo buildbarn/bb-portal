@@ -3,6 +3,10 @@ import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
 import Link from "next/link";
+import {
+  historicalExecuteResponseDigestFromUrl,
+  historicalExecuteResponseUrlFromOperation,
+} from "../OperationStateDisplay/utils";
 import OperationStatusTag from "../OperationStatusTag";
 import { operationsStateToActionPageUrl } from "./utils";
 
@@ -23,13 +27,28 @@ const timeoutColumn: ColumnType<OperationState> = {
 };
 
 const actionDigestColumn: ColumnType<OperationState> = {
-  title: "Action digest",
+  title: "Action digest / Historical execute response digest",
   key: "actionDigest",
-  render: (record: OperationState) => (
-    <Link
-      href={operationsStateToActionPageUrl(record) || ""}
-    >{`${record.actionDigest?.hash}-${record.actionDigest?.sizeBytes}`}</Link>
-  ),
+  render: (record: OperationState) => {
+    const historical_execute_response_url =
+      historicalExecuteResponseUrlFromOperation(record);
+    const historical_execute_response_digest =
+      historicalExecuteResponseDigestFromUrl(historical_execute_response_url);
+
+    if (historical_execute_response_digest && historical_execute_response_url) {
+      return (
+        <Link href={historical_execute_response_url}>
+          {historical_execute_response_digest}
+        </Link>
+      );
+    }
+
+    return (
+      <Link
+        href={operationsStateToActionPageUrl(record) || ""}
+      >{`${record.actionDigest?.hash}-${record.actionDigest?.sizeBytes}`}</Link>
+    );
+  },
 };
 
 const targetIdColumn: ColumnType<OperationState> = {
