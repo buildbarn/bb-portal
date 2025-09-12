@@ -34,6 +34,7 @@ const BrowserCommandDescription: React.FC<Params> = ({
               }/blobs/${digestFunctionValueToString(
                 browserPageParams.digestFunction,
               )}/command/${commandDigest?.hash}-${commandDigest?.sizeBytes}`}
+              style={{ textDecoration: "underline" }}
             >
               Command
             </Link>
