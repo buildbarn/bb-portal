@@ -12,6 +12,7 @@ interface Props {
     user: string,
     status: string,
     invocationId: string,
+    instanceName: string | undefined,
     configuration: string
     startedAt: string
     endedAt: string
@@ -30,6 +31,7 @@ export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({
     user,
     status,
     invocationId,
+    instanceName,
     configuration,
     startedAt,
     endedAt,
@@ -49,6 +51,11 @@ export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({
                 <Descriptions.Item label="Invocation Id">
                     {invocationId}
                 </Descriptions.Item>
+                { instanceName != undefined && instanceName !== "" &&
+                    <Descriptions.Item label="Instance name">
+                        {instanceName}
+                    </Descriptions.Item>
+                }
                 <Descriptions.Item label="Duration">
                     <PortalDuration key="duration" from={startedAt} to={endedAt} includeIcon includePopover />
                 </Descriptions.Item>
