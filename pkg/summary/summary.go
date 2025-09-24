@@ -48,13 +48,14 @@ func (r MissReason) EnumIndex() int32 {
 // String Enum helper method.
 func (r MissReason) String() string {
 	return [...]string{
-		"DIFFERENT_ACTION_KEY",
-		"DIFFERENT_DEPS",
-		"DIFFERENT_ENVIRONMENT",
-		"DIFFERENT_FILES",
+		"DIFFERENT_ACTION_KEY",  // deprecated for DIGEST_MISMATCH
+		"DIFFERENT_DEPS",        // deprecated for DIGEST_MISMATCH
+		"DIFFERENT_ENVIRONMENT", // deprecated for DIGEST_MISMATCH
+		"DIFFERENT_FILES",       // deprecated for DIGEST_MISMATCH
 		"CORRUPTED_CACHE_ENTRY",
 		"NOT_CACHED",
 		"UNCONDITIONAL_EXECUTION",
+		"DIGEST_MISMATCH",
 	}[r]
 }
 
