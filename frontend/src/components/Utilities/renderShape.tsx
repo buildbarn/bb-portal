@@ -1,4 +1,37 @@
-import { Sector } from 'recharts';
+import { Sector, type SectorProps } from 'recharts';
+
+export const renderActiveShapeCompact = ({
+  cx,
+  cy,
+  innerRadius,
+  outerRadius,
+  startAngle,
+  endAngle,
+  fill,
+}: SectorProps) => {
+  return (
+    <g>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+      <Sector
+        cx={cx}
+        cy={cy}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        innerRadius={outerRadius && outerRadius + 6}
+        outerRadius={outerRadius && outerRadius + 10}
+        fill={fill}
+      />
+    </g>
+  );
+};
 
 export const renderActiveShape = (props: any) => {
     const RADIAN = Math.PI / 180;
