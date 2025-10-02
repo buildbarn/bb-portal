@@ -10,6 +10,7 @@ import {
   TestCollection,
   TargetPair,
   BuildGraphMetrics,
+  SystemNetworkStats,
 } from "@/graphql/__generated__/graphql";
 import styles from "../AppBar/index.module.css";
 import React, { useState } from "react";
@@ -19,20 +20,14 @@ import { Space, Tabs, Tooltip, Typography } from "antd";
 import type { TabsProps } from "antd/lib";
 import {
   BuildOutlined,
-  FileSearchOutlined,
-  ClusterOutlined,
-  ExclamationCircleOutlined,
-  NodeCollapseOutlined,
-  DeploymentUnitOutlined,
+  FileSearchOutlined, ExclamationCircleOutlined, DeploymentUnitOutlined,
   ExperimentOutlined,
   RadiusUprightOutlined,
   AreaChartOutlined,
   FieldTimeOutlined,
-  WifiOutlined,
-  HddOutlined,
-  CodeOutlined,
+  WifiOutlined, CodeOutlined,
   BranchesOutlined,
-  InfoCircleOutlined
+  InfoCircleOutlined, LineChartOutlined
 } from "@ant-design/icons";
 import themeStyles from "@/theme/theme.module.css";
 import BuildStepResultTag, {
@@ -41,14 +36,10 @@ import BuildStepResultTag, {
 import DownloadButton from "@/components/DownloadButton";
 import Link from "@/components/Link";
 import LogViewer from "../LogViewer";
-import RunnerMetrics from "../RunnerMetrics";
-import AcMetrics from "../ActionCacheMetrics";
 import TargetMetricsDisplay from "../TargetMetrics";
-import ActionDataMetrics from "../ActionDataMetrics";
 import ArtifactsDataMetrics from "../Artifacts";
 import MemoryMetricsDisplay from "../MemoryMetrics";
-import TimingMetricsDisplay from "../TimingMetrics";
-import NetworkMetricsDisplay from "../NetworkMetrics";
+import SystemMetricsDisplay from "../SystemMetricsDisplay";
 import TestMetricsDisplay from "../TestsMetrics";
 import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
@@ -56,6 +47,7 @@ import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
 import BuildProblems from "../Problems";
 import { generateFileUrl } from "@/utils/urlGenerator";
 import { DigestFunction_Value } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
+import ActionStatisticsDisplay from "../ActionStatisticsDisplay";
 
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
@@ -112,10 +104,8 @@ const BazelInvocation: React.FC<{
     metrics?.timingMetrics ?? undefined;
 
   //netowrk metrics
-  var networkMetrics: NetworkMetrics | undefined =
-    metrics?.networkMetrics ?? undefined;
-  const bytesRecv = networkMetrics?.systemNetworkStats?.bytesRecv ?? 0;
-  const bytesSent = networkMetrics?.systemNetworkStats?.bytesSent ?? 0;
+  var systemNetworkStats: SystemNetworkStats | undefined =
+    metrics?.networkMetrics?.systemNetworkStats ?? undefined;
 
   //test data
   var testCollections: TestCollection[] | undefined | null = testCollection;
@@ -176,8 +166,8 @@ const BazelInvocation: React.FC<{
 
   if (profile) {
     const url = generateFileUrl(
-      instanceName ?? undefined, 
-      DigestFunction_Value.SHA256, 
+      instanceName ?? undefined,
+      DigestFunction_Value.SHA256,
       {
         hash: profile.digest,
         sizeBytes: profile.sizeInBytes.toString()
@@ -204,11 +194,10 @@ const BazelInvocation: React.FC<{
 
   const hideTestsTab: boolean = (testCollection?.length ?? 0) == 0;
   const hideTargetsTab: boolean = (targetData?.length ?? 0) == 0 ? true : false;
-  const hideNetworkTab: boolean = bytesRecv == 0 && bytesSent == 0;
   const hideSourceControlTab: boolean =
     sourceControl?.runID == undefined ||
-    sourceControl.runID == null ||
-    sourceControl.runID == ""
+      sourceControl.runID == null ||
+      sourceControl.runID == ""
       ? true
       : false;
   const hideLogsTab: boolean = false;
@@ -222,24 +211,34 @@ const BazelInvocation: React.FC<{
     (artifactMetrics?.sourceArtifactsRead?.count ?? 0) == 0 &&
     (artifactMetrics?.outputArtifactsFromActionCache?.count ?? 0) == 0 &&
     (artifactMetrics?.topLevelArtifacts?.count ?? 0) == 0;
-  const hideActionsDataTab: boolean = acMetrics?.actionsExecuted == 0;
-  const hideActionCacheTab: boolean =
-    acMetrics?.actionCacheStatistics?.hits == 0 &&
-    acMetrics?.actionCacheStatistics?.misses == 0;
-  const hideRunnersTab: boolean = runnerMetrics.length == 0;
-  const hideTimingTab: boolean =
-    timingMetrics?.wallTimeInMs == 0 &&
-    timingMetrics.executionPhaseTimeInMs == 0 &&
-    timingMetrics.analysisPhaseTimeInMs == 0 &&
-    timingMetrics.cpuTimeInMs == 0 &&
-    timingMetrics.actionsExecutionStartInMs == 0 &&
-    buildGraphMetrics?.actionCount == 0 &&
-    buildGraphMetrics.actionLookupValueCount == 0 &&
-    buildGraphMetrics.actionCountNotIncludingAspects == 0 &&
-    buildGraphMetrics.inputFileConfiguredTargetCount == 0 &&
-    buildGraphMetrics.outputArtifactCount == 0 &&
-    buildGraphMetrics.postInvocationSkyframeNodeCount == 0 &&
-    buildGraphMetrics.outputFileConfiguredTargetCount == 0;
+  const hideActionsTab: boolean =
+    (acMetrics?.actionsExecuted == 0) &&
+    (acMetrics?.actionCacheStatistics?.hits == 0) &&
+    (acMetrics?.actionCacheStatistics?.misses == 0);
+  const hideSystemMetricsTab: boolean =
+    (timingMetrics == undefined &&
+      systemNetworkStats == undefined) || (
+      timingMetrics?.wallTimeInMs == 0 &&
+      timingMetrics?.executionPhaseTimeInMs == 0 &&
+      timingMetrics?.analysisPhaseTimeInMs == 0 &&
+      timingMetrics?.cpuTimeInMs == 0 &&
+      timingMetrics?.actionsExecutionStartInMs == 0 &&
+      buildGraphMetrics?.actionCount == 0 &&
+      buildGraphMetrics.actionLookupValueCount == 0 &&
+      buildGraphMetrics.actionCountNotIncludingAspects == 0 &&
+      buildGraphMetrics.inputFileConfiguredTargetCount == 0 &&
+      buildGraphMetrics.outputArtifactCount == 0 &&
+      buildGraphMetrics.postInvocationSkyframeNodeCount == 0 &&
+      buildGraphMetrics.outputFileConfiguredTargetCount == 0 &&
+      systemNetworkStats?.bytesRecv == 0 &&
+      systemNetworkStats?.bytesSent == 0 &&
+      systemNetworkStats?.packetsRecv == 0 &&
+      systemNetworkStats?.packetsSent == 0 &&
+      systemNetworkStats?.peakBytesRecvPerSec == 0 &&
+      systemNetworkStats?.peakBytesSentPerSec == 0 &&
+      systemNetworkStats?.peakPacketsRecvPerSec == 0 &&
+      systemNetworkStats?.peakPacketsSentPerSec == 0
+    );
 
   interface TabShowHideDisplay {
     hide: boolean;
@@ -249,16 +248,13 @@ const BazelInvocation: React.FC<{
   const showHideTabs: TabShowHideDisplay[] = [
     { key: "BazelInvocationTabs-Tests", hide: hideTestsTab },
     { key: "BazelInvocationTabs-Targets", hide: hideTargetsTab },
-    { key: "BazelInvocationTabs-Network", hide: hideNetworkTab },
     { key: "BazelInvocationTabs-SourceControl", hide: hideSourceControlTab },
     { key: "BazelInvocationTabs-Logs", hide: hideLogsTab },
     { key: "BazelInvocationTabs-Memory", hide: hideMemoryTab },
     { key: "BazelInvocationTabs-Problems", hide: hideProblemsTab },
     { key: "BazelInvocationTabs-Artifacts", hide: hideArtifactsTab },
-    { key: "BazelInvocationTabs-ActionsData", hide: hideActionsDataTab },
-    { key: "BazelInvocationTabs-ActionCache", hide: hideActionCacheTab },
-    { key: "BazelInvocationTabs-Timing", hide: hideTimingTab },
-    { key: "BazelInvocationTabs-Runners", hide: hideRunnersTab },
+    { key: "BazelInvocationTabs-ActionStatistics", hide: hideActionsTab },
+    { key: "BazelInvocationTabs-SystemMetrics", hide: hideSystemMetricsTab },
   ];
 
   const [activeKey, setActiveKey] = useState(
@@ -314,6 +310,19 @@ const BazelInvocation: React.FC<{
       ),
     },
     {
+      key: "BazelInvocationTabs-ActionStatistics",
+      label: "Action Statistics",
+      icon: <LineChartOutlined />,
+      children: (
+        <Space direction="vertical" size="middle" className={themeStyles.space}>
+          <ActionStatisticsDisplay
+            actionData={acMetrics}
+            runnerMetrics={runnerMetrics}
+          />
+        </Space>
+      ),
+    },
+    {
       key: "BazelInvocationTabs-Logs",
       label: "Logs",
       icon: <FileSearchOutlined />,
@@ -331,36 +340,6 @@ const BazelInvocation: React.FC<{
           >
             <LogViewer log={buildLogs} />
           </PortalCard>
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-Runners",
-      label: "Runners",
-      icon: <ClusterOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <RunnerMetrics runnerMetrics={runnerMetrics} />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-ActionCache",
-      label: "Action Cache",
-      icon: <HddOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <AcMetrics acMetrics={acMetrics} />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-ActionsData",
-      label: "Actions Data",
-      icon: <NodeCollapseOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <ActionDataMetrics acMetrics={acMetrics} />
         </Space>
       ),
     },
@@ -385,14 +364,15 @@ const BazelInvocation: React.FC<{
       ),
     },
     {
-      key: "BazelInvocationTabs-Timing",
-      label: "Timing",
+      key: "BazelInvocationTabs-SystemMetrics",
+      label: "System Metrics",
       icon: <FieldTimeOutlined />,
       children: (
         <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <TimingMetricsDisplay
+          <SystemMetricsDisplay
             timingMetrics={timingMetrics}
             buildGraphMetrics={buildGraphMetrics}
+            systemNetworkStats={systemNetworkStats}
           />
         </Space>
       ),
@@ -420,16 +400,6 @@ const BazelInvocation: React.FC<{
             testMetrics={testCollections}
             targetTimes={targetTimes}
           />
-        </Space>
-      ),
-    },
-    {
-      key: "BazelInvocationTabs-Network",
-      label: "Network",
-      icon: <WifiOutlined />,
-      children: (
-        <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <NetworkMetricsDisplay networkMetrics={networkMetrics} />
         </Space>
       ),
     },
