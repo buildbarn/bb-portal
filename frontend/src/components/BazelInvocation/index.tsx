@@ -34,7 +34,6 @@ import BuildStepResultTag, {
 } from "@/components/BuildStepResultTag";
 import DownloadButton from "@/components/DownloadButton";
 import Link from "@/components/Link";
-import LogViewer from "../LogViewer";
 import TargetMetricsDisplay from "../TargetMetrics";
 import ArtifactsDataMetrics from "../Artifacts";
 import MemoryMetricsDisplay from "../MemoryMetrics";
@@ -47,6 +46,7 @@ import BuildProblems from "../Problems";
 import ActionStatisticsDisplay from "../ActionStatisticsDisplay";
 import ProfileDropdown from "../ProfileDropdown";
 import ansiRegex from 'ansi-regex';
+import BuildLogsDisplay from "../BuildLogsDisplay";
 
 const ansiEscapeRegex = ansiRegex();
 
@@ -73,15 +73,9 @@ const BazelInvocation: React.FC<{
     stepLabel,
     hostname,
     isCiWorker,
-    buildLogs,
 
     //relatedFiles,
   } = invocationOverview;
-
-  const logDownloadUrl = useMemo(
-    () => buildLogs ? `data:text/plain;charset=utf-8,${encodeURIComponent(buildLogs.replace(ansiEscapeRegex, ""))}` : undefined,
-    [buildLogs]
-  );
 
   //data for runner metrics
   var runnerMetrics: RunnerCount[] = [];
@@ -312,26 +306,7 @@ const BazelInvocation: React.FC<{
       icon: <FileSearchOutlined />,
       children: (
         <Space direction="vertical" size="middle" className={themeStyles.space}>
-          <PortalCard
-            type="inner"
-            icon={<FileSearchOutlined />}
-            titleBits={["Raw Build Logs"]}
-            extraBits={[
-              <Tooltip title="Bazel emits logs in ANSI format a screen at a time.  They are presented here concatenated for your convenience.">
-                <ExclamationCircleOutlined />
-              </Tooltip>,
-              logDownloadUrl && (
-                <DownloadButton
-                  enabled={true}
-                  buttonLabel="Download Log"
-                  fileName="log.txt"
-                  url={logDownloadUrl}
-                />
-              ),
-            ]}
-          >
-            <LogViewer log={buildLogs} />
-          </PortalCard>
+          <BuildLogsDisplay invocationId={invocationID} />
         </Space>
       ),
     },
