@@ -91,7 +91,7 @@ const AcMetrics: React.FC<{ acMetrics: ActionSummary | undefined; }> = ({ acMetr
         },
         [setActiveIndexRunner]
     );
-    const acTitle: React.ReactNode[] = [<span key="label">Action Cache Statitics</span>];
+    const acTitle: React.ReactNode[] = [<span key="label">Action Cache Statistics</span>];
 
 
     return (
