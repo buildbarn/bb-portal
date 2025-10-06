@@ -1,6 +1,7 @@
 import PortalAlert from "@/components/PortalAlert";
+import type { ApolloError } from "@apollo/client";
 import { AnsiUp } from "ansi_up";
-import { Card, type CardProps } from "antd";
+import { Card, type CardProps, Spin } from "antd";
 import type React from "react";
 import type { RefAttributes } from "react";
 import { JSX } from "react/jsx-runtime";
@@ -11,9 +12,29 @@ const ansi = new AnsiUp();
 
 interface Props {
   log?: string | null;
+  loading?: boolean;
+  error?: ApolloError | undefined;
 }
 
-const LogViewer: React.FC<Props> = ({ log }) => {
+const LogViewer: React.FC<Props> = ({ log, loading, error }) => {
+  if (loading === true)
+    return (
+      <Spin>
+        <pre />
+      </Spin>
+    );
+
+  if (error) {
+    return (
+      <PortalAlert
+        type="error"
+        message={error.message}
+        showIcon
+        className={styles.alert}
+      />
+    );
+  }
+
   if (!log) {
     return (
       <PortalAlert
@@ -23,10 +44,10 @@ const LogViewer: React.FC<Props> = ({ log }) => {
         className={styles.alert}
       />
     );
-  } else {
-    const innerHTML = ansi.ansi_to_html(log);
-    return <pre dangerouslySetInnerHTML={{ __html: innerHTML }} />;
   }
+
+  const innerHTML = ansi.ansi_to_html(log);
+  return <pre dangerouslySetInnerHTML={{ __html: innerHTML }} />;
 };
 
 type LogViewerCardProps = Props &
