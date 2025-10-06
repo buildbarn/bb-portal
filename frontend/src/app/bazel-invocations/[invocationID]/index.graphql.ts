@@ -3,7 +3,7 @@ import { gql } from "@/graphql/__generated__";
 export const LOAD_FULL_BAZEL_INVOCATION_DETAILS = gql(/* GraphQL */ `
   query LoadFullBazelInvocationDetails($invocationID: String!) {
     bazelInvocation(invocationId: $invocationID) {
-      ...FullBazelInvocationDetails
+      ...BazelInvocationInfo
     }
   }
 `);
@@ -175,7 +175,6 @@ fragment BazelInvocationInfo on BazelInvocation {
     id
     buildUUID
   }
-  buildLogs
   profile {
     id
     name
@@ -306,13 +305,6 @@ fragment BlobReferenceInfo on BlobReference {
   ephemeralURL
 }
 `)
-
-
-export const FULL_BAZEL_INVOCATION_DETAILS = gql(/* GraphQL */ `
-    fragment FullBazelInvocationDetails on BazelInvocation {
-      ...BazelInvocationInfo
-    }
-`);
 
 
 export const GET_ACTION_PROBLEM = gql(/* GraphQL */ `
