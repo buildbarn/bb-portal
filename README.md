@@ -26,7 +26,7 @@ npm install
 From repository root, run:
 
 ```
-bazel run //cmd/bb_portal -- --config-file=$PWD/config/portal.jsonnet
+bazel run //cmd/bb_portal -- $PWD/config/portal.jsonnet
 ```
 
 The backend runs a reverse proxy for the frontend.
