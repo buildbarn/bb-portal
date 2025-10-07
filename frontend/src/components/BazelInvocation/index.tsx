@@ -13,7 +13,7 @@ import {
   SystemNetworkStats,
 } from "@/graphql/__generated__/graphql";
 import styles from "../AppBar/index.module.css";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import PortalDuration from "@/components/PortalDuration";
 import PortalCard from "@/components/PortalCard";
 import { Space, Tabs, Tooltip, Typography } from "antd";
@@ -48,6 +48,9 @@ import BuildProblems from "../Problems";
 import { generateFileUrl } from "@/utils/urlGenerator";
 import { DigestFunction_Value } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import ActionStatisticsDisplay from "../ActionStatisticsDisplay";
+import ansiRegex from 'ansi-regex';
+
+const ansiEscapeRegex = ansiRegex();
 
 const BazelInvocation: React.FC<{
   invocationOverview: BazelInvocationInfoFragment;
@@ -76,6 +79,11 @@ const BazelInvocation: React.FC<{
 
     //relatedFiles,
   } = invocationOverview;
+
+  const logDownloadUrl = useMemo(
+    () => buildLogs ? `data:text/plain;charset=utf-8,${encodeURIComponent(buildLogs.replace(ansiEscapeRegex, ""))}` : undefined,
+    [buildLogs]
+  );
 
   //data for runner metrics
   var runnerMetrics: RunnerCount[] = [];
@@ -336,6 +344,14 @@ const BazelInvocation: React.FC<{
               <Tooltip title="Bazel emits logs in ANSI format a screen at a time.  They are presented here concatenated for your convenience.">
                 <ExclamationCircleOutlined />
               </Tooltip>,
+              logDownloadUrl && (
+                <DownloadButton
+                  enabled={true}
+                  buttonLabel="Download Log"
+                  fileName="log.txt"
+                  url={logDownloadUrl}
+                />
+              ),
             ]}
           >
             <LogViewer log={buildLogs} />
