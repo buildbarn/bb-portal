@@ -12,8 +12,8 @@ import TargetGridRow from '../TargetGridRow';
 import { FIND_TARGETS } from '@/app/targets/graphql';
 import NullBooleanTag from '@/components/NullableBooleanTag';
 import Link from 'next/link';
-import { millisecondsToTime } from '@/components/Utilities/time';
 import styles from "@/theme/theme.module.css"
+import { readableDurationFromMilliseconds } from '@/utils/time';
 
 interface Props {
     label: string
@@ -46,7 +46,7 @@ const target_columns: TableColumnsType<GraphDataPoint> = [
         title: "Duration",
         dataIndex: "duration",
         align: "right",
-        render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.duration)}</span>,
+        render: (_, record) => <span className={styles.numberFormat}>{readableDurationFromMilliseconds(record.duration, {smallestUnit: "ms"})}</span>,
     },
 ]
 
@@ -85,7 +85,7 @@ const TestDetails: React.FC<Props> = ({ label }) => {
             <h1>{label}</h1>
             <Row>
                 <Space size="large">
-                    <Statistic title="Average Duration" value={total_duration / totalCnt} />
+                    <Statistic title="Average Duration" value={readableDurationFromMilliseconds(total_duration / totalCnt, {smallestUnit: "ms"})} />
                     <Statistic title="Total Runs" value={totalCnt} />
                 </Space>
             </Row>

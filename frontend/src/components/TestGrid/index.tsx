@@ -14,7 +14,6 @@ import TestGridRow from '../TestGridRow';
 import PortalAlert from '../PortalAlert';
 import Link from 'next/link';
 import styles from "../../theme/theme.module.css"
-import { millisecondsToTime } from '../Utilities/time';
 import { GET_TEST_LABELS } from './graphql';
 interface Props {}
 

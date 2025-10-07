@@ -9,8 +9,8 @@ import PortalCard from "../PortalCard";
 import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
 import { SearchOutlined, ExperimentOutlined, } from "@ant-design/icons";
 import Link from "next/link";
-import { millisecondsToTime } from "../Utilities/time";
 import styles from "../../theme/theme.module.css"
+import { readableDurationFromMilliseconds } from "@/utils/time";
 interface TestDataType {
     key: React.Key;
     status: string;
@@ -147,7 +147,7 @@ const test_columns: TableColumnsType<TestDataType> = [
     {
         title: "Duration",
         dataIndex: "value",
-        render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.duration)}</span>,
+        render: (_, record) => <span className={styles.numberFormat}>{readableDurationFromMilliseconds(record.duration, {smallestUnit: "ms"})}</span>,
         align: "right",
         sorter: (a, b) => a.value - b.value,
     },

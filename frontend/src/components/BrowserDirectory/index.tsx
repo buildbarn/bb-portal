@@ -19,7 +19,7 @@ import {
   readBloomFilter,
 } from "@/utils/bloomFilter";
 import { fetchCasObjectAndParse } from "@/utils/fetchCasObject";
-import { formatFileSizeFromString } from "@/utils/formatValues";
+import { readableFileSizeFromString } from "@/utils/filesize";
 import { generateDirectoryUrl, generateFileUrl } from "@/utils/urlGenerator";
 import { DownOutlined, RightOutlined } from "@ant-design/icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -364,7 +364,7 @@ const DirectoryNode: React.FC<{
         )}
       </Flex>
       <Space size="large">
-        {sizeBytes && <pre>{formatFileSizeFromString(sizeBytes)}</pre>}
+        {sizeBytes && <pre>{readableFileSizeFromString(sizeBytes)}</pre>}
         <pre>{permissions}</pre>
       </Space>
     </Flex>

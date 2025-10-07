@@ -1,21 +1,17 @@
 import React, { useCallback, useState } from 'react';
-import { TableColumnsType } from "antd/lib"
-import { Space, Row, Statistic, Table, TableProps, TablePaginationConfig, Pagination, Alert } from 'antd';
+import { TableColumnsType } from "antd/lib";
+import { Space, Row, Table, TableProps, TablePaginationConfig } from 'antd';
 import { TestStatusEnum } from '../../TestStatusTag';
-import type { StatisticProps } from "antd/lib";
 import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
 import { SearchOutlined } from '@ant-design/icons';
 import { useQuery } from '@apollo/client';
 import { FilterValue } from 'antd/es/table/interface';
 import { uniqueId } from 'lodash';
-import { GetTargetsQueryVariables, GetTargetsWithOffsetQueryVariables, GetUniqueTargetLabelsQuery, GetUniqueTargetLabelsQueryVariables } from '@/graphql/__generated__/graphql';
+import { GetTargetsWithOffsetQueryVariables, GetUniqueTargetLabelsQueryVariables } from '@/graphql/__generated__/graphql';
 import TargetGridRow from '../TargetGridRow';
 import PortalAlert from '../../PortalAlert';
 import Link from 'next/link';
-import styles from "../../../theme/theme.module.css"
-import { millisecondsToTime } from '../../Utilities/time';
-import { GET_TARGETS } from "./graphql"
-import { any } from 'zod';
+import { GET_TARGETS } from "./graphql";
 
 interface Props { }
 

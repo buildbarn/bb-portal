@@ -11,9 +11,9 @@ import { FIND_TESTS_WITH_CACHE } from './graphql';
 import PortalCard from '../PortalCard';
 import { FieldTimeOutlined, BorderInnerOutlined } from '@ant-design/icons/lib/icons';
 import NullBooleanTag from '../NullableBooleanTag';
-import { millisecondsToTime } from '../Utilities/time';
 import styles from "@/theme/theme.module.css"
 import Link from 'next/link';
+import { readableDurationFromMilliseconds } from '@/utils/time';
 
 interface Props {
     label: string
@@ -57,7 +57,7 @@ const test_columns: TableColumnsType<GraphDataPoint> = [
     {
         title: "Duration",
         dataIndex: "duration",
-        render: (_, record) => <span className={styles.numberFormat}>{millisecondsToTime(record.duration)}</span>,
+        render: (_, record) => <span className={styles.numberFormat}>{readableDurationFromMilliseconds(record.duration, {smallestUnit: "ms"})}</span>,
         align: "right",
     },
 
@@ -108,7 +108,7 @@ const TestDetails: React.FC<Props> = ({ label }) => {
             <h1>{label}</h1>
             <Row>
                 <Space size="large">
-                    <Statistic title="Average Duration" value={total_duration / totalCnt} />
+                    <Statistic title="Average Duration" value={readableDurationFromMilliseconds(total_duration / totalCnt, {smallestUnit: "ms"})} />
                     <Statistic title="Total Runs" value={totalCnt} />
                     <Statistic title="Cached Locally" value={local_cached} />
                     <Statistic title="Cached Remotely" value={remote_cached} valueStyle={{ color: "#82ca9d" }} />

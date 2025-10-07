@@ -1,7 +1,7 @@
 "use client";
 
 import type { ExecutedActionMetadata } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import { formatDurationFromDates } from "@/utils/formatValues";
+import { readableDurationFromDates } from "@/utils/time";
 import { ClockCircleOutlined } from "@ant-design/icons";
 import { Flex, Space, Typography } from "antd";
 import type React from "react";
@@ -26,7 +26,11 @@ const formatTimelineElement = (
           <ClockCircleOutlined />
           <Typography.Text type="secondary">
             {" "}
-            (+{formatDurationFromDates(previous, timestamp, 3, 0)})
+            (+
+            {readableDurationFromDates(previous, timestamp, {
+              smallestUnit: "ms",
+            })}
+            )
           </Typography.Text>
         </>
       )}
