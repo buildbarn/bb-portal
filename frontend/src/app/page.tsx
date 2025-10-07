@@ -6,9 +6,9 @@ import { Divider, Space, Typography } from "antd";
 import { env } from "next-runtime-env";
 import styles from "./page.module.css";
 
-const bazelrcLines = `build --bes_backend=${env("NEXT_PUBLIC_BES_GRPC_BACKEND_URL")}\nbuild --bes_results_url=${env("NEXT_PUBLIC_BES_BACKEND_URL")}/bazel-invocations/`;
-
 export default function Home() {
+  const bazelrcLines = `build --bes_backend=${env("NEXT_PUBLIC_BES_GRPC_BACKEND_URL")}\nbuild --bes_results_url=${window.location.origin}/bazel-invocations/`;
+
   return (
     <Content
       content={
