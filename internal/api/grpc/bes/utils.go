@@ -1,6 +1,7 @@
 package bes
 
 import (
+	"bufio"
 	"context"
 	"strings"
 
@@ -24,7 +25,9 @@ func GetNormalizedIncompleteBuildLogs(ctx context.Context, invocation *ent.Bazel
 	}
 
 	result := []string{}
-	for _, line := range strings.Split(sb.String(), "\n") {
+	scanner := bufio.NewScanner(strings.NewReader(sb.String()))
+	for scanner.Scan() {
+		line := scanner.Text()
 		for {
 			// ANSI escape sequence for removing the previous line
 			index := strings.Index(line, "\r\x1b[1A\x1b[K")
@@ -38,5 +41,9 @@ func GetNormalizedIncompleteBuildLogs(ctx context.Context, invocation *ent.Bazel
 		}
 		result = append(result, line)
 	}
+	if err := scanner.Err(); err != nil {
+		return "", util.StatusWrap(err, "Failed to read normalized build logs")
+	}
+
 	return strings.Join(result, "\n"), nil
 }
