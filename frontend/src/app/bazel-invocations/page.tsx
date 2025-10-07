@@ -7,11 +7,11 @@ import PortalCard from '@/components/PortalCard';
 import { BuildFilled } from '@ant-design/icons';
 import BazelInvocationsTable from "@/components/BazelInvocationsTable";
 import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
-import { notFound } from 'next/navigation';
+import PageDisabled from '@/components/PageDisabled';
 
 const Page: React.FC = () => {
-  if (!isFeatureEnabled(FeatureType.BES)) {
-    return notFound();
+  if (!isFeatureEnabled(FeatureType.BES) || !isFeatureEnabled(FeatureType.BES_PAGE_INVOCATIONS)) {
+    return <PageDisabled />;
   }
   const screenSize = useScreenSize();
   return (

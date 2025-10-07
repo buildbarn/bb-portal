@@ -42,7 +42,7 @@ interface BuildGridRowDataType {
 
 
 const Page: React.FC<PageParams> = ({ params }) => {
-  if (!isFeatureEnabled(FeatureType.BES)) {
+  if (!isFeatureEnabled(FeatureType.BES) || !isFeatureEnabled(FeatureType.BES_PAGE_BUILDS)) {
     return <PageDisabled />;
   }
   return <PageContent params={params}/>

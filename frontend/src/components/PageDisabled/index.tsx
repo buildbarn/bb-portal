@@ -14,7 +14,7 @@ const PageDisabled: React.FC = () => {
             <Typography.Title>This page is disabled.</Typography.Title>
             <div>
               <Typography.Paragraph>
-                This page is currently disabled. If you are the system administrator, you can enable it by changing the environment variables of the frontend process.
+                This page is currently disabled. If you are the system administrator, you can enable it by changing the environment variables of the portal frontend process.
               </Typography.Paragraph>
               <Typography.Paragraph>
                 Available environment variables can be found <Link href='https://github.com/buildbarn/bb-portal/blob/main/frontend/.env'>here</Link>.
