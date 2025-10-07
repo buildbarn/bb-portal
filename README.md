@@ -11,6 +11,30 @@ The grouping of Bazel invocations by build is a differentiating feature of the B
 Buildbarn Portal uses a local file-backed database to persist its data so users can continue referencing analyzed results beyond initial viewing.
 The service offers basic functionality for browsing and searching among these persisted Bazel invocation results.
 
+## Configuration
+
+The backend is configured via a jsonnet configuration file. Look at `config/portal.jsonnet` for an example configuration
+file, and `pkg/proto/configuration/bb_portal/bb_portal.proto` for the configuration schema.
+
+The frontend is configured via environment variables. The following environment variables can be used:
+
+| Variable | Default value | Description |
+|----------|---------------|-------------|
+| `NEXT_PUBLIC_BES_BACKEND_URL` | `http://localhost:8081` | The URL that the frontend uses to connect to the backend. |
+| `NEXT_PUBLIC_BES_GRPC_BACKEND_URL` | `grpc://localhost:8082` | The gRPC URL where the backend listens for the BES. |
+| `NEXT_PUBLIC_COMPANY_NAME` | `Example Co` | Used to display the company name in the UI. |
+| `NEXT_PUBLIC_ENABLED_FEATURES_BEP_UPLOAD` | `true` | Enables the upload of BEP files via the UI. |
+| `NEXT_PUBLIC_ENABLED_FEATURES_BES` | `true` | Enables the BES features in the UI. |
+| `NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_BUILDS` | `true` | Enables the Builds pages in the UI. |
+| `NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_INVOCATIONS` | `true` | Enables the Invocations pages in the UI. |
+| `NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_TARGETS` | `true` | Enables the Targets pages in the UI. |
+| `NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_TESTS` | `true` | Enables the Tests pages in the UI. |
+| `NEXT_PUBLIC_ENABLED_FEATURES_BES_PAGE_TRENDS` | `true` | Enables the Trends pages in the UI. |
+| `NEXT_PUBLIC_ENABLED_FEATURES_BROWSER` | `true` | Enables the Browser pages in the UI. |
+| `NEXT_PUBLIC_ENABLED_FEATURES_SCHEDULER` | `true` | Enables the Scheduler pages in the UI. |
+| `NEXT_PUBLIC_FOOTER_CONTENT_JSON` | `[{"text": "Buildteam", "href": "https://buildteamworld.slack.com/archives/CD6HZC750", "icon": "slack"}]` | JSON array of links to display in the footer. Each link should have `text`, `href`, and `icon` properties. The `icon` can be a URL or one of `slack`, `github` and `discord`. |
+| `NEXT_PUBLIC_GITHUB_URL` | `https://github.com` | URL to GitHub. Change if you are using GitHub enterprise. |
+
 ## Setting Up Buildbarn Portal
 
 From `./frontend`, run:
