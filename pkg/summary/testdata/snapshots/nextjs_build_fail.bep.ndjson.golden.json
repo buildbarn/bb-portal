@@ -277,7 +277,7 @@
           "TotalNumCached": 1,
           "FirstStartTime": 0,
           "LastStopTime": 0,
-          "TotalRunDuration": 170000,
+          "TotalRunDuration": 170,
           "Passed": null,
           "Failed": null
         },
@@ -325,7 +325,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-07-25T09:52:57.262971287+02:00"
+        "FirstSeen": "2025-07-25T10:28:10.328314382+02:00"
       },
       "//react/src:lint": {
         "TestSummary": {
@@ -338,7 +338,7 @@
           "TotalNumCached": 1,
           "FirstStartTime": 0,
           "LastStopTime": 0,
-          "TotalRunDuration": 112000,
+          "TotalRunDuration": 112,
           "Passed": null,
           "Failed": null
         },
@@ -386,7 +386,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-07-25T09:52:57.262803309+02:00"
+        "FirstSeen": "2025-07-25T10:28:10.3281344+02:00"
       },
       "//react/src:src_typecheck_test": {
         "TestSummary": {
@@ -399,7 +399,7 @@
           "TotalNumCached": 1,
           "FirstStartTime": 0,
           "LastStopTime": 0,
-          "TotalRunDuration": 85000,
+          "TotalRunDuration": 85,
           "Passed": null,
           "Failed": null
         },
@@ -447,7 +447,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-07-25T09:52:57.262517539+02:00"
+        "FirstSeen": "2025-07-25T10:28:10.327855536+02:00"
       },
       "//react/src:test": {
         "TestSummary": {
@@ -460,7 +460,7 @@
           "TotalNumCached": 1,
           "FirstStartTime": 0,
           "LastStopTime": 0,
-          "TotalRunDuration": 1715000,
+          "TotalRunDuration": 1715,
           "Passed": null,
           "Failed": null
         },
@@ -508,7 +508,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-07-25T09:52:57.262848034+02:00"
+        "FirstSeen": "2025-07-25T10:28:10.328179073+02:00"
       },
       "//react/src:test_lib_typecheck_test": {
         "TestSummary": {
@@ -521,7 +521,7 @@
           "TotalNumCached": 1,
           "FirstStartTime": 0,
           "LastStopTime": 0,
-          "TotalRunDuration": 95000,
+          "TotalRunDuration": 95,
           "Passed": null,
           "Failed": null
         },
@@ -569,7 +569,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-07-25T09:52:57.262567593+02:00"
+        "FirstSeen": "2025-07-25T10:28:10.327908644+02:00"
       },
       "//react:build_smoke_test": {
         "TestSummary": {
@@ -582,7 +582,7 @@
           "TotalNumCached": 1,
           "FirstStartTime": 0,
           "LastStopTime": 0,
-          "TotalRunDuration": 191000,
+          "TotalRunDuration": 191,
           "Passed": null,
           "Failed": null
         },
@@ -630,7 +630,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-07-25T09:52:57.262615263+02:00"
+        "FirstSeen": "2025-07-25T10:28:10.327954538+02:00"
       },
       "//vue:build_test": {
         "TestSummary": {
@@ -643,7 +643,7 @@
           "TotalNumCached": 1,
           "FirstStartTime": 0,
           "LastStopTime": 0,
-          "TotalRunDuration": 68000,
+          "TotalRunDuration": 68,
           "Passed": null,
           "Failed": null
         },
@@ -691,7 +691,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-07-25T09:52:57.262688442+02:00"
+        "FirstSeen": "2025-07-25T10:28:10.328027243+02:00"
       },
       "//vue:type-check": {
         "TestSummary": {
@@ -704,7 +704,7 @@
           "TotalNumCached": 1,
           "FirstStartTime": 0,
           "LastStopTime": 0,
-          "TotalRunDuration": 1180000,
+          "TotalRunDuration": 1180,
           "Passed": null,
           "Failed": null
         },
@@ -752,7 +752,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-07-25T09:52:57.262740109+02:00"
+        "FirstSeen": "2025-07-25T10:28:10.328079499+02:00"
       }
     },
     "Targets": {

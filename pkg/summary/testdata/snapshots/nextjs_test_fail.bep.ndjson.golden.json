@@ -329,7 +329,7 @@
           "TotalNumCached": 0,
           "FirstStartTime": 0,
           "LastStopTime": 0,
-          "TotalRunDuration": 1382000,
+          "TotalRunDuration": 1382,
           "Passed": null,
           "Failed": null
         },
@@ -410,7 +410,7 @@
         "CachedLocally": false,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-07-25T09:52:57.327170196+02:00"
+        "FirstSeen": "2025-07-25T10:28:10.392754834+02:00"
       },
       "//next.js:build_smoke_test": {
         "TestSummary": {
@@ -423,7 +423,7 @@
           "TotalNumCached": 1,
           "FirstStartTime": 0,
           "LastStopTime": 0,
-          "TotalRunDuration": 717000,
+          "TotalRunDuration": 717,
           "Passed": null,
           "Failed": null
         },
@@ -471,7 +471,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-07-25T09:52:57.327047554+02:00"
+        "FirstSeen": "2025-07-25T10:28:10.392625625+02:00"
       },
       "//next.js:build_test": {
         "TestSummary": {
@@ -484,7 +484,7 @@
           "TotalNumCached": 1,
           "FirstStartTime": 0,
           "LastStopTime": 0,
-          "TotalRunDuration": 97000,
+          "TotalRunDuration": 97,
           "Passed": null,
           "Failed": null
         },
@@ -532,7 +532,7 @@
         "CachedLocally": true,
         "CachedRemotely": false,
         "DurationMs": 0,
-        "FirstSeen": "2025-07-25T09:52:57.327032997+02:00"
+        "FirstSeen": "2025-07-25T10:28:10.392610748+02:00"
       }
     },
     "Targets": {
