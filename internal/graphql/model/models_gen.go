@@ -74,12 +74,6 @@ type BlobReference struct {
 	Blob *ent.Blob `json:"-"`
 }
 
-type DeleteResult struct {
-	Deleted    int  `json:"deleted"`
-	Found      int  `json:"found"`
-	Successful bool `json:"successful"`
-}
-
 type ExitCode struct {
 	ID   string `json:"id"`
 	Code int    `json:"code"`
