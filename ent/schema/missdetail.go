@@ -23,6 +23,7 @@ func (MissDetail) Fields() []ent.Field {
 				"CORRUPTED_CACHE_ENTRY",
 				"NOT_CACHED",
 				"UNCONDITIONAL_EXECUTION",
+				"DIGEST_MISMATCH",
 				"UNKNOWN").
 			Default("UNKNOWN").Optional(),
 

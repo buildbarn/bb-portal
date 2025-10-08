@@ -38,6 +38,7 @@ const (
 	MissReasonCORRUPTEDCACHEENTRY
 	MissReasonNOTCACHED
 	MissReasonUNCONDITIONALEXECUTION
+	MissReasonDIGESTMISMATCH
 )
 
 // EnumIndex helper method.
