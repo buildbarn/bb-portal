@@ -18,8 +18,9 @@ import (
 // EvaluationStatUpdate is the builder for updating EvaluationStat entities.
 type EvaluationStatUpdate struct {
 	config
-	hooks    []Hook
-	mutation *EvaluationStatMutation
+	hooks     []Hook
+	mutation  *EvaluationStatMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the EvaluationStatUpdate builder.
@@ -132,6 +133,12 @@ func (esu *EvaluationStatUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (esu *EvaluationStatUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *EvaluationStatUpdate {
+	esu.modifiers = append(esu.modifiers, modifiers...)
+	return esu
+}
+
 func (esu *EvaluationStatUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(evaluationstat.Table, evaluationstat.Columns, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt))
 	if ps := esu.mutation.predicates; len(ps) > 0 {
@@ -185,6 +192,7 @@ func (esu *EvaluationStatUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(esu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, esu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{evaluationstat.Label}
@@ -200,9 +208,10 @@ func (esu *EvaluationStatUpdate) sqlSave(ctx context.Context) (n int, err error)
 // EvaluationStatUpdateOne is the builder for updating a single EvaluationStat entity.
 type EvaluationStatUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *EvaluationStatMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *EvaluationStatMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetSkyfunctionName sets the "skyfunction_name" field.
@@ -322,6 +331,12 @@ func (esuo *EvaluationStatUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (esuo *EvaluationStatUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *EvaluationStatUpdateOne {
+	esuo.modifiers = append(esuo.modifiers, modifiers...)
+	return esuo
+}
+
 func (esuo *EvaluationStatUpdateOne) sqlSave(ctx context.Context) (_node *EvaluationStat, err error) {
 	_spec := sqlgraph.NewUpdateSpec(evaluationstat.Table, evaluationstat.Columns, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt))
 	id, ok := esuo.mutation.ID()
@@ -392,6 +407,7 @@ func (esuo *EvaluationStatUpdateOne) sqlSave(ctx context.Context) (_node *Evalua
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(esuo.modifiers...)
 	_node = &EvaluationStat{config: esuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

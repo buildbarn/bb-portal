@@ -759,7 +759,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	}
 	if value, ok := bic.mutation.EndedAt(); ok {
 		_spec.SetField(bazelinvocation.FieldEndedAt, field.TypeTime, value)
-		_node.EndedAt = value
+		_node.EndedAt = &value
 	}
 	if value, ok := bic.mutation.ChangeNumber(); ok {
 		_spec.SetField(bazelinvocation.FieldChangeNumber, field.TypeInt, value)

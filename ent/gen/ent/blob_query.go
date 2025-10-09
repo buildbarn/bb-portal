@@ -22,8 +22,8 @@ type BlobQuery struct {
 	order      []blob.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Blob
-	modifiers  []func(*sql.Selector)
 	loadTotal  []func(context.Context, []*Blob) error
+	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -253,8 +253,9 @@ func (bq *BlobQuery) Clone() *BlobQuery {
 		inters:     append([]Interceptor{}, bq.inters...),
 		predicates: append([]predicate.Blob{}, bq.predicates...),
 		// clone intermediate query.
-		sql:  bq.sql.Clone(),
-		path: bq.path,
+		sql:       bq.sql.Clone(),
+		path:      bq.path,
+		modifiers: append([]func(*sql.Selector){}, bq.modifiers...),
 	}
 }
 
@@ -432,6 +433,9 @@ func (bq *BlobQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if bq.ctx.Unique != nil && *bq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range bq.modifiers {
+		m(selector)
+	}
 	for _, p := range bq.predicates {
 		p(selector)
 	}
@@ -447,6 +451,12 @@ func (bq *BlobQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (bq *BlobQuery) Modify(modifiers ...func(s *sql.Selector)) *BlobSelect {
+	bq.modifiers = append(bq.modifiers, modifiers...)
+	return bq.Select()
 }
 
 // BlobGroupBy is the group-by builder for Blob entities.
@@ -537,4 +547,10 @@ func (bs *BlobSelect) sqlScan(ctx context.Context, root *BlobQuery, v any) error
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (bs *BlobSelect) Modify(modifiers ...func(s *sql.Selector)) *BlobSelect {
+	bs.modifiers = append(bs.modifiers, modifiers...)
+	return bs
 }

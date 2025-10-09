@@ -27,8 +27,8 @@ type OutputGroupQuery struct {
 	predicates           []predicate.OutputGroup
 	withInlineFiles      *TestFileQuery
 	withFileSets         *NamedSetOfFilesQuery
-	modifiers            []func(*sql.Selector)
 	loadTotal            []func(context.Context, []*OutputGroup) error
+	modifiers            []func(*sql.Selector)
 	withNamedInlineFiles map[string]*TestFileQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -305,8 +305,9 @@ func (ogq *OutputGroupQuery) Clone() *OutputGroupQuery {
 		withInlineFiles: ogq.withInlineFiles.Clone(),
 		withFileSets:    ogq.withFileSets.Clone(),
 		// clone intermediate query.
-		sql:  ogq.sql.Clone(),
-		path: ogq.path,
+		sql:       ogq.sql.Clone(),
+		path:      ogq.path,
+		modifiers: append([]func(*sql.Selector){}, ogq.modifiers...),
 	}
 }
 
@@ -591,6 +592,9 @@ func (ogq *OutputGroupQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if ogq.ctx.Unique != nil && *ogq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range ogq.modifiers {
+		m(selector)
+	}
 	for _, p := range ogq.predicates {
 		p(selector)
 	}
@@ -606,6 +610,12 @@ func (ogq *OutputGroupQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ogq *OutputGroupQuery) Modify(modifiers ...func(s *sql.Selector)) *OutputGroupSelect {
+	ogq.modifiers = append(ogq.modifiers, modifiers...)
+	return ogq.Select()
 }
 
 // WithNamedInlineFiles tells the query-builder to eager-load the nodes that are connected to the "inline_files"
@@ -710,4 +720,10 @@ func (ogs *OutputGroupSelect) sqlScan(ctx context.Context, root *OutputGroupQuer
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ogs *OutputGroupSelect) Modify(modifiers ...func(s *sql.Selector)) *OutputGroupSelect {
+	ogs.modifiers = append(ogs.modifiers, modifiers...)
+	return ogs
 }

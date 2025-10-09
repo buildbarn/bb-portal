@@ -25,8 +25,8 @@ type MissDetailQuery struct {
 	predicates                []predicate.MissDetail
 	withActionCacheStatistics *ActionCacheStatisticsQuery
 	withFKs                   bool
-	modifiers                 []func(*sql.Selector)
 	loadTotal                 []func(context.Context, []*MissDetail) error
+	modifiers                 []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (mdq *MissDetailQuery) Clone() *MissDetailQuery {
 		predicates:                append([]predicate.MissDetail{}, mdq.predicates...),
 		withActionCacheStatistics: mdq.withActionCacheStatistics.Clone(),
 		// clone intermediate query.
-		sql:  mdq.sql.Clone(),
-		path: mdq.path,
+		sql:       mdq.sql.Clone(),
+		path:      mdq.path,
+		modifiers: append([]func(*sql.Selector){}, mdq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (mdq *MissDetailQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if mdq.ctx.Unique != nil && *mdq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range mdq.modifiers {
+		m(selector)
+	}
 	for _, p := range mdq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (mdq *MissDetailQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (mdq *MissDetailQuery) Modify(modifiers ...func(s *sql.Selector)) *MissDetailSelect {
+	mdq.modifiers = append(mdq.modifiers, modifiers...)
+	return mdq.Select()
 }
 
 // MissDetailGroupBy is the group-by builder for MissDetail entities.
@@ -624,4 +634,10 @@ func (mds *MissDetailSelect) sqlScan(ctx context.Context, root *MissDetailQuery,
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (mds *MissDetailSelect) Modify(modifiers ...func(s *sql.Selector)) *MissDetailSelect {
+	mds.modifiers = append(mds.modifiers, modifiers...)
+	return mds
 }

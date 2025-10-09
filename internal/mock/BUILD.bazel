@@ -1,11 +1,9 @@
-#gazelle:ignore
-
 load("@rules_go//extras:gomock.bzl", "gomock")
 load("@rules_go//go:def.bzl", "go_library")
 
 gomock(
-    name = "buildqueuestate_mock",
-    out = "buildqueustate_mock.go",
+    name = "buildqueuestate",
+    out = "buildqueuestate.go",
     interfaces = [
         "BuildQueueStateClient",
     ],
@@ -15,10 +13,25 @@ gomock(
     package = "mock",
 )
 
+gomock(
+    name = "clock",
+    out = "clock.go",
+    interfaces = [
+        "Clock",
+        "Ticker",
+        "Timer",
+    ],
+    library = "@com_github_buildbarn_bb_storage//pkg/clock",
+    mockgen_model_library = "@org_uber_go_mock//mockgen/model",
+    mockgen_tool = "@org_uber_go_mock//mockgen",
+    package = "mock",
+)
+
 go_library(
     name = "mock",
     srcs = [
-        "buildqueustate_mock.go",
+        "buildqueuestate.go",
+        "clock.go",
         "deps.go",
     ],
     importpath = "github.com/buildbarn/bb-portal/internal/mock",
@@ -26,6 +39,7 @@ go_library(
     # keep
     deps = [
         "@com_github_buildbarn_bb_remote_execution//pkg/proto/buildqueuestate",
+        "@com_github_buildbarn_bb_storage//pkg/clock",
         "@org_golang_google_grpc//:grpc",
         "@org_golang_google_protobuf//types/known/emptypb",
         "@org_uber_go_mock//gomock",

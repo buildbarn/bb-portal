@@ -18,8 +18,9 @@ import (
 // CumulativeMetricsUpdate is the builder for updating CumulativeMetrics entities.
 type CumulativeMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *CumulativeMetricsMutation
+	hooks     []Hook
+	mutation  *CumulativeMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the CumulativeMetricsUpdate builder.
@@ -139,6 +140,12 @@ func (cmu *CumulativeMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (cmu *CumulativeMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *CumulativeMetricsUpdate {
+	cmu.modifiers = append(cmu.modifiers, modifiers...)
+	return cmu
+}
+
 func (cmu *CumulativeMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(cumulativemetrics.Table, cumulativemetrics.Columns, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt))
 	if ps := cmu.mutation.predicates; len(ps) > 0 {
@@ -195,6 +202,7 @@ func (cmu *CumulativeMetricsUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(cmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, cmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{cumulativemetrics.Label}
@@ -210,9 +218,10 @@ func (cmu *CumulativeMetricsUpdate) sqlSave(ctx context.Context) (n int, err err
 // CumulativeMetricsUpdateOne is the builder for updating a single CumulativeMetrics entity.
 type CumulativeMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *CumulativeMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *CumulativeMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetNumAnalyses sets the "num_analyses" field.
@@ -339,6 +348,12 @@ func (cmuo *CumulativeMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (cmuo *CumulativeMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *CumulativeMetricsUpdateOne {
+	cmuo.modifiers = append(cmuo.modifiers, modifiers...)
+	return cmuo
+}
+
 func (cmuo *CumulativeMetricsUpdateOne) sqlSave(ctx context.Context) (_node *CumulativeMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(cumulativemetrics.Table, cumulativemetrics.Columns, sqlgraph.NewFieldSpec(cumulativemetrics.FieldID, field.TypeInt))
 	id, ok := cmuo.mutation.ID()
@@ -412,6 +427,7 @@ func (cmuo *CumulativeMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Cum
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(cmuo.modifiers...)
 	_node = &CumulativeMetrics{config: cmuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

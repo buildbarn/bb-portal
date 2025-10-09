@@ -17,8 +17,9 @@ import (
 // BlobUpdate is the builder for updating Blob entities.
 type BlobUpdate struct {
 	config
-	hooks    []Hook
-	mutation *BlobMutation
+	hooks     []Hook
+	mutation  *BlobMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the BlobUpdate builder.
@@ -164,6 +165,12 @@ func (bu *BlobUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (bu *BlobUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BlobUpdate {
+	bu.modifiers = append(bu.modifiers, modifiers...)
+	return bu
+}
+
 func (bu *BlobUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := bu.check(); err != nil {
 		return n, err
@@ -203,6 +210,7 @@ func (bu *BlobUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := bu.mutation.InstanceName(); ok {
 		_spec.SetField(blob.FieldInstanceName, field.TypeString, value)
 	}
+	_spec.AddModifiers(bu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, bu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{blob.Label}
@@ -218,9 +226,10 @@ func (bu *BlobUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // BlobUpdateOne is the builder for updating a single Blob entity.
 type BlobUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *BlobMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *BlobMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetSizeBytes sets the "size_bytes" field.
@@ -373,6 +382,12 @@ func (buo *BlobUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (buo *BlobUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BlobUpdateOne {
+	buo.modifiers = append(buo.modifiers, modifiers...)
+	return buo
+}
+
 func (buo *BlobUpdateOne) sqlSave(ctx context.Context) (_node *Blob, err error) {
 	if err := buo.check(); err != nil {
 		return _node, err
@@ -429,6 +444,7 @@ func (buo *BlobUpdateOne) sqlSave(ctx context.Context) (_node *Blob, err error) 
 	if value, ok := buo.mutation.InstanceName(); ok {
 		_spec.SetField(blob.FieldInstanceName, field.TypeString, value)
 	}
+	_spec.AddModifiers(buo.modifiers...)
 	_node = &Blob{config: buo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

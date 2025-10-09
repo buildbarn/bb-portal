@@ -25,8 +25,8 @@ type BazelInvocationProblemQuery struct {
 	predicates          []predicate.BazelInvocationProblem
 	withBazelInvocation *BazelInvocationQuery
 	withFKs             bool
-	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*BazelInvocationProblem) error
+	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (bipq *BazelInvocationProblemQuery) Clone() *BazelInvocationProblemQuery {
 		predicates:          append([]predicate.BazelInvocationProblem{}, bipq.predicates...),
 		withBazelInvocation: bipq.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  bipq.sql.Clone(),
-		path: bipq.path,
+		sql:       bipq.sql.Clone(),
+		path:      bipq.path,
+		modifiers: append([]func(*sql.Selector){}, bipq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (bipq *BazelInvocationProblemQuery) sqlQuery(ctx context.Context) *sql.Sele
 	if bipq.ctx.Unique != nil && *bipq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range bipq.modifiers {
+		m(selector)
+	}
 	for _, p := range bipq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (bipq *BazelInvocationProblemQuery) sqlQuery(ctx context.Context) *sql.Sele
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (bipq *BazelInvocationProblemQuery) Modify(modifiers ...func(s *sql.Selector)) *BazelInvocationProblemSelect {
+	bipq.modifiers = append(bipq.modifiers, modifiers...)
+	return bipq.Select()
 }
 
 // BazelInvocationProblemGroupBy is the group-by builder for BazelInvocationProblem entities.
@@ -624,4 +634,10 @@ func (bips *BazelInvocationProblemSelect) sqlScan(ctx context.Context, root *Baz
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (bips *BazelInvocationProblemSelect) Modify(modifiers ...func(s *sql.Selector)) *BazelInvocationProblemSelect {
+	bips.modifiers = append(bips.modifiers, modifiers...)
+	return bips
 }

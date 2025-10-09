@@ -19,8 +19,9 @@ import (
 // OutputGroupUpdate is the builder for updating OutputGroup entities.
 type OutputGroupUpdate struct {
 	config
-	hooks    []Hook
-	mutation *OutputGroupMutation
+	hooks     []Hook
+	mutation  *OutputGroupMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the OutputGroupUpdate builder.
@@ -162,6 +163,12 @@ func (ogu *OutputGroupUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (ogu *OutputGroupUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *OutputGroupUpdate {
+	ogu.modifiers = append(ogu.modifiers, modifiers...)
+	return ogu
+}
+
 func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(outputgroup.Table, outputgroup.Columns, sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt))
 	if ps := ogu.mutation.predicates; len(ps) > 0 {
@@ -257,6 +264,7 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(ogu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, ogu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{outputgroup.Label}
@@ -272,9 +280,10 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // OutputGroupUpdateOne is the builder for updating a single OutputGroup entity.
 type OutputGroupUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *OutputGroupMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *OutputGroupMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetName sets the "name" field.
@@ -423,6 +432,12 @@ func (oguo *OutputGroupUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (oguo *OutputGroupUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *OutputGroupUpdateOne {
+	oguo.modifiers = append(oguo.modifiers, modifiers...)
+	return oguo
+}
+
 func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGroup, err error) {
 	_spec := sqlgraph.NewUpdateSpec(outputgroup.Table, outputgroup.Columns, sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt))
 	id, ok := oguo.mutation.ID()
@@ -535,6 +550,7 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(oguo.modifiers...)
 	_node = &OutputGroup{config: oguo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

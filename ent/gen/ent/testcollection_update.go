@@ -21,8 +21,9 @@ import (
 // TestCollectionUpdate is the builder for updating TestCollection entities.
 type TestCollectionUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TestCollectionMutation
+	hooks     []Hook
+	mutation  *TestCollectionMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TestCollectionUpdate builder.
@@ -306,6 +307,12 @@ func (tcu *TestCollectionUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tcu *TestCollectionUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestCollectionUpdate {
+	tcu.modifiers = append(tcu.modifiers, modifiers...)
+	return tcu
+}
+
 func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := tcu.check(); err != nil {
 		return n, err
@@ -466,6 +473,7 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tcu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, tcu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testcollection.Label}
@@ -481,9 +489,10 @@ func (tcu *TestCollectionUpdate) sqlSave(ctx context.Context) (n int, err error)
 // TestCollectionUpdateOne is the builder for updating a single TestCollection entity.
 type TestCollectionUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TestCollectionMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TestCollectionMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetLabel sets the "label" field.
@@ -774,6 +783,12 @@ func (tcuo *TestCollectionUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tcuo *TestCollectionUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestCollectionUpdateOne {
+	tcuo.modifiers = append(tcuo.modifiers, modifiers...)
+	return tcuo
+}
+
 func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCollection, err error) {
 	if err := tcuo.check(); err != nil {
 		return _node, err
@@ -951,6 +966,7 @@ func (tcuo *TestCollectionUpdateOne) sqlSave(ctx context.Context) (_node *TestCo
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tcuo.modifiers...)
 	_node = &TestCollection{config: tcuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

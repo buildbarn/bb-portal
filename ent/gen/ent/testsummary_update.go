@@ -19,8 +19,9 @@ import (
 // TestSummaryUpdate is the builder for updating TestSummary entities.
 type TestSummaryUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TestSummaryMutation
+	hooks     []Hook
+	mutation  *TestSummaryMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TestSummaryUpdate builder.
@@ -424,6 +425,12 @@ func (tsu *TestSummaryUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tsu *TestSummaryUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestSummaryUpdate {
+	tsu.modifiers = append(tsu.modifiers, modifiers...)
+	return tsu
+}
+
 func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := tsu.check(); err != nil {
 		return n, err
@@ -639,6 +646,7 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tsu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, tsu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testsummary.Label}
@@ -654,9 +662,10 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // TestSummaryUpdateOne is the builder for updating a single TestSummary entity.
 type TestSummaryUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TestSummaryMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TestSummaryMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetOverallStatus sets the "overall_status" field.
@@ -1067,6 +1076,12 @@ func (tsuo *TestSummaryUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tsuo *TestSummaryUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestSummaryUpdateOne {
+	tsuo.modifiers = append(tsuo.modifiers, modifiers...)
+	return tsuo
+}
+
 func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSummary, err error) {
 	if err := tsuo.check(); err != nil {
 		return _node, err
@@ -1299,6 +1314,7 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tsuo.modifiers...)
 	_node = &TestSummary{config: tsuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

@@ -65,7 +65,7 @@ func (r *bazelInvocationResolver) BazelCommand(ctx context.Context, obj *ent.Baz
 func (r *bazelInvocationResolver) State(ctx context.Context, obj *ent.BazelInvocation) (*model.BazelInvocationState, error) {
 	return &model.BazelInvocationState{
 		// TODO: Scalar ID
-		BuildEndTime:   &obj.EndedAt,
+		BuildEndTime:   obj.EndedAt,
 		BuildStartTime: &obj.StartedAt,
 		ExitCode: &model.ExitCode{
 			// TODO: Scalar ID

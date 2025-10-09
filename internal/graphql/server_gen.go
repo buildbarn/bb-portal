@@ -8423,9 +8423,9 @@ func (ec *executionContext) _BazelInvocation_endedAt(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(*time.Time)
 	fc.Result = res
-	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_BazelInvocation_endedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {

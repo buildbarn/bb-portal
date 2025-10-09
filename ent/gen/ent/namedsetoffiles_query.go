@@ -29,8 +29,8 @@ type NamedSetOfFilesQuery struct {
 	withFiles       *TestFileQuery
 	withFileSets    *NamedSetOfFilesQuery
 	withFKs         bool
-	modifiers       []func(*sql.Selector)
 	loadTotal       []func(context.Context, []*NamedSetOfFiles) error
+	modifiers       []func(*sql.Selector)
 	withNamedFiles  map[string]*TestFileQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -330,8 +330,9 @@ func (nsofq *NamedSetOfFilesQuery) Clone() *NamedSetOfFilesQuery {
 		withFiles:       nsofq.withFiles.Clone(),
 		withFileSets:    nsofq.withFileSets.Clone(),
 		// clone intermediate query.
-		sql:  nsofq.sql.Clone(),
-		path: nsofq.path,
+		sql:       nsofq.sql.Clone(),
+		path:      nsofq.path,
+		modifiers: append([]func(*sql.Selector){}, nsofq.modifiers...),
 	}
 }
 
@@ -655,6 +656,9 @@ func (nsofq *NamedSetOfFilesQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if nsofq.ctx.Unique != nil && *nsofq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range nsofq.modifiers {
+		m(selector)
+	}
 	for _, p := range nsofq.predicates {
 		p(selector)
 	}
@@ -670,6 +674,12 @@ func (nsofq *NamedSetOfFilesQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (nsofq *NamedSetOfFilesQuery) Modify(modifiers ...func(s *sql.Selector)) *NamedSetOfFilesSelect {
+	nsofq.modifiers = append(nsofq.modifiers, modifiers...)
+	return nsofq.Select()
 }
 
 // WithNamedFiles tells the query-builder to eager-load the nodes that are connected to the "files"
@@ -774,4 +784,10 @@ func (nsofs *NamedSetOfFilesSelect) sqlScan(ctx context.Context, root *NamedSetO
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (nsofs *NamedSetOfFilesSelect) Modify(modifiers ...func(s *sql.Selector)) *NamedSetOfFilesSelect {
+	nsofs.modifiers = append(nsofs.modifiers, modifiers...)
+	return nsofs
 }

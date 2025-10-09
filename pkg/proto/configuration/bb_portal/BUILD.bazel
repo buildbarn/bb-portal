@@ -13,6 +13,7 @@ proto_library(
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/global:global_proto",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc:grpc_proto",
         "@com_github_buildbarn_bb_storage//pkg/proto/configuration/http/server:server_proto",
+        "@protobuf//:duration_proto",
         "@protobuf//:empty_proto",
     ],
 )

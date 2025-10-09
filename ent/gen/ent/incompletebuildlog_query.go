@@ -25,8 +25,8 @@ type IncompleteBuildLogQuery struct {
 	predicates          []predicate.IncompleteBuildLog
 	withBazelInvocation *BazelInvocationQuery
 	withFKs             bool
-	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*IncompleteBuildLog) error
+	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (iblq *IncompleteBuildLogQuery) Clone() *IncompleteBuildLogQuery {
 		predicates:          append([]predicate.IncompleteBuildLog{}, iblq.predicates...),
 		withBazelInvocation: iblq.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  iblq.sql.Clone(),
-		path: iblq.path,
+		sql:       iblq.sql.Clone(),
+		path:      iblq.path,
+		modifiers: append([]func(*sql.Selector){}, iblq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (iblq *IncompleteBuildLogQuery) sqlQuery(ctx context.Context) *sql.Selector
 	if iblq.ctx.Unique != nil && *iblq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range iblq.modifiers {
+		m(selector)
+	}
 	for _, p := range iblq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (iblq *IncompleteBuildLogQuery) sqlQuery(ctx context.Context) *sql.Selector
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (iblq *IncompleteBuildLogQuery) Modify(modifiers ...func(s *sql.Selector)) *IncompleteBuildLogSelect {
+	iblq.modifiers = append(iblq.modifiers, modifiers...)
+	return iblq.Select()
 }
 
 // IncompleteBuildLogGroupBy is the group-by builder for IncompleteBuildLog entities.
@@ -624,4 +634,10 @@ func (ibls *IncompleteBuildLogSelect) sqlScan(ctx context.Context, root *Incompl
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ibls *IncompleteBuildLogSelect) Modify(modifiers ...func(s *sql.Selector)) *IncompleteBuildLogSelect {
+	ibls.modifiers = append(ibls.modifiers, modifiers...)
+	return ibls
 }

@@ -28,8 +28,8 @@ type MemoryMetricsQuery struct {
 	withMetrics             *MetricsQuery
 	withGarbageMetrics      *GarbageMetricsQuery
 	withFKs                 bool
-	modifiers               []func(*sql.Selector)
 	loadTotal               []func(context.Context, []*MemoryMetrics) error
+	modifiers               []func(*sql.Selector)
 	withNamedGarbageMetrics map[string]*GarbageMetricsQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -306,8 +306,9 @@ func (mmq *MemoryMetricsQuery) Clone() *MemoryMetricsQuery {
 		withMetrics:        mmq.withMetrics.Clone(),
 		withGarbageMetrics: mmq.withGarbageMetrics.Clone(),
 		// clone intermediate query.
-		sql:  mmq.sql.Clone(),
-		path: mmq.path,
+		sql:       mmq.sql.Clone(),
+		path:      mmq.path,
+		modifiers: append([]func(*sql.Selector){}, mmq.modifiers...),
 	}
 }
 
@@ -603,6 +604,9 @@ func (mmq *MemoryMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if mmq.ctx.Unique != nil && *mmq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range mmq.modifiers {
+		m(selector)
+	}
 	for _, p := range mmq.predicates {
 		p(selector)
 	}
@@ -618,6 +622,12 @@ func (mmq *MemoryMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (mmq *MemoryMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *MemoryMetricsSelect {
+	mmq.modifiers = append(mmq.modifiers, modifiers...)
+	return mmq.Select()
 }
 
 // WithNamedGarbageMetrics tells the query-builder to eager-load the nodes that are connected to the "garbage_metrics"
@@ -722,4 +732,10 @@ func (mms *MemoryMetricsSelect) sqlScan(ctx context.Context, root *MemoryMetrics
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (mms *MemoryMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *MemoryMetricsSelect {
+	mms.modifiers = append(mms.modifiers, modifiers...)
+	return mms
 }
