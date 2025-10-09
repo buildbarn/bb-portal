@@ -27,7 +27,7 @@ type BazelInvocation struct {
 	// StartedAt holds the value of the "started_at" field.
 	StartedAt time.Time `json:"started_at,omitempty"`
 	// EndedAt holds the value of the "ended_at" field.
-	EndedAt time.Time `json:"ended_at,omitempty"`
+	EndedAt *time.Time `json:"ended_at,omitempty"`
 	// ChangeNumber holds the value of the "change_number" field.
 	ChangeNumber int `json:"change_number,omitempty"`
 	// PatchsetNumber holds the value of the "patchset_number" field.
@@ -286,7 +286,8 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field ended_at", values[i])
 			} else if value.Valid {
-				bi.EndedAt = value.Time
+				bi.EndedAt = new(time.Time)
+				*bi.EndedAt = value.Time
 			}
 		case bazelinvocation.FieldChangeNumber:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -581,8 +582,10 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString("started_at=")
 	builder.WriteString(bi.StartedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("ended_at=")
-	builder.WriteString(bi.EndedAt.Format(time.ANSIC))
+	if v := bi.EndedAt; v != nil {
+		builder.WriteString("ended_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("change_number=")
 	builder.WriteString(fmt.Sprintf("%v", bi.ChangeNumber))

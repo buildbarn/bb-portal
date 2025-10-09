@@ -25,8 +25,8 @@ type InvocationFilesQuery struct {
 	predicates          []predicate.InvocationFiles
 	withBazelInvocation *BazelInvocationQuery
 	withFKs             bool
-	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*InvocationFiles) error
+	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (ifq *InvocationFilesQuery) Clone() *InvocationFilesQuery {
 		predicates:          append([]predicate.InvocationFiles{}, ifq.predicates...),
 		withBazelInvocation: ifq.withBazelInvocation.Clone(),
 		// clone intermediate query.
-		sql:  ifq.sql.Clone(),
-		path: ifq.path,
+		sql:       ifq.sql.Clone(),
+		path:      ifq.path,
+		modifiers: append([]func(*sql.Selector){}, ifq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (ifq *InvocationFilesQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if ifq.ctx.Unique != nil && *ifq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range ifq.modifiers {
+		m(selector)
+	}
 	for _, p := range ifq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (ifq *InvocationFilesQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ifq *InvocationFilesQuery) Modify(modifiers ...func(s *sql.Selector)) *InvocationFilesSelect {
+	ifq.modifiers = append(ifq.modifiers, modifiers...)
+	return ifq.Select()
 }
 
 // InvocationFilesGroupBy is the group-by builder for InvocationFiles entities.
@@ -624,4 +634,10 @@ func (ifs *InvocationFilesSelect) sqlScan(ctx context.Context, root *InvocationF
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ifs *InvocationFilesSelect) Modify(modifiers ...func(s *sql.Selector)) *InvocationFilesSelect {
+	ifs.modifiers = append(ifs.modifiers, modifiers...)
+	return ifs
 }

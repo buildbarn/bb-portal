@@ -18,8 +18,9 @@ import (
 // TargetMetricsUpdate is the builder for updating TargetMetrics entities.
 type TargetMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TargetMetricsMutation
+	hooks     []Hook
+	mutation  *TargetMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TargetMetricsUpdate builder.
@@ -166,6 +167,12 @@ func (tmu *TargetMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tmu *TargetMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TargetMetricsUpdate {
+	tmu.modifiers = append(tmu.modifiers, modifiers...)
+	return tmu
+}
+
 func (tmu *TargetMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(targetmetrics.Table, targetmetrics.Columns, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt))
 	if ps := tmu.mutation.predicates; len(ps) > 0 {
@@ -231,6 +238,7 @@ func (tmu *TargetMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, tmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{targetmetrics.Label}
@@ -246,9 +254,10 @@ func (tmu *TargetMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 // TargetMetricsUpdateOne is the builder for updating a single TargetMetrics entity.
 type TargetMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TargetMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TargetMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetTargetsLoaded sets the "targets_loaded" field.
@@ -402,6 +411,12 @@ func (tmuo *TargetMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tmuo *TargetMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TargetMetricsUpdateOne {
+	tmuo.modifiers = append(tmuo.modifiers, modifiers...)
+	return tmuo
+}
+
 func (tmuo *TargetMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TargetMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(targetmetrics.Table, targetmetrics.Columns, sqlgraph.NewFieldSpec(targetmetrics.FieldID, field.TypeInt))
 	id, ok := tmuo.mutation.ID()
@@ -484,6 +499,7 @@ func (tmuo *TargetMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TargetM
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tmuo.modifiers...)
 	_node = &TargetMetrics{config: tmuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

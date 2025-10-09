@@ -19,8 +19,9 @@ import (
 // TestFileUpdate is the builder for updating TestFile entities.
 type TestFileUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TestFileMutation
+	hooks     []Hook
+	mutation  *TestFileMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TestFileUpdate builder.
@@ -191,6 +192,12 @@ func (tfu *TestFileUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tfu *TestFileUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestFileUpdate {
+	tfu.modifiers = append(tfu.modifiers, modifiers...)
+	return tfu
+}
+
 func (tfu *TestFileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(testfile.Table, testfile.Columns, sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt))
 	if ps := tfu.mutation.predicates; len(ps) > 0 {
@@ -267,6 +274,7 @@ func (tfu *TestFileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tfu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, tfu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testfile.Label}
@@ -282,9 +290,10 @@ func (tfu *TestFileUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // TestFileUpdateOne is the builder for updating a single TestFile entity.
 type TestFileUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TestFileMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TestFileMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetDigest sets the "digest" field.
@@ -462,6 +471,12 @@ func (tfuo *TestFileUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tfuo *TestFileUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestFileUpdateOne {
+	tfuo.modifiers = append(tfuo.modifiers, modifiers...)
+	return tfuo
+}
+
 func (tfuo *TestFileUpdateOne) sqlSave(ctx context.Context) (_node *TestFile, err error) {
 	_spec := sqlgraph.NewUpdateSpec(testfile.Table, testfile.Columns, sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt))
 	id, ok := tfuo.mutation.ID()
@@ -555,6 +570,7 @@ func (tfuo *TestFileUpdateOne) sqlSave(ctx context.Context) (_node *TestFile, er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tfuo.modifiers...)
 	_node = &TestFile{config: tfuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

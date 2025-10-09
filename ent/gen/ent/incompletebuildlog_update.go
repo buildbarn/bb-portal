@@ -18,8 +18,9 @@ import (
 // IncompleteBuildLogUpdate is the builder for updating IncompleteBuildLog entities.
 type IncompleteBuildLogUpdate struct {
 	config
-	hooks    []Hook
-	mutation *IncompleteBuildLogMutation
+	hooks     []Hook
+	mutation  *IncompleteBuildLogMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the IncompleteBuildLogUpdate builder.
@@ -120,6 +121,12 @@ func (iblu *IncompleteBuildLogUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (iblu *IncompleteBuildLogUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *IncompleteBuildLogUpdate {
+	iblu.modifiers = append(iblu.modifiers, modifiers...)
+	return iblu
+}
+
 func (iblu *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt))
 	if ps := iblu.mutation.predicates; len(ps) > 0 {
@@ -167,6 +174,7 @@ func (iblu *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(iblu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, iblu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{incompletebuildlog.Label}
@@ -182,9 +190,10 @@ func (iblu *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (n int, err e
 // IncompleteBuildLogUpdateOne is the builder for updating a single IncompleteBuildLog entity.
 type IncompleteBuildLogUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *IncompleteBuildLogMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *IncompleteBuildLogMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetSnippetID sets the "snippet_id" field.
@@ -292,6 +301,12 @@ func (ibluo *IncompleteBuildLogUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (ibluo *IncompleteBuildLogUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *IncompleteBuildLogUpdateOne {
+	ibluo.modifiers = append(ibluo.modifiers, modifiers...)
+	return ibluo
+}
+
 func (ibluo *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *IncompleteBuildLog, err error) {
 	_spec := sqlgraph.NewUpdateSpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt))
 	id, ok := ibluo.mutation.ID()
@@ -356,6 +371,7 @@ func (ibluo *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *I
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(ibluo.modifiers...)
 	_node = &IncompleteBuildLog{config: ibluo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

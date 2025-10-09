@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package buildbarn.configuration.bb_portal;
 
+import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/auth/auth.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/blobstore/blobstore.proto";
@@ -66,6 +67,38 @@ message BuildEventStreamService {
   // NOTE: This does not work correctly with authentication enabled
   // (instanceNameAuthorizer).
   SaveTargetDataLevel save_target_data_level = 6;
+
+  message DatabaseCleanupConfiguration {
+    // How often to run the cleanup job. 5% jitter will be applied to
+    // avoid accidental synchronization with other instances.
+    // Recommended value: '60s'
+    google.protobuf.Duration cleanup_interval = 1;
+
+    // If the gRPC connection that uploads BES messages for an invocation
+    // has been interrupted and not re-established within this duration,
+    // the invocation is considered abandoned, and will be locked to
+    // prevent further modifications.
+    // Recommended value: '60s'
+    google.protobuf.Duration invocation_connection_timeout = 2;
+
+    // If an invocation that has not yet received the last message in the BES
+    // stream does not receive any new messages within this duration, the
+    // invocation is considered abandoned, and will be locked to prevent further
+    // modifications.
+    // Recommended value: '3600s' (i.e., 1 hour)
+    google.protobuf.Duration invocation_message_timeout = 3;
+
+    // How long to retain data about an invocation after the invocation was
+    // either completed or considered abandoned.
+    // Recommended value: '604800s' (i.e., 7 days)
+    google.protobuf.Duration invocation_retention = 4;
+  }
+
+  // Configuration for the internal database cleanup service. This is a
+  // required field, as otherwise the database will grow without bounds.
+  // If you really want to disable it, just set the cleanup interval to a
+  // very high value.
+  DatabaseCleanupConfiguration database_cleanup_configuration = 7;
 }
 
 message BrowserService {

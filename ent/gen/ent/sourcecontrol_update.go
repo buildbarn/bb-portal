@@ -18,8 +18,9 @@ import (
 // SourceControlUpdate is the builder for updating SourceControl entities.
 type SourceControlUpdate struct {
 	config
-	hooks    []Hook
-	mutation *SourceControlMutation
+	hooks     []Hook
+	mutation  *SourceControlMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the SourceControlUpdate builder.
@@ -415,6 +416,12 @@ func (scu *SourceControlUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (scu *SourceControlUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *SourceControlUpdate {
+	scu.modifiers = append(scu.modifiers, modifiers...)
+	return scu
+}
+
 func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := scu.check(); err != nil {
 		return n, err
@@ -552,6 +559,7 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(scu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, scu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sourcecontrol.Label}
@@ -567,9 +575,10 @@ func (scu *SourceControlUpdate) sqlSave(ctx context.Context) (n int, err error) 
 // SourceControlUpdateOne is the builder for updating a single SourceControl entity.
 type SourceControlUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *SourceControlMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *SourceControlMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetProvider sets the "provider" field.
@@ -972,6 +981,12 @@ func (scuo *SourceControlUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (scuo *SourceControlUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *SourceControlUpdateOne {
+	scuo.modifiers = append(scuo.modifiers, modifiers...)
+	return scuo
+}
+
 func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceControl, err error) {
 	if err := scuo.check(); err != nil {
 		return _node, err
@@ -1126,6 +1141,7 @@ func (scuo *SourceControlUpdateOne) sqlSave(ctx context.Context) (_node *SourceC
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(scuo.modifiers...)
 	_node = &SourceControl{config: scuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

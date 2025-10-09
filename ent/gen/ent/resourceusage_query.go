@@ -25,8 +25,8 @@ type ResourceUsageQuery struct {
 	predicates        []predicate.ResourceUsage
 	withExecutionInfo *ExectionInfoQuery
 	withFKs           bool
-	modifiers         []func(*sql.Selector)
 	loadTotal         []func(context.Context, []*ResourceUsage) error
+	modifiers         []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (ruq *ResourceUsageQuery) Clone() *ResourceUsageQuery {
 		predicates:        append([]predicate.ResourceUsage{}, ruq.predicates...),
 		withExecutionInfo: ruq.withExecutionInfo.Clone(),
 		// clone intermediate query.
-		sql:  ruq.sql.Clone(),
-		path: ruq.path,
+		sql:       ruq.sql.Clone(),
+		path:      ruq.path,
+		modifiers: append([]func(*sql.Selector){}, ruq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (ruq *ResourceUsageQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if ruq.ctx.Unique != nil && *ruq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range ruq.modifiers {
+		m(selector)
+	}
 	for _, p := range ruq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (ruq *ResourceUsageQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ruq *ResourceUsageQuery) Modify(modifiers ...func(s *sql.Selector)) *ResourceUsageSelect {
+	ruq.modifiers = append(ruq.modifiers, modifiers...)
+	return ruq.Select()
 }
 
 // ResourceUsageGroupBy is the group-by builder for ResourceUsage entities.
@@ -624,4 +634,10 @@ func (rus *ResourceUsageSelect) sqlScan(ctx context.Context, root *ResourceUsage
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (rus *ResourceUsageSelect) Modify(modifiers ...func(s *sql.Selector)) *ResourceUsageSelect {
+	rus.modifiers = append(rus.modifiers, modifiers...)
+	return rus
 }

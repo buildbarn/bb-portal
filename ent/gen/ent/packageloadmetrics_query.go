@@ -25,8 +25,8 @@ type PackageLoadMetricsQuery struct {
 	predicates         []predicate.PackageLoadMetrics
 	withPackageMetrics *PackageMetricsQuery
 	withFKs            bool
-	modifiers          []func(*sql.Selector)
 	loadTotal          []func(context.Context, []*PackageLoadMetrics) error
+	modifiers          []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (plmq *PackageLoadMetricsQuery) Clone() *PackageLoadMetricsQuery {
 		predicates:         append([]predicate.PackageLoadMetrics{}, plmq.predicates...),
 		withPackageMetrics: plmq.withPackageMetrics.Clone(),
 		// clone intermediate query.
-		sql:  plmq.sql.Clone(),
-		path: plmq.path,
+		sql:       plmq.sql.Clone(),
+		path:      plmq.path,
+		modifiers: append([]func(*sql.Selector){}, plmq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (plmq *PackageLoadMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector
 	if plmq.ctx.Unique != nil && *plmq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range plmq.modifiers {
+		m(selector)
+	}
 	for _, p := range plmq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (plmq *PackageLoadMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (plmq *PackageLoadMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *PackageLoadMetricsSelect {
+	plmq.modifiers = append(plmq.modifiers, modifiers...)
+	return plmq.Select()
 }
 
 // PackageLoadMetricsGroupBy is the group-by builder for PackageLoadMetrics entities.
@@ -624,4 +634,10 @@ func (plms *PackageLoadMetricsSelect) sqlScan(ctx context.Context, root *Package
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (plms *PackageLoadMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *PackageLoadMetricsSelect {
+	plms.modifiers = append(plms.modifiers, modifiers...)
+	return plms
 }

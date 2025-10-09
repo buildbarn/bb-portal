@@ -60,6 +60,12 @@
     enableBepFileUpload: true,
     enableGraphqlPlayground: true,
     saveTargetDataLevel: { enriched: {} },
+    databaseCleanupConfiguration: {
+      cleanupInterval: '60s',
+      invocationConnectionTimeout: '60s',
+      invocationMessageTimeout: '3600s',
+      invocationRetention: '604800s',
+    },
   },
 
   // The BrowserService can be disabled by not setting this field.

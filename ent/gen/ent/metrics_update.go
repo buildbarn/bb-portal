@@ -27,8 +27,9 @@ import (
 // MetricsUpdate is the builder for updating Metrics entities.
 type MetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *MetricsMutation
+	hooks     []Hook
+	mutation  *MetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the MetricsUpdate builder.
@@ -317,6 +318,12 @@ func (mu *MetricsUpdate) ExecX(ctx context.Context) {
 	if err := mu.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (mu *MetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MetricsUpdate {
+	mu.modifiers = append(mu.modifiers, modifiers...)
+	return mu
 }
 
 func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
@@ -618,6 +625,7 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(mu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, mu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{metrics.Label}
@@ -633,9 +641,10 @@ func (mu *MetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // MetricsUpdateOne is the builder for updating a single Metrics entity.
 type MetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *MetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *MetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
@@ -931,6 +940,12 @@ func (muo *MetricsUpdateOne) ExecX(ctx context.Context) {
 	if err := muo.Exec(ctx); err != nil {
 		panic(err)
 	}
+}
+
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (muo *MetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MetricsUpdateOne {
+	muo.modifiers = append(muo.modifiers, modifiers...)
+	return muo
 }
 
 func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err error) {
@@ -1249,6 +1264,7 @@ func (muo *MetricsUpdateOne) sqlSave(ctx context.Context) (_node *Metrics, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(muo.modifiers...)
 	_node = &Metrics{config: muo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

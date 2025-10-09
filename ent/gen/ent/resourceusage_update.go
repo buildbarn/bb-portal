@@ -18,8 +18,9 @@ import (
 // ResourceUsageUpdate is the builder for updating ResourceUsage entities.
 type ResourceUsageUpdate struct {
 	config
-	hooks    []Hook
-	mutation *ResourceUsageMutation
+	hooks     []Hook
+	mutation  *ResourceUsageMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the ResourceUsageUpdate builder.
@@ -125,6 +126,12 @@ func (ruu *ResourceUsageUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (ruu *ResourceUsageUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ResourceUsageUpdate {
+	ruu.modifiers = append(ruu.modifiers, modifiers...)
+	return ruu
+}
+
 func (ruu *ResourceUsageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(resourceusage.Table, resourceusage.Columns, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt))
 	if ps := ruu.mutation.predicates; len(ps) > 0 {
@@ -175,6 +182,7 @@ func (ruu *ResourceUsageUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(ruu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, ruu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{resourceusage.Label}
@@ -190,9 +198,10 @@ func (ruu *ResourceUsageUpdate) sqlSave(ctx context.Context) (n int, err error) 
 // ResourceUsageUpdateOne is the builder for updating a single ResourceUsage entity.
 type ResourceUsageUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *ResourceUsageMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *ResourceUsageMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetName sets the "name" field.
@@ -305,6 +314,12 @@ func (ruuo *ResourceUsageUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (ruuo *ResourceUsageUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ResourceUsageUpdateOne {
+	ruuo.modifiers = append(ruuo.modifiers, modifiers...)
+	return ruuo
+}
+
 func (ruuo *ResourceUsageUpdateOne) sqlSave(ctx context.Context) (_node *ResourceUsage, err error) {
 	_spec := sqlgraph.NewUpdateSpec(resourceusage.Table, resourceusage.Columns, sqlgraph.NewFieldSpec(resourceusage.FieldID, field.TypeInt))
 	id, ok := ruuo.mutation.ID()
@@ -372,6 +387,7 @@ func (ruuo *ResourceUsageUpdateOne) sqlSave(ctx context.Context) (_node *Resourc
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(ruuo.modifiers...)
 	_node = &ResourceUsage{config: ruuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
