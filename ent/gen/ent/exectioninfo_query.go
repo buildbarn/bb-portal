@@ -30,8 +30,8 @@ type ExectionInfoQuery struct {
 	withTimingBreakdown    *TimingBreakdownQuery
 	withResourceUsage      *ResourceUsageQuery
 	withFKs                bool
-	modifiers              []func(*sql.Selector)
 	loadTotal              []func(context.Context, []*ExectionInfo) error
+	modifiers              []func(*sql.Selector)
 	withNamedResourceUsage map[string]*ResourceUsageQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -331,8 +331,9 @@ func (eiq *ExectionInfoQuery) Clone() *ExectionInfoQuery {
 		withTimingBreakdown: eiq.withTimingBreakdown.Clone(),
 		withResourceUsage:   eiq.withResourceUsage.Clone(),
 		// clone intermediate query.
-		sql:  eiq.sql.Clone(),
-		path: eiq.path,
+		sql:       eiq.sql.Clone(),
+		path:      eiq.path,
+		modifiers: append([]func(*sql.Selector){}, eiq.modifiers...),
 	}
 }
 
@@ -674,6 +675,9 @@ func (eiq *ExectionInfoQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if eiq.ctx.Unique != nil && *eiq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range eiq.modifiers {
+		m(selector)
+	}
 	for _, p := range eiq.predicates {
 		p(selector)
 	}
@@ -689,6 +693,12 @@ func (eiq *ExectionInfoQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (eiq *ExectionInfoQuery) Modify(modifiers ...func(s *sql.Selector)) *ExectionInfoSelect {
+	eiq.modifiers = append(eiq.modifiers, modifiers...)
+	return eiq.Select()
 }
 
 // WithNamedResourceUsage tells the query-builder to eager-load the nodes that are connected to the "resource_usage"
@@ -793,4 +803,10 @@ func (eis *ExectionInfoSelect) sqlScan(ctx context.Context, root *ExectionInfoQu
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (eis *ExectionInfoSelect) Modify(modifiers ...func(s *sql.Selector)) *ExectionInfoSelect {
+	eis.modifiers = append(eis.modifiers, modifiers...)
+	return eis
 }

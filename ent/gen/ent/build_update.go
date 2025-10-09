@@ -19,8 +19,9 @@ import (
 // BuildUpdate is the builder for updating Build entities.
 type BuildUpdate struct {
 	config
-	hooks    []Hook
-	mutation *BuildMutation
+	hooks     []Hook
+	mutation  *BuildMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the BuildUpdate builder.
@@ -111,6 +112,12 @@ func (bu *BuildUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (bu *BuildUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildUpdate {
+	bu.modifiers = append(bu.modifiers, modifiers...)
+	return bu
+}
+
 func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(build.Table, build.Columns, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt))
 	if ps := bu.mutation.predicates; len(ps) > 0 {
@@ -168,6 +175,7 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(bu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, bu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{build.Label}
@@ -183,9 +191,10 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // BuildUpdateOne is the builder for updating a single Build entity.
 type BuildUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *BuildMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *BuildMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetTimestamp sets the "timestamp" field.
@@ -283,6 +292,12 @@ func (buo *BuildUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (buo *BuildUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildUpdateOne {
+	buo.modifiers = append(buo.modifiers, modifiers...)
+	return buo
+}
+
 func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error) {
 	_spec := sqlgraph.NewUpdateSpec(build.Table, build.Columns, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt))
 	id, ok := buo.mutation.ID()
@@ -357,6 +372,7 @@ func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(buo.modifiers...)
 	_node = &Build{config: buo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

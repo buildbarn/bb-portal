@@ -18,8 +18,9 @@ import (
 // TimingChildUpdate is the builder for updating TimingChild entities.
 type TimingChildUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TimingChildMutation
+	hooks     []Hook
+	mutation  *TimingChildMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TimingChildUpdate builder.
@@ -125,6 +126,12 @@ func (tcu *TimingChildUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tcu *TimingChildUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TimingChildUpdate {
+	tcu.modifiers = append(tcu.modifiers, modifiers...)
+	return tcu
+}
+
 func (tcu *TimingChildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(timingchild.Table, timingchild.Columns, sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt))
 	if ps := tcu.mutation.predicates; len(ps) > 0 {
@@ -175,6 +182,7 @@ func (tcu *TimingChildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tcu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, tcu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{timingchild.Label}
@@ -190,9 +198,10 @@ func (tcu *TimingChildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // TimingChildUpdateOne is the builder for updating a single TimingChild entity.
 type TimingChildUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TimingChildMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TimingChildMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetName sets the "name" field.
@@ -305,6 +314,12 @@ func (tcuo *TimingChildUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tcuo *TimingChildUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TimingChildUpdateOne {
+	tcuo.modifiers = append(tcuo.modifiers, modifiers...)
+	return tcuo
+}
+
 func (tcuo *TimingChildUpdateOne) sqlSave(ctx context.Context) (_node *TimingChild, err error) {
 	_spec := sqlgraph.NewUpdateSpec(timingchild.Table, timingchild.Columns, sqlgraph.NewFieldSpec(timingchild.FieldID, field.TypeInt))
 	id, ok := tcuo.mutation.ID()
@@ -372,6 +387,7 @@ func (tcuo *TimingChildUpdateOne) sqlSave(ctx context.Context) (_node *TimingChi
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tcuo.modifiers...)
 	_node = &TimingChild{config: tcuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

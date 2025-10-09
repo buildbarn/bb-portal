@@ -20,8 +20,9 @@ import (
 // BazelInvocationProblemUpdate is the builder for updating BazelInvocationProblem entities.
 type BazelInvocationProblemUpdate struct {
 	config
-	hooks    []Hook
-	mutation *BazelInvocationProblemMutation
+	hooks     []Hook
+	mutation  *BazelInvocationProblemMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the BazelInvocationProblemUpdate builder.
@@ -127,6 +128,12 @@ func (bipu *BazelInvocationProblemUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (bipu *BazelInvocationProblemUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BazelInvocationProblemUpdate {
+	bipu.modifiers = append(bipu.modifiers, modifiers...)
+	return bipu
+}
+
 func (bipu *BazelInvocationProblemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(bazelinvocationproblem.Table, bazelinvocationproblem.Columns, sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt))
 	if ps := bipu.mutation.predicates; len(ps) > 0 {
@@ -179,6 +186,7 @@ func (bipu *BazelInvocationProblemUpdate) sqlSave(ctx context.Context) (n int, e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(bipu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, bipu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{bazelinvocationproblem.Label}
@@ -194,9 +202,10 @@ func (bipu *BazelInvocationProblemUpdate) sqlSave(ctx context.Context) (n int, e
 // BazelInvocationProblemUpdateOne is the builder for updating a single BazelInvocationProblem entity.
 type BazelInvocationProblemUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *BazelInvocationProblemMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *BazelInvocationProblemMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetProblemType sets the "problem_type" field.
@@ -309,6 +318,12 @@ func (bipuo *BazelInvocationProblemUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (bipuo *BazelInvocationProblemUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BazelInvocationProblemUpdateOne {
+	bipuo.modifiers = append(bipuo.modifiers, modifiers...)
+	return bipuo
+}
+
 func (bipuo *BazelInvocationProblemUpdateOne) sqlSave(ctx context.Context) (_node *BazelInvocationProblem, err error) {
 	_spec := sqlgraph.NewUpdateSpec(bazelinvocationproblem.Table, bazelinvocationproblem.Columns, sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt))
 	id, ok := bipuo.mutation.ID()
@@ -378,6 +393,7 @@ func (bipuo *BazelInvocationProblemUpdateOne) sqlSave(ctx context.Context) (_nod
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(bipuo.modifiers...)
 	_node = &BazelInvocationProblem{config: bipuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

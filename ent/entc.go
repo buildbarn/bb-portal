@@ -32,6 +32,7 @@ func main() {
 		entc.FeatureNames("intercept"),
 		entc.FeatureNames("sql/execquery"),
 		entc.FeatureNames("sql/upsert"),
+		entc.FeatureNames("sql/modifier"),
 	}
 	if err := os.RemoveAll("./ent/gen"); err != nil {
 		log.Fatalf("failed to remove ./ent/gen: %v", err)

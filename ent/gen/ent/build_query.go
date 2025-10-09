@@ -25,8 +25,8 @@ type BuildQuery struct {
 	inters               []Interceptor
 	predicates           []predicate.Build
 	withInvocations      *BazelInvocationQuery
-	modifiers            []func(*sql.Selector)
 	loadTotal            []func(context.Context, []*Build) error
+	modifiers            []func(*sql.Selector)
 	withNamedInvocations map[string]*BazelInvocationQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -280,8 +280,9 @@ func (bq *BuildQuery) Clone() *BuildQuery {
 		predicates:      append([]predicate.Build{}, bq.predicates...),
 		withInvocations: bq.withInvocations.Clone(),
 		// clone intermediate query.
-		sql:  bq.sql.Clone(),
-		path: bq.path,
+		sql:       bq.sql.Clone(),
+		path:      bq.path,
+		modifiers: append([]func(*sql.Selector){}, bq.modifiers...),
 	}
 }
 
@@ -520,6 +521,9 @@ func (bq *BuildQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if bq.ctx.Unique != nil && *bq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range bq.modifiers {
+		m(selector)
+	}
 	for _, p := range bq.predicates {
 		p(selector)
 	}
@@ -535,6 +539,12 @@ func (bq *BuildQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (bq *BuildQuery) Modify(modifiers ...func(s *sql.Selector)) *BuildSelect {
+	bq.modifiers = append(bq.modifiers, modifiers...)
+	return bq.Select()
 }
 
 // WithNamedInvocations tells the query-builder to eager-load the nodes that are connected to the "invocations"
@@ -639,4 +649,10 @@ func (bs *BuildSelect) sqlScan(ctx context.Context, root *BuildQuery, v any) err
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (bs *BuildSelect) Modify(modifiers ...func(s *sql.Selector)) *BuildSelect {
+	bs.modifiers = append(bs.modifiers, modifiers...)
+	return bs
 }

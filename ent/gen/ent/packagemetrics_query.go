@@ -28,8 +28,8 @@ type PackageMetricsQuery struct {
 	withMetrics                 *MetricsQuery
 	withPackageLoadMetrics      *PackageLoadMetricsQuery
 	withFKs                     bool
-	modifiers                   []func(*sql.Selector)
 	loadTotal                   []func(context.Context, []*PackageMetrics) error
+	modifiers                   []func(*sql.Selector)
 	withNamedPackageLoadMetrics map[string]*PackageLoadMetricsQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -306,8 +306,9 @@ func (pmq *PackageMetricsQuery) Clone() *PackageMetricsQuery {
 		withMetrics:            pmq.withMetrics.Clone(),
 		withPackageLoadMetrics: pmq.withPackageLoadMetrics.Clone(),
 		// clone intermediate query.
-		sql:  pmq.sql.Clone(),
-		path: pmq.path,
+		sql:       pmq.sql.Clone(),
+		path:      pmq.path,
+		modifiers: append([]func(*sql.Selector){}, pmq.modifiers...),
 	}
 }
 
@@ -605,6 +606,9 @@ func (pmq *PackageMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if pmq.ctx.Unique != nil && *pmq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range pmq.modifiers {
+		m(selector)
+	}
 	for _, p := range pmq.predicates {
 		p(selector)
 	}
@@ -620,6 +624,12 @@ func (pmq *PackageMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (pmq *PackageMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *PackageMetricsSelect {
+	pmq.modifiers = append(pmq.modifiers, modifiers...)
+	return pmq.Select()
 }
 
 // WithNamedPackageLoadMetrics tells the query-builder to eager-load the nodes that are connected to the "package_load_metrics"
@@ -724,4 +734,10 @@ func (pms *PackageMetricsSelect) sqlScan(ctx context.Context, root *PackageMetri
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (pms *PackageMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *PackageMetricsSelect {
+	pms.modifiers = append(pms.modifiers, modifiers...)
+	return pms
 }

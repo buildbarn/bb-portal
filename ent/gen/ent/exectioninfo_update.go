@@ -20,8 +20,9 @@ import (
 // ExectionInfoUpdate is the builder for updating ExectionInfo entities.
 type ExectionInfoUpdate struct {
 	config
-	hooks    []Hook
-	mutation *ExectionInfoMutation
+	hooks     []Hook
+	mutation  *ExectionInfoMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the ExectionInfoUpdate builder.
@@ -262,6 +263,12 @@ func (eiu *ExectionInfoUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (eiu *ExectionInfoUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ExectionInfoUpdate {
+	eiu.modifiers = append(eiu.modifiers, modifiers...)
+	return eiu
+}
+
 func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(exectioninfo.Table, exectioninfo.Columns, sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt))
 	if ps := eiu.mutation.predicates; len(ps) > 0 {
@@ -410,6 +417,7 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(eiu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, eiu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{exectioninfo.Label}
@@ -425,9 +433,10 @@ func (eiu *ExectionInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // ExectionInfoUpdateOne is the builder for updating a single ExectionInfo entity.
 type ExectionInfoUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *ExectionInfoMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *ExectionInfoMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetTimeoutSeconds sets the "timeout_seconds" field.
@@ -675,6 +684,12 @@ func (eiuo *ExectionInfoUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (eiuo *ExectionInfoUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ExectionInfoUpdateOne {
+	eiuo.modifiers = append(eiuo.modifiers, modifiers...)
+	return eiuo
+}
+
 func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *ExectionInfo, err error) {
 	_spec := sqlgraph.NewUpdateSpec(exectioninfo.Table, exectioninfo.Columns, sqlgraph.NewFieldSpec(exectioninfo.FieldID, field.TypeInt))
 	id, ok := eiuo.mutation.ID()
@@ -840,6 +855,7 @@ func (eiuo *ExectionInfoUpdateOne) sqlSave(ctx context.Context) (_node *Exection
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(eiuo.modifiers...)
 	_node = &ExectionInfo{config: eiuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

@@ -25,8 +25,8 @@ type ArtifactMetricsQuery struct {
 	predicates  []predicate.ArtifactMetrics
 	withMetrics *MetricsQuery
 	withFKs     bool
-	modifiers   []func(*sql.Selector)
 	loadTotal   []func(context.Context, []*ArtifactMetrics) error
+	modifiers   []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (amq *ArtifactMetricsQuery) Clone() *ArtifactMetricsQuery {
 		predicates:  append([]predicate.ArtifactMetrics{}, amq.predicates...),
 		withMetrics: amq.withMetrics.Clone(),
 		// clone intermediate query.
-		sql:  amq.sql.Clone(),
-		path: amq.path,
+		sql:       amq.sql.Clone(),
+		path:      amq.path,
+		modifiers: append([]func(*sql.Selector){}, amq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (amq *ArtifactMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if amq.ctx.Unique != nil && *amq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range amq.modifiers {
+		m(selector)
+	}
 	for _, p := range amq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (amq *ArtifactMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (amq *ArtifactMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *ArtifactMetricsSelect {
+	amq.modifiers = append(amq.modifiers, modifiers...)
+	return amq.Select()
 }
 
 // ArtifactMetricsGroupBy is the group-by builder for ArtifactMetrics entities.
@@ -624,4 +634,10 @@ func (ams *ArtifactMetricsSelect) sqlScan(ctx context.Context, root *ArtifactMet
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ams *ArtifactMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *ArtifactMetricsSelect {
+	ams.modifiers = append(ams.modifiers, modifiers...)
+	return ams
 }

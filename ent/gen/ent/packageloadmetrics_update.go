@@ -18,8 +18,9 @@ import (
 // PackageLoadMetricsUpdate is the builder for updating PackageLoadMetrics entities.
 type PackageLoadMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *PackageLoadMetricsMutation
+	hooks     []Hook
+	mutation  *PackageLoadMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the PackageLoadMetricsUpdate builder.
@@ -240,6 +241,12 @@ func (plmu *PackageLoadMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (plmu *PackageLoadMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *PackageLoadMetricsUpdate {
+	plmu.modifiers = append(plmu.modifiers, modifiers...)
+	return plmu
+}
+
 func (plmu *PackageLoadMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(packageloadmetrics.Table, packageloadmetrics.Columns, sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt))
 	if ps := plmu.mutation.predicates; len(ps) > 0 {
@@ -329,6 +336,7 @@ func (plmu *PackageLoadMetricsUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(plmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, plmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{packageloadmetrics.Label}
@@ -344,9 +352,10 @@ func (plmu *PackageLoadMetricsUpdate) sqlSave(ctx context.Context) (n int, err e
 // PackageLoadMetricsUpdateOne is the builder for updating a single PackageLoadMetrics entity.
 type PackageLoadMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *PackageLoadMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *PackageLoadMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetName sets the "name" field.
@@ -574,6 +583,12 @@ func (plmuo *PackageLoadMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (plmuo *PackageLoadMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *PackageLoadMetricsUpdateOne {
+	plmuo.modifiers = append(plmuo.modifiers, modifiers...)
+	return plmuo
+}
+
 func (plmuo *PackageLoadMetricsUpdateOne) sqlSave(ctx context.Context) (_node *PackageLoadMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(packageloadmetrics.Table, packageloadmetrics.Columns, sqlgraph.NewFieldSpec(packageloadmetrics.FieldID, field.TypeInt))
 	id, ok := plmuo.mutation.ID()
@@ -680,6 +695,7 @@ func (plmuo *PackageLoadMetricsUpdateOne) sqlSave(ctx context.Context) (_node *P
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(plmuo.modifiers...)
 	_node = &PackageLoadMetrics{config: plmuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

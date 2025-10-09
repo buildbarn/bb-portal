@@ -18,8 +18,9 @@ import (
 // ArtifactMetricsUpdate is the builder for updating ArtifactMetrics entities.
 type ArtifactMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *ArtifactMetricsMutation
+	hooks     []Hook
+	mutation  *ArtifactMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the ArtifactMetricsUpdate builder.
@@ -301,6 +302,12 @@ func (amu *ArtifactMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (amu *ArtifactMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ArtifactMetricsUpdate {
+	amu.modifiers = append(amu.modifiers, modifiers...)
+	return amu
+}
+
 func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt))
 	if ps := amu.mutation.predicates; len(ps) > 0 {
@@ -411,6 +418,7 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(amu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, amu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{artifactmetrics.Label}
@@ -426,9 +434,10 @@ func (amu *ArtifactMetricsUpdate) sqlSave(ctx context.Context) (n int, err error
 // ArtifactMetricsUpdateOne is the builder for updating a single ArtifactMetrics entity.
 type ArtifactMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *ArtifactMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *ArtifactMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field.
@@ -717,6 +726,12 @@ func (amuo *ArtifactMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (amuo *ArtifactMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *ArtifactMetricsUpdateOne {
+	amuo.modifiers = append(amuo.modifiers, modifiers...)
+	return amuo
+}
+
 func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *ArtifactMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(artifactmetrics.Table, artifactmetrics.Columns, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt))
 	id, ok := amuo.mutation.ID()
@@ -844,6 +859,7 @@ func (amuo *ArtifactMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Artif
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(amuo.modifiers...)
 	_node = &ArtifactMetrics{config: amuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

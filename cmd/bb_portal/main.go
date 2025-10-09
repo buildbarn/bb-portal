@@ -35,11 +35,13 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
+	"github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"
 	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/internal/graphql/auth"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
+	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/global"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	bb_http "github.com/buildbarn/bb-storage/pkg/http"
@@ -172,6 +174,23 @@ func newBuildEventStreamService(
 	if err != nil {
 		return util.StatusWrap(err, "Failed to add database auth interceptors")
 	}
+
+	// Configure the database cleanup service.
+	cleanupConfiguration := besConfiguration.DatabaseCleanupConfiguration
+	if cleanupConfiguration == nil {
+		return status.Error(codes.InvalidArgument, "No databaseCleanupConfiguration configured for BuildEventStreamService")
+	}
+
+	databaseCleanerService, err := dbcleanupservice.NewDbCleanupService(
+		dbClient,
+		clock.SystemClock,
+		cleanupConfiguration,
+	)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to create DatabaseCleanupService")
+	}
+
+	databaseCleanerService.StartDbCleanupService(context.Background(), dependenciesGroup)
 
 	blobArchiveFolder := besConfiguration.BlobArchiveFolder
 	if blobArchiveFolder == "" {

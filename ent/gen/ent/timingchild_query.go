@@ -25,8 +25,8 @@ type TimingChildQuery struct {
 	predicates          []predicate.TimingChild
 	withTimingBreakdown *TimingBreakdownQuery
 	withFKs             bool
-	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*TimingChild) error
+	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (tcq *TimingChildQuery) Clone() *TimingChildQuery {
 		predicates:          append([]predicate.TimingChild{}, tcq.predicates...),
 		withTimingBreakdown: tcq.withTimingBreakdown.Clone(),
 		// clone intermediate query.
-		sql:  tcq.sql.Clone(),
-		path: tcq.path,
+		sql:       tcq.sql.Clone(),
+		path:      tcq.path,
+		modifiers: append([]func(*sql.Selector){}, tcq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (tcq *TimingChildQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if tcq.ctx.Unique != nil && *tcq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range tcq.modifiers {
+		m(selector)
+	}
 	for _, p := range tcq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (tcq *TimingChildQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (tcq *TimingChildQuery) Modify(modifiers ...func(s *sql.Selector)) *TimingChildSelect {
+	tcq.modifiers = append(tcq.modifiers, modifiers...)
+	return tcq.Select()
 }
 
 // TimingChildGroupBy is the group-by builder for TimingChild entities.
@@ -624,4 +634,10 @@ func (tcs *TimingChildSelect) sqlScan(ctx context.Context, root *TimingChildQuer
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (tcs *TimingChildSelect) Modify(modifiers ...func(s *sql.Selector)) *TimingChildSelect {
+	tcs.modifiers = append(tcs.modifiers, modifiers...)
+	return tcs
 }

@@ -28,8 +28,8 @@ type ActionCacheStatisticsQuery struct {
 	withActionSummary    *ActionSummaryQuery
 	withMissDetails      *MissDetailQuery
 	withFKs              bool
-	modifiers            []func(*sql.Selector)
 	loadTotal            []func(context.Context, []*ActionCacheStatistics) error
+	modifiers            []func(*sql.Selector)
 	withNamedMissDetails map[string]*MissDetailQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -306,8 +306,9 @@ func (acsq *ActionCacheStatisticsQuery) Clone() *ActionCacheStatisticsQuery {
 		withActionSummary: acsq.withActionSummary.Clone(),
 		withMissDetails:   acsq.withMissDetails.Clone(),
 		// clone intermediate query.
-		sql:  acsq.sql.Clone(),
-		path: acsq.path,
+		sql:       acsq.sql.Clone(),
+		path:      acsq.path,
+		modifiers: append([]func(*sql.Selector){}, acsq.modifiers...),
 	}
 }
 
@@ -603,6 +604,9 @@ func (acsq *ActionCacheStatisticsQuery) sqlQuery(ctx context.Context) *sql.Selec
 	if acsq.ctx.Unique != nil && *acsq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range acsq.modifiers {
+		m(selector)
+	}
 	for _, p := range acsq.predicates {
 		p(selector)
 	}
@@ -618,6 +622,12 @@ func (acsq *ActionCacheStatisticsQuery) sqlQuery(ctx context.Context) *sql.Selec
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (acsq *ActionCacheStatisticsQuery) Modify(modifiers ...func(s *sql.Selector)) *ActionCacheStatisticsSelect {
+	acsq.modifiers = append(acsq.modifiers, modifiers...)
+	return acsq.Select()
 }
 
 // WithNamedMissDetails tells the query-builder to eager-load the nodes that are connected to the "miss_details"
@@ -722,4 +732,10 @@ func (acss *ActionCacheStatisticsSelect) sqlScan(ctx context.Context, root *Acti
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (acss *ActionCacheStatisticsSelect) Modify(modifiers ...func(s *sql.Selector)) *ActionCacheStatisticsSelect {
+	acss.modifiers = append(acss.modifiers, modifiers...)
+	return acss
 }

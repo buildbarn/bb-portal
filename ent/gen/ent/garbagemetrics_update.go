@@ -18,8 +18,9 @@ import (
 // GarbageMetricsUpdate is the builder for updating GarbageMetrics entities.
 type GarbageMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *GarbageMetricsMutation
+	hooks     []Hook
+	mutation  *GarbageMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the GarbageMetricsUpdate builder.
@@ -132,6 +133,12 @@ func (gmu *GarbageMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (gmu *GarbageMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *GarbageMetricsUpdate {
+	gmu.modifiers = append(gmu.modifiers, modifiers...)
+	return gmu
+}
+
 func (gmu *GarbageMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(garbagemetrics.Table, garbagemetrics.Columns, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt))
 	if ps := gmu.mutation.predicates; len(ps) > 0 {
@@ -185,6 +192,7 @@ func (gmu *GarbageMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(gmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, gmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{garbagemetrics.Label}
@@ -200,9 +208,10 @@ func (gmu *GarbageMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 // GarbageMetricsUpdateOne is the builder for updating a single GarbageMetrics entity.
 type GarbageMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *GarbageMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *GarbageMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetType sets the "type" field.
@@ -322,6 +331,12 @@ func (gmuo *GarbageMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (gmuo *GarbageMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *GarbageMetricsUpdateOne {
+	gmuo.modifiers = append(gmuo.modifiers, modifiers...)
+	return gmuo
+}
+
 func (gmuo *GarbageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *GarbageMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(garbagemetrics.Table, garbagemetrics.Columns, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt))
 	id, ok := gmuo.mutation.ID()
@@ -392,6 +407,7 @@ func (gmuo *GarbageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Garbag
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(gmuo.modifiers...)
 	_node = &GarbageMetrics{config: gmuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

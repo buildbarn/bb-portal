@@ -26,7 +26,7 @@ func (BazelInvocation) Fields() []ent.Field {
 		field.Time("started_at").Optional().Annotations(entgql.OrderField("STARTED_AT")),
 
 		// Time the event ended
-		field.Time("ended_at").Optional(),
+		field.Time("ended_at").Optional().Nillable(),
 
 		// Rethink? Keep for now to capture existing processing.
 		field.Int("change_number").Optional(),
