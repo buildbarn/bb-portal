@@ -38,9 +38,7 @@ update-schema:
 
 .PHONY: update-tests
 update-tests:
-	go test ./pkg/processing/ -snapshot-for-api-tests
-	go test ./internal/graphql/ -update-golden
-	go test ./pkg/summary/ -update-golden
+	bazel run //test/integrationtest:integrationtest_test -- --update-golden
 
 .PHONY: generate-bazel
 generate-bazel:
