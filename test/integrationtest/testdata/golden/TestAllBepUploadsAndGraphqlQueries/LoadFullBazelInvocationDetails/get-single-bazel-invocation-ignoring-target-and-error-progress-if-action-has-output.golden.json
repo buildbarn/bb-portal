@@ -1,0 +1,416 @@
+{
+  "bazelInvocation": {
+    "bazelCommand": {
+      "cmdLine": [
+        "--enable_runfiles=1",
+        "--build_event_json_file=./pkg/summary/testdata/nextjs_target_failed.bep.ndjson"
+      ],
+      "command": "build",
+      "executable": "bazel",
+      "explicitCmdLine": "--build_event_json_file=./pkg/summary/testdata/nextjs_target_failed.bep.ndjson",
+      "explicitStartupOptions": [
+        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
+      ],
+      "id": "",
+      "residual": "//...",
+      "startupOptions": [
+        "--max_idle_secs=10800",
+        "--noshutdown_on_low_sys_mem",
+        "--connect_timeout_secs=30",
+        "--output_user_root=/var/tmp/_bazel_nameless",
+        "--output_base=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096",
+        "--failure_detail_out=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/failure_detail.rawproto",
+        "--expand_configs_in_place",
+        "--idle_server_tasks",
+        "--write_command_log",
+        "--nowatchfs",
+        "--nofatal_event_bus_exceptions",
+        "--nowindows_enable_symlinks",
+        "--noclient_debug",
+        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
+      ]
+    },
+    "bazelVersion": "7.1.0",
+    "build": null,
+    "configurationMnemonic": "darwin_arm64-fastbuild",
+    "cpu": "darwin_arm64",
+    "endedAt": "2024-05-03T00:29:47.784Z",
+    "hostname": "Namelesss-MacBook-Pro.local",
+    "id": "QmF6ZWxJbnZvY2F0aW9uOjU=",
+    "instanceName": "",
+    "invocationID": "df7178e2-a815-4654-a409-d18e845d1e35",
+    "isCiWorker": false,
+    "metrics": {
+      "actionSummary": {
+        "actionCacheStatistics": {
+          "hits": 4,
+          "id": "QWN0aW9uQ2FjaGVTdGF0aXN0aWNzOjU=",
+          "loadTimeInMs": 0,
+          "missDetails": [
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjI5",
+              "reason": "DIFFERENT_ACTION_KEY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjMw",
+              "reason": "DIFFERENT_DEPS"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjMx",
+              "reason": "DIFFERENT_ENVIRONMENT"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjMy",
+              "reason": "DIFFERENT_FILES"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjMz",
+              "reason": "CORRUPTED_CACHE_ENTRY"
+            },
+            {
+              "count": 0,
+              "id": "TWlzc0RldGFpOjM0",
+              "reason": "NOT_CACHED"
+            },
+            {
+              "count": 1,
+              "id": "TWlzc0RldGFpOjM1",
+              "reason": "UNCONDITIONAL_EXECUTION"
+            }
+          ],
+          "misses": 1,
+          "saveTimeInMs": 0,
+          "sizeInBytes": 1549398
+        },
+        "actionData": [
+          {
+            "actionsCreated": 0,
+            "actionsExecuted": 1,
+            "firstStartedMs": 1714696187752,
+            "id": "QWN0aW9uRGF0YToxMw==",
+            "lastEndedMs": 1714696187754,
+            "mnemonic": "BazelWorkspaceStatusAction",
+            "systemTime": 0,
+            "userTime": 0
+          }
+        ],
+        "actionsCreated": 0,
+        "actionsCreatedNotIncludingAspects": 0,
+        "actionsExecuted": 1,
+        "id": "QWN0aW9uU3VtbWFyeTo1",
+        "remoteCacheHits": 0,
+        "runnerCount": [
+          {
+            "actionsExecuted": 1,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6MTU=",
+            "name": "total"
+          },
+          {
+            "actionsExecuted": 1,
+            "execKind": "",
+            "id": "UnVubmVyQ291bnQ6MTY=",
+            "name": "internal"
+          }
+        ]
+      },
+      "artifactMetrics": {
+        "id": "QXJ0aWZhY3RNZXRyaWNzOjU=",
+        "outputArtifactsFromActionCacheCount": 3,
+        "outputArtifactsFromActionCacheSizeInBytes": 26106,
+        "outputArtifactsSeenCount": 5,
+        "outputArtifactsSeenSizeInBytes": 26241,
+        "sourceArtifactsReadCount": 0,
+        "sourceArtifactsReadSizeInBytes": 0,
+        "topLevelArtifactsCount": 0,
+        "topLevelArtifactsSizeInBytes": 0
+      },
+      "cumulativeMetrics": {
+        "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6NQ==",
+        "numAnalyses": 13,
+        "numBuilds": 13
+      },
+      "id": "TWV0cmljczo1",
+      "memoryMetrics": {
+        "garbageMetrics": [],
+        "id": "TWVtb3J5TWV0cmljczo1",
+        "peakPostGcHeapSize": 0,
+        "peakPostGcTenuredSpaceHeapSize": 0,
+        "usedHeapSizePostBuild": 0
+      },
+      "networkMetrics": null,
+      "packageMetrics": {
+        "id": "UGFja2FnZU1ldHJpY3M6NQ==",
+        "packageLoadMetrics": [],
+        "packagesLoaded": 0
+      },
+      "targetMetrics": {
+        "id": "VGFyZ2V0TWV0cmljczo1",
+        "targetsConfigured": 0,
+        "targetsConfiguredNotIncludingAspects": 0,
+        "targetsLoaded": 0
+      },
+      "timingMetrics": {
+        "actionsExecutionStartInMs": 0,
+        "analysisPhaseTimeInMs": 0,
+        "cpuTimeInMs": 2508,
+        "executionPhaseTimeInMs": 32,
+        "id": "VGltaW5nTWV0cmljczo1",
+        "wallTimeInMs": 307
+      }
+    },
+    "numFetches": 0,
+    "profile": null,
+    "sourceControl": null,
+    "startedAt": "2024-05-03T00:29:47.443Z",
+    "state": {
+      "bepCompleted": true,
+      "buildEndTime": "2024-05-03T00:29:47.784Z",
+      "buildStartTime": "2024-05-03T00:29:47.443Z",
+      "exitCode": {
+        "code": 1,
+        "id": "",
+        "name": "PARSING_FAILURE"
+      },
+      "id": ""
+    },
+    "stepLabel": "",
+    "targets": [
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIxMA==",
+        "label": "//next.js/pages/api:api",
+        "success": false,
+        "targetKind": "ts_project rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIxMQ==",
+        "label": "//next.js/pages:_jest_test_bazel_sequencer",
+        "success": true,
+        "targetKind": "_copy_file rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIxMg==",
+        "label": "//next.js/pages:_jest_test_bazel_snapshot_resolver",
+        "success": true,
+        "targetKind": "_copy_file rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIxMw==",
+        "label": "//next.js/pages:_jest_test_bazel_snapshot_reporter",
+        "success": true,
+        "targetKind": "_copy_file rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIxNA==",
+        "label": "//next.js/pages:_jest_test_jest_entrypoint",
+        "success": false,
+        "targetKind": "directory_path rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIxNQ==",
+        "label": "//next.js/pages:pages",
+        "success": false,
+        "targetKind": "ts_project rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIxNg==",
+        "label": "//next.js/public:public",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIxNw==",
+        "label": "//next.js/pages:specs",
+        "success": false,
+        "targetKind": "ts_project rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIxOA==",
+        "label": "//next.js:eslintrc",
+        "success": false,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIxOQ==",
+        "label": "//next.js/styles:styles",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIyMA==",
+        "label": "//next.js:jest_config",
+        "success": false,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIyMQ==",
+        "label": "//next.js:next_js_binary",
+        "success": false,
+        "targetKind": "js_binary rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIyMg==",
+        "label": "//packages/one:one",
+        "success": false,
+        "targetKind": "_npm_package rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIyMw==",
+        "label": "//packages/one:one_ts",
+        "success": false,
+        "targetKind": "ts_project rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIyNA==",
+        "label": "//next.js:package_json",
+        "success": false,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIyNQ==",
+        "label": "//react/public:public",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIyNg==",
+        "label": "//react/src:lint",
+        "success": false,
+        "targetKind": "eslint_test rule",
+        "testSize": "MEDIUM"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIyNw==",
+        "label": "//react/src:assets",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIyOA==",
+        "label": "//react/src:src",
+        "success": true,
+        "targetKind": "js_library rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIyOQ==",
+        "label": "//react/src:src_typecheck",
+        "success": true,
+        "targetKind": "filegroup rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIzMA==",
+        "label": "//react/src:src_transpile",
+        "success": true,
+        "targetKind": "swc_compile rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "INCOMPLETE",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIzMQ==",
+        "label": "//next.js:tsconfig",
+        "success": false,
+        "targetKind": "ts_config rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIzMg==",
+        "label": "//react/src:src_typings",
+        "success": true,
+        "targetKind": "ts_project rule",
+        "testSize": "UNKNOWN"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIzMw==",
+        "label": "//react/src:src_typecheck_test",
+        "success": true,
+        "targetKind": "_empty_test rule",
+        "testSize": "SMALL"
+      },
+      {
+        "abortReason": "",
+        "durationInMs": 0,
+        "id": "VGFyZ2V0OjIzNA==",
+        "label": "//react/src:test",
+        "success": true,
+        "targetKind": "js_test rule",
+        "testSize": "MEDIUM"
+      }
+    ],
+    "testCollection": [],
+    "user": {
+      "Email": "",
+      "LDAP": "nameless"
+    }
+  }
+}

@@ -34,19 +34,21 @@ type QueryRegistry struct {
 func LoadQueryRegistry(t *testing.T, queryDir, consumerContractFile string) *QueryRegistry {
 	reg := QueryRegistry{entries: make(map[string]*registryEntry)}
 
-	queryFiles, err := os.ReadDir(queryDir)
-	if err != nil {
-		panic(fmt.Sprintf("Could not read query directory %s", queryDir))
-	}
+	if queryDir != "" {
+		queryFiles, err := os.ReadDir(queryDir)
+		if err != nil {
+			panic(fmt.Sprintf("Could not read query directory %s", queryDir))
+		}
 
-	for _, file := range queryFiles {
-		fileName := file.Name()
-		if strings.HasSuffix(fileName, ".graphql") {
-			fullPath := filepath.Join(queryDir, fileName)
-			document, err := os.ReadFile(fullPath)
-			require.NoError(t, err)
-			opName := strings.TrimSuffix(fileName, filepath.Ext(fileName))
-			require.NoError(t, reg.Register(opName, Document(document)))
+		for _, file := range queryFiles {
+			fileName := file.Name()
+			if strings.HasSuffix(fileName, ".graphql") {
+				fullPath := filepath.Join(queryDir, fileName)
+				document, err := os.ReadFile(fullPath)
+				require.NoError(t, err)
+				opName := strings.TrimSuffix(fileName, filepath.Ext(fileName))
+				require.NoError(t, reg.Register(opName, Document(document)))
+			}
 		}
 	}
 

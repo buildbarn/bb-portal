@@ -10,9 +10,10 @@ import (
 	"testing"
 
 	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+var updateGoldenFilesCommand = "bazel run //test/integrationtest:integrationtest_test -- --update-golden"
 
 // CompareOptions struct
 type CompareOptions struct {
@@ -40,7 +41,15 @@ func CheckAgainstGoldenFile(t *testing.T, got map[string]interface{}, goldenDir,
 	// get golden file
 	want, err := os.ReadFile(golden)
 	if err != nil {
-		t.Fatal(err)
+		require.FailNow(
+			t,
+			fmt.Sprintf(
+				"Failed to read golden file %s. If the file is missing, create it and then update its contents by running '%s'. Underlying error: %s",
+				golden,
+				updateGoldenFilesCommand,
+				err.Error(),
+			),
+		)
 	}
 
 	gotStr := string(prettyJSON(got))
@@ -53,7 +62,7 @@ func CheckAgainstGoldenFile(t *testing.T, got map[string]interface{}, goldenDir,
 		require.NoError(t, e)
 	}
 
-	assert.JSONEq(t, wantStr, gotStr)
+	require.JSONEq(t, wantStr, gotStr)
 }
 
 // replaceTimes finds all RFC3339 times and RFC7232 (section 2.2) times in the
