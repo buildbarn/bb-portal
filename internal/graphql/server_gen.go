@@ -517,7 +517,7 @@ type ComplexityRoot struct {
 	Query struct {
 		BazelInvocation                  func(childComplexity int, invocationID string) int
 		FindBazelInvocations             func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) int
-		FindBuilds                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.BuildWhereInput) int
+		FindBuilds                       func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) int
 		FindTargets                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.TargetWhereInput) int
 		FindTests                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) int
 		GetAuthenticatedUser             func(childComplexity int, userUUID *uuid.UUID) int
@@ -862,7 +862,7 @@ type QueryResolver interface {
 	Node(ctx context.Context, id string) (ent.Noder, error)
 	Nodes(ctx context.Context, ids []string) ([]ent.Noder, error)
 	FindBazelInvocations(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) (*ent.BazelInvocationConnection, error)
-	FindBuilds(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.BuildWhereInput) (*ent.BuildConnection, error)
+	FindBuilds(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) (*ent.BuildConnection, error)
 	FindTargets(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.TargetWhereInput) (*ent.TargetConnection, error)
 	FindTests(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) (*ent.TestCollectionConnection, error)
 	BazelInvocation(ctx context.Context, invocationID string) (*ent.BazelInvocation, error)
@@ -3160,7 +3160,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.complexity.Query.FindBuilds(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["where"].(*ent.BuildWhereInput)), true
+		return e.complexity.Query.FindBuilds(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.BuildOrder), args["where"].(*ent.BuildWhereInput)), true
 
 	case "Query.findTargets":
 		if e.complexity.Query.FindTargets == nil {
@@ -4414,6 +4414,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputBazelInvocationWhereInput,
 		ec.unmarshalInputBlobWhereInput,
 		ec.unmarshalInputBuildGraphMetricsWhereInput,
+		ec.unmarshalInputBuildOrder,
 		ec.unmarshalInputBuildWhereInput,
 		ec.unmarshalInputCumulativeMetricsWhereInput,
 		ec.unmarshalInputEvaluationStatWhereInput,
@@ -5057,11 +5058,16 @@ func (ec *executionContext) field_Query_findBuilds_args(ctx context.Context, raw
 		return nil, err
 	}
 	args["last"] = arg3
-	arg4, err := ec.field_Query_findBuilds_argsWhere(ctx, rawArgs)
+	arg4, err := ec.field_Query_findBuilds_argsOrderBy(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["where"] = arg4
+	args["orderBy"] = arg4
+	arg5, err := ec.field_Query_findBuilds_argsWhere(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["where"] = arg5
 	return args, nil
 }
 func (ec *executionContext) field_Query_findBuilds_argsAfter(
@@ -5133,6 +5139,24 @@ func (ec *executionContext) field_Query_findBuilds_argsLast(
 	}
 
 	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_findBuilds_argsOrderBy(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*ent.BuildOrder, error) {
+	if _, ok := rawArgs["orderBy"]; !ok {
+		var zeroVal *ent.BuildOrder
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		return ec.unmarshalOBuildOrder2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildOrder(ctx, tmp)
+	}
+
+	var zeroVal *ent.BuildOrder
 	return zeroVal, nil
 }
 
@@ -18762,7 +18786,7 @@ func (ec *executionContext) _Query_findBuilds(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().FindBuilds(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["where"].(*ent.BuildWhereInput))
+		return ec.resolvers.Query().FindBuilds(rctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.BuildOrder), fc.Args["where"].(*ent.BuildWhereInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -35044,6 +35068,44 @@ func (ec *executionContext) unmarshalInputBuildGraphMetricsWhereInput(ctx contex
 				return it, err
 			}
 			it.HasEvaluatedValuesWith = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputBuildOrder(ctx context.Context, obj any) (ent.BuildOrder, error) {
+	var it ent.BuildOrder
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	if _, present := asMap["direction"]; !present {
+		asMap["direction"] = "ASC"
+	}
+
+	fieldsInOrder := [...]string{"direction", "field"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "direction":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("direction"))
+			data, err := ec.unmarshalNOrderDirection2entgoᚗioᚋcontribᚋentgqlᚐOrderDirection(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Direction = data
+		case "field":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("field"))
+			data, err := ec.unmarshalNBuildOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildOrderField(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Field = data
 		}
 	}
 
@@ -57487,6 +57549,22 @@ func (ec *executionContext) unmarshalNBuildGraphMetricsWhereInput2ᚖgithubᚗco
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNBuildOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildOrderField(ctx context.Context, v any) (*ent.BuildOrderField, error) {
+	var res = new(ent.BuildOrderField)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNBuildOrderField2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildOrderField(ctx context.Context, sel ast.SelectionSet, v *ent.BuildOrderField) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalNBuildWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildWhereInput(ctx context.Context, v any) (*ent.BuildWhereInput, error) {
 	res, err := ec.unmarshalInputBuildWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -59168,6 +59246,14 @@ func (ec *executionContext) unmarshalOBuildGraphMetricsWhereInput2ᚖgithubᚗco
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputBuildGraphMetricsWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOBuildOrder2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildOrder(ctx context.Context, v any) (*ent.BuildOrder, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputBuildOrder(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

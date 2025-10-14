@@ -165,8 +165,8 @@ func (r *queryResolver) FindBazelInvocations(ctx context.Context, after *entgql.
 }
 
 // FindBuilds is the resolver for the findBuilds field.
-func (r *queryResolver) FindBuilds(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.BuildWhereInput) (*ent.BuildConnection, error) {
-	return r.client.Build.Query().Paginate(ctx, after, first, before, last, ent.WithBuildFilter(where.Filter))
+func (r *queryResolver) FindBuilds(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BuildOrder, where *ent.BuildWhereInput) (*ent.BuildConnection, error) {
+	return r.client.Build.Query().Paginate(ctx, after, first, before, last, ent.WithBuildFilter(where.Filter), ent.WithBuildOrder(orderBy))
 }
 
 // FindTargets is the resolver for the findTargets field.
