@@ -30,19 +30,16 @@ type InstanceNameEdges struct {
 	BazelInvocations []*BazelInvocation `json:"bazel_invocations,omitempty"`
 	// Builds holds the value of the builds edge.
 	Builds []*Build `json:"builds,omitempty"`
-	// Blobs holds the value of the blobs edge.
-	Blobs []*Blob `json:"blobs,omitempty"`
 	// Targets holds the value of the targets edge.
 	Targets []*Target `json:"targets,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [4]map[string]int
+	totalCount [3]map[string]int
 
 	namedBazelInvocations map[string][]*BazelInvocation
 	namedBuilds           map[string][]*Build
-	namedBlobs            map[string][]*Blob
 	namedTargets          map[string][]*Target
 }
 
@@ -64,19 +61,10 @@ func (e InstanceNameEdges) BuildsOrErr() ([]*Build, error) {
 	return nil, &NotLoadedError{edge: "builds"}
 }
 
-// BlobsOrErr returns the Blobs value or an error if the edge
-// was not loaded in eager-loading.
-func (e InstanceNameEdges) BlobsOrErr() ([]*Blob, error) {
-	if e.loadedTypes[2] {
-		return e.Blobs, nil
-	}
-	return nil, &NotLoadedError{edge: "blobs"}
-}
-
 // TargetsOrErr returns the Targets value or an error if the edge
 // was not loaded in eager-loading.
 func (e InstanceNameEdges) TargetsOrErr() ([]*Target, error) {
-	if e.loadedTypes[3] {
+	if e.loadedTypes[2] {
 		return e.Targets, nil
 	}
 	return nil, &NotLoadedError{edge: "targets"}
@@ -139,11 +127,6 @@ func (in *InstanceName) QueryBazelInvocations() *BazelInvocationQuery {
 // QueryBuilds queries the "builds" edge of the InstanceName entity.
 func (in *InstanceName) QueryBuilds() *BuildQuery {
 	return NewInstanceNameClient(in.config).QueryBuilds(in)
-}
-
-// QueryBlobs queries the "blobs" edge of the InstanceName entity.
-func (in *InstanceName) QueryBlobs() *BlobQuery {
-	return NewInstanceNameClient(in.config).QueryBlobs(in)
 }
 
 // QueryTargets queries the "targets" edge of the InstanceName entity.
@@ -225,30 +208,6 @@ func (in *InstanceName) appendNamedBuilds(name string, edges ...*Build) {
 		in.Edges.namedBuilds[name] = []*Build{}
 	} else {
 		in.Edges.namedBuilds[name] = append(in.Edges.namedBuilds[name], edges...)
-	}
-}
-
-// NamedBlobs returns the Blobs named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (in *InstanceName) NamedBlobs(name string) ([]*Blob, error) {
-	if in.Edges.namedBlobs == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := in.Edges.namedBlobs[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (in *InstanceName) appendNamedBlobs(name string, edges ...*Blob) {
-	if in.Edges.namedBlobs == nil {
-		in.Edges.namedBlobs = make(map[string][]*Blob)
-	}
-	if len(edges) == 0 {
-		in.Edges.namedBlobs[name] = []*Blob{}
-	} else {
-		in.Edges.namedBlobs[name] = append(in.Edges.namedBlobs[name], edges...)
 	}
 }
 

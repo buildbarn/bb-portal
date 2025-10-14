@@ -77,7 +77,6 @@
         connectionString: 'postgresql://app:password@localhost:5432/app',
       },
     },
-    blobArchiveFolder: './blob-archive/',
     enableBepFileUpload: true,
     enableGraphqlPlayground: true,
     saveDataLevel: { basicAndTarget: {} },

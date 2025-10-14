@@ -10,8 +10,6 @@ go_library(
         "artifactmetrics.go",
         "authenticateduser.go",
         "bazelinvocation.go",
-        "bazelinvocationproblem.go",
-        "blob.go",
         "build.go",
         "buildgraphmetrics.go",
         "buildlogchunk.go",

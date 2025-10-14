@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"log/slog"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -41,7 +40,6 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"
 	"github.com/buildbarn/bb-portal/internal/graphql"
-	"github.com/buildbarn/bb-portal/pkg/processing"
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
@@ -113,25 +111,6 @@ func main() {
 	})
 }
 
-func configureBlobArchiving(blobArchiver processing.BlobMultiArchiver, archiveFolder string) {
-	err := os.MkdirAll(archiveFolder, folderPermission)
-	if err != nil {
-		fatal("failed to create blob archive folder", "folder", archiveFolder, "err", err)
-	}
-
-	localBlobArchiver := processing.NewLocalFileArchiver(archiveFolder)
-	blobArchiver.RegisterArchiver("file", localBlobArchiver)
-
-	noopArchiver := processing.NewNoopArchiver()
-	blobArchiver.RegisterArchiver("bytestream", noopArchiver)
-}
-
-func fatal(msg string, args ...any) {
-	// Workaround: No slog.Fatal.
-	slog.Error(msg, args...)
-	os.Exit(1)
-}
-
 func newBuildEventStreamService(
 	configuration *bb_portal.ApplicationConfiguration,
 	siblingsGroup program.Group,
@@ -179,14 +158,6 @@ func newBuildEventStreamService(
 
 	databaseCleanerService.StartDbCleanupService(context.Background(), dependenciesGroup)
 
-	blobArchiveFolder := besConfiguration.BlobArchiveFolder
-	if blobArchiveFolder == "" {
-		return status.Error(codes.NotFound, "No blobArchiveFolder configured for besServiceConfiguration")
-	}
-
-	blobArchiver := processing.NewBlobMultiArchiver()
-	configureBlobArchiving(blobArchiver, blobArchiveFolder)
-
 	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
@@ -204,7 +175,7 @@ func newBuildEventStreamService(
 
 	// Handle BEP file uploads over HTTP.
 	if besConfiguration.EnableBepFileUpload {
-		bepUploader, err := bepuploader.NewBepUploader(dbClient, blobArchiver, configuration, dependenciesGroup, grpcClientFactory, tracerProvider, uuid.NewRandom)
+		bepUploader, err := bepuploader.NewBepUploader(dbClient, configuration, dependenciesGroup, grpcClientFactory, tracerProvider, uuid.NewRandom)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create BEP file upload handler")
 		}
@@ -212,7 +183,7 @@ func newBuildEventStreamService(
 	}
 
 	// Handle the build event stream gRPC strem.
-	buildEventServer, err := bes.NewBuildEventServer(dbClient, blobArchiver, configuration, dependenciesGroup, grpcClientFactory, tracerProvider, uuid.NewRandom)
+	buildEventServer, err := bes.NewBuildEventServer(dbClient, configuration, dependenciesGroup, grpcClientFactory, tracerProvider, uuid.NewRandom)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create BuildEventServer")
 	}

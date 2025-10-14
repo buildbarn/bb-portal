@@ -20,8 +20,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
@@ -88,16 +86,6 @@ var bazelinvocationImplementors = []string{"BazelInvocation", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*BazelInvocation) IsNode() {}
-
-var bazelinvocationproblemImplementors = []string{"BazelInvocationProblem", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*BazelInvocationProblem) IsNode() {}
-
-var blobImplementors = []string{"Blob", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*Blob) IsNode() {}
 
 var buildImplementors = []string{"Build", "Node"}
 
@@ -331,24 +319,6 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(bazelinvocation.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, bazelinvocationImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
-	case bazelinvocationproblem.Table:
-		query := c.BazelInvocationProblem.Query().
-			Where(bazelinvocationproblem.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, bazelinvocationproblemImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
-	case blob.Table:
-		query := c.Blob.Query().
-			Where(blob.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, blobImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -733,38 +703,6 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.BazelInvocation.Query().
 			Where(bazelinvocation.IDIn(ids...))
 		query, err := query.CollectFields(ctx, bazelinvocationImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
-	case bazelinvocationproblem.Table:
-		query := c.BazelInvocationProblem.Query().
-			Where(bazelinvocationproblem.IDIn(ids...))
-		query, err := query.CollectFields(ctx, bazelinvocationproblemImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
-	case blob.Table:
-		query := c.Blob.Query().
-			Where(blob.IDIn(ids...))
-		query, err := query.CollectFields(ctx, blobImplementors...)
 		if err != nil {
 			return nil, err
 		}

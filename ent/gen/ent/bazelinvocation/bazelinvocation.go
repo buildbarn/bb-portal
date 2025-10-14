@@ -85,8 +85,6 @@ const (
 	EdgeConfigurations = "configurations"
 	// EdgeActions holds the string denoting the actions edge name in mutations.
 	EdgeActions = "actions"
-	// EdgeProblems holds the string denoting the problems edge name in mutations.
-	EdgeProblems = "problems"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
 	// EdgeIncompleteBuildLogs holds the string denoting the incomplete_build_logs edge name in mutations.
@@ -152,13 +150,6 @@ const (
 	ActionsInverseTable = "actions"
 	// ActionsColumn is the table column denoting the actions relation/edge.
 	ActionsColumn = "bazel_invocation_id"
-	// ProblemsTable is the table that holds the problems relation/edge.
-	ProblemsTable = "bazel_invocation_problems"
-	// ProblemsInverseTable is the table name for the BazelInvocationProblem entity.
-	// It exists in this package in order to avoid circular dependency with the "bazelinvocationproblem" package.
-	ProblemsInverseTable = "bazel_invocation_problems"
-	// ProblemsColumn is the table column denoting the problems relation/edge.
-	ProblemsColumn = "bazel_invocation_problems"
 	// MetricsTable is the table that holds the metrics relation/edge.
 	MetricsTable = "metrics"
 	// MetricsInverseTable is the table name for the Metrics entity.
@@ -494,20 +485,6 @@ func ByActions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByProblemsCount orders the results by problems count.
-func ByProblemsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newProblemsStep(), opts...)
-	}
-}
-
-// ByProblems orders the results by problems terms.
-func ByProblems(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newProblemsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
 // ByMetricsField orders the results by metrics field.
 func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -638,13 +615,6 @@ func newActionsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ActionsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, ActionsTable, ActionsColumn),
-	)
-}
-func newProblemsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ProblemsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, ProblemsTable, ProblemsColumn),
 	)
 }
 func newMetricsStep() *sqlgraph.Step {

@@ -51,8 +51,8 @@ message BuildEventStreamService {
   // Configures the database for BES information storage.
   Database database = 2;
 
-  // Directory for blob archive.
-  string blob_archive_folder = 3;
+  // Was 'blob_archive_folder'.
+  reserved 3;
 
   // Enables the BEP file upload endpoint.
   bool enable_bep_file_upload = 4;

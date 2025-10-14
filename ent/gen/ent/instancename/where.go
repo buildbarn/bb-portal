@@ -169,29 +169,6 @@ func HasBuildsWith(preds ...predicate.Build) predicate.InstanceName {
 	})
 }
 
-// HasBlobs applies the HasEdge predicate on the "blobs" edge.
-func HasBlobs() predicate.InstanceName {
-	return predicate.InstanceName(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, BlobsTable, BlobsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasBlobsWith applies the HasEdge predicate on the "blobs" edge with a given conditions (other predicates).
-func HasBlobsWith(preds ...predicate.Blob) predicate.InstanceName {
-	return predicate.InstanceName(func(s *sql.Selector) {
-		step := newBlobsStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // HasTargets applies the HasEdge predicate on the "targets" edge.
 func HasTargets() predicate.InstanceName {
 	return predicate.InstanceName(func(s *sql.Selector) {

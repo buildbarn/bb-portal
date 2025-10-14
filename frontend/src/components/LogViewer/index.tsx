@@ -64,21 +64,4 @@ const LogViewer: React.FC<Props> = ({ log, loading, error }) => {
   );
 };
 
-type LogViewerCardProps = Props &
-  IntrinsicAttributes &
-  CardProps &
-  RefAttributes<HTMLDivElement>;
-
-export const LogViewerCard: React.FC<LogViewerCardProps> = ({
-  log,
-  bordered,
-  ...props
-}) => {
-  return (
-    <Card bordered={false} {...props}>
-      <LogViewer log={log} />
-    </Card>
-  );
-};
-
 export default LogViewer;

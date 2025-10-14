@@ -15,7 +15,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
@@ -696,21 +695,6 @@ func (biu *BazelInvocationUpdate) AddActions(a ...*Action) *BazelInvocationUpdat
 	return biu.AddActionIDs(ids...)
 }
 
-// AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
-func (biu *BazelInvocationUpdate) AddProblemIDs(ids ...int64) *BazelInvocationUpdate {
-	biu.mutation.AddProblemIDs(ids...)
-	return biu
-}
-
-// AddProblems adds the "problems" edges to the BazelInvocationProblem entity.
-func (biu *BazelInvocationUpdate) AddProblems(b ...*BazelInvocationProblem) *BazelInvocationUpdate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return biu.AddProblemIDs(ids...)
-}
-
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
 func (biu *BazelInvocationUpdate) SetMetricsID(id int64) *BazelInvocationUpdate {
 	biu.mutation.SetMetricsID(id)
@@ -914,27 +898,6 @@ func (biu *BazelInvocationUpdate) RemoveActions(a ...*Action) *BazelInvocationUp
 		ids[i] = a[i].ID
 	}
 	return biu.RemoveActionIDs(ids...)
-}
-
-// ClearProblems clears all "problems" edges to the BazelInvocationProblem entity.
-func (biu *BazelInvocationUpdate) ClearProblems() *BazelInvocationUpdate {
-	biu.mutation.ClearProblems()
-	return biu
-}
-
-// RemoveProblemIDs removes the "problems" edge to BazelInvocationProblem entities by IDs.
-func (biu *BazelInvocationUpdate) RemoveProblemIDs(ids ...int64) *BazelInvocationUpdate {
-	biu.mutation.RemoveProblemIDs(ids...)
-	return biu
-}
-
-// RemoveProblems removes "problems" edges to BazelInvocationProblem entities.
-func (biu *BazelInvocationUpdate) RemoveProblems(b ...*BazelInvocationProblem) *BazelInvocationUpdate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return biu.RemoveProblemIDs(ids...)
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -1530,51 +1493,6 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if biu.mutation.ProblemsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.ProblemsTable,
-			Columns: []string{bazelinvocation.ProblemsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := biu.mutation.RemovedProblemsIDs(); len(nodes) > 0 && !biu.mutation.ProblemsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.ProblemsTable,
-			Columns: []string{bazelinvocation.ProblemsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := biu.mutation.ProblemsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.ProblemsTable,
-			Columns: []string{bazelinvocation.ProblemsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -2538,21 +2456,6 @@ func (biuo *BazelInvocationUpdateOne) AddActions(a ...*Action) *BazelInvocationU
 	return biuo.AddActionIDs(ids...)
 }
 
-// AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
-func (biuo *BazelInvocationUpdateOne) AddProblemIDs(ids ...int64) *BazelInvocationUpdateOne {
-	biuo.mutation.AddProblemIDs(ids...)
-	return biuo
-}
-
-// AddProblems adds the "problems" edges to the BazelInvocationProblem entity.
-func (biuo *BazelInvocationUpdateOne) AddProblems(b ...*BazelInvocationProblem) *BazelInvocationUpdateOne {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return biuo.AddProblemIDs(ids...)
-}
-
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
 func (biuo *BazelInvocationUpdateOne) SetMetricsID(id int64) *BazelInvocationUpdateOne {
 	biuo.mutation.SetMetricsID(id)
@@ -2756,27 +2659,6 @@ func (biuo *BazelInvocationUpdateOne) RemoveActions(a ...*Action) *BazelInvocati
 		ids[i] = a[i].ID
 	}
 	return biuo.RemoveActionIDs(ids...)
-}
-
-// ClearProblems clears all "problems" edges to the BazelInvocationProblem entity.
-func (biuo *BazelInvocationUpdateOne) ClearProblems() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearProblems()
-	return biuo
-}
-
-// RemoveProblemIDs removes the "problems" edge to BazelInvocationProblem entities by IDs.
-func (biuo *BazelInvocationUpdateOne) RemoveProblemIDs(ids ...int64) *BazelInvocationUpdateOne {
-	biuo.mutation.RemoveProblemIDs(ids...)
-	return biuo
-}
-
-// RemoveProblems removes "problems" edges to BazelInvocationProblem entities.
-func (biuo *BazelInvocationUpdateOne) RemoveProblems(b ...*BazelInvocationProblem) *BazelInvocationUpdateOne {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return biuo.RemoveProblemIDs(ids...)
 }
 
 // ClearMetrics clears the "metrics" edge to the Metrics entity.
@@ -3402,51 +3284,6 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if biuo.mutation.ProblemsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.ProblemsTable,
-			Columns: []string{bazelinvocation.ProblemsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := biuo.mutation.RemovedProblemsIDs(); len(nodes) > 0 && !biuo.mutation.ProblemsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.ProblemsTable,
-			Columns: []string{bazelinvocation.ProblemsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := biuo.mutation.ProblemsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.ProblemsTable,
-			Columns: []string{bazelinvocation.ProblemsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

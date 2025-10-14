@@ -8,14 +8,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/url"
 	"strings"
 
-	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
@@ -25,28 +22,6 @@ import (
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
 	"github.com/google/uuid"
 )
-
-// Stdout is the resolver for the stdout field.
-func (r *actionProblemResolver) Stdout(ctx context.Context, obj *model.ActionProblem) (*model.BlobReference, error) {
-	return helpers.BlobReferenceForFile(ctx, r.client, func(ctx context.Context) (*bes.File, error) {
-		action, err := helpers.GetAction(ctx, obj.Problem)
-		if err != nil {
-			return nil, err
-		}
-		return action.GetStdout(), nil
-	})
-}
-
-// Stderr is the resolver for the stderr field.
-func (r *actionProblemResolver) Stderr(ctx context.Context, obj *model.ActionProblem) (*model.BlobReference, error) {
-	return helpers.BlobReferenceForFile(ctx, r.client, func(ctx context.Context) (*bes.File, error) {
-		action, err := helpers.GetAction(ctx, obj.Problem)
-		if err != nil {
-			return nil, err
-		}
-		return action.GetStderr(), nil
-	})
-}
 
 // BazelCommand is the resolver for the bazelCommand field.
 func (r *bazelInvocationResolver) BazelCommand(ctx context.Context, obj *ent.BazelInvocation) (*model.BazelCommand, error) {
@@ -70,16 +45,6 @@ func (r *bazelInvocationResolver) User(ctx context.Context, obj *ent.BazelInvoca
 	}, nil
 }
 
-// Problems is the resolver for the problems field.
-func (r *bazelInvocationResolver) Problems(ctx context.Context, obj *ent.BazelInvocation) ([]model.Problem, error) {
-	problems, err := obj.QueryProblems().All(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("could not fetch problems: %w", err)
-	}
-
-	return r.helper.DBProblemsToAPIProblems(ctx, problems)
-}
-
 // Profile is the resolver for the profile field.
 func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInvocation) (*model.Profile, error) {
 	profile, err := obj.QueryInvocationFiles().Where(invocationfiles.NameEQ(obj.ProfileName)).Only(ctx)
@@ -97,57 +62,6 @@ func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInv
 		SizeInBytes:    int(profile.SizeBytes),
 		DigestFunction: profile.DigestFunction,
 	}, nil
-}
-
-// DownloadURL is the resolver for the downloadURL field.
-func (r *blobReferenceResolver) DownloadURL(ctx context.Context, obj *model.BlobReference) (string, error) {
-	if obj.Blob == nil {
-		panic("Got a name but not blob")
-	}
-	return fmt.Sprintf("/api/v1/blobs/%d/%s", obj.Blob.ID, url.PathEscape(obj.Name)), nil
-}
-
-// SizeInBytes is the resolver for the sizeInBytes field.
-func (r *blobReferenceResolver) SizeInBytes(ctx context.Context, obj *model.BlobReference) (*int, error) {
-	if obj.Blob == nil {
-		return nil, nil
-	}
-	v := int(obj.Blob.SizeBytes)
-	return &v, nil
-}
-
-// AvailabilityStatus is the resolver for the availabilityStatus field.
-func (r *blobReferenceResolver) AvailabilityStatus(ctx context.Context, obj *model.BlobReference) (model.ActionOutputStatus, error) {
-	if obj.Blob == nil {
-		return model.ActionOutputStatusUnavailable, nil
-	}
-	switch obj.Blob.ArchivingStatus {
-	case blob.ArchivingStatusQUEUED:
-		fallthrough
-	case blob.ArchivingStatusARCHIVING:
-		return model.ActionOutputStatusProcessing, nil
-	case blob.ArchivingStatusSUCCESS:
-		return model.ActionOutputStatusAvailable, nil
-	case blob.ArchivingStatusFAILED:
-		fallthrough
-	default:
-		return model.ActionOutputStatusUnavailable, nil
-	}
-}
-
-// EphemeralUrl is the resolver for the downloadURL field.
-func (r *blobReferenceResolver) EphemeralURL(ctx context.Context, obj *model.BlobReference) (string, error) {
-	if obj.Blob == nil {
-		panic("Got a name but not blob")
-	}
-	if obj.Blob.ArchivingStatus != blob.ArchivingStatusBYTESTREAM {
-		return "", nil
-	}
-	_tmp := strings.Split(obj.Blob.URI, "/blobs/")[1]
-	_split := strings.Split(_tmp, "/")
-	hash, size := _split[0], _split[1]
-
-	return fmt.Sprintf("/blobs/sha256/file/%s-%s/%s", hash, size, url.PathEscape(obj.Name)), nil
 }
 
 // BazelInvocation is the resolver for the bazelInvocation field.
@@ -206,14 +120,3 @@ func (r *targetResolver) InvocationTargetsTotalDurationMillis(ctx context.Contex
 		Aggregate(ent.Sum(invocationtarget.FieldDurationInMs)).
 		Int(ctx)
 }
-
-// ActionProblem returns ActionProblemResolver implementation.
-func (r *Resolver) ActionProblem() ActionProblemResolver { return &actionProblemResolver{r} }
-
-// BlobReference returns BlobReferenceResolver implementation.
-func (r *Resolver) BlobReference() BlobReferenceResolver { return &blobReferenceResolver{r} }
-
-type (
-	actionProblemResolver struct{ *Resolver }
-	blobReferenceResolver struct{ *Resolver }
-)

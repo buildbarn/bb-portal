@@ -2,8 +2,6 @@ package bes
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/json"
 	"fmt"
 	"io"
 	"math"
@@ -12,8 +10,6 @@ import (
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
@@ -21,8 +17,6 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
-	"github.com/buildbarn/bb-portal/pkg/events"
-	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
@@ -41,7 +35,6 @@ import (
 type BuildEventServer struct {
 	db                     database.Client
 	instanceNameAuthorizer auth.Authorizer
-	blobArchiver           processing.BlobMultiArchiver
 	saveDataLevel          *bb_portal.BuildEventStreamService_SaveDataLevel
 	tracerProvider         trace.TracerProvider
 	extractors             *authmetadataextraction.AuthMetadataExtractors
@@ -49,7 +42,7 @@ type BuildEventServer struct {
 }
 
 // NewBuildEventServer creates a new BuildEventServer
-func NewBuildEventServer(db database.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider, uuidGenerator util.UUIDGenerator) (*BuildEventServer, error) {
+func NewBuildEventServer(db database.Client, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider, uuidGenerator util.UUIDGenerator) (*BuildEventServer, error) {
 	if configuration.InstanceNameAuthorizer == nil {
 		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
@@ -76,7 +69,6 @@ func NewBuildEventServer(db database.Client, blobArchiver processing.BlobMultiAr
 	return &BuildEventServer{
 		instanceNameAuthorizer: instanceNameAuthorizer,
 		db:                     db,
-		blobArchiver:           blobArchiver,
 		saveDataLevel:          saveDataLevel,
 		tracerProvider:         tracerProvider,
 		extractors:             extractors,
@@ -87,16 +79,6 @@ func NewBuildEventServer(db database.Client, blobArchiver processing.BlobMultiAr
 // PublishLifecycleEvent handles life cycle events.
 func (s *BuildEventServer) PublishLifecycleEvent(ctx context.Context, request *build.PublishLifecycleEventRequest) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, nil
-}
-
-func getEventHash(buildEvent *events.BuildEvent) ([]byte, error) {
-	marshalOptions := proto.MarshalOptions{Deterministic: true}
-	data, err := marshalOptions.Marshal(buildEvent)
-	if err != nil {
-		return nil, util.StatusWrap(err, "Failed to marshal build event")
-	}
-	hash := sha256.Sum256(data)
-	return hash[:], nil
 }
 
 func requestToBuildEventWithInfo(req *build.PublishBuildToolEventStreamRequest) (*buildeventrecorder.BuildEventWithInfo, error) {
@@ -123,15 +105,9 @@ func requestToBuildEventWithInfo(req *build.PublishBuildToolEventStreamRequest) 
 		return nil, status.Error(codes.InvalidArgument, "Could not unmarshall bazel event")
 	}
 
-	// TODO (isakstenstrom): Remove this and send the raw BES
-	// event instead. This can only be done when we no longer
-	// need JSON serialization of events, like we do for
-	// BazelInvocationProblems.
-	buildEvent := events.NewBuildEvent(&bazelEvent, json.RawMessage(protojson.Format(&bazelEvent)))
-
 	// Add the event to the batch.
 	return &buildeventrecorder.BuildEventWithInfo{
-		Event:          &buildEvent,
+		Event:          &bazelEvent,
 		SequenceNumber: sequenceNumber,
 		AddedAt:        time.Now(),
 	}, nil
@@ -170,7 +146,6 @@ func (s *BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuild
 		ctx,
 		s.db,
 		s.instanceNameAuthorizer,
-		s.blobArchiver,
 		s.saveDataLevel,
 		s.tracerProvider,
 		req.GetProjectId(),

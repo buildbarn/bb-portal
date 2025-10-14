@@ -36,64 +36,6 @@ extend type BazelInvocation {
   user: User
 }
 
-interface Problem implements Node {
-  id: ID!
-  label: String!
-}
-
-enum ActionOutputStatus {
-  PROCESSING
-  AVAILABLE
-  UNAVAILABLE
-  BYTESTREAM
-}
-
-type BlobReference {
-  name: String!
-  downloadURL: String! @goField(forceResolver: true)
-  sizeInBytes: Int @goField(forceResolver: true)
-  availabilityStatus: ActionOutputStatus! @goField(forceResolver: true)
-  ephemeralURL: String! @goField(forceResolver: true)
-}
-
-type ActionProblem implements Node & Problem {
-  id: ID!
-  label: String!
-  type: String!
-  stdout: BlobReference @goField(forceResolver: true)
-  stderr: BlobReference @goField(forceResolver: true)
-}
-
-type ProgressProblem implements Node & Problem {
-  id: ID!
-  label: String!
-  #  TODO: Possibly store these as blobs?
-  output: String!
-}
-
-type TargetProblem implements Node & Problem {
-  id: ID!
-  label: String!
-}
-
-
-extend type BazelInvocation {
-  problems: [Problem!]!
-}
-
-enum BuildStepStatus {
-  Successful
-  Failed
-  Cancelled
-  Unknown
-}
-
-interface BuildStep {
-  id: ID!
-  stepLabel: String!
-  buildStepStatus: BuildStepStatus!
-}
-
 type Profile {
   id: ID!
   name: String!

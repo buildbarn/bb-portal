@@ -22,8 +22,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
@@ -75,10 +73,6 @@ type Client struct {
 	AuthenticatedUser *AuthenticatedUserClient
 	// BazelInvocation is the client for interacting with the BazelInvocation builders.
 	BazelInvocation *BazelInvocationClient
-	// BazelInvocationProblem is the client for interacting with the BazelInvocationProblem builders.
-	BazelInvocationProblem *BazelInvocationProblemClient
-	// Blob is the client for interacting with the Blob builders.
-	Blob *BlobClient
 	// Build is the client for interacting with the Build builders.
 	Build *BuildClient
 	// BuildGraphMetrics is the client for interacting with the BuildGraphMetrics builders.
@@ -155,8 +149,6 @@ func (c *Client) init() {
 	c.ArtifactMetrics = NewArtifactMetricsClient(c.config)
 	c.AuthenticatedUser = NewAuthenticatedUserClient(c.config)
 	c.BazelInvocation = NewBazelInvocationClient(c.config)
-	c.BazelInvocationProblem = NewBazelInvocationProblemClient(c.config)
-	c.Blob = NewBlobClient(c.config)
 	c.Build = NewBuildClient(c.config)
 	c.BuildGraphMetrics = NewBuildGraphMetricsClient(c.config)
 	c.BuildLogChunk = NewBuildLogChunkClient(c.config)
@@ -275,45 +267,43 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                    ctx,
-		config:                 cfg,
-		Action:                 NewActionClient(cfg),
-		ActionCacheStatistics:  NewActionCacheStatisticsClient(cfg),
-		ActionData:             NewActionDataClient(cfg),
-		ActionSummary:          NewActionSummaryClient(cfg),
-		ArtifactMetrics:        NewArtifactMetricsClient(cfg),
-		AuthenticatedUser:      NewAuthenticatedUserClient(cfg),
-		BazelInvocation:        NewBazelInvocationClient(cfg),
-		BazelInvocationProblem: NewBazelInvocationProblemClient(cfg),
-		Blob:                   NewBlobClient(cfg),
-		Build:                  NewBuildClient(cfg),
-		BuildGraphMetrics:      NewBuildGraphMetricsClient(cfg),
-		BuildLogChunk:          NewBuildLogChunkClient(cfg),
-		Configuration:          NewConfigurationClient(cfg),
-		ConnectionMetadata:     NewConnectionMetadataClient(cfg),
-		CumulativeMetrics:      NewCumulativeMetricsClient(cfg),
-		EvaluationStat:         NewEvaluationStatClient(cfg),
-		EventMetadata:          NewEventMetadataClient(cfg),
-		GarbageMetrics:         NewGarbageMetricsClient(cfg),
-		IncompleteBuildLog:     NewIncompleteBuildLogClient(cfg),
-		InstanceName:           NewInstanceNameClient(cfg),
-		InvocationFiles:        NewInvocationFilesClient(cfg),
-		InvocationTarget:       NewInvocationTargetClient(cfg),
-		MemoryMetrics:          NewMemoryMetricsClient(cfg),
-		Metrics:                NewMetricsClient(cfg),
-		MissDetail:             NewMissDetailClient(cfg),
-		NetworkMetrics:         NewNetworkMetricsClient(cfg),
-		PackageLoadMetrics:     NewPackageLoadMetricsClient(cfg),
-		PackageMetrics:         NewPackageMetricsClient(cfg),
-		RunnerCount:            NewRunnerCountClient(cfg),
-		SourceControl:          NewSourceControlClient(cfg),
-		SystemNetworkStats:     NewSystemNetworkStatsClient(cfg),
-		Target:                 NewTargetClient(cfg),
-		TargetKindMapping:      NewTargetKindMappingClient(cfg),
-		TargetMetrics:          NewTargetMetricsClient(cfg),
-		TestResult:             NewTestResultClient(cfg),
-		TestSummary:            NewTestSummaryClient(cfg),
-		TimingMetrics:          NewTimingMetricsClient(cfg),
+		ctx:                   ctx,
+		config:                cfg,
+		Action:                NewActionClient(cfg),
+		ActionCacheStatistics: NewActionCacheStatisticsClient(cfg),
+		ActionData:            NewActionDataClient(cfg),
+		ActionSummary:         NewActionSummaryClient(cfg),
+		ArtifactMetrics:       NewArtifactMetricsClient(cfg),
+		AuthenticatedUser:     NewAuthenticatedUserClient(cfg),
+		BazelInvocation:       NewBazelInvocationClient(cfg),
+		Build:                 NewBuildClient(cfg),
+		BuildGraphMetrics:     NewBuildGraphMetricsClient(cfg),
+		BuildLogChunk:         NewBuildLogChunkClient(cfg),
+		Configuration:         NewConfigurationClient(cfg),
+		ConnectionMetadata:    NewConnectionMetadataClient(cfg),
+		CumulativeMetrics:     NewCumulativeMetricsClient(cfg),
+		EvaluationStat:        NewEvaluationStatClient(cfg),
+		EventMetadata:         NewEventMetadataClient(cfg),
+		GarbageMetrics:        NewGarbageMetricsClient(cfg),
+		IncompleteBuildLog:    NewIncompleteBuildLogClient(cfg),
+		InstanceName:          NewInstanceNameClient(cfg),
+		InvocationFiles:       NewInvocationFilesClient(cfg),
+		InvocationTarget:      NewInvocationTargetClient(cfg),
+		MemoryMetrics:         NewMemoryMetricsClient(cfg),
+		Metrics:               NewMetricsClient(cfg),
+		MissDetail:            NewMissDetailClient(cfg),
+		NetworkMetrics:        NewNetworkMetricsClient(cfg),
+		PackageLoadMetrics:    NewPackageLoadMetricsClient(cfg),
+		PackageMetrics:        NewPackageMetricsClient(cfg),
+		RunnerCount:           NewRunnerCountClient(cfg),
+		SourceControl:         NewSourceControlClient(cfg),
+		SystemNetworkStats:    NewSystemNetworkStatsClient(cfg),
+		Target:                NewTargetClient(cfg),
+		TargetKindMapping:     NewTargetKindMappingClient(cfg),
+		TargetMetrics:         NewTargetMetricsClient(cfg),
+		TestResult:            NewTestResultClient(cfg),
+		TestSummary:           NewTestSummaryClient(cfg),
+		TimingMetrics:         NewTimingMetricsClient(cfg),
 	}, nil
 }
 
@@ -331,45 +321,43 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                    ctx,
-		config:                 cfg,
-		Action:                 NewActionClient(cfg),
-		ActionCacheStatistics:  NewActionCacheStatisticsClient(cfg),
-		ActionData:             NewActionDataClient(cfg),
-		ActionSummary:          NewActionSummaryClient(cfg),
-		ArtifactMetrics:        NewArtifactMetricsClient(cfg),
-		AuthenticatedUser:      NewAuthenticatedUserClient(cfg),
-		BazelInvocation:        NewBazelInvocationClient(cfg),
-		BazelInvocationProblem: NewBazelInvocationProblemClient(cfg),
-		Blob:                   NewBlobClient(cfg),
-		Build:                  NewBuildClient(cfg),
-		BuildGraphMetrics:      NewBuildGraphMetricsClient(cfg),
-		BuildLogChunk:          NewBuildLogChunkClient(cfg),
-		Configuration:          NewConfigurationClient(cfg),
-		ConnectionMetadata:     NewConnectionMetadataClient(cfg),
-		CumulativeMetrics:      NewCumulativeMetricsClient(cfg),
-		EvaluationStat:         NewEvaluationStatClient(cfg),
-		EventMetadata:          NewEventMetadataClient(cfg),
-		GarbageMetrics:         NewGarbageMetricsClient(cfg),
-		IncompleteBuildLog:     NewIncompleteBuildLogClient(cfg),
-		InstanceName:           NewInstanceNameClient(cfg),
-		InvocationFiles:        NewInvocationFilesClient(cfg),
-		InvocationTarget:       NewInvocationTargetClient(cfg),
-		MemoryMetrics:          NewMemoryMetricsClient(cfg),
-		Metrics:                NewMetricsClient(cfg),
-		MissDetail:             NewMissDetailClient(cfg),
-		NetworkMetrics:         NewNetworkMetricsClient(cfg),
-		PackageLoadMetrics:     NewPackageLoadMetricsClient(cfg),
-		PackageMetrics:         NewPackageMetricsClient(cfg),
-		RunnerCount:            NewRunnerCountClient(cfg),
-		SourceControl:          NewSourceControlClient(cfg),
-		SystemNetworkStats:     NewSystemNetworkStatsClient(cfg),
-		Target:                 NewTargetClient(cfg),
-		TargetKindMapping:      NewTargetKindMappingClient(cfg),
-		TargetMetrics:          NewTargetMetricsClient(cfg),
-		TestResult:             NewTestResultClient(cfg),
-		TestSummary:            NewTestSummaryClient(cfg),
-		TimingMetrics:          NewTimingMetricsClient(cfg),
+		ctx:                   ctx,
+		config:                cfg,
+		Action:                NewActionClient(cfg),
+		ActionCacheStatistics: NewActionCacheStatisticsClient(cfg),
+		ActionData:            NewActionDataClient(cfg),
+		ActionSummary:         NewActionSummaryClient(cfg),
+		ArtifactMetrics:       NewArtifactMetricsClient(cfg),
+		AuthenticatedUser:     NewAuthenticatedUserClient(cfg),
+		BazelInvocation:       NewBazelInvocationClient(cfg),
+		Build:                 NewBuildClient(cfg),
+		BuildGraphMetrics:     NewBuildGraphMetricsClient(cfg),
+		BuildLogChunk:         NewBuildLogChunkClient(cfg),
+		Configuration:         NewConfigurationClient(cfg),
+		ConnectionMetadata:    NewConnectionMetadataClient(cfg),
+		CumulativeMetrics:     NewCumulativeMetricsClient(cfg),
+		EvaluationStat:        NewEvaluationStatClient(cfg),
+		EventMetadata:         NewEventMetadataClient(cfg),
+		GarbageMetrics:        NewGarbageMetricsClient(cfg),
+		IncompleteBuildLog:    NewIncompleteBuildLogClient(cfg),
+		InstanceName:          NewInstanceNameClient(cfg),
+		InvocationFiles:       NewInvocationFilesClient(cfg),
+		InvocationTarget:      NewInvocationTargetClient(cfg),
+		MemoryMetrics:         NewMemoryMetricsClient(cfg),
+		Metrics:               NewMetricsClient(cfg),
+		MissDetail:            NewMissDetailClient(cfg),
+		NetworkMetrics:        NewNetworkMetricsClient(cfg),
+		PackageLoadMetrics:    NewPackageLoadMetricsClient(cfg),
+		PackageMetrics:        NewPackageMetricsClient(cfg),
+		RunnerCount:           NewRunnerCountClient(cfg),
+		SourceControl:         NewSourceControlClient(cfg),
+		SystemNetworkStats:    NewSystemNetworkStatsClient(cfg),
+		Target:                NewTargetClient(cfg),
+		TargetKindMapping:     NewTargetKindMappingClient(cfg),
+		TargetMetrics:         NewTargetMetricsClient(cfg),
+		TestResult:            NewTestResultClient(cfg),
+		TestSummary:           NewTestSummaryClient(cfg),
+		TimingMetrics:         NewTimingMetricsClient(cfg),
 	}, nil
 }
 
@@ -400,15 +388,14 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
-		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation,
-		c.BazelInvocationProblem, c.Blob, c.Build, c.BuildGraphMetrics,
-		c.BuildLogChunk, c.Configuration, c.ConnectionMetadata, c.CumulativeMetrics,
-		c.EvaluationStat, c.EventMetadata, c.GarbageMetrics, c.IncompleteBuildLog,
-		c.InstanceName, c.InvocationFiles, c.InvocationTarget, c.MemoryMetrics,
-		c.Metrics, c.MissDetail, c.NetworkMetrics, c.PackageLoadMetrics,
-		c.PackageMetrics, c.RunnerCount, c.SourceControl, c.SystemNetworkStats,
-		c.Target, c.TargetKindMapping, c.TargetMetrics, c.TestResult, c.TestSummary,
-		c.TimingMetrics,
+		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation, c.Build,
+		c.BuildGraphMetrics, c.BuildLogChunk, c.Configuration, c.ConnectionMetadata,
+		c.CumulativeMetrics, c.EvaluationStat, c.EventMetadata, c.GarbageMetrics,
+		c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles, c.InvocationTarget,
+		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NetworkMetrics,
+		c.PackageLoadMetrics, c.PackageMetrics, c.RunnerCount, c.SourceControl,
+		c.SystemNetworkStats, c.Target, c.TargetKindMapping, c.TargetMetrics,
+		c.TestResult, c.TestSummary, c.TimingMetrics,
 	} {
 		n.Use(hooks...)
 	}
@@ -419,15 +406,14 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
-		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation,
-		c.BazelInvocationProblem, c.Blob, c.Build, c.BuildGraphMetrics,
-		c.BuildLogChunk, c.Configuration, c.ConnectionMetadata, c.CumulativeMetrics,
-		c.EvaluationStat, c.EventMetadata, c.GarbageMetrics, c.IncompleteBuildLog,
-		c.InstanceName, c.InvocationFiles, c.InvocationTarget, c.MemoryMetrics,
-		c.Metrics, c.MissDetail, c.NetworkMetrics, c.PackageLoadMetrics,
-		c.PackageMetrics, c.RunnerCount, c.SourceControl, c.SystemNetworkStats,
-		c.Target, c.TargetKindMapping, c.TargetMetrics, c.TestResult, c.TestSummary,
-		c.TimingMetrics,
+		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation, c.Build,
+		c.BuildGraphMetrics, c.BuildLogChunk, c.Configuration, c.ConnectionMetadata,
+		c.CumulativeMetrics, c.EvaluationStat, c.EventMetadata, c.GarbageMetrics,
+		c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles, c.InvocationTarget,
+		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NetworkMetrics,
+		c.PackageLoadMetrics, c.PackageMetrics, c.RunnerCount, c.SourceControl,
+		c.SystemNetworkStats, c.Target, c.TargetKindMapping, c.TargetMetrics,
+		c.TestResult, c.TestSummary, c.TimingMetrics,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -450,10 +436,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AuthenticatedUser.mutate(ctx, m)
 	case *BazelInvocationMutation:
 		return c.BazelInvocation.mutate(ctx, m)
-	case *BazelInvocationProblemMutation:
-		return c.BazelInvocationProblem.mutate(ctx, m)
-	case *BlobMutation:
-		return c.Blob.mutate(ctx, m)
 	case *BuildMutation:
 		return c.Build.mutate(ctx, m)
 	case *BuildGraphMetricsMutation:
@@ -1710,22 +1692,6 @@ func (c *BazelInvocationClient) QueryActions(bi *BazelInvocation) *ActionQuery {
 	return query
 }
 
-// QueryProblems queries the problems edge of a BazelInvocation.
-func (c *BazelInvocationClient) QueryProblems(bi *BazelInvocation) *BazelInvocationProblemQuery {
-	query := (&BazelInvocationProblemClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := bi.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
-			sqlgraph.To(bazelinvocationproblem.Table, bazelinvocationproblem.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ProblemsTable, bazelinvocation.ProblemsColumn),
-		)
-		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // QueryMetrics queries the metrics edge of a BazelInvocation.
 func (c *BazelInvocationClient) QueryMetrics(bi *BazelInvocation) *MetricsQuery {
 	query := (&MetricsClient{config: c.config}).Query()
@@ -1861,304 +1827,6 @@ func (c *BazelInvocationClient) mutate(ctx context.Context, m *BazelInvocationMu
 		return (&BazelInvocationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown BazelInvocation mutation op: %q", m.Op())
-	}
-}
-
-// BazelInvocationProblemClient is a client for the BazelInvocationProblem schema.
-type BazelInvocationProblemClient struct {
-	config
-}
-
-// NewBazelInvocationProblemClient returns a client for the BazelInvocationProblem from the given config.
-func NewBazelInvocationProblemClient(c config) *BazelInvocationProblemClient {
-	return &BazelInvocationProblemClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `bazelinvocationproblem.Hooks(f(g(h())))`.
-func (c *BazelInvocationProblemClient) Use(hooks ...Hook) {
-	c.hooks.BazelInvocationProblem = append(c.hooks.BazelInvocationProblem, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `bazelinvocationproblem.Intercept(f(g(h())))`.
-func (c *BazelInvocationProblemClient) Intercept(interceptors ...Interceptor) {
-	c.inters.BazelInvocationProblem = append(c.inters.BazelInvocationProblem, interceptors...)
-}
-
-// Create returns a builder for creating a BazelInvocationProblem entity.
-func (c *BazelInvocationProblemClient) Create() *BazelInvocationProblemCreate {
-	mutation := newBazelInvocationProblemMutation(c.config, OpCreate)
-	return &BazelInvocationProblemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of BazelInvocationProblem entities.
-func (c *BazelInvocationProblemClient) CreateBulk(builders ...*BazelInvocationProblemCreate) *BazelInvocationProblemCreateBulk {
-	return &BazelInvocationProblemCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *BazelInvocationProblemClient) MapCreateBulk(slice any, setFunc func(*BazelInvocationProblemCreate, int)) *BazelInvocationProblemCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &BazelInvocationProblemCreateBulk{err: fmt.Errorf("calling to BazelInvocationProblemClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*BazelInvocationProblemCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &BazelInvocationProblemCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for BazelInvocationProblem.
-func (c *BazelInvocationProblemClient) Update() *BazelInvocationProblemUpdate {
-	mutation := newBazelInvocationProblemMutation(c.config, OpUpdate)
-	return &BazelInvocationProblemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *BazelInvocationProblemClient) UpdateOne(bip *BazelInvocationProblem) *BazelInvocationProblemUpdateOne {
-	mutation := newBazelInvocationProblemMutation(c.config, OpUpdateOne, withBazelInvocationProblem(bip))
-	return &BazelInvocationProblemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *BazelInvocationProblemClient) UpdateOneID(id int64) *BazelInvocationProblemUpdateOne {
-	mutation := newBazelInvocationProblemMutation(c.config, OpUpdateOne, withBazelInvocationProblemID(id))
-	return &BazelInvocationProblemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for BazelInvocationProblem.
-func (c *BazelInvocationProblemClient) Delete() *BazelInvocationProblemDelete {
-	mutation := newBazelInvocationProblemMutation(c.config, OpDelete)
-	return &BazelInvocationProblemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *BazelInvocationProblemClient) DeleteOne(bip *BazelInvocationProblem) *BazelInvocationProblemDeleteOne {
-	return c.DeleteOneID(bip.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *BazelInvocationProblemClient) DeleteOneID(id int64) *BazelInvocationProblemDeleteOne {
-	builder := c.Delete().Where(bazelinvocationproblem.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &BazelInvocationProblemDeleteOne{builder}
-}
-
-// Query returns a query builder for BazelInvocationProblem.
-func (c *BazelInvocationProblemClient) Query() *BazelInvocationProblemQuery {
-	return &BazelInvocationProblemQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeBazelInvocationProblem},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a BazelInvocationProblem entity by its id.
-func (c *BazelInvocationProblemClient) Get(ctx context.Context, id int64) (*BazelInvocationProblem, error) {
-	return c.Query().Where(bazelinvocationproblem.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *BazelInvocationProblemClient) GetX(ctx context.Context, id int64) *BazelInvocationProblem {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryBazelInvocation queries the bazel_invocation edge of a BazelInvocationProblem.
-func (c *BazelInvocationProblemClient) QueryBazelInvocation(bip *BazelInvocationProblem) *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := bip.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(bazelinvocationproblem.Table, bazelinvocationproblem.FieldID, id),
-			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, bazelinvocationproblem.BazelInvocationTable, bazelinvocationproblem.BazelInvocationColumn),
-		)
-		fromV = sqlgraph.Neighbors(bip.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *BazelInvocationProblemClient) Hooks() []Hook {
-	return c.hooks.BazelInvocationProblem
-}
-
-// Interceptors returns the client interceptors.
-func (c *BazelInvocationProblemClient) Interceptors() []Interceptor {
-	return c.inters.BazelInvocationProblem
-}
-
-func (c *BazelInvocationProblemClient) mutate(ctx context.Context, m *BazelInvocationProblemMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&BazelInvocationProblemCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&BazelInvocationProblemUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&BazelInvocationProblemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&BazelInvocationProblemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown BazelInvocationProblem mutation op: %q", m.Op())
-	}
-}
-
-// BlobClient is a client for the Blob schema.
-type BlobClient struct {
-	config
-}
-
-// NewBlobClient returns a client for the Blob from the given config.
-func NewBlobClient(c config) *BlobClient {
-	return &BlobClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `blob.Hooks(f(g(h())))`.
-func (c *BlobClient) Use(hooks ...Hook) {
-	c.hooks.Blob = append(c.hooks.Blob, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `blob.Intercept(f(g(h())))`.
-func (c *BlobClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Blob = append(c.inters.Blob, interceptors...)
-}
-
-// Create returns a builder for creating a Blob entity.
-func (c *BlobClient) Create() *BlobCreate {
-	mutation := newBlobMutation(c.config, OpCreate)
-	return &BlobCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of Blob entities.
-func (c *BlobClient) CreateBulk(builders ...*BlobCreate) *BlobCreateBulk {
-	return &BlobCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *BlobClient) MapCreateBulk(slice any, setFunc func(*BlobCreate, int)) *BlobCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &BlobCreateBulk{err: fmt.Errorf("calling to BlobClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*BlobCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &BlobCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for Blob.
-func (c *BlobClient) Update() *BlobUpdate {
-	mutation := newBlobMutation(c.config, OpUpdate)
-	return &BlobUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *BlobClient) UpdateOne(b *Blob) *BlobUpdateOne {
-	mutation := newBlobMutation(c.config, OpUpdateOne, withBlob(b))
-	return &BlobUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *BlobClient) UpdateOneID(id int64) *BlobUpdateOne {
-	mutation := newBlobMutation(c.config, OpUpdateOne, withBlobID(id))
-	return &BlobUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Blob.
-func (c *BlobClient) Delete() *BlobDelete {
-	mutation := newBlobMutation(c.config, OpDelete)
-	return &BlobDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *BlobClient) DeleteOne(b *Blob) *BlobDeleteOne {
-	return c.DeleteOneID(b.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *BlobClient) DeleteOneID(id int64) *BlobDeleteOne {
-	builder := c.Delete().Where(blob.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &BlobDeleteOne{builder}
-}
-
-// Query returns a query builder for Blob.
-func (c *BlobClient) Query() *BlobQuery {
-	return &BlobQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeBlob},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a Blob entity by its id.
-func (c *BlobClient) Get(ctx context.Context, id int64) (*Blob, error) {
-	return c.Query().Where(blob.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *BlobClient) GetX(ctx context.Context, id int64) *Blob {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryInstanceName queries the instance_name edge of a Blob.
-func (c *BlobClient) QueryInstanceName(b *Blob) *InstanceNameQuery {
-	query := (&InstanceNameClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := b.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(blob.Table, blob.FieldID, id),
-			sqlgraph.To(instancename.Table, instancename.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, blob.InstanceNameTable, blob.InstanceNameColumn),
-		)
-		fromV = sqlgraph.Neighbors(b.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *BlobClient) Hooks() []Hook {
-	return c.hooks.Blob
-}
-
-// Interceptors returns the client interceptors.
-func (c *BlobClient) Interceptors() []Interceptor {
-	return c.inters.Blob
-}
-
-func (c *BlobClient) mutate(ctx context.Context, m *BlobMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&BlobCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&BlobUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&BlobUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&BlobDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown Blob mutation op: %q", m.Op())
 	}
 }
 
@@ -3914,22 +3582,6 @@ func (c *InstanceNameClient) QueryBuilds(in *InstanceName) *BuildQuery {
 			sqlgraph.From(instancename.Table, instancename.FieldID, id),
 			sqlgraph.To(build.Table, build.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, instancename.BuildsTable, instancename.BuildsColumn),
-		)
-		fromV = sqlgraph.Neighbors(in.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryBlobs queries the blobs edge of a InstanceName.
-func (c *InstanceNameClient) QueryBlobs(in *InstanceName) *BlobQuery {
-	query := (&BlobClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := in.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(instancename.Table, instancename.FieldID, id),
-			sqlgraph.To(blob.Table, blob.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, instancename.BlobsTable, instancename.BlobsColumn),
 		)
 		fromV = sqlgraph.Neighbors(in.driver.Dialect(), step)
 		return fromV, nil
@@ -6821,25 +6473,23 @@ func (c *TimingMetricsClient) mutate(ctx context.Context, m *TimingMetricsMutati
 type (
 	hooks struct {
 		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
-		AuthenticatedUser, BazelInvocation, BazelInvocationProblem, Blob, Build,
-		BuildGraphMetrics, BuildLogChunk, Configuration, ConnectionMetadata,
-		CumulativeMetrics, EvaluationStat, EventMetadata, GarbageMetrics,
-		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTarget,
-		MemoryMetrics, Metrics, MissDetail, NetworkMetrics, PackageLoadMetrics,
-		PackageMetrics, RunnerCount, SourceControl, SystemNetworkStats, Target,
-		TargetKindMapping, TargetMetrics, TestResult, TestSummary,
-		TimingMetrics []ent.Hook
+		AuthenticatedUser, BazelInvocation, Build, BuildGraphMetrics, BuildLogChunk,
+		Configuration, ConnectionMetadata, CumulativeMetrics, EvaluationStat,
+		EventMetadata, GarbageMetrics, IncompleteBuildLog, InstanceName,
+		InvocationFiles, InvocationTarget, MemoryMetrics, Metrics, MissDetail,
+		NetworkMetrics, PackageLoadMetrics, PackageMetrics, RunnerCount, SourceControl,
+		SystemNetworkStats, Target, TargetKindMapping, TargetMetrics, TestResult,
+		TestSummary, TimingMetrics []ent.Hook
 	}
 	inters struct {
 		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
-		AuthenticatedUser, BazelInvocation, BazelInvocationProblem, Blob, Build,
-		BuildGraphMetrics, BuildLogChunk, Configuration, ConnectionMetadata,
-		CumulativeMetrics, EvaluationStat, EventMetadata, GarbageMetrics,
-		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTarget,
-		MemoryMetrics, Metrics, MissDetail, NetworkMetrics, PackageLoadMetrics,
-		PackageMetrics, RunnerCount, SourceControl, SystemNetworkStats, Target,
-		TargetKindMapping, TargetMetrics, TestResult, TestSummary,
-		TimingMetrics []ent.Interceptor
+		AuthenticatedUser, BazelInvocation, Build, BuildGraphMetrics, BuildLogChunk,
+		Configuration, ConnectionMetadata, CumulativeMetrics, EvaluationStat,
+		EventMetadata, GarbageMetrics, IncompleteBuildLog, InstanceName,
+		InvocationFiles, InvocationTarget, MemoryMetrics, Metrics, MissDetail,
+		NetworkMetrics, PackageLoadMetrics, PackageMetrics, RunnerCount, SourceControl,
+		SystemNetworkStats, Target, TargetKindMapping, TargetMetrics, TestResult,
+		TestSummary, TimingMetrics []ent.Interceptor
 	}
 )
 

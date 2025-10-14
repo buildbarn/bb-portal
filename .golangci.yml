@@ -33,14 +33,6 @@ linters-settings:
             desc: "Use our blob package instead, which wraps gocloud.dev/blob with some additional features."
           - pkg: gocloud.dev/pubsub
             desc: "Use our pubsub package instead, which wraps gocloud.dev/blob with some additional features."
-      events:
-        files:
-          - "**/pkg/events/**.go"
-          - "!**/*_test.go"
-        allow:
-          - $gostd
-          # NOTE: $gostd seems to match google.golang.org, even though I don't think it should.
-          - github.com/buildbarn/bb-portal/third_party/bazel/gen/bes
 
   gomodguard:
     # Currently just blocked, so everything is allowed. But we might want to start putting allowed so we can

@@ -69,8 +69,6 @@ func init() {
 	bazelinvocationDescProcessedEventWorkspaceStatus := bazelinvocationFields[28].Descriptor()
 	// bazelinvocation.DefaultProcessedEventWorkspaceStatus holds the default value on creation for the processed_event_workspace_status field.
 	bazelinvocation.DefaultProcessedEventWorkspaceStatus = bazelinvocationDescProcessedEventWorkspaceStatus.Default.(bool)
-	blobFields := authschema.Blob{}.Fields()
-	_ = blobFields
 	build.Policy = privacy.NewPolicies(authschema.Build{})
 	build.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {

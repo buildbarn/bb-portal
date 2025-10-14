@@ -14,7 +14,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
@@ -523,21 +522,6 @@ func (bic *BazelInvocationCreate) AddActions(a ...*Action) *BazelInvocationCreat
 	return bic.AddActionIDs(ids...)
 }
 
-// AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
-func (bic *BazelInvocationCreate) AddProblemIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddProblemIDs(ids...)
-	return bic
-}
-
-// AddProblems adds the "problems" edges to the BazelInvocationProblem entity.
-func (bic *BazelInvocationCreate) AddProblems(b ...*BazelInvocationProblem) *BazelInvocationCreate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return bic.AddProblemIDs(ids...)
-}
-
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
 func (bic *BazelInvocationCreate) SetMetricsID(id int64) *BazelInvocationCreate {
 	bic.mutation.SetMetricsID(id)
@@ -1005,22 +989,6 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := bic.mutation.ProblemsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.ProblemsTable,
-			Columns: []string{bazelinvocation.ProblemsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocationproblem.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

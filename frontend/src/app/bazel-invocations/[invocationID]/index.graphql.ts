@@ -8,24 +8,6 @@ export const LOAD_FULL_BAZEL_INVOCATION_DETAILS = gql(/* GraphQL */ `
   }
 `);
 
-export const GET_PROBLEM_DETAILS = gql(/* GraphQL */ `
-  query GetProblemDetails($invocationID: String!) {
-    bazelInvocation(invocationId: $invocationID) {
-      ...ProblemDetails
-    }
-  }
-`);
-
-export const PROBLEM_DETAILS_FRAGMENT = gql(/* GraphQL */`
-
-  fragment ProblemDetails on BazelInvocation{
-    problems {
-        ...ProblemInfo
-      }
-  }
-
-`)
-
 export const BAZEL_INVOCATION_FRAGMENT = gql(/* GraphQL */ `
 fragment BazelInvocationInfo on BazelInvocation {
   metrics {
@@ -228,62 +210,4 @@ fragment BazelInvocationInfo on BazelInvocation {
     runnerOs
   }
 }
-`);
-export const PROBLEM_INFO_FRAGMENT = gql(/* GraphQL */ `
- fragment ProblemInfo on Problem {
-  id
-  label
-  __typename
-  ... on ActionProblem {
-    __typename
-    id
-    label
-    type
-    stdout {
-      ...BlobReferenceInfo
-    }
-    stderr {
-      ...BlobReferenceInfo
-    }
-  }
-  ... on TargetProblem {
-    __typename
-    id
-    label
-  }
-  ... on ProgressProblem {
-    __typename
-    id
-    output
-    label
-  }
-}
-`);
-
-export const BLOB_REFERENCE_INFO_FRAGMENT = gql(/* GraphQL */ `
-fragment BlobReferenceInfo on BlobReference {
-  availabilityStatus
-  name
-  sizeInBytes
-  downloadURL
-  ephemeralURL
-}
-`)
-
-
-export const GET_ACTION_PROBLEM = gql(/* GraphQL */ `
-  query GetActionProblem($id: ID!) {
-    node(id: $id) {
-      id
-      ... on ActionProblem {
-        label
-        stdout {
-          ...BlobReferenceInfo
-        }
-        stderr {
-          ...BlobReferenceInfo
-        }
-      }
-    }
-  }
 `);

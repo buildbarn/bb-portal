@@ -16,7 +16,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
@@ -46,7 +45,6 @@ type BazelInvocationQuery struct {
 	withConnectionMetadata       *ConnectionMetadataQuery
 	withConfigurations           *ConfigurationQuery
 	withActions                  *ActionQuery
-	withProblems                 *BazelInvocationProblemQuery
 	withMetrics                  *MetricsQuery
 	withIncompleteBuildLogs      *IncompleteBuildLogQuery
 	withBuildLogChunks           *BuildLogChunkQuery
@@ -60,7 +58,6 @@ type BazelInvocationQuery struct {
 	withNamedConnectionMetadata  map[string]*ConnectionMetadataQuery
 	withNamedConfigurations      map[string]*ConfigurationQuery
 	withNamedActions             map[string]*ActionQuery
-	withNamedProblems            map[string]*BazelInvocationProblemQuery
 	withNamedIncompleteBuildLogs map[string]*IncompleteBuildLogQuery
 	withNamedBuildLogChunks      map[string]*BuildLogChunkQuery
 	withNamedInvocationFiles     map[string]*InvocationFilesQuery
@@ -249,28 +246,6 @@ func (biq *BazelInvocationQuery) QueryActions() *ActionQuery {
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
 			sqlgraph.To(action.Table, action.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ActionsTable, bazelinvocation.ActionsColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryProblems chains the current query on the "problems" edge.
-func (biq *BazelInvocationQuery) QueryProblems() *BazelInvocationProblemQuery {
-	query := (&BazelInvocationProblemClient{config: biq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := biq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := biq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
-			sqlgraph.To(bazelinvocationproblem.Table, bazelinvocationproblem.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ProblemsTable, bazelinvocation.ProblemsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
 		return fromU, nil
@@ -631,7 +606,6 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		withConnectionMetadata:  biq.withConnectionMetadata.Clone(),
 		withConfigurations:      biq.withConfigurations.Clone(),
 		withActions:             biq.withActions.Clone(),
-		withProblems:            biq.withProblems.Clone(),
 		withMetrics:             biq.withMetrics.Clone(),
 		withIncompleteBuildLogs: biq.withIncompleteBuildLogs.Clone(),
 		withBuildLogChunks:      biq.withBuildLogChunks.Clone(),
@@ -720,17 +694,6 @@ func (biq *BazelInvocationQuery) WithActions(opts ...func(*ActionQuery)) *BazelI
 		opt(query)
 	}
 	biq.withActions = query
-	return biq
-}
-
-// WithProblems tells the query-builder to eager-load the nodes that are connected to
-// the "problems" edge. The optional arguments are used to configure the query builder of the edge.
-func (biq *BazelInvocationQuery) WithProblems(opts ...func(*BazelInvocationProblemQuery)) *BazelInvocationQuery {
-	query := (&BazelInvocationProblemClient{config: biq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	biq.withProblems = query
 	return biq
 }
 
@@ -896,7 +859,7 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*BazelInvocation{}
 		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
-		loadedTypes = [15]bool{
+		loadedTypes = [14]bool{
 			biq.withInstanceName != nil,
 			biq.withBuild != nil,
 			biq.withAuthenticatedUser != nil,
@@ -904,7 +867,6 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			biq.withConnectionMetadata != nil,
 			biq.withConfigurations != nil,
 			biq.withActions != nil,
-			biq.withProblems != nil,
 			biq.withMetrics != nil,
 			biq.withIncompleteBuildLogs != nil,
 			biq.withBuildLogChunks != nil,
@@ -988,13 +950,6 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			return nil, err
 		}
 	}
-	if query := biq.withProblems; query != nil {
-		if err := biq.loadProblems(ctx, query, nodes,
-			func(n *BazelInvocation) { n.Edges.Problems = []*BazelInvocationProblem{} },
-			func(n *BazelInvocation, e *BazelInvocationProblem) { n.Edges.Problems = append(n.Edges.Problems, e) }); err != nil {
-			return nil, err
-		}
-	}
 	if query := biq.withMetrics; query != nil {
 		if err := biq.loadMetrics(ctx, query, nodes, nil,
 			func(n *BazelInvocation, e *Metrics) { n.Edges.Metrics = e }); err != nil {
@@ -1068,13 +1023,6 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		if err := biq.loadActions(ctx, query, nodes,
 			func(n *BazelInvocation) { n.appendNamedActions(name) },
 			func(n *BazelInvocation, e *Action) { n.appendNamedActions(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range biq.withNamedProblems {
-		if err := biq.loadProblems(ctx, query, nodes,
-			func(n *BazelInvocation) { n.appendNamedProblems(name) },
-			func(n *BazelInvocation, e *BazelInvocationProblem) { n.appendNamedProblems(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1330,37 +1278,6 @@ func (biq *BazelInvocationQuery) loadActions(ctx context.Context, query *ActionQ
 		node, ok := nodeids[fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (biq *BazelInvocationQuery) loadProblems(ctx context.Context, query *BazelInvocationProblemQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *BazelInvocationProblem)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*BazelInvocation)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	query.withFKs = true
-	query.Where(predicate.BazelInvocationProblem(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(bazelinvocation.ProblemsColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.bazel_invocation_problems
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "bazel_invocation_problems" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_problems" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1708,20 +1625,6 @@ func (biq *BazelInvocationQuery) WithNamedActions(name string, opts ...func(*Act
 		biq.withNamedActions = make(map[string]*ActionQuery)
 	}
 	biq.withNamedActions[name] = query
-	return biq
-}
-
-// WithNamedProblems tells the query-builder to eager-load the nodes that are connected to the "problems"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (biq *BazelInvocationQuery) WithNamedProblems(name string, opts ...func(*BazelInvocationProblemQuery)) *BazelInvocationQuery {
-	query := (&BazelInvocationProblemClient{config: biq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if biq.withNamedProblems == nil {
-		biq.withNamedProblems = make(map[string]*BazelInvocationProblemQuery)
-	}
-	biq.withNamedProblems[name] = query
 	return biq
 }
 

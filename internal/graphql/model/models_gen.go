@@ -2,45 +2,6 @@
 
 package model
 
-import (
-	"bytes"
-	"fmt"
-	"io"
-	"strconv"
-
-	"github.com/buildbarn/bb-portal/ent/gen/ent"
-)
-
-type BuildStep interface {
-	IsBuildStep()
-	GetID() string
-	GetStepLabel() string
-	GetBuildStepStatus() BuildStepStatus
-}
-
-type Problem interface {
-	IsNode()
-	IsProblem()
-	GetID() string
-	GetLabel() string
-}
-
-type ActionProblem struct {
-	ID     string         `json:"id"`
-	Label  string         `json:"label"`
-	Type   string         `json:"type"`
-	Stdout *BlobReference `json:"stdout,omitempty"`
-	Stderr *BlobReference `json:"stderr,omitempty"`
-	// The underlying BazelInvocationProblem row
-	Problem *ent.BazelInvocationProblem `json:"-"`
-}
-
-func (ActionProblem) IsNode() {}
-
-func (ActionProblem) IsProblem()            {}
-func (this ActionProblem) GetID() string    { return this.ID }
-func (this ActionProblem) GetLabel() string { return this.Label }
-
 type BazelCommand struct {
 	ID                     string    `json:"id"`
 	Command                string    `json:"command"`
@@ -52,16 +13,6 @@ type BazelCommand struct {
 	ExplicitStartupOptions []*string `json:"explicitStartupOptions,omitempty"`
 }
 
-type BlobReference struct {
-	Name               string             `json:"name"`
-	DownloadURL        string             `json:"downloadURL"`
-	SizeInBytes        *int               `json:"sizeInBytes,omitempty"`
-	AvailabilityStatus ActionOutputStatus `json:"availabilityStatus"`
-	EphemeralURL       string             `json:"ephemeralURL"`
-	// The blob being referenced
-	Blob *ent.Blob `json:"-"`
-}
-
 type Profile struct {
 	ID             string `json:"id"`
 	Name           string `json:"name"`
@@ -70,149 +21,8 @@ type Profile struct {
 	DigestFunction string `json:"digestFunction"`
 }
 
-type ProgressProblem struct {
-	ID     string `json:"id"`
-	Label  string `json:"label"`
-	Output string `json:"output"`
-}
-
-func (ProgressProblem) IsNode() {}
-
-func (ProgressProblem) IsProblem()            {}
-func (this ProgressProblem) GetID() string    { return this.ID }
-func (this ProgressProblem) GetLabel() string { return this.Label }
-
-type TargetProblem struct {
-	ID    string `json:"id"`
-	Label string `json:"label"`
-}
-
-func (TargetProblem) IsNode() {}
-
-func (TargetProblem) IsProblem()            {}
-func (this TargetProblem) GetID() string    { return this.ID }
-func (this TargetProblem) GetLabel() string { return this.Label }
-
 type User struct {
 	ID    string `json:"id"`
 	Email string `json:"Email"`
 	Ldap  string `json:"LDAP"`
-}
-
-type ActionOutputStatus string
-
-const (
-	ActionOutputStatusProcessing  ActionOutputStatus = "PROCESSING"
-	ActionOutputStatusAvailable   ActionOutputStatus = "AVAILABLE"
-	ActionOutputStatusUnavailable ActionOutputStatus = "UNAVAILABLE"
-	ActionOutputStatusBytestream  ActionOutputStatus = "BYTESTREAM"
-)
-
-var AllActionOutputStatus = []ActionOutputStatus{
-	ActionOutputStatusProcessing,
-	ActionOutputStatusAvailable,
-	ActionOutputStatusUnavailable,
-	ActionOutputStatusBytestream,
-}
-
-func (e ActionOutputStatus) IsValid() bool {
-	switch e {
-	case ActionOutputStatusProcessing, ActionOutputStatusAvailable, ActionOutputStatusUnavailable, ActionOutputStatusBytestream:
-		return true
-	}
-	return false
-}
-
-func (e ActionOutputStatus) String() string {
-	return string(e)
-}
-
-func (e *ActionOutputStatus) UnmarshalGQL(v any) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = ActionOutputStatus(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid ActionOutputStatus", str)
-	}
-	return nil
-}
-
-func (e ActionOutputStatus) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
-}
-
-func (e *ActionOutputStatus) UnmarshalJSON(b []byte) error {
-	s, err := strconv.Unquote(string(b))
-	if err != nil {
-		return err
-	}
-	return e.UnmarshalGQL(s)
-}
-
-func (e ActionOutputStatus) MarshalJSON() ([]byte, error) {
-	var buf bytes.Buffer
-	e.MarshalGQL(&buf)
-	return buf.Bytes(), nil
-}
-
-type BuildStepStatus string
-
-const (
-	BuildStepStatusSuccessful BuildStepStatus = "Successful"
-	BuildStepStatusFailed     BuildStepStatus = "Failed"
-	BuildStepStatusCancelled  BuildStepStatus = "Cancelled"
-	BuildStepStatusUnknown    BuildStepStatus = "Unknown"
-)
-
-var AllBuildStepStatus = []BuildStepStatus{
-	BuildStepStatusSuccessful,
-	BuildStepStatusFailed,
-	BuildStepStatusCancelled,
-	BuildStepStatusUnknown,
-}
-
-func (e BuildStepStatus) IsValid() bool {
-	switch e {
-	case BuildStepStatusSuccessful, BuildStepStatusFailed, BuildStepStatusCancelled, BuildStepStatusUnknown:
-		return true
-	}
-	return false
-}
-
-func (e BuildStepStatus) String() string {
-	return string(e)
-}
-
-func (e *BuildStepStatus) UnmarshalGQL(v any) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = BuildStepStatus(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid BuildStepStatus", str)
-	}
-	return nil
-}
-
-func (e BuildStepStatus) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
-}
-
-func (e *BuildStepStatus) UnmarshalJSON(b []byte) error {
-	s, err := strconv.Unquote(string(b))
-	if err != nil {
-		return err
-	}
-	return e.UnmarshalGQL(s)
-}
-
-func (e BuildStepStatus) MarshalJSON() ([]byte, error) {
-	var buf bytes.Buffer
-	e.MarshalGQL(&buf)
-	return buf.Bytes(), nil
 }

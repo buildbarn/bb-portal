@@ -15,7 +15,6 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/embedded"
 	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/internal/mock"
-	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/proto/configuration/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
@@ -79,7 +78,7 @@ func setupTestBepUploader(t *testing.T, db database.Client, testCase testCase, u
 			AuthMetadataKeyConfiguration: testCase.extractors,
 		},
 	}
-	bepUploader, err := bepuploader.NewBepUploader(db, processing.NewBlobMultiArchiver(), config, nil, nil, noop.NewTracerProvider(), uuidGenerator)
+	bepUploader, err := bepuploader.NewBepUploader(db, config, nil, nil, noop.NewTracerProvider(), uuidGenerator)
 	require.NoError(t, err)
 	return bepUploader
 }

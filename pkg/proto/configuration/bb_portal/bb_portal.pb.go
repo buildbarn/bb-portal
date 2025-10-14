@@ -203,7 +203,6 @@ type BuildEventStreamService struct {
 	state                        protoimpl.MessageState                                `protogen:"open.v1"`
 	GrpcServers                  []*grpc.ServerConfiguration                           `protobuf:"bytes,1,rep,name=grpc_servers,json=grpcServers,proto3" json:"grpc_servers,omitempty"`
 	Database                     *Database                                             `protobuf:"bytes,2,opt,name=database,proto3" json:"database,omitempty"`
-	BlobArchiveFolder            string                                                `protobuf:"bytes,3,opt,name=blob_archive_folder,json=blobArchiveFolder,proto3" json:"blob_archive_folder,omitempty"`
 	EnableBepFileUpload          bool                                                  `protobuf:"varint,4,opt,name=enable_bep_file_upload,json=enableBepFileUpload,proto3" json:"enable_bep_file_upload,omitempty"`
 	EnableGraphqlPlayground      bool                                                  `protobuf:"varint,5,opt,name=enable_graphql_playground,json=enableGraphqlPlayground,proto3" json:"enable_graphql_playground,omitempty"`
 	SaveDataLevel                *BuildEventStreamService_SaveDataLevel                `protobuf:"bytes,7,opt,name=save_data_level,json=saveDataLevel,proto3" json:"save_data_level,omitempty"`
@@ -255,13 +254,6 @@ func (x *BuildEventStreamService) GetDatabase() *Database {
 		return x.Database
 	}
 	return nil
-}
-
-func (x *BuildEventStreamService) GetBlobArchiveFolder() string {
-	if x != nil {
-		return x.BlobArchiveFolder
-	}
-	return ""
 }
 
 func (x *BuildEventStreamService) GetEnableBepFileUpload() bool {
@@ -699,11 +691,10 @@ const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_p
 	"\"AuthMetadataExtractorConfiguration\x12\x88\x01\n" +
 	"*external_id_extraction_jmespath_expression\x18\x01 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR&externalIdExtractionJmespathExpression\x12\x8a\x01\n" +
 	"+display_name_extraction_jmespath_expression\x18\x02 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR'displayNameExtractionJmespathExpression\x12\x84\x01\n" +
-	"(user_info_extraction_jmespath_expression\x18\x03 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR$userInfoExtractionJmespathExpression\"\xfc\t\n" +
+	"(user_info_extraction_jmespath_expression\x18\x03 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR$userInfoExtractionJmespathExpression\"\xd2\t\n" +
 	"\x17BuildEventStreamService\x12T\n" +
 	"\fgrpc_servers\x18\x01 \x03(\v21.buildbarn.configuration.grpc.ServerConfigurationR\vgrpcServers\x12G\n" +
-	"\bdatabase\x18\x02 \x01(\v2+.buildbarn.configuration.bb_portal.DatabaseR\bdatabase\x12.\n" +
-	"\x13blob_archive_folder\x18\x03 \x01(\tR\x11blobArchiveFolder\x123\n" +
+	"\bdatabase\x18\x02 \x01(\v2+.buildbarn.configuration.bb_portal.DatabaseR\bdatabase\x123\n" +
 	"\x16enable_bep_file_upload\x18\x04 \x01(\bR\x13enableBepFileUpload\x12:\n" +
 	"\x19enable_graphql_playground\x18\x05 \x01(\bR\x17enableGraphqlPlayground\x12p\n" +
 	"\x0fsave_data_level\x18\a \x01(\v2H.buildbarn.configuration.bb_portal.BuildEventStreamService.SaveDataLevelR\rsaveDataLevel\x12\x9d\x01\n" +
@@ -717,7 +708,7 @@ const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_p
 	"\x10cleanup_interval\x18\x01 \x01(\v2\x19.google.protobuf.DurationR\x0fcleanupInterval\x12]\n" +
 	"\x1dinvocation_connection_timeout\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\x1binvocationConnectionTimeout\x12W\n" +
 	"\x1ainvocation_message_timeout\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\x18invocationMessageTimeout\x12L\n" +
-	"\x14invocation_retention\x18\x04 \x01(\v2\x19.google.protobuf.DurationR\x13invocationRetentionJ\x04\b\x06\x10\a\"\xd5\x03\n" +
+	"\x14invocation_retention\x18\x04 \x01(\v2\x19.google.protobuf.DurationR\x13invocationRetentionJ\x04\b\x03\x10\x04J\x04\b\x06\x10\a\"\xd5\x03\n" +
 	"\x0eBrowserService\x12z\n" +
 	"\x1bcontent_addressable_storage\x18\x01 \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\x19contentAddressableStorage\x12]\n" +
 	"\faction_cache\x18\x02 \x01(\v2:.buildbarn.configuration.blobstore.BlobAccessConfigurationR\vactionCache\x12s\n" +

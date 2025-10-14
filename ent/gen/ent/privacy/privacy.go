@@ -279,54 +279,6 @@ func (f BazelInvocationMutationRuleFunc) EvalMutation(ctx context.Context, m ent
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BazelInvocationMutation", m)
 }
 
-// The BazelInvocationProblemQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type BazelInvocationProblemQueryRuleFunc func(context.Context, *ent.BazelInvocationProblemQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f BazelInvocationProblemQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.BazelInvocationProblemQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.BazelInvocationProblemQuery", q)
-}
-
-// The BazelInvocationProblemMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type BazelInvocationProblemMutationRuleFunc func(context.Context, *ent.BazelInvocationProblemMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f BazelInvocationProblemMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.BazelInvocationProblemMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BazelInvocationProblemMutation", m)
-}
-
-// The BlobQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type BlobQueryRuleFunc func(context.Context, *ent.BlobQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f BlobQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.BlobQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.BlobQuery", q)
-}
-
-// The BlobMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type BlobMutationRuleFunc func(context.Context, *ent.BlobMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f BlobMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.BlobMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.BlobMutation", m)
-}
-
 // The BuildQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type BuildQueryRuleFunc func(context.Context, *ent.BuildQuery) error
@@ -1048,10 +1000,6 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.BazelInvocationQuery:
 		return q.Filter(), nil
-	case *ent.BazelInvocationProblemQuery:
-		return q.Filter(), nil
-	case *ent.BlobQuery:
-		return q.Filter(), nil
 	case *ent.BuildQuery:
 		return q.Filter(), nil
 	case *ent.BuildGraphMetricsQuery:
@@ -1128,10 +1076,6 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 	case *ent.AuthenticatedUserMutation:
 		return m.Filter(), nil
 	case *ent.BazelInvocationMutation:
-		return m.Filter(), nil
-	case *ent.BazelInvocationProblemMutation:
-		return m.Filter(), nil
-	case *ent.BlobMutation:
 		return m.Filter(), nil
 	case *ent.BuildMutation:
 		return m.Filter(), nil
