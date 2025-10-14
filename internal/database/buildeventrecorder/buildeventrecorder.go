@@ -8,16 +8,14 @@ import (
 	"time"
 
 	"github.com/RoaringBitmap/roaring"
+	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	apicommon "github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
-	"github.com/buildbarn/bb-portal/pkg/events"
-	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
-	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
@@ -29,7 +27,7 @@ import (
 // BuildEventWithInfo couples a build event with additional metadata
 // required for processing.
 type BuildEventWithInfo struct {
-	Event *events.BuildEvent
+	Event *bes.BuildEvent
 	// Sequence number is int64 by spec, however it is also starting at
 	// 1 and incrementing by 1 for each event by spec. We therefore
 	// assume we can fit the SequenceNumber in an uint32 and in case we
@@ -44,12 +42,10 @@ type BuildEventWithInfo struct {
 // BuildEventRecorder contains information about a Bazel invocation that is
 // required when processing individual build events.
 type BuildEventRecorder struct {
-	db              database.Client
-	problemDetector detectors.ProblemDetector
-	handledEvents   handledEvents
-	blobArchiver    processing.BlobMultiArchiver
-	saveDataLevel   *bb_portal.BuildEventStreamService_SaveDataLevel
-	tracer          trace.Tracer
+	db            database.Client
+	handledEvents handledEvents
+	saveDataLevel *bb_portal.BuildEventStreamService_SaveDataLevel
+	tracer        trace.Tracer
 
 	InstanceName           string
 	InstanceNameDbID       int64
@@ -70,7 +66,6 @@ func NewBuildEventRecorder(
 	ctx context.Context,
 	db database.Client,
 	instanceNameAuthorizer auth.Authorizer,
-	blobArchiver processing.BlobMultiArchiver,
 	saveDataLevel *bb_portal.BuildEventStreamService_SaveDataLevel,
 	tracerProvider trace.TracerProvider,
 	instanceName string,
@@ -100,11 +95,9 @@ func NewBuildEventRecorder(
 	}
 
 	return &BuildEventRecorder{
-		db:              db,
-		problemDetector: detectors.NewProblemDetector(),
-		blobArchiver:    blobArchiver,
-		saveDataLevel:   saveDataLevel,
-		tracer:          tracer,
+		db:            db,
+		saveDataLevel: saveDataLevel,
+		tracer:        tracer,
 
 		InstanceName:           instanceName,
 		InstanceNameDbID:       instanceNameDbID,

@@ -16,8 +16,6 @@ go_library(
         "//internal/database/buildeventrecorder",
         "//internal/database/dbauthservice",
         "//pkg/authmetadataextraction",
-        "//pkg/events",
-        "//pkg/processing",
         "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
         "//pkg/proto/configuration/bb_portal",
         "@com_github_buildbarn_bb_storage//pkg/auth",
@@ -30,8 +28,6 @@ go_library(
         "@org_golang_google_genproto//googleapis/devtools/build/v1:build",
         "@org_golang_google_grpc//codes",
         "@org_golang_google_grpc//status",
-        "@org_golang_google_protobuf//encoding/protojson",
-        "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//types/known/emptypb",
     ],
 )

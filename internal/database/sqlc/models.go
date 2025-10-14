@@ -6,7 +6,6 @@ package sqlc
 
 import (
 	"database/sql"
-	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -120,24 +119,6 @@ type BazelInvocation struct {
 	AuthenticatedUserBazelInvocations   sql.NullInt64
 	BuildInvocations                    sql.NullInt64
 	InstanceNameBazelInvocations        int64
-}
-
-type BazelInvocationProblem struct {
-	ID                      int64
-	ProblemType             string
-	Label                   string
-	BepEvents               json.RawMessage
-	BazelInvocationProblems sql.NullInt64
-}
-
-type Blob struct {
-	ID                int64
-	Uri               string
-	SizeBytes         sql.NullInt64
-	ArchivingStatus   string
-	Reason            sql.NullString
-	ArchiveUrl        sql.NullString
-	InstanceNameBlobs int64
 }
 
 type Build struct {

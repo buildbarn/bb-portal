@@ -70,21 +70,3 @@ models:
   Duration:
     model:
       - github.com/99designs/gqlgen/graphql.Duration
-  BlobReference:
-    extraFields:
-      Blob:
-        description: "The blob being referenced"
-        type: "*github.com/buildbarn/bb-portal/ent/gen/ent.Blob"
-  ActionProblem:
-    extraFields:
-      Problem:
-        description: "The underlying BazelInvocationProblem row"
-        type: "*github.com/buildbarn/bb-portal/ent/gen/ent.BazelInvocationProblem"
-  TestResult:
-    extraFields:
-      BESTestResult:
-        description: "TestResult object from the Build Event Stream"
-        type: "*github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto.TestResult"
-      TestResultID:
-        description: "IDs extracted for later use"
-        type: "github.com/buildbarn/bb-portal/internal/graphql/model.TestResultID"

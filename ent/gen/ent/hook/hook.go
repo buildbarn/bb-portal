@@ -93,30 +93,6 @@ func (f BazelInvocationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Va
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BazelInvocationMutation", m)
 }
 
-// The BazelInvocationProblemFunc type is an adapter to allow the use of ordinary
-// function as BazelInvocationProblem mutator.
-type BazelInvocationProblemFunc func(context.Context, *ent.BazelInvocationProblemMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f BazelInvocationProblemFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.BazelInvocationProblemMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BazelInvocationProblemMutation", m)
-}
-
-// The BlobFunc type is an adapter to allow the use of ordinary
-// function as Blob mutator.
-type BlobFunc func(context.Context, *ent.BlobMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f BlobFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.BlobMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BlobMutation", m)
-}
-
 // The BuildFunc type is an adapter to allow the use of ordinary
 // function as Build mutator.
 type BuildFunc func(context.Context, *ent.BuildMutation) (ent.Value, error)

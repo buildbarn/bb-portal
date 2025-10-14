@@ -19,10 +19,6 @@ type (
 	AuthenticatedUser struct{ schema.AuthenticatedUser }
 	// BazelInvocation reexport with auth policy added
 	BazelInvocation struct{ schema.BazelInvocation }
-	// BazelInvocationProblem reexport with auth policy added
-	BazelInvocationProblem struct{ schema.BazelInvocationProblem }
-	// Blob reexport with auth policy added
-	Blob struct{ schema.Blob }
 	// Build reexport with auth policy added
 	Build struct{ schema.Build }
 	// BuildLogChunk reexport with auth policy added

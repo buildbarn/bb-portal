@@ -24,7 +24,6 @@ go_library(
         "//internal/database/dbauthservice",
         "//internal/database/dbcleanupservice",
         "//internal/graphql",
-        "//pkg/processing",
         "//pkg/prometheus_metrics",
         "//pkg/proto/configuration/bb_portal",
         "@bazel_remote_apis//build/bazel/remote/execution/v2:remote_execution_go_proto",

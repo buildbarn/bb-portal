@@ -18,7 +18,6 @@ go_test(
         "//internal/database/embedded",
         "//internal/graphql",
         "//internal/mock",
-        "//pkg/processing",
         "//pkg/proto/configuration/bb_portal",
         "//pkg/testkit",
         "@com_github_99designs_gqlgen//graphql",

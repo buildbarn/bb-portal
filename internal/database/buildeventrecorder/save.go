@@ -9,7 +9,6 @@ import (
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/internal/database"
-	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.opentelemetry.io/otel/attribute"
 	otelcodes "go.opentelemetry.io/otel/codes"
@@ -18,7 +17,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func eventTypeName(buildEvent *events.BuildEvent) string {
+func eventTypeName(buildEvent *bes.BuildEvent) string {
 	if eventPayload := buildEvent.GetId().GetId(); eventPayload != nil {
 		return reflect.TypeOf(eventPayload).Elem().Name()
 	}
@@ -74,11 +73,6 @@ func (r *BuildEventRecorder) saveEvent(
 		return util.StatusWrapf(err, "Failed to save build event of type %T", buildEvent.GetId().GetId())
 	}
 
-	err = r.saveBazelInvocationProblems(ctx, tx.Ent(), buildEvent)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save bazel invocation problems")
-	}
-
 	r.handledEvents.bitmap.Add(sequenceNumber)
 	r.saveHandledEvents(ctx, tx, time.Now())
 
@@ -92,7 +86,7 @@ func (r *BuildEventRecorder) saveEvent(
 func (r *BuildEventRecorder) saveBuildEvent(
 	ctx context.Context,
 	tx database.Tx,
-	buildEvent *events.BuildEvent,
+	buildEvent *bes.BuildEvent,
 ) error {
 	switch buildEvent.GetId().GetId().(type) {
 	case *bes.BuildEventId_Started:

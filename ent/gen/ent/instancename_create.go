@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
@@ -65,21 +64,6 @@ func (inc *InstanceNameCreate) AddBuilds(b ...*Build) *InstanceNameCreate {
 		ids[i] = b[i].ID
 	}
 	return inc.AddBuildIDs(ids...)
-}
-
-// AddBlobIDs adds the "blobs" edge to the Blob entity by IDs.
-func (inc *InstanceNameCreate) AddBlobIDs(ids ...int64) *InstanceNameCreate {
-	inc.mutation.AddBlobIDs(ids...)
-	return inc
-}
-
-// AddBlobs adds the "blobs" edges to the Blob entity.
-func (inc *InstanceNameCreate) AddBlobs(b ...*Blob) *InstanceNameCreate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return inc.AddBlobIDs(ids...)
 }
 
 // AddTargetIDs adds the "targets" edge to the Target entity by IDs.
@@ -196,22 +180,6 @@ func (inc *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := inc.mutation.BlobsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   instancename.BlobsTable,
-			Columns: []string{instancename.BlobsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

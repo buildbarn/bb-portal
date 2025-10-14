@@ -5,7 +5,6 @@ import SystemMetricsDisplay from "../SystemMetricsDisplay";
 import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
 import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
-import BuildProblems from "../Problems";
 import PortalCard from "@/components/PortalCard";
 import PortalDuration from "@/components/PortalDuration";
 import {
@@ -21,7 +20,6 @@ import {
   CodeOutlined,
   DatabaseOutlined,
   DeploymentUnitOutlined,
-  ExclamationCircleOutlined,
   ExperimentOutlined,
   FieldTimeOutlined,
   FileSearchOutlined,
@@ -75,7 +73,6 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
   const hideTargetsTab: boolean = !isFeatureEnabled(FeatureType.BES_PAGE_TARGETS);
   const hideTestsTab: boolean = !isFeatureEnabled(FeatureType.BES_PAGE_TESTS);
   const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null;
-  const hideProblemsTab: boolean = invocationOverview.exitCodeName == "SUCCESS";
 
   const items: TabsProps["items"] = [];
   items.push({
@@ -223,19 +220,6 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     children: (
       <Space direction="vertical" size="middle" className={themeStyles.space}>
         <ActionsTab instanceName={instanceName.name} actions={actions} />
-      </Space>
-    ),
-  });
-  if (!hideProblemsTab) items.push({
-    key: "BazelInvocationTabs-Problems",
-    label: "Problems",
-    icon: <ExclamationCircleOutlined />,
-    children: (
-      <Space direction="vertical" size="middle" className={themeStyles.space}>
-        <BuildProblems
-          invocationId={invocationID}
-          instanceName={instanceName.name}
-        />
       </Space>
     ),
   });

@@ -50,13 +50,6 @@ export function generateDirectoryTarballUrl(
   )}/directory/${digest.hash}-${digest.sizeBytes}/?format=tar`;
 }
 
-export function generateUrlFromEphemeralUrl(
-  instanceName: string | undefined,
-  ephemeralUrl: string,
-): string {
-  return `${getServeFileUrl()}${instanceName ? `/${instanceName}` : ""}${ephemeralUrl}`;
-}
-
 export function generateLinkToTargetsPage(
   instanceName: string,
   label: string,

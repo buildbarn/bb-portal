@@ -4,18 +4,9 @@ go_library(
     name = "helpers",
     srcs = [
         "id.go",
-        "output.helpers.go",
         "resolver.helpers.go",
     ],
     importpath = "github.com/buildbarn/bb-portal/internal/graphql/helpers",
     visibility = ["//:__subpackages__"],
-    deps = [
-        "//ent/gen/ent",
-        "//ent/gen/ent/blob",
-        "//internal/graphql/model",
-        "//pkg/events",
-        "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
-        "//pkg/summary/detectors",
-        "@io_entgo_contrib//entgql",
-    ],
+    deps = ["@io_entgo_contrib//entgql"],
 )

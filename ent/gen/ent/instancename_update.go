@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -60,21 +59,6 @@ func (inu *InstanceNameUpdate) AddBuilds(b ...*Build) *InstanceNameUpdate {
 		ids[i] = b[i].ID
 	}
 	return inu.AddBuildIDs(ids...)
-}
-
-// AddBlobIDs adds the "blobs" edge to the Blob entity by IDs.
-func (inu *InstanceNameUpdate) AddBlobIDs(ids ...int64) *InstanceNameUpdate {
-	inu.mutation.AddBlobIDs(ids...)
-	return inu
-}
-
-// AddBlobs adds the "blobs" edges to the Blob entity.
-func (inu *InstanceNameUpdate) AddBlobs(b ...*Blob) *InstanceNameUpdate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return inu.AddBlobIDs(ids...)
 }
 
 // AddTargetIDs adds the "targets" edge to the Target entity by IDs.
@@ -137,27 +121,6 @@ func (inu *InstanceNameUpdate) RemoveBuilds(b ...*Build) *InstanceNameUpdate {
 		ids[i] = b[i].ID
 	}
 	return inu.RemoveBuildIDs(ids...)
-}
-
-// ClearBlobs clears all "blobs" edges to the Blob entity.
-func (inu *InstanceNameUpdate) ClearBlobs() *InstanceNameUpdate {
-	inu.mutation.ClearBlobs()
-	return inu
-}
-
-// RemoveBlobIDs removes the "blobs" edge to Blob entities by IDs.
-func (inu *InstanceNameUpdate) RemoveBlobIDs(ids ...int64) *InstanceNameUpdate {
-	inu.mutation.RemoveBlobIDs(ids...)
-	return inu
-}
-
-// RemoveBlobs removes "blobs" edges to Blob entities.
-func (inu *InstanceNameUpdate) RemoveBlobs(b ...*Blob) *InstanceNameUpdate {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return inu.RemoveBlobIDs(ids...)
 }
 
 // ClearTargets clears all "targets" edges to the Target entity.
@@ -313,51 +276,6 @@ func (inu *InstanceNameUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if inu.mutation.BlobsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   instancename.BlobsTable,
-			Columns: []string{instancename.BlobsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := inu.mutation.RemovedBlobsIDs(); len(nodes) > 0 && !inu.mutation.BlobsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   instancename.BlobsTable,
-			Columns: []string{instancename.BlobsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := inu.mutation.BlobsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   instancename.BlobsTable,
-			Columns: []string{instancename.BlobsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if inu.mutation.TargetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -455,21 +373,6 @@ func (inuo *InstanceNameUpdateOne) AddBuilds(b ...*Build) *InstanceNameUpdateOne
 	return inuo.AddBuildIDs(ids...)
 }
 
-// AddBlobIDs adds the "blobs" edge to the Blob entity by IDs.
-func (inuo *InstanceNameUpdateOne) AddBlobIDs(ids ...int64) *InstanceNameUpdateOne {
-	inuo.mutation.AddBlobIDs(ids...)
-	return inuo
-}
-
-// AddBlobs adds the "blobs" edges to the Blob entity.
-func (inuo *InstanceNameUpdateOne) AddBlobs(b ...*Blob) *InstanceNameUpdateOne {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return inuo.AddBlobIDs(ids...)
-}
-
 // AddTargetIDs adds the "targets" edge to the Target entity by IDs.
 func (inuo *InstanceNameUpdateOne) AddTargetIDs(ids ...int64) *InstanceNameUpdateOne {
 	inuo.mutation.AddTargetIDs(ids...)
@@ -530,27 +433,6 @@ func (inuo *InstanceNameUpdateOne) RemoveBuilds(b ...*Build) *InstanceNameUpdate
 		ids[i] = b[i].ID
 	}
 	return inuo.RemoveBuildIDs(ids...)
-}
-
-// ClearBlobs clears all "blobs" edges to the Blob entity.
-func (inuo *InstanceNameUpdateOne) ClearBlobs() *InstanceNameUpdateOne {
-	inuo.mutation.ClearBlobs()
-	return inuo
-}
-
-// RemoveBlobIDs removes the "blobs" edge to Blob entities by IDs.
-func (inuo *InstanceNameUpdateOne) RemoveBlobIDs(ids ...int64) *InstanceNameUpdateOne {
-	inuo.mutation.RemoveBlobIDs(ids...)
-	return inuo
-}
-
-// RemoveBlobs removes "blobs" edges to Blob entities.
-func (inuo *InstanceNameUpdateOne) RemoveBlobs(b ...*Blob) *InstanceNameUpdateOne {
-	ids := make([]int64, len(b))
-	for i := range b {
-		ids[i] = b[i].ID
-	}
-	return inuo.RemoveBlobIDs(ids...)
 }
 
 // ClearTargets clears all "targets" edges to the Target entity.
@@ -729,51 +611,6 @@ func (inuo *InstanceNameUpdateOne) sqlSave(ctx context.Context) (_node *Instance
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if inuo.mutation.BlobsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   instancename.BlobsTable,
-			Columns: []string{instancename.BlobsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := inuo.mutation.RemovedBlobsIDs(); len(nodes) > 0 && !inuo.mutation.BlobsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   instancename.BlobsTable,
-			Columns: []string{instancename.BlobsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := inuo.mutation.BlobsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   instancename.BlobsTable,
-			Columns: []string{instancename.BlobsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

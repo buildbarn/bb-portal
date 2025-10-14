@@ -15,8 +15,6 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
-	"github.com/buildbarn/bb-portal/pkg/events"
-	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
@@ -40,7 +38,6 @@ const (
 type BepUploader struct {
 	db                     database.Client
 	instanceNameAuthorizer auth.Authorizer
-	blobArchiver           processing.BlobMultiArchiver
 	saveDataLevel          *bb_portal.BuildEventStreamService_SaveDataLevel
 	tracerProvider         trace.TracerProvider
 	extractors             *authmetadataextraction.AuthMetadataExtractors
@@ -48,7 +45,7 @@ type BepUploader struct {
 }
 
 // NewBepUploader creates a new BepUploader
-func NewBepUploader(db database.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider, uuidGenerator util.UUIDGenerator) (*BepUploader, error) {
+func NewBepUploader(db database.Client, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider, uuidGenerator util.UUIDGenerator) (*BepUploader, error) {
 	if configuration.InstanceNameAuthorizer == nil {
 		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
@@ -75,7 +72,6 @@ func NewBepUploader(db database.Client, blobArchiver processing.BlobMultiArchive
 	return &BepUploader{
 		db:                     db,
 		instanceNameAuthorizer: instanceNameAuthorizer,
-		blobArchiver:           blobArchiver,
 		saveDataLevel:          saveDataLevel,
 		tracerProvider:         tracerProvider,
 		extractors:             extractors,
@@ -83,7 +79,7 @@ func NewBepUploader(db database.Client, blobArchiver processing.BlobMultiArchive
 	}, nil
 }
 
-func getEventHash(buildEvent *events.BuildEvent) ([]byte, error) {
+func getEventHash(buildEvent *bes.BuildEvent) ([]byte, error) {
 	marshalOptions := proto.MarshalOptions{Deterministic: true}
 	data, err := marshalOptions.Marshal(buildEvent)
 	if err != nil {
@@ -142,7 +138,6 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 				ctx,
 				b.db,
 				b.instanceNameAuthorizer,
-				b.blobArchiver,
 				b.saveDataLevel,
 				b.tracerProvider,
 				"", // instanceName
@@ -157,12 +152,8 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 			}
 		}
 
-		// TODO (isakstenstrom): Remove this and send the raw BES event instead. This can only be
-		// done when we no longer need JSON serialization of events, like we do for
-		// BazelInvocationProblems.
-		buildEvent := events.NewBuildEvent(&bazelEvent, json.RawMessage(protojson.Format(&bazelEvent)))
 		eventBuffer = append(eventBuffer, buildeventrecorder.BuildEventWithInfo{
-			Event:          &buildEvent,
+			Event:          &bazelEvent,
 			SequenceNumber: sequenceNumber,
 		})
 	}

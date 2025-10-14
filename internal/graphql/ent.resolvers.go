@@ -49,16 +49,6 @@ func (r *bazelInvocationResolver) ID(ctx context.Context, obj *ent.BazelInvocati
 }
 
 // ID is the resolver for the id field.
-func (r *bazelInvocationProblemResolver) ID(ctx context.Context, obj *ent.BazelInvocationProblem) (string, error) {
-	return helpers.GraphQLIDFromTypeAndID("BazelInvocationProblem", obj.ID), nil
-}
-
-// ID is the resolver for the id field.
-func (r *blobResolver) ID(ctx context.Context, obj *ent.Blob) (string, error) {
-	return helpers.GraphQLIDFromTypeAndID("Blob", obj.ID), nil
-}
-
-// ID is the resolver for the id field.
 func (r *buildResolver) ID(ctx context.Context, obj *ent.Build) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("Build", obj.ID), nil
 }
@@ -466,46 +456,6 @@ func (r *authenticatedUserWhereInputResolver) IDLte(ctx context.Context, obj *en
 }
 
 // ID is the resolver for the id field.
-func (r *bazelInvocationProblemWhereInputResolver) ID(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
-}
-
-// IDNeq is the resolver for the idNEQ field.
-func (r *bazelInvocationProblemWhereInputResolver) IDNeq(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
-}
-
-// IDIn is the resolver for the idIn field.
-func (r *bazelInvocationProblemWhereInputResolver) IDIn(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDIn - idIn"))
-}
-
-// IDNotIn is the resolver for the idNotIn field.
-func (r *bazelInvocationProblemWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
-}
-
-// IDGt is the resolver for the idGT field.
-func (r *bazelInvocationProblemWhereInputResolver) IDGt(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGt - idGT"))
-}
-
-// IDGte is the resolver for the idGTE field.
-func (r *bazelInvocationProblemWhereInputResolver) IDGte(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
-}
-
-// IDLt is the resolver for the idLT field.
-func (r *bazelInvocationProblemWhereInputResolver) IDLt(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLt - idLT"))
-}
-
-// IDLte is the resolver for the idLTE field.
-func (r *bazelInvocationProblemWhereInputResolver) IDLte(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
-}
-
-// ID is the resolver for the id field.
 func (r *bazelInvocationWhereInputResolver) ID(ctx context.Context, obj *ent.BazelInvocationWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
@@ -542,46 +492,6 @@ func (r *bazelInvocationWhereInputResolver) IDLt(ctx context.Context, obj *ent.B
 
 // IDLte is the resolver for the idLTE field.
 func (r *bazelInvocationWhereInputResolver) IDLte(ctx context.Context, obj *ent.BazelInvocationWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
-}
-
-// ID is the resolver for the id field.
-func (r *blobWhereInputResolver) ID(ctx context.Context, obj *ent.BlobWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
-}
-
-// IDNeq is the resolver for the idNEQ field.
-func (r *blobWhereInputResolver) IDNeq(ctx context.Context, obj *ent.BlobWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
-}
-
-// IDIn is the resolver for the idIn field.
-func (r *blobWhereInputResolver) IDIn(ctx context.Context, obj *ent.BlobWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDIn - idIn"))
-}
-
-// IDNotIn is the resolver for the idNotIn field.
-func (r *blobWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.BlobWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
-}
-
-// IDGt is the resolver for the idGT field.
-func (r *blobWhereInputResolver) IDGt(ctx context.Context, obj *ent.BlobWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGt - idGT"))
-}
-
-// IDGte is the resolver for the idGTE field.
-func (r *blobWhereInputResolver) IDGte(ctx context.Context, obj *ent.BlobWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
-}
-
-// IDLt is the resolver for the idLT field.
-func (r *blobWhereInputResolver) IDLt(ctx context.Context, obj *ent.BlobWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLt - idLT"))
-}
-
-// IDLte is the resolver for the idLTE field.
-func (r *blobWhereInputResolver) IDLte(ctx context.Context, obj *ent.BlobWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
@@ -1530,14 +1440,6 @@ func (r *Resolver) AuthenticatedUser() AuthenticatedUserResolver {
 // BazelInvocation returns BazelInvocationResolver implementation.
 func (r *Resolver) BazelInvocation() BazelInvocationResolver { return &bazelInvocationResolver{r} }
 
-// BazelInvocationProblem returns BazelInvocationProblemResolver implementation.
-func (r *Resolver) BazelInvocationProblem() BazelInvocationProblemResolver {
-	return &bazelInvocationProblemResolver{r}
-}
-
-// Blob returns BlobResolver implementation.
-func (r *Resolver) Blob() BlobResolver { return &blobResolver{r} }
-
 // Build returns BuildResolver implementation.
 func (r *Resolver) Build() BuildResolver { return &buildResolver{r} }
 
@@ -1646,18 +1548,10 @@ func (r *Resolver) AuthenticatedUserWhereInput() AuthenticatedUserWhereInputReso
 	return &authenticatedUserWhereInputResolver{r}
 }
 
-// BazelInvocationProblemWhereInput returns BazelInvocationProblemWhereInputResolver implementation.
-func (r *Resolver) BazelInvocationProblemWhereInput() BazelInvocationProblemWhereInputResolver {
-	return &bazelInvocationProblemWhereInputResolver{r}
-}
-
 // BazelInvocationWhereInput returns BazelInvocationWhereInputResolver implementation.
 func (r *Resolver) BazelInvocationWhereInput() BazelInvocationWhereInputResolver {
 	return &bazelInvocationWhereInputResolver{r}
 }
-
-// BlobWhereInput returns BlobWhereInputResolver implementation.
-func (r *Resolver) BlobWhereInput() BlobWhereInputResolver { return &blobWhereInputResolver{r} }
 
 // BuildGraphMetricsWhereInput returns BuildGraphMetricsWhereInputResolver implementation.
 func (r *Resolver) BuildGraphMetricsWhereInput() BuildGraphMetricsWhereInputResolver {
@@ -1771,69 +1665,65 @@ func (r *Resolver) TimingMetricsWhereInput() TimingMetricsWhereInputResolver {
 }
 
 type (
-	actionResolver                           struct{ *Resolver }
-	actionCacheStatisticsResolver            struct{ *Resolver }
-	actionDataResolver                       struct{ *Resolver }
-	actionSummaryResolver                    struct{ *Resolver }
-	artifactMetricsResolver                  struct{ *Resolver }
-	authenticatedUserResolver                struct{ *Resolver }
-	bazelInvocationResolver                  struct{ *Resolver }
-	bazelInvocationProblemResolver           struct{ *Resolver }
-	blobResolver                             struct{ *Resolver }
-	buildResolver                            struct{ *Resolver }
-	buildGraphMetricsResolver                struct{ *Resolver }
-	configurationResolver                    struct{ *Resolver }
-	cumulativeMetricsResolver                struct{ *Resolver }
-	evaluationStatResolver                   struct{ *Resolver }
-	garbageMetricsResolver                   struct{ *Resolver }
-	instanceNameResolver                     struct{ *Resolver }
-	invocationFilesResolver                  struct{ *Resolver }
-	invocationTargetResolver                 struct{ *Resolver }
-	memoryMetricsResolver                    struct{ *Resolver }
-	metricsResolver                          struct{ *Resolver }
-	missDetailResolver                       struct{ *Resolver }
-	networkMetricsResolver                   struct{ *Resolver }
-	packageLoadMetricsResolver               struct{ *Resolver }
-	packageMetricsResolver                   struct{ *Resolver }
-	queryResolver                            struct{ *Resolver }
-	runnerCountResolver                      struct{ *Resolver }
-	sourceControlResolver                    struct{ *Resolver }
-	systemNetworkStatsResolver               struct{ *Resolver }
-	targetResolver                           struct{ *Resolver }
-	targetMetricsResolver                    struct{ *Resolver }
-	testResultResolver                       struct{ *Resolver }
-	testSummaryResolver                      struct{ *Resolver }
-	timingMetricsResolver                    struct{ *Resolver }
-	actionCacheStatisticsWhereInputResolver  struct{ *Resolver }
-	actionDataWhereInputResolver             struct{ *Resolver }
-	actionSummaryWhereInputResolver          struct{ *Resolver }
-	actionWhereInputResolver                 struct{ *Resolver }
-	artifactMetricsWhereInputResolver        struct{ *Resolver }
-	authenticatedUserWhereInputResolver      struct{ *Resolver }
-	bazelInvocationProblemWhereInputResolver struct{ *Resolver }
-	bazelInvocationWhereInputResolver        struct{ *Resolver }
-	blobWhereInputResolver                   struct{ *Resolver }
-	buildGraphMetricsWhereInputResolver      struct{ *Resolver }
-	buildWhereInputResolver                  struct{ *Resolver }
-	configurationWhereInputResolver          struct{ *Resolver }
-	cumulativeMetricsWhereInputResolver      struct{ *Resolver }
-	evaluationStatWhereInputResolver         struct{ *Resolver }
-	garbageMetricsWhereInputResolver         struct{ *Resolver }
-	instanceNameWhereInputResolver           struct{ *Resolver }
-	invocationFilesWhereInputResolver        struct{ *Resolver }
-	invocationTargetWhereInputResolver       struct{ *Resolver }
-	memoryMetricsWhereInputResolver          struct{ *Resolver }
-	metricsWhereInputResolver                struct{ *Resolver }
-	missDetailWhereInputResolver             struct{ *Resolver }
-	networkMetricsWhereInputResolver         struct{ *Resolver }
-	packageLoadMetricsWhereInputResolver     struct{ *Resolver }
-	packageMetricsWhereInputResolver         struct{ *Resolver }
-	runnerCountWhereInputResolver            struct{ *Resolver }
-	sourceControlWhereInputResolver          struct{ *Resolver }
-	systemNetworkStatsWhereInputResolver     struct{ *Resolver }
-	targetMetricsWhereInputResolver          struct{ *Resolver }
-	targetWhereInputResolver                 struct{ *Resolver }
-	testResultWhereInputResolver             struct{ *Resolver }
-	testSummaryWhereInputResolver            struct{ *Resolver }
-	timingMetricsWhereInputResolver          struct{ *Resolver }
+	actionResolver                          struct{ *Resolver }
+	actionCacheStatisticsResolver           struct{ *Resolver }
+	actionDataResolver                      struct{ *Resolver }
+	actionSummaryResolver                   struct{ *Resolver }
+	artifactMetricsResolver                 struct{ *Resolver }
+	authenticatedUserResolver               struct{ *Resolver }
+	bazelInvocationResolver                 struct{ *Resolver }
+	buildResolver                           struct{ *Resolver }
+	buildGraphMetricsResolver               struct{ *Resolver }
+	configurationResolver                   struct{ *Resolver }
+	cumulativeMetricsResolver               struct{ *Resolver }
+	evaluationStatResolver                  struct{ *Resolver }
+	garbageMetricsResolver                  struct{ *Resolver }
+	instanceNameResolver                    struct{ *Resolver }
+	invocationFilesResolver                 struct{ *Resolver }
+	invocationTargetResolver                struct{ *Resolver }
+	memoryMetricsResolver                   struct{ *Resolver }
+	metricsResolver                         struct{ *Resolver }
+	missDetailResolver                      struct{ *Resolver }
+	networkMetricsResolver                  struct{ *Resolver }
+	packageLoadMetricsResolver              struct{ *Resolver }
+	packageMetricsResolver                  struct{ *Resolver }
+	queryResolver                           struct{ *Resolver }
+	runnerCountResolver                     struct{ *Resolver }
+	sourceControlResolver                   struct{ *Resolver }
+	systemNetworkStatsResolver              struct{ *Resolver }
+	targetResolver                          struct{ *Resolver }
+	targetMetricsResolver                   struct{ *Resolver }
+	testResultResolver                      struct{ *Resolver }
+	testSummaryResolver                     struct{ *Resolver }
+	timingMetricsResolver                   struct{ *Resolver }
+	actionCacheStatisticsWhereInputResolver struct{ *Resolver }
+	actionDataWhereInputResolver            struct{ *Resolver }
+	actionSummaryWhereInputResolver         struct{ *Resolver }
+	actionWhereInputResolver                struct{ *Resolver }
+	artifactMetricsWhereInputResolver       struct{ *Resolver }
+	authenticatedUserWhereInputResolver     struct{ *Resolver }
+	bazelInvocationWhereInputResolver       struct{ *Resolver }
+	buildGraphMetricsWhereInputResolver     struct{ *Resolver }
+	buildWhereInputResolver                 struct{ *Resolver }
+	configurationWhereInputResolver         struct{ *Resolver }
+	cumulativeMetricsWhereInputResolver     struct{ *Resolver }
+	evaluationStatWhereInputResolver        struct{ *Resolver }
+	garbageMetricsWhereInputResolver        struct{ *Resolver }
+	instanceNameWhereInputResolver          struct{ *Resolver }
+	invocationFilesWhereInputResolver       struct{ *Resolver }
+	invocationTargetWhereInputResolver      struct{ *Resolver }
+	memoryMetricsWhereInputResolver         struct{ *Resolver }
+	metricsWhereInputResolver               struct{ *Resolver }
+	missDetailWhereInputResolver            struct{ *Resolver }
+	networkMetricsWhereInputResolver        struct{ *Resolver }
+	packageLoadMetricsWhereInputResolver    struct{ *Resolver }
+	packageMetricsWhereInputResolver        struct{ *Resolver }
+	runnerCountWhereInputResolver           struct{ *Resolver }
+	sourceControlWhereInputResolver         struct{ *Resolver }
+	systemNetworkStatsWhereInputResolver    struct{ *Resolver }
+	targetMetricsWhereInputResolver         struct{ *Resolver }
+	targetWhereInputResolver                struct{ *Resolver }
+	testResultWhereInputResolver            struct{ *Resolver }
+	testSummaryWhereInputResolver           struct{ *Resolver }
+	timingMetricsWhereInputResolver         struct{ *Resolver }
 )

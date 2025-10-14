@@ -218,22 +218,6 @@ func (bi *BazelInvocation) SourceControl(ctx context.Context) (*SourceControl, e
 	return result, MaskNotFound(err)
 }
 
-func (bip *BazelInvocationProblem) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := bip.Edges.BazelInvocationOrErr()
-	if IsNotLoaded(err) {
-		result, err = bip.QueryBazelInvocation().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (b *Blob) InstanceName(ctx context.Context) (*InstanceName, error) {
-	result, err := b.Edges.InstanceNameOrErr()
-	if IsNotLoaded(err) {
-		result, err = b.QueryInstanceName().Only(ctx)
-	}
-	return result, err
-}
-
 func (b *Build) InstanceName(ctx context.Context) (*InstanceName, error) {
 	result, err := b.Edges.InstanceNameOrErr()
 	if IsNotLoaded(err) {
@@ -378,18 +362,6 @@ func (in *InstanceName) Builds(ctx context.Context) (result []*Build, err error)
 	}
 	if IsNotLoaded(err) {
 		result, err = in.QueryBuilds().All(ctx)
-	}
-	return result, err
-}
-
-func (in *InstanceName) Blobs(ctx context.Context) (result []*Blob, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = in.NamedBlobs(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = in.Edges.BlobsOrErr()
-	}
-	if IsNotLoaded(err) {
-		result, err = in.QueryBlobs().All(ctx)
 	}
 	return result, err
 }

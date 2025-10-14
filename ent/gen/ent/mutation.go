@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"sync"
@@ -19,8 +18,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
@@ -62,43 +59,41 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAction                 = "Action"
-	TypeActionCacheStatistics  = "ActionCacheStatistics"
-	TypeActionData             = "ActionData"
-	TypeActionSummary          = "ActionSummary"
-	TypeArtifactMetrics        = "ArtifactMetrics"
-	TypeAuthenticatedUser      = "AuthenticatedUser"
-	TypeBazelInvocation        = "BazelInvocation"
-	TypeBazelInvocationProblem = "BazelInvocationProblem"
-	TypeBlob                   = "Blob"
-	TypeBuild                  = "Build"
-	TypeBuildGraphMetrics      = "BuildGraphMetrics"
-	TypeBuildLogChunk          = "BuildLogChunk"
-	TypeConfiguration          = "Configuration"
-	TypeConnectionMetadata     = "ConnectionMetadata"
-	TypeCumulativeMetrics      = "CumulativeMetrics"
-	TypeEvaluationStat         = "EvaluationStat"
-	TypeEventMetadata          = "EventMetadata"
-	TypeGarbageMetrics         = "GarbageMetrics"
-	TypeIncompleteBuildLog     = "IncompleteBuildLog"
-	TypeInstanceName           = "InstanceName"
-	TypeInvocationFiles        = "InvocationFiles"
-	TypeInvocationTarget       = "InvocationTarget"
-	TypeMemoryMetrics          = "MemoryMetrics"
-	TypeMetrics                = "Metrics"
-	TypeMissDetail             = "MissDetail"
-	TypeNetworkMetrics         = "NetworkMetrics"
-	TypePackageLoadMetrics     = "PackageLoadMetrics"
-	TypePackageMetrics         = "PackageMetrics"
-	TypeRunnerCount            = "RunnerCount"
-	TypeSourceControl          = "SourceControl"
-	TypeSystemNetworkStats     = "SystemNetworkStats"
-	TypeTarget                 = "Target"
-	TypeTargetKindMapping      = "TargetKindMapping"
-	TypeTargetMetrics          = "TargetMetrics"
-	TypeTestResult             = "TestResult"
-	TypeTestSummary            = "TestSummary"
-	TypeTimingMetrics          = "TimingMetrics"
+	TypeAction                = "Action"
+	TypeActionCacheStatistics = "ActionCacheStatistics"
+	TypeActionData            = "ActionData"
+	TypeActionSummary         = "ActionSummary"
+	TypeArtifactMetrics       = "ArtifactMetrics"
+	TypeAuthenticatedUser     = "AuthenticatedUser"
+	TypeBazelInvocation       = "BazelInvocation"
+	TypeBuild                 = "Build"
+	TypeBuildGraphMetrics     = "BuildGraphMetrics"
+	TypeBuildLogChunk         = "BuildLogChunk"
+	TypeConfiguration         = "Configuration"
+	TypeConnectionMetadata    = "ConnectionMetadata"
+	TypeCumulativeMetrics     = "CumulativeMetrics"
+	TypeEvaluationStat        = "EvaluationStat"
+	TypeEventMetadata         = "EventMetadata"
+	TypeGarbageMetrics        = "GarbageMetrics"
+	TypeIncompleteBuildLog    = "IncompleteBuildLog"
+	TypeInstanceName          = "InstanceName"
+	TypeInvocationFiles       = "InvocationFiles"
+	TypeInvocationTarget      = "InvocationTarget"
+	TypeMemoryMetrics         = "MemoryMetrics"
+	TypeMetrics               = "Metrics"
+	TypeMissDetail            = "MissDetail"
+	TypeNetworkMetrics        = "NetworkMetrics"
+	TypePackageLoadMetrics    = "PackageLoadMetrics"
+	TypePackageMetrics        = "PackageMetrics"
+	TypeRunnerCount           = "RunnerCount"
+	TypeSourceControl         = "SourceControl"
+	TypeSystemNetworkStats    = "SystemNetworkStats"
+	TypeTarget                = "Target"
+	TypeTargetKindMapping     = "TargetKindMapping"
+	TypeTargetMetrics         = "TargetMetrics"
+	TypeTestResult            = "TestResult"
+	TypeTestSummary           = "TestSummary"
+	TypeTimingMetrics         = "TimingMetrics"
 )
 
 // ActionMutation represents an operation that mutates the Action nodes in the graph.
@@ -6727,9 +6722,6 @@ type BazelInvocationMutation struct {
 	actions                                 map[int64]struct{}
 	removedactions                          map[int64]struct{}
 	clearedactions                          bool
-	problems                                map[int64]struct{}
-	removedproblems                         map[int64]struct{}
-	clearedproblems                         bool
 	metrics                                 *int64
 	clearedmetrics                          bool
 	incomplete_build_logs                   map[int64]struct{}
@@ -8641,60 +8633,6 @@ func (m *BazelInvocationMutation) ResetActions() {
 	m.removedactions = nil
 }
 
-// AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by ids.
-func (m *BazelInvocationMutation) AddProblemIDs(ids ...int64) {
-	if m.problems == nil {
-		m.problems = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.problems[ids[i]] = struct{}{}
-	}
-}
-
-// ClearProblems clears the "problems" edge to the BazelInvocationProblem entity.
-func (m *BazelInvocationMutation) ClearProblems() {
-	m.clearedproblems = true
-}
-
-// ProblemsCleared reports if the "problems" edge to the BazelInvocationProblem entity was cleared.
-func (m *BazelInvocationMutation) ProblemsCleared() bool {
-	return m.clearedproblems
-}
-
-// RemoveProblemIDs removes the "problems" edge to the BazelInvocationProblem entity by IDs.
-func (m *BazelInvocationMutation) RemoveProblemIDs(ids ...int64) {
-	if m.removedproblems == nil {
-		m.removedproblems = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.problems, ids[i])
-		m.removedproblems[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedProblems returns the removed IDs of the "problems" edge to the BazelInvocationProblem entity.
-func (m *BazelInvocationMutation) RemovedProblemsIDs() (ids []int64) {
-	for id := range m.removedproblems {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ProblemsIDs returns the "problems" edge IDs in the mutation.
-func (m *BazelInvocationMutation) ProblemsIDs() (ids []int64) {
-	for id := range m.problems {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetProblems resets all changes to the "problems" edge.
-func (m *BazelInvocationMutation) ResetProblems() {
-	m.problems = nil
-	m.clearedproblems = false
-	m.removedproblems = nil
-}
-
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
 func (m *BazelInvocationMutation) SetMetricsID(id int64) {
 	m.metrics = &id
@@ -9832,7 +9770,7 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 15)
+	edges := make([]string, 0, 14)
 	if m.instance_name != nil {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -9853,9 +9791,6 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	}
 	if m.actions != nil {
 		edges = append(edges, bazelinvocation.EdgeActions)
-	}
-	if m.problems != nil {
-		edges = append(edges, bazelinvocation.EdgeProblems)
 	}
 	if m.metrics != nil {
 		edges = append(edges, bazelinvocation.EdgeMetrics)
@@ -9919,12 +9854,6 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeProblems:
-		ids := make([]ent.Value, 0, len(m.problems))
-		for id := range m.problems {
-			ids = append(ids, id)
-		}
-		return ids
 	case bazelinvocation.EdgeMetrics:
 		if id := m.metrics; id != nil {
 			return []ent.Value{*id}
@@ -9969,7 +9898,7 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 15)
+	edges := make([]string, 0, 14)
 	if m.removedconnection_metadata != nil {
 		edges = append(edges, bazelinvocation.EdgeConnectionMetadata)
 	}
@@ -9978,9 +9907,6 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 	}
 	if m.removedactions != nil {
 		edges = append(edges, bazelinvocation.EdgeActions)
-	}
-	if m.removedproblems != nil {
-		edges = append(edges, bazelinvocation.EdgeProblems)
 	}
 	if m.removedincomplete_build_logs != nil {
 		edges = append(edges, bazelinvocation.EdgeIncompleteBuildLogs)
@@ -10022,12 +9948,6 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeProblems:
-		ids := make([]ent.Value, 0, len(m.removedproblems))
-		for id := range m.removedproblems {
-			ids = append(ids, id)
-		}
-		return ids
 	case bazelinvocation.EdgeIncompleteBuildLogs:
 		ids := make([]ent.Value, 0, len(m.removedincomplete_build_logs))
 		for id := range m.removedincomplete_build_logs {
@@ -10064,7 +9984,7 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 15)
+	edges := make([]string, 0, 14)
 	if m.clearedinstance_name {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -10085,9 +10005,6 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	}
 	if m.clearedactions {
 		edges = append(edges, bazelinvocation.EdgeActions)
-	}
-	if m.clearedproblems {
-		edges = append(edges, bazelinvocation.EdgeProblems)
 	}
 	if m.clearedmetrics {
 		edges = append(edges, bazelinvocation.EdgeMetrics)
@@ -10131,8 +10048,6 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedconfigurations
 	case bazelinvocation.EdgeActions:
 		return m.clearedactions
-	case bazelinvocation.EdgeProblems:
-		return m.clearedproblems
 	case bazelinvocation.EdgeMetrics:
 		return m.clearedmetrics
 	case bazelinvocation.EdgeIncompleteBuildLogs:
@@ -10202,9 +10117,6 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 	case bazelinvocation.EdgeActions:
 		m.ResetActions()
 		return nil
-	case bazelinvocation.EdgeProblems:
-		m.ResetProblems()
-		return nil
 	case bazelinvocation.EdgeMetrics:
 		m.ResetMetrics()
 		return nil
@@ -10228,1241 +10140,6 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation edge %s", name)
-}
-
-// BazelInvocationProblemMutation represents an operation that mutates the BazelInvocationProblem nodes in the graph.
-type BazelInvocationProblemMutation struct {
-	config
-	op                      Op
-	typ                     string
-	id                      *int64
-	problem_type            *string
-	label                   *string
-	bep_events              *json.RawMessage
-	appendbep_events        json.RawMessage
-	clearedFields           map[string]struct{}
-	bazel_invocation        *int64
-	clearedbazel_invocation bool
-	done                    bool
-	oldValue                func(context.Context) (*BazelInvocationProblem, error)
-	predicates              []predicate.BazelInvocationProblem
-}
-
-var _ ent.Mutation = (*BazelInvocationProblemMutation)(nil)
-
-// bazelinvocationproblemOption allows management of the mutation configuration using functional options.
-type bazelinvocationproblemOption func(*BazelInvocationProblemMutation)
-
-// newBazelInvocationProblemMutation creates new mutation for the BazelInvocationProblem entity.
-func newBazelInvocationProblemMutation(c config, op Op, opts ...bazelinvocationproblemOption) *BazelInvocationProblemMutation {
-	m := &BazelInvocationProblemMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeBazelInvocationProblem,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withBazelInvocationProblemID sets the ID field of the mutation.
-func withBazelInvocationProblemID(id int64) bazelinvocationproblemOption {
-	return func(m *BazelInvocationProblemMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *BazelInvocationProblem
-		)
-		m.oldValue = func(ctx context.Context) (*BazelInvocationProblem, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().BazelInvocationProblem.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withBazelInvocationProblem sets the old BazelInvocationProblem of the mutation.
-func withBazelInvocationProblem(node *BazelInvocationProblem) bazelinvocationproblemOption {
-	return func(m *BazelInvocationProblemMutation) {
-		m.oldValue = func(context.Context) (*BazelInvocationProblem, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m BazelInvocationProblemMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m BazelInvocationProblemMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of BazelInvocationProblem entities.
-func (m *BazelInvocationProblemMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *BazelInvocationProblemMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *BazelInvocationProblemMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().BazelInvocationProblem.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetProblemType sets the "problem_type" field.
-func (m *BazelInvocationProblemMutation) SetProblemType(s string) {
-	m.problem_type = &s
-}
-
-// ProblemType returns the value of the "problem_type" field in the mutation.
-func (m *BazelInvocationProblemMutation) ProblemType() (r string, exists bool) {
-	v := m.problem_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldProblemType returns the old "problem_type" field's value of the BazelInvocationProblem entity.
-// If the BazelInvocationProblem object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationProblemMutation) OldProblemType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProblemType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProblemType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProblemType: %w", err)
-	}
-	return oldValue.ProblemType, nil
-}
-
-// ResetProblemType resets all changes to the "problem_type" field.
-func (m *BazelInvocationProblemMutation) ResetProblemType() {
-	m.problem_type = nil
-}
-
-// SetLabel sets the "label" field.
-func (m *BazelInvocationProblemMutation) SetLabel(s string) {
-	m.label = &s
-}
-
-// Label returns the value of the "label" field in the mutation.
-func (m *BazelInvocationProblemMutation) Label() (r string, exists bool) {
-	v := m.label
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLabel returns the old "label" field's value of the BazelInvocationProblem entity.
-// If the BazelInvocationProblem object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationProblemMutation) OldLabel(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLabel is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLabel requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLabel: %w", err)
-	}
-	return oldValue.Label, nil
-}
-
-// ResetLabel resets all changes to the "label" field.
-func (m *BazelInvocationProblemMutation) ResetLabel() {
-	m.label = nil
-}
-
-// SetBepEvents sets the "bep_events" field.
-func (m *BazelInvocationProblemMutation) SetBepEvents(jm json.RawMessage) {
-	m.bep_events = &jm
-	m.appendbep_events = nil
-}
-
-// BepEvents returns the value of the "bep_events" field in the mutation.
-func (m *BazelInvocationProblemMutation) BepEvents() (r json.RawMessage, exists bool) {
-	v := m.bep_events
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldBepEvents returns the old "bep_events" field's value of the BazelInvocationProblem entity.
-// If the BazelInvocationProblem object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationProblemMutation) OldBepEvents(ctx context.Context) (v json.RawMessage, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBepEvents is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBepEvents requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBepEvents: %w", err)
-	}
-	return oldValue.BepEvents, nil
-}
-
-// AppendBepEvents adds jm to the "bep_events" field.
-func (m *BazelInvocationProblemMutation) AppendBepEvents(jm json.RawMessage) {
-	m.appendbep_events = append(m.appendbep_events, jm...)
-}
-
-// AppendedBepEvents returns the list of values that were appended to the "bep_events" field in this mutation.
-func (m *BazelInvocationProblemMutation) AppendedBepEvents() (json.RawMessage, bool) {
-	if len(m.appendbep_events) == 0 {
-		return nil, false
-	}
-	return m.appendbep_events, true
-}
-
-// ResetBepEvents resets all changes to the "bep_events" field.
-func (m *BazelInvocationProblemMutation) ResetBepEvents() {
-	m.bep_events = nil
-	m.appendbep_events = nil
-}
-
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *BazelInvocationProblemMutation) SetBazelInvocationID(id int64) {
-	m.bazel_invocation = &id
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (m *BazelInvocationProblemMutation) ClearBazelInvocation() {
-	m.clearedbazel_invocation = true
-}
-
-// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
-func (m *BazelInvocationProblemMutation) BazelInvocationCleared() bool {
-	return m.clearedbazel_invocation
-}
-
-// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *BazelInvocationProblemMutation) BazelInvocationID() (id int64, exists bool) {
-	if m.bazel_invocation != nil {
-		return *m.bazel_invocation, true
-	}
-	return
-}
-
-// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *BazelInvocationProblemMutation) BazelInvocationIDs() (ids []int64) {
-	if id := m.bazel_invocation; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
-func (m *BazelInvocationProblemMutation) ResetBazelInvocation() {
-	m.bazel_invocation = nil
-	m.clearedbazel_invocation = false
-}
-
-// Where appends a list predicates to the BazelInvocationProblemMutation builder.
-func (m *BazelInvocationProblemMutation) Where(ps ...predicate.BazelInvocationProblem) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the BazelInvocationProblemMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *BazelInvocationProblemMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.BazelInvocationProblem, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *BazelInvocationProblemMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *BazelInvocationProblemMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (BazelInvocationProblem).
-func (m *BazelInvocationProblemMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *BazelInvocationProblemMutation) Fields() []string {
-	fields := make([]string, 0, 3)
-	if m.problem_type != nil {
-		fields = append(fields, bazelinvocationproblem.FieldProblemType)
-	}
-	if m.label != nil {
-		fields = append(fields, bazelinvocationproblem.FieldLabel)
-	}
-	if m.bep_events != nil {
-		fields = append(fields, bazelinvocationproblem.FieldBepEvents)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *BazelInvocationProblemMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case bazelinvocationproblem.FieldProblemType:
-		return m.ProblemType()
-	case bazelinvocationproblem.FieldLabel:
-		return m.Label()
-	case bazelinvocationproblem.FieldBepEvents:
-		return m.BepEvents()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *BazelInvocationProblemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case bazelinvocationproblem.FieldProblemType:
-		return m.OldProblemType(ctx)
-	case bazelinvocationproblem.FieldLabel:
-		return m.OldLabel(ctx)
-	case bazelinvocationproblem.FieldBepEvents:
-		return m.OldBepEvents(ctx)
-	}
-	return nil, fmt.Errorf("unknown BazelInvocationProblem field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *BazelInvocationProblemMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case bazelinvocationproblem.FieldProblemType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetProblemType(v)
-		return nil
-	case bazelinvocationproblem.FieldLabel:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLabel(v)
-		return nil
-	case bazelinvocationproblem.FieldBepEvents:
-		v, ok := value.(json.RawMessage)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetBepEvents(v)
-		return nil
-	}
-	return fmt.Errorf("unknown BazelInvocationProblem field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *BazelInvocationProblemMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *BazelInvocationProblemMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *BazelInvocationProblemMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown BazelInvocationProblem numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *BazelInvocationProblemMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *BazelInvocationProblemMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *BazelInvocationProblemMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown BazelInvocationProblem nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *BazelInvocationProblemMutation) ResetField(name string) error {
-	switch name {
-	case bazelinvocationproblem.FieldProblemType:
-		m.ResetProblemType()
-		return nil
-	case bazelinvocationproblem.FieldLabel:
-		m.ResetLabel()
-		return nil
-	case bazelinvocationproblem.FieldBepEvents:
-		m.ResetBepEvents()
-		return nil
-	}
-	return fmt.Errorf("unknown BazelInvocationProblem field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *BazelInvocationProblemMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.bazel_invocation != nil {
-		edges = append(edges, bazelinvocationproblem.EdgeBazelInvocation)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *BazelInvocationProblemMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case bazelinvocationproblem.EdgeBazelInvocation:
-		if id := m.bazel_invocation; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *BazelInvocationProblemMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *BazelInvocationProblemMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *BazelInvocationProblemMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedbazel_invocation {
-		edges = append(edges, bazelinvocationproblem.EdgeBazelInvocation)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *BazelInvocationProblemMutation) EdgeCleared(name string) bool {
-	switch name {
-	case bazelinvocationproblem.EdgeBazelInvocation:
-		return m.clearedbazel_invocation
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *BazelInvocationProblemMutation) ClearEdge(name string) error {
-	switch name {
-	case bazelinvocationproblem.EdgeBazelInvocation:
-		m.ClearBazelInvocation()
-		return nil
-	}
-	return fmt.Errorf("unknown BazelInvocationProblem unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *BazelInvocationProblemMutation) ResetEdge(name string) error {
-	switch name {
-	case bazelinvocationproblem.EdgeBazelInvocation:
-		m.ResetBazelInvocation()
-		return nil
-	}
-	return fmt.Errorf("unknown BazelInvocationProblem edge %s", name)
-}
-
-// BlobMutation represents an operation that mutates the Blob nodes in the graph.
-type BlobMutation struct {
-	config
-	op                   Op
-	typ                  string
-	id                   *int64
-	uri                  *string
-	size_bytes           *int64
-	addsize_bytes        *int64
-	archiving_status     *blob.ArchivingStatus
-	reason               *string
-	archive_url          *string
-	clearedFields        map[string]struct{}
-	instance_name        *int64
-	clearedinstance_name bool
-	done                 bool
-	oldValue             func(context.Context) (*Blob, error)
-	predicates           []predicate.Blob
-}
-
-var _ ent.Mutation = (*BlobMutation)(nil)
-
-// blobOption allows management of the mutation configuration using functional options.
-type blobOption func(*BlobMutation)
-
-// newBlobMutation creates new mutation for the Blob entity.
-func newBlobMutation(c config, op Op, opts ...blobOption) *BlobMutation {
-	m := &BlobMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeBlob,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withBlobID sets the ID field of the mutation.
-func withBlobID(id int64) blobOption {
-	return func(m *BlobMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *Blob
-		)
-		m.oldValue = func(ctx context.Context) (*Blob, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().Blob.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withBlob sets the old Blob of the mutation.
-func withBlob(node *Blob) blobOption {
-	return func(m *BlobMutation) {
-		m.oldValue = func(context.Context) (*Blob, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m BlobMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m BlobMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Blob entities.
-func (m *BlobMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *BlobMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *BlobMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Blob.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetURI sets the "uri" field.
-func (m *BlobMutation) SetURI(s string) {
-	m.uri = &s
-}
-
-// URI returns the value of the "uri" field in the mutation.
-func (m *BlobMutation) URI() (r string, exists bool) {
-	v := m.uri
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldURI returns the old "uri" field's value of the Blob entity.
-// If the Blob object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BlobMutation) OldURI(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldURI is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldURI requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldURI: %w", err)
-	}
-	return oldValue.URI, nil
-}
-
-// ResetURI resets all changes to the "uri" field.
-func (m *BlobMutation) ResetURI() {
-	m.uri = nil
-}
-
-// SetSizeBytes sets the "size_bytes" field.
-func (m *BlobMutation) SetSizeBytes(i int64) {
-	m.size_bytes = &i
-	m.addsize_bytes = nil
-}
-
-// SizeBytes returns the value of the "size_bytes" field in the mutation.
-func (m *BlobMutation) SizeBytes() (r int64, exists bool) {
-	v := m.size_bytes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSizeBytes returns the old "size_bytes" field's value of the Blob entity.
-// If the Blob object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BlobMutation) OldSizeBytes(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSizeBytes is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSizeBytes requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSizeBytes: %w", err)
-	}
-	return oldValue.SizeBytes, nil
-}
-
-// AddSizeBytes adds i to the "size_bytes" field.
-func (m *BlobMutation) AddSizeBytes(i int64) {
-	if m.addsize_bytes != nil {
-		*m.addsize_bytes += i
-	} else {
-		m.addsize_bytes = &i
-	}
-}
-
-// AddedSizeBytes returns the value that was added to the "size_bytes" field in this mutation.
-func (m *BlobMutation) AddedSizeBytes() (r int64, exists bool) {
-	v := m.addsize_bytes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearSizeBytes clears the value of the "size_bytes" field.
-func (m *BlobMutation) ClearSizeBytes() {
-	m.size_bytes = nil
-	m.addsize_bytes = nil
-	m.clearedFields[blob.FieldSizeBytes] = struct{}{}
-}
-
-// SizeBytesCleared returns if the "size_bytes" field was cleared in this mutation.
-func (m *BlobMutation) SizeBytesCleared() bool {
-	_, ok := m.clearedFields[blob.FieldSizeBytes]
-	return ok
-}
-
-// ResetSizeBytes resets all changes to the "size_bytes" field.
-func (m *BlobMutation) ResetSizeBytes() {
-	m.size_bytes = nil
-	m.addsize_bytes = nil
-	delete(m.clearedFields, blob.FieldSizeBytes)
-}
-
-// SetArchivingStatus sets the "archiving_status" field.
-func (m *BlobMutation) SetArchivingStatus(bs blob.ArchivingStatus) {
-	m.archiving_status = &bs
-}
-
-// ArchivingStatus returns the value of the "archiving_status" field in the mutation.
-func (m *BlobMutation) ArchivingStatus() (r blob.ArchivingStatus, exists bool) {
-	v := m.archiving_status
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldArchivingStatus returns the old "archiving_status" field's value of the Blob entity.
-// If the Blob object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BlobMutation) OldArchivingStatus(ctx context.Context) (v blob.ArchivingStatus, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldArchivingStatus is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldArchivingStatus requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldArchivingStatus: %w", err)
-	}
-	return oldValue.ArchivingStatus, nil
-}
-
-// ResetArchivingStatus resets all changes to the "archiving_status" field.
-func (m *BlobMutation) ResetArchivingStatus() {
-	m.archiving_status = nil
-}
-
-// SetReason sets the "reason" field.
-func (m *BlobMutation) SetReason(s string) {
-	m.reason = &s
-}
-
-// Reason returns the value of the "reason" field in the mutation.
-func (m *BlobMutation) Reason() (r string, exists bool) {
-	v := m.reason
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldReason returns the old "reason" field's value of the Blob entity.
-// If the Blob object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BlobMutation) OldReason(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldReason is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldReason requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldReason: %w", err)
-	}
-	return oldValue.Reason, nil
-}
-
-// ClearReason clears the value of the "reason" field.
-func (m *BlobMutation) ClearReason() {
-	m.reason = nil
-	m.clearedFields[blob.FieldReason] = struct{}{}
-}
-
-// ReasonCleared returns if the "reason" field was cleared in this mutation.
-func (m *BlobMutation) ReasonCleared() bool {
-	_, ok := m.clearedFields[blob.FieldReason]
-	return ok
-}
-
-// ResetReason resets all changes to the "reason" field.
-func (m *BlobMutation) ResetReason() {
-	m.reason = nil
-	delete(m.clearedFields, blob.FieldReason)
-}
-
-// SetArchiveURL sets the "archive_url" field.
-func (m *BlobMutation) SetArchiveURL(s string) {
-	m.archive_url = &s
-}
-
-// ArchiveURL returns the value of the "archive_url" field in the mutation.
-func (m *BlobMutation) ArchiveURL() (r string, exists bool) {
-	v := m.archive_url
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldArchiveURL returns the old "archive_url" field's value of the Blob entity.
-// If the Blob object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BlobMutation) OldArchiveURL(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldArchiveURL is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldArchiveURL requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldArchiveURL: %w", err)
-	}
-	return oldValue.ArchiveURL, nil
-}
-
-// ClearArchiveURL clears the value of the "archive_url" field.
-func (m *BlobMutation) ClearArchiveURL() {
-	m.archive_url = nil
-	m.clearedFields[blob.FieldArchiveURL] = struct{}{}
-}
-
-// ArchiveURLCleared returns if the "archive_url" field was cleared in this mutation.
-func (m *BlobMutation) ArchiveURLCleared() bool {
-	_, ok := m.clearedFields[blob.FieldArchiveURL]
-	return ok
-}
-
-// ResetArchiveURL resets all changes to the "archive_url" field.
-func (m *BlobMutation) ResetArchiveURL() {
-	m.archive_url = nil
-	delete(m.clearedFields, blob.FieldArchiveURL)
-}
-
-// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by id.
-func (m *BlobMutation) SetInstanceNameID(id int64) {
-	m.instance_name = &id
-}
-
-// ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
-func (m *BlobMutation) ClearInstanceName() {
-	m.clearedinstance_name = true
-}
-
-// InstanceNameCleared reports if the "instance_name" edge to the InstanceName entity was cleared.
-func (m *BlobMutation) InstanceNameCleared() bool {
-	return m.clearedinstance_name
-}
-
-// InstanceNameID returns the "instance_name" edge ID in the mutation.
-func (m *BlobMutation) InstanceNameID() (id int64, exists bool) {
-	if m.instance_name != nil {
-		return *m.instance_name, true
-	}
-	return
-}
-
-// InstanceNameIDs returns the "instance_name" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// InstanceNameID instead. It exists only for internal usage by the builders.
-func (m *BlobMutation) InstanceNameIDs() (ids []int64) {
-	if id := m.instance_name; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetInstanceName resets all changes to the "instance_name" edge.
-func (m *BlobMutation) ResetInstanceName() {
-	m.instance_name = nil
-	m.clearedinstance_name = false
-}
-
-// Where appends a list predicates to the BlobMutation builder.
-func (m *BlobMutation) Where(ps ...predicate.Blob) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the BlobMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *BlobMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.Blob, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *BlobMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *BlobMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (Blob).
-func (m *BlobMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *BlobMutation) Fields() []string {
-	fields := make([]string, 0, 5)
-	if m.uri != nil {
-		fields = append(fields, blob.FieldURI)
-	}
-	if m.size_bytes != nil {
-		fields = append(fields, blob.FieldSizeBytes)
-	}
-	if m.archiving_status != nil {
-		fields = append(fields, blob.FieldArchivingStatus)
-	}
-	if m.reason != nil {
-		fields = append(fields, blob.FieldReason)
-	}
-	if m.archive_url != nil {
-		fields = append(fields, blob.FieldArchiveURL)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *BlobMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case blob.FieldURI:
-		return m.URI()
-	case blob.FieldSizeBytes:
-		return m.SizeBytes()
-	case blob.FieldArchivingStatus:
-		return m.ArchivingStatus()
-	case blob.FieldReason:
-		return m.Reason()
-	case blob.FieldArchiveURL:
-		return m.ArchiveURL()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *BlobMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case blob.FieldURI:
-		return m.OldURI(ctx)
-	case blob.FieldSizeBytes:
-		return m.OldSizeBytes(ctx)
-	case blob.FieldArchivingStatus:
-		return m.OldArchivingStatus(ctx)
-	case blob.FieldReason:
-		return m.OldReason(ctx)
-	case blob.FieldArchiveURL:
-		return m.OldArchiveURL(ctx)
-	}
-	return nil, fmt.Errorf("unknown Blob field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *BlobMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case blob.FieldURI:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetURI(v)
-		return nil
-	case blob.FieldSizeBytes:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSizeBytes(v)
-		return nil
-	case blob.FieldArchivingStatus:
-		v, ok := value.(blob.ArchivingStatus)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetArchivingStatus(v)
-		return nil
-	case blob.FieldReason:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetReason(v)
-		return nil
-	case blob.FieldArchiveURL:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetArchiveURL(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Blob field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *BlobMutation) AddedFields() []string {
-	var fields []string
-	if m.addsize_bytes != nil {
-		fields = append(fields, blob.FieldSizeBytes)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *BlobMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case blob.FieldSizeBytes:
-		return m.AddedSizeBytes()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *BlobMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case blob.FieldSizeBytes:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddSizeBytes(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Blob numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *BlobMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(blob.FieldSizeBytes) {
-		fields = append(fields, blob.FieldSizeBytes)
-	}
-	if m.FieldCleared(blob.FieldReason) {
-		fields = append(fields, blob.FieldReason)
-	}
-	if m.FieldCleared(blob.FieldArchiveURL) {
-		fields = append(fields, blob.FieldArchiveURL)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *BlobMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *BlobMutation) ClearField(name string) error {
-	switch name {
-	case blob.FieldSizeBytes:
-		m.ClearSizeBytes()
-		return nil
-	case blob.FieldReason:
-		m.ClearReason()
-		return nil
-	case blob.FieldArchiveURL:
-		m.ClearArchiveURL()
-		return nil
-	}
-	return fmt.Errorf("unknown Blob nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *BlobMutation) ResetField(name string) error {
-	switch name {
-	case blob.FieldURI:
-		m.ResetURI()
-		return nil
-	case blob.FieldSizeBytes:
-		m.ResetSizeBytes()
-		return nil
-	case blob.FieldArchivingStatus:
-		m.ResetArchivingStatus()
-		return nil
-	case blob.FieldReason:
-		m.ResetReason()
-		return nil
-	case blob.FieldArchiveURL:
-		m.ResetArchiveURL()
-		return nil
-	}
-	return fmt.Errorf("unknown Blob field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *BlobMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.instance_name != nil {
-		edges = append(edges, blob.EdgeInstanceName)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *BlobMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case blob.EdgeInstanceName:
-		if id := m.instance_name; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *BlobMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *BlobMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *BlobMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedinstance_name {
-		edges = append(edges, blob.EdgeInstanceName)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *BlobMutation) EdgeCleared(name string) bool {
-	switch name {
-	case blob.EdgeInstanceName:
-		return m.clearedinstance_name
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *BlobMutation) ClearEdge(name string) error {
-	switch name {
-	case blob.EdgeInstanceName:
-		m.ClearInstanceName()
-		return nil
-	}
-	return fmt.Errorf("unknown Blob unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *BlobMutation) ResetEdge(name string) error {
-	switch name {
-	case blob.EdgeInstanceName:
-		m.ResetInstanceName()
-		return nil
-	}
-	return fmt.Errorf("unknown Blob edge %s", name)
 }
 
 // BuildMutation represents an operation that mutates the Build nodes in the graph.
@@ -18462,9 +17139,6 @@ type InstanceNameMutation struct {
 	builds                   map[int64]struct{}
 	removedbuilds            map[int64]struct{}
 	clearedbuilds            bool
-	blobs                    map[int64]struct{}
-	removedblobs             map[int64]struct{}
-	clearedblobs             bool
 	targets                  map[int64]struct{}
 	removedtargets           map[int64]struct{}
 	clearedtargets           bool
@@ -18721,60 +17395,6 @@ func (m *InstanceNameMutation) ResetBuilds() {
 	m.removedbuilds = nil
 }
 
-// AddBlobIDs adds the "blobs" edge to the Blob entity by ids.
-func (m *InstanceNameMutation) AddBlobIDs(ids ...int64) {
-	if m.blobs == nil {
-		m.blobs = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.blobs[ids[i]] = struct{}{}
-	}
-}
-
-// ClearBlobs clears the "blobs" edge to the Blob entity.
-func (m *InstanceNameMutation) ClearBlobs() {
-	m.clearedblobs = true
-}
-
-// BlobsCleared reports if the "blobs" edge to the Blob entity was cleared.
-func (m *InstanceNameMutation) BlobsCleared() bool {
-	return m.clearedblobs
-}
-
-// RemoveBlobIDs removes the "blobs" edge to the Blob entity by IDs.
-func (m *InstanceNameMutation) RemoveBlobIDs(ids ...int64) {
-	if m.removedblobs == nil {
-		m.removedblobs = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.blobs, ids[i])
-		m.removedblobs[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedBlobs returns the removed IDs of the "blobs" edge to the Blob entity.
-func (m *InstanceNameMutation) RemovedBlobsIDs() (ids []int64) {
-	for id := range m.removedblobs {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// BlobsIDs returns the "blobs" edge IDs in the mutation.
-func (m *InstanceNameMutation) BlobsIDs() (ids []int64) {
-	for id := range m.blobs {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetBlobs resets all changes to the "blobs" edge.
-func (m *InstanceNameMutation) ResetBlobs() {
-	m.blobs = nil
-	m.clearedblobs = false
-	m.removedblobs = nil
-}
-
 // AddTargetIDs adds the "targets" edge to the Target entity by ids.
 func (m *InstanceNameMutation) AddTargetIDs(ids ...int64) {
 	if m.targets == nil {
@@ -18962,15 +17582,12 @@ func (m *InstanceNameMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *InstanceNameMutation) AddedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 3)
 	if m.bazel_invocations != nil {
 		edges = append(edges, instancename.EdgeBazelInvocations)
 	}
 	if m.builds != nil {
 		edges = append(edges, instancename.EdgeBuilds)
-	}
-	if m.blobs != nil {
-		edges = append(edges, instancename.EdgeBlobs)
 	}
 	if m.targets != nil {
 		edges = append(edges, instancename.EdgeTargets)
@@ -18994,12 +17611,6 @@ func (m *InstanceNameMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case instancename.EdgeBlobs:
-		ids := make([]ent.Value, 0, len(m.blobs))
-		for id := range m.blobs {
-			ids = append(ids, id)
-		}
-		return ids
 	case instancename.EdgeTargets:
 		ids := make([]ent.Value, 0, len(m.targets))
 		for id := range m.targets {
@@ -19012,15 +17623,12 @@ func (m *InstanceNameMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *InstanceNameMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 3)
 	if m.removedbazel_invocations != nil {
 		edges = append(edges, instancename.EdgeBazelInvocations)
 	}
 	if m.removedbuilds != nil {
 		edges = append(edges, instancename.EdgeBuilds)
-	}
-	if m.removedblobs != nil {
-		edges = append(edges, instancename.EdgeBlobs)
 	}
 	if m.removedtargets != nil {
 		edges = append(edges, instancename.EdgeTargets)
@@ -19044,12 +17652,6 @@ func (m *InstanceNameMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case instancename.EdgeBlobs:
-		ids := make([]ent.Value, 0, len(m.removedblobs))
-		for id := range m.removedblobs {
-			ids = append(ids, id)
-		}
-		return ids
 	case instancename.EdgeTargets:
 		ids := make([]ent.Value, 0, len(m.removedtargets))
 		for id := range m.removedtargets {
@@ -19062,15 +17664,12 @@ func (m *InstanceNameMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *InstanceNameMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 3)
 	if m.clearedbazel_invocations {
 		edges = append(edges, instancename.EdgeBazelInvocations)
 	}
 	if m.clearedbuilds {
 		edges = append(edges, instancename.EdgeBuilds)
-	}
-	if m.clearedblobs {
-		edges = append(edges, instancename.EdgeBlobs)
 	}
 	if m.clearedtargets {
 		edges = append(edges, instancename.EdgeTargets)
@@ -19086,8 +17685,6 @@ func (m *InstanceNameMutation) EdgeCleared(name string) bool {
 		return m.clearedbazel_invocations
 	case instancename.EdgeBuilds:
 		return m.clearedbuilds
-	case instancename.EdgeBlobs:
-		return m.clearedblobs
 	case instancename.EdgeTargets:
 		return m.clearedtargets
 	}
@@ -19111,9 +17708,6 @@ func (m *InstanceNameMutation) ResetEdge(name string) error {
 		return nil
 	case instancename.EdgeBuilds:
 		m.ResetBuilds()
-		return nil
-	case instancename.EdgeBlobs:
-		m.ResetBlobs()
 		return nil
 	case instancename.EdgeTargets:
 		m.ResetTargets()

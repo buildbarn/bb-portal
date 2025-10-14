@@ -28,10 +28,6 @@ type Tx struct {
 	AuthenticatedUser *AuthenticatedUserClient
 	// BazelInvocation is the client for interacting with the BazelInvocation builders.
 	BazelInvocation *BazelInvocationClient
-	// BazelInvocationProblem is the client for interacting with the BazelInvocationProblem builders.
-	BazelInvocationProblem *BazelInvocationProblemClient
-	// Blob is the client for interacting with the Blob builders.
-	Blob *BlobClient
 	// Build is the client for interacting with the Build builders.
 	Build *BuildClient
 	// BuildGraphMetrics is the client for interacting with the BuildGraphMetrics builders.
@@ -226,8 +222,6 @@ func (tx *Tx) init() {
 	tx.ArtifactMetrics = NewArtifactMetricsClient(tx.config)
 	tx.AuthenticatedUser = NewAuthenticatedUserClient(tx.config)
 	tx.BazelInvocation = NewBazelInvocationClient(tx.config)
-	tx.BazelInvocationProblem = NewBazelInvocationProblemClient(tx.config)
-	tx.Blob = NewBlobClient(tx.config)
 	tx.Build = NewBuildClient(tx.config)
 	tx.BuildGraphMetrics = NewBuildGraphMetricsClient(tx.config)
 	tx.BuildLogChunk = NewBuildLogChunkClient(tx.config)

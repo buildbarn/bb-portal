@@ -137,7 +137,6 @@ use_repo(
     "io_entgo_ent",
     "io_opentelemetry_go_otel",
     "io_opentelemetry_go_otel_trace",
-    "org_golang_google_api",
     "org_golang_google_genproto",
     "org_golang_google_genproto_googleapis_bytestream",
     "org_golang_google_grpc",

@@ -5,9 +5,7 @@ go_library(
     srcs = [
         "model_hack.go",
         "models_gen.go",
-        "test_result_id.go",
     ],
     importpath = "github.com/buildbarn/bb-portal/internal/graphql/model",
     visibility = ["//:__subpackages__"],
-    deps = ["//ent/gen/ent"],
 )

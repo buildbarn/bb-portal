@@ -294,59 +294,6 @@ var (
 			},
 		},
 	}
-	// BazelInvocationProblemsColumns holds the columns for the "bazel_invocation_problems" table.
-	BazelInvocationProblemsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "problem_type", Type: field.TypeString},
-		{Name: "label", Type: field.TypeString},
-		{Name: "bep_events", Type: field.TypeJSON},
-		{Name: "bazel_invocation_problems", Type: field.TypeInt64, Nullable: true},
-	}
-	// BazelInvocationProblemsTable holds the schema information for the "bazel_invocation_problems" table.
-	BazelInvocationProblemsTable = &schema.Table{
-		Name:       "bazel_invocation_problems",
-		Columns:    BazelInvocationProblemsColumns,
-		PrimaryKey: []*schema.Column{BazelInvocationProblemsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "bazel_invocation_problems_bazel_invocations_problems",
-				Columns:    []*schema.Column{BazelInvocationProblemsColumns[4]},
-				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "bazelinvocationproblem_bazel_invocation_problems",
-				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationProblemsColumns[4]},
-			},
-		},
-	}
-	// BlobsColumns holds the columns for the "blobs" table.
-	BlobsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "uri", Type: field.TypeString, Unique: true},
-		{Name: "size_bytes", Type: field.TypeInt64, Nullable: true},
-		{Name: "archiving_status", Type: field.TypeEnum, Enums: []string{"QUEUED", "ARCHIVING", "SUCCESS", "FAILED", "BYTESTREAM"}, Default: "QUEUED"},
-		{Name: "reason", Type: field.TypeString, Nullable: true},
-		{Name: "archive_url", Type: field.TypeString, Nullable: true},
-		{Name: "instance_name_blobs", Type: field.TypeInt64},
-	}
-	// BlobsTable holds the schema information for the "blobs" table.
-	BlobsTable = &schema.Table{
-		Name:       "blobs",
-		Columns:    BlobsColumns,
-		PrimaryKey: []*schema.Column{BlobsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "blobs_instance_names_blobs",
-				Columns:    []*schema.Column{BlobsColumns[6]},
-				RefColumns: []*schema.Column{InstanceNamesColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-	}
 	// BuildsColumns holds the columns for the "builds" table.
 	BuildsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -1306,8 +1253,6 @@ var (
 		ArtifactMetricsTable,
 		AuthenticatedUsersTable,
 		BazelInvocationsTable,
-		BazelInvocationProblemsTable,
-		BlobsTable,
 		BuildsTable,
 		BuildGraphMetricsTable,
 		BuildLogChunksTable,
@@ -1349,8 +1294,6 @@ func init() {
 	BazelInvocationsTable.ForeignKeys[0].RefTable = AuthenticatedUsersTable
 	BazelInvocationsTable.ForeignKeys[1].RefTable = BuildsTable
 	BazelInvocationsTable.ForeignKeys[2].RefTable = InstanceNamesTable
-	BazelInvocationProblemsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
-	BlobsTable.ForeignKeys[0].RefTable = InstanceNamesTable
 	BuildsTable.ForeignKeys[0].RefTable = InstanceNamesTable
 	BuildGraphMetricsTable.ForeignKeys[0].RefTable = EvaluationStatsTable
 	BuildGraphMetricsTable.ForeignKeys[1].RefTable = EvaluationStatsTable
