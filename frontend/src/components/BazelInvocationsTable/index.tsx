@@ -7,8 +7,10 @@ import { FilterValue } from 'antd/lib/table/interface';
 import getColumns from './Columns';
 import {
   BazelInvocationNodeFragment,
+  BazelInvocationOrderField,
   BazelInvocationWhereInput,
   FindBazelInvocationsQueryVariables,
+  OrderDirection,
 } from '@/graphql/__generated__/graphql';
 import { getFragmentData } from '@/graphql/__generated__';
 import FIND_BAZEL_INVOCATIONS_QUERY, {
@@ -27,9 +29,9 @@ const BazelInvocationsTable: React.FC<Props> = ({ height }) => {
     first: PAGE_SIZE,
     where: {startedAtNotNil: true},
     orderBy: {
-      direction: 'DESC',
-      field: 'STARTED_AT'
-    }
+      direction: OrderDirection.Desc,
+      field: BazelInvocationOrderField.StartedAt,
+    },
   });
 
   const { loading, data, previousData, error } = useQuery(FIND_BAZEL_INVOCATIONS_QUERY, {
@@ -79,9 +81,9 @@ const BazelInvocationsTable: React.FC<Props> = ({ height }) => {
         first: PAGE_SIZE,
         where: wheres.length ? { and: [...wheres] } : undefined,
         orderBy: {
-          direction: 'DESC',
-          field: 'STARTED_AT'
-        }
+          direction: OrderDirection.Desc,
+          field: BazelInvocationOrderField.StartedAt,
+        },
       });
     },
     [],

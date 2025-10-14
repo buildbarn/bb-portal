@@ -2401,6 +2401,53 @@ func (b *BuildQuery) Paginate(
 	return conn, nil
 }
 
+var (
+	// BuildOrderFieldTimestamp orders Build by timestamp.
+	BuildOrderFieldTimestamp = &BuildOrderField{
+		Value: func(b *Build) (ent.Value, error) {
+			return b.Timestamp, nil
+		},
+		column: build.FieldTimestamp,
+		toTerm: build.ByTimestamp,
+		toCursor: func(b *Build) Cursor {
+			return Cursor{
+				ID:    b.ID,
+				Value: b.Timestamp,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f BuildOrderField) String() string {
+	var str string
+	switch f.column {
+	case BuildOrderFieldTimestamp.column:
+		str = "TIMESTAMP"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f BuildOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *BuildOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("BuildOrderField %T must be a string", v)
+	}
+	switch str {
+	case "TIMESTAMP":
+		*f = *BuildOrderFieldTimestamp
+	default:
+		return fmt.Errorf("%s is not a valid BuildOrderField", str)
+	}
+	return nil
+}
+
 // BuildOrderField defines the ordering field of Build.
 type BuildOrderField struct {
 	// Value extracts the ordering value from the given Build.

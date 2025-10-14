@@ -30,6 +30,8 @@
   "BuildEdge": [],
   "BuildGraphMetrics": [],
   "BuildGraphMetricsWhereInput": [],
+  "BuildOrder": [],
+  "BuildOrderField": [],
   "BuildStep": [],
   "BuildStepStatus": [],
   "BuildWhereInput": [],

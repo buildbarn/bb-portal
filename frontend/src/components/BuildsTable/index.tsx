@@ -7,8 +7,10 @@ import { FilterValue } from 'antd/lib/table/interface';
 import getColumns from './Columns';
 import {
   BuildNodeFragment,
+  BuildOrderField,
   BuildWhereInput,
   FindBuildsQueryVariables,
+  OrderDirection,
 } from '@/graphql/__generated__/graphql';
 import { getFragmentData } from '@/graphql/__generated__';
 import FIND_BUILDS_QUERY, {
@@ -25,6 +27,10 @@ type Props = {
 const BuildsTable: React.FC<Props> = ({ height }) => {
   const [variables, setVariables] = useState<FindBuildsQueryVariables>({
     first: PAGE_SIZE,
+    orderBy: {
+      direction: OrderDirection.Desc,
+      field: BuildOrderField.Timestamp,
+    },
   });
 
   const { loading, data, previousData, error } = useQuery(FIND_BUILDS_QUERY, {
@@ -54,6 +60,10 @@ const BuildsTable: React.FC<Props> = ({ height }) => {
       setVariables({
         first: PAGE_SIZE,
         where: wheres.length ? { and: [...wheres] } : wheres[0],
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: BuildOrderField.Timestamp,
+        },
       });
     },
     [],

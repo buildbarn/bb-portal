@@ -3,9 +3,10 @@ import { gql } from "@/graphql/__generated__";
 const FIND_BUILDS_QUERY = gql(/* GraphQL */ `
   query FindBuilds(
     $first: Int!
+    $orderBy: BuildOrder
     $where: BuildWhereInput
   ) {
-    findBuilds(first: $first, where: $where) {
+    findBuilds(first: $first, orderBy: $orderBy, where: $where) {
       edges {
         node {
           ...BuildNode

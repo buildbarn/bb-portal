@@ -21,7 +21,7 @@ func (Build) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("build_url").Immutable(),
 		field.UUID("build_uuid", uuid.UUID{}).Unique().Immutable(),
-		field.Time("timestamp"),
+		field.Time("timestamp").Annotations(entgql.OrderField("TIMESTAMP")),
 	}
 }
 

@@ -1314,6 +1314,28 @@ func newBuildPaginateArgs(rv map[string]any) *buildPaginateArgs {
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
 	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &BuildOrder{Field: &BuildOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithBuildOrder(order))
+			}
+		case *BuildOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithBuildOrder(v))
+			}
+		}
+	}
 	if v, ok := rv[whereField].(*BuildWhereInput); ok {
 		args.opts = append(args.opts, WithBuildFilter(v.Filter))
 	}
