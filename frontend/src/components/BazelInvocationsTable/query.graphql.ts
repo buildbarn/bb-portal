@@ -30,13 +30,8 @@ export const BAZEL_INVOCATION_NODE_FRAGMENT = gql(/* GraphQL */ `
       displayName
     }
     endedAt
-    state {
-      bepCompleted
-      exitCode {
-        code
-        name
-      }
-    }
+    exitCodeName
+    bepCompleted
     build {
       buildUUID
     }

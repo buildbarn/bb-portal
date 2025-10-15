@@ -1,6 +1,3 @@
-import BuildStepResultTag, {
-  BuildStepResultEnum,
-} from "@/components/BuildStepResultTag";
 import Link from "@/components/Link";
 import ArtifactsDataMetrics from "../Artifacts";
 import MemoryMetricsDisplay from "../MemoryMetrics";
@@ -40,6 +37,7 @@ import BuildLogsDisplay from "../BuildLogsDisplay";
 import ProfileDropdown from "../ProfileDropdown";
 import { InvocationTargetsTab } from "../InvocationTargets/InvocationTargetsTab";
 import UserStatusIndicator from "../UserStatusIndicator";
+import { InvocationResultTag } from "../InvocationResultTag";
 
 const DEFAULT_TAB_KEY = "BazelInvocationTabs-Overview";
 
@@ -47,7 +45,6 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
   const {
     invocationID,
     instanceName,
-    state,
     bazelCommand,
     bazelVersion,
     sourceControl,
@@ -76,7 +73,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
   const hideTargetsTab: boolean = !isFeatureEnabled(FeatureType.BES_PAGE_TARGETS);
   const hideTestsTab: boolean = (testCollection == undefined || testCollection == null || testCollection.length == 0)
   const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null;
-  const hideProblemsTab: boolean = state.exitCode?.name == "SUCCESS";
+  const hideProblemsTab: boolean = invocationOverview.exitCodeName == "SUCCESS";
 
   const items: TabsProps["items"] = [];
   items.push({
@@ -107,7 +104,8 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
             hostname={hostname ?? ""}
             isCiWorker={isCiWorker ?? false}
             stepLabel={stepLabel ?? ""}
-            status={state.exitCode?.name ?? ""}
+            exitCodeName={invocationOverview.exitCodeName || undefined}
+            bepCompleted={invocationOverview.bepCompleted}
             bazelVersion={bazelVersion ?? ""}
           />
         </PortalCard>
@@ -240,7 +238,6 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
 const getTitleBits = (invocationOverview: BazelInvocationInfoFragment): React.ReactNode[] => {
   const {
     invocationID,
-    state,
     authenticatedUser,
     user,
   } = invocationOverview;
@@ -262,10 +259,11 @@ const getTitleBits = (invocationOverview: BazelInvocationInfoFragment): React.Re
       </Typography.Text>{" "}
     </span>
   );
-  if (state.exitCode?.name) titleBits.push(
-    <BuildStepResultTag
+  titleBits.push(
+    <InvocationResultTag
       key="result"
-      result={state.exitCode?.name as BuildStepResultEnum}
+      exitCodeName={invocationOverview.exitCodeName || undefined}
+      bepCompleted={invocationOverview.bepCompleted}
     />
   );
   return titleBits;

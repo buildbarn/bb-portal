@@ -8,5 +8,6 @@ export interface TickProps extends SVGProps<SVGTextElement> {
 export interface InvocationInfo {
   invocationId: string;
   timestamps: (number | undefined)[];
-  exitCode?: string;
+  exitCodeName: string | undefined;
+  bepCompleted: boolean;
 }

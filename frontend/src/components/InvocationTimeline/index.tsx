@@ -18,7 +18,7 @@ import {
   YAxis,
 } from "recharts";
 import type { InvocationInfo, TickProps } from "./types";
-import { getBarColor } from "./utils";
+import { getInvocationResultTagColor } from "./utils";
 
 interface Props {
   invocations: FindBuildFromUuidFragment[];
@@ -40,7 +40,8 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
             dayjs(entry.startedAt).valueOf(),
             entry.endedAt ? dayjs(entry.endedAt).valueOf() : undefined,
           ],
-          exitCode: entry.state.exitCode?.name,
+          exitCodeName: entry.exitCodeName || undefined,
+          bepCompleted: entry.bepCompleted,
         };
       }),
     [invocations],
@@ -128,7 +129,7 @@ const InvocationTimeline: React.FC<Props> = ({ invocations }) => {
           barSize={BAR_HEIGHT}
         >
           {invocationsInfo.map((entry) => (
-            <Cell key={entry.invocationId} fill={getBarColor(entry.exitCode)} />
+            <Cell key={entry.invocationId} fill={getInvocationResultTagColor(entry.exitCodeName, entry.bepCompleted)} />
           ))}
         </Bar>
       </BarChart>

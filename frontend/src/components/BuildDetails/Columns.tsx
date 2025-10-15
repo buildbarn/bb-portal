@@ -4,7 +4,8 @@ import Link from "next/link";
 import type { FindBuildFromUuidFragment } from "@/app/builds/[buildUUID]/[[...slugs]]/types";
 import styles from "@/components/AppBar/index.module.css";
 import type { FindBuildByUuidQuery } from "@/graphql/__generated__/graphql";
-import BuildStepResultTag, { type BuildStepResultEnum } from "../BuildStepResultTag";
+import { InvocationResultTag } from "../InvocationResultTag";
+import { invocationResultTagFilters } from "../InvocationResultTag/filters";
 import PortalDuration from "../PortalDuration";
 import SearchWidget, { SearchFilterIcon } from "../SearchWidgets";
 
@@ -126,53 +127,17 @@ export const getColumns = (
       dataIndex: "status",
       filterSearch: true,
       render: (_, record) => (
-        <BuildStepResultTag
+        <InvocationResultTag
           key="result"
-          result={record.state.exitCode?.name as BuildStepResultEnum}
+          exitCodeName={record.exitCodeName || undefined}
+          bepCompleted={record.bepCompleted}
         />
       ),
       filterIcon: (filtered) => (
         <SearchFilterIcon icon={<FilterOutlined />} filtered={filtered} />
       ),
-      onFilter: (value, record) => record.state.exitCode?.name == value,
-      filters: [
-        {
-          text: "Succeeded",
-          value: "SUCCESS",
-        },
-        {
-          text: "Unstable",
-          value: "UNSTABLE",
-        },
-        {
-          text: "Parsing Failed",
-          value: "PARSING_FAILURE",
-        },
-        {
-          text: "Build Failed",
-          value: "BUILD_FAILURE",
-        },
-        {
-          text: "Tests Failed",
-          value: "TESTS_FAILED",
-        },
-        {
-          text: "Not Built",
-          value: "NOT_BUILT",
-        },
-        {
-          text: "Aborted",
-          value: "ABORTED",
-        },
-        {
-          text: "Interrupted",
-          value: "INTERRUPTED",
-        },
-        {
-          text: "Status Unknown",
-          value: "UNKNOWN",
-        },
-      ],
+      onFilter: (value, record) => record.exitCodeName == value,
+      filters: invocationResultTagFilters,
     },
   ];
 };

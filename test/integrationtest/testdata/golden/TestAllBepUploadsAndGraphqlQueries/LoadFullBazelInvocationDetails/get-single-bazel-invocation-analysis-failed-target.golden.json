@@ -33,6 +33,7 @@
       ]
     },
     "bazelVersion": "7.1.0",
+    "bepCompleted": true,
     "build": {
       "buildUUID": "c3a1db88-bad7-54fc-8795-e09393ff2f59",
       "id": "QnVpbGQ6MQ=="
@@ -40,6 +41,7 @@
     "configurationMnemonic": "darwin_arm64-fastbuild",
     "cpu": "darwin_arm64",
     "endedAt": "2024-05-13T23:43:26.247Z",
+    "exitCodeName": "TESTS_FAILED",
     "hostname": "Namelesss-MacBook-Pro.local",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",
     "instanceName": {
@@ -191,17 +193,6 @@
     "profile": null,
     "sourceControl": null,
     "startedAt": "2024-05-13T23:43:23.045Z",
-    "state": {
-      "bepCompleted": true,
-      "buildEndTime": "2024-05-13T23:43:26.247Z",
-      "buildStartTime": "2024-05-13T23:43:23.045Z",
-      "exitCode": {
-        "code": 3,
-        "id": "",
-        "name": "TESTS_FAILED"
-      },
-      "id": ""
-    },
     "stepLabel": "nextjs_test",
     "testCollection": [
       {
