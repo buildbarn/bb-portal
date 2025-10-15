@@ -354,6 +354,8 @@ const BazelInvocation: React.FC<{
         activeKey={checkIfNotHidden(activeKey)}
         onChange={onTabChange}
         defaultActiveKey={DEFAULT_TAB_KEY}
+        // TODO(isakstenstrom): Remove this when we can fetch partial logs.
+        destroyInactiveTabPane={true}
       />
     </PortalCard>
   );
