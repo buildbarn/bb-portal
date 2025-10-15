@@ -72,7 +72,6 @@ func AddDatabaseAuthInterceptors(authorizerConfiguration *auth_pb.AuthorizerConf
 	dbClient.CumulativeMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isCumulativeMetricsAllowed))
 	dbClient.EvaluationStat.Intercept(createInterceptor(instanceNameAuthorizer, isEvaluationStatAllowed))
 	dbClient.ExectionInfo.Intercept(createInterceptor(instanceNameAuthorizer, isExectionInfoAllowed))
-	dbClient.FilesMetric.Intercept(createInterceptor(instanceNameAuthorizer, isFilesMetricAllowed))
 	dbClient.GarbageMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isGarbageMetricsAllowed))
 	dbClient.MemoryMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isMemoryMetricsAllowed))
 	dbClient.Metrics.Intercept(createInterceptor(instanceNameAuthorizer, isMetricsAllowed))
@@ -152,11 +151,6 @@ func isEvaluationStatAllowed(ctx context.Context, instanceNameAuthorizer auth.Au
 func isExectionInfoAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, exectionInfo *ent.ExectionInfo) bool {
 	testResult, err := exectionInfo.TestResult(ctx)
 	return err == nil && testResult != nil
-}
-
-func isFilesMetricAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, filesMetric *ent.FilesMetric) bool {
-	artifactMetrics, err := filesMetric.ArtifactMetrics(ctx)
-	return err == nil && artifactMetrics != nil
 }
 
 func isGarbageMetricsAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, garbageMetrics *ent.GarbageMetrics) bool {

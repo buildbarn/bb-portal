@@ -19,7 +19,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
@@ -1283,25 +1282,105 @@ type ArtifactMetricsWhereInput struct {
 	IDLT    *int  `json:"idLT,omitempty"`
 	IDLTE   *int  `json:"idLTE,omitempty"`
 
+	// "source_artifacts_read_size_in_bytes" field predicates.
+	SourceArtifactsReadSizeInBytes       *int64  `json:"sourceArtifactsReadSizeInBytes,omitempty"`
+	SourceArtifactsReadSizeInBytesNEQ    *int64  `json:"sourceArtifactsReadSizeInBytesNEQ,omitempty"`
+	SourceArtifactsReadSizeInBytesIn     []int64 `json:"sourceArtifactsReadSizeInBytesIn,omitempty"`
+	SourceArtifactsReadSizeInBytesNotIn  []int64 `json:"sourceArtifactsReadSizeInBytesNotIn,omitempty"`
+	SourceArtifactsReadSizeInBytesGT     *int64  `json:"sourceArtifactsReadSizeInBytesGT,omitempty"`
+	SourceArtifactsReadSizeInBytesGTE    *int64  `json:"sourceArtifactsReadSizeInBytesGTE,omitempty"`
+	SourceArtifactsReadSizeInBytesLT     *int64  `json:"sourceArtifactsReadSizeInBytesLT,omitempty"`
+	SourceArtifactsReadSizeInBytesLTE    *int64  `json:"sourceArtifactsReadSizeInBytesLTE,omitempty"`
+	SourceArtifactsReadSizeInBytesIsNil  bool    `json:"sourceArtifactsReadSizeInBytesIsNil,omitempty"`
+	SourceArtifactsReadSizeInBytesNotNil bool    `json:"sourceArtifactsReadSizeInBytesNotNil,omitempty"`
+
+	// "source_artifacts_read_count" field predicates.
+	SourceArtifactsReadCount       *int32  `json:"sourceArtifactsReadCount,omitempty"`
+	SourceArtifactsReadCountNEQ    *int32  `json:"sourceArtifactsReadCountNEQ,omitempty"`
+	SourceArtifactsReadCountIn     []int32 `json:"sourceArtifactsReadCountIn,omitempty"`
+	SourceArtifactsReadCountNotIn  []int32 `json:"sourceArtifactsReadCountNotIn,omitempty"`
+	SourceArtifactsReadCountGT     *int32  `json:"sourceArtifactsReadCountGT,omitempty"`
+	SourceArtifactsReadCountGTE    *int32  `json:"sourceArtifactsReadCountGTE,omitempty"`
+	SourceArtifactsReadCountLT     *int32  `json:"sourceArtifactsReadCountLT,omitempty"`
+	SourceArtifactsReadCountLTE    *int32  `json:"sourceArtifactsReadCountLTE,omitempty"`
+	SourceArtifactsReadCountIsNil  bool    `json:"sourceArtifactsReadCountIsNil,omitempty"`
+	SourceArtifactsReadCountNotNil bool    `json:"sourceArtifactsReadCountNotNil,omitempty"`
+
+	// "output_artifacts_seen_size_in_bytes" field predicates.
+	OutputArtifactsSeenSizeInBytes       *int64  `json:"outputArtifactsSeenSizeInBytes,omitempty"`
+	OutputArtifactsSeenSizeInBytesNEQ    *int64  `json:"outputArtifactsSeenSizeInBytesNEQ,omitempty"`
+	OutputArtifactsSeenSizeInBytesIn     []int64 `json:"outputArtifactsSeenSizeInBytesIn,omitempty"`
+	OutputArtifactsSeenSizeInBytesNotIn  []int64 `json:"outputArtifactsSeenSizeInBytesNotIn,omitempty"`
+	OutputArtifactsSeenSizeInBytesGT     *int64  `json:"outputArtifactsSeenSizeInBytesGT,omitempty"`
+	OutputArtifactsSeenSizeInBytesGTE    *int64  `json:"outputArtifactsSeenSizeInBytesGTE,omitempty"`
+	OutputArtifactsSeenSizeInBytesLT     *int64  `json:"outputArtifactsSeenSizeInBytesLT,omitempty"`
+	OutputArtifactsSeenSizeInBytesLTE    *int64  `json:"outputArtifactsSeenSizeInBytesLTE,omitempty"`
+	OutputArtifactsSeenSizeInBytesIsNil  bool    `json:"outputArtifactsSeenSizeInBytesIsNil,omitempty"`
+	OutputArtifactsSeenSizeInBytesNotNil bool    `json:"outputArtifactsSeenSizeInBytesNotNil,omitempty"`
+
+	// "output_artifacts_seen_count" field predicates.
+	OutputArtifactsSeenCount       *int32  `json:"outputArtifactsSeenCount,omitempty"`
+	OutputArtifactsSeenCountNEQ    *int32  `json:"outputArtifactsSeenCountNEQ,omitempty"`
+	OutputArtifactsSeenCountIn     []int32 `json:"outputArtifactsSeenCountIn,omitempty"`
+	OutputArtifactsSeenCountNotIn  []int32 `json:"outputArtifactsSeenCountNotIn,omitempty"`
+	OutputArtifactsSeenCountGT     *int32  `json:"outputArtifactsSeenCountGT,omitempty"`
+	OutputArtifactsSeenCountGTE    *int32  `json:"outputArtifactsSeenCountGTE,omitempty"`
+	OutputArtifactsSeenCountLT     *int32  `json:"outputArtifactsSeenCountLT,omitempty"`
+	OutputArtifactsSeenCountLTE    *int32  `json:"outputArtifactsSeenCountLTE,omitempty"`
+	OutputArtifactsSeenCountIsNil  bool    `json:"outputArtifactsSeenCountIsNil,omitempty"`
+	OutputArtifactsSeenCountNotNil bool    `json:"outputArtifactsSeenCountNotNil,omitempty"`
+
+	// "output_artifacts_from_action_cache_size_in_bytes" field predicates.
+	OutputArtifactsFromActionCacheSizeInBytes       *int64  `json:"outputArtifactsFromActionCacheSizeInBytes,omitempty"`
+	OutputArtifactsFromActionCacheSizeInBytesNEQ    *int64  `json:"outputArtifactsFromActionCacheSizeInBytesNEQ,omitempty"`
+	OutputArtifactsFromActionCacheSizeInBytesIn     []int64 `json:"outputArtifactsFromActionCacheSizeInBytesIn,omitempty"`
+	OutputArtifactsFromActionCacheSizeInBytesNotIn  []int64 `json:"outputArtifactsFromActionCacheSizeInBytesNotIn,omitempty"`
+	OutputArtifactsFromActionCacheSizeInBytesGT     *int64  `json:"outputArtifactsFromActionCacheSizeInBytesGT,omitempty"`
+	OutputArtifactsFromActionCacheSizeInBytesGTE    *int64  `json:"outputArtifactsFromActionCacheSizeInBytesGTE,omitempty"`
+	OutputArtifactsFromActionCacheSizeInBytesLT     *int64  `json:"outputArtifactsFromActionCacheSizeInBytesLT,omitempty"`
+	OutputArtifactsFromActionCacheSizeInBytesLTE    *int64  `json:"outputArtifactsFromActionCacheSizeInBytesLTE,omitempty"`
+	OutputArtifactsFromActionCacheSizeInBytesIsNil  bool    `json:"outputArtifactsFromActionCacheSizeInBytesIsNil,omitempty"`
+	OutputArtifactsFromActionCacheSizeInBytesNotNil bool    `json:"outputArtifactsFromActionCacheSizeInBytesNotNil,omitempty"`
+
+	// "output_artifacts_from_action_cache_count" field predicates.
+	OutputArtifactsFromActionCacheCount       *int32  `json:"outputArtifactsFromActionCacheCount,omitempty"`
+	OutputArtifactsFromActionCacheCountNEQ    *int32  `json:"outputArtifactsFromActionCacheCountNEQ,omitempty"`
+	OutputArtifactsFromActionCacheCountIn     []int32 `json:"outputArtifactsFromActionCacheCountIn,omitempty"`
+	OutputArtifactsFromActionCacheCountNotIn  []int32 `json:"outputArtifactsFromActionCacheCountNotIn,omitempty"`
+	OutputArtifactsFromActionCacheCountGT     *int32  `json:"outputArtifactsFromActionCacheCountGT,omitempty"`
+	OutputArtifactsFromActionCacheCountGTE    *int32  `json:"outputArtifactsFromActionCacheCountGTE,omitempty"`
+	OutputArtifactsFromActionCacheCountLT     *int32  `json:"outputArtifactsFromActionCacheCountLT,omitempty"`
+	OutputArtifactsFromActionCacheCountLTE    *int32  `json:"outputArtifactsFromActionCacheCountLTE,omitempty"`
+	OutputArtifactsFromActionCacheCountIsNil  bool    `json:"outputArtifactsFromActionCacheCountIsNil,omitempty"`
+	OutputArtifactsFromActionCacheCountNotNil bool    `json:"outputArtifactsFromActionCacheCountNotNil,omitempty"`
+
+	// "top_level_artifacts_size_in_bytes" field predicates.
+	TopLevelArtifactsSizeInBytes       *int64  `json:"topLevelArtifactsSizeInBytes,omitempty"`
+	TopLevelArtifactsSizeInBytesNEQ    *int64  `json:"topLevelArtifactsSizeInBytesNEQ,omitempty"`
+	TopLevelArtifactsSizeInBytesIn     []int64 `json:"topLevelArtifactsSizeInBytesIn,omitempty"`
+	TopLevelArtifactsSizeInBytesNotIn  []int64 `json:"topLevelArtifactsSizeInBytesNotIn,omitempty"`
+	TopLevelArtifactsSizeInBytesGT     *int64  `json:"topLevelArtifactsSizeInBytesGT,omitempty"`
+	TopLevelArtifactsSizeInBytesGTE    *int64  `json:"topLevelArtifactsSizeInBytesGTE,omitempty"`
+	TopLevelArtifactsSizeInBytesLT     *int64  `json:"topLevelArtifactsSizeInBytesLT,omitempty"`
+	TopLevelArtifactsSizeInBytesLTE    *int64  `json:"topLevelArtifactsSizeInBytesLTE,omitempty"`
+	TopLevelArtifactsSizeInBytesIsNil  bool    `json:"topLevelArtifactsSizeInBytesIsNil,omitempty"`
+	TopLevelArtifactsSizeInBytesNotNil bool    `json:"topLevelArtifactsSizeInBytesNotNil,omitempty"`
+
+	// "top_level_artifacts_count" field predicates.
+	TopLevelArtifactsCount       *int32  `json:"topLevelArtifactsCount,omitempty"`
+	TopLevelArtifactsCountNEQ    *int32  `json:"topLevelArtifactsCountNEQ,omitempty"`
+	TopLevelArtifactsCountIn     []int32 `json:"topLevelArtifactsCountIn,omitempty"`
+	TopLevelArtifactsCountNotIn  []int32 `json:"topLevelArtifactsCountNotIn,omitempty"`
+	TopLevelArtifactsCountGT     *int32  `json:"topLevelArtifactsCountGT,omitempty"`
+	TopLevelArtifactsCountGTE    *int32  `json:"topLevelArtifactsCountGTE,omitempty"`
+	TopLevelArtifactsCountLT     *int32  `json:"topLevelArtifactsCountLT,omitempty"`
+	TopLevelArtifactsCountLTE    *int32  `json:"topLevelArtifactsCountLTE,omitempty"`
+	TopLevelArtifactsCountIsNil  bool    `json:"topLevelArtifactsCountIsNil,omitempty"`
+	TopLevelArtifactsCountNotNil bool    `json:"topLevelArtifactsCountNotNil,omitempty"`
+
 	// "metrics" edge predicates.
 	HasMetrics     *bool                `json:"hasMetrics,omitempty"`
 	HasMetricsWith []*MetricsWhereInput `json:"hasMetricsWith,omitempty"`
-
-	// "source_artifacts_read" edge predicates.
-	HasSourceArtifactsRead     *bool                    `json:"hasSourceArtifactsRead,omitempty"`
-	HasSourceArtifactsReadWith []*FilesMetricWhereInput `json:"hasSourceArtifactsReadWith,omitempty"`
-
-	// "output_artifacts_seen" edge predicates.
-	HasOutputArtifactsSeen     *bool                    `json:"hasOutputArtifactsSeen,omitempty"`
-	HasOutputArtifactsSeenWith []*FilesMetricWhereInput `json:"hasOutputArtifactsSeenWith,omitempty"`
-
-	// "output_artifacts_from_action_cache" edge predicates.
-	HasOutputArtifactsFromActionCache     *bool                    `json:"hasOutputArtifactsFromActionCache,omitempty"`
-	HasOutputArtifactsFromActionCacheWith []*FilesMetricWhereInput `json:"hasOutputArtifactsFromActionCacheWith,omitempty"`
-
-	// "top_level_artifacts" edge predicates.
-	HasTopLevelArtifacts     *bool                    `json:"hasTopLevelArtifacts,omitempty"`
-	HasTopLevelArtifactsWith []*FilesMetricWhereInput `json:"hasTopLevelArtifactsWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -1399,6 +1478,246 @@ func (i *ArtifactMetricsWhereInput) P() (predicate.ArtifactMetrics, error) {
 	if i.IDLTE != nil {
 		predicates = append(predicates, artifactmetrics.IDLTE(*i.IDLTE))
 	}
+	if i.SourceArtifactsReadSizeInBytes != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadSizeInBytesEQ(*i.SourceArtifactsReadSizeInBytes))
+	}
+	if i.SourceArtifactsReadSizeInBytesNEQ != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadSizeInBytesNEQ(*i.SourceArtifactsReadSizeInBytesNEQ))
+	}
+	if len(i.SourceArtifactsReadSizeInBytesIn) > 0 {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadSizeInBytesIn(i.SourceArtifactsReadSizeInBytesIn...))
+	}
+	if len(i.SourceArtifactsReadSizeInBytesNotIn) > 0 {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadSizeInBytesNotIn(i.SourceArtifactsReadSizeInBytesNotIn...))
+	}
+	if i.SourceArtifactsReadSizeInBytesGT != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadSizeInBytesGT(*i.SourceArtifactsReadSizeInBytesGT))
+	}
+	if i.SourceArtifactsReadSizeInBytesGTE != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadSizeInBytesGTE(*i.SourceArtifactsReadSizeInBytesGTE))
+	}
+	if i.SourceArtifactsReadSizeInBytesLT != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadSizeInBytesLT(*i.SourceArtifactsReadSizeInBytesLT))
+	}
+	if i.SourceArtifactsReadSizeInBytesLTE != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadSizeInBytesLTE(*i.SourceArtifactsReadSizeInBytesLTE))
+	}
+	if i.SourceArtifactsReadSizeInBytesIsNil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadSizeInBytesIsNil())
+	}
+	if i.SourceArtifactsReadSizeInBytesNotNil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadSizeInBytesNotNil())
+	}
+	if i.SourceArtifactsReadCount != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadCountEQ(*i.SourceArtifactsReadCount))
+	}
+	if i.SourceArtifactsReadCountNEQ != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadCountNEQ(*i.SourceArtifactsReadCountNEQ))
+	}
+	if len(i.SourceArtifactsReadCountIn) > 0 {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadCountIn(i.SourceArtifactsReadCountIn...))
+	}
+	if len(i.SourceArtifactsReadCountNotIn) > 0 {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadCountNotIn(i.SourceArtifactsReadCountNotIn...))
+	}
+	if i.SourceArtifactsReadCountGT != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadCountGT(*i.SourceArtifactsReadCountGT))
+	}
+	if i.SourceArtifactsReadCountGTE != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadCountGTE(*i.SourceArtifactsReadCountGTE))
+	}
+	if i.SourceArtifactsReadCountLT != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadCountLT(*i.SourceArtifactsReadCountLT))
+	}
+	if i.SourceArtifactsReadCountLTE != nil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadCountLTE(*i.SourceArtifactsReadCountLTE))
+	}
+	if i.SourceArtifactsReadCountIsNil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadCountIsNil())
+	}
+	if i.SourceArtifactsReadCountNotNil {
+		predicates = append(predicates, artifactmetrics.SourceArtifactsReadCountNotNil())
+	}
+	if i.OutputArtifactsSeenSizeInBytes != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenSizeInBytesEQ(*i.OutputArtifactsSeenSizeInBytes))
+	}
+	if i.OutputArtifactsSeenSizeInBytesNEQ != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenSizeInBytesNEQ(*i.OutputArtifactsSeenSizeInBytesNEQ))
+	}
+	if len(i.OutputArtifactsSeenSizeInBytesIn) > 0 {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenSizeInBytesIn(i.OutputArtifactsSeenSizeInBytesIn...))
+	}
+	if len(i.OutputArtifactsSeenSizeInBytesNotIn) > 0 {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenSizeInBytesNotIn(i.OutputArtifactsSeenSizeInBytesNotIn...))
+	}
+	if i.OutputArtifactsSeenSizeInBytesGT != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenSizeInBytesGT(*i.OutputArtifactsSeenSizeInBytesGT))
+	}
+	if i.OutputArtifactsSeenSizeInBytesGTE != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenSizeInBytesGTE(*i.OutputArtifactsSeenSizeInBytesGTE))
+	}
+	if i.OutputArtifactsSeenSizeInBytesLT != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenSizeInBytesLT(*i.OutputArtifactsSeenSizeInBytesLT))
+	}
+	if i.OutputArtifactsSeenSizeInBytesLTE != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenSizeInBytesLTE(*i.OutputArtifactsSeenSizeInBytesLTE))
+	}
+	if i.OutputArtifactsSeenSizeInBytesIsNil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenSizeInBytesIsNil())
+	}
+	if i.OutputArtifactsSeenSizeInBytesNotNil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenSizeInBytesNotNil())
+	}
+	if i.OutputArtifactsSeenCount != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenCountEQ(*i.OutputArtifactsSeenCount))
+	}
+	if i.OutputArtifactsSeenCountNEQ != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenCountNEQ(*i.OutputArtifactsSeenCountNEQ))
+	}
+	if len(i.OutputArtifactsSeenCountIn) > 0 {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenCountIn(i.OutputArtifactsSeenCountIn...))
+	}
+	if len(i.OutputArtifactsSeenCountNotIn) > 0 {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenCountNotIn(i.OutputArtifactsSeenCountNotIn...))
+	}
+	if i.OutputArtifactsSeenCountGT != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenCountGT(*i.OutputArtifactsSeenCountGT))
+	}
+	if i.OutputArtifactsSeenCountGTE != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenCountGTE(*i.OutputArtifactsSeenCountGTE))
+	}
+	if i.OutputArtifactsSeenCountLT != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenCountLT(*i.OutputArtifactsSeenCountLT))
+	}
+	if i.OutputArtifactsSeenCountLTE != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenCountLTE(*i.OutputArtifactsSeenCountLTE))
+	}
+	if i.OutputArtifactsSeenCountIsNil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenCountIsNil())
+	}
+	if i.OutputArtifactsSeenCountNotNil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsSeenCountNotNil())
+	}
+	if i.OutputArtifactsFromActionCacheSizeInBytes != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheSizeInBytesEQ(*i.OutputArtifactsFromActionCacheSizeInBytes))
+	}
+	if i.OutputArtifactsFromActionCacheSizeInBytesNEQ != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheSizeInBytesNEQ(*i.OutputArtifactsFromActionCacheSizeInBytesNEQ))
+	}
+	if len(i.OutputArtifactsFromActionCacheSizeInBytesIn) > 0 {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheSizeInBytesIn(i.OutputArtifactsFromActionCacheSizeInBytesIn...))
+	}
+	if len(i.OutputArtifactsFromActionCacheSizeInBytesNotIn) > 0 {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheSizeInBytesNotIn(i.OutputArtifactsFromActionCacheSizeInBytesNotIn...))
+	}
+	if i.OutputArtifactsFromActionCacheSizeInBytesGT != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheSizeInBytesGT(*i.OutputArtifactsFromActionCacheSizeInBytesGT))
+	}
+	if i.OutputArtifactsFromActionCacheSizeInBytesGTE != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheSizeInBytesGTE(*i.OutputArtifactsFromActionCacheSizeInBytesGTE))
+	}
+	if i.OutputArtifactsFromActionCacheSizeInBytesLT != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheSizeInBytesLT(*i.OutputArtifactsFromActionCacheSizeInBytesLT))
+	}
+	if i.OutputArtifactsFromActionCacheSizeInBytesLTE != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheSizeInBytesLTE(*i.OutputArtifactsFromActionCacheSizeInBytesLTE))
+	}
+	if i.OutputArtifactsFromActionCacheSizeInBytesIsNil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheSizeInBytesIsNil())
+	}
+	if i.OutputArtifactsFromActionCacheSizeInBytesNotNil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheSizeInBytesNotNil())
+	}
+	if i.OutputArtifactsFromActionCacheCount != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheCountEQ(*i.OutputArtifactsFromActionCacheCount))
+	}
+	if i.OutputArtifactsFromActionCacheCountNEQ != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheCountNEQ(*i.OutputArtifactsFromActionCacheCountNEQ))
+	}
+	if len(i.OutputArtifactsFromActionCacheCountIn) > 0 {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheCountIn(i.OutputArtifactsFromActionCacheCountIn...))
+	}
+	if len(i.OutputArtifactsFromActionCacheCountNotIn) > 0 {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheCountNotIn(i.OutputArtifactsFromActionCacheCountNotIn...))
+	}
+	if i.OutputArtifactsFromActionCacheCountGT != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheCountGT(*i.OutputArtifactsFromActionCacheCountGT))
+	}
+	if i.OutputArtifactsFromActionCacheCountGTE != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheCountGTE(*i.OutputArtifactsFromActionCacheCountGTE))
+	}
+	if i.OutputArtifactsFromActionCacheCountLT != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheCountLT(*i.OutputArtifactsFromActionCacheCountLT))
+	}
+	if i.OutputArtifactsFromActionCacheCountLTE != nil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheCountLTE(*i.OutputArtifactsFromActionCacheCountLTE))
+	}
+	if i.OutputArtifactsFromActionCacheCountIsNil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheCountIsNil())
+	}
+	if i.OutputArtifactsFromActionCacheCountNotNil {
+		predicates = append(predicates, artifactmetrics.OutputArtifactsFromActionCacheCountNotNil())
+	}
+	if i.TopLevelArtifactsSizeInBytes != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsSizeInBytesEQ(*i.TopLevelArtifactsSizeInBytes))
+	}
+	if i.TopLevelArtifactsSizeInBytesNEQ != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsSizeInBytesNEQ(*i.TopLevelArtifactsSizeInBytesNEQ))
+	}
+	if len(i.TopLevelArtifactsSizeInBytesIn) > 0 {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsSizeInBytesIn(i.TopLevelArtifactsSizeInBytesIn...))
+	}
+	if len(i.TopLevelArtifactsSizeInBytesNotIn) > 0 {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsSizeInBytesNotIn(i.TopLevelArtifactsSizeInBytesNotIn...))
+	}
+	if i.TopLevelArtifactsSizeInBytesGT != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsSizeInBytesGT(*i.TopLevelArtifactsSizeInBytesGT))
+	}
+	if i.TopLevelArtifactsSizeInBytesGTE != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsSizeInBytesGTE(*i.TopLevelArtifactsSizeInBytesGTE))
+	}
+	if i.TopLevelArtifactsSizeInBytesLT != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsSizeInBytesLT(*i.TopLevelArtifactsSizeInBytesLT))
+	}
+	if i.TopLevelArtifactsSizeInBytesLTE != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsSizeInBytesLTE(*i.TopLevelArtifactsSizeInBytesLTE))
+	}
+	if i.TopLevelArtifactsSizeInBytesIsNil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsSizeInBytesIsNil())
+	}
+	if i.TopLevelArtifactsSizeInBytesNotNil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsSizeInBytesNotNil())
+	}
+	if i.TopLevelArtifactsCount != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsCountEQ(*i.TopLevelArtifactsCount))
+	}
+	if i.TopLevelArtifactsCountNEQ != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsCountNEQ(*i.TopLevelArtifactsCountNEQ))
+	}
+	if len(i.TopLevelArtifactsCountIn) > 0 {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsCountIn(i.TopLevelArtifactsCountIn...))
+	}
+	if len(i.TopLevelArtifactsCountNotIn) > 0 {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsCountNotIn(i.TopLevelArtifactsCountNotIn...))
+	}
+	if i.TopLevelArtifactsCountGT != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsCountGT(*i.TopLevelArtifactsCountGT))
+	}
+	if i.TopLevelArtifactsCountGTE != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsCountGTE(*i.TopLevelArtifactsCountGTE))
+	}
+	if i.TopLevelArtifactsCountLT != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsCountLT(*i.TopLevelArtifactsCountLT))
+	}
+	if i.TopLevelArtifactsCountLTE != nil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsCountLTE(*i.TopLevelArtifactsCountLTE))
+	}
+	if i.TopLevelArtifactsCountIsNil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsCountIsNil())
+	}
+	if i.TopLevelArtifactsCountNotNil {
+		predicates = append(predicates, artifactmetrics.TopLevelArtifactsCountNotNil())
+	}
 
 	if i.HasMetrics != nil {
 		p := artifactmetrics.HasMetrics()
@@ -1417,78 +1736,6 @@ func (i *ArtifactMetricsWhereInput) P() (predicate.ArtifactMetrics, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, artifactmetrics.HasMetricsWith(with...))
-	}
-	if i.HasSourceArtifactsRead != nil {
-		p := artifactmetrics.HasSourceArtifactsRead()
-		if !*i.HasSourceArtifactsRead {
-			p = artifactmetrics.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasSourceArtifactsReadWith) > 0 {
-		with := make([]predicate.FilesMetric, 0, len(i.HasSourceArtifactsReadWith))
-		for _, w := range i.HasSourceArtifactsReadWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasSourceArtifactsReadWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, artifactmetrics.HasSourceArtifactsReadWith(with...))
-	}
-	if i.HasOutputArtifactsSeen != nil {
-		p := artifactmetrics.HasOutputArtifactsSeen()
-		if !*i.HasOutputArtifactsSeen {
-			p = artifactmetrics.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasOutputArtifactsSeenWith) > 0 {
-		with := make([]predicate.FilesMetric, 0, len(i.HasOutputArtifactsSeenWith))
-		for _, w := range i.HasOutputArtifactsSeenWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasOutputArtifactsSeenWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, artifactmetrics.HasOutputArtifactsSeenWith(with...))
-	}
-	if i.HasOutputArtifactsFromActionCache != nil {
-		p := artifactmetrics.HasOutputArtifactsFromActionCache()
-		if !*i.HasOutputArtifactsFromActionCache {
-			p = artifactmetrics.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasOutputArtifactsFromActionCacheWith) > 0 {
-		with := make([]predicate.FilesMetric, 0, len(i.HasOutputArtifactsFromActionCacheWith))
-		for _, w := range i.HasOutputArtifactsFromActionCacheWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasOutputArtifactsFromActionCacheWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, artifactmetrics.HasOutputArtifactsFromActionCacheWith(with...))
-	}
-	if i.HasTopLevelArtifacts != nil {
-		p := artifactmetrics.HasTopLevelArtifacts()
-		if !*i.HasTopLevelArtifacts {
-			p = artifactmetrics.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasTopLevelArtifactsWith) > 0 {
-		with := make([]predicate.FilesMetric, 0, len(i.HasTopLevelArtifactsWith))
-		for _, w := range i.HasTopLevelArtifactsWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasTopLevelArtifactsWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, artifactmetrics.HasTopLevelArtifactsWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -5377,236 +5624,6 @@ func (i *ExectionInfoWhereInput) P() (predicate.ExectionInfo, error) {
 		return predicates[0], nil
 	default:
 		return exectioninfo.And(predicates...), nil
-	}
-}
-
-// FilesMetricWhereInput represents a where input for filtering FilesMetric queries.
-type FilesMetricWhereInput struct {
-	Predicates []predicate.FilesMetric  `json:"-"`
-	Not        *FilesMetricWhereInput   `json:"not,omitempty"`
-	Or         []*FilesMetricWhereInput `json:"or,omitempty"`
-	And        []*FilesMetricWhereInput `json:"and,omitempty"`
-
-	// "id" field predicates.
-	ID      *int  `json:"id,omitempty"`
-	IDNEQ   *int  `json:"idNEQ,omitempty"`
-	IDIn    []int `json:"idIn,omitempty"`
-	IDNotIn []int `json:"idNotIn,omitempty"`
-	IDGT    *int  `json:"idGT,omitempty"`
-	IDGTE   *int  `json:"idGTE,omitempty"`
-	IDLT    *int  `json:"idLT,omitempty"`
-	IDLTE   *int  `json:"idLTE,omitempty"`
-
-	// "size_in_bytes" field predicates.
-	SizeInBytes       *int64  `json:"sizeInBytes,omitempty"`
-	SizeInBytesNEQ    *int64  `json:"sizeInBytesNEQ,omitempty"`
-	SizeInBytesIn     []int64 `json:"sizeInBytesIn,omitempty"`
-	SizeInBytesNotIn  []int64 `json:"sizeInBytesNotIn,omitempty"`
-	SizeInBytesGT     *int64  `json:"sizeInBytesGT,omitempty"`
-	SizeInBytesGTE    *int64  `json:"sizeInBytesGTE,omitempty"`
-	SizeInBytesLT     *int64  `json:"sizeInBytesLT,omitempty"`
-	SizeInBytesLTE    *int64  `json:"sizeInBytesLTE,omitempty"`
-	SizeInBytesIsNil  bool    `json:"sizeInBytesIsNil,omitempty"`
-	SizeInBytesNotNil bool    `json:"sizeInBytesNotNil,omitempty"`
-
-	// "count" field predicates.
-	Count       *int32  `json:"count,omitempty"`
-	CountNEQ    *int32  `json:"countNEQ,omitempty"`
-	CountIn     []int32 `json:"countIn,omitempty"`
-	CountNotIn  []int32 `json:"countNotIn,omitempty"`
-	CountGT     *int32  `json:"countGT,omitempty"`
-	CountGTE    *int32  `json:"countGTE,omitempty"`
-	CountLT     *int32  `json:"countLT,omitempty"`
-	CountLTE    *int32  `json:"countLTE,omitempty"`
-	CountIsNil  bool    `json:"countIsNil,omitempty"`
-	CountNotNil bool    `json:"countNotNil,omitempty"`
-
-	// "artifact_metrics" edge predicates.
-	HasArtifactMetrics     *bool                        `json:"hasArtifactMetrics,omitempty"`
-	HasArtifactMetricsWith []*ArtifactMetricsWhereInput `json:"hasArtifactMetricsWith,omitempty"`
-}
-
-// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
-func (i *FilesMetricWhereInput) AddPredicates(predicates ...predicate.FilesMetric) {
-	i.Predicates = append(i.Predicates, predicates...)
-}
-
-// Filter applies the FilesMetricWhereInput filter on the FilesMetricQuery builder.
-func (i *FilesMetricWhereInput) Filter(q *FilesMetricQuery) (*FilesMetricQuery, error) {
-	if i == nil {
-		return q, nil
-	}
-	p, err := i.P()
-	if err != nil {
-		if err == ErrEmptyFilesMetricWhereInput {
-			return q, nil
-		}
-		return nil, err
-	}
-	return q.Where(p), nil
-}
-
-// ErrEmptyFilesMetricWhereInput is returned in case the FilesMetricWhereInput is empty.
-var ErrEmptyFilesMetricWhereInput = errors.New("ent: empty predicate FilesMetricWhereInput")
-
-// P returns a predicate for filtering filesmetrics.
-// An error is returned if the input is empty or invalid.
-func (i *FilesMetricWhereInput) P() (predicate.FilesMetric, error) {
-	var predicates []predicate.FilesMetric
-	if i.Not != nil {
-		p, err := i.Not.P()
-		if err != nil {
-			return nil, fmt.Errorf("%w: field 'not'", err)
-		}
-		predicates = append(predicates, filesmetric.Not(p))
-	}
-	switch n := len(i.Or); {
-	case n == 1:
-		p, err := i.Or[0].P()
-		if err != nil {
-			return nil, fmt.Errorf("%w: field 'or'", err)
-		}
-		predicates = append(predicates, p)
-	case n > 1:
-		or := make([]predicate.FilesMetric, 0, n)
-		for _, w := range i.Or {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'or'", err)
-			}
-			or = append(or, p)
-		}
-		predicates = append(predicates, filesmetric.Or(or...))
-	}
-	switch n := len(i.And); {
-	case n == 1:
-		p, err := i.And[0].P()
-		if err != nil {
-			return nil, fmt.Errorf("%w: field 'and'", err)
-		}
-		predicates = append(predicates, p)
-	case n > 1:
-		and := make([]predicate.FilesMetric, 0, n)
-		for _, w := range i.And {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'and'", err)
-			}
-			and = append(and, p)
-		}
-		predicates = append(predicates, filesmetric.And(and...))
-	}
-	predicates = append(predicates, i.Predicates...)
-	if i.ID != nil {
-		predicates = append(predicates, filesmetric.IDEQ(*i.ID))
-	}
-	if i.IDNEQ != nil {
-		predicates = append(predicates, filesmetric.IDNEQ(*i.IDNEQ))
-	}
-	if len(i.IDIn) > 0 {
-		predicates = append(predicates, filesmetric.IDIn(i.IDIn...))
-	}
-	if len(i.IDNotIn) > 0 {
-		predicates = append(predicates, filesmetric.IDNotIn(i.IDNotIn...))
-	}
-	if i.IDGT != nil {
-		predicates = append(predicates, filesmetric.IDGT(*i.IDGT))
-	}
-	if i.IDGTE != nil {
-		predicates = append(predicates, filesmetric.IDGTE(*i.IDGTE))
-	}
-	if i.IDLT != nil {
-		predicates = append(predicates, filesmetric.IDLT(*i.IDLT))
-	}
-	if i.IDLTE != nil {
-		predicates = append(predicates, filesmetric.IDLTE(*i.IDLTE))
-	}
-	if i.SizeInBytes != nil {
-		predicates = append(predicates, filesmetric.SizeInBytesEQ(*i.SizeInBytes))
-	}
-	if i.SizeInBytesNEQ != nil {
-		predicates = append(predicates, filesmetric.SizeInBytesNEQ(*i.SizeInBytesNEQ))
-	}
-	if len(i.SizeInBytesIn) > 0 {
-		predicates = append(predicates, filesmetric.SizeInBytesIn(i.SizeInBytesIn...))
-	}
-	if len(i.SizeInBytesNotIn) > 0 {
-		predicates = append(predicates, filesmetric.SizeInBytesNotIn(i.SizeInBytesNotIn...))
-	}
-	if i.SizeInBytesGT != nil {
-		predicates = append(predicates, filesmetric.SizeInBytesGT(*i.SizeInBytesGT))
-	}
-	if i.SizeInBytesGTE != nil {
-		predicates = append(predicates, filesmetric.SizeInBytesGTE(*i.SizeInBytesGTE))
-	}
-	if i.SizeInBytesLT != nil {
-		predicates = append(predicates, filesmetric.SizeInBytesLT(*i.SizeInBytesLT))
-	}
-	if i.SizeInBytesLTE != nil {
-		predicates = append(predicates, filesmetric.SizeInBytesLTE(*i.SizeInBytesLTE))
-	}
-	if i.SizeInBytesIsNil {
-		predicates = append(predicates, filesmetric.SizeInBytesIsNil())
-	}
-	if i.SizeInBytesNotNil {
-		predicates = append(predicates, filesmetric.SizeInBytesNotNil())
-	}
-	if i.Count != nil {
-		predicates = append(predicates, filesmetric.CountEQ(*i.Count))
-	}
-	if i.CountNEQ != nil {
-		predicates = append(predicates, filesmetric.CountNEQ(*i.CountNEQ))
-	}
-	if len(i.CountIn) > 0 {
-		predicates = append(predicates, filesmetric.CountIn(i.CountIn...))
-	}
-	if len(i.CountNotIn) > 0 {
-		predicates = append(predicates, filesmetric.CountNotIn(i.CountNotIn...))
-	}
-	if i.CountGT != nil {
-		predicates = append(predicates, filesmetric.CountGT(*i.CountGT))
-	}
-	if i.CountGTE != nil {
-		predicates = append(predicates, filesmetric.CountGTE(*i.CountGTE))
-	}
-	if i.CountLT != nil {
-		predicates = append(predicates, filesmetric.CountLT(*i.CountLT))
-	}
-	if i.CountLTE != nil {
-		predicates = append(predicates, filesmetric.CountLTE(*i.CountLTE))
-	}
-	if i.CountIsNil {
-		predicates = append(predicates, filesmetric.CountIsNil())
-	}
-	if i.CountNotNil {
-		predicates = append(predicates, filesmetric.CountNotNil())
-	}
-
-	if i.HasArtifactMetrics != nil {
-		p := filesmetric.HasArtifactMetrics()
-		if !*i.HasArtifactMetrics {
-			p = filesmetric.Not(p)
-		}
-		predicates = append(predicates, p)
-	}
-	if len(i.HasArtifactMetricsWith) > 0 {
-		with := make([]predicate.ArtifactMetrics, 0, len(i.HasArtifactMetricsWith))
-		for _, w := range i.HasArtifactMetricsWith {
-			p, err := w.P()
-			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasArtifactMetricsWith'", err)
-			}
-			with = append(with, p)
-		}
-		predicates = append(predicates, filesmetric.HasArtifactMetricsWith(with...))
-	}
-	switch len(predicates) {
-	case 0:
-		return nil, ErrEmptyFilesMetricWhereInput
-	case 1:
-		return predicates[0], nil
-	default:
-		return filesmetric.And(predicates...), nil
 	}
 }
 

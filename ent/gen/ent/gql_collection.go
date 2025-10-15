@@ -10,6 +10,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
@@ -18,7 +19,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
@@ -405,6 +405,11 @@ func (am *ArtifactMetricsQuery) CollectFields(ctx context.Context, satisfies ...
 
 func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(artifactmetrics.Columns))
+		selectedFields = []string{artifactmetrics.FieldID}
+	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
@@ -418,51 +423,54 @@ func (am *ArtifactMetricsQuery) collectField(ctx context.Context, oneNode bool, 
 				return err
 			}
 			am.withMetrics = query
-
-		case "sourceArtifactsRead":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&FilesMetricClient{config: am.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
-				return err
+		case "sourceArtifactsReadSizeInBytes":
+			if _, ok := fieldSeen[artifactmetrics.FieldSourceArtifactsReadSizeInBytes]; !ok {
+				selectedFields = append(selectedFields, artifactmetrics.FieldSourceArtifactsReadSizeInBytes)
+				fieldSeen[artifactmetrics.FieldSourceArtifactsReadSizeInBytes] = struct{}{}
 			}
-			am.withSourceArtifactsRead = query
-
-		case "outputArtifactsSeen":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&FilesMetricClient{config: am.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
-				return err
+		case "sourceArtifactsReadCount":
+			if _, ok := fieldSeen[artifactmetrics.FieldSourceArtifactsReadCount]; !ok {
+				selectedFields = append(selectedFields, artifactmetrics.FieldSourceArtifactsReadCount)
+				fieldSeen[artifactmetrics.FieldSourceArtifactsReadCount] = struct{}{}
 			}
-			am.withOutputArtifactsSeen = query
-
-		case "outputArtifactsFromActionCache":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&FilesMetricClient{config: am.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
-				return err
+		case "outputArtifactsSeenSizeInBytes":
+			if _, ok := fieldSeen[artifactmetrics.FieldOutputArtifactsSeenSizeInBytes]; !ok {
+				selectedFields = append(selectedFields, artifactmetrics.FieldOutputArtifactsSeenSizeInBytes)
+				fieldSeen[artifactmetrics.FieldOutputArtifactsSeenSizeInBytes] = struct{}{}
 			}
-			am.withOutputArtifactsFromActionCache = query
-
-		case "topLevelArtifacts":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&FilesMetricClient{config: am.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, filesmetricImplementors)...); err != nil {
-				return err
+		case "outputArtifactsSeenCount":
+			if _, ok := fieldSeen[artifactmetrics.FieldOutputArtifactsSeenCount]; !ok {
+				selectedFields = append(selectedFields, artifactmetrics.FieldOutputArtifactsSeenCount)
+				fieldSeen[artifactmetrics.FieldOutputArtifactsSeenCount] = struct{}{}
 			}
-			am.withTopLevelArtifacts = query
+		case "outputArtifactsFromActionCacheSizeInBytes":
+			if _, ok := fieldSeen[artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes]; !ok {
+				selectedFields = append(selectedFields, artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes)
+				fieldSeen[artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes] = struct{}{}
+			}
+		case "outputArtifactsFromActionCacheCount":
+			if _, ok := fieldSeen[artifactmetrics.FieldOutputArtifactsFromActionCacheCount]; !ok {
+				selectedFields = append(selectedFields, artifactmetrics.FieldOutputArtifactsFromActionCacheCount)
+				fieldSeen[artifactmetrics.FieldOutputArtifactsFromActionCacheCount] = struct{}{}
+			}
+		case "topLevelArtifactsSizeInBytes":
+			if _, ok := fieldSeen[artifactmetrics.FieldTopLevelArtifactsSizeInBytes]; !ok {
+				selectedFields = append(selectedFields, artifactmetrics.FieldTopLevelArtifactsSizeInBytes)
+				fieldSeen[artifactmetrics.FieldTopLevelArtifactsSizeInBytes] = struct{}{}
+			}
+		case "topLevelArtifactsCount":
+			if _, ok := fieldSeen[artifactmetrics.FieldTopLevelArtifactsCount]; !ok {
+				selectedFields = append(selectedFields, artifactmetrics.FieldTopLevelArtifactsCount)
+				fieldSeen[artifactmetrics.FieldTopLevelArtifactsCount] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
 		}
+	}
+	if !unknownSeen {
+		am.Select(selectedFields...)
 	}
 	return nil
 }
@@ -1487,89 +1495,6 @@ func newExectionInfoPaginateArgs(rv map[string]any) *exectioninfoPaginateArgs {
 	}
 	if v, ok := rv[whereField].(*ExectionInfoWhereInput); ok {
 		args.opts = append(args.opts, WithExectionInfoFilter(v.Filter))
-	}
-	return args
-}
-
-// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (fm *FilesMetricQuery) CollectFields(ctx context.Context, satisfies ...string) (*FilesMetricQuery, error) {
-	fc := graphql.GetFieldContext(ctx)
-	if fc == nil {
-		return fm, nil
-	}
-	if err := fm.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
-		return nil, err
-	}
-	return fm, nil
-}
-
-func (fm *FilesMetricQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
-	path = append([]string(nil), path...)
-	var (
-		unknownSeen    bool
-		fieldSeen      = make(map[string]struct{}, len(filesmetric.Columns))
-		selectedFields = []string{filesmetric.FieldID}
-	)
-	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
-		switch field.Name {
-
-		case "artifactMetrics":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&ArtifactMetricsClient{config: fm.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, artifactmetricsImplementors)...); err != nil {
-				return err
-			}
-			fm.withArtifactMetrics = query
-		case "sizeInBytes":
-			if _, ok := fieldSeen[filesmetric.FieldSizeInBytes]; !ok {
-				selectedFields = append(selectedFields, filesmetric.FieldSizeInBytes)
-				fieldSeen[filesmetric.FieldSizeInBytes] = struct{}{}
-			}
-		case "count":
-			if _, ok := fieldSeen[filesmetric.FieldCount]; !ok {
-				selectedFields = append(selectedFields, filesmetric.FieldCount)
-				fieldSeen[filesmetric.FieldCount] = struct{}{}
-			}
-		case "id":
-		case "__typename":
-		default:
-			unknownSeen = true
-		}
-	}
-	if !unknownSeen {
-		fm.Select(selectedFields...)
-	}
-	return nil
-}
-
-type filesmetricPaginateArgs struct {
-	first, last   *int
-	after, before *Cursor
-	opts          []FilesMetricPaginateOption
-}
-
-func newFilesMetricPaginateArgs(rv map[string]any) *filesmetricPaginateArgs {
-	args := &filesmetricPaginateArgs{}
-	if rv == nil {
-		return args
-	}
-	if v := rv[firstField]; v != nil {
-		args.first = v.(*int)
-	}
-	if v := rv[lastField]; v != nil {
-		args.last = v.(*int)
-	}
-	if v := rv[afterField]; v != nil {
-		args.after = v.(*Cursor)
-	}
-	if v := rv[beforeField]; v != nil {
-		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[whereField].(*FilesMetricWhereInput); ok {
-		args.opts = append(args.opts, WithFilesMetricFilter(v.Filter))
 	}
 	return args
 }

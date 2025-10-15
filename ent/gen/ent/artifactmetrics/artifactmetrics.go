@@ -12,16 +12,24 @@ const (
 	Label = "artifact_metrics"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldSourceArtifactsReadSizeInBytes holds the string denoting the source_artifacts_read_size_in_bytes field in the database.
+	FieldSourceArtifactsReadSizeInBytes = "source_artifacts_read_size_in_bytes"
+	// FieldSourceArtifactsReadCount holds the string denoting the source_artifacts_read_count field in the database.
+	FieldSourceArtifactsReadCount = "source_artifacts_read_count"
+	// FieldOutputArtifactsSeenSizeInBytes holds the string denoting the output_artifacts_seen_size_in_bytes field in the database.
+	FieldOutputArtifactsSeenSizeInBytes = "output_artifacts_seen_size_in_bytes"
+	// FieldOutputArtifactsSeenCount holds the string denoting the output_artifacts_seen_count field in the database.
+	FieldOutputArtifactsSeenCount = "output_artifacts_seen_count"
+	// FieldOutputArtifactsFromActionCacheSizeInBytes holds the string denoting the output_artifacts_from_action_cache_size_in_bytes field in the database.
+	FieldOutputArtifactsFromActionCacheSizeInBytes = "output_artifacts_from_action_cache_size_in_bytes"
+	// FieldOutputArtifactsFromActionCacheCount holds the string denoting the output_artifacts_from_action_cache_count field in the database.
+	FieldOutputArtifactsFromActionCacheCount = "output_artifacts_from_action_cache_count"
+	// FieldTopLevelArtifactsSizeInBytes holds the string denoting the top_level_artifacts_size_in_bytes field in the database.
+	FieldTopLevelArtifactsSizeInBytes = "top_level_artifacts_size_in_bytes"
+	// FieldTopLevelArtifactsCount holds the string denoting the top_level_artifacts_count field in the database.
+	FieldTopLevelArtifactsCount = "top_level_artifacts_count"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
 	EdgeMetrics = "metrics"
-	// EdgeSourceArtifactsRead holds the string denoting the source_artifacts_read edge name in mutations.
-	EdgeSourceArtifactsRead = "source_artifacts_read"
-	// EdgeOutputArtifactsSeen holds the string denoting the output_artifacts_seen edge name in mutations.
-	EdgeOutputArtifactsSeen = "output_artifacts_seen"
-	// EdgeOutputArtifactsFromActionCache holds the string denoting the output_artifacts_from_action_cache edge name in mutations.
-	EdgeOutputArtifactsFromActionCache = "output_artifacts_from_action_cache"
-	// EdgeTopLevelArtifacts holds the string denoting the top_level_artifacts edge name in mutations.
-	EdgeTopLevelArtifacts = "top_level_artifacts"
 	// Table holds the table name of the artifactmetrics in the database.
 	Table = "artifact_metrics"
 	// MetricsTable is the table that holds the metrics relation/edge.
@@ -31,47 +39,24 @@ const (
 	MetricsInverseTable = "metrics"
 	// MetricsColumn is the table column denoting the metrics relation/edge.
 	MetricsColumn = "metrics_artifact_metrics"
-	// SourceArtifactsReadTable is the table that holds the source_artifacts_read relation/edge.
-	SourceArtifactsReadTable = "artifact_metrics"
-	// SourceArtifactsReadInverseTable is the table name for the FilesMetric entity.
-	// It exists in this package in order to avoid circular dependency with the "filesmetric" package.
-	SourceArtifactsReadInverseTable = "files_metrics"
-	// SourceArtifactsReadColumn is the table column denoting the source_artifacts_read relation/edge.
-	SourceArtifactsReadColumn = "artifact_metrics_source_artifacts_read"
-	// OutputArtifactsSeenTable is the table that holds the output_artifacts_seen relation/edge.
-	OutputArtifactsSeenTable = "artifact_metrics"
-	// OutputArtifactsSeenInverseTable is the table name for the FilesMetric entity.
-	// It exists in this package in order to avoid circular dependency with the "filesmetric" package.
-	OutputArtifactsSeenInverseTable = "files_metrics"
-	// OutputArtifactsSeenColumn is the table column denoting the output_artifacts_seen relation/edge.
-	OutputArtifactsSeenColumn = "artifact_metrics_output_artifacts_seen"
-	// OutputArtifactsFromActionCacheTable is the table that holds the output_artifacts_from_action_cache relation/edge.
-	OutputArtifactsFromActionCacheTable = "artifact_metrics"
-	// OutputArtifactsFromActionCacheInverseTable is the table name for the FilesMetric entity.
-	// It exists in this package in order to avoid circular dependency with the "filesmetric" package.
-	OutputArtifactsFromActionCacheInverseTable = "files_metrics"
-	// OutputArtifactsFromActionCacheColumn is the table column denoting the output_artifacts_from_action_cache relation/edge.
-	OutputArtifactsFromActionCacheColumn = "artifact_metrics_output_artifacts_from_action_cache"
-	// TopLevelArtifactsTable is the table that holds the top_level_artifacts relation/edge.
-	TopLevelArtifactsTable = "files_metrics"
-	// TopLevelArtifactsInverseTable is the table name for the FilesMetric entity.
-	// It exists in this package in order to avoid circular dependency with the "filesmetric" package.
-	TopLevelArtifactsInverseTable = "files_metrics"
-	// TopLevelArtifactsColumn is the table column denoting the top_level_artifacts relation/edge.
-	TopLevelArtifactsColumn = "artifact_metrics_top_level_artifacts"
 )
 
 // Columns holds all SQL columns for artifactmetrics fields.
 var Columns = []string{
 	FieldID,
+	FieldSourceArtifactsReadSizeInBytes,
+	FieldSourceArtifactsReadCount,
+	FieldOutputArtifactsSeenSizeInBytes,
+	FieldOutputArtifactsSeenCount,
+	FieldOutputArtifactsFromActionCacheSizeInBytes,
+	FieldOutputArtifactsFromActionCacheCount,
+	FieldTopLevelArtifactsSizeInBytes,
+	FieldTopLevelArtifactsCount,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "artifact_metrics"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"artifact_metrics_source_artifacts_read",
-	"artifact_metrics_output_artifacts_seen",
-	"artifact_metrics_output_artifacts_from_action_cache",
 	"metrics_artifact_metrics",
 }
 
@@ -98,38 +83,50 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// BySourceArtifactsReadSizeInBytes orders the results by the source_artifacts_read_size_in_bytes field.
+func BySourceArtifactsReadSizeInBytes(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSourceArtifactsReadSizeInBytes, opts...).ToFunc()
+}
+
+// BySourceArtifactsReadCount orders the results by the source_artifacts_read_count field.
+func BySourceArtifactsReadCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSourceArtifactsReadCount, opts...).ToFunc()
+}
+
+// ByOutputArtifactsSeenSizeInBytes orders the results by the output_artifacts_seen_size_in_bytes field.
+func ByOutputArtifactsSeenSizeInBytes(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOutputArtifactsSeenSizeInBytes, opts...).ToFunc()
+}
+
+// ByOutputArtifactsSeenCount orders the results by the output_artifacts_seen_count field.
+func ByOutputArtifactsSeenCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOutputArtifactsSeenCount, opts...).ToFunc()
+}
+
+// ByOutputArtifactsFromActionCacheSizeInBytes orders the results by the output_artifacts_from_action_cache_size_in_bytes field.
+func ByOutputArtifactsFromActionCacheSizeInBytes(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOutputArtifactsFromActionCacheSizeInBytes, opts...).ToFunc()
+}
+
+// ByOutputArtifactsFromActionCacheCount orders the results by the output_artifacts_from_action_cache_count field.
+func ByOutputArtifactsFromActionCacheCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOutputArtifactsFromActionCacheCount, opts...).ToFunc()
+}
+
+// ByTopLevelArtifactsSizeInBytes orders the results by the top_level_artifacts_size_in_bytes field.
+func ByTopLevelArtifactsSizeInBytes(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTopLevelArtifactsSizeInBytes, opts...).ToFunc()
+}
+
+// ByTopLevelArtifactsCount orders the results by the top_level_artifacts_count field.
+func ByTopLevelArtifactsCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTopLevelArtifactsCount, opts...).ToFunc()
+}
+
 // ByMetricsField orders the results by metrics field.
 func ByMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newMetricsStep(), sql.OrderByField(field, opts...))
-	}
-}
-
-// BySourceArtifactsReadField orders the results by source_artifacts_read field.
-func BySourceArtifactsReadField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newSourceArtifactsReadStep(), sql.OrderByField(field, opts...))
-	}
-}
-
-// ByOutputArtifactsSeenField orders the results by output_artifacts_seen field.
-func ByOutputArtifactsSeenField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newOutputArtifactsSeenStep(), sql.OrderByField(field, opts...))
-	}
-}
-
-// ByOutputArtifactsFromActionCacheField orders the results by output_artifacts_from_action_cache field.
-func ByOutputArtifactsFromActionCacheField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newOutputArtifactsFromActionCacheStep(), sql.OrderByField(field, opts...))
-	}
-}
-
-// ByTopLevelArtifactsField orders the results by top_level_artifacts field.
-func ByTopLevelArtifactsField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTopLevelArtifactsStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newMetricsStep() *sqlgraph.Step {
@@ -137,33 +134,5 @@ func newMetricsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MetricsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2O, true, MetricsTable, MetricsColumn),
-	)
-}
-func newSourceArtifactsReadStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(SourceArtifactsReadInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, SourceArtifactsReadTable, SourceArtifactsReadColumn),
-	)
-}
-func newOutputArtifactsSeenStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(OutputArtifactsSeenInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, OutputArtifactsSeenTable, OutputArtifactsSeenColumn),
-	)
-}
-func newOutputArtifactsFromActionCacheStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(OutputArtifactsFromActionCacheInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, OutputArtifactsFromActionCacheTable, OutputArtifactsFromActionCacheColumn),
-	)
-}
-func newTopLevelArtifactsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(TopLevelArtifactsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2O, false, TopLevelArtifactsTable, TopLevelArtifactsColumn),
 	)
 }

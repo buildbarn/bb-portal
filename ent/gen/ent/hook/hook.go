@@ -177,18 +177,6 @@ func (f ExectionInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ExectionInfoMutation", m)
 }
 
-// The FilesMetricFunc type is an adapter to allow the use of ordinary
-// function as FilesMetric mutator.
-type FilesMetricFunc func(context.Context, *ent.FilesMetricMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f FilesMetricFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.FilesMetricMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FilesMetricMutation", m)
-}
-
 // The GarbageMetricsFunc type is an adapter to allow the use of ordinary
 // function as GarbageMetrics mutator.
 type GarbageMetricsFunc func(context.Context, *ent.GarbageMetricsMutation) (ent.Value, error)

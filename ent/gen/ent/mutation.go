@@ -26,7 +26,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
@@ -78,7 +77,6 @@ const (
 	TypeEvaluationStat         = "EvaluationStat"
 	TypeEventMetadata          = "EventMetadata"
 	TypeExectionInfo           = "ExectionInfo"
-	TypeFilesMetric            = "FilesMetric"
 	TypeGarbageMetrics         = "GarbageMetrics"
 	TypeIncompleteBuildLog     = "IncompleteBuildLog"
 	TypeInvocationFiles        = "InvocationFiles"
@@ -3133,23 +3131,31 @@ func (m *ActionSummaryMutation) ResetEdge(name string) error {
 // ArtifactMetricsMutation represents an operation that mutates the ArtifactMetrics nodes in the graph.
 type ArtifactMetricsMutation struct {
 	config
-	op                                        Op
-	typ                                       string
-	id                                        *int
-	clearedFields                             map[string]struct{}
-	metrics                                   *int
-	clearedmetrics                            bool
-	source_artifacts_read                     *int
-	clearedsource_artifacts_read              bool
-	output_artifacts_seen                     *int
-	clearedoutput_artifacts_seen              bool
-	output_artifacts_from_action_cache        *int
-	clearedoutput_artifacts_from_action_cache bool
-	top_level_artifacts                       *int
-	clearedtop_level_artifacts                bool
-	done                                      bool
-	oldValue                                  func(context.Context) (*ArtifactMetrics, error)
-	predicates                                []predicate.ArtifactMetrics
+	op                                                  Op
+	typ                                                 string
+	id                                                  *int
+	source_artifacts_read_size_in_bytes                 *int64
+	addsource_artifacts_read_size_in_bytes              *int64
+	source_artifacts_read_count                         *int32
+	addsource_artifacts_read_count                      *int32
+	output_artifacts_seen_size_in_bytes                 *int64
+	addoutput_artifacts_seen_size_in_bytes              *int64
+	output_artifacts_seen_count                         *int32
+	addoutput_artifacts_seen_count                      *int32
+	output_artifacts_from_action_cache_size_in_bytes    *int64
+	addoutput_artifacts_from_action_cache_size_in_bytes *int64
+	output_artifacts_from_action_cache_count            *int32
+	addoutput_artifacts_from_action_cache_count         *int32
+	top_level_artifacts_size_in_bytes                   *int64
+	addtop_level_artifacts_size_in_bytes                *int64
+	top_level_artifacts_count                           *int32
+	addtop_level_artifacts_count                        *int32
+	clearedFields                                       map[string]struct{}
+	metrics                                             *int
+	clearedmetrics                                      bool
+	done                                                bool
+	oldValue                                            func(context.Context) (*ArtifactMetrics, error)
+	predicates                                          []predicate.ArtifactMetrics
 }
 
 var _ ent.Mutation = (*ArtifactMetricsMutation)(nil)
@@ -3250,6 +3256,566 @@ func (m *ArtifactMetricsMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
+// SetSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) SetSourceArtifactsReadSizeInBytes(i int64) {
+	m.source_artifacts_read_size_in_bytes = &i
+	m.addsource_artifacts_read_size_in_bytes = nil
+}
+
+// SourceArtifactsReadSizeInBytes returns the value of the "source_artifacts_read_size_in_bytes" field in the mutation.
+func (m *ArtifactMetricsMutation) SourceArtifactsReadSizeInBytes() (r int64, exists bool) {
+	v := m.source_artifacts_read_size_in_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSourceArtifactsReadSizeInBytes returns the old "source_artifacts_read_size_in_bytes" field's value of the ArtifactMetrics entity.
+// If the ArtifactMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArtifactMetricsMutation) OldSourceArtifactsReadSizeInBytes(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSourceArtifactsReadSizeInBytes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSourceArtifactsReadSizeInBytes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSourceArtifactsReadSizeInBytes: %w", err)
+	}
+	return oldValue.SourceArtifactsReadSizeInBytes, nil
+}
+
+// AddSourceArtifactsReadSizeInBytes adds i to the "source_artifacts_read_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) AddSourceArtifactsReadSizeInBytes(i int64) {
+	if m.addsource_artifacts_read_size_in_bytes != nil {
+		*m.addsource_artifacts_read_size_in_bytes += i
+	} else {
+		m.addsource_artifacts_read_size_in_bytes = &i
+	}
+}
+
+// AddedSourceArtifactsReadSizeInBytes returns the value that was added to the "source_artifacts_read_size_in_bytes" field in this mutation.
+func (m *ArtifactMetricsMutation) AddedSourceArtifactsReadSizeInBytes() (r int64, exists bool) {
+	v := m.addsource_artifacts_read_size_in_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearSourceArtifactsReadSizeInBytes clears the value of the "source_artifacts_read_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) ClearSourceArtifactsReadSizeInBytes() {
+	m.source_artifacts_read_size_in_bytes = nil
+	m.addsource_artifacts_read_size_in_bytes = nil
+	m.clearedFields[artifactmetrics.FieldSourceArtifactsReadSizeInBytes] = struct{}{}
+}
+
+// SourceArtifactsReadSizeInBytesCleared returns if the "source_artifacts_read_size_in_bytes" field was cleared in this mutation.
+func (m *ArtifactMetricsMutation) SourceArtifactsReadSizeInBytesCleared() bool {
+	_, ok := m.clearedFields[artifactmetrics.FieldSourceArtifactsReadSizeInBytes]
+	return ok
+}
+
+// ResetSourceArtifactsReadSizeInBytes resets all changes to the "source_artifacts_read_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) ResetSourceArtifactsReadSizeInBytes() {
+	m.source_artifacts_read_size_in_bytes = nil
+	m.addsource_artifacts_read_size_in_bytes = nil
+	delete(m.clearedFields, artifactmetrics.FieldSourceArtifactsReadSizeInBytes)
+}
+
+// SetSourceArtifactsReadCount sets the "source_artifacts_read_count" field.
+func (m *ArtifactMetricsMutation) SetSourceArtifactsReadCount(i int32) {
+	m.source_artifacts_read_count = &i
+	m.addsource_artifacts_read_count = nil
+}
+
+// SourceArtifactsReadCount returns the value of the "source_artifacts_read_count" field in the mutation.
+func (m *ArtifactMetricsMutation) SourceArtifactsReadCount() (r int32, exists bool) {
+	v := m.source_artifacts_read_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSourceArtifactsReadCount returns the old "source_artifacts_read_count" field's value of the ArtifactMetrics entity.
+// If the ArtifactMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArtifactMetricsMutation) OldSourceArtifactsReadCount(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSourceArtifactsReadCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSourceArtifactsReadCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSourceArtifactsReadCount: %w", err)
+	}
+	return oldValue.SourceArtifactsReadCount, nil
+}
+
+// AddSourceArtifactsReadCount adds i to the "source_artifacts_read_count" field.
+func (m *ArtifactMetricsMutation) AddSourceArtifactsReadCount(i int32) {
+	if m.addsource_artifacts_read_count != nil {
+		*m.addsource_artifacts_read_count += i
+	} else {
+		m.addsource_artifacts_read_count = &i
+	}
+}
+
+// AddedSourceArtifactsReadCount returns the value that was added to the "source_artifacts_read_count" field in this mutation.
+func (m *ArtifactMetricsMutation) AddedSourceArtifactsReadCount() (r int32, exists bool) {
+	v := m.addsource_artifacts_read_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearSourceArtifactsReadCount clears the value of the "source_artifacts_read_count" field.
+func (m *ArtifactMetricsMutation) ClearSourceArtifactsReadCount() {
+	m.source_artifacts_read_count = nil
+	m.addsource_artifacts_read_count = nil
+	m.clearedFields[artifactmetrics.FieldSourceArtifactsReadCount] = struct{}{}
+}
+
+// SourceArtifactsReadCountCleared returns if the "source_artifacts_read_count" field was cleared in this mutation.
+func (m *ArtifactMetricsMutation) SourceArtifactsReadCountCleared() bool {
+	_, ok := m.clearedFields[artifactmetrics.FieldSourceArtifactsReadCount]
+	return ok
+}
+
+// ResetSourceArtifactsReadCount resets all changes to the "source_artifacts_read_count" field.
+func (m *ArtifactMetricsMutation) ResetSourceArtifactsReadCount() {
+	m.source_artifacts_read_count = nil
+	m.addsource_artifacts_read_count = nil
+	delete(m.clearedFields, artifactmetrics.FieldSourceArtifactsReadCount)
+}
+
+// SetOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) SetOutputArtifactsSeenSizeInBytes(i int64) {
+	m.output_artifacts_seen_size_in_bytes = &i
+	m.addoutput_artifacts_seen_size_in_bytes = nil
+}
+
+// OutputArtifactsSeenSizeInBytes returns the value of the "output_artifacts_seen_size_in_bytes" field in the mutation.
+func (m *ArtifactMetricsMutation) OutputArtifactsSeenSizeInBytes() (r int64, exists bool) {
+	v := m.output_artifacts_seen_size_in_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOutputArtifactsSeenSizeInBytes returns the old "output_artifacts_seen_size_in_bytes" field's value of the ArtifactMetrics entity.
+// If the ArtifactMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArtifactMetricsMutation) OldOutputArtifactsSeenSizeInBytes(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOutputArtifactsSeenSizeInBytes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOutputArtifactsSeenSizeInBytes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOutputArtifactsSeenSizeInBytes: %w", err)
+	}
+	return oldValue.OutputArtifactsSeenSizeInBytes, nil
+}
+
+// AddOutputArtifactsSeenSizeInBytes adds i to the "output_artifacts_seen_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) AddOutputArtifactsSeenSizeInBytes(i int64) {
+	if m.addoutput_artifacts_seen_size_in_bytes != nil {
+		*m.addoutput_artifacts_seen_size_in_bytes += i
+	} else {
+		m.addoutput_artifacts_seen_size_in_bytes = &i
+	}
+}
+
+// AddedOutputArtifactsSeenSizeInBytes returns the value that was added to the "output_artifacts_seen_size_in_bytes" field in this mutation.
+func (m *ArtifactMetricsMutation) AddedOutputArtifactsSeenSizeInBytes() (r int64, exists bool) {
+	v := m.addoutput_artifacts_seen_size_in_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearOutputArtifactsSeenSizeInBytes clears the value of the "output_artifacts_seen_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) ClearOutputArtifactsSeenSizeInBytes() {
+	m.output_artifacts_seen_size_in_bytes = nil
+	m.addoutput_artifacts_seen_size_in_bytes = nil
+	m.clearedFields[artifactmetrics.FieldOutputArtifactsSeenSizeInBytes] = struct{}{}
+}
+
+// OutputArtifactsSeenSizeInBytesCleared returns if the "output_artifacts_seen_size_in_bytes" field was cleared in this mutation.
+func (m *ArtifactMetricsMutation) OutputArtifactsSeenSizeInBytesCleared() bool {
+	_, ok := m.clearedFields[artifactmetrics.FieldOutputArtifactsSeenSizeInBytes]
+	return ok
+}
+
+// ResetOutputArtifactsSeenSizeInBytes resets all changes to the "output_artifacts_seen_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) ResetOutputArtifactsSeenSizeInBytes() {
+	m.output_artifacts_seen_size_in_bytes = nil
+	m.addoutput_artifacts_seen_size_in_bytes = nil
+	delete(m.clearedFields, artifactmetrics.FieldOutputArtifactsSeenSizeInBytes)
+}
+
+// SetOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field.
+func (m *ArtifactMetricsMutation) SetOutputArtifactsSeenCount(i int32) {
+	m.output_artifacts_seen_count = &i
+	m.addoutput_artifacts_seen_count = nil
+}
+
+// OutputArtifactsSeenCount returns the value of the "output_artifacts_seen_count" field in the mutation.
+func (m *ArtifactMetricsMutation) OutputArtifactsSeenCount() (r int32, exists bool) {
+	v := m.output_artifacts_seen_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOutputArtifactsSeenCount returns the old "output_artifacts_seen_count" field's value of the ArtifactMetrics entity.
+// If the ArtifactMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArtifactMetricsMutation) OldOutputArtifactsSeenCount(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOutputArtifactsSeenCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOutputArtifactsSeenCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOutputArtifactsSeenCount: %w", err)
+	}
+	return oldValue.OutputArtifactsSeenCount, nil
+}
+
+// AddOutputArtifactsSeenCount adds i to the "output_artifacts_seen_count" field.
+func (m *ArtifactMetricsMutation) AddOutputArtifactsSeenCount(i int32) {
+	if m.addoutput_artifacts_seen_count != nil {
+		*m.addoutput_artifacts_seen_count += i
+	} else {
+		m.addoutput_artifacts_seen_count = &i
+	}
+}
+
+// AddedOutputArtifactsSeenCount returns the value that was added to the "output_artifacts_seen_count" field in this mutation.
+func (m *ArtifactMetricsMutation) AddedOutputArtifactsSeenCount() (r int32, exists bool) {
+	v := m.addoutput_artifacts_seen_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearOutputArtifactsSeenCount clears the value of the "output_artifacts_seen_count" field.
+func (m *ArtifactMetricsMutation) ClearOutputArtifactsSeenCount() {
+	m.output_artifacts_seen_count = nil
+	m.addoutput_artifacts_seen_count = nil
+	m.clearedFields[artifactmetrics.FieldOutputArtifactsSeenCount] = struct{}{}
+}
+
+// OutputArtifactsSeenCountCleared returns if the "output_artifacts_seen_count" field was cleared in this mutation.
+func (m *ArtifactMetricsMutation) OutputArtifactsSeenCountCleared() bool {
+	_, ok := m.clearedFields[artifactmetrics.FieldOutputArtifactsSeenCount]
+	return ok
+}
+
+// ResetOutputArtifactsSeenCount resets all changes to the "output_artifacts_seen_count" field.
+func (m *ArtifactMetricsMutation) ResetOutputArtifactsSeenCount() {
+	m.output_artifacts_seen_count = nil
+	m.addoutput_artifacts_seen_count = nil
+	delete(m.clearedFields, artifactmetrics.FieldOutputArtifactsSeenCount)
+}
+
+// SetOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) SetOutputArtifactsFromActionCacheSizeInBytes(i int64) {
+	m.output_artifacts_from_action_cache_size_in_bytes = &i
+	m.addoutput_artifacts_from_action_cache_size_in_bytes = nil
+}
+
+// OutputArtifactsFromActionCacheSizeInBytes returns the value of the "output_artifacts_from_action_cache_size_in_bytes" field in the mutation.
+func (m *ArtifactMetricsMutation) OutputArtifactsFromActionCacheSizeInBytes() (r int64, exists bool) {
+	v := m.output_artifacts_from_action_cache_size_in_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOutputArtifactsFromActionCacheSizeInBytes returns the old "output_artifacts_from_action_cache_size_in_bytes" field's value of the ArtifactMetrics entity.
+// If the ArtifactMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArtifactMetricsMutation) OldOutputArtifactsFromActionCacheSizeInBytes(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOutputArtifactsFromActionCacheSizeInBytes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOutputArtifactsFromActionCacheSizeInBytes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOutputArtifactsFromActionCacheSizeInBytes: %w", err)
+	}
+	return oldValue.OutputArtifactsFromActionCacheSizeInBytes, nil
+}
+
+// AddOutputArtifactsFromActionCacheSizeInBytes adds i to the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) AddOutputArtifactsFromActionCacheSizeInBytes(i int64) {
+	if m.addoutput_artifacts_from_action_cache_size_in_bytes != nil {
+		*m.addoutput_artifacts_from_action_cache_size_in_bytes += i
+	} else {
+		m.addoutput_artifacts_from_action_cache_size_in_bytes = &i
+	}
+}
+
+// AddedOutputArtifactsFromActionCacheSizeInBytes returns the value that was added to the "output_artifacts_from_action_cache_size_in_bytes" field in this mutation.
+func (m *ArtifactMetricsMutation) AddedOutputArtifactsFromActionCacheSizeInBytes() (r int64, exists bool) {
+	v := m.addoutput_artifacts_from_action_cache_size_in_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearOutputArtifactsFromActionCacheSizeInBytes clears the value of the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) ClearOutputArtifactsFromActionCacheSizeInBytes() {
+	m.output_artifacts_from_action_cache_size_in_bytes = nil
+	m.addoutput_artifacts_from_action_cache_size_in_bytes = nil
+	m.clearedFields[artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes] = struct{}{}
+}
+
+// OutputArtifactsFromActionCacheSizeInBytesCleared returns if the "output_artifacts_from_action_cache_size_in_bytes" field was cleared in this mutation.
+func (m *ArtifactMetricsMutation) OutputArtifactsFromActionCacheSizeInBytesCleared() bool {
+	_, ok := m.clearedFields[artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes]
+	return ok
+}
+
+// ResetOutputArtifactsFromActionCacheSizeInBytes resets all changes to the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) ResetOutputArtifactsFromActionCacheSizeInBytes() {
+	m.output_artifacts_from_action_cache_size_in_bytes = nil
+	m.addoutput_artifacts_from_action_cache_size_in_bytes = nil
+	delete(m.clearedFields, artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes)
+}
+
+// SetOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field.
+func (m *ArtifactMetricsMutation) SetOutputArtifactsFromActionCacheCount(i int32) {
+	m.output_artifacts_from_action_cache_count = &i
+	m.addoutput_artifacts_from_action_cache_count = nil
+}
+
+// OutputArtifactsFromActionCacheCount returns the value of the "output_artifacts_from_action_cache_count" field in the mutation.
+func (m *ArtifactMetricsMutation) OutputArtifactsFromActionCacheCount() (r int32, exists bool) {
+	v := m.output_artifacts_from_action_cache_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOutputArtifactsFromActionCacheCount returns the old "output_artifacts_from_action_cache_count" field's value of the ArtifactMetrics entity.
+// If the ArtifactMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArtifactMetricsMutation) OldOutputArtifactsFromActionCacheCount(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOutputArtifactsFromActionCacheCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOutputArtifactsFromActionCacheCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOutputArtifactsFromActionCacheCount: %w", err)
+	}
+	return oldValue.OutputArtifactsFromActionCacheCount, nil
+}
+
+// AddOutputArtifactsFromActionCacheCount adds i to the "output_artifacts_from_action_cache_count" field.
+func (m *ArtifactMetricsMutation) AddOutputArtifactsFromActionCacheCount(i int32) {
+	if m.addoutput_artifacts_from_action_cache_count != nil {
+		*m.addoutput_artifacts_from_action_cache_count += i
+	} else {
+		m.addoutput_artifacts_from_action_cache_count = &i
+	}
+}
+
+// AddedOutputArtifactsFromActionCacheCount returns the value that was added to the "output_artifacts_from_action_cache_count" field in this mutation.
+func (m *ArtifactMetricsMutation) AddedOutputArtifactsFromActionCacheCount() (r int32, exists bool) {
+	v := m.addoutput_artifacts_from_action_cache_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearOutputArtifactsFromActionCacheCount clears the value of the "output_artifacts_from_action_cache_count" field.
+func (m *ArtifactMetricsMutation) ClearOutputArtifactsFromActionCacheCount() {
+	m.output_artifacts_from_action_cache_count = nil
+	m.addoutput_artifacts_from_action_cache_count = nil
+	m.clearedFields[artifactmetrics.FieldOutputArtifactsFromActionCacheCount] = struct{}{}
+}
+
+// OutputArtifactsFromActionCacheCountCleared returns if the "output_artifacts_from_action_cache_count" field was cleared in this mutation.
+func (m *ArtifactMetricsMutation) OutputArtifactsFromActionCacheCountCleared() bool {
+	_, ok := m.clearedFields[artifactmetrics.FieldOutputArtifactsFromActionCacheCount]
+	return ok
+}
+
+// ResetOutputArtifactsFromActionCacheCount resets all changes to the "output_artifacts_from_action_cache_count" field.
+func (m *ArtifactMetricsMutation) ResetOutputArtifactsFromActionCacheCount() {
+	m.output_artifacts_from_action_cache_count = nil
+	m.addoutput_artifacts_from_action_cache_count = nil
+	delete(m.clearedFields, artifactmetrics.FieldOutputArtifactsFromActionCacheCount)
+}
+
+// SetTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) SetTopLevelArtifactsSizeInBytes(i int64) {
+	m.top_level_artifacts_size_in_bytes = &i
+	m.addtop_level_artifacts_size_in_bytes = nil
+}
+
+// TopLevelArtifactsSizeInBytes returns the value of the "top_level_artifacts_size_in_bytes" field in the mutation.
+func (m *ArtifactMetricsMutation) TopLevelArtifactsSizeInBytes() (r int64, exists bool) {
+	v := m.top_level_artifacts_size_in_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTopLevelArtifactsSizeInBytes returns the old "top_level_artifacts_size_in_bytes" field's value of the ArtifactMetrics entity.
+// If the ArtifactMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArtifactMetricsMutation) OldTopLevelArtifactsSizeInBytes(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTopLevelArtifactsSizeInBytes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTopLevelArtifactsSizeInBytes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTopLevelArtifactsSizeInBytes: %w", err)
+	}
+	return oldValue.TopLevelArtifactsSizeInBytes, nil
+}
+
+// AddTopLevelArtifactsSizeInBytes adds i to the "top_level_artifacts_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) AddTopLevelArtifactsSizeInBytes(i int64) {
+	if m.addtop_level_artifacts_size_in_bytes != nil {
+		*m.addtop_level_artifacts_size_in_bytes += i
+	} else {
+		m.addtop_level_artifacts_size_in_bytes = &i
+	}
+}
+
+// AddedTopLevelArtifactsSizeInBytes returns the value that was added to the "top_level_artifacts_size_in_bytes" field in this mutation.
+func (m *ArtifactMetricsMutation) AddedTopLevelArtifactsSizeInBytes() (r int64, exists bool) {
+	v := m.addtop_level_artifacts_size_in_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearTopLevelArtifactsSizeInBytes clears the value of the "top_level_artifacts_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) ClearTopLevelArtifactsSizeInBytes() {
+	m.top_level_artifacts_size_in_bytes = nil
+	m.addtop_level_artifacts_size_in_bytes = nil
+	m.clearedFields[artifactmetrics.FieldTopLevelArtifactsSizeInBytes] = struct{}{}
+}
+
+// TopLevelArtifactsSizeInBytesCleared returns if the "top_level_artifacts_size_in_bytes" field was cleared in this mutation.
+func (m *ArtifactMetricsMutation) TopLevelArtifactsSizeInBytesCleared() bool {
+	_, ok := m.clearedFields[artifactmetrics.FieldTopLevelArtifactsSizeInBytes]
+	return ok
+}
+
+// ResetTopLevelArtifactsSizeInBytes resets all changes to the "top_level_artifacts_size_in_bytes" field.
+func (m *ArtifactMetricsMutation) ResetTopLevelArtifactsSizeInBytes() {
+	m.top_level_artifacts_size_in_bytes = nil
+	m.addtop_level_artifacts_size_in_bytes = nil
+	delete(m.clearedFields, artifactmetrics.FieldTopLevelArtifactsSizeInBytes)
+}
+
+// SetTopLevelArtifactsCount sets the "top_level_artifacts_count" field.
+func (m *ArtifactMetricsMutation) SetTopLevelArtifactsCount(i int32) {
+	m.top_level_artifacts_count = &i
+	m.addtop_level_artifacts_count = nil
+}
+
+// TopLevelArtifactsCount returns the value of the "top_level_artifacts_count" field in the mutation.
+func (m *ArtifactMetricsMutation) TopLevelArtifactsCount() (r int32, exists bool) {
+	v := m.top_level_artifacts_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTopLevelArtifactsCount returns the old "top_level_artifacts_count" field's value of the ArtifactMetrics entity.
+// If the ArtifactMetrics object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArtifactMetricsMutation) OldTopLevelArtifactsCount(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTopLevelArtifactsCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTopLevelArtifactsCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTopLevelArtifactsCount: %w", err)
+	}
+	return oldValue.TopLevelArtifactsCount, nil
+}
+
+// AddTopLevelArtifactsCount adds i to the "top_level_artifacts_count" field.
+func (m *ArtifactMetricsMutation) AddTopLevelArtifactsCount(i int32) {
+	if m.addtop_level_artifacts_count != nil {
+		*m.addtop_level_artifacts_count += i
+	} else {
+		m.addtop_level_artifacts_count = &i
+	}
+}
+
+// AddedTopLevelArtifactsCount returns the value that was added to the "top_level_artifacts_count" field in this mutation.
+func (m *ArtifactMetricsMutation) AddedTopLevelArtifactsCount() (r int32, exists bool) {
+	v := m.addtop_level_artifacts_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearTopLevelArtifactsCount clears the value of the "top_level_artifacts_count" field.
+func (m *ArtifactMetricsMutation) ClearTopLevelArtifactsCount() {
+	m.top_level_artifacts_count = nil
+	m.addtop_level_artifacts_count = nil
+	m.clearedFields[artifactmetrics.FieldTopLevelArtifactsCount] = struct{}{}
+}
+
+// TopLevelArtifactsCountCleared returns if the "top_level_artifacts_count" field was cleared in this mutation.
+func (m *ArtifactMetricsMutation) TopLevelArtifactsCountCleared() bool {
+	_, ok := m.clearedFields[artifactmetrics.FieldTopLevelArtifactsCount]
+	return ok
+}
+
+// ResetTopLevelArtifactsCount resets all changes to the "top_level_artifacts_count" field.
+func (m *ArtifactMetricsMutation) ResetTopLevelArtifactsCount() {
+	m.top_level_artifacts_count = nil
+	m.addtop_level_artifacts_count = nil
+	delete(m.clearedFields, artifactmetrics.FieldTopLevelArtifactsCount)
+}
+
 // SetMetricsID sets the "metrics" edge to the Metrics entity by id.
 func (m *ArtifactMetricsMutation) SetMetricsID(id int) {
 	m.metrics = &id
@@ -3289,162 +3855,6 @@ func (m *ArtifactMetricsMutation) ResetMetrics() {
 	m.clearedmetrics = false
 }
 
-// SetSourceArtifactsReadID sets the "source_artifacts_read" edge to the FilesMetric entity by id.
-func (m *ArtifactMetricsMutation) SetSourceArtifactsReadID(id int) {
-	m.source_artifacts_read = &id
-}
-
-// ClearSourceArtifactsRead clears the "source_artifacts_read" edge to the FilesMetric entity.
-func (m *ArtifactMetricsMutation) ClearSourceArtifactsRead() {
-	m.clearedsource_artifacts_read = true
-}
-
-// SourceArtifactsReadCleared reports if the "source_artifacts_read" edge to the FilesMetric entity was cleared.
-func (m *ArtifactMetricsMutation) SourceArtifactsReadCleared() bool {
-	return m.clearedsource_artifacts_read
-}
-
-// SourceArtifactsReadID returns the "source_artifacts_read" edge ID in the mutation.
-func (m *ArtifactMetricsMutation) SourceArtifactsReadID() (id int, exists bool) {
-	if m.source_artifacts_read != nil {
-		return *m.source_artifacts_read, true
-	}
-	return
-}
-
-// SourceArtifactsReadIDs returns the "source_artifacts_read" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// SourceArtifactsReadID instead. It exists only for internal usage by the builders.
-func (m *ArtifactMetricsMutation) SourceArtifactsReadIDs() (ids []int) {
-	if id := m.source_artifacts_read; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetSourceArtifactsRead resets all changes to the "source_artifacts_read" edge.
-func (m *ArtifactMetricsMutation) ResetSourceArtifactsRead() {
-	m.source_artifacts_read = nil
-	m.clearedsource_artifacts_read = false
-}
-
-// SetOutputArtifactsSeenID sets the "output_artifacts_seen" edge to the FilesMetric entity by id.
-func (m *ArtifactMetricsMutation) SetOutputArtifactsSeenID(id int) {
-	m.output_artifacts_seen = &id
-}
-
-// ClearOutputArtifactsSeen clears the "output_artifacts_seen" edge to the FilesMetric entity.
-func (m *ArtifactMetricsMutation) ClearOutputArtifactsSeen() {
-	m.clearedoutput_artifacts_seen = true
-}
-
-// OutputArtifactsSeenCleared reports if the "output_artifacts_seen" edge to the FilesMetric entity was cleared.
-func (m *ArtifactMetricsMutation) OutputArtifactsSeenCleared() bool {
-	return m.clearedoutput_artifacts_seen
-}
-
-// OutputArtifactsSeenID returns the "output_artifacts_seen" edge ID in the mutation.
-func (m *ArtifactMetricsMutation) OutputArtifactsSeenID() (id int, exists bool) {
-	if m.output_artifacts_seen != nil {
-		return *m.output_artifacts_seen, true
-	}
-	return
-}
-
-// OutputArtifactsSeenIDs returns the "output_artifacts_seen" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OutputArtifactsSeenID instead. It exists only for internal usage by the builders.
-func (m *ArtifactMetricsMutation) OutputArtifactsSeenIDs() (ids []int) {
-	if id := m.output_artifacts_seen; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetOutputArtifactsSeen resets all changes to the "output_artifacts_seen" edge.
-func (m *ArtifactMetricsMutation) ResetOutputArtifactsSeen() {
-	m.output_artifacts_seen = nil
-	m.clearedoutput_artifacts_seen = false
-}
-
-// SetOutputArtifactsFromActionCacheID sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity by id.
-func (m *ArtifactMetricsMutation) SetOutputArtifactsFromActionCacheID(id int) {
-	m.output_artifacts_from_action_cache = &id
-}
-
-// ClearOutputArtifactsFromActionCache clears the "output_artifacts_from_action_cache" edge to the FilesMetric entity.
-func (m *ArtifactMetricsMutation) ClearOutputArtifactsFromActionCache() {
-	m.clearedoutput_artifacts_from_action_cache = true
-}
-
-// OutputArtifactsFromActionCacheCleared reports if the "output_artifacts_from_action_cache" edge to the FilesMetric entity was cleared.
-func (m *ArtifactMetricsMutation) OutputArtifactsFromActionCacheCleared() bool {
-	return m.clearedoutput_artifacts_from_action_cache
-}
-
-// OutputArtifactsFromActionCacheID returns the "output_artifacts_from_action_cache" edge ID in the mutation.
-func (m *ArtifactMetricsMutation) OutputArtifactsFromActionCacheID() (id int, exists bool) {
-	if m.output_artifacts_from_action_cache != nil {
-		return *m.output_artifacts_from_action_cache, true
-	}
-	return
-}
-
-// OutputArtifactsFromActionCacheIDs returns the "output_artifacts_from_action_cache" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OutputArtifactsFromActionCacheID instead. It exists only for internal usage by the builders.
-func (m *ArtifactMetricsMutation) OutputArtifactsFromActionCacheIDs() (ids []int) {
-	if id := m.output_artifacts_from_action_cache; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetOutputArtifactsFromActionCache resets all changes to the "output_artifacts_from_action_cache" edge.
-func (m *ArtifactMetricsMutation) ResetOutputArtifactsFromActionCache() {
-	m.output_artifacts_from_action_cache = nil
-	m.clearedoutput_artifacts_from_action_cache = false
-}
-
-// SetTopLevelArtifactsID sets the "top_level_artifacts" edge to the FilesMetric entity by id.
-func (m *ArtifactMetricsMutation) SetTopLevelArtifactsID(id int) {
-	m.top_level_artifacts = &id
-}
-
-// ClearTopLevelArtifacts clears the "top_level_artifacts" edge to the FilesMetric entity.
-func (m *ArtifactMetricsMutation) ClearTopLevelArtifacts() {
-	m.clearedtop_level_artifacts = true
-}
-
-// TopLevelArtifactsCleared reports if the "top_level_artifacts" edge to the FilesMetric entity was cleared.
-func (m *ArtifactMetricsMutation) TopLevelArtifactsCleared() bool {
-	return m.clearedtop_level_artifacts
-}
-
-// TopLevelArtifactsID returns the "top_level_artifacts" edge ID in the mutation.
-func (m *ArtifactMetricsMutation) TopLevelArtifactsID() (id int, exists bool) {
-	if m.top_level_artifacts != nil {
-		return *m.top_level_artifacts, true
-	}
-	return
-}
-
-// TopLevelArtifactsIDs returns the "top_level_artifacts" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// TopLevelArtifactsID instead. It exists only for internal usage by the builders.
-func (m *ArtifactMetricsMutation) TopLevelArtifactsIDs() (ids []int) {
-	if id := m.top_level_artifacts; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetTopLevelArtifacts resets all changes to the "top_level_artifacts" edge.
-func (m *ArtifactMetricsMutation) ResetTopLevelArtifacts() {
-	m.top_level_artifacts = nil
-	m.clearedtop_level_artifacts = false
-}
-
 // Where appends a list predicates to the ArtifactMetricsMutation builder.
 func (m *ArtifactMetricsMutation) Where(ps ...predicate.ArtifactMetrics) {
 	m.predicates = append(m.predicates, ps...)
@@ -3479,7 +3889,31 @@ func (m *ArtifactMetricsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ArtifactMetricsMutation) Fields() []string {
-	fields := make([]string, 0, 0)
+	fields := make([]string, 0, 8)
+	if m.source_artifacts_read_size_in_bytes != nil {
+		fields = append(fields, artifactmetrics.FieldSourceArtifactsReadSizeInBytes)
+	}
+	if m.source_artifacts_read_count != nil {
+		fields = append(fields, artifactmetrics.FieldSourceArtifactsReadCount)
+	}
+	if m.output_artifacts_seen_size_in_bytes != nil {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsSeenSizeInBytes)
+	}
+	if m.output_artifacts_seen_count != nil {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsSeenCount)
+	}
+	if m.output_artifacts_from_action_cache_size_in_bytes != nil {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes)
+	}
+	if m.output_artifacts_from_action_cache_count != nil {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsFromActionCacheCount)
+	}
+	if m.top_level_artifacts_size_in_bytes != nil {
+		fields = append(fields, artifactmetrics.FieldTopLevelArtifactsSizeInBytes)
+	}
+	if m.top_level_artifacts_count != nil {
+		fields = append(fields, artifactmetrics.FieldTopLevelArtifactsCount)
+	}
 	return fields
 }
 
@@ -3487,6 +3921,24 @@ func (m *ArtifactMetricsMutation) Fields() []string {
 // return value indicates that this field was not set, or was not defined in the
 // schema.
 func (m *ArtifactMetricsMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case artifactmetrics.FieldSourceArtifactsReadSizeInBytes:
+		return m.SourceArtifactsReadSizeInBytes()
+	case artifactmetrics.FieldSourceArtifactsReadCount:
+		return m.SourceArtifactsReadCount()
+	case artifactmetrics.FieldOutputArtifactsSeenSizeInBytes:
+		return m.OutputArtifactsSeenSizeInBytes()
+	case artifactmetrics.FieldOutputArtifactsSeenCount:
+		return m.OutputArtifactsSeenCount()
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes:
+		return m.OutputArtifactsFromActionCacheSizeInBytes()
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheCount:
+		return m.OutputArtifactsFromActionCacheCount()
+	case artifactmetrics.FieldTopLevelArtifactsSizeInBytes:
+		return m.TopLevelArtifactsSizeInBytes()
+	case artifactmetrics.FieldTopLevelArtifactsCount:
+		return m.TopLevelArtifactsCount()
+	}
 	return nil, false
 }
 
@@ -3494,6 +3946,24 @@ func (m *ArtifactMetricsMutation) Field(name string) (ent.Value, bool) {
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
 func (m *ArtifactMetricsMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case artifactmetrics.FieldSourceArtifactsReadSizeInBytes:
+		return m.OldSourceArtifactsReadSizeInBytes(ctx)
+	case artifactmetrics.FieldSourceArtifactsReadCount:
+		return m.OldSourceArtifactsReadCount(ctx)
+	case artifactmetrics.FieldOutputArtifactsSeenSizeInBytes:
+		return m.OldOutputArtifactsSeenSizeInBytes(ctx)
+	case artifactmetrics.FieldOutputArtifactsSeenCount:
+		return m.OldOutputArtifactsSeenCount(ctx)
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes:
+		return m.OldOutputArtifactsFromActionCacheSizeInBytes(ctx)
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheCount:
+		return m.OldOutputArtifactsFromActionCacheCount(ctx)
+	case artifactmetrics.FieldTopLevelArtifactsSizeInBytes:
+		return m.OldTopLevelArtifactsSizeInBytes(ctx)
+	case artifactmetrics.FieldTopLevelArtifactsCount:
+		return m.OldTopLevelArtifactsCount(ctx)
+	}
 	return nil, fmt.Errorf("unknown ArtifactMetrics field %s", name)
 }
 
@@ -3502,6 +3972,62 @@ func (m *ArtifactMetricsMutation) OldField(ctx context.Context, name string) (en
 // type.
 func (m *ArtifactMetricsMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case artifactmetrics.FieldSourceArtifactsReadSizeInBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSourceArtifactsReadSizeInBytes(v)
+		return nil
+	case artifactmetrics.FieldSourceArtifactsReadCount:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSourceArtifactsReadCount(v)
+		return nil
+	case artifactmetrics.FieldOutputArtifactsSeenSizeInBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOutputArtifactsSeenSizeInBytes(v)
+		return nil
+	case artifactmetrics.FieldOutputArtifactsSeenCount:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOutputArtifactsSeenCount(v)
+		return nil
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOutputArtifactsFromActionCacheSizeInBytes(v)
+		return nil
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheCount:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOutputArtifactsFromActionCacheCount(v)
+		return nil
+	case artifactmetrics.FieldTopLevelArtifactsSizeInBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTopLevelArtifactsSizeInBytes(v)
+		return nil
+	case artifactmetrics.FieldTopLevelArtifactsCount:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTopLevelArtifactsCount(v)
+		return nil
 	}
 	return fmt.Errorf("unknown ArtifactMetrics field %s", name)
 }
@@ -3509,13 +4035,56 @@ func (m *ArtifactMetricsMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *ArtifactMetricsMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addsource_artifacts_read_size_in_bytes != nil {
+		fields = append(fields, artifactmetrics.FieldSourceArtifactsReadSizeInBytes)
+	}
+	if m.addsource_artifacts_read_count != nil {
+		fields = append(fields, artifactmetrics.FieldSourceArtifactsReadCount)
+	}
+	if m.addoutput_artifacts_seen_size_in_bytes != nil {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsSeenSizeInBytes)
+	}
+	if m.addoutput_artifacts_seen_count != nil {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsSeenCount)
+	}
+	if m.addoutput_artifacts_from_action_cache_size_in_bytes != nil {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes)
+	}
+	if m.addoutput_artifacts_from_action_cache_count != nil {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsFromActionCacheCount)
+	}
+	if m.addtop_level_artifacts_size_in_bytes != nil {
+		fields = append(fields, artifactmetrics.FieldTopLevelArtifactsSizeInBytes)
+	}
+	if m.addtop_level_artifacts_count != nil {
+		fields = append(fields, artifactmetrics.FieldTopLevelArtifactsCount)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *ArtifactMetricsMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case artifactmetrics.FieldSourceArtifactsReadSizeInBytes:
+		return m.AddedSourceArtifactsReadSizeInBytes()
+	case artifactmetrics.FieldSourceArtifactsReadCount:
+		return m.AddedSourceArtifactsReadCount()
+	case artifactmetrics.FieldOutputArtifactsSeenSizeInBytes:
+		return m.AddedOutputArtifactsSeenSizeInBytes()
+	case artifactmetrics.FieldOutputArtifactsSeenCount:
+		return m.AddedOutputArtifactsSeenCount()
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes:
+		return m.AddedOutputArtifactsFromActionCacheSizeInBytes()
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheCount:
+		return m.AddedOutputArtifactsFromActionCacheCount()
+	case artifactmetrics.FieldTopLevelArtifactsSizeInBytes:
+		return m.AddedTopLevelArtifactsSizeInBytes()
+	case artifactmetrics.FieldTopLevelArtifactsCount:
+		return m.AddedTopLevelArtifactsCount()
+	}
 	return nil, false
 }
 
@@ -3523,13 +4092,96 @@ func (m *ArtifactMetricsMutation) AddedField(name string) (ent.Value, bool) {
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
 func (m *ArtifactMetricsMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case artifactmetrics.FieldSourceArtifactsReadSizeInBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSourceArtifactsReadSizeInBytes(v)
+		return nil
+	case artifactmetrics.FieldSourceArtifactsReadCount:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSourceArtifactsReadCount(v)
+		return nil
+	case artifactmetrics.FieldOutputArtifactsSeenSizeInBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOutputArtifactsSeenSizeInBytes(v)
+		return nil
+	case artifactmetrics.FieldOutputArtifactsSeenCount:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOutputArtifactsSeenCount(v)
+		return nil
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOutputArtifactsFromActionCacheSizeInBytes(v)
+		return nil
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheCount:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOutputArtifactsFromActionCacheCount(v)
+		return nil
+	case artifactmetrics.FieldTopLevelArtifactsSizeInBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTopLevelArtifactsSizeInBytes(v)
+		return nil
+	case artifactmetrics.FieldTopLevelArtifactsCount:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTopLevelArtifactsCount(v)
+		return nil
+	}
 	return fmt.Errorf("unknown ArtifactMetrics numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *ArtifactMetricsMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(artifactmetrics.FieldSourceArtifactsReadSizeInBytes) {
+		fields = append(fields, artifactmetrics.FieldSourceArtifactsReadSizeInBytes)
+	}
+	if m.FieldCleared(artifactmetrics.FieldSourceArtifactsReadCount) {
+		fields = append(fields, artifactmetrics.FieldSourceArtifactsReadCount)
+	}
+	if m.FieldCleared(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes) {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsSeenSizeInBytes)
+	}
+	if m.FieldCleared(artifactmetrics.FieldOutputArtifactsSeenCount) {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsSeenCount)
+	}
+	if m.FieldCleared(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes) {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes)
+	}
+	if m.FieldCleared(artifactmetrics.FieldOutputArtifactsFromActionCacheCount) {
+		fields = append(fields, artifactmetrics.FieldOutputArtifactsFromActionCacheCount)
+	}
+	if m.FieldCleared(artifactmetrics.FieldTopLevelArtifactsSizeInBytes) {
+		fields = append(fields, artifactmetrics.FieldTopLevelArtifactsSizeInBytes)
+	}
+	if m.FieldCleared(artifactmetrics.FieldTopLevelArtifactsCount) {
+		fields = append(fields, artifactmetrics.FieldTopLevelArtifactsCount)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -3542,32 +4194,72 @@ func (m *ArtifactMetricsMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *ArtifactMetricsMutation) ClearField(name string) error {
+	switch name {
+	case artifactmetrics.FieldSourceArtifactsReadSizeInBytes:
+		m.ClearSourceArtifactsReadSizeInBytes()
+		return nil
+	case artifactmetrics.FieldSourceArtifactsReadCount:
+		m.ClearSourceArtifactsReadCount()
+		return nil
+	case artifactmetrics.FieldOutputArtifactsSeenSizeInBytes:
+		m.ClearOutputArtifactsSeenSizeInBytes()
+		return nil
+	case artifactmetrics.FieldOutputArtifactsSeenCount:
+		m.ClearOutputArtifactsSeenCount()
+		return nil
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes:
+		m.ClearOutputArtifactsFromActionCacheSizeInBytes()
+		return nil
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheCount:
+		m.ClearOutputArtifactsFromActionCacheCount()
+		return nil
+	case artifactmetrics.FieldTopLevelArtifactsSizeInBytes:
+		m.ClearTopLevelArtifactsSizeInBytes()
+		return nil
+	case artifactmetrics.FieldTopLevelArtifactsCount:
+		m.ClearTopLevelArtifactsCount()
+		return nil
+	}
 	return fmt.Errorf("unknown ArtifactMetrics nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
 func (m *ArtifactMetricsMutation) ResetField(name string) error {
+	switch name {
+	case artifactmetrics.FieldSourceArtifactsReadSizeInBytes:
+		m.ResetSourceArtifactsReadSizeInBytes()
+		return nil
+	case artifactmetrics.FieldSourceArtifactsReadCount:
+		m.ResetSourceArtifactsReadCount()
+		return nil
+	case artifactmetrics.FieldOutputArtifactsSeenSizeInBytes:
+		m.ResetOutputArtifactsSeenSizeInBytes()
+		return nil
+	case artifactmetrics.FieldOutputArtifactsSeenCount:
+		m.ResetOutputArtifactsSeenCount()
+		return nil
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes:
+		m.ResetOutputArtifactsFromActionCacheSizeInBytes()
+		return nil
+	case artifactmetrics.FieldOutputArtifactsFromActionCacheCount:
+		m.ResetOutputArtifactsFromActionCacheCount()
+		return nil
+	case artifactmetrics.FieldTopLevelArtifactsSizeInBytes:
+		m.ResetTopLevelArtifactsSizeInBytes()
+		return nil
+	case artifactmetrics.FieldTopLevelArtifactsCount:
+		m.ResetTopLevelArtifactsCount()
+		return nil
+	}
 	return fmt.Errorf("unknown ArtifactMetrics field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ArtifactMetricsMutation) AddedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 1)
 	if m.metrics != nil {
 		edges = append(edges, artifactmetrics.EdgeMetrics)
-	}
-	if m.source_artifacts_read != nil {
-		edges = append(edges, artifactmetrics.EdgeSourceArtifactsRead)
-	}
-	if m.output_artifacts_seen != nil {
-		edges = append(edges, artifactmetrics.EdgeOutputArtifactsSeen)
-	}
-	if m.output_artifacts_from_action_cache != nil {
-		edges = append(edges, artifactmetrics.EdgeOutputArtifactsFromActionCache)
-	}
-	if m.top_level_artifacts != nil {
-		edges = append(edges, artifactmetrics.EdgeTopLevelArtifacts)
 	}
 	return edges
 }
@@ -3580,29 +4272,13 @@ func (m *ArtifactMetricsMutation) AddedIDs(name string) []ent.Value {
 		if id := m.metrics; id != nil {
 			return []ent.Value{*id}
 		}
-	case artifactmetrics.EdgeSourceArtifactsRead:
-		if id := m.source_artifacts_read; id != nil {
-			return []ent.Value{*id}
-		}
-	case artifactmetrics.EdgeOutputArtifactsSeen:
-		if id := m.output_artifacts_seen; id != nil {
-			return []ent.Value{*id}
-		}
-	case artifactmetrics.EdgeOutputArtifactsFromActionCache:
-		if id := m.output_artifacts_from_action_cache; id != nil {
-			return []ent.Value{*id}
-		}
-	case artifactmetrics.EdgeTopLevelArtifacts:
-		if id := m.top_level_artifacts; id != nil {
-			return []ent.Value{*id}
-		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ArtifactMetricsMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -3614,21 +4290,9 @@ func (m *ArtifactMetricsMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ArtifactMetricsMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 1)
 	if m.clearedmetrics {
 		edges = append(edges, artifactmetrics.EdgeMetrics)
-	}
-	if m.clearedsource_artifacts_read {
-		edges = append(edges, artifactmetrics.EdgeSourceArtifactsRead)
-	}
-	if m.clearedoutput_artifacts_seen {
-		edges = append(edges, artifactmetrics.EdgeOutputArtifactsSeen)
-	}
-	if m.clearedoutput_artifacts_from_action_cache {
-		edges = append(edges, artifactmetrics.EdgeOutputArtifactsFromActionCache)
-	}
-	if m.clearedtop_level_artifacts {
-		edges = append(edges, artifactmetrics.EdgeTopLevelArtifacts)
 	}
 	return edges
 }
@@ -3639,14 +4303,6 @@ func (m *ArtifactMetricsMutation) EdgeCleared(name string) bool {
 	switch name {
 	case artifactmetrics.EdgeMetrics:
 		return m.clearedmetrics
-	case artifactmetrics.EdgeSourceArtifactsRead:
-		return m.clearedsource_artifacts_read
-	case artifactmetrics.EdgeOutputArtifactsSeen:
-		return m.clearedoutput_artifacts_seen
-	case artifactmetrics.EdgeOutputArtifactsFromActionCache:
-		return m.clearedoutput_artifacts_from_action_cache
-	case artifactmetrics.EdgeTopLevelArtifacts:
-		return m.clearedtop_level_artifacts
 	}
 	return false
 }
@@ -3658,18 +4314,6 @@ func (m *ArtifactMetricsMutation) ClearEdge(name string) error {
 	case artifactmetrics.EdgeMetrics:
 		m.ClearMetrics()
 		return nil
-	case artifactmetrics.EdgeSourceArtifactsRead:
-		m.ClearSourceArtifactsRead()
-		return nil
-	case artifactmetrics.EdgeOutputArtifactsSeen:
-		m.ClearOutputArtifactsSeen()
-		return nil
-	case artifactmetrics.EdgeOutputArtifactsFromActionCache:
-		m.ClearOutputArtifactsFromActionCache()
-		return nil
-	case artifactmetrics.EdgeTopLevelArtifacts:
-		m.ClearTopLevelArtifacts()
-		return nil
 	}
 	return fmt.Errorf("unknown ArtifactMetrics unique edge %s", name)
 }
@@ -3680,18 +4324,6 @@ func (m *ArtifactMetricsMutation) ResetEdge(name string) error {
 	switch name {
 	case artifactmetrics.EdgeMetrics:
 		m.ResetMetrics()
-		return nil
-	case artifactmetrics.EdgeSourceArtifactsRead:
-		m.ResetSourceArtifactsRead()
-		return nil
-	case artifactmetrics.EdgeOutputArtifactsSeen:
-		m.ResetOutputArtifactsSeen()
-		return nil
-	case artifactmetrics.EdgeOutputArtifactsFromActionCache:
-		m.ResetOutputArtifactsFromActionCache()
-		return nil
-	case artifactmetrics.EdgeTopLevelArtifacts:
-		m.ResetTopLevelArtifacts()
 		return nil
 	}
 	return fmt.Errorf("unknown ArtifactMetrics edge %s", name)
@@ -13605,565 +14237,6 @@ func (m *ExectionInfoMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown ExectionInfo edge %s", name)
-}
-
-// FilesMetricMutation represents an operation that mutates the FilesMetric nodes in the graph.
-type FilesMetricMutation struct {
-	config
-	op                      Op
-	typ                     string
-	id                      *int
-	size_in_bytes           *int64
-	addsize_in_bytes        *int64
-	count                   *int32
-	addcount                *int32
-	clearedFields           map[string]struct{}
-	artifact_metrics        *int
-	clearedartifact_metrics bool
-	done                    bool
-	oldValue                func(context.Context) (*FilesMetric, error)
-	predicates              []predicate.FilesMetric
-}
-
-var _ ent.Mutation = (*FilesMetricMutation)(nil)
-
-// filesmetricOption allows management of the mutation configuration using functional options.
-type filesmetricOption func(*FilesMetricMutation)
-
-// newFilesMetricMutation creates new mutation for the FilesMetric entity.
-func newFilesMetricMutation(c config, op Op, opts ...filesmetricOption) *FilesMetricMutation {
-	m := &FilesMetricMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeFilesMetric,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withFilesMetricID sets the ID field of the mutation.
-func withFilesMetricID(id int) filesmetricOption {
-	return func(m *FilesMetricMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *FilesMetric
-		)
-		m.oldValue = func(ctx context.Context) (*FilesMetric, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().FilesMetric.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withFilesMetric sets the old FilesMetric of the mutation.
-func withFilesMetric(node *FilesMetric) filesmetricOption {
-	return func(m *FilesMetricMutation) {
-		m.oldValue = func(context.Context) (*FilesMetric, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m FilesMetricMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m FilesMetricMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *FilesMetricMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *FilesMetricMutation) IDs(ctx context.Context) ([]int, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().FilesMetric.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetSizeInBytes sets the "size_in_bytes" field.
-func (m *FilesMetricMutation) SetSizeInBytes(i int64) {
-	m.size_in_bytes = &i
-	m.addsize_in_bytes = nil
-}
-
-// SizeInBytes returns the value of the "size_in_bytes" field in the mutation.
-func (m *FilesMetricMutation) SizeInBytes() (r int64, exists bool) {
-	v := m.size_in_bytes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSizeInBytes returns the old "size_in_bytes" field's value of the FilesMetric entity.
-// If the FilesMetric object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FilesMetricMutation) OldSizeInBytes(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSizeInBytes is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSizeInBytes requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSizeInBytes: %w", err)
-	}
-	return oldValue.SizeInBytes, nil
-}
-
-// AddSizeInBytes adds i to the "size_in_bytes" field.
-func (m *FilesMetricMutation) AddSizeInBytes(i int64) {
-	if m.addsize_in_bytes != nil {
-		*m.addsize_in_bytes += i
-	} else {
-		m.addsize_in_bytes = &i
-	}
-}
-
-// AddedSizeInBytes returns the value that was added to the "size_in_bytes" field in this mutation.
-func (m *FilesMetricMutation) AddedSizeInBytes() (r int64, exists bool) {
-	v := m.addsize_in_bytes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearSizeInBytes clears the value of the "size_in_bytes" field.
-func (m *FilesMetricMutation) ClearSizeInBytes() {
-	m.size_in_bytes = nil
-	m.addsize_in_bytes = nil
-	m.clearedFields[filesmetric.FieldSizeInBytes] = struct{}{}
-}
-
-// SizeInBytesCleared returns if the "size_in_bytes" field was cleared in this mutation.
-func (m *FilesMetricMutation) SizeInBytesCleared() bool {
-	_, ok := m.clearedFields[filesmetric.FieldSizeInBytes]
-	return ok
-}
-
-// ResetSizeInBytes resets all changes to the "size_in_bytes" field.
-func (m *FilesMetricMutation) ResetSizeInBytes() {
-	m.size_in_bytes = nil
-	m.addsize_in_bytes = nil
-	delete(m.clearedFields, filesmetric.FieldSizeInBytes)
-}
-
-// SetCount sets the "count" field.
-func (m *FilesMetricMutation) SetCount(i int32) {
-	m.count = &i
-	m.addcount = nil
-}
-
-// Count returns the value of the "count" field in the mutation.
-func (m *FilesMetricMutation) Count() (r int32, exists bool) {
-	v := m.count
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCount returns the old "count" field's value of the FilesMetric entity.
-// If the FilesMetric object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FilesMetricMutation) OldCount(ctx context.Context) (v int32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCount is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCount requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCount: %w", err)
-	}
-	return oldValue.Count, nil
-}
-
-// AddCount adds i to the "count" field.
-func (m *FilesMetricMutation) AddCount(i int32) {
-	if m.addcount != nil {
-		*m.addcount += i
-	} else {
-		m.addcount = &i
-	}
-}
-
-// AddedCount returns the value that was added to the "count" field in this mutation.
-func (m *FilesMetricMutation) AddedCount() (r int32, exists bool) {
-	v := m.addcount
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearCount clears the value of the "count" field.
-func (m *FilesMetricMutation) ClearCount() {
-	m.count = nil
-	m.addcount = nil
-	m.clearedFields[filesmetric.FieldCount] = struct{}{}
-}
-
-// CountCleared returns if the "count" field was cleared in this mutation.
-func (m *FilesMetricMutation) CountCleared() bool {
-	_, ok := m.clearedFields[filesmetric.FieldCount]
-	return ok
-}
-
-// ResetCount resets all changes to the "count" field.
-func (m *FilesMetricMutation) ResetCount() {
-	m.count = nil
-	m.addcount = nil
-	delete(m.clearedFields, filesmetric.FieldCount)
-}
-
-// SetArtifactMetricsID sets the "artifact_metrics" edge to the ArtifactMetrics entity by id.
-func (m *FilesMetricMutation) SetArtifactMetricsID(id int) {
-	m.artifact_metrics = &id
-}
-
-// ClearArtifactMetrics clears the "artifact_metrics" edge to the ArtifactMetrics entity.
-func (m *FilesMetricMutation) ClearArtifactMetrics() {
-	m.clearedartifact_metrics = true
-}
-
-// ArtifactMetricsCleared reports if the "artifact_metrics" edge to the ArtifactMetrics entity was cleared.
-func (m *FilesMetricMutation) ArtifactMetricsCleared() bool {
-	return m.clearedartifact_metrics
-}
-
-// ArtifactMetricsID returns the "artifact_metrics" edge ID in the mutation.
-func (m *FilesMetricMutation) ArtifactMetricsID() (id int, exists bool) {
-	if m.artifact_metrics != nil {
-		return *m.artifact_metrics, true
-	}
-	return
-}
-
-// ArtifactMetricsIDs returns the "artifact_metrics" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ArtifactMetricsID instead. It exists only for internal usage by the builders.
-func (m *FilesMetricMutation) ArtifactMetricsIDs() (ids []int) {
-	if id := m.artifact_metrics; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetArtifactMetrics resets all changes to the "artifact_metrics" edge.
-func (m *FilesMetricMutation) ResetArtifactMetrics() {
-	m.artifact_metrics = nil
-	m.clearedartifact_metrics = false
-}
-
-// Where appends a list predicates to the FilesMetricMutation builder.
-func (m *FilesMetricMutation) Where(ps ...predicate.FilesMetric) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the FilesMetricMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *FilesMetricMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.FilesMetric, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *FilesMetricMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *FilesMetricMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (FilesMetric).
-func (m *FilesMetricMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *FilesMetricMutation) Fields() []string {
-	fields := make([]string, 0, 2)
-	if m.size_in_bytes != nil {
-		fields = append(fields, filesmetric.FieldSizeInBytes)
-	}
-	if m.count != nil {
-		fields = append(fields, filesmetric.FieldCount)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *FilesMetricMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case filesmetric.FieldSizeInBytes:
-		return m.SizeInBytes()
-	case filesmetric.FieldCount:
-		return m.Count()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *FilesMetricMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case filesmetric.FieldSizeInBytes:
-		return m.OldSizeInBytes(ctx)
-	case filesmetric.FieldCount:
-		return m.OldCount(ctx)
-	}
-	return nil, fmt.Errorf("unknown FilesMetric field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *FilesMetricMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case filesmetric.FieldSizeInBytes:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSizeInBytes(v)
-		return nil
-	case filesmetric.FieldCount:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCount(v)
-		return nil
-	}
-	return fmt.Errorf("unknown FilesMetric field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *FilesMetricMutation) AddedFields() []string {
-	var fields []string
-	if m.addsize_in_bytes != nil {
-		fields = append(fields, filesmetric.FieldSizeInBytes)
-	}
-	if m.addcount != nil {
-		fields = append(fields, filesmetric.FieldCount)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *FilesMetricMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case filesmetric.FieldSizeInBytes:
-		return m.AddedSizeInBytes()
-	case filesmetric.FieldCount:
-		return m.AddedCount()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *FilesMetricMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case filesmetric.FieldSizeInBytes:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddSizeInBytes(v)
-		return nil
-	case filesmetric.FieldCount:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddCount(v)
-		return nil
-	}
-	return fmt.Errorf("unknown FilesMetric numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *FilesMetricMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(filesmetric.FieldSizeInBytes) {
-		fields = append(fields, filesmetric.FieldSizeInBytes)
-	}
-	if m.FieldCleared(filesmetric.FieldCount) {
-		fields = append(fields, filesmetric.FieldCount)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *FilesMetricMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *FilesMetricMutation) ClearField(name string) error {
-	switch name {
-	case filesmetric.FieldSizeInBytes:
-		m.ClearSizeInBytes()
-		return nil
-	case filesmetric.FieldCount:
-		m.ClearCount()
-		return nil
-	}
-	return fmt.Errorf("unknown FilesMetric nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *FilesMetricMutation) ResetField(name string) error {
-	switch name {
-	case filesmetric.FieldSizeInBytes:
-		m.ResetSizeInBytes()
-		return nil
-	case filesmetric.FieldCount:
-		m.ResetCount()
-		return nil
-	}
-	return fmt.Errorf("unknown FilesMetric field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *FilesMetricMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.artifact_metrics != nil {
-		edges = append(edges, filesmetric.EdgeArtifactMetrics)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *FilesMetricMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case filesmetric.EdgeArtifactMetrics:
-		if id := m.artifact_metrics; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *FilesMetricMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *FilesMetricMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *FilesMetricMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedartifact_metrics {
-		edges = append(edges, filesmetric.EdgeArtifactMetrics)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *FilesMetricMutation) EdgeCleared(name string) bool {
-	switch name {
-	case filesmetric.EdgeArtifactMetrics:
-		return m.clearedartifact_metrics
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *FilesMetricMutation) ClearEdge(name string) error {
-	switch name {
-	case filesmetric.EdgeArtifactMetrics:
-		m.ClearArtifactMetrics()
-		return nil
-	}
-	return fmt.Errorf("unknown FilesMetric unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *FilesMetricMutation) ResetEdge(name string) error {
-	switch name {
-	case filesmetric.EdgeArtifactMetrics:
-		m.ResetArtifactMetrics()
-		return nil
-	}
-	return fmt.Errorf("unknown FilesMetric edge %s", name)
 }
 
 // GarbageMetricsMutation represents an operation that mutates the GarbageMetrics nodes in the graph.

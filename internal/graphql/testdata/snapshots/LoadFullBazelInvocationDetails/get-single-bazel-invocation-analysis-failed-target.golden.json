@@ -140,26 +140,14 @@
       },
       "artifactMetrics": {
         "id": "QXJ0aWZhY3RNZXRyaWNzOjU=",
-        "outputArtifactsFromActionCache": {
-          "count": 11,
-          "id": "RmlsZXNNZXRyaWM6MTk=",
-          "sizeInBytes": 690376
-        },
-        "outputArtifactsSeen": {
-          "count": 15,
-          "id": "RmlsZXNNZXRyaWM6MTg=",
-          "sizeInBytes": 692189
-        },
-        "sourceArtifactsRead": {
-          "count": 0,
-          "id": "RmlsZXNNZXRyaWM6MTc=",
-          "sizeInBytes": 0
-        },
-        "topLevelArtifacts": {
-          "count": 12392,
-          "id": "RmlsZXNNZXRyaWM6MjA=",
-          "sizeInBytes": 1157054839
-        }
+        "outputArtifactsFromActionCacheCount": 11,
+        "outputArtifactsFromActionCacheSizeInBytes": 690376,
+        "outputArtifactsSeenCount": 15,
+        "outputArtifactsSeenSizeInBytes": 692189,
+        "sourceArtifactsReadCount": 0,
+        "sourceArtifactsReadSizeInBytes": 0,
+        "topLevelArtifactsCount": 12392,
+        "topLevelArtifactsSizeInBytes": 1157054839
       },
       "cumulativeMetrics": {
         "id": "Q3VtdWxhdGl2ZU1ldHJpY3M6NQ==",

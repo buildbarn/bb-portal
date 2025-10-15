@@ -42,8 +42,6 @@ type Tx struct {
 	EventMetadata *EventMetadataClient
 	// ExectionInfo is the client for interacting with the ExectionInfo builders.
 	ExectionInfo *ExectionInfoClient
-	// FilesMetric is the client for interacting with the FilesMetric builders.
-	FilesMetric *FilesMetricClient
 	// GarbageMetrics is the client for interacting with the GarbageMetrics builders.
 	GarbageMetrics *GarbageMetricsClient
 	// IncompleteBuildLog is the client for interacting with the IncompleteBuildLog builders.
@@ -237,7 +235,6 @@ func (tx *Tx) init() {
 	tx.EvaluationStat = NewEvaluationStatClient(tx.config)
 	tx.EventMetadata = NewEventMetadataClient(tx.config)
 	tx.ExectionInfo = NewExectionInfoClient(tx.config)
-	tx.FilesMetric = NewFilesMetricClient(tx.config)
 	tx.GarbageMetrics = NewGarbageMetricsClient(tx.config)
 	tx.IncompleteBuildLog = NewIncompleteBuildLogClient(tx.config)
 	tx.InvocationFiles = NewInvocationFilesClient(tx.config)

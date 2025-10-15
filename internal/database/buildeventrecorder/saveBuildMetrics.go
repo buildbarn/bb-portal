@@ -129,59 +129,39 @@ func (r *BuildEventRecorder) saveActionSummary(ctx context.Context, tx *ent.Tx, 
 	return nil
 }
 
-func (r *BuildEventRecorder) saveFilesMetric(ctx context.Context, tx *ent.Tx, filesMetric *bes.BuildMetrics_ArtifactMetrics_FilesMetric) (*ent.FilesMetric, error) {
-	if filesMetric == nil {
-		return nil, nil
-	}
-
-	fm, err := tx.FilesMetric.Create().
-		SetCount(filesMetric.Count).
-		SetSizeInBytes(filesMetric.SizeInBytes).
-		Save(ctx)
-	if err != nil {
-		return nil, util.StatusWrap(err, "Failed to save files metric to database")
-	}
-	return fm, nil
-}
-
 func (r *BuildEventRecorder) saveArtifactMetrics(ctx context.Context, tx *ent.Tx, artifactMetrics *bes.BuildMetrics_ArtifactMetrics, metricsDbID int) error {
 	if artifactMetrics == nil {
 		return nil
 	}
 
-	sourceArtifactsRead, err := r.saveFilesMetric(ctx, tx, artifactMetrics.SourceArtifactsRead)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save sourceArtifactsRead metric")
-	}
-	outputArtifactsSeen, err := r.saveFilesMetric(ctx, tx, artifactMetrics.OutputArtifactsSeen)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save outputArtifactsSeen metric")
-	}
-	outputArtifactsFromActionCache, err := r.saveFilesMetric(ctx, tx, artifactMetrics.OutputArtifactsFromActionCache)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save outputArtifactsFromActionCache metric")
-	}
-	topLevelArtifacts, err := r.saveFilesMetric(ctx, tx, artifactMetrics.TopLevelArtifacts)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save topLevelArtifacts metric")
-	}
-
 	create := tx.ArtifactMetrics.Create().
 		SetMetricsID(metricsDbID)
 
-	if sourceArtifactsRead != nil {
-		create.SetSourceArtifactsRead(sourceArtifactsRead)
+	if artifactMetrics.SourceArtifactsRead != nil {
+		create.
+			SetSourceArtifactsReadCount(artifactMetrics.SourceArtifactsRead.Count).
+			SetSourceArtifactsReadSizeInBytes(artifactMetrics.SourceArtifactsRead.SizeInBytes)
 	}
-	if outputArtifactsSeen != nil {
-		create.SetOutputArtifactsSeen(outputArtifactsSeen)
+
+	if artifactMetrics.OutputArtifactsSeen != nil {
+		create.
+			SetOutputArtifactsSeenCount(artifactMetrics.OutputArtifactsSeen.Count).
+			SetOutputArtifactsSeenSizeInBytes(artifactMetrics.OutputArtifactsSeen.SizeInBytes)
 	}
-	if outputArtifactsFromActionCache != nil {
-		create.SetOutputArtifactsFromActionCache(outputArtifactsFromActionCache)
+
+	if artifactMetrics.OutputArtifactsFromActionCache != nil {
+		create.
+			SetOutputArtifactsFromActionCacheCount(artifactMetrics.OutputArtifactsFromActionCache.Count).
+			SetOutputArtifactsFromActionCacheSizeInBytes(artifactMetrics.OutputArtifactsFromActionCache.SizeInBytes)
 	}
-	if topLevelArtifacts != nil {
-		create.SetTopLevelArtifacts(topLevelArtifacts)
+
+	if artifactMetrics.TopLevelArtifacts != nil {
+		create.
+			SetTopLevelArtifactsCount(artifactMetrics.TopLevelArtifacts.Count).
+			SetTopLevelArtifactsSizeInBytes(artifactMetrics.TopLevelArtifacts.SizeInBytes)
 	}
-	err = create.Exec(ctx)
+
+	err := create.Exec(ctx)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to save artifact metrics to database")
 	}

@@ -26,7 +26,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
@@ -125,7 +124,6 @@ func checkColumn(table, column string) error {
 			evaluationstat.Table:         evaluationstat.ValidColumn,
 			eventmetadata.Table:          eventmetadata.ValidColumn,
 			exectioninfo.Table:           exectioninfo.ValidColumn,
-			filesmetric.Table:            filesmetric.ValidColumn,
 			garbagemetrics.Table:         garbagemetrics.ValidColumn,
 			incompletebuildlog.Table:     incompletebuildlog.ValidColumn,
 			invocationfiles.Table:        invocationfiles.ValidColumn,

@@ -29,7 +29,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
@@ -91,8 +90,6 @@ type Client struct {
 	EventMetadata *EventMetadataClient
 	// ExectionInfo is the client for interacting with the ExectionInfo builders.
 	ExectionInfo *ExectionInfoClient
-	// FilesMetric is the client for interacting with the FilesMetric builders.
-	FilesMetric *FilesMetricClient
 	// GarbageMetrics is the client for interacting with the GarbageMetrics builders.
 	GarbageMetrics *GarbageMetricsClient
 	// IncompleteBuildLog is the client for interacting with the IncompleteBuildLog builders.
@@ -168,7 +165,6 @@ func (c *Client) init() {
 	c.EvaluationStat = NewEvaluationStatClient(c.config)
 	c.EventMetadata = NewEventMetadataClient(c.config)
 	c.ExectionInfo = NewExectionInfoClient(c.config)
-	c.FilesMetric = NewFilesMetricClient(c.config)
 	c.GarbageMetrics = NewGarbageMetricsClient(c.config)
 	c.IncompleteBuildLog = NewIncompleteBuildLogClient(c.config)
 	c.InvocationFiles = NewInvocationFilesClient(c.config)
@@ -299,7 +295,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		EvaluationStat:         NewEvaluationStatClient(cfg),
 		EventMetadata:          NewEventMetadataClient(cfg),
 		ExectionInfo:           NewExectionInfoClient(cfg),
-		FilesMetric:            NewFilesMetricClient(cfg),
 		GarbageMetrics:         NewGarbageMetricsClient(cfg),
 		IncompleteBuildLog:     NewIncompleteBuildLogClient(cfg),
 		InvocationFiles:        NewInvocationFilesClient(cfg),
@@ -357,7 +352,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		EvaluationStat:         NewEvaluationStatClient(cfg),
 		EventMetadata:          NewEventMetadataClient(cfg),
 		ExectionInfo:           NewExectionInfoClient(cfg),
-		FilesMetric:            NewFilesMetricClient(cfg),
 		GarbageMetrics:         NewGarbageMetricsClient(cfg),
 		IncompleteBuildLog:     NewIncompleteBuildLogClient(cfg),
 		InvocationFiles:        NewInvocationFilesClient(cfg),
@@ -414,9 +408,9 @@ func (c *Client) Use(hooks ...Hook) {
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
 		c.BazelInvocation, c.BazelInvocationProblem, c.Blob, c.Build,
 		c.BuildGraphMetrics, c.ConnectionMetadata, c.CumulativeMetrics,
-		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.FilesMetric,
-		c.GarbageMetrics, c.IncompleteBuildLog, c.InvocationFiles, c.MemoryMetrics,
-		c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup,
+		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.GarbageMetrics,
+		c.IncompleteBuildLog, c.InvocationFiles, c.MemoryMetrics, c.Metrics,
+		c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup,
 		c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage, c.RunnerCount,
 		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetMetrics,
 		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
@@ -433,9 +427,9 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
 		c.BazelInvocation, c.BazelInvocationProblem, c.Blob, c.Build,
 		c.BuildGraphMetrics, c.ConnectionMetadata, c.CumulativeMetrics,
-		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.FilesMetric,
-		c.GarbageMetrics, c.IncompleteBuildLog, c.InvocationFiles, c.MemoryMetrics,
-		c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup,
+		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.GarbageMetrics,
+		c.IncompleteBuildLog, c.InvocationFiles, c.MemoryMetrics, c.Metrics,
+		c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup,
 		c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage, c.RunnerCount,
 		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetMetrics,
 		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
@@ -476,8 +470,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.EventMetadata.mutate(ctx, m)
 	case *ExectionInfoMutation:
 		return c.ExectionInfo.mutate(ctx, m)
-	case *FilesMetricMutation:
-		return c.FilesMetric.mutate(ctx, m)
 	case *GarbageMetricsMutation:
 		return c.GarbageMetrics.mutate(ctx, m)
 	case *IncompleteBuildLogMutation:
@@ -1159,70 +1151,6 @@ func (c *ArtifactMetricsClient) QueryMetrics(am *ArtifactMetrics) *MetricsQuery 
 			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, id),
 			sqlgraph.To(metrics.Table, metrics.FieldID),
 			sqlgraph.Edge(sqlgraph.O2O, true, artifactmetrics.MetricsTable, artifactmetrics.MetricsColumn),
-		)
-		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QuerySourceArtifactsRead queries the source_artifacts_read edge of a ArtifactMetrics.
-func (c *ArtifactMetricsClient) QuerySourceArtifactsRead(am *ArtifactMetrics) *FilesMetricQuery {
-	query := (&FilesMetricClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := am.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, id),
-			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, artifactmetrics.SourceArtifactsReadTable, artifactmetrics.SourceArtifactsReadColumn),
-		)
-		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryOutputArtifactsSeen queries the output_artifacts_seen edge of a ArtifactMetrics.
-func (c *ArtifactMetricsClient) QueryOutputArtifactsSeen(am *ArtifactMetrics) *FilesMetricQuery {
-	query := (&FilesMetricClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := am.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, id),
-			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, artifactmetrics.OutputArtifactsSeenTable, artifactmetrics.OutputArtifactsSeenColumn),
-		)
-		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryOutputArtifactsFromActionCache queries the output_artifacts_from_action_cache edge of a ArtifactMetrics.
-func (c *ArtifactMetricsClient) QueryOutputArtifactsFromActionCache(am *ArtifactMetrics) *FilesMetricQuery {
-	query := (&FilesMetricClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := am.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, id),
-			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, artifactmetrics.OutputArtifactsFromActionCacheTable, artifactmetrics.OutputArtifactsFromActionCacheColumn),
-		)
-		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryTopLevelArtifacts queries the top_level_artifacts edge of a ArtifactMetrics.
-func (c *ArtifactMetricsClient) QueryTopLevelArtifacts(am *ArtifactMetrics) *FilesMetricQuery {
-	query := (&FilesMetricClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := am.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(artifactmetrics.Table, artifactmetrics.FieldID, id),
-			sqlgraph.To(filesmetric.Table, filesmetric.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, artifactmetrics.TopLevelArtifactsTable, artifactmetrics.TopLevelArtifactsColumn),
 		)
 		fromV = sqlgraph.Neighbors(am.driver.Dialect(), step)
 		return fromV, nil
@@ -2982,155 +2910,6 @@ func (c *ExectionInfoClient) mutate(ctx context.Context, m *ExectionInfoMutation
 		return (&ExectionInfoDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown ExectionInfo mutation op: %q", m.Op())
-	}
-}
-
-// FilesMetricClient is a client for the FilesMetric schema.
-type FilesMetricClient struct {
-	config
-}
-
-// NewFilesMetricClient returns a client for the FilesMetric from the given config.
-func NewFilesMetricClient(c config) *FilesMetricClient {
-	return &FilesMetricClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `filesmetric.Hooks(f(g(h())))`.
-func (c *FilesMetricClient) Use(hooks ...Hook) {
-	c.hooks.FilesMetric = append(c.hooks.FilesMetric, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `filesmetric.Intercept(f(g(h())))`.
-func (c *FilesMetricClient) Intercept(interceptors ...Interceptor) {
-	c.inters.FilesMetric = append(c.inters.FilesMetric, interceptors...)
-}
-
-// Create returns a builder for creating a FilesMetric entity.
-func (c *FilesMetricClient) Create() *FilesMetricCreate {
-	mutation := newFilesMetricMutation(c.config, OpCreate)
-	return &FilesMetricCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of FilesMetric entities.
-func (c *FilesMetricClient) CreateBulk(builders ...*FilesMetricCreate) *FilesMetricCreateBulk {
-	return &FilesMetricCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *FilesMetricClient) MapCreateBulk(slice any, setFunc func(*FilesMetricCreate, int)) *FilesMetricCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &FilesMetricCreateBulk{err: fmt.Errorf("calling to FilesMetricClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*FilesMetricCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &FilesMetricCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for FilesMetric.
-func (c *FilesMetricClient) Update() *FilesMetricUpdate {
-	mutation := newFilesMetricMutation(c.config, OpUpdate)
-	return &FilesMetricUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *FilesMetricClient) UpdateOne(fm *FilesMetric) *FilesMetricUpdateOne {
-	mutation := newFilesMetricMutation(c.config, OpUpdateOne, withFilesMetric(fm))
-	return &FilesMetricUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *FilesMetricClient) UpdateOneID(id int) *FilesMetricUpdateOne {
-	mutation := newFilesMetricMutation(c.config, OpUpdateOne, withFilesMetricID(id))
-	return &FilesMetricUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for FilesMetric.
-func (c *FilesMetricClient) Delete() *FilesMetricDelete {
-	mutation := newFilesMetricMutation(c.config, OpDelete)
-	return &FilesMetricDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *FilesMetricClient) DeleteOne(fm *FilesMetric) *FilesMetricDeleteOne {
-	return c.DeleteOneID(fm.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *FilesMetricClient) DeleteOneID(id int) *FilesMetricDeleteOne {
-	builder := c.Delete().Where(filesmetric.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &FilesMetricDeleteOne{builder}
-}
-
-// Query returns a query builder for FilesMetric.
-func (c *FilesMetricClient) Query() *FilesMetricQuery {
-	return &FilesMetricQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeFilesMetric},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a FilesMetric entity by its id.
-func (c *FilesMetricClient) Get(ctx context.Context, id int) (*FilesMetric, error) {
-	return c.Query().Where(filesmetric.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *FilesMetricClient) GetX(ctx context.Context, id int) *FilesMetric {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryArtifactMetrics queries the artifact_metrics edge of a FilesMetric.
-func (c *FilesMetricClient) QueryArtifactMetrics(fm *FilesMetric) *ArtifactMetricsQuery {
-	query := (&ArtifactMetricsClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := fm.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(filesmetric.Table, filesmetric.FieldID, id),
-			sqlgraph.To(artifactmetrics.Table, artifactmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, filesmetric.ArtifactMetricsTable, filesmetric.ArtifactMetricsColumn),
-		)
-		fromV = sqlgraph.Neighbors(fm.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *FilesMetricClient) Hooks() []Hook {
-	return c.hooks.FilesMetric
-}
-
-// Interceptors returns the client interceptors.
-func (c *FilesMetricClient) Interceptors() []Interceptor {
-	return c.inters.FilesMetric
-}
-
-func (c *FilesMetricClient) mutate(ctx context.Context, m *FilesMetricMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&FilesMetricCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&FilesMetricUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&FilesMetricUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&FilesMetricDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown FilesMetric mutation op: %q", m.Op())
 	}
 }
 
@@ -7068,7 +6847,7 @@ type (
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		BazelInvocation, BazelInvocationProblem, Blob, Build, BuildGraphMetrics,
 		ConnectionMetadata, CumulativeMetrics, EvaluationStat, EventMetadata,
-		ExectionInfo, FilesMetric, GarbageMetrics, IncompleteBuildLog, InvocationFiles,
+		ExectionInfo, GarbageMetrics, IncompleteBuildLog, InvocationFiles,
 		MemoryMetrics, Metrics, MissDetail, NamedSetOfFiles, NetworkMetrics,
 		OutputGroup, PackageLoadMetrics, PackageMetrics, ResourceUsage, RunnerCount,
 		SourceControl, SystemNetworkStats, Target, TargetMetrics, TestCollection,
@@ -7079,7 +6858,7 @@ type (
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		BazelInvocation, BazelInvocationProblem, Blob, Build, BuildGraphMetrics,
 		ConnectionMetadata, CumulativeMetrics, EvaluationStat, EventMetadata,
-		ExectionInfo, FilesMetric, GarbageMetrics, IncompleteBuildLog, InvocationFiles,
+		ExectionInfo, GarbageMetrics, IncompleteBuildLog, InvocationFiles,
 		MemoryMetrics, Metrics, MissDetail, NamedSetOfFiles, NetworkMetrics,
 		OutputGroup, PackageLoadMetrics, PackageMetrics, ResourceUsage, RunnerCount,
 		SourceControl, SystemNetworkStats, Target, TargetMetrics, TestCollection,
