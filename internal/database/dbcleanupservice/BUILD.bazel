@@ -11,6 +11,8 @@ go_library(
         "//ent/gen/ent/build",
         "//ent/gen/ent/connectionmetadata",
         "//ent/gen/ent/eventmetadata",
+        "//ent/gen/ent/incompletebuildlog",
+        "//internal/api/grpc/bes",
         "//internal/database/common",
         "//pkg/proto/configuration/bb_portal",
         "@com_github_buildbarn_bb_storage//pkg/clock",

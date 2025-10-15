@@ -14,6 +14,8 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	localbes "github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/clock"
@@ -96,6 +98,9 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 				}
 				if err := dc.RemoveOldEventMetadata(ctx); err != nil {
 					slog.Warn("Failed to remove old event metadata", "err", err)
+				}
+				if err := dc.CompactLogs(ctx); err != nil {
+					slog.Warn("Failed to compact logs", "err", err)
 				}
 				if err := dc.RemoveOldInvocations(ctx); err != nil {
 					slog.Warn("Failed to remove old invocations", "err", err)
@@ -252,6 +257,48 @@ func (dc *DbCleanupService) RemoveOldEventMetadata(ctx context.Context) error {
 		return util.StatusWrap(err, "Failed to remove old event metadata")
 	}
 	slog.Info("Removed old event metadata", "count", deletedEM)
+	return nil
+}
+
+// CompactLogs compacts incomplete build logs by merging log entries for
+// the same invocation.
+func (dc *DbCleanupService) CompactLogs(ctx context.Context) error {
+	slog.Info("Compacting logs")
+
+	tx, err := dc.db.BeginTx(ctx, &entsql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return util.StatusWrap(err, "Failed to create transaction")
+	}
+
+	invocations, err := tx.BazelInvocation.Query().
+		Where(
+			bazelinvocation.BepCompleted(true),
+			bazelinvocation.HasIncompleteBuildLogs(),
+		).
+		All(ctx)
+	if err != nil {
+		return common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to query invocations with incomplete build logs"))
+	}
+
+	for _, invocation := range invocations {
+		normalizedLogs, err := localbes.GetNormalizedIncompleteBuildLogs(ctx, invocation)
+		err = tx.BazelInvocation.
+			Update().
+			Where(bazelinvocation.IDEQ(invocation.ID)).
+			SetBuildLogs(normalizedLogs).
+			Exec(ctx)
+		if err != nil {
+			return common.RollbackAndWrapError(tx, util.StatusWrapf(err, "Failed to save compacted build logs for invocation %d", invocation.ID))
+		}
+		_, err = tx.IncompleteBuildLog.Delete().Where(incompletebuildlog.HasBazelInvocationWith(bazelinvocation.IDEQ(invocation.ID))).Exec(ctx)
+		if err != nil {
+			return common.RollbackAndWrapError(tx, util.StatusWrapf(err, "Failed to delete incomplete build log snippets for invocation %d", invocation.ID))
+		}
+	}
+	err = tx.Commit()
+	if err != nil {
+		return util.StatusWrap(err, "Failed to commit transaction")
+	}
 	return nil
 }
 
