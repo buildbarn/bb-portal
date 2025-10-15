@@ -39,6 +39,26 @@ func getNewDbCleanupService(client *ent.Client, clock clock.Clock, traceProvider
 	return dbcleanupservice.NewDbCleanupService(client, clock, cleanupConfiguration, traceProvider)
 }
 
+func populateIncompleteBuildLog(t *testing.T, ctx context.Context, client *ent.Client, invocationDbID int) {
+	logSnippets := []string{
+		"\u001b[32mComputing main repo mapping:\u001b[0m \n\r\u001b[1A\u001b[K\u001b[32mLoading:\u001b[0m \n\r\u001b[1A\u001b[K\u001b[32mLoading:\u001b[0m 0 packages loaded\n",
+		"\r\u001b[1A\u001b[K\u001b[35mWARNING: \u001b[0mBuild options --dynamic_mode, --extra_execution_platforms, and --extra_toolchains have changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).\n\u001b[32mAnalyzing:\u001b[0m target //:hello (0 packages loaded)\n",
+		"\r\u001b[1A\u001b[K\u001b[32mAnalyzing:\u001b[0m target //:hello (0 packages loaded, 0 targets configured)\n\r\u001b[1A\u001b[K\u001b[32mAnalyzing:\u001b[0m target //:hello (0 packages loaded, 0 targets configured)\n\n",
+		"\r\u001b[1A\u001b[K\r\u001b[1A\u001b[K\u001b[32mINFO: \u001b[0mAnalyzed target //:hello (0 packages loaded, 2 targets configured).\n\n",
+		"\r\u001b[1A\u001b[K\u001b[32mINFO: \u001b[0mFound 1 target...\n\u001b[32m[2 / 2]\u001b[0m no actions running\n",
+		"\r\u001b[1A\u001b[KTarget //:hello up-to-date:\n\u001b[32m[2 / 2]\u001b[0m no actions running\n\r\u001b[1A\u001b[K  bazel-bin/hello.sh\n\u001b[32m[2 / 2]\u001b[0m no actions running\n\r\u001b[1A\u001b[K\u001b[32mINFO: \u001b[0mElapsed time: 0.137s, Critical Path: 0.02s\n\u001b[32m[2 / 2]\u001b[0m no actions running\n\r\u001b[1A\u001b[K\u001b[32mINFO: \u001b[0m2 processes: 1 internal, 1 linux-sandbox.\n\u001b[32m[2 / 2]\u001b[0m no actions running\n\r\u001b[1A\u001b[K\u001b[32mINFO: \u001b[0mBuild completed successfully, 2 total actions\n\u001b[32mINFO:\u001b[0m \n\r\u001b[1A\u001b[K\u001b[32mINFO:\u001b[0m \n",
+	}
+	for i, snippet := range logSnippets {
+		_, err := client.IncompleteBuildLog.Create().
+			SetBazelInvocationID(invocationDbID).
+			// LogSnippetID is 1-indexed.
+			SetSnippetID(int32(i + 1)).
+			SetLogSnippet(snippet).
+			Save(ctx)
+		require.NoError(t, err)
+	}
+}
+
 func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 	ctrl, ctx := gomock.WithContext(context.Background(), t)
 	clock := mock.NewMockClock(ctrl)
@@ -757,6 +777,91 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 		count, err := client.EventMetadata.Query().Count(ctx)
 		require.NoError(t, err)
 		require.Equal(t, 0, count)
+	})
+}
+
+func TestCompactLogs(t *testing.T) {
+	ctrl, ctx := gomock.WithContext(context.Background(), t)
+	clock := mock.NewMockClock(ctrl)
+	traceProvider := noop.NewTracerProvider()
+
+	t.Run("FinishedInvocationWithoutIncompleteLog", func(t *testing.T) {
+		client := setupTestDB(t)
+		inv, err := client.BazelInvocation.Create().
+			SetInvocationID(uuid.New()).
+			SetBepCompleted(true).
+			Save(ctx)
+		require.NoError(t, err)
+
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		require.NoError(t, err)
+		err = cleanup.CompactLogs(ctx)
+		require.NoError(t, err)
+		updatedInvocation, err := client.BazelInvocation.Get(ctx, inv.ID)
+		require.NoError(t, err)
+		require.Equal(t, "", updatedInvocation.BuildLogs)
+
+		count, err := client.IncompleteBuildLog.Query().Count(ctx)
+		require.NoError(t, err)
+		require.Equal(t, 0, count)
+	})
+
+	requireIncompleteLogCount := func(t *testing.T, client *ent.Client, expected int) {
+		count, err := client.IncompleteBuildLog.Query().Count(ctx)
+		require.NoError(t, err)
+		require.Equal(t, expected, count)
+	}
+
+	t.Run("FinishedInvocationWithIncompleteLog", func(t *testing.T) {
+		client := setupTestDB(t)
+		inv, err := client.BazelInvocation.Create().
+			SetInvocationID(uuid.New()).
+			SetBepCompleted(true).
+			Save(ctx)
+		require.NoError(t, err)
+
+		populateIncompleteBuildLog(t, ctx, client, inv.ID)
+
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		require.NoError(t, err)
+		// Delete attempt before compaction should not delete logs.
+		err = cleanup.DeleteIncompleteLogs(ctx)
+		require.NoError(t, err)
+		requireIncompleteLogCount(t, client, 6)
+		// Compaction should not delete logs
+		err = cleanup.CompactLogs(ctx)
+		require.NoError(t, err)
+		requireIncompleteLogCount(t, client, 6)
+		updatedInvocation, err := client.BazelInvocation.Get(ctx, inv.ID)
+		require.NoError(t, err)
+		require.Equal(t, "\x1b[35mWARNING: \x1b[0mBuild options --dynamic_mode, --extra_execution_platforms, and --extra_toolchains have changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).\n\x1b[32mINFO: \x1b[0mAnalyzed target //:hello (0 packages loaded, 2 targets configured).\n\x1b[32mINFO: \x1b[0mFound 1 target...\nTarget //:hello up-to-date:\n  bazel-bin/hello.sh\n\x1b[32mINFO: \x1b[0mElapsed time: 0.137s, Critical Path: 0.02s\n\x1b[32mINFO: \x1b[0m2 processes: 1 internal, 1 linux-sandbox.\n\x1b[32mINFO: \x1b[0mBuild completed successfully, 2 total actions\n\x1b[32mINFO:\x1b[0m \n", updatedInvocation.BuildLogs)
+		// Now logs should be deleted
+		err = cleanup.DeleteIncompleteLogs(ctx)
+		require.NoError(t, err)
+		requireIncompleteLogCount(t, client, 0)
+	})
+
+	t.Run("UnfinishedInvocationWithIncompleteLog", func(t *testing.T) {
+		client := setupTestDB(t)
+		inv, err := client.BazelInvocation.Create().
+			SetInvocationID(uuid.New()).
+			SetBepCompleted(false).
+			Save(ctx)
+		require.NoError(t, err)
+
+		populateIncompleteBuildLog(t, ctx, client, inv.ID)
+		requireIncompleteLogCount(t, client, 6)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		require.NoError(t, err)
+		err = cleanup.CompactLogs(ctx)
+		require.NoError(t, err)
+		requireIncompleteLogCount(t, client, 6)
+		updatedInvocation, err := client.BazelInvocation.Get(ctx, inv.ID)
+		require.NoError(t, err)
+		require.Equal(t, "", updatedInvocation.BuildLogs)
+		err = cleanup.DeleteIncompleteLogs(ctx)
+		require.NoError(t, err)
+		requireIncompleteLogCount(t, client, 6)
 	})
 }
 
