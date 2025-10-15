@@ -3,6 +3,7 @@ package dbcleanupservice
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log/slog"
 	"math/rand/v2"
 	"strings"
@@ -14,11 +15,15 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	localbes "github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -104,6 +109,12 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 				}
 				if err := dc.RemoveOldEventMetadata(ctx); err != nil {
 					slog.Warn("Failed to remove old event metadata", "err", err)
+				}
+				if err := dc.CompactLogs(ctx); err != nil {
+					slog.Warn("Failed to compact logs", "err", err)
+				}
+				if err := dc.DeleteIncompleteLogs(ctx); err != nil {
+					slog.Warn("Failed to delete incomplete logs", "err", err)
 				}
 				if err := dc.RemoveOldInvocations(ctx); err != nil {
 					slog.Warn("Failed to remove old invocations", "err", err)
@@ -272,6 +283,99 @@ func (dc *DbCleanupService) RemoveOldEventMetadata(ctx context.Context) error {
 		return util.StatusWrap(err, "Failed to remove old event metadata")
 	}
 	slog.Info("Removed old event metadata", "count", deletedEM)
+	return nil
+}
+
+func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, invocation *ent.BazelInvocation) error {
+	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.normalizeInvocation")
+	defer span.End()
+
+	span.SetAttributes(attribute.String("invocation.id", invocation.InvocationID.String()))
+
+	normalizedLogs, err := localbes.GetNormalizedIncompleteBuildLogs(ctx, invocation)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "Could not normalize log")
+		return err
+	}
+
+	err = dc.db.BazelInvocation.
+		Update().
+		Where(
+			bazelinvocation.IDEQ(invocation.ID),
+			bazelinvocation.BuildLogsIsNil(),
+		).
+		SetBuildLogs(normalizedLogs).
+		Exec(ctx)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "Could not save normalized logs")
+		return err
+	}
+
+	return nil
+}
+
+// CompactLogs compacts incomplete build logs by merging log entries for
+// the same invocation.
+func (dc *DbCleanupService) CompactLogs(ctx context.Context) error {
+	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.CompactLogs")
+	defer span.End()
+
+	invocations, err := dc.db.BazelInvocation.Query().
+		Where(
+			bazelinvocation.BepCompleted(true),
+			bazelinvocation.BuildLogsIsNil(),
+		).
+		All(ctx)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "Failed to query invocations with incomplete build logs")
+		return util.StatusWrap(err, "Failed to query invocations with incomplete build logs")
+	}
+
+	errs := make([]error, 0, len(invocations))
+	for _, invocation := range invocations {
+		err = dc.normalizeInvocation(ctx, invocation)
+		if err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	span.SetAttributes(
+		attribute.Int("invocations.total", len(invocations)),
+		attribute.Int("invocations.succeeded", len(invocations)-len(errs)),
+	)
+
+	if len(errs) != 0 {
+		err = util.StatusFromMultiple(errs)
+		span.RecordError(err)
+		span.SetStatus(codes.Error, fmt.Sprintf("%d/%d invocation logs could not be compacted", len(errs), len(invocations)))
+		return err
+	}
+
+	return nil
+}
+
+// DeleteIncompleteLogs deletes logs which have had their incomplete
+// build logs normalized.
+func (dc *DbCleanupService) DeleteIncompleteLogs(ctx context.Context) error {
+	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.DeleteIncompleteLogs")
+	defer span.End()
+
+	_, err := dc.db.IncompleteBuildLog.Delete().
+		Where(
+			incompletebuildlog.HasBazelInvocationWith(
+				bazelinvocation.BuildLogsNotNil(),
+			),
+		).
+		Exec(ctx)
+	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "Could not delete incompleted build logs")
+		return util.StatusWrap(err, "Could not delete incompleted build logs")
+	}
+
 	return nil
 }
 
