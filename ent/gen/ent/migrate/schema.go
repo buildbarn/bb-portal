@@ -84,9 +84,14 @@ var (
 	// ArtifactMetricsColumns holds the columns for the "artifact_metrics" table.
 	ArtifactMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "artifact_metrics_source_artifacts_read", Type: field.TypeInt, Nullable: true},
-		{Name: "artifact_metrics_output_artifacts_seen", Type: field.TypeInt, Nullable: true},
-		{Name: "artifact_metrics_output_artifacts_from_action_cache", Type: field.TypeInt, Nullable: true},
+		{Name: "source_artifacts_read_size_in_bytes", Type: field.TypeInt64, Nullable: true},
+		{Name: "source_artifacts_read_count", Type: field.TypeInt32, Nullable: true},
+		{Name: "output_artifacts_seen_size_in_bytes", Type: field.TypeInt64, Nullable: true},
+		{Name: "output_artifacts_seen_count", Type: field.TypeInt32, Nullable: true},
+		{Name: "output_artifacts_from_action_cache_size_in_bytes", Type: field.TypeInt64, Nullable: true},
+		{Name: "output_artifacts_from_action_cache_count", Type: field.TypeInt32, Nullable: true},
+		{Name: "top_level_artifacts_size_in_bytes", Type: field.TypeInt64, Nullable: true},
+		{Name: "top_level_artifacts_count", Type: field.TypeInt32, Nullable: true},
 		{Name: "metrics_artifact_metrics", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// ArtifactMetricsTable holds the schema information for the "artifact_metrics" table.
@@ -96,26 +101,8 @@ var (
 		PrimaryKey: []*schema.Column{ArtifactMetricsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "artifact_metrics_files_metrics_source_artifacts_read",
-				Columns:    []*schema.Column{ArtifactMetricsColumns[1]},
-				RefColumns: []*schema.Column{FilesMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "artifact_metrics_files_metrics_output_artifacts_seen",
-				Columns:    []*schema.Column{ArtifactMetricsColumns[2]},
-				RefColumns: []*schema.Column{FilesMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "artifact_metrics_files_metrics_output_artifacts_from_action_cache",
-				Columns:    []*schema.Column{ArtifactMetricsColumns[3]},
-				RefColumns: []*schema.Column{FilesMetricsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
 				Symbol:     "artifact_metrics_metrics_artifact_metrics",
-				Columns:    []*schema.Column{ArtifactMetricsColumns[4]},
+				Columns:    []*schema.Column{ArtifactMetricsColumns[9]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -429,27 +416,6 @@ var (
 				Symbol:     "exection_infos_test_result_be_ss_execution_info",
 				Columns:    []*schema.Column{ExectionInfosColumns[6]},
 				RefColumns: []*schema.Column{TestResultBeSsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// FilesMetricsColumns holds the columns for the "files_metrics" table.
-	FilesMetricsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "size_in_bytes", Type: field.TypeInt64, Nullable: true},
-		{Name: "count", Type: field.TypeInt32, Nullable: true},
-		{Name: "artifact_metrics_top_level_artifacts", Type: field.TypeInt, Unique: true, Nullable: true},
-	}
-	// FilesMetricsTable holds the schema information for the "files_metrics" table.
-	FilesMetricsTable = &schema.Table{
-		Name:       "files_metrics",
-		Columns:    FilesMetricsColumns,
-		PrimaryKey: []*schema.Column{FilesMetricsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "files_metrics_artifact_metrics_top_level_artifacts",
-				Columns:    []*schema.Column{FilesMetricsColumns[3]},
-				RefColumns: []*schema.Column{ArtifactMetricsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 		},
@@ -1116,7 +1082,6 @@ var (
 		EvaluationStatsTable,
 		EventMetadataTable,
 		ExectionInfosTable,
-		FilesMetricsTable,
 		GarbageMetricsTable,
 		IncompleteBuildLogsTable,
 		InvocationFilesTable,
@@ -1148,10 +1113,7 @@ func init() {
 	ActionCacheStatisticsTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	ActionDataTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	ActionSummariesTable.ForeignKeys[0].RefTable = MetricsTable
-	ArtifactMetricsTable.ForeignKeys[0].RefTable = FilesMetricsTable
-	ArtifactMetricsTable.ForeignKeys[1].RefTable = FilesMetricsTable
-	ArtifactMetricsTable.ForeignKeys[2].RefTable = FilesMetricsTable
-	ArtifactMetricsTable.ForeignKeys[3].RefTable = MetricsTable
+	ArtifactMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	BazelInvocationsTable.ForeignKeys[0].RefTable = BuildsTable
 	BazelInvocationProblemsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	BuildGraphMetricsTable.ForeignKeys[0].RefTable = EvaluationStatsTable
@@ -1164,7 +1126,6 @@ func init() {
 	EvaluationStatsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
 	EventMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	ExectionInfosTable.ForeignKeys[0].RefTable = TestResultBeSsTable
-	FilesMetricsTable.ForeignKeys[0].RefTable = ArtifactMetricsTable
 	GarbageMetricsTable.ForeignKeys[0].RefTable = MemoryMetricsTable
 	IncompleteBuildLogsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationFilesTable.ForeignKeys[0].RefTable = BazelInvocationsTable

@@ -78,11 +78,6 @@ func (r *exectionInfoResolver) ID(ctx context.Context, obj *ent.ExectionInfo) (s
 }
 
 // ID is the resolver for the id field.
-func (r *filesMetricResolver) ID(ctx context.Context, obj *ent.FilesMetric) (string, error) {
-	return helpers.GraphQLIDFromTypeAndID("FilesMetric", obj.ID), nil
-}
-
-// ID is the resolver for the id field.
 func (r *garbageMetricsResolver) ID(ctx context.Context, obj *ent.GarbageMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("GarbageMetrics", obj.ID), nil
 }
@@ -760,46 +755,6 @@ func (r *exectionInfoWhereInputResolver) IDLt(ctx context.Context, obj *ent.Exec
 
 // IDLte is the resolver for the idLTE field.
 func (r *exectionInfoWhereInputResolver) IDLte(ctx context.Context, obj *ent.ExectionInfoWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
-}
-
-// ID is the resolver for the id field.
-func (r *filesMetricWhereInputResolver) ID(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
-}
-
-// IDNeq is the resolver for the idNEQ field.
-func (r *filesMetricWhereInputResolver) IDNeq(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
-}
-
-// IDIn is the resolver for the idIn field.
-func (r *filesMetricWhereInputResolver) IDIn(ctx context.Context, obj *ent.FilesMetricWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDIn - idIn"))
-}
-
-// IDNotIn is the resolver for the idNotIn field.
-func (r *filesMetricWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.FilesMetricWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
-}
-
-// IDGt is the resolver for the idGT field.
-func (r *filesMetricWhereInputResolver) IDGt(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGt - idGT"))
-}
-
-// IDGte is the resolver for the idGTE field.
-func (r *filesMetricWhereInputResolver) IDGte(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
-}
-
-// IDLt is the resolver for the idLT field.
-func (r *filesMetricWhereInputResolver) IDLt(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLt - idLT"))
-}
-
-// IDLte is the resolver for the idLTE field.
-func (r *filesMetricWhereInputResolver) IDLte(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
@@ -1807,9 +1762,6 @@ func (r *Resolver) EvaluationStat() EvaluationStatResolver { return &evaluationS
 // ExectionInfo returns ExectionInfoResolver implementation.
 func (r *Resolver) ExectionInfo() ExectionInfoResolver { return &exectionInfoResolver{r} }
 
-// FilesMetric returns FilesMetricResolver implementation.
-func (r *Resolver) FilesMetric() FilesMetricResolver { return &filesMetricResolver{r} }
-
 // GarbageMetrics returns GarbageMetricsResolver implementation.
 func (r *Resolver) GarbageMetrics() GarbageMetricsResolver { return &garbageMetricsResolver{r} }
 
@@ -1947,11 +1899,6 @@ func (r *Resolver) ExectionInfoWhereInput() ExectionInfoWhereInputResolver {
 	return &exectionInfoWhereInputResolver{r}
 }
 
-// FilesMetricWhereInput returns FilesMetricWhereInputResolver implementation.
-func (r *Resolver) FilesMetricWhereInput() FilesMetricWhereInputResolver {
-	return &filesMetricWhereInputResolver{r}
-}
-
 // GarbageMetricsWhereInput returns GarbageMetricsWhereInputResolver implementation.
 func (r *Resolver) GarbageMetricsWhereInput() GarbageMetricsWhereInputResolver {
 	return &garbageMetricsWhereInputResolver{r}
@@ -2083,7 +2030,6 @@ type (
 	cumulativeMetricsResolver                struct{ *Resolver }
 	evaluationStatResolver                   struct{ *Resolver }
 	exectionInfoResolver                     struct{ *Resolver }
-	filesMetricResolver                      struct{ *Resolver }
 	garbageMetricsResolver                   struct{ *Resolver }
 	incompleteBuildLogResolver               struct{ *Resolver }
 	invocationFilesResolver                  struct{ *Resolver }
@@ -2121,7 +2067,6 @@ type (
 	cumulativeMetricsWhereInputResolver      struct{ *Resolver }
 	evaluationStatWhereInputResolver         struct{ *Resolver }
 	exectionInfoWhereInputResolver           struct{ *Resolver }
-	filesMetricWhereInputResolver            struct{ *Resolver }
 	garbageMetricsWhereInputResolver         struct{ *Resolver }
 	incompleteBuildLogWhereInputResolver     struct{ *Resolver }
 	invocationFilesWhereInputResolver        struct{ *Resolver }

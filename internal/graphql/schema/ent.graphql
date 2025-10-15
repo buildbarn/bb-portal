@@ -342,11 +342,15 @@ input ActionSummaryWhereInput {
 }
 type ArtifactMetrics implements Node {
   id: ID!
+  sourceArtifactsReadSizeInBytes: Int
+  sourceArtifactsReadCount: Int
+  outputArtifactsSeenSizeInBytes: Int
+  outputArtifactsSeenCount: Int
+  outputArtifactsFromActionCacheSizeInBytes: Int
+  outputArtifactsFromActionCacheCount: Int
+  topLevelArtifactsSizeInBytes: Int
+  topLevelArtifactsCount: Int
   metrics: Metrics
-  sourceArtifactsRead: FilesMetric
-  outputArtifactsSeen: FilesMetric
-  outputArtifactsFromActionCache: FilesMetric
-  topLevelArtifacts: FilesMetric
 }
 """
 ArtifactMetricsWhereInput is used for filtering ArtifactMetrics objects.
@@ -368,30 +372,114 @@ input ArtifactMetricsWhereInput {
   idLT: ID
   idLTE: ID
   """
+  source_artifacts_read_size_in_bytes field predicates
+  """
+  sourceArtifactsReadSizeInBytes: Int
+  sourceArtifactsReadSizeInBytesNEQ: Int
+  sourceArtifactsReadSizeInBytesIn: [Int!]
+  sourceArtifactsReadSizeInBytesNotIn: [Int!]
+  sourceArtifactsReadSizeInBytesGT: Int
+  sourceArtifactsReadSizeInBytesGTE: Int
+  sourceArtifactsReadSizeInBytesLT: Int
+  sourceArtifactsReadSizeInBytesLTE: Int
+  sourceArtifactsReadSizeInBytesIsNil: Boolean
+  sourceArtifactsReadSizeInBytesNotNil: Boolean
+  """
+  source_artifacts_read_count field predicates
+  """
+  sourceArtifactsReadCount: Int
+  sourceArtifactsReadCountNEQ: Int
+  sourceArtifactsReadCountIn: [Int!]
+  sourceArtifactsReadCountNotIn: [Int!]
+  sourceArtifactsReadCountGT: Int
+  sourceArtifactsReadCountGTE: Int
+  sourceArtifactsReadCountLT: Int
+  sourceArtifactsReadCountLTE: Int
+  sourceArtifactsReadCountIsNil: Boolean
+  sourceArtifactsReadCountNotNil: Boolean
+  """
+  output_artifacts_seen_size_in_bytes field predicates
+  """
+  outputArtifactsSeenSizeInBytes: Int
+  outputArtifactsSeenSizeInBytesNEQ: Int
+  outputArtifactsSeenSizeInBytesIn: [Int!]
+  outputArtifactsSeenSizeInBytesNotIn: [Int!]
+  outputArtifactsSeenSizeInBytesGT: Int
+  outputArtifactsSeenSizeInBytesGTE: Int
+  outputArtifactsSeenSizeInBytesLT: Int
+  outputArtifactsSeenSizeInBytesLTE: Int
+  outputArtifactsSeenSizeInBytesIsNil: Boolean
+  outputArtifactsSeenSizeInBytesNotNil: Boolean
+  """
+  output_artifacts_seen_count field predicates
+  """
+  outputArtifactsSeenCount: Int
+  outputArtifactsSeenCountNEQ: Int
+  outputArtifactsSeenCountIn: [Int!]
+  outputArtifactsSeenCountNotIn: [Int!]
+  outputArtifactsSeenCountGT: Int
+  outputArtifactsSeenCountGTE: Int
+  outputArtifactsSeenCountLT: Int
+  outputArtifactsSeenCountLTE: Int
+  outputArtifactsSeenCountIsNil: Boolean
+  outputArtifactsSeenCountNotNil: Boolean
+  """
+  output_artifacts_from_action_cache_size_in_bytes field predicates
+  """
+  outputArtifactsFromActionCacheSizeInBytes: Int
+  outputArtifactsFromActionCacheSizeInBytesNEQ: Int
+  outputArtifactsFromActionCacheSizeInBytesIn: [Int!]
+  outputArtifactsFromActionCacheSizeInBytesNotIn: [Int!]
+  outputArtifactsFromActionCacheSizeInBytesGT: Int
+  outputArtifactsFromActionCacheSizeInBytesGTE: Int
+  outputArtifactsFromActionCacheSizeInBytesLT: Int
+  outputArtifactsFromActionCacheSizeInBytesLTE: Int
+  outputArtifactsFromActionCacheSizeInBytesIsNil: Boolean
+  outputArtifactsFromActionCacheSizeInBytesNotNil: Boolean
+  """
+  output_artifacts_from_action_cache_count field predicates
+  """
+  outputArtifactsFromActionCacheCount: Int
+  outputArtifactsFromActionCacheCountNEQ: Int
+  outputArtifactsFromActionCacheCountIn: [Int!]
+  outputArtifactsFromActionCacheCountNotIn: [Int!]
+  outputArtifactsFromActionCacheCountGT: Int
+  outputArtifactsFromActionCacheCountGTE: Int
+  outputArtifactsFromActionCacheCountLT: Int
+  outputArtifactsFromActionCacheCountLTE: Int
+  outputArtifactsFromActionCacheCountIsNil: Boolean
+  outputArtifactsFromActionCacheCountNotNil: Boolean
+  """
+  top_level_artifacts_size_in_bytes field predicates
+  """
+  topLevelArtifactsSizeInBytes: Int
+  topLevelArtifactsSizeInBytesNEQ: Int
+  topLevelArtifactsSizeInBytesIn: [Int!]
+  topLevelArtifactsSizeInBytesNotIn: [Int!]
+  topLevelArtifactsSizeInBytesGT: Int
+  topLevelArtifactsSizeInBytesGTE: Int
+  topLevelArtifactsSizeInBytesLT: Int
+  topLevelArtifactsSizeInBytesLTE: Int
+  topLevelArtifactsSizeInBytesIsNil: Boolean
+  topLevelArtifactsSizeInBytesNotNil: Boolean
+  """
+  top_level_artifacts_count field predicates
+  """
+  topLevelArtifactsCount: Int
+  topLevelArtifactsCountNEQ: Int
+  topLevelArtifactsCountIn: [Int!]
+  topLevelArtifactsCountNotIn: [Int!]
+  topLevelArtifactsCountGT: Int
+  topLevelArtifactsCountGTE: Int
+  topLevelArtifactsCountLT: Int
+  topLevelArtifactsCountLTE: Int
+  topLevelArtifactsCountIsNil: Boolean
+  topLevelArtifactsCountNotNil: Boolean
+  """
   metrics edge predicates
   """
   hasMetrics: Boolean
   hasMetricsWith: [MetricsWhereInput!]
-  """
-  source_artifacts_read edge predicates
-  """
-  hasSourceArtifactsRead: Boolean
-  hasSourceArtifactsReadWith: [FilesMetricWhereInput!]
-  """
-  output_artifacts_seen edge predicates
-  """
-  hasOutputArtifactsSeen: Boolean
-  hasOutputArtifactsSeenWith: [FilesMetricWhereInput!]
-  """
-  output_artifacts_from_action_cache edge predicates
-  """
-  hasOutputArtifactsFromActionCache: Boolean
-  hasOutputArtifactsFromActionCacheWith: [FilesMetricWhereInput!]
-  """
-  top_level_artifacts edge predicates
-  """
-  hasTopLevelArtifacts: Boolean
-  hasTopLevelArtifactsWith: [FilesMetricWhereInput!]
 }
 type BazelInvocation implements Node {
   id: ID!
@@ -1579,63 +1667,6 @@ input ExectionInfoWhereInput {
   """
   hasResourceUsage: Boolean
   hasResourceUsageWith: [ResourceUsageWhereInput!]
-}
-type FilesMetric implements Node {
-  id: ID!
-  sizeInBytes: Int
-  count: Int
-  artifactMetrics: ArtifactMetrics
-}
-"""
-FilesMetricWhereInput is used for filtering FilesMetric objects.
-Input was generated by ent.
-"""
-input FilesMetricWhereInput {
-  not: FilesMetricWhereInput
-  and: [FilesMetricWhereInput!]
-  or: [FilesMetricWhereInput!]
-  """
-  id field predicates
-  """
-  id: ID
-  idNEQ: ID
-  idIn: [ID!]
-  idNotIn: [ID!]
-  idGT: ID
-  idGTE: ID
-  idLT: ID
-  idLTE: ID
-  """
-  size_in_bytes field predicates
-  """
-  sizeInBytes: Int
-  sizeInBytesNEQ: Int
-  sizeInBytesIn: [Int!]
-  sizeInBytesNotIn: [Int!]
-  sizeInBytesGT: Int
-  sizeInBytesGTE: Int
-  sizeInBytesLT: Int
-  sizeInBytesLTE: Int
-  sizeInBytesIsNil: Boolean
-  sizeInBytesNotNil: Boolean
-  """
-  count field predicates
-  """
-  count: Int
-  countNEQ: Int
-  countIn: [Int!]
-  countNotIn: [Int!]
-  countGT: Int
-  countGTE: Int
-  countLT: Int
-  countLTE: Int
-  countIsNil: Boolean
-  countNotNil: Boolean
-  """
-  artifact_metrics edge predicates
-  """
-  hasArtifactMetrics: Boolean
-  hasArtifactMetricsWith: [ArtifactMetricsWhereInput!]
 }
 type GarbageMetrics implements Node {
   id: ID!

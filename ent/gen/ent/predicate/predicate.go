@@ -48,9 +48,6 @@ type EventMetadata func(*sql.Selector)
 // ExectionInfo is the predicate function for exectioninfo builders.
 type ExectionInfo func(*sql.Selector)
 
-// FilesMetric is the predicate function for filesmetric builders.
-type FilesMetric func(*sql.Selector)
-
 // GarbageMetrics is the predicate function for garbagemetrics builders.
 type GarbageMetrics func(*sql.Selector)
 

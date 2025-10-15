@@ -25,7 +25,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
@@ -118,11 +117,6 @@ var exectioninfoImplementors = []string{"ExectionInfo", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*ExectionInfo) IsNode() {}
-
-var filesmetricImplementors = []string{"FilesMetric", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*FilesMetric) IsNode() {}
 
 var garbagemetricsImplementors = []string{"GarbageMetrics", "Node"}
 
@@ -406,15 +400,6 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			Where(exectioninfo.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, exectioninfoImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
-	case filesmetric.Table:
-		query := c.FilesMetric.Query().
-			Where(filesmetric.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, filesmetricImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -888,22 +873,6 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.ExectionInfo.Query().
 			Where(exectioninfo.IDIn(ids...))
 		query, err := query.CollectFields(ctx, exectioninfoImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
-	case filesmetric.Table:
-		query := c.FilesMetric.Query().
-			Where(filesmetric.IDIn(ids...))
-		query, err := query.CollectFields(ctx, filesmetricImplementors...)
 		if err != nil {
 			return nil, err
 		}

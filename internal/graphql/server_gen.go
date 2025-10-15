@@ -65,7 +65,6 @@ type ResolverRoot interface {
 	CumulativeMetrics() CumulativeMetricsResolver
 	EvaluationStat() EvaluationStatResolver
 	ExectionInfo() ExectionInfoResolver
-	FilesMetric() FilesMetricResolver
 	GarbageMetrics() GarbageMetricsResolver
 	IncompleteBuildLog() IncompleteBuildLogResolver
 	InvocationFiles() InvocationFilesResolver
@@ -105,7 +104,6 @@ type ResolverRoot interface {
 	CumulativeMetricsWhereInput() CumulativeMetricsWhereInputResolver
 	EvaluationStatWhereInput() EvaluationStatWhereInputResolver
 	ExectionInfoWhereInput() ExectionInfoWhereInputResolver
-	FilesMetricWhereInput() FilesMetricWhereInputResolver
 	GarbageMetricsWhereInput() GarbageMetricsWhereInputResolver
 	IncompleteBuildLogWhereInput() IncompleteBuildLogWhereInputResolver
 	InvocationFilesWhereInput() InvocationFilesWhereInputResolver
@@ -180,12 +178,16 @@ type ComplexityRoot struct {
 	}
 
 	ArtifactMetrics struct {
-		ID                             func(childComplexity int) int
-		Metrics                        func(childComplexity int) int
-		OutputArtifactsFromActionCache func(childComplexity int) int
-		OutputArtifactsSeen            func(childComplexity int) int
-		SourceArtifactsRead            func(childComplexity int) int
-		TopLevelArtifacts              func(childComplexity int) int
+		ID                                        func(childComplexity int) int
+		Metrics                                   func(childComplexity int) int
+		OutputArtifactsFromActionCacheCount       func(childComplexity int) int
+		OutputArtifactsFromActionCacheSizeInBytes func(childComplexity int) int
+		OutputArtifactsSeenCount                  func(childComplexity int) int
+		OutputArtifactsSeenSizeInBytes            func(childComplexity int) int
+		SourceArtifactsReadCount                  func(childComplexity int) int
+		SourceArtifactsReadSizeInBytes            func(childComplexity int) int
+		TopLevelArtifactsCount                    func(childComplexity int) int
+		TopLevelArtifactsSizeInBytes              func(childComplexity int) int
 	}
 
 	BazelCommand struct {
@@ -354,13 +356,6 @@ type ComplexityRoot struct {
 		Code func(childComplexity int) int
 		ID   func(childComplexity int) int
 		Name func(childComplexity int) int
-	}
-
-	FilesMetric struct {
-		ArtifactMetrics func(childComplexity int) int
-		Count           func(childComplexity int) int
-		ID              func(childComplexity int) int
-		SizeInBytes     func(childComplexity int) int
 	}
 
 	GarbageMetrics struct {
@@ -839,9 +834,6 @@ type EvaluationStatResolver interface {
 type ExectionInfoResolver interface {
 	ID(ctx context.Context, obj *ent.ExectionInfo) (string, error)
 }
-type FilesMetricResolver interface {
-	ID(ctx context.Context, obj *ent.FilesMetric) (string, error)
-}
 type GarbageMetricsResolver interface {
 	ID(ctx context.Context, obj *ent.GarbageMetrics) (string, error)
 }
@@ -1065,16 +1057,6 @@ type ExectionInfoWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.ExectionInfoWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.ExectionInfoWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.ExectionInfoWhereInput, data *string) error
-}
-type FilesMetricWhereInputResolver interface {
-	ID(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error
-	IDNeq(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error
-	IDIn(ctx context.Context, obj *ent.FilesMetricWhereInput, data []string) error
-	IDNotIn(ctx context.Context, obj *ent.FilesMetricWhereInput, data []string) error
-	IDGt(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error
-	IDGte(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error
-	IDLt(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error
-	IDLte(ctx context.Context, obj *ent.FilesMetricWhereInput, data *string) error
 }
 type GarbageMetricsWhereInputResolver interface {
 	ID(ctx context.Context, obj *ent.GarbageMetricsWhereInput, data *string) error
@@ -1567,33 +1549,61 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ArtifactMetrics.Metrics(childComplexity), true
 
-	case "ArtifactMetrics.outputArtifactsFromActionCache":
-		if e.complexity.ArtifactMetrics.OutputArtifactsFromActionCache == nil {
+	case "ArtifactMetrics.outputArtifactsFromActionCacheCount":
+		if e.complexity.ArtifactMetrics.OutputArtifactsFromActionCacheCount == nil {
 			break
 		}
 
-		return e.complexity.ArtifactMetrics.OutputArtifactsFromActionCache(childComplexity), true
+		return e.complexity.ArtifactMetrics.OutputArtifactsFromActionCacheCount(childComplexity), true
 
-	case "ArtifactMetrics.outputArtifactsSeen":
-		if e.complexity.ArtifactMetrics.OutputArtifactsSeen == nil {
+	case "ArtifactMetrics.outputArtifactsFromActionCacheSizeInBytes":
+		if e.complexity.ArtifactMetrics.OutputArtifactsFromActionCacheSizeInBytes == nil {
 			break
 		}
 
-		return e.complexity.ArtifactMetrics.OutputArtifactsSeen(childComplexity), true
+		return e.complexity.ArtifactMetrics.OutputArtifactsFromActionCacheSizeInBytes(childComplexity), true
 
-	case "ArtifactMetrics.sourceArtifactsRead":
-		if e.complexity.ArtifactMetrics.SourceArtifactsRead == nil {
+	case "ArtifactMetrics.outputArtifactsSeenCount":
+		if e.complexity.ArtifactMetrics.OutputArtifactsSeenCount == nil {
 			break
 		}
 
-		return e.complexity.ArtifactMetrics.SourceArtifactsRead(childComplexity), true
+		return e.complexity.ArtifactMetrics.OutputArtifactsSeenCount(childComplexity), true
 
-	case "ArtifactMetrics.topLevelArtifacts":
-		if e.complexity.ArtifactMetrics.TopLevelArtifacts == nil {
+	case "ArtifactMetrics.outputArtifactsSeenSizeInBytes":
+		if e.complexity.ArtifactMetrics.OutputArtifactsSeenSizeInBytes == nil {
 			break
 		}
 
-		return e.complexity.ArtifactMetrics.TopLevelArtifacts(childComplexity), true
+		return e.complexity.ArtifactMetrics.OutputArtifactsSeenSizeInBytes(childComplexity), true
+
+	case "ArtifactMetrics.sourceArtifactsReadCount":
+		if e.complexity.ArtifactMetrics.SourceArtifactsReadCount == nil {
+			break
+		}
+
+		return e.complexity.ArtifactMetrics.SourceArtifactsReadCount(childComplexity), true
+
+	case "ArtifactMetrics.sourceArtifactsReadSizeInBytes":
+		if e.complexity.ArtifactMetrics.SourceArtifactsReadSizeInBytes == nil {
+			break
+		}
+
+		return e.complexity.ArtifactMetrics.SourceArtifactsReadSizeInBytes(childComplexity), true
+
+	case "ArtifactMetrics.topLevelArtifactsCount":
+		if e.complexity.ArtifactMetrics.TopLevelArtifactsCount == nil {
+			break
+		}
+
+		return e.complexity.ArtifactMetrics.TopLevelArtifactsCount(childComplexity), true
+
+	case "ArtifactMetrics.topLevelArtifactsSizeInBytes":
+		if e.complexity.ArtifactMetrics.TopLevelArtifactsSizeInBytes == nil {
+			break
+		}
+
+		return e.complexity.ArtifactMetrics.TopLevelArtifactsSizeInBytes(childComplexity), true
 
 	case "BazelCommand.cmdLine":
 		if e.complexity.BazelCommand.CmdLine == nil {
@@ -2413,34 +2423,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ExitCode.Name(childComplexity), true
-
-	case "FilesMetric.artifactMetrics":
-		if e.complexity.FilesMetric.ArtifactMetrics == nil {
-			break
-		}
-
-		return e.complexity.FilesMetric.ArtifactMetrics(childComplexity), true
-
-	case "FilesMetric.count":
-		if e.complexity.FilesMetric.Count == nil {
-			break
-		}
-
-		return e.complexity.FilesMetric.Count(childComplexity), true
-
-	case "FilesMetric.id":
-		if e.complexity.FilesMetric.ID == nil {
-			break
-		}
-
-		return e.complexity.FilesMetric.ID(childComplexity), true
-
-	case "FilesMetric.sizeInBytes":
-		if e.complexity.FilesMetric.SizeInBytes == nil {
-			break
-		}
-
-		return e.complexity.FilesMetric.SizeInBytes(childComplexity), true
 
 	case "GarbageMetrics.garbageCollected":
 		if e.complexity.GarbageMetrics.GarbageCollected == nil {
@@ -4524,7 +4506,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCumulativeMetricsWhereInput,
 		ec.unmarshalInputEvaluationStatWhereInput,
 		ec.unmarshalInputExectionInfoWhereInput,
-		ec.unmarshalInputFilesMetricWhereInput,
 		ec.unmarshalInputGarbageMetricsWhereInput,
 		ec.unmarshalInputIncompleteBuildLogWhereInput,
 		ec.unmarshalInputInvocationFilesWhereInput,
@@ -7770,6 +7751,334 @@ func (ec *executionContext) fieldContext_ArtifactMetrics_id(_ context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _ArtifactMetrics_sourceArtifactsReadSizeInBytes(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ArtifactMetrics_sourceArtifactsReadSizeInBytes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SourceArtifactsReadSizeInBytes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	fc.Result = res
+	return ec.marshalOInt2int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ArtifactMetrics_sourceArtifactsReadSizeInBytes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactMetrics",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ArtifactMetrics_sourceArtifactsReadCount(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ArtifactMetrics_sourceArtifactsReadCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SourceArtifactsReadCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	fc.Result = res
+	return ec.marshalOInt2int32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ArtifactMetrics_sourceArtifactsReadCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactMetrics",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ArtifactMetrics_outputArtifactsSeenSizeInBytes(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ArtifactMetrics_outputArtifactsSeenSizeInBytes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OutputArtifactsSeenSizeInBytes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	fc.Result = res
+	return ec.marshalOInt2int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ArtifactMetrics_outputArtifactsSeenSizeInBytes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactMetrics",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ArtifactMetrics_outputArtifactsSeenCount(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ArtifactMetrics_outputArtifactsSeenCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OutputArtifactsSeenCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	fc.Result = res
+	return ec.marshalOInt2int32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ArtifactMetrics_outputArtifactsSeenCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactMetrics",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ArtifactMetrics_outputArtifactsFromActionCacheSizeInBytes(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ArtifactMetrics_outputArtifactsFromActionCacheSizeInBytes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OutputArtifactsFromActionCacheSizeInBytes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	fc.Result = res
+	return ec.marshalOInt2int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ArtifactMetrics_outputArtifactsFromActionCacheSizeInBytes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactMetrics",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ArtifactMetrics_outputArtifactsFromActionCacheCount(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ArtifactMetrics_outputArtifactsFromActionCacheCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OutputArtifactsFromActionCacheCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	fc.Result = res
+	return ec.marshalOInt2int32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ArtifactMetrics_outputArtifactsFromActionCacheCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactMetrics",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ArtifactMetrics_topLevelArtifactsSizeInBytes(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ArtifactMetrics_topLevelArtifactsSizeInBytes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TopLevelArtifactsSizeInBytes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	fc.Result = res
+	return ec.marshalOInt2int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ArtifactMetrics_topLevelArtifactsSizeInBytes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactMetrics",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ArtifactMetrics_topLevelArtifactsCount(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ArtifactMetrics_topLevelArtifactsCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TopLevelArtifactsCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	fc.Result = res
+	return ec.marshalOInt2int32(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ArtifactMetrics_topLevelArtifactsCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ArtifactMetrics",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ArtifactMetrics_metrics(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ArtifactMetrics_metrics(ctx, field)
 	if err != nil {
@@ -7830,210 +8139,6 @@ func (ec *executionContext) fieldContext_ArtifactMetrics_metrics(_ context.Conte
 				return ec.fieldContext_Metrics_buildGraphMetrics(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Metrics", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ArtifactMetrics_sourceArtifactsRead(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ArtifactMetrics_sourceArtifactsRead(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SourceArtifactsRead(ctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*ent.FilesMetric)
-	fc.Result = res
-	return ec.marshalOFilesMetric2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetric(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ArtifactMetrics_sourceArtifactsRead(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ArtifactMetrics",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_FilesMetric_id(ctx, field)
-			case "sizeInBytes":
-				return ec.fieldContext_FilesMetric_sizeInBytes(ctx, field)
-			case "count":
-				return ec.fieldContext_FilesMetric_count(ctx, field)
-			case "artifactMetrics":
-				return ec.fieldContext_FilesMetric_artifactMetrics(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FilesMetric", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ArtifactMetrics_outputArtifactsSeen(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ArtifactMetrics_outputArtifactsSeen(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.OutputArtifactsSeen(ctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*ent.FilesMetric)
-	fc.Result = res
-	return ec.marshalOFilesMetric2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetric(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ArtifactMetrics_outputArtifactsSeen(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ArtifactMetrics",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_FilesMetric_id(ctx, field)
-			case "sizeInBytes":
-				return ec.fieldContext_FilesMetric_sizeInBytes(ctx, field)
-			case "count":
-				return ec.fieldContext_FilesMetric_count(ctx, field)
-			case "artifactMetrics":
-				return ec.fieldContext_FilesMetric_artifactMetrics(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FilesMetric", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ArtifactMetrics_outputArtifactsFromActionCache(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ArtifactMetrics_outputArtifactsFromActionCache(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.OutputArtifactsFromActionCache(ctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*ent.FilesMetric)
-	fc.Result = res
-	return ec.marshalOFilesMetric2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetric(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ArtifactMetrics_outputArtifactsFromActionCache(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ArtifactMetrics",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_FilesMetric_id(ctx, field)
-			case "sizeInBytes":
-				return ec.fieldContext_FilesMetric_sizeInBytes(ctx, field)
-			case "count":
-				return ec.fieldContext_FilesMetric_count(ctx, field)
-			case "artifactMetrics":
-				return ec.fieldContext_FilesMetric_artifactMetrics(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FilesMetric", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ArtifactMetrics_topLevelArtifacts(ctx context.Context, field graphql.CollectedField, obj *ent.ArtifactMetrics) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ArtifactMetrics_topLevelArtifacts(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.TopLevelArtifacts(ctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*ent.FilesMetric)
-	fc.Result = res
-	return ec.marshalOFilesMetric2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetric(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ArtifactMetrics_topLevelArtifacts(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ArtifactMetrics",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_FilesMetric_id(ctx, field)
-			case "sizeInBytes":
-				return ec.fieldContext_FilesMetric_sizeInBytes(ctx, field)
-			case "count":
-				return ec.fieldContext_FilesMetric_count(ctx, field)
-			case "artifactMetrics":
-				return ec.fieldContext_FilesMetric_artifactMetrics(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type FilesMetric", field.Name)
 		},
 	}
 	return fc, nil
@@ -13613,187 +13718,6 @@ func (ec *executionContext) fieldContext_ExitCode_name(_ context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _FilesMetric_id(ctx context.Context, field graphql.CollectedField, obj *ent.FilesMetric) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FilesMetric_id(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.FilesMetric().ID(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FilesMetric_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FilesMetric",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FilesMetric_sizeInBytes(ctx context.Context, field graphql.CollectedField, obj *ent.FilesMetric) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FilesMetric_sizeInBytes(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SizeInBytes, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(int64)
-	fc.Result = res
-	return ec.marshalOInt2int64(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FilesMetric_sizeInBytes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FilesMetric",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FilesMetric_count(ctx context.Context, field graphql.CollectedField, obj *ent.FilesMetric) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FilesMetric_count(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Count, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(int32)
-	fc.Result = res
-	return ec.marshalOInt2int32(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FilesMetric_count(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FilesMetric",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _FilesMetric_artifactMetrics(ctx context.Context, field graphql.CollectedField, obj *ent.FilesMetric) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_FilesMetric_artifactMetrics(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ArtifactMetrics(ctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*ent.ArtifactMetrics)
-	fc.Result = res
-	return ec.marshalOArtifactMetrics2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐArtifactMetrics(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_FilesMetric_artifactMetrics(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "FilesMetric",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_ArtifactMetrics_id(ctx, field)
-			case "metrics":
-				return ec.fieldContext_ArtifactMetrics_metrics(ctx, field)
-			case "sourceArtifactsRead":
-				return ec.fieldContext_ArtifactMetrics_sourceArtifactsRead(ctx, field)
-			case "outputArtifactsSeen":
-				return ec.fieldContext_ArtifactMetrics_outputArtifactsSeen(ctx, field)
-			case "outputArtifactsFromActionCache":
-				return ec.fieldContext_ArtifactMetrics_outputArtifactsFromActionCache(ctx, field)
-			case "topLevelArtifacts":
-				return ec.fieldContext_ArtifactMetrics_topLevelArtifacts(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ArtifactMetrics", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _GarbageMetrics_id(ctx context.Context, field graphql.CollectedField, obj *ent.GarbageMetrics) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_GarbageMetrics_id(ctx, field)
 	if err != nil {
@@ -15379,16 +15303,24 @@ func (ec *executionContext) fieldContext_Metrics_artifactMetrics(_ context.Conte
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_ArtifactMetrics_id(ctx, field)
+			case "sourceArtifactsReadSizeInBytes":
+				return ec.fieldContext_ArtifactMetrics_sourceArtifactsReadSizeInBytes(ctx, field)
+			case "sourceArtifactsReadCount":
+				return ec.fieldContext_ArtifactMetrics_sourceArtifactsReadCount(ctx, field)
+			case "outputArtifactsSeenSizeInBytes":
+				return ec.fieldContext_ArtifactMetrics_outputArtifactsSeenSizeInBytes(ctx, field)
+			case "outputArtifactsSeenCount":
+				return ec.fieldContext_ArtifactMetrics_outputArtifactsSeenCount(ctx, field)
+			case "outputArtifactsFromActionCacheSizeInBytes":
+				return ec.fieldContext_ArtifactMetrics_outputArtifactsFromActionCacheSizeInBytes(ctx, field)
+			case "outputArtifactsFromActionCacheCount":
+				return ec.fieldContext_ArtifactMetrics_outputArtifactsFromActionCacheCount(ctx, field)
+			case "topLevelArtifactsSizeInBytes":
+				return ec.fieldContext_ArtifactMetrics_topLevelArtifactsSizeInBytes(ctx, field)
+			case "topLevelArtifactsCount":
+				return ec.fieldContext_ArtifactMetrics_topLevelArtifactsCount(ctx, field)
 			case "metrics":
 				return ec.fieldContext_ArtifactMetrics_metrics(ctx, field)
-			case "sourceArtifactsRead":
-				return ec.fieldContext_ArtifactMetrics_sourceArtifactsRead(ctx, field)
-			case "outputArtifactsSeen":
-				return ec.fieldContext_ArtifactMetrics_outputArtifactsSeen(ctx, field)
-			case "outputArtifactsFromActionCache":
-				return ec.fieldContext_ArtifactMetrics_outputArtifactsFromActionCache(ctx, field)
-			case "topLevelArtifacts":
-				return ec.fieldContext_ArtifactMetrics_topLevelArtifacts(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ArtifactMetrics", field.Name)
 		},
@@ -30959,7 +30891,7 @@ func (ec *executionContext) unmarshalInputArtifactMetricsWhereInput(ctx context.
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "hasMetrics", "hasMetricsWith", "hasSourceArtifactsRead", "hasSourceArtifactsReadWith", "hasOutputArtifactsSeen", "hasOutputArtifactsSeenWith", "hasOutputArtifactsFromActionCache", "hasOutputArtifactsFromActionCacheWith", "hasTopLevelArtifacts", "hasTopLevelArtifactsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "sourceArtifactsReadSizeInBytes", "sourceArtifactsReadSizeInBytesNEQ", "sourceArtifactsReadSizeInBytesIn", "sourceArtifactsReadSizeInBytesNotIn", "sourceArtifactsReadSizeInBytesGT", "sourceArtifactsReadSizeInBytesGTE", "sourceArtifactsReadSizeInBytesLT", "sourceArtifactsReadSizeInBytesLTE", "sourceArtifactsReadSizeInBytesIsNil", "sourceArtifactsReadSizeInBytesNotNil", "sourceArtifactsReadCount", "sourceArtifactsReadCountNEQ", "sourceArtifactsReadCountIn", "sourceArtifactsReadCountNotIn", "sourceArtifactsReadCountGT", "sourceArtifactsReadCountGTE", "sourceArtifactsReadCountLT", "sourceArtifactsReadCountLTE", "sourceArtifactsReadCountIsNil", "sourceArtifactsReadCountNotNil", "outputArtifactsSeenSizeInBytes", "outputArtifactsSeenSizeInBytesNEQ", "outputArtifactsSeenSizeInBytesIn", "outputArtifactsSeenSizeInBytesNotIn", "outputArtifactsSeenSizeInBytesGT", "outputArtifactsSeenSizeInBytesGTE", "outputArtifactsSeenSizeInBytesLT", "outputArtifactsSeenSizeInBytesLTE", "outputArtifactsSeenSizeInBytesIsNil", "outputArtifactsSeenSizeInBytesNotNil", "outputArtifactsSeenCount", "outputArtifactsSeenCountNEQ", "outputArtifactsSeenCountIn", "outputArtifactsSeenCountNotIn", "outputArtifactsSeenCountGT", "outputArtifactsSeenCountGTE", "outputArtifactsSeenCountLT", "outputArtifactsSeenCountLTE", "outputArtifactsSeenCountIsNil", "outputArtifactsSeenCountNotNil", "outputArtifactsFromActionCacheSizeInBytes", "outputArtifactsFromActionCacheSizeInBytesNEQ", "outputArtifactsFromActionCacheSizeInBytesIn", "outputArtifactsFromActionCacheSizeInBytesNotIn", "outputArtifactsFromActionCacheSizeInBytesGT", "outputArtifactsFromActionCacheSizeInBytesGTE", "outputArtifactsFromActionCacheSizeInBytesLT", "outputArtifactsFromActionCacheSizeInBytesLTE", "outputArtifactsFromActionCacheSizeInBytesIsNil", "outputArtifactsFromActionCacheSizeInBytesNotNil", "outputArtifactsFromActionCacheCount", "outputArtifactsFromActionCacheCountNEQ", "outputArtifactsFromActionCacheCountIn", "outputArtifactsFromActionCacheCountNotIn", "outputArtifactsFromActionCacheCountGT", "outputArtifactsFromActionCacheCountGTE", "outputArtifactsFromActionCacheCountLT", "outputArtifactsFromActionCacheCountLTE", "outputArtifactsFromActionCacheCountIsNil", "outputArtifactsFromActionCacheCountNotNil", "topLevelArtifactsSizeInBytes", "topLevelArtifactsSizeInBytesNEQ", "topLevelArtifactsSizeInBytesIn", "topLevelArtifactsSizeInBytesNotIn", "topLevelArtifactsSizeInBytesGT", "topLevelArtifactsSizeInBytesGTE", "topLevelArtifactsSizeInBytesLT", "topLevelArtifactsSizeInBytesLTE", "topLevelArtifactsSizeInBytesIsNil", "topLevelArtifactsSizeInBytesNotNil", "topLevelArtifactsCount", "topLevelArtifactsCountNEQ", "topLevelArtifactsCountIn", "topLevelArtifactsCountNotIn", "topLevelArtifactsCountGT", "topLevelArtifactsCountGTE", "topLevelArtifactsCountLT", "topLevelArtifactsCountLTE", "topLevelArtifactsCountIsNil", "topLevelArtifactsCountNotNil", "hasMetrics", "hasMetricsWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -31059,6 +30991,566 @@ func (ec *executionContext) unmarshalInputArtifactMetricsWhereInput(ctx context.
 			if err = ec.resolvers.ArtifactMetricsWhereInput().IDLte(ctx, &it, data); err != nil {
 				return it, err
 			}
+		case "sourceArtifactsReadSizeInBytes":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadSizeInBytes"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadSizeInBytes = data
+		case "sourceArtifactsReadSizeInBytesNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadSizeInBytesNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadSizeInBytesNEQ = data
+		case "sourceArtifactsReadSizeInBytesIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadSizeInBytesIn"))
+			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadSizeInBytesIn = data
+		case "sourceArtifactsReadSizeInBytesNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadSizeInBytesNotIn"))
+			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadSizeInBytesNotIn = data
+		case "sourceArtifactsReadSizeInBytesGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadSizeInBytesGT"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadSizeInBytesGT = data
+		case "sourceArtifactsReadSizeInBytesGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadSizeInBytesGTE"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadSizeInBytesGTE = data
+		case "sourceArtifactsReadSizeInBytesLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadSizeInBytesLT"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadSizeInBytesLT = data
+		case "sourceArtifactsReadSizeInBytesLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadSizeInBytesLTE"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadSizeInBytesLTE = data
+		case "sourceArtifactsReadSizeInBytesIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadSizeInBytesIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadSizeInBytesIsNil = data
+		case "sourceArtifactsReadSizeInBytesNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadSizeInBytesNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadSizeInBytesNotNil = data
+		case "sourceArtifactsReadCount":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadCount"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadCount = data
+		case "sourceArtifactsReadCountNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadCountNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadCountNEQ = data
+		case "sourceArtifactsReadCountIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadCountIn"))
+			data, err := ec.unmarshalOInt2ᚕint32ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadCountIn = data
+		case "sourceArtifactsReadCountNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadCountNotIn"))
+			data, err := ec.unmarshalOInt2ᚕint32ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadCountNotIn = data
+		case "sourceArtifactsReadCountGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadCountGT"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadCountGT = data
+		case "sourceArtifactsReadCountGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadCountGTE"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadCountGTE = data
+		case "sourceArtifactsReadCountLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadCountLT"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadCountLT = data
+		case "sourceArtifactsReadCountLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadCountLTE"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadCountLTE = data
+		case "sourceArtifactsReadCountIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadCountIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadCountIsNil = data
+		case "sourceArtifactsReadCountNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sourceArtifactsReadCountNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SourceArtifactsReadCountNotNil = data
+		case "outputArtifactsSeenSizeInBytes":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenSizeInBytes"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenSizeInBytes = data
+		case "outputArtifactsSeenSizeInBytesNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenSizeInBytesNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenSizeInBytesNEQ = data
+		case "outputArtifactsSeenSizeInBytesIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenSizeInBytesIn"))
+			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenSizeInBytesIn = data
+		case "outputArtifactsSeenSizeInBytesNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenSizeInBytesNotIn"))
+			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenSizeInBytesNotIn = data
+		case "outputArtifactsSeenSizeInBytesGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenSizeInBytesGT"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenSizeInBytesGT = data
+		case "outputArtifactsSeenSizeInBytesGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenSizeInBytesGTE"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenSizeInBytesGTE = data
+		case "outputArtifactsSeenSizeInBytesLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenSizeInBytesLT"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenSizeInBytesLT = data
+		case "outputArtifactsSeenSizeInBytesLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenSizeInBytesLTE"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenSizeInBytesLTE = data
+		case "outputArtifactsSeenSizeInBytesIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenSizeInBytesIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenSizeInBytesIsNil = data
+		case "outputArtifactsSeenSizeInBytesNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenSizeInBytesNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenSizeInBytesNotNil = data
+		case "outputArtifactsSeenCount":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenCount"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenCount = data
+		case "outputArtifactsSeenCountNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenCountNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenCountNEQ = data
+		case "outputArtifactsSeenCountIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenCountIn"))
+			data, err := ec.unmarshalOInt2ᚕint32ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenCountIn = data
+		case "outputArtifactsSeenCountNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenCountNotIn"))
+			data, err := ec.unmarshalOInt2ᚕint32ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenCountNotIn = data
+		case "outputArtifactsSeenCountGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenCountGT"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenCountGT = data
+		case "outputArtifactsSeenCountGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenCountGTE"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenCountGTE = data
+		case "outputArtifactsSeenCountLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenCountLT"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenCountLT = data
+		case "outputArtifactsSeenCountLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenCountLTE"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenCountLTE = data
+		case "outputArtifactsSeenCountIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenCountIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenCountIsNil = data
+		case "outputArtifactsSeenCountNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsSeenCountNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsSeenCountNotNil = data
+		case "outputArtifactsFromActionCacheSizeInBytes":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheSizeInBytes"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheSizeInBytes = data
+		case "outputArtifactsFromActionCacheSizeInBytesNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheSizeInBytesNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheSizeInBytesNEQ = data
+		case "outputArtifactsFromActionCacheSizeInBytesIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheSizeInBytesIn"))
+			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheSizeInBytesIn = data
+		case "outputArtifactsFromActionCacheSizeInBytesNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheSizeInBytesNotIn"))
+			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheSizeInBytesNotIn = data
+		case "outputArtifactsFromActionCacheSizeInBytesGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheSizeInBytesGT"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheSizeInBytesGT = data
+		case "outputArtifactsFromActionCacheSizeInBytesGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheSizeInBytesGTE"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheSizeInBytesGTE = data
+		case "outputArtifactsFromActionCacheSizeInBytesLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheSizeInBytesLT"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheSizeInBytesLT = data
+		case "outputArtifactsFromActionCacheSizeInBytesLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheSizeInBytesLTE"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheSizeInBytesLTE = data
+		case "outputArtifactsFromActionCacheSizeInBytesIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheSizeInBytesIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheSizeInBytesIsNil = data
+		case "outputArtifactsFromActionCacheSizeInBytesNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheSizeInBytesNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheSizeInBytesNotNil = data
+		case "outputArtifactsFromActionCacheCount":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheCount"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheCount = data
+		case "outputArtifactsFromActionCacheCountNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheCountNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheCountNEQ = data
+		case "outputArtifactsFromActionCacheCountIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheCountIn"))
+			data, err := ec.unmarshalOInt2ᚕint32ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheCountIn = data
+		case "outputArtifactsFromActionCacheCountNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheCountNotIn"))
+			data, err := ec.unmarshalOInt2ᚕint32ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheCountNotIn = data
+		case "outputArtifactsFromActionCacheCountGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheCountGT"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheCountGT = data
+		case "outputArtifactsFromActionCacheCountGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheCountGTE"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheCountGTE = data
+		case "outputArtifactsFromActionCacheCountLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheCountLT"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheCountLT = data
+		case "outputArtifactsFromActionCacheCountLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheCountLTE"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheCountLTE = data
+		case "outputArtifactsFromActionCacheCountIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheCountIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheCountIsNil = data
+		case "outputArtifactsFromActionCacheCountNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("outputArtifactsFromActionCacheCountNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OutputArtifactsFromActionCacheCountNotNil = data
+		case "topLevelArtifactsSizeInBytes":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsSizeInBytes"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsSizeInBytes = data
+		case "topLevelArtifactsSizeInBytesNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsSizeInBytesNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsSizeInBytesNEQ = data
+		case "topLevelArtifactsSizeInBytesIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsSizeInBytesIn"))
+			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsSizeInBytesIn = data
+		case "topLevelArtifactsSizeInBytesNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsSizeInBytesNotIn"))
+			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsSizeInBytesNotIn = data
+		case "topLevelArtifactsSizeInBytesGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsSizeInBytesGT"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsSizeInBytesGT = data
+		case "topLevelArtifactsSizeInBytesGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsSizeInBytesGTE"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsSizeInBytesGTE = data
+		case "topLevelArtifactsSizeInBytesLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsSizeInBytesLT"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsSizeInBytesLT = data
+		case "topLevelArtifactsSizeInBytesLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsSizeInBytesLTE"))
+			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsSizeInBytesLTE = data
+		case "topLevelArtifactsSizeInBytesIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsSizeInBytesIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsSizeInBytesIsNil = data
+		case "topLevelArtifactsSizeInBytesNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsSizeInBytesNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsSizeInBytesNotNil = data
+		case "topLevelArtifactsCount":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsCount"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsCount = data
+		case "topLevelArtifactsCountNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsCountNEQ"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsCountNEQ = data
+		case "topLevelArtifactsCountIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsCountIn"))
+			data, err := ec.unmarshalOInt2ᚕint32ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsCountIn = data
+		case "topLevelArtifactsCountNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsCountNotIn"))
+			data, err := ec.unmarshalOInt2ᚕint32ᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsCountNotIn = data
+		case "topLevelArtifactsCountGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsCountGT"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsCountGT = data
+		case "topLevelArtifactsCountGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsCountGTE"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsCountGTE = data
+		case "topLevelArtifactsCountLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsCountLT"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsCountLT = data
+		case "topLevelArtifactsCountLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsCountLTE"))
+			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsCountLTE = data
+		case "topLevelArtifactsCountIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsCountIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsCountIsNil = data
+		case "topLevelArtifactsCountNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("topLevelArtifactsCountNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TopLevelArtifactsCountNotNil = data
 		case "hasMetrics":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasMetrics"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -31073,62 +31565,6 @@ func (ec *executionContext) unmarshalInputArtifactMetricsWhereInput(ctx context.
 				return it, err
 			}
 			it.HasMetricsWith = data
-		case "hasSourceArtifactsRead":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasSourceArtifactsRead"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasSourceArtifactsRead = data
-		case "hasSourceArtifactsReadWith":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasSourceArtifactsReadWith"))
-			data, err := ec.unmarshalOFilesMetricWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasSourceArtifactsReadWith = data
-		case "hasOutputArtifactsSeen":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOutputArtifactsSeen"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasOutputArtifactsSeen = data
-		case "hasOutputArtifactsSeenWith":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOutputArtifactsSeenWith"))
-			data, err := ec.unmarshalOFilesMetricWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasOutputArtifactsSeenWith = data
-		case "hasOutputArtifactsFromActionCache":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOutputArtifactsFromActionCache"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasOutputArtifactsFromActionCache = data
-		case "hasOutputArtifactsFromActionCacheWith":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasOutputArtifactsFromActionCacheWith"))
-			data, err := ec.unmarshalOFilesMetricWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasOutputArtifactsFromActionCacheWith = data
-		case "hasTopLevelArtifacts":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTopLevelArtifacts"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasTopLevelArtifacts = data
-		case "hasTopLevelArtifactsWith":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTopLevelArtifactsWith"))
-			data, err := ec.unmarshalOFilesMetricWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasTopLevelArtifactsWith = data
 		}
 	}
 
@@ -36432,273 +36868,6 @@ func (ec *executionContext) unmarshalInputExectionInfoWhereInput(ctx context.Con
 				return it, err
 			}
 			it.HasResourceUsageWith = data
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputFilesMetricWhereInput(ctx context.Context, obj any) (ent.FilesMetricWhereInput, error) {
-	var it ent.FilesMetricWhereInput
-	asMap := map[string]any{}
-	for k, v := range obj.(map[string]any) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "sizeInBytes", "sizeInBytesNEQ", "sizeInBytesIn", "sizeInBytesNotIn", "sizeInBytesGT", "sizeInBytesGTE", "sizeInBytesLT", "sizeInBytesLTE", "sizeInBytesIsNil", "sizeInBytesNotNil", "count", "countNEQ", "countIn", "countNotIn", "countGT", "countGTE", "countLT", "countLTE", "countIsNil", "countNotNil", "hasArtifactMetrics", "hasArtifactMetricsWith"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "not":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
-			data, err := ec.unmarshalOFilesMetricWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Not = data
-		case "and":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
-			data, err := ec.unmarshalOFilesMetricWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.And = data
-		case "or":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
-			data, err := ec.unmarshalOFilesMetricWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Or = data
-		case "id":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FilesMetricWhereInput().ID(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "idNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FilesMetricWhereInput().IDNeq(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "idIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FilesMetricWhereInput().IDIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "idNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
-			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FilesMetricWhereInput().IDNotIn(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "idGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FilesMetricWhereInput().IDGt(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "idGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FilesMetricWhereInput().IDGte(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "idLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FilesMetricWhereInput().IDLt(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "idLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			if err = ec.resolvers.FilesMetricWhereInput().IDLte(ctx, &it, data); err != nil {
-				return it, err
-			}
-		case "sizeInBytes":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytes"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SizeInBytes = data
-		case "sizeInBytesNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesNEQ"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SizeInBytesNEQ = data
-		case "sizeInBytesIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesIn"))
-			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SizeInBytesIn = data
-		case "sizeInBytesNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesNotIn"))
-			data, err := ec.unmarshalOInt2ᚕint64ᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SizeInBytesNotIn = data
-		case "sizeInBytesGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesGT"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SizeInBytesGT = data
-		case "sizeInBytesGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesGTE"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SizeInBytesGTE = data
-		case "sizeInBytesLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesLT"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SizeInBytesLT = data
-		case "sizeInBytesLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesLTE"))
-			data, err := ec.unmarshalOInt2ᚖint64(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SizeInBytesLTE = data
-		case "sizeInBytesIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SizeInBytesIsNil = data
-		case "sizeInBytesNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sizeInBytesNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SizeInBytesNotNil = data
-		case "count":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("count"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Count = data
-		case "countNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countNEQ"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CountNEQ = data
-		case "countIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countIn"))
-			data, err := ec.unmarshalOInt2ᚕint32ᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CountIn = data
-		case "countNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countNotIn"))
-			data, err := ec.unmarshalOInt2ᚕint32ᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CountNotIn = data
-		case "countGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countGT"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CountGT = data
-		case "countGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countGTE"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CountGTE = data
-		case "countLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countLT"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CountLT = data
-		case "countLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countLTE"))
-			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CountLTE = data
-		case "countIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CountIsNil = data
-		case "countNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("countNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.CountNotNil = data
-		case "hasArtifactMetrics":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasArtifactMetrics"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasArtifactMetrics = data
-		case "hasArtifactMetricsWith":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasArtifactMetricsWith"))
-			data, err := ec.unmarshalOArtifactMetricsWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐArtifactMetricsWhereInputᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.HasArtifactMetricsWith = data
 		}
 	}
 
@@ -48462,11 +48631,6 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._GarbageMetrics(ctx, sel, obj)
-	case *ent.FilesMetric:
-		if obj == nil {
-			return graphql.Null
-		}
-		return ec._FilesMetric(ctx, sel, obj)
 	case *ent.ExectionInfo:
 		if obj == nil {
 			return graphql.Null
@@ -49208,6 +49372,22 @@ func (ec *executionContext) _ArtifactMetrics(ctx context.Context, sel ast.Select
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "sourceArtifactsReadSizeInBytes":
+			out.Values[i] = ec._ArtifactMetrics_sourceArtifactsReadSizeInBytes(ctx, field, obj)
+		case "sourceArtifactsReadCount":
+			out.Values[i] = ec._ArtifactMetrics_sourceArtifactsReadCount(ctx, field, obj)
+		case "outputArtifactsSeenSizeInBytes":
+			out.Values[i] = ec._ArtifactMetrics_outputArtifactsSeenSizeInBytes(ctx, field, obj)
+		case "outputArtifactsSeenCount":
+			out.Values[i] = ec._ArtifactMetrics_outputArtifactsSeenCount(ctx, field, obj)
+		case "outputArtifactsFromActionCacheSizeInBytes":
+			out.Values[i] = ec._ArtifactMetrics_outputArtifactsFromActionCacheSizeInBytes(ctx, field, obj)
+		case "outputArtifactsFromActionCacheCount":
+			out.Values[i] = ec._ArtifactMetrics_outputArtifactsFromActionCacheCount(ctx, field, obj)
+		case "topLevelArtifactsSizeInBytes":
+			out.Values[i] = ec._ArtifactMetrics_topLevelArtifactsSizeInBytes(ctx, field, obj)
+		case "topLevelArtifactsCount":
+			out.Values[i] = ec._ArtifactMetrics_topLevelArtifactsCount(ctx, field, obj)
 		case "metrics":
 			field := field
 
@@ -49218,138 +49398,6 @@ func (ec *executionContext) _ArtifactMetrics(ctx context.Context, sel ast.Select
 					}
 				}()
 				res = ec._ArtifactMetrics_metrics(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "sourceArtifactsRead":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._ArtifactMetrics_sourceArtifactsRead(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "outputArtifactsSeen":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._ArtifactMetrics_outputArtifactsSeen(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "outputArtifactsFromActionCache":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._ArtifactMetrics_outputArtifactsFromActionCache(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "topLevelArtifacts":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._ArtifactMetrics_topLevelArtifacts(ctx, field, obj)
 				return res
 			}
 
@@ -51498,113 +51546,6 @@ func (ec *executionContext) _ExitCode(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var filesMetricImplementors = []string{"FilesMetric", "Node"}
-
-func (ec *executionContext) _FilesMetric(ctx context.Context, sel ast.SelectionSet, obj *ent.FilesMetric) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, filesMetricImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("FilesMetric")
-		case "id":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._FilesMetric_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "sizeInBytes":
-			out.Values[i] = ec._FilesMetric_sizeInBytes(ctx, field, obj)
-		case "count":
-			out.Values[i] = ec._FilesMetric_count(ctx, field, obj)
-		case "artifactMetrics":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._FilesMetric_artifactMetrics(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -57198,11 +57139,6 @@ func (ec *executionContext) unmarshalNExectionInfoWhereInput2ᚖgithubᚗcomᚋb
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNFilesMetricWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInput(ctx context.Context, v any) (*ent.FilesMetricWhereInput, error) {
-	res, err := ec.unmarshalInputFilesMetricWhereInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalNGarbageMetrics2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐGarbageMetrics(ctx context.Context, sel ast.SelectionSet, v *ent.GarbageMetrics) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -58870,39 +58806,6 @@ func (ec *executionContext) marshalOExitCode2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑ
 		return graphql.Null
 	}
 	return ec._ExitCode(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOFilesMetric2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetric(ctx context.Context, sel ast.SelectionSet, v *ent.FilesMetric) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._FilesMetric(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOFilesMetricWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInputᚄ(ctx context.Context, v any) ([]*ent.FilesMetricWhereInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []any
-	vSlice = graphql.CoerceList(v)
-	var err error
-	res := make([]*ent.FilesMetricWhereInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNFilesMetricWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOFilesMetricWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐFilesMetricWhereInput(ctx context.Context, v any) (*ent.FilesMetricWhereInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFilesMetricWhereInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOFloat2ᚖfloat64(ctx context.Context, v any) (*float64, error) {

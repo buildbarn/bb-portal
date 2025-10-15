@@ -22,7 +22,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
@@ -482,33 +481,6 @@ func (f TraverseExectionInfo) Traverse(ctx context.Context, q ent.Query) error {
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.ExectionInfoQuery", q)
-}
-
-// The FilesMetricFunc type is an adapter to allow the use of ordinary function as a Querier.
-type FilesMetricFunc func(context.Context, *ent.FilesMetricQuery) (ent.Value, error)
-
-// Query calls f(ctx, q).
-func (f FilesMetricFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.FilesMetricQuery); ok {
-		return f(ctx, q)
-	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.FilesMetricQuery", q)
-}
-
-// The TraverseFilesMetric type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseFilesMetric func(context.Context, *ent.FilesMetricQuery) error
-
-// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseFilesMetric) Intercept(next ent.Querier) ent.Querier {
-	return next
-}
-
-// Traverse calls f(ctx, q).
-func (f TraverseFilesMetric) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.FilesMetricQuery); ok {
-		return f(ctx, q)
-	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.FilesMetricQuery", q)
 }
 
 // The GarbageMetricsFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -1190,8 +1162,6 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.EventMetadataQuery, predicate.EventMetadata, eventmetadata.OrderOption]{typ: ent.TypeEventMetadata, tq: q}, nil
 	case *ent.ExectionInfoQuery:
 		return &query[*ent.ExectionInfoQuery, predicate.ExectionInfo, exectioninfo.OrderOption]{typ: ent.TypeExectionInfo, tq: q}, nil
-	case *ent.FilesMetricQuery:
-		return &query[*ent.FilesMetricQuery, predicate.FilesMetric, filesmetric.OrderOption]{typ: ent.TypeFilesMetric, tq: q}, nil
 	case *ent.GarbageMetricsQuery:
 		return &query[*ent.GarbageMetricsQuery, predicate.GarbageMetrics, garbagemetrics.OrderOption]{typ: ent.TypeGarbageMetrics, tq: q}, nil
 	case *ent.IncompleteBuildLogQuery:

@@ -17,7 +17,6 @@ go_library(
         "evaluationstat.go",
         "eventmetadata.go",
         "executioninfo.go",
-        "filesmetric.go",
         "garbagemetrics.go",
         "incompletebuildlog.go",
         "invocationfiles.go",
