@@ -9,42 +9,46 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 )
 
 // ArtifactMetrics is the model entity for the ArtifactMetrics schema.
 type ArtifactMetrics struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// SourceArtifactsReadSizeInBytes holds the value of the "source_artifacts_read_size_in_bytes" field.
+	SourceArtifactsReadSizeInBytes int64 `json:"source_artifacts_read_size_in_bytes,omitempty"`
+	// SourceArtifactsReadCount holds the value of the "source_artifacts_read_count" field.
+	SourceArtifactsReadCount int32 `json:"source_artifacts_read_count,omitempty"`
+	// OutputArtifactsSeenSizeInBytes holds the value of the "output_artifacts_seen_size_in_bytes" field.
+	OutputArtifactsSeenSizeInBytes int64 `json:"output_artifacts_seen_size_in_bytes,omitempty"`
+	// OutputArtifactsSeenCount holds the value of the "output_artifacts_seen_count" field.
+	OutputArtifactsSeenCount int32 `json:"output_artifacts_seen_count,omitempty"`
+	// OutputArtifactsFromActionCacheSizeInBytes holds the value of the "output_artifacts_from_action_cache_size_in_bytes" field.
+	OutputArtifactsFromActionCacheSizeInBytes int64 `json:"output_artifacts_from_action_cache_size_in_bytes,omitempty"`
+	// OutputArtifactsFromActionCacheCount holds the value of the "output_artifacts_from_action_cache_count" field.
+	OutputArtifactsFromActionCacheCount int32 `json:"output_artifacts_from_action_cache_count,omitempty"`
+	// TopLevelArtifactsSizeInBytes holds the value of the "top_level_artifacts_size_in_bytes" field.
+	TopLevelArtifactsSizeInBytes int64 `json:"top_level_artifacts_size_in_bytes,omitempty"`
+	// TopLevelArtifactsCount holds the value of the "top_level_artifacts_count" field.
+	TopLevelArtifactsCount int32 `json:"top_level_artifacts_count,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ArtifactMetricsQuery when eager-loading is set.
-	Edges                                               ArtifactMetricsEdges `json:"edges"`
-	artifact_metrics_source_artifacts_read              *int
-	artifact_metrics_output_artifacts_seen              *int
-	artifact_metrics_output_artifacts_from_action_cache *int
-	metrics_artifact_metrics                            *int
-	selectValues                                        sql.SelectValues
+	Edges                    ArtifactMetricsEdges `json:"edges"`
+	metrics_artifact_metrics *int
+	selectValues             sql.SelectValues
 }
 
 // ArtifactMetricsEdges holds the relations/edges for other nodes in the graph.
 type ArtifactMetricsEdges struct {
 	// Metrics holds the value of the metrics edge.
 	Metrics *Metrics `json:"metrics,omitempty"`
-	// SourceArtifactsRead holds the value of the source_artifacts_read edge.
-	SourceArtifactsRead *FilesMetric `json:"source_artifacts_read,omitempty"`
-	// OutputArtifactsSeen holds the value of the output_artifacts_seen edge.
-	OutputArtifactsSeen *FilesMetric `json:"output_artifacts_seen,omitempty"`
-	// OutputArtifactsFromActionCache holds the value of the output_artifacts_from_action_cache edge.
-	OutputArtifactsFromActionCache *FilesMetric `json:"output_artifacts_from_action_cache,omitempty"`
-	// TopLevelArtifacts holds the value of the top_level_artifacts edge.
-	TopLevelArtifacts *FilesMetric `json:"top_level_artifacts,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [5]bool
+	loadedTypes [1]bool
 	// totalCount holds the count of the edges above.
-	totalCount [5]map[string]int
+	totalCount [1]map[string]int
 }
 
 // MetricsOrErr returns the Metrics value or an error if the edge
@@ -58,64 +62,14 @@ func (e ArtifactMetricsEdges) MetricsOrErr() (*Metrics, error) {
 	return nil, &NotLoadedError{edge: "metrics"}
 }
 
-// SourceArtifactsReadOrErr returns the SourceArtifactsRead value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e ArtifactMetricsEdges) SourceArtifactsReadOrErr() (*FilesMetric, error) {
-	if e.SourceArtifactsRead != nil {
-		return e.SourceArtifactsRead, nil
-	} else if e.loadedTypes[1] {
-		return nil, &NotFoundError{label: filesmetric.Label}
-	}
-	return nil, &NotLoadedError{edge: "source_artifacts_read"}
-}
-
-// OutputArtifactsSeenOrErr returns the OutputArtifactsSeen value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e ArtifactMetricsEdges) OutputArtifactsSeenOrErr() (*FilesMetric, error) {
-	if e.OutputArtifactsSeen != nil {
-		return e.OutputArtifactsSeen, nil
-	} else if e.loadedTypes[2] {
-		return nil, &NotFoundError{label: filesmetric.Label}
-	}
-	return nil, &NotLoadedError{edge: "output_artifacts_seen"}
-}
-
-// OutputArtifactsFromActionCacheOrErr returns the OutputArtifactsFromActionCache value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e ArtifactMetricsEdges) OutputArtifactsFromActionCacheOrErr() (*FilesMetric, error) {
-	if e.OutputArtifactsFromActionCache != nil {
-		return e.OutputArtifactsFromActionCache, nil
-	} else if e.loadedTypes[3] {
-		return nil, &NotFoundError{label: filesmetric.Label}
-	}
-	return nil, &NotLoadedError{edge: "output_artifacts_from_action_cache"}
-}
-
-// TopLevelArtifactsOrErr returns the TopLevelArtifacts value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e ArtifactMetricsEdges) TopLevelArtifactsOrErr() (*FilesMetric, error) {
-	if e.TopLevelArtifacts != nil {
-		return e.TopLevelArtifacts, nil
-	} else if e.loadedTypes[4] {
-		return nil, &NotFoundError{label: filesmetric.Label}
-	}
-	return nil, &NotLoadedError{edge: "top_level_artifacts"}
-}
-
 // scanValues returns the types for scanning values from sql.Rows.
 func (*ArtifactMetrics) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case artifactmetrics.FieldID:
+		case artifactmetrics.FieldID, artifactmetrics.FieldSourceArtifactsReadSizeInBytes, artifactmetrics.FieldSourceArtifactsReadCount, artifactmetrics.FieldOutputArtifactsSeenSizeInBytes, artifactmetrics.FieldOutputArtifactsSeenCount, artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes, artifactmetrics.FieldOutputArtifactsFromActionCacheCount, artifactmetrics.FieldTopLevelArtifactsSizeInBytes, artifactmetrics.FieldTopLevelArtifactsCount:
 			values[i] = new(sql.NullInt64)
-		case artifactmetrics.ForeignKeys[0]: // artifact_metrics_source_artifacts_read
-			values[i] = new(sql.NullInt64)
-		case artifactmetrics.ForeignKeys[1]: // artifact_metrics_output_artifacts_seen
-			values[i] = new(sql.NullInt64)
-		case artifactmetrics.ForeignKeys[2]: // artifact_metrics_output_artifacts_from_action_cache
-			values[i] = new(sql.NullInt64)
-		case artifactmetrics.ForeignKeys[3]: // metrics_artifact_metrics
+		case artifactmetrics.ForeignKeys[0]: // metrics_artifact_metrics
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -138,28 +92,55 @@ func (am *ArtifactMetrics) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			am.ID = int(value.Int64)
+		case artifactmetrics.FieldSourceArtifactsReadSizeInBytes:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field source_artifacts_read_size_in_bytes", values[i])
+			} else if value.Valid {
+				am.SourceArtifactsReadSizeInBytes = value.Int64
+			}
+		case artifactmetrics.FieldSourceArtifactsReadCount:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field source_artifacts_read_count", values[i])
+			} else if value.Valid {
+				am.SourceArtifactsReadCount = int32(value.Int64)
+			}
+		case artifactmetrics.FieldOutputArtifactsSeenSizeInBytes:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field output_artifacts_seen_size_in_bytes", values[i])
+			} else if value.Valid {
+				am.OutputArtifactsSeenSizeInBytes = value.Int64
+			}
+		case artifactmetrics.FieldOutputArtifactsSeenCount:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field output_artifacts_seen_count", values[i])
+			} else if value.Valid {
+				am.OutputArtifactsSeenCount = int32(value.Int64)
+			}
+		case artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field output_artifacts_from_action_cache_size_in_bytes", values[i])
+			} else if value.Valid {
+				am.OutputArtifactsFromActionCacheSizeInBytes = value.Int64
+			}
+		case artifactmetrics.FieldOutputArtifactsFromActionCacheCount:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field output_artifacts_from_action_cache_count", values[i])
+			} else if value.Valid {
+				am.OutputArtifactsFromActionCacheCount = int32(value.Int64)
+			}
+		case artifactmetrics.FieldTopLevelArtifactsSizeInBytes:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field top_level_artifacts_size_in_bytes", values[i])
+			} else if value.Valid {
+				am.TopLevelArtifactsSizeInBytes = value.Int64
+			}
+		case artifactmetrics.FieldTopLevelArtifactsCount:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field top_level_artifacts_count", values[i])
+			} else if value.Valid {
+				am.TopLevelArtifactsCount = int32(value.Int64)
+			}
 		case artifactmetrics.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_source_artifacts_read", value)
-			} else if value.Valid {
-				am.artifact_metrics_source_artifacts_read = new(int)
-				*am.artifact_metrics_source_artifacts_read = int(value.Int64)
-			}
-		case artifactmetrics.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_output_artifacts_seen", value)
-			} else if value.Valid {
-				am.artifact_metrics_output_artifacts_seen = new(int)
-				*am.artifact_metrics_output_artifacts_seen = int(value.Int64)
-			}
-		case artifactmetrics.ForeignKeys[2]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field artifact_metrics_output_artifacts_from_action_cache", value)
-			} else if value.Valid {
-				am.artifact_metrics_output_artifacts_from_action_cache = new(int)
-				*am.artifact_metrics_output_artifacts_from_action_cache = int(value.Int64)
-			}
-		case artifactmetrics.ForeignKeys[3]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field metrics_artifact_metrics", value)
 			} else if value.Valid {
@@ -184,26 +165,6 @@ func (am *ArtifactMetrics) QueryMetrics() *MetricsQuery {
 	return NewArtifactMetricsClient(am.config).QueryMetrics(am)
 }
 
-// QuerySourceArtifactsRead queries the "source_artifacts_read" edge of the ArtifactMetrics entity.
-func (am *ArtifactMetrics) QuerySourceArtifactsRead() *FilesMetricQuery {
-	return NewArtifactMetricsClient(am.config).QuerySourceArtifactsRead(am)
-}
-
-// QueryOutputArtifactsSeen queries the "output_artifacts_seen" edge of the ArtifactMetrics entity.
-func (am *ArtifactMetrics) QueryOutputArtifactsSeen() *FilesMetricQuery {
-	return NewArtifactMetricsClient(am.config).QueryOutputArtifactsSeen(am)
-}
-
-// QueryOutputArtifactsFromActionCache queries the "output_artifacts_from_action_cache" edge of the ArtifactMetrics entity.
-func (am *ArtifactMetrics) QueryOutputArtifactsFromActionCache() *FilesMetricQuery {
-	return NewArtifactMetricsClient(am.config).QueryOutputArtifactsFromActionCache(am)
-}
-
-// QueryTopLevelArtifacts queries the "top_level_artifacts" edge of the ArtifactMetrics entity.
-func (am *ArtifactMetrics) QueryTopLevelArtifacts() *FilesMetricQuery {
-	return NewArtifactMetricsClient(am.config).QueryTopLevelArtifacts(am)
-}
-
 // Update returns a builder for updating this ArtifactMetrics.
 // Note that you need to call ArtifactMetrics.Unwrap() before calling this method if this ArtifactMetrics
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -226,7 +187,30 @@ func (am *ArtifactMetrics) Unwrap() *ArtifactMetrics {
 func (am *ArtifactMetrics) String() string {
 	var builder strings.Builder
 	builder.WriteString("ArtifactMetrics(")
-	builder.WriteString(fmt.Sprintf("id=%v", am.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", am.ID))
+	builder.WriteString("source_artifacts_read_size_in_bytes=")
+	builder.WriteString(fmt.Sprintf("%v", am.SourceArtifactsReadSizeInBytes))
+	builder.WriteString(", ")
+	builder.WriteString("source_artifacts_read_count=")
+	builder.WriteString(fmt.Sprintf("%v", am.SourceArtifactsReadCount))
+	builder.WriteString(", ")
+	builder.WriteString("output_artifacts_seen_size_in_bytes=")
+	builder.WriteString(fmt.Sprintf("%v", am.OutputArtifactsSeenSizeInBytes))
+	builder.WriteString(", ")
+	builder.WriteString("output_artifacts_seen_count=")
+	builder.WriteString(fmt.Sprintf("%v", am.OutputArtifactsSeenCount))
+	builder.WriteString(", ")
+	builder.WriteString("output_artifacts_from_action_cache_size_in_bytes=")
+	builder.WriteString(fmt.Sprintf("%v", am.OutputArtifactsFromActionCacheSizeInBytes))
+	builder.WriteString(", ")
+	builder.WriteString("output_artifacts_from_action_cache_count=")
+	builder.WriteString(fmt.Sprintf("%v", am.OutputArtifactsFromActionCacheCount))
+	builder.WriteString(", ")
+	builder.WriteString("top_level_artifacts_size_in_bytes=")
+	builder.WriteString(fmt.Sprintf("%v", am.TopLevelArtifactsSizeInBytes))
+	builder.WriteString(", ")
+	builder.WriteString("top_level_artifacts_count=")
+	builder.WriteString(fmt.Sprintf("%v", am.TopLevelArtifactsCount))
 	builder.WriteByte(')')
 	return builder.String()
 }

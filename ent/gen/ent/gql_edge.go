@@ -84,38 +84,6 @@ func (am *ArtifactMetrics) Metrics(ctx context.Context) (*Metrics, error) {
 	return result, MaskNotFound(err)
 }
 
-func (am *ArtifactMetrics) SourceArtifactsRead(ctx context.Context) (*FilesMetric, error) {
-	result, err := am.Edges.SourceArtifactsReadOrErr()
-	if IsNotLoaded(err) {
-		result, err = am.QuerySourceArtifactsRead().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (am *ArtifactMetrics) OutputArtifactsSeen(ctx context.Context) (*FilesMetric, error) {
-	result, err := am.Edges.OutputArtifactsSeenOrErr()
-	if IsNotLoaded(err) {
-		result, err = am.QueryOutputArtifactsSeen().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (am *ArtifactMetrics) OutputArtifactsFromActionCache(ctx context.Context) (*FilesMetric, error) {
-	result, err := am.Edges.OutputArtifactsFromActionCacheOrErr()
-	if IsNotLoaded(err) {
-		result, err = am.QueryOutputArtifactsFromActionCache().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (am *ArtifactMetrics) TopLevelArtifacts(ctx context.Context) (*FilesMetric, error) {
-	result, err := am.Edges.TopLevelArtifactsOrErr()
-	if IsNotLoaded(err) {
-		result, err = am.QueryTopLevelArtifacts().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
 func (bi *BazelInvocation) Build(ctx context.Context) (*Build, error) {
 	result, err := bi.Edges.BuildOrErr()
 	if IsNotLoaded(err) {
@@ -298,14 +266,6 @@ func (ei *ExectionInfo) ResourceUsage(ctx context.Context) (result []*ResourceUs
 		result, err = ei.QueryResourceUsage().All(ctx)
 	}
 	return result, err
-}
-
-func (fm *FilesMetric) ArtifactMetrics(ctx context.Context) (*ArtifactMetrics, error) {
-	result, err := fm.Edges.ArtifactMetricsOrErr()
-	if IsNotLoaded(err) {
-		result, err = fm.QueryArtifactMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
 }
 
 func (gm *GarbageMetrics) MemoryMetrics(ctx context.Context) (*MemoryMetrics, error) {

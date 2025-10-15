@@ -68,26 +68,14 @@ fragment BazelInvocationInfo on BazelInvocation {
     }
     artifactMetrics {
       id
-      sourceArtifactsRead {
-        id
-        sizeInBytes
-        count
-      }
-      outputArtifactsSeen {
-        id
-        sizeInBytes
-        count
-      }
-      outputArtifactsFromActionCache {
-        id
-        sizeInBytes
-        count
-      }
-      topLevelArtifacts {
-        id
-        sizeInBytes
-        count
-      }
+      sourceArtifactsReadCount
+      sourceArtifactsReadSizeInBytes
+      outputArtifactsSeenCount
+      outputArtifactsSeenSizeInBytes
+      outputArtifactsFromActionCacheCount
+      outputArtifactsFromActionCacheSizeInBytes
+      topLevelArtifactsCount
+      topLevelArtifactsSizeInBytes
     }
     cumulativeMetrics {
       id

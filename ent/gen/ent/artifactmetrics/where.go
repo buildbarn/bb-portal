@@ -53,6 +53,446 @@ func IDLTE(id int) predicate.ArtifactMetrics {
 	return predicate.ArtifactMetrics(sql.FieldLTE(FieldID, id))
 }
 
+// SourceArtifactsReadSizeInBytes applies equality check predicate on the "source_artifacts_read_size_in_bytes" field. It's identical to SourceArtifactsReadSizeInBytesEQ.
+func SourceArtifactsReadSizeInBytes(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldSourceArtifactsReadSizeInBytes, v))
+}
+
+// SourceArtifactsReadCount applies equality check predicate on the "source_artifacts_read_count" field. It's identical to SourceArtifactsReadCountEQ.
+func SourceArtifactsReadCount(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldSourceArtifactsReadCount, v))
+}
+
+// OutputArtifactsSeenSizeInBytes applies equality check predicate on the "output_artifacts_seen_size_in_bytes" field. It's identical to OutputArtifactsSeenSizeInBytesEQ.
+func OutputArtifactsSeenSizeInBytes(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldOutputArtifactsSeenSizeInBytes, v))
+}
+
+// OutputArtifactsSeenCount applies equality check predicate on the "output_artifacts_seen_count" field. It's identical to OutputArtifactsSeenCountEQ.
+func OutputArtifactsSeenCount(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldOutputArtifactsSeenCount, v))
+}
+
+// OutputArtifactsFromActionCacheSizeInBytes applies equality check predicate on the "output_artifacts_from_action_cache_size_in_bytes" field. It's identical to OutputArtifactsFromActionCacheSizeInBytesEQ.
+func OutputArtifactsFromActionCacheSizeInBytes(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldOutputArtifactsFromActionCacheSizeInBytes, v))
+}
+
+// OutputArtifactsFromActionCacheCount applies equality check predicate on the "output_artifacts_from_action_cache_count" field. It's identical to OutputArtifactsFromActionCacheCountEQ.
+func OutputArtifactsFromActionCacheCount(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldOutputArtifactsFromActionCacheCount, v))
+}
+
+// TopLevelArtifactsSizeInBytes applies equality check predicate on the "top_level_artifacts_size_in_bytes" field. It's identical to TopLevelArtifactsSizeInBytesEQ.
+func TopLevelArtifactsSizeInBytes(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldTopLevelArtifactsSizeInBytes, v))
+}
+
+// TopLevelArtifactsCount applies equality check predicate on the "top_level_artifacts_count" field. It's identical to TopLevelArtifactsCountEQ.
+func TopLevelArtifactsCount(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldTopLevelArtifactsCount, v))
+}
+
+// SourceArtifactsReadSizeInBytesEQ applies the EQ predicate on the "source_artifacts_read_size_in_bytes" field.
+func SourceArtifactsReadSizeInBytesEQ(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldSourceArtifactsReadSizeInBytes, v))
+}
+
+// SourceArtifactsReadSizeInBytesNEQ applies the NEQ predicate on the "source_artifacts_read_size_in_bytes" field.
+func SourceArtifactsReadSizeInBytesNEQ(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNEQ(FieldSourceArtifactsReadSizeInBytes, v))
+}
+
+// SourceArtifactsReadSizeInBytesIn applies the In predicate on the "source_artifacts_read_size_in_bytes" field.
+func SourceArtifactsReadSizeInBytesIn(vs ...int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIn(FieldSourceArtifactsReadSizeInBytes, vs...))
+}
+
+// SourceArtifactsReadSizeInBytesNotIn applies the NotIn predicate on the "source_artifacts_read_size_in_bytes" field.
+func SourceArtifactsReadSizeInBytesNotIn(vs ...int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotIn(FieldSourceArtifactsReadSizeInBytes, vs...))
+}
+
+// SourceArtifactsReadSizeInBytesGT applies the GT predicate on the "source_artifacts_read_size_in_bytes" field.
+func SourceArtifactsReadSizeInBytesGT(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGT(FieldSourceArtifactsReadSizeInBytes, v))
+}
+
+// SourceArtifactsReadSizeInBytesGTE applies the GTE predicate on the "source_artifacts_read_size_in_bytes" field.
+func SourceArtifactsReadSizeInBytesGTE(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGTE(FieldSourceArtifactsReadSizeInBytes, v))
+}
+
+// SourceArtifactsReadSizeInBytesLT applies the LT predicate on the "source_artifacts_read_size_in_bytes" field.
+func SourceArtifactsReadSizeInBytesLT(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLT(FieldSourceArtifactsReadSizeInBytes, v))
+}
+
+// SourceArtifactsReadSizeInBytesLTE applies the LTE predicate on the "source_artifacts_read_size_in_bytes" field.
+func SourceArtifactsReadSizeInBytesLTE(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLTE(FieldSourceArtifactsReadSizeInBytes, v))
+}
+
+// SourceArtifactsReadSizeInBytesIsNil applies the IsNil predicate on the "source_artifacts_read_size_in_bytes" field.
+func SourceArtifactsReadSizeInBytesIsNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIsNull(FieldSourceArtifactsReadSizeInBytes))
+}
+
+// SourceArtifactsReadSizeInBytesNotNil applies the NotNil predicate on the "source_artifacts_read_size_in_bytes" field.
+func SourceArtifactsReadSizeInBytesNotNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotNull(FieldSourceArtifactsReadSizeInBytes))
+}
+
+// SourceArtifactsReadCountEQ applies the EQ predicate on the "source_artifacts_read_count" field.
+func SourceArtifactsReadCountEQ(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldSourceArtifactsReadCount, v))
+}
+
+// SourceArtifactsReadCountNEQ applies the NEQ predicate on the "source_artifacts_read_count" field.
+func SourceArtifactsReadCountNEQ(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNEQ(FieldSourceArtifactsReadCount, v))
+}
+
+// SourceArtifactsReadCountIn applies the In predicate on the "source_artifacts_read_count" field.
+func SourceArtifactsReadCountIn(vs ...int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIn(FieldSourceArtifactsReadCount, vs...))
+}
+
+// SourceArtifactsReadCountNotIn applies the NotIn predicate on the "source_artifacts_read_count" field.
+func SourceArtifactsReadCountNotIn(vs ...int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotIn(FieldSourceArtifactsReadCount, vs...))
+}
+
+// SourceArtifactsReadCountGT applies the GT predicate on the "source_artifacts_read_count" field.
+func SourceArtifactsReadCountGT(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGT(FieldSourceArtifactsReadCount, v))
+}
+
+// SourceArtifactsReadCountGTE applies the GTE predicate on the "source_artifacts_read_count" field.
+func SourceArtifactsReadCountGTE(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGTE(FieldSourceArtifactsReadCount, v))
+}
+
+// SourceArtifactsReadCountLT applies the LT predicate on the "source_artifacts_read_count" field.
+func SourceArtifactsReadCountLT(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLT(FieldSourceArtifactsReadCount, v))
+}
+
+// SourceArtifactsReadCountLTE applies the LTE predicate on the "source_artifacts_read_count" field.
+func SourceArtifactsReadCountLTE(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLTE(FieldSourceArtifactsReadCount, v))
+}
+
+// SourceArtifactsReadCountIsNil applies the IsNil predicate on the "source_artifacts_read_count" field.
+func SourceArtifactsReadCountIsNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIsNull(FieldSourceArtifactsReadCount))
+}
+
+// SourceArtifactsReadCountNotNil applies the NotNil predicate on the "source_artifacts_read_count" field.
+func SourceArtifactsReadCountNotNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotNull(FieldSourceArtifactsReadCount))
+}
+
+// OutputArtifactsSeenSizeInBytesEQ applies the EQ predicate on the "output_artifacts_seen_size_in_bytes" field.
+func OutputArtifactsSeenSizeInBytesEQ(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldOutputArtifactsSeenSizeInBytes, v))
+}
+
+// OutputArtifactsSeenSizeInBytesNEQ applies the NEQ predicate on the "output_artifacts_seen_size_in_bytes" field.
+func OutputArtifactsSeenSizeInBytesNEQ(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNEQ(FieldOutputArtifactsSeenSizeInBytes, v))
+}
+
+// OutputArtifactsSeenSizeInBytesIn applies the In predicate on the "output_artifacts_seen_size_in_bytes" field.
+func OutputArtifactsSeenSizeInBytesIn(vs ...int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIn(FieldOutputArtifactsSeenSizeInBytes, vs...))
+}
+
+// OutputArtifactsSeenSizeInBytesNotIn applies the NotIn predicate on the "output_artifacts_seen_size_in_bytes" field.
+func OutputArtifactsSeenSizeInBytesNotIn(vs ...int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotIn(FieldOutputArtifactsSeenSizeInBytes, vs...))
+}
+
+// OutputArtifactsSeenSizeInBytesGT applies the GT predicate on the "output_artifacts_seen_size_in_bytes" field.
+func OutputArtifactsSeenSizeInBytesGT(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGT(FieldOutputArtifactsSeenSizeInBytes, v))
+}
+
+// OutputArtifactsSeenSizeInBytesGTE applies the GTE predicate on the "output_artifacts_seen_size_in_bytes" field.
+func OutputArtifactsSeenSizeInBytesGTE(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGTE(FieldOutputArtifactsSeenSizeInBytes, v))
+}
+
+// OutputArtifactsSeenSizeInBytesLT applies the LT predicate on the "output_artifacts_seen_size_in_bytes" field.
+func OutputArtifactsSeenSizeInBytesLT(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLT(FieldOutputArtifactsSeenSizeInBytes, v))
+}
+
+// OutputArtifactsSeenSizeInBytesLTE applies the LTE predicate on the "output_artifacts_seen_size_in_bytes" field.
+func OutputArtifactsSeenSizeInBytesLTE(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLTE(FieldOutputArtifactsSeenSizeInBytes, v))
+}
+
+// OutputArtifactsSeenSizeInBytesIsNil applies the IsNil predicate on the "output_artifacts_seen_size_in_bytes" field.
+func OutputArtifactsSeenSizeInBytesIsNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIsNull(FieldOutputArtifactsSeenSizeInBytes))
+}
+
+// OutputArtifactsSeenSizeInBytesNotNil applies the NotNil predicate on the "output_artifacts_seen_size_in_bytes" field.
+func OutputArtifactsSeenSizeInBytesNotNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotNull(FieldOutputArtifactsSeenSizeInBytes))
+}
+
+// OutputArtifactsSeenCountEQ applies the EQ predicate on the "output_artifacts_seen_count" field.
+func OutputArtifactsSeenCountEQ(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldOutputArtifactsSeenCount, v))
+}
+
+// OutputArtifactsSeenCountNEQ applies the NEQ predicate on the "output_artifacts_seen_count" field.
+func OutputArtifactsSeenCountNEQ(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNEQ(FieldOutputArtifactsSeenCount, v))
+}
+
+// OutputArtifactsSeenCountIn applies the In predicate on the "output_artifacts_seen_count" field.
+func OutputArtifactsSeenCountIn(vs ...int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIn(FieldOutputArtifactsSeenCount, vs...))
+}
+
+// OutputArtifactsSeenCountNotIn applies the NotIn predicate on the "output_artifacts_seen_count" field.
+func OutputArtifactsSeenCountNotIn(vs ...int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotIn(FieldOutputArtifactsSeenCount, vs...))
+}
+
+// OutputArtifactsSeenCountGT applies the GT predicate on the "output_artifacts_seen_count" field.
+func OutputArtifactsSeenCountGT(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGT(FieldOutputArtifactsSeenCount, v))
+}
+
+// OutputArtifactsSeenCountGTE applies the GTE predicate on the "output_artifacts_seen_count" field.
+func OutputArtifactsSeenCountGTE(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGTE(FieldOutputArtifactsSeenCount, v))
+}
+
+// OutputArtifactsSeenCountLT applies the LT predicate on the "output_artifacts_seen_count" field.
+func OutputArtifactsSeenCountLT(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLT(FieldOutputArtifactsSeenCount, v))
+}
+
+// OutputArtifactsSeenCountLTE applies the LTE predicate on the "output_artifacts_seen_count" field.
+func OutputArtifactsSeenCountLTE(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLTE(FieldOutputArtifactsSeenCount, v))
+}
+
+// OutputArtifactsSeenCountIsNil applies the IsNil predicate on the "output_artifacts_seen_count" field.
+func OutputArtifactsSeenCountIsNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIsNull(FieldOutputArtifactsSeenCount))
+}
+
+// OutputArtifactsSeenCountNotNil applies the NotNil predicate on the "output_artifacts_seen_count" field.
+func OutputArtifactsSeenCountNotNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotNull(FieldOutputArtifactsSeenCount))
+}
+
+// OutputArtifactsFromActionCacheSizeInBytesEQ applies the EQ predicate on the "output_artifacts_from_action_cache_size_in_bytes" field.
+func OutputArtifactsFromActionCacheSizeInBytesEQ(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldOutputArtifactsFromActionCacheSizeInBytes, v))
+}
+
+// OutputArtifactsFromActionCacheSizeInBytesNEQ applies the NEQ predicate on the "output_artifacts_from_action_cache_size_in_bytes" field.
+func OutputArtifactsFromActionCacheSizeInBytesNEQ(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNEQ(FieldOutputArtifactsFromActionCacheSizeInBytes, v))
+}
+
+// OutputArtifactsFromActionCacheSizeInBytesIn applies the In predicate on the "output_artifacts_from_action_cache_size_in_bytes" field.
+func OutputArtifactsFromActionCacheSizeInBytesIn(vs ...int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIn(FieldOutputArtifactsFromActionCacheSizeInBytes, vs...))
+}
+
+// OutputArtifactsFromActionCacheSizeInBytesNotIn applies the NotIn predicate on the "output_artifacts_from_action_cache_size_in_bytes" field.
+func OutputArtifactsFromActionCacheSizeInBytesNotIn(vs ...int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotIn(FieldOutputArtifactsFromActionCacheSizeInBytes, vs...))
+}
+
+// OutputArtifactsFromActionCacheSizeInBytesGT applies the GT predicate on the "output_artifacts_from_action_cache_size_in_bytes" field.
+func OutputArtifactsFromActionCacheSizeInBytesGT(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGT(FieldOutputArtifactsFromActionCacheSizeInBytes, v))
+}
+
+// OutputArtifactsFromActionCacheSizeInBytesGTE applies the GTE predicate on the "output_artifacts_from_action_cache_size_in_bytes" field.
+func OutputArtifactsFromActionCacheSizeInBytesGTE(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGTE(FieldOutputArtifactsFromActionCacheSizeInBytes, v))
+}
+
+// OutputArtifactsFromActionCacheSizeInBytesLT applies the LT predicate on the "output_artifacts_from_action_cache_size_in_bytes" field.
+func OutputArtifactsFromActionCacheSizeInBytesLT(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLT(FieldOutputArtifactsFromActionCacheSizeInBytes, v))
+}
+
+// OutputArtifactsFromActionCacheSizeInBytesLTE applies the LTE predicate on the "output_artifacts_from_action_cache_size_in_bytes" field.
+func OutputArtifactsFromActionCacheSizeInBytesLTE(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLTE(FieldOutputArtifactsFromActionCacheSizeInBytes, v))
+}
+
+// OutputArtifactsFromActionCacheSizeInBytesIsNil applies the IsNil predicate on the "output_artifacts_from_action_cache_size_in_bytes" field.
+func OutputArtifactsFromActionCacheSizeInBytesIsNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIsNull(FieldOutputArtifactsFromActionCacheSizeInBytes))
+}
+
+// OutputArtifactsFromActionCacheSizeInBytesNotNil applies the NotNil predicate on the "output_artifacts_from_action_cache_size_in_bytes" field.
+func OutputArtifactsFromActionCacheSizeInBytesNotNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotNull(FieldOutputArtifactsFromActionCacheSizeInBytes))
+}
+
+// OutputArtifactsFromActionCacheCountEQ applies the EQ predicate on the "output_artifacts_from_action_cache_count" field.
+func OutputArtifactsFromActionCacheCountEQ(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldOutputArtifactsFromActionCacheCount, v))
+}
+
+// OutputArtifactsFromActionCacheCountNEQ applies the NEQ predicate on the "output_artifacts_from_action_cache_count" field.
+func OutputArtifactsFromActionCacheCountNEQ(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNEQ(FieldOutputArtifactsFromActionCacheCount, v))
+}
+
+// OutputArtifactsFromActionCacheCountIn applies the In predicate on the "output_artifacts_from_action_cache_count" field.
+func OutputArtifactsFromActionCacheCountIn(vs ...int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIn(FieldOutputArtifactsFromActionCacheCount, vs...))
+}
+
+// OutputArtifactsFromActionCacheCountNotIn applies the NotIn predicate on the "output_artifacts_from_action_cache_count" field.
+func OutputArtifactsFromActionCacheCountNotIn(vs ...int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotIn(FieldOutputArtifactsFromActionCacheCount, vs...))
+}
+
+// OutputArtifactsFromActionCacheCountGT applies the GT predicate on the "output_artifacts_from_action_cache_count" field.
+func OutputArtifactsFromActionCacheCountGT(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGT(FieldOutputArtifactsFromActionCacheCount, v))
+}
+
+// OutputArtifactsFromActionCacheCountGTE applies the GTE predicate on the "output_artifacts_from_action_cache_count" field.
+func OutputArtifactsFromActionCacheCountGTE(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGTE(FieldOutputArtifactsFromActionCacheCount, v))
+}
+
+// OutputArtifactsFromActionCacheCountLT applies the LT predicate on the "output_artifacts_from_action_cache_count" field.
+func OutputArtifactsFromActionCacheCountLT(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLT(FieldOutputArtifactsFromActionCacheCount, v))
+}
+
+// OutputArtifactsFromActionCacheCountLTE applies the LTE predicate on the "output_artifacts_from_action_cache_count" field.
+func OutputArtifactsFromActionCacheCountLTE(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLTE(FieldOutputArtifactsFromActionCacheCount, v))
+}
+
+// OutputArtifactsFromActionCacheCountIsNil applies the IsNil predicate on the "output_artifacts_from_action_cache_count" field.
+func OutputArtifactsFromActionCacheCountIsNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIsNull(FieldOutputArtifactsFromActionCacheCount))
+}
+
+// OutputArtifactsFromActionCacheCountNotNil applies the NotNil predicate on the "output_artifacts_from_action_cache_count" field.
+func OutputArtifactsFromActionCacheCountNotNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotNull(FieldOutputArtifactsFromActionCacheCount))
+}
+
+// TopLevelArtifactsSizeInBytesEQ applies the EQ predicate on the "top_level_artifacts_size_in_bytes" field.
+func TopLevelArtifactsSizeInBytesEQ(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldTopLevelArtifactsSizeInBytes, v))
+}
+
+// TopLevelArtifactsSizeInBytesNEQ applies the NEQ predicate on the "top_level_artifacts_size_in_bytes" field.
+func TopLevelArtifactsSizeInBytesNEQ(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNEQ(FieldTopLevelArtifactsSizeInBytes, v))
+}
+
+// TopLevelArtifactsSizeInBytesIn applies the In predicate on the "top_level_artifacts_size_in_bytes" field.
+func TopLevelArtifactsSizeInBytesIn(vs ...int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIn(FieldTopLevelArtifactsSizeInBytes, vs...))
+}
+
+// TopLevelArtifactsSizeInBytesNotIn applies the NotIn predicate on the "top_level_artifacts_size_in_bytes" field.
+func TopLevelArtifactsSizeInBytesNotIn(vs ...int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotIn(FieldTopLevelArtifactsSizeInBytes, vs...))
+}
+
+// TopLevelArtifactsSizeInBytesGT applies the GT predicate on the "top_level_artifacts_size_in_bytes" field.
+func TopLevelArtifactsSizeInBytesGT(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGT(FieldTopLevelArtifactsSizeInBytes, v))
+}
+
+// TopLevelArtifactsSizeInBytesGTE applies the GTE predicate on the "top_level_artifacts_size_in_bytes" field.
+func TopLevelArtifactsSizeInBytesGTE(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGTE(FieldTopLevelArtifactsSizeInBytes, v))
+}
+
+// TopLevelArtifactsSizeInBytesLT applies the LT predicate on the "top_level_artifacts_size_in_bytes" field.
+func TopLevelArtifactsSizeInBytesLT(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLT(FieldTopLevelArtifactsSizeInBytes, v))
+}
+
+// TopLevelArtifactsSizeInBytesLTE applies the LTE predicate on the "top_level_artifacts_size_in_bytes" field.
+func TopLevelArtifactsSizeInBytesLTE(v int64) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLTE(FieldTopLevelArtifactsSizeInBytes, v))
+}
+
+// TopLevelArtifactsSizeInBytesIsNil applies the IsNil predicate on the "top_level_artifacts_size_in_bytes" field.
+func TopLevelArtifactsSizeInBytesIsNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIsNull(FieldTopLevelArtifactsSizeInBytes))
+}
+
+// TopLevelArtifactsSizeInBytesNotNil applies the NotNil predicate on the "top_level_artifacts_size_in_bytes" field.
+func TopLevelArtifactsSizeInBytesNotNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotNull(FieldTopLevelArtifactsSizeInBytes))
+}
+
+// TopLevelArtifactsCountEQ applies the EQ predicate on the "top_level_artifacts_count" field.
+func TopLevelArtifactsCountEQ(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldEQ(FieldTopLevelArtifactsCount, v))
+}
+
+// TopLevelArtifactsCountNEQ applies the NEQ predicate on the "top_level_artifacts_count" field.
+func TopLevelArtifactsCountNEQ(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNEQ(FieldTopLevelArtifactsCount, v))
+}
+
+// TopLevelArtifactsCountIn applies the In predicate on the "top_level_artifacts_count" field.
+func TopLevelArtifactsCountIn(vs ...int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIn(FieldTopLevelArtifactsCount, vs...))
+}
+
+// TopLevelArtifactsCountNotIn applies the NotIn predicate on the "top_level_artifacts_count" field.
+func TopLevelArtifactsCountNotIn(vs ...int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotIn(FieldTopLevelArtifactsCount, vs...))
+}
+
+// TopLevelArtifactsCountGT applies the GT predicate on the "top_level_artifacts_count" field.
+func TopLevelArtifactsCountGT(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGT(FieldTopLevelArtifactsCount, v))
+}
+
+// TopLevelArtifactsCountGTE applies the GTE predicate on the "top_level_artifacts_count" field.
+func TopLevelArtifactsCountGTE(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldGTE(FieldTopLevelArtifactsCount, v))
+}
+
+// TopLevelArtifactsCountLT applies the LT predicate on the "top_level_artifacts_count" field.
+func TopLevelArtifactsCountLT(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLT(FieldTopLevelArtifactsCount, v))
+}
+
+// TopLevelArtifactsCountLTE applies the LTE predicate on the "top_level_artifacts_count" field.
+func TopLevelArtifactsCountLTE(v int32) predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldLTE(FieldTopLevelArtifactsCount, v))
+}
+
+// TopLevelArtifactsCountIsNil applies the IsNil predicate on the "top_level_artifacts_count" field.
+func TopLevelArtifactsCountIsNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldIsNull(FieldTopLevelArtifactsCount))
+}
+
+// TopLevelArtifactsCountNotNil applies the NotNil predicate on the "top_level_artifacts_count" field.
+func TopLevelArtifactsCountNotNil() predicate.ArtifactMetrics {
+	return predicate.ArtifactMetrics(sql.FieldNotNull(FieldTopLevelArtifactsCount))
+}
+
 // HasMetrics applies the HasEdge predicate on the "metrics" edge.
 func HasMetrics() predicate.ArtifactMetrics {
 	return predicate.ArtifactMetrics(func(s *sql.Selector) {
@@ -68,98 +508,6 @@ func HasMetrics() predicate.ArtifactMetrics {
 func HasMetricsWith(preds ...predicate.Metrics) predicate.ArtifactMetrics {
 	return predicate.ArtifactMetrics(func(s *sql.Selector) {
 		step := newMetricsStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasSourceArtifactsRead applies the HasEdge predicate on the "source_artifacts_read" edge.
-func HasSourceArtifactsRead() predicate.ArtifactMetrics {
-	return predicate.ArtifactMetrics(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, SourceArtifactsReadTable, SourceArtifactsReadColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasSourceArtifactsReadWith applies the HasEdge predicate on the "source_artifacts_read" edge with a given conditions (other predicates).
-func HasSourceArtifactsReadWith(preds ...predicate.FilesMetric) predicate.ArtifactMetrics {
-	return predicate.ArtifactMetrics(func(s *sql.Selector) {
-		step := newSourceArtifactsReadStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasOutputArtifactsSeen applies the HasEdge predicate on the "output_artifacts_seen" edge.
-func HasOutputArtifactsSeen() predicate.ArtifactMetrics {
-	return predicate.ArtifactMetrics(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, OutputArtifactsSeenTable, OutputArtifactsSeenColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasOutputArtifactsSeenWith applies the HasEdge predicate on the "output_artifacts_seen" edge with a given conditions (other predicates).
-func HasOutputArtifactsSeenWith(preds ...predicate.FilesMetric) predicate.ArtifactMetrics {
-	return predicate.ArtifactMetrics(func(s *sql.Selector) {
-		step := newOutputArtifactsSeenStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasOutputArtifactsFromActionCache applies the HasEdge predicate on the "output_artifacts_from_action_cache" edge.
-func HasOutputArtifactsFromActionCache() predicate.ArtifactMetrics {
-	return predicate.ArtifactMetrics(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, OutputArtifactsFromActionCacheTable, OutputArtifactsFromActionCacheColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasOutputArtifactsFromActionCacheWith applies the HasEdge predicate on the "output_artifacts_from_action_cache" edge with a given conditions (other predicates).
-func HasOutputArtifactsFromActionCacheWith(preds ...predicate.FilesMetric) predicate.ArtifactMetrics {
-	return predicate.ArtifactMetrics(func(s *sql.Selector) {
-		step := newOutputArtifactsFromActionCacheStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasTopLevelArtifacts applies the HasEdge predicate on the "top_level_artifacts" edge.
-func HasTopLevelArtifacts() predicate.ArtifactMetrics {
-	return predicate.ArtifactMetrics(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, TopLevelArtifactsTable, TopLevelArtifactsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasTopLevelArtifactsWith applies the HasEdge predicate on the "top_level_artifacts" edge with a given conditions (other predicates).
-func HasTopLevelArtifactsWith(preds ...predicate.FilesMetric) predicate.ArtifactMetrics {
-	return predicate.ArtifactMetrics(func(s *sql.Selector) {
-		step := newTopLevelArtifactsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

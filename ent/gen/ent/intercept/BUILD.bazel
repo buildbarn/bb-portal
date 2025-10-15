@@ -21,7 +21,6 @@ go_library(
         "//ent/gen/ent/evaluationstat",
         "//ent/gen/ent/eventmetadata",
         "//ent/gen/ent/exectioninfo",
-        "//ent/gen/ent/filesmetric",
         "//ent/gen/ent/garbagemetrics",
         "//ent/gen/ent/incompletebuildlog",
         "//ent/gen/ent/invocationfiles",
