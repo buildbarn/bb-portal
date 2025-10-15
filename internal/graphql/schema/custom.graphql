@@ -67,23 +67,6 @@ extend type BazelInvocation {
   bazelCommand: BazelCommand!
 }
 
-type ExitCode {
-  id: ID!
-  code: Int!
-  name: String!
-}
-
-type BazelInvocationState {
-  id: ID!
-  buildEndTime: Time
-  buildStartTime: Time
-  exitCode: ExitCode
-  bepCompleted: Boolean!
-}
-
-extend type BazelInvocation {
-  state: BazelInvocationState!
-}
 
 type User {
   id: ID!

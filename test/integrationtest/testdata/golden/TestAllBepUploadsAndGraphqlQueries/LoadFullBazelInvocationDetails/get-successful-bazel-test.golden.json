@@ -32,10 +32,12 @@
       ]
     },
     "bazelVersion": "7.1.0",
+    "bepCompleted": true,
     "build": null,
     "configurationMnemonic": "darwin_arm64-fastbuild",
     "cpu": "darwin_arm64",
     "endedAt": "2024-05-03T00:23:40.441Z",
+    "exitCodeName": "SUCCESS",
     "hostname": "Namelesss-MacBook-Pro.local",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
     "instanceName": {
@@ -213,17 +215,6 @@
     "profile": null,
     "sourceControl": null,
     "startedAt": "2024-05-03T00:23:37.843Z",
-    "state": {
-      "bepCompleted": true,
-      "buildEndTime": "2024-05-03T00:23:40.441Z",
-      "buildStartTime": "2024-05-03T00:23:37.843Z",
-      "exitCode": {
-        "code": 0,
-        "id": "",
-        "name": "SUCCESS"
-      },
-      "id": ""
-    },
     "stepLabel": "",
     "testCollection": [
       {

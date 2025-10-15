@@ -244,7 +244,6 @@ type ComplexityRoot struct {
 		Profile               func(childComplexity int) int
 		SourceControl         func(childComplexity int) int
 		StartedAt             func(childComplexity int) int
-		State                 func(childComplexity int) int
 		StepLabel             func(childComplexity int) int
 		TestCollection        func(childComplexity int) int
 		User                  func(childComplexity int) int
@@ -268,14 +267,6 @@ type ComplexityRoot struct {
 		ID              func(childComplexity int) int
 		Label           func(childComplexity int) int
 		ProblemType     func(childComplexity int) int
-	}
-
-	BazelInvocationState struct {
-		BepCompleted   func(childComplexity int) int
-		BuildEndTime   func(childComplexity int) int
-		BuildStartTime func(childComplexity int) int
-		ExitCode       func(childComplexity int) int
-		ID             func(childComplexity int) int
 	}
 
 	Blob struct {
@@ -359,12 +350,6 @@ type ComplexityRoot struct {
 		TestResult      func(childComplexity int) int
 		TimeoutSeconds  func(childComplexity int) int
 		TimingBreakdown func(childComplexity int) int
-	}
-
-	ExitCode struct {
-		Code func(childComplexity int) int
-		ID   func(childComplexity int) int
-		Name func(childComplexity int) int
 	}
 
 	GarbageMetrics struct {
@@ -786,7 +771,6 @@ type BazelInvocationResolver interface {
 	ID(ctx context.Context, obj *ent.BazelInvocation) (string, error)
 
 	BazelCommand(ctx context.Context, obj *ent.BazelInvocation) (*model.BazelCommand, error)
-	State(ctx context.Context, obj *ent.BazelInvocation) (*model.BazelInvocationState, error)
 	User(ctx context.Context, obj *ent.BazelInvocation) (*model.User, error)
 	Problems(ctx context.Context, obj *ent.BazelInvocation) ([]model.Problem, error)
 	Profile(ctx context.Context, obj *ent.BazelInvocation) (*model.Profile, error)
@@ -1922,13 +1906,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.BazelInvocation.StartedAt(childComplexity), true
 
-	case "BazelInvocation.state":
-		if e.complexity.BazelInvocation.State == nil {
-			break
-		}
-
-		return e.complexity.BazelInvocation.State(childComplexity), true
-
 	case "BazelInvocation.stepLabel":
 		if e.complexity.BazelInvocation.StepLabel == nil {
 			break
@@ -2026,41 +2003,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.BazelInvocationProblem.ProblemType(childComplexity), true
-
-	case "BazelInvocationState.bepCompleted":
-		if e.complexity.BazelInvocationState.BepCompleted == nil {
-			break
-		}
-
-		return e.complexity.BazelInvocationState.BepCompleted(childComplexity), true
-
-	case "BazelInvocationState.buildEndTime":
-		if e.complexity.BazelInvocationState.BuildEndTime == nil {
-			break
-		}
-
-		return e.complexity.BazelInvocationState.BuildEndTime(childComplexity), true
-
-	case "BazelInvocationState.buildStartTime":
-		if e.complexity.BazelInvocationState.BuildStartTime == nil {
-			break
-		}
-
-		return e.complexity.BazelInvocationState.BuildStartTime(childComplexity), true
-
-	case "BazelInvocationState.exitCode":
-		if e.complexity.BazelInvocationState.ExitCode == nil {
-			break
-		}
-
-		return e.complexity.BazelInvocationState.ExitCode(childComplexity), true
-
-	case "BazelInvocationState.id":
-		if e.complexity.BazelInvocationState.ID == nil {
-			break
-		}
-
-		return e.complexity.BazelInvocationState.ID(childComplexity), true
 
 	case "Blob.archiveURL":
 		if e.complexity.Blob.ArchiveURL == nil {
@@ -2453,27 +2395,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.ExectionInfo.TimingBreakdown(childComplexity), true
-
-	case "ExitCode.code":
-		if e.complexity.ExitCode.Code == nil {
-			break
-		}
-
-		return e.complexity.ExitCode.Code(childComplexity), true
-
-	case "ExitCode.id":
-		if e.complexity.ExitCode.ID == nil {
-			break
-		}
-
-		return e.complexity.ExitCode.ID(childComplexity), true
-
-	case "ExitCode.name":
-		if e.complexity.ExitCode.Name == nil {
-			break
-		}
-
-		return e.complexity.ExitCode.Name(childComplexity), true
 
 	case "GarbageMetrics.garbageCollected":
 		if e.complexity.GarbageMetrics.GarbageCollected == nil {
@@ -10060,62 +9981,6 @@ func (ec *executionContext) fieldContext_BazelInvocation_bazelCommand(_ context.
 	return fc, nil
 }
 
-func (ec *executionContext) _BazelInvocation_state(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BazelInvocation_state(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.BazelInvocation().State(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.BazelInvocationState)
-	fc.Result = res
-	return ec.marshalNBazelInvocationState2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐBazelInvocationState(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_BazelInvocation_state(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "BazelInvocation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_BazelInvocationState_id(ctx, field)
-			case "buildEndTime":
-				return ec.fieldContext_BazelInvocationState_buildEndTime(ctx, field)
-			case "buildStartTime":
-				return ec.fieldContext_BazelInvocationState_buildStartTime(ctx, field)
-			case "exitCode":
-				return ec.fieldContext_BazelInvocationState_exitCode(ctx, field)
-			case "bepCompleted":
-				return ec.fieldContext_BazelInvocationState_bepCompleted(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type BazelInvocationState", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _BazelInvocation_user(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_BazelInvocation_user(ctx, field)
 	if err != nil {
@@ -10542,8 +10407,6 @@ func (ec *executionContext) fieldContext_BazelInvocationEdge_node(_ context.Cont
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 			case "bazelCommand":
 				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
-			case "state":
-				return ec.fieldContext_BazelInvocation_state(ctx, field)
 			case "user":
 				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "problems":
@@ -10829,8 +10692,6 @@ func (ec *executionContext) fieldContext_BazelInvocationProblem_bazelInvocation(
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 			case "bazelCommand":
 				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
-			case "state":
-				return ec.fieldContext_BazelInvocation_state(ctx, field)
 			case "user":
 				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "problems":
@@ -10841,225 +10702,6 @@ func (ec *executionContext) fieldContext_BazelInvocationProblem_bazelInvocation(
 				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _BazelInvocationState_id(ctx context.Context, field graphql.CollectedField, obj *model.BazelInvocationState) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BazelInvocationState_id(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_BazelInvocationState_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "BazelInvocationState",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _BazelInvocationState_buildEndTime(ctx context.Context, field graphql.CollectedField, obj *model.BazelInvocationState) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BazelInvocationState_buildEndTime(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.BuildEndTime, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	fc.Result = res
-	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_BazelInvocationState_buildEndTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "BazelInvocationState",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _BazelInvocationState_buildStartTime(ctx context.Context, field graphql.CollectedField, obj *model.BazelInvocationState) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BazelInvocationState_buildStartTime(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.BuildStartTime, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	fc.Result = res
-	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_BazelInvocationState_buildStartTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "BazelInvocationState",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _BazelInvocationState_exitCode(ctx context.Context, field graphql.CollectedField, obj *model.BazelInvocationState) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BazelInvocationState_exitCode(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ExitCode, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.ExitCode)
-	fc.Result = res
-	return ec.marshalOExitCode2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐExitCode(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_BazelInvocationState_exitCode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "BazelInvocationState",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_ExitCode_id(ctx, field)
-			case "code":
-				return ec.fieldContext_ExitCode_code(ctx, field)
-			case "name":
-				return ec.fieldContext_ExitCode_name(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ExitCode", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _BazelInvocationState_bepCompleted(ctx context.Context, field graphql.CollectedField, obj *model.BazelInvocationState) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BazelInvocationState_bepCompleted(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.BepCompleted, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_BazelInvocationState_bepCompleted(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "BazelInvocationState",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -11923,8 +11565,6 @@ func (ec *executionContext) fieldContext_Build_invocations(_ context.Context, fi
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 			case "bazelCommand":
 				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
-			case "state":
-				return ec.fieldContext_BazelInvocation_state(ctx, field)
 			case "user":
 				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "problems":
@@ -13731,138 +13371,6 @@ func (ec *executionContext) fieldContext_ExectionInfo_resourceUsage(_ context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _ExitCode_id(ctx context.Context, field graphql.CollectedField, obj *model.ExitCode) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ExitCode_id(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ExitCode_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ExitCode",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ExitCode_code(ctx context.Context, field graphql.CollectedField, obj *model.ExitCode) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ExitCode_code(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Code, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ExitCode_code(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ExitCode",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ExitCode_name(ctx context.Context, field graphql.CollectedField, obj *model.ExitCode) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ExitCode_name(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Name, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ExitCode_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ExitCode",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _GarbageMetrics_id(ctx context.Context, field graphql.CollectedField, obj *ent.GarbageMetrics) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_GarbageMetrics_id(ctx, field)
 	if err != nil {
@@ -14270,8 +13778,6 @@ func (ec *executionContext) fieldContext_IncompleteBuildLog_bazelInvocation(_ co
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 			case "bazelCommand":
 				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
-			case "state":
-				return ec.fieldContext_BazelInvocation_state(ctx, field)
 			case "user":
 				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "problems":
@@ -14469,8 +13975,6 @@ func (ec *executionContext) fieldContext_InstanceName_bazelInvocations(_ context
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 			case "bazelCommand":
 				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
-			case "state":
-				return ec.fieldContext_BazelInvocation_state(ctx, field)
 			case "user":
 				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "problems":
@@ -15001,8 +14505,6 @@ func (ec *executionContext) fieldContext_InvocationFiles_bazelInvocation(_ conte
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 			case "bazelCommand":
 				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
-			case "state":
-				return ec.fieldContext_BazelInvocation_state(ctx, field)
 			case "user":
 				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "problems":
@@ -15452,8 +14954,6 @@ func (ec *executionContext) fieldContext_InvocationTarget_bazelInvocation(_ cont
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 			case "bazelCommand":
 				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
-			case "state":
-				return ec.fieldContext_BazelInvocation_state(ctx, field)
 			case "user":
 				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "problems":
@@ -16202,8 +15702,6 @@ func (ec *executionContext) fieldContext_Metrics_bazelInvocation(_ context.Conte
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 			case "bazelCommand":
 				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
-			case "state":
-				return ec.fieldContext_BazelInvocation_state(ctx, field)
 			case "user":
 				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "problems":
@@ -19058,8 +18556,6 @@ func (ec *executionContext) fieldContext_Query_bazelInvocation(ctx context.Conte
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 			case "bazelCommand":
 				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
-			case "state":
-				return ec.fieldContext_BazelInvocation_state(ctx, field)
 			case "user":
 				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "problems":
@@ -20924,8 +20420,6 @@ func (ec *executionContext) fieldContext_SourceControl_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 			case "bazelCommand":
 				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
-			case "state":
-				return ec.fieldContext_BazelInvocation_state(ctx, field)
 			case "user":
 				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "problems":
@@ -22981,8 +22475,6 @@ func (ec *executionContext) fieldContext_TestCollection_bazelInvocation(_ contex
 				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
 			case "bazelCommand":
 				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
-			case "state":
-				return ec.fieldContext_BazelInvocation_state(ctx, field)
 			case "user":
 				return ec.fieldContext_BazelInvocation_user(ctx, field)
 			case "problems":
@@ -50213,42 +49705,6 @@ func (ec *executionContext) _BazelInvocation(ctx context.Context, sel ast.Select
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "state":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._BazelInvocation_state(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "user":
 			field := field
 
@@ -50584,56 +50040,6 @@ func (ec *executionContext) _BazelInvocationProblem(ctx context.Context, sel ast
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var bazelInvocationStateImplementors = []string{"BazelInvocationState"}
-
-func (ec *executionContext) _BazelInvocationState(ctx context.Context, sel ast.SelectionSet, obj *model.BazelInvocationState) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, bazelInvocationStateImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BazelInvocationState")
-		case "id":
-			out.Values[i] = ec._BazelInvocationState_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "buildEndTime":
-			out.Values[i] = ec._BazelInvocationState_buildEndTime(ctx, field, obj)
-		case "buildStartTime":
-			out.Values[i] = ec._BazelInvocationState_buildStartTime(ctx, field, obj)
-		case "exitCode":
-			out.Values[i] = ec._BazelInvocationState_exitCode(ctx, field, obj)
-		case "bepCompleted":
-			out.Values[i] = ec._BazelInvocationState_bepCompleted(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -51856,55 +51262,6 @@ func (ec *executionContext) _ExectionInfo(ctx context.Context, sel ast.Selection
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var exitCodeImplementors = []string{"ExitCode"}
-
-func (ec *executionContext) _ExitCode(ctx context.Context, sel ast.SelectionSet, obj *model.ExitCode) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, exitCodeImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("ExitCode")
-		case "id":
-			out.Values[i] = ec._ExitCode_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "code":
-			out.Values[i] = ec._ExitCode_code(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "name":
-			out.Values[i] = ec._ExitCode_name(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -57446,20 +56803,6 @@ func (ec *executionContext) unmarshalNBazelInvocationProblemWhereInput2ᚖgithub
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNBazelInvocationState2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐBazelInvocationState(ctx context.Context, sel ast.SelectionSet, v model.BazelInvocationState) graphql.Marshaler {
-	return ec._BazelInvocationState(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNBazelInvocationState2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐBazelInvocationState(ctx context.Context, sel ast.SelectionSet, v *model.BazelInvocationState) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._BazelInvocationState(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalNBazelInvocationWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationWhereInput(ctx context.Context, v any) (*ent.BazelInvocationWhereInput, error) {
 	res, err := ec.unmarshalInputBazelInvocationWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -59396,13 +58739,6 @@ func (ec *executionContext) unmarshalOExectionInfoWhereInput2ᚖgithubᚗcomᚋb
 	}
 	res, err := ec.unmarshalInputExectionInfoWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOExitCode2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐExitCode(ctx context.Context, sel ast.SelectionSet, v *model.ExitCode) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._ExitCode(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOFloat2ᚖfloat64(ctx context.Context, v any) (*float64, error) {

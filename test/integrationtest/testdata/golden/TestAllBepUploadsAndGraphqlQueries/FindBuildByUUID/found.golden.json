@@ -5,16 +5,13 @@
     "id": "QnVpbGQ6MQ==",
     "invocations": [
       {
+        "bepCompleted": true,
         "endedAt": "2024-05-13T23:43:26.247Z",
+        "exitCodeName": "TESTS_FAILED",
         "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",
         "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
         "sourceControl": null,
         "startedAt": "2024-05-13T23:43:23.045Z",
-        "state": {
-          "exitCode": {
-            "name": "TESTS_FAILED"
-          }
-        },
         "userLdap": "nameless"
       }
     ],

@@ -1,14 +1,13 @@
-import React, { RefAttributes } from 'react';
-import { CardProps, Descriptions, Space } from 'antd';
-import { JSX } from 'react/jsx-runtime';
-import IntrinsicAttributes = JSX.IntrinsicAttributes;
-import BuildStepResultTag, { BuildStepResultEnum } from '../BuildStepResultTag';
+import React from 'react';
+import { Descriptions, Space } from 'antd';
 import PortalDuration from '../PortalDuration';
+import { InvocationResultTag } from '../InvocationResultTag';
 
 interface Props {
     command: string,
     cpu: string,
-    status: string,
+    exitCodeName: string | undefined,
+    bepCompleted: boolean,
     invocationId: string,
     instanceName: string | undefined,
     configuration: string
@@ -24,7 +23,8 @@ interface Props {
 export const InvocationOverviewDisplay: React.FC<Props> = ({
     command,
     cpu,
-    status,
+    exitCodeName,
+    bepCompleted,
     invocationId,
     instanceName,
     configuration,
@@ -40,7 +40,7 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({
         <Space>
             <Descriptions column={1} bordered >
                 <Descriptions.Item label="Status">
-                    <BuildStepResultTag key="result" result={status as BuildStepResultEnum} />
+                    <InvocationResultTag key="result" exitCodeName={exitCodeName} bepCompleted={bepCompleted} />
                 </Descriptions.Item>
                 <Descriptions.Item label="Invocation Id">
                     {invocationId}

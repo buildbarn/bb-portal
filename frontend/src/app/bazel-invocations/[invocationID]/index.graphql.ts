@@ -181,17 +181,8 @@ fragment BazelInvocationInfo on BazelInvocation {
   }
   startedAt
   endedAt
-  state {
-    bepCompleted
-    buildEndTime
-    buildStartTime
-    exitCode {
-      code
-      id
-      name
-    }
-    id
-  }
+  exitCodeName
+  bepCompleted
   configurationMnemonic
   cpu
   numFetches

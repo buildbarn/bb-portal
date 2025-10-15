@@ -64,21 +64,6 @@ func (r *bazelInvocationResolver) BazelCommand(ctx context.Context, obj *ent.Baz
 	}, nil
 }
 
-// State is the resolver for the state field.
-func (r *bazelInvocationResolver) State(ctx context.Context, obj *ent.BazelInvocation) (*model.BazelInvocationState, error) {
-	return &model.BazelInvocationState{
-		// TODO: Scalar ID
-		BuildEndTime:   obj.EndedAt,
-		BuildStartTime: &obj.StartedAt,
-		ExitCode: &model.ExitCode{
-			// TODO: Scalar ID
-			Code: int(obj.ExitCodeCode),
-			Name: obj.ExitCodeName,
-		},
-		BepCompleted: obj.BepCompleted,
-	}, nil
-}
-
 // User is the resolver for the user field.
 func (r *bazelInvocationResolver) User(ctx context.Context, obj *ent.BazelInvocation) (*model.User, error) {
 	return &model.User{

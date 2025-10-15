@@ -25,13 +25,8 @@ export const AUTHENTICATED_USER_NODE_FRAGMENT = gql(/* GraphQL */ `
           }
           endedAt
           startedAt
-          state {
-            bepCompleted
-            exitCode {
-              code
-              name
-            }
-          }
+          exitCodeName
+          bepCompleted
         }
       }
     }

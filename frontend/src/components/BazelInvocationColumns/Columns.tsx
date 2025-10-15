@@ -11,8 +11,9 @@ import styles from './Columns.module.css';
 import { BazelInvocationNodeFragment } from '@/graphql/__generated__/graphql';
 import { SearchFilterIcon, SearchWidget, TimeRangeSelector } from '@/components/SearchWidgets';
 import PortalDuration from "@/components/PortalDuration";
-import BuildStepResultTag, { BuildStepResultEnum } from "@/components/BuildStepResultTag";
 import UserStatusIndicator from '../UserStatusIndicator';
+import { InvocationResultTag } from '../InvocationResultTag';
+import { invocationResultTagFilters } from '../InvocationResultTag/filters';
 
 export const invocationIdColumn: ColumnType<BazelInvocationNodeFragment> = {
   key: 'invocationID',
@@ -55,47 +56,10 @@ export const statusColumn: ColumnType<BazelInvocationNodeFragment> = {
   key: 'result',
   width: 120,
   title: 'Result',
-  render: (_, record) => <BuildStepResultTag result={record.state.exitCode?.name as BuildStepResultEnum} />,
+  render: (_, record) => <InvocationResultTag exitCodeName={record.exitCodeName || undefined} bepCompleted={record.bepCompleted}/>,
   filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
-  onFilter:  (value, record) => record.state.exitCode?.name == value,
-  filters:[
-    {
-      text: "Succeeded",
-      value: "SUCCESS",
-    },
-    {
-      text: "Unstable",
-      value: "UNSTABLE",
-    },
-    {
-      text: "Parsing Failed",
-      value: "PARSING_FAILURE",
-    },
-    {
-      text: "Build Failed",
-      value: "BUILD_FAILURE",
-    },
-    {
-      text: "Tests Failed",
-      value: "TESTS_FAILED",
-    },
-    {
-      text: "Not Built",
-      value: "NOT_BUILT",
-    },
-    {
-      text: "Aborted",
-      value: "ABORTED",
-    },
-    {
-      text: "Interrupted",
-      value: "INTERRUPTED",
-    },
-    {
-      text: "Status Unknown",
-      value: "UNKNOWN",
-    },
-  ]
+  onFilter: (value, record) => record.exitCodeName === value,
+  filters: invocationResultTagFilters,
 };
 
 export const buildColumn: ColumnType<BazelInvocationNodeFragment> = {

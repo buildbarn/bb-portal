@@ -13,11 +13,8 @@ export const FIND_BUILD_BY_UUID_QUERY = gql(/* GraphQL */ `
         userLdap
         endedAt
         startedAt
-        state {
-          exitCode {
-            name
-          }
-        }
+        exitCodeName
+        bepCompleted
         sourceControl{
           job
           action

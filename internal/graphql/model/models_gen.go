@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"strconv"
-	"time"
 
 	"github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
@@ -56,14 +55,6 @@ type BazelCommand struct {
 	ExplicitStartupOptions []*string `json:"explicitStartupOptions,omitempty"`
 }
 
-type BazelInvocationState struct {
-	ID             string     `json:"id"`
-	BuildEndTime   *time.Time `json:"buildEndTime,omitempty"`
-	BuildStartTime *time.Time `json:"buildStartTime,omitempty"`
-	ExitCode       *ExitCode  `json:"exitCode,omitempty"`
-	BepCompleted   bool       `json:"bepCompleted"`
-}
-
 type BlobReference struct {
 	Name               string             `json:"name"`
 	DownloadURL        string             `json:"downloadURL"`
@@ -72,12 +63,6 @@ type BlobReference struct {
 	EphemeralURL       string             `json:"ephemeralURL"`
 	// The blob being referenced
 	Blob *ent.Blob `json:"-"`
-}
-
-type ExitCode struct {
-	ID   string `json:"id"`
-	Code int    `json:"code"`
-	Name string `json:"name"`
 }
 
 type Profile struct {

@@ -32,10 +32,12 @@
       ]
     },
     "bazelVersion": "7.1.0",
+    "bepCompleted": true,
     "build": null,
     "configurationMnemonic": "darwin_arm64-fastbuild",
     "cpu": "darwin_arm64",
     "endedAt": "2024-05-03T00:29:47.784Z",
+    "exitCodeName": "PARSING_FAILURE",
     "hostname": "Namelesss-MacBook-Pro.local",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjU=",
     "instanceName": {
@@ -171,17 +173,6 @@
     "profile": null,
     "sourceControl": null,
     "startedAt": "2024-05-03T00:29:47.443Z",
-    "state": {
-      "bepCompleted": true,
-      "buildEndTime": "2024-05-03T00:29:47.784Z",
-      "buildStartTime": "2024-05-03T00:29:47.443Z",
-      "exitCode": {
-        "code": 1,
-        "id": "",
-        "name": "PARSING_FAILURE"
-      },
-      "id": ""
-    },
     "stepLabel": "",
     "testCollection": [],
     "user": {
