@@ -33,7 +33,7 @@ fetch(`${YOUR_API_HOST}/graphql`, {
       }
     });
 
-    fs.writeFile('./src/components/ApolloWrapper/possibleTypes.json', JSON.stringify(possibleTypes), err => {
+    fs.writeFile('./src/components/ApolloWrapper/possibleTypes.json', JSON.stringify(possibleTypes, null, "  "), err => {
       if (err) {
         console.error('Error writing possibleTypes.json', err);
       } else {
