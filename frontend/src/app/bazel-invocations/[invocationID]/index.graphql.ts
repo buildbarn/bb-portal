@@ -162,15 +162,6 @@ fragment BazelInvocationInfo on BazelInvocation {
     sizeInBytes
     digestFunction
   }
-  targets {
-    id
-    label
-    success
-    testSize
-    targetKind
-    durationInMs
-    abortReason
-  }
   testCollection {
     id
     label

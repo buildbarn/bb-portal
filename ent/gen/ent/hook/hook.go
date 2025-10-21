@@ -225,6 +225,18 @@ func (f InvocationFilesFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Va
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InvocationFilesMutation", m)
 }
 
+// The InvocationTargetFunc type is an adapter to allow the use of ordinary
+// function as InvocationTarget mutator.
+type InvocationTargetFunc func(context.Context, *ent.InvocationTargetMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f InvocationTargetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.InvocationTargetMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InvocationTargetMutation", m)
+}
+
 // The MemoryMetricsFunc type is an adapter to allow the use of ordinary
 // function as MemoryMetrics mutator.
 type MemoryMetricsFunc func(context.Context, *ent.MemoryMetricsMutation) (ent.Value, error)
@@ -379,6 +391,18 @@ func (f TargetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TargetMutation", m)
+}
+
+// The TargetKindMappingFunc type is an adapter to allow the use of ordinary
+// function as TargetKindMapping mutator.
+type TargetKindMappingFunc func(context.Context, *ent.TargetKindMappingMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TargetKindMappingFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TargetKindMappingMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TargetKindMappingMutation", m)
 }
 
 // The TargetMetricsFunc type is an adapter to allow the use of ordinary

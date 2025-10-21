@@ -96,8 +96,10 @@ const (
 	EdgeInvocationFiles = "invocation_files"
 	// EdgeTestCollection holds the string denoting the test_collection edge name in mutations.
 	EdgeTestCollection = "test_collection"
-	// EdgeTargets holds the string denoting the targets edge name in mutations.
-	EdgeTargets = "targets"
+	// EdgeInvocationTargets holds the string denoting the invocation_targets edge name in mutations.
+	EdgeInvocationTargets = "invocation_targets"
+	// EdgeTargetKindMappings holds the string denoting the target_kind_mappings edge name in mutations.
+	EdgeTargetKindMappings = "target_kind_mappings"
 	// EdgeSourceControl holds the string denoting the source_control edge name in mutations.
 	EdgeSourceControl = "source_control"
 	// Table holds the table name of the bazelinvocation in the database.
@@ -165,13 +167,20 @@ const (
 	TestCollectionInverseTable = "test_collections"
 	// TestCollectionColumn is the table column denoting the test_collection relation/edge.
 	TestCollectionColumn = "bazel_invocation_test_collection"
-	// TargetsTable is the table that holds the targets relation/edge.
-	TargetsTable = "targets"
-	// TargetsInverseTable is the table name for the Target entity.
-	// It exists in this package in order to avoid circular dependency with the "target" package.
-	TargetsInverseTable = "targets"
-	// TargetsColumn is the table column denoting the targets relation/edge.
-	TargetsColumn = "bazel_invocation_targets"
+	// InvocationTargetsTable is the table that holds the invocation_targets relation/edge.
+	InvocationTargetsTable = "invocation_targets"
+	// InvocationTargetsInverseTable is the table name for the InvocationTarget entity.
+	// It exists in this package in order to avoid circular dependency with the "invocationtarget" package.
+	InvocationTargetsInverseTable = "invocation_targets"
+	// InvocationTargetsColumn is the table column denoting the invocation_targets relation/edge.
+	InvocationTargetsColumn = "bazel_invocation_invocation_targets"
+	// TargetKindMappingsTable is the table that holds the target_kind_mappings relation/edge.
+	TargetKindMappingsTable = "target_kind_mappings"
+	// TargetKindMappingsInverseTable is the table name for the TargetKindMapping entity.
+	// It exists in this package in order to avoid circular dependency with the "targetkindmapping" package.
+	TargetKindMappingsInverseTable = "target_kind_mappings"
+	// TargetKindMappingsColumn is the table column denoting the target_kind_mappings relation/edge.
+	TargetKindMappingsColumn = "bazel_invocation_target_kind_mappings"
 	// SourceControlTable is the table that holds the source_control relation/edge.
 	SourceControlTable = "source_controls"
 	// SourceControlInverseTable is the table name for the SourceControl entity.
@@ -516,17 +525,31 @@ func ByTestCollection(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByTargetsCount orders the results by targets count.
-func ByTargetsCount(opts ...sql.OrderTermOption) OrderOption {
+// ByInvocationTargetsCount orders the results by invocation_targets count.
+func ByInvocationTargetsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTargetsStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newInvocationTargetsStep(), opts...)
 	}
 }
 
-// ByTargets orders the results by targets terms.
-func ByTargets(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByInvocationTargets orders the results by invocation_targets terms.
+func ByInvocationTargets(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTargetsStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newInvocationTargetsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByTargetKindMappingsCount orders the results by target_kind_mappings count.
+func ByTargetKindMappingsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTargetKindMappingsStep(), opts...)
+	}
+}
+
+// ByTargetKindMappings orders the results by target_kind_mappings terms.
+func ByTargetKindMappings(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTargetKindMappingsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -599,11 +622,18 @@ func newTestCollectionStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, TestCollectionTable, TestCollectionColumn),
 	)
 }
-func newTargetsStep() *sqlgraph.Step {
+func newInvocationTargetsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(TargetsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, TargetsTable, TargetsColumn),
+		sqlgraph.To(InvocationTargetsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, InvocationTargetsTable, InvocationTargetsColumn),
+	)
+}
+func newTargetKindMappingsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TargetKindMappingsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TargetKindMappingsTable, TargetKindMappingsColumn),
 	)
 }
 func newSourceControlStep() *sqlgraph.Step {

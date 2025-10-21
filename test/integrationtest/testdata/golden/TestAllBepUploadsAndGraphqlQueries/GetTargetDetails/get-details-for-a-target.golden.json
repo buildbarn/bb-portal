@@ -1,0 +1,68 @@
+{
+  "getTarget": {
+    "invocationTargets": {
+      "edges": [
+        {
+          "node": {
+            "abortReason": "NONE",
+            "bazelInvocation": {
+              "invocationID": "fd03240f-697e-4b64-95bc-888e27445bf9"
+            },
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo5",
+            "success": true,
+            "tags": null
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "bazelInvocation": {
+              "invocationID": "08ae089d-4c85-405c-83fc-dbe9fc1dc942"
+            },
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDo3Mw==",
+            "success": true,
+            "tags": null
+          }
+        },
+        {
+          "node": {
+            "abortReason": "NONE",
+            "bazelInvocation": {
+              "invocationID": "10a37e86-6e2b-4adb-83dd-c2906f42bdd6"
+            },
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDoxMzU=",
+            "success": true,
+            "tags": null
+          }
+        },
+        {
+          "node": {
+            "abortReason": "INCOMPLETE",
+            "bazelInvocation": {
+              "invocationID": "df7178e2-a815-4654-a409-d18e845d1e35"
+            },
+            "durationInMs": 0,
+            "failureMessage": "",
+            "id": "SW52b2NhdGlvblRhcmdldDoyMjk=",
+            "success": false,
+            "tags": null
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": "gaFpzOU",
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": "gaFpCQ"
+      },
+      "totalCount": 4
+    },
+    "invocationTargetsTotalDurationMillis": 0
+  }
+}

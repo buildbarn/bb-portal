@@ -157,7 +157,13 @@ func (BazelInvocation) Edges() []ent.Edge {
 			),
 
 		// Target Data for the completed Invocation
-		edge.To("targets", Target.Type).
+		edge.To("invocation_targets", InvocationTarget.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+				entgql.RelayConnection(),
+			),
+
+		edge.To("target_kind_mappings", TargetKindMapping.Type).
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
@@ -177,6 +183,7 @@ func (BazelInvocation) Indexes() []ent.Index {
 		index.Fields("invocation_id"),
 		index.Fields("started_at"),
 		index.Edges("build"),
+		index.Edges("instance_name"),
 	}
 }
 

@@ -30,6 +30,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
@@ -4183,6 +4184,320 @@ func (_if *InvocationFiles) ToEdge(order *InvocationFilesOrder) *InvocationFiles
 	}
 }
 
+// InvocationTargetEdge is the edge representation of InvocationTarget.
+type InvocationTargetEdge struct {
+	Node   *InvocationTarget `json:"node"`
+	Cursor Cursor            `json:"cursor"`
+}
+
+// InvocationTargetConnection is the connection containing edges to InvocationTarget.
+type InvocationTargetConnection struct {
+	Edges      []*InvocationTargetEdge `json:"edges"`
+	PageInfo   PageInfo                `json:"pageInfo"`
+	TotalCount int                     `json:"totalCount"`
+}
+
+func (c *InvocationTargetConnection) build(nodes []*InvocationTarget, pager *invocationtargetPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *InvocationTarget
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *InvocationTarget {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *InvocationTarget {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*InvocationTargetEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &InvocationTargetEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// InvocationTargetPaginateOption enables pagination customization.
+type InvocationTargetPaginateOption func(*invocationtargetPager) error
+
+// WithInvocationTargetOrder configures pagination ordering.
+func WithInvocationTargetOrder(order *InvocationTargetOrder) InvocationTargetPaginateOption {
+	if order == nil {
+		order = DefaultInvocationTargetOrder
+	}
+	o := *order
+	return func(pager *invocationtargetPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultInvocationTargetOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithInvocationTargetFilter configures pagination filter.
+func WithInvocationTargetFilter(filter func(*InvocationTargetQuery) (*InvocationTargetQuery, error)) InvocationTargetPaginateOption {
+	return func(pager *invocationtargetPager) error {
+		if filter == nil {
+			return errors.New("InvocationTargetQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type invocationtargetPager struct {
+	reverse bool
+	order   *InvocationTargetOrder
+	filter  func(*InvocationTargetQuery) (*InvocationTargetQuery, error)
+}
+
+func newInvocationTargetPager(opts []InvocationTargetPaginateOption, reverse bool) (*invocationtargetPager, error) {
+	pager := &invocationtargetPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultInvocationTargetOrder
+	}
+	return pager, nil
+}
+
+func (p *invocationtargetPager) applyFilter(query *InvocationTargetQuery) (*InvocationTargetQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *invocationtargetPager) toCursor(it *InvocationTarget) Cursor {
+	return p.order.Field.toCursor(it)
+}
+
+func (p *invocationtargetPager) applyCursors(query *InvocationTargetQuery, after, before *Cursor) (*InvocationTargetQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultInvocationTargetOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *invocationtargetPager) applyOrder(query *InvocationTargetQuery) *InvocationTargetQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultInvocationTargetOrder.Field {
+		query = query.Order(DefaultInvocationTargetOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *invocationtargetPager) orderExpr(query *InvocationTargetQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultInvocationTargetOrder.Field {
+			b.Comma().Ident(DefaultInvocationTargetOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to InvocationTarget.
+func (it *InvocationTargetQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...InvocationTargetPaginateOption,
+) (*InvocationTargetConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newInvocationTargetPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if it, err = pager.applyFilter(it); err != nil {
+		return nil, err
+	}
+	conn := &InvocationTargetConnection{Edges: []*InvocationTargetEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := it.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if it, err = pager.applyCursors(it, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		it.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := it.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	it = pager.applyOrder(it)
+	nodes, err := it.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+var (
+	// InvocationTargetOrderFieldStartTimeInMs orders InvocationTarget by start_time_in_ms.
+	InvocationTargetOrderFieldStartTimeInMs = &InvocationTargetOrderField{
+		Value: func(it *InvocationTarget) (ent.Value, error) {
+			return it.StartTimeInMs, nil
+		},
+		column: invocationtarget.FieldStartTimeInMs,
+		toTerm: invocationtarget.ByStartTimeInMs,
+		toCursor: func(it *InvocationTarget) Cursor {
+			return Cursor{
+				ID:    it.ID,
+				Value: it.StartTimeInMs,
+			}
+		},
+	}
+	// InvocationTargetOrderFieldDurationInMs orders InvocationTarget by duration_in_ms.
+	InvocationTargetOrderFieldDurationInMs = &InvocationTargetOrderField{
+		Value: func(it *InvocationTarget) (ent.Value, error) {
+			return it.DurationInMs, nil
+		},
+		column: invocationtarget.FieldDurationInMs,
+		toTerm: invocationtarget.ByDurationInMs,
+		toCursor: func(it *InvocationTarget) Cursor {
+			return Cursor{
+				ID:    it.ID,
+				Value: it.DurationInMs,
+			}
+		},
+	}
+)
+
+// String implement fmt.Stringer interface.
+func (f InvocationTargetOrderField) String() string {
+	var str string
+	switch f.column {
+	case InvocationTargetOrderFieldStartTimeInMs.column:
+		str = "STARTED_AT"
+	case InvocationTargetOrderFieldDurationInMs.column:
+		str = "DURATION"
+	}
+	return str
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (f InvocationTargetOrderField) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(f.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (f *InvocationTargetOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("InvocationTargetOrderField %T must be a string", v)
+	}
+	switch str {
+	case "STARTED_AT":
+		*f = *InvocationTargetOrderFieldStartTimeInMs
+	case "DURATION":
+		*f = *InvocationTargetOrderFieldDurationInMs
+	default:
+		return fmt.Errorf("%s is not a valid InvocationTargetOrderField", str)
+	}
+	return nil
+}
+
+// InvocationTargetOrderField defines the ordering field of InvocationTarget.
+type InvocationTargetOrderField struct {
+	// Value extracts the ordering value from the given InvocationTarget.
+	Value    func(*InvocationTarget) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) invocationtarget.OrderOption
+	toCursor func(*InvocationTarget) Cursor
+}
+
+// InvocationTargetOrder defines the ordering of InvocationTarget.
+type InvocationTargetOrder struct {
+	Direction OrderDirection              `json:"direction"`
+	Field     *InvocationTargetOrderField `json:"field"`
+}
+
+// DefaultInvocationTargetOrder is the default ordering of InvocationTarget.
+var DefaultInvocationTargetOrder = &InvocationTargetOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &InvocationTargetOrderField{
+		Value: func(it *InvocationTarget) (ent.Value, error) {
+			return it.ID, nil
+		},
+		column: invocationtarget.FieldID,
+		toTerm: invocationtarget.ByID,
+		toCursor: func(it *InvocationTarget) Cursor {
+			return Cursor{ID: it.ID}
+		},
+	},
+}
+
+// ToEdge converts InvocationTarget into InvocationTargetEdge.
+func (it *InvocationTarget) ToEdge(order *InvocationTargetOrder) *InvocationTargetEdge {
+	if order == nil {
+		order = DefaultInvocationTargetOrder
+	}
+	return &InvocationTargetEdge{
+		Node:   it,
+		Cursor: order.Field.toCursor(it),
+	}
+}
+
 // MemoryMetricsEdge is the edge representation of MemoryMetrics.
 type MemoryMetricsEdge struct {
 	Node   *MemoryMetrics `json:"node"`
@@ -7377,53 +7692,6 @@ func (t *TargetQuery) Paginate(
 	}
 	conn.build(nodes, pager, after, first, before, last)
 	return conn, nil
-}
-
-var (
-	// TargetOrderFieldDurationInMs orders Target by duration_in_ms.
-	TargetOrderFieldDurationInMs = &TargetOrderField{
-		Value: func(t *Target) (ent.Value, error) {
-			return t.DurationInMs, nil
-		},
-		column: target.FieldDurationInMs,
-		toTerm: target.ByDurationInMs,
-		toCursor: func(t *Target) Cursor {
-			return Cursor{
-				ID:    t.ID,
-				Value: t.DurationInMs,
-			}
-		},
-	}
-)
-
-// String implement fmt.Stringer interface.
-func (f TargetOrderField) String() string {
-	var str string
-	switch f.column {
-	case TargetOrderFieldDurationInMs.column:
-		str = "DURATION"
-	}
-	return str
-}
-
-// MarshalGQL implements graphql.Marshaler interface.
-func (f TargetOrderField) MarshalGQL(w io.Writer) {
-	io.WriteString(w, strconv.Quote(f.String()))
-}
-
-// UnmarshalGQL implements graphql.Unmarshaler interface.
-func (f *TargetOrderField) UnmarshalGQL(v interface{}) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("TargetOrderField %T must be a string", v)
-	}
-	switch str {
-	case "DURATION":
-		*f = *TargetOrderFieldDurationInMs
-	default:
-		return fmt.Errorf("%s is not a valid TargetOrderField", str)
-	}
-	return nil
 }
 
 // TargetOrderField defines the ordering field of Target.

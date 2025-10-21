@@ -117,13 +117,15 @@ type BazelInvocationEdges struct {
 	InvocationFiles []*InvocationFiles `json:"invocation_files,omitempty"`
 	// TestCollection holds the value of the test_collection edge.
 	TestCollection []*TestCollection `json:"test_collection,omitempty"`
-	// Targets holds the value of the targets edge.
-	Targets []*Target `json:"targets,omitempty"`
+	// InvocationTargets holds the value of the invocation_targets edge.
+	InvocationTargets []*InvocationTarget `json:"invocation_targets,omitempty"`
+	// TargetKindMappings holds the value of the target_kind_mappings edge.
+	TargetKindMappings []*TargetKindMapping `json:"target_kind_mappings,omitempty"`
 	// SourceControl holds the value of the source_control edge.
 	SourceControl *SourceControl `json:"source_control,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [11]bool
+	loadedTypes [12]bool
 	// totalCount holds the count of the edges above.
 	totalCount [8]map[string]int
 
@@ -133,7 +135,8 @@ type BazelInvocationEdges struct {
 	namedIncompleteBuildLogs map[string][]*IncompleteBuildLog
 	namedInvocationFiles     map[string][]*InvocationFiles
 	namedTestCollection      map[string][]*TestCollection
-	namedTargets             map[string][]*Target
+	namedInvocationTargets   map[string][]*InvocationTarget
+	namedTargetKindMappings  map[string][]*TargetKindMapping
 }
 
 // InstanceNameOrErr returns the InstanceName value or an error if the edge
@@ -223,13 +226,22 @@ func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
 	return nil, &NotLoadedError{edge: "test_collection"}
 }
 
-// TargetsOrErr returns the Targets value or an error if the edge
+// InvocationTargetsOrErr returns the InvocationTargets value or an error if the edge
 // was not loaded in eager-loading.
-func (e BazelInvocationEdges) TargetsOrErr() ([]*Target, error) {
+func (e BazelInvocationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, error) {
 	if e.loadedTypes[9] {
-		return e.Targets, nil
+		return e.InvocationTargets, nil
 	}
-	return nil, &NotLoadedError{edge: "targets"}
+	return nil, &NotLoadedError{edge: "invocation_targets"}
+}
+
+// TargetKindMappingsOrErr returns the TargetKindMappings value or an error if the edge
+// was not loaded in eager-loading.
+func (e BazelInvocationEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, error) {
+	if e.loadedTypes[10] {
+		return e.TargetKindMappings, nil
+	}
+	return nil, &NotLoadedError{edge: "target_kind_mappings"}
 }
 
 // SourceControlOrErr returns the SourceControl value or an error if the edge
@@ -237,7 +249,7 @@ func (e BazelInvocationEdges) TargetsOrErr() ([]*Target, error) {
 func (e BazelInvocationEdges) SourceControlOrErr() (*SourceControl, error) {
 	if e.SourceControl != nil {
 		return e.SourceControl, nil
-	} else if e.loadedTypes[10] {
+	} else if e.loadedTypes[11] {
 		return nil, &NotFoundError{label: sourcecontrol.Label}
 	}
 	return nil, &NotLoadedError{edge: "source_control"}
@@ -564,9 +576,14 @@ func (bi *BazelInvocation) QueryTestCollection() *TestCollectionQuery {
 	return NewBazelInvocationClient(bi.config).QueryTestCollection(bi)
 }
 
-// QueryTargets queries the "targets" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryTargets() *TargetQuery {
-	return NewBazelInvocationClient(bi.config).QueryTargets(bi)
+// QueryInvocationTargets queries the "invocation_targets" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryInvocationTargets() *InvocationTargetQuery {
+	return NewBazelInvocationClient(bi.config).QueryInvocationTargets(bi)
+}
+
+// QueryTargetKindMappings queries the "target_kind_mappings" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryTargetKindMappings() *TargetKindMappingQuery {
+	return NewBazelInvocationClient(bi.config).QueryTargetKindMappings(bi)
 }
 
 // QuerySourceControl queries the "source_control" edge of the BazelInvocation entity.
@@ -845,27 +862,51 @@ func (bi *BazelInvocation) appendNamedTestCollection(name string, edges ...*Test
 	}
 }
 
-// NamedTargets returns the Targets named value or an error if the edge was not
+// NamedInvocationTargets returns the InvocationTargets named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedTargets(name string) ([]*Target, error) {
-	if bi.Edges.namedTargets == nil {
+func (bi *BazelInvocation) NamedInvocationTargets(name string) ([]*InvocationTarget, error) {
+	if bi.Edges.namedInvocationTargets == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := bi.Edges.namedTargets[name]
+	nodes, ok := bi.Edges.namedInvocationTargets[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (bi *BazelInvocation) appendNamedTargets(name string, edges ...*Target) {
-	if bi.Edges.namedTargets == nil {
-		bi.Edges.namedTargets = make(map[string][]*Target)
+func (bi *BazelInvocation) appendNamedInvocationTargets(name string, edges ...*InvocationTarget) {
+	if bi.Edges.namedInvocationTargets == nil {
+		bi.Edges.namedInvocationTargets = make(map[string][]*InvocationTarget)
 	}
 	if len(edges) == 0 {
-		bi.Edges.namedTargets[name] = []*Target{}
+		bi.Edges.namedInvocationTargets[name] = []*InvocationTarget{}
 	} else {
-		bi.Edges.namedTargets[name] = append(bi.Edges.namedTargets[name], edges...)
+		bi.Edges.namedInvocationTargets[name] = append(bi.Edges.namedInvocationTargets[name], edges...)
+	}
+}
+
+// NamedTargetKindMappings returns the TargetKindMappings named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (bi *BazelInvocation) NamedTargetKindMappings(name string) ([]*TargetKindMapping, error) {
+	if bi.Edges.namedTargetKindMappings == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := bi.Edges.namedTargetKindMappings[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (bi *BazelInvocation) appendNamedTargetKindMappings(name string, edges ...*TargetKindMapping) {
+	if bi.Edges.namedTargetKindMappings == nil {
+		bi.Edges.namedTargetKindMappings = make(map[string][]*TargetKindMapping)
+	}
+	if len(edges) == 0 {
+		bi.Edges.namedTargetKindMappings[name] = []*TargetKindMapping{}
+	} else {
+		bi.Edges.namedTargetKindMappings[name] = append(bi.Edges.namedTargetKindMappings[name], edges...)
 	}
 }
 

@@ -201,9 +201,9 @@ func (r *BuildEventRecorder) saveBuildEvent(
 	case *bes.BuildEventId_Configuration:
 		return r.saveBuildConfiguration(ctx, tx, buildEvent.GetConfiguration())
 	case *bes.BuildEventId_TargetConfigured:
-		return r.saveTargetConfigured(ctx, tx, buildEvent.GetConfigured(), buildEvent.GetTargetConfiguredLabel())
+		return r.saveTargetConfigured(ctx, tx, buildEvent.GetConfigured(), buildEvent.GetId().GetTargetConfigured())
 	case *bes.BuildEventId_TargetCompleted:
-		return r.saveTargetCompleted(ctx, tx, buildEvent.GetCompleted(), buildEvent.GetTargetCompletedLabel(), buildEvent.GetAborted())
+		return r.saveTargetCompleted(ctx, tx, buildEvent.GetCompleted(), buildEvent.GetId().GetTargetCompleted(), buildEvent.GetAborted())
 	case *bes.BuildEventId_Fetch:
 		return r.saveFetch(ctx, tx, buildEvent.GetFetch())
 	case *bes.BuildEventId_TestResult:

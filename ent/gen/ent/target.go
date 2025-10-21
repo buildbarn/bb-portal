@@ -3,13 +3,12 @@
 package ent
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 )
 
@@ -20,51 +19,62 @@ type Target struct {
 	ID int `json:"id,omitempty"`
 	// Label holds the value of the "label" field.
 	Label string `json:"label,omitempty"`
-	// Tag holds the value of the "tag" field.
-	Tag []string `json:"tag,omitempty"`
+	// Aspect holds the value of the "aspect" field.
+	Aspect string `json:"aspect,omitempty"`
 	// TargetKind holds the value of the "target_kind" field.
 	TargetKind string `json:"target_kind,omitempty"`
-	// TestSize holds the value of the "test_size" field.
-	TestSize target.TestSize `json:"test_size,omitempty"`
-	// Success holds the value of the "success" field.
-	Success bool `json:"success,omitempty"`
-	// TestTimeout holds the value of the "test_timeout" field.
-	TestTimeout int64 `json:"test_timeout,omitempty"`
-	// StartTimeInMs holds the value of the "start_time_in_ms" field.
-	StartTimeInMs int64 `json:"start_time_in_ms,omitempty"`
-	// EndTimeInMs holds the value of the "end_time_in_ms" field.
-	EndTimeInMs int64 `json:"end_time_in_ms,omitempty"`
-	// DurationInMs holds the value of the "duration_in_ms" field.
-	DurationInMs int64 `json:"duration_in_ms,omitempty"`
-	// AbortReason holds the value of the "abort_reason" field.
-	AbortReason target.AbortReason `json:"abort_reason,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetQuery when eager-loading is set.
-	Edges                    TargetEdges `json:"edges"`
-	bazel_invocation_targets *int
-	selectValues             sql.SelectValues
+	Edges                 TargetEdges `json:"edges"`
+	instance_name_targets *int
+	selectValues          sql.SelectValues
 }
 
 // TargetEdges holds the relations/edges for other nodes in the graph.
 type TargetEdges struct {
-	// BazelInvocation holds the value of the bazel_invocation edge.
-	BazelInvocation *BazelInvocation `json:"bazel_invocation,omitempty"`
+	// InstanceName holds the value of the instance_name edge.
+	InstanceName *InstanceName `json:"instance_name,omitempty"`
+	// InvocationTargets holds the value of the invocation_targets edge.
+	InvocationTargets []*InvocationTarget `json:"invocation_targets,omitempty"`
+	// TargetKindMappings holds the value of the target_kind_mappings edge.
+	TargetKindMappings []*TargetKindMapping `json:"target_kind_mappings,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
+
+	namedInvocationTargets  map[string][]*InvocationTarget
+	namedTargetKindMappings map[string][]*TargetKindMapping
 }
 
-// BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
+// InstanceNameOrErr returns the InstanceName value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e TargetEdges) BazelInvocationOrErr() (*BazelInvocation, error) {
-	if e.BazelInvocation != nil {
-		return e.BazelInvocation, nil
+func (e TargetEdges) InstanceNameOrErr() (*InstanceName, error) {
+	if e.InstanceName != nil {
+		return e.InstanceName, nil
 	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: bazelinvocation.Label}
+		return nil, &NotFoundError{label: instancename.Label}
 	}
-	return nil, &NotLoadedError{edge: "bazel_invocation"}
+	return nil, &NotLoadedError{edge: "instance_name"}
+}
+
+// InvocationTargetsOrErr returns the InvocationTargets value or an error if the edge
+// was not loaded in eager-loading.
+func (e TargetEdges) InvocationTargetsOrErr() ([]*InvocationTarget, error) {
+	if e.loadedTypes[1] {
+		return e.InvocationTargets, nil
+	}
+	return nil, &NotLoadedError{edge: "invocation_targets"}
+}
+
+// TargetKindMappingsOrErr returns the TargetKindMappings value or an error if the edge
+// was not loaded in eager-loading.
+func (e TargetEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, error) {
+	if e.loadedTypes[2] {
+		return e.TargetKindMappings, nil
+	}
+	return nil, &NotLoadedError{edge: "target_kind_mappings"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -72,15 +82,11 @@ func (*Target) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case target.FieldTag:
-			values[i] = new([]byte)
-		case target.FieldSuccess:
-			values[i] = new(sql.NullBool)
-		case target.FieldID, target.FieldTestTimeout, target.FieldStartTimeInMs, target.FieldEndTimeInMs, target.FieldDurationInMs:
+		case target.FieldID:
 			values[i] = new(sql.NullInt64)
-		case target.FieldLabel, target.FieldTargetKind, target.FieldTestSize, target.FieldAbortReason:
+		case target.FieldLabel, target.FieldAspect, target.FieldTargetKind:
 			values[i] = new(sql.NullString)
-		case target.ForeignKeys[0]: // bazel_invocation_targets
+		case target.ForeignKeys[0]: // instance_name_targets
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -109,13 +115,11 @@ func (t *Target) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				t.Label = value.String
 			}
-		case target.FieldTag:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field tag", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &t.Tag); err != nil {
-					return fmt.Errorf("unmarshal field tag: %w", err)
-				}
+		case target.FieldAspect:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field aspect", values[i])
+			} else if value.Valid {
+				t.Aspect = value.String
 			}
 		case target.FieldTargetKind:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -123,54 +127,12 @@ func (t *Target) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				t.TargetKind = value.String
 			}
-		case target.FieldTestSize:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field test_size", values[i])
-			} else if value.Valid {
-				t.TestSize = target.TestSize(value.String)
-			}
-		case target.FieldSuccess:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field success", values[i])
-			} else if value.Valid {
-				t.Success = value.Bool
-			}
-		case target.FieldTestTimeout:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field test_timeout", values[i])
-			} else if value.Valid {
-				t.TestTimeout = value.Int64
-			}
-		case target.FieldStartTimeInMs:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field start_time_in_ms", values[i])
-			} else if value.Valid {
-				t.StartTimeInMs = value.Int64
-			}
-		case target.FieldEndTimeInMs:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field end_time_in_ms", values[i])
-			} else if value.Valid {
-				t.EndTimeInMs = value.Int64
-			}
-		case target.FieldDurationInMs:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field duration_in_ms", values[i])
-			} else if value.Valid {
-				t.DurationInMs = value.Int64
-			}
-		case target.FieldAbortReason:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field abort_reason", values[i])
-			} else if value.Valid {
-				t.AbortReason = target.AbortReason(value.String)
-			}
 		case target.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_targets", value)
+				return fmt.Errorf("unexpected type %T for edge-field instance_name_targets", value)
 			} else if value.Valid {
-				t.bazel_invocation_targets = new(int)
-				*t.bazel_invocation_targets = int(value.Int64)
+				t.instance_name_targets = new(int)
+				*t.instance_name_targets = int(value.Int64)
 			}
 		default:
 			t.selectValues.Set(columns[i], values[i])
@@ -185,9 +147,19 @@ func (t *Target) Value(name string) (ent.Value, error) {
 	return t.selectValues.Get(name)
 }
 
-// QueryBazelInvocation queries the "bazel_invocation" edge of the Target entity.
-func (t *Target) QueryBazelInvocation() *BazelInvocationQuery {
-	return NewTargetClient(t.config).QueryBazelInvocation(t)
+// QueryInstanceName queries the "instance_name" edge of the Target entity.
+func (t *Target) QueryInstanceName() *InstanceNameQuery {
+	return NewTargetClient(t.config).QueryInstanceName(t)
+}
+
+// QueryInvocationTargets queries the "invocation_targets" edge of the Target entity.
+func (t *Target) QueryInvocationTargets() *InvocationTargetQuery {
+	return NewTargetClient(t.config).QueryInvocationTargets(t)
+}
+
+// QueryTargetKindMappings queries the "target_kind_mappings" edge of the Target entity.
+func (t *Target) QueryTargetKindMappings() *TargetKindMappingQuery {
+	return NewTargetClient(t.config).QueryTargetKindMappings(t)
 }
 
 // Update returns a builder for updating this Target.
@@ -216,34 +188,61 @@ func (t *Target) String() string {
 	builder.WriteString("label=")
 	builder.WriteString(t.Label)
 	builder.WriteString(", ")
-	builder.WriteString("tag=")
-	builder.WriteString(fmt.Sprintf("%v", t.Tag))
+	builder.WriteString("aspect=")
+	builder.WriteString(t.Aspect)
 	builder.WriteString(", ")
 	builder.WriteString("target_kind=")
 	builder.WriteString(t.TargetKind)
-	builder.WriteString(", ")
-	builder.WriteString("test_size=")
-	builder.WriteString(fmt.Sprintf("%v", t.TestSize))
-	builder.WriteString(", ")
-	builder.WriteString("success=")
-	builder.WriteString(fmt.Sprintf("%v", t.Success))
-	builder.WriteString(", ")
-	builder.WriteString("test_timeout=")
-	builder.WriteString(fmt.Sprintf("%v", t.TestTimeout))
-	builder.WriteString(", ")
-	builder.WriteString("start_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", t.StartTimeInMs))
-	builder.WriteString(", ")
-	builder.WriteString("end_time_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", t.EndTimeInMs))
-	builder.WriteString(", ")
-	builder.WriteString("duration_in_ms=")
-	builder.WriteString(fmt.Sprintf("%v", t.DurationInMs))
-	builder.WriteString(", ")
-	builder.WriteString("abort_reason=")
-	builder.WriteString(fmt.Sprintf("%v", t.AbortReason))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedInvocationTargets returns the InvocationTargets named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (t *Target) NamedInvocationTargets(name string) ([]*InvocationTarget, error) {
+	if t.Edges.namedInvocationTargets == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := t.Edges.namedInvocationTargets[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (t *Target) appendNamedInvocationTargets(name string, edges ...*InvocationTarget) {
+	if t.Edges.namedInvocationTargets == nil {
+		t.Edges.namedInvocationTargets = make(map[string][]*InvocationTarget)
+	}
+	if len(edges) == 0 {
+		t.Edges.namedInvocationTargets[name] = []*InvocationTarget{}
+	} else {
+		t.Edges.namedInvocationTargets[name] = append(t.Edges.namedInvocationTargets[name], edges...)
+	}
+}
+
+// NamedTargetKindMappings returns the TargetKindMappings named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (t *Target) NamedTargetKindMappings(name string) ([]*TargetKindMapping, error) {
+	if t.Edges.namedTargetKindMappings == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := t.Edges.namedTargetKindMappings[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (t *Target) appendNamedTargetKindMappings(name string, edges ...*TargetKindMapping) {
+	if t.Edges.namedTargetKindMappings == nil {
+		t.Edges.namedTargetKindMappings = make(map[string][]*TargetKindMapping)
+	}
+	if len(edges) == 0 {
+		t.Edges.namedTargetKindMappings[name] = []*TargetKindMapping{}
+	} else {
+		t.Edges.namedTargetKindMappings[name] = append(t.Edges.namedTargetKindMappings[name], edges...)
+	}
 }
 
 // Targets is a parsable slice of Target.

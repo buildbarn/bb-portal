@@ -26,6 +26,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
@@ -40,6 +41,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
@@ -592,6 +594,33 @@ func (f TraverseInvocationFiles) Traverse(ctx context.Context, q ent.Query) erro
 	return fmt.Errorf("unexpected query type %T. expect *ent.InvocationFilesQuery", q)
 }
 
+// The InvocationTargetFunc type is an adapter to allow the use of ordinary function as a Querier.
+type InvocationTargetFunc func(context.Context, *ent.InvocationTargetQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f InvocationTargetFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.InvocationTargetQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.InvocationTargetQuery", q)
+}
+
+// The TraverseInvocationTarget type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseInvocationTarget func(context.Context, *ent.InvocationTargetQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseInvocationTarget) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseInvocationTarget) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.InvocationTargetQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.InvocationTargetQuery", q)
+}
+
 // The MemoryMetricsFunc type is an adapter to allow the use of ordinary function as a Querier.
 type MemoryMetricsFunc func(context.Context, *ent.MemoryMetricsQuery) (ent.Value, error)
 
@@ -943,6 +972,33 @@ func (f TraverseTarget) Traverse(ctx context.Context, q ent.Query) error {
 	return fmt.Errorf("unexpected query type %T. expect *ent.TargetQuery", q)
 }
 
+// The TargetKindMappingFunc type is an adapter to allow the use of ordinary function as a Querier.
+type TargetKindMappingFunc func(context.Context, *ent.TargetKindMappingQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f TargetKindMappingFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.TargetKindMappingQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.TargetKindMappingQuery", q)
+}
+
+// The TraverseTargetKindMapping type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseTargetKindMapping func(context.Context, *ent.TargetKindMappingQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseTargetKindMapping) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseTargetKindMapping) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.TargetKindMappingQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.TargetKindMappingQuery", q)
+}
+
 // The TargetMetricsFunc type is an adapter to allow the use of ordinary function as a Querier.
 type TargetMetricsFunc func(context.Context, *ent.TargetMetricsQuery) (ent.Value, error)
 
@@ -1198,6 +1254,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.InstanceNameQuery, predicate.InstanceName, instancename.OrderOption]{typ: ent.TypeInstanceName, tq: q}, nil
 	case *ent.InvocationFilesQuery:
 		return &query[*ent.InvocationFilesQuery, predicate.InvocationFiles, invocationfiles.OrderOption]{typ: ent.TypeInvocationFiles, tq: q}, nil
+	case *ent.InvocationTargetQuery:
+		return &query[*ent.InvocationTargetQuery, predicate.InvocationTarget, invocationtarget.OrderOption]{typ: ent.TypeInvocationTarget, tq: q}, nil
 	case *ent.MemoryMetricsQuery:
 		return &query[*ent.MemoryMetricsQuery, predicate.MemoryMetrics, memorymetrics.OrderOption]{typ: ent.TypeMemoryMetrics, tq: q}, nil
 	case *ent.MetricsQuery:
@@ -1224,6 +1282,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.SystemNetworkStatsQuery, predicate.SystemNetworkStats, systemnetworkstats.OrderOption]{typ: ent.TypeSystemNetworkStats, tq: q}, nil
 	case *ent.TargetQuery:
 		return &query[*ent.TargetQuery, predicate.Target, target.OrderOption]{typ: ent.TypeTarget, tq: q}, nil
+	case *ent.TargetKindMappingQuery:
+		return &query[*ent.TargetKindMappingQuery, predicate.TargetKindMapping, targetkindmapping.OrderOption]{typ: ent.TypeTargetKindMapping, tq: q}, nil
 	case *ent.TargetMetricsQuery:
 		return &query[*ent.TargetMetricsQuery, predicate.TargetMetrics, targetmetrics.OrderOption]{typ: ent.TypeTargetMetrics, tq: q}, nil
 	case *ent.TestCollectionQuery:

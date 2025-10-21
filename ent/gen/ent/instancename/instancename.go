@@ -20,6 +20,8 @@ const (
 	EdgeBuilds = "builds"
 	// EdgeBlobs holds the string denoting the blobs edge name in mutations.
 	EdgeBlobs = "blobs"
+	// EdgeTargets holds the string denoting the targets edge name in mutations.
+	EdgeTargets = "targets"
 	// Table holds the table name of the instancename in the database.
 	Table = "instance_names"
 	// BazelInvocationsTable is the table that holds the bazel_invocations relation/edge.
@@ -43,6 +45,13 @@ const (
 	BlobsInverseTable = "blobs"
 	// BlobsColumn is the table column denoting the blobs relation/edge.
 	BlobsColumn = "instance_name_blobs"
+	// TargetsTable is the table that holds the targets relation/edge.
+	TargetsTable = "targets"
+	// TargetsInverseTable is the table name for the Target entity.
+	// It exists in this package in order to avoid circular dependency with the "target" package.
+	TargetsInverseTable = "targets"
+	// TargetsColumn is the table column denoting the targets relation/edge.
+	TargetsColumn = "instance_name_targets"
 )
 
 // Columns holds all SQL columns for instancename fields.
@@ -115,6 +124,20 @@ func ByBlobs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newBlobsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByTargetsCount orders the results by targets count.
+func ByTargetsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTargetsStep(), opts...)
+	}
+}
+
+// ByTargets orders the results by targets terms.
+func ByTargets(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTargetsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newBazelInvocationsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -134,5 +157,12 @@ func newBlobsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(BlobsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, BlobsTable, BlobsColumn),
+	)
+}
+func newTargetsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TargetsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TargetsTable, TargetsColumn),
 	)
 }

@@ -3,10 +3,6 @@
 package target
 
 import (
-	"fmt"
-	"io"
-	"strconv"
-
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -18,56 +14,53 @@ const (
 	FieldID = "id"
 	// FieldLabel holds the string denoting the label field in the database.
 	FieldLabel = "label"
-	// FieldTag holds the string denoting the tag field in the database.
-	FieldTag = "tag"
+	// FieldAspect holds the string denoting the aspect field in the database.
+	FieldAspect = "aspect"
 	// FieldTargetKind holds the string denoting the target_kind field in the database.
 	FieldTargetKind = "target_kind"
-	// FieldTestSize holds the string denoting the test_size field in the database.
-	FieldTestSize = "test_size"
-	// FieldSuccess holds the string denoting the success field in the database.
-	FieldSuccess = "success"
-	// FieldTestTimeout holds the string denoting the test_timeout field in the database.
-	FieldTestTimeout = "test_timeout"
-	// FieldStartTimeInMs holds the string denoting the start_time_in_ms field in the database.
-	FieldStartTimeInMs = "start_time_in_ms"
-	// FieldEndTimeInMs holds the string denoting the end_time_in_ms field in the database.
-	FieldEndTimeInMs = "end_time_in_ms"
-	// FieldDurationInMs holds the string denoting the duration_in_ms field in the database.
-	FieldDurationInMs = "duration_in_ms"
-	// FieldAbortReason holds the string denoting the abort_reason field in the database.
-	FieldAbortReason = "abort_reason"
-	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
-	EdgeBazelInvocation = "bazel_invocation"
+	// EdgeInstanceName holds the string denoting the instance_name edge name in mutations.
+	EdgeInstanceName = "instance_name"
+	// EdgeInvocationTargets holds the string denoting the invocation_targets edge name in mutations.
+	EdgeInvocationTargets = "invocation_targets"
+	// EdgeTargetKindMappings holds the string denoting the target_kind_mappings edge name in mutations.
+	EdgeTargetKindMappings = "target_kind_mappings"
 	// Table holds the table name of the target in the database.
 	Table = "targets"
-	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
-	BazelInvocationTable = "targets"
-	// BazelInvocationInverseTable is the table name for the BazelInvocation entity.
-	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
-	BazelInvocationInverseTable = "bazel_invocations"
-	// BazelInvocationColumn is the table column denoting the bazel_invocation relation/edge.
-	BazelInvocationColumn = "bazel_invocation_targets"
+	// InstanceNameTable is the table that holds the instance_name relation/edge.
+	InstanceNameTable = "targets"
+	// InstanceNameInverseTable is the table name for the InstanceName entity.
+	// It exists in this package in order to avoid circular dependency with the "instancename" package.
+	InstanceNameInverseTable = "instance_names"
+	// InstanceNameColumn is the table column denoting the instance_name relation/edge.
+	InstanceNameColumn = "instance_name_targets"
+	// InvocationTargetsTable is the table that holds the invocation_targets relation/edge.
+	InvocationTargetsTable = "invocation_targets"
+	// InvocationTargetsInverseTable is the table name for the InvocationTarget entity.
+	// It exists in this package in order to avoid circular dependency with the "invocationtarget" package.
+	InvocationTargetsInverseTable = "invocation_targets"
+	// InvocationTargetsColumn is the table column denoting the invocation_targets relation/edge.
+	InvocationTargetsColumn = "target_invocation_targets"
+	// TargetKindMappingsTable is the table that holds the target_kind_mappings relation/edge.
+	TargetKindMappingsTable = "target_kind_mappings"
+	// TargetKindMappingsInverseTable is the table name for the TargetKindMapping entity.
+	// It exists in this package in order to avoid circular dependency with the "targetkindmapping" package.
+	TargetKindMappingsInverseTable = "target_kind_mappings"
+	// TargetKindMappingsColumn is the table column denoting the target_kind_mappings relation/edge.
+	TargetKindMappingsColumn = "target_target_kind_mappings"
 )
 
 // Columns holds all SQL columns for target fields.
 var Columns = []string{
 	FieldID,
 	FieldLabel,
-	FieldTag,
+	FieldAspect,
 	FieldTargetKind,
-	FieldTestSize,
-	FieldSuccess,
-	FieldTestTimeout,
-	FieldStartTimeInMs,
-	FieldEndTimeInMs,
-	FieldDurationInMs,
-	FieldAbortReason,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "targets"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"bazel_invocation_targets",
+	"instance_name_targets",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -85,70 +78,6 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-var (
-	// DefaultSuccess holds the default value on creation for the "success" field.
-	DefaultSuccess bool
-)
-
-// TestSize defines the type for the "test_size" enum field.
-type TestSize string
-
-// TestSize values.
-const (
-	TestSizeUNKNOWN  TestSize = "UNKNOWN"
-	TestSizeSMALL    TestSize = "SMALL"
-	TestSizeMEDIUM   TestSize = "MEDIUM"
-	TestSizeLARGE    TestSize = "LARGE"
-	TestSizeENORMOUS TestSize = "ENORMOUS"
-)
-
-func (ts TestSize) String() string {
-	return string(ts)
-}
-
-// TestSizeValidator is a validator for the "test_size" field enum values. It is called by the builders before save.
-func TestSizeValidator(ts TestSize) error {
-	switch ts {
-	case TestSizeUNKNOWN, TestSizeSMALL, TestSizeMEDIUM, TestSizeLARGE, TestSizeENORMOUS:
-		return nil
-	default:
-		return fmt.Errorf("target: invalid enum value for test_size field: %q", ts)
-	}
-}
-
-// AbortReason defines the type for the "abort_reason" enum field.
-type AbortReason string
-
-// AbortReason values.
-const (
-	AbortReasonUNKNOWN                    AbortReason = "UNKNOWN"
-	AbortReasonUSER_INTERRUPTED           AbortReason = "USER_INTERRUPTED"
-	AbortReasonNO_ANALYZE                 AbortReason = "NO_ANALYZE"
-	AbortReasonNO_BUILD                   AbortReason = "NO_BUILD"
-	AbortReasonTIME_OUT                   AbortReason = "TIME_OUT"
-	AbortReasonREMOTE_ENVIRONMENT_FAILURE AbortReason = "REMOTE_ENVIRONMENT_FAILURE"
-	AbortReasonINTERNAL                   AbortReason = "INTERNAL"
-	AbortReasonLOADING_FAILURE            AbortReason = "LOADING_FAILURE"
-	AbortReasonANALYSIS_FAILURE           AbortReason = "ANALYSIS_FAILURE"
-	AbortReasonSKIPPED                    AbortReason = "SKIPPED"
-	AbortReasonINCOMPLETE                 AbortReason = "INCOMPLETE"
-	AbortReasonOUT_OF_MEMORY              AbortReason = "OUT_OF_MEMORY"
-)
-
-func (ar AbortReason) String() string {
-	return string(ar)
-}
-
-// AbortReasonValidator is a validator for the "abort_reason" field enum values. It is called by the builders before save.
-func AbortReasonValidator(ar AbortReason) error {
-	switch ar {
-	case AbortReasonUNKNOWN, AbortReasonUSER_INTERRUPTED, AbortReasonNO_ANALYZE, AbortReasonNO_BUILD, AbortReasonTIME_OUT, AbortReasonREMOTE_ENVIRONMENT_FAILURE, AbortReasonINTERNAL, AbortReasonLOADING_FAILURE, AbortReasonANALYSIS_FAILURE, AbortReasonSKIPPED, AbortReasonINCOMPLETE, AbortReasonOUT_OF_MEMORY:
-		return nil
-	default:
-		return fmt.Errorf("target: invalid enum value for abort_reason field: %q", ar)
-	}
-}
-
 // OrderOption defines the ordering options for the Target queries.
 type OrderOption func(*sql.Selector)
 
@@ -162,92 +91,68 @@ func ByLabel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLabel, opts...).ToFunc()
 }
 
+// ByAspect orders the results by the aspect field.
+func ByAspect(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAspect, opts...).ToFunc()
+}
+
 // ByTargetKind orders the results by the target_kind field.
 func ByTargetKind(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTargetKind, opts...).ToFunc()
 }
 
-// ByTestSize orders the results by the test_size field.
-func ByTestSize(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTestSize, opts...).ToFunc()
-}
-
-// BySuccess orders the results by the success field.
-func BySuccess(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSuccess, opts...).ToFunc()
-}
-
-// ByTestTimeout orders the results by the test_timeout field.
-func ByTestTimeout(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTestTimeout, opts...).ToFunc()
-}
-
-// ByStartTimeInMs orders the results by the start_time_in_ms field.
-func ByStartTimeInMs(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldStartTimeInMs, opts...).ToFunc()
-}
-
-// ByEndTimeInMs orders the results by the end_time_in_ms field.
-func ByEndTimeInMs(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldEndTimeInMs, opts...).ToFunc()
-}
-
-// ByDurationInMs orders the results by the duration_in_ms field.
-func ByDurationInMs(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDurationInMs, opts...).ToFunc()
-}
-
-// ByAbortReason orders the results by the abort_reason field.
-func ByAbortReason(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAbortReason, opts...).ToFunc()
-}
-
-// ByBazelInvocationField orders the results by bazel_invocation field.
-func ByBazelInvocationField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByInstanceNameField orders the results by instance_name field.
+func ByInstanceNameField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBazelInvocationStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newInstanceNameStep(), sql.OrderByField(field, opts...))
 	}
 }
-func newBazelInvocationStep() *sqlgraph.Step {
+
+// ByInvocationTargetsCount orders the results by invocation_targets count.
+func ByInvocationTargetsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newInvocationTargetsStep(), opts...)
+	}
+}
+
+// ByInvocationTargets orders the results by invocation_targets terms.
+func ByInvocationTargets(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newInvocationTargetsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByTargetKindMappingsCount orders the results by target_kind_mappings count.
+func ByTargetKindMappingsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTargetKindMappingsStep(), opts...)
+	}
+}
+
+// ByTargetKindMappings orders the results by target_kind_mappings terms.
+func ByTargetKindMappings(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTargetKindMappingsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newInstanceNameStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(BazelInvocationInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, BazelInvocationTable, BazelInvocationColumn),
+		sqlgraph.To(InstanceNameInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, InstanceNameTable, InstanceNameColumn),
 	)
 }
-
-// MarshalGQL implements graphql.Marshaler interface.
-func (e TestSize) MarshalGQL(w io.Writer) {
-	io.WriteString(w, strconv.Quote(e.String()))
+func newInvocationTargetsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(InvocationTargetsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, InvocationTargetsTable, InvocationTargetsColumn),
+	)
 }
-
-// UnmarshalGQL implements graphql.Unmarshaler interface.
-func (e *TestSize) UnmarshalGQL(val interface{}) error {
-	str, ok := val.(string)
-	if !ok {
-		return fmt.Errorf("enum %T must be a string", val)
-	}
-	*e = TestSize(str)
-	if err := TestSizeValidator(*e); err != nil {
-		return fmt.Errorf("%s is not a valid TestSize", str)
-	}
-	return nil
-}
-
-// MarshalGQL implements graphql.Marshaler interface.
-func (e AbortReason) MarshalGQL(w io.Writer) {
-	io.WriteString(w, strconv.Quote(e.String()))
-}
-
-// UnmarshalGQL implements graphql.Unmarshaler interface.
-func (e *AbortReason) UnmarshalGQL(val interface{}) error {
-	str, ok := val.(string)
-	if !ok {
-		return fmt.Errorf("enum %T must be a string", val)
-	}
-	*e = AbortReason(str)
-	if err := AbortReasonValidator(*e); err != nil {
-		return fmt.Errorf("%s is not a valid AbortReason", str)
-	}
-	return nil
+func newTargetKindMappingsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TargetKindMappingsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TargetKindMappingsTable, TargetKindMappingsColumn),
+	)
 }

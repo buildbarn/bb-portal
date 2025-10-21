@@ -11,36 +11,50 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveTargetConfigured(ctx context.Context, tx *ent.Tx, targetConfigured *bes.TargetConfigured, label string) error {
+func (r *BuildEventRecorder) saveTargetConfigured(ctx context.Context, tx *ent.Tx, targetConfigured *bes.TargetConfigured, targetConfiguredID *bes.BuildEventId_TargetConfiguredId) error {
 	if r.saveTargetDataLevel.GetNone() != nil {
 		return nil
 	}
 
-	if label == "" {
-		return fmt.Errorf("missing label for TargetConfigured BES message")
-	}
 	if targetConfigured == nil {
 		return nil
 	}
-
-	create := tx.Target.Create().
-		SetLabel(label).
-		SetTargetKind(targetConfigured.TargetKind).
-		SetTestSize(target.TestSize(bes.TestSize_name[int32(targetConfigured.TestSize)])).
-		SetSuccess(false).
-		SetBazelInvocationID(r.InvocationDbID)
-
-	if r.saveTargetDataLevel.GetEnriched() != nil {
-		create.SetTag(targetConfigured.Tag)
+	if targetConfiguredID == nil {
+		return fmt.Errorf("missing TargetCompletedId for TargetConfigured BES message")
 	}
+
+	if targetConfiguredID.Label == "" {
+		return fmt.Errorf("missing label in TargetCompletedId for TargetConfigured BES message")
+	}
+
+	targetID, err := tx.Target.Create().
+		SetInstanceNameID(r.InstanceNameDbID).
+		SetLabel(targetConfiguredID.Label).
+		SetAspect(targetConfiguredID.Aspect).
+		SetTargetKind(targetConfigured.TargetKind).
+		OnConflictColumns(
+			target.FieldLabel,
+			target.FieldAspect,
+			target.FieldTargetKind,
+			target.InstanceNameColumn,
+		).
+		Ignore().
+		ID(ctx)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to create target for TargetConfigured BES message")
+	}
+
+	create := tx.TargetKindMapping.Create().
+		SetBazelInvocationID(r.InvocationDbID).
+		SetTargetID(targetID)
 
 	if r.IsRealTime {
 		create.SetStartTimeInMs(time.Now().UnixMilli())
 	}
 
-	err := create.Exec(ctx)
+	err = create.Exec(ctx)
 	if err != nil {
-		return util.StatusWrap(err, "failed to create target for target configured BES message")
+		return util.StatusWrap(err, "failed to create TargetKindMapping for target configured BES message")
 	}
 	return nil
 }

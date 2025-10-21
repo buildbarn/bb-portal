@@ -138,6 +138,57 @@ var (
 						},
 					},
 				},
+				"GetInvocationTargetsForInvocation": {
+					"get targets for successfull build": {
+						variables: testkit.Variables{
+							"invocationID": successfulBazelBuild.invocationID,
+						},
+					},
+					"get targets for failed analysis": {
+						variables: testkit.Variables{
+							"invocationID": failedBazelAnalysis.invocationID,
+						},
+					},
+				},
+				"GetTargetDetails": {
+					"get details for a target": {
+						variables: testkit.Variables{
+							"instanceName": "",
+							"label":        "//packages/one:one",
+							"aspect":       "",
+							"targetKind":   "_npm_package rule",
+							"where": map[string]interface{}{
+								"hasTargetWith": []interface{}{
+									map[string]interface{}{
+										"hasInstanceNameWith": map[string]interface{}{
+											"name": "",
+										},
+										"label":      "//packages/one:one",
+										"aspect":     "",
+										"targetKind": "_npm_package rule",
+									},
+								},
+							},
+						},
+					},
+				},
+				"GetTargetsList": {
+					"get all targets": {
+						variables: testkit.Variables{
+							"first": 1000,
+						},
+					},
+				},
+				"GetInvocationTargetsForTarget": {
+					"get invocation targets for target": {
+						variables: testkit.Variables{
+							"instanceName": "",
+							"label":        "//packages/one:one",
+							"aspect":       "",
+							"targetKind":   "_npm_package rule",
+						},
+					},
+				},
 			},
 		},
 		{

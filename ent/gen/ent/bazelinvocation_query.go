@@ -20,10 +20,11 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 )
 
@@ -43,7 +44,8 @@ type BazelInvocationQuery struct {
 	withIncompleteBuildLogs      *IncompleteBuildLogQuery
 	withInvocationFiles          *InvocationFilesQuery
 	withTestCollection           *TestCollectionQuery
-	withTargets                  *TargetQuery
+	withInvocationTargets        *InvocationTargetQuery
+	withTargetKindMappings       *TargetKindMappingQuery
 	withSourceControl            *SourceControlQuery
 	withFKs                      bool
 	loadTotal                    []func(context.Context, []*BazelInvocation) error
@@ -54,7 +56,8 @@ type BazelInvocationQuery struct {
 	withNamedIncompleteBuildLogs map[string]*IncompleteBuildLogQuery
 	withNamedInvocationFiles     map[string]*InvocationFilesQuery
 	withNamedTestCollection      map[string]*TestCollectionQuery
-	withNamedTargets             map[string]*TargetQuery
+	withNamedInvocationTargets   map[string]*InvocationTargetQuery
+	withNamedTargetKindMappings  map[string]*TargetKindMappingQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -289,9 +292,9 @@ func (biq *BazelInvocationQuery) QueryTestCollection() *TestCollectionQuery {
 	return query
 }
 
-// QueryTargets chains the current query on the "targets" edge.
-func (biq *BazelInvocationQuery) QueryTargets() *TargetQuery {
-	query := (&TargetClient{config: biq.config}).Query()
+// QueryInvocationTargets chains the current query on the "invocation_targets" edge.
+func (biq *BazelInvocationQuery) QueryInvocationTargets() *InvocationTargetQuery {
+	query := (&InvocationTargetClient{config: biq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := biq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -302,8 +305,30 @@ func (biq *BazelInvocationQuery) QueryTargets() *TargetQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
-			sqlgraph.To(target.Table, target.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.TargetsTable, bazelinvocation.TargetsColumn),
+			sqlgraph.To(invocationtarget.Table, invocationtarget.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.InvocationTargetsTable, bazelinvocation.InvocationTargetsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTargetKindMappings chains the current query on the "target_kind_mappings" edge.
+func (biq *BazelInvocationQuery) QueryTargetKindMappings() *TargetKindMappingQuery {
+	query := (&TargetKindMappingClient{config: biq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := biq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := biq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(targetkindmapping.Table, targetkindmapping.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.TargetKindMappingsTable, bazelinvocation.TargetKindMappingsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
 		return fromU, nil
@@ -534,7 +559,8 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		withIncompleteBuildLogs: biq.withIncompleteBuildLogs.Clone(),
 		withInvocationFiles:     biq.withInvocationFiles.Clone(),
 		withTestCollection:      biq.withTestCollection.Clone(),
-		withTargets:             biq.withTargets.Clone(),
+		withInvocationTargets:   biq.withInvocationTargets.Clone(),
+		withTargetKindMappings:  biq.withTargetKindMappings.Clone(),
 		withSourceControl:       biq.withSourceControl.Clone(),
 		// clone intermediate query.
 		sql:       biq.sql.Clone(),
@@ -642,14 +668,25 @@ func (biq *BazelInvocationQuery) WithTestCollection(opts ...func(*TestCollection
 	return biq
 }
 
-// WithTargets tells the query-builder to eager-load the nodes that are connected to
-// the "targets" edge. The optional arguments are used to configure the query builder of the edge.
-func (biq *BazelInvocationQuery) WithTargets(opts ...func(*TargetQuery)) *BazelInvocationQuery {
-	query := (&TargetClient{config: biq.config}).Query()
+// WithInvocationTargets tells the query-builder to eager-load the nodes that are connected to
+// the "invocation_targets" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithInvocationTargets(opts ...func(*InvocationTargetQuery)) *BazelInvocationQuery {
+	query := (&InvocationTargetClient{config: biq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	biq.withTargets = query
+	biq.withInvocationTargets = query
+	return biq
+}
+
+// WithTargetKindMappings tells the query-builder to eager-load the nodes that are connected to
+// the "target_kind_mappings" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithTargetKindMappings(opts ...func(*TargetKindMappingQuery)) *BazelInvocationQuery {
+	query := (&TargetKindMappingClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	biq.withTargetKindMappings = query
 	return biq
 }
 
@@ -743,7 +780,7 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*BazelInvocation{}
 		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
-		loadedTypes = [11]bool{
+		loadedTypes = [12]bool{
 			biq.withInstanceName != nil,
 			biq.withBuild != nil,
 			biq.withEventMetadata != nil,
@@ -753,7 +790,8 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			biq.withIncompleteBuildLogs != nil,
 			biq.withInvocationFiles != nil,
 			biq.withTestCollection != nil,
-			biq.withTargets != nil,
+			biq.withInvocationTargets != nil,
+			biq.withTargetKindMappings != nil,
 			biq.withSourceControl != nil,
 		}
 	)
@@ -852,10 +890,21 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			return nil, err
 		}
 	}
-	if query := biq.withTargets; query != nil {
-		if err := biq.loadTargets(ctx, query, nodes,
-			func(n *BazelInvocation) { n.Edges.Targets = []*Target{} },
-			func(n *BazelInvocation, e *Target) { n.Edges.Targets = append(n.Edges.Targets, e) }); err != nil {
+	if query := biq.withInvocationTargets; query != nil {
+		if err := biq.loadInvocationTargets(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.InvocationTargets = []*InvocationTarget{} },
+			func(n *BazelInvocation, e *InvocationTarget) {
+				n.Edges.InvocationTargets = append(n.Edges.InvocationTargets, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
+	if query := biq.withTargetKindMappings; query != nil {
+		if err := biq.loadTargetKindMappings(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.TargetKindMappings = []*TargetKindMapping{} },
+			func(n *BazelInvocation, e *TargetKindMapping) {
+				n.Edges.TargetKindMappings = append(n.Edges.TargetKindMappings, e)
+			}); err != nil {
 			return nil, err
 		}
 	}
@@ -907,10 +956,17 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			return nil, err
 		}
 	}
-	for name, query := range biq.withNamedTargets {
-		if err := biq.loadTargets(ctx, query, nodes,
-			func(n *BazelInvocation) { n.appendNamedTargets(name) },
-			func(n *BazelInvocation, e *Target) { n.appendNamedTargets(name, e) }); err != nil {
+	for name, query := range biq.withNamedInvocationTargets {
+		if err := biq.loadInvocationTargets(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedInvocationTargets(name) },
+			func(n *BazelInvocation, e *InvocationTarget) { n.appendNamedInvocationTargets(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range biq.withNamedTargetKindMappings {
+		if err := biq.loadTargetKindMappings(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedTargetKindMappings(name) },
+			func(n *BazelInvocation, e *TargetKindMapping) { n.appendNamedTargetKindMappings(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1200,7 +1256,7 @@ func (biq *BazelInvocationQuery) loadTestCollection(ctx context.Context, query *
 	}
 	return nil
 }
-func (biq *BazelInvocationQuery) loadTargets(ctx context.Context, query *TargetQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *Target)) error {
+func (biq *BazelInvocationQuery) loadInvocationTargets(ctx context.Context, query *InvocationTargetQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *InvocationTarget)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*BazelInvocation)
 	for i := range nodes {
@@ -1211,21 +1267,52 @@ func (biq *BazelInvocationQuery) loadTargets(ctx context.Context, query *TargetQ
 		}
 	}
 	query.withFKs = true
-	query.Where(predicate.Target(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(bazelinvocation.TargetsColumn), fks...))
+	query.Where(predicate.InvocationTarget(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.InvocationTargetsColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.bazel_invocation_targets
+		fk := n.bazel_invocation_invocation_targets
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "bazel_invocation_targets" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "bazel_invocation_invocation_targets" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_targets" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_invocation_targets" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (biq *BazelInvocationQuery) loadTargetKindMappings(ctx context.Context, query *TargetKindMappingQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *TargetKindMapping)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*BazelInvocation)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.TargetKindMapping(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.TargetKindMappingsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.bazel_invocation_target_kind_mappings
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "bazel_invocation_target_kind_mappings" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_target_kind_mappings" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1437,17 +1524,31 @@ func (biq *BazelInvocationQuery) WithNamedTestCollection(name string, opts ...fu
 	return biq
 }
 
-// WithNamedTargets tells the query-builder to eager-load the nodes that are connected to the "targets"
+// WithNamedInvocationTargets tells the query-builder to eager-load the nodes that are connected to the "invocation_targets"
 // edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (biq *BazelInvocationQuery) WithNamedTargets(name string, opts ...func(*TargetQuery)) *BazelInvocationQuery {
-	query := (&TargetClient{config: biq.config}).Query()
+func (biq *BazelInvocationQuery) WithNamedInvocationTargets(name string, opts ...func(*InvocationTargetQuery)) *BazelInvocationQuery {
+	query := (&InvocationTargetClient{config: biq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	if biq.withNamedTargets == nil {
-		biq.withNamedTargets = make(map[string]*TargetQuery)
+	if biq.withNamedInvocationTargets == nil {
+		biq.withNamedInvocationTargets = make(map[string]*InvocationTargetQuery)
 	}
-	biq.withNamedTargets[name] = query
+	biq.withNamedInvocationTargets[name] = query
+	return biq
+}
+
+// WithNamedTargetKindMappings tells the query-builder to eager-load the nodes that are connected to the "target_kind_mappings"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithNamedTargetKindMappings(name string, opts ...func(*TargetKindMappingQuery)) *BazelInvocationQuery {
+	query := (&TargetKindMappingClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if biq.withNamedTargetKindMappings == nil {
+		biq.withNamedTargetKindMappings = make(map[string]*TargetKindMappingQuery)
+	}
+	biq.withNamedTargetKindMappings[name] = query
 	return biq
 }
 

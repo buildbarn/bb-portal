@@ -24,5 +24,6 @@ func (InstanceName) Edges() []ent.Edge {
 		edge.To("bazel_invocations", BazelInvocation.Type),
 		edge.To("builds", Build.Type),
 		edge.To("blobs", Blob.Type),
+		edge.To("targets", Target.Type),
 	}
 }

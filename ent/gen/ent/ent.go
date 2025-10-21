@@ -30,6 +30,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
@@ -43,6 +44,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
@@ -129,6 +131,7 @@ func checkColumn(table, column string) error {
 			incompletebuildlog.Table:     incompletebuildlog.ValidColumn,
 			instancename.Table:           instancename.ValidColumn,
 			invocationfiles.Table:        invocationfiles.ValidColumn,
+			invocationtarget.Table:       invocationtarget.ValidColumn,
 			memorymetrics.Table:          memorymetrics.ValidColumn,
 			metrics.Table:                metrics.ValidColumn,
 			missdetail.Table:             missdetail.ValidColumn,
@@ -142,6 +145,7 @@ func checkColumn(table, column string) error {
 			sourcecontrol.Table:          sourcecontrol.ValidColumn,
 			systemnetworkstats.Table:     systemnetworkstats.ValidColumn,
 			target.Table:                 target.ValidColumn,
+			targetkindmapping.Table:      targetkindmapping.ValidColumn,
 			targetmetrics.Table:          targetmetrics.ValidColumn,
 			testcollection.Table:         testcollection.ValidColumn,
 			testfile.Table:               testfile.ValidColumn,

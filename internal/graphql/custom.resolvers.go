@@ -16,7 +16,9 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	localbes "github.com/buildbarn/bb-portal/internal/api/grpc/bes"
@@ -191,6 +193,18 @@ func (r *queryResolver) GetBuild(ctx context.Context, buildURL *string, buildUUI
 	return r.client.Build.Query().Where(build.BuildUUID(*buildUUID)).First(ctx)
 }
 
+// GetTarget is the resolver for the getTarget field.
+func (r *queryResolver) GetTarget(ctx context.Context, instanceName, label, aspect, targetKind string) (*ent.Target, error) {
+	return r.client.Target.Query().Where(
+		target.LabelEQ(label),
+		target.Aspect(aspect),
+		target.TargetKind(targetKind),
+		target.HasInstanceNameWith(
+			instancename.Name(instanceName),
+		),
+	).Only(ctx)
+}
+
 // GetUniqueTestLabels is the resolver for the getUniqueTestLabels field.
 func (r *queryResolver) GetUniqueTestLabels(ctx context.Context, param *string) ([]*string, error) {
 	query := r.client.TestCollection.Query().Limit(100)
@@ -204,19 +218,6 @@ func (r *queryResolver) GetUniqueTestLabels(ctx context.Context, param *string) 
 	}
 	// elapsed := time.Since(started)
 	// slog.Info("GetUniqueTestLabels", "elapsed:", elapsed.String())
-	return helpers.StringSliceArrayToPointerArray(res), nil
-}
-
-// GetUniqueTargetLabels is the resolver for the getUniqueTargetLabels field.
-func (r *queryResolver) GetUniqueTargetLabels(ctx context.Context, param *string) ([]*string, error) {
-	query := r.client.Target.Query().Limit(100)
-	if param != nil && *param != "" {
-		query = query.Where(target.LabelContains(*param))
-	}
-	res, err := query.Unique(true).Select(target.FieldLabel).Strings(ctx)
-	if err != nil {
-		return nil, err
-	}
 	return helpers.StringSliceArrayToPointerArray(res), nil
 }
 
@@ -252,16 +253,6 @@ func (r *queryResolver) GetTestPassAggregation(ctx context.Context, label *strin
 		return nil, err
 	}
 	return result, nil
-}
-
-// GetTargetDurationAggregation is the resolver for the getTargetDurationAggregation field.
-func (r *queryResolver) GetTargetDurationAggregation(ctx context.Context, label *string) ([]*model.TargetAggregate, error) {
-	panic(fmt.Errorf("not implemented: GetTargetDurationAggregation - getTargetDurationAggregation"))
-}
-
-// GetTargetPassAggregation is the resolver for the getTargetPassAggregation field.
-func (r *queryResolver) GetTargetPassAggregation(ctx context.Context, label *string) ([]*model.TargetAggregate, error) {
-	panic(fmt.Errorf("not implemented: GetTargetPassAggregation - getTargetPassAggregation"))
 }
 
 // GetTestsWithOffset is the resolver for the getTestsWithOffset field.
@@ -307,49 +298,6 @@ func (r *queryResolver) GetTestsWithOffset(ctx context.Context, label *string, o
 	return response, nil
 }
 
-// GetTargetsWithOffset is the resolver for the GetTargetsWithOffset field.
-func (r *queryResolver) GetTargetsWithOffset(ctx context.Context, label *string, offset, limit *int, sortBy, direction *string) (*model.TargetGridResult, error) {
-	maxLimit := 100
-	take := 10
-	skip := 0
-	if limit != nil {
-		if *limit > maxLimit {
-			return nil, fmt.Errorf("limit cannot exceed %d", maxLimit)
-		}
-		take = *limit
-	}
-	if offset != nil {
-		skip = *offset
-	}
-
-	var result []*model.TargetGridRow
-	query := r.client.Target.Query()
-
-	if label != nil && *label != "" {
-		query = query.Where(target.LabelContains(*label))
-	}
-
-	err := query.
-		Limit(take).
-		Offset(skip).
-		GroupBy(target.FieldLabel).
-		Aggregate(ent.Count(),
-			ent.As(ent.Mean(target.FieldDurationInMs), "avg"),
-			ent.Sum(target.FieldDurationInMs),
-			ent.Min(target.FieldDurationInMs),
-			ent.Max(target.FieldDurationInMs)).
-		Scan(ctx, &result)
-	if err != nil {
-		return nil, err
-	}
-	totalCount := 0
-	response := &model.TargetGridResult{
-		Result: result,
-		Total:  &totalCount,
-	}
-	return response, nil
-}
-
 // GetAveragePassPercentageForLabel is the resolver for the getAveragePassPercentageForLabel field.
 func (r *queryResolver) GetAveragePassPercentageForLabel(ctx context.Context, label string) (*float64, error) {
 	// TODO: maybe there is a more elegant/faster way to do this with aggregaate
@@ -373,6 +321,26 @@ func (r *queryResolver) GetAveragePassPercentageForLabel(ctx context.Context, la
 	}
 	result := float64(passCount/totalCount) * 100.0
 	return helpers.GetFloatPointer(&result), nil
+}
+
+// InvocationTargetsTotalDurationMillis is the resolver for the invocationTargetsTotalDurationMillis field.
+func (r *targetResolver) InvocationTargetsTotalDurationMillis(ctx context.Context, obj *ent.Target) (int, error) {
+	// If there are no invocation targets with a duration, SUM in SQL yields NULL
+	// which can cause a scan error. Count first and return 0 if no rows match.
+	count, err := obj.QueryInvocationTargets().
+		Where(invocationtarget.DurationInMsNotNil()).
+		Count(ctx)
+	if err != nil {
+		return 0, err
+	}
+	if count == 0 {
+		return 0, nil
+	}
+
+	return obj.QueryInvocationTargets().
+		Where(invocationtarget.DurationInMsNotNil()).
+		Aggregate(ent.Sum(invocationtarget.FieldDurationInMs)).
+		Int(ctx)
 }
 
 // ActionLogOutput is the resolver for the actionLogOutput field.

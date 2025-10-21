@@ -4,8 +4,11 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
+	"fmt"
 
 	"entgo.io/contrib/entgql"
+	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
@@ -23,6 +26,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
@@ -599,16 +603,92 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				*wq = *query
 			})
 
-		case "targets":
+		case "invocationTargets":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&TargetClient{config: bi.config}).Query()
+				query = (&InvocationTargetClient{config: bi.config}).Query()
 			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetImplementors)...); err != nil {
+			args := newInvocationTargetPaginateArgs(fieldArgs(ctx, new(InvocationTargetWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newInvocationTargetPager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
 				return err
 			}
-			bi.WithNamedTargets(alias, func(wq *TargetQuery) {
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					bi.loadTotal = append(bi.loadTotal, func(ctx context.Context, nodes []*BazelInvocation) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID int `sql:"bazel_invocation_invocation_targets"`
+							Count  int `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(bazelinvocation.InvocationTargetsColumn), ids...))
+						})
+						if err := query.GroupBy(bazelinvocation.InvocationTargetsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[int]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[6][alias] = n
+						}
+						return nil
+					})
+				} else {
+					bi.loadTotal = append(bi.loadTotal, func(_ context.Context, nodes []*BazelInvocation) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.InvocationTargets)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[6][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, false, opCtx, *field, path, mayAddCondition(satisfies, invocationtargetImplementors)...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				if oneNode {
+					pager.applyOrder(query.Limit(limit))
+				} else {
+					modify := entgql.LimitPerRow(bazelinvocation.InvocationTargetsColumn, limit, pager.orderExpr(query))
+					query.modifiers = append(query.modifiers, modify)
+				}
+			} else {
+				query = pager.applyOrder(query)
+			}
+			bi.WithNamedInvocationTargets(alias, func(wq *InvocationTargetQuery) {
 				*wq = *query
 			})
 
@@ -1744,6 +1824,19 @@ func (in *InstanceNameQuery) collectField(ctx context.Context, oneNode bool, opC
 			in.WithNamedBlobs(alias, func(wq *BlobQuery) {
 				*wq = *query
 			})
+
+		case "targets":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TargetClient{config: in.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, targetImplementors)...); err != nil {
+				return err
+			}
+			in.WithNamedTargets(alias, func(wq *TargetQuery) {
+				*wq = *query
+			})
 		case "name":
 			if _, ok := fieldSeen[instancename.FieldName]; !ok {
 				selectedFields = append(selectedFields, instancename.FieldName)
@@ -1884,6 +1977,147 @@ func newInvocationFilesPaginateArgs(rv map[string]any) *invocationfilesPaginateA
 	}
 	if v, ok := rv[whereField].(*InvocationFilesWhereInput); ok {
 		args.opts = append(args.opts, WithInvocationFilesFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (it *InvocationTargetQuery) CollectFields(ctx context.Context, satisfies ...string) (*InvocationTargetQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return it, nil
+	}
+	if err := it.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return it, nil
+}
+
+func (it *InvocationTargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(invocationtarget.Columns))
+		selectedFields = []string{invocationtarget.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "bazelInvocation":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BazelInvocationClient{config: it.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
+				return err
+			}
+			it.withBazelInvocation = query
+
+		case "target":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&TargetClient{config: it.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, targetImplementors)...); err != nil {
+				return err
+			}
+			it.withTarget = query
+		case "success":
+			if _, ok := fieldSeen[invocationtarget.FieldSuccess]; !ok {
+				selectedFields = append(selectedFields, invocationtarget.FieldSuccess)
+				fieldSeen[invocationtarget.FieldSuccess] = struct{}{}
+			}
+		case "tags":
+			if _, ok := fieldSeen[invocationtarget.FieldTags]; !ok {
+				selectedFields = append(selectedFields, invocationtarget.FieldTags)
+				fieldSeen[invocationtarget.FieldTags] = struct{}{}
+			}
+		case "startTimeInMs":
+			if _, ok := fieldSeen[invocationtarget.FieldStartTimeInMs]; !ok {
+				selectedFields = append(selectedFields, invocationtarget.FieldStartTimeInMs)
+				fieldSeen[invocationtarget.FieldStartTimeInMs] = struct{}{}
+			}
+		case "endTimeInMs":
+			if _, ok := fieldSeen[invocationtarget.FieldEndTimeInMs]; !ok {
+				selectedFields = append(selectedFields, invocationtarget.FieldEndTimeInMs)
+				fieldSeen[invocationtarget.FieldEndTimeInMs] = struct{}{}
+			}
+		case "durationInMs":
+			if _, ok := fieldSeen[invocationtarget.FieldDurationInMs]; !ok {
+				selectedFields = append(selectedFields, invocationtarget.FieldDurationInMs)
+				fieldSeen[invocationtarget.FieldDurationInMs] = struct{}{}
+			}
+		case "failureMessage":
+			if _, ok := fieldSeen[invocationtarget.FieldFailureMessage]; !ok {
+				selectedFields = append(selectedFields, invocationtarget.FieldFailureMessage)
+				fieldSeen[invocationtarget.FieldFailureMessage] = struct{}{}
+			}
+		case "abortReason":
+			if _, ok := fieldSeen[invocationtarget.FieldAbortReason]; !ok {
+				selectedFields = append(selectedFields, invocationtarget.FieldAbortReason)
+				fieldSeen[invocationtarget.FieldAbortReason] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		it.Select(selectedFields...)
+	}
+	return nil
+}
+
+type invocationtargetPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []InvocationTargetPaginateOption
+}
+
+func newInvocationTargetPaginateArgs(rv map[string]any) *invocationtargetPaginateArgs {
+	args := &invocationtargetPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[orderByField]; ok {
+		switch v := v.(type) {
+		case map[string]any:
+			var (
+				err1, err2 error
+				order      = &InvocationTargetOrder{Field: &InvocationTargetOrderField{}, Direction: entgql.OrderDirectionAsc}
+			)
+			if d, ok := v[directionField]; ok {
+				err1 = order.Direction.UnmarshalGQL(d)
+			}
+			if f, ok := v[fieldField]; ok {
+				err2 = order.Field.UnmarshalGQL(f)
+			}
+			if err1 == nil && err2 == nil {
+				args.opts = append(args.opts, WithInvocationTargetOrder(order))
+			}
+		case *InvocationTargetOrder:
+			if v != nil {
+				args.opts = append(args.opts, WithInvocationTargetOrder(v))
+			}
+		}
+	}
+	if v, ok := rv[whereField].(*InvocationTargetWhereInput); ok {
+		args.opts = append(args.opts, WithInvocationTargetFilter(v.Filter))
 	}
 	return args
 }
@@ -3138,65 +3372,119 @@ func (t *TargetQuery) collectField(ctx context.Context, oneNode bool, opCtx *gra
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
-		case "bazelInvocation":
+		case "instanceName":
 			var (
 				alias = field.Alias
 				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: t.config}).Query()
+				query = (&InstanceNameClient{config: t.config}).Query()
 			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, instancenameImplementors)...); err != nil {
 				return err
 			}
-			t.withBazelInvocation = query
+			t.withInstanceName = query
+
+		case "invocationTargets":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&InvocationTargetClient{config: t.config}).Query()
+			)
+			args := newInvocationTargetPaginateArgs(fieldArgs(ctx, new(InvocationTargetWhereInput), path...))
+			if err := validateFirstLast(args.first, args.last); err != nil {
+				return fmt.Errorf("validate first and last in path %q: %w", path, err)
+			}
+			pager, err := newInvocationTargetPager(args.opts, args.last != nil)
+			if err != nil {
+				return fmt.Errorf("create new pager in path %q: %w", path, err)
+			}
+			if query, err = pager.applyFilter(query); err != nil {
+				return err
+			}
+			ignoredEdges := !hasCollectedField(ctx, append(path, edgesField)...)
+			if hasCollectedField(ctx, append(path, totalCountField)...) || hasCollectedField(ctx, append(path, pageInfoField)...) {
+				hasPagination := args.after != nil || args.first != nil || args.before != nil || args.last != nil
+				if hasPagination || ignoredEdges {
+					query := query.Clone()
+					t.loadTotal = append(t.loadTotal, func(ctx context.Context, nodes []*Target) error {
+						ids := make([]driver.Value, len(nodes))
+						for i := range nodes {
+							ids[i] = nodes[i].ID
+						}
+						var v []struct {
+							NodeID int `sql:"target_invocation_targets"`
+							Count  int `sql:"count"`
+						}
+						query.Where(func(s *sql.Selector) {
+							s.Where(sql.InValues(s.C(target.InvocationTargetsColumn), ids...))
+						})
+						if err := query.GroupBy(target.InvocationTargetsColumn).Aggregate(Count()).Scan(ctx, &v); err != nil {
+							return err
+						}
+						m := make(map[int]int, len(v))
+						for i := range v {
+							m[v[i].NodeID] = v[i].Count
+						}
+						for i := range nodes {
+							n := m[nodes[i].ID]
+							if nodes[i].Edges.totalCount[1] == nil {
+								nodes[i].Edges.totalCount[1] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[1][alias] = n
+						}
+						return nil
+					})
+				} else {
+					t.loadTotal = append(t.loadTotal, func(_ context.Context, nodes []*Target) error {
+						for i := range nodes {
+							n := len(nodes[i].Edges.InvocationTargets)
+							if nodes[i].Edges.totalCount[1] == nil {
+								nodes[i].Edges.totalCount[1] = make(map[string]int)
+							}
+							nodes[i].Edges.totalCount[1][alias] = n
+						}
+						return nil
+					})
+				}
+			}
+			if ignoredEdges || (args.first != nil && *args.first == 0) || (args.last != nil && *args.last == 0) {
+				continue
+			}
+			if query, err = pager.applyCursors(query, args.after, args.before); err != nil {
+				return err
+			}
+			path = append(path, edgesField, nodeField)
+			if field := collectedField(ctx, path...); field != nil {
+				if err := query.collectField(ctx, false, opCtx, *field, path, mayAddCondition(satisfies, invocationtargetImplementors)...); err != nil {
+					return err
+				}
+			}
+			if limit := paginateLimit(args.first, args.last); limit > 0 {
+				if oneNode {
+					pager.applyOrder(query.Limit(limit))
+				} else {
+					modify := entgql.LimitPerRow(target.InvocationTargetsColumn, limit, pager.orderExpr(query))
+					query.modifiers = append(query.modifiers, modify)
+				}
+			} else {
+				query = pager.applyOrder(query)
+			}
+			t.WithNamedInvocationTargets(alias, func(wq *InvocationTargetQuery) {
+				*wq = *query
+			})
 		case "label":
 			if _, ok := fieldSeen[target.FieldLabel]; !ok {
 				selectedFields = append(selectedFields, target.FieldLabel)
 				fieldSeen[target.FieldLabel] = struct{}{}
 			}
-		case "tag":
-			if _, ok := fieldSeen[target.FieldTag]; !ok {
-				selectedFields = append(selectedFields, target.FieldTag)
-				fieldSeen[target.FieldTag] = struct{}{}
+		case "aspect":
+			if _, ok := fieldSeen[target.FieldAspect]; !ok {
+				selectedFields = append(selectedFields, target.FieldAspect)
+				fieldSeen[target.FieldAspect] = struct{}{}
 			}
 		case "targetKind":
 			if _, ok := fieldSeen[target.FieldTargetKind]; !ok {
 				selectedFields = append(selectedFields, target.FieldTargetKind)
 				fieldSeen[target.FieldTargetKind] = struct{}{}
-			}
-		case "testSize":
-			if _, ok := fieldSeen[target.FieldTestSize]; !ok {
-				selectedFields = append(selectedFields, target.FieldTestSize)
-				fieldSeen[target.FieldTestSize] = struct{}{}
-			}
-		case "success":
-			if _, ok := fieldSeen[target.FieldSuccess]; !ok {
-				selectedFields = append(selectedFields, target.FieldSuccess)
-				fieldSeen[target.FieldSuccess] = struct{}{}
-			}
-		case "testTimeout":
-			if _, ok := fieldSeen[target.FieldTestTimeout]; !ok {
-				selectedFields = append(selectedFields, target.FieldTestTimeout)
-				fieldSeen[target.FieldTestTimeout] = struct{}{}
-			}
-		case "startTimeInMs":
-			if _, ok := fieldSeen[target.FieldStartTimeInMs]; !ok {
-				selectedFields = append(selectedFields, target.FieldStartTimeInMs)
-				fieldSeen[target.FieldStartTimeInMs] = struct{}{}
-			}
-		case "endTimeInMs":
-			if _, ok := fieldSeen[target.FieldEndTimeInMs]; !ok {
-				selectedFields = append(selectedFields, target.FieldEndTimeInMs)
-				fieldSeen[target.FieldEndTimeInMs] = struct{}{}
-			}
-		case "durationInMs":
-			if _, ok := fieldSeen[target.FieldDurationInMs]; !ok {
-				selectedFields = append(selectedFields, target.FieldDurationInMs)
-				fieldSeen[target.FieldDurationInMs] = struct{}{}
-			}
-		case "abortReason":
-			if _, ok := fieldSeen[target.FieldAbortReason]; !ok {
-				selectedFields = append(selectedFields, target.FieldAbortReason)
-				fieldSeen[target.FieldAbortReason] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -3232,28 +3520,6 @@ func newTargetPaginateArgs(rv map[string]any) *targetPaginateArgs {
 	}
 	if v := rv[beforeField]; v != nil {
 		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[orderByField]; ok {
-		switch v := v.(type) {
-		case map[string]any:
-			var (
-				err1, err2 error
-				order      = &TargetOrder{Field: &TargetOrderField{}, Direction: entgql.OrderDirectionAsc}
-			)
-			if d, ok := v[directionField]; ok {
-				err1 = order.Direction.UnmarshalGQL(d)
-			}
-			if f, ok := v[fieldField]; ok {
-				err2 = order.Field.UnmarshalGQL(f)
-			}
-			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithTargetOrder(order))
-			}
-		case *TargetOrder:
-			if v != nil {
-				args.opts = append(args.opts, WithTargetOrder(v))
-			}
-		}
 	}
 	if v, ok := rv[whereField].(*TargetWhereInput); ok {
 		args.opts = append(args.opts, WithTargetFilter(v.Filter))

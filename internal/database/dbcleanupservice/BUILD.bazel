@@ -2,7 +2,11 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "dbcleanupservice",
-    srcs = ["dbcleanupservice.go"],
+    srcs = [
+        "dbcleanupservice.go",
+        "removetargetkindmappings.go",
+        "removeunusedtargets.go",
+    ],
     importpath = "github.com/buildbarn/bb-portal/internal/database/dbcleanupservice",
     visibility = ["//:__subpackages__"],
     deps = [
@@ -12,6 +16,8 @@ go_library(
         "//ent/gen/ent/connectionmetadata",
         "//ent/gen/ent/eventmetadata",
         "//ent/gen/ent/incompletebuildlog",
+        "//ent/gen/ent/target",
+        "//ent/gen/ent/targetkindmapping",
         "//internal/api/grpc/bes",
         "//internal/database/common",
         "//pkg/proto/configuration/bb_portal",
@@ -27,10 +33,15 @@ go_library(
 
 go_test(
     name = "dbcleanupservice_test",
-    srcs = ["dbcleanupservice_test.go"],
+    srcs = [
+        "dbcleanupservice_test.go",
+        "removetargetkindmappings_test.go",
+        "removeunusedtargets_test.go",
+    ],
     deps = [
         ":dbcleanupservice",
         "//ent/gen/ent",
+        "//ent/gen/ent/invocationtarget",
         "//internal/mock",
         "//pkg/proto/configuration/bb_portal",
         "@com_github_buildbarn_bb_storage//pkg/clock",

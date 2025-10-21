@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 )
 
 // InstanceNameCreate is the builder for creating a InstanceName entity.
@@ -73,6 +74,21 @@ func (inc *InstanceNameCreate) AddBlobs(b ...*Blob) *InstanceNameCreate {
 		ids[i] = b[i].ID
 	}
 	return inc.AddBlobIDs(ids...)
+}
+
+// AddTargetIDs adds the "targets" edge to the Target entity by IDs.
+func (inc *InstanceNameCreate) AddTargetIDs(ids ...int) *InstanceNameCreate {
+	inc.mutation.AddTargetIDs(ids...)
+	return inc
+}
+
+// AddTargets adds the "targets" edges to the Target entity.
+func (inc *InstanceNameCreate) AddTargets(t ...*Target) *InstanceNameCreate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return inc.AddTargetIDs(ids...)
 }
 
 // Mutation returns the InstanceNameMutation object of the builder.
@@ -184,6 +200,22 @@ func (inc *InstanceNameCreate) createSpec() (*InstanceName, *sqlgraph.CreateSpec
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(blob.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := inc.mutation.TargetsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   instancename.TargetsTable,
+			Columns: []string{instancename.TargetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

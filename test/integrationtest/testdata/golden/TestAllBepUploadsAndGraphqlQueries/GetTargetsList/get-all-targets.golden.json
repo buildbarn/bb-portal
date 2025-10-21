@@ -1,0 +1,705 @@
+{
+  "findTargets": {
+    "edges": [
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjE=",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js/pages/api:api",
+          "targetKind": "ts_project rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI=",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js/pages:_jest_test_bazel_sequencer",
+          "targetKind": "_copy_file rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM=",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js/pages:_jest_test_bazel_snapshot_reporter",
+          "targetKind": "_copy_file rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ=",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js/pages:_jest_test_bazel_snapshot_resolver",
+          "targetKind": "_copy_file rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjU=",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js/pages:_jest_test_jest_entrypoint",
+          "targetKind": "directory_path rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjY=",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js/pages:jest_test",
+          "targetKind": "jest_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0Ojc=",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js/pages:pages",
+          "targetKind": "ts_project rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0Ojg=",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js/pages:specs",
+          "targetKind": "ts_project rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0Ojk=",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js/styles:styles",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjEw",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js/public:public",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjEx",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:build_smoke_test",
+          "targetKind": "js_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjEy",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:build_test",
+          "targetKind": "_empty_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjEz",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:eslintrc",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjE0",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:next",
+          "targetKind": "_run_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjE1",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:next_dev",
+          "targetKind": "_js_run_devserver rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjE2",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:jest_config",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjE3",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:next_js_binary",
+          "targetKind": "js_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjE4",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:next_start",
+          "targetKind": "_js_run_devserver rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjE5",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:package_json",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjIw",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:tsconfig",
+          "targetKind": "ts_config rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjIx",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//packages/one:one",
+          "targetKind": "_npm_package rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjIy",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/public:public",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjIz",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//packages/one:one_ts",
+          "targetKind": "ts_project rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI0",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:assets",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI1",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:lint",
+          "targetKind": "eslint_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI2",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:src_transpile",
+          "targetKind": "swc_compile rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI3",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:src",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI4",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:src_typecheck",
+          "targetKind": "filegroup rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI5",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:src_typecheck_test",
+          "targetKind": "_empty_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjMw",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:src_typings",
+          "targetKind": "ts_project rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjMx",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test",
+          "targetKind": "js_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjMy",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test_lib",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjMz",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test_lib_transpile",
+          "targetKind": "swc_compile rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM0",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test_lib_typecheck",
+          "targetKind": "filegroup rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM1",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test_lib_typecheck_test",
+          "targetKind": "_empty_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM2",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test_lib_typings",
+          "targetKind": "ts_project rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM3",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:build",
+          "targetKind": "_run_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM4",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:build_smoke_test",
+          "targetKind": "js_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM5",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:package_json",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQw",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:preview",
+          "targetKind": "js_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQx",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:start",
+          "targetKind": "_js_run_devserver rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQy",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:tsconfig",
+          "targetKind": "ts_config rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQz",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:vite",
+          "targetKind": "js_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ0",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:vite.config",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ1",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:write_swcrc",
+          "targetKind": "_run_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ2",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react-webpack/src:transpile",
+          "targetKind": "swc_compile rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ3",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react-webpack:_bundle_webpack_binary",
+          "targetKind": "js_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ4",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react-webpack:_bundle_webpack_binary_entrypoint",
+          "targetKind": "directory_path rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ5",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react-webpack:_dev_server_webpack_binary",
+          "targetKind": "js_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjUw",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react-webpack:_dev_server_webpack_binary_entrypoint",
+          "targetKind": "directory_path rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjUx",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react-webpack:build_smoke_test",
+          "targetKind": "js_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjUy",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react-webpack:bundle",
+          "targetKind": "_webpack_bundle rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjUz",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react-webpack:dev_server",
+          "targetKind": "_js_run_devserver rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjU0",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//vue/libraries/simple:build",
+          "targetKind": "_run_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjU1",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//vue/libraries/simple:simple",
+          "targetKind": "_npm_package rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjU2",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//vue/libraries/simple:types",
+          "targetKind": "_run_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjU3",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//vue/libraries/simple:vite.config",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjU4",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//vue/src:src",
+          "targetKind": "_copy_to_bin rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjU5",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//vue:build",
+          "targetKind": "_run_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjYw",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//vue:build_test",
+          "targetKind": "_empty_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjYx",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//vue:type-check",
+          "targetKind": "js_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjYy",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//vue:vite",
+          "targetKind": "js_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjYz",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//:eslint",
+          "targetKind": "js_binary rule"
+        }
+      }
+    ],
+    "pageInfo": {
+      "endCursor": "gaFpPw",
+      "hasNextPage": false,
+      "hasPreviousPage": false,
+      "startCursor": "gaFpAQ"
+    }
+  }
+}

@@ -9,11 +9,12 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 )
 
 // TargetUpdate is the builder for updating Target entities.
@@ -44,21 +45,17 @@ func (tu *TargetUpdate) SetNillableLabel(s *string) *TargetUpdate {
 	return tu
 }
 
-// SetTag sets the "tag" field.
-func (tu *TargetUpdate) SetTag(s []string) *TargetUpdate {
-	tu.mutation.SetTag(s)
+// SetAspect sets the "aspect" field.
+func (tu *TargetUpdate) SetAspect(s string) *TargetUpdate {
+	tu.mutation.SetAspect(s)
 	return tu
 }
 
-// AppendTag appends s to the "tag" field.
-func (tu *TargetUpdate) AppendTag(s []string) *TargetUpdate {
-	tu.mutation.AppendTag(s)
-	return tu
-}
-
-// ClearTag clears the value of the "tag" field.
-func (tu *TargetUpdate) ClearTag() *TargetUpdate {
-	tu.mutation.ClearTag()
+// SetNillableAspect sets the "aspect" field if the given value is not nil.
+func (tu *TargetUpdate) SetNillableAspect(s *string) *TargetUpdate {
+	if s != nil {
+		tu.SetAspect(*s)
+	}
 	return tu
 }
 
@@ -76,197 +73,45 @@ func (tu *TargetUpdate) SetNillableTargetKind(s *string) *TargetUpdate {
 	return tu
 }
 
-// ClearTargetKind clears the value of the "target_kind" field.
-func (tu *TargetUpdate) ClearTargetKind() *TargetUpdate {
-	tu.mutation.ClearTargetKind()
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (tu *TargetUpdate) SetInstanceNameID(id int) *TargetUpdate {
+	tu.mutation.SetInstanceNameID(id)
 	return tu
 }
 
-// SetTestSize sets the "test_size" field.
-func (tu *TargetUpdate) SetTestSize(ts target.TestSize) *TargetUpdate {
-	tu.mutation.SetTestSize(ts)
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (tu *TargetUpdate) SetInstanceName(i *InstanceName) *TargetUpdate {
+	return tu.SetInstanceNameID(i.ID)
+}
+
+// AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
+func (tu *TargetUpdate) AddInvocationTargetIDs(ids ...int) *TargetUpdate {
+	tu.mutation.AddInvocationTargetIDs(ids...)
 	return tu
 }
 
-// SetNillableTestSize sets the "test_size" field if the given value is not nil.
-func (tu *TargetUpdate) SetNillableTestSize(ts *target.TestSize) *TargetUpdate {
-	if ts != nil {
-		tu.SetTestSize(*ts)
+// AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
+func (tu *TargetUpdate) AddInvocationTargets(i ...*InvocationTarget) *TargetUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
 	}
+	return tu.AddInvocationTargetIDs(ids...)
+}
+
+// AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
+func (tu *TargetUpdate) AddTargetKindMappingIDs(ids ...int) *TargetUpdate {
+	tu.mutation.AddTargetKindMappingIDs(ids...)
 	return tu
 }
 
-// ClearTestSize clears the value of the "test_size" field.
-func (tu *TargetUpdate) ClearTestSize() *TargetUpdate {
-	tu.mutation.ClearTestSize()
-	return tu
-}
-
-// SetSuccess sets the "success" field.
-func (tu *TargetUpdate) SetSuccess(b bool) *TargetUpdate {
-	tu.mutation.SetSuccess(b)
-	return tu
-}
-
-// SetNillableSuccess sets the "success" field if the given value is not nil.
-func (tu *TargetUpdate) SetNillableSuccess(b *bool) *TargetUpdate {
-	if b != nil {
-		tu.SetSuccess(*b)
+// AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
+func (tu *TargetUpdate) AddTargetKindMappings(t ...*TargetKindMapping) *TargetUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
 	}
-	return tu
-}
-
-// ClearSuccess clears the value of the "success" field.
-func (tu *TargetUpdate) ClearSuccess() *TargetUpdate {
-	tu.mutation.ClearSuccess()
-	return tu
-}
-
-// SetTestTimeout sets the "test_timeout" field.
-func (tu *TargetUpdate) SetTestTimeout(i int64) *TargetUpdate {
-	tu.mutation.ResetTestTimeout()
-	tu.mutation.SetTestTimeout(i)
-	return tu
-}
-
-// SetNillableTestTimeout sets the "test_timeout" field if the given value is not nil.
-func (tu *TargetUpdate) SetNillableTestTimeout(i *int64) *TargetUpdate {
-	if i != nil {
-		tu.SetTestTimeout(*i)
-	}
-	return tu
-}
-
-// AddTestTimeout adds i to the "test_timeout" field.
-func (tu *TargetUpdate) AddTestTimeout(i int64) *TargetUpdate {
-	tu.mutation.AddTestTimeout(i)
-	return tu
-}
-
-// ClearTestTimeout clears the value of the "test_timeout" field.
-func (tu *TargetUpdate) ClearTestTimeout() *TargetUpdate {
-	tu.mutation.ClearTestTimeout()
-	return tu
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (tu *TargetUpdate) SetStartTimeInMs(i int64) *TargetUpdate {
-	tu.mutation.ResetStartTimeInMs()
-	tu.mutation.SetStartTimeInMs(i)
-	return tu
-}
-
-// SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (tu *TargetUpdate) SetNillableStartTimeInMs(i *int64) *TargetUpdate {
-	if i != nil {
-		tu.SetStartTimeInMs(*i)
-	}
-	return tu
-}
-
-// AddStartTimeInMs adds i to the "start_time_in_ms" field.
-func (tu *TargetUpdate) AddStartTimeInMs(i int64) *TargetUpdate {
-	tu.mutation.AddStartTimeInMs(i)
-	return tu
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (tu *TargetUpdate) ClearStartTimeInMs() *TargetUpdate {
-	tu.mutation.ClearStartTimeInMs()
-	return tu
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (tu *TargetUpdate) SetEndTimeInMs(i int64) *TargetUpdate {
-	tu.mutation.ResetEndTimeInMs()
-	tu.mutation.SetEndTimeInMs(i)
-	return tu
-}
-
-// SetNillableEndTimeInMs sets the "end_time_in_ms" field if the given value is not nil.
-func (tu *TargetUpdate) SetNillableEndTimeInMs(i *int64) *TargetUpdate {
-	if i != nil {
-		tu.SetEndTimeInMs(*i)
-	}
-	return tu
-}
-
-// AddEndTimeInMs adds i to the "end_time_in_ms" field.
-func (tu *TargetUpdate) AddEndTimeInMs(i int64) *TargetUpdate {
-	tu.mutation.AddEndTimeInMs(i)
-	return tu
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (tu *TargetUpdate) ClearEndTimeInMs() *TargetUpdate {
-	tu.mutation.ClearEndTimeInMs()
-	return tu
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (tu *TargetUpdate) SetDurationInMs(i int64) *TargetUpdate {
-	tu.mutation.ResetDurationInMs()
-	tu.mutation.SetDurationInMs(i)
-	return tu
-}
-
-// SetNillableDurationInMs sets the "duration_in_ms" field if the given value is not nil.
-func (tu *TargetUpdate) SetNillableDurationInMs(i *int64) *TargetUpdate {
-	if i != nil {
-		tu.SetDurationInMs(*i)
-	}
-	return tu
-}
-
-// AddDurationInMs adds i to the "duration_in_ms" field.
-func (tu *TargetUpdate) AddDurationInMs(i int64) *TargetUpdate {
-	tu.mutation.AddDurationInMs(i)
-	return tu
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (tu *TargetUpdate) ClearDurationInMs() *TargetUpdate {
-	tu.mutation.ClearDurationInMs()
-	return tu
-}
-
-// SetAbortReason sets the "abort_reason" field.
-func (tu *TargetUpdate) SetAbortReason(tr target.AbortReason) *TargetUpdate {
-	tu.mutation.SetAbortReason(tr)
-	return tu
-}
-
-// SetNillableAbortReason sets the "abort_reason" field if the given value is not nil.
-func (tu *TargetUpdate) SetNillableAbortReason(tr *target.AbortReason) *TargetUpdate {
-	if tr != nil {
-		tu.SetAbortReason(*tr)
-	}
-	return tu
-}
-
-// ClearAbortReason clears the value of the "abort_reason" field.
-func (tu *TargetUpdate) ClearAbortReason() *TargetUpdate {
-	tu.mutation.ClearAbortReason()
-	return tu
-}
-
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tu *TargetUpdate) SetBazelInvocationID(id int) *TargetUpdate {
-	tu.mutation.SetBazelInvocationID(id)
-	return tu
-}
-
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tu *TargetUpdate) SetNillableBazelInvocationID(id *int) *TargetUpdate {
-	if id != nil {
-		tu = tu.SetBazelInvocationID(*id)
-	}
-	return tu
-}
-
-// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (tu *TargetUpdate) SetBazelInvocation(b *BazelInvocation) *TargetUpdate {
-	return tu.SetBazelInvocationID(b.ID)
+	return tu.AddTargetKindMappingIDs(ids...)
 }
 
 // Mutation returns the TargetMutation object of the builder.
@@ -274,10 +119,52 @@ func (tu *TargetUpdate) Mutation() *TargetMutation {
 	return tu.mutation
 }
 
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (tu *TargetUpdate) ClearBazelInvocation() *TargetUpdate {
-	tu.mutation.ClearBazelInvocation()
+// ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
+func (tu *TargetUpdate) ClearInstanceName() *TargetUpdate {
+	tu.mutation.ClearInstanceName()
 	return tu
+}
+
+// ClearInvocationTargets clears all "invocation_targets" edges to the InvocationTarget entity.
+func (tu *TargetUpdate) ClearInvocationTargets() *TargetUpdate {
+	tu.mutation.ClearInvocationTargets()
+	return tu
+}
+
+// RemoveInvocationTargetIDs removes the "invocation_targets" edge to InvocationTarget entities by IDs.
+func (tu *TargetUpdate) RemoveInvocationTargetIDs(ids ...int) *TargetUpdate {
+	tu.mutation.RemoveInvocationTargetIDs(ids...)
+	return tu
+}
+
+// RemoveInvocationTargets removes "invocation_targets" edges to InvocationTarget entities.
+func (tu *TargetUpdate) RemoveInvocationTargets(i ...*InvocationTarget) *TargetUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return tu.RemoveInvocationTargetIDs(ids...)
+}
+
+// ClearTargetKindMappings clears all "target_kind_mappings" edges to the TargetKindMapping entity.
+func (tu *TargetUpdate) ClearTargetKindMappings() *TargetUpdate {
+	tu.mutation.ClearTargetKindMappings()
+	return tu
+}
+
+// RemoveTargetKindMappingIDs removes the "target_kind_mappings" edge to TargetKindMapping entities by IDs.
+func (tu *TargetUpdate) RemoveTargetKindMappingIDs(ids ...int) *TargetUpdate {
+	tu.mutation.RemoveTargetKindMappingIDs(ids...)
+	return tu
+}
+
+// RemoveTargetKindMappings removes "target_kind_mappings" edges to TargetKindMapping entities.
+func (tu *TargetUpdate) RemoveTargetKindMappings(t ...*TargetKindMapping) *TargetUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return tu.RemoveTargetKindMappingIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -309,15 +196,8 @@ func (tu *TargetUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (tu *TargetUpdate) check() error {
-	if v, ok := tu.mutation.TestSize(); ok {
-		if err := target.TestSizeValidator(v); err != nil {
-			return &ValidationError{Name: "test_size", err: fmt.Errorf(`ent: validator failed for field "Target.test_size": %w`, err)}
-		}
-	}
-	if v, ok := tu.mutation.AbortReason(); ok {
-		if err := target.AbortReasonValidator(v); err != nil {
-			return &ValidationError{Name: "abort_reason", err: fmt.Errorf(`ent: validator failed for field "Target.abort_reason": %w`, err)}
-		}
+	if tu.mutation.InstanceNameCleared() && len(tu.mutation.InstanceNameIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Target.instance_name"`)
 	}
 	return nil
 }
@@ -343,99 +223,124 @@ func (tu *TargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := tu.mutation.Label(); ok {
 		_spec.SetField(target.FieldLabel, field.TypeString, value)
 	}
-	if value, ok := tu.mutation.Tag(); ok {
-		_spec.SetField(target.FieldTag, field.TypeJSON, value)
-	}
-	if value, ok := tu.mutation.AppendedTag(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, target.FieldTag, value)
-		})
-	}
-	if tu.mutation.TagCleared() {
-		_spec.ClearField(target.FieldTag, field.TypeJSON)
+	if value, ok := tu.mutation.Aspect(); ok {
+		_spec.SetField(target.FieldAspect, field.TypeString, value)
 	}
 	if value, ok := tu.mutation.TargetKind(); ok {
 		_spec.SetField(target.FieldTargetKind, field.TypeString, value)
 	}
-	if tu.mutation.TargetKindCleared() {
-		_spec.ClearField(target.FieldTargetKind, field.TypeString)
-	}
-	if value, ok := tu.mutation.TestSize(); ok {
-		_spec.SetField(target.FieldTestSize, field.TypeEnum, value)
-	}
-	if tu.mutation.TestSizeCleared() {
-		_spec.ClearField(target.FieldTestSize, field.TypeEnum)
-	}
-	if value, ok := tu.mutation.Success(); ok {
-		_spec.SetField(target.FieldSuccess, field.TypeBool, value)
-	}
-	if tu.mutation.SuccessCleared() {
-		_spec.ClearField(target.FieldSuccess, field.TypeBool)
-	}
-	if value, ok := tu.mutation.TestTimeout(); ok {
-		_spec.SetField(target.FieldTestTimeout, field.TypeInt64, value)
-	}
-	if value, ok := tu.mutation.AddedTestTimeout(); ok {
-		_spec.AddField(target.FieldTestTimeout, field.TypeInt64, value)
-	}
-	if tu.mutation.TestTimeoutCleared() {
-		_spec.ClearField(target.FieldTestTimeout, field.TypeInt64)
-	}
-	if value, ok := tu.mutation.StartTimeInMs(); ok {
-		_spec.SetField(target.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if value, ok := tu.mutation.AddedStartTimeInMs(); ok {
-		_spec.AddField(target.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if tu.mutation.StartTimeInMsCleared() {
-		_spec.ClearField(target.FieldStartTimeInMs, field.TypeInt64)
-	}
-	if value, ok := tu.mutation.EndTimeInMs(); ok {
-		_spec.SetField(target.FieldEndTimeInMs, field.TypeInt64, value)
-	}
-	if value, ok := tu.mutation.AddedEndTimeInMs(); ok {
-		_spec.AddField(target.FieldEndTimeInMs, field.TypeInt64, value)
-	}
-	if tu.mutation.EndTimeInMsCleared() {
-		_spec.ClearField(target.FieldEndTimeInMs, field.TypeInt64)
-	}
-	if value, ok := tu.mutation.DurationInMs(); ok {
-		_spec.SetField(target.FieldDurationInMs, field.TypeInt64, value)
-	}
-	if value, ok := tu.mutation.AddedDurationInMs(); ok {
-		_spec.AddField(target.FieldDurationInMs, field.TypeInt64, value)
-	}
-	if tu.mutation.DurationInMsCleared() {
-		_spec.ClearField(target.FieldDurationInMs, field.TypeInt64)
-	}
-	if value, ok := tu.mutation.AbortReason(); ok {
-		_spec.SetField(target.FieldAbortReason, field.TypeEnum, value)
-	}
-	if tu.mutation.AbortReasonCleared() {
-		_spec.ClearField(target.FieldAbortReason, field.TypeEnum)
-	}
-	if tu.mutation.BazelInvocationCleared() {
+	if tu.mutation.InstanceNameCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   target.BazelInvocationTable,
-			Columns: []string{target.BazelInvocationColumn},
+			Table:   target.InstanceNameTable,
+			Columns: []string{target.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := tu.mutation.InstanceNameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   target.BazelInvocationTable,
-			Columns: []string{target.BazelInvocationColumn},
+			Table:   target.InstanceNameTable,
+			Columns: []string{target.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if tu.mutation.InvocationTargetsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.InvocationTargetsTable,
+			Columns: []string{target.InvocationTargetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.RemovedInvocationTargetsIDs(); len(nodes) > 0 && !tu.mutation.InvocationTargetsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.InvocationTargetsTable,
+			Columns: []string{target.InvocationTargetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.InvocationTargetsTable,
+			Columns: []string{target.InvocationTargetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if tu.mutation.TargetKindMappingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.TargetKindMappingsTable,
+			Columns: []string{target.TargetKindMappingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.RemovedTargetKindMappingsIDs(); len(nodes) > 0 && !tu.mutation.TargetKindMappingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.TargetKindMappingsTable,
+			Columns: []string{target.TargetKindMappingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.TargetKindMappingsTable,
+			Columns: []string{target.TargetKindMappingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -479,21 +384,17 @@ func (tuo *TargetUpdateOne) SetNillableLabel(s *string) *TargetUpdateOne {
 	return tuo
 }
 
-// SetTag sets the "tag" field.
-func (tuo *TargetUpdateOne) SetTag(s []string) *TargetUpdateOne {
-	tuo.mutation.SetTag(s)
+// SetAspect sets the "aspect" field.
+func (tuo *TargetUpdateOne) SetAspect(s string) *TargetUpdateOne {
+	tuo.mutation.SetAspect(s)
 	return tuo
 }
 
-// AppendTag appends s to the "tag" field.
-func (tuo *TargetUpdateOne) AppendTag(s []string) *TargetUpdateOne {
-	tuo.mutation.AppendTag(s)
-	return tuo
-}
-
-// ClearTag clears the value of the "tag" field.
-func (tuo *TargetUpdateOne) ClearTag() *TargetUpdateOne {
-	tuo.mutation.ClearTag()
+// SetNillableAspect sets the "aspect" field if the given value is not nil.
+func (tuo *TargetUpdateOne) SetNillableAspect(s *string) *TargetUpdateOne {
+	if s != nil {
+		tuo.SetAspect(*s)
+	}
 	return tuo
 }
 
@@ -511,197 +412,45 @@ func (tuo *TargetUpdateOne) SetNillableTargetKind(s *string) *TargetUpdateOne {
 	return tuo
 }
 
-// ClearTargetKind clears the value of the "target_kind" field.
-func (tuo *TargetUpdateOne) ClearTargetKind() *TargetUpdateOne {
-	tuo.mutation.ClearTargetKind()
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (tuo *TargetUpdateOne) SetInstanceNameID(id int) *TargetUpdateOne {
+	tuo.mutation.SetInstanceNameID(id)
 	return tuo
 }
 
-// SetTestSize sets the "test_size" field.
-func (tuo *TargetUpdateOne) SetTestSize(ts target.TestSize) *TargetUpdateOne {
-	tuo.mutation.SetTestSize(ts)
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (tuo *TargetUpdateOne) SetInstanceName(i *InstanceName) *TargetUpdateOne {
+	return tuo.SetInstanceNameID(i.ID)
+}
+
+// AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
+func (tuo *TargetUpdateOne) AddInvocationTargetIDs(ids ...int) *TargetUpdateOne {
+	tuo.mutation.AddInvocationTargetIDs(ids...)
 	return tuo
 }
 
-// SetNillableTestSize sets the "test_size" field if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableTestSize(ts *target.TestSize) *TargetUpdateOne {
-	if ts != nil {
-		tuo.SetTestSize(*ts)
+// AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
+func (tuo *TargetUpdateOne) AddInvocationTargets(i ...*InvocationTarget) *TargetUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
 	}
+	return tuo.AddInvocationTargetIDs(ids...)
+}
+
+// AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
+func (tuo *TargetUpdateOne) AddTargetKindMappingIDs(ids ...int) *TargetUpdateOne {
+	tuo.mutation.AddTargetKindMappingIDs(ids...)
 	return tuo
 }
 
-// ClearTestSize clears the value of the "test_size" field.
-func (tuo *TargetUpdateOne) ClearTestSize() *TargetUpdateOne {
-	tuo.mutation.ClearTestSize()
-	return tuo
-}
-
-// SetSuccess sets the "success" field.
-func (tuo *TargetUpdateOne) SetSuccess(b bool) *TargetUpdateOne {
-	tuo.mutation.SetSuccess(b)
-	return tuo
-}
-
-// SetNillableSuccess sets the "success" field if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableSuccess(b *bool) *TargetUpdateOne {
-	if b != nil {
-		tuo.SetSuccess(*b)
+// AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
+func (tuo *TargetUpdateOne) AddTargetKindMappings(t ...*TargetKindMapping) *TargetUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
 	}
-	return tuo
-}
-
-// ClearSuccess clears the value of the "success" field.
-func (tuo *TargetUpdateOne) ClearSuccess() *TargetUpdateOne {
-	tuo.mutation.ClearSuccess()
-	return tuo
-}
-
-// SetTestTimeout sets the "test_timeout" field.
-func (tuo *TargetUpdateOne) SetTestTimeout(i int64) *TargetUpdateOne {
-	tuo.mutation.ResetTestTimeout()
-	tuo.mutation.SetTestTimeout(i)
-	return tuo
-}
-
-// SetNillableTestTimeout sets the "test_timeout" field if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableTestTimeout(i *int64) *TargetUpdateOne {
-	if i != nil {
-		tuo.SetTestTimeout(*i)
-	}
-	return tuo
-}
-
-// AddTestTimeout adds i to the "test_timeout" field.
-func (tuo *TargetUpdateOne) AddTestTimeout(i int64) *TargetUpdateOne {
-	tuo.mutation.AddTestTimeout(i)
-	return tuo
-}
-
-// ClearTestTimeout clears the value of the "test_timeout" field.
-func (tuo *TargetUpdateOne) ClearTestTimeout() *TargetUpdateOne {
-	tuo.mutation.ClearTestTimeout()
-	return tuo
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (tuo *TargetUpdateOne) SetStartTimeInMs(i int64) *TargetUpdateOne {
-	tuo.mutation.ResetStartTimeInMs()
-	tuo.mutation.SetStartTimeInMs(i)
-	return tuo
-}
-
-// SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableStartTimeInMs(i *int64) *TargetUpdateOne {
-	if i != nil {
-		tuo.SetStartTimeInMs(*i)
-	}
-	return tuo
-}
-
-// AddStartTimeInMs adds i to the "start_time_in_ms" field.
-func (tuo *TargetUpdateOne) AddStartTimeInMs(i int64) *TargetUpdateOne {
-	tuo.mutation.AddStartTimeInMs(i)
-	return tuo
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (tuo *TargetUpdateOne) ClearStartTimeInMs() *TargetUpdateOne {
-	tuo.mutation.ClearStartTimeInMs()
-	return tuo
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (tuo *TargetUpdateOne) SetEndTimeInMs(i int64) *TargetUpdateOne {
-	tuo.mutation.ResetEndTimeInMs()
-	tuo.mutation.SetEndTimeInMs(i)
-	return tuo
-}
-
-// SetNillableEndTimeInMs sets the "end_time_in_ms" field if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableEndTimeInMs(i *int64) *TargetUpdateOne {
-	if i != nil {
-		tuo.SetEndTimeInMs(*i)
-	}
-	return tuo
-}
-
-// AddEndTimeInMs adds i to the "end_time_in_ms" field.
-func (tuo *TargetUpdateOne) AddEndTimeInMs(i int64) *TargetUpdateOne {
-	tuo.mutation.AddEndTimeInMs(i)
-	return tuo
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (tuo *TargetUpdateOne) ClearEndTimeInMs() *TargetUpdateOne {
-	tuo.mutation.ClearEndTimeInMs()
-	return tuo
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (tuo *TargetUpdateOne) SetDurationInMs(i int64) *TargetUpdateOne {
-	tuo.mutation.ResetDurationInMs()
-	tuo.mutation.SetDurationInMs(i)
-	return tuo
-}
-
-// SetNillableDurationInMs sets the "duration_in_ms" field if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableDurationInMs(i *int64) *TargetUpdateOne {
-	if i != nil {
-		tuo.SetDurationInMs(*i)
-	}
-	return tuo
-}
-
-// AddDurationInMs adds i to the "duration_in_ms" field.
-func (tuo *TargetUpdateOne) AddDurationInMs(i int64) *TargetUpdateOne {
-	tuo.mutation.AddDurationInMs(i)
-	return tuo
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (tuo *TargetUpdateOne) ClearDurationInMs() *TargetUpdateOne {
-	tuo.mutation.ClearDurationInMs()
-	return tuo
-}
-
-// SetAbortReason sets the "abort_reason" field.
-func (tuo *TargetUpdateOne) SetAbortReason(tr target.AbortReason) *TargetUpdateOne {
-	tuo.mutation.SetAbortReason(tr)
-	return tuo
-}
-
-// SetNillableAbortReason sets the "abort_reason" field if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableAbortReason(tr *target.AbortReason) *TargetUpdateOne {
-	if tr != nil {
-		tuo.SetAbortReason(*tr)
-	}
-	return tuo
-}
-
-// ClearAbortReason clears the value of the "abort_reason" field.
-func (tuo *TargetUpdateOne) ClearAbortReason() *TargetUpdateOne {
-	tuo.mutation.ClearAbortReason()
-	return tuo
-}
-
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tuo *TargetUpdateOne) SetBazelInvocationID(id int) *TargetUpdateOne {
-	tuo.mutation.SetBazelInvocationID(id)
-	return tuo
-}
-
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tuo *TargetUpdateOne) SetNillableBazelInvocationID(id *int) *TargetUpdateOne {
-	if id != nil {
-		tuo = tuo.SetBazelInvocationID(*id)
-	}
-	return tuo
-}
-
-// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (tuo *TargetUpdateOne) SetBazelInvocation(b *BazelInvocation) *TargetUpdateOne {
-	return tuo.SetBazelInvocationID(b.ID)
+	return tuo.AddTargetKindMappingIDs(ids...)
 }
 
 // Mutation returns the TargetMutation object of the builder.
@@ -709,10 +458,52 @@ func (tuo *TargetUpdateOne) Mutation() *TargetMutation {
 	return tuo.mutation
 }
 
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (tuo *TargetUpdateOne) ClearBazelInvocation() *TargetUpdateOne {
-	tuo.mutation.ClearBazelInvocation()
+// ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
+func (tuo *TargetUpdateOne) ClearInstanceName() *TargetUpdateOne {
+	tuo.mutation.ClearInstanceName()
 	return tuo
+}
+
+// ClearInvocationTargets clears all "invocation_targets" edges to the InvocationTarget entity.
+func (tuo *TargetUpdateOne) ClearInvocationTargets() *TargetUpdateOne {
+	tuo.mutation.ClearInvocationTargets()
+	return tuo
+}
+
+// RemoveInvocationTargetIDs removes the "invocation_targets" edge to InvocationTarget entities by IDs.
+func (tuo *TargetUpdateOne) RemoveInvocationTargetIDs(ids ...int) *TargetUpdateOne {
+	tuo.mutation.RemoveInvocationTargetIDs(ids...)
+	return tuo
+}
+
+// RemoveInvocationTargets removes "invocation_targets" edges to InvocationTarget entities.
+func (tuo *TargetUpdateOne) RemoveInvocationTargets(i ...*InvocationTarget) *TargetUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return tuo.RemoveInvocationTargetIDs(ids...)
+}
+
+// ClearTargetKindMappings clears all "target_kind_mappings" edges to the TargetKindMapping entity.
+func (tuo *TargetUpdateOne) ClearTargetKindMappings() *TargetUpdateOne {
+	tuo.mutation.ClearTargetKindMappings()
+	return tuo
+}
+
+// RemoveTargetKindMappingIDs removes the "target_kind_mappings" edge to TargetKindMapping entities by IDs.
+func (tuo *TargetUpdateOne) RemoveTargetKindMappingIDs(ids ...int) *TargetUpdateOne {
+	tuo.mutation.RemoveTargetKindMappingIDs(ids...)
+	return tuo
+}
+
+// RemoveTargetKindMappings removes "target_kind_mappings" edges to TargetKindMapping entities.
+func (tuo *TargetUpdateOne) RemoveTargetKindMappings(t ...*TargetKindMapping) *TargetUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return tuo.RemoveTargetKindMappingIDs(ids...)
 }
 
 // Where appends a list predicates to the TargetUpdate builder.
@@ -757,15 +548,8 @@ func (tuo *TargetUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (tuo *TargetUpdateOne) check() error {
-	if v, ok := tuo.mutation.TestSize(); ok {
-		if err := target.TestSizeValidator(v); err != nil {
-			return &ValidationError{Name: "test_size", err: fmt.Errorf(`ent: validator failed for field "Target.test_size": %w`, err)}
-		}
-	}
-	if v, ok := tuo.mutation.AbortReason(); ok {
-		if err := target.AbortReasonValidator(v); err != nil {
-			return &ValidationError{Name: "abort_reason", err: fmt.Errorf(`ent: validator failed for field "Target.abort_reason": %w`, err)}
-		}
+	if tuo.mutation.InstanceNameCleared() && len(tuo.mutation.InstanceNameIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Target.instance_name"`)
 	}
 	return nil
 }
@@ -808,99 +592,124 @@ func (tuo *TargetUpdateOne) sqlSave(ctx context.Context) (_node *Target, err err
 	if value, ok := tuo.mutation.Label(); ok {
 		_spec.SetField(target.FieldLabel, field.TypeString, value)
 	}
-	if value, ok := tuo.mutation.Tag(); ok {
-		_spec.SetField(target.FieldTag, field.TypeJSON, value)
-	}
-	if value, ok := tuo.mutation.AppendedTag(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, target.FieldTag, value)
-		})
-	}
-	if tuo.mutation.TagCleared() {
-		_spec.ClearField(target.FieldTag, field.TypeJSON)
+	if value, ok := tuo.mutation.Aspect(); ok {
+		_spec.SetField(target.FieldAspect, field.TypeString, value)
 	}
 	if value, ok := tuo.mutation.TargetKind(); ok {
 		_spec.SetField(target.FieldTargetKind, field.TypeString, value)
 	}
-	if tuo.mutation.TargetKindCleared() {
-		_spec.ClearField(target.FieldTargetKind, field.TypeString)
-	}
-	if value, ok := tuo.mutation.TestSize(); ok {
-		_spec.SetField(target.FieldTestSize, field.TypeEnum, value)
-	}
-	if tuo.mutation.TestSizeCleared() {
-		_spec.ClearField(target.FieldTestSize, field.TypeEnum)
-	}
-	if value, ok := tuo.mutation.Success(); ok {
-		_spec.SetField(target.FieldSuccess, field.TypeBool, value)
-	}
-	if tuo.mutation.SuccessCleared() {
-		_spec.ClearField(target.FieldSuccess, field.TypeBool)
-	}
-	if value, ok := tuo.mutation.TestTimeout(); ok {
-		_spec.SetField(target.FieldTestTimeout, field.TypeInt64, value)
-	}
-	if value, ok := tuo.mutation.AddedTestTimeout(); ok {
-		_spec.AddField(target.FieldTestTimeout, field.TypeInt64, value)
-	}
-	if tuo.mutation.TestTimeoutCleared() {
-		_spec.ClearField(target.FieldTestTimeout, field.TypeInt64)
-	}
-	if value, ok := tuo.mutation.StartTimeInMs(); ok {
-		_spec.SetField(target.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if value, ok := tuo.mutation.AddedStartTimeInMs(); ok {
-		_spec.AddField(target.FieldStartTimeInMs, field.TypeInt64, value)
-	}
-	if tuo.mutation.StartTimeInMsCleared() {
-		_spec.ClearField(target.FieldStartTimeInMs, field.TypeInt64)
-	}
-	if value, ok := tuo.mutation.EndTimeInMs(); ok {
-		_spec.SetField(target.FieldEndTimeInMs, field.TypeInt64, value)
-	}
-	if value, ok := tuo.mutation.AddedEndTimeInMs(); ok {
-		_spec.AddField(target.FieldEndTimeInMs, field.TypeInt64, value)
-	}
-	if tuo.mutation.EndTimeInMsCleared() {
-		_spec.ClearField(target.FieldEndTimeInMs, field.TypeInt64)
-	}
-	if value, ok := tuo.mutation.DurationInMs(); ok {
-		_spec.SetField(target.FieldDurationInMs, field.TypeInt64, value)
-	}
-	if value, ok := tuo.mutation.AddedDurationInMs(); ok {
-		_spec.AddField(target.FieldDurationInMs, field.TypeInt64, value)
-	}
-	if tuo.mutation.DurationInMsCleared() {
-		_spec.ClearField(target.FieldDurationInMs, field.TypeInt64)
-	}
-	if value, ok := tuo.mutation.AbortReason(); ok {
-		_spec.SetField(target.FieldAbortReason, field.TypeEnum, value)
-	}
-	if tuo.mutation.AbortReasonCleared() {
-		_spec.ClearField(target.FieldAbortReason, field.TypeEnum)
-	}
-	if tuo.mutation.BazelInvocationCleared() {
+	if tuo.mutation.InstanceNameCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   target.BazelInvocationTable,
-			Columns: []string{target.BazelInvocationColumn},
+			Table:   target.InstanceNameTable,
+			Columns: []string{target.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tuo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := tuo.mutation.InstanceNameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   target.BazelInvocationTable,
-			Columns: []string{target.BazelInvocationColumn},
+			Table:   target.InstanceNameTable,
+			Columns: []string{target.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if tuo.mutation.InvocationTargetsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.InvocationTargetsTable,
+			Columns: []string{target.InvocationTargetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.RemovedInvocationTargetsIDs(); len(nodes) > 0 && !tuo.mutation.InvocationTargetsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.InvocationTargetsTable,
+			Columns: []string{target.InvocationTargetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.InvocationTargetsTable,
+			Columns: []string{target.InvocationTargetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if tuo.mutation.TargetKindMappingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.TargetKindMappingsTable,
+			Columns: []string{target.TargetKindMappingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.RemovedTargetKindMappingsIDs(); len(nodes) > 0 && !tuo.mutation.TargetKindMappingsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.TargetKindMappingsTable,
+			Columns: []string{target.TargetKindMappingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.TargetKindMappingsTable,
+			Columns: []string{target.TargetKindMappingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

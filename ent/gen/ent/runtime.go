@@ -4,7 +4,7 @@ package ent
 
 import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/schema"
 )
 
@@ -44,14 +44,14 @@ func init() {
 	bazelinvocation.DefaultProcessedEventWorkspaceStatus = bazelinvocationDescProcessedEventWorkspaceStatus.Default.(bool)
 	blobFields := schema.Blob{}.Fields()
 	_ = blobFields
+	invocationtargetFields := schema.InvocationTarget{}.Fields()
+	_ = invocationtargetFields
+	// invocationtargetDescSuccess is the schema descriptor for success field.
+	invocationtargetDescSuccess := invocationtargetFields[0].Descriptor()
+	// invocationtarget.DefaultSuccess holds the default value on creation for the success field.
+	invocationtarget.DefaultSuccess = invocationtargetDescSuccess.Default.(bool)
 	missdetailFields := schema.MissDetail{}.Fields()
 	_ = missdetailFields
-	targetFields := schema.Target{}.Fields()
-	_ = targetFields
-	// targetDescSuccess is the schema descriptor for success field.
-	targetDescSuccess := targetFields[4].Descriptor()
-	// target.DefaultSuccess holds the default value on creation for the success field.
-	target.DefaultSuccess = targetDescSuccess.Default.(bool)
 	testcollectionFields := schema.TestCollection{}.Fields()
 	_ = testcollectionFields
 	testresultbesFields := schema.TestResultBES{}.Fields()

@@ -144,16 +144,25 @@ func (bi *BazelInvocation) TestCollection(ctx context.Context) (result []*TestCo
 	return result, err
 }
 
-func (bi *BazelInvocation) Targets(ctx context.Context) (result []*Target, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = bi.NamedTargets(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = bi.Edges.TargetsOrErr()
+func (bi *BazelInvocation) InvocationTargets(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *InvocationTargetOrder, where *InvocationTargetWhereInput,
+) (*InvocationTargetConnection, error) {
+	opts := []InvocationTargetPaginateOption{
+		WithInvocationTargetOrder(orderBy),
+		WithInvocationTargetFilter(where.Filter),
 	}
-	if IsNotLoaded(err) {
-		result, err = bi.QueryTargets().All(ctx)
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := bi.Edges.totalCount[6][alias]
+	if nodes, err := bi.NamedInvocationTargets(alias); err == nil || hasTotalCount {
+		pager, err := newInvocationTargetPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &InvocationTargetConnection{Edges: []*InvocationTargetEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
 	}
-	return result, err
+	return bi.QueryInvocationTargets().Paginate(ctx, after, first, before, last, opts...)
 }
 
 func (bi *BazelInvocation) SourceControl(ctx context.Context) (*SourceControl, error) {
@@ -344,12 +353,40 @@ func (in *InstanceName) Blobs(ctx context.Context) (result []*Blob, err error) {
 	return result, err
 }
 
+func (in *InstanceName) Targets(ctx context.Context) (result []*Target, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = in.NamedTargets(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = in.Edges.TargetsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = in.QueryTargets().All(ctx)
+	}
+	return result, err
+}
+
 func (_if *InvocationFiles) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
 	result, err := _if.Edges.BazelInvocationOrErr()
 	if IsNotLoaded(err) {
 		result, err = _if.QueryBazelInvocation().Only(ctx)
 	}
 	return result, MaskNotFound(err)
+}
+
+func (it *InvocationTarget) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := it.Edges.BazelInvocationOrErr()
+	if IsNotLoaded(err) {
+		result, err = it.QueryBazelInvocation().Only(ctx)
+	}
+	return result, err
+}
+
+func (it *InvocationTarget) Target(ctx context.Context) (*Target, error) {
+	result, err := it.Edges.TargetOrErr()
+	if IsNotLoaded(err) {
+		result, err = it.QueryTarget().Only(ctx)
+	}
+	return result, err
 }
 
 func (mm *MemoryMetrics) Metrics(ctx context.Context) (*Metrics, error) {
@@ -584,12 +621,33 @@ func (sns *SystemNetworkStats) NetworkMetrics(ctx context.Context) (*NetworkMetr
 	return result, MaskNotFound(err)
 }
 
-func (t *Target) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := t.Edges.BazelInvocationOrErr()
+func (t *Target) InstanceName(ctx context.Context) (*InstanceName, error) {
+	result, err := t.Edges.InstanceNameOrErr()
 	if IsNotLoaded(err) {
-		result, err = t.QueryBazelInvocation().Only(ctx)
+		result, err = t.QueryInstanceName().Only(ctx)
 	}
-	return result, MaskNotFound(err)
+	return result, err
+}
+
+func (t *Target) InvocationTargets(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *InvocationTargetOrder, where *InvocationTargetWhereInput,
+) (*InvocationTargetConnection, error) {
+	opts := []InvocationTargetPaginateOption{
+		WithInvocationTargetOrder(orderBy),
+		WithInvocationTargetFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := t.Edges.totalCount[1][alias]
+	if nodes, err := t.NamedInvocationTargets(alias); err == nil || hasTotalCount {
+		pager, err := newInvocationTargetPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &InvocationTargetConnection{Edges: []*InvocationTargetEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return t.QueryInvocationTargets().Paginate(ctx, after, first, before, last, opts...)
 }
 
 func (tm *TargetMetrics) Metrics(ctx context.Context) (*Metrics, error) {
