@@ -3,6 +3,7 @@
 package build
 
 import (
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -68,6 +69,16 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
+var (
+	Hooks  [1]ent.Hook
+	Policy ent.Policy
+)
 
 // OrderOption defines the ordering options for the Build queries.
 type OrderOption func(*sql.Selector)

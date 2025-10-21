@@ -8,6 +8,7 @@ go_library(
     deps = [
         "//ent/gen/ent",
         "//internal/database/buildeventrecorder",
+        "//internal/database/dbauthservice",
         "//pkg/authmetadataextraction",
         "//pkg/events",
         "//pkg/processing",

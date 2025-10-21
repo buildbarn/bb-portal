@@ -16,6 +16,7 @@ import (
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
+	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/processing"
@@ -88,7 +89,10 @@ func (s BuildEventServer) PublishLifecycleEvent(ctx context.Context, request *bu
 
 // PublishBuildToolEventStream handles a build tool event stream.
 func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildEvent_PublishBuildToolEventStreamServer) error {
-	ctx := stream.Context()
+	// We can safely bypass authorization checks here, as we check that the
+	// user is allowed to upload to the instance name when creating the
+	// BuildEventRecorder.
+	ctx := dbauthservice.NewContextWithDbAuthServiceBypass(stream.Context())
 	slog.InfoContext(ctx, "Stream started", "event", ctx)
 
 	var buildEventRecorder *buildeventrecorder.BuildEventRecorder = nil

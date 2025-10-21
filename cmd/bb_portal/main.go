@@ -14,19 +14,17 @@ import (
 
 	_ "net/http/pprof"
 
-	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/interceptors#configuration)
+	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel"
 	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
 	"go.opentelemetry.io/otel/trace"
 
-	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
-	"github.com/99designs/gqlgen/graphql/handler"
+	gqlgen "github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/aereal/otelgqlgen"
 	"github.com/gorilla/mux"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/mattn/go-sqlite3"
@@ -42,17 +40,19 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
+	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"
 	"github.com/buildbarn/bb-portal/internal/graphql"
-	"github.com/buildbarn/bb-portal/internal/graphql/auth"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
+	auth_configuration "github.com/buildbarn/bb-storage/pkg/auth/configuration"
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/global"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	http_server "github.com/buildbarn/bb-storage/pkg/http/server"
 	"github.com/buildbarn/bb-storage/pkg/program"
+	auth_pb "github.com/buildbarn/bb-storage/pkg/proto/configuration/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
@@ -148,52 +148,9 @@ func newBuildEventStreamService(
 		return nil
 	}
 
-	var dbClient *ent.Client
-	var err error
-
-	switch dbConfig := besConfiguration.Database.Source.(type) {
-	case *bb_portal.Database_Sqlite:
-		if dbConfig.Sqlite.ConnectionString == "" {
-			return status.Error(codes.InvalidArgument, "Empty connection string for sqlite database")
-		}
-		db, err := otelsql.Open(
-			"sqlite3",
-			dbConfig.Sqlite.ConnectionString,
-			otelsql.WithTracerProvider(tracerProvider),
-			otelsql.WithAttributes(semconv.DBSystemNameSQLite),
-		)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to open sqlite database")
-		}
-		drv := entsql.OpenDB(dialect.SQLite, db)
-		dbClient = ent.NewClient(ent.Driver(drv))
-
-		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
-			return util.StatusWrap(err, "Failed to run schema migration")
-		}
-	case *bb_portal.Database_Postgres:
-		if dbConfig.Postgres.ConnectionString == "" {
-			return status.Error(codes.InvalidArgument, "Empty connection string for postgres database")
-		}
-		db, err := otelsql.Open(
-			"pgx",
-			dbConfig.Postgres.ConnectionString,
-			otelsql.WithTracerProvider(tracerProvider),
-			otelsql.WithAttributes(semconv.DBSystemNamePostgreSQL),
-		)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to open postgres database")
-		}
-		drv := entsql.OpenDB(dialect.Postgres, db)
-		dbClient = ent.NewClient(ent.Driver(drv))
-		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
-			return util.StatusWrap(err, "Failed to run schema migration")
-		}
-	}
-
-	err = auth.AddDatabaseAuthInterceptors(configuration.InstanceNameAuthorizer, dbClient, dependenciesGroup, grpcClientFactory)
+	dbClient, err := newDatabaseClient(besConfiguration.Database, tracerProvider)
 	if err != nil {
-		return util.StatusWrap(err, "Failed to add database auth interceptors")
+		return util.StatusWrap(err, "Failed to create database client for BuildEventStreamService")
 	}
 
 	// Configure the database cleanup service.
@@ -222,13 +179,9 @@ func newBuildEventStreamService(
 	blobArchiver := processing.NewBlobMultiArchiver()
 	configureBlobArchiving(blobArchiver, blobArchiveFolder)
 
-	srv := handler.NewDefaultServer(graphql.NewSchema(dbClient))
-	srv.Use(entgql.Transactioner{TxOpener: dbClient})
-	srv.Use(otelgqlgen.New(otelgqlgen.WithTracerProvider(tracerProvider)))
-
-	router.PathPrefix("/graphql").Handler(srv)
-	if besConfiguration.EnableGraphqlPlayground {
-		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
+	err = addGraphqlHandler(configuration, besConfiguration, dependenciesGroup, grpcClientFactory, router, dbClient, tracerProvider)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to add GraphQL handler for BuildEventStreamService")
 	}
 
 	// Handle BEP file uploads over HTTP.
@@ -254,6 +207,92 @@ func newBuildEventStreamService(
 		grpcClientFactory,
 	); err != nil {
 		return util.StatusWrap(err, "gRPC server failure")
+	}
+	return nil
+}
+
+func newDatabaseClient(dbConfig *bb_portal.Database, tracerProvider trace.TracerProvider) (*ent.Client, error) {
+	switch dbConfig := dbConfig.Source.(type) {
+	case *bb_portal.Database_Sqlite:
+		if dbConfig.Sqlite.ConnectionString == "" {
+			return nil, status.Error(codes.InvalidArgument, "Empty connection string for sqlite database")
+		}
+		db, err := otelsql.Open(
+			"sqlite3",
+			dbConfig.Sqlite.ConnectionString,
+			otelsql.WithTracerProvider(tracerProvider),
+			otelsql.WithAttributes(semconv.DBSystemNameSQLite),
+		)
+		if err != nil {
+			return nil, util.StatusWrap(err, "Failed to open sqlite database")
+		}
+		drv := entsql.OpenDB(dialect.SQLite, db)
+		dbClient := ent.NewClient(ent.Driver(drv))
+
+		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
+			return nil, util.StatusWrap(err, "Failed to run schema migration")
+		}
+		return dbClient, nil
+	case *bb_portal.Database_Postgres:
+		if dbConfig.Postgres.ConnectionString == "" {
+			return nil, status.Error(codes.InvalidArgument, "Empty connection string for postgres database")
+		}
+		db, err := otelsql.Open(
+			"pgx",
+			dbConfig.Postgres.ConnectionString,
+			otelsql.WithTracerProvider(tracerProvider),
+			otelsql.WithAttributes(semconv.DBSystemNamePostgreSQL),
+		)
+		if err != nil {
+			return nil, util.StatusWrap(err, "Failed to open postgres database")
+		}
+		drv := entsql.OpenDB(dialect.Postgres, db)
+		dbClient := ent.NewClient(ent.Driver(drv))
+		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
+			return nil, util.StatusWrap(err, "Failed to run schema migration")
+		}
+		return dbClient, nil
+	default:
+		return nil, status.Error(codes.InvalidArgument, "Missing database configuration")
+	}
+}
+
+func addGraphqlHandler(
+	configuration *bb_portal.ApplicationConfiguration,
+	besConfiguration *bb_portal.BuildEventStreamService,
+	dependenciesGroup program.Group,
+	grpcClientFactory bb_grpc.ClientFactory,
+	router *mux.Router,
+	dbClient *ent.Client,
+	tracerProvider trace.TracerProvider,
+) error {
+	srv := graphql.NewGraphqlHandler(dbClient, tracerProvider)
+
+	if configuration.InstanceNameAuthorizer == nil {
+		return status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
+	}
+
+	switch configuration.InstanceNameAuthorizer.Policy.(type) {
+	case *auth_pb.AuthorizerConfiguration_Allow:
+		// If the policy is "Allow", we add a auth bypass. Using the
+		// DbAuthService would just slow us down.
+		srv.AroundOperations(func(ctx context.Context, next gqlgen.OperationHandler) gqlgen.ResponseHandler {
+			return next(dbauthservice.NewContextWithDbAuthServiceBypass(ctx))
+		})
+	default:
+		instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
+		}
+		dbAuthServie := dbauthservice.NewDbAuthService(dbClient, clock.SystemClock, instanceNameAuthorizer, time.Second*5)
+		srv.AroundOperations(func(ctx context.Context, next gqlgen.OperationHandler) gqlgen.ResponseHandler {
+			return next(dbauthservice.NewContextWithDbAuthService(ctx, dbAuthServie))
+		})
+	}
+
+	router.PathPrefix("/graphql").Handler(srv)
+	if besConfiguration.EnableGraphqlPlayground {
+		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
 	}
 	return nil
 }

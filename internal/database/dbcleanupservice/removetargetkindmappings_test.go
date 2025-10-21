@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/mock"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
@@ -25,6 +26,7 @@ func createTestTarget(t *testing.T, ctx context.Context, client *ent.Client, tar
 
 func TestRemoveTargetKindMappings(t *testing.T) {
 	ctrl, ctx := gomock.WithContext(context.Background(), t)
+	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 	clock := mock.NewMockClock(ctrl)
 	traceProvider := noop.NewTracerProvider()
 

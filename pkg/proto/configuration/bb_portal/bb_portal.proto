@@ -81,8 +81,6 @@ message BuildEventStreamService {
   // Controls whether target data should be saved, and if so, to what extent.
   // NOTE: This is a beta feature, and it will likely change in the future,
   // including what data is stored at each level.
-  // NOTE: This does not work correctly with authentication enabled
-  // (instanceNameAuthorizer).
   SaveTargetDataLevel save_target_data_level = 6;
 
   message DatabaseCleanupConfiguration {

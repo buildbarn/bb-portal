@@ -5,4 +5,14 @@ go_library(
     srcs = ["runtime.go"],
     importpath = "github.com/buildbarn/bb-portal/ent/gen/ent/runtime",
     visibility = ["//visibility:public"],
+    deps = [
+        "//ent/authschema",
+        "//ent/gen/ent/authenticateduser",
+        "//ent/gen/ent/bazelinvocation",
+        "//ent/gen/ent/build",
+        "//ent/gen/ent/invocationtarget",
+        "//ent/gen/ent/target",
+        "@io_entgo_ent//:ent",
+        "@io_entgo_ent//privacy",
+    ],
 )

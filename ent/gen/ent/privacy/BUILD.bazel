@@ -1,0 +1,13 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "privacy",
+    srcs = ["privacy.go"],
+    importpath = "github.com/buildbarn/bb-portal/ent/gen/ent/privacy",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//ent/gen/ent",
+        "@io_entgo_ent//entql",
+        "@io_entgo_ent//privacy",
+    ],
+)

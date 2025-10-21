@@ -12,6 +12,7 @@ import (
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
+	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/processing"
@@ -81,6 +82,10 @@ func NewBepUploader(db *ent.Client, blobArchiver processing.BlobMultiArchiver, c
 
 // RecordEventNdjsonFile records all build events from an ndjson bep file.
 func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader) (string, int, error) {
+	// We can safely bypass authorization checks here, as we check that the
+	// user is allowed to upload to the instance name when creating the
+	// BuildEventRecorder.
+	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 	scanner := bufio.NewScanner(file)
 	unmarshaler := protojson.UnmarshalOptions{
 		DiscardUnknown: true,

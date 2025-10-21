@@ -2,7 +2,107 @@
 
 package runtime
 
-// The schema-stitching logic is generated in github.com/buildbarn/bb-portal/ent/gen/ent/runtime.go
+import (
+	"context"
+
+	"github.com/buildbarn/bb-portal/ent/authschema"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+
+	"entgo.io/ent"
+	"entgo.io/ent/privacy"
+)
+
+// The init function reads all schema descriptors with runtime code
+// (default values, validators, hooks and policies) and stitches it
+// to their package variables.
+func init() {
+	authenticateduser.Policy = privacy.NewPolicies(authschema.AuthenticatedUser{})
+	authenticateduser.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := authenticateduser.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	bazelinvocation.Policy = privacy.NewPolicies(authschema.BazelInvocation{})
+	bazelinvocation.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := bazelinvocation.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	bazelinvocationFields := authschema.BazelInvocation{}.Fields()
+	_ = bazelinvocationFields
+	// bazelinvocationDescBepCompleted is the schema descriptor for bep_completed field.
+	bazelinvocationDescBepCompleted := bazelinvocationFields[5].Descriptor()
+	// bazelinvocation.DefaultBepCompleted holds the default value on creation for the bep_completed field.
+	bazelinvocation.DefaultBepCompleted = bazelinvocationDescBepCompleted.Default.(bool)
+	// bazelinvocationDescProcessedEventStarted is the schema descriptor for processed_event_started field.
+	bazelinvocationDescProcessedEventStarted := bazelinvocationFields[27].Descriptor()
+	// bazelinvocation.DefaultProcessedEventStarted holds the default value on creation for the processed_event_started field.
+	bazelinvocation.DefaultProcessedEventStarted = bazelinvocationDescProcessedEventStarted.Default.(bool)
+	// bazelinvocationDescProcessedEventBuildMetadata is the schema descriptor for processed_event_build_metadata field.
+	bazelinvocationDescProcessedEventBuildMetadata := bazelinvocationFields[28].Descriptor()
+	// bazelinvocation.DefaultProcessedEventBuildMetadata holds the default value on creation for the processed_event_build_metadata field.
+	bazelinvocation.DefaultProcessedEventBuildMetadata = bazelinvocationDescProcessedEventBuildMetadata.Default.(bool)
+	// bazelinvocationDescProcessedEventOptionsParsed is the schema descriptor for processed_event_options_parsed field.
+	bazelinvocationDescProcessedEventOptionsParsed := bazelinvocationFields[29].Descriptor()
+	// bazelinvocation.DefaultProcessedEventOptionsParsed holds the default value on creation for the processed_event_options_parsed field.
+	bazelinvocation.DefaultProcessedEventOptionsParsed = bazelinvocationDescProcessedEventOptionsParsed.Default.(bool)
+	// bazelinvocationDescProcessedEventBuildFinished is the schema descriptor for processed_event_build_finished field.
+	bazelinvocationDescProcessedEventBuildFinished := bazelinvocationFields[30].Descriptor()
+	// bazelinvocation.DefaultProcessedEventBuildFinished holds the default value on creation for the processed_event_build_finished field.
+	bazelinvocation.DefaultProcessedEventBuildFinished = bazelinvocationDescProcessedEventBuildFinished.Default.(bool)
+	// bazelinvocationDescProcessedEventStructuredCommandLine is the schema descriptor for processed_event_structured_command_line field.
+	bazelinvocationDescProcessedEventStructuredCommandLine := bazelinvocationFields[31].Descriptor()
+	// bazelinvocation.DefaultProcessedEventStructuredCommandLine holds the default value on creation for the processed_event_structured_command_line field.
+	bazelinvocation.DefaultProcessedEventStructuredCommandLine = bazelinvocationDescProcessedEventStructuredCommandLine.Default.(bool)
+	// bazelinvocationDescProcessedEventWorkspaceStatus is the schema descriptor for processed_event_workspace_status field.
+	bazelinvocationDescProcessedEventWorkspaceStatus := bazelinvocationFields[32].Descriptor()
+	// bazelinvocation.DefaultProcessedEventWorkspaceStatus holds the default value on creation for the processed_event_workspace_status field.
+	bazelinvocation.DefaultProcessedEventWorkspaceStatus = bazelinvocationDescProcessedEventWorkspaceStatus.Default.(bool)
+	blobFields := authschema.Blob{}.Fields()
+	_ = blobFields
+	build.Policy = privacy.NewPolicies(authschema.Build{})
+	build.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := build.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	invocationtargetFields := authschema.InvocationTarget{}.Fields()
+	_ = invocationtargetFields
+	// invocationtargetDescSuccess is the schema descriptor for success field.
+	invocationtargetDescSuccess := invocationtargetFields[0].Descriptor()
+	// invocationtarget.DefaultSuccess holds the default value on creation for the success field.
+	invocationtarget.DefaultSuccess = invocationtargetDescSuccess.Default.(bool)
+	missdetailFields := authschema.MissDetail{}.Fields()
+	_ = missdetailFields
+	target.Policy = privacy.NewPolicies(authschema.Target{})
+	target.Hooks[0] = func(next ent.Mutator) ent.Mutator {
+		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+			if err := target.Policy.EvalMutation(ctx, m); err != nil {
+				return nil, err
+			}
+			return next.Mutate(ctx, m)
+		})
+	}
+	testcollectionFields := authschema.TestCollection{}.Fields()
+	_ = testcollectionFields
+	testresultbesFields := authschema.TestResultBES{}.Fields()
+	_ = testresultbesFields
+	testsummaryFields := authschema.TestSummary{}.Fields()
+	_ = testsummaryFields
+}
 
 const (
 	Version = "v0.14.4"                                         // Version of ent codegen.

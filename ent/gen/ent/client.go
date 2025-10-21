@@ -1343,7 +1343,8 @@ func (c *AuthenticatedUserClient) QueryBazelInvocations(au *AuthenticatedUser) *
 
 // Hooks returns the client hooks.
 func (c *AuthenticatedUserClient) Hooks() []Hook {
-	return c.hooks.AuthenticatedUser
+	hooks := c.hooks.AuthenticatedUser
+	return append(hooks[:len(hooks):len(hooks)], authenticateduser.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -1684,7 +1685,8 @@ func (c *BazelInvocationClient) QuerySourceControl(bi *BazelInvocation) *SourceC
 
 // Hooks returns the client hooks.
 func (c *BazelInvocationClient) Hooks() []Hook {
-	return c.hooks.BazelInvocation
+	hooks := c.hooks.BazelInvocation
+	return append(hooks[:len(hooks):len(hooks)], bazelinvocation.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -2147,7 +2149,8 @@ func (c *BuildClient) QueryInvocations(b *Build) *BazelInvocationQuery {
 
 // Hooks returns the client hooks.
 func (c *BuildClient) Hooks() []Hook {
-	return c.hooks.Build
+	hooks := c.hooks.Build
+	return append(hooks[:len(hooks):len(hooks)], build.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -6171,7 +6174,8 @@ func (c *TargetClient) QueryTargetKindMappings(t *Target) *TargetKindMappingQuer
 
 // Hooks returns the client hooks.
 func (c *TargetClient) Hooks() []Hook {
-	return c.hooks.Target
+	hooks := c.hooks.Target
+	return append(hooks[:len(hooks):len(hooks)], target.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.

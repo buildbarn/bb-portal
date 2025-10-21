@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"database/sql/driver"
+	"errors"
 	"fmt"
 	"math"
 
@@ -807,6 +808,12 @@ func (biq *BazelInvocationQuery) prepareQuery(ctx context.Context) error {
 			return err
 		}
 		biq.sql = prev
+	}
+	if bazelinvocation.Policy == nil {
+		return errors.New("ent: uninitialized bazelinvocation.Policy (forgotten import ent/runtime?)")
+	}
+	if err := bazelinvocation.Policy.EvalQuery(ctx, biq); err != nil {
+		return err
 	}
 	return nil
 }

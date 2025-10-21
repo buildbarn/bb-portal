@@ -6,6 +6,9 @@ import (
 	"time"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
+	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
+	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"
 	"github.com/buildbarn/bb-portal/internal/mock"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
@@ -69,6 +72,7 @@ func populateIncompleteBuildLog(t *testing.T, ctx context.Context, client *ent.C
 
 func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 	ctrl, ctx := gomock.WithContext(context.Background(), t)
+	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 	clock := mock.NewMockClock(ctrl)
 	cleanupTime := time.Unix(1600000300, 0)
 	traceProvider := noop.NewTracerProvider()
@@ -252,6 +256,7 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 
 func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	ctrl, ctx := gomock.WithContext(context.Background(), t)
+	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 	clock := mock.NewMockClock(ctrl)
 	cleanupTime := time.Unix(1600000060, 0)
 	traceProvider := noop.NewTracerProvider()
@@ -550,6 +555,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 func TestRemoveOldInvocationConnections(t *testing.T) {
 	ctrl, ctx := gomock.WithContext(context.Background(), t)
+	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 	clock := mock.NewMockClock(ctrl)
 	traceProvider := noop.NewTracerProvider()
 
@@ -673,6 +679,7 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 
 func TestRemoveOldEventMetadata(t *testing.T) {
 	ctrl, ctx := gomock.WithContext(context.Background(), t)
+	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 	clock := mock.NewMockClock(ctrl)
 	cleanupTime := time.Unix(1600000120, 0)
 	traceProvider := noop.NewTracerProvider()
@@ -838,6 +845,7 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 
 func TestCompactLogs(t *testing.T) {
 	ctrl, ctx := gomock.WithContext(context.Background(), t)
+	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 	clock := mock.NewMockClock(ctrl)
 	traceProvider := noop.NewTracerProvider()
 
@@ -929,6 +937,7 @@ func TestCompactLogs(t *testing.T) {
 
 func TestRemoveOldInvocations(t *testing.T) {
 	ctrl, ctx := gomock.WithContext(context.Background(), t)
+	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 	clock := mock.NewMockClock(ctrl)
 	cleanupTime := time.Unix(1600000200, 0)
 	traceProvider := noop.NewTracerProvider()
@@ -1060,6 +1069,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 
 func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	ctrl, ctx := gomock.WithContext(context.Background(), t)
+	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 	clock := mock.NewMockClock(ctrl)
 	traceProvider := noop.NewTracerProvider()
 

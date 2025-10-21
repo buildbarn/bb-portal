@@ -1,0 +1,18 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "authschema",
+    srcs = [
+        "privacy.go",
+        "schema.go",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/ent/authschema",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//ent/gen/ent",
+        "//ent/gen/ent/privacy",
+        "//ent/schema",
+        "//internal/database/dbauthservice",
+        "@io_entgo_ent//entql",
+    ],
+)

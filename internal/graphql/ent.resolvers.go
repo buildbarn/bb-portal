@@ -10,10 +10,6 @@ import (
 
 	"entgo.io/contrib/entgql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 )
 
@@ -149,53 +145,18 @@ func (r *packageMetricsResolver) ID(ctx context.Context, obj *ent.PackageMetrics
 
 // Node is the resolver for the node field.
 func (r *queryResolver) Node(ctx context.Context, id string) (ent.Noder, error) {
-	typ, intID, err := helpers.GraphQLTypeAndIntIDFromID(id)
-	if err != nil {
-		return nil, err
-	}
-	table := map[string]string{
-		"BazelInvocation":        bazelinvocation.Table,
-		"BazelInvocationProblem": bazelinvocationproblem.Table,
-		"ActionProblem":          bazelinvocationproblem.Table,
-		"ProgressProblem":        bazelinvocationproblem.Table,
-		"TargetProblem":          bazelinvocationproblem.Table,
-		"TestProblem":            bazelinvocationproblem.Table,
-		"Blob":                   blob.Table,
-		"Build":                  build.Table,
-	}[typ]
-
-	var n ent.Noder
-	if table == bazelinvocationproblem.Table {
-		var dbProblem *ent.BazelInvocationProblem
-		dbProblem, err = r.client.BazelInvocationProblem.Get(ctx, intID)
-		if err != nil {
-			return nil, err
-		}
-		n, err = r.helper.DBProblemToAPIProblem(ctx, dbProblem)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		n, err = r.client.Noder(ctx, intID, ent.WithFixedNodeType(table))
-	}
-
-	if err != nil {
-		return nil, err
-	}
-	return n, nil
+	// Not implemented as we only have authorization for the entites you can
+	// query on directly. If you need this functionality, only implement it
+	// for specific types and add authorization for them.
+	panic(fmt.Errorf("not implemented: Node - node"))
 }
 
 // Nodes is the resolver for the nodes field.
 func (r *queryResolver) Nodes(ctx context.Context, ids []string) ([]ent.Noder, error) {
-	noders := make([]ent.Noder, 0, len(ids))
-	for _, id := range ids {
-		noder, err := r.Node(ctx, id)
-		if err != nil {
-			return nil, err
-		}
-		noders = append(noders, noder)
-	}
-	return noders, nil
+	// Not implemented as we only have authorization for the entites you can
+	// query on directly. If you need this functionality, only implement it
+	// for specific types and add authorization for them.
+	panic(fmt.Errorf("not implemented: Nodes - nodes"))
 }
 
 // FindBazelInvocations is the resolver for the findBazelInvocations field.
