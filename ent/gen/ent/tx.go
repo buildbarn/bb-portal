@@ -50,6 +50,8 @@ type Tx struct {
 	InstanceName *InstanceNameClient
 	// InvocationFiles is the client for interacting with the InvocationFiles builders.
 	InvocationFiles *InvocationFilesClient
+	// InvocationTarget is the client for interacting with the InvocationTarget builders.
+	InvocationTarget *InvocationTargetClient
 	// MemoryMetrics is the client for interacting with the MemoryMetrics builders.
 	MemoryMetrics *MemoryMetricsClient
 	// Metrics is the client for interacting with the Metrics builders.
@@ -76,6 +78,8 @@ type Tx struct {
 	SystemNetworkStats *SystemNetworkStatsClient
 	// Target is the client for interacting with the Target builders.
 	Target *TargetClient
+	// TargetKindMapping is the client for interacting with the TargetKindMapping builders.
+	TargetKindMapping *TargetKindMappingClient
 	// TargetMetrics is the client for interacting with the TargetMetrics builders.
 	TargetMetrics *TargetMetricsClient
 	// TestCollection is the client for interacting with the TestCollection builders.
@@ -241,6 +245,7 @@ func (tx *Tx) init() {
 	tx.IncompleteBuildLog = NewIncompleteBuildLogClient(tx.config)
 	tx.InstanceName = NewInstanceNameClient(tx.config)
 	tx.InvocationFiles = NewInvocationFilesClient(tx.config)
+	tx.InvocationTarget = NewInvocationTargetClient(tx.config)
 	tx.MemoryMetrics = NewMemoryMetricsClient(tx.config)
 	tx.Metrics = NewMetricsClient(tx.config)
 	tx.MissDetail = NewMissDetailClient(tx.config)
@@ -254,6 +259,7 @@ func (tx *Tx) init() {
 	tx.SourceControl = NewSourceControlClient(tx.config)
 	tx.SystemNetworkStats = NewSystemNetworkStatsClient(tx.config)
 	tx.Target = NewTargetClient(tx.config)
+	tx.TargetKindMapping = NewTargetKindMappingClient(tx.config)
 	tx.TargetMetrics = NewTargetMetricsClient(tx.config)
 	tx.TestCollection = NewTestCollectionClient(tx.config)
 	tx.TestFile = NewTestFileClient(tx.config)

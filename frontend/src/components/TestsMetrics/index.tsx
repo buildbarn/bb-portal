@@ -1,8 +1,8 @@
 import React from "react";
-import { Table, Row, Statistic, Space } from 'antd';
+import { Table, Row, Statistic, Space, Spin } from 'antd';
 import type { StatisticProps, TableColumnsType } from "antd/lib";
 import TestStatusTag from "../TestStatusTag";
-import { TestCollection } from "@/graphql/__generated__/graphql";
+import { GetInvocationTargetsForInvocationQuery, TestCollection } from "@/graphql/__generated__/graphql";
 import { TestStatusEnum } from "../TestStatusTag";
 import NullBooleanTag from "../NullableBooleanTag";
 import PortalCard from "../PortalCard";
@@ -11,6 +11,9 @@ import { SearchOutlined, ExperimentOutlined, } from "@ant-design/icons";
 import Link from "next/link";
 import styles from "../../theme/theme.module.css"
 import { readableDurationFromMilliseconds } from "@/utils/time";
+import { useQuery } from "@apollo/client";
+import { GET_INVOCATION_TARGETS_FOR_INVOCATION } from "../InvocationTargets/InvocationTargetsTable/graphql";
+import PortalAlert from "../PortalAlert";
 interface TestDataType {
     key: React.Key;
     status: string;
@@ -156,13 +159,44 @@ const test_columns: TableColumnsType<TestDataType> = [
 
 const TestMetricsDisplay: React.FC<{
     testMetrics: TestCollection[] | undefined | null,
-    targetTimes: Map<string, number>,
+    invocationId: string
 }> = ({
     testMetrics,
-    targetTimes,
+    invocationId
 }) => {
         const totalTests: number = testMetrics?.length ?? 0
         const test_data: TestDataType[] = []
+        var targetTimes: Map<string, number> = new Map<string, number>();
+        const { data, error, loading } = useQuery<GetInvocationTargetsForInvocationQuery>(
+          GET_INVOCATION_TARGETS_FOR_INVOCATION,
+          {
+            variables: { invocationId: invocationId },
+            fetchPolicy: "cache-first",
+            notifyOnNetworkStatusChange: true,
+          },
+        );
+
+        if (loading === true)
+          return (
+            <Spin>
+              <pre />
+            </Spin>
+          );
+
+        if (error) {
+          return (
+            <PortalAlert
+              type="error"
+              message={error.message}
+              showIcon
+              className={styles.alert}
+            />
+          );
+        }
+
+        data?.bazelInvocation.invocationTargets.edges?.map((x) => {
+          targetTimes.set(x?.node?.target.label ?? "", x?.node?.durationInMs ?? 0);
+        });
 
         testMetrics?.map((item: TestCollection, index) => {
             var label = item.label ?? "NO_TARGET_LABEL"

@@ -17,6 +17,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 )
 
 // InstanceNameQuery is the builder for querying InstanceName entities.
@@ -29,11 +30,13 @@ type InstanceNameQuery struct {
 	withBazelInvocations      *BazelInvocationQuery
 	withBuilds                *BuildQuery
 	withBlobs                 *BlobQuery
+	withTargets               *TargetQuery
 	loadTotal                 []func(context.Context, []*InstanceName) error
 	modifiers                 []func(*sql.Selector)
 	withNamedBazelInvocations map[string]*BazelInvocationQuery
 	withNamedBuilds           map[string]*BuildQuery
 	withNamedBlobs            map[string]*BlobQuery
+	withNamedTargets          map[string]*TargetQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -129,6 +132,28 @@ func (inq *InstanceNameQuery) QueryBlobs() *BlobQuery {
 			sqlgraph.From(instancename.Table, instancename.FieldID, selector),
 			sqlgraph.To(blob.Table, blob.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, instancename.BlobsTable, instancename.BlobsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(inq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTargets chains the current query on the "targets" edge.
+func (inq *InstanceNameQuery) QueryTargets() *TargetQuery {
+	query := (&TargetClient{config: inq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := inq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := inq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(instancename.Table, instancename.FieldID, selector),
+			sqlgraph.To(target.Table, target.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, instancename.TargetsTable, instancename.TargetsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(inq.driver.Dialect(), step)
 		return fromU, nil
@@ -331,6 +356,7 @@ func (inq *InstanceNameQuery) Clone() *InstanceNameQuery {
 		withBazelInvocations: inq.withBazelInvocations.Clone(),
 		withBuilds:           inq.withBuilds.Clone(),
 		withBlobs:            inq.withBlobs.Clone(),
+		withTargets:          inq.withTargets.Clone(),
 		// clone intermediate query.
 		sql:       inq.sql.Clone(),
 		path:      inq.path,
@@ -368,6 +394,17 @@ func (inq *InstanceNameQuery) WithBlobs(opts ...func(*BlobQuery)) *InstanceNameQ
 		opt(query)
 	}
 	inq.withBlobs = query
+	return inq
+}
+
+// WithTargets tells the query-builder to eager-load the nodes that are connected to
+// the "targets" edge. The optional arguments are used to configure the query builder of the edge.
+func (inq *InstanceNameQuery) WithTargets(opts ...func(*TargetQuery)) *InstanceNameQuery {
+	query := (&TargetClient{config: inq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	inq.withTargets = query
 	return inq
 }
 
@@ -449,10 +486,11 @@ func (inq *InstanceNameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 	var (
 		nodes       = []*InstanceName{}
 		_spec       = inq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			inq.withBazelInvocations != nil,
 			inq.withBuilds != nil,
 			inq.withBlobs != nil,
+			inq.withTargets != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -499,6 +537,13 @@ func (inq *InstanceNameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 			return nil, err
 		}
 	}
+	if query := inq.withTargets; query != nil {
+		if err := inq.loadTargets(ctx, query, nodes,
+			func(n *InstanceName) { n.Edges.Targets = []*Target{} },
+			func(n *InstanceName, e *Target) { n.Edges.Targets = append(n.Edges.Targets, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for name, query := range inq.withNamedBazelInvocations {
 		if err := inq.loadBazelInvocations(ctx, query, nodes,
 			func(n *InstanceName) { n.appendNamedBazelInvocations(name) },
@@ -517,6 +562,13 @@ func (inq *InstanceNameQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 		if err := inq.loadBlobs(ctx, query, nodes,
 			func(n *InstanceName) { n.appendNamedBlobs(name) },
 			func(n *InstanceName, e *Blob) { n.appendNamedBlobs(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range inq.withNamedTargets {
+		if err := inq.loadTargets(ctx, query, nodes,
+			func(n *InstanceName) { n.appendNamedTargets(name) },
+			func(n *InstanceName, e *Target) { n.appendNamedTargets(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -616,6 +668,37 @@ func (inq *InstanceNameQuery) loadBlobs(ctx context.Context, query *BlobQuery, n
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "instance_name_blobs" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (inq *InstanceNameQuery) loadTargets(ctx context.Context, query *TargetQuery, nodes []*InstanceName, init func(*InstanceName), assign func(*InstanceName, *Target)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*InstanceName)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Target(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(instancename.TargetsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.instance_name_targets
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "instance_name_targets" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "instance_name_targets" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -754,6 +837,20 @@ func (inq *InstanceNameQuery) WithNamedBlobs(name string, opts ...func(*BlobQuer
 		inq.withNamedBlobs = make(map[string]*BlobQuery)
 	}
 	inq.withNamedBlobs[name] = query
+	return inq
+}
+
+// WithNamedTargets tells the query-builder to eager-load the nodes that are connected to the "targets"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (inq *InstanceNameQuery) WithNamedTargets(name string, opts ...func(*TargetQuery)) *InstanceNameQuery {
+	query := (&TargetClient{config: inq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if inq.withNamedTargets == nil {
+		inq.withNamedTargets = make(map[string]*TargetQuery)
+	}
+	inq.withNamedTargets[name] = query
 	return inq
 }
 

@@ -1,8 +1,8 @@
+import { env } from "next-runtime-env";
 import type {
   Digest,
   DigestFunction_Value,
 } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
-import { env } from "next-runtime-env";
 import { digestFunctionValueToString } from "./digestFunctionUtils";
 
 function getServeFileUrl(): string {
@@ -55,4 +55,19 @@ export function generateUrlFromEphemeralUrl(
   ephemeralUrl: string,
 ): string {
   return `${getServeFileUrl()}${instanceName ? `/${instanceName}` : ""}${ephemeralUrl}`;
+}
+
+export function generateLinkToTargetsPage(
+  instanceName: string,
+  label: string,
+  aspect: string,
+  targetKind: string,
+): string {
+  const params = new URLSearchParams({
+    instanceName: encodeURIComponent(encodeURIComponent(instanceName)),
+    label: encodeURIComponent(encodeURIComponent(label)),
+    aspect: encodeURIComponent(encodeURIComponent(aspect)),
+    targetKind: encodeURIComponent(encodeURIComponent(targetKind)),
+  });
+  return `/target?${params.toString()}`;
 }

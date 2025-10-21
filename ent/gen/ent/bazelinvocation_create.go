@@ -19,9 +19,10 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/google/uuid"
 )
@@ -595,19 +596,34 @@ func (bic *BazelInvocationCreate) AddTestCollection(t ...*TestCollection) *Bazel
 	return bic.AddTestCollectionIDs(ids...)
 }
 
-// AddTargetIDs adds the "targets" edge to the Target entity by IDs.
-func (bic *BazelInvocationCreate) AddTargetIDs(ids ...int) *BazelInvocationCreate {
-	bic.mutation.AddTargetIDs(ids...)
+// AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
+func (bic *BazelInvocationCreate) AddInvocationTargetIDs(ids ...int) *BazelInvocationCreate {
+	bic.mutation.AddInvocationTargetIDs(ids...)
 	return bic
 }
 
-// AddTargets adds the "targets" edges to the Target entity.
-func (bic *BazelInvocationCreate) AddTargets(t ...*Target) *BazelInvocationCreate {
+// AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
+func (bic *BazelInvocationCreate) AddInvocationTargets(i ...*InvocationTarget) *BazelInvocationCreate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return bic.AddInvocationTargetIDs(ids...)
+}
+
+// AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
+func (bic *BazelInvocationCreate) AddTargetKindMappingIDs(ids ...int) *BazelInvocationCreate {
+	bic.mutation.AddTargetKindMappingIDs(ids...)
+	return bic
+}
+
+// AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
+func (bic *BazelInvocationCreate) AddTargetKindMappings(t ...*TargetKindMapping) *BazelInvocationCreate {
 	ids := make([]int, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
-	return bic.AddTargetIDs(ids...)
+	return bic.AddTargetKindMappingIDs(ids...)
 }
 
 // SetSourceControlID sets the "source_control" edge to the SourceControl entity by ID.
@@ -1028,15 +1044,31 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := bic.mutation.TargetsIDs(); len(nodes) > 0 {
+	if nodes := bic.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   bazelinvocation.TargetsTable,
-			Columns: []string{bazelinvocation.TargetsColumn},
+			Table:   bazelinvocation.InvocationTargetsTable,
+			Columns: []string{bazelinvocation.InvocationTargetsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.TargetKindMappingsTable,
+			Columns: []string{bazelinvocation.TargetKindMappingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

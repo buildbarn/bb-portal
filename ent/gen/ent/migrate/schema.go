@@ -210,6 +210,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{BazelInvocationsColumns[34]},
 			},
+			{
+				Name:    "bazelinvocation_instance_name_bazel_invocations",
+				Unique:  false,
+				Columns: []*schema.Column{BazelInvocationsColumns[35]},
+			},
 		},
 	}
 	// BazelInvocationProblemsColumns holds the columns for the "bazel_invocation_problems" table.
@@ -621,6 +626,56 @@ var (
 			},
 		},
 	}
+	// InvocationTargetsColumns holds the columns for the "invocation_targets" table.
+	InvocationTargetsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "success", Type: field.TypeBool, Default: false},
+		{Name: "tags", Type: field.TypeJSON, Nullable: true},
+		{Name: "start_time_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "end_time_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "duration_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "failure_message", Type: field.TypeString, Nullable: true},
+		{Name: "abort_reason", Type: field.TypeEnum, Enums: []string{"ANALYSIS_FAILURE", "INCOMPLETE", "INTERNAL", "LOADING_FAILURE", "NO_ANALYZE", "NO_BUILD", "NONE", "OUT_OF_MEMORY", "REMOTE_ENVIRONMENT_FAILURE", "SKIPPED", "TIME_OUT", "UNKNOWN", "USER_INTERRUPTED"}},
+		{Name: "bazel_invocation_invocation_targets", Type: field.TypeInt},
+		{Name: "target_invocation_targets", Type: field.TypeInt},
+	}
+	// InvocationTargetsTable holds the schema information for the "invocation_targets" table.
+	InvocationTargetsTable = &schema.Table{
+		Name:       "invocation_targets",
+		Columns:    InvocationTargetsColumns,
+		PrimaryKey: []*schema.Column{InvocationTargetsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "invocation_targets_bazel_invocations_invocation_targets",
+				Columns:    []*schema.Column{InvocationTargetsColumns[8]},
+				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "invocation_targets_targets_invocation_targets",
+				Columns:    []*schema.Column{InvocationTargetsColumns[9]},
+				RefColumns: []*schema.Column{TargetsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "invocationtarget_bazel_invocation_invocation_targets",
+				Unique:  false,
+				Columns: []*schema.Column{InvocationTargetsColumns[8]},
+			},
+			{
+				Name:    "invocationtarget_target_invocation_targets",
+				Unique:  false,
+				Columns: []*schema.Column{InvocationTargetsColumns[9]},
+			},
+			{
+				Name:    "invocationtarget_bazel_invocation_invocation_targets_target_invocation_targets",
+				Unique:  false,
+				Columns: []*schema.Column{InvocationTargetsColumns[8], InvocationTargetsColumns[9]},
+			},
+		},
+	}
 	// MemoryMetricsColumns holds the columns for the "memory_metrics" table.
 	MemoryMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -964,16 +1019,9 @@ var (
 	TargetsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "label", Type: field.TypeString},
-		{Name: "tag", Type: field.TypeJSON, Nullable: true},
-		{Name: "target_kind", Type: field.TypeString, Nullable: true},
-		{Name: "test_size", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNKNOWN", "SMALL", "MEDIUM", "LARGE", "ENORMOUS"}},
-		{Name: "success", Type: field.TypeBool, Nullable: true, Default: false},
-		{Name: "test_timeout", Type: field.TypeInt64, Nullable: true},
-		{Name: "start_time_in_ms", Type: field.TypeInt64, Nullable: true},
-		{Name: "end_time_in_ms", Type: field.TypeInt64, Nullable: true},
-		{Name: "duration_in_ms", Type: field.TypeInt64, Nullable: true},
-		{Name: "abort_reason", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNKNOWN", "USER_INTERRUPTED", "NO_ANALYZE", "NO_BUILD", "TIME_OUT", "REMOTE_ENVIRONMENT_FAILURE", "INTERNAL", "LOADING_FAILURE", "ANALYSIS_FAILURE", "SKIPPED", "INCOMPLETE", "OUT_OF_MEMORY"}},
-		{Name: "bazel_invocation_targets", Type: field.TypeInt, Nullable: true},
+		{Name: "aspect", Type: field.TypeString},
+		{Name: "target_kind", Type: field.TypeString},
+		{Name: "instance_name_targets", Type: field.TypeInt},
 	}
 	// TargetsTable holds the schema information for the "targets" table.
 	TargetsTable = &schema.Table{
@@ -982,27 +1030,71 @@ var (
 		PrimaryKey: []*schema.Column{TargetsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "targets_bazel_invocations_targets",
-				Columns:    []*schema.Column{TargetsColumns[11]},
+				Symbol:     "targets_instance_names_targets",
+				Columns:    []*schema.Column{TargetsColumns[4]},
+				RefColumns: []*schema.Column{InstanceNamesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "target_instance_name_targets",
+				Unique:  false,
+				Columns: []*schema.Column{TargetsColumns[4]},
+			},
+			{
+				Name:    "target_label_aspect",
+				Unique:  false,
+				Columns: []*schema.Column{TargetsColumns[1], TargetsColumns[2]},
+			},
+			{
+				Name:    "target_label_aspect_target_kind_instance_name_targets",
+				Unique:  true,
+				Columns: []*schema.Column{TargetsColumns[1], TargetsColumns[2], TargetsColumns[3], TargetsColumns[4]},
+			},
+		},
+	}
+	// TargetKindMappingsColumns holds the columns for the "target_kind_mappings" table.
+	TargetKindMappingsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "start_time_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "bazel_invocation_target_kind_mappings", Type: field.TypeInt},
+		{Name: "target_target_kind_mappings", Type: field.TypeInt},
+	}
+	// TargetKindMappingsTable holds the schema information for the "target_kind_mappings" table.
+	TargetKindMappingsTable = &schema.Table{
+		Name:       "target_kind_mappings",
+		Columns:    TargetKindMappingsColumns,
+		PrimaryKey: []*schema.Column{TargetKindMappingsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "target_kind_mappings_bazel_invocations_target_kind_mappings",
+				Columns:    []*schema.Column{TargetKindMappingsColumns[2]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "target_kind_mappings_targets_target_kind_mappings",
+				Columns:    []*schema.Column{TargetKindMappingsColumns[3]},
+				RefColumns: []*schema.Column{TargetsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "target_label",
+				Name:    "targetkindmapping_bazel_invocation_target_kind_mappings",
 				Unique:  false,
-				Columns: []*schema.Column{TargetsColumns[1]},
+				Columns: []*schema.Column{TargetKindMappingsColumns[2]},
 			},
 			{
-				Name:    "target_bazel_invocation_targets",
+				Name:    "targetkindmapping_target_target_kind_mappings",
 				Unique:  false,
-				Columns: []*schema.Column{TargetsColumns[11]},
+				Columns: []*schema.Column{TargetKindMappingsColumns[3]},
 			},
 			{
-				Name:    "target_label_bazel_invocation_targets",
+				Name:    "targetkindmapping_bazel_invocation_target_kind_mappings_target_target_kind_mappings",
 				Unique:  true,
-				Columns: []*schema.Column{TargetsColumns[1], TargetsColumns[11]},
+				Columns: []*schema.Column{TargetKindMappingsColumns[2], TargetKindMappingsColumns[3]},
 			},
 		},
 	}
@@ -1325,6 +1417,7 @@ var (
 		IncompleteBuildLogsTable,
 		InstanceNamesTable,
 		InvocationFilesTable,
+		InvocationTargetsTable,
 		MemoryMetricsTable,
 		MetricsTable,
 		MissDetailsTable,
@@ -1338,6 +1431,7 @@ var (
 		SourceControlsTable,
 		SystemNetworkStatsTable,
 		TargetsTable,
+		TargetKindMappingsTable,
 		TargetMetricsTable,
 		TestCollectionsTable,
 		TestFilesTable,
@@ -1372,6 +1466,8 @@ func init() {
 	GarbageMetricsTable.ForeignKeys[0].RefTable = MemoryMetricsTable
 	IncompleteBuildLogsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationFilesTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	InvocationTargetsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	InvocationTargetsTable.ForeignKeys[1].RefTable = TargetsTable
 	MemoryMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	MetricsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	MissDetailsTable.ForeignKeys[0].RefTable = ActionCacheStatisticsTable
@@ -1384,7 +1480,9 @@ func init() {
 	RunnerCountsTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	SourceControlsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	SystemNetworkStatsTable.ForeignKeys[0].RefTable = NetworkMetricsTable
-	TargetsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	TargetsTable.ForeignKeys[0].RefTable = InstanceNamesTable
+	TargetKindMappingsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	TargetKindMappingsTable.ForeignKeys[1].RefTable = TargetsTable
 	TargetMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	TestCollectionsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	TestFilesTable.ForeignKeys[0].RefTable = NamedSetOfFilesTable

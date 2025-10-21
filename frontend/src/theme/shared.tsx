@@ -15,6 +15,9 @@ const shared = {
     Typography: {
       titleMarginBottom: 0,
     },
+    Popover: {
+      titleMinWidth: 0,
+    }
   },
   token: {
     fontFamily: '-apple-system, system-ui, BlinkMacSystemFont;',

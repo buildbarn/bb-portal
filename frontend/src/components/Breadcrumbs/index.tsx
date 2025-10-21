@@ -43,22 +43,10 @@ const Breadcrumbs: React.FC<Props> = ({ segmentTitles }) => {
     () => {
       // Split the path by slashes and remove any empty segments
       // For example, convert "/foo/bar/baz" to ["foo", "bar", "baz"]
-      const segments = pathname.split(separator).filter(segment => segment.length > 0);
-
-      //special handling for the base64 encoded route params to get around nextjs being overly helpful and decoding urls automagically
-      if (segments.includes("tests")) {
-        var idx = segments.indexOf("tests")
-        if (idx + 1 < segments.length) {
-          segments[idx + 1] = atob(segments[idx + 1])
-        }
-      }
-      //for future targets route
-      if (segments.includes("targets")) {
-        var idx = segments.indexOf("targets")
-        if (idx + 1 < segments.length) {
-          segments[idx + 1] = atob(segments[idx + 1])
-        }
-      }
+      const segments = pathname
+        .split(separator)
+        .filter((segment) => segment.length > 0)
+        .map((segment) => decodeURIComponent(segment));
 
       // Iterate over the list of segments to build a breadcrumb object for each
       const breadcrumbs = segments.map((segment, index) => {

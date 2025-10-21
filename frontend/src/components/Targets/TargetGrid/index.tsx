@@ -1,109 +1,100 @@
-import React, { useCallback, useState } from 'react';
-import { TableColumnsType } from "antd/lib";
-import { Space, Row, Table, TableProps, TablePaginationConfig } from 'antd';
-import { TestStatusEnum } from '../../TestStatusTag';
-import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
-import { SearchOutlined } from '@ant-design/icons';
-import { useQuery } from '@apollo/client';
-import { FilterValue } from 'antd/es/table/interface';
-import { uniqueId } from 'lodash';
-import { GetTargetsWithOffsetQueryVariables, GetUniqueTargetLabelsQueryVariables } from '@/graphql/__generated__/graphql';
-import TargetGridRow from '../TargetGridRow';
-import PortalAlert from '../../PortalAlert';
-import Link from 'next/link';
-import { GET_TARGETS } from "./graphql";
+import { useQuery } from "@apollo/client";
+import { Row, Space } from "antd";
+import type { FilterValue } from "antd/es/table/interface";
+import React from "react";
+import {
+  CursorTable,
+  getNewPaginationVariables,
+} from "@/components/CursorTable";
+import type { PaginationVariables } from "@/components/CursorTable/types";
+import type { TargetWhereInput } from "@/graphql/__generated__/graphql";
+import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
+import PortalAlert from "../../PortalAlert";
+import TargetGridRow from "../TargetGridRow";
+import { columns, type TargetGridRowType } from "./Columns";
+import { GET_TARGETS_LIST } from "./graphql";
 
-interface Props { }
+const TargetGrid: React.FC = () => {
+  const [paginationVariables, setPaginationVariables] =
+    React.useState<PaginationVariables>(getNewPaginationVariables());
+  const [filterVariables, setFilterVariables] =
+    React.useState<TargetWhereInput>({});
 
-export interface TargetStatusType {
-  label: string
-  invocationId: string,
-  status: TestStatusEnum
-}
-
-interface TargetGridRowDataType {
-  key: React.Key;
-  label: string;
-}
-
-const PAGE_SIZE = 20
-const columns: TableColumnsType<TargetGridRowDataType> = [
-  {
-    title: "Label",
-    dataIndex: "label",
-    filterSearch: true,
-    render: (_, record) =>
-
-      <Link href={"targets/" + btoa(encodeURIComponent(record.label))}>{record.label}</Link>,
-    filterDropdown: filterProps => (
-      <SearchWidget placeholder="Target Pattern..." {...filterProps} />
-    ),
-    filterIcon: filtered => <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />,
-    onFilter: (value, record) => (record.label.includes(value.toString()) ? true : false)
-  },
-]
-
-const TargetGrid: React.FC<Props> = () => {
-
-  const [variables, setVariables] = useState<GetUniqueTargetLabelsQueryVariables>({})
-
-  const { loading: labelLoading, data: labelData, previousData: labelPreviousData, error: labelError } = useQuery(GET_TARGETS, {
-    variables: variables,
-    pollInterval: 300000
+  const { data, loading, error } = useQuery(GET_TARGETS_LIST, {
+    variables: {
+      ...paginationVariables,
+      where: filterVariables,
+    },
   });
 
-  const data = labelLoading ? labelPreviousData : labelData;
-  var result: TargetGridRowDataType[] = []
+  const onFilterChange = (filters: Record<string, FilterValue | null>) => {
+    const newFilters: TargetWhereInput[] = [];
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value && value.length > 0) {
+        switch (key) {
+          case "target-kind":
+            newFilters.push({ targetKindContainsFold: value[0] as string });
+            break;
+          case "label":
+            newFilters.push({ labelContainsFold: value[0] as string });
+            break;
+        }
+      }
+    });
+    setFilterVariables({ and: newFilters });
+  };
 
-  if (labelError) {
-    <PortalAlert className="error" message="There was a problem communicating w/the backend server." />
-  } else {
-    data?.getUniqueTargetLabels?.map(dataRow => {
-      var row: TargetGridRowDataType = {
-        key: "target-grid-row-data-" + uniqueId(),
-        label: dataRow ?? "",
-        // status: [],
-        // average_duration: dataRow?.avg ?? 0,
-        // min_duration: dataRow?.min ?? 0,
-        // max_duration: dataRow?.max ?? 0,
-        // total_count: dataRow?.count ?? 0,
-      }
-      result.push(row)
-    })
+  if (error) {
+    return (
+      <PortalAlert
+        className="error"
+        message="There was a problem communicating w/the backend server."
+      />
+    );
   }
-  const onChange: TableProps<TargetGridRowDataType>['onChange'] = useCallback(
-    (pagination: TablePaginationConfig,
-      filters: Record<string, FilterValue | null>, extra: any) => {
-      var vars: GetTargetsWithOffsetQueryVariables = {}
-      if (filters['label']?.length) {
-        var label = filters['label']?.[0]?.toString() ?? ""
-        vars.label = label
-      } else {
-        vars.label = ""
-      }
-      vars.limit = PAGE_SIZE
-      vars.offset = ((pagination.current ?? 1) - 1) * PAGE_SIZE;
-      setVariables(vars)
-    },
-    [variables],
-  );
+
+  const rowData = parseGraphqlEdgeList(data?.findTargets);
+
   return (
-    <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
       <Row>
-        <Table<TargetGridRowDataType>
+        <CursorTable<TargetGridRowType>
           columns={columns}
-          loading={labelLoading}
-          rowKey="key"
-          onChange={onChange}
+          loading={loading}
+          size="small"
+          rowKey="id"
           expandable={{
-            indentSize: 100,
-            expandedRowRender: (record) => (
-              <TargetGridRow rowLabel={record.label} first={20} reverseOrder={true} />
-            ),
             rowExpandable: (_) => true,
+            expandedRowRender: (record) => (
+              <TargetGridRow
+                instanceName={record.instanceName.name}
+                label={record.label}
+                aspect={record.aspect}
+                targetKind={record.targetKind}
+                numberOfElements={40}
+                direction={"newToOld"}
+              />
+            ),
           }}
-          pagination={false}
-          dataSource={result} />
+          onChange={(_pagination, filters, _sorter, _extra) =>
+            onFilterChange(filters)
+          }
+          dataSource={rowData}
+          pagination={{
+            position: "bottom",
+            justify: "end",
+            size: "middle",
+          }}
+          pageInfo={{
+            startCursor: data?.findTargets.pageInfo.startCursor || "",
+            endCursor: data?.findTargets.pageInfo.endCursor || "",
+            hasNextPage: data?.findTargets.pageInfo.hasNextPage || false,
+            hasPreviousPage:
+              data?.findTargets.pageInfo.hasPreviousPage || false,
+          }}
+          paginationVariables={paginationVariables}
+          setPaginationVariables={setPaginationVariables}
+        />
       </Row>
     </Space>
   );

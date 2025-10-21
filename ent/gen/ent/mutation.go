@@ -30,6 +30,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
@@ -44,6 +45,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
@@ -82,6 +84,7 @@ const (
 	TypeIncompleteBuildLog     = "IncompleteBuildLog"
 	TypeInstanceName           = "InstanceName"
 	TypeInvocationFiles        = "InvocationFiles"
+	TypeInvocationTarget       = "InvocationTarget"
 	TypeMemoryMetrics          = "MemoryMetrics"
 	TypeMetrics                = "Metrics"
 	TypeMissDetail             = "MissDetail"
@@ -95,6 +98,7 @@ const (
 	TypeSourceControl          = "SourceControl"
 	TypeSystemNetworkStats     = "SystemNetworkStats"
 	TypeTarget                 = "Target"
+	TypeTargetKindMapping      = "TargetKindMapping"
 	TypeTargetMetrics          = "TargetMetrics"
 	TypeTestCollection         = "TestCollection"
 	TypeTestFile               = "TestFile"
@@ -4403,9 +4407,12 @@ type BazelInvocationMutation struct {
 	test_collection                         map[int]struct{}
 	removedtest_collection                  map[int]struct{}
 	clearedtest_collection                  bool
-	targets                                 map[int]struct{}
-	removedtargets                          map[int]struct{}
-	clearedtargets                          bool
+	invocation_targets                      map[int]struct{}
+	removedinvocation_targets               map[int]struct{}
+	clearedinvocation_targets               bool
+	target_kind_mappings                    map[int]struct{}
+	removedtarget_kind_mappings             map[int]struct{}
+	clearedtarget_kind_mappings             bool
 	source_control                          *int
 	clearedsource_control                   bool
 	done                                    bool
@@ -6613,58 +6620,112 @@ func (m *BazelInvocationMutation) ResetTestCollection() {
 	m.removedtest_collection = nil
 }
 
-// AddTargetIDs adds the "targets" edge to the Target entity by ids.
-func (m *BazelInvocationMutation) AddTargetIDs(ids ...int) {
-	if m.targets == nil {
-		m.targets = make(map[int]struct{})
+// AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by ids.
+func (m *BazelInvocationMutation) AddInvocationTargetIDs(ids ...int) {
+	if m.invocation_targets == nil {
+		m.invocation_targets = make(map[int]struct{})
 	}
 	for i := range ids {
-		m.targets[ids[i]] = struct{}{}
+		m.invocation_targets[ids[i]] = struct{}{}
 	}
 }
 
-// ClearTargets clears the "targets" edge to the Target entity.
-func (m *BazelInvocationMutation) ClearTargets() {
-	m.clearedtargets = true
+// ClearInvocationTargets clears the "invocation_targets" edge to the InvocationTarget entity.
+func (m *BazelInvocationMutation) ClearInvocationTargets() {
+	m.clearedinvocation_targets = true
 }
 
-// TargetsCleared reports if the "targets" edge to the Target entity was cleared.
-func (m *BazelInvocationMutation) TargetsCleared() bool {
-	return m.clearedtargets
+// InvocationTargetsCleared reports if the "invocation_targets" edge to the InvocationTarget entity was cleared.
+func (m *BazelInvocationMutation) InvocationTargetsCleared() bool {
+	return m.clearedinvocation_targets
 }
 
-// RemoveTargetIDs removes the "targets" edge to the Target entity by IDs.
-func (m *BazelInvocationMutation) RemoveTargetIDs(ids ...int) {
-	if m.removedtargets == nil {
-		m.removedtargets = make(map[int]struct{})
+// RemoveInvocationTargetIDs removes the "invocation_targets" edge to the InvocationTarget entity by IDs.
+func (m *BazelInvocationMutation) RemoveInvocationTargetIDs(ids ...int) {
+	if m.removedinvocation_targets == nil {
+		m.removedinvocation_targets = make(map[int]struct{})
 	}
 	for i := range ids {
-		delete(m.targets, ids[i])
-		m.removedtargets[ids[i]] = struct{}{}
+		delete(m.invocation_targets, ids[i])
+		m.removedinvocation_targets[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedTargets returns the removed IDs of the "targets" edge to the Target entity.
-func (m *BazelInvocationMutation) RemovedTargetsIDs() (ids []int) {
-	for id := range m.removedtargets {
+// RemovedInvocationTargets returns the removed IDs of the "invocation_targets" edge to the InvocationTarget entity.
+func (m *BazelInvocationMutation) RemovedInvocationTargetsIDs() (ids []int) {
+	for id := range m.removedinvocation_targets {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// TargetsIDs returns the "targets" edge IDs in the mutation.
-func (m *BazelInvocationMutation) TargetsIDs() (ids []int) {
-	for id := range m.targets {
+// InvocationTargetsIDs returns the "invocation_targets" edge IDs in the mutation.
+func (m *BazelInvocationMutation) InvocationTargetsIDs() (ids []int) {
+	for id := range m.invocation_targets {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetTargets resets all changes to the "targets" edge.
-func (m *BazelInvocationMutation) ResetTargets() {
-	m.targets = nil
-	m.clearedtargets = false
-	m.removedtargets = nil
+// ResetInvocationTargets resets all changes to the "invocation_targets" edge.
+func (m *BazelInvocationMutation) ResetInvocationTargets() {
+	m.invocation_targets = nil
+	m.clearedinvocation_targets = false
+	m.removedinvocation_targets = nil
+}
+
+// AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by ids.
+func (m *BazelInvocationMutation) AddTargetKindMappingIDs(ids ...int) {
+	if m.target_kind_mappings == nil {
+		m.target_kind_mappings = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.target_kind_mappings[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTargetKindMappings clears the "target_kind_mappings" edge to the TargetKindMapping entity.
+func (m *BazelInvocationMutation) ClearTargetKindMappings() {
+	m.clearedtarget_kind_mappings = true
+}
+
+// TargetKindMappingsCleared reports if the "target_kind_mappings" edge to the TargetKindMapping entity was cleared.
+func (m *BazelInvocationMutation) TargetKindMappingsCleared() bool {
+	return m.clearedtarget_kind_mappings
+}
+
+// RemoveTargetKindMappingIDs removes the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
+func (m *BazelInvocationMutation) RemoveTargetKindMappingIDs(ids ...int) {
+	if m.removedtarget_kind_mappings == nil {
+		m.removedtarget_kind_mappings = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.target_kind_mappings, ids[i])
+		m.removedtarget_kind_mappings[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTargetKindMappings returns the removed IDs of the "target_kind_mappings" edge to the TargetKindMapping entity.
+func (m *BazelInvocationMutation) RemovedTargetKindMappingsIDs() (ids []int) {
+	for id := range m.removedtarget_kind_mappings {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// TargetKindMappingsIDs returns the "target_kind_mappings" edge IDs in the mutation.
+func (m *BazelInvocationMutation) TargetKindMappingsIDs() (ids []int) {
+	for id := range m.target_kind_mappings {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTargetKindMappings resets all changes to the "target_kind_mappings" edge.
+func (m *BazelInvocationMutation) ResetTargetKindMappings() {
+	m.target_kind_mappings = nil
+	m.clearedtarget_kind_mappings = false
+	m.removedtarget_kind_mappings = nil
 }
 
 // SetSourceControlID sets the "source_control" edge to the SourceControl entity by id.
@@ -7587,7 +7648,7 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 12)
 	if m.instance_name != nil {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -7615,8 +7676,11 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	if m.test_collection != nil {
 		edges = append(edges, bazelinvocation.EdgeTestCollection)
 	}
-	if m.targets != nil {
-		edges = append(edges, bazelinvocation.EdgeTargets)
+	if m.invocation_targets != nil {
+		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
+	}
+	if m.target_kind_mappings != nil {
+		edges = append(edges, bazelinvocation.EdgeTargetKindMappings)
 	}
 	if m.source_control != nil {
 		edges = append(edges, bazelinvocation.EdgeSourceControl)
@@ -7676,9 +7740,15 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeTargets:
-		ids := make([]ent.Value, 0, len(m.targets))
-		for id := range m.targets {
+	case bazelinvocation.EdgeInvocationTargets:
+		ids := make([]ent.Value, 0, len(m.invocation_targets))
+		for id := range m.invocation_targets {
+			ids = append(ids, id)
+		}
+		return ids
+	case bazelinvocation.EdgeTargetKindMappings:
+		ids := make([]ent.Value, 0, len(m.target_kind_mappings))
+		for id := range m.target_kind_mappings {
 			ids = append(ids, id)
 		}
 		return ids
@@ -7692,7 +7762,7 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 12)
 	if m.removedevent_metadata != nil {
 		edges = append(edges, bazelinvocation.EdgeEventMetadata)
 	}
@@ -7711,8 +7781,11 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 	if m.removedtest_collection != nil {
 		edges = append(edges, bazelinvocation.EdgeTestCollection)
 	}
-	if m.removedtargets != nil {
-		edges = append(edges, bazelinvocation.EdgeTargets)
+	if m.removedinvocation_targets != nil {
+		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
+	}
+	if m.removedtarget_kind_mappings != nil {
+		edges = append(edges, bazelinvocation.EdgeTargetKindMappings)
 	}
 	return edges
 }
@@ -7757,9 +7830,15 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeTargets:
-		ids := make([]ent.Value, 0, len(m.removedtargets))
-		for id := range m.removedtargets {
+	case bazelinvocation.EdgeInvocationTargets:
+		ids := make([]ent.Value, 0, len(m.removedinvocation_targets))
+		for id := range m.removedinvocation_targets {
+			ids = append(ids, id)
+		}
+		return ids
+	case bazelinvocation.EdgeTargetKindMappings:
+		ids := make([]ent.Value, 0, len(m.removedtarget_kind_mappings))
+		for id := range m.removedtarget_kind_mappings {
 			ids = append(ids, id)
 		}
 		return ids
@@ -7769,7 +7848,7 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 12)
 	if m.clearedinstance_name {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -7797,8 +7876,11 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	if m.clearedtest_collection {
 		edges = append(edges, bazelinvocation.EdgeTestCollection)
 	}
-	if m.clearedtargets {
-		edges = append(edges, bazelinvocation.EdgeTargets)
+	if m.clearedinvocation_targets {
+		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
+	}
+	if m.clearedtarget_kind_mappings {
+		edges = append(edges, bazelinvocation.EdgeTargetKindMappings)
 	}
 	if m.clearedsource_control {
 		edges = append(edges, bazelinvocation.EdgeSourceControl)
@@ -7828,8 +7910,10 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedinvocation_files
 	case bazelinvocation.EdgeTestCollection:
 		return m.clearedtest_collection
-	case bazelinvocation.EdgeTargets:
-		return m.clearedtargets
+	case bazelinvocation.EdgeInvocationTargets:
+		return m.clearedinvocation_targets
+	case bazelinvocation.EdgeTargetKindMappings:
+		return m.clearedtarget_kind_mappings
 	case bazelinvocation.EdgeSourceControl:
 		return m.clearedsource_control
 	}
@@ -7887,8 +7971,11 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 	case bazelinvocation.EdgeTestCollection:
 		m.ResetTestCollection()
 		return nil
-	case bazelinvocation.EdgeTargets:
-		m.ResetTargets()
+	case bazelinvocation.EdgeInvocationTargets:
+		m.ResetInvocationTargets()
+		return nil
+	case bazelinvocation.EdgeTargetKindMappings:
+		m.ResetTargetKindMappings()
 		return nil
 	case bazelinvocation.EdgeSourceControl:
 		m.ResetSourceControl()
@@ -15270,6 +15357,9 @@ type InstanceNameMutation struct {
 	blobs                    map[int]struct{}
 	removedblobs             map[int]struct{}
 	clearedblobs             bool
+	targets                  map[int]struct{}
+	removedtargets           map[int]struct{}
+	clearedtargets           bool
 	done                     bool
 	oldValue                 func(context.Context) (*InstanceName, error)
 	predicates               []predicate.InstanceName
@@ -15571,6 +15661,60 @@ func (m *InstanceNameMutation) ResetBlobs() {
 	m.removedblobs = nil
 }
 
+// AddTargetIDs adds the "targets" edge to the Target entity by ids.
+func (m *InstanceNameMutation) AddTargetIDs(ids ...int) {
+	if m.targets == nil {
+		m.targets = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.targets[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTargets clears the "targets" edge to the Target entity.
+func (m *InstanceNameMutation) ClearTargets() {
+	m.clearedtargets = true
+}
+
+// TargetsCleared reports if the "targets" edge to the Target entity was cleared.
+func (m *InstanceNameMutation) TargetsCleared() bool {
+	return m.clearedtargets
+}
+
+// RemoveTargetIDs removes the "targets" edge to the Target entity by IDs.
+func (m *InstanceNameMutation) RemoveTargetIDs(ids ...int) {
+	if m.removedtargets == nil {
+		m.removedtargets = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.targets, ids[i])
+		m.removedtargets[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTargets returns the removed IDs of the "targets" edge to the Target entity.
+func (m *InstanceNameMutation) RemovedTargetsIDs() (ids []int) {
+	for id := range m.removedtargets {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// TargetsIDs returns the "targets" edge IDs in the mutation.
+func (m *InstanceNameMutation) TargetsIDs() (ids []int) {
+	for id := range m.targets {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTargets resets all changes to the "targets" edge.
+func (m *InstanceNameMutation) ResetTargets() {
+	m.targets = nil
+	m.clearedtargets = false
+	m.removedtargets = nil
+}
+
 // Where appends a list predicates to the InstanceNameMutation builder.
 func (m *InstanceNameMutation) Where(ps ...predicate.InstanceName) {
 	m.predicates = append(m.predicates, ps...)
@@ -15704,7 +15848,7 @@ func (m *InstanceNameMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *InstanceNameMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.bazel_invocations != nil {
 		edges = append(edges, instancename.EdgeBazelInvocations)
 	}
@@ -15713,6 +15857,9 @@ func (m *InstanceNameMutation) AddedEdges() []string {
 	}
 	if m.blobs != nil {
 		edges = append(edges, instancename.EdgeBlobs)
+	}
+	if m.targets != nil {
+		edges = append(edges, instancename.EdgeTargets)
 	}
 	return edges
 }
@@ -15739,13 +15886,19 @@ func (m *InstanceNameMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case instancename.EdgeTargets:
+		ids := make([]ent.Value, 0, len(m.targets))
+		for id := range m.targets {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *InstanceNameMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.removedbazel_invocations != nil {
 		edges = append(edges, instancename.EdgeBazelInvocations)
 	}
@@ -15754,6 +15907,9 @@ func (m *InstanceNameMutation) RemovedEdges() []string {
 	}
 	if m.removedblobs != nil {
 		edges = append(edges, instancename.EdgeBlobs)
+	}
+	if m.removedtargets != nil {
+		edges = append(edges, instancename.EdgeTargets)
 	}
 	return edges
 }
@@ -15780,13 +15936,19 @@ func (m *InstanceNameMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case instancename.EdgeTargets:
+		ids := make([]ent.Value, 0, len(m.removedtargets))
+		for id := range m.removedtargets {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *InstanceNameMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedbazel_invocations {
 		edges = append(edges, instancename.EdgeBazelInvocations)
 	}
@@ -15795,6 +15957,9 @@ func (m *InstanceNameMutation) ClearedEdges() []string {
 	}
 	if m.clearedblobs {
 		edges = append(edges, instancename.EdgeBlobs)
+	}
+	if m.clearedtargets {
+		edges = append(edges, instancename.EdgeTargets)
 	}
 	return edges
 }
@@ -15809,6 +15974,8 @@ func (m *InstanceNameMutation) EdgeCleared(name string) bool {
 		return m.clearedbuilds
 	case instancename.EdgeBlobs:
 		return m.clearedblobs
+	case instancename.EdgeTargets:
+		return m.clearedtargets
 	}
 	return false
 }
@@ -15833,6 +16000,9 @@ func (m *InstanceNameMutation) ResetEdge(name string) error {
 		return nil
 	case instancename.EdgeBlobs:
 		m.ResetBlobs()
+		return nil
+	case instancename.EdgeTargets:
+		m.ResetTargets()
 		return nil
 	}
 	return fmt.Errorf("unknown InstanceName edge %s", name)
@@ -16561,6 +16731,1002 @@ func (m *InvocationFilesMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown InvocationFiles edge %s", name)
+}
+
+// InvocationTargetMutation represents an operation that mutates the InvocationTarget nodes in the graph.
+type InvocationTargetMutation struct {
+	config
+	op                      Op
+	typ                     string
+	id                      *int
+	success                 *bool
+	tags                    *[]string
+	appendtags              []string
+	start_time_in_ms        *int64
+	addstart_time_in_ms     *int64
+	end_time_in_ms          *int64
+	addend_time_in_ms       *int64
+	duration_in_ms          *int64
+	addduration_in_ms       *int64
+	failure_message         *string
+	abort_reason            *invocationtarget.AbortReason
+	clearedFields           map[string]struct{}
+	bazel_invocation        *int
+	clearedbazel_invocation bool
+	target                  *int
+	clearedtarget           bool
+	done                    bool
+	oldValue                func(context.Context) (*InvocationTarget, error)
+	predicates              []predicate.InvocationTarget
+}
+
+var _ ent.Mutation = (*InvocationTargetMutation)(nil)
+
+// invocationtargetOption allows management of the mutation configuration using functional options.
+type invocationtargetOption func(*InvocationTargetMutation)
+
+// newInvocationTargetMutation creates new mutation for the InvocationTarget entity.
+func newInvocationTargetMutation(c config, op Op, opts ...invocationtargetOption) *InvocationTargetMutation {
+	m := &InvocationTargetMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeInvocationTarget,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withInvocationTargetID sets the ID field of the mutation.
+func withInvocationTargetID(id int) invocationtargetOption {
+	return func(m *InvocationTargetMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *InvocationTarget
+		)
+		m.oldValue = func(ctx context.Context) (*InvocationTarget, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().InvocationTarget.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withInvocationTarget sets the old InvocationTarget of the mutation.
+func withInvocationTarget(node *InvocationTarget) invocationtargetOption {
+	return func(m *InvocationTargetMutation) {
+		m.oldValue = func(context.Context) (*InvocationTarget, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m InvocationTargetMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m InvocationTargetMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *InvocationTargetMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *InvocationTargetMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().InvocationTarget.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetSuccess sets the "success" field.
+func (m *InvocationTargetMutation) SetSuccess(b bool) {
+	m.success = &b
+}
+
+// Success returns the value of the "success" field in the mutation.
+func (m *InvocationTargetMutation) Success() (r bool, exists bool) {
+	v := m.success
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSuccess returns the old "success" field's value of the InvocationTarget entity.
+// If the InvocationTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *InvocationTargetMutation) OldSuccess(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSuccess is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSuccess requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSuccess: %w", err)
+	}
+	return oldValue.Success, nil
+}
+
+// ResetSuccess resets all changes to the "success" field.
+func (m *InvocationTargetMutation) ResetSuccess() {
+	m.success = nil
+}
+
+// SetTags sets the "tags" field.
+func (m *InvocationTargetMutation) SetTags(s []string) {
+	m.tags = &s
+	m.appendtags = nil
+}
+
+// Tags returns the value of the "tags" field in the mutation.
+func (m *InvocationTargetMutation) Tags() (r []string, exists bool) {
+	v := m.tags
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTags returns the old "tags" field's value of the InvocationTarget entity.
+// If the InvocationTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *InvocationTargetMutation) OldTags(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTags is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTags requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTags: %w", err)
+	}
+	return oldValue.Tags, nil
+}
+
+// AppendTags adds s to the "tags" field.
+func (m *InvocationTargetMutation) AppendTags(s []string) {
+	m.appendtags = append(m.appendtags, s...)
+}
+
+// AppendedTags returns the list of values that were appended to the "tags" field in this mutation.
+func (m *InvocationTargetMutation) AppendedTags() ([]string, bool) {
+	if len(m.appendtags) == 0 {
+		return nil, false
+	}
+	return m.appendtags, true
+}
+
+// ClearTags clears the value of the "tags" field.
+func (m *InvocationTargetMutation) ClearTags() {
+	m.tags = nil
+	m.appendtags = nil
+	m.clearedFields[invocationtarget.FieldTags] = struct{}{}
+}
+
+// TagsCleared returns if the "tags" field was cleared in this mutation.
+func (m *InvocationTargetMutation) TagsCleared() bool {
+	_, ok := m.clearedFields[invocationtarget.FieldTags]
+	return ok
+}
+
+// ResetTags resets all changes to the "tags" field.
+func (m *InvocationTargetMutation) ResetTags() {
+	m.tags = nil
+	m.appendtags = nil
+	delete(m.clearedFields, invocationtarget.FieldTags)
+}
+
+// SetStartTimeInMs sets the "start_time_in_ms" field.
+func (m *InvocationTargetMutation) SetStartTimeInMs(i int64) {
+	m.start_time_in_ms = &i
+	m.addstart_time_in_ms = nil
+}
+
+// StartTimeInMs returns the value of the "start_time_in_ms" field in the mutation.
+func (m *InvocationTargetMutation) StartTimeInMs() (r int64, exists bool) {
+	v := m.start_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStartTimeInMs returns the old "start_time_in_ms" field's value of the InvocationTarget entity.
+// If the InvocationTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *InvocationTargetMutation) OldStartTimeInMs(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStartTimeInMs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStartTimeInMs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStartTimeInMs: %w", err)
+	}
+	return oldValue.StartTimeInMs, nil
+}
+
+// AddStartTimeInMs adds i to the "start_time_in_ms" field.
+func (m *InvocationTargetMutation) AddStartTimeInMs(i int64) {
+	if m.addstart_time_in_ms != nil {
+		*m.addstart_time_in_ms += i
+	} else {
+		m.addstart_time_in_ms = &i
+	}
+}
+
+// AddedStartTimeInMs returns the value that was added to the "start_time_in_ms" field in this mutation.
+func (m *InvocationTargetMutation) AddedStartTimeInMs() (r int64, exists bool) {
+	v := m.addstart_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
+func (m *InvocationTargetMutation) ClearStartTimeInMs() {
+	m.start_time_in_ms = nil
+	m.addstart_time_in_ms = nil
+	m.clearedFields[invocationtarget.FieldStartTimeInMs] = struct{}{}
+}
+
+// StartTimeInMsCleared returns if the "start_time_in_ms" field was cleared in this mutation.
+func (m *InvocationTargetMutation) StartTimeInMsCleared() bool {
+	_, ok := m.clearedFields[invocationtarget.FieldStartTimeInMs]
+	return ok
+}
+
+// ResetStartTimeInMs resets all changes to the "start_time_in_ms" field.
+func (m *InvocationTargetMutation) ResetStartTimeInMs() {
+	m.start_time_in_ms = nil
+	m.addstart_time_in_ms = nil
+	delete(m.clearedFields, invocationtarget.FieldStartTimeInMs)
+}
+
+// SetEndTimeInMs sets the "end_time_in_ms" field.
+func (m *InvocationTargetMutation) SetEndTimeInMs(i int64) {
+	m.end_time_in_ms = &i
+	m.addend_time_in_ms = nil
+}
+
+// EndTimeInMs returns the value of the "end_time_in_ms" field in the mutation.
+func (m *InvocationTargetMutation) EndTimeInMs() (r int64, exists bool) {
+	v := m.end_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEndTimeInMs returns the old "end_time_in_ms" field's value of the InvocationTarget entity.
+// If the InvocationTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *InvocationTargetMutation) OldEndTimeInMs(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEndTimeInMs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEndTimeInMs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEndTimeInMs: %w", err)
+	}
+	return oldValue.EndTimeInMs, nil
+}
+
+// AddEndTimeInMs adds i to the "end_time_in_ms" field.
+func (m *InvocationTargetMutation) AddEndTimeInMs(i int64) {
+	if m.addend_time_in_ms != nil {
+		*m.addend_time_in_ms += i
+	} else {
+		m.addend_time_in_ms = &i
+	}
+}
+
+// AddedEndTimeInMs returns the value that was added to the "end_time_in_ms" field in this mutation.
+func (m *InvocationTargetMutation) AddedEndTimeInMs() (r int64, exists bool) {
+	v := m.addend_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
+func (m *InvocationTargetMutation) ClearEndTimeInMs() {
+	m.end_time_in_ms = nil
+	m.addend_time_in_ms = nil
+	m.clearedFields[invocationtarget.FieldEndTimeInMs] = struct{}{}
+}
+
+// EndTimeInMsCleared returns if the "end_time_in_ms" field was cleared in this mutation.
+func (m *InvocationTargetMutation) EndTimeInMsCleared() bool {
+	_, ok := m.clearedFields[invocationtarget.FieldEndTimeInMs]
+	return ok
+}
+
+// ResetEndTimeInMs resets all changes to the "end_time_in_ms" field.
+func (m *InvocationTargetMutation) ResetEndTimeInMs() {
+	m.end_time_in_ms = nil
+	m.addend_time_in_ms = nil
+	delete(m.clearedFields, invocationtarget.FieldEndTimeInMs)
+}
+
+// SetDurationInMs sets the "duration_in_ms" field.
+func (m *InvocationTargetMutation) SetDurationInMs(i int64) {
+	m.duration_in_ms = &i
+	m.addduration_in_ms = nil
+}
+
+// DurationInMs returns the value of the "duration_in_ms" field in the mutation.
+func (m *InvocationTargetMutation) DurationInMs() (r int64, exists bool) {
+	v := m.duration_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDurationInMs returns the old "duration_in_ms" field's value of the InvocationTarget entity.
+// If the InvocationTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *InvocationTargetMutation) OldDurationInMs(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDurationInMs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDurationInMs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDurationInMs: %w", err)
+	}
+	return oldValue.DurationInMs, nil
+}
+
+// AddDurationInMs adds i to the "duration_in_ms" field.
+func (m *InvocationTargetMutation) AddDurationInMs(i int64) {
+	if m.addduration_in_ms != nil {
+		*m.addduration_in_ms += i
+	} else {
+		m.addduration_in_ms = &i
+	}
+}
+
+// AddedDurationInMs returns the value that was added to the "duration_in_ms" field in this mutation.
+func (m *InvocationTargetMutation) AddedDurationInMs() (r int64, exists bool) {
+	v := m.addduration_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDurationInMs clears the value of the "duration_in_ms" field.
+func (m *InvocationTargetMutation) ClearDurationInMs() {
+	m.duration_in_ms = nil
+	m.addduration_in_ms = nil
+	m.clearedFields[invocationtarget.FieldDurationInMs] = struct{}{}
+}
+
+// DurationInMsCleared returns if the "duration_in_ms" field was cleared in this mutation.
+func (m *InvocationTargetMutation) DurationInMsCleared() bool {
+	_, ok := m.clearedFields[invocationtarget.FieldDurationInMs]
+	return ok
+}
+
+// ResetDurationInMs resets all changes to the "duration_in_ms" field.
+func (m *InvocationTargetMutation) ResetDurationInMs() {
+	m.duration_in_ms = nil
+	m.addduration_in_ms = nil
+	delete(m.clearedFields, invocationtarget.FieldDurationInMs)
+}
+
+// SetFailureMessage sets the "failure_message" field.
+func (m *InvocationTargetMutation) SetFailureMessage(s string) {
+	m.failure_message = &s
+}
+
+// FailureMessage returns the value of the "failure_message" field in the mutation.
+func (m *InvocationTargetMutation) FailureMessage() (r string, exists bool) {
+	v := m.failure_message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFailureMessage returns the old "failure_message" field's value of the InvocationTarget entity.
+// If the InvocationTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *InvocationTargetMutation) OldFailureMessage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFailureMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFailureMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFailureMessage: %w", err)
+	}
+	return oldValue.FailureMessage, nil
+}
+
+// ClearFailureMessage clears the value of the "failure_message" field.
+func (m *InvocationTargetMutation) ClearFailureMessage() {
+	m.failure_message = nil
+	m.clearedFields[invocationtarget.FieldFailureMessage] = struct{}{}
+}
+
+// FailureMessageCleared returns if the "failure_message" field was cleared in this mutation.
+func (m *InvocationTargetMutation) FailureMessageCleared() bool {
+	_, ok := m.clearedFields[invocationtarget.FieldFailureMessage]
+	return ok
+}
+
+// ResetFailureMessage resets all changes to the "failure_message" field.
+func (m *InvocationTargetMutation) ResetFailureMessage() {
+	m.failure_message = nil
+	delete(m.clearedFields, invocationtarget.FieldFailureMessage)
+}
+
+// SetAbortReason sets the "abort_reason" field.
+func (m *InvocationTargetMutation) SetAbortReason(ir invocationtarget.AbortReason) {
+	m.abort_reason = &ir
+}
+
+// AbortReason returns the value of the "abort_reason" field in the mutation.
+func (m *InvocationTargetMutation) AbortReason() (r invocationtarget.AbortReason, exists bool) {
+	v := m.abort_reason
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAbortReason returns the old "abort_reason" field's value of the InvocationTarget entity.
+// If the InvocationTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *InvocationTargetMutation) OldAbortReason(ctx context.Context) (v invocationtarget.AbortReason, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAbortReason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAbortReason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAbortReason: %w", err)
+	}
+	return oldValue.AbortReason, nil
+}
+
+// ResetAbortReason resets all changes to the "abort_reason" field.
+func (m *InvocationTargetMutation) ResetAbortReason() {
+	m.abort_reason = nil
+}
+
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
+func (m *InvocationTargetMutation) SetBazelInvocationID(id int) {
+	m.bazel_invocation = &id
+}
+
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
+func (m *InvocationTargetMutation) ClearBazelInvocation() {
+	m.clearedbazel_invocation = true
+}
+
+// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
+func (m *InvocationTargetMutation) BazelInvocationCleared() bool {
+	return m.clearedbazel_invocation
+}
+
+// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
+func (m *InvocationTargetMutation) BazelInvocationID() (id int, exists bool) {
+	if m.bazel_invocation != nil {
+		return *m.bazel_invocation, true
+	}
+	return
+}
+
+// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BazelInvocationID instead. It exists only for internal usage by the builders.
+func (m *InvocationTargetMutation) BazelInvocationIDs() (ids []int) {
+	if id := m.bazel_invocation; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
+func (m *InvocationTargetMutation) ResetBazelInvocation() {
+	m.bazel_invocation = nil
+	m.clearedbazel_invocation = false
+}
+
+// SetTargetID sets the "target" edge to the Target entity by id.
+func (m *InvocationTargetMutation) SetTargetID(id int) {
+	m.target = &id
+}
+
+// ClearTarget clears the "target" edge to the Target entity.
+func (m *InvocationTargetMutation) ClearTarget() {
+	m.clearedtarget = true
+}
+
+// TargetCleared reports if the "target" edge to the Target entity was cleared.
+func (m *InvocationTargetMutation) TargetCleared() bool {
+	return m.clearedtarget
+}
+
+// TargetID returns the "target" edge ID in the mutation.
+func (m *InvocationTargetMutation) TargetID() (id int, exists bool) {
+	if m.target != nil {
+		return *m.target, true
+	}
+	return
+}
+
+// TargetIDs returns the "target" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TargetID instead. It exists only for internal usage by the builders.
+func (m *InvocationTargetMutation) TargetIDs() (ids []int) {
+	if id := m.target; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTarget resets all changes to the "target" edge.
+func (m *InvocationTargetMutation) ResetTarget() {
+	m.target = nil
+	m.clearedtarget = false
+}
+
+// Where appends a list predicates to the InvocationTargetMutation builder.
+func (m *InvocationTargetMutation) Where(ps ...predicate.InvocationTarget) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the InvocationTargetMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *InvocationTargetMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.InvocationTarget, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *InvocationTargetMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *InvocationTargetMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (InvocationTarget).
+func (m *InvocationTargetMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *InvocationTargetMutation) Fields() []string {
+	fields := make([]string, 0, 7)
+	if m.success != nil {
+		fields = append(fields, invocationtarget.FieldSuccess)
+	}
+	if m.tags != nil {
+		fields = append(fields, invocationtarget.FieldTags)
+	}
+	if m.start_time_in_ms != nil {
+		fields = append(fields, invocationtarget.FieldStartTimeInMs)
+	}
+	if m.end_time_in_ms != nil {
+		fields = append(fields, invocationtarget.FieldEndTimeInMs)
+	}
+	if m.duration_in_ms != nil {
+		fields = append(fields, invocationtarget.FieldDurationInMs)
+	}
+	if m.failure_message != nil {
+		fields = append(fields, invocationtarget.FieldFailureMessage)
+	}
+	if m.abort_reason != nil {
+		fields = append(fields, invocationtarget.FieldAbortReason)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *InvocationTargetMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case invocationtarget.FieldSuccess:
+		return m.Success()
+	case invocationtarget.FieldTags:
+		return m.Tags()
+	case invocationtarget.FieldStartTimeInMs:
+		return m.StartTimeInMs()
+	case invocationtarget.FieldEndTimeInMs:
+		return m.EndTimeInMs()
+	case invocationtarget.FieldDurationInMs:
+		return m.DurationInMs()
+	case invocationtarget.FieldFailureMessage:
+		return m.FailureMessage()
+	case invocationtarget.FieldAbortReason:
+		return m.AbortReason()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *InvocationTargetMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case invocationtarget.FieldSuccess:
+		return m.OldSuccess(ctx)
+	case invocationtarget.FieldTags:
+		return m.OldTags(ctx)
+	case invocationtarget.FieldStartTimeInMs:
+		return m.OldStartTimeInMs(ctx)
+	case invocationtarget.FieldEndTimeInMs:
+		return m.OldEndTimeInMs(ctx)
+	case invocationtarget.FieldDurationInMs:
+		return m.OldDurationInMs(ctx)
+	case invocationtarget.FieldFailureMessage:
+		return m.OldFailureMessage(ctx)
+	case invocationtarget.FieldAbortReason:
+		return m.OldAbortReason(ctx)
+	}
+	return nil, fmt.Errorf("unknown InvocationTarget field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *InvocationTargetMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case invocationtarget.FieldSuccess:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSuccess(v)
+		return nil
+	case invocationtarget.FieldTags:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTags(v)
+		return nil
+	case invocationtarget.FieldStartTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStartTimeInMs(v)
+		return nil
+	case invocationtarget.FieldEndTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEndTimeInMs(v)
+		return nil
+	case invocationtarget.FieldDurationInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDurationInMs(v)
+		return nil
+	case invocationtarget.FieldFailureMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFailureMessage(v)
+		return nil
+	case invocationtarget.FieldAbortReason:
+		v, ok := value.(invocationtarget.AbortReason)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAbortReason(v)
+		return nil
+	}
+	return fmt.Errorf("unknown InvocationTarget field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *InvocationTargetMutation) AddedFields() []string {
+	var fields []string
+	if m.addstart_time_in_ms != nil {
+		fields = append(fields, invocationtarget.FieldStartTimeInMs)
+	}
+	if m.addend_time_in_ms != nil {
+		fields = append(fields, invocationtarget.FieldEndTimeInMs)
+	}
+	if m.addduration_in_ms != nil {
+		fields = append(fields, invocationtarget.FieldDurationInMs)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *InvocationTargetMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case invocationtarget.FieldStartTimeInMs:
+		return m.AddedStartTimeInMs()
+	case invocationtarget.FieldEndTimeInMs:
+		return m.AddedEndTimeInMs()
+	case invocationtarget.FieldDurationInMs:
+		return m.AddedDurationInMs()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *InvocationTargetMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case invocationtarget.FieldStartTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStartTimeInMs(v)
+		return nil
+	case invocationtarget.FieldEndTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddEndTimeInMs(v)
+		return nil
+	case invocationtarget.FieldDurationInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDurationInMs(v)
+		return nil
+	}
+	return fmt.Errorf("unknown InvocationTarget numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *InvocationTargetMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(invocationtarget.FieldTags) {
+		fields = append(fields, invocationtarget.FieldTags)
+	}
+	if m.FieldCleared(invocationtarget.FieldStartTimeInMs) {
+		fields = append(fields, invocationtarget.FieldStartTimeInMs)
+	}
+	if m.FieldCleared(invocationtarget.FieldEndTimeInMs) {
+		fields = append(fields, invocationtarget.FieldEndTimeInMs)
+	}
+	if m.FieldCleared(invocationtarget.FieldDurationInMs) {
+		fields = append(fields, invocationtarget.FieldDurationInMs)
+	}
+	if m.FieldCleared(invocationtarget.FieldFailureMessage) {
+		fields = append(fields, invocationtarget.FieldFailureMessage)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *InvocationTargetMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *InvocationTargetMutation) ClearField(name string) error {
+	switch name {
+	case invocationtarget.FieldTags:
+		m.ClearTags()
+		return nil
+	case invocationtarget.FieldStartTimeInMs:
+		m.ClearStartTimeInMs()
+		return nil
+	case invocationtarget.FieldEndTimeInMs:
+		m.ClearEndTimeInMs()
+		return nil
+	case invocationtarget.FieldDurationInMs:
+		m.ClearDurationInMs()
+		return nil
+	case invocationtarget.FieldFailureMessage:
+		m.ClearFailureMessage()
+		return nil
+	}
+	return fmt.Errorf("unknown InvocationTarget nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *InvocationTargetMutation) ResetField(name string) error {
+	switch name {
+	case invocationtarget.FieldSuccess:
+		m.ResetSuccess()
+		return nil
+	case invocationtarget.FieldTags:
+		m.ResetTags()
+		return nil
+	case invocationtarget.FieldStartTimeInMs:
+		m.ResetStartTimeInMs()
+		return nil
+	case invocationtarget.FieldEndTimeInMs:
+		m.ResetEndTimeInMs()
+		return nil
+	case invocationtarget.FieldDurationInMs:
+		m.ResetDurationInMs()
+		return nil
+	case invocationtarget.FieldFailureMessage:
+		m.ResetFailureMessage()
+		return nil
+	case invocationtarget.FieldAbortReason:
+		m.ResetAbortReason()
+		return nil
+	}
+	return fmt.Errorf("unknown InvocationTarget field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *InvocationTargetMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.bazel_invocation != nil {
+		edges = append(edges, invocationtarget.EdgeBazelInvocation)
+	}
+	if m.target != nil {
+		edges = append(edges, invocationtarget.EdgeTarget)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *InvocationTargetMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case invocationtarget.EdgeBazelInvocation:
+		if id := m.bazel_invocation; id != nil {
+			return []ent.Value{*id}
+		}
+	case invocationtarget.EdgeTarget:
+		if id := m.target; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *InvocationTargetMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *InvocationTargetMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *InvocationTargetMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedbazel_invocation {
+		edges = append(edges, invocationtarget.EdgeBazelInvocation)
+	}
+	if m.clearedtarget {
+		edges = append(edges, invocationtarget.EdgeTarget)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *InvocationTargetMutation) EdgeCleared(name string) bool {
+	switch name {
+	case invocationtarget.EdgeBazelInvocation:
+		return m.clearedbazel_invocation
+	case invocationtarget.EdgeTarget:
+		return m.clearedtarget
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *InvocationTargetMutation) ClearEdge(name string) error {
+	switch name {
+	case invocationtarget.EdgeBazelInvocation:
+		m.ClearBazelInvocation()
+		return nil
+	case invocationtarget.EdgeTarget:
+		m.ClearTarget()
+		return nil
+	}
+	return fmt.Errorf("unknown InvocationTarget unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *InvocationTargetMutation) ResetEdge(name string) error {
+	switch name {
+	case invocationtarget.EdgeBazelInvocation:
+		m.ResetBazelInvocation()
+		return nil
+	case invocationtarget.EdgeTarget:
+		m.ResetTarget()
+		return nil
+	}
+	return fmt.Errorf("unknown InvocationTarget edge %s", name)
 }
 
 // MemoryMetricsMutation represents an operation that mutates the MemoryMetrics nodes in the graph.
@@ -25429,30 +26595,24 @@ func (m *SystemNetworkStatsMutation) ResetEdge(name string) error {
 // TargetMutation represents an operation that mutates the Target nodes in the graph.
 type TargetMutation struct {
 	config
-	op                      Op
-	typ                     string
-	id                      *int
-	label                   *string
-	tag                     *[]string
-	appendtag               []string
-	target_kind             *string
-	test_size               *target.TestSize
-	success                 *bool
-	test_timeout            *int64
-	addtest_timeout         *int64
-	start_time_in_ms        *int64
-	addstart_time_in_ms     *int64
-	end_time_in_ms          *int64
-	addend_time_in_ms       *int64
-	duration_in_ms          *int64
-	addduration_in_ms       *int64
-	abort_reason            *target.AbortReason
-	clearedFields           map[string]struct{}
-	bazel_invocation        *int
-	clearedbazel_invocation bool
-	done                    bool
-	oldValue                func(context.Context) (*Target, error)
-	predicates              []predicate.Target
+	op                          Op
+	typ                         string
+	id                          *int
+	label                       *string
+	aspect                      *string
+	target_kind                 *string
+	clearedFields               map[string]struct{}
+	instance_name               *int
+	clearedinstance_name        bool
+	invocation_targets          map[int]struct{}
+	removedinvocation_targets   map[int]struct{}
+	clearedinvocation_targets   bool
+	target_kind_mappings        map[int]struct{}
+	removedtarget_kind_mappings map[int]struct{}
+	clearedtarget_kind_mappings bool
+	done                        bool
+	oldValue                    func(context.Context) (*Target, error)
+	predicates                  []predicate.Target
 }
 
 var _ ent.Mutation = (*TargetMutation)(nil)
@@ -25589,69 +26749,40 @@ func (m *TargetMutation) ResetLabel() {
 	m.label = nil
 }
 
-// SetTag sets the "tag" field.
-func (m *TargetMutation) SetTag(s []string) {
-	m.tag = &s
-	m.appendtag = nil
+// SetAspect sets the "aspect" field.
+func (m *TargetMutation) SetAspect(s string) {
+	m.aspect = &s
 }
 
-// Tag returns the value of the "tag" field in the mutation.
-func (m *TargetMutation) Tag() (r []string, exists bool) {
-	v := m.tag
+// Aspect returns the value of the "aspect" field in the mutation.
+func (m *TargetMutation) Aspect() (r string, exists bool) {
+	v := m.aspect
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldTag returns the old "tag" field's value of the Target entity.
+// OldAspect returns the old "aspect" field's value of the Target entity.
 // If the Target object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TargetMutation) OldTag(ctx context.Context) (v []string, err error) {
+func (m *TargetMutation) OldAspect(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTag is only allowed on UpdateOne operations")
+		return v, errors.New("OldAspect is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTag requires an ID field in the mutation")
+		return v, errors.New("OldAspect requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTag: %w", err)
+		return v, fmt.Errorf("querying old value for OldAspect: %w", err)
 	}
-	return oldValue.Tag, nil
+	return oldValue.Aspect, nil
 }
 
-// AppendTag adds s to the "tag" field.
-func (m *TargetMutation) AppendTag(s []string) {
-	m.appendtag = append(m.appendtag, s...)
-}
-
-// AppendedTag returns the list of values that were appended to the "tag" field in this mutation.
-func (m *TargetMutation) AppendedTag() ([]string, bool) {
-	if len(m.appendtag) == 0 {
-		return nil, false
-	}
-	return m.appendtag, true
-}
-
-// ClearTag clears the value of the "tag" field.
-func (m *TargetMutation) ClearTag() {
-	m.tag = nil
-	m.appendtag = nil
-	m.clearedFields[target.FieldTag] = struct{}{}
-}
-
-// TagCleared returns if the "tag" field was cleared in this mutation.
-func (m *TargetMutation) TagCleared() bool {
-	_, ok := m.clearedFields[target.FieldTag]
-	return ok
-}
-
-// ResetTag resets all changes to the "tag" field.
-func (m *TargetMutation) ResetTag() {
-	m.tag = nil
-	m.appendtag = nil
-	delete(m.clearedFields, target.FieldTag)
+// ResetAspect resets all changes to the "aspect" field.
+func (m *TargetMutation) ResetAspect() {
+	m.aspect = nil
 }
 
 // SetTargetKind sets the "target_kind" field.
@@ -25685,488 +26816,156 @@ func (m *TargetMutation) OldTargetKind(ctx context.Context) (v string, err error
 	return oldValue.TargetKind, nil
 }
 
-// ClearTargetKind clears the value of the "target_kind" field.
-func (m *TargetMutation) ClearTargetKind() {
-	m.target_kind = nil
-	m.clearedFields[target.FieldTargetKind] = struct{}{}
-}
-
-// TargetKindCleared returns if the "target_kind" field was cleared in this mutation.
-func (m *TargetMutation) TargetKindCleared() bool {
-	_, ok := m.clearedFields[target.FieldTargetKind]
-	return ok
-}
-
 // ResetTargetKind resets all changes to the "target_kind" field.
 func (m *TargetMutation) ResetTargetKind() {
 	m.target_kind = nil
-	delete(m.clearedFields, target.FieldTargetKind)
 }
 
-// SetTestSize sets the "test_size" field.
-func (m *TargetMutation) SetTestSize(ts target.TestSize) {
-	m.test_size = &ts
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by id.
+func (m *TargetMutation) SetInstanceNameID(id int) {
+	m.instance_name = &id
 }
 
-// TestSize returns the value of the "test_size" field in the mutation.
-func (m *TargetMutation) TestSize() (r target.TestSize, exists bool) {
-	v := m.test_size
-	if v == nil {
-		return
-	}
-	return *v, true
+// ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
+func (m *TargetMutation) ClearInstanceName() {
+	m.clearedinstance_name = true
 }
 
-// OldTestSize returns the old "test_size" field's value of the Target entity.
-// If the Target object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TargetMutation) OldTestSize(ctx context.Context) (v target.TestSize, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTestSize is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTestSize requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTestSize: %w", err)
-	}
-	return oldValue.TestSize, nil
+// InstanceNameCleared reports if the "instance_name" edge to the InstanceName entity was cleared.
+func (m *TargetMutation) InstanceNameCleared() bool {
+	return m.clearedinstance_name
 }
 
-// ClearTestSize clears the value of the "test_size" field.
-func (m *TargetMutation) ClearTestSize() {
-	m.test_size = nil
-	m.clearedFields[target.FieldTestSize] = struct{}{}
-}
-
-// TestSizeCleared returns if the "test_size" field was cleared in this mutation.
-func (m *TargetMutation) TestSizeCleared() bool {
-	_, ok := m.clearedFields[target.FieldTestSize]
-	return ok
-}
-
-// ResetTestSize resets all changes to the "test_size" field.
-func (m *TargetMutation) ResetTestSize() {
-	m.test_size = nil
-	delete(m.clearedFields, target.FieldTestSize)
-}
-
-// SetSuccess sets the "success" field.
-func (m *TargetMutation) SetSuccess(b bool) {
-	m.success = &b
-}
-
-// Success returns the value of the "success" field in the mutation.
-func (m *TargetMutation) Success() (r bool, exists bool) {
-	v := m.success
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSuccess returns the old "success" field's value of the Target entity.
-// If the Target object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TargetMutation) OldSuccess(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSuccess is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSuccess requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSuccess: %w", err)
-	}
-	return oldValue.Success, nil
-}
-
-// ClearSuccess clears the value of the "success" field.
-func (m *TargetMutation) ClearSuccess() {
-	m.success = nil
-	m.clearedFields[target.FieldSuccess] = struct{}{}
-}
-
-// SuccessCleared returns if the "success" field was cleared in this mutation.
-func (m *TargetMutation) SuccessCleared() bool {
-	_, ok := m.clearedFields[target.FieldSuccess]
-	return ok
-}
-
-// ResetSuccess resets all changes to the "success" field.
-func (m *TargetMutation) ResetSuccess() {
-	m.success = nil
-	delete(m.clearedFields, target.FieldSuccess)
-}
-
-// SetTestTimeout sets the "test_timeout" field.
-func (m *TargetMutation) SetTestTimeout(i int64) {
-	m.test_timeout = &i
-	m.addtest_timeout = nil
-}
-
-// TestTimeout returns the value of the "test_timeout" field in the mutation.
-func (m *TargetMutation) TestTimeout() (r int64, exists bool) {
-	v := m.test_timeout
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTestTimeout returns the old "test_timeout" field's value of the Target entity.
-// If the Target object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TargetMutation) OldTestTimeout(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTestTimeout is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTestTimeout requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTestTimeout: %w", err)
-	}
-	return oldValue.TestTimeout, nil
-}
-
-// AddTestTimeout adds i to the "test_timeout" field.
-func (m *TargetMutation) AddTestTimeout(i int64) {
-	if m.addtest_timeout != nil {
-		*m.addtest_timeout += i
-	} else {
-		m.addtest_timeout = &i
-	}
-}
-
-// AddedTestTimeout returns the value that was added to the "test_timeout" field in this mutation.
-func (m *TargetMutation) AddedTestTimeout() (r int64, exists bool) {
-	v := m.addtest_timeout
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearTestTimeout clears the value of the "test_timeout" field.
-func (m *TargetMutation) ClearTestTimeout() {
-	m.test_timeout = nil
-	m.addtest_timeout = nil
-	m.clearedFields[target.FieldTestTimeout] = struct{}{}
-}
-
-// TestTimeoutCleared returns if the "test_timeout" field was cleared in this mutation.
-func (m *TargetMutation) TestTimeoutCleared() bool {
-	_, ok := m.clearedFields[target.FieldTestTimeout]
-	return ok
-}
-
-// ResetTestTimeout resets all changes to the "test_timeout" field.
-func (m *TargetMutation) ResetTestTimeout() {
-	m.test_timeout = nil
-	m.addtest_timeout = nil
-	delete(m.clearedFields, target.FieldTestTimeout)
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (m *TargetMutation) SetStartTimeInMs(i int64) {
-	m.start_time_in_ms = &i
-	m.addstart_time_in_ms = nil
-}
-
-// StartTimeInMs returns the value of the "start_time_in_ms" field in the mutation.
-func (m *TargetMutation) StartTimeInMs() (r int64, exists bool) {
-	v := m.start_time_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStartTimeInMs returns the old "start_time_in_ms" field's value of the Target entity.
-// If the Target object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TargetMutation) OldStartTimeInMs(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStartTimeInMs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStartTimeInMs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStartTimeInMs: %w", err)
-	}
-	return oldValue.StartTimeInMs, nil
-}
-
-// AddStartTimeInMs adds i to the "start_time_in_ms" field.
-func (m *TargetMutation) AddStartTimeInMs(i int64) {
-	if m.addstart_time_in_ms != nil {
-		*m.addstart_time_in_ms += i
-	} else {
-		m.addstart_time_in_ms = &i
-	}
-}
-
-// AddedStartTimeInMs returns the value that was added to the "start_time_in_ms" field in this mutation.
-func (m *TargetMutation) AddedStartTimeInMs() (r int64, exists bool) {
-	v := m.addstart_time_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (m *TargetMutation) ClearStartTimeInMs() {
-	m.start_time_in_ms = nil
-	m.addstart_time_in_ms = nil
-	m.clearedFields[target.FieldStartTimeInMs] = struct{}{}
-}
-
-// StartTimeInMsCleared returns if the "start_time_in_ms" field was cleared in this mutation.
-func (m *TargetMutation) StartTimeInMsCleared() bool {
-	_, ok := m.clearedFields[target.FieldStartTimeInMs]
-	return ok
-}
-
-// ResetStartTimeInMs resets all changes to the "start_time_in_ms" field.
-func (m *TargetMutation) ResetStartTimeInMs() {
-	m.start_time_in_ms = nil
-	m.addstart_time_in_ms = nil
-	delete(m.clearedFields, target.FieldStartTimeInMs)
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (m *TargetMutation) SetEndTimeInMs(i int64) {
-	m.end_time_in_ms = &i
-	m.addend_time_in_ms = nil
-}
-
-// EndTimeInMs returns the value of the "end_time_in_ms" field in the mutation.
-func (m *TargetMutation) EndTimeInMs() (r int64, exists bool) {
-	v := m.end_time_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldEndTimeInMs returns the old "end_time_in_ms" field's value of the Target entity.
-// If the Target object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TargetMutation) OldEndTimeInMs(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEndTimeInMs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEndTimeInMs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEndTimeInMs: %w", err)
-	}
-	return oldValue.EndTimeInMs, nil
-}
-
-// AddEndTimeInMs adds i to the "end_time_in_ms" field.
-func (m *TargetMutation) AddEndTimeInMs(i int64) {
-	if m.addend_time_in_ms != nil {
-		*m.addend_time_in_ms += i
-	} else {
-		m.addend_time_in_ms = &i
-	}
-}
-
-// AddedEndTimeInMs returns the value that was added to the "end_time_in_ms" field in this mutation.
-func (m *TargetMutation) AddedEndTimeInMs() (r int64, exists bool) {
-	v := m.addend_time_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (m *TargetMutation) ClearEndTimeInMs() {
-	m.end_time_in_ms = nil
-	m.addend_time_in_ms = nil
-	m.clearedFields[target.FieldEndTimeInMs] = struct{}{}
-}
-
-// EndTimeInMsCleared returns if the "end_time_in_ms" field was cleared in this mutation.
-func (m *TargetMutation) EndTimeInMsCleared() bool {
-	_, ok := m.clearedFields[target.FieldEndTimeInMs]
-	return ok
-}
-
-// ResetEndTimeInMs resets all changes to the "end_time_in_ms" field.
-func (m *TargetMutation) ResetEndTimeInMs() {
-	m.end_time_in_ms = nil
-	m.addend_time_in_ms = nil
-	delete(m.clearedFields, target.FieldEndTimeInMs)
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (m *TargetMutation) SetDurationInMs(i int64) {
-	m.duration_in_ms = &i
-	m.addduration_in_ms = nil
-}
-
-// DurationInMs returns the value of the "duration_in_ms" field in the mutation.
-func (m *TargetMutation) DurationInMs() (r int64, exists bool) {
-	v := m.duration_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDurationInMs returns the old "duration_in_ms" field's value of the Target entity.
-// If the Target object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TargetMutation) OldDurationInMs(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDurationInMs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDurationInMs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDurationInMs: %w", err)
-	}
-	return oldValue.DurationInMs, nil
-}
-
-// AddDurationInMs adds i to the "duration_in_ms" field.
-func (m *TargetMutation) AddDurationInMs(i int64) {
-	if m.addduration_in_ms != nil {
-		*m.addduration_in_ms += i
-	} else {
-		m.addduration_in_ms = &i
-	}
-}
-
-// AddedDurationInMs returns the value that was added to the "duration_in_ms" field in this mutation.
-func (m *TargetMutation) AddedDurationInMs() (r int64, exists bool) {
-	v := m.addduration_in_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (m *TargetMutation) ClearDurationInMs() {
-	m.duration_in_ms = nil
-	m.addduration_in_ms = nil
-	m.clearedFields[target.FieldDurationInMs] = struct{}{}
-}
-
-// DurationInMsCleared returns if the "duration_in_ms" field was cleared in this mutation.
-func (m *TargetMutation) DurationInMsCleared() bool {
-	_, ok := m.clearedFields[target.FieldDurationInMs]
-	return ok
-}
-
-// ResetDurationInMs resets all changes to the "duration_in_ms" field.
-func (m *TargetMutation) ResetDurationInMs() {
-	m.duration_in_ms = nil
-	m.addduration_in_ms = nil
-	delete(m.clearedFields, target.FieldDurationInMs)
-}
-
-// SetAbortReason sets the "abort_reason" field.
-func (m *TargetMutation) SetAbortReason(tr target.AbortReason) {
-	m.abort_reason = &tr
-}
-
-// AbortReason returns the value of the "abort_reason" field in the mutation.
-func (m *TargetMutation) AbortReason() (r target.AbortReason, exists bool) {
-	v := m.abort_reason
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAbortReason returns the old "abort_reason" field's value of the Target entity.
-// If the Target object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TargetMutation) OldAbortReason(ctx context.Context) (v target.AbortReason, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAbortReason is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAbortReason requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAbortReason: %w", err)
-	}
-	return oldValue.AbortReason, nil
-}
-
-// ClearAbortReason clears the value of the "abort_reason" field.
-func (m *TargetMutation) ClearAbortReason() {
-	m.abort_reason = nil
-	m.clearedFields[target.FieldAbortReason] = struct{}{}
-}
-
-// AbortReasonCleared returns if the "abort_reason" field was cleared in this mutation.
-func (m *TargetMutation) AbortReasonCleared() bool {
-	_, ok := m.clearedFields[target.FieldAbortReason]
-	return ok
-}
-
-// ResetAbortReason resets all changes to the "abort_reason" field.
-func (m *TargetMutation) ResetAbortReason() {
-	m.abort_reason = nil
-	delete(m.clearedFields, target.FieldAbortReason)
-}
-
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *TargetMutation) SetBazelInvocationID(id int) {
-	m.bazel_invocation = &id
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (m *TargetMutation) ClearBazelInvocation() {
-	m.clearedbazel_invocation = true
-}
-
-// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
-func (m *TargetMutation) BazelInvocationCleared() bool {
-	return m.clearedbazel_invocation
-}
-
-// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *TargetMutation) BazelInvocationID() (id int, exists bool) {
-	if m.bazel_invocation != nil {
-		return *m.bazel_invocation, true
+// InstanceNameID returns the "instance_name" edge ID in the mutation.
+func (m *TargetMutation) InstanceNameID() (id int, exists bool) {
+	if m.instance_name != nil {
+		return *m.instance_name, true
 	}
 	return
 }
 
-// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// InstanceNameIDs returns the "instance_name" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *TargetMutation) BazelInvocationIDs() (ids []int) {
-	if id := m.bazel_invocation; id != nil {
+// InstanceNameID instead. It exists only for internal usage by the builders.
+func (m *TargetMutation) InstanceNameIDs() (ids []int) {
+	if id := m.instance_name; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
-func (m *TargetMutation) ResetBazelInvocation() {
-	m.bazel_invocation = nil
-	m.clearedbazel_invocation = false
+// ResetInstanceName resets all changes to the "instance_name" edge.
+func (m *TargetMutation) ResetInstanceName() {
+	m.instance_name = nil
+	m.clearedinstance_name = false
+}
+
+// AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by ids.
+func (m *TargetMutation) AddInvocationTargetIDs(ids ...int) {
+	if m.invocation_targets == nil {
+		m.invocation_targets = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.invocation_targets[ids[i]] = struct{}{}
+	}
+}
+
+// ClearInvocationTargets clears the "invocation_targets" edge to the InvocationTarget entity.
+func (m *TargetMutation) ClearInvocationTargets() {
+	m.clearedinvocation_targets = true
+}
+
+// InvocationTargetsCleared reports if the "invocation_targets" edge to the InvocationTarget entity was cleared.
+func (m *TargetMutation) InvocationTargetsCleared() bool {
+	return m.clearedinvocation_targets
+}
+
+// RemoveInvocationTargetIDs removes the "invocation_targets" edge to the InvocationTarget entity by IDs.
+func (m *TargetMutation) RemoveInvocationTargetIDs(ids ...int) {
+	if m.removedinvocation_targets == nil {
+		m.removedinvocation_targets = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.invocation_targets, ids[i])
+		m.removedinvocation_targets[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedInvocationTargets returns the removed IDs of the "invocation_targets" edge to the InvocationTarget entity.
+func (m *TargetMutation) RemovedInvocationTargetsIDs() (ids []int) {
+	for id := range m.removedinvocation_targets {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// InvocationTargetsIDs returns the "invocation_targets" edge IDs in the mutation.
+func (m *TargetMutation) InvocationTargetsIDs() (ids []int) {
+	for id := range m.invocation_targets {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetInvocationTargets resets all changes to the "invocation_targets" edge.
+func (m *TargetMutation) ResetInvocationTargets() {
+	m.invocation_targets = nil
+	m.clearedinvocation_targets = false
+	m.removedinvocation_targets = nil
+}
+
+// AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by ids.
+func (m *TargetMutation) AddTargetKindMappingIDs(ids ...int) {
+	if m.target_kind_mappings == nil {
+		m.target_kind_mappings = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.target_kind_mappings[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTargetKindMappings clears the "target_kind_mappings" edge to the TargetKindMapping entity.
+func (m *TargetMutation) ClearTargetKindMappings() {
+	m.clearedtarget_kind_mappings = true
+}
+
+// TargetKindMappingsCleared reports if the "target_kind_mappings" edge to the TargetKindMapping entity was cleared.
+func (m *TargetMutation) TargetKindMappingsCleared() bool {
+	return m.clearedtarget_kind_mappings
+}
+
+// RemoveTargetKindMappingIDs removes the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
+func (m *TargetMutation) RemoveTargetKindMappingIDs(ids ...int) {
+	if m.removedtarget_kind_mappings == nil {
+		m.removedtarget_kind_mappings = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.target_kind_mappings, ids[i])
+		m.removedtarget_kind_mappings[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTargetKindMappings returns the removed IDs of the "target_kind_mappings" edge to the TargetKindMapping entity.
+func (m *TargetMutation) RemovedTargetKindMappingsIDs() (ids []int) {
+	for id := range m.removedtarget_kind_mappings {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// TargetKindMappingsIDs returns the "target_kind_mappings" edge IDs in the mutation.
+func (m *TargetMutation) TargetKindMappingsIDs() (ids []int) {
+	for id := range m.target_kind_mappings {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTargetKindMappings resets all changes to the "target_kind_mappings" edge.
+func (m *TargetMutation) ResetTargetKindMappings() {
+	m.target_kind_mappings = nil
+	m.clearedtarget_kind_mappings = false
+	m.removedtarget_kind_mappings = nil
 }
 
 // Where appends a list predicates to the TargetMutation builder.
@@ -26203,36 +27002,15 @@ func (m *TargetMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TargetMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 3)
 	if m.label != nil {
 		fields = append(fields, target.FieldLabel)
 	}
-	if m.tag != nil {
-		fields = append(fields, target.FieldTag)
+	if m.aspect != nil {
+		fields = append(fields, target.FieldAspect)
 	}
 	if m.target_kind != nil {
 		fields = append(fields, target.FieldTargetKind)
-	}
-	if m.test_size != nil {
-		fields = append(fields, target.FieldTestSize)
-	}
-	if m.success != nil {
-		fields = append(fields, target.FieldSuccess)
-	}
-	if m.test_timeout != nil {
-		fields = append(fields, target.FieldTestTimeout)
-	}
-	if m.start_time_in_ms != nil {
-		fields = append(fields, target.FieldStartTimeInMs)
-	}
-	if m.end_time_in_ms != nil {
-		fields = append(fields, target.FieldEndTimeInMs)
-	}
-	if m.duration_in_ms != nil {
-		fields = append(fields, target.FieldDurationInMs)
-	}
-	if m.abort_reason != nil {
-		fields = append(fields, target.FieldAbortReason)
 	}
 	return fields
 }
@@ -26244,24 +27022,10 @@ func (m *TargetMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case target.FieldLabel:
 		return m.Label()
-	case target.FieldTag:
-		return m.Tag()
+	case target.FieldAspect:
+		return m.Aspect()
 	case target.FieldTargetKind:
 		return m.TargetKind()
-	case target.FieldTestSize:
-		return m.TestSize()
-	case target.FieldSuccess:
-		return m.Success()
-	case target.FieldTestTimeout:
-		return m.TestTimeout()
-	case target.FieldStartTimeInMs:
-		return m.StartTimeInMs()
-	case target.FieldEndTimeInMs:
-		return m.EndTimeInMs()
-	case target.FieldDurationInMs:
-		return m.DurationInMs()
-	case target.FieldAbortReason:
-		return m.AbortReason()
 	}
 	return nil, false
 }
@@ -26273,24 +27037,10 @@ func (m *TargetMutation) OldField(ctx context.Context, name string) (ent.Value, 
 	switch name {
 	case target.FieldLabel:
 		return m.OldLabel(ctx)
-	case target.FieldTag:
-		return m.OldTag(ctx)
+	case target.FieldAspect:
+		return m.OldAspect(ctx)
 	case target.FieldTargetKind:
 		return m.OldTargetKind(ctx)
-	case target.FieldTestSize:
-		return m.OldTestSize(ctx)
-	case target.FieldSuccess:
-		return m.OldSuccess(ctx)
-	case target.FieldTestTimeout:
-		return m.OldTestTimeout(ctx)
-	case target.FieldStartTimeInMs:
-		return m.OldStartTimeInMs(ctx)
-	case target.FieldEndTimeInMs:
-		return m.OldEndTimeInMs(ctx)
-	case target.FieldDurationInMs:
-		return m.OldDurationInMs(ctx)
-	case target.FieldAbortReason:
-		return m.OldAbortReason(ctx)
 	}
 	return nil, fmt.Errorf("unknown Target field %s", name)
 }
@@ -26307,12 +27057,12 @@ func (m *TargetMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetLabel(v)
 		return nil
-	case target.FieldTag:
-		v, ok := value.([]string)
+	case target.FieldAspect:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetTag(v)
+		m.SetAspect(v)
 		return nil
 	case target.FieldTargetKind:
 		v, ok := value.(string)
@@ -26321,55 +27071,6 @@ func (m *TargetMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetTargetKind(v)
 		return nil
-	case target.FieldTestSize:
-		v, ok := value.(target.TestSize)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTestSize(v)
-		return nil
-	case target.FieldSuccess:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSuccess(v)
-		return nil
-	case target.FieldTestTimeout:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTestTimeout(v)
-		return nil
-	case target.FieldStartTimeInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStartTimeInMs(v)
-		return nil
-	case target.FieldEndTimeInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetEndTimeInMs(v)
-		return nil
-	case target.FieldDurationInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDurationInMs(v)
-		return nil
-	case target.FieldAbortReason:
-		v, ok := value.(target.AbortReason)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAbortReason(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Target field %s", name)
 }
@@ -26377,36 +27078,13 @@ func (m *TargetMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *TargetMutation) AddedFields() []string {
-	var fields []string
-	if m.addtest_timeout != nil {
-		fields = append(fields, target.FieldTestTimeout)
-	}
-	if m.addstart_time_in_ms != nil {
-		fields = append(fields, target.FieldStartTimeInMs)
-	}
-	if m.addend_time_in_ms != nil {
-		fields = append(fields, target.FieldEndTimeInMs)
-	}
-	if m.addduration_in_ms != nil {
-		fields = append(fields, target.FieldDurationInMs)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *TargetMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case target.FieldTestTimeout:
-		return m.AddedTestTimeout()
-	case target.FieldStartTimeInMs:
-		return m.AddedStartTimeInMs()
-	case target.FieldEndTimeInMs:
-		return m.AddedEndTimeInMs()
-	case target.FieldDurationInMs:
-		return m.AddedDurationInMs()
-	}
 	return nil, false
 }
 
@@ -26415,34 +27093,6 @@ func (m *TargetMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *TargetMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case target.FieldTestTimeout:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTestTimeout(v)
-		return nil
-	case target.FieldStartTimeInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddStartTimeInMs(v)
-		return nil
-	case target.FieldEndTimeInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddEndTimeInMs(v)
-		return nil
-	case target.FieldDurationInMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddDurationInMs(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Target numeric field %s", name)
 }
@@ -26450,35 +27100,7 @@ func (m *TargetMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *TargetMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(target.FieldTag) {
-		fields = append(fields, target.FieldTag)
-	}
-	if m.FieldCleared(target.FieldTargetKind) {
-		fields = append(fields, target.FieldTargetKind)
-	}
-	if m.FieldCleared(target.FieldTestSize) {
-		fields = append(fields, target.FieldTestSize)
-	}
-	if m.FieldCleared(target.FieldSuccess) {
-		fields = append(fields, target.FieldSuccess)
-	}
-	if m.FieldCleared(target.FieldTestTimeout) {
-		fields = append(fields, target.FieldTestTimeout)
-	}
-	if m.FieldCleared(target.FieldStartTimeInMs) {
-		fields = append(fields, target.FieldStartTimeInMs)
-	}
-	if m.FieldCleared(target.FieldEndTimeInMs) {
-		fields = append(fields, target.FieldEndTimeInMs)
-	}
-	if m.FieldCleared(target.FieldDurationInMs) {
-		fields = append(fields, target.FieldDurationInMs)
-	}
-	if m.FieldCleared(target.FieldAbortReason) {
-		fields = append(fields, target.FieldAbortReason)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -26491,35 +27113,6 @@ func (m *TargetMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *TargetMutation) ClearField(name string) error {
-	switch name {
-	case target.FieldTag:
-		m.ClearTag()
-		return nil
-	case target.FieldTargetKind:
-		m.ClearTargetKind()
-		return nil
-	case target.FieldTestSize:
-		m.ClearTestSize()
-		return nil
-	case target.FieldSuccess:
-		m.ClearSuccess()
-		return nil
-	case target.FieldTestTimeout:
-		m.ClearTestTimeout()
-		return nil
-	case target.FieldStartTimeInMs:
-		m.ClearStartTimeInMs()
-		return nil
-	case target.FieldEndTimeInMs:
-		m.ClearEndTimeInMs()
-		return nil
-	case target.FieldDurationInMs:
-		m.ClearDurationInMs()
-		return nil
-	case target.FieldAbortReason:
-		m.ClearAbortReason()
-		return nil
-	}
 	return fmt.Errorf("unknown Target nullable field %s", name)
 }
 
@@ -26530,32 +27123,11 @@ func (m *TargetMutation) ResetField(name string) error {
 	case target.FieldLabel:
 		m.ResetLabel()
 		return nil
-	case target.FieldTag:
-		m.ResetTag()
+	case target.FieldAspect:
+		m.ResetAspect()
 		return nil
 	case target.FieldTargetKind:
 		m.ResetTargetKind()
-		return nil
-	case target.FieldTestSize:
-		m.ResetTestSize()
-		return nil
-	case target.FieldSuccess:
-		m.ResetSuccess()
-		return nil
-	case target.FieldTestTimeout:
-		m.ResetTestTimeout()
-		return nil
-	case target.FieldStartTimeInMs:
-		m.ResetStartTimeInMs()
-		return nil
-	case target.FieldEndTimeInMs:
-		m.ResetEndTimeInMs()
-		return nil
-	case target.FieldDurationInMs:
-		m.ResetDurationInMs()
-		return nil
-	case target.FieldAbortReason:
-		m.ResetAbortReason()
 		return nil
 	}
 	return fmt.Errorf("unknown Target field %s", name)
@@ -26563,9 +27135,15 @@ func (m *TargetMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *TargetMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.bazel_invocation != nil {
-		edges = append(edges, target.EdgeBazelInvocation)
+	edges := make([]string, 0, 3)
+	if m.instance_name != nil {
+		edges = append(edges, target.EdgeInstanceName)
+	}
+	if m.invocation_targets != nil {
+		edges = append(edges, target.EdgeInvocationTargets)
+	}
+	if m.target_kind_mappings != nil {
+		edges = append(edges, target.EdgeTargetKindMappings)
 	}
 	return edges
 }
@@ -26574,31 +27152,69 @@ func (m *TargetMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *TargetMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case target.EdgeBazelInvocation:
-		if id := m.bazel_invocation; id != nil {
+	case target.EdgeInstanceName:
+		if id := m.instance_name; id != nil {
 			return []ent.Value{*id}
 		}
+	case target.EdgeInvocationTargets:
+		ids := make([]ent.Value, 0, len(m.invocation_targets))
+		for id := range m.invocation_targets {
+			ids = append(ids, id)
+		}
+		return ids
+	case target.EdgeTargetKindMappings:
+		ids := make([]ent.Value, 0, len(m.target_kind_mappings))
+		for id := range m.target_kind_mappings {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TargetMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
+	if m.removedinvocation_targets != nil {
+		edges = append(edges, target.EdgeInvocationTargets)
+	}
+	if m.removedtarget_kind_mappings != nil {
+		edges = append(edges, target.EdgeTargetKindMappings)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *TargetMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case target.EdgeInvocationTargets:
+		ids := make([]ent.Value, 0, len(m.removedinvocation_targets))
+		for id := range m.removedinvocation_targets {
+			ids = append(ids, id)
+		}
+		return ids
+	case target.EdgeTargetKindMappings:
+		ids := make([]ent.Value, 0, len(m.removedtarget_kind_mappings))
+		for id := range m.removedtarget_kind_mappings {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *TargetMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedbazel_invocation {
-		edges = append(edges, target.EdgeBazelInvocation)
+	edges := make([]string, 0, 3)
+	if m.clearedinstance_name {
+		edges = append(edges, target.EdgeInstanceName)
+	}
+	if m.clearedinvocation_targets {
+		edges = append(edges, target.EdgeInvocationTargets)
+	}
+	if m.clearedtarget_kind_mappings {
+		edges = append(edges, target.EdgeTargetKindMappings)
 	}
 	return edges
 }
@@ -26607,8 +27223,12 @@ func (m *TargetMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *TargetMutation) EdgeCleared(name string) bool {
 	switch name {
-	case target.EdgeBazelInvocation:
-		return m.clearedbazel_invocation
+	case target.EdgeInstanceName:
+		return m.clearedinstance_name
+	case target.EdgeInvocationTargets:
+		return m.clearedinvocation_targets
+	case target.EdgeTargetKindMappings:
+		return m.clearedtarget_kind_mappings
 	}
 	return false
 }
@@ -26617,8 +27237,8 @@ func (m *TargetMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TargetMutation) ClearEdge(name string) error {
 	switch name {
-	case target.EdgeBazelInvocation:
-		m.ClearBazelInvocation()
+	case target.EdgeInstanceName:
+		m.ClearInstanceName()
 		return nil
 	}
 	return fmt.Errorf("unknown Target unique edge %s", name)
@@ -26628,11 +27248,528 @@ func (m *TargetMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *TargetMutation) ResetEdge(name string) error {
 	switch name {
-	case target.EdgeBazelInvocation:
-		m.ResetBazelInvocation()
+	case target.EdgeInstanceName:
+		m.ResetInstanceName()
+		return nil
+	case target.EdgeInvocationTargets:
+		m.ResetInvocationTargets()
+		return nil
+	case target.EdgeTargetKindMappings:
+		m.ResetTargetKindMappings()
 		return nil
 	}
 	return fmt.Errorf("unknown Target edge %s", name)
+}
+
+// TargetKindMappingMutation represents an operation that mutates the TargetKindMapping nodes in the graph.
+type TargetKindMappingMutation struct {
+	config
+	op                      Op
+	typ                     string
+	id                      *int
+	start_time_in_ms        *int64
+	addstart_time_in_ms     *int64
+	clearedFields           map[string]struct{}
+	bazel_invocation        *int
+	clearedbazel_invocation bool
+	target                  *int
+	clearedtarget           bool
+	done                    bool
+	oldValue                func(context.Context) (*TargetKindMapping, error)
+	predicates              []predicate.TargetKindMapping
+}
+
+var _ ent.Mutation = (*TargetKindMappingMutation)(nil)
+
+// targetkindmappingOption allows management of the mutation configuration using functional options.
+type targetkindmappingOption func(*TargetKindMappingMutation)
+
+// newTargetKindMappingMutation creates new mutation for the TargetKindMapping entity.
+func newTargetKindMappingMutation(c config, op Op, opts ...targetkindmappingOption) *TargetKindMappingMutation {
+	m := &TargetKindMappingMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeTargetKindMapping,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withTargetKindMappingID sets the ID field of the mutation.
+func withTargetKindMappingID(id int) targetkindmappingOption {
+	return func(m *TargetKindMappingMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *TargetKindMapping
+		)
+		m.oldValue = func(ctx context.Context) (*TargetKindMapping, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().TargetKindMapping.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withTargetKindMapping sets the old TargetKindMapping of the mutation.
+func withTargetKindMapping(node *TargetKindMapping) targetkindmappingOption {
+	return func(m *TargetKindMappingMutation) {
+		m.oldValue = func(context.Context) (*TargetKindMapping, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m TargetKindMappingMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m TargetKindMappingMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *TargetKindMappingMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *TargetKindMappingMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().TargetKindMapping.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetStartTimeInMs sets the "start_time_in_ms" field.
+func (m *TargetKindMappingMutation) SetStartTimeInMs(i int64) {
+	m.start_time_in_ms = &i
+	m.addstart_time_in_ms = nil
+}
+
+// StartTimeInMs returns the value of the "start_time_in_ms" field in the mutation.
+func (m *TargetKindMappingMutation) StartTimeInMs() (r int64, exists bool) {
+	v := m.start_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStartTimeInMs returns the old "start_time_in_ms" field's value of the TargetKindMapping entity.
+// If the TargetKindMapping object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TargetKindMappingMutation) OldStartTimeInMs(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStartTimeInMs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStartTimeInMs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStartTimeInMs: %w", err)
+	}
+	return oldValue.StartTimeInMs, nil
+}
+
+// AddStartTimeInMs adds i to the "start_time_in_ms" field.
+func (m *TargetKindMappingMutation) AddStartTimeInMs(i int64) {
+	if m.addstart_time_in_ms != nil {
+		*m.addstart_time_in_ms += i
+	} else {
+		m.addstart_time_in_ms = &i
+	}
+}
+
+// AddedStartTimeInMs returns the value that was added to the "start_time_in_ms" field in this mutation.
+func (m *TargetKindMappingMutation) AddedStartTimeInMs() (r int64, exists bool) {
+	v := m.addstart_time_in_ms
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
+func (m *TargetKindMappingMutation) ClearStartTimeInMs() {
+	m.start_time_in_ms = nil
+	m.addstart_time_in_ms = nil
+	m.clearedFields[targetkindmapping.FieldStartTimeInMs] = struct{}{}
+}
+
+// StartTimeInMsCleared returns if the "start_time_in_ms" field was cleared in this mutation.
+func (m *TargetKindMappingMutation) StartTimeInMsCleared() bool {
+	_, ok := m.clearedFields[targetkindmapping.FieldStartTimeInMs]
+	return ok
+}
+
+// ResetStartTimeInMs resets all changes to the "start_time_in_ms" field.
+func (m *TargetKindMappingMutation) ResetStartTimeInMs() {
+	m.start_time_in_ms = nil
+	m.addstart_time_in_ms = nil
+	delete(m.clearedFields, targetkindmapping.FieldStartTimeInMs)
+}
+
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
+func (m *TargetKindMappingMutation) SetBazelInvocationID(id int) {
+	m.bazel_invocation = &id
+}
+
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
+func (m *TargetKindMappingMutation) ClearBazelInvocation() {
+	m.clearedbazel_invocation = true
+}
+
+// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
+func (m *TargetKindMappingMutation) BazelInvocationCleared() bool {
+	return m.clearedbazel_invocation
+}
+
+// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
+func (m *TargetKindMappingMutation) BazelInvocationID() (id int, exists bool) {
+	if m.bazel_invocation != nil {
+		return *m.bazel_invocation, true
+	}
+	return
+}
+
+// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BazelInvocationID instead. It exists only for internal usage by the builders.
+func (m *TargetKindMappingMutation) BazelInvocationIDs() (ids []int) {
+	if id := m.bazel_invocation; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
+func (m *TargetKindMappingMutation) ResetBazelInvocation() {
+	m.bazel_invocation = nil
+	m.clearedbazel_invocation = false
+}
+
+// SetTargetID sets the "target" edge to the Target entity by id.
+func (m *TargetKindMappingMutation) SetTargetID(id int) {
+	m.target = &id
+}
+
+// ClearTarget clears the "target" edge to the Target entity.
+func (m *TargetKindMappingMutation) ClearTarget() {
+	m.clearedtarget = true
+}
+
+// TargetCleared reports if the "target" edge to the Target entity was cleared.
+func (m *TargetKindMappingMutation) TargetCleared() bool {
+	return m.clearedtarget
+}
+
+// TargetID returns the "target" edge ID in the mutation.
+func (m *TargetKindMappingMutation) TargetID() (id int, exists bool) {
+	if m.target != nil {
+		return *m.target, true
+	}
+	return
+}
+
+// TargetIDs returns the "target" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// TargetID instead. It exists only for internal usage by the builders.
+func (m *TargetKindMappingMutation) TargetIDs() (ids []int) {
+	if id := m.target; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetTarget resets all changes to the "target" edge.
+func (m *TargetKindMappingMutation) ResetTarget() {
+	m.target = nil
+	m.clearedtarget = false
+}
+
+// Where appends a list predicates to the TargetKindMappingMutation builder.
+func (m *TargetKindMappingMutation) Where(ps ...predicate.TargetKindMapping) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the TargetKindMappingMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *TargetKindMappingMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.TargetKindMapping, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *TargetKindMappingMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *TargetKindMappingMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (TargetKindMapping).
+func (m *TargetKindMappingMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *TargetKindMappingMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.start_time_in_ms != nil {
+		fields = append(fields, targetkindmapping.FieldStartTimeInMs)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *TargetKindMappingMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case targetkindmapping.FieldStartTimeInMs:
+		return m.StartTimeInMs()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *TargetKindMappingMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case targetkindmapping.FieldStartTimeInMs:
+		return m.OldStartTimeInMs(ctx)
+	}
+	return nil, fmt.Errorf("unknown TargetKindMapping field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TargetKindMappingMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case targetkindmapping.FieldStartTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStartTimeInMs(v)
+		return nil
+	}
+	return fmt.Errorf("unknown TargetKindMapping field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *TargetKindMappingMutation) AddedFields() []string {
+	var fields []string
+	if m.addstart_time_in_ms != nil {
+		fields = append(fields, targetkindmapping.FieldStartTimeInMs)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *TargetKindMappingMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case targetkindmapping.FieldStartTimeInMs:
+		return m.AddedStartTimeInMs()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TargetKindMappingMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case targetkindmapping.FieldStartTimeInMs:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStartTimeInMs(v)
+		return nil
+	}
+	return fmt.Errorf("unknown TargetKindMapping numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *TargetKindMappingMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(targetkindmapping.FieldStartTimeInMs) {
+		fields = append(fields, targetkindmapping.FieldStartTimeInMs)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *TargetKindMappingMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *TargetKindMappingMutation) ClearField(name string) error {
+	switch name {
+	case targetkindmapping.FieldStartTimeInMs:
+		m.ClearStartTimeInMs()
+		return nil
+	}
+	return fmt.Errorf("unknown TargetKindMapping nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *TargetKindMappingMutation) ResetField(name string) error {
+	switch name {
+	case targetkindmapping.FieldStartTimeInMs:
+		m.ResetStartTimeInMs()
+		return nil
+	}
+	return fmt.Errorf("unknown TargetKindMapping field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *TargetKindMappingMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.bazel_invocation != nil {
+		edges = append(edges, targetkindmapping.EdgeBazelInvocation)
+	}
+	if m.target != nil {
+		edges = append(edges, targetkindmapping.EdgeTarget)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *TargetKindMappingMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case targetkindmapping.EdgeBazelInvocation:
+		if id := m.bazel_invocation; id != nil {
+			return []ent.Value{*id}
+		}
+	case targetkindmapping.EdgeTarget:
+		if id := m.target; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *TargetKindMappingMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *TargetKindMappingMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *TargetKindMappingMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedbazel_invocation {
+		edges = append(edges, targetkindmapping.EdgeBazelInvocation)
+	}
+	if m.clearedtarget {
+		edges = append(edges, targetkindmapping.EdgeTarget)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *TargetKindMappingMutation) EdgeCleared(name string) bool {
+	switch name {
+	case targetkindmapping.EdgeBazelInvocation:
+		return m.clearedbazel_invocation
+	case targetkindmapping.EdgeTarget:
+		return m.clearedtarget
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *TargetKindMappingMutation) ClearEdge(name string) error {
+	switch name {
+	case targetkindmapping.EdgeBazelInvocation:
+		m.ClearBazelInvocation()
+		return nil
+	case targetkindmapping.EdgeTarget:
+		m.ClearTarget()
+		return nil
+	}
+	return fmt.Errorf("unknown TargetKindMapping unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *TargetKindMappingMutation) ResetEdge(name string) error {
+	switch name {
+	case targetkindmapping.EdgeBazelInvocation:
+		m.ResetBazelInvocation()
+		return nil
+	case targetkindmapping.EdgeTarget:
+		m.ResetTarget()
+		return nil
+	}
+	return fmt.Errorf("unknown TargetKindMapping edge %s", name)
 }
 
 // TargetMetricsMutation represents an operation that mutates the TargetMetrics nodes in the graph.

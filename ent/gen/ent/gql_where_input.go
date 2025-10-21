@@ -23,6 +23,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
@@ -2072,9 +2073,9 @@ type BazelInvocationWhereInput struct {
 	HasTestCollection     *bool                       `json:"hasTestCollection,omitempty"`
 	HasTestCollectionWith []*TestCollectionWhereInput `json:"hasTestCollectionWith,omitempty"`
 
-	// "targets" edge predicates.
-	HasTargets     *bool               `json:"hasTargets,omitempty"`
-	HasTargetsWith []*TargetWhereInput `json:"hasTargetsWith,omitempty"`
+	// "invocation_targets" edge predicates.
+	HasInvocationTargets     *bool                         `json:"hasInvocationTargets,omitempty"`
+	HasInvocationTargetsWith []*InvocationTargetWhereInput `json:"hasInvocationTargetsWith,omitempty"`
 
 	// "source_control" edge predicates.
 	HasSourceControl     *bool                      `json:"hasSourceControl,omitempty"`
@@ -3020,23 +3021,23 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 		}
 		predicates = append(predicates, bazelinvocation.HasTestCollectionWith(with...))
 	}
-	if i.HasTargets != nil {
-		p := bazelinvocation.HasTargets()
-		if !*i.HasTargets {
+	if i.HasInvocationTargets != nil {
+		p := bazelinvocation.HasInvocationTargets()
+		if !*i.HasInvocationTargets {
 			p = bazelinvocation.Not(p)
 		}
 		predicates = append(predicates, p)
 	}
-	if len(i.HasTargetsWith) > 0 {
-		with := make([]predicate.Target, 0, len(i.HasTargetsWith))
-		for _, w := range i.HasTargetsWith {
+	if len(i.HasInvocationTargetsWith) > 0 {
+		with := make([]predicate.InvocationTarget, 0, len(i.HasInvocationTargetsWith))
+		for _, w := range i.HasInvocationTargetsWith {
 			p, err := w.P()
 			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasTargetsWith'", err)
+				return nil, fmt.Errorf("%w: field 'HasInvocationTargetsWith'", err)
 			}
 			with = append(with, p)
 		}
-		predicates = append(predicates, bazelinvocation.HasTargetsWith(with...))
+		predicates = append(predicates, bazelinvocation.HasInvocationTargetsWith(with...))
 	}
 	if i.HasSourceControl != nil {
 		p := bazelinvocation.HasSourceControl()
@@ -6051,6 +6052,10 @@ type InstanceNameWhereInput struct {
 	// "blobs" edge predicates.
 	HasBlobs     *bool             `json:"hasBlobs,omitempty"`
 	HasBlobsWith []*BlobWhereInput `json:"hasBlobsWith,omitempty"`
+
+	// "targets" edge predicates.
+	HasTargets     *bool               `json:"hasTargets,omitempty"`
+	HasTargetsWith []*TargetWhereInput `json:"hasTargetsWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -6241,6 +6246,24 @@ func (i *InstanceNameWhereInput) P() (predicate.InstanceName, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, instancename.HasBlobsWith(with...))
+	}
+	if i.HasTargets != nil {
+		p := instancename.HasTargets()
+		if !*i.HasTargets {
+			p = instancename.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTargetsWith) > 0 {
+		with := make([]predicate.Target, 0, len(i.HasTargetsWith))
+		for _, w := range i.HasTargetsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTargetsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, instancename.HasTargetsWith(with...))
 	}
 	switch len(predicates) {
 	case 0:
@@ -6677,6 +6700,390 @@ func (i *InvocationFilesWhereInput) P() (predicate.InvocationFiles, error) {
 		return predicates[0], nil
 	default:
 		return invocationfiles.And(predicates...), nil
+	}
+}
+
+// InvocationTargetWhereInput represents a where input for filtering InvocationTarget queries.
+type InvocationTargetWhereInput struct {
+	Predicates []predicate.InvocationTarget  `json:"-"`
+	Not        *InvocationTargetWhereInput   `json:"not,omitempty"`
+	Or         []*InvocationTargetWhereInput `json:"or,omitempty"`
+	And        []*InvocationTargetWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "success" field predicates.
+	Success    *bool `json:"success,omitempty"`
+	SuccessNEQ *bool `json:"successNEQ,omitempty"`
+
+	// "start_time_in_ms" field predicates.
+	StartTimeInMs       *int64  `json:"startTimeInMs,omitempty"`
+	StartTimeInMsNEQ    *int64  `json:"startTimeInMsNEQ,omitempty"`
+	StartTimeInMsIn     []int64 `json:"startTimeInMsIn,omitempty"`
+	StartTimeInMsNotIn  []int64 `json:"startTimeInMsNotIn,omitempty"`
+	StartTimeInMsGT     *int64  `json:"startTimeInMsGT,omitempty"`
+	StartTimeInMsGTE    *int64  `json:"startTimeInMsGTE,omitempty"`
+	StartTimeInMsLT     *int64  `json:"startTimeInMsLT,omitempty"`
+	StartTimeInMsLTE    *int64  `json:"startTimeInMsLTE,omitempty"`
+	StartTimeInMsIsNil  bool    `json:"startTimeInMsIsNil,omitempty"`
+	StartTimeInMsNotNil bool    `json:"startTimeInMsNotNil,omitempty"`
+
+	// "end_time_in_ms" field predicates.
+	EndTimeInMs       *int64  `json:"endTimeInMs,omitempty"`
+	EndTimeInMsNEQ    *int64  `json:"endTimeInMsNEQ,omitempty"`
+	EndTimeInMsIn     []int64 `json:"endTimeInMsIn,omitempty"`
+	EndTimeInMsNotIn  []int64 `json:"endTimeInMsNotIn,omitempty"`
+	EndTimeInMsGT     *int64  `json:"endTimeInMsGT,omitempty"`
+	EndTimeInMsGTE    *int64  `json:"endTimeInMsGTE,omitempty"`
+	EndTimeInMsLT     *int64  `json:"endTimeInMsLT,omitempty"`
+	EndTimeInMsLTE    *int64  `json:"endTimeInMsLTE,omitempty"`
+	EndTimeInMsIsNil  bool    `json:"endTimeInMsIsNil,omitempty"`
+	EndTimeInMsNotNil bool    `json:"endTimeInMsNotNil,omitempty"`
+
+	// "duration_in_ms" field predicates.
+	DurationInMs       *int64  `json:"durationInMs,omitempty"`
+	DurationInMsNEQ    *int64  `json:"durationInMsNEQ,omitempty"`
+	DurationInMsIn     []int64 `json:"durationInMsIn,omitempty"`
+	DurationInMsNotIn  []int64 `json:"durationInMsNotIn,omitempty"`
+	DurationInMsGT     *int64  `json:"durationInMsGT,omitempty"`
+	DurationInMsGTE    *int64  `json:"durationInMsGTE,omitempty"`
+	DurationInMsLT     *int64  `json:"durationInMsLT,omitempty"`
+	DurationInMsLTE    *int64  `json:"durationInMsLTE,omitempty"`
+	DurationInMsIsNil  bool    `json:"durationInMsIsNil,omitempty"`
+	DurationInMsNotNil bool    `json:"durationInMsNotNil,omitempty"`
+
+	// "failure_message" field predicates.
+	FailureMessage             *string  `json:"failureMessage,omitempty"`
+	FailureMessageNEQ          *string  `json:"failureMessageNEQ,omitempty"`
+	FailureMessageIn           []string `json:"failureMessageIn,omitempty"`
+	FailureMessageNotIn        []string `json:"failureMessageNotIn,omitempty"`
+	FailureMessageGT           *string  `json:"failureMessageGT,omitempty"`
+	FailureMessageGTE          *string  `json:"failureMessageGTE,omitempty"`
+	FailureMessageLT           *string  `json:"failureMessageLT,omitempty"`
+	FailureMessageLTE          *string  `json:"failureMessageLTE,omitempty"`
+	FailureMessageContains     *string  `json:"failureMessageContains,omitempty"`
+	FailureMessageHasPrefix    *string  `json:"failureMessageHasPrefix,omitempty"`
+	FailureMessageHasSuffix    *string  `json:"failureMessageHasSuffix,omitempty"`
+	FailureMessageIsNil        bool     `json:"failureMessageIsNil,omitempty"`
+	FailureMessageNotNil       bool     `json:"failureMessageNotNil,omitempty"`
+	FailureMessageEqualFold    *string  `json:"failureMessageEqualFold,omitempty"`
+	FailureMessageContainsFold *string  `json:"failureMessageContainsFold,omitempty"`
+
+	// "abort_reason" field predicates.
+	AbortReason      *invocationtarget.AbortReason  `json:"abortReason,omitempty"`
+	AbortReasonNEQ   *invocationtarget.AbortReason  `json:"abortReasonNEQ,omitempty"`
+	AbortReasonIn    []invocationtarget.AbortReason `json:"abortReasonIn,omitempty"`
+	AbortReasonNotIn []invocationtarget.AbortReason `json:"abortReasonNotIn,omitempty"`
+
+	// "bazel_invocation" edge predicates.
+	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
+	HasBazelInvocationWith []*BazelInvocationWhereInput `json:"hasBazelInvocationWith,omitempty"`
+
+	// "target" edge predicates.
+	HasTarget     *bool               `json:"hasTarget,omitempty"`
+	HasTargetWith []*TargetWhereInput `json:"hasTargetWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *InvocationTargetWhereInput) AddPredicates(predicates ...predicate.InvocationTarget) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the InvocationTargetWhereInput filter on the InvocationTargetQuery builder.
+func (i *InvocationTargetWhereInput) Filter(q *InvocationTargetQuery) (*InvocationTargetQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyInvocationTargetWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyInvocationTargetWhereInput is returned in case the InvocationTargetWhereInput is empty.
+var ErrEmptyInvocationTargetWhereInput = errors.New("ent: empty predicate InvocationTargetWhereInput")
+
+// P returns a predicate for filtering invocationtargets.
+// An error is returned if the input is empty or invalid.
+func (i *InvocationTargetWhereInput) P() (predicate.InvocationTarget, error) {
+	var predicates []predicate.InvocationTarget
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, invocationtarget.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.InvocationTarget, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, invocationtarget.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.InvocationTarget, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, invocationtarget.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, invocationtarget.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, invocationtarget.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, invocationtarget.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, invocationtarget.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, invocationtarget.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, invocationtarget.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, invocationtarget.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, invocationtarget.IDLTE(*i.IDLTE))
+	}
+	if i.Success != nil {
+		predicates = append(predicates, invocationtarget.SuccessEQ(*i.Success))
+	}
+	if i.SuccessNEQ != nil {
+		predicates = append(predicates, invocationtarget.SuccessNEQ(*i.SuccessNEQ))
+	}
+	if i.StartTimeInMs != nil {
+		predicates = append(predicates, invocationtarget.StartTimeInMsEQ(*i.StartTimeInMs))
+	}
+	if i.StartTimeInMsNEQ != nil {
+		predicates = append(predicates, invocationtarget.StartTimeInMsNEQ(*i.StartTimeInMsNEQ))
+	}
+	if len(i.StartTimeInMsIn) > 0 {
+		predicates = append(predicates, invocationtarget.StartTimeInMsIn(i.StartTimeInMsIn...))
+	}
+	if len(i.StartTimeInMsNotIn) > 0 {
+		predicates = append(predicates, invocationtarget.StartTimeInMsNotIn(i.StartTimeInMsNotIn...))
+	}
+	if i.StartTimeInMsGT != nil {
+		predicates = append(predicates, invocationtarget.StartTimeInMsGT(*i.StartTimeInMsGT))
+	}
+	if i.StartTimeInMsGTE != nil {
+		predicates = append(predicates, invocationtarget.StartTimeInMsGTE(*i.StartTimeInMsGTE))
+	}
+	if i.StartTimeInMsLT != nil {
+		predicates = append(predicates, invocationtarget.StartTimeInMsLT(*i.StartTimeInMsLT))
+	}
+	if i.StartTimeInMsLTE != nil {
+		predicates = append(predicates, invocationtarget.StartTimeInMsLTE(*i.StartTimeInMsLTE))
+	}
+	if i.StartTimeInMsIsNil {
+		predicates = append(predicates, invocationtarget.StartTimeInMsIsNil())
+	}
+	if i.StartTimeInMsNotNil {
+		predicates = append(predicates, invocationtarget.StartTimeInMsNotNil())
+	}
+	if i.EndTimeInMs != nil {
+		predicates = append(predicates, invocationtarget.EndTimeInMsEQ(*i.EndTimeInMs))
+	}
+	if i.EndTimeInMsNEQ != nil {
+		predicates = append(predicates, invocationtarget.EndTimeInMsNEQ(*i.EndTimeInMsNEQ))
+	}
+	if len(i.EndTimeInMsIn) > 0 {
+		predicates = append(predicates, invocationtarget.EndTimeInMsIn(i.EndTimeInMsIn...))
+	}
+	if len(i.EndTimeInMsNotIn) > 0 {
+		predicates = append(predicates, invocationtarget.EndTimeInMsNotIn(i.EndTimeInMsNotIn...))
+	}
+	if i.EndTimeInMsGT != nil {
+		predicates = append(predicates, invocationtarget.EndTimeInMsGT(*i.EndTimeInMsGT))
+	}
+	if i.EndTimeInMsGTE != nil {
+		predicates = append(predicates, invocationtarget.EndTimeInMsGTE(*i.EndTimeInMsGTE))
+	}
+	if i.EndTimeInMsLT != nil {
+		predicates = append(predicates, invocationtarget.EndTimeInMsLT(*i.EndTimeInMsLT))
+	}
+	if i.EndTimeInMsLTE != nil {
+		predicates = append(predicates, invocationtarget.EndTimeInMsLTE(*i.EndTimeInMsLTE))
+	}
+	if i.EndTimeInMsIsNil {
+		predicates = append(predicates, invocationtarget.EndTimeInMsIsNil())
+	}
+	if i.EndTimeInMsNotNil {
+		predicates = append(predicates, invocationtarget.EndTimeInMsNotNil())
+	}
+	if i.DurationInMs != nil {
+		predicates = append(predicates, invocationtarget.DurationInMsEQ(*i.DurationInMs))
+	}
+	if i.DurationInMsNEQ != nil {
+		predicates = append(predicates, invocationtarget.DurationInMsNEQ(*i.DurationInMsNEQ))
+	}
+	if len(i.DurationInMsIn) > 0 {
+		predicates = append(predicates, invocationtarget.DurationInMsIn(i.DurationInMsIn...))
+	}
+	if len(i.DurationInMsNotIn) > 0 {
+		predicates = append(predicates, invocationtarget.DurationInMsNotIn(i.DurationInMsNotIn...))
+	}
+	if i.DurationInMsGT != nil {
+		predicates = append(predicates, invocationtarget.DurationInMsGT(*i.DurationInMsGT))
+	}
+	if i.DurationInMsGTE != nil {
+		predicates = append(predicates, invocationtarget.DurationInMsGTE(*i.DurationInMsGTE))
+	}
+	if i.DurationInMsLT != nil {
+		predicates = append(predicates, invocationtarget.DurationInMsLT(*i.DurationInMsLT))
+	}
+	if i.DurationInMsLTE != nil {
+		predicates = append(predicates, invocationtarget.DurationInMsLTE(*i.DurationInMsLTE))
+	}
+	if i.DurationInMsIsNil {
+		predicates = append(predicates, invocationtarget.DurationInMsIsNil())
+	}
+	if i.DurationInMsNotNil {
+		predicates = append(predicates, invocationtarget.DurationInMsNotNil())
+	}
+	if i.FailureMessage != nil {
+		predicates = append(predicates, invocationtarget.FailureMessageEQ(*i.FailureMessage))
+	}
+	if i.FailureMessageNEQ != nil {
+		predicates = append(predicates, invocationtarget.FailureMessageNEQ(*i.FailureMessageNEQ))
+	}
+	if len(i.FailureMessageIn) > 0 {
+		predicates = append(predicates, invocationtarget.FailureMessageIn(i.FailureMessageIn...))
+	}
+	if len(i.FailureMessageNotIn) > 0 {
+		predicates = append(predicates, invocationtarget.FailureMessageNotIn(i.FailureMessageNotIn...))
+	}
+	if i.FailureMessageGT != nil {
+		predicates = append(predicates, invocationtarget.FailureMessageGT(*i.FailureMessageGT))
+	}
+	if i.FailureMessageGTE != nil {
+		predicates = append(predicates, invocationtarget.FailureMessageGTE(*i.FailureMessageGTE))
+	}
+	if i.FailureMessageLT != nil {
+		predicates = append(predicates, invocationtarget.FailureMessageLT(*i.FailureMessageLT))
+	}
+	if i.FailureMessageLTE != nil {
+		predicates = append(predicates, invocationtarget.FailureMessageLTE(*i.FailureMessageLTE))
+	}
+	if i.FailureMessageContains != nil {
+		predicates = append(predicates, invocationtarget.FailureMessageContains(*i.FailureMessageContains))
+	}
+	if i.FailureMessageHasPrefix != nil {
+		predicates = append(predicates, invocationtarget.FailureMessageHasPrefix(*i.FailureMessageHasPrefix))
+	}
+	if i.FailureMessageHasSuffix != nil {
+		predicates = append(predicates, invocationtarget.FailureMessageHasSuffix(*i.FailureMessageHasSuffix))
+	}
+	if i.FailureMessageIsNil {
+		predicates = append(predicates, invocationtarget.FailureMessageIsNil())
+	}
+	if i.FailureMessageNotNil {
+		predicates = append(predicates, invocationtarget.FailureMessageNotNil())
+	}
+	if i.FailureMessageEqualFold != nil {
+		predicates = append(predicates, invocationtarget.FailureMessageEqualFold(*i.FailureMessageEqualFold))
+	}
+	if i.FailureMessageContainsFold != nil {
+		predicates = append(predicates, invocationtarget.FailureMessageContainsFold(*i.FailureMessageContainsFold))
+	}
+	if i.AbortReason != nil {
+		predicates = append(predicates, invocationtarget.AbortReasonEQ(*i.AbortReason))
+	}
+	if i.AbortReasonNEQ != nil {
+		predicates = append(predicates, invocationtarget.AbortReasonNEQ(*i.AbortReasonNEQ))
+	}
+	if len(i.AbortReasonIn) > 0 {
+		predicates = append(predicates, invocationtarget.AbortReasonIn(i.AbortReasonIn...))
+	}
+	if len(i.AbortReasonNotIn) > 0 {
+		predicates = append(predicates, invocationtarget.AbortReasonNotIn(i.AbortReasonNotIn...))
+	}
+
+	if i.HasBazelInvocation != nil {
+		p := invocationtarget.HasBazelInvocation()
+		if !*i.HasBazelInvocation {
+			p = invocationtarget.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBazelInvocationWith) > 0 {
+		with := make([]predicate.BazelInvocation, 0, len(i.HasBazelInvocationWith))
+		for _, w := range i.HasBazelInvocationWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBazelInvocationWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, invocationtarget.HasBazelInvocationWith(with...))
+	}
+	if i.HasTarget != nil {
+		p := invocationtarget.HasTarget()
+		if !*i.HasTarget {
+			p = invocationtarget.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasTargetWith) > 0 {
+		with := make([]predicate.Target, 0, len(i.HasTargetWith))
+		for _, w := range i.HasTargetWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasTargetWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, invocationtarget.HasTargetWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyInvocationTargetWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return invocationtarget.And(predicates...), nil
 	}
 }
 
@@ -10964,6 +11371,21 @@ type TargetWhereInput struct {
 	LabelEqualFold    *string  `json:"labelEqualFold,omitempty"`
 	LabelContainsFold *string  `json:"labelContainsFold,omitempty"`
 
+	// "aspect" field predicates.
+	Aspect             *string  `json:"aspect,omitempty"`
+	AspectNEQ          *string  `json:"aspectNEQ,omitempty"`
+	AspectIn           []string `json:"aspectIn,omitempty"`
+	AspectNotIn        []string `json:"aspectNotIn,omitempty"`
+	AspectGT           *string  `json:"aspectGT,omitempty"`
+	AspectGTE          *string  `json:"aspectGTE,omitempty"`
+	AspectLT           *string  `json:"aspectLT,omitempty"`
+	AspectLTE          *string  `json:"aspectLTE,omitempty"`
+	AspectContains     *string  `json:"aspectContains,omitempty"`
+	AspectHasPrefix    *string  `json:"aspectHasPrefix,omitempty"`
+	AspectHasSuffix    *string  `json:"aspectHasSuffix,omitempty"`
+	AspectEqualFold    *string  `json:"aspectEqualFold,omitempty"`
+	AspectContainsFold *string  `json:"aspectContainsFold,omitempty"`
+
 	// "target_kind" field predicates.
 	TargetKind             *string  `json:"targetKind,omitempty"`
 	TargetKindNEQ          *string  `json:"targetKindNEQ,omitempty"`
@@ -10976,84 +11398,16 @@ type TargetWhereInput struct {
 	TargetKindContains     *string  `json:"targetKindContains,omitempty"`
 	TargetKindHasPrefix    *string  `json:"targetKindHasPrefix,omitempty"`
 	TargetKindHasSuffix    *string  `json:"targetKindHasSuffix,omitempty"`
-	TargetKindIsNil        bool     `json:"targetKindIsNil,omitempty"`
-	TargetKindNotNil       bool     `json:"targetKindNotNil,omitempty"`
 	TargetKindEqualFold    *string  `json:"targetKindEqualFold,omitempty"`
 	TargetKindContainsFold *string  `json:"targetKindContainsFold,omitempty"`
 
-	// "test_size" field predicates.
-	TestSize       *target.TestSize  `json:"testSize,omitempty"`
-	TestSizeNEQ    *target.TestSize  `json:"testSizeNEQ,omitempty"`
-	TestSizeIn     []target.TestSize `json:"testSizeIn,omitempty"`
-	TestSizeNotIn  []target.TestSize `json:"testSizeNotIn,omitempty"`
-	TestSizeIsNil  bool              `json:"testSizeIsNil,omitempty"`
-	TestSizeNotNil bool              `json:"testSizeNotNil,omitempty"`
+	// "instance_name" edge predicates.
+	HasInstanceName     *bool                     `json:"hasInstanceName,omitempty"`
+	HasInstanceNameWith []*InstanceNameWhereInput `json:"hasInstanceNameWith,omitempty"`
 
-	// "success" field predicates.
-	Success       *bool `json:"success,omitempty"`
-	SuccessNEQ    *bool `json:"successNEQ,omitempty"`
-	SuccessIsNil  bool  `json:"successIsNil,omitempty"`
-	SuccessNotNil bool  `json:"successNotNil,omitempty"`
-
-	// "test_timeout" field predicates.
-	TestTimeout       *int64  `json:"testTimeout,omitempty"`
-	TestTimeoutNEQ    *int64  `json:"testTimeoutNEQ,omitempty"`
-	TestTimeoutIn     []int64 `json:"testTimeoutIn,omitempty"`
-	TestTimeoutNotIn  []int64 `json:"testTimeoutNotIn,omitempty"`
-	TestTimeoutGT     *int64  `json:"testTimeoutGT,omitempty"`
-	TestTimeoutGTE    *int64  `json:"testTimeoutGTE,omitempty"`
-	TestTimeoutLT     *int64  `json:"testTimeoutLT,omitempty"`
-	TestTimeoutLTE    *int64  `json:"testTimeoutLTE,omitempty"`
-	TestTimeoutIsNil  bool    `json:"testTimeoutIsNil,omitempty"`
-	TestTimeoutNotNil bool    `json:"testTimeoutNotNil,omitempty"`
-
-	// "start_time_in_ms" field predicates.
-	StartTimeInMs       *int64  `json:"startTimeInMs,omitempty"`
-	StartTimeInMsNEQ    *int64  `json:"startTimeInMsNEQ,omitempty"`
-	StartTimeInMsIn     []int64 `json:"startTimeInMsIn,omitempty"`
-	StartTimeInMsNotIn  []int64 `json:"startTimeInMsNotIn,omitempty"`
-	StartTimeInMsGT     *int64  `json:"startTimeInMsGT,omitempty"`
-	StartTimeInMsGTE    *int64  `json:"startTimeInMsGTE,omitempty"`
-	StartTimeInMsLT     *int64  `json:"startTimeInMsLT,omitempty"`
-	StartTimeInMsLTE    *int64  `json:"startTimeInMsLTE,omitempty"`
-	StartTimeInMsIsNil  bool    `json:"startTimeInMsIsNil,omitempty"`
-	StartTimeInMsNotNil bool    `json:"startTimeInMsNotNil,omitempty"`
-
-	// "end_time_in_ms" field predicates.
-	EndTimeInMs       *int64  `json:"endTimeInMs,omitempty"`
-	EndTimeInMsNEQ    *int64  `json:"endTimeInMsNEQ,omitempty"`
-	EndTimeInMsIn     []int64 `json:"endTimeInMsIn,omitempty"`
-	EndTimeInMsNotIn  []int64 `json:"endTimeInMsNotIn,omitempty"`
-	EndTimeInMsGT     *int64  `json:"endTimeInMsGT,omitempty"`
-	EndTimeInMsGTE    *int64  `json:"endTimeInMsGTE,omitempty"`
-	EndTimeInMsLT     *int64  `json:"endTimeInMsLT,omitempty"`
-	EndTimeInMsLTE    *int64  `json:"endTimeInMsLTE,omitempty"`
-	EndTimeInMsIsNil  bool    `json:"endTimeInMsIsNil,omitempty"`
-	EndTimeInMsNotNil bool    `json:"endTimeInMsNotNil,omitempty"`
-
-	// "duration_in_ms" field predicates.
-	DurationInMs       *int64  `json:"durationInMs,omitempty"`
-	DurationInMsNEQ    *int64  `json:"durationInMsNEQ,omitempty"`
-	DurationInMsIn     []int64 `json:"durationInMsIn,omitempty"`
-	DurationInMsNotIn  []int64 `json:"durationInMsNotIn,omitempty"`
-	DurationInMsGT     *int64  `json:"durationInMsGT,omitempty"`
-	DurationInMsGTE    *int64  `json:"durationInMsGTE,omitempty"`
-	DurationInMsLT     *int64  `json:"durationInMsLT,omitempty"`
-	DurationInMsLTE    *int64  `json:"durationInMsLTE,omitempty"`
-	DurationInMsIsNil  bool    `json:"durationInMsIsNil,omitempty"`
-	DurationInMsNotNil bool    `json:"durationInMsNotNil,omitempty"`
-
-	// "abort_reason" field predicates.
-	AbortReason       *target.AbortReason  `json:"abortReason,omitempty"`
-	AbortReasonNEQ    *target.AbortReason  `json:"abortReasonNEQ,omitempty"`
-	AbortReasonIn     []target.AbortReason `json:"abortReasonIn,omitempty"`
-	AbortReasonNotIn  []target.AbortReason `json:"abortReasonNotIn,omitempty"`
-	AbortReasonIsNil  bool                 `json:"abortReasonIsNil,omitempty"`
-	AbortReasonNotNil bool                 `json:"abortReasonNotNil,omitempty"`
-
-	// "bazel_invocation" edge predicates.
-	HasBazelInvocation     *bool                        `json:"hasBazelInvocation,omitempty"`
-	HasBazelInvocationWith []*BazelInvocationWhereInput `json:"hasBazelInvocationWith,omitempty"`
+	// "invocation_targets" edge predicates.
+	HasInvocationTargets     *bool                         `json:"hasInvocationTargets,omitempty"`
+	HasInvocationTargetsWith []*InvocationTargetWhereInput `json:"hasInvocationTargetsWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -11190,6 +11544,45 @@ func (i *TargetWhereInput) P() (predicate.Target, error) {
 	if i.LabelContainsFold != nil {
 		predicates = append(predicates, target.LabelContainsFold(*i.LabelContainsFold))
 	}
+	if i.Aspect != nil {
+		predicates = append(predicates, target.AspectEQ(*i.Aspect))
+	}
+	if i.AspectNEQ != nil {
+		predicates = append(predicates, target.AspectNEQ(*i.AspectNEQ))
+	}
+	if len(i.AspectIn) > 0 {
+		predicates = append(predicates, target.AspectIn(i.AspectIn...))
+	}
+	if len(i.AspectNotIn) > 0 {
+		predicates = append(predicates, target.AspectNotIn(i.AspectNotIn...))
+	}
+	if i.AspectGT != nil {
+		predicates = append(predicates, target.AspectGT(*i.AspectGT))
+	}
+	if i.AspectGTE != nil {
+		predicates = append(predicates, target.AspectGTE(*i.AspectGTE))
+	}
+	if i.AspectLT != nil {
+		predicates = append(predicates, target.AspectLT(*i.AspectLT))
+	}
+	if i.AspectLTE != nil {
+		predicates = append(predicates, target.AspectLTE(*i.AspectLTE))
+	}
+	if i.AspectContains != nil {
+		predicates = append(predicates, target.AspectContains(*i.AspectContains))
+	}
+	if i.AspectHasPrefix != nil {
+		predicates = append(predicates, target.AspectHasPrefix(*i.AspectHasPrefix))
+	}
+	if i.AspectHasSuffix != nil {
+		predicates = append(predicates, target.AspectHasSuffix(*i.AspectHasSuffix))
+	}
+	if i.AspectEqualFold != nil {
+		predicates = append(predicates, target.AspectEqualFold(*i.AspectEqualFold))
+	}
+	if i.AspectContainsFold != nil {
+		predicates = append(predicates, target.AspectContainsFold(*i.AspectContainsFold))
+	}
 	if i.TargetKind != nil {
 		predicates = append(predicates, target.TargetKindEQ(*i.TargetKind))
 	}
@@ -11223,204 +11616,48 @@ func (i *TargetWhereInput) P() (predicate.Target, error) {
 	if i.TargetKindHasSuffix != nil {
 		predicates = append(predicates, target.TargetKindHasSuffix(*i.TargetKindHasSuffix))
 	}
-	if i.TargetKindIsNil {
-		predicates = append(predicates, target.TargetKindIsNil())
-	}
-	if i.TargetKindNotNil {
-		predicates = append(predicates, target.TargetKindNotNil())
-	}
 	if i.TargetKindEqualFold != nil {
 		predicates = append(predicates, target.TargetKindEqualFold(*i.TargetKindEqualFold))
 	}
 	if i.TargetKindContainsFold != nil {
 		predicates = append(predicates, target.TargetKindContainsFold(*i.TargetKindContainsFold))
 	}
-	if i.TestSize != nil {
-		predicates = append(predicates, target.TestSizeEQ(*i.TestSize))
-	}
-	if i.TestSizeNEQ != nil {
-		predicates = append(predicates, target.TestSizeNEQ(*i.TestSizeNEQ))
-	}
-	if len(i.TestSizeIn) > 0 {
-		predicates = append(predicates, target.TestSizeIn(i.TestSizeIn...))
-	}
-	if len(i.TestSizeNotIn) > 0 {
-		predicates = append(predicates, target.TestSizeNotIn(i.TestSizeNotIn...))
-	}
-	if i.TestSizeIsNil {
-		predicates = append(predicates, target.TestSizeIsNil())
-	}
-	if i.TestSizeNotNil {
-		predicates = append(predicates, target.TestSizeNotNil())
-	}
-	if i.Success != nil {
-		predicates = append(predicates, target.SuccessEQ(*i.Success))
-	}
-	if i.SuccessNEQ != nil {
-		predicates = append(predicates, target.SuccessNEQ(*i.SuccessNEQ))
-	}
-	if i.SuccessIsNil {
-		predicates = append(predicates, target.SuccessIsNil())
-	}
-	if i.SuccessNotNil {
-		predicates = append(predicates, target.SuccessNotNil())
-	}
-	if i.TestTimeout != nil {
-		predicates = append(predicates, target.TestTimeoutEQ(*i.TestTimeout))
-	}
-	if i.TestTimeoutNEQ != nil {
-		predicates = append(predicates, target.TestTimeoutNEQ(*i.TestTimeoutNEQ))
-	}
-	if len(i.TestTimeoutIn) > 0 {
-		predicates = append(predicates, target.TestTimeoutIn(i.TestTimeoutIn...))
-	}
-	if len(i.TestTimeoutNotIn) > 0 {
-		predicates = append(predicates, target.TestTimeoutNotIn(i.TestTimeoutNotIn...))
-	}
-	if i.TestTimeoutGT != nil {
-		predicates = append(predicates, target.TestTimeoutGT(*i.TestTimeoutGT))
-	}
-	if i.TestTimeoutGTE != nil {
-		predicates = append(predicates, target.TestTimeoutGTE(*i.TestTimeoutGTE))
-	}
-	if i.TestTimeoutLT != nil {
-		predicates = append(predicates, target.TestTimeoutLT(*i.TestTimeoutLT))
-	}
-	if i.TestTimeoutLTE != nil {
-		predicates = append(predicates, target.TestTimeoutLTE(*i.TestTimeoutLTE))
-	}
-	if i.TestTimeoutIsNil {
-		predicates = append(predicates, target.TestTimeoutIsNil())
-	}
-	if i.TestTimeoutNotNil {
-		predicates = append(predicates, target.TestTimeoutNotNil())
-	}
-	if i.StartTimeInMs != nil {
-		predicates = append(predicates, target.StartTimeInMsEQ(*i.StartTimeInMs))
-	}
-	if i.StartTimeInMsNEQ != nil {
-		predicates = append(predicates, target.StartTimeInMsNEQ(*i.StartTimeInMsNEQ))
-	}
-	if len(i.StartTimeInMsIn) > 0 {
-		predicates = append(predicates, target.StartTimeInMsIn(i.StartTimeInMsIn...))
-	}
-	if len(i.StartTimeInMsNotIn) > 0 {
-		predicates = append(predicates, target.StartTimeInMsNotIn(i.StartTimeInMsNotIn...))
-	}
-	if i.StartTimeInMsGT != nil {
-		predicates = append(predicates, target.StartTimeInMsGT(*i.StartTimeInMsGT))
-	}
-	if i.StartTimeInMsGTE != nil {
-		predicates = append(predicates, target.StartTimeInMsGTE(*i.StartTimeInMsGTE))
-	}
-	if i.StartTimeInMsLT != nil {
-		predicates = append(predicates, target.StartTimeInMsLT(*i.StartTimeInMsLT))
-	}
-	if i.StartTimeInMsLTE != nil {
-		predicates = append(predicates, target.StartTimeInMsLTE(*i.StartTimeInMsLTE))
-	}
-	if i.StartTimeInMsIsNil {
-		predicates = append(predicates, target.StartTimeInMsIsNil())
-	}
-	if i.StartTimeInMsNotNil {
-		predicates = append(predicates, target.StartTimeInMsNotNil())
-	}
-	if i.EndTimeInMs != nil {
-		predicates = append(predicates, target.EndTimeInMsEQ(*i.EndTimeInMs))
-	}
-	if i.EndTimeInMsNEQ != nil {
-		predicates = append(predicates, target.EndTimeInMsNEQ(*i.EndTimeInMsNEQ))
-	}
-	if len(i.EndTimeInMsIn) > 0 {
-		predicates = append(predicates, target.EndTimeInMsIn(i.EndTimeInMsIn...))
-	}
-	if len(i.EndTimeInMsNotIn) > 0 {
-		predicates = append(predicates, target.EndTimeInMsNotIn(i.EndTimeInMsNotIn...))
-	}
-	if i.EndTimeInMsGT != nil {
-		predicates = append(predicates, target.EndTimeInMsGT(*i.EndTimeInMsGT))
-	}
-	if i.EndTimeInMsGTE != nil {
-		predicates = append(predicates, target.EndTimeInMsGTE(*i.EndTimeInMsGTE))
-	}
-	if i.EndTimeInMsLT != nil {
-		predicates = append(predicates, target.EndTimeInMsLT(*i.EndTimeInMsLT))
-	}
-	if i.EndTimeInMsLTE != nil {
-		predicates = append(predicates, target.EndTimeInMsLTE(*i.EndTimeInMsLTE))
-	}
-	if i.EndTimeInMsIsNil {
-		predicates = append(predicates, target.EndTimeInMsIsNil())
-	}
-	if i.EndTimeInMsNotNil {
-		predicates = append(predicates, target.EndTimeInMsNotNil())
-	}
-	if i.DurationInMs != nil {
-		predicates = append(predicates, target.DurationInMsEQ(*i.DurationInMs))
-	}
-	if i.DurationInMsNEQ != nil {
-		predicates = append(predicates, target.DurationInMsNEQ(*i.DurationInMsNEQ))
-	}
-	if len(i.DurationInMsIn) > 0 {
-		predicates = append(predicates, target.DurationInMsIn(i.DurationInMsIn...))
-	}
-	if len(i.DurationInMsNotIn) > 0 {
-		predicates = append(predicates, target.DurationInMsNotIn(i.DurationInMsNotIn...))
-	}
-	if i.DurationInMsGT != nil {
-		predicates = append(predicates, target.DurationInMsGT(*i.DurationInMsGT))
-	}
-	if i.DurationInMsGTE != nil {
-		predicates = append(predicates, target.DurationInMsGTE(*i.DurationInMsGTE))
-	}
-	if i.DurationInMsLT != nil {
-		predicates = append(predicates, target.DurationInMsLT(*i.DurationInMsLT))
-	}
-	if i.DurationInMsLTE != nil {
-		predicates = append(predicates, target.DurationInMsLTE(*i.DurationInMsLTE))
-	}
-	if i.DurationInMsIsNil {
-		predicates = append(predicates, target.DurationInMsIsNil())
-	}
-	if i.DurationInMsNotNil {
-		predicates = append(predicates, target.DurationInMsNotNil())
-	}
-	if i.AbortReason != nil {
-		predicates = append(predicates, target.AbortReasonEQ(*i.AbortReason))
-	}
-	if i.AbortReasonNEQ != nil {
-		predicates = append(predicates, target.AbortReasonNEQ(*i.AbortReasonNEQ))
-	}
-	if len(i.AbortReasonIn) > 0 {
-		predicates = append(predicates, target.AbortReasonIn(i.AbortReasonIn...))
-	}
-	if len(i.AbortReasonNotIn) > 0 {
-		predicates = append(predicates, target.AbortReasonNotIn(i.AbortReasonNotIn...))
-	}
-	if i.AbortReasonIsNil {
-		predicates = append(predicates, target.AbortReasonIsNil())
-	}
-	if i.AbortReasonNotNil {
-		predicates = append(predicates, target.AbortReasonNotNil())
-	}
 
-	if i.HasBazelInvocation != nil {
-		p := target.HasBazelInvocation()
-		if !*i.HasBazelInvocation {
+	if i.HasInstanceName != nil {
+		p := target.HasInstanceName()
+		if !*i.HasInstanceName {
 			p = target.Not(p)
 		}
 		predicates = append(predicates, p)
 	}
-	if len(i.HasBazelInvocationWith) > 0 {
-		with := make([]predicate.BazelInvocation, 0, len(i.HasBazelInvocationWith))
-		for _, w := range i.HasBazelInvocationWith {
+	if len(i.HasInstanceNameWith) > 0 {
+		with := make([]predicate.InstanceName, 0, len(i.HasInstanceNameWith))
+		for _, w := range i.HasInstanceNameWith {
 			p, err := w.P()
 			if err != nil {
-				return nil, fmt.Errorf("%w: field 'HasBazelInvocationWith'", err)
+				return nil, fmt.Errorf("%w: field 'HasInstanceNameWith'", err)
 			}
 			with = append(with, p)
 		}
-		predicates = append(predicates, target.HasBazelInvocationWith(with...))
+		predicates = append(predicates, target.HasInstanceNameWith(with...))
+	}
+	if i.HasInvocationTargets != nil {
+		p := target.HasInvocationTargets()
+		if !*i.HasInvocationTargets {
+			p = target.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasInvocationTargetsWith) > 0 {
+		with := make([]predicate.InvocationTarget, 0, len(i.HasInvocationTargetsWith))
+		for _, w := range i.HasInvocationTargetsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasInvocationTargetsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, target.HasInvocationTargetsWith(with...))
 	}
 	switch len(predicates) {
 	case 0:

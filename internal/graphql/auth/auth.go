@@ -74,6 +74,7 @@ func AddDatabaseAuthInterceptors(authorizerConfiguration *auth_pb.AuthorizerConf
 	dbClient.ExectionInfo.Intercept(createInterceptor(instanceNameAuthorizer, isExectionInfoAllowed))
 	dbClient.GarbageMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isGarbageMetricsAllowed))
 	dbClient.InstanceName.Intercept(createInterceptor(instanceNameAuthorizer, isInstanceNameAllowed))
+	dbClient.InvocationTarget.Intercept(createInterceptor(instanceNameAuthorizer, isInvocationTargetAllowed))
 	dbClient.MemoryMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isMemoryMetricsAllowed))
 	dbClient.Metrics.Intercept(createInterceptor(instanceNameAuthorizer, isMetricsAllowed))
 	dbClient.MissDetail.Intercept(createInterceptor(instanceNameAuthorizer, isMissDetailAllowed))
@@ -169,6 +170,11 @@ func isInstanceNameAllowed(ctx context.Context, instanceNameAuthorizer auth.Auth
 	return common.IsInstanceNameAllowed(ctx, instanceNameAuthorizer, instanceName.Name)
 }
 
+func isInvocationTargetAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, invocationTarget *ent.InvocationTarget) bool {
+	target, err := invocationTarget.Target(ctx)
+	return err == nil && target != nil
+}
+
 func isMemoryMetricsAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, memoryMetrics *ent.MemoryMetrics) bool {
 	metrics, err := memoryMetrics.Metrics(ctx)
 	return err == nil && metrics != nil
@@ -230,7 +236,7 @@ func isTargetMetricsAllowed(ctx context.Context, instanceNameAuthorizer auth.Aut
 }
 
 func isTargetAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, target *ent.Target) bool {
-	invocation, err := target.BazelInvocation(ctx)
+	invocation, err := target.InstanceName(ctx)
 	return err == nil && invocation != nil
 }
 

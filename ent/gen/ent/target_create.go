@@ -10,8 +10,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 )
 
 // TargetCreate is the builder for creating a Target entity.
@@ -28,9 +30,9 @@ func (tc *TargetCreate) SetLabel(s string) *TargetCreate {
 	return tc
 }
 
-// SetTag sets the "tag" field.
-func (tc *TargetCreate) SetTag(s []string) *TargetCreate {
-	tc.mutation.SetTag(s)
+// SetAspect sets the "aspect" field.
+func (tc *TargetCreate) SetAspect(s string) *TargetCreate {
+	tc.mutation.SetAspect(s)
 	return tc
 }
 
@@ -40,129 +42,45 @@ func (tc *TargetCreate) SetTargetKind(s string) *TargetCreate {
 	return tc
 }
 
-// SetNillableTargetKind sets the "target_kind" field if the given value is not nil.
-func (tc *TargetCreate) SetNillableTargetKind(s *string) *TargetCreate {
-	if s != nil {
-		tc.SetTargetKind(*s)
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (tc *TargetCreate) SetInstanceNameID(id int) *TargetCreate {
+	tc.mutation.SetInstanceNameID(id)
+	return tc
+}
+
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (tc *TargetCreate) SetInstanceName(i *InstanceName) *TargetCreate {
+	return tc.SetInstanceNameID(i.ID)
+}
+
+// AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
+func (tc *TargetCreate) AddInvocationTargetIDs(ids ...int) *TargetCreate {
+	tc.mutation.AddInvocationTargetIDs(ids...)
+	return tc
+}
+
+// AddInvocationTargets adds the "invocation_targets" edges to the InvocationTarget entity.
+func (tc *TargetCreate) AddInvocationTargets(i ...*InvocationTarget) *TargetCreate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
 	}
+	return tc.AddInvocationTargetIDs(ids...)
+}
+
+// AddTargetKindMappingIDs adds the "target_kind_mappings" edge to the TargetKindMapping entity by IDs.
+func (tc *TargetCreate) AddTargetKindMappingIDs(ids ...int) *TargetCreate {
+	tc.mutation.AddTargetKindMappingIDs(ids...)
 	return tc
 }
 
-// SetTestSize sets the "test_size" field.
-func (tc *TargetCreate) SetTestSize(ts target.TestSize) *TargetCreate {
-	tc.mutation.SetTestSize(ts)
-	return tc
-}
-
-// SetNillableTestSize sets the "test_size" field if the given value is not nil.
-func (tc *TargetCreate) SetNillableTestSize(ts *target.TestSize) *TargetCreate {
-	if ts != nil {
-		tc.SetTestSize(*ts)
+// AddTargetKindMappings adds the "target_kind_mappings" edges to the TargetKindMapping entity.
+func (tc *TargetCreate) AddTargetKindMappings(t ...*TargetKindMapping) *TargetCreate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
 	}
-	return tc
-}
-
-// SetSuccess sets the "success" field.
-func (tc *TargetCreate) SetSuccess(b bool) *TargetCreate {
-	tc.mutation.SetSuccess(b)
-	return tc
-}
-
-// SetNillableSuccess sets the "success" field if the given value is not nil.
-func (tc *TargetCreate) SetNillableSuccess(b *bool) *TargetCreate {
-	if b != nil {
-		tc.SetSuccess(*b)
-	}
-	return tc
-}
-
-// SetTestTimeout sets the "test_timeout" field.
-func (tc *TargetCreate) SetTestTimeout(i int64) *TargetCreate {
-	tc.mutation.SetTestTimeout(i)
-	return tc
-}
-
-// SetNillableTestTimeout sets the "test_timeout" field if the given value is not nil.
-func (tc *TargetCreate) SetNillableTestTimeout(i *int64) *TargetCreate {
-	if i != nil {
-		tc.SetTestTimeout(*i)
-	}
-	return tc
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (tc *TargetCreate) SetStartTimeInMs(i int64) *TargetCreate {
-	tc.mutation.SetStartTimeInMs(i)
-	return tc
-}
-
-// SetNillableStartTimeInMs sets the "start_time_in_ms" field if the given value is not nil.
-func (tc *TargetCreate) SetNillableStartTimeInMs(i *int64) *TargetCreate {
-	if i != nil {
-		tc.SetStartTimeInMs(*i)
-	}
-	return tc
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (tc *TargetCreate) SetEndTimeInMs(i int64) *TargetCreate {
-	tc.mutation.SetEndTimeInMs(i)
-	return tc
-}
-
-// SetNillableEndTimeInMs sets the "end_time_in_ms" field if the given value is not nil.
-func (tc *TargetCreate) SetNillableEndTimeInMs(i *int64) *TargetCreate {
-	if i != nil {
-		tc.SetEndTimeInMs(*i)
-	}
-	return tc
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (tc *TargetCreate) SetDurationInMs(i int64) *TargetCreate {
-	tc.mutation.SetDurationInMs(i)
-	return tc
-}
-
-// SetNillableDurationInMs sets the "duration_in_ms" field if the given value is not nil.
-func (tc *TargetCreate) SetNillableDurationInMs(i *int64) *TargetCreate {
-	if i != nil {
-		tc.SetDurationInMs(*i)
-	}
-	return tc
-}
-
-// SetAbortReason sets the "abort_reason" field.
-func (tc *TargetCreate) SetAbortReason(tr target.AbortReason) *TargetCreate {
-	tc.mutation.SetAbortReason(tr)
-	return tc
-}
-
-// SetNillableAbortReason sets the "abort_reason" field if the given value is not nil.
-func (tc *TargetCreate) SetNillableAbortReason(tr *target.AbortReason) *TargetCreate {
-	if tr != nil {
-		tc.SetAbortReason(*tr)
-	}
-	return tc
-}
-
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tc *TargetCreate) SetBazelInvocationID(id int) *TargetCreate {
-	tc.mutation.SetBazelInvocationID(id)
-	return tc
-}
-
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (tc *TargetCreate) SetNillableBazelInvocationID(id *int) *TargetCreate {
-	if id != nil {
-		tc = tc.SetBazelInvocationID(*id)
-	}
-	return tc
-}
-
-// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (tc *TargetCreate) SetBazelInvocation(b *BazelInvocation) *TargetCreate {
-	return tc.SetBazelInvocationID(b.ID)
+	return tc.AddTargetKindMappingIDs(ids...)
 }
 
 // Mutation returns the TargetMutation object of the builder.
@@ -172,7 +90,6 @@ func (tc *TargetCreate) Mutation() *TargetMutation {
 
 // Save creates the Target in the database.
 func (tc *TargetCreate) Save(ctx context.Context) (*Target, error) {
-	tc.defaults()
 	return withHooks(ctx, tc.sqlSave, tc.mutation, tc.hooks)
 }
 
@@ -198,28 +115,19 @@ func (tc *TargetCreate) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (tc *TargetCreate) defaults() {
-	if _, ok := tc.mutation.Success(); !ok {
-		v := target.DefaultSuccess
-		tc.mutation.SetSuccess(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (tc *TargetCreate) check() error {
 	if _, ok := tc.mutation.Label(); !ok {
 		return &ValidationError{Name: "label", err: errors.New(`ent: missing required field "Target.label"`)}
 	}
-	if v, ok := tc.mutation.TestSize(); ok {
-		if err := target.TestSizeValidator(v); err != nil {
-			return &ValidationError{Name: "test_size", err: fmt.Errorf(`ent: validator failed for field "Target.test_size": %w`, err)}
-		}
+	if _, ok := tc.mutation.Aspect(); !ok {
+		return &ValidationError{Name: "aspect", err: errors.New(`ent: missing required field "Target.aspect"`)}
 	}
-	if v, ok := tc.mutation.AbortReason(); ok {
-		if err := target.AbortReasonValidator(v); err != nil {
-			return &ValidationError{Name: "abort_reason", err: fmt.Errorf(`ent: validator failed for field "Target.abort_reason": %w`, err)}
-		}
+	if _, ok := tc.mutation.TargetKind(); !ok {
+		return &ValidationError{Name: "target_kind", err: errors.New(`ent: missing required field "Target.target_kind"`)}
+	}
+	if len(tc.mutation.InstanceNameIDs()) == 0 {
+		return &ValidationError{Name: "instance_name", err: errors.New(`ent: missing required edge "Target.instance_name"`)}
 	}
 	return nil
 }
@@ -252,57 +160,61 @@ func (tc *TargetCreate) createSpec() (*Target, *sqlgraph.CreateSpec) {
 		_spec.SetField(target.FieldLabel, field.TypeString, value)
 		_node.Label = value
 	}
-	if value, ok := tc.mutation.Tag(); ok {
-		_spec.SetField(target.FieldTag, field.TypeJSON, value)
-		_node.Tag = value
+	if value, ok := tc.mutation.Aspect(); ok {
+		_spec.SetField(target.FieldAspect, field.TypeString, value)
+		_node.Aspect = value
 	}
 	if value, ok := tc.mutation.TargetKind(); ok {
 		_spec.SetField(target.FieldTargetKind, field.TypeString, value)
 		_node.TargetKind = value
 	}
-	if value, ok := tc.mutation.TestSize(); ok {
-		_spec.SetField(target.FieldTestSize, field.TypeEnum, value)
-		_node.TestSize = value
-	}
-	if value, ok := tc.mutation.Success(); ok {
-		_spec.SetField(target.FieldSuccess, field.TypeBool, value)
-		_node.Success = value
-	}
-	if value, ok := tc.mutation.TestTimeout(); ok {
-		_spec.SetField(target.FieldTestTimeout, field.TypeInt64, value)
-		_node.TestTimeout = value
-	}
-	if value, ok := tc.mutation.StartTimeInMs(); ok {
-		_spec.SetField(target.FieldStartTimeInMs, field.TypeInt64, value)
-		_node.StartTimeInMs = value
-	}
-	if value, ok := tc.mutation.EndTimeInMs(); ok {
-		_spec.SetField(target.FieldEndTimeInMs, field.TypeInt64, value)
-		_node.EndTimeInMs = value
-	}
-	if value, ok := tc.mutation.DurationInMs(); ok {
-		_spec.SetField(target.FieldDurationInMs, field.TypeInt64, value)
-		_node.DurationInMs = value
-	}
-	if value, ok := tc.mutation.AbortReason(); ok {
-		_spec.SetField(target.FieldAbortReason, field.TypeEnum, value)
-		_node.AbortReason = value
-	}
-	if nodes := tc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
+	if nodes := tc.mutation.InstanceNameIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   target.BazelInvocationTable,
-			Columns: []string{target.BazelInvocationColumn},
+			Table:   target.InstanceNameTable,
+			Columns: []string{target.InstanceNameColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.bazel_invocation_targets = &nodes[0]
+		_node.instance_name_targets = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := tc.mutation.InvocationTargetsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.InvocationTargetsTable,
+			Columns: []string{target.InvocationTargetsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := tc.mutation.TargetKindMappingsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   target.TargetKindMappingsTable,
+			Columns: []string{target.TargetKindMappingsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(targetkindmapping.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -369,21 +281,15 @@ func (u *TargetUpsert) UpdateLabel() *TargetUpsert {
 	return u
 }
 
-// SetTag sets the "tag" field.
-func (u *TargetUpsert) SetTag(v []string) *TargetUpsert {
-	u.Set(target.FieldTag, v)
+// SetAspect sets the "aspect" field.
+func (u *TargetUpsert) SetAspect(v string) *TargetUpsert {
+	u.Set(target.FieldAspect, v)
 	return u
 }
 
-// UpdateTag sets the "tag" field to the value that was provided on create.
-func (u *TargetUpsert) UpdateTag() *TargetUpsert {
-	u.SetExcluded(target.FieldTag)
-	return u
-}
-
-// ClearTag clears the value of the "tag" field.
-func (u *TargetUpsert) ClearTag() *TargetUpsert {
-	u.SetNull(target.FieldTag)
+// UpdateAspect sets the "aspect" field to the value that was provided on create.
+func (u *TargetUpsert) UpdateAspect() *TargetUpsert {
+	u.SetExcluded(target.FieldAspect)
 	return u
 }
 
@@ -396,162 +302,6 @@ func (u *TargetUpsert) SetTargetKind(v string) *TargetUpsert {
 // UpdateTargetKind sets the "target_kind" field to the value that was provided on create.
 func (u *TargetUpsert) UpdateTargetKind() *TargetUpsert {
 	u.SetExcluded(target.FieldTargetKind)
-	return u
-}
-
-// ClearTargetKind clears the value of the "target_kind" field.
-func (u *TargetUpsert) ClearTargetKind() *TargetUpsert {
-	u.SetNull(target.FieldTargetKind)
-	return u
-}
-
-// SetTestSize sets the "test_size" field.
-func (u *TargetUpsert) SetTestSize(v target.TestSize) *TargetUpsert {
-	u.Set(target.FieldTestSize, v)
-	return u
-}
-
-// UpdateTestSize sets the "test_size" field to the value that was provided on create.
-func (u *TargetUpsert) UpdateTestSize() *TargetUpsert {
-	u.SetExcluded(target.FieldTestSize)
-	return u
-}
-
-// ClearTestSize clears the value of the "test_size" field.
-func (u *TargetUpsert) ClearTestSize() *TargetUpsert {
-	u.SetNull(target.FieldTestSize)
-	return u
-}
-
-// SetSuccess sets the "success" field.
-func (u *TargetUpsert) SetSuccess(v bool) *TargetUpsert {
-	u.Set(target.FieldSuccess, v)
-	return u
-}
-
-// UpdateSuccess sets the "success" field to the value that was provided on create.
-func (u *TargetUpsert) UpdateSuccess() *TargetUpsert {
-	u.SetExcluded(target.FieldSuccess)
-	return u
-}
-
-// ClearSuccess clears the value of the "success" field.
-func (u *TargetUpsert) ClearSuccess() *TargetUpsert {
-	u.SetNull(target.FieldSuccess)
-	return u
-}
-
-// SetTestTimeout sets the "test_timeout" field.
-func (u *TargetUpsert) SetTestTimeout(v int64) *TargetUpsert {
-	u.Set(target.FieldTestTimeout, v)
-	return u
-}
-
-// UpdateTestTimeout sets the "test_timeout" field to the value that was provided on create.
-func (u *TargetUpsert) UpdateTestTimeout() *TargetUpsert {
-	u.SetExcluded(target.FieldTestTimeout)
-	return u
-}
-
-// AddTestTimeout adds v to the "test_timeout" field.
-func (u *TargetUpsert) AddTestTimeout(v int64) *TargetUpsert {
-	u.Add(target.FieldTestTimeout, v)
-	return u
-}
-
-// ClearTestTimeout clears the value of the "test_timeout" field.
-func (u *TargetUpsert) ClearTestTimeout() *TargetUpsert {
-	u.SetNull(target.FieldTestTimeout)
-	return u
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (u *TargetUpsert) SetStartTimeInMs(v int64) *TargetUpsert {
-	u.Set(target.FieldStartTimeInMs, v)
-	return u
-}
-
-// UpdateStartTimeInMs sets the "start_time_in_ms" field to the value that was provided on create.
-func (u *TargetUpsert) UpdateStartTimeInMs() *TargetUpsert {
-	u.SetExcluded(target.FieldStartTimeInMs)
-	return u
-}
-
-// AddStartTimeInMs adds v to the "start_time_in_ms" field.
-func (u *TargetUpsert) AddStartTimeInMs(v int64) *TargetUpsert {
-	u.Add(target.FieldStartTimeInMs, v)
-	return u
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (u *TargetUpsert) ClearStartTimeInMs() *TargetUpsert {
-	u.SetNull(target.FieldStartTimeInMs)
-	return u
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (u *TargetUpsert) SetEndTimeInMs(v int64) *TargetUpsert {
-	u.Set(target.FieldEndTimeInMs, v)
-	return u
-}
-
-// UpdateEndTimeInMs sets the "end_time_in_ms" field to the value that was provided on create.
-func (u *TargetUpsert) UpdateEndTimeInMs() *TargetUpsert {
-	u.SetExcluded(target.FieldEndTimeInMs)
-	return u
-}
-
-// AddEndTimeInMs adds v to the "end_time_in_ms" field.
-func (u *TargetUpsert) AddEndTimeInMs(v int64) *TargetUpsert {
-	u.Add(target.FieldEndTimeInMs, v)
-	return u
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (u *TargetUpsert) ClearEndTimeInMs() *TargetUpsert {
-	u.SetNull(target.FieldEndTimeInMs)
-	return u
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (u *TargetUpsert) SetDurationInMs(v int64) *TargetUpsert {
-	u.Set(target.FieldDurationInMs, v)
-	return u
-}
-
-// UpdateDurationInMs sets the "duration_in_ms" field to the value that was provided on create.
-func (u *TargetUpsert) UpdateDurationInMs() *TargetUpsert {
-	u.SetExcluded(target.FieldDurationInMs)
-	return u
-}
-
-// AddDurationInMs adds v to the "duration_in_ms" field.
-func (u *TargetUpsert) AddDurationInMs(v int64) *TargetUpsert {
-	u.Add(target.FieldDurationInMs, v)
-	return u
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (u *TargetUpsert) ClearDurationInMs() *TargetUpsert {
-	u.SetNull(target.FieldDurationInMs)
-	return u
-}
-
-// SetAbortReason sets the "abort_reason" field.
-func (u *TargetUpsert) SetAbortReason(v target.AbortReason) *TargetUpsert {
-	u.Set(target.FieldAbortReason, v)
-	return u
-}
-
-// UpdateAbortReason sets the "abort_reason" field to the value that was provided on create.
-func (u *TargetUpsert) UpdateAbortReason() *TargetUpsert {
-	u.SetExcluded(target.FieldAbortReason)
-	return u
-}
-
-// ClearAbortReason clears the value of the "abort_reason" field.
-func (u *TargetUpsert) ClearAbortReason() *TargetUpsert {
-	u.SetNull(target.FieldAbortReason)
 	return u
 }
 
@@ -609,24 +359,17 @@ func (u *TargetUpsertOne) UpdateLabel() *TargetUpsertOne {
 	})
 }
 
-// SetTag sets the "tag" field.
-func (u *TargetUpsertOne) SetTag(v []string) *TargetUpsertOne {
+// SetAspect sets the "aspect" field.
+func (u *TargetUpsertOne) SetAspect(v string) *TargetUpsertOne {
 	return u.Update(func(s *TargetUpsert) {
-		s.SetTag(v)
+		s.SetAspect(v)
 	})
 }
 
-// UpdateTag sets the "tag" field to the value that was provided on create.
-func (u *TargetUpsertOne) UpdateTag() *TargetUpsertOne {
+// UpdateAspect sets the "aspect" field to the value that was provided on create.
+func (u *TargetUpsertOne) UpdateAspect() *TargetUpsertOne {
 	return u.Update(func(s *TargetUpsert) {
-		s.UpdateTag()
-	})
-}
-
-// ClearTag clears the value of the "tag" field.
-func (u *TargetUpsertOne) ClearTag() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearTag()
+		s.UpdateAspect()
 	})
 }
 
@@ -641,188 +384,6 @@ func (u *TargetUpsertOne) SetTargetKind(v string) *TargetUpsertOne {
 func (u *TargetUpsertOne) UpdateTargetKind() *TargetUpsertOne {
 	return u.Update(func(s *TargetUpsert) {
 		s.UpdateTargetKind()
-	})
-}
-
-// ClearTargetKind clears the value of the "target_kind" field.
-func (u *TargetUpsertOne) ClearTargetKind() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearTargetKind()
-	})
-}
-
-// SetTestSize sets the "test_size" field.
-func (u *TargetUpsertOne) SetTestSize(v target.TestSize) *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetTestSize(v)
-	})
-}
-
-// UpdateTestSize sets the "test_size" field to the value that was provided on create.
-func (u *TargetUpsertOne) UpdateTestSize() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateTestSize()
-	})
-}
-
-// ClearTestSize clears the value of the "test_size" field.
-func (u *TargetUpsertOne) ClearTestSize() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearTestSize()
-	})
-}
-
-// SetSuccess sets the "success" field.
-func (u *TargetUpsertOne) SetSuccess(v bool) *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetSuccess(v)
-	})
-}
-
-// UpdateSuccess sets the "success" field to the value that was provided on create.
-func (u *TargetUpsertOne) UpdateSuccess() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateSuccess()
-	})
-}
-
-// ClearSuccess clears the value of the "success" field.
-func (u *TargetUpsertOne) ClearSuccess() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearSuccess()
-	})
-}
-
-// SetTestTimeout sets the "test_timeout" field.
-func (u *TargetUpsertOne) SetTestTimeout(v int64) *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetTestTimeout(v)
-	})
-}
-
-// AddTestTimeout adds v to the "test_timeout" field.
-func (u *TargetUpsertOne) AddTestTimeout(v int64) *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.AddTestTimeout(v)
-	})
-}
-
-// UpdateTestTimeout sets the "test_timeout" field to the value that was provided on create.
-func (u *TargetUpsertOne) UpdateTestTimeout() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateTestTimeout()
-	})
-}
-
-// ClearTestTimeout clears the value of the "test_timeout" field.
-func (u *TargetUpsertOne) ClearTestTimeout() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearTestTimeout()
-	})
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (u *TargetUpsertOne) SetStartTimeInMs(v int64) *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetStartTimeInMs(v)
-	})
-}
-
-// AddStartTimeInMs adds v to the "start_time_in_ms" field.
-func (u *TargetUpsertOne) AddStartTimeInMs(v int64) *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.AddStartTimeInMs(v)
-	})
-}
-
-// UpdateStartTimeInMs sets the "start_time_in_ms" field to the value that was provided on create.
-func (u *TargetUpsertOne) UpdateStartTimeInMs() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateStartTimeInMs()
-	})
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (u *TargetUpsertOne) ClearStartTimeInMs() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearStartTimeInMs()
-	})
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (u *TargetUpsertOne) SetEndTimeInMs(v int64) *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetEndTimeInMs(v)
-	})
-}
-
-// AddEndTimeInMs adds v to the "end_time_in_ms" field.
-func (u *TargetUpsertOne) AddEndTimeInMs(v int64) *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.AddEndTimeInMs(v)
-	})
-}
-
-// UpdateEndTimeInMs sets the "end_time_in_ms" field to the value that was provided on create.
-func (u *TargetUpsertOne) UpdateEndTimeInMs() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateEndTimeInMs()
-	})
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (u *TargetUpsertOne) ClearEndTimeInMs() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearEndTimeInMs()
-	})
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (u *TargetUpsertOne) SetDurationInMs(v int64) *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetDurationInMs(v)
-	})
-}
-
-// AddDurationInMs adds v to the "duration_in_ms" field.
-func (u *TargetUpsertOne) AddDurationInMs(v int64) *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.AddDurationInMs(v)
-	})
-}
-
-// UpdateDurationInMs sets the "duration_in_ms" field to the value that was provided on create.
-func (u *TargetUpsertOne) UpdateDurationInMs() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateDurationInMs()
-	})
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (u *TargetUpsertOne) ClearDurationInMs() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearDurationInMs()
-	})
-}
-
-// SetAbortReason sets the "abort_reason" field.
-func (u *TargetUpsertOne) SetAbortReason(v target.AbortReason) *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetAbortReason(v)
-	})
-}
-
-// UpdateAbortReason sets the "abort_reason" field to the value that was provided on create.
-func (u *TargetUpsertOne) UpdateAbortReason() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateAbortReason()
-	})
-}
-
-// ClearAbortReason clears the value of the "abort_reason" field.
-func (u *TargetUpsertOne) ClearAbortReason() *TargetUpsertOne {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearAbortReason()
 	})
 }
 
@@ -878,7 +439,6 @@ func (tcb *TargetCreateBulk) Save(ctx context.Context) ([]*Target, error) {
 	for i := range tcb.builders {
 		func(i int, root context.Context) {
 			builder := tcb.builders[i]
-			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TargetMutation)
 				if !ok {
@@ -1044,24 +604,17 @@ func (u *TargetUpsertBulk) UpdateLabel() *TargetUpsertBulk {
 	})
 }
 
-// SetTag sets the "tag" field.
-func (u *TargetUpsertBulk) SetTag(v []string) *TargetUpsertBulk {
+// SetAspect sets the "aspect" field.
+func (u *TargetUpsertBulk) SetAspect(v string) *TargetUpsertBulk {
 	return u.Update(func(s *TargetUpsert) {
-		s.SetTag(v)
+		s.SetAspect(v)
 	})
 }
 
-// UpdateTag sets the "tag" field to the value that was provided on create.
-func (u *TargetUpsertBulk) UpdateTag() *TargetUpsertBulk {
+// UpdateAspect sets the "aspect" field to the value that was provided on create.
+func (u *TargetUpsertBulk) UpdateAspect() *TargetUpsertBulk {
 	return u.Update(func(s *TargetUpsert) {
-		s.UpdateTag()
-	})
-}
-
-// ClearTag clears the value of the "tag" field.
-func (u *TargetUpsertBulk) ClearTag() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearTag()
+		s.UpdateAspect()
 	})
 }
 
@@ -1076,188 +629,6 @@ func (u *TargetUpsertBulk) SetTargetKind(v string) *TargetUpsertBulk {
 func (u *TargetUpsertBulk) UpdateTargetKind() *TargetUpsertBulk {
 	return u.Update(func(s *TargetUpsert) {
 		s.UpdateTargetKind()
-	})
-}
-
-// ClearTargetKind clears the value of the "target_kind" field.
-func (u *TargetUpsertBulk) ClearTargetKind() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearTargetKind()
-	})
-}
-
-// SetTestSize sets the "test_size" field.
-func (u *TargetUpsertBulk) SetTestSize(v target.TestSize) *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetTestSize(v)
-	})
-}
-
-// UpdateTestSize sets the "test_size" field to the value that was provided on create.
-func (u *TargetUpsertBulk) UpdateTestSize() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateTestSize()
-	})
-}
-
-// ClearTestSize clears the value of the "test_size" field.
-func (u *TargetUpsertBulk) ClearTestSize() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearTestSize()
-	})
-}
-
-// SetSuccess sets the "success" field.
-func (u *TargetUpsertBulk) SetSuccess(v bool) *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetSuccess(v)
-	})
-}
-
-// UpdateSuccess sets the "success" field to the value that was provided on create.
-func (u *TargetUpsertBulk) UpdateSuccess() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateSuccess()
-	})
-}
-
-// ClearSuccess clears the value of the "success" field.
-func (u *TargetUpsertBulk) ClearSuccess() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearSuccess()
-	})
-}
-
-// SetTestTimeout sets the "test_timeout" field.
-func (u *TargetUpsertBulk) SetTestTimeout(v int64) *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetTestTimeout(v)
-	})
-}
-
-// AddTestTimeout adds v to the "test_timeout" field.
-func (u *TargetUpsertBulk) AddTestTimeout(v int64) *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.AddTestTimeout(v)
-	})
-}
-
-// UpdateTestTimeout sets the "test_timeout" field to the value that was provided on create.
-func (u *TargetUpsertBulk) UpdateTestTimeout() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateTestTimeout()
-	})
-}
-
-// ClearTestTimeout clears the value of the "test_timeout" field.
-func (u *TargetUpsertBulk) ClearTestTimeout() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearTestTimeout()
-	})
-}
-
-// SetStartTimeInMs sets the "start_time_in_ms" field.
-func (u *TargetUpsertBulk) SetStartTimeInMs(v int64) *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetStartTimeInMs(v)
-	})
-}
-
-// AddStartTimeInMs adds v to the "start_time_in_ms" field.
-func (u *TargetUpsertBulk) AddStartTimeInMs(v int64) *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.AddStartTimeInMs(v)
-	})
-}
-
-// UpdateStartTimeInMs sets the "start_time_in_ms" field to the value that was provided on create.
-func (u *TargetUpsertBulk) UpdateStartTimeInMs() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateStartTimeInMs()
-	})
-}
-
-// ClearStartTimeInMs clears the value of the "start_time_in_ms" field.
-func (u *TargetUpsertBulk) ClearStartTimeInMs() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearStartTimeInMs()
-	})
-}
-
-// SetEndTimeInMs sets the "end_time_in_ms" field.
-func (u *TargetUpsertBulk) SetEndTimeInMs(v int64) *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetEndTimeInMs(v)
-	})
-}
-
-// AddEndTimeInMs adds v to the "end_time_in_ms" field.
-func (u *TargetUpsertBulk) AddEndTimeInMs(v int64) *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.AddEndTimeInMs(v)
-	})
-}
-
-// UpdateEndTimeInMs sets the "end_time_in_ms" field to the value that was provided on create.
-func (u *TargetUpsertBulk) UpdateEndTimeInMs() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateEndTimeInMs()
-	})
-}
-
-// ClearEndTimeInMs clears the value of the "end_time_in_ms" field.
-func (u *TargetUpsertBulk) ClearEndTimeInMs() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearEndTimeInMs()
-	})
-}
-
-// SetDurationInMs sets the "duration_in_ms" field.
-func (u *TargetUpsertBulk) SetDurationInMs(v int64) *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetDurationInMs(v)
-	})
-}
-
-// AddDurationInMs adds v to the "duration_in_ms" field.
-func (u *TargetUpsertBulk) AddDurationInMs(v int64) *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.AddDurationInMs(v)
-	})
-}
-
-// UpdateDurationInMs sets the "duration_in_ms" field to the value that was provided on create.
-func (u *TargetUpsertBulk) UpdateDurationInMs() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateDurationInMs()
-	})
-}
-
-// ClearDurationInMs clears the value of the "duration_in_ms" field.
-func (u *TargetUpsertBulk) ClearDurationInMs() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearDurationInMs()
-	})
-}
-
-// SetAbortReason sets the "abort_reason" field.
-func (u *TargetUpsertBulk) SetAbortReason(v target.AbortReason) *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.SetAbortReason(v)
-	})
-}
-
-// UpdateAbortReason sets the "abort_reason" field to the value that was provided on create.
-func (u *TargetUpsertBulk) UpdateAbortReason() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.UpdateAbortReason()
-	})
-}
-
-// ClearAbortReason clears the value of the "abort_reason" field.
-func (u *TargetUpsertBulk) ClearAbortReason() *TargetUpsertBulk {
-	return u.Update(func(s *TargetUpsert) {
-		s.ClearAbortReason()
 	})
 }
 

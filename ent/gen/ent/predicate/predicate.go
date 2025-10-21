@@ -60,6 +60,9 @@ type InstanceName func(*sql.Selector)
 // InvocationFiles is the predicate function for invocationfiles builders.
 type InvocationFiles func(*sql.Selector)
 
+// InvocationTarget is the predicate function for invocationtarget builders.
+type InvocationTarget func(*sql.Selector)
+
 // MemoryMetrics is the predicate function for memorymetrics builders.
 type MemoryMetrics func(*sql.Selector)
 
@@ -98,6 +101,9 @@ type SystemNetworkStats func(*sql.Selector)
 
 // Target is the predicate function for target builders.
 type Target func(*sql.Selector)
+
+// TargetKindMapping is the predicate function for targetkindmapping builders.
+type TargetKindMapping func(*sql.Selector)
 
 // TargetMetrics is the predicate function for targetmetrics builders.
 type TargetMetrics func(*sql.Selector)

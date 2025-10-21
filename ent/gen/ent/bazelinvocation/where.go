@@ -1928,21 +1928,44 @@ func HasTestCollectionWith(preds ...predicate.TestCollection) predicate.BazelInv
 	})
 }
 
-// HasTargets applies the HasEdge predicate on the "targets" edge.
-func HasTargets() predicate.BazelInvocation {
+// HasInvocationTargets applies the HasEdge predicate on the "invocation_targets" edge.
+func HasInvocationTargets() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, TargetsTable, TargetsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, InvocationTargetsTable, InvocationTargetsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasTargetsWith applies the HasEdge predicate on the "targets" edge with a given conditions (other predicates).
-func HasTargetsWith(preds ...predicate.Target) predicate.BazelInvocation {
+// HasInvocationTargetsWith applies the HasEdge predicate on the "invocation_targets" edge with a given conditions (other predicates).
+func HasInvocationTargetsWith(preds ...predicate.InvocationTarget) predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
-		step := newTargetsStep()
+		step := newInvocationTargetsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasTargetKindMappings applies the HasEdge predicate on the "target_kind_mappings" edge.
+func HasTargetKindMappings() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TargetKindMappingsTable, TargetKindMappingsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTargetKindMappingsWith applies the HasEdge predicate on the "target_kind_mappings" edge with a given conditions (other predicates).
+func HasTargetKindMappingsWith(preds ...predicate.TargetKindMapping) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newTargetKindMappingsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

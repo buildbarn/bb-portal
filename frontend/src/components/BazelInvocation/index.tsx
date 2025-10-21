@@ -2,7 +2,6 @@ import BuildStepResultTag, {
   BuildStepResultEnum,
 } from "@/components/BuildStepResultTag";
 import Link from "@/components/Link";
-import TargetMetricsDisplay from "../TargetMetrics";
 import ArtifactsDataMetrics from "../Artifacts";
 import MemoryMetricsDisplay from "../MemoryMetrics";
 import SystemMetricsDisplay from "../SystemMetricsDisplay";
@@ -18,6 +17,7 @@ import {
   RunnerCount
 } from "@/graphql/__generated__/graphql";
 import themeStyles from "@/theme/theme.module.css";
+import { FeatureType, isFeatureEnabled } from "@/utils/isFeatureEnabled";
 import {
   AreaChartOutlined,
   BranchesOutlined,
@@ -38,6 +38,7 @@ import ActionStatisticsDisplay from "../ActionStatisticsDisplay";
 import styles from "../AppBar/index.module.css";
 import BuildLogsDisplay from "../BuildLogsDisplay";
 import ProfileDropdown from "../ProfileDropdown";
+import { InvocationTargetsTab } from "../InvocationTargets/InvocationTargetsTab";
 
 const DEFAULT_TAB_KEY = "BazelInvocationTabs-Overview";
 
@@ -52,7 +53,6 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     user,
     metrics,
     testCollection,
-    targets,
     numFetches,
     cpu,
     configurationMnemonic,
@@ -66,11 +66,6 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     runnerMetrics.push(item)
   );
 
-  var targetTimes: Map<string, number> = new Map<string, number>();
-  targets?.map((x) => {
-    targetTimes.set(x.label ?? "", x.durationInMs ?? 0);
-  });
-
   const hideActionsTab: boolean = metrics?.actionSummary == undefined || metrics?.actionSummary == null;
   const hideLogsTab: boolean = false;
   const hideArtifactsTab: boolean = metrics?.artifactMetrics == undefined || metrics?.artifactMetrics == null;
@@ -78,7 +73,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
   const hideSystemMetricsTab: boolean =
     (metrics?.timingMetrics == undefined || metrics?.timingMetrics == null)
     && (metrics?.networkMetrics == undefined || metrics?.networkMetrics == null);
-  const hideTargetsTab: boolean = (targets == undefined || targets == null || targets.length == 0) && (metrics?.targetMetrics == undefined || metrics?.targetMetrics == null);
+  const hideTargetsTab: boolean = !isFeatureEnabled(FeatureType.BES_PAGE_TARGETS);
   const hideTestsTab: boolean = (testCollection == undefined || testCollection == null || testCollection.length == 0)
   const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null;
   const hideProblemsTab: boolean = state.exitCode?.name == "SUCCESS";
@@ -176,19 +171,20 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
       </Space>
     ),
   });
-  if (!hideTargetsTab) items.push({
-    key: "BazelInvocationTabs-Targets",
-    label: "Targets",
-    icon: <DeploymentUnitOutlined />,
-    children: (
-      <Space direction="vertical" size="middle" className={themeStyles.space}>
-        <TargetMetricsDisplay
+  if (!hideTargetsTab)
+    items.push({
+      key: "BazelInvocationTabs-Targets",
+      label: "Targets",
+      icon: <DeploymentUnitOutlined />,
+      children: (
+        <Space direction="vertical" size="middle" className={themeStyles.space}>
+          <InvocationTargetsTab
+          invocationId={invocationID}
           targetMetrics={metrics?.targetMetrics ?? undefined}
-          targetData={targets ?? undefined}
-        />
-      </Space>
-    ),
-  });
+          />
+        </Space>
+      ),
+    });
   if (!hideTestsTab) items.push({
     key: "BazelInvocationTabs-Tests",
     label: "Tests",
@@ -197,7 +193,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
       <Space direction="vertical" size="middle" className={themeStyles.space}>
         <TestMetricsDisplay
           testMetrics={testCollection ?? undefined}
-          targetTimes={targetTimes}
+          invocationId={invocationID}
         />
       </Space>
     ),

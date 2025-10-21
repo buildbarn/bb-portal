@@ -122,6 +122,12 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 				if err := dc.RemoveBuildsWithoutInvocations(ctx); err != nil {
 					slog.Warn("Failed to remove builds without invocations", "err", err)
 				}
+				if err := dc.RemoveTargetKindMappings(ctx); err != nil {
+					slog.Warn("Failed to remove old TargetKindMappings", "err", err)
+				}
+				if err := dc.RemoveUnusedTargets(ctx); err != nil {
+					slog.Warn("Failed to remove unused targets", "err", err)
+				}
 				slog.Info("Finished database cleanup")
 			}
 		}

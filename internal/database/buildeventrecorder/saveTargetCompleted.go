@@ -5,55 +5,73 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveTargetCompleted(ctx context.Context, tx *ent.Tx, targetCompleted *bes.TargetComplete, label string, aborted *bes.Aborted) error {
+func (r *BuildEventRecorder) saveTargetCompleted(ctx context.Context, tx *ent.Tx, targetCompleted *bes.TargetComplete, targetCompletedID *bes.BuildEventId_TargetCompletedId, aborted *bes.Aborted) error {
 	if r.saveTargetDataLevel.GetNone() != nil {
 		return nil
 	}
 
-	if label == "" {
-		return fmt.Errorf("missing label for TargetCompleted BES message")
+	if targetCompletedID == nil {
+		return fmt.Errorf("missing TargetCompletedId for TargetCompleted BES message")
+	}
+	if targetCompletedID.Label == "" {
+		return fmt.Errorf("missing label in TargetCompletedId for TargetCompleted BES message")
 	}
 
-	targetDb, err := tx.Target.Query().Where(
-		target.LabelEQ(label),
-		target.HasBazelInvocationWith(bazelinvocation.ID(r.InvocationDbID)),
-	).Only(ctx)
-	if err != nil {
-		return util.StatusWrap(err, "failed to find target for target completed BEP message")
-	}
-
-	update := tx.Target.Update().
+	targetKindMapping, err := tx.TargetKindMapping.Query().
 		Where(
-			target.ID(targetDb.ID),
-		)
+			// This creates a more efficient query than using `HasBazelInvocationWith`
+			predicate.TargetKindMapping(sql.FieldEQ(targetkindmapping.BazelInvocationColumn, r.InvocationDbID)),
+			targetkindmapping.HasTargetWith(
+				target.LabelEQ(targetCompletedID.Label),
+				target.AspectEQ(targetCompletedID.Aspect),
+			),
+		).
+		WithTarget().
+		Only(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to find target kind mapping for label %q: %w", targetCompletedID.Label, err)
+	}
+
+	update := tx.InvocationTarget.Create().
+		SetBazelInvocationID(r.InvocationDbID).
+		SetTargetID(targetKindMapping.Edges.Target.ID)
 
 	if r.IsRealTime {
 		now := time.Now().UnixMilli()
+		update.SetStartTimeInMs(targetKindMapping.StartTimeInMs)
 		update.SetEndTimeInMs(now)
-		update.SetDurationInMs(now - targetDb.StartTimeInMs)
+		update.SetDurationInMs(now - targetKindMapping.StartTimeInMs)
 	}
+
 	if targetCompleted != nil {
-		update.SetSuccess(targetCompleted.GetSuccess())
-		if r.saveTargetDataLevel.GetEnriched() != nil && targetCompleted.TestTimeout != nil {
-			update.SetTestTimeout(targetCompleted.TestTimeout.Seconds)
+		update.SetSuccess(targetCompleted.Success)
+		if targetCompleted.FailureDetail.GetMessage() != "" {
+			update.SetFailureMessage(targetCompleted.FailureDetail.GetMessage())
 		}
-	} else {
-		update.SetSuccess(false)
+		if len(targetCompleted.Tag) > 0 {
+			update.SetTags(targetCompleted.Tag)
+		}
 	}
+
 	if aborted != nil {
-		update.SetAbortReason(target.AbortReason(bes.Aborted_AbortReason_name[int32(aborted.Reason)]))
+		update.SetAbortReason(invocationtarget.AbortReason(bes.Aborted_AbortReason_name[int32(aborted.Reason)]))
+	} else {
+		update.SetAbortReason(invocationtarget.AbortReasonNONE)
 	}
 
 	err = update.Exec(ctx)
 	if err != nil {
-		return util.StatusWrap(err, "failed to update target for target completed BEP message")
+		return util.StatusWrap(err, "failed to update invocation target for target completed BEP message")
 	}
 	return nil
 }

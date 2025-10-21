@@ -1,12 +1,15 @@
 extend type Query {
   bazelInvocation(invocationId: String!): BazelInvocation!
   getBuild(buildURL: String, buildUUID: UUID): Build
+  getTarget(
+    instanceName: String!
+    label: String!
+    aspect: String!
+    targetKind: String!
+  ): Target
   getUniqueTestLabels(param: String): [String]
-  getUniqueTargetLabels(param: String): [String]
   getTestDurationAggregation(label: String): [TargetAggregate]
   getTestPassAggregation(label: String): [TargetAggregate]
-  getTargetDurationAggregation(label: String): [TargetAggregate]
-  getTargetPassAggregation(label: String): [TargetAggregate]
   getTestsWithOffset(
     label: String
     offset: Int
@@ -14,13 +17,6 @@ extend type Query {
     sortBy: String
     direction: String
   ): TestGridResult
-  getTargetsWithOffset(
-    label: String
-    offset: Int
-    limit: Int
-    sortBy: String
-    direction: String
-  ): TargetGridResult
   getAveragePassPercentageForLabel(label: String!): Float
 }
 
@@ -34,25 +30,9 @@ type TargetAggregate {
   pass: Int
 }
 
-type TargetGridResult {
-  total: Int
-  result: [TargetGridRow]
-}
-
 type TestGridResult {
   total: Int
   result: [TestGridRow]
-}
-
-type TargetGridRow {
-  label: String
-  count: Int
-  sum: Int
-  min: Int
-  max: Int
-  avg: Float
-  passRate: Float
-  cells: [TargetGridCell]
 }
 
 type TestGridRow {
@@ -64,12 +44,6 @@ type TestGridRow {
   avg: Float
   passRate: Float
   cells: [TestGridCell]
-}
-
-type TargetGridCell {
-  invocationId: UUID
-  complete: Target
-  abortReason: TargetAbortReason
 }
 
 type TestGridCell {
@@ -204,8 +178,9 @@ type Profile {
 
 extend type BazelInvocation {
   profile: Profile
+  buildLogs: String @goField(forceResolver: true)
 }
 
-extend type BazelInvocation {
-  buildLogs: String @goField(forceResolver: true)
+extend type Target {
+  invocationTargetsTotalDurationMillis: Int! @goField(forceResolver: true)
 }

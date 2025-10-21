@@ -11,7 +11,6 @@ import (
 
 	"github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/google/uuid"
 )
@@ -109,28 +108,6 @@ type TargetAggregate struct {
 	Max   *int    `json:"max,omitempty"`
 	Avg   *int    `json:"avg,omitempty"`
 	Pass  *int    `json:"pass,omitempty"`
-}
-
-type TargetGridCell struct {
-	InvocationID *uuid.UUID          `json:"invocationId,omitempty"`
-	Complete     *ent.Target         `json:"complete,omitempty"`
-	AbortReason  *target.AbortReason `json:"abortReason,omitempty"`
-}
-
-type TargetGridResult struct {
-	Total  *int             `json:"total,omitempty"`
-	Result []*TargetGridRow `json:"result,omitempty"`
-}
-
-type TargetGridRow struct {
-	Label    *string           `json:"label,omitempty"`
-	Count    *int              `json:"count,omitempty"`
-	Sum      *int              `json:"sum,omitempty"`
-	Min      *int              `json:"min,omitempty"`
-	Max      *int              `json:"max,omitempty"`
-	Avg      *float64          `json:"avg,omitempty"`
-	PassRate *float64          `json:"passRate,omitempty"`
-	Cells    []*TargetGridCell `json:"cells,omitempty"`
 }
 
 type TargetProblem struct {

@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -11,22 +12,28 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 )
 
 // TargetQuery is the builder for querying Target entities.
 type TargetQuery struct {
 	config
-	ctx                 *QueryContext
-	order               []target.OrderOption
-	inters              []Interceptor
-	predicates          []predicate.Target
-	withBazelInvocation *BazelInvocationQuery
-	withFKs             bool
-	loadTotal           []func(context.Context, []*Target) error
-	modifiers           []func(*sql.Selector)
+	ctx                         *QueryContext
+	order                       []target.OrderOption
+	inters                      []Interceptor
+	predicates                  []predicate.Target
+	withInstanceName            *InstanceNameQuery
+	withInvocationTargets       *InvocationTargetQuery
+	withTargetKindMappings      *TargetKindMappingQuery
+	withFKs                     bool
+	loadTotal                   []func(context.Context, []*Target) error
+	modifiers                   []func(*sql.Selector)
+	withNamedInvocationTargets  map[string]*InvocationTargetQuery
+	withNamedTargetKindMappings map[string]*TargetKindMappingQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -63,9 +70,9 @@ func (tq *TargetQuery) Order(o ...target.OrderOption) *TargetQuery {
 	return tq
 }
 
-// QueryBazelInvocation chains the current query on the "bazel_invocation" edge.
-func (tq *TargetQuery) QueryBazelInvocation() *BazelInvocationQuery {
-	query := (&BazelInvocationClient{config: tq.config}).Query()
+// QueryInstanceName chains the current query on the "instance_name" edge.
+func (tq *TargetQuery) QueryInstanceName() *InstanceNameQuery {
+	query := (&InstanceNameClient{config: tq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := tq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -76,8 +83,52 @@ func (tq *TargetQuery) QueryBazelInvocation() *BazelInvocationQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(target.Table, target.FieldID, selector),
-			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, target.BazelInvocationTable, target.BazelInvocationColumn),
+			sqlgraph.To(instancename.Table, instancename.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, target.InstanceNameTable, target.InstanceNameColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryInvocationTargets chains the current query on the "invocation_targets" edge.
+func (tq *TargetQuery) QueryInvocationTargets() *InvocationTargetQuery {
+	query := (&InvocationTargetClient{config: tq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := tq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := tq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(target.Table, target.FieldID, selector),
+			sqlgraph.To(invocationtarget.Table, invocationtarget.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, target.InvocationTargetsTable, target.InvocationTargetsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTargetKindMappings chains the current query on the "target_kind_mappings" edge.
+func (tq *TargetQuery) QueryTargetKindMappings() *TargetKindMappingQuery {
+	query := (&TargetKindMappingClient{config: tq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := tq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := tq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(target.Table, target.FieldID, selector),
+			sqlgraph.To(targetkindmapping.Table, targetkindmapping.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, target.TargetKindMappingsTable, target.TargetKindMappingsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
 		return fromU, nil
@@ -272,12 +323,14 @@ func (tq *TargetQuery) Clone() *TargetQuery {
 		return nil
 	}
 	return &TargetQuery{
-		config:              tq.config,
-		ctx:                 tq.ctx.Clone(),
-		order:               append([]target.OrderOption{}, tq.order...),
-		inters:              append([]Interceptor{}, tq.inters...),
-		predicates:          append([]predicate.Target{}, tq.predicates...),
-		withBazelInvocation: tq.withBazelInvocation.Clone(),
+		config:                 tq.config,
+		ctx:                    tq.ctx.Clone(),
+		order:                  append([]target.OrderOption{}, tq.order...),
+		inters:                 append([]Interceptor{}, tq.inters...),
+		predicates:             append([]predicate.Target{}, tq.predicates...),
+		withInstanceName:       tq.withInstanceName.Clone(),
+		withInvocationTargets:  tq.withInvocationTargets.Clone(),
+		withTargetKindMappings: tq.withTargetKindMappings.Clone(),
 		// clone intermediate query.
 		sql:       tq.sql.Clone(),
 		path:      tq.path,
@@ -285,14 +338,36 @@ func (tq *TargetQuery) Clone() *TargetQuery {
 	}
 }
 
-// WithBazelInvocation tells the query-builder to eager-load the nodes that are connected to
-// the "bazel_invocation" edge. The optional arguments are used to configure the query builder of the edge.
-func (tq *TargetQuery) WithBazelInvocation(opts ...func(*BazelInvocationQuery)) *TargetQuery {
-	query := (&BazelInvocationClient{config: tq.config}).Query()
+// WithInstanceName tells the query-builder to eager-load the nodes that are connected to
+// the "instance_name" edge. The optional arguments are used to configure the query builder of the edge.
+func (tq *TargetQuery) WithInstanceName(opts ...func(*InstanceNameQuery)) *TargetQuery {
+	query := (&InstanceNameClient{config: tq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	tq.withBazelInvocation = query
+	tq.withInstanceName = query
+	return tq
+}
+
+// WithInvocationTargets tells the query-builder to eager-load the nodes that are connected to
+// the "invocation_targets" edge. The optional arguments are used to configure the query builder of the edge.
+func (tq *TargetQuery) WithInvocationTargets(opts ...func(*InvocationTargetQuery)) *TargetQuery {
+	query := (&InvocationTargetClient{config: tq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	tq.withInvocationTargets = query
+	return tq
+}
+
+// WithTargetKindMappings tells the query-builder to eager-load the nodes that are connected to
+// the "target_kind_mappings" edge. The optional arguments are used to configure the query builder of the edge.
+func (tq *TargetQuery) WithTargetKindMappings(opts ...func(*TargetKindMappingQuery)) *TargetQuery {
+	query := (&TargetKindMappingClient{config: tq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	tq.withTargetKindMappings = query
 	return tq
 }
 
@@ -375,11 +450,13 @@ func (tq *TargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Targe
 		nodes       = []*Target{}
 		withFKs     = tq.withFKs
 		_spec       = tq.querySpec()
-		loadedTypes = [1]bool{
-			tq.withBazelInvocation != nil,
+		loadedTypes = [3]bool{
+			tq.withInstanceName != nil,
+			tq.withInvocationTargets != nil,
+			tq.withTargetKindMappings != nil,
 		}
 	)
-	if tq.withBazelInvocation != nil {
+	if tq.withInstanceName != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -406,9 +483,39 @@ func (tq *TargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Targe
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := tq.withBazelInvocation; query != nil {
-		if err := tq.loadBazelInvocation(ctx, query, nodes, nil,
-			func(n *Target, e *BazelInvocation) { n.Edges.BazelInvocation = e }); err != nil {
+	if query := tq.withInstanceName; query != nil {
+		if err := tq.loadInstanceName(ctx, query, nodes, nil,
+			func(n *Target, e *InstanceName) { n.Edges.InstanceName = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := tq.withInvocationTargets; query != nil {
+		if err := tq.loadInvocationTargets(ctx, query, nodes,
+			func(n *Target) { n.Edges.InvocationTargets = []*InvocationTarget{} },
+			func(n *Target, e *InvocationTarget) { n.Edges.InvocationTargets = append(n.Edges.InvocationTargets, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := tq.withTargetKindMappings; query != nil {
+		if err := tq.loadTargetKindMappings(ctx, query, nodes,
+			func(n *Target) { n.Edges.TargetKindMappings = []*TargetKindMapping{} },
+			func(n *Target, e *TargetKindMapping) {
+				n.Edges.TargetKindMappings = append(n.Edges.TargetKindMappings, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range tq.withNamedInvocationTargets {
+		if err := tq.loadInvocationTargets(ctx, query, nodes,
+			func(n *Target) { n.appendNamedInvocationTargets(name) },
+			func(n *Target, e *InvocationTarget) { n.appendNamedInvocationTargets(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range tq.withNamedTargetKindMappings {
+		if err := tq.loadTargetKindMappings(ctx, query, nodes,
+			func(n *Target) { n.appendNamedTargetKindMappings(name) },
+			func(n *Target, e *TargetKindMapping) { n.appendNamedTargetKindMappings(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -420,14 +527,14 @@ func (tq *TargetQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Targe
 	return nodes, nil
 }
 
-func (tq *TargetQuery) loadBazelInvocation(ctx context.Context, query *BazelInvocationQuery, nodes []*Target, init func(*Target), assign func(*Target, *BazelInvocation)) error {
+func (tq *TargetQuery) loadInstanceName(ctx context.Context, query *InstanceNameQuery, nodes []*Target, init func(*Target), assign func(*Target, *InstanceName)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Target)
 	for i := range nodes {
-		if nodes[i].bazel_invocation_targets == nil {
+		if nodes[i].instance_name_targets == nil {
 			continue
 		}
-		fk := *nodes[i].bazel_invocation_targets
+		fk := *nodes[i].instance_name_targets
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -436,7 +543,7 @@ func (tq *TargetQuery) loadBazelInvocation(ctx context.Context, query *BazelInvo
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(bazelinvocation.IDIn(ids...))
+	query.Where(instancename.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
@@ -444,11 +551,73 @@ func (tq *TargetQuery) loadBazelInvocation(ctx context.Context, query *BazelInvo
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_targets" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "instance_name_targets" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (tq *TargetQuery) loadInvocationTargets(ctx context.Context, query *InvocationTargetQuery, nodes []*Target, init func(*Target), assign func(*Target, *InvocationTarget)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Target)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.InvocationTarget(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(target.InvocationTargetsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.target_invocation_targets
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "target_invocation_targets" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "target_invocation_targets" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (tq *TargetQuery) loadTargetKindMappings(ctx context.Context, query *TargetKindMappingQuery, nodes []*Target, init func(*Target), assign func(*Target, *TargetKindMapping)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*Target)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.TargetKindMapping(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(target.TargetKindMappingsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.target_target_kind_mappings
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "target_target_kind_mappings" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "target_target_kind_mappings" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -544,6 +713,34 @@ func (tq *TargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (tq *TargetQuery) Modify(modifiers ...func(s *sql.Selector)) *TargetSelect {
 	tq.modifiers = append(tq.modifiers, modifiers...)
 	return tq.Select()
+}
+
+// WithNamedInvocationTargets tells the query-builder to eager-load the nodes that are connected to the "invocation_targets"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (tq *TargetQuery) WithNamedInvocationTargets(name string, opts ...func(*InvocationTargetQuery)) *TargetQuery {
+	query := (&InvocationTargetClient{config: tq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if tq.withNamedInvocationTargets == nil {
+		tq.withNamedInvocationTargets = make(map[string]*InvocationTargetQuery)
+	}
+	tq.withNamedInvocationTargets[name] = query
+	return tq
+}
+
+// WithNamedTargetKindMappings tells the query-builder to eager-load the nodes that are connected to the "target_kind_mappings"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (tq *TargetQuery) WithNamedTargetKindMappings(name string, opts ...func(*TargetKindMappingQuery)) *TargetQuery {
+	query := (&TargetKindMappingClient{config: tq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if tq.withNamedTargetKindMappings == nil {
+		tq.withNamedTargetKindMappings = make(map[string]*TargetKindMappingQuery)
+	}
+	tq.withNamedTargetKindMappings[name] = query
+	return tq
 }
 
 // TargetGroupBy is the group-by builder for Target entities.
