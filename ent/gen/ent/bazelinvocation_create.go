@@ -672,7 +672,9 @@ func (bic *BazelInvocationCreate) Mutation() *BazelInvocationMutation {
 
 // Save creates the BazelInvocation in the database.
 func (bic *BazelInvocationCreate) Save(ctx context.Context) (*BazelInvocation, error) {
-	bic.defaults()
+	if err := bic.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, bic.sqlSave, bic.mutation, bic.hooks)
 }
 
@@ -699,7 +701,7 @@ func (bic *BazelInvocationCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (bic *BazelInvocationCreate) defaults() {
+func (bic *BazelInvocationCreate) defaults() error {
 	if _, ok := bic.mutation.BepCompleted(); !ok {
 		v := bazelinvocation.DefaultBepCompleted
 		bic.mutation.SetBepCompleted(v)
@@ -728,6 +730,7 @@ func (bic *BazelInvocationCreate) defaults() {
 		v := bazelinvocation.DefaultProcessedEventWorkspaceStatus
 		bic.mutation.SetProcessedEventWorkspaceStatus(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.

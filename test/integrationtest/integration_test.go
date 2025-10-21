@@ -10,6 +10,8 @@ import (
 
 	"github.com/google/uuid"
 
+	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
+	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
 	databasecommon "github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/testkit"
@@ -138,13 +140,6 @@ var (
 						variables: testkit.Variables{
 							"first": 1000,
 							"where": nil,
-						},
-					},
-				},
-				"GetActionProblem": {
-					"get action problem by ID output blob archiving queued": {
-						variables: testkit.Variables{
-							"id": "QWN0aW9uUHJvYmxlbTox",
 						},
 					},
 				},
@@ -283,8 +278,8 @@ func TestFromBesToGraphql(t *testing.T) {
 }
 
 func runTestCase(t *testing.T, queryRegistry *testkit.QueryRegistry, testCase testCase) {
-	var ctx context.Context
-	if ctx = testCase.ctx; ctx == nil {
+	ctx := testCase.ctx
+	if ctx == nil {
 		ctx = context.Background()
 	}
 

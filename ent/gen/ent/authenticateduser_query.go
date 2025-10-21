@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"database/sql/driver"
+	"errors"
 	"fmt"
 	"math"
 
@@ -367,6 +368,12 @@ func (auq *AuthenticatedUserQuery) prepareQuery(ctx context.Context) error {
 			return err
 		}
 		auq.sql = prev
+	}
+	if authenticateduser.Policy == nil {
+		return errors.New("ent: uninitialized authenticateduser.Policy (forgotten import ent/runtime?)")
+	}
+	if err := authenticateduser.Policy.EvalQuery(ctx, auq); err != nil {
+		return err
 	}
 	return nil
 }

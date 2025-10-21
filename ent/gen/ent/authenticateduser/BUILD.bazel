@@ -11,6 +11,7 @@ go_library(
     deps = [
         "//ent/gen/ent/predicate",
         "@com_github_google_uuid//:uuid",
+        "@io_entgo_ent//:ent",
         "@io_entgo_ent//dialect/sql",
         "@io_entgo_ent//dialect/sql/sqlgraph",
     ],

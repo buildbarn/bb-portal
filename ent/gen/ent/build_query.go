@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"database/sql/driver"
+	"errors"
 	"fmt"
 	"math"
 
@@ -404,6 +405,12 @@ func (bq *BuildQuery) prepareQuery(ctx context.Context) error {
 			return err
 		}
 		bq.sql = prev
+	}
+	if build.Policy == nil {
+		return errors.New("ent: uninitialized build.Policy (forgotten import ent/runtime?)")
+	}
+	if err := build.Policy.EvalQuery(ctx, bq); err != nil {
+		return err
 	}
 	return nil
 }

@@ -18,6 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	localbes "github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/database/common"
+	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/program"
@@ -89,6 +90,7 @@ func NewDbCleanupService(
 // cleanup of the database.
 func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group program.Group) {
 	group.Go(func(ctx context.Context, siblingsGroup, dependenciesGroup program.Group) error {
+		ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 		for {
 			// Add 5% jitter to the cleanup interval
 			timeToSleep := dc.cleanupInterval + time.Duration((rand.Float64()*0.1-0.05)*float64(dc.cleanupInterval))

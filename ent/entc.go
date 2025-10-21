@@ -22,24 +22,31 @@ func main() {
 		entgql.WithNodeDescriptor(false),
 	)
 	if err != nil {
-		log.Fatalf("creating entgql extension: %v", err)
+		log.Fatalf("Error creating entgql extension: %v", err)
 	}
-	extensions := []entc.Extension{ex}
-	extensions = append(extensions, entviz.Extension{})
+	config := &gen.Config{
+		Target:  "./ent/gen/ent",
+		Package: "github.com/buildbarn/bb-portal/ent/gen/ent",
+	}
 	opts := []entc.Option{
-		entc.Extensions(extensions...),
-		entc.FeatureNames("intercept"),
+		entc.Extensions(
+			ex,
+			entviz.Extension{},
+		),
 		entc.FeatureNames("sql/execquery"),
 		entc.FeatureNames("sql/upsert"),
 		entc.FeatureNames("sql/modifier"),
+		entc.FeatureNames("privacy"),
+		entc.FeatureNames("entql"),
 	}
-	if err := os.RemoveAll("./ent/gen"); err != nil {
-		log.Fatalf("failed to remove ./ent/gen: %v", err)
+	err = os.RemoveAll("./ent/gen/ent")
+	if err != nil {
+		log.Fatalf("Error removing old generated code: %v", err)
 	}
-	if err := entc.Generate("./ent/schema", &gen.Config{
-		Target:  "./ent/gen/ent",
-		Package: "github.com/buildbarn/bb-portal/ent/gen/ent",
-	}, opts...); err != nil {
-		log.Fatalf("running ent codegen: %v", err)
+	if err := entc.Generate("./ent/schema", config, opts...); err != nil {
+		log.Fatalf("Error running first ent codegen: %v", err)
+	}
+	if err := entc.Generate("./ent/authschema", config, opts...); err != nil {
+		log.Fatalf("Error running second ent codegen: %v\nMake sure that all schemas have been added to ent/authschema/schema.go correctly. Read `ent/README.md` to understand how the generation system works.", err)
 	}
 }

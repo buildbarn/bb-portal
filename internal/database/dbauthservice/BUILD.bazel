@@ -1,0 +1,40 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "dbauthservice",
+    srcs = [
+        "bypass.go",
+        "dbauthservice.go",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/internal/database/dbauthservice",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//ent/gen/ent",
+        "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@com_github_buildbarn_bb_storage//pkg/clock",
+        "@com_github_buildbarn_bb_storage//pkg/digest",
+    ],
+)
+
+go_test(
+    name = "dbauthservice_test",
+    srcs = [
+        "dbauthservice_benchmark_test.go",
+        "dbauthservice_test.go",
+    ],
+    deps = [
+        ":dbauthservice",
+        "//ent/gen/ent",
+        "//ent/gen/ent/runtime",
+        "//internal/mock",
+        "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@com_github_buildbarn_bb_storage//pkg/clock",
+        "@com_github_buildbarn_bb_storage//pkg/digest",
+        "@com_github_buildbarn_bb_storage//pkg/jmespath",
+        "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_google_uuid//:uuid",
+        "@com_github_mattn_go_sqlite3//:go-sqlite3",
+        "@com_github_stretchr_testify//require",
+        "@org_uber_go_mock//gomock",
+    ],
+)
