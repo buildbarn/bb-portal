@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/proto/configuration/auth"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel/trace"
 )
 
 func setupTestDB(t *testing.T) *ent.Client {
@@ -25,7 +26,7 @@ func setupTestDB(t *testing.T) *ent.Client {
 	return db
 }
 
-func setupTestBepUploader(t *testing.T, client *ent.Client) *bepuploader.BepUploader {
+func setupTestBepUploader(t *testing.T, client *ent.Client, traceProvider trace.TracerProvider) *bepuploader.BepUploader {
 	config := &bb_portal.ApplicationConfiguration{
 		InstanceNameAuthorizer: &auth.AuthorizerConfiguration{
 			Policy: &auth.AuthorizerConfiguration_Allow{},
@@ -36,7 +37,7 @@ func setupTestBepUploader(t *testing.T, client *ent.Client) *bepuploader.BepUplo
 			},
 		},
 	}
-	bepUploader, err := bepuploader.NewBepUploader(client, processing.NewBlobMultiArchiver(), config, nil, nil)
+	bepUploader, err := bepuploader.NewBepUploader(client, processing.NewBlobMultiArchiver(), config, nil, nil, traceProvider)
 	require.NoError(t, err)
 	return bepUploader
 }

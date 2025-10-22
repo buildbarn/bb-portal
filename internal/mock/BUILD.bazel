@@ -27,12 +27,33 @@ gomock(
     package = "mock",
 )
 
+gomock(
+    name = "trace",
+    out = "trace.go",
+    interfaces = [
+        "Span",
+        "Tracer",
+        "TracerProvider",
+    ],
+    library = "@io_opentelemetry_go_otel_trace//:trace",
+    mock_names = {
+        "Span": "BareMockSpan",
+        "Tracer": "BareMockTracer",
+        "TracerProvider": "BareMockTracerProvider",
+    },
+    mockgen_model_library = "@org_uber_go_mock//mockgen/model",
+    mockgen_tool = "@org_uber_go_mock//mockgen",
+    package = "mock",
+)
+
 go_library(
     name = "mock",
     srcs = [
         "buildqueuestate.go",
         "clock.go",
         "deps.go",
+        "trace.go",
+        "trace_wrap.go",
     ],
     importpath = "github.com/buildbarn/bb-portal/internal/mock",
     visibility = ["//:__subpackages__"],
@@ -40,6 +61,10 @@ go_library(
     deps = [
         "@com_github_buildbarn_bb_remote_execution//pkg/proto/buildqueuestate",
         "@com_github_buildbarn_bb_storage//pkg/clock",
+        "@io_opentelemetry_go_otel//attribute",
+        "@io_opentelemetry_go_otel//codes",
+        "@io_opentelemetry_go_otel_trace//:trace",
+        "@io_opentelemetry_go_otel_trace//embedded",
         "@org_golang_google_grpc//:grpc",
         "@org_golang_google_protobuf//types/known/emptypb",
         "@org_uber_go_mock//gomock",

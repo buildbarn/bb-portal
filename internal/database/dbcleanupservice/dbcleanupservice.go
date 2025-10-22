@@ -21,6 +21,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"go.opentelemetry.io/otel/trace"
 )
 
 // DbCleanupService a service that performs periodic cleanup of the
@@ -40,10 +41,16 @@ type DbCleanupService struct {
 	invocationConnectionTimeout time.Duration
 	invocationMessageTimeout    time.Duration
 	invocationRetention         time.Duration
+	tracer                      trace.Tracer
 }
 
 // NewDbCleanupService creates a new DbCleanupService.
-func NewDbCleanupService(db *ent.Client, clock clock.Clock, cleanupConfiguration *bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration) (*DbCleanupService, error) {
+func NewDbCleanupService(
+	db *ent.Client,
+	clock clock.Clock,
+	cleanupConfiguration *bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration,
+	tracerProvider trace.TracerProvider,
+) (*DbCleanupService, error) {
 	cleanupInterval := cleanupConfiguration.CleanupInterval
 	if err := cleanupInterval.CheckValid(); err != nil {
 		return nil, util.StatusWrap(err, "Failed to parse cleanupInterval parameter time")
@@ -71,6 +78,7 @@ func NewDbCleanupService(db *ent.Client, clock clock.Clock, cleanupConfiguration
 		invocationConnectionTimeout: invocationConnectionTimeout.AsDuration(),
 		invocationMessageTimeout:    invocationMessageTimeout.AsDuration(),
 		invocationRetention:         invocationRetention.AsDuration(),
+		tracer:                      tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"),
 	}, nil
 }
 
@@ -120,6 +128,9 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 func (dc *DbCleanupService) LockInvocationsWithNoRecentConnections(ctx context.Context) error {
 	slog.Info("Locking unfinished invocations with no recent connections")
 
+	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.LockInvocationsWithNoRecentConnections")
+	defer span.End()
+
 	cutoffTime := dc.clock.Now().Add(-dc.invocationConnectionTimeout)
 
 	// TODO: Set the end time of the invocation based on the last
@@ -145,6 +156,9 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentConnections(ctx context.C
 // events in a certain period of time.
 func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Context) error {
 	slog.Info("Locking unfinished invocations that has no recent events")
+
+	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.LockInvocationsWithNoRecentEvents")
+	defer span.End()
 
 	cutoffTime := dc.clock.Now().Add(-dc.invocationMessageTimeout)
 
@@ -224,6 +238,9 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 func (dc *DbCleanupService) RemoveOldInvocationConnections(ctx context.Context) error {
 	slog.Info("Locking old invocation connections")
 
+	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveOldInvocationConnections")
+	defer span.End()
+
 	deletedRows, err := dc.db.ConnectionMetadata.Delete().
 		Where(
 			connectionmetadata.HasBazelInvocationWith(
@@ -242,6 +259,10 @@ func (dc *DbCleanupService) RemoveOldInvocationConnections(ctx context.Context) 
 // completed before a certain cutoff time.
 func (dc *DbCleanupService) RemoveOldEventMetadata(ctx context.Context) error {
 	slog.Info("Removing old event metadata")
+
+	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveOldEventMetadata")
+	defer span.End()
+
 	cutoffTime := dc.clock.Now().Add(-dc.invocationMessageTimeout)
 	// Remove all event metadata that is for invocations that have
 	// completed before the cutoff time.
@@ -264,6 +285,9 @@ func (dc *DbCleanupService) RemoveOldEventMetadata(ctx context.Context) error {
 // the same invocation.
 func (dc *DbCleanupService) CompactLogs(ctx context.Context) error {
 	slog.Info("Compacting logs")
+
+	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.CompactLogs")
+	defer span.End()
 
 	tx, err := dc.db.BeginTx(ctx, &entsql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
@@ -306,6 +330,10 @@ func (dc *DbCleanupService) CompactLogs(ctx context.Context) error {
 // certain cutoff time.
 func (dc *DbCleanupService) RemoveOldInvocations(ctx context.Context) error {
 	slog.Info("Removing old invocations")
+
+	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveOldInvocations")
+	defer span.End()
+
 	cutoffTime := dc.clock.Now().Add(-dc.invocationRetention)
 	deletedInvocation, err := dc.db.BazelInvocation.Delete().
 		Where(
@@ -324,6 +352,10 @@ func (dc *DbCleanupService) RemoveOldInvocations(ctx context.Context) error {
 // associated invocations.
 func (dc *DbCleanupService) RemoveBuildsWithoutInvocations(ctx context.Context) error {
 	slog.Info("Removing builds without invocations")
+
+	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveBuildsWithoutInvocations")
+	defer span.End()
+
 	deletedBuilds, err := dc.db.Build.Delete().
 		Where(
 			build.Not(build.HasInvocations()),

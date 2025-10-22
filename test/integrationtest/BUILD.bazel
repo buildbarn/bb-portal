@@ -12,6 +12,7 @@ go_test(
         "//internal/api/http/bepuploader",
         "//internal/database/common",
         "//internal/graphql",
+        "//internal/mock",
         "//pkg/processing",
         "//pkg/proto/configuration/bb_portal",
         "//pkg/testkit",
@@ -21,5 +22,7 @@ go_test(
         "@com_github_mattn_go_sqlite3//:go-sqlite3",
         "@com_github_stretchr_testify//assert",
         "@com_github_stretchr_testify//require",
+        "@io_opentelemetry_go_otel_trace//:trace",
+        "@org_uber_go_mock//gomock",
     ],
 )

@@ -24,6 +24,8 @@ import (
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
+
+	"go.opentelemetry.io/otel/trace"
 )
 
 // BuildEventServer implements the Build Event Service.
@@ -36,10 +38,11 @@ type BuildEventServer struct {
 	instanceNameAuthorizer auth.Authorizer
 	blobArchiver           processing.BlobMultiArchiver
 	saveTargetDataLevel    *bb_portal.BuildEventStreamService_SaveTargetDataLevel
+	tracerProvider         trace.TracerProvider
 }
 
 // NewBuildEventServer creates a new BuildEventServer
-func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory) (*BuildEventServer, error) {
+func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider) (*BuildEventServer, error) {
 	if configuration.InstanceNameAuthorizer == nil {
 		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
@@ -63,6 +66,7 @@ func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiv
 		db:                     db,
 		blobArchiver:           blobArchiver,
 		saveTargetDataLevel:    saveTargetDataLevel,
+		tracerProvider:         tracerProvider,
 	}, nil
 }
 
@@ -97,6 +101,7 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 				s.instanceNameAuthorizer,
 				s.blobArchiver,
 				s.saveTargetDataLevel,
+				s.tracerProvider,
 				req.GetProjectId(),
 				req.GetOrderedBuildEvent().GetStreamId().GetInvocationId(),
 				req.GetOrderedBuildEvent().GetStreamId().GetBuildId(),

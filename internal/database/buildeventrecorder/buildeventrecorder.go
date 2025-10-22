@@ -16,7 +16,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
-
+	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -28,6 +28,7 @@ type BuildEventRecorder struct {
 	problemDetector     detectors.ProblemDetector
 	blobArchiver        processing.BlobMultiArchiver
 	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel
+	tracer              trace.Tracer
 
 	InstanceName           string
 	InvocationID           string
@@ -43,7 +44,7 @@ func NewBuildEventRecorder(
 	instanceNameAuthorizer auth.Authorizer,
 	blobArchiver processing.BlobMultiArchiver,
 	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel,
-
+	tracerProvider trace.TracerProvider,
 	instanceName string,
 	invocationID string,
 	correlatedInvocationID string,
@@ -66,6 +67,7 @@ func NewBuildEventRecorder(
 		problemDetector:     detectors.NewProblemDetector(),
 		blobArchiver:        blobArchiver,
 		saveTargetDataLevel: saveTargetDataLevel,
+		tracer:              tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"),
 
 		InstanceName:           instanceName,
 		InvocationID:           invocationID,

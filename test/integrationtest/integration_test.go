@@ -9,11 +9,13 @@ import (
 	"testing"
 
 	databasecommon "github.com/buildbarn/bb-portal/internal/database/common"
+	"github.com/buildbarn/bb-portal/internal/mock"
 	"github.com/buildbarn/bb-portal/pkg/testkit"
 	gql "github.com/machinebox/graphql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 // Run `bazel run //test/integrationtest:integrationtest_test -- --update-golden` to update golden files.
@@ -138,8 +140,17 @@ func getTestCases() testTable {
 // running a series of queries against the GraphQL API, comparing the results
 // against golden files stored in the testdata/golden folder.
 func TestFromBesToGraphql(t *testing.T) {
+	ctrl, ctx := gomock.WithContext(context.Background(), t)
+
+	traceProvider := mock.NewMockTracerProvider(ctrl)
+	tracer := mock.NewMockTracer(ctrl)
+	traceProvider.BareMockTracerProvider.EXPECT().Tracer("github.com/buildbarn/bb-portal/internal/database/buildeventrecorder").Return(tracer).AnyTimes()
+	span := mock.NewMockSpan(ctrl)
+	tracer.BareMockTracer.EXPECT().Start(gomock.Any(), gomock.Any(), gomock.Any()).Return(context.Background(), span).AnyTimes()
+	span.BareMockSpan.EXPECT().End().AnyTimes()
+
 	db := setupTestDB(t)
-	bepUploader := setupTestBepUploader(t, db)
+	bepUploader := setupTestBepUploader(t, db, traceProvider)
 
 	// Read BEP file from testdata folder
 	dirEntries, err := os.ReadDir(bepFolderPath)
@@ -154,7 +165,7 @@ func TestFromBesToGraphql(t *testing.T) {
 		t.Run(fmt.Sprintf("SavingFileToDb_%s", entry.Name()), func(t *testing.T) {
 			file, err := os.Open(bepFolderPath + "/" + entry.Name())
 			require.NoError(t, err)
-			_, _, err = bepUploader.RecordEventNdjsonFile(context.Background(), file)
+			_, _, err = bepUploader.RecordEventNdjsonFile(ctx, file)
 			require.NoError(t, err)
 			err = file.Close()
 			require.NoError(t, err)
@@ -180,7 +191,7 @@ func TestFromBesToGraphql(t *testing.T) {
 					}
 
 					var got map[string]interface{}
-					err := graphQLClient.Run(context.Background(), req, &got)
+					err := graphQLClient.Run(ctx, req, &got)
 
 					// Verify response.
 					if testCase.wantErr != nil {

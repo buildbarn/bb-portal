@@ -14,6 +14,7 @@ import (
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/require"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/mock/gomock"
 	"google.golang.org/protobuf/types/known/durationpb"
 )
@@ -27,14 +28,14 @@ func setupTestDB(t *testing.T) *ent.Client {
 	return client
 }
 
-func getNewDbCleanupService(client *ent.Client, clock clock.Clock) (*dbcleanupservice.DbCleanupService, error) {
+func getNewDbCleanupService(client *ent.Client, clock clock.Clock, traceProvider trace.TracerProvider) (*dbcleanupservice.DbCleanupService, error) {
 	cleanupConfiguration := &bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration{
 		CleanupInterval:             durationpb.New(1 * time.Minute),
 		InvocationConnectionTimeout: durationpb.New(30 * time.Second),
 		InvocationMessageTimeout:    durationpb.New(30 * time.Second),
 		InvocationRetention:         durationpb.New(30 * time.Minute),
 	}
-	return dbcleanupservice.NewDbCleanupService(client, clock, cleanupConfiguration)
+	return dbcleanupservice.NewDbCleanupService(client, clock, cleanupConfiguration, traceProvider)
 }
 
 func populateIncompleteBuildLog(t *testing.T, ctx context.Context, client *ent.Client, invocationDbID int) {
@@ -240,9 +241,16 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	clock := mock.NewMockClock(ctrl)
 	cleanupTime := time.Unix(1600000060, 0)
 
+	traceProvider := mock.NewMockTracerProvider(ctrl)
+	tracer := mock.NewMockTracer(ctrl)
+	traceProvider.BareMockTracerProvider.EXPECT().Tracer("github.com/buildbarn/bb-portal/internal/database/dbcleanupservice").Return(tracer).AnyTimes()
+	span := mock.NewMockSpan(ctrl)
+	tracer.BareMockTracer.EXPECT().Start(gomock.Any(), gomock.Any()).Return(context.Background(), span).AnyTimes()
+	span.BareMockSpan.EXPECT().End().AnyTimes()
+
 	t.Run("NoInvocations-NoEventMetadata", func(t *testing.T) {
 		client := setupTestDB(t)
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -256,7 +264,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -277,7 +285,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -303,7 +311,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -330,7 +338,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -357,7 +365,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -385,7 +393,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -425,7 +433,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -463,7 +471,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -500,7 +508,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -640,9 +648,16 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 	clock := mock.NewMockClock(ctrl)
 	cleanupTime := time.Unix(1600000120, 0)
 
+	traceProvider := mock.NewMockTracerProvider(ctrl)
+	tracer := mock.NewMockTracer(ctrl)
+	traceProvider.BareMockTracerProvider.EXPECT().Tracer("github.com/buildbarn/bb-portal/internal/database/dbcleanupservice").Return(tracer).AnyTimes()
+	span := mock.NewMockSpan(ctrl)
+	tracer.BareMockTracer.EXPECT().Start(gomock.Any(), gomock.Any()).Return(context.Background(), span).AnyTimes()
+	span.BareMockSpan.EXPECT().End().AnyTimes()
+
 	t.Run("NoEventMetadata", func(t *testing.T) {
 		client := setupTestDB(t)
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -668,7 +683,7 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -694,7 +709,7 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -719,7 +734,7 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -745,7 +760,7 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -778,7 +793,7 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -873,10 +888,17 @@ func TestRemoveOldInvocations(t *testing.T) {
 	clock := mock.NewMockClock(ctrl)
 	cleanupTime := time.Unix(1600000200, 0)
 
+	traceProvider := mock.NewMockTracerProvider(ctrl)
+	tracer := mock.NewMockTracer(ctrl)
+	traceProvider.BareMockTracerProvider.EXPECT().Tracer("github.com/buildbarn/bb-portal/internal/database/dbcleanupservice").Return(tracer).AnyTimes()
+	span := mock.NewMockSpan(ctrl)
+	tracer.BareMockTracer.EXPECT().Start(gomock.Any(), gomock.Any()).Return(context.Background(), span).AnyTimes()
+	span.BareMockSpan.EXPECT().End().AnyTimes()
+
 	t.Run("NoInvocations", func(t *testing.T) {
 		client := setupTestDB(t)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldInvocations(ctx)
@@ -895,7 +917,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldInvocations(ctx)
@@ -915,7 +937,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldInvocations(ctx)
@@ -935,7 +957,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldInvocations(ctx)
@@ -975,7 +997,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldInvocations(ctx)
@@ -991,10 +1013,17 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	ctrl, ctx := gomock.WithContext(context.Background(), t)
 	clock := mock.NewMockClock(ctrl)
 
+	traceProvider := mock.NewMockTracerProvider(ctrl)
+	tracer := mock.NewMockTracer(ctrl)
+	traceProvider.BareMockTracerProvider.EXPECT().Tracer("github.com/buildbarn/bb-portal/internal/database/dbcleanupservice").Return(tracer).AnyTimes()
+	span := mock.NewMockSpan(ctrl)
+	tracer.BareMockTracer.EXPECT().Start(gomock.Any(), gomock.Any()).Return(context.Background(), span).AnyTimes()
+	span.BareMockSpan.EXPECT().End().AnyTimes()
+
 	t.Run("NoBuilds", func(t *testing.T) {
 		client := setupTestDB(t)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)
@@ -1014,7 +1043,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)
@@ -1029,7 +1058,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 		_, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceName("").SetTimestamp(time.Now()).Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)
@@ -1056,7 +1085,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 		_, err = client.Build.Create().SetBuildURL("3").SetBuildUUID(uuid.New()).SetInstanceName("").SetTimestamp(time.Now()).Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock)
+		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)
