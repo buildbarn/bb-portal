@@ -22,6 +22,7 @@ import BuildStepResultTag, {
 import PortalDuration from "@/components/PortalDuration";
 import { isFeatureEnabled, FeatureType } from '@/utils/isFeatureEnabled';
 import PageDisabled from "@/components/PageDisabled";
+import CollapsableInvocationTimeline from "@/components/CollapsableInvocationTimeline";
 
 interface PageParams {
   params: {
@@ -287,6 +288,11 @@ const PageContent: React.FC<PageParams> = ({ params }) => {
           extraBits={extraBits}
         >
           <Space direction="vertical" style={{ width: "100%" }}>
+            {responseData?.getBuild?.invocations && (
+              <CollapsableInvocationTimeline
+                invocations={responseData.getBuild?.invocations}
+              />
+            )}
             <Table columns={columns} dataSource={result} pagination={false} />
           </Space>
         </PortalCard>
