@@ -16,7 +16,7 @@ interface PageParams {
 }
 
 const Page: React.FC<PageParams> = ({ params }) => {
-  if (!isFeatureEnabled(FeatureType.SCHEDULER)) {
+  if (!isFeatureEnabled(FeatureType.OPERATIONS)) {
     return <PageDisabled />;
   }
 

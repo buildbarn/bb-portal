@@ -1,6 +1,7 @@
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import { useQuery } from "@tanstack/react-query";
 import { Row, Skeleton, Space, Statistic, Typography } from "antd";
+import Link from "next/link";
 import type React from "react";
 import PlatformQueuesTable from "../PlatformQueuesTable";
 import PortalAlert from "../PortalAlert";
@@ -41,6 +42,7 @@ const SchedulerGrid: React.FC = () => {
       <Statistic
         title="Total number of operations"
         value={data.paginationInfo?.totalEntries}
+        valueRender={(value) => <Link href="/operations">{value}</Link>}
       />
     );
   };
