@@ -105,17 +105,6 @@ fragment BazelInvocationInfo on BazelInvocation {
         remoteRunner
       }
     }
-    buildGraphMetrics {
-      id
-      actionLookupValueCount
-      actionLookupValueCountNotIncludingAspects
-      actionCount
-      inputFileConfiguredTargetCount
-      outputFileConfiguredTargetCount
-      otherConfiguredTargetCount
-      outputArtifactCount
-      postInvocationSkyframeNodeCount
-    }
     memoryMetrics {
       id
       usedHeapSizePostBuild
