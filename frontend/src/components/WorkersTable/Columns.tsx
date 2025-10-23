@@ -1,4 +1,5 @@
 import type { WorkerState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
+import { readableDurationFromDates } from "@/utils/time";
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
 import PropertyTagList from "../PropertyTagList";
@@ -19,7 +20,14 @@ const workerTimeoutColumn: ColumnType<WorkerState> = {
   key: "workerTimeout",
   title: "Worker timeout",
   render: (_, record) => (
-    <Typography.Text>{record.timeout?.toISOString() || "∞"}</Typography.Text>
+    <Typography.Text>
+      {(record.timeout &&
+        readableDurationFromDates(new Date(), record.timeout, {
+          precision: 1,
+          smallestUnit: "s",
+        })) ||
+        "∞"}
+    </Typography.Text>
   ),
 };
 
@@ -33,7 +41,13 @@ const operationTimeoutColumn: ColumnType<WorkerState> = {
   render: (_, record) => (
     <Typography.Text>
       {record.currentOperation
-        ? record.currentOperation?.timeout?.toISOString() || "∞"
+        ? (record.currentOperation?.timeout &&
+            readableDurationFromDates(
+              new Date(),
+              record.currentOperation.timeout,
+              { precision: 1, smallestUnit: "s" },
+            )) ||
+          "∞"
         : "Idle"}
     </Typography.Text>
   ),
