@@ -20,7 +20,7 @@
             "name": "TESTS_FAILED"
           }
         },
-        "userLdap": ""
+        "userLdap": "nameless"
       }
     ],
     "timestamp": "2024-05-13T23:43:23.045Z"

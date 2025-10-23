@@ -31,11 +31,11 @@
       ]
     },
     "build": null,
-    "buildLogs": "Computing main repo mapping: \nLoading: \nLoading: 0 packages loaded\nAnalyzing: 63 targets (0 packages loaded, 0 targets configured)\nAnalyzing: 63 targets (0 packages loaded, 0 targets configured)\n[0 / 1] [Prepa] BazelWorkspaceStatusAction stable-status.txt\nINFO: Analyzed 63 targets (0 packages loaded, 0 targets configured).\n[13 / 14] 10 / 11 tests; Testing //next.js/pages:jest_test; 0s darwin-sandbox\n//next.js:build_smoke_test                                      (cached) PASSED in 0.4s\n//next.js:build_test                                            (cached) PASSED in 0.1s\n//react:build_smoke_test                                        (cached) PASSED in 0.2s\n//react-webpack:build_smoke_test                                (cached) PASSED in 0.2s\n//react/src:lint                                                (cached) PASSED in 0.1s\n//react/src:src_typecheck_test                                  (cached) PASSED in 0.1s\n//react/src:test                                                (cached) PASSED in 1.7s\n//react/src:test_lib_typecheck_test                             (cached) PASSED in 0.1s\n//vue:build_test                                                (cached) PASSED in 0.1s\n//vue:type-check                                                (cached) PASSED in 1.2s\n//next.js/pages:jest_test                                                PASSED in 1.1s\nExecuted 1 out of 11 tests: 11 tests pass.\nThere were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.\nINFO: Found 52 targets and 11 test targets...\nINFO: Elapsed time: 2.598s, Critical Path: 2.22s\nINFO: 4 processes: 1 internal, 2 darwin-sandbox, 1 local.\nINFO: Build completed successfully, 4 total actions\nINFO: \n",
+    "buildLogs": "Computing main repo mapping: \nLoading: \nLoading: 0 packages loaded\nAnalyzing: 63 targets (0 packages loaded, 0 targets configured)\nAnalyzing: 63 targets (0 packages loaded, 0 targets configured)\n[0 / 1] [Prepa] BazelWorkspaceStatusAction stable-status.txt\nINFO: Analyzed 63 targets (0 packages loaded, 0 targets configured).\n[13 / 14] 10 / 11 tests; Testing //next.js/pages:jest_test; 0s darwin-sandbox\nINFO: Found 52 targets and 11 test targets...\nINFO: Elapsed time: 2.598s, Critical Path: 2.22s\nINFO: 4 processes: 1 internal, 2 darwin-sandbox, 1 local.\nINFO: Build completed successfully, 4 total actions\nINFO: \n//next.js:build_smoke_test                                      (cached) PASSED in 0.4s\n//next.js:build_test                                            (cached) PASSED in 0.1s\n//react:build_smoke_test                                        (cached) PASSED in 0.2s\n//react-webpack:build_smoke_test                                (cached) PASSED in 0.2s\n//react/src:lint                                                (cached) PASSED in 0.1s\n//react/src:src_typecheck_test                                  (cached) PASSED in 0.1s\n//react/src:test                                                (cached) PASSED in 1.7s\n//react/src:test_lib_typecheck_test                             (cached) PASSED in 0.1s\n//vue:build_test                                                (cached) PASSED in 0.1s\n//vue:type-check                                                (cached) PASSED in 1.2s\n//next.js/pages:jest_test                                                PASSED in 1.1s\n\nExecuted 1 out of 11 tests: 11 tests pass.\nThere were tests whose specified size is too big. Use the --test_verbose_timeout_warnings command line option to see which ones these are.\n",
     "configurationMnemonic": "darwin_arm64-fastbuild",
     "cpu": "darwin_arm64",
     "endedAt": "2024-05-03T00:23:40.441Z",
-    "hostname": "",
+    "hostname": "Namelesss-MacBook-Pro.local",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",
     "instanceName": "",
     "invocationID": "10a37e86-6e2b-4adb-83dd-c2906f42bdd6",
@@ -276,7 +276,7 @@
     "testCollection": [],
     "user": {
       "Email": "",
-      "LDAP": ""
+      "LDAP": "nameless"
     }
   }
 }
