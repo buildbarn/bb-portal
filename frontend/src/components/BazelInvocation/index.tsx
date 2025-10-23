@@ -33,6 +33,7 @@ import themeStyles from "@/theme/theme.module.css";
 import BuildStepResultTag, {
   BuildStepResultEnum,
 } from "@/components/BuildStepResultTag";
+import DownloadButton from "@/components/DownloadButton";
 import Link from "@/components/Link";
 import LogViewer from "../LogViewer";
 import TargetMetricsDisplay from "../TargetMetrics";
