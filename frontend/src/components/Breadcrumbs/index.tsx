@@ -3,10 +3,10 @@
 import React, { useMemo } from 'react';
 import { Breadcrumb, Typography } from 'antd';
 import { BreadcrumbItemType } from 'antd/lib/breadcrumb/Breadcrumb';
-import { HomeOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from '@/components/Breadcrumbs/index.module.css';
+import BuildbarnIcon from '../BuildbarnIcon';
 
 // Define a common separator reference
 const separator: string = '/';
@@ -74,7 +74,7 @@ const Breadcrumbs: React.FC<Props> = ({ segmentTitles }) => {
       });
 
       // Return the list of breadcrumbs items along with a way home
-      return [{ path: separator, title: <HomeOutlined /> }, ...breadcrumbs];
+      return [{ path: separator, title: <BuildbarnIcon /> }, ...breadcrumbs];
 
       // Only update the breadcrumb item list when the path has changed
     },
