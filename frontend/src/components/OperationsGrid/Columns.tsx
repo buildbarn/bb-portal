@@ -1,5 +1,5 @@
-import dayjs from "@/lib/dayjs";
 import type { OperationState } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
+import { readableDurationFromDates } from "@/utils/time";
 import { type TableColumnsType, Typography } from "antd";
 import type { ColumnType } from "antd/lib/table";
 import Link from "next/link";
@@ -21,7 +21,12 @@ const timeoutColumn: ColumnType<OperationState> = {
   dataIndex: "timeout",
   render: (value: Date | undefined) => (
     <Typography.Text>
-      {value ? `${dayjs(value).diff(undefined, "seconds")}s` : "∞"}
+      {value
+        ? readableDurationFromDates(new Date(), value, {
+            precision: 1,
+            smallestUnit: "s",
+          })
+        : "∞"}
     </Typography.Text>
   ),
 };
