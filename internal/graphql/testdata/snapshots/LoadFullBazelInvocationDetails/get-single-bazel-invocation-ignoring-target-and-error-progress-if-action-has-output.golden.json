@@ -35,7 +35,7 @@
     "configurationMnemonic": "darwin_arm64-fastbuild",
     "cpu": "darwin_arm64",
     "endedAt": "2024-05-03T00:29:47.784Z",
-    "hostname": "",
+    "hostname": "Namelesss-MacBook-Pro.local",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjM=",
     "instanceName": "",
     "invocationID": "df7178e2-a815-4654-a409-d18e845d1e35",
@@ -234,7 +234,7 @@
     "testCollection": [],
     "user": {
       "Email": "",
-      "LDAP": ""
+      "LDAP": "nameless"
     }
   }
 }
