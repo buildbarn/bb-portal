@@ -5,12 +5,10 @@ import Content from "@/components/Content";
 import { ApolloError, NetworkStatus, useQuery } from "@apollo/client";
 import {
   BazelInvocationInfoFragment,
-  FullBazelInvocationDetailsFragment,
   LoadFullBazelInvocationDetailsQuery, ProblemInfoFragment
 } from '@/graphql/__generated__/graphql';
 import {
   BAZEL_INVOCATION_FRAGMENT,
-  FULL_BAZEL_INVOCATION_DETAILS,
   LOAD_FULL_BAZEL_INVOCATION_DETAILS
 } from "@/app/bazel-invocations/[invocationID]/index.graphql";
 import { getFragmentData } from "@/graphql/__generated__";
@@ -63,7 +61,7 @@ const BazelInvocationsContent: React.FC<Props> = ({ loading, error, networkStatu
   return <></>
 }
 
-const shouldStopPolling = (invocation: FullBazelInvocationDetailsFragment | null | undefined): boolean => {
+const shouldStopPolling = (invocation: BazelInvocationInfoFragment | null | undefined): boolean => {
   return !!invocation;
 }
 
@@ -80,13 +78,14 @@ const PageContent: React.FC<PageParams> = ({ params }) => {
     {
       variables: { invocationID: params.invocationID },
       fetchPolicy: 'cache-and-network',
+      // nextFetchPolicy prevents unnecessary refetches if the logs are fetched
+      nextFetchPolicy: 'cache-only',
       pollInterval: 5000,
       notifyOnNetworkStatusChange: true,
     },
   );
 
-  const invocation = getFragmentData(FULL_BAZEL_INVOCATION_DETAILS, data?.bazelInvocation);
-  const invocationOverview = getFragmentData(BAZEL_INVOCATION_FRAGMENT, invocation)
+  const invocation = getFragmentData(BAZEL_INVOCATION_FRAGMENT, data?.bazelInvocation);
 
 
   const stop = shouldStopPolling(invocation);
@@ -100,7 +99,7 @@ const PageContent: React.FC<PageParams> = ({ params }) => {
 
   return (
     <Content
-      content={<BazelInvocationsContent loading={loading} error={error} networkStatus={networkStatus} invocationInfo={invocationOverview as BazelInvocationInfoFragment} problems={[]} />}
+      content={<BazelInvocationsContent loading={loading} error={error} networkStatus={networkStatus} invocationInfo={invocation as BazelInvocationInfoFragment} problems={[]} />}
     />
   );
 }
