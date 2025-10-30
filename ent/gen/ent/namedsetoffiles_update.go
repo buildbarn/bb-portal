@@ -19,8 +19,9 @@ import (
 // NamedSetOfFilesUpdate is the builder for updating NamedSetOfFiles entities.
 type NamedSetOfFilesUpdate struct {
 	config
-	hooks    []Hook
-	mutation *NamedSetOfFilesMutation
+	hooks     []Hook
+	mutation  *NamedSetOfFilesMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the NamedSetOfFilesUpdate builder.
@@ -147,6 +148,12 @@ func (nsofu *NamedSetOfFilesUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (nsofu *NamedSetOfFilesUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *NamedSetOfFilesUpdate {
+	nsofu.modifiers = append(nsofu.modifiers, modifiers...)
+	return nsofu
+}
+
 func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(namedsetoffiles.Table, namedsetoffiles.Columns, sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt))
 	if ps := nsofu.mutation.predicates; len(ps) > 0 {
@@ -259,6 +266,7 @@ func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(nsofu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, nsofu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{namedsetoffiles.Label}
@@ -274,9 +282,10 @@ func (nsofu *NamedSetOfFilesUpdate) sqlSave(ctx context.Context) (n int, err err
 // NamedSetOfFilesUpdateOne is the builder for updating a single NamedSetOfFiles entity.
 type NamedSetOfFilesUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *NamedSetOfFilesMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *NamedSetOfFilesMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by ID.
@@ -410,6 +419,12 @@ func (nsofuo *NamedSetOfFilesUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (nsofuo *NamedSetOfFilesUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *NamedSetOfFilesUpdateOne {
+	nsofuo.modifiers = append(nsofuo.modifiers, modifiers...)
+	return nsofuo
+}
+
 func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *NamedSetOfFiles, err error) {
 	_spec := sqlgraph.NewUpdateSpec(namedsetoffiles.Table, namedsetoffiles.Columns, sqlgraph.NewFieldSpec(namedsetoffiles.FieldID, field.TypeInt))
 	id, ok := nsofuo.mutation.ID()
@@ -539,6 +554,7 @@ func (nsofuo *NamedSetOfFilesUpdateOne) sqlSave(ctx context.Context) (_node *Nam
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(nsofuo.modifiers...)
 	_node = &NamedSetOfFiles{config: nsofuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

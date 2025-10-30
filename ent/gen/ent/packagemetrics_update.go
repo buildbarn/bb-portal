@@ -19,8 +19,9 @@ import (
 // PackageMetricsUpdate is the builder for updating PackageMetrics entities.
 type PackageMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *PackageMetricsMutation
+	hooks     []Hook
+	mutation  *PackageMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the PackageMetricsUpdate builder.
@@ -149,6 +150,12 @@ func (pmu *PackageMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (pmu *PackageMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *PackageMetricsUpdate {
+	pmu.modifiers = append(pmu.modifiers, modifiers...)
+	return pmu
+}
+
 func (pmu *PackageMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(packagemetrics.Table, packagemetrics.Columns, sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt))
 	if ps := pmu.mutation.predicates; len(ps) > 0 {
@@ -241,6 +248,7 @@ func (pmu *PackageMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(pmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, pmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{packagemetrics.Label}
@@ -256,9 +264,10 @@ func (pmu *PackageMetricsUpdate) sqlSave(ctx context.Context) (n int, err error)
 // PackageMetricsUpdateOne is the builder for updating a single PackageMetrics entity.
 type PackageMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *PackageMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *PackageMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetPackagesLoaded sets the "packages_loaded" field.
@@ -394,6 +403,12 @@ func (pmuo *PackageMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (pmuo *PackageMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *PackageMetricsUpdateOne {
+	pmuo.modifiers = append(pmuo.modifiers, modifiers...)
+	return pmuo
+}
+
 func (pmuo *PackageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *PackageMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(packagemetrics.Table, packagemetrics.Columns, sqlgraph.NewFieldSpec(packagemetrics.FieldID, field.TypeInt))
 	id, ok := pmuo.mutation.ID()
@@ -503,6 +518,7 @@ func (pmuo *PackageMetricsUpdateOne) sqlSave(ctx context.Context) (_node *Packag
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(pmuo.modifiers...)
 	_node = &PackageMetrics{config: pmuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

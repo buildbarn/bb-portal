@@ -30,8 +30,8 @@ type TestResultBESQuery struct {
 	withTestActionOutput      *TestFileQuery
 	withExecutionInfo         *ExectionInfoQuery
 	withFKs                   bool
-	modifiers                 []func(*sql.Selector)
 	loadTotal                 []func(context.Context, []*TestResultBES) error
+	modifiers                 []func(*sql.Selector)
 	withNamedTestActionOutput map[string]*TestFileQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -331,8 +331,9 @@ func (trbq *TestResultBESQuery) Clone() *TestResultBESQuery {
 		withTestActionOutput: trbq.withTestActionOutput.Clone(),
 		withExecutionInfo:    trbq.withExecutionInfo.Clone(),
 		// clone intermediate query.
-		sql:  trbq.sql.Clone(),
-		path: trbq.path,
+		sql:       trbq.sql.Clone(),
+		path:      trbq.path,
+		modifiers: append([]func(*sql.Selector){}, trbq.modifiers...),
 	}
 }
 
@@ -674,6 +675,9 @@ func (trbq *TestResultBESQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if trbq.ctx.Unique != nil && *trbq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range trbq.modifiers {
+		m(selector)
+	}
 	for _, p := range trbq.predicates {
 		p(selector)
 	}
@@ -689,6 +693,12 @@ func (trbq *TestResultBESQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (trbq *TestResultBESQuery) Modify(modifiers ...func(s *sql.Selector)) *TestResultBESSelect {
+	trbq.modifiers = append(trbq.modifiers, modifiers...)
+	return trbq.Select()
 }
 
 // WithNamedTestActionOutput tells the query-builder to eager-load the nodes that are connected to the "test_action_output"
@@ -793,4 +803,10 @@ func (trbs *TestResultBESSelect) sqlScan(ctx context.Context, root *TestResultBE
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (trbs *TestResultBESSelect) Modify(modifiers ...func(s *sql.Selector)) *TestResultBESSelect {
+	trbs.modifiers = append(trbs.modifiers, modifiers...)
+	return trbs
 }

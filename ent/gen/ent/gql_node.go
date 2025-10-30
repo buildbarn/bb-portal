@@ -23,12 +23,11 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
@@ -37,15 +36,12 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/racestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetconfigured"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
@@ -112,35 +108,30 @@ var cumulativemetricsImplementors = []string{"CumulativeMetrics", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*CumulativeMetrics) IsNode() {}
 
-var dynamicexecutionmetricsImplementors = []string{"DynamicExecutionMetrics", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*DynamicExecutionMetrics) IsNode() {}
-
 var evaluationstatImplementors = []string{"EvaluationStat", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*EvaluationStat) IsNode() {}
-
-var eventfileImplementors = []string{"EventFile", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*EventFile) IsNode() {}
 
 var exectioninfoImplementors = []string{"ExectionInfo", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*ExectionInfo) IsNode() {}
 
-var filesmetricImplementors = []string{"FilesMetric", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*FilesMetric) IsNode() {}
-
 var garbagemetricsImplementors = []string{"GarbageMetrics", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*GarbageMetrics) IsNode() {}
+
+var incompletebuildlogImplementors = []string{"IncompleteBuildLog", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*IncompleteBuildLog) IsNode() {}
+
+var invocationfilesImplementors = []string{"InvocationFiles", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*InvocationFiles) IsNode() {}
 
 var memorymetricsImplementors = []string{"MemoryMetrics", "Node"}
 
@@ -182,11 +173,6 @@ var packagemetricsImplementors = []string{"PackageMetrics", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*PackageMetrics) IsNode() {}
 
-var racestatisticsImplementors = []string{"RaceStatistics", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*RaceStatistics) IsNode() {}
-
 var resourceusageImplementors = []string{"ResourceUsage", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
@@ -207,25 +193,15 @@ var systemnetworkstatsImplementors = []string{"SystemNetworkStats", "Node"}
 // IsNode implements the Node interface check for GQLGen.
 func (*SystemNetworkStats) IsNode() {}
 
-var targetcompleteImplementors = []string{"TargetComplete", "Node"}
+var targetImplementors = []string{"Target", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
-func (*TargetComplete) IsNode() {}
-
-var targetconfiguredImplementors = []string{"TargetConfigured", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*TargetConfigured) IsNode() {}
+func (*Target) IsNode() {}
 
 var targetmetricsImplementors = []string{"TargetMetrics", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*TargetMetrics) IsNode() {}
-
-var targetpairImplementors = []string{"TargetPair", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*TargetPair) IsNode() {}
 
 var testcollectionImplementors = []string{"TestCollection", "Node"}
 
@@ -410,29 +386,11 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(ctx)
-	case dynamicexecutionmetrics.Table:
-		query := c.DynamicExecutionMetrics.Query().
-			Where(dynamicexecutionmetrics.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, dynamicexecutionmetricsImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
 	case evaluationstat.Table:
 		query := c.EvaluationStat.Query().
 			Where(evaluationstat.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, evaluationstatImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
-	case eventfile.Table:
-		query := c.EventFile.Query().
-			Where(eventfile.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, eventfileImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -446,20 +404,29 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(ctx)
-	case filesmetric.Table:
-		query := c.FilesMetric.Query().
-			Where(filesmetric.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, filesmetricImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
 	case garbagemetrics.Table:
 		query := c.GarbageMetrics.Query().
 			Where(garbagemetrics.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, garbagemetricsImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case incompletebuildlog.Table:
+		query := c.IncompleteBuildLog.Query().
+			Where(incompletebuildlog.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, incompletebuildlogImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case invocationfiles.Table:
+		query := c.InvocationFiles.Query().
+			Where(invocationfiles.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, invocationfilesImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -536,15 +503,6 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(ctx)
-	case racestatistics.Table:
-		query := c.RaceStatistics.Query().
-			Where(racestatistics.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, racestatisticsImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
 	case resourceusage.Table:
 		query := c.ResourceUsage.Query().
 			Where(resourceusage.ID(id))
@@ -581,20 +539,11 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			}
 		}
 		return query.Only(ctx)
-	case targetcomplete.Table:
-		query := c.TargetComplete.Query().
-			Where(targetcomplete.ID(id))
+	case target.Table:
+		query := c.Target.Query().
+			Where(target.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, targetcompleteImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
-	case targetconfigured.Table:
-		query := c.TargetConfigured.Query().
-			Where(targetconfigured.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, targetconfiguredImplementors...); err != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, targetImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -604,15 +553,6 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			Where(targetmetrics.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, targetmetricsImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
-	case targetpair.Table:
-		query := c.TargetPair.Query().
-			Where(targetpair.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, targetpairImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -913,42 +853,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case dynamicexecutionmetrics.Table:
-		query := c.DynamicExecutionMetrics.Query().
-			Where(dynamicexecutionmetrics.IDIn(ids...))
-		query, err := query.CollectFields(ctx, dynamicexecutionmetricsImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
 	case evaluationstat.Table:
 		query := c.EvaluationStat.Query().
 			Where(evaluationstat.IDIn(ids...))
 		query, err := query.CollectFields(ctx, evaluationstatImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
-	case eventfile.Table:
-		query := c.EventFile.Query().
-			Where(eventfile.IDIn(ids...))
-		query, err := query.CollectFields(ctx, eventfileImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -977,10 +885,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case filesmetric.Table:
-		query := c.FilesMetric.Query().
-			Where(filesmetric.IDIn(ids...))
-		query, err := query.CollectFields(ctx, filesmetricImplementors...)
+	case garbagemetrics.Table:
+		query := c.GarbageMetrics.Query().
+			Where(garbagemetrics.IDIn(ids...))
+		query, err := query.CollectFields(ctx, garbagemetricsImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -993,10 +901,26 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case garbagemetrics.Table:
-		query := c.GarbageMetrics.Query().
-			Where(garbagemetrics.IDIn(ids...))
-		query, err := query.CollectFields(ctx, garbagemetricsImplementors...)
+	case incompletebuildlog.Table:
+		query := c.IncompleteBuildLog.Query().
+			Where(incompletebuildlog.IDIn(ids...))
+		query, err := query.CollectFields(ctx, incompletebuildlogImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case invocationfiles.Table:
+		query := c.InvocationFiles.Query().
+			Where(invocationfiles.IDIn(ids...))
+		query, err := query.CollectFields(ctx, invocationfilesImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1137,22 +1061,6 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case racestatistics.Table:
-		query := c.RaceStatistics.Query().
-			Where(racestatistics.IDIn(ids...))
-		query, err := query.CollectFields(ctx, racestatisticsImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
 	case resourceusage.Table:
 		query := c.ResourceUsage.Query().
 			Where(resourceusage.IDIn(ids...))
@@ -1217,26 +1125,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 				*noder = node
 			}
 		}
-	case targetcomplete.Table:
-		query := c.TargetComplete.Query().
-			Where(targetcomplete.IDIn(ids...))
-		query, err := query.CollectFields(ctx, targetcompleteImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
-	case targetconfigured.Table:
-		query := c.TargetConfigured.Query().
-			Where(targetconfigured.IDIn(ids...))
-		query, err := query.CollectFields(ctx, targetconfiguredImplementors...)
+	case target.Table:
+		query := c.Target.Query().
+			Where(target.IDIn(ids...))
+		query, err := query.CollectFields(ctx, targetImplementors...)
 		if err != nil {
 			return nil, err
 		}
@@ -1253,22 +1145,6 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.TargetMetrics.Query().
 			Where(targetmetrics.IDIn(ids...))
 		query, err := query.CollectFields(ctx, targetmetricsImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
-	case targetpair.Table:
-		query := c.TargetPair.Query().
-			Where(targetpair.IDIn(ids...))
-		query, err := query.CollectFields(ctx, targetpairImplementors...)
 		if err != nil {
 			return nil, err
 		}

@@ -25,8 +25,8 @@ type EvaluationStatQuery struct {
 	predicates            []predicate.EvaluationStat
 	withBuildGraphMetrics *BuildGraphMetricsQuery
 	withFKs               bool
-	modifiers             []func(*sql.Selector)
 	loadTotal             []func(context.Context, []*EvaluationStat) error
+	modifiers             []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (esq *EvaluationStatQuery) Clone() *EvaluationStatQuery {
 		predicates:            append([]predicate.EvaluationStat{}, esq.predicates...),
 		withBuildGraphMetrics: esq.withBuildGraphMetrics.Clone(),
 		// clone intermediate query.
-		sql:  esq.sql.Clone(),
-		path: esq.path,
+		sql:       esq.sql.Clone(),
+		path:      esq.path,
+		modifiers: append([]func(*sql.Selector){}, esq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (esq *EvaluationStatQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if esq.ctx.Unique != nil && *esq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range esq.modifiers {
+		m(selector)
+	}
 	for _, p := range esq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (esq *EvaluationStatQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (esq *EvaluationStatQuery) Modify(modifiers ...func(s *sql.Selector)) *EvaluationStatSelect {
+	esq.modifiers = append(esq.modifiers, modifiers...)
+	return esq.Select()
 }
 
 // EvaluationStatGroupBy is the group-by builder for EvaluationStat entities.
@@ -624,4 +634,10 @@ func (ess *EvaluationStatSelect) sqlScan(ctx context.Context, root *EvaluationSt
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ess *EvaluationStatSelect) Modify(modifiers ...func(s *sql.Selector)) *EvaluationStatSelect {
+	ess.modifiers = append(ess.modifiers, modifiers...)
+	return ess
 }

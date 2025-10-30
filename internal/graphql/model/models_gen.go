@@ -3,6 +3,7 @@
 package model
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"strconv"
@@ -10,7 +11,7 @@ import (
 
 	"github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetpair"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/google/uuid"
 )
@@ -57,11 +58,11 @@ type BazelCommand struct {
 }
 
 type BazelInvocationState struct {
-	ID             string    `json:"id"`
-	BuildEndTime   time.Time `json:"buildEndTime"`
-	BuildStartTime time.Time `json:"buildStartTime"`
-	ExitCode       *ExitCode `json:"exitCode,omitempty"`
-	BepCompleted   bool      `json:"bepCompleted"`
+	ID             string     `json:"id"`
+	BuildEndTime   *time.Time `json:"buildEndTime,omitempty"`
+	BuildStartTime *time.Time `json:"buildStartTime,omitempty"`
+	ExitCode       *ExitCode  `json:"exitCode,omitempty"`
+	BepCompleted   bool       `json:"bepCompleted"`
 }
 
 type BlobReference struct {
@@ -74,33 +75,18 @@ type BlobReference struct {
 	Blob *ent.Blob `json:"-"`
 }
 
-type DeleteResult struct {
-	Deleted    int  `json:"deleted"`
-	Found      int  `json:"found"`
-	Successful bool `json:"successful"`
-}
-
-type EnvVar struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-
 type ExitCode struct {
 	ID   string `json:"id"`
 	Code int    `json:"code"`
 	Name string `json:"name"`
 }
 
-type NamedFile struct {
-	Name string `json:"name"`
-	URL  string `json:"url"`
-}
-
 type Profile struct {
-	ID          string `json:"id"`
-	Name        string `json:"name"`
-	Digest      string `json:"digest"`
-	SizeInBytes int    `json:"sizeInBytes"`
+	ID             string `json:"id"`
+	Name           string `json:"name"`
+	Digest         string `json:"digest"`
+	SizeInBytes    int    `json:"sizeInBytes"`
+	DigestFunction string `json:"digestFunction"`
 }
 
 type ProgressProblem struct {
@@ -126,9 +112,9 @@ type TargetAggregate struct {
 }
 
 type TargetGridCell struct {
-	InvocationID *uuid.UUID              `json:"invocationId,omitempty"`
-	Complete     *ent.TargetComplete     `json:"complete,omitempty"`
-	AbortReason  *targetpair.AbortReason `json:"abortReason,omitempty"`
+	InvocationID *uuid.UUID          `json:"invocationId,omitempty"`
+	Complete     *ent.Target         `json:"complete,omitempty"`
+	AbortReason  *target.AbortReason `json:"abortReason,omitempty"`
 }
 
 type TargetGridResult struct {
@@ -259,6 +245,20 @@ func (e ActionOutputStatus) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
+func (e *ActionOutputStatus) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e ActionOutputStatus) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
+}
+
 type BuildStepStatus string
 
 const (
@@ -302,4 +302,18 @@ func (e *BuildStepStatus) UnmarshalGQL(v any) error {
 
 func (e BuildStepStatus) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *BuildStepStatus) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e BuildStepStatus) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
 }

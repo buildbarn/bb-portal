@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
@@ -17,6 +19,7 @@ type TestFileCreate struct {
 	config
 	mutation *TestFileMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetDigest sets the "digest" field.
@@ -160,6 +163,7 @@ func (tfc *TestFileCreate) createSpec() (*TestFile, *sqlgraph.CreateSpec) {
 		_node = &TestFile{config: tfc.config}
 		_spec = sqlgraph.NewCreateSpec(testfile.Table, sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = tfc.conflict
 	if value, ok := tfc.mutation.Digest(); ok {
 		_spec.SetField(testfile.FieldDigest, field.TypeString, value)
 		_node.Digest = value
@@ -200,11 +204,342 @@ func (tfc *TestFileCreate) createSpec() (*TestFile, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TestFile.Create().
+//		SetDigest(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TestFileUpsert) {
+//			SetDigest(v+v).
+//		}).
+//		Exec(ctx)
+func (tfc *TestFileCreate) OnConflict(opts ...sql.ConflictOption) *TestFileUpsertOne {
+	tfc.conflict = opts
+	return &TestFileUpsertOne{
+		create: tfc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TestFile.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (tfc *TestFileCreate) OnConflictColumns(columns ...string) *TestFileUpsertOne {
+	tfc.conflict = append(tfc.conflict, sql.ConflictColumns(columns...))
+	return &TestFileUpsertOne{
+		create: tfc,
+	}
+}
+
+type (
+	// TestFileUpsertOne is the builder for "upsert"-ing
+	//  one TestFile node.
+	TestFileUpsertOne struct {
+		create *TestFileCreate
+	}
+
+	// TestFileUpsert is the "OnConflict" setter.
+	TestFileUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetDigest sets the "digest" field.
+func (u *TestFileUpsert) SetDigest(v string) *TestFileUpsert {
+	u.Set(testfile.FieldDigest, v)
+	return u
+}
+
+// UpdateDigest sets the "digest" field to the value that was provided on create.
+func (u *TestFileUpsert) UpdateDigest() *TestFileUpsert {
+	u.SetExcluded(testfile.FieldDigest)
+	return u
+}
+
+// ClearDigest clears the value of the "digest" field.
+func (u *TestFileUpsert) ClearDigest() *TestFileUpsert {
+	u.SetNull(testfile.FieldDigest)
+	return u
+}
+
+// SetFile sets the "file" field.
+func (u *TestFileUpsert) SetFile(v string) *TestFileUpsert {
+	u.Set(testfile.FieldFile, v)
+	return u
+}
+
+// UpdateFile sets the "file" field to the value that was provided on create.
+func (u *TestFileUpsert) UpdateFile() *TestFileUpsert {
+	u.SetExcluded(testfile.FieldFile)
+	return u
+}
+
+// ClearFile clears the value of the "file" field.
+func (u *TestFileUpsert) ClearFile() *TestFileUpsert {
+	u.SetNull(testfile.FieldFile)
+	return u
+}
+
+// SetLength sets the "length" field.
+func (u *TestFileUpsert) SetLength(v int64) *TestFileUpsert {
+	u.Set(testfile.FieldLength, v)
+	return u
+}
+
+// UpdateLength sets the "length" field to the value that was provided on create.
+func (u *TestFileUpsert) UpdateLength() *TestFileUpsert {
+	u.SetExcluded(testfile.FieldLength)
+	return u
+}
+
+// AddLength adds v to the "length" field.
+func (u *TestFileUpsert) AddLength(v int64) *TestFileUpsert {
+	u.Add(testfile.FieldLength, v)
+	return u
+}
+
+// ClearLength clears the value of the "length" field.
+func (u *TestFileUpsert) ClearLength() *TestFileUpsert {
+	u.SetNull(testfile.FieldLength)
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *TestFileUpsert) SetName(v string) *TestFileUpsert {
+	u.Set(testfile.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *TestFileUpsert) UpdateName() *TestFileUpsert {
+	u.SetExcluded(testfile.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *TestFileUpsert) ClearName() *TestFileUpsert {
+	u.SetNull(testfile.FieldName)
+	return u
+}
+
+// SetPrefix sets the "prefix" field.
+func (u *TestFileUpsert) SetPrefix(v []string) *TestFileUpsert {
+	u.Set(testfile.FieldPrefix, v)
+	return u
+}
+
+// UpdatePrefix sets the "prefix" field to the value that was provided on create.
+func (u *TestFileUpsert) UpdatePrefix() *TestFileUpsert {
+	u.SetExcluded(testfile.FieldPrefix)
+	return u
+}
+
+// ClearPrefix clears the value of the "prefix" field.
+func (u *TestFileUpsert) ClearPrefix() *TestFileUpsert {
+	u.SetNull(testfile.FieldPrefix)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.TestFile.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TestFileUpsertOne) UpdateNewValues() *TestFileUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TestFile.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *TestFileUpsertOne) Ignore() *TestFileUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TestFileUpsertOne) DoNothing() *TestFileUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TestFileCreate.OnConflict
+// documentation for more info.
+func (u *TestFileUpsertOne) Update(set func(*TestFileUpsert)) *TestFileUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TestFileUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetDigest sets the "digest" field.
+func (u *TestFileUpsertOne) SetDigest(v string) *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.SetDigest(v)
+	})
+}
+
+// UpdateDigest sets the "digest" field to the value that was provided on create.
+func (u *TestFileUpsertOne) UpdateDigest() *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.UpdateDigest()
+	})
+}
+
+// ClearDigest clears the value of the "digest" field.
+func (u *TestFileUpsertOne) ClearDigest() *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.ClearDigest()
+	})
+}
+
+// SetFile sets the "file" field.
+func (u *TestFileUpsertOne) SetFile(v string) *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.SetFile(v)
+	})
+}
+
+// UpdateFile sets the "file" field to the value that was provided on create.
+func (u *TestFileUpsertOne) UpdateFile() *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.UpdateFile()
+	})
+}
+
+// ClearFile clears the value of the "file" field.
+func (u *TestFileUpsertOne) ClearFile() *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.ClearFile()
+	})
+}
+
+// SetLength sets the "length" field.
+func (u *TestFileUpsertOne) SetLength(v int64) *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.SetLength(v)
+	})
+}
+
+// AddLength adds v to the "length" field.
+func (u *TestFileUpsertOne) AddLength(v int64) *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.AddLength(v)
+	})
+}
+
+// UpdateLength sets the "length" field to the value that was provided on create.
+func (u *TestFileUpsertOne) UpdateLength() *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.UpdateLength()
+	})
+}
+
+// ClearLength clears the value of the "length" field.
+func (u *TestFileUpsertOne) ClearLength() *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.ClearLength()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *TestFileUpsertOne) SetName(v string) *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *TestFileUpsertOne) UpdateName() *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *TestFileUpsertOne) ClearName() *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetPrefix sets the "prefix" field.
+func (u *TestFileUpsertOne) SetPrefix(v []string) *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.SetPrefix(v)
+	})
+}
+
+// UpdatePrefix sets the "prefix" field to the value that was provided on create.
+func (u *TestFileUpsertOne) UpdatePrefix() *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.UpdatePrefix()
+	})
+}
+
+// ClearPrefix clears the value of the "prefix" field.
+func (u *TestFileUpsertOne) ClearPrefix() *TestFileUpsertOne {
+	return u.Update(func(s *TestFileUpsert) {
+		s.ClearPrefix()
+	})
+}
+
+// Exec executes the query.
+func (u *TestFileUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TestFileCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TestFileUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *TestFileUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *TestFileUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // TestFileCreateBulk is the builder for creating many TestFile entities in bulk.
 type TestFileCreateBulk struct {
 	config
 	err      error
 	builders []*TestFileCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the TestFile entities in the database.
@@ -233,6 +568,7 @@ func (tfcb *TestFileCreateBulk) Save(ctx context.Context) ([]*TestFile, error) {
 					_, err = mutators[i+1].Mutate(root, tfcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = tfcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, tfcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -283,6 +619,222 @@ func (tfcb *TestFileCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (tfcb *TestFileCreateBulk) ExecX(ctx context.Context) {
 	if err := tfcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.TestFile.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.TestFileUpsert) {
+//			SetDigest(v+v).
+//		}).
+//		Exec(ctx)
+func (tfcb *TestFileCreateBulk) OnConflict(opts ...sql.ConflictOption) *TestFileUpsertBulk {
+	tfcb.conflict = opts
+	return &TestFileUpsertBulk{
+		create: tfcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.TestFile.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (tfcb *TestFileCreateBulk) OnConflictColumns(columns ...string) *TestFileUpsertBulk {
+	tfcb.conflict = append(tfcb.conflict, sql.ConflictColumns(columns...))
+	return &TestFileUpsertBulk{
+		create: tfcb,
+	}
+}
+
+// TestFileUpsertBulk is the builder for "upsert"-ing
+// a bulk of TestFile nodes.
+type TestFileUpsertBulk struct {
+	create *TestFileCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.TestFile.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *TestFileUpsertBulk) UpdateNewValues() *TestFileUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.TestFile.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *TestFileUpsertBulk) Ignore() *TestFileUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *TestFileUpsertBulk) DoNothing() *TestFileUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the TestFileCreateBulk.OnConflict
+// documentation for more info.
+func (u *TestFileUpsertBulk) Update(set func(*TestFileUpsert)) *TestFileUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&TestFileUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetDigest sets the "digest" field.
+func (u *TestFileUpsertBulk) SetDigest(v string) *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.SetDigest(v)
+	})
+}
+
+// UpdateDigest sets the "digest" field to the value that was provided on create.
+func (u *TestFileUpsertBulk) UpdateDigest() *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.UpdateDigest()
+	})
+}
+
+// ClearDigest clears the value of the "digest" field.
+func (u *TestFileUpsertBulk) ClearDigest() *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.ClearDigest()
+	})
+}
+
+// SetFile sets the "file" field.
+func (u *TestFileUpsertBulk) SetFile(v string) *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.SetFile(v)
+	})
+}
+
+// UpdateFile sets the "file" field to the value that was provided on create.
+func (u *TestFileUpsertBulk) UpdateFile() *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.UpdateFile()
+	})
+}
+
+// ClearFile clears the value of the "file" field.
+func (u *TestFileUpsertBulk) ClearFile() *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.ClearFile()
+	})
+}
+
+// SetLength sets the "length" field.
+func (u *TestFileUpsertBulk) SetLength(v int64) *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.SetLength(v)
+	})
+}
+
+// AddLength adds v to the "length" field.
+func (u *TestFileUpsertBulk) AddLength(v int64) *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.AddLength(v)
+	})
+}
+
+// UpdateLength sets the "length" field to the value that was provided on create.
+func (u *TestFileUpsertBulk) UpdateLength() *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.UpdateLength()
+	})
+}
+
+// ClearLength clears the value of the "length" field.
+func (u *TestFileUpsertBulk) ClearLength() *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.ClearLength()
+	})
+}
+
+// SetName sets the "name" field.
+func (u *TestFileUpsertBulk) SetName(v string) *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *TestFileUpsertBulk) UpdateName() *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *TestFileUpsertBulk) ClearName() *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetPrefix sets the "prefix" field.
+func (u *TestFileUpsertBulk) SetPrefix(v []string) *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.SetPrefix(v)
+	})
+}
+
+// UpdatePrefix sets the "prefix" field to the value that was provided on create.
+func (u *TestFileUpsertBulk) UpdatePrefix() *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.UpdatePrefix()
+	})
+}
+
+// ClearPrefix clears the value of the "prefix" field.
+func (u *TestFileUpsertBulk) ClearPrefix() *TestFileUpsertBulk {
+	return u.Update(func(s *TestFileUpsert) {
+		s.ClearPrefix()
+	})
+}
+
+// Exec executes the query.
+func (u *TestFileUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the TestFileCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for TestFileCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *TestFileUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

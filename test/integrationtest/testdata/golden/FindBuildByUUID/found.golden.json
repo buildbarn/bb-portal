@@ -1,0 +1,23 @@
+{
+  "getBuild": {
+    "buildURL": "https://example.com/build/1234",
+    "buildUUID": "c3a1db88-bad7-54fc-8795-e09393ff2f59",
+    "id": "QnVpbGQ6MQ==",
+    "invocations": [
+      {
+        "endedAt": "2024-05-13T23:43:26.247Z",
+        "id": "QmF6ZWxJbnZvY2F0aW9uOjU=",
+        "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
+        "sourceControl": null,
+        "startedAt": "2024-05-13T23:43:23.045Z",
+        "state": {
+          "exitCode": {
+            "name": "TESTS_FAILED"
+          }
+        },
+        "userLdap": "nameless"
+      }
+    ],
+    "timestamp": "2024-05-13T23:43:23.045Z"
+  }
+}

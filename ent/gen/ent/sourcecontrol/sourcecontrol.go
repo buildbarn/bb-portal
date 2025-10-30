@@ -3,6 +3,10 @@
 package sourcecontrol
 
 import (
+	"fmt"
+	"io"
+	"strconv"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -12,34 +16,38 @@ const (
 	Label = "source_control"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldRepoURL holds the string denoting the repo_url field in the database.
-	FieldRepoURL = "repo_url"
-	// FieldBranch holds the string denoting the branch field in the database.
-	FieldBranch = "branch"
+	// FieldProvider holds the string denoting the provider field in the database.
+	FieldProvider = "provider"
+	// FieldInstanceURL holds the string denoting the instance_url field in the database.
+	FieldInstanceURL = "instance_url"
+	// FieldRepo holds the string denoting the repo field in the database.
+	FieldRepo = "repo"
+	// FieldRefs holds the string denoting the refs field in the database.
+	FieldRefs = "refs"
 	// FieldCommitSha holds the string denoting the commit_sha field in the database.
 	FieldCommitSha = "commit_sha"
 	// FieldActor holds the string denoting the actor field in the database.
 	FieldActor = "actor"
-	// FieldRefs holds the string denoting the refs field in the database.
-	FieldRefs = "refs"
-	// FieldRunID holds the string denoting the run_id field in the database.
-	FieldRunID = "run_id"
-	// FieldWorkflow holds the string denoting the workflow field in the database.
-	FieldWorkflow = "workflow"
-	// FieldAction holds the string denoting the action field in the database.
-	FieldAction = "action"
-	// FieldWorkspace holds the string denoting the workspace field in the database.
-	FieldWorkspace = "workspace"
 	// FieldEventName holds the string denoting the event_name field in the database.
 	FieldEventName = "event_name"
+	// FieldWorkflow holds the string denoting the workflow field in the database.
+	FieldWorkflow = "workflow"
+	// FieldRunID holds the string denoting the run_id field in the database.
+	FieldRunID = "run_id"
+	// FieldRunNumber holds the string denoting the run_number field in the database.
+	FieldRunNumber = "run_number"
 	// FieldJob holds the string denoting the job field in the database.
 	FieldJob = "job"
+	// FieldAction holds the string denoting the action field in the database.
+	FieldAction = "action"
 	// FieldRunnerName holds the string denoting the runner_name field in the database.
 	FieldRunnerName = "runner_name"
 	// FieldRunnerArch holds the string denoting the runner_arch field in the database.
 	FieldRunnerArch = "runner_arch"
 	// FieldRunnerOs holds the string denoting the runner_os field in the database.
 	FieldRunnerOs = "runner_os"
+	// FieldWorkspace holds the string denoting the workspace field in the database.
+	FieldWorkspace = "workspace"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
 	EdgeBazelInvocation = "bazel_invocation"
 	// Table holds the table name of the sourcecontrol in the database.
@@ -56,20 +64,22 @@ const (
 // Columns holds all SQL columns for sourcecontrol fields.
 var Columns = []string{
 	FieldID,
-	FieldRepoURL,
-	FieldBranch,
+	FieldProvider,
+	FieldInstanceURL,
+	FieldRepo,
+	FieldRefs,
 	FieldCommitSha,
 	FieldActor,
-	FieldRefs,
-	FieldRunID,
-	FieldWorkflow,
-	FieldAction,
-	FieldWorkspace,
 	FieldEventName,
+	FieldWorkflow,
+	FieldRunID,
+	FieldRunNumber,
 	FieldJob,
+	FieldAction,
 	FieldRunnerName,
 	FieldRunnerArch,
 	FieldRunnerOs,
+	FieldWorkspace,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "source_controls"
@@ -93,6 +103,29 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Provider defines the type for the "provider" enum field.
+type Provider string
+
+// Provider values.
+const (
+	ProviderGITHUB Provider = "GITHUB"
+	ProviderGITLAB Provider = "GITLAB"
+)
+
+func (pr Provider) String() string {
+	return string(pr)
+}
+
+// ProviderValidator is a validator for the "provider" field enum values. It is called by the builders before save.
+func ProviderValidator(pr Provider) error {
+	switch pr {
+	case ProviderGITHUB, ProviderGITLAB:
+		return nil
+	default:
+		return fmt.Errorf("sourcecontrol: invalid enum value for provider field: %q", pr)
+	}
+}
+
 // OrderOption defines the ordering options for the SourceControl queries.
 type OrderOption func(*sql.Selector)
 
@@ -101,14 +134,24 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByRepoURL orders the results by the repo_url field.
-func ByRepoURL(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRepoURL, opts...).ToFunc()
+// ByProvider orders the results by the provider field.
+func ByProvider(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProvider, opts...).ToFunc()
 }
 
-// ByBranch orders the results by the branch field.
-func ByBranch(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldBranch, opts...).ToFunc()
+// ByInstanceURL orders the results by the instance_url field.
+func ByInstanceURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldInstanceURL, opts...).ToFunc()
+}
+
+// ByRepo orders the results by the repo field.
+func ByRepo(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRepo, opts...).ToFunc()
+}
+
+// ByRefs orders the results by the refs field.
+func ByRefs(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRefs, opts...).ToFunc()
 }
 
 // ByCommitSha orders the results by the commit_sha field.
@@ -121,14 +164,9 @@ func ByActor(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldActor, opts...).ToFunc()
 }
 
-// ByRefs orders the results by the refs field.
-func ByRefs(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRefs, opts...).ToFunc()
-}
-
-// ByRunID orders the results by the run_id field.
-func ByRunID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRunID, opts...).ToFunc()
+// ByEventName orders the results by the event_name field.
+func ByEventName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEventName, opts...).ToFunc()
 }
 
 // ByWorkflow orders the results by the workflow field.
@@ -136,24 +174,24 @@ func ByWorkflow(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldWorkflow, opts...).ToFunc()
 }
 
-// ByAction orders the results by the action field.
-func ByAction(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAction, opts...).ToFunc()
+// ByRunID orders the results by the run_id field.
+func ByRunID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRunID, opts...).ToFunc()
 }
 
-// ByWorkspace orders the results by the workspace field.
-func ByWorkspace(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldWorkspace, opts...).ToFunc()
-}
-
-// ByEventName orders the results by the event_name field.
-func ByEventName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldEventName, opts...).ToFunc()
+// ByRunNumber orders the results by the run_number field.
+func ByRunNumber(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRunNumber, opts...).ToFunc()
 }
 
 // ByJob orders the results by the job field.
 func ByJob(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldJob, opts...).ToFunc()
+}
+
+// ByAction orders the results by the action field.
+func ByAction(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAction, opts...).ToFunc()
 }
 
 // ByRunnerName orders the results by the runner_name field.
@@ -171,6 +209,11 @@ func ByRunnerOs(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRunnerOs, opts...).ToFunc()
 }
 
+// ByWorkspace orders the results by the workspace field.
+func ByWorkspace(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldWorkspace, opts...).ToFunc()
+}
+
 // ByBazelInvocationField orders the results by bazel_invocation field.
 func ByBazelInvocationField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -183,4 +226,22 @@ func newBazelInvocationStep() *sqlgraph.Step {
 		sqlgraph.To(BazelInvocationInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2O, true, BazelInvocationTable, BazelInvocationColumn),
 	)
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (e Provider) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(e.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (e *Provider) UnmarshalGQL(val interface{}) error {
+	str, ok := val.(string)
+	if !ok {
+		return fmt.Errorf("enum %T must be a string", val)
+	}
+	*e = Provider(str)
+	if err := ProviderValidator(*e); err != nil {
+		return fmt.Errorf("%s is not a valid Provider", str)
+	}
+	return nil
 }

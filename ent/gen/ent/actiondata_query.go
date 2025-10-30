@@ -25,8 +25,8 @@ type ActionDataQuery struct {
 	predicates        []predicate.ActionData
 	withActionSummary *ActionSummaryQuery
 	withFKs           bool
-	modifiers         []func(*sql.Selector)
 	loadTotal         []func(context.Context, []*ActionData) error
+	modifiers         []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (adq *ActionDataQuery) Clone() *ActionDataQuery {
 		predicates:        append([]predicate.ActionData{}, adq.predicates...),
 		withActionSummary: adq.withActionSummary.Clone(),
 		// clone intermediate query.
-		sql:  adq.sql.Clone(),
-		path: adq.path,
+		sql:       adq.sql.Clone(),
+		path:      adq.path,
+		modifiers: append([]func(*sql.Selector){}, adq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (adq *ActionDataQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if adq.ctx.Unique != nil && *adq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range adq.modifiers {
+		m(selector)
+	}
 	for _, p := range adq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (adq *ActionDataQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (adq *ActionDataQuery) Modify(modifiers ...func(s *sql.Selector)) *ActionDataSelect {
+	adq.modifiers = append(adq.modifiers, modifiers...)
+	return adq.Select()
 }
 
 // ActionDataGroupBy is the group-by builder for ActionData entities.
@@ -624,4 +634,10 @@ func (ads *ActionDataSelect) sqlScan(ctx context.Context, root *ActionDataQuery,
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ads *ActionDataSelect) Modify(modifiers ...func(s *sql.Selector)) *ActionDataSelect {
+	ads.modifiers = append(ads.modifiers, modifiers...)
+	return ads
 }

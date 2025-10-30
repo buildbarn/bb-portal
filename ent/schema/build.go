@@ -19,10 +19,10 @@ type Build struct {
 // Fields of the Build.
 func (Build) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("build_url").Unique().Immutable(),
+		field.String("build_url").Immutable(),
 		field.UUID("build_uuid", uuid.UUID{}).Unique().Immutable(),
-		field.JSON("env", map[string]string{}).Annotations(entgql.Skip()), // NOTE: Uses custom resolver.
-		field.Time("timestamp").Optional(),
+		field.String("instance_name").Immutable(),
+		field.Time("timestamp"),
 	}
 }
 
@@ -39,7 +39,9 @@ func (Build) Edges() []ent.Edge {
 // Indexes of the Build.
 func (Build) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("env"),
+		index.Fields("build_uuid"),
+		index.Fields("build_url"),
+		index.Fields("build_url", "instance_name").Unique(),
 	}
 }
 

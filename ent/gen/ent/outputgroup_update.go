@@ -13,15 +13,15 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/namedsetoffiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/targetcomplete"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
 )
 
 // OutputGroupUpdate is the builder for updating OutputGroup entities.
 type OutputGroupUpdate struct {
 	config
-	hooks    []Hook
-	mutation *OutputGroupMutation
+	hooks     []Hook
+	mutation  *OutputGroupMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the OutputGroupUpdate builder.
@@ -70,25 +70,6 @@ func (ogu *OutputGroupUpdate) ClearIncomplete() *OutputGroupUpdate {
 	return ogu
 }
 
-// SetTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID.
-func (ogu *OutputGroupUpdate) SetTargetCompleteID(id int) *OutputGroupUpdate {
-	ogu.mutation.SetTargetCompleteID(id)
-	return ogu
-}
-
-// SetNillableTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID if the given value is not nil.
-func (ogu *OutputGroupUpdate) SetNillableTargetCompleteID(id *int) *OutputGroupUpdate {
-	if id != nil {
-		ogu = ogu.SetTargetCompleteID(*id)
-	}
-	return ogu
-}
-
-// SetTargetComplete sets the "target_complete" edge to the TargetComplete entity.
-func (ogu *OutputGroupUpdate) SetTargetComplete(t *TargetComplete) *OutputGroupUpdate {
-	return ogu.SetTargetCompleteID(t.ID)
-}
-
 // AddInlineFileIDs adds the "inline_files" edge to the TestFile entity by IDs.
 func (ogu *OutputGroupUpdate) AddInlineFileIDs(ids ...int) *OutputGroupUpdate {
 	ogu.mutation.AddInlineFileIDs(ids...)
@@ -126,12 +107,6 @@ func (ogu *OutputGroupUpdate) SetFileSets(n *NamedSetOfFiles) *OutputGroupUpdate
 // Mutation returns the OutputGroupMutation object of the builder.
 func (ogu *OutputGroupUpdate) Mutation() *OutputGroupMutation {
 	return ogu.mutation
-}
-
-// ClearTargetComplete clears the "target_complete" edge to the TargetComplete entity.
-func (ogu *OutputGroupUpdate) ClearTargetComplete() *OutputGroupUpdate {
-	ogu.mutation.ClearTargetComplete()
-	return ogu
 }
 
 // ClearInlineFiles clears all "inline_files" edges to the TestFile entity.
@@ -188,6 +163,12 @@ func (ogu *OutputGroupUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (ogu *OutputGroupUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *OutputGroupUpdate {
+	ogu.modifiers = append(ogu.modifiers, modifiers...)
+	return ogu
+}
+
 func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(outputgroup.Table, outputgroup.Columns, sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt))
 	if ps := ogu.mutation.predicates; len(ps) > 0 {
@@ -208,35 +189,6 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if ogu.mutation.IncompleteCleared() {
 		_spec.ClearField(outputgroup.FieldIncomplete, field.TypeBool)
-	}
-	if ogu.mutation.TargetCompleteCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   outputgroup.TargetCompleteTable,
-			Columns: []string{outputgroup.TargetCompleteColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetcomplete.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ogu.mutation.TargetCompleteIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   outputgroup.TargetCompleteTable,
-			Columns: []string{outputgroup.TargetCompleteColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetcomplete.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if ogu.mutation.InlineFilesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -312,6 +264,7 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(ogu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, ogu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{outputgroup.Label}
@@ -327,9 +280,10 @@ func (ogu *OutputGroupUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // OutputGroupUpdateOne is the builder for updating a single OutputGroup entity.
 type OutputGroupUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *OutputGroupMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *OutputGroupMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetName sets the "name" field.
@@ -372,25 +326,6 @@ func (oguo *OutputGroupUpdateOne) ClearIncomplete() *OutputGroupUpdateOne {
 	return oguo
 }
 
-// SetTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID.
-func (oguo *OutputGroupUpdateOne) SetTargetCompleteID(id int) *OutputGroupUpdateOne {
-	oguo.mutation.SetTargetCompleteID(id)
-	return oguo
-}
-
-// SetNillableTargetCompleteID sets the "target_complete" edge to the TargetComplete entity by ID if the given value is not nil.
-func (oguo *OutputGroupUpdateOne) SetNillableTargetCompleteID(id *int) *OutputGroupUpdateOne {
-	if id != nil {
-		oguo = oguo.SetTargetCompleteID(*id)
-	}
-	return oguo
-}
-
-// SetTargetComplete sets the "target_complete" edge to the TargetComplete entity.
-func (oguo *OutputGroupUpdateOne) SetTargetComplete(t *TargetComplete) *OutputGroupUpdateOne {
-	return oguo.SetTargetCompleteID(t.ID)
-}
-
 // AddInlineFileIDs adds the "inline_files" edge to the TestFile entity by IDs.
 func (oguo *OutputGroupUpdateOne) AddInlineFileIDs(ids ...int) *OutputGroupUpdateOne {
 	oguo.mutation.AddInlineFileIDs(ids...)
@@ -428,12 +363,6 @@ func (oguo *OutputGroupUpdateOne) SetFileSets(n *NamedSetOfFiles) *OutputGroupUp
 // Mutation returns the OutputGroupMutation object of the builder.
 func (oguo *OutputGroupUpdateOne) Mutation() *OutputGroupMutation {
 	return oguo.mutation
-}
-
-// ClearTargetComplete clears the "target_complete" edge to the TargetComplete entity.
-func (oguo *OutputGroupUpdateOne) ClearTargetComplete() *OutputGroupUpdateOne {
-	oguo.mutation.ClearTargetComplete()
-	return oguo
 }
 
 // ClearInlineFiles clears all "inline_files" edges to the TestFile entity.
@@ -503,6 +432,12 @@ func (oguo *OutputGroupUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (oguo *OutputGroupUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *OutputGroupUpdateOne {
+	oguo.modifiers = append(oguo.modifiers, modifiers...)
+	return oguo
+}
+
 func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGroup, err error) {
 	_spec := sqlgraph.NewUpdateSpec(outputgroup.Table, outputgroup.Columns, sqlgraph.NewFieldSpec(outputgroup.FieldID, field.TypeInt))
 	id, ok := oguo.mutation.ID()
@@ -540,35 +475,6 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 	}
 	if oguo.mutation.IncompleteCleared() {
 		_spec.ClearField(outputgroup.FieldIncomplete, field.TypeBool)
-	}
-	if oguo.mutation.TargetCompleteCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   outputgroup.TargetCompleteTable,
-			Columns: []string{outputgroup.TargetCompleteColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetcomplete.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := oguo.mutation.TargetCompleteIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: true,
-			Table:   outputgroup.TargetCompleteTable,
-			Columns: []string{outputgroup.TargetCompleteColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(targetcomplete.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if oguo.mutation.InlineFilesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -644,6 +550,7 @@ func (oguo *OutputGroupUpdateOne) sqlSave(ctx context.Context) (_node *OutputGro
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(oguo.modifiers...)
 	_node = &OutputGroup{config: oguo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

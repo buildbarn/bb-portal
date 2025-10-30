@@ -1,5 +1,5 @@
 import type { BazelInvocationInfoFragment } from "@/graphql/__generated__/graphql";
-import { DigestFunction_Value } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
+import { digestFunctionValueFromString } from "@/utils/digestFunctionUtils";
 import { generateFileUrl } from "@/utils/urlGenerator";
 import {
   DownOutlined,
@@ -18,7 +18,7 @@ const getProfileUrl = (
 ): string => {
   return generateFileUrl(
     instanceName,
-    DigestFunction_Value.SHA256,
+    digestFunctionValueFromString(profile.digestFunction),
     {
       hash: profile.digest,
       sizeBytes: profile.sizeInBytes.toString(),

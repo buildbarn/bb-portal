@@ -3,7 +3,7 @@ import { gql } from "@/graphql/__generated__";
 export const LOAD_FULL_BAZEL_INVOCATION_DETAILS = gql(/* GraphQL */ `
   query LoadFullBazelInvocationDetails($invocationID: String!) {
     bazelInvocation(invocationId: $invocationID) {
-      ...FullBazelInvocationDetails
+      ...BazelInvocationInfo
     }
   }
 `);
@@ -68,42 +68,19 @@ fragment BazelInvocationInfo on BazelInvocation {
     }
     artifactMetrics {
       id
-      sourceArtifactsRead {
-        id
-        sizeInBytes
-        count
-      }
-      outputArtifactsSeen {
-        id
-        sizeInBytes
-        count
-      }
-      outputArtifactsFromActionCache {
-        id
-        sizeInBytes
-        count
-      }
-      topLevelArtifacts {
-        id
-        sizeInBytes
-        count
-      }
+      sourceArtifactsReadCount
+      sourceArtifactsReadSizeInBytes
+      outputArtifactsSeenCount
+      outputArtifactsSeenSizeInBytes
+      outputArtifactsFromActionCacheCount
+      outputArtifactsFromActionCacheSizeInBytes
+      topLevelArtifactsCount
+      topLevelArtifactsSizeInBytes
     }
     cumulativeMetrics {
       id
       numBuilds
       numAnalyses
-    }
-    dynamicExecutionMetrics {
-      id
-      raceStatistics {
-        id
-        localWins
-        mnemonic
-        renoteWins
-        localRunner
-        remoteRunner
-      }
     }
     buildGraphMetrics {
       id
@@ -182,16 +159,17 @@ fragment BazelInvocationInfo on BazelInvocation {
   id
   invocationID
   instanceName
+  bazelVersion
   build {
     id
     buildUUID
   }
-  buildLogs
   profile {
     id
     name
     digest
     sizeInBytes
+    digestFunction
   }
   targets {
     id
@@ -210,10 +188,6 @@ fragment BazelInvocationInfo on BazelInvocation {
     overallStatus
     cachedLocally
     cachedRemotely
-  }
-  relatedFiles {
-    name
-    url
   }
   user {
     Email
@@ -240,17 +214,18 @@ fragment BazelInvocationInfo on BazelInvocation {
   isCiWorker
   sourceControl {
     id
+    provider
+    instanceURL
+    repo
+    refs
     commitSha
     actor
-    branch
-    repoURL
-    refs
-    runID
-    workflow
-    workspace
-    action
     eventName
+    workflow
+    runID
+    runNumber
     job
+    action
     runnerName
     runnerArch
     runnerOs
@@ -317,13 +292,6 @@ fragment BlobReferenceInfo on BlobReference {
   ephemeralURL
 }
 `)
-
-
-export const FULL_BAZEL_INVOCATION_DETAILS = gql(/* GraphQL */ `
-    fragment FullBazelInvocationDetails on BazelInvocation {
-      ...BazelInvocationInfo
-    }
-`);
 
 
 export const GET_ACTION_PROBLEM = gql(/* GraphQL */ `

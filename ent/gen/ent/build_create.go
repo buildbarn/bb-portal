@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
@@ -20,6 +21,7 @@ type BuildCreate struct {
 	config
 	mutation *BuildMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetBuildURL sets the "build_url" field.
@@ -34,23 +36,15 @@ func (bc *BuildCreate) SetBuildUUID(u uuid.UUID) *BuildCreate {
 	return bc
 }
 
-// SetEnv sets the "env" field.
-func (bc *BuildCreate) SetEnv(m map[string]string) *BuildCreate {
-	bc.mutation.SetEnv(m)
+// SetInstanceName sets the "instance_name" field.
+func (bc *BuildCreate) SetInstanceName(s string) *BuildCreate {
+	bc.mutation.SetInstanceName(s)
 	return bc
 }
 
 // SetTimestamp sets the "timestamp" field.
 func (bc *BuildCreate) SetTimestamp(t time.Time) *BuildCreate {
 	bc.mutation.SetTimestamp(t)
-	return bc
-}
-
-// SetNillableTimestamp sets the "timestamp" field if the given value is not nil.
-func (bc *BuildCreate) SetNillableTimestamp(t *time.Time) *BuildCreate {
-	if t != nil {
-		bc.SetTimestamp(*t)
-	}
 	return bc
 }
 
@@ -109,8 +103,11 @@ func (bc *BuildCreate) check() error {
 	if _, ok := bc.mutation.BuildUUID(); !ok {
 		return &ValidationError{Name: "build_uuid", err: errors.New(`ent: missing required field "Build.build_uuid"`)}
 	}
-	if _, ok := bc.mutation.Env(); !ok {
-		return &ValidationError{Name: "env", err: errors.New(`ent: missing required field "Build.env"`)}
+	if _, ok := bc.mutation.InstanceName(); !ok {
+		return &ValidationError{Name: "instance_name", err: errors.New(`ent: missing required field "Build.instance_name"`)}
+	}
+	if _, ok := bc.mutation.Timestamp(); !ok {
+		return &ValidationError{Name: "timestamp", err: errors.New(`ent: missing required field "Build.timestamp"`)}
 	}
 	return nil
 }
@@ -138,6 +135,7 @@ func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 		_node = &Build{config: bc.config}
 		_spec = sqlgraph.NewCreateSpec(build.Table, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = bc.conflict
 	if value, ok := bc.mutation.BuildURL(); ok {
 		_spec.SetField(build.FieldBuildURL, field.TypeString, value)
 		_node.BuildURL = value
@@ -146,9 +144,9 @@ func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 		_spec.SetField(build.FieldBuildUUID, field.TypeUUID, value)
 		_node.BuildUUID = value
 	}
-	if value, ok := bc.mutation.Env(); ok {
-		_spec.SetField(build.FieldEnv, field.TypeJSON, value)
-		_node.Env = value
+	if value, ok := bc.mutation.InstanceName(); ok {
+		_spec.SetField(build.FieldInstanceName, field.TypeString, value)
+		_node.InstanceName = value
 	}
 	if value, ok := bc.mutation.Timestamp(); ok {
 		_spec.SetField(build.FieldTimestamp, field.TypeTime, value)
@@ -173,11 +171,171 @@ func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Build.Create().
+//		SetBuildURL(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BuildUpsert) {
+//			SetBuildURL(v+v).
+//		}).
+//		Exec(ctx)
+func (bc *BuildCreate) OnConflict(opts ...sql.ConflictOption) *BuildUpsertOne {
+	bc.conflict = opts
+	return &BuildUpsertOne{
+		create: bc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Build.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (bc *BuildCreate) OnConflictColumns(columns ...string) *BuildUpsertOne {
+	bc.conflict = append(bc.conflict, sql.ConflictColumns(columns...))
+	return &BuildUpsertOne{
+		create: bc,
+	}
+}
+
+type (
+	// BuildUpsertOne is the builder for "upsert"-ing
+	//  one Build node.
+	BuildUpsertOne struct {
+		create *BuildCreate
+	}
+
+	// BuildUpsert is the "OnConflict" setter.
+	BuildUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetTimestamp sets the "timestamp" field.
+func (u *BuildUpsert) SetTimestamp(v time.Time) *BuildUpsert {
+	u.Set(build.FieldTimestamp, v)
+	return u
+}
+
+// UpdateTimestamp sets the "timestamp" field to the value that was provided on create.
+func (u *BuildUpsert) UpdateTimestamp() *BuildUpsert {
+	u.SetExcluded(build.FieldTimestamp)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.Build.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BuildUpsertOne) UpdateNewValues() *BuildUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.BuildURL(); exists {
+			s.SetIgnore(build.FieldBuildURL)
+		}
+		if _, exists := u.create.mutation.BuildUUID(); exists {
+			s.SetIgnore(build.FieldBuildUUID)
+		}
+		if _, exists := u.create.mutation.InstanceName(); exists {
+			s.SetIgnore(build.FieldInstanceName)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Build.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *BuildUpsertOne) Ignore() *BuildUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BuildUpsertOne) DoNothing() *BuildUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BuildCreate.OnConflict
+// documentation for more info.
+func (u *BuildUpsertOne) Update(set func(*BuildUpsert)) *BuildUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BuildUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetTimestamp sets the "timestamp" field.
+func (u *BuildUpsertOne) SetTimestamp(v time.Time) *BuildUpsertOne {
+	return u.Update(func(s *BuildUpsert) {
+		s.SetTimestamp(v)
+	})
+}
+
+// UpdateTimestamp sets the "timestamp" field to the value that was provided on create.
+func (u *BuildUpsertOne) UpdateTimestamp() *BuildUpsertOne {
+	return u.Update(func(s *BuildUpsert) {
+		s.UpdateTimestamp()
+	})
+}
+
+// Exec executes the query.
+func (u *BuildUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BuildCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BuildUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *BuildUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *BuildUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // BuildCreateBulk is the builder for creating many Build entities in bulk.
 type BuildCreateBulk struct {
 	config
 	err      error
 	builders []*BuildCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the Build entities in the database.
@@ -206,6 +364,7 @@ func (bcb *BuildCreateBulk) Save(ctx context.Context) ([]*Build, error) {
 					_, err = mutators[i+1].Mutate(root, bcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = bcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, bcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -256,6 +415,137 @@ func (bcb *BuildCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (bcb *BuildCreateBulk) ExecX(ctx context.Context) {
 	if err := bcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Build.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BuildUpsert) {
+//			SetBuildURL(v+v).
+//		}).
+//		Exec(ctx)
+func (bcb *BuildCreateBulk) OnConflict(opts ...sql.ConflictOption) *BuildUpsertBulk {
+	bcb.conflict = opts
+	return &BuildUpsertBulk{
+		create: bcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Build.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (bcb *BuildCreateBulk) OnConflictColumns(columns ...string) *BuildUpsertBulk {
+	bcb.conflict = append(bcb.conflict, sql.ConflictColumns(columns...))
+	return &BuildUpsertBulk{
+		create: bcb,
+	}
+}
+
+// BuildUpsertBulk is the builder for "upsert"-ing
+// a bulk of Build nodes.
+type BuildUpsertBulk struct {
+	create *BuildCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.Build.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BuildUpsertBulk) UpdateNewValues() *BuildUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.BuildURL(); exists {
+				s.SetIgnore(build.FieldBuildURL)
+			}
+			if _, exists := b.mutation.BuildUUID(); exists {
+				s.SetIgnore(build.FieldBuildUUID)
+			}
+			if _, exists := b.mutation.InstanceName(); exists {
+				s.SetIgnore(build.FieldInstanceName)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Build.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *BuildUpsertBulk) Ignore() *BuildUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BuildUpsertBulk) DoNothing() *BuildUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BuildCreateBulk.OnConflict
+// documentation for more info.
+func (u *BuildUpsertBulk) Update(set func(*BuildUpsert)) *BuildUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BuildUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetTimestamp sets the "timestamp" field.
+func (u *BuildUpsertBulk) SetTimestamp(v time.Time) *BuildUpsertBulk {
+	return u.Update(func(s *BuildUpsert) {
+		s.SetTimestamp(v)
+	})
+}
+
+// UpdateTimestamp sets the "timestamp" field to the value that was provided on create.
+func (u *BuildUpsertBulk) UpdateTimestamp() *BuildUpsertBulk {
+	return u.Update(func(s *BuildUpsert) {
+		s.UpdateTimestamp()
+	})
+}
+
+// Exec executes the query.
+func (u *BuildUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the BuildCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BuildCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BuildUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

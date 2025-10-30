@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
+	"entgo.io/ent/schema/index"
 )
 
 // Metrics holds the schema definition for the Metrics entity.
@@ -82,19 +83,19 @@ func (Metrics) Edges() []ent.Edge {
 				entsql.OnDelete(entsql.Cascade),
 			),
 
-		// Dynamic execution metrics if available.
-		edge.To("dynamic_execution_metrics", DynamicExecutionMetrics.Type).
-			Unique().
-			Annotations(
-				entsql.OnDelete(entsql.Cascade),
-			),
-
 		// Build graph metrics.
 		edge.To("build_graph_metrics", BuildGraphMetrics.Type).
 			Unique().
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+	}
+}
+
+// Indexes of the Metrics.
+func (Metrics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("bazel_invocation"),
 	}
 }
 

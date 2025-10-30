@@ -16,8 +16,8 @@ const (
 	FieldBuildURL = "build_url"
 	// FieldBuildUUID holds the string denoting the build_uuid field in the database.
 	FieldBuildUUID = "build_uuid"
-	// FieldEnv holds the string denoting the env field in the database.
-	FieldEnv = "env"
+	// FieldInstanceName holds the string denoting the instance_name field in the database.
+	FieldInstanceName = "instance_name"
 	// FieldTimestamp holds the string denoting the timestamp field in the database.
 	FieldTimestamp = "timestamp"
 	// EdgeInvocations holds the string denoting the invocations edge name in mutations.
@@ -38,7 +38,7 @@ var Columns = []string{
 	FieldID,
 	FieldBuildURL,
 	FieldBuildUUID,
-	FieldEnv,
+	FieldInstanceName,
 	FieldTimestamp,
 }
 
@@ -68,6 +68,11 @@ func ByBuildURL(opts ...sql.OrderTermOption) OrderOption {
 // ByBuildUUID orders the results by the build_uuid field.
 func ByBuildUUID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBuildUUID, opts...).ToFunc()
+}
+
+// ByInstanceName orders the results by the instance_name field.
+func ByInstanceName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldInstanceName, opts...).ToFunc()
 }
 
 // ByTimestamp orders the results by the timestamp field.

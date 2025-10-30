@@ -31,8 +31,8 @@ query GetTargetsWithOffset(
 export const FIND_TARGETS = gql(/* GraphQL */ `
   query FindTargets(
      $first: Int!
-     $where: TargetPairWhereInput
-     $orderBy: TargetPairOrder
+     $where: TargetWhereInput
+     $orderBy: TargetOrder
      $after: Cursor
    ){
    findTargets (first: $first, where: $where, orderBy: $orderBy, after: $after){

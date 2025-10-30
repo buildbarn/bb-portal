@@ -17,7 +17,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/dynamicexecutionmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
@@ -30,24 +29,23 @@ import (
 // MetricsQuery is the builder for querying Metrics entities.
 type MetricsQuery struct {
 	config
-	ctx                         *QueryContext
-	order                       []metrics.OrderOption
-	inters                      []Interceptor
-	predicates                  []predicate.Metrics
-	withBazelInvocation         *BazelInvocationQuery
-	withActionSummary           *ActionSummaryQuery
-	withMemoryMetrics           *MemoryMetricsQuery
-	withTargetMetrics           *TargetMetricsQuery
-	withPackageMetrics          *PackageMetricsQuery
-	withTimingMetrics           *TimingMetricsQuery
-	withCumulativeMetrics       *CumulativeMetricsQuery
-	withArtifactMetrics         *ArtifactMetricsQuery
-	withNetworkMetrics          *NetworkMetricsQuery
-	withDynamicExecutionMetrics *DynamicExecutionMetricsQuery
-	withBuildGraphMetrics       *BuildGraphMetricsQuery
-	withFKs                     bool
-	modifiers                   []func(*sql.Selector)
-	loadTotal                   []func(context.Context, []*Metrics) error
+	ctx                   *QueryContext
+	order                 []metrics.OrderOption
+	inters                []Interceptor
+	predicates            []predicate.Metrics
+	withBazelInvocation   *BazelInvocationQuery
+	withActionSummary     *ActionSummaryQuery
+	withMemoryMetrics     *MemoryMetricsQuery
+	withTargetMetrics     *TargetMetricsQuery
+	withPackageMetrics    *PackageMetricsQuery
+	withTimingMetrics     *TimingMetricsQuery
+	withCumulativeMetrics *CumulativeMetricsQuery
+	withArtifactMetrics   *ArtifactMetricsQuery
+	withNetworkMetrics    *NetworkMetricsQuery
+	withBuildGraphMetrics *BuildGraphMetricsQuery
+	withFKs               bool
+	loadTotal             []func(context.Context, []*Metrics) error
+	modifiers             []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -282,28 +280,6 @@ func (mq *MetricsQuery) QueryNetworkMetrics() *NetworkMetricsQuery {
 	return query
 }
 
-// QueryDynamicExecutionMetrics chains the current query on the "dynamic_execution_metrics" edge.
-func (mq *MetricsQuery) QueryDynamicExecutionMetrics() *DynamicExecutionMetricsQuery {
-	query := (&DynamicExecutionMetricsClient{config: mq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := mq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := mq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(metrics.Table, metrics.FieldID, selector),
-			sqlgraph.To(dynamicexecutionmetrics.Table, dynamicexecutionmetrics.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, metrics.DynamicExecutionMetricsTable, metrics.DynamicExecutionMetricsColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(mq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
 // QueryBuildGraphMetrics chains the current query on the "build_graph_metrics" edge.
 func (mq *MetricsQuery) QueryBuildGraphMetrics() *BuildGraphMetricsQuery {
 	query := (&BuildGraphMetricsClient{config: mq.config}).Query()
@@ -513,25 +489,25 @@ func (mq *MetricsQuery) Clone() *MetricsQuery {
 		return nil
 	}
 	return &MetricsQuery{
-		config:                      mq.config,
-		ctx:                         mq.ctx.Clone(),
-		order:                       append([]metrics.OrderOption{}, mq.order...),
-		inters:                      append([]Interceptor{}, mq.inters...),
-		predicates:                  append([]predicate.Metrics{}, mq.predicates...),
-		withBazelInvocation:         mq.withBazelInvocation.Clone(),
-		withActionSummary:           mq.withActionSummary.Clone(),
-		withMemoryMetrics:           mq.withMemoryMetrics.Clone(),
-		withTargetMetrics:           mq.withTargetMetrics.Clone(),
-		withPackageMetrics:          mq.withPackageMetrics.Clone(),
-		withTimingMetrics:           mq.withTimingMetrics.Clone(),
-		withCumulativeMetrics:       mq.withCumulativeMetrics.Clone(),
-		withArtifactMetrics:         mq.withArtifactMetrics.Clone(),
-		withNetworkMetrics:          mq.withNetworkMetrics.Clone(),
-		withDynamicExecutionMetrics: mq.withDynamicExecutionMetrics.Clone(),
-		withBuildGraphMetrics:       mq.withBuildGraphMetrics.Clone(),
+		config:                mq.config,
+		ctx:                   mq.ctx.Clone(),
+		order:                 append([]metrics.OrderOption{}, mq.order...),
+		inters:                append([]Interceptor{}, mq.inters...),
+		predicates:            append([]predicate.Metrics{}, mq.predicates...),
+		withBazelInvocation:   mq.withBazelInvocation.Clone(),
+		withActionSummary:     mq.withActionSummary.Clone(),
+		withMemoryMetrics:     mq.withMemoryMetrics.Clone(),
+		withTargetMetrics:     mq.withTargetMetrics.Clone(),
+		withPackageMetrics:    mq.withPackageMetrics.Clone(),
+		withTimingMetrics:     mq.withTimingMetrics.Clone(),
+		withCumulativeMetrics: mq.withCumulativeMetrics.Clone(),
+		withArtifactMetrics:   mq.withArtifactMetrics.Clone(),
+		withNetworkMetrics:    mq.withNetworkMetrics.Clone(),
+		withBuildGraphMetrics: mq.withBuildGraphMetrics.Clone(),
 		// clone intermediate query.
-		sql:  mq.sql.Clone(),
-		path: mq.path,
+		sql:       mq.sql.Clone(),
+		path:      mq.path,
+		modifiers: append([]func(*sql.Selector){}, mq.modifiers...),
 	}
 }
 
@@ -634,17 +610,6 @@ func (mq *MetricsQuery) WithNetworkMetrics(opts ...func(*NetworkMetricsQuery)) *
 	return mq
 }
 
-// WithDynamicExecutionMetrics tells the query-builder to eager-load the nodes that are connected to
-// the "dynamic_execution_metrics" edge. The optional arguments are used to configure the query builder of the edge.
-func (mq *MetricsQuery) WithDynamicExecutionMetrics(opts ...func(*DynamicExecutionMetricsQuery)) *MetricsQuery {
-	query := (&DynamicExecutionMetricsClient{config: mq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	mq.withDynamicExecutionMetrics = query
-	return mq
-}
-
 // WithBuildGraphMetrics tells the query-builder to eager-load the nodes that are connected to
 // the "build_graph_metrics" edge. The optional arguments are used to configure the query builder of the edge.
 func (mq *MetricsQuery) WithBuildGraphMetrics(opts ...func(*BuildGraphMetricsQuery)) *MetricsQuery {
@@ -713,7 +678,7 @@ func (mq *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 		nodes       = []*Metrics{}
 		withFKs     = mq.withFKs
 		_spec       = mq.querySpec()
-		loadedTypes = [11]bool{
+		loadedTypes = [10]bool{
 			mq.withBazelInvocation != nil,
 			mq.withActionSummary != nil,
 			mq.withMemoryMetrics != nil,
@@ -723,7 +688,6 @@ func (mq *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 			mq.withCumulativeMetrics != nil,
 			mq.withArtifactMetrics != nil,
 			mq.withNetworkMetrics != nil,
-			mq.withDynamicExecutionMetrics != nil,
 			mq.withBuildGraphMetrics != nil,
 		}
 	)
@@ -805,12 +769,6 @@ func (mq *MetricsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Metr
 	if query := mq.withNetworkMetrics; query != nil {
 		if err := mq.loadNetworkMetrics(ctx, query, nodes, nil,
 			func(n *Metrics, e *NetworkMetrics) { n.Edges.NetworkMetrics = e }); err != nil {
-			return nil, err
-		}
-	}
-	if query := mq.withDynamicExecutionMetrics; query != nil {
-		if err := mq.loadDynamicExecutionMetrics(ctx, query, nodes, nil,
-			func(n *Metrics, e *DynamicExecutionMetrics) { n.Edges.DynamicExecutionMetrics = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -1084,34 +1042,6 @@ func (mq *MetricsQuery) loadNetworkMetrics(ctx context.Context, query *NetworkMe
 	}
 	return nil
 }
-func (mq *MetricsQuery) loadDynamicExecutionMetrics(ctx context.Context, query *DynamicExecutionMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *DynamicExecutionMetrics)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Metrics)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-	}
-	query.withFKs = true
-	query.Where(predicate.DynamicExecutionMetrics(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(metrics.DynamicExecutionMetricsColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.metrics_dynamic_execution_metrics
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "metrics_dynamic_execution_metrics" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "metrics_dynamic_execution_metrics" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
 func (mq *MetricsQuery) loadBuildGraphMetrics(ctx context.Context, query *BuildGraphMetricsQuery, nodes []*Metrics, init func(*Metrics), assign func(*Metrics, *BuildGraphMetrics)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*Metrics)
@@ -1208,6 +1138,9 @@ func (mq *MetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if mq.ctx.Unique != nil && *mq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range mq.modifiers {
+		m(selector)
+	}
 	for _, p := range mq.predicates {
 		p(selector)
 	}
@@ -1223,6 +1156,12 @@ func (mq *MetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (mq *MetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *MetricsSelect {
+	mq.modifiers = append(mq.modifiers, modifiers...)
+	return mq.Select()
 }
 
 // MetricsGroupBy is the group-by builder for Metrics entities.
@@ -1313,4 +1252,10 @@ func (ms *MetricsSelect) sqlScan(ctx context.Context, root *MetricsQuery, v any)
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ms *MetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *MetricsSelect {
+	ms.modifiers = append(ms.modifiers, modifiers...)
+	return ms
 }

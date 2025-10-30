@@ -25,8 +25,8 @@ type TestFileQuery struct {
 	predicates     []predicate.TestFile
 	withTestResult *TestResultBESQuery
 	withFKs        bool
-	modifiers      []func(*sql.Selector)
 	loadTotal      []func(context.Context, []*TestFile) error
+	modifiers      []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (tfq *TestFileQuery) Clone() *TestFileQuery {
 		predicates:     append([]predicate.TestFile{}, tfq.predicates...),
 		withTestResult: tfq.withTestResult.Clone(),
 		// clone intermediate query.
-		sql:  tfq.sql.Clone(),
-		path: tfq.path,
+		sql:       tfq.sql.Clone(),
+		path:      tfq.path,
+		modifiers: append([]func(*sql.Selector){}, tfq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (tfq *TestFileQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if tfq.ctx.Unique != nil && *tfq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range tfq.modifiers {
+		m(selector)
+	}
 	for _, p := range tfq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (tfq *TestFileQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (tfq *TestFileQuery) Modify(modifiers ...func(s *sql.Selector)) *TestFileSelect {
+	tfq.modifiers = append(tfq.modifiers, modifiers...)
+	return tfq.Select()
 }
 
 // TestFileGroupBy is the group-by builder for TestFile entities.
@@ -624,4 +634,10 @@ func (tfs *TestFileSelect) sqlScan(ctx context.Context, root *TestFileQuery, v a
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (tfs *TestFileSelect) Modify(modifiers ...func(s *sql.Selector)) *TestFileSelect {
+	tfs.modifiers = append(tfs.modifiers, modifiers...)
+	return tfs
 }

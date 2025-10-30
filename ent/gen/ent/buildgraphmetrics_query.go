@@ -32,8 +32,8 @@ type BuildGraphMetricsQuery struct {
 	withCleanedValues   *EvaluationStatQuery
 	withEvaluatedValues *EvaluationStatQuery
 	withFKs             bool
-	modifiers           []func(*sql.Selector)
 	loadTotal           []func(context.Context, []*BuildGraphMetrics) error
+	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -401,8 +401,9 @@ func (bgmq *BuildGraphMetricsQuery) Clone() *BuildGraphMetricsQuery {
 		withCleanedValues:   bgmq.withCleanedValues.Clone(),
 		withEvaluatedValues: bgmq.withEvaluatedValues.Clone(),
 		// clone intermediate query.
-		sql:  bgmq.sql.Clone(),
-		path: bgmq.path,
+		sql:       bgmq.sql.Clone(),
+		path:      bgmq.path,
+		modifiers: append([]func(*sql.Selector){}, bgmq.modifiers...),
 	}
 }
 
@@ -887,6 +888,9 @@ func (bgmq *BuildGraphMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector 
 	if bgmq.ctx.Unique != nil && *bgmq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range bgmq.modifiers {
+		m(selector)
+	}
 	for _, p := range bgmq.predicates {
 		p(selector)
 	}
@@ -902,6 +906,12 @@ func (bgmq *BuildGraphMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector 
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (bgmq *BuildGraphMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *BuildGraphMetricsSelect {
+	bgmq.modifiers = append(bgmq.modifiers, modifiers...)
+	return bgmq.Select()
 }
 
 // BuildGraphMetricsGroupBy is the group-by builder for BuildGraphMetrics entities.
@@ -992,4 +1002,10 @@ func (bgms *BuildGraphMetricsSelect) sqlScan(ctx context.Context, root *BuildGra
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (bgms *BuildGraphMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *BuildGraphMetricsSelect {
+	bgms.modifiers = append(bgms.modifiers, modifiers...)
+	return bgms
 }

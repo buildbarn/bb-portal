@@ -3,7 +3,6 @@
 package ent
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -23,8 +22,8 @@ type Build struct {
 	BuildURL string `json:"build_url,omitempty"`
 	// BuildUUID holds the value of the "build_uuid" field.
 	BuildUUID uuid.UUID `json:"build_uuid,omitempty"`
-	// Env holds the value of the "env" field.
-	Env map[string]string `json:"env,omitempty"`
+	// InstanceName holds the value of the "instance_name" field.
+	InstanceName string `json:"instance_name,omitempty"`
 	// Timestamp holds the value of the "timestamp" field.
 	Timestamp time.Time `json:"timestamp,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -60,11 +59,9 @@ func (*Build) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case build.FieldEnv:
-			values[i] = new([]byte)
 		case build.FieldID:
 			values[i] = new(sql.NullInt64)
-		case build.FieldBuildURL:
+		case build.FieldBuildURL, build.FieldInstanceName:
 			values[i] = new(sql.NullString)
 		case build.FieldTimestamp:
 			values[i] = new(sql.NullTime)
@@ -103,13 +100,11 @@ func (b *Build) assignValues(columns []string, values []any) error {
 			} else if value != nil {
 				b.BuildUUID = *value
 			}
-		case build.FieldEnv:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field env", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &b.Env); err != nil {
-					return fmt.Errorf("unmarshal field env: %w", err)
-				}
+		case build.FieldInstanceName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field instance_name", values[i])
+			} else if value.Valid {
+				b.InstanceName = value.String
 			}
 		case build.FieldTimestamp:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -164,8 +159,8 @@ func (b *Build) String() string {
 	builder.WriteString("build_uuid=")
 	builder.WriteString(fmt.Sprintf("%v", b.BuildUUID))
 	builder.WriteString(", ")
-	builder.WriteString("env=")
-	builder.WriteString(fmt.Sprintf("%v", b.Env))
+	builder.WriteString("instance_name=")
+	builder.WriteString(b.InstanceName)
 	builder.WriteString(", ")
 	builder.WriteString("timestamp=")
 	builder.WriteString(b.Timestamp.Format(time.ANSIC))

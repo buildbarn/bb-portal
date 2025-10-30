@@ -28,8 +28,8 @@ type NetworkMetricsQuery struct {
 	withMetrics            *MetricsQuery
 	withSystemNetworkStats *SystemNetworkStatsQuery
 	withFKs                bool
-	modifiers              []func(*sql.Selector)
 	loadTotal              []func(context.Context, []*NetworkMetrics) error
+	modifiers              []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -305,8 +305,9 @@ func (nmq *NetworkMetricsQuery) Clone() *NetworkMetricsQuery {
 		withMetrics:            nmq.withMetrics.Clone(),
 		withSystemNetworkStats: nmq.withSystemNetworkStats.Clone(),
 		// clone intermediate query.
-		sql:  nmq.sql.Clone(),
-		path: nmq.path,
+		sql:       nmq.sql.Clone(),
+		path:      nmq.path,
+		modifiers: append([]func(*sql.Selector){}, nmq.modifiers...),
 	}
 }
 
@@ -569,6 +570,9 @@ func (nmq *NetworkMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if nmq.ctx.Unique != nil && *nmq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range nmq.modifiers {
+		m(selector)
+	}
 	for _, p := range nmq.predicates {
 		p(selector)
 	}
@@ -584,6 +588,12 @@ func (nmq *NetworkMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (nmq *NetworkMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *NetworkMetricsSelect {
+	nmq.modifiers = append(nmq.modifiers, modifiers...)
+	return nmq.Select()
 }
 
 // NetworkMetricsGroupBy is the group-by builder for NetworkMetrics entities.
@@ -674,4 +684,10 @@ func (nms *NetworkMetricsSelect) sqlScan(ctx context.Context, root *NetworkMetri
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (nms *NetworkMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *NetworkMetricsSelect {
+	nms.modifiers = append(nms.modifiers, modifiers...)
+	return nms
 }

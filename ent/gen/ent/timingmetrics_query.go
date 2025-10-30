@@ -25,8 +25,8 @@ type TimingMetricsQuery struct {
 	predicates  []predicate.TimingMetrics
 	withMetrics *MetricsQuery
 	withFKs     bool
-	modifiers   []func(*sql.Selector)
 	loadTotal   []func(context.Context, []*TimingMetrics) error
+	modifiers   []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -279,8 +279,9 @@ func (tmq *TimingMetricsQuery) Clone() *TimingMetricsQuery {
 		predicates:  append([]predicate.TimingMetrics{}, tmq.predicates...),
 		withMetrics: tmq.withMetrics.Clone(),
 		// clone intermediate query.
-		sql:  tmq.sql.Clone(),
-		path: tmq.path,
+		sql:       tmq.sql.Clone(),
+		path:      tmq.path,
+		modifiers: append([]func(*sql.Selector){}, tmq.modifiers...),
 	}
 }
 
@@ -519,6 +520,9 @@ func (tmq *TimingMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if tmq.ctx.Unique != nil && *tmq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range tmq.modifiers {
+		m(selector)
+	}
 	for _, p := range tmq.predicates {
 		p(selector)
 	}
@@ -534,6 +538,12 @@ func (tmq *TimingMetricsQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (tmq *TimingMetricsQuery) Modify(modifiers ...func(s *sql.Selector)) *TimingMetricsSelect {
+	tmq.modifiers = append(tmq.modifiers, modifiers...)
+	return tmq.Select()
 }
 
 // TimingMetricsGroupBy is the group-by builder for TimingMetrics entities.
@@ -624,4 +634,10 @@ func (tms *TimingMetricsSelect) sqlScan(ctx context.Context, root *TimingMetrics
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (tms *TimingMetricsSelect) Modify(modifiers ...func(s *sql.Selector)) *TimingMetricsSelect {
+	tms.modifiers = append(tms.modifiers, modifiers...)
+	return tms
 }

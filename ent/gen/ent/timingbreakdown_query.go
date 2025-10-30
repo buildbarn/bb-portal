@@ -28,8 +28,8 @@ type TimingBreakdownQuery struct {
 	withExecutionInfo *ExectionInfoQuery
 	withChild         *TimingChildQuery
 	withFKs           bool
-	modifiers         []func(*sql.Selector)
 	loadTotal         []func(context.Context, []*TimingBreakdown) error
+	modifiers         []func(*sql.Selector)
 	withNamedChild    map[string]*TimingChildQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -306,8 +306,9 @@ func (tbq *TimingBreakdownQuery) Clone() *TimingBreakdownQuery {
 		withExecutionInfo: tbq.withExecutionInfo.Clone(),
 		withChild:         tbq.withChild.Clone(),
 		// clone intermediate query.
-		sql:  tbq.sql.Clone(),
-		path: tbq.path,
+		sql:       tbq.sql.Clone(),
+		path:      tbq.path,
+		modifiers: append([]func(*sql.Selector){}, tbq.modifiers...),
 	}
 }
 
@@ -603,6 +604,9 @@ func (tbq *TimingBreakdownQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if tbq.ctx.Unique != nil && *tbq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range tbq.modifiers {
+		m(selector)
+	}
 	for _, p := range tbq.predicates {
 		p(selector)
 	}
@@ -618,6 +622,12 @@ func (tbq *TimingBreakdownQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (tbq *TimingBreakdownQuery) Modify(modifiers ...func(s *sql.Selector)) *TimingBreakdownSelect {
+	tbq.modifiers = append(tbq.modifiers, modifiers...)
+	return tbq.Select()
 }
 
 // WithNamedChild tells the query-builder to eager-load the nodes that are connected to the "child"
@@ -722,4 +732,10 @@ func (tbs *TimingBreakdownSelect) sqlScan(ctx context.Context, root *TimingBreak
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (tbs *TimingBreakdownSelect) Modify(modifiers ...func(s *sql.Selector)) *TimingBreakdownSelect {
+	tbs.modifiers = append(tbs.modifiers, modifiers...)
+	return tbs
 }

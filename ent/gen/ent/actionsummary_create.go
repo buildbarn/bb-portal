@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
@@ -20,6 +22,7 @@ type ActionSummaryCreate struct {
 	config
 	mutation *ActionSummaryMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetActionsCreated sets the "actions_created" field.
@@ -206,6 +209,7 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 		_node = &ActionSummary{config: asc.config}
 		_spec = sqlgraph.NewCreateSpec(actionsummary.Table, sqlgraph.NewFieldSpec(actionsummary.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = asc.conflict
 	if value, ok := asc.mutation.ActionsCreated(); ok {
 		_spec.SetField(actionsummary.FieldActionsCreated, field.TypeInt64, value)
 		_node.ActionsCreated = value
@@ -290,11 +294,342 @@ func (asc *ActionSummaryCreate) createSpec() (*ActionSummary, *sqlgraph.CreateSp
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ActionSummary.Create().
+//		SetActionsCreated(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ActionSummaryUpsert) {
+//			SetActionsCreated(v+v).
+//		}).
+//		Exec(ctx)
+func (asc *ActionSummaryCreate) OnConflict(opts ...sql.ConflictOption) *ActionSummaryUpsertOne {
+	asc.conflict = opts
+	return &ActionSummaryUpsertOne{
+		create: asc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ActionSummary.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (asc *ActionSummaryCreate) OnConflictColumns(columns ...string) *ActionSummaryUpsertOne {
+	asc.conflict = append(asc.conflict, sql.ConflictColumns(columns...))
+	return &ActionSummaryUpsertOne{
+		create: asc,
+	}
+}
+
+type (
+	// ActionSummaryUpsertOne is the builder for "upsert"-ing
+	//  one ActionSummary node.
+	ActionSummaryUpsertOne struct {
+		create *ActionSummaryCreate
+	}
+
+	// ActionSummaryUpsert is the "OnConflict" setter.
+	ActionSummaryUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetActionsCreated sets the "actions_created" field.
+func (u *ActionSummaryUpsert) SetActionsCreated(v int64) *ActionSummaryUpsert {
+	u.Set(actionsummary.FieldActionsCreated, v)
+	return u
+}
+
+// UpdateActionsCreated sets the "actions_created" field to the value that was provided on create.
+func (u *ActionSummaryUpsert) UpdateActionsCreated() *ActionSummaryUpsert {
+	u.SetExcluded(actionsummary.FieldActionsCreated)
+	return u
+}
+
+// AddActionsCreated adds v to the "actions_created" field.
+func (u *ActionSummaryUpsert) AddActionsCreated(v int64) *ActionSummaryUpsert {
+	u.Add(actionsummary.FieldActionsCreated, v)
+	return u
+}
+
+// ClearActionsCreated clears the value of the "actions_created" field.
+func (u *ActionSummaryUpsert) ClearActionsCreated() *ActionSummaryUpsert {
+	u.SetNull(actionsummary.FieldActionsCreated)
+	return u
+}
+
+// SetActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field.
+func (u *ActionSummaryUpsert) SetActionsCreatedNotIncludingAspects(v int64) *ActionSummaryUpsert {
+	u.Set(actionsummary.FieldActionsCreatedNotIncludingAspects, v)
+	return u
+}
+
+// UpdateActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field to the value that was provided on create.
+func (u *ActionSummaryUpsert) UpdateActionsCreatedNotIncludingAspects() *ActionSummaryUpsert {
+	u.SetExcluded(actionsummary.FieldActionsCreatedNotIncludingAspects)
+	return u
+}
+
+// AddActionsCreatedNotIncludingAspects adds v to the "actions_created_not_including_aspects" field.
+func (u *ActionSummaryUpsert) AddActionsCreatedNotIncludingAspects(v int64) *ActionSummaryUpsert {
+	u.Add(actionsummary.FieldActionsCreatedNotIncludingAspects, v)
+	return u
+}
+
+// ClearActionsCreatedNotIncludingAspects clears the value of the "actions_created_not_including_aspects" field.
+func (u *ActionSummaryUpsert) ClearActionsCreatedNotIncludingAspects() *ActionSummaryUpsert {
+	u.SetNull(actionsummary.FieldActionsCreatedNotIncludingAspects)
+	return u
+}
+
+// SetActionsExecuted sets the "actions_executed" field.
+func (u *ActionSummaryUpsert) SetActionsExecuted(v int64) *ActionSummaryUpsert {
+	u.Set(actionsummary.FieldActionsExecuted, v)
+	return u
+}
+
+// UpdateActionsExecuted sets the "actions_executed" field to the value that was provided on create.
+func (u *ActionSummaryUpsert) UpdateActionsExecuted() *ActionSummaryUpsert {
+	u.SetExcluded(actionsummary.FieldActionsExecuted)
+	return u
+}
+
+// AddActionsExecuted adds v to the "actions_executed" field.
+func (u *ActionSummaryUpsert) AddActionsExecuted(v int64) *ActionSummaryUpsert {
+	u.Add(actionsummary.FieldActionsExecuted, v)
+	return u
+}
+
+// ClearActionsExecuted clears the value of the "actions_executed" field.
+func (u *ActionSummaryUpsert) ClearActionsExecuted() *ActionSummaryUpsert {
+	u.SetNull(actionsummary.FieldActionsExecuted)
+	return u
+}
+
+// SetRemoteCacheHits sets the "remote_cache_hits" field.
+func (u *ActionSummaryUpsert) SetRemoteCacheHits(v int64) *ActionSummaryUpsert {
+	u.Set(actionsummary.FieldRemoteCacheHits, v)
+	return u
+}
+
+// UpdateRemoteCacheHits sets the "remote_cache_hits" field to the value that was provided on create.
+func (u *ActionSummaryUpsert) UpdateRemoteCacheHits() *ActionSummaryUpsert {
+	u.SetExcluded(actionsummary.FieldRemoteCacheHits)
+	return u
+}
+
+// AddRemoteCacheHits adds v to the "remote_cache_hits" field.
+func (u *ActionSummaryUpsert) AddRemoteCacheHits(v int64) *ActionSummaryUpsert {
+	u.Add(actionsummary.FieldRemoteCacheHits, v)
+	return u
+}
+
+// ClearRemoteCacheHits clears the value of the "remote_cache_hits" field.
+func (u *ActionSummaryUpsert) ClearRemoteCacheHits() *ActionSummaryUpsert {
+	u.SetNull(actionsummary.FieldRemoteCacheHits)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.ActionSummary.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ActionSummaryUpsertOne) UpdateNewValues() *ActionSummaryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ActionSummary.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *ActionSummaryUpsertOne) Ignore() *ActionSummaryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ActionSummaryUpsertOne) DoNothing() *ActionSummaryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ActionSummaryCreate.OnConflict
+// documentation for more info.
+func (u *ActionSummaryUpsertOne) Update(set func(*ActionSummaryUpsert)) *ActionSummaryUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ActionSummaryUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetActionsCreated sets the "actions_created" field.
+func (u *ActionSummaryUpsertOne) SetActionsCreated(v int64) *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.SetActionsCreated(v)
+	})
+}
+
+// AddActionsCreated adds v to the "actions_created" field.
+func (u *ActionSummaryUpsertOne) AddActionsCreated(v int64) *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.AddActionsCreated(v)
+	})
+}
+
+// UpdateActionsCreated sets the "actions_created" field to the value that was provided on create.
+func (u *ActionSummaryUpsertOne) UpdateActionsCreated() *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.UpdateActionsCreated()
+	})
+}
+
+// ClearActionsCreated clears the value of the "actions_created" field.
+func (u *ActionSummaryUpsertOne) ClearActionsCreated() *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.ClearActionsCreated()
+	})
+}
+
+// SetActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field.
+func (u *ActionSummaryUpsertOne) SetActionsCreatedNotIncludingAspects(v int64) *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.SetActionsCreatedNotIncludingAspects(v)
+	})
+}
+
+// AddActionsCreatedNotIncludingAspects adds v to the "actions_created_not_including_aspects" field.
+func (u *ActionSummaryUpsertOne) AddActionsCreatedNotIncludingAspects(v int64) *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.AddActionsCreatedNotIncludingAspects(v)
+	})
+}
+
+// UpdateActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field to the value that was provided on create.
+func (u *ActionSummaryUpsertOne) UpdateActionsCreatedNotIncludingAspects() *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.UpdateActionsCreatedNotIncludingAspects()
+	})
+}
+
+// ClearActionsCreatedNotIncludingAspects clears the value of the "actions_created_not_including_aspects" field.
+func (u *ActionSummaryUpsertOne) ClearActionsCreatedNotIncludingAspects() *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.ClearActionsCreatedNotIncludingAspects()
+	})
+}
+
+// SetActionsExecuted sets the "actions_executed" field.
+func (u *ActionSummaryUpsertOne) SetActionsExecuted(v int64) *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.SetActionsExecuted(v)
+	})
+}
+
+// AddActionsExecuted adds v to the "actions_executed" field.
+func (u *ActionSummaryUpsertOne) AddActionsExecuted(v int64) *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.AddActionsExecuted(v)
+	})
+}
+
+// UpdateActionsExecuted sets the "actions_executed" field to the value that was provided on create.
+func (u *ActionSummaryUpsertOne) UpdateActionsExecuted() *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.UpdateActionsExecuted()
+	})
+}
+
+// ClearActionsExecuted clears the value of the "actions_executed" field.
+func (u *ActionSummaryUpsertOne) ClearActionsExecuted() *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.ClearActionsExecuted()
+	})
+}
+
+// SetRemoteCacheHits sets the "remote_cache_hits" field.
+func (u *ActionSummaryUpsertOne) SetRemoteCacheHits(v int64) *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.SetRemoteCacheHits(v)
+	})
+}
+
+// AddRemoteCacheHits adds v to the "remote_cache_hits" field.
+func (u *ActionSummaryUpsertOne) AddRemoteCacheHits(v int64) *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.AddRemoteCacheHits(v)
+	})
+}
+
+// UpdateRemoteCacheHits sets the "remote_cache_hits" field to the value that was provided on create.
+func (u *ActionSummaryUpsertOne) UpdateRemoteCacheHits() *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.UpdateRemoteCacheHits()
+	})
+}
+
+// ClearRemoteCacheHits clears the value of the "remote_cache_hits" field.
+func (u *ActionSummaryUpsertOne) ClearRemoteCacheHits() *ActionSummaryUpsertOne {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.ClearRemoteCacheHits()
+	})
+}
+
+// Exec executes the query.
+func (u *ActionSummaryUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ActionSummaryCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ActionSummaryUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *ActionSummaryUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *ActionSummaryUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // ActionSummaryCreateBulk is the builder for creating many ActionSummary entities in bulk.
 type ActionSummaryCreateBulk struct {
 	config
 	err      error
 	builders []*ActionSummaryCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the ActionSummary entities in the database.
@@ -323,6 +658,7 @@ func (ascb *ActionSummaryCreateBulk) Save(ctx context.Context) ([]*ActionSummary
 					_, err = mutators[i+1].Mutate(root, ascb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = ascb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, ascb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -373,6 +709,222 @@ func (ascb *ActionSummaryCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (ascb *ActionSummaryCreateBulk) ExecX(ctx context.Context) {
 	if err := ascb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ActionSummary.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ActionSummaryUpsert) {
+//			SetActionsCreated(v+v).
+//		}).
+//		Exec(ctx)
+func (ascb *ActionSummaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *ActionSummaryUpsertBulk {
+	ascb.conflict = opts
+	return &ActionSummaryUpsertBulk{
+		create: ascb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ActionSummary.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (ascb *ActionSummaryCreateBulk) OnConflictColumns(columns ...string) *ActionSummaryUpsertBulk {
+	ascb.conflict = append(ascb.conflict, sql.ConflictColumns(columns...))
+	return &ActionSummaryUpsertBulk{
+		create: ascb,
+	}
+}
+
+// ActionSummaryUpsertBulk is the builder for "upsert"-ing
+// a bulk of ActionSummary nodes.
+type ActionSummaryUpsertBulk struct {
+	create *ActionSummaryCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.ActionSummary.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ActionSummaryUpsertBulk) UpdateNewValues() *ActionSummaryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ActionSummary.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *ActionSummaryUpsertBulk) Ignore() *ActionSummaryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ActionSummaryUpsertBulk) DoNothing() *ActionSummaryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ActionSummaryCreateBulk.OnConflict
+// documentation for more info.
+func (u *ActionSummaryUpsertBulk) Update(set func(*ActionSummaryUpsert)) *ActionSummaryUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ActionSummaryUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetActionsCreated sets the "actions_created" field.
+func (u *ActionSummaryUpsertBulk) SetActionsCreated(v int64) *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.SetActionsCreated(v)
+	})
+}
+
+// AddActionsCreated adds v to the "actions_created" field.
+func (u *ActionSummaryUpsertBulk) AddActionsCreated(v int64) *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.AddActionsCreated(v)
+	})
+}
+
+// UpdateActionsCreated sets the "actions_created" field to the value that was provided on create.
+func (u *ActionSummaryUpsertBulk) UpdateActionsCreated() *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.UpdateActionsCreated()
+	})
+}
+
+// ClearActionsCreated clears the value of the "actions_created" field.
+func (u *ActionSummaryUpsertBulk) ClearActionsCreated() *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.ClearActionsCreated()
+	})
+}
+
+// SetActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field.
+func (u *ActionSummaryUpsertBulk) SetActionsCreatedNotIncludingAspects(v int64) *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.SetActionsCreatedNotIncludingAspects(v)
+	})
+}
+
+// AddActionsCreatedNotIncludingAspects adds v to the "actions_created_not_including_aspects" field.
+func (u *ActionSummaryUpsertBulk) AddActionsCreatedNotIncludingAspects(v int64) *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.AddActionsCreatedNotIncludingAspects(v)
+	})
+}
+
+// UpdateActionsCreatedNotIncludingAspects sets the "actions_created_not_including_aspects" field to the value that was provided on create.
+func (u *ActionSummaryUpsertBulk) UpdateActionsCreatedNotIncludingAspects() *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.UpdateActionsCreatedNotIncludingAspects()
+	})
+}
+
+// ClearActionsCreatedNotIncludingAspects clears the value of the "actions_created_not_including_aspects" field.
+func (u *ActionSummaryUpsertBulk) ClearActionsCreatedNotIncludingAspects() *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.ClearActionsCreatedNotIncludingAspects()
+	})
+}
+
+// SetActionsExecuted sets the "actions_executed" field.
+func (u *ActionSummaryUpsertBulk) SetActionsExecuted(v int64) *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.SetActionsExecuted(v)
+	})
+}
+
+// AddActionsExecuted adds v to the "actions_executed" field.
+func (u *ActionSummaryUpsertBulk) AddActionsExecuted(v int64) *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.AddActionsExecuted(v)
+	})
+}
+
+// UpdateActionsExecuted sets the "actions_executed" field to the value that was provided on create.
+func (u *ActionSummaryUpsertBulk) UpdateActionsExecuted() *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.UpdateActionsExecuted()
+	})
+}
+
+// ClearActionsExecuted clears the value of the "actions_executed" field.
+func (u *ActionSummaryUpsertBulk) ClearActionsExecuted() *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.ClearActionsExecuted()
+	})
+}
+
+// SetRemoteCacheHits sets the "remote_cache_hits" field.
+func (u *ActionSummaryUpsertBulk) SetRemoteCacheHits(v int64) *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.SetRemoteCacheHits(v)
+	})
+}
+
+// AddRemoteCacheHits adds v to the "remote_cache_hits" field.
+func (u *ActionSummaryUpsertBulk) AddRemoteCacheHits(v int64) *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.AddRemoteCacheHits(v)
+	})
+}
+
+// UpdateRemoteCacheHits sets the "remote_cache_hits" field to the value that was provided on create.
+func (u *ActionSummaryUpsertBulk) UpdateRemoteCacheHits() *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.UpdateRemoteCacheHits()
+	})
+}
+
+// ClearRemoteCacheHits clears the value of the "remote_cache_hits" field.
+func (u *ActionSummaryUpsertBulk) ClearRemoteCacheHits() *ActionSummaryUpsertBulk {
+	return u.Update(func(s *ActionSummaryUpsert) {
+		s.ClearRemoteCacheHits()
+	})
+}
+
+// Exec executes the query.
+func (u *ActionSummaryUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the ActionSummaryCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ActionSummaryCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ActionSummaryUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

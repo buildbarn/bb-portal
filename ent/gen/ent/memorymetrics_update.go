@@ -19,8 +19,9 @@ import (
 // MemoryMetricsUpdate is the builder for updating MemoryMetrics entities.
 type MemoryMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *MemoryMetricsMutation
+	hooks     []Hook
+	mutation  *MemoryMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the MemoryMetricsUpdate builder.
@@ -203,6 +204,12 @@ func (mmu *MemoryMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (mmu *MemoryMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MemoryMetricsUpdate {
+	mmu.modifiers = append(mmu.modifiers, modifiers...)
+	return mmu
+}
+
 func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(memorymetrics.Table, memorymetrics.Columns, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt))
 	if ps := mmu.mutation.predicates; len(ps) > 0 {
@@ -313,6 +320,7 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(mmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, mmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{memorymetrics.Label}
@@ -328,9 +336,10 @@ func (mmu *MemoryMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 // MemoryMetricsUpdateOne is the builder for updating a single MemoryMetrics entity.
 type MemoryMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *MemoryMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *MemoryMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetPeakPostGcHeapSize sets the "peak_post_gc_heap_size" field.
@@ -520,6 +529,12 @@ func (mmuo *MemoryMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (mmuo *MemoryMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MemoryMetricsUpdateOne {
+	mmuo.modifiers = append(mmuo.modifiers, modifiers...)
+	return mmuo
+}
+
 func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(memorymetrics.Table, memorymetrics.Columns, sqlgraph.NewFieldSpec(memorymetrics.FieldID, field.TypeInt))
 	id, ok := mmuo.mutation.ID()
@@ -647,6 +662,7 @@ func (mmuo *MemoryMetricsUpdateOne) sqlSave(ctx context.Context) (_node *MemoryM
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(mmuo.modifiers...)
 	_node = &MemoryMetrics{config: mmuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

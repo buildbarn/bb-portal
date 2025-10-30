@@ -32,8 +32,8 @@ type ActionSummaryQuery struct {
 	withRunnerCount           *RunnerCountQuery
 	withActionCacheStatistics *ActionCacheStatisticsQuery
 	withFKs                   bool
-	modifiers                 []func(*sql.Selector)
 	loadTotal                 []func(context.Context, []*ActionSummary) error
+	modifiers                 []func(*sql.Selector)
 	withNamedActionData       map[string]*ActionDataQuery
 	withNamedRunnerCount      map[string]*RunnerCountQuery
 	// intermediate query (i.e. traversal path).
@@ -357,8 +357,9 @@ func (asq *ActionSummaryQuery) Clone() *ActionSummaryQuery {
 		withRunnerCount:           asq.withRunnerCount.Clone(),
 		withActionCacheStatistics: asq.withActionCacheStatistics.Clone(),
 		// clone intermediate query.
-		sql:  asq.sql.Clone(),
-		path: asq.path,
+		sql:       asq.sql.Clone(),
+		path:      asq.path,
+		modifiers: append([]func(*sql.Selector){}, asq.modifiers...),
 	}
 }
 
@@ -757,6 +758,9 @@ func (asq *ActionSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	if asq.ctx.Unique != nil && *asq.ctx.Unique {
 		selector.Distinct()
 	}
+	for _, m := range asq.modifiers {
+		m(selector)
+	}
 	for _, p := range asq.predicates {
 		p(selector)
 	}
@@ -772,6 +776,12 @@ func (asq *ActionSummaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (asq *ActionSummaryQuery) Modify(modifiers ...func(s *sql.Selector)) *ActionSummarySelect {
+	asq.modifiers = append(asq.modifiers, modifiers...)
+	return asq.Select()
 }
 
 // WithNamedActionData tells the query-builder to eager-load the nodes that are connected to the "action_data"
@@ -890,4 +900,10 @@ func (ass *ActionSummarySelect) sqlScan(ctx context.Context, root *ActionSummary
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
+}
+
+// Modify adds a query modifier for attaching custom logic to queries.
+func (ass *ActionSummarySelect) Modify(modifiers ...func(s *sql.Selector)) *ActionSummarySelect {
+	ass.modifiers = append(ass.modifiers, modifiers...)
+	return ass
 }

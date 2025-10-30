@@ -4,12 +4,13 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/filesmetric"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 )
 
@@ -18,6 +19,119 @@ type ArtifactMetricsCreate struct {
 	config
 	mutation *ArtifactMetricsMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
+}
+
+// SetSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field.
+func (amc *ArtifactMetricsCreate) SetSourceArtifactsReadSizeInBytes(i int64) *ArtifactMetricsCreate {
+	amc.mutation.SetSourceArtifactsReadSizeInBytes(i)
+	return amc
+}
+
+// SetNillableSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableSourceArtifactsReadSizeInBytes(i *int64) *ArtifactMetricsCreate {
+	if i != nil {
+		amc.SetSourceArtifactsReadSizeInBytes(*i)
+	}
+	return amc
+}
+
+// SetSourceArtifactsReadCount sets the "source_artifacts_read_count" field.
+func (amc *ArtifactMetricsCreate) SetSourceArtifactsReadCount(i int32) *ArtifactMetricsCreate {
+	amc.mutation.SetSourceArtifactsReadCount(i)
+	return amc
+}
+
+// SetNillableSourceArtifactsReadCount sets the "source_artifacts_read_count" field if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableSourceArtifactsReadCount(i *int32) *ArtifactMetricsCreate {
+	if i != nil {
+		amc.SetSourceArtifactsReadCount(*i)
+	}
+	return amc
+}
+
+// SetOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field.
+func (amc *ArtifactMetricsCreate) SetOutputArtifactsSeenSizeInBytes(i int64) *ArtifactMetricsCreate {
+	amc.mutation.SetOutputArtifactsSeenSizeInBytes(i)
+	return amc
+}
+
+// SetNillableOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsSeenSizeInBytes(i *int64) *ArtifactMetricsCreate {
+	if i != nil {
+		amc.SetOutputArtifactsSeenSizeInBytes(*i)
+	}
+	return amc
+}
+
+// SetOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field.
+func (amc *ArtifactMetricsCreate) SetOutputArtifactsSeenCount(i int32) *ArtifactMetricsCreate {
+	amc.mutation.SetOutputArtifactsSeenCount(i)
+	return amc
+}
+
+// SetNillableOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsSeenCount(i *int32) *ArtifactMetricsCreate {
+	if i != nil {
+		amc.SetOutputArtifactsSeenCount(*i)
+	}
+	return amc
+}
+
+// SetOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (amc *ArtifactMetricsCreate) SetOutputArtifactsFromActionCacheSizeInBytes(i int64) *ArtifactMetricsCreate {
+	amc.mutation.SetOutputArtifactsFromActionCacheSizeInBytes(i)
+	return amc
+}
+
+// SetNillableOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsFromActionCacheSizeInBytes(i *int64) *ArtifactMetricsCreate {
+	if i != nil {
+		amc.SetOutputArtifactsFromActionCacheSizeInBytes(*i)
+	}
+	return amc
+}
+
+// SetOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field.
+func (amc *ArtifactMetricsCreate) SetOutputArtifactsFromActionCacheCount(i int32) *ArtifactMetricsCreate {
+	amc.mutation.SetOutputArtifactsFromActionCacheCount(i)
+	return amc
+}
+
+// SetNillableOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsFromActionCacheCount(i *int32) *ArtifactMetricsCreate {
+	if i != nil {
+		amc.SetOutputArtifactsFromActionCacheCount(*i)
+	}
+	return amc
+}
+
+// SetTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field.
+func (amc *ArtifactMetricsCreate) SetTopLevelArtifactsSizeInBytes(i int64) *ArtifactMetricsCreate {
+	amc.mutation.SetTopLevelArtifactsSizeInBytes(i)
+	return amc
+}
+
+// SetNillableTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableTopLevelArtifactsSizeInBytes(i *int64) *ArtifactMetricsCreate {
+	if i != nil {
+		amc.SetTopLevelArtifactsSizeInBytes(*i)
+	}
+	return amc
+}
+
+// SetTopLevelArtifactsCount sets the "top_level_artifacts_count" field.
+func (amc *ArtifactMetricsCreate) SetTopLevelArtifactsCount(i int32) *ArtifactMetricsCreate {
+	amc.mutation.SetTopLevelArtifactsCount(i)
+	return amc
+}
+
+// SetNillableTopLevelArtifactsCount sets the "top_level_artifacts_count" field if the given value is not nil.
+func (amc *ArtifactMetricsCreate) SetNillableTopLevelArtifactsCount(i *int32) *ArtifactMetricsCreate {
+	if i != nil {
+		amc.SetTopLevelArtifactsCount(*i)
+	}
+	return amc
 }
 
 // SetMetricsID sets the "metrics" edge to the Metrics entity by ID.
@@ -37,82 +151,6 @@ func (amc *ArtifactMetricsCreate) SetNillableMetricsID(id *int) *ArtifactMetrics
 // SetMetrics sets the "metrics" edge to the Metrics entity.
 func (amc *ArtifactMetricsCreate) SetMetrics(m *Metrics) *ArtifactMetricsCreate {
 	return amc.SetMetricsID(m.ID)
-}
-
-// SetSourceArtifactsReadID sets the "source_artifacts_read" edge to the FilesMetric entity by ID.
-func (amc *ArtifactMetricsCreate) SetSourceArtifactsReadID(id int) *ArtifactMetricsCreate {
-	amc.mutation.SetSourceArtifactsReadID(id)
-	return amc
-}
-
-// SetNillableSourceArtifactsReadID sets the "source_artifacts_read" edge to the FilesMetric entity by ID if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableSourceArtifactsReadID(id *int) *ArtifactMetricsCreate {
-	if id != nil {
-		amc = amc.SetSourceArtifactsReadID(*id)
-	}
-	return amc
-}
-
-// SetSourceArtifactsRead sets the "source_artifacts_read" edge to the FilesMetric entity.
-func (amc *ArtifactMetricsCreate) SetSourceArtifactsRead(f *FilesMetric) *ArtifactMetricsCreate {
-	return amc.SetSourceArtifactsReadID(f.ID)
-}
-
-// SetOutputArtifactsSeenID sets the "output_artifacts_seen" edge to the FilesMetric entity by ID.
-func (amc *ArtifactMetricsCreate) SetOutputArtifactsSeenID(id int) *ArtifactMetricsCreate {
-	amc.mutation.SetOutputArtifactsSeenID(id)
-	return amc
-}
-
-// SetNillableOutputArtifactsSeenID sets the "output_artifacts_seen" edge to the FilesMetric entity by ID if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsSeenID(id *int) *ArtifactMetricsCreate {
-	if id != nil {
-		amc = amc.SetOutputArtifactsSeenID(*id)
-	}
-	return amc
-}
-
-// SetOutputArtifactsSeen sets the "output_artifacts_seen" edge to the FilesMetric entity.
-func (amc *ArtifactMetricsCreate) SetOutputArtifactsSeen(f *FilesMetric) *ArtifactMetricsCreate {
-	return amc.SetOutputArtifactsSeenID(f.ID)
-}
-
-// SetOutputArtifactsFromActionCacheID sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity by ID.
-func (amc *ArtifactMetricsCreate) SetOutputArtifactsFromActionCacheID(id int) *ArtifactMetricsCreate {
-	amc.mutation.SetOutputArtifactsFromActionCacheID(id)
-	return amc
-}
-
-// SetNillableOutputArtifactsFromActionCacheID sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity by ID if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableOutputArtifactsFromActionCacheID(id *int) *ArtifactMetricsCreate {
-	if id != nil {
-		amc = amc.SetOutputArtifactsFromActionCacheID(*id)
-	}
-	return amc
-}
-
-// SetOutputArtifactsFromActionCache sets the "output_artifacts_from_action_cache" edge to the FilesMetric entity.
-func (amc *ArtifactMetricsCreate) SetOutputArtifactsFromActionCache(f *FilesMetric) *ArtifactMetricsCreate {
-	return amc.SetOutputArtifactsFromActionCacheID(f.ID)
-}
-
-// SetTopLevelArtifactsID sets the "top_level_artifacts" edge to the FilesMetric entity by ID.
-func (amc *ArtifactMetricsCreate) SetTopLevelArtifactsID(id int) *ArtifactMetricsCreate {
-	amc.mutation.SetTopLevelArtifactsID(id)
-	return amc
-}
-
-// SetNillableTopLevelArtifactsID sets the "top_level_artifacts" edge to the FilesMetric entity by ID if the given value is not nil.
-func (amc *ArtifactMetricsCreate) SetNillableTopLevelArtifactsID(id *int) *ArtifactMetricsCreate {
-	if id != nil {
-		amc = amc.SetTopLevelArtifactsID(*id)
-	}
-	return amc
-}
-
-// SetTopLevelArtifacts sets the "top_level_artifacts" edge to the FilesMetric entity.
-func (amc *ArtifactMetricsCreate) SetTopLevelArtifacts(f *FilesMetric) *ArtifactMetricsCreate {
-	return amc.SetTopLevelArtifactsID(f.ID)
 }
 
 // Mutation returns the ArtifactMetricsMutation object of the builder.
@@ -175,6 +213,39 @@ func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.Crea
 		_node = &ArtifactMetrics{config: amc.config}
 		_spec = sqlgraph.NewCreateSpec(artifactmetrics.Table, sqlgraph.NewFieldSpec(artifactmetrics.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = amc.conflict
+	if value, ok := amc.mutation.SourceArtifactsReadSizeInBytes(); ok {
+		_spec.SetField(artifactmetrics.FieldSourceArtifactsReadSizeInBytes, field.TypeInt64, value)
+		_node.SourceArtifactsReadSizeInBytes = value
+	}
+	if value, ok := amc.mutation.SourceArtifactsReadCount(); ok {
+		_spec.SetField(artifactmetrics.FieldSourceArtifactsReadCount, field.TypeInt32, value)
+		_node.SourceArtifactsReadCount = value
+	}
+	if value, ok := amc.mutation.OutputArtifactsSeenSizeInBytes(); ok {
+		_spec.SetField(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes, field.TypeInt64, value)
+		_node.OutputArtifactsSeenSizeInBytes = value
+	}
+	if value, ok := amc.mutation.OutputArtifactsSeenCount(); ok {
+		_spec.SetField(artifactmetrics.FieldOutputArtifactsSeenCount, field.TypeInt32, value)
+		_node.OutputArtifactsSeenCount = value
+	}
+	if value, ok := amc.mutation.OutputArtifactsFromActionCacheSizeInBytes(); ok {
+		_spec.SetField(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes, field.TypeInt64, value)
+		_node.OutputArtifactsFromActionCacheSizeInBytes = value
+	}
+	if value, ok := amc.mutation.OutputArtifactsFromActionCacheCount(); ok {
+		_spec.SetField(artifactmetrics.FieldOutputArtifactsFromActionCacheCount, field.TypeInt32, value)
+		_node.OutputArtifactsFromActionCacheCount = value
+	}
+	if value, ok := amc.mutation.TopLevelArtifactsSizeInBytes(); ok {
+		_spec.SetField(artifactmetrics.FieldTopLevelArtifactsSizeInBytes, field.TypeInt64, value)
+		_node.TopLevelArtifactsSizeInBytes = value
+	}
+	if value, ok := amc.mutation.TopLevelArtifactsCount(); ok {
+		_spec.SetField(artifactmetrics.FieldTopLevelArtifactsCount, field.TypeInt32, value)
+		_node.TopLevelArtifactsCount = value
+	}
 	if nodes := amc.mutation.MetricsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2O,
@@ -192,74 +263,545 @@ func (amc *ArtifactMetricsCreate) createSpec() (*ArtifactMetrics, *sqlgraph.Crea
 		_node.metrics_artifact_metrics = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := amc.mutation.SourceArtifactsReadIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   artifactmetrics.SourceArtifactsReadTable,
-			Columns: []string{artifactmetrics.SourceArtifactsReadColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.artifact_metrics_source_artifacts_read = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := amc.mutation.OutputArtifactsSeenIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   artifactmetrics.OutputArtifactsSeenTable,
-			Columns: []string{artifactmetrics.OutputArtifactsSeenColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.artifact_metrics_output_artifacts_seen = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := amc.mutation.OutputArtifactsFromActionCacheIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   artifactmetrics.OutputArtifactsFromActionCacheTable,
-			Columns: []string{artifactmetrics.OutputArtifactsFromActionCacheColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.artifact_metrics_output_artifacts_from_action_cache = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := amc.mutation.TopLevelArtifactsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   artifactmetrics.TopLevelArtifactsTable,
-			Columns: []string{artifactmetrics.TopLevelArtifactsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(filesmetric.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	return _node, _spec
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ArtifactMetrics.Create().
+//		SetSourceArtifactsReadSizeInBytes(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ArtifactMetricsUpsert) {
+//			SetSourceArtifactsReadSizeInBytes(v+v).
+//		}).
+//		Exec(ctx)
+func (amc *ArtifactMetricsCreate) OnConflict(opts ...sql.ConflictOption) *ArtifactMetricsUpsertOne {
+	amc.conflict = opts
+	return &ArtifactMetricsUpsertOne{
+		create: amc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ArtifactMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (amc *ArtifactMetricsCreate) OnConflictColumns(columns ...string) *ArtifactMetricsUpsertOne {
+	amc.conflict = append(amc.conflict, sql.ConflictColumns(columns...))
+	return &ArtifactMetricsUpsertOne{
+		create: amc,
+	}
+}
+
+type (
+	// ArtifactMetricsUpsertOne is the builder for "upsert"-ing
+	//  one ArtifactMetrics node.
+	ArtifactMetricsUpsertOne struct {
+		create *ArtifactMetricsCreate
+	}
+
+	// ArtifactMetricsUpsert is the "OnConflict" setter.
+	ArtifactMetricsUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) SetSourceArtifactsReadSizeInBytes(v int64) *ArtifactMetricsUpsert {
+	u.Set(artifactmetrics.FieldSourceArtifactsReadSizeInBytes, v)
+	return u
+}
+
+// UpdateSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsert) UpdateSourceArtifactsReadSizeInBytes() *ArtifactMetricsUpsert {
+	u.SetExcluded(artifactmetrics.FieldSourceArtifactsReadSizeInBytes)
+	return u
+}
+
+// AddSourceArtifactsReadSizeInBytes adds v to the "source_artifacts_read_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) AddSourceArtifactsReadSizeInBytes(v int64) *ArtifactMetricsUpsert {
+	u.Add(artifactmetrics.FieldSourceArtifactsReadSizeInBytes, v)
+	return u
+}
+
+// ClearSourceArtifactsReadSizeInBytes clears the value of the "source_artifacts_read_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) ClearSourceArtifactsReadSizeInBytes() *ArtifactMetricsUpsert {
+	u.SetNull(artifactmetrics.FieldSourceArtifactsReadSizeInBytes)
+	return u
+}
+
+// SetSourceArtifactsReadCount sets the "source_artifacts_read_count" field.
+func (u *ArtifactMetricsUpsert) SetSourceArtifactsReadCount(v int32) *ArtifactMetricsUpsert {
+	u.Set(artifactmetrics.FieldSourceArtifactsReadCount, v)
+	return u
+}
+
+// UpdateSourceArtifactsReadCount sets the "source_artifacts_read_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsert) UpdateSourceArtifactsReadCount() *ArtifactMetricsUpsert {
+	u.SetExcluded(artifactmetrics.FieldSourceArtifactsReadCount)
+	return u
+}
+
+// AddSourceArtifactsReadCount adds v to the "source_artifacts_read_count" field.
+func (u *ArtifactMetricsUpsert) AddSourceArtifactsReadCount(v int32) *ArtifactMetricsUpsert {
+	u.Add(artifactmetrics.FieldSourceArtifactsReadCount, v)
+	return u
+}
+
+// ClearSourceArtifactsReadCount clears the value of the "source_artifacts_read_count" field.
+func (u *ArtifactMetricsUpsert) ClearSourceArtifactsReadCount() *ArtifactMetricsUpsert {
+	u.SetNull(artifactmetrics.FieldSourceArtifactsReadCount)
+	return u
+}
+
+// SetOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) SetOutputArtifactsSeenSizeInBytes(v int64) *ArtifactMetricsUpsert {
+	u.Set(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes, v)
+	return u
+}
+
+// UpdateOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsert) UpdateOutputArtifactsSeenSizeInBytes() *ArtifactMetricsUpsert {
+	u.SetExcluded(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes)
+	return u
+}
+
+// AddOutputArtifactsSeenSizeInBytes adds v to the "output_artifacts_seen_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) AddOutputArtifactsSeenSizeInBytes(v int64) *ArtifactMetricsUpsert {
+	u.Add(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes, v)
+	return u
+}
+
+// ClearOutputArtifactsSeenSizeInBytes clears the value of the "output_artifacts_seen_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) ClearOutputArtifactsSeenSizeInBytes() *ArtifactMetricsUpsert {
+	u.SetNull(artifactmetrics.FieldOutputArtifactsSeenSizeInBytes)
+	return u
+}
+
+// SetOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field.
+func (u *ArtifactMetricsUpsert) SetOutputArtifactsSeenCount(v int32) *ArtifactMetricsUpsert {
+	u.Set(artifactmetrics.FieldOutputArtifactsSeenCount, v)
+	return u
+}
+
+// UpdateOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsert) UpdateOutputArtifactsSeenCount() *ArtifactMetricsUpsert {
+	u.SetExcluded(artifactmetrics.FieldOutputArtifactsSeenCount)
+	return u
+}
+
+// AddOutputArtifactsSeenCount adds v to the "output_artifacts_seen_count" field.
+func (u *ArtifactMetricsUpsert) AddOutputArtifactsSeenCount(v int32) *ArtifactMetricsUpsert {
+	u.Add(artifactmetrics.FieldOutputArtifactsSeenCount, v)
+	return u
+}
+
+// ClearOutputArtifactsSeenCount clears the value of the "output_artifacts_seen_count" field.
+func (u *ArtifactMetricsUpsert) ClearOutputArtifactsSeenCount() *ArtifactMetricsUpsert {
+	u.SetNull(artifactmetrics.FieldOutputArtifactsSeenCount)
+	return u
+}
+
+// SetOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) SetOutputArtifactsFromActionCacheSizeInBytes(v int64) *ArtifactMetricsUpsert {
+	u.Set(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes, v)
+	return u
+}
+
+// UpdateOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsert) UpdateOutputArtifactsFromActionCacheSizeInBytes() *ArtifactMetricsUpsert {
+	u.SetExcluded(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes)
+	return u
+}
+
+// AddOutputArtifactsFromActionCacheSizeInBytes adds v to the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) AddOutputArtifactsFromActionCacheSizeInBytes(v int64) *ArtifactMetricsUpsert {
+	u.Add(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes, v)
+	return u
+}
+
+// ClearOutputArtifactsFromActionCacheSizeInBytes clears the value of the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) ClearOutputArtifactsFromActionCacheSizeInBytes() *ArtifactMetricsUpsert {
+	u.SetNull(artifactmetrics.FieldOutputArtifactsFromActionCacheSizeInBytes)
+	return u
+}
+
+// SetOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field.
+func (u *ArtifactMetricsUpsert) SetOutputArtifactsFromActionCacheCount(v int32) *ArtifactMetricsUpsert {
+	u.Set(artifactmetrics.FieldOutputArtifactsFromActionCacheCount, v)
+	return u
+}
+
+// UpdateOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsert) UpdateOutputArtifactsFromActionCacheCount() *ArtifactMetricsUpsert {
+	u.SetExcluded(artifactmetrics.FieldOutputArtifactsFromActionCacheCount)
+	return u
+}
+
+// AddOutputArtifactsFromActionCacheCount adds v to the "output_artifacts_from_action_cache_count" field.
+func (u *ArtifactMetricsUpsert) AddOutputArtifactsFromActionCacheCount(v int32) *ArtifactMetricsUpsert {
+	u.Add(artifactmetrics.FieldOutputArtifactsFromActionCacheCount, v)
+	return u
+}
+
+// ClearOutputArtifactsFromActionCacheCount clears the value of the "output_artifacts_from_action_cache_count" field.
+func (u *ArtifactMetricsUpsert) ClearOutputArtifactsFromActionCacheCount() *ArtifactMetricsUpsert {
+	u.SetNull(artifactmetrics.FieldOutputArtifactsFromActionCacheCount)
+	return u
+}
+
+// SetTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) SetTopLevelArtifactsSizeInBytes(v int64) *ArtifactMetricsUpsert {
+	u.Set(artifactmetrics.FieldTopLevelArtifactsSizeInBytes, v)
+	return u
+}
+
+// UpdateTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsert) UpdateTopLevelArtifactsSizeInBytes() *ArtifactMetricsUpsert {
+	u.SetExcluded(artifactmetrics.FieldTopLevelArtifactsSizeInBytes)
+	return u
+}
+
+// AddTopLevelArtifactsSizeInBytes adds v to the "top_level_artifacts_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) AddTopLevelArtifactsSizeInBytes(v int64) *ArtifactMetricsUpsert {
+	u.Add(artifactmetrics.FieldTopLevelArtifactsSizeInBytes, v)
+	return u
+}
+
+// ClearTopLevelArtifactsSizeInBytes clears the value of the "top_level_artifacts_size_in_bytes" field.
+func (u *ArtifactMetricsUpsert) ClearTopLevelArtifactsSizeInBytes() *ArtifactMetricsUpsert {
+	u.SetNull(artifactmetrics.FieldTopLevelArtifactsSizeInBytes)
+	return u
+}
+
+// SetTopLevelArtifactsCount sets the "top_level_artifacts_count" field.
+func (u *ArtifactMetricsUpsert) SetTopLevelArtifactsCount(v int32) *ArtifactMetricsUpsert {
+	u.Set(artifactmetrics.FieldTopLevelArtifactsCount, v)
+	return u
+}
+
+// UpdateTopLevelArtifactsCount sets the "top_level_artifacts_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsert) UpdateTopLevelArtifactsCount() *ArtifactMetricsUpsert {
+	u.SetExcluded(artifactmetrics.FieldTopLevelArtifactsCount)
+	return u
+}
+
+// AddTopLevelArtifactsCount adds v to the "top_level_artifacts_count" field.
+func (u *ArtifactMetricsUpsert) AddTopLevelArtifactsCount(v int32) *ArtifactMetricsUpsert {
+	u.Add(artifactmetrics.FieldTopLevelArtifactsCount, v)
+	return u
+}
+
+// ClearTopLevelArtifactsCount clears the value of the "top_level_artifacts_count" field.
+func (u *ArtifactMetricsUpsert) ClearTopLevelArtifactsCount() *ArtifactMetricsUpsert {
+	u.SetNull(artifactmetrics.FieldTopLevelArtifactsCount)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.ArtifactMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ArtifactMetricsUpsertOne) UpdateNewValues() *ArtifactMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ArtifactMetrics.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *ArtifactMetricsUpsertOne) Ignore() *ArtifactMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ArtifactMetricsUpsertOne) DoNothing() *ArtifactMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ArtifactMetricsCreate.OnConflict
+// documentation for more info.
+func (u *ArtifactMetricsUpsertOne) Update(set func(*ArtifactMetricsUpsert)) *ArtifactMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ArtifactMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) SetSourceArtifactsReadSizeInBytes(v int64) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetSourceArtifactsReadSizeInBytes(v)
+	})
+}
+
+// AddSourceArtifactsReadSizeInBytes adds v to the "source_artifacts_read_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) AddSourceArtifactsReadSizeInBytes(v int64) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddSourceArtifactsReadSizeInBytes(v)
+	})
+}
+
+// UpdateSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertOne) UpdateSourceArtifactsReadSizeInBytes() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateSourceArtifactsReadSizeInBytes()
+	})
+}
+
+// ClearSourceArtifactsReadSizeInBytes clears the value of the "source_artifacts_read_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) ClearSourceArtifactsReadSizeInBytes() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearSourceArtifactsReadSizeInBytes()
+	})
+}
+
+// SetSourceArtifactsReadCount sets the "source_artifacts_read_count" field.
+func (u *ArtifactMetricsUpsertOne) SetSourceArtifactsReadCount(v int32) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetSourceArtifactsReadCount(v)
+	})
+}
+
+// AddSourceArtifactsReadCount adds v to the "source_artifacts_read_count" field.
+func (u *ArtifactMetricsUpsertOne) AddSourceArtifactsReadCount(v int32) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddSourceArtifactsReadCount(v)
+	})
+}
+
+// UpdateSourceArtifactsReadCount sets the "source_artifacts_read_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertOne) UpdateSourceArtifactsReadCount() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateSourceArtifactsReadCount()
+	})
+}
+
+// ClearSourceArtifactsReadCount clears the value of the "source_artifacts_read_count" field.
+func (u *ArtifactMetricsUpsertOne) ClearSourceArtifactsReadCount() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearSourceArtifactsReadCount()
+	})
+}
+
+// SetOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) SetOutputArtifactsSeenSizeInBytes(v int64) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetOutputArtifactsSeenSizeInBytes(v)
+	})
+}
+
+// AddOutputArtifactsSeenSizeInBytes adds v to the "output_artifacts_seen_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) AddOutputArtifactsSeenSizeInBytes(v int64) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddOutputArtifactsSeenSizeInBytes(v)
+	})
+}
+
+// UpdateOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertOne) UpdateOutputArtifactsSeenSizeInBytes() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateOutputArtifactsSeenSizeInBytes()
+	})
+}
+
+// ClearOutputArtifactsSeenSizeInBytes clears the value of the "output_artifacts_seen_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) ClearOutputArtifactsSeenSizeInBytes() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearOutputArtifactsSeenSizeInBytes()
+	})
+}
+
+// SetOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field.
+func (u *ArtifactMetricsUpsertOne) SetOutputArtifactsSeenCount(v int32) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetOutputArtifactsSeenCount(v)
+	})
+}
+
+// AddOutputArtifactsSeenCount adds v to the "output_artifacts_seen_count" field.
+func (u *ArtifactMetricsUpsertOne) AddOutputArtifactsSeenCount(v int32) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddOutputArtifactsSeenCount(v)
+	})
+}
+
+// UpdateOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertOne) UpdateOutputArtifactsSeenCount() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateOutputArtifactsSeenCount()
+	})
+}
+
+// ClearOutputArtifactsSeenCount clears the value of the "output_artifacts_seen_count" field.
+func (u *ArtifactMetricsUpsertOne) ClearOutputArtifactsSeenCount() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearOutputArtifactsSeenCount()
+	})
+}
+
+// SetOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) SetOutputArtifactsFromActionCacheSizeInBytes(v int64) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetOutputArtifactsFromActionCacheSizeInBytes(v)
+	})
+}
+
+// AddOutputArtifactsFromActionCacheSizeInBytes adds v to the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) AddOutputArtifactsFromActionCacheSizeInBytes(v int64) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddOutputArtifactsFromActionCacheSizeInBytes(v)
+	})
+}
+
+// UpdateOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertOne) UpdateOutputArtifactsFromActionCacheSizeInBytes() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateOutputArtifactsFromActionCacheSizeInBytes()
+	})
+}
+
+// ClearOutputArtifactsFromActionCacheSizeInBytes clears the value of the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) ClearOutputArtifactsFromActionCacheSizeInBytes() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearOutputArtifactsFromActionCacheSizeInBytes()
+	})
+}
+
+// SetOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field.
+func (u *ArtifactMetricsUpsertOne) SetOutputArtifactsFromActionCacheCount(v int32) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetOutputArtifactsFromActionCacheCount(v)
+	})
+}
+
+// AddOutputArtifactsFromActionCacheCount adds v to the "output_artifacts_from_action_cache_count" field.
+func (u *ArtifactMetricsUpsertOne) AddOutputArtifactsFromActionCacheCount(v int32) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddOutputArtifactsFromActionCacheCount(v)
+	})
+}
+
+// UpdateOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertOne) UpdateOutputArtifactsFromActionCacheCount() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateOutputArtifactsFromActionCacheCount()
+	})
+}
+
+// ClearOutputArtifactsFromActionCacheCount clears the value of the "output_artifacts_from_action_cache_count" field.
+func (u *ArtifactMetricsUpsertOne) ClearOutputArtifactsFromActionCacheCount() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearOutputArtifactsFromActionCacheCount()
+	})
+}
+
+// SetTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) SetTopLevelArtifactsSizeInBytes(v int64) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetTopLevelArtifactsSizeInBytes(v)
+	})
+}
+
+// AddTopLevelArtifactsSizeInBytes adds v to the "top_level_artifacts_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) AddTopLevelArtifactsSizeInBytes(v int64) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddTopLevelArtifactsSizeInBytes(v)
+	})
+}
+
+// UpdateTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertOne) UpdateTopLevelArtifactsSizeInBytes() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateTopLevelArtifactsSizeInBytes()
+	})
+}
+
+// ClearTopLevelArtifactsSizeInBytes clears the value of the "top_level_artifacts_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertOne) ClearTopLevelArtifactsSizeInBytes() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearTopLevelArtifactsSizeInBytes()
+	})
+}
+
+// SetTopLevelArtifactsCount sets the "top_level_artifacts_count" field.
+func (u *ArtifactMetricsUpsertOne) SetTopLevelArtifactsCount(v int32) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetTopLevelArtifactsCount(v)
+	})
+}
+
+// AddTopLevelArtifactsCount adds v to the "top_level_artifacts_count" field.
+func (u *ArtifactMetricsUpsertOne) AddTopLevelArtifactsCount(v int32) *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddTopLevelArtifactsCount(v)
+	})
+}
+
+// UpdateTopLevelArtifactsCount sets the "top_level_artifacts_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertOne) UpdateTopLevelArtifactsCount() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateTopLevelArtifactsCount()
+	})
+}
+
+// ClearTopLevelArtifactsCount clears the value of the "top_level_artifacts_count" field.
+func (u *ArtifactMetricsUpsertOne) ClearTopLevelArtifactsCount() *ArtifactMetricsUpsertOne {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearTopLevelArtifactsCount()
+	})
+}
+
+// Exec executes the query.
+func (u *ArtifactMetricsUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ArtifactMetricsCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ArtifactMetricsUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *ArtifactMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *ArtifactMetricsUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
 }
 
 // ArtifactMetricsCreateBulk is the builder for creating many ArtifactMetrics entities in bulk.
@@ -267,6 +809,7 @@ type ArtifactMetricsCreateBulk struct {
 	config
 	err      error
 	builders []*ArtifactMetricsCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the ArtifactMetrics entities in the database.
@@ -295,6 +838,7 @@ func (amcb *ArtifactMetricsCreateBulk) Save(ctx context.Context) ([]*ArtifactMet
 					_, err = mutators[i+1].Mutate(root, amcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = amcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, amcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -345,6 +889,334 @@ func (amcb *ArtifactMetricsCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (amcb *ArtifactMetricsCreateBulk) ExecX(ctx context.Context) {
 	if err := amcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.ArtifactMetrics.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.ArtifactMetricsUpsert) {
+//			SetSourceArtifactsReadSizeInBytes(v+v).
+//		}).
+//		Exec(ctx)
+func (amcb *ArtifactMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *ArtifactMetricsUpsertBulk {
+	amcb.conflict = opts
+	return &ArtifactMetricsUpsertBulk{
+		create: amcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.ArtifactMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (amcb *ArtifactMetricsCreateBulk) OnConflictColumns(columns ...string) *ArtifactMetricsUpsertBulk {
+	amcb.conflict = append(amcb.conflict, sql.ConflictColumns(columns...))
+	return &ArtifactMetricsUpsertBulk{
+		create: amcb,
+	}
+}
+
+// ArtifactMetricsUpsertBulk is the builder for "upsert"-ing
+// a bulk of ArtifactMetrics nodes.
+type ArtifactMetricsUpsertBulk struct {
+	create *ArtifactMetricsCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.ArtifactMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *ArtifactMetricsUpsertBulk) UpdateNewValues() *ArtifactMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.ArtifactMetrics.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *ArtifactMetricsUpsertBulk) Ignore() *ArtifactMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *ArtifactMetricsUpsertBulk) DoNothing() *ArtifactMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the ArtifactMetricsCreateBulk.OnConflict
+// documentation for more info.
+func (u *ArtifactMetricsUpsertBulk) Update(set func(*ArtifactMetricsUpsert)) *ArtifactMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&ArtifactMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) SetSourceArtifactsReadSizeInBytes(v int64) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetSourceArtifactsReadSizeInBytes(v)
+	})
+}
+
+// AddSourceArtifactsReadSizeInBytes adds v to the "source_artifacts_read_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) AddSourceArtifactsReadSizeInBytes(v int64) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddSourceArtifactsReadSizeInBytes(v)
+	})
+}
+
+// UpdateSourceArtifactsReadSizeInBytes sets the "source_artifacts_read_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertBulk) UpdateSourceArtifactsReadSizeInBytes() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateSourceArtifactsReadSizeInBytes()
+	})
+}
+
+// ClearSourceArtifactsReadSizeInBytes clears the value of the "source_artifacts_read_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) ClearSourceArtifactsReadSizeInBytes() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearSourceArtifactsReadSizeInBytes()
+	})
+}
+
+// SetSourceArtifactsReadCount sets the "source_artifacts_read_count" field.
+func (u *ArtifactMetricsUpsertBulk) SetSourceArtifactsReadCount(v int32) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetSourceArtifactsReadCount(v)
+	})
+}
+
+// AddSourceArtifactsReadCount adds v to the "source_artifacts_read_count" field.
+func (u *ArtifactMetricsUpsertBulk) AddSourceArtifactsReadCount(v int32) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddSourceArtifactsReadCount(v)
+	})
+}
+
+// UpdateSourceArtifactsReadCount sets the "source_artifacts_read_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertBulk) UpdateSourceArtifactsReadCount() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateSourceArtifactsReadCount()
+	})
+}
+
+// ClearSourceArtifactsReadCount clears the value of the "source_artifacts_read_count" field.
+func (u *ArtifactMetricsUpsertBulk) ClearSourceArtifactsReadCount() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearSourceArtifactsReadCount()
+	})
+}
+
+// SetOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) SetOutputArtifactsSeenSizeInBytes(v int64) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetOutputArtifactsSeenSizeInBytes(v)
+	})
+}
+
+// AddOutputArtifactsSeenSizeInBytes adds v to the "output_artifacts_seen_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) AddOutputArtifactsSeenSizeInBytes(v int64) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddOutputArtifactsSeenSizeInBytes(v)
+	})
+}
+
+// UpdateOutputArtifactsSeenSizeInBytes sets the "output_artifacts_seen_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertBulk) UpdateOutputArtifactsSeenSizeInBytes() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateOutputArtifactsSeenSizeInBytes()
+	})
+}
+
+// ClearOutputArtifactsSeenSizeInBytes clears the value of the "output_artifacts_seen_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) ClearOutputArtifactsSeenSizeInBytes() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearOutputArtifactsSeenSizeInBytes()
+	})
+}
+
+// SetOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field.
+func (u *ArtifactMetricsUpsertBulk) SetOutputArtifactsSeenCount(v int32) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetOutputArtifactsSeenCount(v)
+	})
+}
+
+// AddOutputArtifactsSeenCount adds v to the "output_artifacts_seen_count" field.
+func (u *ArtifactMetricsUpsertBulk) AddOutputArtifactsSeenCount(v int32) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddOutputArtifactsSeenCount(v)
+	})
+}
+
+// UpdateOutputArtifactsSeenCount sets the "output_artifacts_seen_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertBulk) UpdateOutputArtifactsSeenCount() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateOutputArtifactsSeenCount()
+	})
+}
+
+// ClearOutputArtifactsSeenCount clears the value of the "output_artifacts_seen_count" field.
+func (u *ArtifactMetricsUpsertBulk) ClearOutputArtifactsSeenCount() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearOutputArtifactsSeenCount()
+	})
+}
+
+// SetOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) SetOutputArtifactsFromActionCacheSizeInBytes(v int64) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetOutputArtifactsFromActionCacheSizeInBytes(v)
+	})
+}
+
+// AddOutputArtifactsFromActionCacheSizeInBytes adds v to the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) AddOutputArtifactsFromActionCacheSizeInBytes(v int64) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddOutputArtifactsFromActionCacheSizeInBytes(v)
+	})
+}
+
+// UpdateOutputArtifactsFromActionCacheSizeInBytes sets the "output_artifacts_from_action_cache_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertBulk) UpdateOutputArtifactsFromActionCacheSizeInBytes() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateOutputArtifactsFromActionCacheSizeInBytes()
+	})
+}
+
+// ClearOutputArtifactsFromActionCacheSizeInBytes clears the value of the "output_artifacts_from_action_cache_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) ClearOutputArtifactsFromActionCacheSizeInBytes() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearOutputArtifactsFromActionCacheSizeInBytes()
+	})
+}
+
+// SetOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field.
+func (u *ArtifactMetricsUpsertBulk) SetOutputArtifactsFromActionCacheCount(v int32) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetOutputArtifactsFromActionCacheCount(v)
+	})
+}
+
+// AddOutputArtifactsFromActionCacheCount adds v to the "output_artifacts_from_action_cache_count" field.
+func (u *ArtifactMetricsUpsertBulk) AddOutputArtifactsFromActionCacheCount(v int32) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddOutputArtifactsFromActionCacheCount(v)
+	})
+}
+
+// UpdateOutputArtifactsFromActionCacheCount sets the "output_artifacts_from_action_cache_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertBulk) UpdateOutputArtifactsFromActionCacheCount() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateOutputArtifactsFromActionCacheCount()
+	})
+}
+
+// ClearOutputArtifactsFromActionCacheCount clears the value of the "output_artifacts_from_action_cache_count" field.
+func (u *ArtifactMetricsUpsertBulk) ClearOutputArtifactsFromActionCacheCount() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearOutputArtifactsFromActionCacheCount()
+	})
+}
+
+// SetTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) SetTopLevelArtifactsSizeInBytes(v int64) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetTopLevelArtifactsSizeInBytes(v)
+	})
+}
+
+// AddTopLevelArtifactsSizeInBytes adds v to the "top_level_artifacts_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) AddTopLevelArtifactsSizeInBytes(v int64) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddTopLevelArtifactsSizeInBytes(v)
+	})
+}
+
+// UpdateTopLevelArtifactsSizeInBytes sets the "top_level_artifacts_size_in_bytes" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertBulk) UpdateTopLevelArtifactsSizeInBytes() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateTopLevelArtifactsSizeInBytes()
+	})
+}
+
+// ClearTopLevelArtifactsSizeInBytes clears the value of the "top_level_artifacts_size_in_bytes" field.
+func (u *ArtifactMetricsUpsertBulk) ClearTopLevelArtifactsSizeInBytes() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearTopLevelArtifactsSizeInBytes()
+	})
+}
+
+// SetTopLevelArtifactsCount sets the "top_level_artifacts_count" field.
+func (u *ArtifactMetricsUpsertBulk) SetTopLevelArtifactsCount(v int32) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.SetTopLevelArtifactsCount(v)
+	})
+}
+
+// AddTopLevelArtifactsCount adds v to the "top_level_artifacts_count" field.
+func (u *ArtifactMetricsUpsertBulk) AddTopLevelArtifactsCount(v int32) *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.AddTopLevelArtifactsCount(v)
+	})
+}
+
+// UpdateTopLevelArtifactsCount sets the "top_level_artifacts_count" field to the value that was provided on create.
+func (u *ArtifactMetricsUpsertBulk) UpdateTopLevelArtifactsCount() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.UpdateTopLevelArtifactsCount()
+	})
+}
+
+// ClearTopLevelArtifactsCount clears the value of the "top_level_artifacts_count" field.
+func (u *ArtifactMetricsUpsertBulk) ClearTopLevelArtifactsCount() *ArtifactMetricsUpsertBulk {
+	return u.Update(func(s *ArtifactMetricsUpsert) {
+		s.ClearTopLevelArtifactsCount()
+	})
+}
+
+// Exec executes the query.
+func (u *ArtifactMetricsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the ArtifactMetricsCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for ArtifactMetricsCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *ArtifactMetricsUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

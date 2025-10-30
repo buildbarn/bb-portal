@@ -21,8 +21,9 @@ import (
 // TestResultBESUpdate is the builder for updating TestResultBES entities.
 type TestResultBESUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TestResultBESMutation
+	hooks     []Hook
+	mutation  *TestResultBESMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TestResultBESUpdate builder.
@@ -358,6 +359,12 @@ func (trbu *TestResultBESUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (trbu *TestResultBESUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestResultBESUpdate {
+	trbu.modifiers = append(trbu.modifiers, modifiers...)
+	return trbu
+}
+
 func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := trbu.check(); err != nil {
 		return n, err
@@ -541,6 +548,7 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(trbu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, trbu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{testresultbes.Label}
@@ -556,9 +564,10 @@ func (trbu *TestResultBESUpdate) sqlSave(ctx context.Context) (n int, err error)
 // TestResultBESUpdateOne is the builder for updating a single TestResultBES entity.
 type TestResultBESUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TestResultBESMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TestResultBESMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetTestStatus sets the "test_status" field.
@@ -901,6 +910,12 @@ func (trbuo *TestResultBESUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (trbuo *TestResultBESUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TestResultBESUpdateOne {
+	trbuo.modifiers = append(trbuo.modifiers, modifiers...)
+	return trbuo
+}
+
 func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestResultBES, err error) {
 	if err := trbuo.check(); err != nil {
 		return _node, err
@@ -1101,6 +1116,7 @@ func (trbuo *TestResultBESUpdateOne) sqlSave(ctx context.Context) (_node *TestRe
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(trbuo.modifiers...)
 	_node = &TestResultBES{config: trbuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

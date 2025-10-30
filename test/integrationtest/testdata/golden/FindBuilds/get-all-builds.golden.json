@@ -1,0 +1,14 @@
+{
+  "findBuilds": {
+    "edges": [
+      {
+        "node": {
+          "buildURL": "https://example.com/build/1234",
+          "buildUUID": "c3a1db88-bad7-54fc-8795-e09393ff2f59",
+          "id": "QnVpbGQ6MQ==",
+          "timestamp": "2024-05-13T23:43:23.045Z"
+        }
+      }
+    ]
+  }
+}

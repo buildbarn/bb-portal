@@ -18,6 +18,8 @@ load("@gazelle//:def.bzl", "gazelle")
 # gazelle:resolve proto go pkg/proto/configuration/grpc/grpc.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/grpc
 # gazelle:resolve proto go pkg/proto/configuration/http/http.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/http
 # gazelle:resolve proto build/bazel/remote/execution/v2/remote_execution.proto @bazel_remote_apis//build/bazel/remote/execution/v2:remote_execution_proto
+# gazelle:resolve proto google/protobuf/duration.proto @protobuf//:duration_proto
+# gazelle:resolve proto google/protobuf/empty.proto @protobuf//:empty_proto
 # gazelle:resolve proto google/rpc/status.proto @googleapis//google/rpc:status_proto
 # gazelle:resolve proto pkg/proto/configuration/auth/auth.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/auth:auth_proto
 # gazelle:resolve proto pkg/proto/configuration/blobstore/blobstore.proto @com_github_buildbarn_bb_storage//pkg/proto/configuration/blobstore:blobstore_proto

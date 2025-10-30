@@ -18,8 +18,9 @@ import (
 // TimingMetricsUpdate is the builder for updating TimingMetrics entities.
 type TimingMetricsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *TimingMetricsMutation
+	hooks     []Hook
+	mutation  *TimingMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the TimingMetricsUpdate builder.
@@ -220,6 +221,12 @@ func (tmu *TimingMetricsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tmu *TimingMetricsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TimingMetricsUpdate {
+	tmu.modifiers = append(tmu.modifiers, modifiers...)
+	return tmu
+}
+
 func (tmu *TimingMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(timingmetrics.Table, timingmetrics.Columns, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt))
 	if ps := tmu.mutation.predicates; len(ps) > 0 {
@@ -303,6 +310,7 @@ func (tmu *TimingMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, tmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{timingmetrics.Label}
@@ -318,9 +326,10 @@ func (tmu *TimingMetricsUpdate) sqlSave(ctx context.Context) (n int, err error) 
 // TimingMetricsUpdateOne is the builder for updating a single TimingMetrics entity.
 type TimingMetricsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *TimingMetricsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *TimingMetricsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetCPUTimeInMs sets the "cpu_time_in_ms" field.
@@ -528,6 +537,12 @@ func (tmuo *TimingMetricsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (tmuo *TimingMetricsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *TimingMetricsUpdateOne {
+	tmuo.modifiers = append(tmuo.modifiers, modifiers...)
+	return tmuo
+}
+
 func (tmuo *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingMetrics, err error) {
 	_spec := sqlgraph.NewUpdateSpec(timingmetrics.Table, timingmetrics.Columns, sqlgraph.NewFieldSpec(timingmetrics.FieldID, field.TypeInt))
 	id, ok := tmuo.mutation.ID()
@@ -628,6 +643,7 @@ func (tmuo *TimingMetricsUpdateOne) sqlSave(ctx context.Context) (_node *TimingM
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(tmuo.modifiers...)
 	_node = &TimingMetrics{config: tmuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

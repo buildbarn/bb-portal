@@ -18,8 +18,9 @@ import (
 // SystemNetworkStatsUpdate is the builder for updating SystemNetworkStats entities.
 type SystemNetworkStatsUpdate struct {
 	config
-	hooks    []Hook
-	mutation *SystemNetworkStatsMutation
+	hooks     []Hook
+	mutation  *SystemNetworkStatsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the SystemNetworkStatsUpdate builder.
@@ -301,6 +302,12 @@ func (snsu *SystemNetworkStatsUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (snsu *SystemNetworkStatsUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *SystemNetworkStatsUpdate {
+	snsu.modifiers = append(snsu.modifiers, modifiers...)
+	return snsu
+}
+
 func (snsu *SystemNetworkStatsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(systemnetworkstats.Table, systemnetworkstats.Columns, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt))
 	if ps := snsu.mutation.predicates; len(ps) > 0 {
@@ -411,6 +418,7 @@ func (snsu *SystemNetworkStatsUpdate) sqlSave(ctx context.Context) (n int, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(snsu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, snsu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{systemnetworkstats.Label}
@@ -426,9 +434,10 @@ func (snsu *SystemNetworkStatsUpdate) sqlSave(ctx context.Context) (n int, err e
 // SystemNetworkStatsUpdateOne is the builder for updating a single SystemNetworkStats entity.
 type SystemNetworkStatsUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *SystemNetworkStatsMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *SystemNetworkStatsMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetBytesSent sets the "bytes_sent" field.
@@ -717,6 +726,12 @@ func (snsuo *SystemNetworkStatsUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (snsuo *SystemNetworkStatsUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *SystemNetworkStatsUpdateOne {
+	snsuo.modifiers = append(snsuo.modifiers, modifiers...)
+	return snsuo
+}
+
 func (snsuo *SystemNetworkStatsUpdateOne) sqlSave(ctx context.Context) (_node *SystemNetworkStats, err error) {
 	_spec := sqlgraph.NewUpdateSpec(systemnetworkstats.Table, systemnetworkstats.Columns, sqlgraph.NewFieldSpec(systemnetworkstats.FieldID, field.TypeInt))
 	id, ok := snsuo.mutation.ID()
@@ -844,6 +859,7 @@ func (snsuo *SystemNetworkStatsUpdateOne) sqlSave(ctx context.Context) (_node *S
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(snsuo.modifiers...)
 	_node = &SystemNetworkStats{config: snsuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

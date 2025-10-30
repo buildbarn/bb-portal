@@ -30,8 +30,6 @@ const (
 	EdgeArtifactMetrics = "artifact_metrics"
 	// EdgeNetworkMetrics holds the string denoting the network_metrics edge name in mutations.
 	EdgeNetworkMetrics = "network_metrics"
-	// EdgeDynamicExecutionMetrics holds the string denoting the dynamic_execution_metrics edge name in mutations.
-	EdgeDynamicExecutionMetrics = "dynamic_execution_metrics"
 	// EdgeBuildGraphMetrics holds the string denoting the build_graph_metrics edge name in mutations.
 	EdgeBuildGraphMetrics = "build_graph_metrics"
 	// Table holds the table name of the metrics in the database.
@@ -99,13 +97,6 @@ const (
 	NetworkMetricsInverseTable = "network_metrics"
 	// NetworkMetricsColumn is the table column denoting the network_metrics relation/edge.
 	NetworkMetricsColumn = "metrics_network_metrics"
-	// DynamicExecutionMetricsTable is the table that holds the dynamic_execution_metrics relation/edge.
-	DynamicExecutionMetricsTable = "dynamic_execution_metrics"
-	// DynamicExecutionMetricsInverseTable is the table name for the DynamicExecutionMetrics entity.
-	// It exists in this package in order to avoid circular dependency with the "dynamicexecutionmetrics" package.
-	DynamicExecutionMetricsInverseTable = "dynamic_execution_metrics"
-	// DynamicExecutionMetricsColumn is the table column denoting the dynamic_execution_metrics relation/edge.
-	DynamicExecutionMetricsColumn = "metrics_dynamic_execution_metrics"
 	// BuildGraphMetricsTable is the table that holds the build_graph_metrics relation/edge.
 	BuildGraphMetricsTable = "build_graph_metrics"
 	// BuildGraphMetricsInverseTable is the table name for the BuildGraphMetrics entity.
@@ -212,13 +203,6 @@ func ByNetworkMetricsField(field string, opts ...sql.OrderTermOption) OrderOptio
 	}
 }
 
-// ByDynamicExecutionMetricsField orders the results by dynamic_execution_metrics field.
-func ByDynamicExecutionMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newDynamicExecutionMetricsStep(), sql.OrderByField(field, opts...))
-	}
-}
-
 // ByBuildGraphMetricsField orders the results by build_graph_metrics field.
 func ByBuildGraphMetricsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -286,13 +270,6 @@ func newNetworkMetricsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(NetworkMetricsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2O, false, NetworkMetricsTable, NetworkMetricsColumn),
-	)
-}
-func newDynamicExecutionMetricsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(DynamicExecutionMetricsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2O, false, DynamicExecutionMetricsTable, DynamicExecutionMetricsColumn),
 	)
 }
 func newBuildGraphMetricsStep() *sqlgraph.Step {

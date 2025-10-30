@@ -18,8 +18,9 @@ import (
 // MissDetailUpdate is the builder for updating MissDetail entities.
 type MissDetailUpdate struct {
 	config
-	hooks    []Hook
-	mutation *MissDetailMutation
+	hooks     []Hook
+	mutation  *MissDetailMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // Where appends a list predicates to the MissDetailUpdate builder.
@@ -142,6 +143,12 @@ func (mdu *MissDetailUpdate) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (mdu *MissDetailUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MissDetailUpdate {
+	mdu.modifiers = append(mdu.modifiers, modifiers...)
+	return mdu
+}
+
 func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := mdu.check(); err != nil {
 		return n, err
@@ -198,6 +205,7 @@ func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(mdu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, mdu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{missdetail.Label}
@@ -213,9 +221,10 @@ func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 // MissDetailUpdateOne is the builder for updating a single MissDetail entity.
 type MissDetailUpdateOne struct {
 	config
-	fields   []string
-	hooks    []Hook
-	mutation *MissDetailMutation
+	fields    []string
+	hooks     []Hook
+	mutation  *MissDetailMutation
+	modifiers []func(*sql.UpdateBuilder)
 }
 
 // SetReason sets the "reason" field.
@@ -345,6 +354,12 @@ func (mduo *MissDetailUpdateOne) check() error {
 	return nil
 }
 
+// Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
+func (mduo *MissDetailUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MissDetailUpdateOne {
+	mduo.modifiers = append(mduo.modifiers, modifiers...)
+	return mduo
+}
+
 func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail, err error) {
 	if err := mduo.check(); err != nil {
 		return _node, err
@@ -418,6 +433,7 @@ func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	_spec.AddModifiers(mduo.modifiers...)
 	_node = &MissDetail{config: mduo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues

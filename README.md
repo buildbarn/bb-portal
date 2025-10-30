@@ -33,7 +33,6 @@ The frontend is configured via environment variables. The following environment 
 | `NEXT_PUBLIC_ENABLED_FEATURES_BROWSER` | `true` | Enables the Browser pages in the UI. |
 | `NEXT_PUBLIC_ENABLED_FEATURES_SCHEDULER` | `true` | Enables the Scheduler pages in the UI. |
 | `NEXT_PUBLIC_FOOTER_CONTENT_JSON` | `[{"text": "Buildteam", "href": "https://buildteamworld.slack.com/archives/CD6HZC750", "icon": "slack"}]` | JSON array of links to display in the footer. Each link should have `text`, `href`, and `icon` properties. The `icon` can be a URL or one of `slack`, `github` and `discord`. |
-| `NEXT_PUBLIC_GITHUB_URL` | `https://github.com` | URL to GitHub. Change if you are using GitHub enterprise. |
 
 ## Setting Up Buildbarn Portal
 

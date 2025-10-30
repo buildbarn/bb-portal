@@ -50,8 +50,6 @@ var Columns = []string{
 var ForeignKeys = []string{
 	"named_set_of_files_files",
 	"output_group_inline_files",
-	"target_complete_important_output",
-	"target_complete_directory_output",
 	"test_result_bes_test_action_output",
 	"test_summary_passed",
 	"test_summary_failed",

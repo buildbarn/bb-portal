@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
@@ -17,6 +19,7 @@ type EvaluationStatCreate struct {
 	config
 	mutation *EvaluationStatMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetSkyfunctionName sets the "skyfunction_name" field.
@@ -126,6 +129,7 @@ func (esc *EvaluationStatCreate) createSpec() (*EvaluationStat, *sqlgraph.Create
 		_node = &EvaluationStat{config: esc.config}
 		_spec = sqlgraph.NewCreateSpec(evaluationstat.Table, sqlgraph.NewFieldSpec(evaluationstat.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = esc.conflict
 	if value, ok := esc.mutation.SkyfunctionName(); ok {
 		_spec.SetField(evaluationstat.FieldSkyfunctionName, field.TypeString, value)
 		_node.SkyfunctionName = value
@@ -154,11 +158,225 @@ func (esc *EvaluationStatCreate) createSpec() (*EvaluationStat, *sqlgraph.Create
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.EvaluationStat.Create().
+//		SetSkyfunctionName(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.EvaluationStatUpsert) {
+//			SetSkyfunctionName(v+v).
+//		}).
+//		Exec(ctx)
+func (esc *EvaluationStatCreate) OnConflict(opts ...sql.ConflictOption) *EvaluationStatUpsertOne {
+	esc.conflict = opts
+	return &EvaluationStatUpsertOne{
+		create: esc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.EvaluationStat.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (esc *EvaluationStatCreate) OnConflictColumns(columns ...string) *EvaluationStatUpsertOne {
+	esc.conflict = append(esc.conflict, sql.ConflictColumns(columns...))
+	return &EvaluationStatUpsertOne{
+		create: esc,
+	}
+}
+
+type (
+	// EvaluationStatUpsertOne is the builder for "upsert"-ing
+	//  one EvaluationStat node.
+	EvaluationStatUpsertOne struct {
+		create *EvaluationStatCreate
+	}
+
+	// EvaluationStatUpsert is the "OnConflict" setter.
+	EvaluationStatUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetSkyfunctionName sets the "skyfunction_name" field.
+func (u *EvaluationStatUpsert) SetSkyfunctionName(v string) *EvaluationStatUpsert {
+	u.Set(evaluationstat.FieldSkyfunctionName, v)
+	return u
+}
+
+// UpdateSkyfunctionName sets the "skyfunction_name" field to the value that was provided on create.
+func (u *EvaluationStatUpsert) UpdateSkyfunctionName() *EvaluationStatUpsert {
+	u.SetExcluded(evaluationstat.FieldSkyfunctionName)
+	return u
+}
+
+// ClearSkyfunctionName clears the value of the "skyfunction_name" field.
+func (u *EvaluationStatUpsert) ClearSkyfunctionName() *EvaluationStatUpsert {
+	u.SetNull(evaluationstat.FieldSkyfunctionName)
+	return u
+}
+
+// SetCount sets the "count" field.
+func (u *EvaluationStatUpsert) SetCount(v int64) *EvaluationStatUpsert {
+	u.Set(evaluationstat.FieldCount, v)
+	return u
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *EvaluationStatUpsert) UpdateCount() *EvaluationStatUpsert {
+	u.SetExcluded(evaluationstat.FieldCount)
+	return u
+}
+
+// AddCount adds v to the "count" field.
+func (u *EvaluationStatUpsert) AddCount(v int64) *EvaluationStatUpsert {
+	u.Add(evaluationstat.FieldCount, v)
+	return u
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *EvaluationStatUpsert) ClearCount() *EvaluationStatUpsert {
+	u.SetNull(evaluationstat.FieldCount)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.EvaluationStat.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *EvaluationStatUpsertOne) UpdateNewValues() *EvaluationStatUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.EvaluationStat.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *EvaluationStatUpsertOne) Ignore() *EvaluationStatUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *EvaluationStatUpsertOne) DoNothing() *EvaluationStatUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the EvaluationStatCreate.OnConflict
+// documentation for more info.
+func (u *EvaluationStatUpsertOne) Update(set func(*EvaluationStatUpsert)) *EvaluationStatUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&EvaluationStatUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSkyfunctionName sets the "skyfunction_name" field.
+func (u *EvaluationStatUpsertOne) SetSkyfunctionName(v string) *EvaluationStatUpsertOne {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.SetSkyfunctionName(v)
+	})
+}
+
+// UpdateSkyfunctionName sets the "skyfunction_name" field to the value that was provided on create.
+func (u *EvaluationStatUpsertOne) UpdateSkyfunctionName() *EvaluationStatUpsertOne {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.UpdateSkyfunctionName()
+	})
+}
+
+// ClearSkyfunctionName clears the value of the "skyfunction_name" field.
+func (u *EvaluationStatUpsertOne) ClearSkyfunctionName() *EvaluationStatUpsertOne {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.ClearSkyfunctionName()
+	})
+}
+
+// SetCount sets the "count" field.
+func (u *EvaluationStatUpsertOne) SetCount(v int64) *EvaluationStatUpsertOne {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.SetCount(v)
+	})
+}
+
+// AddCount adds v to the "count" field.
+func (u *EvaluationStatUpsertOne) AddCount(v int64) *EvaluationStatUpsertOne {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.AddCount(v)
+	})
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *EvaluationStatUpsertOne) UpdateCount() *EvaluationStatUpsertOne {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.UpdateCount()
+	})
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *EvaluationStatUpsertOne) ClearCount() *EvaluationStatUpsertOne {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.ClearCount()
+	})
+}
+
+// Exec executes the query.
+func (u *EvaluationStatUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for EvaluationStatCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *EvaluationStatUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *EvaluationStatUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *EvaluationStatUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // EvaluationStatCreateBulk is the builder for creating many EvaluationStat entities in bulk.
 type EvaluationStatCreateBulk struct {
 	config
 	err      error
 	builders []*EvaluationStatCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the EvaluationStat entities in the database.
@@ -187,6 +405,7 @@ func (escb *EvaluationStatCreateBulk) Save(ctx context.Context) ([]*EvaluationSt
 					_, err = mutators[i+1].Mutate(root, escb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = escb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, escb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -237,6 +456,159 @@ func (escb *EvaluationStatCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (escb *EvaluationStatCreateBulk) ExecX(ctx context.Context) {
 	if err := escb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.EvaluationStat.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.EvaluationStatUpsert) {
+//			SetSkyfunctionName(v+v).
+//		}).
+//		Exec(ctx)
+func (escb *EvaluationStatCreateBulk) OnConflict(opts ...sql.ConflictOption) *EvaluationStatUpsertBulk {
+	escb.conflict = opts
+	return &EvaluationStatUpsertBulk{
+		create: escb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.EvaluationStat.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (escb *EvaluationStatCreateBulk) OnConflictColumns(columns ...string) *EvaluationStatUpsertBulk {
+	escb.conflict = append(escb.conflict, sql.ConflictColumns(columns...))
+	return &EvaluationStatUpsertBulk{
+		create: escb,
+	}
+}
+
+// EvaluationStatUpsertBulk is the builder for "upsert"-ing
+// a bulk of EvaluationStat nodes.
+type EvaluationStatUpsertBulk struct {
+	create *EvaluationStatCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.EvaluationStat.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *EvaluationStatUpsertBulk) UpdateNewValues() *EvaluationStatUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.EvaluationStat.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *EvaluationStatUpsertBulk) Ignore() *EvaluationStatUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *EvaluationStatUpsertBulk) DoNothing() *EvaluationStatUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the EvaluationStatCreateBulk.OnConflict
+// documentation for more info.
+func (u *EvaluationStatUpsertBulk) Update(set func(*EvaluationStatUpsert)) *EvaluationStatUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&EvaluationStatUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetSkyfunctionName sets the "skyfunction_name" field.
+func (u *EvaluationStatUpsertBulk) SetSkyfunctionName(v string) *EvaluationStatUpsertBulk {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.SetSkyfunctionName(v)
+	})
+}
+
+// UpdateSkyfunctionName sets the "skyfunction_name" field to the value that was provided on create.
+func (u *EvaluationStatUpsertBulk) UpdateSkyfunctionName() *EvaluationStatUpsertBulk {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.UpdateSkyfunctionName()
+	})
+}
+
+// ClearSkyfunctionName clears the value of the "skyfunction_name" field.
+func (u *EvaluationStatUpsertBulk) ClearSkyfunctionName() *EvaluationStatUpsertBulk {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.ClearSkyfunctionName()
+	})
+}
+
+// SetCount sets the "count" field.
+func (u *EvaluationStatUpsertBulk) SetCount(v int64) *EvaluationStatUpsertBulk {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.SetCount(v)
+	})
+}
+
+// AddCount adds v to the "count" field.
+func (u *EvaluationStatUpsertBulk) AddCount(v int64) *EvaluationStatUpsertBulk {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.AddCount(v)
+	})
+}
+
+// UpdateCount sets the "count" field to the value that was provided on create.
+func (u *EvaluationStatUpsertBulk) UpdateCount() *EvaluationStatUpsertBulk {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.UpdateCount()
+	})
+}
+
+// ClearCount clears the value of the "count" field.
+func (u *EvaluationStatUpsertBulk) ClearCount() *EvaluationStatUpsertBulk {
+	return u.Update(func(s *EvaluationStatUpsert) {
+		s.ClearCount()
+	})
+}
+
+// Exec executes the query.
+func (u *EvaluationStatUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the EvaluationStatCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for EvaluationStatCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *EvaluationStatUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

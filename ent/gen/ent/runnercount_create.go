@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
@@ -17,6 +19,7 @@ type RunnerCountCreate struct {
 	config
 	mutation *RunnerCountMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetName sets the "name" field.
@@ -140,6 +143,7 @@ func (rcc *RunnerCountCreate) createSpec() (*RunnerCount, *sqlgraph.CreateSpec) 
 		_node = &RunnerCount{config: rcc.config}
 		_spec = sqlgraph.NewCreateSpec(runnercount.Table, sqlgraph.NewFieldSpec(runnercount.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = rcc.conflict
 	if value, ok := rcc.mutation.Name(); ok {
 		_spec.SetField(runnercount.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -172,11 +176,264 @@ func (rcc *RunnerCountCreate) createSpec() (*RunnerCount, *sqlgraph.CreateSpec) 
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.RunnerCount.Create().
+//		SetName(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.RunnerCountUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (rcc *RunnerCountCreate) OnConflict(opts ...sql.ConflictOption) *RunnerCountUpsertOne {
+	rcc.conflict = opts
+	return &RunnerCountUpsertOne{
+		create: rcc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.RunnerCount.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (rcc *RunnerCountCreate) OnConflictColumns(columns ...string) *RunnerCountUpsertOne {
+	rcc.conflict = append(rcc.conflict, sql.ConflictColumns(columns...))
+	return &RunnerCountUpsertOne{
+		create: rcc,
+	}
+}
+
+type (
+	// RunnerCountUpsertOne is the builder for "upsert"-ing
+	//  one RunnerCount node.
+	RunnerCountUpsertOne struct {
+		create *RunnerCountCreate
+	}
+
+	// RunnerCountUpsert is the "OnConflict" setter.
+	RunnerCountUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetName sets the "name" field.
+func (u *RunnerCountUpsert) SetName(v string) *RunnerCountUpsert {
+	u.Set(runnercount.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *RunnerCountUpsert) UpdateName() *RunnerCountUpsert {
+	u.SetExcluded(runnercount.FieldName)
+	return u
+}
+
+// ClearName clears the value of the "name" field.
+func (u *RunnerCountUpsert) ClearName() *RunnerCountUpsert {
+	u.SetNull(runnercount.FieldName)
+	return u
+}
+
+// SetExecKind sets the "exec_kind" field.
+func (u *RunnerCountUpsert) SetExecKind(v string) *RunnerCountUpsert {
+	u.Set(runnercount.FieldExecKind, v)
+	return u
+}
+
+// UpdateExecKind sets the "exec_kind" field to the value that was provided on create.
+func (u *RunnerCountUpsert) UpdateExecKind() *RunnerCountUpsert {
+	u.SetExcluded(runnercount.FieldExecKind)
+	return u
+}
+
+// ClearExecKind clears the value of the "exec_kind" field.
+func (u *RunnerCountUpsert) ClearExecKind() *RunnerCountUpsert {
+	u.SetNull(runnercount.FieldExecKind)
+	return u
+}
+
+// SetActionsExecuted sets the "actions_executed" field.
+func (u *RunnerCountUpsert) SetActionsExecuted(v int64) *RunnerCountUpsert {
+	u.Set(runnercount.FieldActionsExecuted, v)
+	return u
+}
+
+// UpdateActionsExecuted sets the "actions_executed" field to the value that was provided on create.
+func (u *RunnerCountUpsert) UpdateActionsExecuted() *RunnerCountUpsert {
+	u.SetExcluded(runnercount.FieldActionsExecuted)
+	return u
+}
+
+// AddActionsExecuted adds v to the "actions_executed" field.
+func (u *RunnerCountUpsert) AddActionsExecuted(v int64) *RunnerCountUpsert {
+	u.Add(runnercount.FieldActionsExecuted, v)
+	return u
+}
+
+// ClearActionsExecuted clears the value of the "actions_executed" field.
+func (u *RunnerCountUpsert) ClearActionsExecuted() *RunnerCountUpsert {
+	u.SetNull(runnercount.FieldActionsExecuted)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.RunnerCount.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *RunnerCountUpsertOne) UpdateNewValues() *RunnerCountUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.RunnerCount.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *RunnerCountUpsertOne) Ignore() *RunnerCountUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *RunnerCountUpsertOne) DoNothing() *RunnerCountUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the RunnerCountCreate.OnConflict
+// documentation for more info.
+func (u *RunnerCountUpsertOne) Update(set func(*RunnerCountUpsert)) *RunnerCountUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&RunnerCountUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *RunnerCountUpsertOne) SetName(v string) *RunnerCountUpsertOne {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *RunnerCountUpsertOne) UpdateName() *RunnerCountUpsertOne {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *RunnerCountUpsertOne) ClearName() *RunnerCountUpsertOne {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetExecKind sets the "exec_kind" field.
+func (u *RunnerCountUpsertOne) SetExecKind(v string) *RunnerCountUpsertOne {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.SetExecKind(v)
+	})
+}
+
+// UpdateExecKind sets the "exec_kind" field to the value that was provided on create.
+func (u *RunnerCountUpsertOne) UpdateExecKind() *RunnerCountUpsertOne {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.UpdateExecKind()
+	})
+}
+
+// ClearExecKind clears the value of the "exec_kind" field.
+func (u *RunnerCountUpsertOne) ClearExecKind() *RunnerCountUpsertOne {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.ClearExecKind()
+	})
+}
+
+// SetActionsExecuted sets the "actions_executed" field.
+func (u *RunnerCountUpsertOne) SetActionsExecuted(v int64) *RunnerCountUpsertOne {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.SetActionsExecuted(v)
+	})
+}
+
+// AddActionsExecuted adds v to the "actions_executed" field.
+func (u *RunnerCountUpsertOne) AddActionsExecuted(v int64) *RunnerCountUpsertOne {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.AddActionsExecuted(v)
+	})
+}
+
+// UpdateActionsExecuted sets the "actions_executed" field to the value that was provided on create.
+func (u *RunnerCountUpsertOne) UpdateActionsExecuted() *RunnerCountUpsertOne {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.UpdateActionsExecuted()
+	})
+}
+
+// ClearActionsExecuted clears the value of the "actions_executed" field.
+func (u *RunnerCountUpsertOne) ClearActionsExecuted() *RunnerCountUpsertOne {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.ClearActionsExecuted()
+	})
+}
+
+// Exec executes the query.
+func (u *RunnerCountUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for RunnerCountCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *RunnerCountUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *RunnerCountUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *RunnerCountUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // RunnerCountCreateBulk is the builder for creating many RunnerCount entities in bulk.
 type RunnerCountCreateBulk struct {
 	config
 	err      error
 	builders []*RunnerCountCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the RunnerCount entities in the database.
@@ -205,6 +462,7 @@ func (rccb *RunnerCountCreateBulk) Save(ctx context.Context) ([]*RunnerCount, er
 					_, err = mutators[i+1].Mutate(root, rccb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = rccb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, rccb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -255,6 +513,180 @@ func (rccb *RunnerCountCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (rccb *RunnerCountCreateBulk) ExecX(ctx context.Context) {
 	if err := rccb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.RunnerCount.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.RunnerCountUpsert) {
+//			SetName(v+v).
+//		}).
+//		Exec(ctx)
+func (rccb *RunnerCountCreateBulk) OnConflict(opts ...sql.ConflictOption) *RunnerCountUpsertBulk {
+	rccb.conflict = opts
+	return &RunnerCountUpsertBulk{
+		create: rccb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.RunnerCount.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (rccb *RunnerCountCreateBulk) OnConflictColumns(columns ...string) *RunnerCountUpsertBulk {
+	rccb.conflict = append(rccb.conflict, sql.ConflictColumns(columns...))
+	return &RunnerCountUpsertBulk{
+		create: rccb,
+	}
+}
+
+// RunnerCountUpsertBulk is the builder for "upsert"-ing
+// a bulk of RunnerCount nodes.
+type RunnerCountUpsertBulk struct {
+	create *RunnerCountCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.RunnerCount.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *RunnerCountUpsertBulk) UpdateNewValues() *RunnerCountUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.RunnerCount.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *RunnerCountUpsertBulk) Ignore() *RunnerCountUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *RunnerCountUpsertBulk) DoNothing() *RunnerCountUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the RunnerCountCreateBulk.OnConflict
+// documentation for more info.
+func (u *RunnerCountUpsertBulk) Update(set func(*RunnerCountUpsert)) *RunnerCountUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&RunnerCountUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetName sets the "name" field.
+func (u *RunnerCountUpsertBulk) SetName(v string) *RunnerCountUpsertBulk {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *RunnerCountUpsertBulk) UpdateName() *RunnerCountUpsertBulk {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.UpdateName()
+	})
+}
+
+// ClearName clears the value of the "name" field.
+func (u *RunnerCountUpsertBulk) ClearName() *RunnerCountUpsertBulk {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.ClearName()
+	})
+}
+
+// SetExecKind sets the "exec_kind" field.
+func (u *RunnerCountUpsertBulk) SetExecKind(v string) *RunnerCountUpsertBulk {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.SetExecKind(v)
+	})
+}
+
+// UpdateExecKind sets the "exec_kind" field to the value that was provided on create.
+func (u *RunnerCountUpsertBulk) UpdateExecKind() *RunnerCountUpsertBulk {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.UpdateExecKind()
+	})
+}
+
+// ClearExecKind clears the value of the "exec_kind" field.
+func (u *RunnerCountUpsertBulk) ClearExecKind() *RunnerCountUpsertBulk {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.ClearExecKind()
+	})
+}
+
+// SetActionsExecuted sets the "actions_executed" field.
+func (u *RunnerCountUpsertBulk) SetActionsExecuted(v int64) *RunnerCountUpsertBulk {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.SetActionsExecuted(v)
+	})
+}
+
+// AddActionsExecuted adds v to the "actions_executed" field.
+func (u *RunnerCountUpsertBulk) AddActionsExecuted(v int64) *RunnerCountUpsertBulk {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.AddActionsExecuted(v)
+	})
+}
+
+// UpdateActionsExecuted sets the "actions_executed" field to the value that was provided on create.
+func (u *RunnerCountUpsertBulk) UpdateActionsExecuted() *RunnerCountUpsertBulk {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.UpdateActionsExecuted()
+	})
+}
+
+// ClearActionsExecuted clears the value of the "actions_executed" field.
+func (u *RunnerCountUpsertBulk) ClearActionsExecuted() *RunnerCountUpsertBulk {
+	return u.Update(func(s *RunnerCountUpsert) {
+		s.ClearActionsExecuted()
+	})
+}
+
+// Exec executes the query.
+func (u *RunnerCountUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the RunnerCountCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for RunnerCountCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *RunnerCountUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

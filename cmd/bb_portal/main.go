@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"log"
 	"log/slog"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"reflect"
 	"slices"
 	"time"
 
@@ -16,16 +16,22 @@ import (
 
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/interceptors#configuration)
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
+	"go.opentelemetry.io/otel"
+	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
+	"go.opentelemetry.io/otel/trace"
 
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/aereal/otelgqlgen"
 	"github.com/gorilla/mux"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/rs/cors"
+	"github.com/uptrace/opentelemetry-go-extra/otelsql"
+
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	go_grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -33,13 +39,15 @@ import (
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
-	"github.com/buildbarn/bb-portal/internal/api"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
+	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
+	"github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"
 	"github.com/buildbarn/bb-portal/internal/graphql"
 	"github.com/buildbarn/bb-portal/internal/graphql/auth"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	prometheusmetrics "github.com/buildbarn/bb-portal/pkg/prometheus_metrics"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
+	"github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/buildbarn/bb-storage/pkg/global"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	bb_http "github.com/buildbarn/bb-storage/pkg/http"
@@ -69,6 +77,10 @@ func main() {
 			return util.StatusWrap(err, "Failed to apply global configuration options")
 		}
 
+		tracerProvider := otel.GetTracerProvider()
+		if tracerProvider == nil || reflect.ValueOf(tracerProvider).IsNil() {
+			return status.Error(codes.Internal, "Otel tracer provider is nil")
+		}
 		router := mux.NewRouter()
 
 		err = NewGrpcWebSchedulerService(&configuration, siblingsGroup, dependenciesGroup, grpcClientFactory, router)
@@ -79,7 +91,7 @@ func main() {
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create gRPC-Web Browser service")
 		}
-		err = newBuildEventStreamService(&configuration, siblingsGroup, dependenciesGroup, grpcClientFactory, router)
+		err = newBuildEventStreamService(&configuration, siblingsGroup, dependenciesGroup, grpcClientFactory, router, tracerProvider)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create BES service")
 		}
@@ -127,6 +139,7 @@ func newBuildEventStreamService(
 	dependenciesGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
 	router *mux.Router,
+	tracerProvider trace.TracerProvider,
 ) error {
 	besConfiguration := configuration.BesServiceConfiguration
 	if besConfiguration == nil {
@@ -142,13 +155,17 @@ func newBuildEventStreamService(
 		if dbConfig.Sqlite.ConnectionString == "" {
 			return status.Error(codes.InvalidArgument, "Empty connection string for sqlite database")
 		}
-		dbClient, err = ent.Open(
+		db, err := otelsql.Open(
 			"sqlite3",
 			dbConfig.Sqlite.ConnectionString,
+			otelsql.WithTracerProvider(tracerProvider),
+			otelsql.WithAttributes(semconv.DBSystemNameSQLite),
 		)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to open sqlite database")
 		}
+		drv := entsql.OpenDB(dialect.SQLite, db)
+		dbClient = ent.NewClient(ent.Driver(drv))
 
 		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
 			return util.StatusWrap(err, "Failed to run schema migration")
@@ -157,7 +174,12 @@ func newBuildEventStreamService(
 		if dbConfig.Postgres.ConnectionString == "" {
 			return status.Error(codes.InvalidArgument, "Empty connection string for postgres database")
 		}
-		db, err := sql.Open("pgx", dbConfig.Postgres.ConnectionString)
+		db, err := otelsql.Open(
+			"pgx",
+			dbConfig.Postgres.ConnectionString,
+			otelsql.WithTracerProvider(tracerProvider),
+			otelsql.WithAttributes(semconv.DBSystemNamePostgreSQL),
+		)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to open postgres database")
 		}
@@ -173,6 +195,24 @@ func newBuildEventStreamService(
 		return util.StatusWrap(err, "Failed to add database auth interceptors")
 	}
 
+	// Configure the database cleanup service.
+	cleanupConfiguration := besConfiguration.DatabaseCleanupConfiguration
+	if cleanupConfiguration == nil {
+		return status.Error(codes.InvalidArgument, "No databaseCleanupConfiguration configured for BuildEventStreamService")
+	}
+
+	databaseCleanerService, err := dbcleanupservice.NewDbCleanupService(
+		dbClient,
+		clock.SystemClock,
+		cleanupConfiguration,
+		tracerProvider,
+	)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to create DatabaseCleanupService")
+	}
+
+	databaseCleanerService.StartDbCleanupService(context.Background(), dependenciesGroup)
+
 	blobArchiveFolder := besConfiguration.BlobArchiveFolder
 	if blobArchiveFolder == "" {
 		return status.Error(codes.NotFound, "No blobArchiveFolder configured for besServiceConfiguration")
@@ -183,30 +223,37 @@ func newBuildEventStreamService(
 
 	srv := handler.NewDefaultServer(graphql.NewSchema(dbClient))
 	srv.Use(entgql.Transactioner{TxOpener: dbClient})
+	srv.Use(otelgqlgen.New(otelgqlgen.WithTracerProvider(tracerProvider)))
 
 	router.PathPrefix("/graphql").Handler(srv)
 	if besConfiguration.EnableGraphqlPlayground {
 		router.Handle("/graphiql", playground.Handler("GraphQL Playground", "/graphql"))
 	}
+
+	// Handle BEP file uploads over HTTP.
 	if besConfiguration.EnableBepFileUpload {
-		router.Handle("/api/v1/bep/upload", api.NewBEPUploadHandler(dbClient, blobArchiver)).Methods("POST")
+		bepUploader, err := bepuploader.NewBepUploader(dbClient, blobArchiver, configuration, dependenciesGroup, grpcClientFactory, tracerProvider)
+		if err != nil {
+			return util.StatusWrap(err, "Failed to create BEP file upload handler")
+		}
+		router.Path("/api/v1/bep/upload").Methods("POST").Handler(bepUploader)
 	}
 
-	builcEventServer, err := bes.NewBuildEventServer(dbClient, blobArchiver, configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
+	// Handle the build event stream gRPC strem.
+	buildEventServer, err := bes.NewBuildEventServer(dbClient, blobArchiver, configuration, dependenciesGroup, grpcClientFactory, tracerProvider)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create BuildEventServer")
 	}
 	if err := bb_grpc.NewServersFromConfigurationAndServe(
 		besConfiguration.GrpcServers,
 		func(s go_grpc.ServiceRegistrar) {
-			build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), builcEventServer)
+			build.RegisterPublishBuildEventServer(s.(*go_grpc.Server), buildEventServer)
 		},
 		siblingsGroup,
 		grpcClientFactory,
 	); err != nil {
 		return util.StatusWrap(err, "gRPC server failure")
 	}
-
 	return nil
 }
 

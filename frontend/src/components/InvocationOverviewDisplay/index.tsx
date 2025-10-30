@@ -6,7 +6,6 @@ import BuildStepResultTag, { BuildStepResultEnum } from '../BuildStepResultTag';
 import PortalDuration from '../PortalDuration';
 
 interface Props {
-    targets: number,
     command: string,
     cpu: string,
     user: string,
@@ -19,13 +18,11 @@ interface Props {
     hostname: string
     isCiWorker: boolean,
     stepLabel: string,
-    numFetches: number
+    numFetches: number,
+    bazelVersion: string,
 }
 
-type OverviewProps = Props & IntrinsicAttributes & CardProps & RefAttributes<HTMLDivElement>;
-
-export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({
-    targets,
+export const InvocationOverviewDisplay: React.FC<Props> = ({
     command,
     cpu,
     user,
@@ -38,10 +35,9 @@ export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({
     hostname,
     isCiWorker,
     stepLabel,
-    numFetches, ...props }) => {
-
-        const stepLabelExists = stepLabel != "" && stepLabel != null
-
+    numFetches,
+    bazelVersion,
+}) => {
     return (
         <Space>
             <Descriptions column={1} bordered >
@@ -51,7 +47,7 @@ export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({
                 <Descriptions.Item label="Invocation Id">
                     {invocationId}
                 </Descriptions.Item>
-                { instanceName != undefined && instanceName !== "" &&
+                {instanceName != undefined && instanceName !== "" &&
                     <Descriptions.Item label="Instance name">
                         {instanceName}
                     </Descriptions.Item>
@@ -59,31 +55,46 @@ export const InvocationOverviewDisplay: React.FC<OverviewProps> = ({
                 <Descriptions.Item label="Duration">
                     <PortalDuration key="duration" from={startedAt} to={endedAt} includeIcon includePopover />
                 </Descriptions.Item>
-                <Descriptions.Item label="User">
-                    {user}
-                </Descriptions.Item>
-                <Descriptions.Item label="Command">
-                    <code>
-                        {command}
-                    </code>
-                </Descriptions.Item>
-                <Descriptions.Item label="CPU">
-                    {cpu}
-                </Descriptions.Item>
-                <Descriptions.Item label="Configuration">
-                    {configuration}
-                </Descriptions.Item>
-                <Descriptions.Item label="Hostname">
-                    {hostname}
-                </Descriptions.Item>
-                <Descriptions.Item label="Number of Fetches">
-                    {numFetches}
-                </Descriptions.Item>
-                { isCiWorker &&
-                 <Descriptions.Item label="CI Worker">True</Descriptions.Item>
+                {user != "" &&
+                    <Descriptions.Item label="User">
+                        {user}
+                    </Descriptions.Item>
                 }
-                { stepLabelExists &&
+                {command != "" &&
+                    <Descriptions.Item label="Command">
+                        <code>
+                            {command}
+                        </code>
+                    </Descriptions.Item>
+                }
+                {cpu != "" &&
+                    <Descriptions.Item label="CPU">
+                        {cpu}
+                    </Descriptions.Item>
+                }
+                {configuration != "" &&
+                    <Descriptions.Item label="Configuration">
+                        {configuration}
+                    </Descriptions.Item>
+                }
+                {hostname != "" &&
+                    <Descriptions.Item label="Hostname">
+                        {hostname}
+                    </Descriptions.Item>
+                }
+                {numFetches != 0 &&
+                    <Descriptions.Item label="Number of Fetches">
+                        {numFetches}
+                    </Descriptions.Item>
+                }
+                {isCiWorker &&
+                    <Descriptions.Item label="CI Worker">True</Descriptions.Item>
+                }
+                {stepLabel != "" &&
                     <Descriptions.Item label="CI Step Label">{stepLabel}</Descriptions.Item>
+                }
+                                {bazelVersion != "" &&
+                    <Descriptions.Item label="Bazel version">{bazelVersion}</Descriptions.Item>
                 }
             </Descriptions>
         </Space>

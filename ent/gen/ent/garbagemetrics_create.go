@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
@@ -17,6 +19,7 @@ type GarbageMetricsCreate struct {
 	config
 	mutation *GarbageMetricsMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetType sets the "type" field.
@@ -126,6 +129,7 @@ func (gmc *GarbageMetricsCreate) createSpec() (*GarbageMetrics, *sqlgraph.Create
 		_node = &GarbageMetrics{config: gmc.config}
 		_spec = sqlgraph.NewCreateSpec(garbagemetrics.Table, sqlgraph.NewFieldSpec(garbagemetrics.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = gmc.conflict
 	if value, ok := gmc.mutation.GetType(); ok {
 		_spec.SetField(garbagemetrics.FieldType, field.TypeString, value)
 		_node.Type = value
@@ -154,11 +158,225 @@ func (gmc *GarbageMetricsCreate) createSpec() (*GarbageMetrics, *sqlgraph.Create
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.GarbageMetrics.Create().
+//		SetType(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.GarbageMetricsUpsert) {
+//			SetType(v+v).
+//		}).
+//		Exec(ctx)
+func (gmc *GarbageMetricsCreate) OnConflict(opts ...sql.ConflictOption) *GarbageMetricsUpsertOne {
+	gmc.conflict = opts
+	return &GarbageMetricsUpsertOne{
+		create: gmc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.GarbageMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (gmc *GarbageMetricsCreate) OnConflictColumns(columns ...string) *GarbageMetricsUpsertOne {
+	gmc.conflict = append(gmc.conflict, sql.ConflictColumns(columns...))
+	return &GarbageMetricsUpsertOne{
+		create: gmc,
+	}
+}
+
+type (
+	// GarbageMetricsUpsertOne is the builder for "upsert"-ing
+	//  one GarbageMetrics node.
+	GarbageMetricsUpsertOne struct {
+		create *GarbageMetricsCreate
+	}
+
+	// GarbageMetricsUpsert is the "OnConflict" setter.
+	GarbageMetricsUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetType sets the "type" field.
+func (u *GarbageMetricsUpsert) SetType(v string) *GarbageMetricsUpsert {
+	u.Set(garbagemetrics.FieldType, v)
+	return u
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *GarbageMetricsUpsert) UpdateType() *GarbageMetricsUpsert {
+	u.SetExcluded(garbagemetrics.FieldType)
+	return u
+}
+
+// ClearType clears the value of the "type" field.
+func (u *GarbageMetricsUpsert) ClearType() *GarbageMetricsUpsert {
+	u.SetNull(garbagemetrics.FieldType)
+	return u
+}
+
+// SetGarbageCollected sets the "garbage_collected" field.
+func (u *GarbageMetricsUpsert) SetGarbageCollected(v int64) *GarbageMetricsUpsert {
+	u.Set(garbagemetrics.FieldGarbageCollected, v)
+	return u
+}
+
+// UpdateGarbageCollected sets the "garbage_collected" field to the value that was provided on create.
+func (u *GarbageMetricsUpsert) UpdateGarbageCollected() *GarbageMetricsUpsert {
+	u.SetExcluded(garbagemetrics.FieldGarbageCollected)
+	return u
+}
+
+// AddGarbageCollected adds v to the "garbage_collected" field.
+func (u *GarbageMetricsUpsert) AddGarbageCollected(v int64) *GarbageMetricsUpsert {
+	u.Add(garbagemetrics.FieldGarbageCollected, v)
+	return u
+}
+
+// ClearGarbageCollected clears the value of the "garbage_collected" field.
+func (u *GarbageMetricsUpsert) ClearGarbageCollected() *GarbageMetricsUpsert {
+	u.SetNull(garbagemetrics.FieldGarbageCollected)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.GarbageMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *GarbageMetricsUpsertOne) UpdateNewValues() *GarbageMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.GarbageMetrics.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *GarbageMetricsUpsertOne) Ignore() *GarbageMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *GarbageMetricsUpsertOne) DoNothing() *GarbageMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the GarbageMetricsCreate.OnConflict
+// documentation for more info.
+func (u *GarbageMetricsUpsertOne) Update(set func(*GarbageMetricsUpsert)) *GarbageMetricsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&GarbageMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetType sets the "type" field.
+func (u *GarbageMetricsUpsertOne) SetType(v string) *GarbageMetricsUpsertOne {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.SetType(v)
+	})
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *GarbageMetricsUpsertOne) UpdateType() *GarbageMetricsUpsertOne {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.UpdateType()
+	})
+}
+
+// ClearType clears the value of the "type" field.
+func (u *GarbageMetricsUpsertOne) ClearType() *GarbageMetricsUpsertOne {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.ClearType()
+	})
+}
+
+// SetGarbageCollected sets the "garbage_collected" field.
+func (u *GarbageMetricsUpsertOne) SetGarbageCollected(v int64) *GarbageMetricsUpsertOne {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.SetGarbageCollected(v)
+	})
+}
+
+// AddGarbageCollected adds v to the "garbage_collected" field.
+func (u *GarbageMetricsUpsertOne) AddGarbageCollected(v int64) *GarbageMetricsUpsertOne {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.AddGarbageCollected(v)
+	})
+}
+
+// UpdateGarbageCollected sets the "garbage_collected" field to the value that was provided on create.
+func (u *GarbageMetricsUpsertOne) UpdateGarbageCollected() *GarbageMetricsUpsertOne {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.UpdateGarbageCollected()
+	})
+}
+
+// ClearGarbageCollected clears the value of the "garbage_collected" field.
+func (u *GarbageMetricsUpsertOne) ClearGarbageCollected() *GarbageMetricsUpsertOne {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.ClearGarbageCollected()
+	})
+}
+
+// Exec executes the query.
+func (u *GarbageMetricsUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for GarbageMetricsCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *GarbageMetricsUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *GarbageMetricsUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *GarbageMetricsUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // GarbageMetricsCreateBulk is the builder for creating many GarbageMetrics entities in bulk.
 type GarbageMetricsCreateBulk struct {
 	config
 	err      error
 	builders []*GarbageMetricsCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the GarbageMetrics entities in the database.
@@ -187,6 +405,7 @@ func (gmcb *GarbageMetricsCreateBulk) Save(ctx context.Context) ([]*GarbageMetri
 					_, err = mutators[i+1].Mutate(root, gmcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = gmcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, gmcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -237,6 +456,159 @@ func (gmcb *GarbageMetricsCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (gmcb *GarbageMetricsCreateBulk) ExecX(ctx context.Context) {
 	if err := gmcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.GarbageMetrics.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.GarbageMetricsUpsert) {
+//			SetType(v+v).
+//		}).
+//		Exec(ctx)
+func (gmcb *GarbageMetricsCreateBulk) OnConflict(opts ...sql.ConflictOption) *GarbageMetricsUpsertBulk {
+	gmcb.conflict = opts
+	return &GarbageMetricsUpsertBulk{
+		create: gmcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.GarbageMetrics.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (gmcb *GarbageMetricsCreateBulk) OnConflictColumns(columns ...string) *GarbageMetricsUpsertBulk {
+	gmcb.conflict = append(gmcb.conflict, sql.ConflictColumns(columns...))
+	return &GarbageMetricsUpsertBulk{
+		create: gmcb,
+	}
+}
+
+// GarbageMetricsUpsertBulk is the builder for "upsert"-ing
+// a bulk of GarbageMetrics nodes.
+type GarbageMetricsUpsertBulk struct {
+	create *GarbageMetricsCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.GarbageMetrics.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *GarbageMetricsUpsertBulk) UpdateNewValues() *GarbageMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.GarbageMetrics.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *GarbageMetricsUpsertBulk) Ignore() *GarbageMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *GarbageMetricsUpsertBulk) DoNothing() *GarbageMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the GarbageMetricsCreateBulk.OnConflict
+// documentation for more info.
+func (u *GarbageMetricsUpsertBulk) Update(set func(*GarbageMetricsUpsert)) *GarbageMetricsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&GarbageMetricsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetType sets the "type" field.
+func (u *GarbageMetricsUpsertBulk) SetType(v string) *GarbageMetricsUpsertBulk {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.SetType(v)
+	})
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *GarbageMetricsUpsertBulk) UpdateType() *GarbageMetricsUpsertBulk {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.UpdateType()
+	})
+}
+
+// ClearType clears the value of the "type" field.
+func (u *GarbageMetricsUpsertBulk) ClearType() *GarbageMetricsUpsertBulk {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.ClearType()
+	})
+}
+
+// SetGarbageCollected sets the "garbage_collected" field.
+func (u *GarbageMetricsUpsertBulk) SetGarbageCollected(v int64) *GarbageMetricsUpsertBulk {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.SetGarbageCollected(v)
+	})
+}
+
+// AddGarbageCollected adds v to the "garbage_collected" field.
+func (u *GarbageMetricsUpsertBulk) AddGarbageCollected(v int64) *GarbageMetricsUpsertBulk {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.AddGarbageCollected(v)
+	})
+}
+
+// UpdateGarbageCollected sets the "garbage_collected" field to the value that was provided on create.
+func (u *GarbageMetricsUpsertBulk) UpdateGarbageCollected() *GarbageMetricsUpsertBulk {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.UpdateGarbageCollected()
+	})
+}
+
+// ClearGarbageCollected clears the value of the "garbage_collected" field.
+func (u *GarbageMetricsUpsertBulk) ClearGarbageCollected() *GarbageMetricsUpsertBulk {
+	return u.Update(func(s *GarbageMetricsUpsert) {
+		s.ClearGarbageCollected()
+	})
+}
+
+// Exec executes the query.
+func (u *GarbageMetricsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the GarbageMetricsCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for GarbageMetricsCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *GarbageMetricsUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
