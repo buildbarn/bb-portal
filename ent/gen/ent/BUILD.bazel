@@ -3,6 +3,11 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "ent",
     srcs = [
+        "action.go",
+        "action_create.go",
+        "action_delete.go",
+        "action_query.go",
+        "action_update.go",
         "actioncachestatistics.go",
         "actioncachestatistics_create.go",
         "actioncachestatistics_delete.go",
@@ -241,6 +246,7 @@ go_library(
     importpath = "github.com/buildbarn/bb-portal/ent/gen/ent",
     visibility = ["//visibility:public"],
     deps = [
+        "//ent/gen/ent/action",
         "//ent/gen/ent/actioncachestatistics",
         "//ent/gen/ent/actiondata",
         "//ent/gen/ent/actionsummary",

@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
@@ -681,6 +682,21 @@ func (biu *BazelInvocationUpdate) AddConfigurations(c ...*Configuration) *BazelI
 	return biu.AddConfigurationIDs(ids...)
 }
 
+// AddActionIDs adds the "actions" edge to the Action entity by IDs.
+func (biu *BazelInvocationUpdate) AddActionIDs(ids ...int64) *BazelInvocationUpdate {
+	biu.mutation.AddActionIDs(ids...)
+	return biu
+}
+
+// AddActions adds the "actions" edges to the Action entity.
+func (biu *BazelInvocationUpdate) AddActions(a ...*Action) *BazelInvocationUpdate {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return biu.AddActionIDs(ids...)
+}
+
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
 func (biu *BazelInvocationUpdate) AddProblemIDs(ids ...int64) *BazelInvocationUpdate {
 	biu.mutation.AddProblemIDs(ids...)
@@ -893,6 +909,27 @@ func (biu *BazelInvocationUpdate) RemoveConfigurations(c ...*Configuration) *Baz
 		ids[i] = c[i].ID
 	}
 	return biu.RemoveConfigurationIDs(ids...)
+}
+
+// ClearActions clears all "actions" edges to the Action entity.
+func (biu *BazelInvocationUpdate) ClearActions() *BazelInvocationUpdate {
+	biu.mutation.ClearActions()
+	return biu
+}
+
+// RemoveActionIDs removes the "actions" edge to Action entities by IDs.
+func (biu *BazelInvocationUpdate) RemoveActionIDs(ids ...int64) *BazelInvocationUpdate {
+	biu.mutation.RemoveActionIDs(ids...)
+	return biu
+}
+
+// RemoveActions removes "actions" edges to Action entities.
+func (biu *BazelInvocationUpdate) RemoveActions(a ...*Action) *BazelInvocationUpdate {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return biu.RemoveActionIDs(ids...)
 }
 
 // ClearProblems clears all "problems" edges to the BazelInvocationProblem entity.
@@ -1485,6 +1522,51 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biu.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ActionsTable,
+			Columns: []string{bazelinvocation.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.RemovedActionsIDs(); len(nodes) > 0 && !biu.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ActionsTable,
+			Columns: []string{bazelinvocation.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.ActionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ActionsTable,
+			Columns: []string{bazelinvocation.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -2523,6 +2605,21 @@ func (biuo *BazelInvocationUpdateOne) AddConfigurations(c ...*Configuration) *Ba
 	return biuo.AddConfigurationIDs(ids...)
 }
 
+// AddActionIDs adds the "actions" edge to the Action entity by IDs.
+func (biuo *BazelInvocationUpdateOne) AddActionIDs(ids ...int64) *BazelInvocationUpdateOne {
+	biuo.mutation.AddActionIDs(ids...)
+	return biuo
+}
+
+// AddActions adds the "actions" edges to the Action entity.
+func (biuo *BazelInvocationUpdateOne) AddActions(a ...*Action) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return biuo.AddActionIDs(ids...)
+}
+
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
 func (biuo *BazelInvocationUpdateOne) AddProblemIDs(ids ...int64) *BazelInvocationUpdateOne {
 	biuo.mutation.AddProblemIDs(ids...)
@@ -2735,6 +2832,27 @@ func (biuo *BazelInvocationUpdateOne) RemoveConfigurations(c ...*Configuration) 
 		ids[i] = c[i].ID
 	}
 	return biuo.RemoveConfigurationIDs(ids...)
+}
+
+// ClearActions clears all "actions" edges to the Action entity.
+func (biuo *BazelInvocationUpdateOne) ClearActions() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearActions()
+	return biuo
+}
+
+// RemoveActionIDs removes the "actions" edge to Action entities by IDs.
+func (biuo *BazelInvocationUpdateOne) RemoveActionIDs(ids ...int64) *BazelInvocationUpdateOne {
+	biuo.mutation.RemoveActionIDs(ids...)
+	return biuo
+}
+
+// RemoveActions removes "actions" edges to Action entities.
+func (biuo *BazelInvocationUpdateOne) RemoveActions(a ...*Action) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return biuo.RemoveActionIDs(ids...)
 }
 
 // ClearProblems clears all "problems" edges to the BazelInvocationProblem entity.
@@ -3357,6 +3475,51 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biuo.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ActionsTable,
+			Columns: []string{bazelinvocation.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.RemovedActionsIDs(); len(nodes) > 0 && !biuo.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ActionsTable,
+			Columns: []string{bazelinvocation.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.ActionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ActionsTable,
+			Columns: []string{bazelinvocation.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -70,7 +70,7 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({
                     </Descriptions.Item>
                 }
                 <Descriptions.Item label="Duration">
-                    <PortalDuration key="duration" from={startedAt} to={endedAt} includeIcon includePopover />
+                    <PortalDuration key="duration" from={startedAt} to={endedAt} includeIcon includePopover formatConfig={{smallestUnit: "s"}}/>
                 </Descriptions.Item>
                 {command !== "" &&
                     <Descriptions.Item label="Command">

@@ -114,6 +114,7 @@ export const getColumns = (
           to={record.endedAt}
           includeIcon
           includePopover
+          formatConfig={{smallestUnit: "s"}}
         />
       ),
     },

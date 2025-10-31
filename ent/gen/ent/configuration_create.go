@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -121,6 +122,21 @@ func (cc *ConfigurationCreate) AddInvocationTargets(i ...*InvocationTarget) *Con
 		ids[j] = i[j].ID
 	}
 	return cc.AddInvocationTargetIDs(ids...)
+}
+
+// AddActionIDs adds the "actions" edge to the Action entity by IDs.
+func (cc *ConfigurationCreate) AddActionIDs(ids ...int64) *ConfigurationCreate {
+	cc.mutation.AddActionIDs(ids...)
+	return cc
+}
+
+// AddActions adds the "actions" edges to the Action entity.
+func (cc *ConfigurationCreate) AddActions(a ...*Action) *ConfigurationCreate {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return cc.AddActionIDs(ids...)
 }
 
 // Mutation returns the ConfigurationMutation object of the builder.
@@ -249,6 +265,22 @@ func (cc *ConfigurationCreate) createSpec() (*Configuration, *sqlgraph.CreateSpe
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.ActionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   configuration.ActionsTable,
+			Columns: []string{configuration.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

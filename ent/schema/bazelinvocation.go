@@ -122,6 +122,11 @@ func (BazelInvocation) Edges() []ent.Edge {
 				entsql.OnDelete(entsql.Cascade),
 			),
 
+		edge.To("actions", Action.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
 		// Edge to any probles detected.
 		// NOTE: Uses custom resolver / types.
 		edge.To("problems", BazelInvocationProblem.Type).

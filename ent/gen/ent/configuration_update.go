@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -136,6 +137,21 @@ func (cu *ConfigurationUpdate) AddInvocationTargets(i ...*InvocationTarget) *Con
 	return cu.AddInvocationTargetIDs(ids...)
 }
 
+// AddActionIDs adds the "actions" edge to the Action entity by IDs.
+func (cu *ConfigurationUpdate) AddActionIDs(ids ...int64) *ConfigurationUpdate {
+	cu.mutation.AddActionIDs(ids...)
+	return cu
+}
+
+// AddActions adds the "actions" edges to the Action entity.
+func (cu *ConfigurationUpdate) AddActions(a ...*Action) *ConfigurationUpdate {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return cu.AddActionIDs(ids...)
+}
+
 // Mutation returns the ConfigurationMutation object of the builder.
 func (cu *ConfigurationUpdate) Mutation() *ConfigurationMutation {
 	return cu.mutation
@@ -160,6 +176,27 @@ func (cu *ConfigurationUpdate) RemoveInvocationTargets(i ...*InvocationTarget) *
 		ids[j] = i[j].ID
 	}
 	return cu.RemoveInvocationTargetIDs(ids...)
+}
+
+// ClearActions clears all "actions" edges to the Action entity.
+func (cu *ConfigurationUpdate) ClearActions() *ConfigurationUpdate {
+	cu.mutation.ClearActions()
+	return cu
+}
+
+// RemoveActionIDs removes the "actions" edge to Action entities by IDs.
+func (cu *ConfigurationUpdate) RemoveActionIDs(ids ...int64) *ConfigurationUpdate {
+	cu.mutation.RemoveActionIDs(ids...)
+	return cu
+}
+
+// RemoveActions removes "actions" edges to Action entities.
+func (cu *ConfigurationUpdate) RemoveActions(a ...*Action) *ConfigurationUpdate {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return cu.RemoveActionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -283,6 +320,51 @@ func (cu *ConfigurationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cu.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   configuration.ActionsTable,
+			Columns: []string{configuration.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedActionsIDs(); len(nodes) > 0 && !cu.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   configuration.ActionsTable,
+			Columns: []string{configuration.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.ActionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   configuration.ActionsTable,
+			Columns: []string{configuration.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -419,6 +501,21 @@ func (cuo *ConfigurationUpdateOne) AddInvocationTargets(i ...*InvocationTarget) 
 	return cuo.AddInvocationTargetIDs(ids...)
 }
 
+// AddActionIDs adds the "actions" edge to the Action entity by IDs.
+func (cuo *ConfigurationUpdateOne) AddActionIDs(ids ...int64) *ConfigurationUpdateOne {
+	cuo.mutation.AddActionIDs(ids...)
+	return cuo
+}
+
+// AddActions adds the "actions" edges to the Action entity.
+func (cuo *ConfigurationUpdateOne) AddActions(a ...*Action) *ConfigurationUpdateOne {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return cuo.AddActionIDs(ids...)
+}
+
 // Mutation returns the ConfigurationMutation object of the builder.
 func (cuo *ConfigurationUpdateOne) Mutation() *ConfigurationMutation {
 	return cuo.mutation
@@ -443,6 +540,27 @@ func (cuo *ConfigurationUpdateOne) RemoveInvocationTargets(i ...*InvocationTarge
 		ids[j] = i[j].ID
 	}
 	return cuo.RemoveInvocationTargetIDs(ids...)
+}
+
+// ClearActions clears all "actions" edges to the Action entity.
+func (cuo *ConfigurationUpdateOne) ClearActions() *ConfigurationUpdateOne {
+	cuo.mutation.ClearActions()
+	return cuo
+}
+
+// RemoveActionIDs removes the "actions" edge to Action entities by IDs.
+func (cuo *ConfigurationUpdateOne) RemoveActionIDs(ids ...int64) *ConfigurationUpdateOne {
+	cuo.mutation.RemoveActionIDs(ids...)
+	return cuo
+}
+
+// RemoveActions removes "actions" edges to Action entities.
+func (cuo *ConfigurationUpdateOne) RemoveActions(a ...*Action) *ConfigurationUpdateOne {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return cuo.RemoveActionIDs(ids...)
 }
 
 // Where appends a list predicates to the ConfigurationUpdate builder.
@@ -596,6 +714,51 @@ func (cuo *ConfigurationUpdateOne) sqlSave(ctx context.Context) (_node *Configur
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   configuration.ActionsTable,
+			Columns: []string{configuration.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedActionsIDs(); len(nodes) > 0 && !cuo.mutation.ActionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   configuration.ActionsTable,
+			Columns: []string{configuration.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.ActionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   configuration.ActionsTable,
+			Columns: []string{configuration.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

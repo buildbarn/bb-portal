@@ -30,6 +30,8 @@ const (
 	EdgeBazelInvocation = "bazel_invocation"
 	// EdgeInvocationTargets holds the string denoting the invocation_targets edge name in mutations.
 	EdgeInvocationTargets = "invocation_targets"
+	// EdgeActions holds the string denoting the actions edge name in mutations.
+	EdgeActions = "actions"
 	// Table holds the table name of the configuration in the database.
 	Table = "configurations"
 	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
@@ -46,6 +48,13 @@ const (
 	InvocationTargetsInverseTable = "invocation_targets"
 	// InvocationTargetsColumn is the table column denoting the invocation_targets relation/edge.
 	InvocationTargetsColumn = "invocation_target_configuration"
+	// ActionsTable is the table that holds the actions relation/edge.
+	ActionsTable = "actions"
+	// ActionsInverseTable is the table name for the Action entity.
+	// It exists in this package in order to avoid circular dependency with the "action" package.
+	ActionsInverseTable = "actions"
+	// ActionsColumn is the table column denoting the actions relation/edge.
+	ActionsColumn = "configuration_id"
 )
 
 // Columns holds all SQL columns for configuration fields.
@@ -128,6 +137,20 @@ func ByInvocationTargets(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption
 		sqlgraph.OrderByNeighborTerms(s, newInvocationTargetsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByActionsCount orders the results by actions count.
+func ByActionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newActionsStep(), opts...)
+	}
+}
+
+// ByActions orders the results by actions terms.
+func ByActions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newActionsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newBazelInvocationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -140,5 +163,12 @@ func newInvocationTargetsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(InvocationTargetsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, true, InvocationTargetsTable, InvocationTargetsColumn),
+	)
+}
+func newActionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ActionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, ActionsTable, ActionsColumn),
 	)
 }

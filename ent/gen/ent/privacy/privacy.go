@@ -111,6 +111,30 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
+// The ActionQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type ActionQueryRuleFunc func(context.Context, *ent.ActionQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f ActionQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.ActionQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.ActionQuery", q)
+}
+
+// The ActionMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type ActionMutationRuleFunc func(context.Context, *ent.ActionMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f ActionMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.ActionMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.ActionMutation", m)
+}
+
 // The ActionCacheStatisticsQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type ActionCacheStatisticsQueryRuleFunc func(context.Context, *ent.ActionCacheStatisticsQuery) error
@@ -1202,6 +1226,8 @@ var _ QueryMutationRule = FilterFunc(nil)
 
 func queryFilter(q ent.Query) (Filter, error) {
 	switch q := q.(type) {
+	case *ent.ActionQuery:
+		return q.Filter(), nil
 	case *ent.ActionCacheStatisticsQuery:
 		return q.Filter(), nil
 	case *ent.ActionDataQuery:
@@ -1297,6 +1323,8 @@ func queryFilter(q ent.Query) (Filter, error) {
 
 func mutationFilter(m ent.Mutation) (Filter, error) {
 	switch m := m.(type) {
+	case *ent.ActionMutation:
+		return m.Filter(), nil
 	case *ent.ActionCacheStatisticsMutation:
 		return m.Filter(), nil
 	case *ent.ActionDataMutation:

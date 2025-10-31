@@ -1,5 +1,49 @@
 {
   "bazelInvocation": {
+    "actions": [
+      {
+        "commandLine": [
+          "bazel-out/darwin_arm64-opt-exec-ST-13d3ddad9198/bin/external/aspect_rules_ts~~ext~npm_typescript/tsc.sh",
+          "--skipLibCheck",
+          "--project",
+          "next.js/tsconfig.json",
+          "--outDir",
+          "next.js/pages",
+          "--rootDir",
+          "next.js/pages",
+          "--declarationDir",
+          "next.js/pages"
+        ],
+        "configuration": {
+          "configurationID": "c2963a46add6c3e91df2df593bc8bed9f041306a424d0aae347094deb8733654",
+          "cpu": "darwin_arm64",
+          "id": "Q29uZmlndXJhdGlvbjo0",
+          "makeVariables": {
+            "BINDIR": "bazel-out/darwin_arm64-fastbuild/bin",
+            "COMPILATION_MODE": "fastbuild",
+            "GENDIR": "bazel-out/darwin_arm64-fastbuild/bin",
+            "TARGET_CPU": "darwin_arm64"
+          },
+          "mnemonic": "darwin_arm64-fastbuild",
+          "platformName": "darwin_arm64"
+        },
+        "endTime": null,
+        "exitCode": 1,
+        "failureCode": "NON_ZERO_EXIT",
+        "failureMessage": "tsc.sh failed: error executing TsProject command (from target //next.js/pages:pages) bazel-out/darwin_arm64-opt-exec-ST-13d3ddad9198/bin/external/aspect_rules_ts~~ext~npm_typescript/tsc.sh --skipLibCheck --project next.js/tsconfig.json --outDir next.js/pages --rootDir next.js/pages ... (remaining 2 arguments skipped)\n\nUse --sandbox_debug to see verbose messages from the sandbox and retain the sandbox build root for debugging",
+        "id": "QWN0aW9uOjE=",
+        "label": "//next.js/pages:pages",
+        "startTime": null,
+        "stderrHash": "",
+        "stderrHashFunction": "",
+        "stderrSizeBytes": 0,
+        "stdoutHash": "actions",
+        "stdoutHashFunction": "sha256",
+        "stdoutSizeBytes": 0,
+        "success": false,
+        "type": "TsProject"
+      }
+    ],
     "authenticatedUser": null,
     "bazelCommand": {
       "cmdLine": [

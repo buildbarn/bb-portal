@@ -159,6 +159,32 @@ fragment BazelInvocationInfo on BazelInvocation {
     id
     buildUUID
   }
+  actions {
+    id
+    label
+    type
+    success
+    exitCode
+    commandLine
+    startTime
+    endTime
+    failureCode
+    failureMessage
+    stdoutHash
+    stdoutSizeBytes
+    stdoutHashFunction
+    stderrHash
+    stderrSizeBytes
+    stderrHashFunction
+    configuration {
+      id
+      configurationID
+      mnemonic
+      platformName
+      cpu
+      makeVariables
+    }
+  }
   profile {
     id
     name

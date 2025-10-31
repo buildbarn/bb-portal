@@ -13,6 +13,27 @@ import (
 	"github.com/sqlc-dev/pqtype"
 )
 
+type Action struct {
+	ID                 int64
+	Label              string
+	Type               sql.NullString
+	Success            sql.NullBool
+	ExitCode           sql.NullInt32
+	CommandLine        pqtype.NullRawMessage
+	StartTime          sql.NullTime
+	EndTime            sql.NullTime
+	FailureCode        sql.NullString
+	FailureMessage     sql.NullString
+	StdoutHash         sql.NullString
+	StdoutSizeBytes    sql.NullInt64
+	StdoutHashFunction sql.NullString
+	StderrHash         sql.NullString
+	StderrSizeBytes    sql.NullInt64
+	StderrHashFunction sql.NullString
+	ConfigurationID    int64
+	BazelInvocationID  int64
+}
+
 type ActionCacheStatistic struct {
 	ID                                 int64
 	SizeInBytes                        sql.NullInt64
