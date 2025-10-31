@@ -20,6 +20,7 @@ import {
   BranchesOutlined,
   BuildOutlined,
   CodeOutlined,
+  DatabaseOutlined,
   DeploymentUnitOutlined,
   ExclamationCircleOutlined,
   ExperimentOutlined,
@@ -38,11 +39,13 @@ import ProfileDropdown from "../ProfileDropdown";
 import { InvocationTargetsTab } from "../InvocationTargets/InvocationTargetsTab";
 import UserStatusIndicator from "../UserStatusIndicator";
 import { InvocationResultTag } from "../InvocationResultTag";
+import { ActionsTab } from "../ActionsTab";
 
 const DEFAULT_TAB_KEY = "BazelInvocationTabs-Overview";
 
 const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps["items"] => {
   const {
+    actions,
     invocationID,
     instanceName,
     bazelCommand,
@@ -62,13 +65,14 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     runnerMetrics.push(item)
   );
 
-  const hideActionsTab: boolean = metrics?.actionSummary == undefined || metrics?.actionSummary == null;
+  const hideActionStatisticsTab: boolean = metrics?.actionSummary == undefined || metrics?.actionSummary == null;
   const hideLogsTab: boolean = false;
   const hideArtifactsTab: boolean = metrics?.artifactMetrics == undefined || metrics?.artifactMetrics == null;
   const hideMemoryTab: boolean = metrics?.memoryMetrics == undefined || metrics?.memoryMetrics == null;
   const hideSystemMetricsTab: boolean =
     (metrics?.timingMetrics == undefined || metrics?.timingMetrics == null)
     && (metrics?.networkMetrics == undefined || metrics?.networkMetrics == null);
+  const hideFailedActionsTab: boolean = actions == undefined || actions == null || actions.length == 0;
   const hideTargetsTab: boolean = !isFeatureEnabled(FeatureType.BES_PAGE_TARGETS);
   const hideTestsTab: boolean = (testCollection == undefined || testCollection == null || testCollection.length == 0)
   const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null;
@@ -110,7 +114,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
       </Space>
     ),
   });
-  if (!hideActionsTab) items.push({
+  if (!hideActionStatisticsTab) items.push({
     key: "BazelInvocationTabs-ActionStatistics",
     label: "Action Statistics",
     icon: <LineChartOutlined />,
@@ -216,6 +220,16 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
       </Space>
     ),
   });
+  if (!hideFailedActionsTab) items.push({
+    key: "BazelInvocationTabs-Actions",
+    label: "Failed Actions",
+    icon: <DatabaseOutlined />,
+    children: (
+      <Space direction="vertical" size="middle" className={themeStyles.space}>
+        <ActionsTab instanceName={instanceName.name} actions={actions} />
+      </Space>
+    ),
+  });
   if (!hideProblemsTab) items.push({
     key: "BazelInvocationTabs-Problems",
     label: "Problems",
@@ -283,6 +297,7 @@ const getExtraBits = (invocationOverview: BazelInvocationInfoFragment, isNestedW
       to={invocationOverview.endedAt}
       includeIcon
       includePopover
+      formatConfig={{smallestUnit: "s"}}
     />
   )
   if (profile) extraBits.push(

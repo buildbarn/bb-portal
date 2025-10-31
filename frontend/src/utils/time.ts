@@ -1,8 +1,8 @@
+import type { Duration } from "dayjs/plugin/duration";
 import dayjs from "@/lib/dayjs";
 import type { Duration as ProtobufDuration } from "@/lib/grpc-client/google/protobuf/duration";
-import type { Duration } from "dayjs/plugin/duration";
 
-interface ReadableFormatConfig {
+export interface ReadableFormatConfig {
   precision?: number;
   smallestUnit?: "d" | "h" | "m" | "s" | "ms" | "us" | "ns";
 }

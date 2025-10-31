@@ -106,6 +106,8 @@ type BazelInvocationEdges struct {
 	ConnectionMetadata []*ConnectionMetadata `json:"connection_metadata,omitempty"`
 	// Configurations holds the value of the configurations edge.
 	Configurations []*Configuration `json:"configurations,omitempty"`
+	// Actions holds the value of the actions edge.
+	Actions []*Action `json:"actions,omitempty"`
 	// Problems holds the value of the problems edge.
 	Problems []*BazelInvocationProblem `json:"problems,omitempty"`
 	// Metrics holds the value of the metrics edge.
@@ -126,12 +128,13 @@ type BazelInvocationEdges struct {
 	SourceControl *SourceControl `json:"source_control,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [15]bool
+	loadedTypes [16]bool
 	// totalCount holds the count of the edges above.
-	totalCount [9]map[string]int
+	totalCount [10]map[string]int
 
 	namedConnectionMetadata  map[string][]*ConnectionMetadata
 	namedConfigurations      map[string][]*Configuration
+	namedActions             map[string][]*Action
 	namedProblems            map[string][]*BazelInvocationProblem
 	namedIncompleteBuildLogs map[string][]*IncompleteBuildLog
 	namedBuildLogChunks      map[string][]*BuildLogChunk
@@ -203,10 +206,19 @@ func (e BazelInvocationEdges) ConfigurationsOrErr() ([]*Configuration, error) {
 	return nil, &NotLoadedError{edge: "configurations"}
 }
 
+// ActionsOrErr returns the Actions value or an error if the edge
+// was not loaded in eager-loading.
+func (e BazelInvocationEdges) ActionsOrErr() ([]*Action, error) {
+	if e.loadedTypes[6] {
+		return e.Actions, nil
+	}
+	return nil, &NotLoadedError{edge: "actions"}
+}
+
 // ProblemsOrErr returns the Problems value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) ProblemsOrErr() ([]*BazelInvocationProblem, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[7] {
 		return e.Problems, nil
 	}
 	return nil, &NotLoadedError{edge: "problems"}
@@ -217,7 +229,7 @@ func (e BazelInvocationEdges) ProblemsOrErr() ([]*BazelInvocationProblem, error)
 func (e BazelInvocationEdges) MetricsOrErr() (*Metrics, error) {
 	if e.Metrics != nil {
 		return e.Metrics, nil
-	} else if e.loadedTypes[7] {
+	} else if e.loadedTypes[8] {
 		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
@@ -226,7 +238,7 @@ func (e BazelInvocationEdges) MetricsOrErr() (*Metrics, error) {
 // IncompleteBuildLogsOrErr returns the IncompleteBuildLogs value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) IncompleteBuildLogsOrErr() ([]*IncompleteBuildLog, error) {
-	if e.loadedTypes[8] {
+	if e.loadedTypes[9] {
 		return e.IncompleteBuildLogs, nil
 	}
 	return nil, &NotLoadedError{edge: "incomplete_build_logs"}
@@ -235,7 +247,7 @@ func (e BazelInvocationEdges) IncompleteBuildLogsOrErr() ([]*IncompleteBuildLog,
 // BuildLogChunksOrErr returns the BuildLogChunks value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) BuildLogChunksOrErr() ([]*BuildLogChunk, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[10] {
 		return e.BuildLogChunks, nil
 	}
 	return nil, &NotLoadedError{edge: "build_log_chunks"}
@@ -244,7 +256,7 @@ func (e BazelInvocationEdges) BuildLogChunksOrErr() ([]*BuildLogChunk, error) {
 // InvocationFilesOrErr returns the InvocationFiles value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) InvocationFilesOrErr() ([]*InvocationFiles, error) {
-	if e.loadedTypes[10] {
+	if e.loadedTypes[11] {
 		return e.InvocationFiles, nil
 	}
 	return nil, &NotLoadedError{edge: "invocation_files"}
@@ -253,7 +265,7 @@ func (e BazelInvocationEdges) InvocationFilesOrErr() ([]*InvocationFiles, error)
 // TestCollectionOrErr returns the TestCollection value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
-	if e.loadedTypes[11] {
+	if e.loadedTypes[12] {
 		return e.TestCollection, nil
 	}
 	return nil, &NotLoadedError{edge: "test_collection"}
@@ -262,7 +274,7 @@ func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
 // InvocationTargetsOrErr returns the InvocationTargets value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, error) {
-	if e.loadedTypes[12] {
+	if e.loadedTypes[13] {
 		return e.InvocationTargets, nil
 	}
 	return nil, &NotLoadedError{edge: "invocation_targets"}
@@ -271,7 +283,7 @@ func (e BazelInvocationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, err
 // TargetKindMappingsOrErr returns the TargetKindMappings value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, error) {
-	if e.loadedTypes[13] {
+	if e.loadedTypes[14] {
 		return e.TargetKindMappings, nil
 	}
 	return nil, &NotLoadedError{edge: "target_kind_mappings"}
@@ -282,7 +294,7 @@ func (e BazelInvocationEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, e
 func (e BazelInvocationEdges) SourceControlOrErr() (*SourceControl, error) {
 	if e.SourceControl != nil {
 		return e.SourceControl, nil
-	} else if e.loadedTypes[14] {
+	} else if e.loadedTypes[15] {
 		return nil, &NotFoundError{label: sourcecontrol.Label}
 	}
 	return nil, &NotLoadedError{edge: "source_control"}
@@ -579,6 +591,11 @@ func (bi *BazelInvocation) QueryConfigurations() *ConfigurationQuery {
 	return NewBazelInvocationClient(bi.config).QueryConfigurations(bi)
 }
 
+// QueryActions queries the "actions" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryActions() *ActionQuery {
+	return NewBazelInvocationClient(bi.config).QueryActions(bi)
+}
+
 // QueryProblems queries the "problems" edge of the BazelInvocation entity.
 func (bi *BazelInvocation) QueryProblems() *BazelInvocationProblemQuery {
 	return NewBazelInvocationClient(bi.config).QueryProblems(bi)
@@ -784,6 +801,30 @@ func (bi *BazelInvocation) appendNamedConfigurations(name string, edges ...*Conf
 		bi.Edges.namedConfigurations[name] = []*Configuration{}
 	} else {
 		bi.Edges.namedConfigurations[name] = append(bi.Edges.namedConfigurations[name], edges...)
+	}
+}
+
+// NamedActions returns the Actions named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (bi *BazelInvocation) NamedActions(name string) ([]*Action, error) {
+	if bi.Edges.namedActions == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := bi.Edges.namedActions[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (bi *BazelInvocation) appendNamedActions(name string, edges ...*Action) {
+	if bi.Edges.namedActions == nil {
+		bi.Edges.namedActions = make(map[string][]*Action)
+	}
+	if len(edges) == 0 {
+		bi.Edges.namedActions[name] = []*Action{}
+	} else {
+		bi.Edges.namedActions[name] = append(bi.Edges.namedActions[name], edges...)
 	}
 }
 

@@ -14,6 +14,8 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// Action is the client for interacting with the Action builders.
+	Action *ActionClient
 	// ActionCacheStatistics is the client for interacting with the ActionCacheStatistics builders.
 	ActionCacheStatistics *ActionCacheStatisticsClient
 	// ActionData is the client for interacting with the ActionData builders.
@@ -233,6 +235,7 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.Action = NewActionClient(tx.config)
 	tx.ActionCacheStatistics = NewActionCacheStatisticsClient(tx.config)
 	tx.ActionData = NewActionDataClient(tx.config)
 	tx.ActionSummary = NewActionSummaryClient(tx.config)
@@ -286,7 +289,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: ActionCacheStatistics.QueryXXX(), the query will be executed
+// applies a query, for example: Action.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

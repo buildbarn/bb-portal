@@ -1,5 +1,6 @@
 {
   "bazelInvocation": {
+    "actions": [],
     "authenticatedUser": null,
     "bazelCommand": {
       "cmdLine": [

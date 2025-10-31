@@ -9,6 +9,18 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 )
 
+// The ActionFunc type is an adapter to allow the use of ordinary
+// function as Action mutator.
+type ActionFunc func(context.Context, *ent.ActionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ActionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ActionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ActionMutation", m)
+}
+
 // The ActionCacheStatisticsFunc type is an adapter to allow the use of ordinary
 // function as ActionCacheStatistics mutator.
 type ActionCacheStatisticsFunc func(context.Context, *ent.ActionCacheStatisticsMutation) (ent.Value, error)

@@ -1,4 +1,5 @@
 {
+  "Action": [],
   "ActionCacheStatistics": [],
   "ActionCacheStatisticsWhereInput": [],
   "ActionData": [],
@@ -7,6 +8,7 @@
   "ActionProblem": [],
   "ActionSummary": [],
   "ActionSummaryWhereInput": [],
+  "ActionWhereInput": [],
   "Any": [],
   "ArtifactMetrics": [],
   "ArtifactMetricsWhereInput": [],
@@ -74,6 +76,7 @@
   "NetworkMetrics": [],
   "NetworkMetricsWhereInput": [],
   "Node": [
+    "Action",
     "ActionCacheStatistics",
     "ActionData",
     "ActionSummary",

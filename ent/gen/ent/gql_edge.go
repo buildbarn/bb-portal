@@ -8,6 +8,22 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
+func (a *Action) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := a.Edges.BazelInvocationOrErr()
+	if IsNotLoaded(err) {
+		result, err = a.QueryBazelInvocation().Only(ctx)
+	}
+	return result, err
+}
+
+func (a *Action) Configuration(ctx context.Context) (*Configuration, error) {
+	result, err := a.Edges.ConfigurationOrErr()
+	if IsNotLoaded(err) {
+		result, err = a.QueryConfiguration().Only(ctx)
+	}
+	return result, err
+}
+
 func (acs *ActionCacheStatistics) ActionSummary(ctx context.Context) (*ActionSummary, error) {
 	result, err := acs.Edges.ActionSummaryOrErr()
 	if IsNotLoaded(err) {
@@ -141,6 +157,18 @@ func (bi *BazelInvocation) Configurations(ctx context.Context) (result []*Config
 	return result, err
 }
 
+func (bi *BazelInvocation) Actions(ctx context.Context) (result []*Action, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = bi.NamedActions(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = bi.Edges.ActionsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = bi.QueryActions().All(ctx)
+	}
+	return result, err
+}
+
 func (bi *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
 	result, err := bi.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
@@ -181,7 +209,7 @@ func (bi *BazelInvocation) InvocationTargets(
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := bi.Edges.totalCount[7][alias]
+	totalCount, hasTotalCount := bi.Edges.totalCount[8][alias]
 	if nodes, err := bi.NamedInvocationTargets(alias); err == nil || hasTotalCount {
 		pager, err := newInvocationTargetPager(opts, last != nil)
 		if err != nil {
@@ -302,6 +330,18 @@ func (c *Configuration) InvocationTargets(ctx context.Context) (result []*Invoca
 	}
 	if IsNotLoaded(err) {
 		result, err = c.QueryInvocationTargets().All(ctx)
+	}
+	return result, err
+}
+
+func (c *Configuration) Actions(ctx context.Context) (result []*Action, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = c.NamedActions(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = c.Edges.ActionsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = c.QueryActions().All(ctx)
 	}
 	return result, err
 }

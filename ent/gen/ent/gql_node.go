@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/schema"
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
@@ -60,6 +61,11 @@ import (
 type Noder interface {
 	IsNode()
 }
+
+var actionImplementors = []string{"Action", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Action) IsNode() {}
 
 var actioncachestatisticsImplementors = []string{"ActionCacheStatistics", "Node"}
 
@@ -314,6 +320,15 @@ func (c *Client) Noder(ctx context.Context, id int64, opts ...NodeOption) (_ Nod
 
 func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, error) {
 	switch table {
+	case action.Table:
+		query := c.Action.Query().
+			Where(action.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, actionImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
 	case actioncachestatistics.Table:
 		query := c.ActionCacheStatistics.Query().
 			Where(actioncachestatistics.ID(id))
@@ -738,6 +753,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		idmap[id] = append(idmap[id], &noders[i])
 	}
 	switch table {
+	case action.Table:
+		query := c.Action.Query().
+			Where(action.IDIn(ids...))
+		query, err := query.CollectFields(ctx, actionImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
 	case actioncachestatistics.Table:
 		query := c.ActionCacheStatistics.Query().
 			Where(actioncachestatistics.IDIn(ids...))

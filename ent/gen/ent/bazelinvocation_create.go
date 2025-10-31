@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
@@ -508,6 +509,21 @@ func (bic *BazelInvocationCreate) AddConfigurations(c ...*Configuration) *BazelI
 	return bic.AddConfigurationIDs(ids...)
 }
 
+// AddActionIDs adds the "actions" edge to the Action entity by IDs.
+func (bic *BazelInvocationCreate) AddActionIDs(ids ...int64) *BazelInvocationCreate {
+	bic.mutation.AddActionIDs(ids...)
+	return bic
+}
+
+// AddActions adds the "actions" edges to the Action entity.
+func (bic *BazelInvocationCreate) AddActions(a ...*Action) *BazelInvocationCreate {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return bic.AddActionIDs(ids...)
+}
+
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
 func (bic *BazelInvocationCreate) AddProblemIDs(ids ...int64) *BazelInvocationCreate {
 	bic.mutation.AddProblemIDs(ids...)
@@ -989,6 +1005,22 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.ActionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ActionsTable,
+			Columns: []string{bazelinvocation.ActionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(action.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

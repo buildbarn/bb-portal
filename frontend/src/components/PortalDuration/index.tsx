@@ -6,12 +6,14 @@ import dayjs from "@/lib/dayjs";
 import themeStyles from "@/theme/theme.module.css";
 import { readableDurationFromDates } from "@/utils/time";
 import styles from "./index.module.css";
+import { ReadableFormatConfig } from '@/utils/time';
 
 interface Props {
   from?: string | null;
   to?: string | null;
   includeIcon?: boolean;
   includePopover?: boolean;
+  formatConfig?: ReadableFormatConfig
 }
 
 const PortalDuration: React.FC<Props> = ({
@@ -19,6 +21,7 @@ const PortalDuration: React.FC<Props> = ({
   to,
   includeIcon,
   includePopover,
+  formatConfig,
 }) => {
   const [now, setNow] = useState(new Date());
 
@@ -42,7 +45,7 @@ const PortalDuration: React.FC<Props> = ({
       className={themeStyles.tagClickable}
     >
       <div className={styles.duration}>
-        {readableDurationFromDates(actualFrom, actualTo, { smallestUnit: "s" })}
+        {readableDurationFromDates(actualFrom, actualTo, formatConfig)}
       </div>
     </Tag>
   );

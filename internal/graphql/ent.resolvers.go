@@ -14,6 +14,11 @@ import (
 )
 
 // ID is the resolver for the id field.
+func (r *actionResolver) ID(ctx context.Context, obj *ent.Action) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("Action", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
 func (r *actionCacheStatisticsResolver) ID(ctx context.Context, obj *ent.ActionCacheStatistics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("ActionCacheStatistics", obj.ID), nil
 }
@@ -377,6 +382,46 @@ func (r *actionSummaryWhereInputResolver) IDLt(ctx context.Context, obj *ent.Act
 
 // IDLte is the resolver for the idLTE field.
 func (r *actionSummaryWhereInputResolver) IDLte(ctx context.Context, obj *ent.ActionSummaryWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *actionWhereInputResolver) ID(ctx context.Context, obj *ent.ActionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *actionWhereInputResolver) IDNeq(ctx context.Context, obj *ent.ActionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *actionWhereInputResolver) IDIn(ctx context.Context, obj *ent.ActionWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *actionWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.ActionWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *actionWhereInputResolver) IDGt(ctx context.Context, obj *ent.ActionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *actionWhereInputResolver) IDGte(ctx context.Context, obj *ent.ActionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *actionWhereInputResolver) IDLt(ctx context.Context, obj *ent.ActionWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *actionWhereInputResolver) IDLte(ctx context.Context, obj *ent.ActionWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
@@ -1820,6 +1865,9 @@ func (r *timingMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.Ti
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
+// Action returns ActionResolver implementation.
+func (r *Resolver) Action() ActionResolver { return &actionResolver{r} }
+
 // ActionCacheStatistics returns ActionCacheStatisticsResolver implementation.
 func (r *Resolver) ActionCacheStatistics() ActionCacheStatisticsResolver {
 	return &actionCacheStatisticsResolver{r}
@@ -1968,6 +2016,9 @@ func (r *Resolver) ActionDataWhereInput() ActionDataWhereInputResolver {
 func (r *Resolver) ActionSummaryWhereInput() ActionSummaryWhereInputResolver {
 	return &actionSummaryWhereInputResolver{r}
 }
+
+// ActionWhereInput returns ActionWhereInputResolver implementation.
+func (r *Resolver) ActionWhereInput() ActionWhereInputResolver { return &actionWhereInputResolver{r} }
 
 // ArtifactMetricsWhereInput returns ArtifactMetricsWhereInputResolver implementation.
 func (r *Resolver) ArtifactMetricsWhereInput() ArtifactMetricsWhereInputResolver {
@@ -2144,6 +2195,7 @@ func (r *Resolver) TimingMetricsWhereInput() TimingMetricsWhereInputResolver {
 }
 
 type (
+	actionResolver                           struct{ *Resolver }
 	actionCacheStatisticsResolver            struct{ *Resolver }
 	actionDataResolver                       struct{ *Resolver }
 	actionSummaryResolver                    struct{ *Resolver }
@@ -2187,6 +2239,7 @@ type (
 	actionCacheStatisticsWhereInputResolver  struct{ *Resolver }
 	actionDataWhereInputResolver             struct{ *Resolver }
 	actionSummaryWhereInputResolver          struct{ *Resolver }
+	actionWhereInputResolver                 struct{ *Resolver }
 	artifactMetricsWhereInputResolver        struct{ *Resolver }
 	authenticatedUserWhereInputResolver      struct{ *Resolver }
 	bazelInvocationProblemWhereInputResolver struct{ *Resolver }

@@ -210,6 +210,7 @@ func filterIgnoredIndividualEvents(batch []BuildEventWithInfo) (filtered, rest [
 	for _, x := range batch {
 		switch x.Event.BuildEvent.GetId().GetId().(type) {
 		case *bes.BuildEventId_Started,
+			*bes.BuildEventId_ActionCompleted,
 			*bes.BuildEventId_BuildMetadata,
 			*bes.BuildEventId_OptionsParsed,
 			*bes.BuildEventId_BuildFinished,

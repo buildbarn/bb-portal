@@ -71,6 +71,7 @@ export const durationColumn: ColumnTypeWithFilter<BazelInvocationNodeFragment> =
       from={record.startedAt}
       to={record.endedAt}
       includePopover
+      formatConfig={{smallestUnit: "s"}}
     />
   ),
 };

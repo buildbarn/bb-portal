@@ -15,6 +15,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actioncachestatistics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
@@ -68,6 +69,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Action is the client for interacting with the Action builders.
+	Action *ActionClient
 	// ActionCacheStatistics is the client for interacting with the ActionCacheStatistics builders.
 	ActionCacheStatistics *ActionCacheStatisticsClient
 	// ActionData is the client for interacting with the ActionData builders.
@@ -169,6 +172,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Action = NewActionClient(c.config)
 	c.ActionCacheStatistics = NewActionCacheStatisticsClient(c.config)
 	c.ActionData = NewActionDataClient(c.config)
 	c.ActionSummary = NewActionSummaryClient(c.config)
@@ -305,6 +309,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:                    ctx,
 		config:                 cfg,
+		Action:                 NewActionClient(cfg),
 		ActionCacheStatistics:  NewActionCacheStatisticsClient(cfg),
 		ActionData:             NewActionDataClient(cfg),
 		ActionSummary:          NewActionSummaryClient(cfg),
@@ -368,6 +373,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:                    ctx,
 		config:                 cfg,
+		Action:                 NewActionClient(cfg),
 		ActionCacheStatistics:  NewActionCacheStatisticsClient(cfg),
 		ActionData:             NewActionDataClient(cfg),
 		ActionSummary:          NewActionSummaryClient(cfg),
@@ -418,7 +424,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		ActionCacheStatistics.
+//		Action.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -441,17 +447,18 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
-		c.AuthenticatedUser, c.BazelInvocation, c.BazelInvocationProblem, c.Blob,
-		c.Build, c.BuildGraphMetrics, c.BuildLogChunk, c.Configuration,
-		c.ConnectionMetadata, c.CumulativeMetrics, c.EvaluationStat, c.EventMetadata,
-		c.ExectionInfo, c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName,
-		c.InvocationFiles, c.InvocationTarget, c.MemoryMetrics, c.Metrics,
-		c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup,
-		c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage, c.RunnerCount,
-		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetKindMapping,
-		c.TargetMetrics, c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
-		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
+		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
+		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation,
+		c.BazelInvocationProblem, c.Blob, c.Build, c.BuildGraphMetrics,
+		c.BuildLogChunk, c.Configuration, c.ConnectionMetadata, c.CumulativeMetrics,
+		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.GarbageMetrics,
+		c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles, c.InvocationTarget,
+		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics,
+		c.OutputGroup, c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage,
+		c.RunnerCount, c.SourceControl, c.SystemNetworkStats, c.Target,
+		c.TargetKindMapping, c.TargetMetrics, c.TestCollection, c.TestFile,
+		c.TestResultBES, c.TestSummary, c.TimingBreakdown, c.TimingChild,
+		c.TimingMetrics,
 	} {
 		n.Use(hooks...)
 	}
@@ -461,17 +468,18 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
-		c.AuthenticatedUser, c.BazelInvocation, c.BazelInvocationProblem, c.Blob,
-		c.Build, c.BuildGraphMetrics, c.BuildLogChunk, c.Configuration,
-		c.ConnectionMetadata, c.CumulativeMetrics, c.EvaluationStat, c.EventMetadata,
-		c.ExectionInfo, c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName,
-		c.InvocationFiles, c.InvocationTarget, c.MemoryMetrics, c.Metrics,
-		c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup,
-		c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage, c.RunnerCount,
-		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetKindMapping,
-		c.TargetMetrics, c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
-		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
+		c.Action, c.ActionCacheStatistics, c.ActionData, c.ActionSummary,
+		c.ArtifactMetrics, c.AuthenticatedUser, c.BazelInvocation,
+		c.BazelInvocationProblem, c.Blob, c.Build, c.BuildGraphMetrics,
+		c.BuildLogChunk, c.Configuration, c.ConnectionMetadata, c.CumulativeMetrics,
+		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.GarbageMetrics,
+		c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles, c.InvocationTarget,
+		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics,
+		c.OutputGroup, c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage,
+		c.RunnerCount, c.SourceControl, c.SystemNetworkStats, c.Target,
+		c.TargetKindMapping, c.TargetMetrics, c.TestCollection, c.TestFile,
+		c.TestResultBES, c.TestSummary, c.TimingBreakdown, c.TimingChild,
+		c.TimingMetrics,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -480,6 +488,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
+	case *ActionMutation:
+		return c.Action.mutate(ctx, m)
 	case *ActionCacheStatisticsMutation:
 		return c.ActionCacheStatistics.mutate(ctx, m)
 	case *ActionDataMutation:
@@ -570,6 +580,171 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.TimingMetrics.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
+	}
+}
+
+// ActionClient is a client for the Action schema.
+type ActionClient struct {
+	config
+}
+
+// NewActionClient returns a client for the Action from the given config.
+func NewActionClient(c config) *ActionClient {
+	return &ActionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `action.Hooks(f(g(h())))`.
+func (c *ActionClient) Use(hooks ...Hook) {
+	c.hooks.Action = append(c.hooks.Action, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `action.Intercept(f(g(h())))`.
+func (c *ActionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Action = append(c.inters.Action, interceptors...)
+}
+
+// Create returns a builder for creating a Action entity.
+func (c *ActionClient) Create() *ActionCreate {
+	mutation := newActionMutation(c.config, OpCreate)
+	return &ActionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Action entities.
+func (c *ActionClient) CreateBulk(builders ...*ActionCreate) *ActionCreateBulk {
+	return &ActionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ActionClient) MapCreateBulk(slice any, setFunc func(*ActionCreate, int)) *ActionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ActionCreateBulk{err: fmt.Errorf("calling to ActionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ActionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ActionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Action.
+func (c *ActionClient) Update() *ActionUpdate {
+	mutation := newActionMutation(c.config, OpUpdate)
+	return &ActionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ActionClient) UpdateOne(a *Action) *ActionUpdateOne {
+	mutation := newActionMutation(c.config, OpUpdateOne, withAction(a))
+	return &ActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ActionClient) UpdateOneID(id int64) *ActionUpdateOne {
+	mutation := newActionMutation(c.config, OpUpdateOne, withActionID(id))
+	return &ActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Action.
+func (c *ActionClient) Delete() *ActionDelete {
+	mutation := newActionMutation(c.config, OpDelete)
+	return &ActionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ActionClient) DeleteOne(a *Action) *ActionDeleteOne {
+	return c.DeleteOneID(a.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ActionClient) DeleteOneID(id int64) *ActionDeleteOne {
+	builder := c.Delete().Where(action.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ActionDeleteOne{builder}
+}
+
+// Query returns a query builder for Action.
+func (c *ActionClient) Query() *ActionQuery {
+	return &ActionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAction},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Action entity by its id.
+func (c *ActionClient) Get(ctx context.Context, id int64) (*Action, error) {
+	return c.Query().Where(action.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ActionClient) GetX(ctx context.Context, id int64) *Action {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a Action.
+func (c *ActionClient) QueryBazelInvocation(a *Action) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(action.Table, action.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, action.BazelInvocationTable, action.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryConfiguration queries the configuration edge of a Action.
+func (c *ActionClient) QueryConfiguration(a *Action) *ConfigurationQuery {
+	query := (&ConfigurationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(action.Table, action.FieldID, id),
+			sqlgraph.To(configuration.Table, configuration.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, action.ConfigurationTable, action.ConfigurationColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ActionClient) Hooks() []Hook {
+	return c.hooks.Action
+}
+
+// Interceptors returns the client interceptors.
+func (c *ActionClient) Interceptors() []Interceptor {
+	return c.inters.Action
+}
+
+func (c *ActionClient) mutate(ctx context.Context, m *ActionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ActionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ActionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ActionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Action mutation op: %q", m.Op())
 	}
 }
 
@@ -1580,6 +1755,22 @@ func (c *BazelInvocationClient) QueryConfigurations(bi *BazelInvocation) *Config
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(configuration.Table, configuration.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ConfigurationsTable, bazelinvocation.ConfigurationsColumn),
+		)
+		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryActions queries the actions edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryActions(bi *BazelInvocation) *ActionQuery {
+	query := (&ActionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := bi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(action.Table, action.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ActionsTable, bazelinvocation.ActionsColumn),
 		)
 		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
 		return fromV, nil
@@ -2732,6 +2923,22 @@ func (c *ConfigurationClient) QueryInvocationTargets(co *Configuration) *Invocat
 			sqlgraph.From(configuration.Table, configuration.FieldID, id),
 			sqlgraph.To(invocationtarget.Table, invocationtarget.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, configuration.InvocationTargetsTable, configuration.InvocationTargetsColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryActions queries the actions edge of a Configuration.
+func (c *ConfigurationClient) QueryActions(co *Configuration) *ActionQuery {
+	query := (&ActionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(configuration.Table, configuration.FieldID, id),
+			sqlgraph.To(action.Table, action.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, configuration.ActionsTable, configuration.ActionsColumn),
 		)
 		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
 		return fromV, nil
@@ -8048,7 +8255,7 @@ func (c *TimingMetricsClient) mutate(ctx context.Context, m *TimingMetricsMutati
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
+		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, BazelInvocationProblem, Blob, Build,
 		BuildGraphMetrics, BuildLogChunk, Configuration, ConnectionMetadata,
 		CumulativeMetrics, EvaluationStat, EventMetadata, ExectionInfo, GarbageMetrics,
@@ -8060,7 +8267,7 @@ type (
 		TimingChild, TimingMetrics []ent.Hook
 	}
 	inters struct {
-		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
+		Action, ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, BazelInvocationProblem, Blob, Build,
 		BuildGraphMetrics, BuildLogChunk, Configuration, ConnectionMetadata,
 		CumulativeMetrics, EvaluationStat, EventMetadata, ExectionInfo, GarbageMetrics,
