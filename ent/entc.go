@@ -28,7 +28,6 @@ func main() {
 	extensions = append(extensions, entviz.Extension{})
 	opts := []entc.Option{
 		entc.Extensions(extensions...),
-		entc.TemplateDir("./ent/template"),
 		entc.FeatureNames("intercept"),
 		entc.FeatureNames("sql/execquery"),
 		entc.FeatureNames("sql/upsert"),
