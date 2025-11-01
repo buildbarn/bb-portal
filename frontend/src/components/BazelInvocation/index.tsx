@@ -9,7 +9,6 @@ import {
   NetworkMetrics,
   TestCollection,
   TargetPair,
-  BuildGraphMetrics,
   SystemNetworkStats,
 } from "@/graphql/__generated__/graphql";
 import styles from "../AppBar/index.module.css";
@@ -101,10 +100,6 @@ const BazelInvocation: React.FC<{
   //memory metrics
   var memoryMetrics: MemoryMetrics | undefined =
     metrics?.memoryMetrics ?? undefined;
-
-  //build graph metrics
-  var buildGraphMetrics: BuildGraphMetrics | undefined =
-    metrics?.buildGraphMetrics ?? undefined;
 
   //timing metrics
   var timingMetrics: TimingMetrics | undefined =
@@ -220,13 +215,6 @@ const BazelInvocation: React.FC<{
       timingMetrics?.analysisPhaseTimeInMs == 0 &&
       timingMetrics?.cpuTimeInMs == 0 &&
       timingMetrics?.actionsExecutionStartInMs == 0 &&
-      buildGraphMetrics?.actionCount == 0 &&
-      buildGraphMetrics.actionLookupValueCount == 0 &&
-      buildGraphMetrics.actionCountNotIncludingAspects == 0 &&
-      buildGraphMetrics.inputFileConfiguredTargetCount == 0 &&
-      buildGraphMetrics.outputArtifactCount == 0 &&
-      buildGraphMetrics.postInvocationSkyframeNodeCount == 0 &&
-      buildGraphMetrics.outputFileConfiguredTargetCount == 0 &&
       systemNetworkStats?.bytesRecv == 0 &&
       systemNetworkStats?.bytesSent == 0 &&
       systemNetworkStats?.packetsRecv == 0 &&
@@ -236,7 +224,6 @@ const BazelInvocation: React.FC<{
       systemNetworkStats?.peakPacketsRecvPerSec == 0 &&
       systemNetworkStats?.peakPacketsSentPerSec == 0
     );
-
   interface TabShowHideDisplay {
     hide: boolean;
     key: string;
@@ -376,7 +363,6 @@ const BazelInvocation: React.FC<{
         <Space direction="vertical" size="middle" className={themeStyles.space}>
           <SystemMetricsDisplay
             timingMetrics={timingMetrics}
-            buildGraphMetrics={buildGraphMetrics}
             systemNetworkStats={systemNetworkStats}
           />
         </Space>
