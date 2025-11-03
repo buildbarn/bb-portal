@@ -201,6 +201,18 @@ func (f IncompleteBuildLogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.IncompleteBuildLogMutation", m)
 }
 
+// The InstanceNameFunc type is an adapter to allow the use of ordinary
+// function as InstanceName mutator.
+type InstanceNameFunc func(context.Context, *ent.InstanceNameMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f InstanceNameFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.InstanceNameMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InstanceNameMutation", m)
+}
+
 // The InvocationFilesFunc type is an adapter to allow the use of ordinary
 // function as InvocationFiles mutator.
 type InvocationFilesFunc func(context.Context, *ent.InvocationFilesMutation) (ent.Value, error)

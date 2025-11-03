@@ -66,11 +66,6 @@ func BuildUUID(v uuid.UUID) predicate.Build {
 	return predicate.Build(sql.FieldEQ(FieldBuildUUID, v))
 }
 
-// InstanceName applies equality check predicate on the "instance_name" field. It's identical to InstanceNameEQ.
-func InstanceName(v string) predicate.Build {
-	return predicate.Build(sql.FieldEQ(FieldInstanceName, v))
-}
-
 // Timestamp applies equality check predicate on the "timestamp" field. It's identical to TimestampEQ.
 func Timestamp(v time.Time) predicate.Build {
 	return predicate.Build(sql.FieldEQ(FieldTimestamp, v))
@@ -181,71 +176,6 @@ func BuildUUIDLTE(v uuid.UUID) predicate.Build {
 	return predicate.Build(sql.FieldLTE(FieldBuildUUID, v))
 }
 
-// InstanceNameEQ applies the EQ predicate on the "instance_name" field.
-func InstanceNameEQ(v string) predicate.Build {
-	return predicate.Build(sql.FieldEQ(FieldInstanceName, v))
-}
-
-// InstanceNameNEQ applies the NEQ predicate on the "instance_name" field.
-func InstanceNameNEQ(v string) predicate.Build {
-	return predicate.Build(sql.FieldNEQ(FieldInstanceName, v))
-}
-
-// InstanceNameIn applies the In predicate on the "instance_name" field.
-func InstanceNameIn(vs ...string) predicate.Build {
-	return predicate.Build(sql.FieldIn(FieldInstanceName, vs...))
-}
-
-// InstanceNameNotIn applies the NotIn predicate on the "instance_name" field.
-func InstanceNameNotIn(vs ...string) predicate.Build {
-	return predicate.Build(sql.FieldNotIn(FieldInstanceName, vs...))
-}
-
-// InstanceNameGT applies the GT predicate on the "instance_name" field.
-func InstanceNameGT(v string) predicate.Build {
-	return predicate.Build(sql.FieldGT(FieldInstanceName, v))
-}
-
-// InstanceNameGTE applies the GTE predicate on the "instance_name" field.
-func InstanceNameGTE(v string) predicate.Build {
-	return predicate.Build(sql.FieldGTE(FieldInstanceName, v))
-}
-
-// InstanceNameLT applies the LT predicate on the "instance_name" field.
-func InstanceNameLT(v string) predicate.Build {
-	return predicate.Build(sql.FieldLT(FieldInstanceName, v))
-}
-
-// InstanceNameLTE applies the LTE predicate on the "instance_name" field.
-func InstanceNameLTE(v string) predicate.Build {
-	return predicate.Build(sql.FieldLTE(FieldInstanceName, v))
-}
-
-// InstanceNameContains applies the Contains predicate on the "instance_name" field.
-func InstanceNameContains(v string) predicate.Build {
-	return predicate.Build(sql.FieldContains(FieldInstanceName, v))
-}
-
-// InstanceNameHasPrefix applies the HasPrefix predicate on the "instance_name" field.
-func InstanceNameHasPrefix(v string) predicate.Build {
-	return predicate.Build(sql.FieldHasPrefix(FieldInstanceName, v))
-}
-
-// InstanceNameHasSuffix applies the HasSuffix predicate on the "instance_name" field.
-func InstanceNameHasSuffix(v string) predicate.Build {
-	return predicate.Build(sql.FieldHasSuffix(FieldInstanceName, v))
-}
-
-// InstanceNameEqualFold applies the EqualFold predicate on the "instance_name" field.
-func InstanceNameEqualFold(v string) predicate.Build {
-	return predicate.Build(sql.FieldEqualFold(FieldInstanceName, v))
-}
-
-// InstanceNameContainsFold applies the ContainsFold predicate on the "instance_name" field.
-func InstanceNameContainsFold(v string) predicate.Build {
-	return predicate.Build(sql.FieldContainsFold(FieldInstanceName, v))
-}
-
 // TimestampEQ applies the EQ predicate on the "timestamp" field.
 func TimestampEQ(v time.Time) predicate.Build {
 	return predicate.Build(sql.FieldEQ(FieldTimestamp, v))
@@ -284,6 +214,29 @@ func TimestampLT(v time.Time) predicate.Build {
 // TimestampLTE applies the LTE predicate on the "timestamp" field.
 func TimestampLTE(v time.Time) predicate.Build {
 	return predicate.Build(sql.FieldLTE(FieldTimestamp, v))
+}
+
+// HasInstanceName applies the HasEdge predicate on the "instance_name" edge.
+func HasInstanceName() predicate.Build {
+	return predicate.Build(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, InstanceNameTable, InstanceNameColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasInstanceNameWith applies the HasEdge predicate on the "instance_name" edge with a given conditions (other predicates).
+func HasInstanceNameWith(preds ...predicate.InstanceName) predicate.Build {
+	return predicate.Build(func(s *sql.Selector) {
+		step := newInstanceNameStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // HasInvocations applies the HasEdge predicate on the "invocations" edge.

@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
@@ -24,7 +25,9 @@ type BuildQuery struct {
 	order                []build.OrderOption
 	inters               []Interceptor
 	predicates           []predicate.Build
+	withInstanceName     *InstanceNameQuery
 	withInvocations      *BazelInvocationQuery
+	withFKs              bool
 	loadTotal            []func(context.Context, []*Build) error
 	modifiers            []func(*sql.Selector)
 	withNamedInvocations map[string]*BazelInvocationQuery
@@ -62,6 +65,28 @@ func (bq *BuildQuery) Unique(unique bool) *BuildQuery {
 func (bq *BuildQuery) Order(o ...build.OrderOption) *BuildQuery {
 	bq.order = append(bq.order, o...)
 	return bq
+}
+
+// QueryInstanceName chains the current query on the "instance_name" edge.
+func (bq *BuildQuery) QueryInstanceName() *InstanceNameQuery {
+	query := (&InstanceNameClient{config: bq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := bq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := bq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(build.Table, build.FieldID, selector),
+			sqlgraph.To(instancename.Table, instancename.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, build.InstanceNameTable, build.InstanceNameColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(bq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // QueryInvocations chains the current query on the "invocations" edge.
@@ -273,17 +298,29 @@ func (bq *BuildQuery) Clone() *BuildQuery {
 		return nil
 	}
 	return &BuildQuery{
-		config:          bq.config,
-		ctx:             bq.ctx.Clone(),
-		order:           append([]build.OrderOption{}, bq.order...),
-		inters:          append([]Interceptor{}, bq.inters...),
-		predicates:      append([]predicate.Build{}, bq.predicates...),
-		withInvocations: bq.withInvocations.Clone(),
+		config:           bq.config,
+		ctx:              bq.ctx.Clone(),
+		order:            append([]build.OrderOption{}, bq.order...),
+		inters:           append([]Interceptor{}, bq.inters...),
+		predicates:       append([]predicate.Build{}, bq.predicates...),
+		withInstanceName: bq.withInstanceName.Clone(),
+		withInvocations:  bq.withInvocations.Clone(),
 		// clone intermediate query.
 		sql:       bq.sql.Clone(),
 		path:      bq.path,
 		modifiers: append([]func(*sql.Selector){}, bq.modifiers...),
 	}
+}
+
+// WithInstanceName tells the query-builder to eager-load the nodes that are connected to
+// the "instance_name" edge. The optional arguments are used to configure the query builder of the edge.
+func (bq *BuildQuery) WithInstanceName(opts ...func(*InstanceNameQuery)) *BuildQuery {
+	query := (&InstanceNameClient{config: bq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	bq.withInstanceName = query
+	return bq
 }
 
 // WithInvocations tells the query-builder to eager-load the nodes that are connected to
@@ -374,11 +411,19 @@ func (bq *BuildQuery) prepareQuery(ctx context.Context) error {
 func (bq *BuildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Build, error) {
 	var (
 		nodes       = []*Build{}
+		withFKs     = bq.withFKs
 		_spec       = bq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
+			bq.withInstanceName != nil,
 			bq.withInvocations != nil,
 		}
 	)
+	if bq.withInstanceName != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, build.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Build).scanValues(nil, columns)
 	}
@@ -399,6 +444,12 @@ func (bq *BuildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Build,
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
+	}
+	if query := bq.withInstanceName; query != nil {
+		if err := bq.loadInstanceName(ctx, query, nodes, nil,
+			func(n *Build, e *InstanceName) { n.Edges.InstanceName = e }); err != nil {
+			return nil, err
+		}
 	}
 	if query := bq.withInvocations; query != nil {
 		if err := bq.loadInvocations(ctx, query, nodes,
@@ -422,6 +473,38 @@ func (bq *BuildQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Build,
 	return nodes, nil
 }
 
+func (bq *BuildQuery) loadInstanceName(ctx context.Context, query *InstanceNameQuery, nodes []*Build, init func(*Build), assign func(*Build, *InstanceName)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*Build)
+	for i := range nodes {
+		if nodes[i].instance_name_builds == nil {
+			continue
+		}
+		fk := *nodes[i].instance_name_builds
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(instancename.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "instance_name_builds" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 func (bq *BuildQuery) loadInvocations(ctx context.Context, query *BazelInvocationQuery, nodes []*Build, init func(*Build), assign func(*Build, *BazelInvocation)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int]*Build)

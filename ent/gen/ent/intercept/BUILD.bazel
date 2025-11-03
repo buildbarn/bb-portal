@@ -23,6 +23,7 @@ go_library(
         "//ent/gen/ent/exectioninfo",
         "//ent/gen/ent/garbagemetrics",
         "//ent/gen/ent/incompletebuildlog",
+        "//ent/gen/ent/instancename",
         "//ent/gen/ent/invocationfiles",
         "//ent/gen/ent/memorymetrics",
         "//ent/gen/ent/metrics",

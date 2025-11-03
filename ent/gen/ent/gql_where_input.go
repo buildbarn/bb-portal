@@ -21,6 +21,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -1997,23 +1998,6 @@ type BazelInvocationWhereInput struct {
 	ProfileNameEqualFold    *string  `json:"profileNameEqualFold,omitempty"`
 	ProfileNameContainsFold *string  `json:"profileNameContainsFold,omitempty"`
 
-	// "instance_name" field predicates.
-	InstanceName             *string  `json:"instanceName,omitempty"`
-	InstanceNameNEQ          *string  `json:"instanceNameNEQ,omitempty"`
-	InstanceNameIn           []string `json:"instanceNameIn,omitempty"`
-	InstanceNameNotIn        []string `json:"instanceNameNotIn,omitempty"`
-	InstanceNameGT           *string  `json:"instanceNameGT,omitempty"`
-	InstanceNameGTE          *string  `json:"instanceNameGTE,omitempty"`
-	InstanceNameLT           *string  `json:"instanceNameLT,omitempty"`
-	InstanceNameLTE          *string  `json:"instanceNameLTE,omitempty"`
-	InstanceNameContains     *string  `json:"instanceNameContains,omitempty"`
-	InstanceNameHasPrefix    *string  `json:"instanceNameHasPrefix,omitempty"`
-	InstanceNameHasSuffix    *string  `json:"instanceNameHasSuffix,omitempty"`
-	InstanceNameIsNil        bool     `json:"instanceNameIsNil,omitempty"`
-	InstanceNameNotNil       bool     `json:"instanceNameNotNil,omitempty"`
-	InstanceNameEqualFold    *string  `json:"instanceNameEqualFold,omitempty"`
-	InstanceNameContainsFold *string  `json:"instanceNameContainsFold,omitempty"`
-
 	// "bazel_version" field predicates.
 	BazelVersion             *string  `json:"bazelVersion,omitempty"`
 	BazelVersionNEQ          *string  `json:"bazelVersionNEQ,omitempty"`
@@ -2059,6 +2043,10 @@ type BazelInvocationWhereInput struct {
 	ExitCodeCodeLTE    *int32  `json:"exitCodeCodeLTE,omitempty"`
 	ExitCodeCodeIsNil  bool    `json:"exitCodeCodeIsNil,omitempty"`
 	ExitCodeCodeNotNil bool    `json:"exitCodeCodeNotNil,omitempty"`
+
+	// "instance_name" edge predicates.
+	HasInstanceName     *bool                     `json:"hasInstanceName,omitempty"`
+	HasInstanceNameWith []*InstanceNameWhereInput `json:"hasInstanceNameWith,omitempty"`
 
 	// "build" edge predicates.
 	HasBuild     *bool              `json:"hasBuild,omitempty"`
@@ -2785,51 +2773,6 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 	if i.ProfileNameContainsFold != nil {
 		predicates = append(predicates, bazelinvocation.ProfileNameContainsFold(*i.ProfileNameContainsFold))
 	}
-	if i.InstanceName != nil {
-		predicates = append(predicates, bazelinvocation.InstanceNameEQ(*i.InstanceName))
-	}
-	if i.InstanceNameNEQ != nil {
-		predicates = append(predicates, bazelinvocation.InstanceNameNEQ(*i.InstanceNameNEQ))
-	}
-	if len(i.InstanceNameIn) > 0 {
-		predicates = append(predicates, bazelinvocation.InstanceNameIn(i.InstanceNameIn...))
-	}
-	if len(i.InstanceNameNotIn) > 0 {
-		predicates = append(predicates, bazelinvocation.InstanceNameNotIn(i.InstanceNameNotIn...))
-	}
-	if i.InstanceNameGT != nil {
-		predicates = append(predicates, bazelinvocation.InstanceNameGT(*i.InstanceNameGT))
-	}
-	if i.InstanceNameGTE != nil {
-		predicates = append(predicates, bazelinvocation.InstanceNameGTE(*i.InstanceNameGTE))
-	}
-	if i.InstanceNameLT != nil {
-		predicates = append(predicates, bazelinvocation.InstanceNameLT(*i.InstanceNameLT))
-	}
-	if i.InstanceNameLTE != nil {
-		predicates = append(predicates, bazelinvocation.InstanceNameLTE(*i.InstanceNameLTE))
-	}
-	if i.InstanceNameContains != nil {
-		predicates = append(predicates, bazelinvocation.InstanceNameContains(*i.InstanceNameContains))
-	}
-	if i.InstanceNameHasPrefix != nil {
-		predicates = append(predicates, bazelinvocation.InstanceNameHasPrefix(*i.InstanceNameHasPrefix))
-	}
-	if i.InstanceNameHasSuffix != nil {
-		predicates = append(predicates, bazelinvocation.InstanceNameHasSuffix(*i.InstanceNameHasSuffix))
-	}
-	if i.InstanceNameIsNil {
-		predicates = append(predicates, bazelinvocation.InstanceNameIsNil())
-	}
-	if i.InstanceNameNotNil {
-		predicates = append(predicates, bazelinvocation.InstanceNameNotNil())
-	}
-	if i.InstanceNameEqualFold != nil {
-		predicates = append(predicates, bazelinvocation.InstanceNameEqualFold(*i.InstanceNameEqualFold))
-	}
-	if i.InstanceNameContainsFold != nil {
-		predicates = append(predicates, bazelinvocation.InstanceNameContainsFold(*i.InstanceNameContainsFold))
-	}
 	if i.BazelVersion != nil {
 		predicates = append(predicates, bazelinvocation.BazelVersionEQ(*i.BazelVersion))
 	}
@@ -2951,6 +2894,24 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 		predicates = append(predicates, bazelinvocation.ExitCodeCodeNotNil())
 	}
 
+	if i.HasInstanceName != nil {
+		p := bazelinvocation.HasInstanceName()
+		if !*i.HasInstanceName {
+			p = bazelinvocation.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasInstanceNameWith) > 0 {
+		with := make([]predicate.InstanceName, 0, len(i.HasInstanceNameWith))
+		for _, w := range i.HasInstanceNameWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasInstanceNameWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, bazelinvocation.HasInstanceNameWith(with...))
+	}
 	if i.HasBuild != nil {
 		p := bazelinvocation.HasBuild()
 		if !*i.HasBuild {
@@ -3443,20 +3404,9 @@ type BlobWhereInput struct {
 	ArchiveURLEqualFold    *string  `json:"archiveURLEqualFold,omitempty"`
 	ArchiveURLContainsFold *string  `json:"archiveURLContainsFold,omitempty"`
 
-	// "instance_name" field predicates.
-	InstanceName             *string  `json:"instanceName,omitempty"`
-	InstanceNameNEQ          *string  `json:"instanceNameNEQ,omitempty"`
-	InstanceNameIn           []string `json:"instanceNameIn,omitempty"`
-	InstanceNameNotIn        []string `json:"instanceNameNotIn,omitempty"`
-	InstanceNameGT           *string  `json:"instanceNameGT,omitempty"`
-	InstanceNameGTE          *string  `json:"instanceNameGTE,omitempty"`
-	InstanceNameLT           *string  `json:"instanceNameLT,omitempty"`
-	InstanceNameLTE          *string  `json:"instanceNameLTE,omitempty"`
-	InstanceNameContains     *string  `json:"instanceNameContains,omitempty"`
-	InstanceNameHasPrefix    *string  `json:"instanceNameHasPrefix,omitempty"`
-	InstanceNameHasSuffix    *string  `json:"instanceNameHasSuffix,omitempty"`
-	InstanceNameEqualFold    *string  `json:"instanceNameEqualFold,omitempty"`
-	InstanceNameContainsFold *string  `json:"instanceNameContainsFold,omitempty"`
+	// "instance_name" edge predicates.
+	HasInstanceName     *bool                     `json:"hasInstanceName,omitempty"`
+	HasInstanceNameWith []*InstanceNameWhereInput `json:"hasInstanceNameWith,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
@@ -3725,46 +3675,25 @@ func (i *BlobWhereInput) P() (predicate.Blob, error) {
 	if i.ArchiveURLContainsFold != nil {
 		predicates = append(predicates, blob.ArchiveURLContainsFold(*i.ArchiveURLContainsFold))
 	}
-	if i.InstanceName != nil {
-		predicates = append(predicates, blob.InstanceNameEQ(*i.InstanceName))
-	}
-	if i.InstanceNameNEQ != nil {
-		predicates = append(predicates, blob.InstanceNameNEQ(*i.InstanceNameNEQ))
-	}
-	if len(i.InstanceNameIn) > 0 {
-		predicates = append(predicates, blob.InstanceNameIn(i.InstanceNameIn...))
-	}
-	if len(i.InstanceNameNotIn) > 0 {
-		predicates = append(predicates, blob.InstanceNameNotIn(i.InstanceNameNotIn...))
-	}
-	if i.InstanceNameGT != nil {
-		predicates = append(predicates, blob.InstanceNameGT(*i.InstanceNameGT))
-	}
-	if i.InstanceNameGTE != nil {
-		predicates = append(predicates, blob.InstanceNameGTE(*i.InstanceNameGTE))
-	}
-	if i.InstanceNameLT != nil {
-		predicates = append(predicates, blob.InstanceNameLT(*i.InstanceNameLT))
-	}
-	if i.InstanceNameLTE != nil {
-		predicates = append(predicates, blob.InstanceNameLTE(*i.InstanceNameLTE))
-	}
-	if i.InstanceNameContains != nil {
-		predicates = append(predicates, blob.InstanceNameContains(*i.InstanceNameContains))
-	}
-	if i.InstanceNameHasPrefix != nil {
-		predicates = append(predicates, blob.InstanceNameHasPrefix(*i.InstanceNameHasPrefix))
-	}
-	if i.InstanceNameHasSuffix != nil {
-		predicates = append(predicates, blob.InstanceNameHasSuffix(*i.InstanceNameHasSuffix))
-	}
-	if i.InstanceNameEqualFold != nil {
-		predicates = append(predicates, blob.InstanceNameEqualFold(*i.InstanceNameEqualFold))
-	}
-	if i.InstanceNameContainsFold != nil {
-		predicates = append(predicates, blob.InstanceNameContainsFold(*i.InstanceNameContainsFold))
-	}
 
+	if i.HasInstanceName != nil {
+		p := blob.HasInstanceName()
+		if !*i.HasInstanceName {
+			p = blob.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasInstanceNameWith) > 0 {
+		with := make([]predicate.InstanceName, 0, len(i.HasInstanceNameWith))
+		for _, w := range i.HasInstanceNameWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasInstanceNameWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, blob.HasInstanceNameWith(with...))
+	}
 	switch len(predicates) {
 	case 0:
 		return nil, ErrEmptyBlobWhereInput
@@ -3817,21 +3746,6 @@ type BuildWhereInput struct {
 	BuildUUIDLT    *uuid.UUID  `json:"buildUUIDLT,omitempty"`
 	BuildUUIDLTE   *uuid.UUID  `json:"buildUUIDLTE,omitempty"`
 
-	// "instance_name" field predicates.
-	InstanceName             *string  `json:"instanceName,omitempty"`
-	InstanceNameNEQ          *string  `json:"instanceNameNEQ,omitempty"`
-	InstanceNameIn           []string `json:"instanceNameIn,omitempty"`
-	InstanceNameNotIn        []string `json:"instanceNameNotIn,omitempty"`
-	InstanceNameGT           *string  `json:"instanceNameGT,omitempty"`
-	InstanceNameGTE          *string  `json:"instanceNameGTE,omitempty"`
-	InstanceNameLT           *string  `json:"instanceNameLT,omitempty"`
-	InstanceNameLTE          *string  `json:"instanceNameLTE,omitempty"`
-	InstanceNameContains     *string  `json:"instanceNameContains,omitempty"`
-	InstanceNameHasPrefix    *string  `json:"instanceNameHasPrefix,omitempty"`
-	InstanceNameHasSuffix    *string  `json:"instanceNameHasSuffix,omitempty"`
-	InstanceNameEqualFold    *string  `json:"instanceNameEqualFold,omitempty"`
-	InstanceNameContainsFold *string  `json:"instanceNameContainsFold,omitempty"`
-
 	// "timestamp" field predicates.
 	Timestamp      *time.Time  `json:"timestamp,omitempty"`
 	TimestampNEQ   *time.Time  `json:"timestampNEQ,omitempty"`
@@ -3841,6 +3755,10 @@ type BuildWhereInput struct {
 	TimestampGTE   *time.Time  `json:"timestampGTE,omitempty"`
 	TimestampLT    *time.Time  `json:"timestampLT,omitempty"`
 	TimestampLTE   *time.Time  `json:"timestampLTE,omitempty"`
+
+	// "instance_name" edge predicates.
+	HasInstanceName     *bool                     `json:"hasInstanceName,omitempty"`
+	HasInstanceNameWith []*InstanceNameWhereInput `json:"hasInstanceNameWith,omitempty"`
 
 	// "invocations" edge predicates.
 	HasInvocations     *bool                        `json:"hasInvocations,omitempty"`
@@ -4005,45 +3923,6 @@ func (i *BuildWhereInput) P() (predicate.Build, error) {
 	if i.BuildUUIDLTE != nil {
 		predicates = append(predicates, build.BuildUUIDLTE(*i.BuildUUIDLTE))
 	}
-	if i.InstanceName != nil {
-		predicates = append(predicates, build.InstanceNameEQ(*i.InstanceName))
-	}
-	if i.InstanceNameNEQ != nil {
-		predicates = append(predicates, build.InstanceNameNEQ(*i.InstanceNameNEQ))
-	}
-	if len(i.InstanceNameIn) > 0 {
-		predicates = append(predicates, build.InstanceNameIn(i.InstanceNameIn...))
-	}
-	if len(i.InstanceNameNotIn) > 0 {
-		predicates = append(predicates, build.InstanceNameNotIn(i.InstanceNameNotIn...))
-	}
-	if i.InstanceNameGT != nil {
-		predicates = append(predicates, build.InstanceNameGT(*i.InstanceNameGT))
-	}
-	if i.InstanceNameGTE != nil {
-		predicates = append(predicates, build.InstanceNameGTE(*i.InstanceNameGTE))
-	}
-	if i.InstanceNameLT != nil {
-		predicates = append(predicates, build.InstanceNameLT(*i.InstanceNameLT))
-	}
-	if i.InstanceNameLTE != nil {
-		predicates = append(predicates, build.InstanceNameLTE(*i.InstanceNameLTE))
-	}
-	if i.InstanceNameContains != nil {
-		predicates = append(predicates, build.InstanceNameContains(*i.InstanceNameContains))
-	}
-	if i.InstanceNameHasPrefix != nil {
-		predicates = append(predicates, build.InstanceNameHasPrefix(*i.InstanceNameHasPrefix))
-	}
-	if i.InstanceNameHasSuffix != nil {
-		predicates = append(predicates, build.InstanceNameHasSuffix(*i.InstanceNameHasSuffix))
-	}
-	if i.InstanceNameEqualFold != nil {
-		predicates = append(predicates, build.InstanceNameEqualFold(*i.InstanceNameEqualFold))
-	}
-	if i.InstanceNameContainsFold != nil {
-		predicates = append(predicates, build.InstanceNameContainsFold(*i.InstanceNameContainsFold))
-	}
 	if i.Timestamp != nil {
 		predicates = append(predicates, build.TimestampEQ(*i.Timestamp))
 	}
@@ -4069,6 +3948,24 @@ func (i *BuildWhereInput) P() (predicate.Build, error) {
 		predicates = append(predicates, build.TimestampLTE(*i.TimestampLTE))
 	}
 
+	if i.HasInstanceName != nil {
+		p := build.HasInstanceName()
+		if !*i.HasInstanceName {
+			p = build.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasInstanceNameWith) > 0 {
+		with := make([]predicate.InstanceName, 0, len(i.HasInstanceNameWith))
+		for _, w := range i.HasInstanceNameWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasInstanceNameWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, build.HasInstanceNameWith(with...))
+	}
 	if i.HasInvocations != nil {
 		p := build.HasInvocations()
 		if !*i.HasInvocations {
@@ -6108,6 +6005,250 @@ func (i *IncompleteBuildLogWhereInput) P() (predicate.IncompleteBuildLog, error)
 		return predicates[0], nil
 	default:
 		return incompletebuildlog.And(predicates...), nil
+	}
+}
+
+// InstanceNameWhereInput represents a where input for filtering InstanceName queries.
+type InstanceNameWhereInput struct {
+	Predicates []predicate.InstanceName  `json:"-"`
+	Not        *InstanceNameWhereInput   `json:"not,omitempty"`
+	Or         []*InstanceNameWhereInput `json:"or,omitempty"`
+	And        []*InstanceNameWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "name" field predicates.
+	Name             *string  `json:"name,omitempty"`
+	NameNEQ          *string  `json:"nameNEQ,omitempty"`
+	NameIn           []string `json:"nameIn,omitempty"`
+	NameNotIn        []string `json:"nameNotIn,omitempty"`
+	NameGT           *string  `json:"nameGT,omitempty"`
+	NameGTE          *string  `json:"nameGTE,omitempty"`
+	NameLT           *string  `json:"nameLT,omitempty"`
+	NameLTE          *string  `json:"nameLTE,omitempty"`
+	NameContains     *string  `json:"nameContains,omitempty"`
+	NameHasPrefix    *string  `json:"nameHasPrefix,omitempty"`
+	NameHasSuffix    *string  `json:"nameHasSuffix,omitempty"`
+	NameEqualFold    *string  `json:"nameEqualFold,omitempty"`
+	NameContainsFold *string  `json:"nameContainsFold,omitempty"`
+
+	// "bazel_invocations" edge predicates.
+	HasBazelInvocations     *bool                        `json:"hasBazelInvocations,omitempty"`
+	HasBazelInvocationsWith []*BazelInvocationWhereInput `json:"hasBazelInvocationsWith,omitempty"`
+
+	// "builds" edge predicates.
+	HasBuilds     *bool              `json:"hasBuilds,omitempty"`
+	HasBuildsWith []*BuildWhereInput `json:"hasBuildsWith,omitempty"`
+
+	// "blobs" edge predicates.
+	HasBlobs     *bool             `json:"hasBlobs,omitempty"`
+	HasBlobsWith []*BlobWhereInput `json:"hasBlobsWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *InstanceNameWhereInput) AddPredicates(predicates ...predicate.InstanceName) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the InstanceNameWhereInput filter on the InstanceNameQuery builder.
+func (i *InstanceNameWhereInput) Filter(q *InstanceNameQuery) (*InstanceNameQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyInstanceNameWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyInstanceNameWhereInput is returned in case the InstanceNameWhereInput is empty.
+var ErrEmptyInstanceNameWhereInput = errors.New("ent: empty predicate InstanceNameWhereInput")
+
+// P returns a predicate for filtering instancenames.
+// An error is returned if the input is empty or invalid.
+func (i *InstanceNameWhereInput) P() (predicate.InstanceName, error) {
+	var predicates []predicate.InstanceName
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, instancename.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.InstanceName, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, instancename.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.InstanceName, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, instancename.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, instancename.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, instancename.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, instancename.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, instancename.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, instancename.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, instancename.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, instancename.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, instancename.IDLTE(*i.IDLTE))
+	}
+	if i.Name != nil {
+		predicates = append(predicates, instancename.NameEQ(*i.Name))
+	}
+	if i.NameNEQ != nil {
+		predicates = append(predicates, instancename.NameNEQ(*i.NameNEQ))
+	}
+	if len(i.NameIn) > 0 {
+		predicates = append(predicates, instancename.NameIn(i.NameIn...))
+	}
+	if len(i.NameNotIn) > 0 {
+		predicates = append(predicates, instancename.NameNotIn(i.NameNotIn...))
+	}
+	if i.NameGT != nil {
+		predicates = append(predicates, instancename.NameGT(*i.NameGT))
+	}
+	if i.NameGTE != nil {
+		predicates = append(predicates, instancename.NameGTE(*i.NameGTE))
+	}
+	if i.NameLT != nil {
+		predicates = append(predicates, instancename.NameLT(*i.NameLT))
+	}
+	if i.NameLTE != nil {
+		predicates = append(predicates, instancename.NameLTE(*i.NameLTE))
+	}
+	if i.NameContains != nil {
+		predicates = append(predicates, instancename.NameContains(*i.NameContains))
+	}
+	if i.NameHasPrefix != nil {
+		predicates = append(predicates, instancename.NameHasPrefix(*i.NameHasPrefix))
+	}
+	if i.NameHasSuffix != nil {
+		predicates = append(predicates, instancename.NameHasSuffix(*i.NameHasSuffix))
+	}
+	if i.NameEqualFold != nil {
+		predicates = append(predicates, instancename.NameEqualFold(*i.NameEqualFold))
+	}
+	if i.NameContainsFold != nil {
+		predicates = append(predicates, instancename.NameContainsFold(*i.NameContainsFold))
+	}
+
+	if i.HasBazelInvocations != nil {
+		p := instancename.HasBazelInvocations()
+		if !*i.HasBazelInvocations {
+			p = instancename.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBazelInvocationsWith) > 0 {
+		with := make([]predicate.BazelInvocation, 0, len(i.HasBazelInvocationsWith))
+		for _, w := range i.HasBazelInvocationsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBazelInvocationsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, instancename.HasBazelInvocationsWith(with...))
+	}
+	if i.HasBuilds != nil {
+		p := instancename.HasBuilds()
+		if !*i.HasBuilds {
+			p = instancename.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBuildsWith) > 0 {
+		with := make([]predicate.Build, 0, len(i.HasBuildsWith))
+		for _, w := range i.HasBuildsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBuildsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, instancename.HasBuildsWith(with...))
+	}
+	if i.HasBlobs != nil {
+		p := instancename.HasBlobs()
+		if !*i.HasBlobs {
+			p = instancename.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBlobsWith) > 0 {
+		with := make([]predicate.Blob, 0, len(i.HasBlobsWith))
+		for _, w := range i.HasBlobsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBlobsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, instancename.HasBlobsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyInstanceNameWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return instancename.And(predicates...), nil
 	}
 }
 

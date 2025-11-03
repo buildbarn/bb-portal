@@ -46,8 +46,6 @@ const (
 	FieldNumFetches = "num_fetches"
 	// FieldProfileName holds the string denoting the profile_name field in the database.
 	FieldProfileName = "profile_name"
-	// FieldInstanceName holds the string denoting the instance_name field in the database.
-	FieldInstanceName = "instance_name"
 	// FieldBazelVersion holds the string denoting the bazel_version field in the database.
 	FieldBazelVersion = "bazel_version"
 	// FieldExitCodeName holds the string denoting the exit_code_name field in the database.
@@ -80,6 +78,8 @@ const (
 	FieldProcessedEventStructuredCommandLine = "processed_event_structured_command_line"
 	// FieldProcessedEventWorkspaceStatus holds the string denoting the processed_event_workspace_status field in the database.
 	FieldProcessedEventWorkspaceStatus = "processed_event_workspace_status"
+	// EdgeInstanceName holds the string denoting the instance_name edge name in mutations.
+	EdgeInstanceName = "instance_name"
 	// EdgeBuild holds the string denoting the build edge name in mutations.
 	EdgeBuild = "build"
 	// EdgeEventMetadata holds the string denoting the event_metadata edge name in mutations.
@@ -102,6 +102,13 @@ const (
 	EdgeSourceControl = "source_control"
 	// Table holds the table name of the bazelinvocation in the database.
 	Table = "bazel_invocations"
+	// InstanceNameTable is the table that holds the instance_name relation/edge.
+	InstanceNameTable = "bazel_invocations"
+	// InstanceNameInverseTable is the table name for the InstanceName entity.
+	// It exists in this package in order to avoid circular dependency with the "instancename" package.
+	InstanceNameInverseTable = "instance_names"
+	// InstanceNameColumn is the table column denoting the instance_name relation/edge.
+	InstanceNameColumn = "instance_name_bazel_invocations"
 	// BuildTable is the table that holds the build relation/edge.
 	BuildTable = "bazel_invocations"
 	// BuildInverseTable is the table name for the Build entity.
@@ -194,7 +201,6 @@ var Columns = []string{
 	FieldConfigurationMnemonic,
 	FieldNumFetches,
 	FieldProfileName,
-	FieldInstanceName,
 	FieldBazelVersion,
 	FieldExitCodeName,
 	FieldExitCodeCode,
@@ -217,6 +223,7 @@ var Columns = []string{
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"build_invocations",
+	"instance_name_bazel_invocations",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -344,11 +351,6 @@ func ByProfileName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProfileName, opts...).ToFunc()
 }
 
-// ByInstanceName orders the results by the instance_name field.
-func ByInstanceName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldInstanceName, opts...).ToFunc()
-}
-
 // ByBazelVersion orders the results by the bazel_version field.
 func ByBazelVersion(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBazelVersion, opts...).ToFunc()
@@ -407,6 +409,13 @@ func ByProcessedEventStructuredCommandLine(opts ...sql.OrderTermOption) OrderOpt
 // ByProcessedEventWorkspaceStatus orders the results by the processed_event_workspace_status field.
 func ByProcessedEventWorkspaceStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProcessedEventWorkspaceStatus, opts...).ToFunc()
+}
+
+// ByInstanceNameField orders the results by instance_name field.
+func ByInstanceNameField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newInstanceNameStep(), sql.OrderByField(field, opts...))
+	}
 }
 
 // ByBuildField orders the results by build field.
@@ -526,6 +535,13 @@ func BySourceControlField(field string, opts ...sql.OrderTermOption) OrderOption
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newSourceControlStep(), sql.OrderByField(field, opts...))
 	}
+}
+func newInstanceNameStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(InstanceNameInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, InstanceNameTable, InstanceNameColumn),
+	)
 }
 func newBuildStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(

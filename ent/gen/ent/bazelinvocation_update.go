@@ -18,6 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -375,26 +376,6 @@ func (biu *BazelInvocationUpdate) ClearProfileName() *BazelInvocationUpdate {
 	return biu
 }
 
-// SetInstanceName sets the "instance_name" field.
-func (biu *BazelInvocationUpdate) SetInstanceName(s string) *BazelInvocationUpdate {
-	biu.mutation.SetInstanceName(s)
-	return biu
-}
-
-// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableInstanceName(s *string) *BazelInvocationUpdate {
-	if s != nil {
-		biu.SetInstanceName(*s)
-	}
-	return biu
-}
-
-// ClearInstanceName clears the value of the "instance_name" field.
-func (biu *BazelInvocationUpdate) ClearInstanceName() *BazelInvocationUpdate {
-	biu.mutation.ClearInstanceName()
-	return biu
-}
-
 // SetBazelVersion sets the "bazel_version" field.
 func (biu *BazelInvocationUpdate) SetBazelVersion(s string) *BazelInvocationUpdate {
 	biu.mutation.SetBazelVersion(s)
@@ -678,6 +659,17 @@ func (biu *BazelInvocationUpdate) SetNillableProcessedEventWorkspaceStatus(b *bo
 	return biu
 }
 
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (biu *BazelInvocationUpdate) SetInstanceNameID(id int) *BazelInvocationUpdate {
+	biu.mutation.SetInstanceNameID(id)
+	return biu
+}
+
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (biu *BazelInvocationUpdate) SetInstanceName(i *InstanceName) *BazelInvocationUpdate {
+	return biu.SetInstanceNameID(i.ID)
+}
+
 // SetBuildID sets the "build" edge to the Build entity by ID.
 func (biu *BazelInvocationUpdate) SetBuildID(id int) *BazelInvocationUpdate {
 	biu.mutation.SetBuildID(id)
@@ -843,6 +835,12 @@ func (biu *BazelInvocationUpdate) SetSourceControl(s *SourceControl) *BazelInvoc
 // Mutation returns the BazelInvocationMutation object of the builder.
 func (biu *BazelInvocationUpdate) Mutation() *BazelInvocationMutation {
 	return biu.mutation
+}
+
+// ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
+func (biu *BazelInvocationUpdate) ClearInstanceName() *BazelInvocationUpdate {
+	biu.mutation.ClearInstanceName()
+	return biu
 }
 
 // ClearBuild clears the "build" edge to the Build entity.
@@ -1037,6 +1035,14 @@ func (biu *BazelInvocationUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (biu *BazelInvocationUpdate) check() error {
+	if biu.mutation.InstanceNameCleared() && len(biu.mutation.InstanceNameIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "BazelInvocation.instance_name"`)
+	}
+	return nil
+}
+
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (biu *BazelInvocationUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BazelInvocationUpdate {
 	biu.modifiers = append(biu.modifiers, modifiers...)
@@ -1044,6 +1050,9 @@ func (biu *BazelInvocationUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)
 }
 
 func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := biu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(bazelinvocation.Table, bazelinvocation.Columns, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt))
 	if ps := biu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -1154,12 +1163,6 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	if biu.mutation.ProfileNameCleared() {
 		_spec.ClearField(bazelinvocation.FieldProfileName, field.TypeString)
 	}
-	if value, ok := biu.mutation.InstanceName(); ok {
-		_spec.SetField(bazelinvocation.FieldInstanceName, field.TypeString, value)
-	}
-	if biu.mutation.InstanceNameCleared() {
-		_spec.ClearField(bazelinvocation.FieldInstanceName, field.TypeString)
-	}
 	if value, ok := biu.mutation.BazelVersion(); ok {
 		_spec.SetField(bazelinvocation.FieldBazelVersion, field.TypeString, value)
 	}
@@ -1260,6 +1263,35 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if value, ok := biu.mutation.ProcessedEventWorkspaceStatus(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventWorkspaceStatus, field.TypeBool, value)
+	}
+	if biu.mutation.InstanceNameCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   bazelinvocation.InstanceNameTable,
+			Columns: []string{bazelinvocation.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.InstanceNameIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   bazelinvocation.InstanceNameTable,
+			Columns: []string{bazelinvocation.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if biu.mutation.BuildCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -2020,26 +2052,6 @@ func (biuo *BazelInvocationUpdateOne) ClearProfileName() *BazelInvocationUpdateO
 	return biuo
 }
 
-// SetInstanceName sets the "instance_name" field.
-func (biuo *BazelInvocationUpdateOne) SetInstanceName(s string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetInstanceName(s)
-	return biuo
-}
-
-// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableInstanceName(s *string) *BazelInvocationUpdateOne {
-	if s != nil {
-		biuo.SetInstanceName(*s)
-	}
-	return biuo
-}
-
-// ClearInstanceName clears the value of the "instance_name" field.
-func (biuo *BazelInvocationUpdateOne) ClearInstanceName() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearInstanceName()
-	return biuo
-}
-
 // SetBazelVersion sets the "bazel_version" field.
 func (biuo *BazelInvocationUpdateOne) SetBazelVersion(s string) *BazelInvocationUpdateOne {
 	biuo.mutation.SetBazelVersion(s)
@@ -2323,6 +2335,17 @@ func (biuo *BazelInvocationUpdateOne) SetNillableProcessedEventWorkspaceStatus(b
 	return biuo
 }
 
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (biuo *BazelInvocationUpdateOne) SetInstanceNameID(id int) *BazelInvocationUpdateOne {
+	biuo.mutation.SetInstanceNameID(id)
+	return biuo
+}
+
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (biuo *BazelInvocationUpdateOne) SetInstanceName(i *InstanceName) *BazelInvocationUpdateOne {
+	return biuo.SetInstanceNameID(i.ID)
+}
+
 // SetBuildID sets the "build" edge to the Build entity by ID.
 func (biuo *BazelInvocationUpdateOne) SetBuildID(id int) *BazelInvocationUpdateOne {
 	biuo.mutation.SetBuildID(id)
@@ -2488,6 +2511,12 @@ func (biuo *BazelInvocationUpdateOne) SetSourceControl(s *SourceControl) *BazelI
 // Mutation returns the BazelInvocationMutation object of the builder.
 func (biuo *BazelInvocationUpdateOne) Mutation() *BazelInvocationMutation {
 	return biuo.mutation
+}
+
+// ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
+func (biuo *BazelInvocationUpdateOne) ClearInstanceName() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearInstanceName()
+	return biuo
 }
 
 // ClearBuild clears the "build" edge to the Build entity.
@@ -2695,6 +2724,14 @@ func (biuo *BazelInvocationUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (biuo *BazelInvocationUpdateOne) check() error {
+	if biuo.mutation.InstanceNameCleared() && len(biuo.mutation.InstanceNameIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "BazelInvocation.instance_name"`)
+	}
+	return nil
+}
+
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (biuo *BazelInvocationUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BazelInvocationUpdateOne {
 	biuo.modifiers = append(biuo.modifiers, modifiers...)
@@ -2702,6 +2739,9 @@ func (biuo *BazelInvocationUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuil
 }
 
 func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *BazelInvocation, err error) {
+	if err := biuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(bazelinvocation.Table, bazelinvocation.Columns, sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt))
 	id, ok := biuo.mutation.ID()
 	if !ok {
@@ -2829,12 +2869,6 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	if biuo.mutation.ProfileNameCleared() {
 		_spec.ClearField(bazelinvocation.FieldProfileName, field.TypeString)
 	}
-	if value, ok := biuo.mutation.InstanceName(); ok {
-		_spec.SetField(bazelinvocation.FieldInstanceName, field.TypeString, value)
-	}
-	if biuo.mutation.InstanceNameCleared() {
-		_spec.ClearField(bazelinvocation.FieldInstanceName, field.TypeString)
-	}
 	if value, ok := biuo.mutation.BazelVersion(); ok {
 		_spec.SetField(bazelinvocation.FieldBazelVersion, field.TypeString, value)
 	}
@@ -2935,6 +2969,35 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if value, ok := biuo.mutation.ProcessedEventWorkspaceStatus(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventWorkspaceStatus, field.TypeBool, value)
+	}
+	if biuo.mutation.InstanceNameCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   bazelinvocation.InstanceNameTable,
+			Columns: []string{bazelinvocation.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.InstanceNameIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   bazelinvocation.InstanceNameTable,
+			Columns: []string{bazelinvocation.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if biuo.mutation.BuildCleared() {
 		edge := &sqlgraph.EdgeSpec{

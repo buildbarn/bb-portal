@@ -1,12 +1,12 @@
 load("@rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "blob",
+    name = "instancename",
     srcs = [
-        "blob.go",
+        "instancename.go",
         "where.go",
     ],
-    importpath = "github.com/buildbarn/bb-portal/ent/gen/ent/blob",
+    importpath = "github.com/buildbarn/bb-portal/ent/gen/ent/instancename",
     visibility = ["//visibility:public"],
     deps = [
         "//ent/gen/ent/predicate",

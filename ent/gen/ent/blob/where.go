@@ -4,6 +4,7 @@ package blob
 
 import (
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
@@ -70,11 +71,6 @@ func Reason(v string) predicate.Blob {
 // ArchiveURL applies equality check predicate on the "archive_url" field. It's identical to ArchiveURLEQ.
 func ArchiveURL(v string) predicate.Blob {
 	return predicate.Blob(sql.FieldEQ(FieldArchiveURL, v))
-}
-
-// InstanceName applies equality check predicate on the "instance_name" field. It's identical to InstanceNameEQ.
-func InstanceName(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldEQ(FieldInstanceName, v))
 }
 
 // URIEQ applies the EQ predicate on the "uri" field.
@@ -362,69 +358,27 @@ func ArchiveURLContainsFold(v string) predicate.Blob {
 	return predicate.Blob(sql.FieldContainsFold(FieldArchiveURL, v))
 }
 
-// InstanceNameEQ applies the EQ predicate on the "instance_name" field.
-func InstanceNameEQ(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldEQ(FieldInstanceName, v))
+// HasInstanceName applies the HasEdge predicate on the "instance_name" edge.
+func HasInstanceName() predicate.Blob {
+	return predicate.Blob(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, InstanceNameTable, InstanceNameColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
 }
 
-// InstanceNameNEQ applies the NEQ predicate on the "instance_name" field.
-func InstanceNameNEQ(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldNEQ(FieldInstanceName, v))
-}
-
-// InstanceNameIn applies the In predicate on the "instance_name" field.
-func InstanceNameIn(vs ...string) predicate.Blob {
-	return predicate.Blob(sql.FieldIn(FieldInstanceName, vs...))
-}
-
-// InstanceNameNotIn applies the NotIn predicate on the "instance_name" field.
-func InstanceNameNotIn(vs ...string) predicate.Blob {
-	return predicate.Blob(sql.FieldNotIn(FieldInstanceName, vs...))
-}
-
-// InstanceNameGT applies the GT predicate on the "instance_name" field.
-func InstanceNameGT(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldGT(FieldInstanceName, v))
-}
-
-// InstanceNameGTE applies the GTE predicate on the "instance_name" field.
-func InstanceNameGTE(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldGTE(FieldInstanceName, v))
-}
-
-// InstanceNameLT applies the LT predicate on the "instance_name" field.
-func InstanceNameLT(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldLT(FieldInstanceName, v))
-}
-
-// InstanceNameLTE applies the LTE predicate on the "instance_name" field.
-func InstanceNameLTE(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldLTE(FieldInstanceName, v))
-}
-
-// InstanceNameContains applies the Contains predicate on the "instance_name" field.
-func InstanceNameContains(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldContains(FieldInstanceName, v))
-}
-
-// InstanceNameHasPrefix applies the HasPrefix predicate on the "instance_name" field.
-func InstanceNameHasPrefix(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldHasPrefix(FieldInstanceName, v))
-}
-
-// InstanceNameHasSuffix applies the HasSuffix predicate on the "instance_name" field.
-func InstanceNameHasSuffix(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldHasSuffix(FieldInstanceName, v))
-}
-
-// InstanceNameEqualFold applies the EqualFold predicate on the "instance_name" field.
-func InstanceNameEqualFold(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldEqualFold(FieldInstanceName, v))
-}
-
-// InstanceNameContainsFold applies the ContainsFold predicate on the "instance_name" field.
-func InstanceNameContainsFold(v string) predicate.Blob {
-	return predicate.Blob(sql.FieldContainsFold(FieldInstanceName, v))
+// HasInstanceNameWith applies the HasEdge predicate on the "instance_name" edge with a given conditions (other predicates).
+func HasInstanceNameWith(preds ...predicate.InstanceName) predicate.Blob {
+	return predicate.Blob(func(s *sql.Selector) {
+		step := newInstanceNameStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

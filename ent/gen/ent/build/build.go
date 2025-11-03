@@ -16,14 +16,21 @@ const (
 	FieldBuildURL = "build_url"
 	// FieldBuildUUID holds the string denoting the build_uuid field in the database.
 	FieldBuildUUID = "build_uuid"
-	// FieldInstanceName holds the string denoting the instance_name field in the database.
-	FieldInstanceName = "instance_name"
 	// FieldTimestamp holds the string denoting the timestamp field in the database.
 	FieldTimestamp = "timestamp"
+	// EdgeInstanceName holds the string denoting the instance_name edge name in mutations.
+	EdgeInstanceName = "instance_name"
 	// EdgeInvocations holds the string denoting the invocations edge name in mutations.
 	EdgeInvocations = "invocations"
 	// Table holds the table name of the build in the database.
 	Table = "builds"
+	// InstanceNameTable is the table that holds the instance_name relation/edge.
+	InstanceNameTable = "builds"
+	// InstanceNameInverseTable is the table name for the InstanceName entity.
+	// It exists in this package in order to avoid circular dependency with the "instancename" package.
+	InstanceNameInverseTable = "instance_names"
+	// InstanceNameColumn is the table column denoting the instance_name relation/edge.
+	InstanceNameColumn = "instance_name_builds"
 	// InvocationsTable is the table that holds the invocations relation/edge.
 	InvocationsTable = "bazel_invocations"
 	// InvocationsInverseTable is the table name for the BazelInvocation entity.
@@ -38,14 +45,24 @@ var Columns = []string{
 	FieldID,
 	FieldBuildURL,
 	FieldBuildUUID,
-	FieldInstanceName,
 	FieldTimestamp,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the "builds"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"instance_name_builds",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -70,14 +87,16 @@ func ByBuildUUID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBuildUUID, opts...).ToFunc()
 }
 
-// ByInstanceName orders the results by the instance_name field.
-func ByInstanceName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldInstanceName, opts...).ToFunc()
-}
-
 // ByTimestamp orders the results by the timestamp field.
 func ByTimestamp(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTimestamp, opts...).ToFunc()
+}
+
+// ByInstanceNameField orders the results by instance_name field.
+func ByInstanceNameField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newInstanceNameStep(), sql.OrderByField(field, opts...))
+	}
 }
 
 // ByInvocationsCount orders the results by invocations count.
@@ -92,6 +111,13 @@ func ByInvocations(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newInvocationsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
+}
+func newInstanceNameStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(InstanceNameInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, InstanceNameTable, InstanceNameColumn),
+	)
 }
 func newInvocationsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(

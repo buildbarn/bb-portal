@@ -21,6 +21,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
@@ -526,6 +527,17 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
+		case "instanceName":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&InstanceNameClient{config: bi.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, instancenameImplementors)...); err != nil {
+				return err
+			}
+			bi.withInstanceName = query
+
 		case "build":
 			var (
 				alias = field.Alias
@@ -684,11 +696,6 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			if _, ok := fieldSeen[bazelinvocation.FieldNumFetches]; !ok {
 				selectedFields = append(selectedFields, bazelinvocation.FieldNumFetches)
 				fieldSeen[bazelinvocation.FieldNumFetches] = struct{}{}
-			}
-		case "instanceName":
-			if _, ok := fieldSeen[bazelinvocation.FieldInstanceName]; !ok {
-				selectedFields = append(selectedFields, bazelinvocation.FieldInstanceName)
-				fieldSeen[bazelinvocation.FieldInstanceName] = struct{}{}
 			}
 		case "bazelVersion":
 			if _, ok := fieldSeen[bazelinvocation.FieldBazelVersion]; !ok {
@@ -872,6 +879,17 @@ func (b *BlobQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
+
+		case "instanceName":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&InstanceNameClient{config: b.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, instancenameImplementors)...); err != nil {
+				return err
+			}
+			b.withInstanceName = query
 		case "uri":
 			if _, ok := fieldSeen[blob.FieldURI]; !ok {
 				selectedFields = append(selectedFields, blob.FieldURI)
@@ -896,11 +914,6 @@ func (b *BlobQuery) collectField(ctx context.Context, oneNode bool, opCtx *graph
 			if _, ok := fieldSeen[blob.FieldArchiveURL]; !ok {
 				selectedFields = append(selectedFields, blob.FieldArchiveURL)
 				fieldSeen[blob.FieldArchiveURL] = struct{}{}
-			}
-		case "instanceName":
-			if _, ok := fieldSeen[blob.FieldInstanceName]; !ok {
-				selectedFields = append(selectedFields, blob.FieldInstanceName)
-				fieldSeen[blob.FieldInstanceName] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -965,6 +978,17 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 
+		case "instanceName":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&InstanceNameClient{config: b.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, instancenameImplementors)...); err != nil {
+				return err
+			}
+			b.withInstanceName = query
+
 		case "invocations":
 			var (
 				alias = field.Alias
@@ -986,11 +1010,6 @@ func (b *BuildQuery) collectField(ctx context.Context, oneNode bool, opCtx *grap
 			if _, ok := fieldSeen[build.FieldBuildUUID]; !ok {
 				selectedFields = append(selectedFields, build.FieldBuildUUID)
 				fieldSeen[build.FieldBuildUUID] = struct{}{}
-			}
-		case "instanceName":
-			if _, ok := fieldSeen[build.FieldInstanceName]; !ok {
-				selectedFields = append(selectedFields, build.FieldInstanceName)
-				fieldSeen[build.FieldInstanceName] = struct{}{}
 			}
 		case "timestamp":
 			if _, ok := fieldSeen[build.FieldTimestamp]; !ok {
@@ -1661,6 +1680,112 @@ func newIncompleteBuildLogPaginateArgs(rv map[string]any) *incompletebuildlogPag
 	}
 	if v, ok := rv[whereField].(*IncompleteBuildLogWhereInput); ok {
 		args.opts = append(args.opts, WithIncompleteBuildLogFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (in *InstanceNameQuery) CollectFields(ctx context.Context, satisfies ...string) (*InstanceNameQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return in, nil
+	}
+	if err := in.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return in, nil
+}
+
+func (in *InstanceNameQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(instancename.Columns))
+		selectedFields = []string{instancename.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "bazelInvocations":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BazelInvocationClient{config: in.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
+				return err
+			}
+			in.WithNamedBazelInvocations(alias, func(wq *BazelInvocationQuery) {
+				*wq = *query
+			})
+
+		case "builds":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BuildClient{config: in.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, buildImplementors)...); err != nil {
+				return err
+			}
+			in.WithNamedBuilds(alias, func(wq *BuildQuery) {
+				*wq = *query
+			})
+
+		case "blobs":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BlobClient{config: in.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, blobImplementors)...); err != nil {
+				return err
+			}
+			in.WithNamedBlobs(alias, func(wq *BlobQuery) {
+				*wq = *query
+			})
+		case "name":
+			if _, ok := fieldSeen[instancename.FieldName]; !ok {
+				selectedFields = append(selectedFields, instancename.FieldName)
+				fieldSeen[instancename.FieldName] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		in.Select(selectedFields...)
+	}
+	return nil
+}
+
+type instancenamePaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []InstanceNamePaginateOption
+}
+
+func newInstanceNamePaginateArgs(rv map[string]any) *instancenamePaginateArgs {
+	args := &instancenamePaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*InstanceNameWhereInput); ok {
+		args.opts = append(args.opts, WithInstanceNameFilter(v.Filter))
 	}
 	return args
 }

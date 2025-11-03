@@ -67,6 +67,7 @@ type ResolverRoot interface {
 	ExectionInfo() ExectionInfoResolver
 	GarbageMetrics() GarbageMetricsResolver
 	IncompleteBuildLog() IncompleteBuildLogResolver
+	InstanceName() InstanceNameResolver
 	InvocationFiles() InvocationFilesResolver
 	MemoryMetrics() MemoryMetricsResolver
 	Metrics() MetricsResolver
@@ -105,6 +106,7 @@ type ResolverRoot interface {
 	ExectionInfoWhereInput() ExectionInfoWhereInputResolver
 	GarbageMetricsWhereInput() GarbageMetricsWhereInputResolver
 	IncompleteBuildLogWhereInput() IncompleteBuildLogWhereInputResolver
+	InstanceNameWhereInput() InstanceNameWhereInputResolver
 	InvocationFilesWhereInput() InvocationFilesWhereInputResolver
 	MemoryMetricsWhereInput() MemoryMetricsWhereInputResolver
 	MetricsWhereInput() MetricsWhereInputResolver
@@ -363,6 +365,14 @@ type ComplexityRoot struct {
 		ID              func(childComplexity int) int
 		LogSnippet      func(childComplexity int) int
 		SnippetID       func(childComplexity int) int
+	}
+
+	InstanceName struct {
+		BazelInvocations func(childComplexity int) int
+		Blobs            func(childComplexity int) int
+		Builds           func(childComplexity int) int
+		ID               func(childComplexity int) int
+		Name             func(childComplexity int) int
 	}
 
 	InvocationFiles struct {
@@ -826,6 +836,9 @@ type GarbageMetricsResolver interface {
 type IncompleteBuildLogResolver interface {
 	ID(ctx context.Context, obj *ent.IncompleteBuildLog) (string, error)
 }
+type InstanceNameResolver interface {
+	ID(ctx context.Context, obj *ent.InstanceName) (string, error)
+}
 type InvocationFilesResolver interface {
 	ID(ctx context.Context, obj *ent.InvocationFiles) (string, error)
 }
@@ -1057,6 +1070,16 @@ type IncompleteBuildLogWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error
+}
+type InstanceNameWhereInputResolver interface {
+	ID(ctx context.Context, obj *ent.InstanceNameWhereInput, data *string) error
+	IDNeq(ctx context.Context, obj *ent.InstanceNameWhereInput, data *string) error
+	IDIn(ctx context.Context, obj *ent.InstanceNameWhereInput, data []string) error
+	IDNotIn(ctx context.Context, obj *ent.InstanceNameWhereInput, data []string) error
+	IDGt(ctx context.Context, obj *ent.InstanceNameWhereInput, data *string) error
+	IDGte(ctx context.Context, obj *ent.InstanceNameWhereInput, data *string) error
+	IDLt(ctx context.Context, obj *ent.InstanceNameWhereInput, data *string) error
+	IDLte(ctx context.Context, obj *ent.InstanceNameWhereInput, data *string) error
 }
 type InvocationFilesWhereInputResolver interface {
 	ID(ctx context.Context, obj *ent.InvocationFilesWhereInput, data *string) error
@@ -2438,6 +2461,41 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.IncompleteBuildLog.SnippetID(childComplexity), true
+
+	case "InstanceName.bazelInvocations":
+		if e.complexity.InstanceName.BazelInvocations == nil {
+			break
+		}
+
+		return e.complexity.InstanceName.BazelInvocations(childComplexity), true
+
+	case "InstanceName.blobs":
+		if e.complexity.InstanceName.Blobs == nil {
+			break
+		}
+
+		return e.complexity.InstanceName.Blobs(childComplexity), true
+
+	case "InstanceName.builds":
+		if e.complexity.InstanceName.Builds == nil {
+			break
+		}
+
+		return e.complexity.InstanceName.Builds(childComplexity), true
+
+	case "InstanceName.id":
+		if e.complexity.InstanceName.ID == nil {
+			break
+		}
+
+		return e.complexity.InstanceName.ID(childComplexity), true
+
+	case "InstanceName.name":
+		if e.complexity.InstanceName.Name == nil {
+			break
+		}
+
+		return e.complexity.InstanceName.Name(childComplexity), true
 
 	case "InvocationFiles.bazelInvocation":
 		if e.complexity.InvocationFiles.BazelInvocation == nil {
@@ -4419,6 +4477,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputExectionInfoWhereInput,
 		ec.unmarshalInputGarbageMetricsWhereInput,
 		ec.unmarshalInputIncompleteBuildLogWhereInput,
+		ec.unmarshalInputInstanceNameWhereInput,
 		ec.unmarshalInputInvocationFilesWhereInput,
 		ec.unmarshalInputMemoryMetricsWhereInput,
 		ec.unmarshalInputMetricsWhereInput,
@@ -8936,47 +8995,6 @@ func (ec *executionContext) fieldContext_BazelInvocation_numFetches(_ context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _BazelInvocation_instanceName(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BazelInvocation_instanceName(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.InstanceName, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_BazelInvocation_instanceName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "BazelInvocation",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _BazelInvocation_bazelVersion(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
 	if err != nil {
@@ -9100,6 +9118,62 @@ func (ec *executionContext) fieldContext_BazelInvocation_exitCodeCode(_ context.
 	return fc, nil
 }
 
+func (ec *executionContext) _BazelInvocation_instanceName(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_BazelInvocation_instanceName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.InstanceName(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.InstanceName)
+	fc.Result = res
+	return ec.marshalNInstanceName2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceName(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_BazelInvocation_instanceName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BazelInvocation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_InstanceName_id(ctx, field)
+			case "name":
+				return ec.fieldContext_InstanceName_name(ctx, field)
+			case "bazelInvocations":
+				return ec.fieldContext_InstanceName_bazelInvocations(ctx, field)
+			case "builds":
+				return ec.fieldContext_InstanceName_builds(ctx, field)
+			case "blobs":
+				return ec.fieldContext_InstanceName_blobs(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type InstanceName", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _BazelInvocation_build(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_BazelInvocation_build(ctx, field)
 	if err != nil {
@@ -9142,10 +9216,10 @@ func (ec *executionContext) fieldContext_BazelInvocation_build(_ context.Context
 				return ec.fieldContext_Build_buildURL(ctx, field)
 			case "buildUUID":
 				return ec.fieldContext_Build_buildUUID(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_Build_instanceName(ctx, field)
 			case "timestamp":
 				return ec.fieldContext_Build_timestamp(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_Build_instanceName(ctx, field)
 			case "invocations":
 				return ec.fieldContext_Build_invocations(ctx, field)
 			}
@@ -10057,14 +10131,14 @@ func (ec *executionContext) fieldContext_BazelInvocationEdge_node(_ context.Cont
 				return ec.fieldContext_BazelInvocation_configurationMnemonic(ctx, field)
 			case "numFetches":
 				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "bazelVersion":
 				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
 			case "exitCodeName":
 				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
 			case "exitCodeCode":
 				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "metrics":
@@ -10342,14 +10416,14 @@ func (ec *executionContext) fieldContext_BazelInvocationProblem_bazelInvocation(
 				return ec.fieldContext_BazelInvocation_configurationMnemonic(ctx, field)
 			case "numFetches":
 				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "bazelVersion":
 				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
 			case "exitCodeName":
 				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
 			case "exitCodeCode":
 				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "metrics":
@@ -10871,7 +10945,7 @@ func (ec *executionContext) _Blob_instanceName(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.InstanceName, nil
+		return obj.InstanceName(ctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10883,19 +10957,31 @@ func (ec *executionContext) _Blob_instanceName(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*ent.InstanceName)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNInstanceName2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceName(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Blob_instanceName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Blob",
 		Field:      field,
-		IsMethod:   false,
+		IsMethod:   true,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_InstanceName_id(ctx, field)
+			case "name":
+				return ec.fieldContext_InstanceName_name(ctx, field)
+			case "bazelInvocations":
+				return ec.fieldContext_InstanceName_bazelInvocations(ctx, field)
+			case "builds":
+				return ec.fieldContext_InstanceName_builds(ctx, field)
+			case "blobs":
+				return ec.fieldContext_InstanceName_blobs(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type InstanceName", field.Name)
 		},
 	}
 	return fc, nil
@@ -11250,50 +11336,6 @@ func (ec *executionContext) fieldContext_Build_buildUUID(_ context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _Build_instanceName(ctx context.Context, field graphql.CollectedField, obj *ent.Build) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Build_instanceName(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.InstanceName, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Build_instanceName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Build",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Build_timestamp(ctx context.Context, field graphql.CollectedField, obj *ent.Build) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Build_timestamp(ctx, field)
 	if err != nil {
@@ -11333,6 +11375,62 @@ func (ec *executionContext) fieldContext_Build_timestamp(_ context.Context, fiel
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Build_instanceName(ctx context.Context, field graphql.CollectedField, obj *ent.Build) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Build_instanceName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.InstanceName(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.InstanceName)
+	fc.Result = res
+	return ec.marshalNInstanceName2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceName(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Build_instanceName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Build",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_InstanceName_id(ctx, field)
+			case "name":
+				return ec.fieldContext_InstanceName_name(ctx, field)
+			case "bazelInvocations":
+				return ec.fieldContext_InstanceName_bazelInvocations(ctx, field)
+			case "builds":
+				return ec.fieldContext_InstanceName_builds(ctx, field)
+			case "blobs":
+				return ec.fieldContext_InstanceName_blobs(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type InstanceName", field.Name)
 		},
 	}
 	return fc, nil
@@ -11406,14 +11504,14 @@ func (ec *executionContext) fieldContext_Build_invocations(_ context.Context, fi
 				return ec.fieldContext_BazelInvocation_configurationMnemonic(ctx, field)
 			case "numFetches":
 				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "bazelVersion":
 				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
 			case "exitCodeName":
 				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
 			case "exitCodeCode":
 				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "metrics":
@@ -11634,10 +11732,10 @@ func (ec *executionContext) fieldContext_BuildEdge_node(_ context.Context, field
 				return ec.fieldContext_Build_buildURL(ctx, field)
 			case "buildUUID":
 				return ec.fieldContext_Build_buildUUID(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_Build_instanceName(ctx, field)
 			case "timestamp":
 				return ec.fieldContext_Build_timestamp(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_Build_instanceName(ctx, field)
 			case "invocations":
 				return ec.fieldContext_Build_invocations(ctx, field)
 			}
@@ -13751,14 +13849,14 @@ func (ec *executionContext) fieldContext_IncompleteBuildLog_bazelInvocation(_ co
 				return ec.fieldContext_BazelInvocation_configurationMnemonic(ctx, field)
 			case "numFetches":
 				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "bazelVersion":
 				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
 			case "exitCodeName":
 				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
 			case "exitCodeCode":
 				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "metrics":
@@ -13787,6 +13885,315 @@ func (ec *executionContext) fieldContext_IncompleteBuildLog_bazelInvocation(_ co
 				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _InstanceName_id(ctx context.Context, field graphql.CollectedField, obj *ent.InstanceName) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_InstanceName_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.InstanceName().ID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_InstanceName_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "InstanceName",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _InstanceName_name(ctx context.Context, field graphql.CollectedField, obj *ent.InstanceName) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_InstanceName_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_InstanceName_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "InstanceName",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _InstanceName_bazelInvocations(ctx context.Context, field graphql.CollectedField, obj *ent.InstanceName) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_InstanceName_bazelInvocations(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BazelInvocations(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.BazelInvocation)
+	fc.Result = res
+	return ec.marshalOBazelInvocation2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_InstanceName_bazelInvocations(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "InstanceName",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_BazelInvocation_id(ctx, field)
+			case "invocationID":
+				return ec.fieldContext_BazelInvocation_invocationID(ctx, field)
+			case "startedAt":
+				return ec.fieldContext_BazelInvocation_startedAt(ctx, field)
+			case "endedAt":
+				return ec.fieldContext_BazelInvocation_endedAt(ctx, field)
+			case "changeNumber":
+				return ec.fieldContext_BazelInvocation_changeNumber(ctx, field)
+			case "patchsetNumber":
+				return ec.fieldContext_BazelInvocation_patchsetNumber(ctx, field)
+			case "bepCompleted":
+				return ec.fieldContext_BazelInvocation_bepCompleted(ctx, field)
+			case "stepLabel":
+				return ec.fieldContext_BazelInvocation_stepLabel(ctx, field)
+			case "userEmail":
+				return ec.fieldContext_BazelInvocation_userEmail(ctx, field)
+			case "userLdap":
+				return ec.fieldContext_BazelInvocation_userLdap(ctx, field)
+			case "cpu":
+				return ec.fieldContext_BazelInvocation_cpu(ctx, field)
+			case "platformName":
+				return ec.fieldContext_BazelInvocation_platformName(ctx, field)
+			case "hostname":
+				return ec.fieldContext_BazelInvocation_hostname(ctx, field)
+			case "isCiWorker":
+				return ec.fieldContext_BazelInvocation_isCiWorker(ctx, field)
+			case "configurationMnemonic":
+				return ec.fieldContext_BazelInvocation_configurationMnemonic(ctx, field)
+			case "numFetches":
+				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
+			case "bazelVersion":
+				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
+			case "exitCodeName":
+				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
+			case "exitCodeCode":
+				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
+			case "build":
+				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "metrics":
+				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
+			case "incompleteBuildLogs":
+				return ec.fieldContext_BazelInvocation_incompleteBuildLogs(ctx, field)
+			case "invocationFiles":
+				return ec.fieldContext_BazelInvocation_invocationFiles(ctx, field)
+			case "testCollection":
+				return ec.fieldContext_BazelInvocation_testCollection(ctx, field)
+			case "targets":
+				return ec.fieldContext_BazelInvocation_targets(ctx, field)
+			case "sourceControl":
+				return ec.fieldContext_BazelInvocation_sourceControl(ctx, field)
+			case "bazelCommand":
+				return ec.fieldContext_BazelInvocation_bazelCommand(ctx, field)
+			case "state":
+				return ec.fieldContext_BazelInvocation_state(ctx, field)
+			case "user":
+				return ec.fieldContext_BazelInvocation_user(ctx, field)
+			case "problems":
+				return ec.fieldContext_BazelInvocation_problems(ctx, field)
+			case "profile":
+				return ec.fieldContext_BazelInvocation_profile(ctx, field)
+			case "buildLogs":
+				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _InstanceName_builds(ctx context.Context, field graphql.CollectedField, obj *ent.InstanceName) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_InstanceName_builds(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Builds(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.Build)
+	fc.Result = res
+	return ec.marshalOBuild2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_InstanceName_builds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "InstanceName",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Build_id(ctx, field)
+			case "buildURL":
+				return ec.fieldContext_Build_buildURL(ctx, field)
+			case "buildUUID":
+				return ec.fieldContext_Build_buildUUID(ctx, field)
+			case "timestamp":
+				return ec.fieldContext_Build_timestamp(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_Build_instanceName(ctx, field)
+			case "invocations":
+				return ec.fieldContext_Build_invocations(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Build", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _InstanceName_blobs(ctx context.Context, field graphql.CollectedField, obj *ent.InstanceName) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_InstanceName_blobs(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Blobs(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*ent.Blob)
+	fc.Result = res
+	return ec.marshalOBlob2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBlobᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_InstanceName_blobs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "InstanceName",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Blob_id(ctx, field)
+			case "uri":
+				return ec.fieldContext_Blob_uri(ctx, field)
+			case "sizeBytes":
+				return ec.fieldContext_Blob_sizeBytes(ctx, field)
+			case "archivingStatus":
+				return ec.fieldContext_Blob_archivingStatus(ctx, field)
+			case "reason":
+				return ec.fieldContext_Blob_reason(ctx, field)
+			case "archiveURL":
+				return ec.fieldContext_Blob_archiveURL(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_Blob_instanceName(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Blob", field.Name)
 		},
 	}
 	return fc, nil
@@ -14112,14 +14519,14 @@ func (ec *executionContext) fieldContext_InvocationFiles_bazelInvocation(_ conte
 				return ec.fieldContext_BazelInvocation_configurationMnemonic(ctx, field)
 			case "numFetches":
 				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "bazelVersion":
 				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
 			case "exitCodeName":
 				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
 			case "exitCodeCode":
 				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "metrics":
@@ -14548,14 +14955,14 @@ func (ec *executionContext) fieldContext_Metrics_bazelInvocation(_ context.Conte
 				return ec.fieldContext_BazelInvocation_configurationMnemonic(ctx, field)
 			case "numFetches":
 				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "bazelVersion":
 				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
 			case "exitCodeName":
 				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
 			case "exitCodeCode":
 				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "metrics":
@@ -17782,14 +18189,14 @@ func (ec *executionContext) fieldContext_Query_bazelInvocation(ctx context.Conte
 				return ec.fieldContext_BazelInvocation_configurationMnemonic(ctx, field)
 			case "numFetches":
 				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "bazelVersion":
 				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
 			case "exitCodeName":
 				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
 			case "exitCodeCode":
 				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "metrics":
@@ -17876,10 +18283,10 @@ func (ec *executionContext) fieldContext_Query_getBuild(ctx context.Context, fie
 				return ec.fieldContext_Build_buildURL(ctx, field)
 			case "buildUUID":
 				return ec.fieldContext_Build_buildUUID(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_Build_instanceName(ctx, field)
 			case "timestamp":
 				return ec.fieldContext_Build_timestamp(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_Build_instanceName(ctx, field)
 			case "invocations":
 				return ec.fieldContext_Build_invocations(ctx, field)
 			}
@@ -20000,14 +20407,14 @@ func (ec *executionContext) fieldContext_SourceControl_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_configurationMnemonic(ctx, field)
 			case "numFetches":
 				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "bazelVersion":
 				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
 			case "exitCodeName":
 				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
 			case "exitCodeCode":
 				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "metrics":
@@ -20987,14 +21394,14 @@ func (ec *executionContext) fieldContext_Target_bazelInvocation(_ context.Contex
 				return ec.fieldContext_BazelInvocation_configurationMnemonic(ctx, field)
 			case "numFetches":
 				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "bazelVersion":
 				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
 			case "exitCodeName":
 				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
 			case "exitCodeCode":
 				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "metrics":
@@ -22875,14 +23282,14 @@ func (ec *executionContext) fieldContext_TestCollection_bazelInvocation(_ contex
 				return ec.fieldContext_BazelInvocation_configurationMnemonic(ctx, field)
 			case "numFetches":
 				return ec.fieldContext_BazelInvocation_numFetches(ctx, field)
-			case "instanceName":
-				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "bazelVersion":
 				return ec.fieldContext_BazelInvocation_bazelVersion(ctx, field)
 			case "exitCodeName":
 				return ec.fieldContext_BazelInvocation_exitCodeName(ctx, field)
 			case "exitCodeCode":
 				return ec.fieldContext_BazelInvocation_exitCodeCode(ctx, field)
+			case "instanceName":
+				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
 			case "metrics":
@@ -31341,7 +31748,7 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "invocationID", "invocationIDNEQ", "invocationIDIn", "invocationIDNotIn", "invocationIDGT", "invocationIDGTE", "invocationIDLT", "invocationIDLTE", "startedAt", "startedAtNEQ", "startedAtIn", "startedAtNotIn", "startedAtGT", "startedAtGTE", "startedAtLT", "startedAtLTE", "startedAtIsNil", "startedAtNotNil", "endedAt", "endedAtNEQ", "endedAtIn", "endedAtNotIn", "endedAtGT", "endedAtGTE", "endedAtLT", "endedAtLTE", "endedAtIsNil", "endedAtNotNil", "changeNumber", "changeNumberNEQ", "changeNumberIn", "changeNumberNotIn", "changeNumberGT", "changeNumberGTE", "changeNumberLT", "changeNumberLTE", "changeNumberIsNil", "changeNumberNotNil", "patchsetNumber", "patchsetNumberNEQ", "patchsetNumberIn", "patchsetNumberNotIn", "patchsetNumberGT", "patchsetNumberGTE", "patchsetNumberLT", "patchsetNumberLTE", "patchsetNumberIsNil", "patchsetNumberNotNil", "bepCompleted", "bepCompletedNEQ", "stepLabel", "stepLabelNEQ", "stepLabelIn", "stepLabelNotIn", "stepLabelGT", "stepLabelGTE", "stepLabelLT", "stepLabelLTE", "stepLabelContains", "stepLabelHasPrefix", "stepLabelHasSuffix", "stepLabelIsNil", "stepLabelNotNil", "stepLabelEqualFold", "stepLabelContainsFold", "userEmail", "userEmailNEQ", "userEmailIn", "userEmailNotIn", "userEmailGT", "userEmailGTE", "userEmailLT", "userEmailLTE", "userEmailContains", "userEmailHasPrefix", "userEmailHasSuffix", "userEmailIsNil", "userEmailNotNil", "userEmailEqualFold", "userEmailContainsFold", "userLdap", "userLdapNEQ", "userLdapIn", "userLdapNotIn", "userLdapGT", "userLdapGTE", "userLdapLT", "userLdapLTE", "userLdapContains", "userLdapHasPrefix", "userLdapHasSuffix", "userLdapIsNil", "userLdapNotNil", "userLdapEqualFold", "userLdapContainsFold", "buildLogs", "buildLogsNEQ", "buildLogsIn", "buildLogsNotIn", "buildLogsGT", "buildLogsGTE", "buildLogsLT", "buildLogsLTE", "buildLogsContains", "buildLogsHasPrefix", "buildLogsHasSuffix", "buildLogsIsNil", "buildLogsNotNil", "buildLogsEqualFold", "buildLogsContainsFold", "cpu", "cpuNEQ", "cpuIn", "cpuNotIn", "cpuGT", "cpuGTE", "cpuLT", "cpuLTE", "cpuContains", "cpuHasPrefix", "cpuHasSuffix", "cpuIsNil", "cpuNotNil", "cpuEqualFold", "cpuContainsFold", "platformName", "platformNameNEQ", "platformNameIn", "platformNameNotIn", "platformNameGT", "platformNameGTE", "platformNameLT", "platformNameLTE", "platformNameContains", "platformNameHasPrefix", "platformNameHasSuffix", "platformNameIsNil", "platformNameNotNil", "platformNameEqualFold", "platformNameContainsFold", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "isCiWorker", "isCiWorkerNEQ", "isCiWorkerIsNil", "isCiWorkerNotNil", "configurationMnemonic", "configurationMnemonicNEQ", "configurationMnemonicIn", "configurationMnemonicNotIn", "configurationMnemonicGT", "configurationMnemonicGTE", "configurationMnemonicLT", "configurationMnemonicLTE", "configurationMnemonicContains", "configurationMnemonicHasPrefix", "configurationMnemonicHasSuffix", "configurationMnemonicIsNil", "configurationMnemonicNotNil", "configurationMnemonicEqualFold", "configurationMnemonicContainsFold", "numFetches", "numFetchesNEQ", "numFetchesIn", "numFetchesNotIn", "numFetchesGT", "numFetchesGTE", "numFetchesLT", "numFetchesLTE", "numFetchesIsNil", "numFetchesNotNil", "profileName", "profileNameNEQ", "profileNameIn", "profileNameNotIn", "profileNameGT", "profileNameGTE", "profileNameLT", "profileNameLTE", "profileNameContains", "profileNameHasPrefix", "profileNameHasSuffix", "profileNameIsNil", "profileNameNotNil", "profileNameEqualFold", "profileNameContainsFold", "instanceName", "instanceNameNEQ", "instanceNameIn", "instanceNameNotIn", "instanceNameGT", "instanceNameGTE", "instanceNameLT", "instanceNameLTE", "instanceNameContains", "instanceNameHasPrefix", "instanceNameHasSuffix", "instanceNameIsNil", "instanceNameNotNil", "instanceNameEqualFold", "instanceNameContainsFold", "bazelVersion", "bazelVersionNEQ", "bazelVersionIn", "bazelVersionNotIn", "bazelVersionGT", "bazelVersionGTE", "bazelVersionLT", "bazelVersionLTE", "bazelVersionContains", "bazelVersionHasPrefix", "bazelVersionHasSuffix", "bazelVersionIsNil", "bazelVersionNotNil", "bazelVersionEqualFold", "bazelVersionContainsFold", "exitCodeName", "exitCodeNameNEQ", "exitCodeNameIn", "exitCodeNameNotIn", "exitCodeNameGT", "exitCodeNameGTE", "exitCodeNameLT", "exitCodeNameLTE", "exitCodeNameContains", "exitCodeNameHasPrefix", "exitCodeNameHasSuffix", "exitCodeNameIsNil", "exitCodeNameNotNil", "exitCodeNameEqualFold", "exitCodeNameContainsFold", "exitCodeCode", "exitCodeCodeNEQ", "exitCodeCodeIn", "exitCodeCodeNotIn", "exitCodeCodeGT", "exitCodeCodeGTE", "exitCodeCodeLT", "exitCodeCodeLTE", "exitCodeCodeIsNil", "exitCodeCodeNotNil", "hasBuild", "hasBuildWith", "hasProblems", "hasProblemsWith", "hasMetrics", "hasMetricsWith", "hasIncompleteBuildLogs", "hasIncompleteBuildLogsWith", "hasInvocationFiles", "hasInvocationFilesWith", "hasTestCollection", "hasTestCollectionWith", "hasTargets", "hasTargetsWith", "hasSourceControl", "hasSourceControlWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "invocationID", "invocationIDNEQ", "invocationIDIn", "invocationIDNotIn", "invocationIDGT", "invocationIDGTE", "invocationIDLT", "invocationIDLTE", "startedAt", "startedAtNEQ", "startedAtIn", "startedAtNotIn", "startedAtGT", "startedAtGTE", "startedAtLT", "startedAtLTE", "startedAtIsNil", "startedAtNotNil", "endedAt", "endedAtNEQ", "endedAtIn", "endedAtNotIn", "endedAtGT", "endedAtGTE", "endedAtLT", "endedAtLTE", "endedAtIsNil", "endedAtNotNil", "changeNumber", "changeNumberNEQ", "changeNumberIn", "changeNumberNotIn", "changeNumberGT", "changeNumberGTE", "changeNumberLT", "changeNumberLTE", "changeNumberIsNil", "changeNumberNotNil", "patchsetNumber", "patchsetNumberNEQ", "patchsetNumberIn", "patchsetNumberNotIn", "patchsetNumberGT", "patchsetNumberGTE", "patchsetNumberLT", "patchsetNumberLTE", "patchsetNumberIsNil", "patchsetNumberNotNil", "bepCompleted", "bepCompletedNEQ", "stepLabel", "stepLabelNEQ", "stepLabelIn", "stepLabelNotIn", "stepLabelGT", "stepLabelGTE", "stepLabelLT", "stepLabelLTE", "stepLabelContains", "stepLabelHasPrefix", "stepLabelHasSuffix", "stepLabelIsNil", "stepLabelNotNil", "stepLabelEqualFold", "stepLabelContainsFold", "userEmail", "userEmailNEQ", "userEmailIn", "userEmailNotIn", "userEmailGT", "userEmailGTE", "userEmailLT", "userEmailLTE", "userEmailContains", "userEmailHasPrefix", "userEmailHasSuffix", "userEmailIsNil", "userEmailNotNil", "userEmailEqualFold", "userEmailContainsFold", "userLdap", "userLdapNEQ", "userLdapIn", "userLdapNotIn", "userLdapGT", "userLdapGTE", "userLdapLT", "userLdapLTE", "userLdapContains", "userLdapHasPrefix", "userLdapHasSuffix", "userLdapIsNil", "userLdapNotNil", "userLdapEqualFold", "userLdapContainsFold", "buildLogs", "buildLogsNEQ", "buildLogsIn", "buildLogsNotIn", "buildLogsGT", "buildLogsGTE", "buildLogsLT", "buildLogsLTE", "buildLogsContains", "buildLogsHasPrefix", "buildLogsHasSuffix", "buildLogsIsNil", "buildLogsNotNil", "buildLogsEqualFold", "buildLogsContainsFold", "cpu", "cpuNEQ", "cpuIn", "cpuNotIn", "cpuGT", "cpuGTE", "cpuLT", "cpuLTE", "cpuContains", "cpuHasPrefix", "cpuHasSuffix", "cpuIsNil", "cpuNotNil", "cpuEqualFold", "cpuContainsFold", "platformName", "platformNameNEQ", "platformNameIn", "platformNameNotIn", "platformNameGT", "platformNameGTE", "platformNameLT", "platformNameLTE", "platformNameContains", "platformNameHasPrefix", "platformNameHasSuffix", "platformNameIsNil", "platformNameNotNil", "platformNameEqualFold", "platformNameContainsFold", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "isCiWorker", "isCiWorkerNEQ", "isCiWorkerIsNil", "isCiWorkerNotNil", "configurationMnemonic", "configurationMnemonicNEQ", "configurationMnemonicIn", "configurationMnemonicNotIn", "configurationMnemonicGT", "configurationMnemonicGTE", "configurationMnemonicLT", "configurationMnemonicLTE", "configurationMnemonicContains", "configurationMnemonicHasPrefix", "configurationMnemonicHasSuffix", "configurationMnemonicIsNil", "configurationMnemonicNotNil", "configurationMnemonicEqualFold", "configurationMnemonicContainsFold", "numFetches", "numFetchesNEQ", "numFetchesIn", "numFetchesNotIn", "numFetchesGT", "numFetchesGTE", "numFetchesLT", "numFetchesLTE", "numFetchesIsNil", "numFetchesNotNil", "profileName", "profileNameNEQ", "profileNameIn", "profileNameNotIn", "profileNameGT", "profileNameGTE", "profileNameLT", "profileNameLTE", "profileNameContains", "profileNameHasPrefix", "profileNameHasSuffix", "profileNameIsNil", "profileNameNotNil", "profileNameEqualFold", "profileNameContainsFold", "bazelVersion", "bazelVersionNEQ", "bazelVersionIn", "bazelVersionNotIn", "bazelVersionGT", "bazelVersionGTE", "bazelVersionLT", "bazelVersionLTE", "bazelVersionContains", "bazelVersionHasPrefix", "bazelVersionHasSuffix", "bazelVersionIsNil", "bazelVersionNotNil", "bazelVersionEqualFold", "bazelVersionContainsFold", "exitCodeName", "exitCodeNameNEQ", "exitCodeNameIn", "exitCodeNameNotIn", "exitCodeNameGT", "exitCodeNameGTE", "exitCodeNameLT", "exitCodeNameLTE", "exitCodeNameContains", "exitCodeNameHasPrefix", "exitCodeNameHasSuffix", "exitCodeNameIsNil", "exitCodeNameNotNil", "exitCodeNameEqualFold", "exitCodeNameContainsFold", "exitCodeCode", "exitCodeCodeNEQ", "exitCodeCodeIn", "exitCodeCodeNotIn", "exitCodeCodeGT", "exitCodeCodeGTE", "exitCodeCodeLT", "exitCodeCodeLTE", "exitCodeCodeIsNil", "exitCodeCodeNotNil", "hasInstanceName", "hasInstanceNameWith", "hasBuild", "hasBuildWith", "hasProblems", "hasProblemsWith", "hasMetrics", "hasMetricsWith", "hasIncompleteBuildLogs", "hasIncompleteBuildLogsWith", "hasInvocationFiles", "hasInvocationFilesWith", "hasTestCollection", "hasTestCollectionWith", "hasTargets", "hasTargetsWith", "hasSourceControl", "hasSourceControlWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -32834,111 +33241,6 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 				return it, err
 			}
 			it.ProfileNameContainsFold = data
-		case "instanceName":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceName"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceName = data
-		case "instanceNameNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameNEQ"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameNEQ = data
-		case "instanceNameIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameIn = data
-		case "instanceNameNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameNotIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameNotIn = data
-		case "instanceNameGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameGT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameGT = data
-		case "instanceNameGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameGTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameGTE = data
-		case "instanceNameLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameLT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameLT = data
-		case "instanceNameLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameLTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameLTE = data
-		case "instanceNameContains":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameContains"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameContains = data
-		case "instanceNameHasPrefix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameHasPrefix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameHasPrefix = data
-		case "instanceNameHasSuffix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameHasSuffix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameHasSuffix = data
-		case "instanceNameIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameIsNil = data
-		case "instanceNameNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameNotNil = data
-		case "instanceNameEqualFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameEqualFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameEqualFold = data
-		case "instanceNameContainsFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameContainsFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameContainsFold = data
 		case "bazelVersion":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bazelVersion"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -33219,6 +33521,20 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 				return it, err
 			}
 			it.ExitCodeCodeNotNil = data
+		case "hasInstanceName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasInstanceName"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasInstanceName = data
+		case "hasInstanceNameWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasInstanceNameWith"))
+			data, err := ec.unmarshalOInstanceNameWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceNameWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasInstanceNameWith = data
 		case "hasBuild":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBuild"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -33344,7 +33660,7 @@ func (ec *executionContext) unmarshalInputBlobWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "uri", "uriNEQ", "uriIn", "uriNotIn", "uriGT", "uriGTE", "uriLT", "uriLTE", "uriContains", "uriHasPrefix", "uriHasSuffix", "uriEqualFold", "uriContainsFold", "sizeBytes", "sizeBytesNEQ", "sizeBytesIn", "sizeBytesNotIn", "sizeBytesGT", "sizeBytesGTE", "sizeBytesLT", "sizeBytesLTE", "sizeBytesIsNil", "sizeBytesNotNil", "archivingStatus", "archivingStatusNEQ", "archivingStatusIn", "archivingStatusNotIn", "reason", "reasonNEQ", "reasonIn", "reasonNotIn", "reasonGT", "reasonGTE", "reasonLT", "reasonLTE", "reasonContains", "reasonHasPrefix", "reasonHasSuffix", "reasonIsNil", "reasonNotNil", "reasonEqualFold", "reasonContainsFold", "archiveURL", "archiveURLNEQ", "archiveURLIn", "archiveURLNotIn", "archiveURLGT", "archiveURLGTE", "archiveURLLT", "archiveURLLTE", "archiveURLContains", "archiveURLHasPrefix", "archiveURLHasSuffix", "archiveURLIsNil", "archiveURLNotNil", "archiveURLEqualFold", "archiveURLContainsFold", "instanceName", "instanceNameNEQ", "instanceNameIn", "instanceNameNotIn", "instanceNameGT", "instanceNameGTE", "instanceNameLT", "instanceNameLTE", "instanceNameContains", "instanceNameHasPrefix", "instanceNameHasSuffix", "instanceNameEqualFold", "instanceNameContainsFold"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "uri", "uriNEQ", "uriIn", "uriNotIn", "uriGT", "uriGTE", "uriLT", "uriLTE", "uriContains", "uriHasPrefix", "uriHasSuffix", "uriEqualFold", "uriContainsFold", "sizeBytes", "sizeBytesNEQ", "sizeBytesIn", "sizeBytesNotIn", "sizeBytesGT", "sizeBytesGTE", "sizeBytesLT", "sizeBytesLTE", "sizeBytesIsNil", "sizeBytesNotNil", "archivingStatus", "archivingStatusNEQ", "archivingStatusIn", "archivingStatusNotIn", "reason", "reasonNEQ", "reasonIn", "reasonNotIn", "reasonGT", "reasonGTE", "reasonLT", "reasonLTE", "reasonContains", "reasonHasPrefix", "reasonHasSuffix", "reasonIsNil", "reasonNotNil", "reasonEqualFold", "reasonContainsFold", "archiveURL", "archiveURLNEQ", "archiveURLIn", "archiveURLNotIn", "archiveURLGT", "archiveURLGTE", "archiveURLLT", "archiveURLLTE", "archiveURLContains", "archiveURLHasPrefix", "archiveURLHasSuffix", "archiveURLIsNil", "archiveURLNotNil", "archiveURLEqualFold", "archiveURLContainsFold", "hasInstanceName", "hasInstanceNameWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -33843,97 +34159,20 @@ func (ec *executionContext) unmarshalInputBlobWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.ArchiveURLContainsFold = data
-		case "instanceName":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceName"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+		case "hasInstanceName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasInstanceName"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.InstanceName = data
-		case "instanceNameNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameNEQ"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			it.HasInstanceName = data
+		case "hasInstanceNameWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasInstanceNameWith"))
+			data, err := ec.unmarshalOInstanceNameWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceNameWhereInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.InstanceNameNEQ = data
-		case "instanceNameIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameIn = data
-		case "instanceNameNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameNotIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameNotIn = data
-		case "instanceNameGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameGT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameGT = data
-		case "instanceNameGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameGTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameGTE = data
-		case "instanceNameLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameLT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameLT = data
-		case "instanceNameLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameLTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameLTE = data
-		case "instanceNameContains":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameContains"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameContains = data
-		case "instanceNameHasPrefix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameHasPrefix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameHasPrefix = data
-		case "instanceNameHasSuffix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameHasSuffix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameHasSuffix = data
-		case "instanceNameEqualFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameEqualFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameEqualFold = data
-		case "instanceNameContainsFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameContainsFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameContainsFold = data
+			it.HasInstanceNameWith = data
 		}
 	}
 
@@ -34774,7 +35013,7 @@ func (ec *executionContext) unmarshalInputBuildWhereInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "buildURL", "buildURLNEQ", "buildURLIn", "buildURLNotIn", "buildURLGT", "buildURLGTE", "buildURLLT", "buildURLLTE", "buildURLContains", "buildURLHasPrefix", "buildURLHasSuffix", "buildURLEqualFold", "buildURLContainsFold", "buildUUID", "buildUUIDNEQ", "buildUUIDIn", "buildUUIDNotIn", "buildUUIDGT", "buildUUIDGTE", "buildUUIDLT", "buildUUIDLTE", "instanceName", "instanceNameNEQ", "instanceNameIn", "instanceNameNotIn", "instanceNameGT", "instanceNameGTE", "instanceNameLT", "instanceNameLTE", "instanceNameContains", "instanceNameHasPrefix", "instanceNameHasSuffix", "instanceNameEqualFold", "instanceNameContainsFold", "timestamp", "timestampNEQ", "timestampIn", "timestampNotIn", "timestampGT", "timestampGTE", "timestampLT", "timestampLTE", "hasInvocations", "hasInvocationsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "buildURL", "buildURLNEQ", "buildURLIn", "buildURLNotIn", "buildURLGT", "buildURLGTE", "buildURLLT", "buildURLLTE", "buildURLContains", "buildURLHasPrefix", "buildURLHasSuffix", "buildURLEqualFold", "buildURLContainsFold", "buildUUID", "buildUUIDNEQ", "buildUUIDIn", "buildUUIDNotIn", "buildUUIDGT", "buildUUIDGTE", "buildUUIDLT", "buildUUIDLTE", "timestamp", "timestampNEQ", "timestampIn", "timestampNotIn", "timestampGT", "timestampGTE", "timestampLT", "timestampLTE", "hasInstanceName", "hasInstanceNameWith", "hasInvocations", "hasInvocationsWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -35021,97 +35260,6 @@ func (ec *executionContext) unmarshalInputBuildWhereInput(ctx context.Context, o
 				return it, err
 			}
 			it.BuildUUIDLTE = data
-		case "instanceName":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceName"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceName = data
-		case "instanceNameNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameNEQ"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameNEQ = data
-		case "instanceNameIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameIn = data
-		case "instanceNameNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameNotIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameNotIn = data
-		case "instanceNameGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameGT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameGT = data
-		case "instanceNameGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameGTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameGTE = data
-		case "instanceNameLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameLT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameLT = data
-		case "instanceNameLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameLTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameLTE = data
-		case "instanceNameContains":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameContains"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameContains = data
-		case "instanceNameHasPrefix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameHasPrefix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameHasPrefix = data
-		case "instanceNameHasSuffix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameHasSuffix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameHasSuffix = data
-		case "instanceNameEqualFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameEqualFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameEqualFold = data
-		case "instanceNameContainsFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("instanceNameContainsFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.InstanceNameContainsFold = data
 		case "timestamp":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timestamp"))
 			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
@@ -35168,6 +35316,20 @@ func (ec *executionContext) unmarshalInputBuildWhereInput(ctx context.Context, o
 				return it, err
 			}
 			it.TimestampLTE = data
+		case "hasInstanceName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasInstanceName"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasInstanceName = data
+		case "hasInstanceNameWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasInstanceNameWith"))
+			data, err := ec.unmarshalOInstanceNameWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceNameWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasInstanceNameWith = data
 		case "hasInvocations":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasInvocations"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -36860,6 +37022,252 @@ func (ec *executionContext) unmarshalInputIncompleteBuildLogWhereInput(ctx conte
 				return it, err
 			}
 			it.HasBazelInvocationWith = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputInstanceNameWhereInput(ctx context.Context, obj any) (ent.InstanceNameWhereInput, error) {
+	var it ent.InstanceNameWhereInput
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "hasBazelInvocations", "hasBazelInvocationsWith", "hasBuilds", "hasBuildsWith", "hasBlobs", "hasBlobsWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOInstanceNameWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceNameWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOInstanceNameWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceNameWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOInstanceNameWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceNameWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.InstanceNameWhereInput().ID(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.InstanceNameWhereInput().IDNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.InstanceNameWhereInput().IDIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.InstanceNameWhereInput().IDNotIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.InstanceNameWhereInput().IDGt(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.InstanceNameWhereInput().IDGte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.InstanceNameWhereInput().IDLt(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.InstanceNameWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "name":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Name = data
+		case "nameNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameNEQ = data
+		case "nameIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameIn = data
+		case "nameNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameNotIn = data
+		case "nameGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameGT = data
+		case "nameGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameGTE = data
+		case "nameLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameLT = data
+		case "nameLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameLTE = data
+		case "nameContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameContains = data
+		case "nameHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameHasPrefix = data
+		case "nameHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameHasSuffix = data
+		case "nameEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameEqualFold = data
+		case "nameContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("nameContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.NameContainsFold = data
+		case "hasBazelInvocations":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBazelInvocations"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasBazelInvocations = data
+		case "hasBazelInvocationsWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBazelInvocationsWith"))
+			data, err := ec.unmarshalOBazelInvocationWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasBazelInvocationsWith = data
+		case "hasBuilds":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBuilds"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasBuilds = data
+		case "hasBuildsWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBuildsWith"))
+			data, err := ec.unmarshalOBuildWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasBuildsWith = data
+		case "hasBlobs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBlobs"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasBlobs = data
+		case "hasBlobsWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBlobsWith"))
+			data, err := ec.unmarshalOBlobWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBlobWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasBlobsWith = data
 		}
 	}
 
@@ -48037,6 +48445,11 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._InvocationFiles(ctx, sel, obj)
+	case *ent.InstanceName:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._InstanceName(ctx, sel, obj)
 	case *ent.IncompleteBuildLog:
 		if obj == nil {
 			return graphql.Null
@@ -49008,14 +49421,48 @@ func (ec *executionContext) _BazelInvocation(ctx context.Context, sel ast.Select
 			out.Values[i] = ec._BazelInvocation_configurationMnemonic(ctx, field, obj)
 		case "numFetches":
 			out.Values[i] = ec._BazelInvocation_numFetches(ctx, field, obj)
-		case "instanceName":
-			out.Values[i] = ec._BazelInvocation_instanceName(ctx, field, obj)
 		case "bazelVersion":
 			out.Values[i] = ec._BazelInvocation_bazelVersion(ctx, field, obj)
 		case "exitCodeName":
 			out.Values[i] = ec._BazelInvocation_exitCodeName(ctx, field, obj)
 		case "exitCodeCode":
 			out.Values[i] = ec._BazelInvocation_exitCodeCode(ctx, field, obj)
+		case "instanceName":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._BazelInvocation_instanceName(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "build":
 			field := field
 
@@ -49791,10 +50238,41 @@ func (ec *executionContext) _Blob(ctx context.Context, sel ast.SelectionSet, obj
 		case "archiveURL":
 			out.Values[i] = ec._Blob_archiveURL(ctx, field, obj)
 		case "instanceName":
-			out.Values[i] = ec._Blob_instanceName(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Blob_instanceName(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -50055,16 +50533,47 @@ func (ec *executionContext) _Build(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "instanceName":
-			out.Values[i] = ec._Build_instanceName(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
 		case "timestamp":
 			out.Values[i] = ec._Build_timestamp(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "instanceName":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Build_instanceName(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "invocations":
 			field := field
 
@@ -51110,6 +51619,180 @@ func (ec *executionContext) _IncompleteBuildLog(ctx context.Context, sel ast.Sel
 					}
 				}()
 				res = ec._IncompleteBuildLog_bazelInvocation(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var instanceNameImplementors = []string{"InstanceName", "Node"}
+
+func (ec *executionContext) _InstanceName(ctx context.Context, sel ast.SelectionSet, obj *ent.InstanceName) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, instanceNameImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("InstanceName")
+		case "id":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._InstanceName_id(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "name":
+			out.Values[i] = ec._InstanceName_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "bazelInvocations":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._InstanceName_bazelInvocations(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "builds":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._InstanceName_builds(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "blobs":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._InstanceName_blobs(ctx, field, obj)
 				return res
 			}
 
@@ -56329,6 +57012,16 @@ func (ec *executionContext) unmarshalNBazelInvocationWhereInput2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalNBlob2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBlob(ctx context.Context, sel ast.SelectionSet, v *ent.Blob) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Blob(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNBlobArchivingStatus2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋblobᚐArchivingStatus(ctx context.Context, v any) (blob.ArchivingStatus, error) {
 	var res blob.ArchivingStatus
 	err := res.UnmarshalGQL(v)
@@ -56372,6 +57065,16 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNBuild2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuild(ctx context.Context, sel ast.SelectionSet, v *ent.Build) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Build(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNBuildConnection2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildConnection(ctx context.Context, sel ast.SelectionSet, v ent.BuildConnection) graphql.Marshaler {
@@ -56496,6 +57199,21 @@ func (ec *executionContext) marshalNIncompleteBuildLog2ᚖgithubᚗcomᚋbuildba
 
 func (ec *executionContext) unmarshalNIncompleteBuildLogWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐIncompleteBuildLogWhereInput(ctx context.Context, v any) (*ent.IncompleteBuildLogWhereInput, error) {
 	res, err := ec.unmarshalInputIncompleteBuildLogWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInstanceName2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceName(ctx context.Context, sel ast.SelectionSet, v *ent.InstanceName) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._InstanceName(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNInstanceNameWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceNameWhereInput(ctx context.Context, v any) (*ent.InstanceNameWhereInput, error) {
+	res, err := ec.unmarshalInputInstanceNameWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -57726,6 +58444,53 @@ func (ec *executionContext) unmarshalOBazelInvocationWhereInput2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalOBlob2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBlobᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.Blob) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNBlob2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBlob(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) unmarshalOBlobArchivingStatus2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋblobᚐArchivingStatusᚄ(ctx context.Context, v any) ([]blob.ArchivingStatus, error) {
 	if v == nil {
 		return nil, nil
@@ -57868,6 +58633,53 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	_ = ctx
 	res := graphql.MarshalBoolean(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOBuild2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuildᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.Build) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNBuild2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuild(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalOBuild2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBuild(ctx context.Context, sel ast.SelectionSet, v *ent.Build) graphql.Marshaler {
@@ -58320,6 +59132,32 @@ func (ec *executionContext) unmarshalOIncompleteBuildLogWhereInput2ᚖgithubᚗc
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputIncompleteBuildLogWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOInstanceNameWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceNameWhereInputᚄ(ctx context.Context, v any) ([]*ent.InstanceNameWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]*ent.InstanceNameWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNInstanceNameWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceNameWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOInstanceNameWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐInstanceNameWhereInput(ctx context.Context, v any) (*ent.InstanceNameWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputInstanceNameWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

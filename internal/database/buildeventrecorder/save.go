@@ -38,7 +38,7 @@ func (r *BuildEventRecorder) RecordEvent(
 	sequenceNumber int64,
 ) error {
 	ctx, span := r.tracer.Start(ctx,
-		fmt.Sprintf("BuildEventServer.recordEvent_%s", eventTypeName(buildEvent)),
+		fmt.Sprintf("BuildEventRecorder.recordEvent_%s", eventTypeName(buildEvent)),
 		trace.WithAttributes(
 			attribute.String("invocation.id", r.InvocationID),
 			attribute.String("invocation.instance_name", r.InstanceName),

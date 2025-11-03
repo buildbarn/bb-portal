@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 )
 
 // BlobCreate is the builder for creating a Blob entity.
@@ -83,18 +84,15 @@ func (bc *BlobCreate) SetNillableArchiveURL(s *string) *BlobCreate {
 	return bc
 }
 
-// SetInstanceName sets the "instance_name" field.
-func (bc *BlobCreate) SetInstanceName(s string) *BlobCreate {
-	bc.mutation.SetInstanceName(s)
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (bc *BlobCreate) SetInstanceNameID(id int) *BlobCreate {
+	bc.mutation.SetInstanceNameID(id)
 	return bc
 }
 
-// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
-func (bc *BlobCreate) SetNillableInstanceName(s *string) *BlobCreate {
-	if s != nil {
-		bc.SetInstanceName(*s)
-	}
-	return bc
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (bc *BlobCreate) SetInstanceName(i *InstanceName) *BlobCreate {
+	return bc.SetInstanceNameID(i.ID)
 }
 
 // Mutation returns the BlobMutation object of the builder.
@@ -136,10 +134,6 @@ func (bc *BlobCreate) defaults() {
 		v := blob.DefaultArchivingStatus
 		bc.mutation.SetArchivingStatus(v)
 	}
-	if _, ok := bc.mutation.InstanceName(); !ok {
-		v := blob.DefaultInstanceName
-		bc.mutation.SetInstanceName(v)
-	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -155,8 +149,8 @@ func (bc *BlobCreate) check() error {
 			return &ValidationError{Name: "archiving_status", err: fmt.Errorf(`ent: validator failed for field "Blob.archiving_status": %w`, err)}
 		}
 	}
-	if _, ok := bc.mutation.InstanceName(); !ok {
-		return &ValidationError{Name: "instance_name", err: errors.New(`ent: missing required field "Blob.instance_name"`)}
+	if len(bc.mutation.InstanceNameIDs()) == 0 {
+		return &ValidationError{Name: "instance_name", err: errors.New(`ent: missing required edge "Blob.instance_name"`)}
 	}
 	return nil
 }
@@ -205,9 +199,22 @@ func (bc *BlobCreate) createSpec() (*Blob, *sqlgraph.CreateSpec) {
 		_spec.SetField(blob.FieldArchiveURL, field.TypeString, value)
 		_node.ArchiveURL = value
 	}
-	if value, ok := bc.mutation.InstanceName(); ok {
-		_spec.SetField(blob.FieldInstanceName, field.TypeString, value)
-		_node.InstanceName = value
+	if nodes := bc.mutation.InstanceNameIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   blob.InstanceNameTable,
+			Columns: []string{blob.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.instance_name_blobs = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -330,18 +337,6 @@ func (u *BlobUpsert) UpdateArchiveURL() *BlobUpsert {
 // ClearArchiveURL clears the value of the "archive_url" field.
 func (u *BlobUpsert) ClearArchiveURL() *BlobUpsert {
 	u.SetNull(blob.FieldArchiveURL)
-	return u
-}
-
-// SetInstanceName sets the "instance_name" field.
-func (u *BlobUpsert) SetInstanceName(v string) *BlobUpsert {
-	u.Set(blob.FieldInstanceName, v)
-	return u
-}
-
-// UpdateInstanceName sets the "instance_name" field to the value that was provided on create.
-func (u *BlobUpsert) UpdateInstanceName() *BlobUpsert {
-	u.SetExcluded(blob.FieldInstanceName)
 	return u
 }
 
@@ -471,20 +466,6 @@ func (u *BlobUpsertOne) UpdateArchiveURL() *BlobUpsertOne {
 func (u *BlobUpsertOne) ClearArchiveURL() *BlobUpsertOne {
 	return u.Update(func(s *BlobUpsert) {
 		s.ClearArchiveURL()
-	})
-}
-
-// SetInstanceName sets the "instance_name" field.
-func (u *BlobUpsertOne) SetInstanceName(v string) *BlobUpsertOne {
-	return u.Update(func(s *BlobUpsert) {
-		s.SetInstanceName(v)
-	})
-}
-
-// UpdateInstanceName sets the "instance_name" field to the value that was provided on create.
-func (u *BlobUpsertOne) UpdateInstanceName() *BlobUpsertOne {
-	return u.Update(func(s *BlobUpsert) {
-		s.UpdateInstanceName()
 	})
 }
 
@@ -780,20 +761,6 @@ func (u *BlobUpsertBulk) UpdateArchiveURL() *BlobUpsertBulk {
 func (u *BlobUpsertBulk) ClearArchiveURL() *BlobUpsertBulk {
 	return u.Update(func(s *BlobUpsert) {
 		s.ClearArchiveURL()
-	})
-}
-
-// SetInstanceName sets the "instance_name" field.
-func (u *BlobUpsertBulk) SetInstanceName(v string) *BlobUpsertBulk {
-	return u.Update(func(s *BlobUpsert) {
-		s.SetInstanceName(v)
-	})
-}
-
-// UpdateInstanceName sets the "instance_name" field to the value that was provided on create.
-func (u *BlobUpsertBulk) UpdateInstanceName() *BlobUpsertBulk {
-	return u.Update(func(s *BlobUpsert) {
-		s.UpdateInstanceName()
 	})
 }
 

@@ -2,6 +2,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -20,11 +21,15 @@ func (Blob) Fields() []ent.Field {
 			Default("QUEUED"),
 		field.String("reason").Optional(),
 		field.String("archive_url").Optional(),
-		field.String("instance_name").Default(""),
 	}
 }
 
 // Edges of the Blob.
 func (Blob) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("instance_name", InstanceName.Type).
+			Ref("blobs").
+			Unique().
+			Required(),
+	}
 }

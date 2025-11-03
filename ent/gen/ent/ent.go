@@ -28,6 +28,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -126,6 +127,7 @@ func checkColumn(table, column string) error {
 			exectioninfo.Table:           exectioninfo.ValidColumn,
 			garbagemetrics.Table:         garbagemetrics.ValidColumn,
 			incompletebuildlog.Table:     incompletebuildlog.ValidColumn,
+			instancename.Table:           instancename.ValidColumn,
 			invocationfiles.Table:        invocationfiles.ValidColumn,
 			memorymetrics.Table:          memorymetrics.ValidColumn,
 			metrics.Table:                metrics.ValidColumn,
