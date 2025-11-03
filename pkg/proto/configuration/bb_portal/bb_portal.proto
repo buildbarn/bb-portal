@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package buildbarn.configuration.bb_portal;
 
-import "pkg/proto/configuration/auth/auth.proto";
-import "pkg/proto/configuration/blobstore/blobstore.proto";
-import "pkg/proto/configuration/global/global.proto";
-import "pkg/proto/configuration/grpc/grpc.proto";
-import "pkg/proto/configuration/http/http.proto";
+import "github.com/buildbarn/bb-storage/pkg/proto/configuration/auth/auth.proto";
+import "github.com/buildbarn/bb-storage/pkg/proto/configuration/blobstore/blobstore.proto";
+import "github.com/buildbarn/bb-storage/pkg/proto/configuration/global/global.proto";
+import "github.com/buildbarn/bb-storage/pkg/proto/configuration/grpc/grpc.proto";
+import "github.com/buildbarn/bb-storage/pkg/proto/configuration/http/server/server.proto";
 
 option go_package = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal";
 
@@ -80,7 +80,7 @@ message ApplicationConfiguration {
   // Configuration for the main HTTP server for the application. All HTTP
   // traffic is routed through this server, including gRPC-Web traffic from the
   // frontend, and the proxy for the frontend UI (if configured).
-  repeated buildbarn.configuration.http.ServerConfiguration http_servers = 1;
+  repeated buildbarn.configuration.http.server.Configuration http_servers = 1;
 
   // Common configuration options that apply to all Buildbarn binaries.
   buildbarn.configuration.global.Configuration global = 2;

@@ -1,5 +1,5 @@
 diff --git tools/github_workflows/workflows_template.libsonnet tools/github_workflows/workflows_template.libsonnet
-index ef2bfb9..4956c7e 100644
+index 73bc06c..916c177 100644
 --- tools/github_workflows/workflows_template.libsonnet
 +++ tools/github_workflows/workflows_template.libsonnet
 @@ -4,15 +4,6 @@
@@ -18,14 +18,13 @@ index ef2bfb9..4956c7e 100644
      {
        name: 'linux_arm64',
        extension: '',
-@@ -48,14 +39,6 @@
+@@ -47,13 +38,6 @@
                platform_name: 'linux_amd64',
                upload: true,
              },
 -            {
 -              bazel_os: 'windows',
 -              cross_compile: false,
--              lint: false,
 -              os: 'windows-latest',
 -              platform_name: 'windows_amd64',
 -              upload: false,
@@ -33,52 +32,16 @@ index ef2bfb9..4956c7e 100644
            ],
          },
        },
-@@ -86,9 +69,14 @@
-           run: 'bazel mod tidy',
-           'if': 'matrix.host.lint',
-         },
-+        {
-+          name: 'Go generate',
-+          run: 'go generate',
-+          'if': 'matrix.host.lint',
-+        },
-         {
-           name: 'Gazelle',
--          run: "rm -f $(find . -name '*.pb.go' | sed -e 's/[^/]*$/BUILD.bazel/') && bazel run //:gazelle",
-+          run: "rm -f $(find . -name '*.pb.go' -not -path './pkg/proto/bazelbuild/*' | sed -e 's/[^/]*$/BUILD.bazel/') && bazel run //:gazelle",
-           'if': 'matrix.host.lint',
-         },
-         {
-@@ -103,7 +91,7 @@
-         },
-         {
-           name: 'Clang format',
--          run: "find . -name '*.proto' -exec bazel run @llvm_toolchain_llvm//:bin/clang-format -- -i {} +",
-+          run: "find . -name '*.proto' -not -path './frontend/*' -exec bazel run @llvm_toolchain_llvm//:bin/clang-format -- -i {} +",
-           'if': 'matrix.host.lint',
-         },
-         {
-@@ -117,8 +105,9 @@
-             if [ -d pkg/proto ]; then
-               find . bazel-bin/pkg/proto -name '*.pb.go' -delete || true
-               bazel build $(bazel query --output=label 'kind("go_proto_library", //...)')
-+              third_party/bazel/download_protofiles.sh
-               find bazel-bin/pkg/proto -name '*.pb.go' | while read f; do
--                cat $f > $(echo $f | sed -e 's|.*/pkg/proto/|pkg/proto/|')
-+                cat $f > $(echo $f | sed -e 's|^bazel-bin/||' -e 's|/[^/]*_go_proto_/.*/|/|')
-               done
-             fi
-           |||,
-@@ -217,12 +206,12 @@
-     'master.yaml': {
-       name: 'master',
-       on: { push: { branches: ['main', 'master'] } },
+@@ -173,12 +157,12 @@
+     'main.yaml': {
+       name: 'main',
+       on: { push: { branches: ['main'] } },
 -      jobs: getJobs(binaries, containers, setupSteps, extraSteps, true, false),
 +      jobs: getJobs(binaries, containers, setupSteps, extraSteps, true, true),
      },
      'pull-requests.yaml': {
        name: 'pull-requests',
-       on: { pull_request: { branches: ['main', 'master'] } },
+       on: { pull_request: { branches: ['main'] } },
 -      jobs: getJobs(binaries, containers, setupSteps, extraSteps, false, false),
 +      jobs: getJobs(binaries, containers, setupSteps, extraSteps, false, true),
      },

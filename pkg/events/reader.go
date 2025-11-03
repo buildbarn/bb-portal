@@ -78,10 +78,10 @@ func AsJSONArray(buildEvents []*BuildEvent) (jsonb json.RawMessage, err error) {
 	var bepEvents []byte
 	bepEvents, err = json.Marshal(rawEvents)
 	if err != nil {
-		return
+		return jsonb, err
 	}
 	jsonb = bepEvents
-	return
+	return jsonb, err
 }
 
 // FromJSONArray Get it from a JSON array.
@@ -89,7 +89,7 @@ func FromJSONArray(events json.RawMessage) (buildEvents []BuildEvent, err error)
 	// Unpack list of bytes.
 	var rawEvents []json.RawMessage
 	if err = json.Unmarshal(events, &rawEvents); err != nil {
-		return
+		return buildEvents, err
 	}
 
 	// Unmarshal every element as build event.
@@ -100,12 +100,12 @@ func FromJSONArray(events json.RawMessage) (buildEvents []BuildEvent, err error)
 		bepEvent := bes.BuildEvent{}
 		err = bepUnmarshaler.Unmarshal(rawEvent, &bepEvent)
 		if err != nil {
-			return
+			return buildEvents, err
 		}
 		buildEvent := NewBuildEvent(&bepEvent, rawEvent).Clone()
 		buildEvents = append(buildEvents, buildEvent)
 	}
-	return
+	return buildEvents, err
 }
 
 // IsActionCompleted Is the action completed.
