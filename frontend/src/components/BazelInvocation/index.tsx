@@ -105,7 +105,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
             cpu={cpu ?? ""}
             user={user?.LDAP ?? ""}
             invocationId={invocationID}
-            instanceName={instanceName ?? undefined}
+            instanceName={instanceName.name}
             configuration={configurationMnemonic ?? ""}
             numFetches={numFetches ?? 0}
             startedAt={invocationOverview.startedAt}
@@ -233,7 +233,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
       <Space direction="vertical" size="middle" className={themeStyles.space}>
         <BuildProblems
           invocationId={invocationID}
-          instanceName={instanceName ?? undefined}
+          instanceName={instanceName.name}
         />
       </Space>
     ),
@@ -295,7 +295,7 @@ const getExtraBits = (invocationOverview: BazelInvocationInfoFragment, isNestedW
   )
   if (profile) extraBits.push(
     <ProfileDropdown
-      instanceName={instanceName ?? undefined}
+      instanceName={instanceName.name}
       profile={profile}
       invocationID={invocationID}
     />,

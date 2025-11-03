@@ -17,6 +17,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -263,20 +264,6 @@ func (bic *BazelInvocationCreate) SetNillableProfileName(s *string) *BazelInvoca
 	return bic
 }
 
-// SetInstanceName sets the "instance_name" field.
-func (bic *BazelInvocationCreate) SetInstanceName(s string) *BazelInvocationCreate {
-	bic.mutation.SetInstanceName(s)
-	return bic
-}
-
-// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableInstanceName(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetInstanceName(*s)
-	}
-	return bic
-}
-
 // SetBazelVersion sets the "bazel_version" field.
 func (bic *BazelInvocationCreate) SetBazelVersion(s string) *BazelInvocationCreate {
 	bic.mutation.SetBazelVersion(s)
@@ -467,6 +454,17 @@ func (bic *BazelInvocationCreate) SetNillableProcessedEventWorkspaceStatus(b *bo
 		bic.SetProcessedEventWorkspaceStatus(*b)
 	}
 	return bic
+}
+
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (bic *BazelInvocationCreate) SetInstanceNameID(id int) *BazelInvocationCreate {
+	bic.mutation.SetInstanceNameID(id)
+	return bic
+}
+
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (bic *BazelInvocationCreate) SetInstanceName(i *InstanceName) *BazelInvocationCreate {
+	return bic.SetInstanceNameID(i.ID)
 }
 
 // SetBuildID sets the "build" edge to the Build entity by ID.
@@ -722,6 +720,9 @@ func (bic *BazelInvocationCreate) check() error {
 	if _, ok := bic.mutation.ProcessedEventWorkspaceStatus(); !ok {
 		return &ValidationError{Name: "processed_event_workspace_status", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_workspace_status"`)}
 	}
+	if len(bic.mutation.InstanceNameIDs()) == 0 {
+		return &ValidationError{Name: "instance_name", err: errors.New(`ent: missing required edge "BazelInvocation.instance_name"`)}
+	}
 	return nil
 }
 
@@ -817,10 +818,6 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_spec.SetField(bazelinvocation.FieldProfileName, field.TypeString, value)
 		_node.ProfileName = value
 	}
-	if value, ok := bic.mutation.InstanceName(); ok {
-		_spec.SetField(bazelinvocation.FieldInstanceName, field.TypeString, value)
-		_node.InstanceName = value
-	}
 	if value, ok := bic.mutation.BazelVersion(); ok {
 		_spec.SetField(bazelinvocation.FieldBazelVersion, field.TypeString, value)
 		_node.BazelVersion = value
@@ -884,6 +881,23 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	if value, ok := bic.mutation.ProcessedEventWorkspaceStatus(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventWorkspaceStatus, field.TypeBool, value)
 		_node.ProcessedEventWorkspaceStatus = value
+	}
+	if nodes := bic.mutation.InstanceNameIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   bazelinvocation.InstanceNameTable,
+			Columns: []string{bazelinvocation.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.instance_name_bazel_invocations = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := bic.mutation.BuildIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -1395,24 +1409,6 @@ func (u *BazelInvocationUpsert) UpdateProfileName() *BazelInvocationUpsert {
 // ClearProfileName clears the value of the "profile_name" field.
 func (u *BazelInvocationUpsert) ClearProfileName() *BazelInvocationUpsert {
 	u.SetNull(bazelinvocation.FieldProfileName)
-	return u
-}
-
-// SetInstanceName sets the "instance_name" field.
-func (u *BazelInvocationUpsert) SetInstanceName(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldInstanceName, v)
-	return u
-}
-
-// UpdateInstanceName sets the "instance_name" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateInstanceName() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldInstanceName)
-	return u
-}
-
-// ClearInstanceName clears the value of the "instance_name" field.
-func (u *BazelInvocationUpsert) ClearInstanceName() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldInstanceName)
 	return u
 }
 
@@ -2066,27 +2062,6 @@ func (u *BazelInvocationUpsertOne) UpdateProfileName() *BazelInvocationUpsertOne
 func (u *BazelInvocationUpsertOne) ClearProfileName() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.ClearProfileName()
-	})
-}
-
-// SetInstanceName sets the "instance_name" field.
-func (u *BazelInvocationUpsertOne) SetInstanceName(v string) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetInstanceName(v)
-	})
-}
-
-// UpdateInstanceName sets the "instance_name" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateInstanceName() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateInstanceName()
-	})
-}
-
-// ClearInstanceName clears the value of the "instance_name" field.
-func (u *BazelInvocationUpsertOne) ClearInstanceName() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearInstanceName()
 	})
 }
 
@@ -2949,27 +2924,6 @@ func (u *BazelInvocationUpsertBulk) UpdateProfileName() *BazelInvocationUpsertBu
 func (u *BazelInvocationUpsertBulk) ClearProfileName() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.ClearProfileName()
-	})
-}
-
-// SetInstanceName sets the "instance_name" field.
-func (u *BazelInvocationUpsertBulk) SetInstanceName(v string) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetInstanceName(v)
-	})
-}
-
-// UpdateInstanceName sets the "instance_name" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateInstanceName() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateInstanceName()
-	})
-}
-
-// ClearInstanceName clears the value of the "instance_name" field.
-func (u *BazelInvocationUpsertBulk) ClearInstanceName() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearInstanceName()
 	})
 }
 

@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
@@ -44,6 +45,17 @@ func (bu *BuildUpdate) SetNillableTimestamp(t *time.Time) *BuildUpdate {
 	return bu
 }
 
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (bu *BuildUpdate) SetInstanceNameID(id int) *BuildUpdate {
+	bu.mutation.SetInstanceNameID(id)
+	return bu
+}
+
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (bu *BuildUpdate) SetInstanceName(i *InstanceName) *BuildUpdate {
+	return bu.SetInstanceNameID(i.ID)
+}
+
 // AddInvocationIDs adds the "invocations" edge to the BazelInvocation entity by IDs.
 func (bu *BuildUpdate) AddInvocationIDs(ids ...int) *BuildUpdate {
 	bu.mutation.AddInvocationIDs(ids...)
@@ -62,6 +74,12 @@ func (bu *BuildUpdate) AddInvocations(b ...*BazelInvocation) *BuildUpdate {
 // Mutation returns the BuildMutation object of the builder.
 func (bu *BuildUpdate) Mutation() *BuildMutation {
 	return bu.mutation
+}
+
+// ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
+func (bu *BuildUpdate) ClearInstanceName() *BuildUpdate {
+	bu.mutation.ClearInstanceName()
+	return bu
 }
 
 // ClearInvocations clears all "invocations" edges to the BazelInvocation entity.
@@ -112,6 +130,14 @@ func (bu *BuildUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (bu *BuildUpdate) check() error {
+	if bu.mutation.InstanceNameCleared() && len(bu.mutation.InstanceNameIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Build.instance_name"`)
+	}
+	return nil
+}
+
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (bu *BuildUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildUpdate {
 	bu.modifiers = append(bu.modifiers, modifiers...)
@@ -119,6 +145,9 @@ func (bu *BuildUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildUpd
 }
 
 func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := bu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(build.Table, build.Columns, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt))
 	if ps := bu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -129,6 +158,35 @@ func (bu *BuildUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := bu.mutation.Timestamp(); ok {
 		_spec.SetField(build.FieldTimestamp, field.TypeTime, value)
+	}
+	if bu.mutation.InstanceNameCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   build.InstanceNameTable,
+			Columns: []string{build.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bu.mutation.InstanceNameIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   build.InstanceNameTable,
+			Columns: []string{build.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if bu.mutation.InvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -211,6 +269,17 @@ func (buo *BuildUpdateOne) SetNillableTimestamp(t *time.Time) *BuildUpdateOne {
 	return buo
 }
 
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (buo *BuildUpdateOne) SetInstanceNameID(id int) *BuildUpdateOne {
+	buo.mutation.SetInstanceNameID(id)
+	return buo
+}
+
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (buo *BuildUpdateOne) SetInstanceName(i *InstanceName) *BuildUpdateOne {
+	return buo.SetInstanceNameID(i.ID)
+}
+
 // AddInvocationIDs adds the "invocations" edge to the BazelInvocation entity by IDs.
 func (buo *BuildUpdateOne) AddInvocationIDs(ids ...int) *BuildUpdateOne {
 	buo.mutation.AddInvocationIDs(ids...)
@@ -229,6 +298,12 @@ func (buo *BuildUpdateOne) AddInvocations(b ...*BazelInvocation) *BuildUpdateOne
 // Mutation returns the BuildMutation object of the builder.
 func (buo *BuildUpdateOne) Mutation() *BuildMutation {
 	return buo.mutation
+}
+
+// ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
+func (buo *BuildUpdateOne) ClearInstanceName() *BuildUpdateOne {
+	buo.mutation.ClearInstanceName()
+	return buo
 }
 
 // ClearInvocations clears all "invocations" edges to the BazelInvocation entity.
@@ -292,6 +367,14 @@ func (buo *BuildUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (buo *BuildUpdateOne) check() error {
+	if buo.mutation.InstanceNameCleared() && len(buo.mutation.InstanceNameIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Build.instance_name"`)
+	}
+	return nil
+}
+
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (buo *BuildUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *BuildUpdateOne {
 	buo.modifiers = append(buo.modifiers, modifiers...)
@@ -299,6 +382,9 @@ func (buo *BuildUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *Buil
 }
 
 func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error) {
+	if err := buo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(build.Table, build.Columns, sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt))
 	id, ok := buo.mutation.ID()
 	if !ok {
@@ -326,6 +412,35 @@ func (buo *BuildUpdateOne) sqlSave(ctx context.Context) (_node *Build, err error
 	}
 	if value, ok := buo.mutation.Timestamp(); ok {
 		_spec.SetField(build.FieldTimestamp, field.TypeTime, value)
+	}
+	if buo.mutation.InstanceNameCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   build.InstanceNameTable,
+			Columns: []string{build.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := buo.mutation.InstanceNameIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   build.InstanceNameTable,
+			Columns: []string{build.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if buo.mutation.InvocationsCleared() {
 		edge := &sqlgraph.EdgeSpec{

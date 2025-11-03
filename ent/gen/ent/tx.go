@@ -46,6 +46,8 @@ type Tx struct {
 	GarbageMetrics *GarbageMetricsClient
 	// IncompleteBuildLog is the client for interacting with the IncompleteBuildLog builders.
 	IncompleteBuildLog *IncompleteBuildLogClient
+	// InstanceName is the client for interacting with the InstanceName builders.
+	InstanceName *InstanceNameClient
 	// InvocationFiles is the client for interacting with the InvocationFiles builders.
 	InvocationFiles *InvocationFilesClient
 	// MemoryMetrics is the client for interacting with the MemoryMetrics builders.
@@ -237,6 +239,7 @@ func (tx *Tx) init() {
 	tx.ExectionInfo = NewExectionInfoClient(tx.config)
 	tx.GarbageMetrics = NewGarbageMetricsClient(tx.config)
 	tx.IncompleteBuildLog = NewIncompleteBuildLogClient(tx.config)
+	tx.InstanceName = NewInstanceNameClient(tx.config)
 	tx.InvocationFiles = NewInvocationFilesClient(tx.config)
 	tx.MemoryMetrics = NewMemoryMetricsClient(tx.config)
 	tx.Metrics = NewMetricsClient(tx.config)

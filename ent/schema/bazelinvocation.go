@@ -71,9 +71,6 @@ func (BazelInvocation) Fields() []ent.Field {
 		// The name of the build profile.
 		field.String("profile_name").Optional().Annotations(entgql.Skip(entgql.SkipType)),
 
-		// The instance name for the invocation.
-		field.String("instance_name").Optional(),
-
 		field.String("bazel_version").Optional(),
 
 		field.String("exit_code_name").Optional(),
@@ -102,6 +99,11 @@ func (BazelInvocation) Fields() []ent.Field {
 // Edges of the BazelInvocation.
 func (BazelInvocation) Edges() []ent.Edge {
 	return []ent.Edge{
+		edge.From("instance_name", InstanceName.Type).
+			Ref("bazel_invocations").
+			Unique().
+			Required(),
+
 		// Edge back from the Build.
 		edge.From("build", Build.Type).
 			Ref("invocations").

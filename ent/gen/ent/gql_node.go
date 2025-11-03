@@ -27,6 +27,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -127,6 +128,11 @@ var incompletebuildlogImplementors = []string{"IncompleteBuildLog", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*IncompleteBuildLog) IsNode() {}
+
+var instancenameImplementors = []string{"InstanceName", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*InstanceName) IsNode() {}
 
 var invocationfilesImplementors = []string{"InvocationFiles", "Node"}
 
@@ -418,6 +424,15 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			Where(incompletebuildlog.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, incompletebuildlogImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case instancename.Table:
+		query := c.InstanceName.Query().
+			Where(instancename.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, instancenameImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -905,6 +920,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.IncompleteBuildLog.Query().
 			Where(incompletebuildlog.IDIn(ids...))
 		query, err := query.CollectFields(ctx, incompletebuildlogImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case instancename.Table:
+		query := c.InstanceName.Query().
+			Where(instancename.IDIn(ids...))
+		query, err := query.CollectFields(ctx, instancenameImplementors...)
 		if err != nil {
 			return nil, err
 		}

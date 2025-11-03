@@ -41,7 +41,9 @@
     "endedAt": "2024-05-13T23:43:26.247Z",
     "hostname": "Namelesss-MacBook-Pro.local",
     "id": "QmF6ZWxJbnZvY2F0aW9uOjQ=",
-    "instanceName": "",
+    "instanceName": {
+      "name": ""
+    },
     "invocationID": "571d0839-fd63-4442-bb4d-61f7bfa4ddae",
     "isCiWorker": false,
     "metrics": {

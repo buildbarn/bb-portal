@@ -9,6 +9,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 )
 
 // Blob is the model entity for the Blob schema.
@@ -26,9 +27,33 @@ type Blob struct {
 	Reason string `json:"reason,omitempty"`
 	// ArchiveURL holds the value of the "archive_url" field.
 	ArchiveURL string `json:"archive_url,omitempty"`
-	// InstanceName holds the value of the "instance_name" field.
-	InstanceName string `json:"instance_name,omitempty"`
-	selectValues sql.SelectValues
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the BlobQuery when eager-loading is set.
+	Edges               BlobEdges `json:"edges"`
+	instance_name_blobs *int
+	selectValues        sql.SelectValues
+}
+
+// BlobEdges holds the relations/edges for other nodes in the graph.
+type BlobEdges struct {
+	// InstanceName holds the value of the instance_name edge.
+	InstanceName *InstanceName `json:"instance_name,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
+}
+
+// InstanceNameOrErr returns the InstanceName value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BlobEdges) InstanceNameOrErr() (*InstanceName, error) {
+	if e.InstanceName != nil {
+		return e.InstanceName, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: instancename.Label}
+	}
+	return nil, &NotLoadedError{edge: "instance_name"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -38,8 +63,10 @@ func (*Blob) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case blob.FieldID, blob.FieldSizeBytes:
 			values[i] = new(sql.NullInt64)
-		case blob.FieldURI, blob.FieldArchivingStatus, blob.FieldReason, blob.FieldArchiveURL, blob.FieldInstanceName:
+		case blob.FieldURI, blob.FieldArchivingStatus, blob.FieldReason, blob.FieldArchiveURL:
 			values[i] = new(sql.NullString)
+		case blob.ForeignKeys[0]: // instance_name_blobs
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -91,11 +118,12 @@ func (b *Blob) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				b.ArchiveURL = value.String
 			}
-		case blob.FieldInstanceName:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field instance_name", values[i])
+		case blob.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field instance_name_blobs", value)
 			} else if value.Valid {
-				b.InstanceName = value.String
+				b.instance_name_blobs = new(int)
+				*b.instance_name_blobs = int(value.Int64)
 			}
 		default:
 			b.selectValues.Set(columns[i], values[i])
@@ -108,6 +136,11 @@ func (b *Blob) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (b *Blob) Value(name string) (ent.Value, error) {
 	return b.selectValues.Get(name)
+}
+
+// QueryInstanceName queries the "instance_name" edge of the Blob entity.
+func (b *Blob) QueryInstanceName() *InstanceNameQuery {
+	return NewBlobClient(b.config).QueryInstanceName(b)
 }
 
 // Update returns a builder for updating this Blob.
@@ -147,9 +180,6 @@ func (b *Blob) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("archive_url=")
 	builder.WriteString(b.ArchiveURL)
-	builder.WriteString(", ")
-	builder.WriteString("instance_name=")
-	builder.WriteString(b.InstanceName)
 	builder.WriteByte(')')
 	return builder.String()
 }

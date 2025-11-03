@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -25,10 +26,17 @@ const (
 	FieldReason = "reason"
 	// FieldArchiveURL holds the string denoting the archive_url field in the database.
 	FieldArchiveURL = "archive_url"
-	// FieldInstanceName holds the string denoting the instance_name field in the database.
-	FieldInstanceName = "instance_name"
+	// EdgeInstanceName holds the string denoting the instance_name edge name in mutations.
+	EdgeInstanceName = "instance_name"
 	// Table holds the table name of the blob in the database.
 	Table = "blobs"
+	// InstanceNameTable is the table that holds the instance_name relation/edge.
+	InstanceNameTable = "blobs"
+	// InstanceNameInverseTable is the table name for the InstanceName entity.
+	// It exists in this package in order to avoid circular dependency with the "instancename" package.
+	InstanceNameInverseTable = "instance_names"
+	// InstanceNameColumn is the table column denoting the instance_name relation/edge.
+	InstanceNameColumn = "instance_name_blobs"
 )
 
 // Columns holds all SQL columns for blob fields.
@@ -39,7 +47,12 @@ var Columns = []string{
 	FieldArchivingStatus,
 	FieldReason,
 	FieldArchiveURL,
-	FieldInstanceName,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the "blobs"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"instance_name_blobs",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -49,13 +62,13 @@ func ValidColumn(column string) bool {
 			return true
 		}
 	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
+			return true
+		}
+	}
 	return false
 }
-
-var (
-	// DefaultInstanceName holds the default value on creation for the "instance_name" field.
-	DefaultInstanceName string
-)
 
 // ArchivingStatus defines the type for the "archiving_status" enum field.
 type ArchivingStatus string
@@ -119,9 +132,18 @@ func ByArchiveURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldArchiveURL, opts...).ToFunc()
 }
 
-// ByInstanceName orders the results by the instance_name field.
-func ByInstanceName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldInstanceName, opts...).ToFunc()
+// ByInstanceNameField orders the results by instance_name field.
+func ByInstanceNameField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newInstanceNameStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newInstanceNameStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(InstanceNameInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, InstanceNameTable, InstanceNameColumn),
+	)
 }
 
 // MarshalGQL implements graphql.Marshaler interface.

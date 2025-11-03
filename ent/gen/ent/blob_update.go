@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
 
@@ -109,23 +110,26 @@ func (bu *BlobUpdate) ClearArchiveURL() *BlobUpdate {
 	return bu
 }
 
-// SetInstanceName sets the "instance_name" field.
-func (bu *BlobUpdate) SetInstanceName(s string) *BlobUpdate {
-	bu.mutation.SetInstanceName(s)
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (bu *BlobUpdate) SetInstanceNameID(id int) *BlobUpdate {
+	bu.mutation.SetInstanceNameID(id)
 	return bu
 }
 
-// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
-func (bu *BlobUpdate) SetNillableInstanceName(s *string) *BlobUpdate {
-	if s != nil {
-		bu.SetInstanceName(*s)
-	}
-	return bu
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (bu *BlobUpdate) SetInstanceName(i *InstanceName) *BlobUpdate {
+	return bu.SetInstanceNameID(i.ID)
 }
 
 // Mutation returns the BlobMutation object of the builder.
 func (bu *BlobUpdate) Mutation() *BlobMutation {
 	return bu.mutation
+}
+
+// ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
+func (bu *BlobUpdate) ClearInstanceName() *BlobUpdate {
+	bu.mutation.ClearInstanceName()
+	return bu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -161,6 +165,9 @@ func (bu *BlobUpdate) check() error {
 		if err := blob.ArchivingStatusValidator(v); err != nil {
 			return &ValidationError{Name: "archiving_status", err: fmt.Errorf(`ent: validator failed for field "Blob.archiving_status": %w`, err)}
 		}
+	}
+	if bu.mutation.InstanceNameCleared() && len(bu.mutation.InstanceNameIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Blob.instance_name"`)
 	}
 	return nil
 }
@@ -207,8 +214,34 @@ func (bu *BlobUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if bu.mutation.ArchiveURLCleared() {
 		_spec.ClearField(blob.FieldArchiveURL, field.TypeString)
 	}
-	if value, ok := bu.mutation.InstanceName(); ok {
-		_spec.SetField(blob.FieldInstanceName, field.TypeString, value)
+	if bu.mutation.InstanceNameCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   blob.InstanceNameTable,
+			Columns: []string{blob.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := bu.mutation.InstanceNameIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   blob.InstanceNameTable,
+			Columns: []string{blob.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_spec.AddModifiers(bu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, bu.driver, _spec); err != nil {
@@ -313,23 +346,26 @@ func (buo *BlobUpdateOne) ClearArchiveURL() *BlobUpdateOne {
 	return buo
 }
 
-// SetInstanceName sets the "instance_name" field.
-func (buo *BlobUpdateOne) SetInstanceName(s string) *BlobUpdateOne {
-	buo.mutation.SetInstanceName(s)
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (buo *BlobUpdateOne) SetInstanceNameID(id int) *BlobUpdateOne {
+	buo.mutation.SetInstanceNameID(id)
 	return buo
 }
 
-// SetNillableInstanceName sets the "instance_name" field if the given value is not nil.
-func (buo *BlobUpdateOne) SetNillableInstanceName(s *string) *BlobUpdateOne {
-	if s != nil {
-		buo.SetInstanceName(*s)
-	}
-	return buo
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (buo *BlobUpdateOne) SetInstanceName(i *InstanceName) *BlobUpdateOne {
+	return buo.SetInstanceNameID(i.ID)
 }
 
 // Mutation returns the BlobMutation object of the builder.
 func (buo *BlobUpdateOne) Mutation() *BlobMutation {
 	return buo.mutation
+}
+
+// ClearInstanceName clears the "instance_name" edge to the InstanceName entity.
+func (buo *BlobUpdateOne) ClearInstanceName() *BlobUpdateOne {
+	buo.mutation.ClearInstanceName()
+	return buo
 }
 
 // Where appends a list predicates to the BlobUpdate builder.
@@ -378,6 +414,9 @@ func (buo *BlobUpdateOne) check() error {
 		if err := blob.ArchivingStatusValidator(v); err != nil {
 			return &ValidationError{Name: "archiving_status", err: fmt.Errorf(`ent: validator failed for field "Blob.archiving_status": %w`, err)}
 		}
+	}
+	if buo.mutation.InstanceNameCleared() && len(buo.mutation.InstanceNameIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "Blob.instance_name"`)
 	}
 	return nil
 }
@@ -441,8 +480,34 @@ func (buo *BlobUpdateOne) sqlSave(ctx context.Context) (_node *Blob, err error) 
 	if buo.mutation.ArchiveURLCleared() {
 		_spec.ClearField(blob.FieldArchiveURL, field.TypeString)
 	}
-	if value, ok := buo.mutation.InstanceName(); ok {
-		_spec.SetField(blob.FieldInstanceName, field.TypeString, value)
+	if buo.mutation.InstanceNameCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   blob.InstanceNameTable,
+			Columns: []string{blob.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := buo.mutation.InstanceNameIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   blob.InstanceNameTable,
+			Columns: []string{blob.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_spec.AddModifiers(buo.modifiers...)
 	_node = &Blob{config: buo.config}

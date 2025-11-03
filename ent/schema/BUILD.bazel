@@ -19,6 +19,7 @@ go_library(
         "executioninfo.go",
         "garbagemetrics.go",
         "incompletebuildlog.go",
+        "instancename.go",
         "invocationfiles.go",
         "memorymetrics.go",
         "metrics.go",

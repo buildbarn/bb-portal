@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/google/uuid"
 )
 
@@ -22,33 +23,45 @@ type Build struct {
 	BuildURL string `json:"build_url,omitempty"`
 	// BuildUUID holds the value of the "build_uuid" field.
 	BuildUUID uuid.UUID `json:"build_uuid,omitempty"`
-	// InstanceName holds the value of the "instance_name" field.
-	InstanceName string `json:"instance_name,omitempty"`
 	// Timestamp holds the value of the "timestamp" field.
 	Timestamp time.Time `json:"timestamp,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BuildQuery when eager-loading is set.
-	Edges        BuildEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges                BuildEdges `json:"edges"`
+	instance_name_builds *int
+	selectValues         sql.SelectValues
 }
 
 // BuildEdges holds the relations/edges for other nodes in the graph.
 type BuildEdges struct {
+	// InstanceName holds the value of the instance_name edge.
+	InstanceName *InstanceName `json:"instance_name,omitempty"`
 	// Invocations holds the value of the invocations edge.
 	Invocations []*BazelInvocation `json:"invocations,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
 
 	namedInvocations map[string][]*BazelInvocation
+}
+
+// InstanceNameOrErr returns the InstanceName value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BuildEdges) InstanceNameOrErr() (*InstanceName, error) {
+	if e.InstanceName != nil {
+		return e.InstanceName, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: instancename.Label}
+	}
+	return nil, &NotLoadedError{edge: "instance_name"}
 }
 
 // InvocationsOrErr returns the Invocations value or an error if the edge
 // was not loaded in eager-loading.
 func (e BuildEdges) InvocationsOrErr() ([]*BazelInvocation, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		return e.Invocations, nil
 	}
 	return nil, &NotLoadedError{edge: "invocations"}
@@ -61,12 +74,14 @@ func (*Build) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case build.FieldID:
 			values[i] = new(sql.NullInt64)
-		case build.FieldBuildURL, build.FieldInstanceName:
+		case build.FieldBuildURL:
 			values[i] = new(sql.NullString)
 		case build.FieldTimestamp:
 			values[i] = new(sql.NullTime)
 		case build.FieldBuildUUID:
 			values[i] = new(uuid.UUID)
+		case build.ForeignKeys[0]: // instance_name_builds
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -100,17 +115,18 @@ func (b *Build) assignValues(columns []string, values []any) error {
 			} else if value != nil {
 				b.BuildUUID = *value
 			}
-		case build.FieldInstanceName:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field instance_name", values[i])
-			} else if value.Valid {
-				b.InstanceName = value.String
-			}
 		case build.FieldTimestamp:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field timestamp", values[i])
 			} else if value.Valid {
 				b.Timestamp = value.Time
+			}
+		case build.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field instance_name_builds", value)
+			} else if value.Valid {
+				b.instance_name_builds = new(int)
+				*b.instance_name_builds = int(value.Int64)
 			}
 		default:
 			b.selectValues.Set(columns[i], values[i])
@@ -123,6 +139,11 @@ func (b *Build) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (b *Build) Value(name string) (ent.Value, error) {
 	return b.selectValues.Get(name)
+}
+
+// QueryInstanceName queries the "instance_name" edge of the Build entity.
+func (b *Build) QueryInstanceName() *InstanceNameQuery {
+	return NewBuildClient(b.config).QueryInstanceName(b)
 }
 
 // QueryInvocations queries the "invocations" edge of the Build entity.
@@ -158,9 +179,6 @@ func (b *Build) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("build_uuid=")
 	builder.WriteString(fmt.Sprintf("%v", b.BuildUUID))
-	builder.WriteString(", ")
-	builder.WriteString("instance_name=")
-	builder.WriteString(b.InstanceName)
 	builder.WriteString(", ")
 	builder.WriteString("timestamp=")
 	builder.WriteString(b.Timestamp.Format(time.ANSIC))

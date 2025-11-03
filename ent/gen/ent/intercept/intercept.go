@@ -24,6 +24,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -535,6 +536,33 @@ func (f TraverseIncompleteBuildLog) Traverse(ctx context.Context, q ent.Query) e
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.IncompleteBuildLogQuery", q)
+}
+
+// The InstanceNameFunc type is an adapter to allow the use of ordinary function as a Querier.
+type InstanceNameFunc func(context.Context, *ent.InstanceNameQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f InstanceNameFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.InstanceNameQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.InstanceNameQuery", q)
+}
+
+// The TraverseInstanceName type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseInstanceName func(context.Context, *ent.InstanceNameQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseInstanceName) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseInstanceName) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.InstanceNameQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.InstanceNameQuery", q)
 }
 
 // The InvocationFilesFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -1166,6 +1194,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.GarbageMetricsQuery, predicate.GarbageMetrics, garbagemetrics.OrderOption]{typ: ent.TypeGarbageMetrics, tq: q}, nil
 	case *ent.IncompleteBuildLogQuery:
 		return &query[*ent.IncompleteBuildLogQuery, predicate.IncompleteBuildLog, incompletebuildlog.OrderOption]{typ: ent.TypeIncompleteBuildLog, tq: q}, nil
+	case *ent.InstanceNameQuery:
+		return &query[*ent.InstanceNameQuery, predicate.InstanceName, instancename.OrderOption]{typ: ent.TypeInstanceName, tq: q}, nil
 	case *ent.InvocationFilesQuery:
 		return &query[*ent.InvocationFilesQuery, predicate.InvocationFiles, invocationfiles.OrderOption]{typ: ent.TypeInvocationFiles, tq: q}, nil
 	case *ent.MemoryMetricsQuery:

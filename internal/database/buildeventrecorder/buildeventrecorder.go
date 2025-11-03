@@ -2,20 +2,24 @@ package buildeventrecorder
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"log/slog"
 	"time"
 
+	entsql "entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	apicommon "github.com/buildbarn/bb-portal/internal/api/common"
+	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -31,6 +35,7 @@ type BuildEventRecorder struct {
 	tracer              trace.Tracer
 
 	InstanceName           string
+	InstanceNameDbID       int
 	InvocationID           string
 	InvocationDbID         int
 	CorrelatedInvocationID string
@@ -57,7 +62,9 @@ func NewBuildEventRecorder(
 		return nil, status.Error(codes.PermissionDenied, fmt.Sprintf("Instance name %q is not allowed", instanceName))
 	}
 
-	invocationDb, err := findOrCreateInvocation(ctx, db, invocationID, instanceName)
+	tracer := tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/buildeventrecorder")
+
+	instanceNameDbID, invocationDbID, err := findOrCreateInvocation(ctx, db, invocationID, instanceName, tracer)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to find or create bazel invocation")
 	}
@@ -67,11 +74,12 @@ func NewBuildEventRecorder(
 		problemDetector:     detectors.NewProblemDetector(),
 		blobArchiver:        blobArchiver,
 		saveTargetDataLevel: saveTargetDataLevel,
-		tracer:              tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"),
+		tracer:              tracer,
 
 		InstanceName:           instanceName,
+		InstanceNameDbID:       instanceNameDbID,
 		InvocationID:           invocationID,
-		InvocationDbID:         invocationDb.ID,
+		InvocationDbID:         invocationDbID,
 		CorrelatedInvocationID: correlatedInvocationID,
 		IsRealTime:             isRealTime,
 	}, nil
@@ -82,41 +90,71 @@ func findOrCreateInvocation(
 	db *ent.Client,
 	invocationID string,
 	instanceName string,
-) (*ent.BazelInvocation, error) {
+	tracer trace.Tracer,
+) (int, int, error) {
+	ctx, span := tracer.Start(ctx,
+		fmt.Sprintf("BuildEventRecorder.findOrCreateInvocation"),
+		trace.WithAttributes(
+			attribute.String("invocation.id", invocationID),
+			attribute.String("invocation.instance_name", instanceName),
+		),
+	)
+	defer span.End()
+
 	invocationIDUUID, err := uuid.Parse(invocationID)
 	if err != nil {
-		return nil, util.StatusWrap(err, "Failed to parse invocation ID")
+		return 0, 0, util.StatusWrap(err, "Failed to parse invocation ID")
 	}
 
-	invocationDbID, err := db.BazelInvocation.Create().
+	tx, err := db.BeginTx(ctx, &entsql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return 0, 0, util.StatusWrap(err, "Failed to create transaction")
+	}
+
+	instanceNameDbID, err := tx.InstanceName.Create().
+		SetName(instanceName).
+		OnConflictColumns("name").
+		Ignore().
+		ID(ctx)
+	if err != nil {
+		return 0, 0, common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to create or find instance name"))
+	}
+
+	invocationDbID, err := tx.BazelInvocation.Create().
 		SetInvocationID(invocationIDUUID).
-		SetInstanceName(instanceName).
+		SetInstanceNameID(instanceNameDbID).
 		OnConflictColumns(bazelinvocation.FieldInvocationID).
 		Ignore().
 		ID(ctx)
 	if err != nil {
-		return nil, util.StatusWrap(err, "Failed to create or find bazel invocation")
+		return 0, 0, common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to create or find bazel invocation"))
 	}
 
-	invocationDb, err := db.BazelInvocation.Query().
+	invocationDb, err := tx.BazelInvocation.Query().
 		Where(bazelinvocation.ID(invocationDbID)).
-		Select(
-			bazelinvocation.FieldID,
-			bazelinvocation.FieldBepCompleted,
-			bazelinvocation.FieldInstanceName,
-		).
 		Only(ctx)
 	if err != nil {
-		return nil, util.StatusWrap(err, "Failed to query bazel invocation by ID")
+		return 0, 0, common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to query bazel invocation by ID"))
 	}
 
-	if invocationDb.InstanceName != instanceName {
-		return nil, status.Errorf(codes.FailedPrecondition, "Invocation with ID %q already exists with different instance name. Possible UUID collision.", invocationID)
+	instanceNameDb, err := invocationDb.InstanceName(ctx)
+	if err != nil {
+		return 0, 0, common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to get existing invocation instance name"))
+	}
+
+	if instanceNameDb.ID != instanceNameDbID {
+		return 0, 0, common.RollbackAndWrapError(tx, status.Errorf(codes.FailedPrecondition, "Invocation with ID %q already exists with different instance name. Possible UUID collision.", invocationID))
 	}
 	if invocationDb.BepCompleted {
-		return nil, status.Errorf(codes.FailedPrecondition, "Invocation with ID %q already exists and is locked for writing", invocationID)
+		return 0, 0, common.RollbackAndWrapError(tx, status.Errorf(codes.FailedPrecondition, "Invocation with ID %q already exists and is locked for writing", invocationID))
 	}
-	return invocationDb, nil
+
+	err = tx.Commit()
+	if err != nil {
+		return 0, 0, util.StatusWrap(err, "Failed to commit transaction")
+	}
+
+	return instanceNameDbID, invocationDb.ID, nil
 }
 
 // StartLoggingConnectionMetadata starts a goroutine that periodically

@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/google/uuid"
 )
 
@@ -36,16 +37,21 @@ func (bc *BuildCreate) SetBuildUUID(u uuid.UUID) *BuildCreate {
 	return bc
 }
 
-// SetInstanceName sets the "instance_name" field.
-func (bc *BuildCreate) SetInstanceName(s string) *BuildCreate {
-	bc.mutation.SetInstanceName(s)
-	return bc
-}
-
 // SetTimestamp sets the "timestamp" field.
 func (bc *BuildCreate) SetTimestamp(t time.Time) *BuildCreate {
 	bc.mutation.SetTimestamp(t)
 	return bc
+}
+
+// SetInstanceNameID sets the "instance_name" edge to the InstanceName entity by ID.
+func (bc *BuildCreate) SetInstanceNameID(id int) *BuildCreate {
+	bc.mutation.SetInstanceNameID(id)
+	return bc
+}
+
+// SetInstanceName sets the "instance_name" edge to the InstanceName entity.
+func (bc *BuildCreate) SetInstanceName(i *InstanceName) *BuildCreate {
+	return bc.SetInstanceNameID(i.ID)
 }
 
 // AddInvocationIDs adds the "invocations" edge to the BazelInvocation entity by IDs.
@@ -103,11 +109,11 @@ func (bc *BuildCreate) check() error {
 	if _, ok := bc.mutation.BuildUUID(); !ok {
 		return &ValidationError{Name: "build_uuid", err: errors.New(`ent: missing required field "Build.build_uuid"`)}
 	}
-	if _, ok := bc.mutation.InstanceName(); !ok {
-		return &ValidationError{Name: "instance_name", err: errors.New(`ent: missing required field "Build.instance_name"`)}
-	}
 	if _, ok := bc.mutation.Timestamp(); !ok {
 		return &ValidationError{Name: "timestamp", err: errors.New(`ent: missing required field "Build.timestamp"`)}
+	}
+	if len(bc.mutation.InstanceNameIDs()) == 0 {
+		return &ValidationError{Name: "instance_name", err: errors.New(`ent: missing required edge "Build.instance_name"`)}
 	}
 	return nil
 }
@@ -144,13 +150,26 @@ func (bc *BuildCreate) createSpec() (*Build, *sqlgraph.CreateSpec) {
 		_spec.SetField(build.FieldBuildUUID, field.TypeUUID, value)
 		_node.BuildUUID = value
 	}
-	if value, ok := bc.mutation.InstanceName(); ok {
-		_spec.SetField(build.FieldInstanceName, field.TypeString, value)
-		_node.InstanceName = value
-	}
 	if value, ok := bc.mutation.Timestamp(); ok {
 		_spec.SetField(build.FieldTimestamp, field.TypeTime, value)
 		_node.Timestamp = value
+	}
+	if nodes := bc.mutation.InstanceNameIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   build.InstanceNameTable,
+			Columns: []string{build.InstanceNameColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(instancename.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.instance_name_builds = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := bc.mutation.InvocationsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -248,9 +267,6 @@ func (u *BuildUpsertOne) UpdateNewValues() *BuildUpsertOne {
 		}
 		if _, exists := u.create.mutation.BuildUUID(); exists {
 			s.SetIgnore(build.FieldBuildUUID)
-		}
-		if _, exists := u.create.mutation.InstanceName(); exists {
-			s.SetIgnore(build.FieldInstanceName)
 		}
 	}))
 	return u
@@ -477,9 +493,6 @@ func (u *BuildUpsertBulk) UpdateNewValues() *BuildUpsertBulk {
 			}
 			if _, exists := b.mutation.BuildUUID(); exists {
 				s.SetIgnore(build.FieldBuildUUID)
-			}
-			if _, exists := b.mutation.InstanceName(); exists {
-				s.SetIgnore(build.FieldInstanceName)
 			}
 		}
 	}))

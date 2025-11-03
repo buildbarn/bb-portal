@@ -4,7 +4,6 @@ package ent
 
 import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/schema"
 )
@@ -20,35 +19,31 @@ func init() {
 	// bazelinvocation.DefaultBepCompleted holds the default value on creation for the bep_completed field.
 	bazelinvocation.DefaultBepCompleted = bazelinvocationDescBepCompleted.Default.(bool)
 	// bazelinvocationDescProcessedEventStarted is the schema descriptor for processed_event_started field.
-	bazelinvocationDescProcessedEventStarted := bazelinvocationFields[28].Descriptor()
+	bazelinvocationDescProcessedEventStarted := bazelinvocationFields[27].Descriptor()
 	// bazelinvocation.DefaultProcessedEventStarted holds the default value on creation for the processed_event_started field.
 	bazelinvocation.DefaultProcessedEventStarted = bazelinvocationDescProcessedEventStarted.Default.(bool)
 	// bazelinvocationDescProcessedEventBuildMetadata is the schema descriptor for processed_event_build_metadata field.
-	bazelinvocationDescProcessedEventBuildMetadata := bazelinvocationFields[29].Descriptor()
+	bazelinvocationDescProcessedEventBuildMetadata := bazelinvocationFields[28].Descriptor()
 	// bazelinvocation.DefaultProcessedEventBuildMetadata holds the default value on creation for the processed_event_build_metadata field.
 	bazelinvocation.DefaultProcessedEventBuildMetadata = bazelinvocationDescProcessedEventBuildMetadata.Default.(bool)
 	// bazelinvocationDescProcessedEventOptionsParsed is the schema descriptor for processed_event_options_parsed field.
-	bazelinvocationDescProcessedEventOptionsParsed := bazelinvocationFields[30].Descriptor()
+	bazelinvocationDescProcessedEventOptionsParsed := bazelinvocationFields[29].Descriptor()
 	// bazelinvocation.DefaultProcessedEventOptionsParsed holds the default value on creation for the processed_event_options_parsed field.
 	bazelinvocation.DefaultProcessedEventOptionsParsed = bazelinvocationDescProcessedEventOptionsParsed.Default.(bool)
 	// bazelinvocationDescProcessedEventBuildFinished is the schema descriptor for processed_event_build_finished field.
-	bazelinvocationDescProcessedEventBuildFinished := bazelinvocationFields[31].Descriptor()
+	bazelinvocationDescProcessedEventBuildFinished := bazelinvocationFields[30].Descriptor()
 	// bazelinvocation.DefaultProcessedEventBuildFinished holds the default value on creation for the processed_event_build_finished field.
 	bazelinvocation.DefaultProcessedEventBuildFinished = bazelinvocationDescProcessedEventBuildFinished.Default.(bool)
 	// bazelinvocationDescProcessedEventStructuredCommandLine is the schema descriptor for processed_event_structured_command_line field.
-	bazelinvocationDescProcessedEventStructuredCommandLine := bazelinvocationFields[32].Descriptor()
+	bazelinvocationDescProcessedEventStructuredCommandLine := bazelinvocationFields[31].Descriptor()
 	// bazelinvocation.DefaultProcessedEventStructuredCommandLine holds the default value on creation for the processed_event_structured_command_line field.
 	bazelinvocation.DefaultProcessedEventStructuredCommandLine = bazelinvocationDescProcessedEventStructuredCommandLine.Default.(bool)
 	// bazelinvocationDescProcessedEventWorkspaceStatus is the schema descriptor for processed_event_workspace_status field.
-	bazelinvocationDescProcessedEventWorkspaceStatus := bazelinvocationFields[33].Descriptor()
+	bazelinvocationDescProcessedEventWorkspaceStatus := bazelinvocationFields[32].Descriptor()
 	// bazelinvocation.DefaultProcessedEventWorkspaceStatus holds the default value on creation for the processed_event_workspace_status field.
 	bazelinvocation.DefaultProcessedEventWorkspaceStatus = bazelinvocationDescProcessedEventWorkspaceStatus.Default.(bool)
 	blobFields := schema.Blob{}.Fields()
 	_ = blobFields
-	// blobDescInstanceName is the schema descriptor for instance_name field.
-	blobDescInstanceName := blobFields[5].Descriptor()
-	// blob.DefaultInstanceName holds the default value on creation for the instance_name field.
-	blob.DefaultInstanceName = blobDescInstanceName.Default.(string)
 	missdetailFields := schema.MissDetail{}.Fields()
 	_ = missdetailFields
 	targetFields := schema.Target{}.Fields()

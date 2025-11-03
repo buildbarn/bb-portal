@@ -21,7 +21,6 @@ func (Build) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("build_url").Immutable(),
 		field.UUID("build_uuid", uuid.UUID{}).Unique().Immutable(),
-		field.String("instance_name").Immutable(),
 		field.Time("timestamp"),
 	}
 }
@@ -29,6 +28,11 @@ func (Build) Fields() []ent.Field {
 // Edges of the Build.
 func (Build) Edges() []ent.Edge {
 	return []ent.Edge{
+		edge.From("instance_name", InstanceName.Type).
+			Ref("builds").
+			Unique().
+			Required(),
+
 		edge.To("invocations", BazelInvocation.Type).
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
@@ -42,7 +46,9 @@ func (Build) Indexes() []ent.Index {
 		index.Fields("build_uuid"),
 		index.Fields("build_url"),
 		index.Fields("timestamp"),
-		index.Fields("build_url", "instance_name").Unique(),
+		index.Fields("build_url").
+			Edges("instance_name").
+			Unique(),
 	}
 }
 

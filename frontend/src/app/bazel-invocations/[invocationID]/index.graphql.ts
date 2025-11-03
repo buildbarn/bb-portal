@@ -147,7 +147,9 @@ fragment BazelInvocationInfo on BazelInvocation {
   }
   id
   invocationID
-  instanceName
+  instanceName {
+    name
+  }
   bazelVersion
   build {
     id

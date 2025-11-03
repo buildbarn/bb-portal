@@ -18,6 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -33,6 +34,7 @@ type BazelInvocationQuery struct {
 	order                        []bazelinvocation.OrderOption
 	inters                       []Interceptor
 	predicates                   []predicate.BazelInvocation
+	withInstanceName             *InstanceNameQuery
 	withBuild                    *BuildQuery
 	withEventMetadata            *EventMetadataQuery
 	withConnectionMetadata       *ConnectionMetadataQuery
@@ -87,6 +89,28 @@ func (biq *BazelInvocationQuery) Unique(unique bool) *BazelInvocationQuery {
 func (biq *BazelInvocationQuery) Order(o ...bazelinvocation.OrderOption) *BazelInvocationQuery {
 	biq.order = append(biq.order, o...)
 	return biq
+}
+
+// QueryInstanceName chains the current query on the "instance_name" edge.
+func (biq *BazelInvocationQuery) QueryInstanceName() *InstanceNameQuery {
+	query := (&InstanceNameClient{config: biq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := biq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := biq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(instancename.Table, instancename.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, bazelinvocation.InstanceNameTable, bazelinvocation.InstanceNameColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // QueryBuild chains the current query on the "build" edge.
@@ -501,6 +525,7 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		order:                   append([]bazelinvocation.OrderOption{}, biq.order...),
 		inters:                  append([]Interceptor{}, biq.inters...),
 		predicates:              append([]predicate.BazelInvocation{}, biq.predicates...),
+		withInstanceName:        biq.withInstanceName.Clone(),
 		withBuild:               biq.withBuild.Clone(),
 		withEventMetadata:       biq.withEventMetadata.Clone(),
 		withConnectionMetadata:  biq.withConnectionMetadata.Clone(),
@@ -516,6 +541,17 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		path:      biq.path,
 		modifiers: append([]func(*sql.Selector){}, biq.modifiers...),
 	}
+}
+
+// WithInstanceName tells the query-builder to eager-load the nodes that are connected to
+// the "instance_name" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithInstanceName(opts ...func(*InstanceNameQuery)) *BazelInvocationQuery {
+	query := (&InstanceNameClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	biq.withInstanceName = query
+	return biq
 }
 
 // WithBuild tells the query-builder to eager-load the nodes that are connected to
@@ -707,7 +743,8 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*BazelInvocation{}
 		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
-		loadedTypes = [10]bool{
+		loadedTypes = [11]bool{
+			biq.withInstanceName != nil,
 			biq.withBuild != nil,
 			biq.withEventMetadata != nil,
 			biq.withConnectionMetadata != nil,
@@ -720,7 +757,7 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			biq.withSourceControl != nil,
 		}
 	)
-	if biq.withBuild != nil {
+	if biq.withInstanceName != nil || biq.withBuild != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -746,6 +783,12 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
+	}
+	if query := biq.withInstanceName; query != nil {
+		if err := biq.loadInstanceName(ctx, query, nodes, nil,
+			func(n *BazelInvocation, e *InstanceName) { n.Edges.InstanceName = e }); err != nil {
+			return nil, err
+		}
 	}
 	if query := biq.withBuild; query != nil {
 		if err := biq.loadBuild(ctx, query, nodes, nil,
@@ -879,6 +922,38 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	return nodes, nil
 }
 
+func (biq *BazelInvocationQuery) loadInstanceName(ctx context.Context, query *InstanceNameQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *InstanceName)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*BazelInvocation)
+	for i := range nodes {
+		if nodes[i].instance_name_bazel_invocations == nil {
+			continue
+		}
+		fk := *nodes[i].instance_name_bazel_invocations
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(instancename.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "instance_name_bazel_invocations" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 func (biq *BazelInvocationQuery) loadBuild(ctx context.Context, query *BuildQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *Build)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*BazelInvocation)

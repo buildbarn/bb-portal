@@ -70,7 +70,12 @@ func (r *BuildEventRecorder) saveBazelInvocationProblems(
 		return nil
 	}
 
-	invocationDb, err := tx.BazelInvocation.Query().Where(bazelinvocation.ID(r.InvocationDbID)).Select(bazelinvocation.FieldInvocationID, bazelinvocation.FieldInstanceName).Only(ctx)
+	invocationDb, err := tx.BazelInvocation.Query().
+		Where(
+			bazelinvocation.ID(r.InvocationDbID),
+		).
+		Select(bazelinvocation.FieldInvocationID).
+		Only(ctx)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to find invocation for problems")
 	}
@@ -96,7 +101,7 @@ func (r *BuildEventRecorder) saveBazelInvocationProblems(
 		b := missingBlobs[i]
 		create.
 			SetURI(string(b)).
-			SetInstanceName(r.InstanceName)
+			SetInstanceNameID(r.InstanceNameDbID)
 	}).Exec(ctx)
 	if err != nil {
 		return util.StatusWrap(err, "failed to save blobs to database")

@@ -73,6 +73,7 @@ func AddDatabaseAuthInterceptors(authorizerConfiguration *auth_pb.AuthorizerConf
 	dbClient.EvaluationStat.Intercept(createInterceptor(instanceNameAuthorizer, isEvaluationStatAllowed))
 	dbClient.ExectionInfo.Intercept(createInterceptor(instanceNameAuthorizer, isExectionInfoAllowed))
 	dbClient.GarbageMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isGarbageMetricsAllowed))
+	dbClient.InstanceName.Intercept(createInterceptor(instanceNameAuthorizer, isInstanceNameAllowed))
 	dbClient.MemoryMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isMemoryMetricsAllowed))
 	dbClient.Metrics.Intercept(createInterceptor(instanceNameAuthorizer, isMetricsAllowed))
 	dbClient.MissDetail.Intercept(createInterceptor(instanceNameAuthorizer, isMissDetailAllowed))
@@ -117,7 +118,8 @@ func isArtifactMetricsAllowed(ctx context.Context, instanceNameAuthorizer auth.A
 }
 
 func isBazelInvocationAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, invocation *ent.BazelInvocation) bool {
-	return common.IsInstanceNameAllowed(ctx, instanceNameAuthorizer, invocation.InstanceName)
+	instanceName, err := invocation.InstanceName(ctx)
+	return err == nil && instanceName == nil
 }
 
 func isBazelInvocationProblemAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, problem *ent.BazelInvocationProblem) bool {
@@ -126,11 +128,13 @@ func isBazelInvocationProblemAllowed(ctx context.Context, instanceNameAuthorizer
 }
 
 func isBlobAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, blob *ent.Blob) bool {
-	return common.IsInstanceNameAllowed(ctx, instanceNameAuthorizer, blob.InstanceName)
+	instanceName, err := blob.InstanceName(ctx)
+	return err == nil && instanceName == nil
 }
 
 func isBuildAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, build *ent.Build) bool {
-	return common.IsInstanceNameAllowed(ctx, instanceNameAuthorizer, build.InstanceName)
+	instanceName, err := build.InstanceName(ctx)
+	return err == nil && instanceName == nil
 }
 
 func isBuildGraphMetricsAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, buildGraphMetrics *ent.BuildGraphMetrics) bool {
@@ -156,6 +160,13 @@ func isExectionInfoAllowed(ctx context.Context, instanceNameAuthorizer auth.Auth
 func isGarbageMetricsAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, garbageMetrics *ent.GarbageMetrics) bool {
 	memoryMetrics, err := garbageMetrics.MemoryMetrics(ctx)
 	return err == nil && memoryMetrics != nil
+}
+
+func isInstanceNameAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, instanceName *ent.InstanceName) bool {
+	if instanceName == nil {
+		return false
+	}
+	return common.IsInstanceNameAllowed(ctx, instanceNameAuthorizer, instanceName.Name)
 }
 
 func isMemoryMetricsAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, memoryMetrics *ent.MemoryMetrics) bool {

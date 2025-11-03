@@ -39,6 +39,14 @@ func getNewDbCleanupService(client *ent.Client, clock clock.Clock, traceProvider
 	return dbcleanupservice.NewDbCleanupService(client, clock, cleanupConfiguration, traceProvider)
 }
 
+func createInstanceName(t *testing.T, ctx context.Context, client *ent.Client, name string) int {
+	in, err := client.InstanceName.Create().
+		SetName(name).
+		Save(ctx)
+	require.NoError(t, err)
+	return in.ID
+}
+
 func populateIncompleteBuildLog(t *testing.T, ctx context.Context, client *ent.Client, invocationDbID int) {
 	logSnippets := []string{
 		"\u001b[32mComputing main repo mapping:\u001b[0m \n\r\u001b[1A\u001b[K\u001b[32mLoading:\u001b[0m \n\r\u001b[1A\u001b[K\u001b[32mLoading:\u001b[0m 0 packages loaded\n",
@@ -82,13 +90,16 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 
 	t.Run("InvocationsWithNoConnectionMetadata", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv1, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(false).
 			Save(ctx)
 		require.NoError(t, err)
 		inv2, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -115,8 +126,10 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 
 	t.Run("UnfinishedInvocationNoRecentConnections", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -140,8 +153,10 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 
 	t.Run("UnfinishedInvocationRecentConnection", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -165,8 +180,10 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 
 	t.Run("FinishedInvocationWithOldConnection", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -191,9 +208,11 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 
 	t.Run("MultipleMixedInvocations", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		// old connection -> should be locked
 		invOld, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			Save(ctx)
 		require.NoError(t, err)
 		_, err = client.ConnectionMetadata.Create().
@@ -205,6 +224,7 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 		// recent connection -> should remain unlocked
 		invRecent, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			Save(ctx)
 		require.NoError(t, err)
 		_, err = client.ConnectionMetadata.Create().
@@ -247,8 +267,10 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 	t.Run("UnfinishedInvocation-NoEventMetadata", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		startInv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -266,8 +288,10 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 	t.Run("FinishedInvocation-NoEventMetadata", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		startInv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			SetEndedAt(cleanupTime.Add(-60 * time.Second)).
 			Save(ctx)
@@ -287,8 +311,10 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 	t.Run("UnfinishedInvocationWithoutEndedAt", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			Save(ctx)
 		require.NoError(t, err)
 		em, err := client.EventMetadata.Create().
@@ -313,8 +339,10 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 	t.Run("UnfinishedInvocationWithEndedAt", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetEndedAt(cleanupTime.Add(-60 * time.Second)).
 			Save(ctx)
 		require.NoError(t, err)
@@ -340,8 +368,10 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 	t.Run("FinishedInvocationWithoutEndedAt", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -367,8 +397,10 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 	t.Run("FinishedInvocationWithEndedAt", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetEndedAt(cleanupTime.Add(-60 * time.Second)).
 			SetBepCompleted(true).
 			Save(ctx)
@@ -395,8 +427,10 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 	t.Run("UnfinishedInvocation-MultipleEventMetadata", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			Save(ctx)
 		require.NoError(t, err)
 		_, err = client.EventMetadata.Create().
@@ -435,8 +469,10 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 	t.Run("MultipleUnfinishedInvocations", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb1, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			Save(ctx)
 		require.NoError(t, err)
 		em1, err := client.EventMetadata.Create().
@@ -449,6 +485,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 		invocationDb2, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			Save(ctx)
 		require.NoError(t, err)
 		em2, err := client.EventMetadata.Create().
@@ -478,8 +515,10 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 	t.Run("UnfinishedInvocation-RecentEventMetadata", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			Save(ctx)
 		require.NoError(t, err)
 		_, err = client.EventMetadata.Create().
@@ -530,8 +569,10 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 
 	t.Run("ConnectionForCompletedInvocation", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -560,8 +601,10 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 
 	t.Run("ConnectionForUnfinishedInvocation", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(false).
 			Save(ctx)
 		require.NoError(t, err)
@@ -585,9 +628,11 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 
 	t.Run("MultipleMixedConnections", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		// Completed invocation
 		invDone, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -600,6 +645,7 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 		// Unfinished invocation
 		invNotDone, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(false).
 			Save(ctx)
 		require.NoError(t, err)
@@ -645,8 +691,10 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 
 	t.Run("EventMetadataNotOld", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			SetEndedAt(cleanupTime.Add(-15 * time.Second)).
 			Save(ctx)
@@ -671,8 +719,10 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 
 	t.Run("EventMetadataOld", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			SetEndedAt(cleanupTime.Add(-60 * time.Second)).
 			Save(ctx)
@@ -697,8 +747,10 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 
 	t.Run("EventMetadataOldButInvocationNotCompleted", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetEndedAt(cleanupTime.Add(-60 * time.Second)).
 			Save(ctx)
 		require.NoError(t, err)
@@ -722,8 +774,10 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 
 	t.Run("EventMetadataOldButInvocationEndedAtAfterCutoff", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			SetEndedAt(cleanupTime.Add(-15 * time.Second)).
 			Save(ctx)
@@ -748,8 +802,10 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 
 	t.Run("MultipleEventMetadata", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			SetEndedAt(cleanupTime.Add(-60 * time.Second)).
 			Save(ctx)
@@ -787,8 +843,10 @@ func TestCompactLogs(t *testing.T) {
 
 	t.Run("FinishedInvocationWithoutIncompleteLog", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -814,8 +872,10 @@ func TestCompactLogs(t *testing.T) {
 
 	t.Run("FinishedInvocationWithIncompleteLog", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			Save(ctx)
 		require.NoError(t, err)
@@ -843,8 +903,10 @@ func TestCompactLogs(t *testing.T) {
 
 	t.Run("UnfinishedInvocationWithIncompleteLog", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(false).
 			Save(ctx)
 		require.NoError(t, err)
@@ -887,8 +949,10 @@ func TestRemoveOldInvocations(t *testing.T) {
 
 	t.Run("InvocationNotCompleted", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		_, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetEndedAt(cleanupTime.Add(-60 * time.Minute)).
 			Save(ctx)
 		require.NoError(t, err)
@@ -906,8 +970,10 @@ func TestRemoveOldInvocations(t *testing.T) {
 
 	t.Run("InvocationCompletedButNotOld", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		_, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			SetEndedAt(cleanupTime.Add(-15 * time.Minute)).
 			Save(ctx)
@@ -926,8 +992,10 @@ func TestRemoveOldInvocations(t *testing.T) {
 
 	t.Run("InvocationCompletedAndOld", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		_, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			SetEndedAt(cleanupTime.Add(-60 * time.Minute)).
 			Save(ctx)
@@ -946,9 +1014,11 @@ func TestRemoveOldInvocations(t *testing.T) {
 
 	t.Run("MultipleInvocationsMixed", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		// Old and completed
 		_, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			SetEndedAt(cleanupTime.Add(-60 * time.Minute)).
 			Save(ctx)
@@ -956,12 +1026,14 @@ func TestRemoveOldInvocations(t *testing.T) {
 		// Not completed
 		_, err = client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetEndedAt(cleanupTime.Add(-60 * time.Minute)).
 			Save(ctx)
 		require.NoError(t, err)
 		// Completed but not old
 		_, err = client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBepCompleted(true).
 			SetEndedAt(cleanupTime.Add(-15 * time.Minute)).
 			Save(ctx)
@@ -969,6 +1041,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 		// Not completed and not old
 		_, err = client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetEndedAt(cleanupTime.Add(-15 * time.Minute)).
 			Save(ctx)
 		require.NoError(t, err)
@@ -1005,10 +1078,13 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 
 	t.Run("BuildWithInvocation", func(t *testing.T) {
 		client := setupTestDB(t)
-		buildObj, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceName("").SetTimestamp(time.Now()).Save(ctx)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+
+		buildObj, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now()).Save(ctx)
 		require.NoError(t, err)
 		_, err = client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBuild(buildObj).
 			Save(ctx)
 		require.NoError(t, err)
@@ -1025,7 +1101,9 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 
 	t.Run("BuildWithoutInvocation", func(t *testing.T) {
 		client := setupTestDB(t)
-		_, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceName("").SetTimestamp(time.Now()).Save(ctx)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+
+		_, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now()).Save(ctx)
 		require.NoError(t, err)
 
 		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
@@ -1040,19 +1118,22 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 
 	t.Run("MultipleBuildsMixed", func(t *testing.T) {
 		client := setupTestDB(t)
+		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
+
 		// Build with invocation
-		buildWithInv, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceName("").SetTimestamp(time.Now()).Save(ctx)
+		buildWithInv, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now()).Save(ctx)
 		require.NoError(t, err)
 		_, err = client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
+			SetInstanceNameID(instanceNameDbID).
 			SetBuild(buildWithInv).
 			Save(ctx)
 		require.NoError(t, err)
 		// Build without invocation
-		_, err = client.Build.Create().SetBuildURL("2").SetBuildUUID(uuid.New()).SetInstanceName("").SetTimestamp(time.Now()).Save(ctx)
+		_, err = client.Build.Create().SetBuildURL("2").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now()).Save(ctx)
 		require.NoError(t, err)
 		// Another build without invocation
-		_, err = client.Build.Create().SetBuildURL("3").SetBuildUUID(uuid.New()).SetInstanceName("").SetTimestamp(time.Now()).Save(ctx)
+		_, err = client.Build.Create().SetBuildURL("3").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now()).Save(ctx)
 		require.NoError(t, err)
 
 		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)

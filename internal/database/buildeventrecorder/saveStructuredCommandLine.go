@@ -249,7 +249,7 @@ func (r *BuildEventRecorder) recordBuild(ctx context.Context, tx *ent.Tx, envVar
 
 	invocation, err := tx.BazelInvocation.Query().
 		Where(bazelinvocation.IDEQ(r.InvocationDbID)).
-		Select(bazelinvocation.FieldStartedAt, bazelinvocation.FieldInstanceName).
+		Select(bazelinvocation.FieldStartedAt).
 		Only(ctx)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to query for invocation start time")
@@ -267,7 +267,7 @@ func (r *BuildEventRecorder) recordBuild(ctx context.Context, tx *ent.Tx, envVar
 			SetBuildURL(buildURL).
 			SetBuildUUID(buildUUID).
 			SetTimestamp(invocation.StartedAt).
-			SetInstanceName(r.InstanceName).
+			SetInstanceNameID(r.InstanceNameDbID).
 			AddInvocationIDs(r.InvocationDbID).
 			Exec(ctx)
 		if err != nil {

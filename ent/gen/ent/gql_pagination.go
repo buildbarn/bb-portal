@@ -28,6 +28,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
@@ -3681,6 +3682,255 @@ func (ibl *IncompleteBuildLog) ToEdge(order *IncompleteBuildLogOrder) *Incomplet
 	return &IncompleteBuildLogEdge{
 		Node:   ibl,
 		Cursor: order.Field.toCursor(ibl),
+	}
+}
+
+// InstanceNameEdge is the edge representation of InstanceName.
+type InstanceNameEdge struct {
+	Node   *InstanceName `json:"node"`
+	Cursor Cursor        `json:"cursor"`
+}
+
+// InstanceNameConnection is the connection containing edges to InstanceName.
+type InstanceNameConnection struct {
+	Edges      []*InstanceNameEdge `json:"edges"`
+	PageInfo   PageInfo            `json:"pageInfo"`
+	TotalCount int                 `json:"totalCount"`
+}
+
+func (c *InstanceNameConnection) build(nodes []*InstanceName, pager *instancenamePager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *InstanceName
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *InstanceName {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *InstanceName {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*InstanceNameEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &InstanceNameEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// InstanceNamePaginateOption enables pagination customization.
+type InstanceNamePaginateOption func(*instancenamePager) error
+
+// WithInstanceNameOrder configures pagination ordering.
+func WithInstanceNameOrder(order *InstanceNameOrder) InstanceNamePaginateOption {
+	if order == nil {
+		order = DefaultInstanceNameOrder
+	}
+	o := *order
+	return func(pager *instancenamePager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultInstanceNameOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithInstanceNameFilter configures pagination filter.
+func WithInstanceNameFilter(filter func(*InstanceNameQuery) (*InstanceNameQuery, error)) InstanceNamePaginateOption {
+	return func(pager *instancenamePager) error {
+		if filter == nil {
+			return errors.New("InstanceNameQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type instancenamePager struct {
+	reverse bool
+	order   *InstanceNameOrder
+	filter  func(*InstanceNameQuery) (*InstanceNameQuery, error)
+}
+
+func newInstanceNamePager(opts []InstanceNamePaginateOption, reverse bool) (*instancenamePager, error) {
+	pager := &instancenamePager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultInstanceNameOrder
+	}
+	return pager, nil
+}
+
+func (p *instancenamePager) applyFilter(query *InstanceNameQuery) (*InstanceNameQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *instancenamePager) toCursor(in *InstanceName) Cursor {
+	return p.order.Field.toCursor(in)
+}
+
+func (p *instancenamePager) applyCursors(query *InstanceNameQuery, after, before *Cursor) (*InstanceNameQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultInstanceNameOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *instancenamePager) applyOrder(query *InstanceNameQuery) *InstanceNameQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultInstanceNameOrder.Field {
+		query = query.Order(DefaultInstanceNameOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *instancenamePager) orderExpr(query *InstanceNameQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultInstanceNameOrder.Field {
+			b.Comma().Ident(DefaultInstanceNameOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to InstanceName.
+func (in *InstanceNameQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...InstanceNamePaginateOption,
+) (*InstanceNameConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newInstanceNamePager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if in, err = pager.applyFilter(in); err != nil {
+		return nil, err
+	}
+	conn := &InstanceNameConnection{Edges: []*InstanceNameEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := in.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if in, err = pager.applyCursors(in, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		in.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := in.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	in = pager.applyOrder(in)
+	nodes, err := in.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+// InstanceNameOrderField defines the ordering field of InstanceName.
+type InstanceNameOrderField struct {
+	// Value extracts the ordering value from the given InstanceName.
+	Value    func(*InstanceName) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) instancename.OrderOption
+	toCursor func(*InstanceName) Cursor
+}
+
+// InstanceNameOrder defines the ordering of InstanceName.
+type InstanceNameOrder struct {
+	Direction OrderDirection          `json:"direction"`
+	Field     *InstanceNameOrderField `json:"field"`
+}
+
+// DefaultInstanceNameOrder is the default ordering of InstanceName.
+var DefaultInstanceNameOrder = &InstanceNameOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &InstanceNameOrderField{
+		Value: func(in *InstanceName) (ent.Value, error) {
+			return in.ID, nil
+		},
+		column: instancename.FieldID,
+		toTerm: instancename.ByID,
+		toCursor: func(in *InstanceName) Cursor {
+			return Cursor{ID: in.ID}
+		},
+	},
+}
+
+// ToEdge converts InstanceName into InstanceNameEdge.
+func (in *InstanceName) ToEdge(order *InstanceNameOrder) *InstanceNameEdge {
+	if order == nil {
+		order = DefaultInstanceNameOrder
+	}
+	return &InstanceNameEdge{
+		Node:   in,
+		Cursor: order.Field.toCursor(in),
 	}
 }
 
