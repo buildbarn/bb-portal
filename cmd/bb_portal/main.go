@@ -42,7 +42,7 @@ import (
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/global"
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
-	bb_http "github.com/buildbarn/bb-storage/pkg/http"
+	http_server "github.com/buildbarn/bb-storage/pkg/http/server"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
@@ -90,9 +90,9 @@ func main() {
 			return util.StatusWrap(err, "Failed to create frontend proxy service")
 		}
 
-		bb_http.NewServersFromConfigurationAndServe(
+		http_server.NewServersFromConfigurationAndServe(
 			configuration.HttpServers,
-			bb_http.NewMetricsHandler(allowCorsWrapper(configuration.AllowedOrigins, router), "PortalUI"),
+			http_server.NewMetricsHandler(allowCorsWrapper(configuration.AllowedOrigins, router), "PortalUI"),
 			siblingsGroup,
 			grpcClientFactory,
 		)
