@@ -20,6 +20,7 @@ import (
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -36,10 +37,11 @@ type BepUploader struct {
 	instanceNameAuthorizer auth.Authorizer
 	blobArchiver           processing.BlobMultiArchiver
 	saveTargetDataLevel    *bb_portal.BuildEventStreamService_SaveTargetDataLevel
+	tracerProvider         trace.TracerProvider
 }
 
 // NewBepUploader creates a new BepUploader
-func NewBepUploader(db *ent.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory) (*BepUploader, error) {
+func NewBepUploader(db *ent.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider) (*BepUploader, error) {
 	if configuration.InstanceNameAuthorizer == nil {
 		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
@@ -63,6 +65,7 @@ func NewBepUploader(db *ent.Client, blobArchiver processing.BlobMultiArchiver, c
 		instanceNameAuthorizer: instanceNameAuthorizer,
 		blobArchiver:           blobArchiver,
 		saveTargetDataLevel:    saveTargetDataLevel,
+		tracerProvider:         tracerProvider,
 	}, nil
 }
 
@@ -97,6 +100,7 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 				b.instanceNameAuthorizer,
 				b.blobArchiver,
 				b.saveTargetDataLevel,
+				b.tracerProvider,
 				"",                                // instanceName
 				bazelEvent.GetStarted().GetUuid(), // invocationID
 				"",                                // correlatedInvocationID

@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"fmt"
+	"reflect"
 	"time"
 
 	entsql "entgo.io/ent/dialect/sql"
@@ -16,10 +17,19 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 )
+
+func eventTypeName(buildEvent *events.BuildEvent) string {
+	if eventPayload := buildEvent.GetId().GetId(); eventPayload != nil {
+		return reflect.TypeOf(eventPayload).Elem().Name()
+	}
+	return "<nil>"
+}
 
 // RecordEvent records a build event in the database.
 func (r *BuildEventRecorder) RecordEvent(
@@ -27,6 +37,16 @@ func (r *BuildEventRecorder) RecordEvent(
 	buildEvent *events.BuildEvent,
 	sequenceNumber int64,
 ) error {
+	ctx, span := r.tracer.Start(ctx,
+		fmt.Sprintf("BuildEventServer.recordEvent_%s", eventTypeName(buildEvent)),
+		trace.WithAttributes(
+			attribute.String("invocation.id", r.InvocationID),
+			attribute.String("invocation.instance_name", r.InstanceName),
+			attribute.String("build_event.type", eventTypeName(buildEvent)),
+		),
+	)
+	defer span.End()
+
 	// We create the event hash before starting the transaction, as
 	// this operation does not need to be part of it.
 	eventHash, err := r.getEventHash(buildEvent)
