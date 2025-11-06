@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // ActionSummary holds the schema definition for the ActionSummary entity.
@@ -64,5 +65,12 @@ func (ActionSummary) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+	}
+}
+
+// Indexes of the ActionSummary.
+func (ActionSummary) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("metrics"),
 	}
 }

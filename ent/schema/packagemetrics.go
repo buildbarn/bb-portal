@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // PackageMetrics holds the schema definition for the PackageMetrics entity.
@@ -46,5 +47,12 @@ func (PackageMetrics) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+	}
+}
+
+// Indexes of the PackageMetrics.
+func (PackageMetrics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("metrics"),
 	}
 }

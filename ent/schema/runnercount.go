@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // RunnerCount holds the schema definition for the RunnerCount entity.
@@ -34,6 +35,13 @@ func (RunnerCount) Edges() []ent.Edge {
 		edge.From("action_summary", ActionSummary.Type).
 			Ref("runner_count").
 			Unique(),
+	}
+}
+
+// Indexes of the RunnerCount.
+func (RunnerCount) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("action_summary"),
 	}
 }
 

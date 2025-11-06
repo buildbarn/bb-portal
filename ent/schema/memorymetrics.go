@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // MemoryMetrics holds the schema definition for the Blob entity.
@@ -42,5 +43,12 @@ func (MemoryMetrics) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+	}
+}
+
+// Indexes of the MemoryMetrics.
+func (MemoryMetrics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("metrics"),
 	}
 }

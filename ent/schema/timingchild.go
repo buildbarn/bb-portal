@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // TimingChild holds the schema definition for the TimingChild entity.
@@ -29,5 +30,12 @@ func (TimingChild) Edges() []ent.Edge {
 		edge.From("timing_breakdown", TimingBreakdown.Type).
 			Ref("child").
 			Unique(),
+	}
+}
+
+// Indexes of the TimingChild.
+func (TimingChild) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("timing_breakdown"),
 	}
 }

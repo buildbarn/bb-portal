@@ -85,6 +85,7 @@ func (TestCollection) Edges() []ent.Edge {
 func (TestCollection) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("label"),
+		index.Edges("bazel_invocation"),
 		// Make each label unique per invocation.
 		index.Fields("label").
 			Edges("bazel_invocation").

@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // ExectionInfo holds the schema definition for the ExectionInfo entity.
@@ -55,5 +56,12 @@ func (ExectionInfo) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+	}
+}
+
+// Indexes of the ExectionInfo.
+func (ExectionInfo) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("test_result"),
 	}
 }

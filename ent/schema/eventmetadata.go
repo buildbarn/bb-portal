@@ -42,6 +42,7 @@ func (EventMetadata) Edges() []ent.Edge {
 // Indexes of the EventMetadata.
 func (EventMetadata) Indexes() []ent.Index {
 	return []ent.Index{
+		index.Edges("bazel_invocation"),
 		index.Fields("sequence_number").
 			Edges("bazel_invocation").
 			Unique(),

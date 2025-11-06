@@ -45,6 +45,7 @@ func (InvocationFiles) Edges() []ent.Edge {
 // Indexes of the InvocationFiles.
 func (InvocationFiles) Indexes() []ent.Index {
 	return []ent.Index{
+		index.Edges("bazel_invocation"),
 		// Index making the combination of a name and invocation unique.
 		index.Fields("name").
 			Edges("bazel_invocation").

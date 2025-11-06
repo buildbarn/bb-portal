@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // TimingBreakdown holds the schema definition for the TimingBreakdown entity.
@@ -39,5 +40,12 @@ func (TimingBreakdown) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+	}
+}
+
+// Indexes of the TimingBreakdown.
+func (TimingBreakdown) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("execution_info"),
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // MissDetail holds the schema definition for the MissDetail entity.
@@ -38,5 +39,12 @@ func (MissDetail) Edges() []ent.Edge {
 		edge.From("action_cache_statistics", ActionCacheStatistics.Type).
 			Ref("miss_details").
 			Unique(),
+	}
+}
+
+// Indexes of the MissDetail.
+func (MissDetail) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("action_cache_statistics"),
 	}
 }

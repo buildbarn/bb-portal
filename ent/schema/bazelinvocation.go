@@ -173,7 +173,8 @@ func (BazelInvocation) Edges() []ent.Edge {
 func (BazelInvocation) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("invocation_id"),
-		index.Fields("change_number", "patchset_number"),
+		index.Fields("started_at"),
+		index.Edges("build"),
 	}
 }
 

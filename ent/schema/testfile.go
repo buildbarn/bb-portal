@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // TODO: Unused. Either delete or implement properly.
@@ -47,5 +48,12 @@ func (TestFile) Edges() []ent.Edge {
 		edge.From("test_result", TestResultBES.Type).
 			Ref("test_action_output").
 			Unique(),
+	}
+}
+
+// Indexes of the TestFile.
+func (TestFile) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("test_result"),
 	}
 }

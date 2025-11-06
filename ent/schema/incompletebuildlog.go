@@ -36,6 +36,7 @@ func (IncompleteBuildLog) Edges() []ent.Edge {
 // Indexes for IncompleteBuildLog.
 func (IncompleteBuildLog) Indexes() []ent.Index {
 	return []ent.Index{
+		index.Edges("bazel_invocation"),
 		index.Fields("snippet_id").
 			Edges("bazel_invocation").
 			Unique(),

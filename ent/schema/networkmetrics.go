@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
+	"entgo.io/ent/schema/index"
 )
 
 // NetworkMetrics holds the schema definition for the NetworkMetrics entity.
@@ -30,5 +31,12 @@ func (NetworkMetrics) Edges() []ent.Edge {
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
+	}
+}
+
+// Indexes of the NetworkMetrics.
+func (NetworkMetrics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("metrics"),
 	}
 }

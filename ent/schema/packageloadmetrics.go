@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // PackageLoadMetrics holds the schema definition for the Blob entity.
@@ -42,5 +43,12 @@ func (PackageLoadMetrics) Edges() []ent.Edge {
 		edge.From("package_metrics", PackageMetrics.Type).
 			Ref("package_load_metrics").
 			Unique(),
+	}
+}
+
+// Indexes of the PackageLoadMetrics.
+func (PackageLoadMetrics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("package_metrics"),
 	}
 }
