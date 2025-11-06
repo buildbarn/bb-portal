@@ -31,6 +31,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "actioncachestatistics_action_summary_action_cache_statistics",
+				Unique:  false,
+				Columns: []*schema.Column{ActionCacheStatisticsColumns[6]},
+			},
+		},
 	}
 	// ActionDataColumns holds the columns for the "action_data" table.
 	ActionDataColumns = []*schema.Column{
@@ -57,6 +64,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "actiondata_action_summary_action_data",
+				Unique:  false,
+				Columns: []*schema.Column{ActionDataColumns[8]},
+			},
+		},
 	}
 	// ActionSummariesColumns holds the columns for the "action_summaries" table.
 	ActionSummariesColumns = []*schema.Column{
@@ -78,6 +92,13 @@ var (
 				Columns:    []*schema.Column{ActionSummariesColumns[5]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "actionsummary_metrics_action_summary",
+				Unique:  false,
+				Columns: []*schema.Column{ActionSummariesColumns[5]},
 			},
 		},
 	}
@@ -105,6 +126,13 @@ var (
 				Columns:    []*schema.Column{ArtifactMetricsColumns[9]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "artifactmetrics_metrics_artifact_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{ArtifactMetricsColumns[9]},
 			},
 		},
 	}
@@ -167,9 +195,14 @@ var (
 				Columns: []*schema.Column{BazelInvocationsColumns[1]},
 			},
 			{
-				Name:    "bazelinvocation_change_number_patchset_number",
+				Name:    "bazelinvocation_started_at",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[4], BazelInvocationsColumns[5]},
+				Columns: []*schema.Column{BazelInvocationsColumns[2]},
+			},
+			{
+				Name:    "bazelinvocation_build_invocations",
+				Unique:  false,
+				Columns: []*schema.Column{BazelInvocationsColumns[35]},
 			},
 		},
 	}
@@ -192,6 +225,13 @@ var (
 				Columns:    []*schema.Column{BazelInvocationProblemsColumns[4]},
 				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "bazelinvocationproblem_bazel_invocation_problems",
+				Unique:  false,
+				Columns: []*schema.Column{BazelInvocationProblemsColumns[4]},
 			},
 		},
 	}
@@ -234,6 +274,11 @@ var (
 				Name:    "build_build_url",
 				Unique:  false,
 				Columns: []*schema.Column{BuildsColumns[1]},
+			},
+			{
+				Name:    "build_timestamp",
+				Unique:  false,
+				Columns: []*schema.Column{BuildsColumns[4]},
 			},
 			{
 				Name:    "build_build_url_instance_name",
@@ -297,6 +342,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "buildgraphmetrics_metrics_build_graph_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{BuildGraphMetricsColumns[14]},
+			},
+		},
 	}
 	// ConnectionMetadataColumns holds the columns for the "connection_metadata" table.
 	ConnectionMetadataColumns = []*schema.Column{
@@ -345,6 +397,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "cumulativemetrics_metrics_cumulative_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{CumulativeMetricsColumns[3]},
+			},
+		},
 	}
 	// EvaluationStatsColumns holds the columns for the "evaluation_stats" table.
 	EvaluationStatsColumns = []*schema.Column{
@@ -390,6 +449,11 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
+				Name:    "eventmetadata_bazel_invocation_event_metadata",
+				Unique:  false,
+				Columns: []*schema.Column{EventMetadataColumns[4]},
+			},
+			{
 				Name:    "eventmetadata_sequence_number_bazel_invocation_event_metadata",
 				Unique:  true,
 				Columns: []*schema.Column{EventMetadataColumns[1], EventMetadataColumns[4]},
@@ -419,6 +483,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "exectioninfo_test_result_bes_execution_info",
+				Unique:  false,
+				Columns: []*schema.Column{ExectionInfosColumns[6]},
+			},
+		},
 	}
 	// GarbageMetricsColumns holds the columns for the "garbage_metrics" table.
 	GarbageMetricsColumns = []*schema.Column{
@@ -438,6 +509,13 @@ var (
 				Columns:    []*schema.Column{GarbageMetricsColumns[3]},
 				RefColumns: []*schema.Column{MemoryMetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "garbagemetrics_memory_metrics_garbage_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{GarbageMetricsColumns[3]},
 			},
 		},
 	}
@@ -462,6 +540,11 @@ var (
 			},
 		},
 		Indexes: []*schema.Index{
+			{
+				Name:    "incompletebuildlog_bazel_invocation_incomplete_build_logs",
+				Unique:  false,
+				Columns: []*schema.Column{IncompleteBuildLogsColumns[3]},
+			},
 			{
 				Name:    "incompletebuildlog_snippet_id_bazel_invocation_incomplete_build_logs",
 				Unique:  true,
@@ -494,6 +577,11 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
+				Name:    "invocationfiles_bazel_invocation_invocation_files",
+				Unique:  false,
+				Columns: []*schema.Column{InvocationFilesColumns[6]},
+			},
+			{
 				Name:    "invocationfiles_name_bazel_invocation_invocation_files",
 				Unique:  true,
 				Columns: []*schema.Column{InvocationFilesColumns[1], InvocationFilesColumns[6]},
@@ -519,6 +607,13 @@ var (
 				Columns:    []*schema.Column{MemoryMetricsColumns[4]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "memorymetrics_metrics_memory_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{MemoryMetricsColumns[4]},
 			},
 		},
 	}
@@ -568,6 +663,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "missdetail_action_cache_statistics_miss_details",
+				Unique:  false,
+				Columns: []*schema.Column{MissDetailsColumns[3]},
+			},
+		},
 	}
 	// NamedSetOfFilesColumns holds the columns for the "named_set_of_files" table.
 	NamedSetOfFilesColumns = []*schema.Column{
@@ -613,6 +715,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "networkmetrics_metrics_network_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{NetworkMetricsColumns[1]},
+			},
+		},
 	}
 	// OutputGroupsColumns holds the columns for the "output_groups" table.
 	OutputGroupsColumns = []*schema.Column{
@@ -650,6 +759,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "packageloadmetrics_package_metrics_package_load_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{PackageLoadMetricsColumns[7]},
+			},
+		},
 	}
 	// PackageMetricsColumns holds the columns for the "package_metrics" table.
 	PackageMetricsColumns = []*schema.Column{
@@ -668,6 +784,13 @@ var (
 				Columns:    []*schema.Column{PackageMetricsColumns[2]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "packagemetrics_metrics_package_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{PackageMetricsColumns[2]},
 			},
 		},
 	}
@@ -691,6 +814,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "resourceusage_exection_info_resource_usage",
+				Unique:  false,
+				Columns: []*schema.Column{ResourceUsagesColumns[3]},
+			},
+		},
 	}
 	// RunnerCountsColumns holds the columns for the "runner_counts" table.
 	RunnerCountsColumns = []*schema.Column{
@@ -711,6 +841,13 @@ var (
 				Columns:    []*schema.Column{RunnerCountsColumns[4]},
 				RefColumns: []*schema.Column{ActionSummariesColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "runnercount_action_summary_runner_count",
+				Unique:  false,
+				Columns: []*schema.Column{RunnerCountsColumns[4]},
 			},
 		},
 	}
@@ -748,6 +885,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "sourcecontrol_bazel_invocation_source_control",
+				Unique:  false,
+				Columns: []*schema.Column{SourceControlsColumns[17]},
+			},
+		},
 	}
 	// SystemNetworkStatsColumns holds the columns for the "system_network_stats" table.
 	SystemNetworkStatsColumns = []*schema.Column{
@@ -773,6 +917,13 @@ var (
 				Columns:    []*schema.Column{SystemNetworkStatsColumns[9]},
 				RefColumns: []*schema.Column{NetworkMetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "systemnetworkstats_network_metrics_system_network_stats",
+				Unique:  false,
+				Columns: []*schema.Column{SystemNetworkStatsColumns[9]},
 			},
 		},
 	}
@@ -811,6 +962,11 @@ var (
 				Columns: []*schema.Column{TargetsColumns[1]},
 			},
 			{
+				Name:    "target_bazel_invocation_targets",
+				Unique:  false,
+				Columns: []*schema.Column{TargetsColumns[11]},
+			},
+			{
 				Name:    "target_label_bazel_invocation_targets",
 				Unique:  true,
 				Columns: []*schema.Column{TargetsColumns[1], TargetsColumns[11]},
@@ -836,6 +992,13 @@ var (
 				Columns:    []*schema.Column{TargetMetricsColumns[4]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "targetmetrics_metrics_target_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{TargetMetricsColumns[4]},
 			},
 		},
 	}
@@ -869,6 +1032,11 @@ var (
 				Name:    "testcollection_label",
 				Unique:  false,
 				Columns: []*schema.Column{TestCollectionsColumns[1]},
+			},
+			{
+				Name:    "testcollection_bazel_invocation_test_collection",
+				Unique:  false,
+				Columns: []*schema.Column{TestCollectionsColumns[8]},
 			},
 			{
 				Name:    "testcollection_label_bazel_invocation_test_collection",
@@ -928,6 +1096,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "testfile_test_result_bes_test_action_output",
+				Unique:  false,
+				Columns: []*schema.Column{TestFilesColumns[8]},
+			},
+		},
 	}
 	// TestResultBeSsColumns holds the columns for the "test_result_be_ss" table.
 	TestResultBeSsColumns = []*schema.Column{
@@ -961,6 +1136,11 @@ var (
 				Name:    "testresultbes_label",
 				Unique:  false,
 				Columns: []*schema.Column{TestResultBeSsColumns[3]},
+			},
+			{
+				Name:    "testresultbes_test_collection_test_results",
+				Unique:  false,
+				Columns: []*schema.Column{TestResultBeSsColumns[10]},
 			},
 		},
 	}
@@ -998,6 +1178,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{TestSummariesColumns[10]},
 			},
+			{
+				Name:    "testsummary_test_collection_test_summary",
+				Unique:  false,
+				Columns: []*schema.Column{TestSummariesColumns[11]},
+			},
 		},
 	}
 	// TimingBreakdownsColumns holds the columns for the "timing_breakdowns" table.
@@ -1020,6 +1205,13 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "timingbreakdown_exection_info_timing_breakdown",
+				Unique:  false,
+				Columns: []*schema.Column{TimingBreakdownsColumns[3]},
+			},
+		},
 	}
 	// TimingChildsColumns holds the columns for the "timing_childs" table.
 	TimingChildsColumns = []*schema.Column{
@@ -1039,6 +1231,13 @@ var (
 				Columns:    []*schema.Column{TimingChildsColumns[3]},
 				RefColumns: []*schema.Column{TimingBreakdownsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "timingchild_timing_breakdown_child",
+				Unique:  false,
+				Columns: []*schema.Column{TimingChildsColumns[3]},
 			},
 		},
 	}
@@ -1063,6 +1262,13 @@ var (
 				Columns:    []*schema.Column{TimingMetricsColumns[6]},
 				RefColumns: []*schema.Column{MetricsColumns[0]},
 				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "timingmetrics_metrics_timing_metrics",
+				Unique:  false,
+				Columns: []*schema.Column{TimingMetricsColumns[6]},
 			},
 		},
 	}

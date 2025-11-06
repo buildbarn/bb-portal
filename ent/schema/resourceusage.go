@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // ResourceUsage holds the schema definition for the ResourceUsage entity.
@@ -30,5 +31,12 @@ func (ResourceUsage) Edges() []ent.Edge {
 		edge.From("execution_info", ExectionInfo.Type).
 			Ref("resource_usage").
 			Unique(),
+	}
+}
+
+// Indexes of the ResourceUsage.
+func (ResourceUsage) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("execution_info"),
 	}
 }

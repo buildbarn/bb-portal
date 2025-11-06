@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // ActionData holds the schema definition for the ActionData entity.
@@ -50,5 +51,12 @@ func (ActionData) Edges() []ent.Edge {
 		edge.From("action_summary", ActionSummary.Type).
 			Ref("action_data").
 			Unique(),
+	}
+}
+
+// Indexes of the ActionData.
+func (ActionData) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("action_summary"),
 	}
 }

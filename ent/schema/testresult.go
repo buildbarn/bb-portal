@@ -97,5 +97,6 @@ func (TestResultBES) Edges() []ent.Edge {
 func (TestResultBES) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("label"),
+		index.Edges("test_collection"),
 	}
 }

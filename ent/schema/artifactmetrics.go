@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // ArtifactMetrics holds the schema definition for the ArtifactMetrics entity.
@@ -47,5 +48,12 @@ func (ArtifactMetrics) Edges() []ent.Edge {
 		edge.From("metrics", Metrics.Type).
 			Ref("artifact_metrics").
 			Unique(),
+	}
+}
+
+// Indexes of the ArtifactMetrics.
+func (ArtifactMetrics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("metrics"),
 	}
 }

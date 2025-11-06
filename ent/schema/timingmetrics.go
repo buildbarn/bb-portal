@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // TimingMetrics holds the schema definition for the TimingMetrics entity.
@@ -46,5 +47,12 @@ func (TimingMetrics) Edges() []ent.Edge {
 		edge.From("metrics", Metrics.Type).
 			Ref("timing_metrics").
 			Unique(),
+	}
+}
+
+// Indexes of the TimingMetrics.
+func (TimingMetrics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("metrics"),
 	}
 }

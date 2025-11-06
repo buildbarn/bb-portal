@@ -89,5 +89,6 @@ func (TestSummary) Edges() []ent.Edge {
 func (TestSummary) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("label"),
+		index.Edges("test_collection"),
 	}
 }

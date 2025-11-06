@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // SourceControl holds the schema definition for the SourceControl entity.
@@ -73,5 +74,12 @@ func (SourceControl) Edges() []ent.Edge {
 		edge.From("bazel_invocation", BazelInvocation.Type).
 			Ref("source_control").
 			Unique(),
+	}
+}
+
+// Indexes for SourceControl.
+func (SourceControl) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("bazel_invocation"),
 	}
 }

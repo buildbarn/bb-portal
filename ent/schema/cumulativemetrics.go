@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // CumulativeMetrics holds the schema definition for the CumulativeMetrics entity.
@@ -35,5 +36,12 @@ func (CumulativeMetrics) Edges() []ent.Edge {
 		edge.From("metrics", Metrics.Type).
 			Ref("cumulative_metrics").
 			Unique(),
+	}
+}
+
+// Indexes of the CumulativeMetrics.
+func (CumulativeMetrics) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Edges("metrics"),
 	}
 }

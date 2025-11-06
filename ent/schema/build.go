@@ -41,6 +41,7 @@ func (Build) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("build_uuid"),
 		index.Fields("build_url"),
+		index.Fields("timestamp"),
 		index.Fields("build_url", "instance_name").Unique(),
 	}
 }

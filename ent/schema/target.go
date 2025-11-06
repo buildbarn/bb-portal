@@ -115,6 +115,7 @@ func (Target) Edges() []ent.Edge {
 func (Target) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("label"),
+		index.Edges("bazel_invocation"),
 		index.Fields("label").
 			Edges("bazel_invocation").
 			Unique(),
