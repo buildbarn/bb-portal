@@ -87,6 +87,11 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 	// BuildEventRecorder.
 	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
 	scanner := bufio.NewScanner(file)
+
+	// Increase the buffer size for the scanner, to allow for BEP events with
+	// rows up to 10MB in size.
+	buf := make([]byte, 0, 64*1024)
+	scanner.Buffer(buf, 10*1024*1024)
 	unmarshaler := protojson.UnmarshalOptions{
 		DiscardUnknown: true,
 	}
