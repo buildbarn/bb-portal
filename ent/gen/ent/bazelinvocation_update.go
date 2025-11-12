@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
@@ -690,6 +691,25 @@ func (biu *BazelInvocationUpdate) SetBuild(b *Build) *BazelInvocationUpdate {
 	return biu.SetBuildID(b.ID)
 }
 
+// SetAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by ID.
+func (biu *BazelInvocationUpdate) SetAuthenticatedUserID(id int) *BazelInvocationUpdate {
+	biu.mutation.SetAuthenticatedUserID(id)
+	return biu
+}
+
+// SetNillableAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by ID if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableAuthenticatedUserID(id *int) *BazelInvocationUpdate {
+	if id != nil {
+		biu = biu.SetAuthenticatedUserID(*id)
+	}
+	return biu
+}
+
+// SetAuthenticatedUser sets the "authenticated_user" edge to the AuthenticatedUser entity.
+func (biu *BazelInvocationUpdate) SetAuthenticatedUser(a *AuthenticatedUser) *BazelInvocationUpdate {
+	return biu.SetAuthenticatedUserID(a.ID)
+}
+
 // AddEventMetadatumIDs adds the "event_metadata" edge to the EventMetadata entity by IDs.
 func (biu *BazelInvocationUpdate) AddEventMetadatumIDs(ids ...int) *BazelInvocationUpdate {
 	biu.mutation.AddEventMetadatumIDs(ids...)
@@ -862,6 +882,12 @@ func (biu *BazelInvocationUpdate) ClearInstanceName() *BazelInvocationUpdate {
 // ClearBuild clears the "build" edge to the Build entity.
 func (biu *BazelInvocationUpdate) ClearBuild() *BazelInvocationUpdate {
 	biu.mutation.ClearBuild()
+	return biu
+}
+
+// ClearAuthenticatedUser clears the "authenticated_user" edge to the AuthenticatedUser entity.
+func (biu *BazelInvocationUpdate) ClearAuthenticatedUser() *BazelInvocationUpdate {
+	biu.mutation.ClearAuthenticatedUser()
 	return biu
 }
 
@@ -1352,6 +1378,35 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biu.mutation.AuthenticatedUserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   bazelinvocation.AuthenticatedUserTable,
+			Columns: []string{bazelinvocation.AuthenticatedUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.AuthenticatedUserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   bazelinvocation.AuthenticatedUserTable,
+			Columns: []string{bazelinvocation.AuthenticatedUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -2447,6 +2502,25 @@ func (biuo *BazelInvocationUpdateOne) SetBuild(b *Build) *BazelInvocationUpdateO
 	return biuo.SetBuildID(b.ID)
 }
 
+// SetAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by ID.
+func (biuo *BazelInvocationUpdateOne) SetAuthenticatedUserID(id int) *BazelInvocationUpdateOne {
+	biuo.mutation.SetAuthenticatedUserID(id)
+	return biuo
+}
+
+// SetNillableAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by ID if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableAuthenticatedUserID(id *int) *BazelInvocationUpdateOne {
+	if id != nil {
+		biuo = biuo.SetAuthenticatedUserID(*id)
+	}
+	return biuo
+}
+
+// SetAuthenticatedUser sets the "authenticated_user" edge to the AuthenticatedUser entity.
+func (biuo *BazelInvocationUpdateOne) SetAuthenticatedUser(a *AuthenticatedUser) *BazelInvocationUpdateOne {
+	return biuo.SetAuthenticatedUserID(a.ID)
+}
+
 // AddEventMetadatumIDs adds the "event_metadata" edge to the EventMetadata entity by IDs.
 func (biuo *BazelInvocationUpdateOne) AddEventMetadatumIDs(ids ...int) *BazelInvocationUpdateOne {
 	biuo.mutation.AddEventMetadatumIDs(ids...)
@@ -2619,6 +2693,12 @@ func (biuo *BazelInvocationUpdateOne) ClearInstanceName() *BazelInvocationUpdate
 // ClearBuild clears the "build" edge to the Build entity.
 func (biuo *BazelInvocationUpdateOne) ClearBuild() *BazelInvocationUpdateOne {
 	biuo.mutation.ClearBuild()
+	return biuo
+}
+
+// ClearAuthenticatedUser clears the "authenticated_user" edge to the AuthenticatedUser entity.
+func (biuo *BazelInvocationUpdateOne) ClearAuthenticatedUser() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearAuthenticatedUser()
 	return biuo
 }
 
@@ -3139,6 +3219,35 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(build.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biuo.mutation.AuthenticatedUserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   bazelinvocation.AuthenticatedUserTable,
+			Columns: []string{bazelinvocation.AuthenticatedUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.AuthenticatedUserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   bazelinvocation.AuthenticatedUserTable,
+			Columns: []string{bazelinvocation.AuthenticatedUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

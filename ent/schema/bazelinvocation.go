@@ -109,6 +109,11 @@ func (BazelInvocation) Edges() []ent.Edge {
 			Ref("invocations").
 			Unique(),
 
+		// Edge from an authenticated user which called this invocation.
+		edge.From("authenticated_user", AuthenticatedUser.Type).
+			Ref("bazel_invocations").
+			Unique(),
+
 		// Event metadata for all events processed for this invocation.
 		edge.To("event_metadata", EventMetadata.Type).
 			Annotations(

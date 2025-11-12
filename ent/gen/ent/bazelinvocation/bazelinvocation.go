@@ -82,6 +82,8 @@ const (
 	EdgeInstanceName = "instance_name"
 	// EdgeBuild holds the string denoting the build edge name in mutations.
 	EdgeBuild = "build"
+	// EdgeAuthenticatedUser holds the string denoting the authenticated_user edge name in mutations.
+	EdgeAuthenticatedUser = "authenticated_user"
 	// EdgeEventMetadata holds the string denoting the event_metadata edge name in mutations.
 	EdgeEventMetadata = "event_metadata"
 	// EdgeConnectionMetadata holds the string denoting the connection_metadata edge name in mutations.
@@ -118,6 +120,13 @@ const (
 	BuildInverseTable = "builds"
 	// BuildColumn is the table column denoting the build relation/edge.
 	BuildColumn = "build_invocations"
+	// AuthenticatedUserTable is the table that holds the authenticated_user relation/edge.
+	AuthenticatedUserTable = "bazel_invocations"
+	// AuthenticatedUserInverseTable is the table name for the AuthenticatedUser entity.
+	// It exists in this package in order to avoid circular dependency with the "authenticateduser" package.
+	AuthenticatedUserInverseTable = "authenticated_users"
+	// AuthenticatedUserColumn is the table column denoting the authenticated_user relation/edge.
+	AuthenticatedUserColumn = "authenticated_user_bazel_invocations"
 	// EventMetadataTable is the table that holds the event_metadata relation/edge.
 	EventMetadataTable = "event_metadata"
 	// EventMetadataInverseTable is the table name for the EventMetadata entity.
@@ -231,6 +240,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "bazel_invocations"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
+	"authenticated_user_bazel_invocations",
 	"build_invocations",
 	"instance_name_bazel_invocations",
 }
@@ -434,6 +444,13 @@ func ByBuildField(field string, opts ...sql.OrderTermOption) OrderOption {
 	}
 }
 
+// ByAuthenticatedUserField orders the results by authenticated_user field.
+func ByAuthenticatedUserField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAuthenticatedUserStep(), sql.OrderByField(field, opts...))
+	}
+}
+
 // ByEventMetadataCount orders the results by event_metadata count.
 func ByEventMetadataCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -571,6 +588,13 @@ func newBuildStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(BuildInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, BuildTable, BuildColumn),
+	)
+}
+func newAuthenticatedUserStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AuthenticatedUserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, AuthenticatedUserTable, AuthenticatedUserColumn),
 	)
 }
 func newEventMetadataStep() *sqlgraph.Step {

@@ -1,0 +1,4 @@
+.alert {
+  border: 0 !important;
+  box-shadow: var(--ant-card-box-shadow);
+}

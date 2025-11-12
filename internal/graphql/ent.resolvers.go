@@ -38,6 +38,11 @@ func (r *artifactMetricsResolver) ID(ctx context.Context, obj *ent.ArtifactMetri
 }
 
 // ID is the resolver for the id field.
+func (r *authenticatedUserResolver) ID(ctx context.Context, obj *ent.AuthenticatedUser) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("AuthenticatedUser", obj.ID), nil
+}
+
+// ID is the resolver for the id field.
 func (r *bazelInvocationResolver) ID(ctx context.Context, obj *ent.BazelInvocation) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("BazelInvocation", obj.ID), nil
 }
@@ -445,6 +450,46 @@ func (r *artifactMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent.A
 
 // IDLte is the resolver for the idLTE field.
 func (r *artifactMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.ArtifactMetricsWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *authenticatedUserWhereInputResolver) ID(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *authenticatedUserWhereInputResolver) IDNeq(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *authenticatedUserWhereInputResolver) IDIn(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *authenticatedUserWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *authenticatedUserWhereInputResolver) IDGt(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *authenticatedUserWhereInputResolver) IDGte(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *authenticatedUserWhereInputResolver) IDLt(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *authenticatedUserWhereInputResolver) IDLte(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
@@ -1822,6 +1867,11 @@ func (r *Resolver) ActionSummary() ActionSummaryResolver { return &actionSummary
 // ArtifactMetrics returns ArtifactMetricsResolver implementation.
 func (r *Resolver) ArtifactMetrics() ArtifactMetricsResolver { return &artifactMetricsResolver{r} }
 
+// AuthenticatedUser returns AuthenticatedUserResolver implementation.
+func (r *Resolver) AuthenticatedUser() AuthenticatedUserResolver {
+	return &authenticatedUserResolver{r}
+}
+
 // BazelInvocation returns BazelInvocationResolver implementation.
 func (r *Resolver) BazelInvocation() BazelInvocationResolver { return &bazelInvocationResolver{r} }
 
@@ -1957,6 +2007,11 @@ func (r *Resolver) ActionSummaryWhereInput() ActionSummaryWhereInputResolver {
 // ArtifactMetricsWhereInput returns ArtifactMetricsWhereInputResolver implementation.
 func (r *Resolver) ArtifactMetricsWhereInput() ArtifactMetricsWhereInputResolver {
 	return &artifactMetricsWhereInputResolver{r}
+}
+
+// AuthenticatedUserWhereInput returns AuthenticatedUserWhereInputResolver implementation.
+func (r *Resolver) AuthenticatedUserWhereInput() AuthenticatedUserWhereInputResolver {
+	return &authenticatedUserWhereInputResolver{r}
 }
 
 // BazelInvocationProblemWhereInput returns BazelInvocationProblemWhereInputResolver implementation.
@@ -2128,6 +2183,7 @@ type (
 	actionDataResolver                       struct{ *Resolver }
 	actionSummaryResolver                    struct{ *Resolver }
 	artifactMetricsResolver                  struct{ *Resolver }
+	authenticatedUserResolver                struct{ *Resolver }
 	bazelInvocationResolver                  struct{ *Resolver }
 	bazelInvocationProblemResolver           struct{ *Resolver }
 	blobResolver                             struct{ *Resolver }
@@ -2167,6 +2223,7 @@ type (
 	actionDataWhereInputResolver             struct{ *Resolver }
 	actionSummaryWhereInputResolver          struct{ *Resolver }
 	artifactMetricsWhereInputResolver        struct{ *Resolver }
+	authenticatedUserWhereInputResolver      struct{ *Resolver }
 	bazelInvocationProblemWhereInputResolver struct{ *Resolver }
 	bazelInvocationWhereInputResolver        struct{ *Resolver }
 	blobWhereInputResolver                   struct{ *Resolver }

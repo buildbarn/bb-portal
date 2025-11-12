@@ -136,6 +136,27 @@ var (
 			},
 		},
 	}
+	// AuthenticatedUsersColumns holds the columns for the "authenticated_users" table.
+	AuthenticatedUsersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "user_uuid", Type: field.TypeUUID, Unique: true},
+		{Name: "external_id", Type: field.TypeString, Unique: true},
+		{Name: "display_name", Type: field.TypeString, Nullable: true},
+		{Name: "user_info", Type: field.TypeJSON, Nullable: true},
+	}
+	// AuthenticatedUsersTable holds the schema information for the "authenticated_users" table.
+	AuthenticatedUsersTable = &schema.Table{
+		Name:       "authenticated_users",
+		Columns:    AuthenticatedUsersColumns,
+		PrimaryKey: []*schema.Column{AuthenticatedUsersColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "authenticateduser_user_uuid",
+				Unique:  false,
+				Columns: []*schema.Column{AuthenticatedUsersColumns[1]},
+			},
+		},
+	}
 	// BazelInvocationsColumns holds the columns for the "bazel_invocations" table.
 	BazelInvocationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -172,6 +193,7 @@ var (
 		{Name: "processed_event_build_finished", Type: field.TypeBool, Default: false},
 		{Name: "processed_event_structured_command_line", Type: field.TypeBool, Default: false},
 		{Name: "processed_event_workspace_status", Type: field.TypeBool, Default: false},
+		{Name: "authenticated_user_bazel_invocations", Type: field.TypeInt, Nullable: true},
 		{Name: "build_invocations", Type: field.TypeInt, Nullable: true},
 		{Name: "instance_name_bazel_invocations", Type: field.TypeInt},
 	}
@@ -182,14 +204,20 @@ var (
 		PrimaryKey: []*schema.Column{BazelInvocationsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "bazel_invocations_builds_invocations",
+				Symbol:     "bazel_invocations_authenticated_users_bazel_invocations",
 				Columns:    []*schema.Column{BazelInvocationsColumns[34]},
+				RefColumns: []*schema.Column{AuthenticatedUsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "bazel_invocations_builds_invocations",
+				Columns:    []*schema.Column{BazelInvocationsColumns[35]},
 				RefColumns: []*schema.Column{BuildsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "bazel_invocations_instance_names_bazel_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[35]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[36]},
 				RefColumns: []*schema.Column{InstanceNamesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -208,12 +236,12 @@ var (
 			{
 				Name:    "bazelinvocation_build_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[34]},
+				Columns: []*schema.Column{BazelInvocationsColumns[35]},
 			},
 			{
 				Name:    "bazelinvocation_instance_name_bazel_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[35]},
+				Columns: []*schema.Column{BazelInvocationsColumns[36]},
 			},
 		},
 	}
@@ -1403,6 +1431,7 @@ var (
 		ActionDataTable,
 		ActionSummariesTable,
 		ArtifactMetricsTable,
+		AuthenticatedUsersTable,
 		BazelInvocationsTable,
 		BazelInvocationProblemsTable,
 		BlobsTable,
@@ -1448,8 +1477,9 @@ func init() {
 	ActionDataTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	ActionSummariesTable.ForeignKeys[0].RefTable = MetricsTable
 	ArtifactMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	BazelInvocationsTable.ForeignKeys[0].RefTable = BuildsTable
-	BazelInvocationsTable.ForeignKeys[1].RefTable = InstanceNamesTable
+	BazelInvocationsTable.ForeignKeys[0].RefTable = AuthenticatedUsersTable
+	BazelInvocationsTable.ForeignKeys[1].RefTable = BuildsTable
+	BazelInvocationsTable.ForeignKeys[2].RefTable = InstanceNamesTable
 	BazelInvocationProblemsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	BlobsTable.ForeignKeys[0].RefTable = InstanceNamesTable
 	BuildsTable.ForeignKeys[0].RefTable = InstanceNamesTable

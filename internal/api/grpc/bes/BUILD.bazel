@@ -11,6 +11,7 @@ go_library(
     deps = [
         "//ent/gen/ent",
         "//internal/database/buildeventrecorder",
+        "//pkg/authmetadataextraction",
         "//pkg/events",
         "//pkg/processing",
         "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",

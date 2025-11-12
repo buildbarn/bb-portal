@@ -56,6 +56,7 @@ type ResolverRoot interface {
 	ActionProblem() ActionProblemResolver
 	ActionSummary() ActionSummaryResolver
 	ArtifactMetrics() ArtifactMetricsResolver
+	AuthenticatedUser() AuthenticatedUserResolver
 	BazelInvocation() BazelInvocationResolver
 	BazelInvocationProblem() BazelInvocationProblemResolver
 	Blob() BlobResolver
@@ -97,6 +98,7 @@ type ResolverRoot interface {
 	ActionDataWhereInput() ActionDataWhereInputResolver
 	ActionSummaryWhereInput() ActionSummaryWhereInputResolver
 	ArtifactMetricsWhereInput() ArtifactMetricsWhereInputResolver
+	AuthenticatedUserWhereInput() AuthenticatedUserWhereInputResolver
 	BazelInvocationProblemWhereInput() BazelInvocationProblemWhereInputResolver
 	BazelInvocationWhereInput() BazelInvocationWhereInputResolver
 	BlobWhereInput() BlobWhereInputResolver
@@ -193,6 +195,15 @@ type ComplexityRoot struct {
 		TopLevelArtifactsSizeInBytes              func(childComplexity int) int
 	}
 
+	AuthenticatedUser struct {
+		BazelInvocations func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.BazelInvocationOrder, where *ent.BazelInvocationWhereInput) int
+		DisplayName      func(childComplexity int) int
+		ExternalID       func(childComplexity int) int
+		ID               func(childComplexity int) int
+		UserInfo         func(childComplexity int) int
+		UserUUID         func(childComplexity int) int
+	}
+
 	BazelCommand struct {
 		CmdLine                func(childComplexity int) int
 		Command                func(childComplexity int) int
@@ -205,6 +216,7 @@ type ComplexityRoot struct {
 	}
 
 	BazelInvocation struct {
+		AuthenticatedUser     func(childComplexity int) int
 		BazelCommand          func(childComplexity int) int
 		BazelVersion          func(childComplexity int) int
 		BepCompleted          func(childComplexity int) int
@@ -521,6 +533,7 @@ type ComplexityRoot struct {
 		FindRunnerCounts                 func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.RunnerCountWhereInput) int
 		FindTargets                      func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.TargetWhereInput) int
 		FindTests                        func(childComplexity int, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) int
+		GetAuthenticatedUser             func(childComplexity int, userUUID *uuid.UUID) int
 		GetAveragePassPercentageForLabel func(childComplexity int, label string) int
 		GetBuild                         func(childComplexity int, buildURL *string, buildUUID *uuid.UUID) int
 		GetTarget                        func(childComplexity int, instanceName string, label string, aspect string, targetKind string) int
@@ -790,6 +803,9 @@ type ActionSummaryResolver interface {
 type ArtifactMetricsResolver interface {
 	ID(ctx context.Context, obj *ent.ArtifactMetrics) (string, error)
 }
+type AuthenticatedUserResolver interface {
+	ID(ctx context.Context, obj *ent.AuthenticatedUser) (string, error)
+}
 type BazelInvocationResolver interface {
 	ID(ctx context.Context, obj *ent.BazelInvocation) (string, error)
 
@@ -876,6 +892,7 @@ type QueryResolver interface {
 	FindTargets(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.TargetWhereInput) (*ent.TargetConnection, error)
 	FindTests(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, orderBy *ent.TestCollectionOrder, where *ent.TestCollectionWhereInput) (*ent.TestCollectionConnection, error)
 	BazelInvocation(ctx context.Context, invocationID string) (*ent.BazelInvocation, error)
+	GetAuthenticatedUser(ctx context.Context, userUUID *uuid.UUID) (*ent.AuthenticatedUser, error)
 	GetBuild(ctx context.Context, buildURL *string, buildUUID *uuid.UUID) (*ent.Build, error)
 	GetTarget(ctx context.Context, instanceName string, label string, aspect string, targetKind string) (*ent.Target, error)
 	GetUniqueTestLabels(ctx context.Context, param *string) ([]*string, error)
@@ -969,6 +986,16 @@ type ArtifactMetricsWhereInputResolver interface {
 	IDGte(ctx context.Context, obj *ent.ArtifactMetricsWhereInput, data *string) error
 	IDLt(ctx context.Context, obj *ent.ArtifactMetricsWhereInput, data *string) error
 	IDLte(ctx context.Context, obj *ent.ArtifactMetricsWhereInput, data *string) error
+}
+type AuthenticatedUserWhereInputResolver interface {
+	ID(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error
+	IDNeq(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error
+	IDIn(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data []string) error
+	IDNotIn(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data []string) error
+	IDGt(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error
+	IDGte(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error
+	IDLt(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error
+	IDLte(ctx context.Context, obj *ent.AuthenticatedUserWhereInput, data *string) error
 }
 type BazelInvocationProblemWhereInputResolver interface {
 	ID(ctx context.Context, obj *ent.BazelInvocationProblemWhereInput, data *string) error
@@ -1617,6 +1644,53 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.ArtifactMetrics.TopLevelArtifactsSizeInBytes(childComplexity), true
 
+	case "AuthenticatedUser.bazelInvocations":
+		if e.complexity.AuthenticatedUser.BazelInvocations == nil {
+			break
+		}
+
+		args, err := ec.field_AuthenticatedUser_bazelInvocations_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.AuthenticatedUser.BazelInvocations(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.BazelInvocationOrder), args["where"].(*ent.BazelInvocationWhereInput)), true
+
+	case "AuthenticatedUser.displayName":
+		if e.complexity.AuthenticatedUser.DisplayName == nil {
+			break
+		}
+
+		return e.complexity.AuthenticatedUser.DisplayName(childComplexity), true
+
+	case "AuthenticatedUser.externalID":
+		if e.complexity.AuthenticatedUser.ExternalID == nil {
+			break
+		}
+
+		return e.complexity.AuthenticatedUser.ExternalID(childComplexity), true
+
+	case "AuthenticatedUser.id":
+		if e.complexity.AuthenticatedUser.ID == nil {
+			break
+		}
+
+		return e.complexity.AuthenticatedUser.ID(childComplexity), true
+
+	case "AuthenticatedUser.userInfo":
+		if e.complexity.AuthenticatedUser.UserInfo == nil {
+			break
+		}
+
+		return e.complexity.AuthenticatedUser.UserInfo(childComplexity), true
+
+	case "AuthenticatedUser.userUUID":
+		if e.complexity.AuthenticatedUser.UserUUID == nil {
+			break
+		}
+
+		return e.complexity.AuthenticatedUser.UserUUID(childComplexity), true
+
 	case "BazelCommand.cmdLine":
 		if e.complexity.BazelCommand.CmdLine == nil {
 			break
@@ -1672,6 +1746,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.BazelCommand.StartupOptions(childComplexity), true
+
+	case "BazelInvocation.authenticatedUser":
+		if e.complexity.BazelInvocation.AuthenticatedUser == nil {
+			break
+		}
+
+		return e.complexity.BazelInvocation.AuthenticatedUser(childComplexity), true
 
 	case "BazelInvocation.bazelCommand":
 		if e.complexity.BazelInvocation.BazelCommand == nil {
@@ -3190,6 +3271,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Query.FindTests(childComplexity, args["after"].(*entgql.Cursor[int]), args["first"].(*int), args["before"].(*entgql.Cursor[int]), args["last"].(*int), args["orderBy"].(*ent.TestCollectionOrder), args["where"].(*ent.TestCollectionWhereInput)), true
 
+	case "Query.getAuthenticatedUser":
+		if e.complexity.Query.GetAuthenticatedUser == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getAuthenticatedUser_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetAuthenticatedUser(childComplexity, args["userUUID"].(*uuid.UUID)), true
+
 	case "Query.getAveragePassPercentageForLabel":
 		if e.complexity.Query.GetAveragePassPercentageForLabel == nil {
 			break
@@ -4435,6 +4528,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputActionDataWhereInput,
 		ec.unmarshalInputActionSummaryWhereInput,
 		ec.unmarshalInputArtifactMetricsWhereInput,
+		ec.unmarshalInputAuthenticatedUserWhereInput,
 		ec.unmarshalInputBazelInvocationOrder,
 		ec.unmarshalInputBazelInvocationProblemWhereInput,
 		ec.unmarshalInputBazelInvocationWhereInput,
@@ -4574,6 +4668,149 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_AuthenticatedUser_bazelInvocations_argsAfter(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["after"] = arg0
+	arg1, err := ec.field_AuthenticatedUser_bazelInvocations_argsFirst(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["first"] = arg1
+	arg2, err := ec.field_AuthenticatedUser_bazelInvocations_argsBefore(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["before"] = arg2
+	arg3, err := ec.field_AuthenticatedUser_bazelInvocations_argsLast(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["last"] = arg3
+	arg4, err := ec.field_AuthenticatedUser_bazelInvocations_argsOrderBy(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["orderBy"] = arg4
+	arg5, err := ec.field_AuthenticatedUser_bazelInvocations_argsWhere(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["where"] = arg5
+	return args, nil
+}
+func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_argsAfter(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*entgql.Cursor[int], error) {
+	if _, ok := rawArgs["after"]; !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
+	if tmp, ok := rawArgs["after"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_argsFirst(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int, error) {
+	if _, ok := rawArgs["first"]; !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
+	if tmp, ok := rawArgs["first"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_argsBefore(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*entgql.Cursor[int], error) {
+	if _, ok := rawArgs["before"]; !ok {
+		var zeroVal *entgql.Cursor[int]
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("before"))
+	if tmp, ok := rawArgs["before"]; ok {
+		return ec.unmarshalOCursor2ᚖentgoᚗioᚋcontribᚋentgqlᚐCursor(ctx, tmp)
+	}
+
+	var zeroVal *entgql.Cursor[int]
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_argsLast(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int, error) {
+	if _, ok := rawArgs["last"]; !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+	if tmp, ok := rawArgs["last"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_argsOrderBy(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*ent.BazelInvocationOrder, error) {
+	if _, ok := rawArgs["orderBy"]; !ok {
+		var zeroVal *ent.BazelInvocationOrder
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("orderBy"))
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		return ec.unmarshalOBazelInvocationOrder2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationOrder(ctx, tmp)
+	}
+
+	var zeroVal *ent.BazelInvocationOrder
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_AuthenticatedUser_bazelInvocations_argsWhere(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*ent.BazelInvocationWhereInput, error) {
+	if _, ok := rawArgs["where"]; !ok {
+		var zeroVal *ent.BazelInvocationWhereInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("where"))
+	if tmp, ok := rawArgs["where"]; ok {
+		return ec.unmarshalOBazelInvocationWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationWhereInput(ctx, tmp)
+	}
+
+	var zeroVal *ent.BazelInvocationWhereInput
+	return zeroVal, nil
+}
 
 func (ec *executionContext) field_BazelInvocation_invocationTargets_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
@@ -5537,6 +5774,34 @@ func (ec *executionContext) field_Query_findTests_argsWhere(
 	}
 
 	var zeroVal *ent.TestCollectionWhereInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_getAuthenticatedUser_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_getAuthenticatedUser_argsUserUUID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["userUUID"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_getAuthenticatedUser_argsUserUUID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*uuid.UUID, error) {
+	if _, ok := rawArgs["userUUID"]; !ok {
+		var zeroVal *uuid.UUID
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("userUUID"))
+	if tmp, ok := rawArgs["userUUID"]; ok {
+		return ec.unmarshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, tmp)
+	}
+
+	var zeroVal *uuid.UUID
 	return zeroVal, nil
 }
 
@@ -8113,6 +8378,283 @@ func (ec *executionContext) fieldContext_ArtifactMetrics_metrics(_ context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _AuthenticatedUser_id(ctx context.Context, field graphql.CollectedField, obj *ent.AuthenticatedUser) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AuthenticatedUser_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.AuthenticatedUser().ID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AuthenticatedUser_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AuthenticatedUser",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AuthenticatedUser_userUUID(ctx context.Context, field graphql.CollectedField, obj *ent.AuthenticatedUser) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AuthenticatedUser_userUUID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserUUID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uuid.UUID)
+	fc.Result = res
+	return ec.marshalNUUID2githubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AuthenticatedUser_userUUID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AuthenticatedUser",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type UUID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AuthenticatedUser_externalID(ctx context.Context, field graphql.CollectedField, obj *ent.AuthenticatedUser) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AuthenticatedUser_externalID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExternalID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AuthenticatedUser_externalID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AuthenticatedUser",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AuthenticatedUser_displayName(ctx context.Context, field graphql.CollectedField, obj *ent.AuthenticatedUser) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AuthenticatedUser_displayName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DisplayName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AuthenticatedUser_displayName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AuthenticatedUser",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AuthenticatedUser_userInfo(ctx context.Context, field graphql.CollectedField, obj *ent.AuthenticatedUser) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AuthenticatedUser_userInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserInfo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(map[string]any)
+	fc.Result = res
+	return ec.marshalOMap2map(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AuthenticatedUser_userInfo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AuthenticatedUser",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Map does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AuthenticatedUser_bazelInvocations(ctx context.Context, field graphql.CollectedField, obj *ent.AuthenticatedUser) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AuthenticatedUser_bazelInvocations(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BazelInvocations(ctx, fc.Args["after"].(*entgql.Cursor[int]), fc.Args["first"].(*int), fc.Args["before"].(*entgql.Cursor[int]), fc.Args["last"].(*int), fc.Args["orderBy"].(*ent.BazelInvocationOrder), fc.Args["where"].(*ent.BazelInvocationWhereInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*ent.BazelInvocationConnection)
+	fc.Result = res
+	return ec.marshalNBazelInvocationConnection2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationConnection(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AuthenticatedUser_bazelInvocations(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AuthenticatedUser",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "edges":
+				return ec.fieldContext_BazelInvocationConnection_edges(ctx, field)
+			case "pageInfo":
+				return ec.fieldContext_BazelInvocationConnection_pageInfo(ctx, field)
+			case "totalCount":
+				return ec.fieldContext_BazelInvocationConnection_totalCount(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type BazelInvocationConnection", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_AuthenticatedUser_bazelInvocations_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _BazelCommand_id(ctx context.Context, field graphql.CollectedField, obj *model.BazelCommand) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_BazelCommand_id(ctx, field)
 	if err != nil {
@@ -9357,6 +9899,61 @@ func (ec *executionContext) fieldContext_BazelInvocation_build(_ context.Context
 	return fc, nil
 }
 
+func (ec *executionContext) _BazelInvocation_authenticatedUser(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AuthenticatedUser(ctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.AuthenticatedUser)
+	fc.Result = res
+	return ec.marshalOAuthenticatedUser2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_BazelInvocation_authenticatedUser(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BazelInvocation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AuthenticatedUser_id(ctx, field)
+			case "userUUID":
+				return ec.fieldContext_AuthenticatedUser_userUUID(ctx, field)
+			case "externalID":
+				return ec.fieldContext_AuthenticatedUser_externalID(ctx, field)
+			case "displayName":
+				return ec.fieldContext_AuthenticatedUser_displayName(ctx, field)
+			case "userInfo":
+				return ec.fieldContext_AuthenticatedUser_userInfo(ctx, field)
+			case "bazelInvocations":
+				return ec.fieldContext_AuthenticatedUser_bazelInvocations(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AuthenticatedUser", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _BazelInvocation_metrics(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_BazelInvocation_metrics(ctx, field)
 	if err != nil {
@@ -10265,6 +10862,8 @@ func (ec *executionContext) fieldContext_BazelInvocationEdge_node(_ context.Cont
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
 			case "metrics":
 				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
 			case "incompleteBuildLogs":
@@ -10550,6 +11149,8 @@ func (ec *executionContext) fieldContext_BazelInvocationProblem_bazelInvocation(
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
 			case "metrics":
 				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
 			case "incompleteBuildLogs":
@@ -11642,6 +12243,8 @@ func (ec *executionContext) fieldContext_Build_invocations(_ context.Context, fi
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
 			case "metrics":
 				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
 			case "incompleteBuildLogs":
@@ -13987,6 +14590,8 @@ func (ec *executionContext) fieldContext_IncompleteBuildLog_bazelInvocation(_ co
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
 			case "metrics":
 				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
 			case "incompleteBuildLogs":
@@ -14184,6 +14789,8 @@ func (ec *executionContext) fieldContext_InstanceName_bazelInvocations(_ context
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
 			case "metrics":
 				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
 			case "incompleteBuildLogs":
@@ -14714,6 +15321,8 @@ func (ec *executionContext) fieldContext_InvocationFiles_bazelInvocation(_ conte
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
 			case "metrics":
 				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
 			case "incompleteBuildLogs":
@@ -15163,6 +15772,8 @@ func (ec *executionContext) fieldContext_InvocationTarget_bazelInvocation(_ cont
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
 			case "metrics":
 				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
 			case "incompleteBuildLogs":
@@ -15911,6 +16522,8 @@ func (ec *executionContext) fieldContext_Metrics_bazelInvocation(_ context.Conte
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
 			case "metrics":
 				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
 			case "incompleteBuildLogs":
@@ -19145,6 +19758,8 @@ func (ec *executionContext) fieldContext_Query_bazelInvocation(ctx context.Conte
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
 			case "metrics":
 				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
 			case "incompleteBuildLogs":
@@ -19181,6 +19796,72 @@ func (ec *executionContext) fieldContext_Query_bazelInvocation(ctx context.Conte
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_bazelInvocation_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getAuthenticatedUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getAuthenticatedUser(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetAuthenticatedUser(rctx, fc.Args["userUUID"].(*uuid.UUID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*ent.AuthenticatedUser)
+	fc.Result = res
+	return ec.marshalOAuthenticatedUser2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getAuthenticatedUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_AuthenticatedUser_id(ctx, field)
+			case "userUUID":
+				return ec.fieldContext_AuthenticatedUser_userUUID(ctx, field)
+			case "externalID":
+				return ec.fieldContext_AuthenticatedUser_externalID(ctx, field)
+			case "displayName":
+				return ec.fieldContext_AuthenticatedUser_displayName(ctx, field)
+			case "userInfo":
+				return ec.fieldContext_AuthenticatedUser_userInfo(ctx, field)
+			case "bazelInvocations":
+				return ec.fieldContext_AuthenticatedUser_bazelInvocations(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AuthenticatedUser", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getAuthenticatedUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -21185,6 +21866,8 @@ func (ec *executionContext) fieldContext_SourceControl_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
 			case "metrics":
 				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
 			case "incompleteBuildLogs":
@@ -23240,6 +23923,8 @@ func (ec *executionContext) fieldContext_TestCollection_bazelInvocation(_ contex
 				return ec.fieldContext_BazelInvocation_instanceName(ctx, field)
 			case "build":
 				return ec.fieldContext_BazelInvocation_build(ctx, field)
+			case "authenticatedUser":
+				return ec.fieldContext_BazelInvocation_authenticatedUser(ctx, field)
 			case "metrics":
 				return ec.fieldContext_BazelInvocation_metrics(ctx, field)
 			case "incompleteBuildLogs":
@@ -31342,6 +32027,385 @@ func (ec *executionContext) unmarshalInputArtifactMetricsWhereInput(ctx context.
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputAuthenticatedUserWhereInput(ctx context.Context, obj any) (ent.AuthenticatedUserWhereInput, error) {
+	var it ent.AuthenticatedUserWhereInput
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "userUUID", "userUUIDNEQ", "userUUIDIn", "userUUIDNotIn", "userUUIDGT", "userUUIDGTE", "userUUIDLT", "userUUIDLTE", "externalID", "externalIDNEQ", "externalIDIn", "externalIDNotIn", "externalIDGT", "externalIDGTE", "externalIDLT", "externalIDLTE", "externalIDContains", "externalIDHasPrefix", "externalIDHasSuffix", "externalIDEqualFold", "externalIDContainsFold", "displayName", "displayNameNEQ", "displayNameIn", "displayNameNotIn", "displayNameGT", "displayNameGTE", "displayNameLT", "displayNameLTE", "displayNameContains", "displayNameHasPrefix", "displayNameHasSuffix", "displayNameIsNil", "displayNameNotNil", "displayNameEqualFold", "displayNameContainsFold", "hasBazelInvocations", "hasBazelInvocationsWith"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "not":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("not"))
+			data, err := ec.unmarshalOAuthenticatedUserWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUserWhereInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Not = data
+		case "and":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("and"))
+			data, err := ec.unmarshalOAuthenticatedUserWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUserWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.And = data
+		case "or":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("or"))
+			data, err := ec.unmarshalOAuthenticatedUserWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUserWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Or = data
+		case "id":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.AuthenticatedUserWhereInput().ID(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNEQ"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.AuthenticatedUserWhereInput().IDNeq(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.AuthenticatedUserWhereInput().IDIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idNotIn"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.AuthenticatedUserWhereInput().IDNotIn(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGT"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.AuthenticatedUserWhereInput().IDGt(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idGTE"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.AuthenticatedUserWhereInput().IDGte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLT"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.AuthenticatedUserWhereInput().IDLt(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "idLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("idLTE"))
+			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.AuthenticatedUserWhereInput().IDLte(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "userUUID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userUUID"))
+			data, err := ec.unmarshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserUUID = data
+		case "userUUIDNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userUUIDNEQ"))
+			data, err := ec.unmarshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserUUIDNEQ = data
+		case "userUUIDIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userUUIDIn"))
+			data, err := ec.unmarshalOUUID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserUUIDIn = data
+		case "userUUIDNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userUUIDNotIn"))
+			data, err := ec.unmarshalOUUID2ᚕgithubᚗcomᚋgoogleᚋuuidᚐUUIDᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserUUIDNotIn = data
+		case "userUUIDGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userUUIDGT"))
+			data, err := ec.unmarshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserUUIDGT = data
+		case "userUUIDGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userUUIDGTE"))
+			data, err := ec.unmarshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserUUIDGTE = data
+		case "userUUIDLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userUUIDLT"))
+			data, err := ec.unmarshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserUUIDLT = data
+		case "userUUIDLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userUUIDLTE"))
+			data, err := ec.unmarshalOUUID2ᚖgithubᚗcomᚋgoogleᚋuuidᚐUUID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UserUUIDLTE = data
+		case "externalID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalID"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalID = data
+		case "externalIDNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDNEQ = data
+		case "externalIDIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDIn = data
+		case "externalIDNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDNotIn = data
+		case "externalIDGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDGT = data
+		case "externalIDGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDGTE = data
+		case "externalIDLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDLT = data
+		case "externalIDLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDLTE = data
+		case "externalIDContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDContains = data
+		case "externalIDHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDHasPrefix = data
+		case "externalIDHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDHasSuffix = data
+		case "externalIDEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDEqualFold = data
+		case "externalIDContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("externalIDContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExternalIDContainsFold = data
+		case "displayName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayName"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayName = data
+		case "displayNameNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameNEQ = data
+		case "displayNameIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameIn = data
+		case "displayNameNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameNotIn = data
+		case "displayNameGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameGT = data
+		case "displayNameGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameGTE = data
+		case "displayNameLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameLT = data
+		case "displayNameLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameLTE = data
+		case "displayNameContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameContains = data
+		case "displayNameHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameHasPrefix = data
+		case "displayNameHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameHasSuffix = data
+		case "displayNameIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameIsNil = data
+		case "displayNameNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameNotNil = data
+		case "displayNameEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameEqualFold = data
+		case "displayNameContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("displayNameContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DisplayNameContainsFold = data
+		case "hasBazelInvocations":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBazelInvocations"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasBazelInvocations = data
+		case "hasBazelInvocationsWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasBazelInvocationsWith"))
+			data, err := ec.unmarshalOBazelInvocationWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐBazelInvocationWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasBazelInvocationsWith = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputBazelInvocationOrder(ctx context.Context, obj any) (ent.BazelInvocationOrder, error) {
 	var it ent.BazelInvocationOrder
 	asMap := map[string]any{}
@@ -31696,7 +32760,7 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "invocationID", "invocationIDNEQ", "invocationIDIn", "invocationIDNotIn", "invocationIDGT", "invocationIDGTE", "invocationIDLT", "invocationIDLTE", "startedAt", "startedAtNEQ", "startedAtIn", "startedAtNotIn", "startedAtGT", "startedAtGTE", "startedAtLT", "startedAtLTE", "startedAtIsNil", "startedAtNotNil", "endedAt", "endedAtNEQ", "endedAtIn", "endedAtNotIn", "endedAtGT", "endedAtGTE", "endedAtLT", "endedAtLTE", "endedAtIsNil", "endedAtNotNil", "changeNumber", "changeNumberNEQ", "changeNumberIn", "changeNumberNotIn", "changeNumberGT", "changeNumberGTE", "changeNumberLT", "changeNumberLTE", "changeNumberIsNil", "changeNumberNotNil", "patchsetNumber", "patchsetNumberNEQ", "patchsetNumberIn", "patchsetNumberNotIn", "patchsetNumberGT", "patchsetNumberGTE", "patchsetNumberLT", "patchsetNumberLTE", "patchsetNumberIsNil", "patchsetNumberNotNil", "bepCompleted", "bepCompletedNEQ", "stepLabel", "stepLabelNEQ", "stepLabelIn", "stepLabelNotIn", "stepLabelGT", "stepLabelGTE", "stepLabelLT", "stepLabelLTE", "stepLabelContains", "stepLabelHasPrefix", "stepLabelHasSuffix", "stepLabelIsNil", "stepLabelNotNil", "stepLabelEqualFold", "stepLabelContainsFold", "userEmail", "userEmailNEQ", "userEmailIn", "userEmailNotIn", "userEmailGT", "userEmailGTE", "userEmailLT", "userEmailLTE", "userEmailContains", "userEmailHasPrefix", "userEmailHasSuffix", "userEmailIsNil", "userEmailNotNil", "userEmailEqualFold", "userEmailContainsFold", "userLdap", "userLdapNEQ", "userLdapIn", "userLdapNotIn", "userLdapGT", "userLdapGTE", "userLdapLT", "userLdapLTE", "userLdapContains", "userLdapHasPrefix", "userLdapHasSuffix", "userLdapIsNil", "userLdapNotNil", "userLdapEqualFold", "userLdapContainsFold", "buildLogs", "buildLogsNEQ", "buildLogsIn", "buildLogsNotIn", "buildLogsGT", "buildLogsGTE", "buildLogsLT", "buildLogsLTE", "buildLogsContains", "buildLogsHasPrefix", "buildLogsHasSuffix", "buildLogsIsNil", "buildLogsNotNil", "buildLogsEqualFold", "buildLogsContainsFold", "cpu", "cpuNEQ", "cpuIn", "cpuNotIn", "cpuGT", "cpuGTE", "cpuLT", "cpuLTE", "cpuContains", "cpuHasPrefix", "cpuHasSuffix", "cpuIsNil", "cpuNotNil", "cpuEqualFold", "cpuContainsFold", "platformName", "platformNameNEQ", "platformNameIn", "platformNameNotIn", "platformNameGT", "platformNameGTE", "platformNameLT", "platformNameLTE", "platformNameContains", "platformNameHasPrefix", "platformNameHasSuffix", "platformNameIsNil", "platformNameNotNil", "platformNameEqualFold", "platformNameContainsFold", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "isCiWorker", "isCiWorkerNEQ", "isCiWorkerIsNil", "isCiWorkerNotNil", "configurationMnemonic", "configurationMnemonicNEQ", "configurationMnemonicIn", "configurationMnemonicNotIn", "configurationMnemonicGT", "configurationMnemonicGTE", "configurationMnemonicLT", "configurationMnemonicLTE", "configurationMnemonicContains", "configurationMnemonicHasPrefix", "configurationMnemonicHasSuffix", "configurationMnemonicIsNil", "configurationMnemonicNotNil", "configurationMnemonicEqualFold", "configurationMnemonicContainsFold", "numFetches", "numFetchesNEQ", "numFetchesIn", "numFetchesNotIn", "numFetchesGT", "numFetchesGTE", "numFetchesLT", "numFetchesLTE", "numFetchesIsNil", "numFetchesNotNil", "profileName", "profileNameNEQ", "profileNameIn", "profileNameNotIn", "profileNameGT", "profileNameGTE", "profileNameLT", "profileNameLTE", "profileNameContains", "profileNameHasPrefix", "profileNameHasSuffix", "profileNameIsNil", "profileNameNotNil", "profileNameEqualFold", "profileNameContainsFold", "bazelVersion", "bazelVersionNEQ", "bazelVersionIn", "bazelVersionNotIn", "bazelVersionGT", "bazelVersionGTE", "bazelVersionLT", "bazelVersionLTE", "bazelVersionContains", "bazelVersionHasPrefix", "bazelVersionHasSuffix", "bazelVersionIsNil", "bazelVersionNotNil", "bazelVersionEqualFold", "bazelVersionContainsFold", "exitCodeName", "exitCodeNameNEQ", "exitCodeNameIn", "exitCodeNameNotIn", "exitCodeNameGT", "exitCodeNameGTE", "exitCodeNameLT", "exitCodeNameLTE", "exitCodeNameContains", "exitCodeNameHasPrefix", "exitCodeNameHasSuffix", "exitCodeNameIsNil", "exitCodeNameNotNil", "exitCodeNameEqualFold", "exitCodeNameContainsFold", "exitCodeCode", "exitCodeCodeNEQ", "exitCodeCodeIn", "exitCodeCodeNotIn", "exitCodeCodeGT", "exitCodeCodeGTE", "exitCodeCodeLT", "exitCodeCodeLTE", "exitCodeCodeIsNil", "exitCodeCodeNotNil", "hasInstanceName", "hasInstanceNameWith", "hasBuild", "hasBuildWith", "hasProblems", "hasProblemsWith", "hasMetrics", "hasMetricsWith", "hasIncompleteBuildLogs", "hasIncompleteBuildLogsWith", "hasInvocationFiles", "hasInvocationFilesWith", "hasTestCollection", "hasTestCollectionWith", "hasInvocationTargets", "hasInvocationTargetsWith", "hasSourceControl", "hasSourceControlWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "invocationID", "invocationIDNEQ", "invocationIDIn", "invocationIDNotIn", "invocationIDGT", "invocationIDGTE", "invocationIDLT", "invocationIDLTE", "startedAt", "startedAtNEQ", "startedAtIn", "startedAtNotIn", "startedAtGT", "startedAtGTE", "startedAtLT", "startedAtLTE", "startedAtIsNil", "startedAtNotNil", "endedAt", "endedAtNEQ", "endedAtIn", "endedAtNotIn", "endedAtGT", "endedAtGTE", "endedAtLT", "endedAtLTE", "endedAtIsNil", "endedAtNotNil", "changeNumber", "changeNumberNEQ", "changeNumberIn", "changeNumberNotIn", "changeNumberGT", "changeNumberGTE", "changeNumberLT", "changeNumberLTE", "changeNumberIsNil", "changeNumberNotNil", "patchsetNumber", "patchsetNumberNEQ", "patchsetNumberIn", "patchsetNumberNotIn", "patchsetNumberGT", "patchsetNumberGTE", "patchsetNumberLT", "patchsetNumberLTE", "patchsetNumberIsNil", "patchsetNumberNotNil", "bepCompleted", "bepCompletedNEQ", "stepLabel", "stepLabelNEQ", "stepLabelIn", "stepLabelNotIn", "stepLabelGT", "stepLabelGTE", "stepLabelLT", "stepLabelLTE", "stepLabelContains", "stepLabelHasPrefix", "stepLabelHasSuffix", "stepLabelIsNil", "stepLabelNotNil", "stepLabelEqualFold", "stepLabelContainsFold", "userEmail", "userEmailNEQ", "userEmailIn", "userEmailNotIn", "userEmailGT", "userEmailGTE", "userEmailLT", "userEmailLTE", "userEmailContains", "userEmailHasPrefix", "userEmailHasSuffix", "userEmailIsNil", "userEmailNotNil", "userEmailEqualFold", "userEmailContainsFold", "userLdap", "userLdapNEQ", "userLdapIn", "userLdapNotIn", "userLdapGT", "userLdapGTE", "userLdapLT", "userLdapLTE", "userLdapContains", "userLdapHasPrefix", "userLdapHasSuffix", "userLdapIsNil", "userLdapNotNil", "userLdapEqualFold", "userLdapContainsFold", "buildLogs", "buildLogsNEQ", "buildLogsIn", "buildLogsNotIn", "buildLogsGT", "buildLogsGTE", "buildLogsLT", "buildLogsLTE", "buildLogsContains", "buildLogsHasPrefix", "buildLogsHasSuffix", "buildLogsIsNil", "buildLogsNotNil", "buildLogsEqualFold", "buildLogsContainsFold", "cpu", "cpuNEQ", "cpuIn", "cpuNotIn", "cpuGT", "cpuGTE", "cpuLT", "cpuLTE", "cpuContains", "cpuHasPrefix", "cpuHasSuffix", "cpuIsNil", "cpuNotNil", "cpuEqualFold", "cpuContainsFold", "platformName", "platformNameNEQ", "platformNameIn", "platformNameNotIn", "platformNameGT", "platformNameGTE", "platformNameLT", "platformNameLTE", "platformNameContains", "platformNameHasPrefix", "platformNameHasSuffix", "platformNameIsNil", "platformNameNotNil", "platformNameEqualFold", "platformNameContainsFold", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "isCiWorker", "isCiWorkerNEQ", "isCiWorkerIsNil", "isCiWorkerNotNil", "configurationMnemonic", "configurationMnemonicNEQ", "configurationMnemonicIn", "configurationMnemonicNotIn", "configurationMnemonicGT", "configurationMnemonicGTE", "configurationMnemonicLT", "configurationMnemonicLTE", "configurationMnemonicContains", "configurationMnemonicHasPrefix", "configurationMnemonicHasSuffix", "configurationMnemonicIsNil", "configurationMnemonicNotNil", "configurationMnemonicEqualFold", "configurationMnemonicContainsFold", "numFetches", "numFetchesNEQ", "numFetchesIn", "numFetchesNotIn", "numFetchesGT", "numFetchesGTE", "numFetchesLT", "numFetchesLTE", "numFetchesIsNil", "numFetchesNotNil", "profileName", "profileNameNEQ", "profileNameIn", "profileNameNotIn", "profileNameGT", "profileNameGTE", "profileNameLT", "profileNameLTE", "profileNameContains", "profileNameHasPrefix", "profileNameHasSuffix", "profileNameIsNil", "profileNameNotNil", "profileNameEqualFold", "profileNameContainsFold", "bazelVersion", "bazelVersionNEQ", "bazelVersionIn", "bazelVersionNotIn", "bazelVersionGT", "bazelVersionGTE", "bazelVersionLT", "bazelVersionLTE", "bazelVersionContains", "bazelVersionHasPrefix", "bazelVersionHasSuffix", "bazelVersionIsNil", "bazelVersionNotNil", "bazelVersionEqualFold", "bazelVersionContainsFold", "exitCodeName", "exitCodeNameNEQ", "exitCodeNameIn", "exitCodeNameNotIn", "exitCodeNameGT", "exitCodeNameGTE", "exitCodeNameLT", "exitCodeNameLTE", "exitCodeNameContains", "exitCodeNameHasPrefix", "exitCodeNameHasSuffix", "exitCodeNameIsNil", "exitCodeNameNotNil", "exitCodeNameEqualFold", "exitCodeNameContainsFold", "exitCodeCode", "exitCodeCodeNEQ", "exitCodeCodeIn", "exitCodeCodeNotIn", "exitCodeCodeGT", "exitCodeCodeGTE", "exitCodeCodeLT", "exitCodeCodeLTE", "exitCodeCodeIsNil", "exitCodeCodeNotNil", "hasInstanceName", "hasInstanceNameWith", "hasBuild", "hasBuildWith", "hasAuthenticatedUser", "hasAuthenticatedUserWith", "hasProblems", "hasProblemsWith", "hasMetrics", "hasMetricsWith", "hasIncompleteBuildLogs", "hasIncompleteBuildLogsWith", "hasInvocationFiles", "hasInvocationFilesWith", "hasTestCollection", "hasTestCollectionWith", "hasInvocationTargets", "hasInvocationTargetsWith", "hasSourceControl", "hasSourceControlWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -33497,6 +34561,20 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 				return it, err
 			}
 			it.HasBuildWith = data
+		case "hasAuthenticatedUser":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasAuthenticatedUser"))
+			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasAuthenticatedUser = data
+		case "hasAuthenticatedUserWith":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasAuthenticatedUserWith"))
+			data, err := ec.unmarshalOAuthenticatedUserWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUserWhereInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.HasAuthenticatedUserWith = data
 		case "hasProblems":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasProblems"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -48664,6 +49742,11 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 			return graphql.Null
 		}
 		return ec._BazelInvocation(ctx, sel, obj)
+	case *ent.AuthenticatedUser:
+		if obj == nil {
+			return graphql.Null
+		}
+		return ec._AuthenticatedUser(ctx, sel, obj)
 	case *ent.ArtifactMetrics:
 		if obj == nil {
 			return graphql.Null
@@ -49437,6 +50520,126 @@ func (ec *executionContext) _ArtifactMetrics(ctx context.Context, sel ast.Select
 	return out
 }
 
+var authenticatedUserImplementors = []string{"AuthenticatedUser", "Node"}
+
+func (ec *executionContext) _AuthenticatedUser(ctx context.Context, sel ast.SelectionSet, obj *ent.AuthenticatedUser) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, authenticatedUserImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AuthenticatedUser")
+		case "id":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AuthenticatedUser_id(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "userUUID":
+			out.Values[i] = ec._AuthenticatedUser_userUUID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "externalID":
+			out.Values[i] = ec._AuthenticatedUser_externalID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "displayName":
+			out.Values[i] = ec._AuthenticatedUser_displayName(ctx, field, obj)
+		case "userInfo":
+			out.Values[i] = ec._AuthenticatedUser_userInfo(ctx, field, obj)
+		case "bazelInvocations":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._AuthenticatedUser_bazelInvocations(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var bazelCommandImplementors = []string{"BazelCommand"}
 
 func (ec *executionContext) _BazelCommand(ctx context.Context, sel ast.SelectionSet, obj *model.BazelCommand) graphql.Marshaler {
@@ -49637,6 +50840,39 @@ func (ec *executionContext) _BazelInvocation(ctx context.Context, sel ast.Select
 					}
 				}()
 				res = ec._BazelInvocation_build(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "authenticatedUser":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._BazelInvocation_authenticatedUser(ctx, field, obj)
 				return res
 			}
 
@@ -54208,6 +55444,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getAuthenticatedUser":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getAuthenticatedUser(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "getBuild":
 			field := field
 
@@ -57261,6 +58516,11 @@ func (ec *executionContext) unmarshalNArtifactMetricsWhereInput2ᚖgithubᚗcom�
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNAuthenticatedUserWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUserWhereInput(ctx context.Context, v any) (*ent.AuthenticatedUserWhereInput, error) {
+	res, err := ec.unmarshalInputAuthenticatedUserWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNBazelCommand2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋinternalᚋgraphqlᚋmodelᚐBazelCommand(ctx context.Context, sel ast.SelectionSet, v model.BazelCommand) graphql.Marshaler {
 	return ec._BazelCommand(ctx, sel, &v)
 }
@@ -58615,6 +59875,39 @@ func (ec *executionContext) unmarshalOArtifactMetricsWhereInput2ᚖgithubᚗcom�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputArtifactMetricsWhereInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOAuthenticatedUser2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUser(ctx context.Context, sel ast.SelectionSet, v *ent.AuthenticatedUser) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AuthenticatedUser(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOAuthenticatedUserWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUserWhereInputᚄ(ctx context.Context, v any) ([]*ent.AuthenticatedUserWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]*ent.AuthenticatedUserWhereInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNAuthenticatedUserWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUserWhereInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalOAuthenticatedUserWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐAuthenticatedUserWhereInput(ctx context.Context, v any) (*ent.AuthenticatedUserWhereInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputAuthenticatedUserWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -60002,6 +61295,24 @@ func (ec *executionContext) unmarshalOInvocationTargetWhereInput2ᚖgithubᚗcom
 	}
 	res, err := ec.unmarshalInputInvocationTargetWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOMap2map(ctx context.Context, v any) (map[string]any, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalMap(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOMap2map(ctx context.Context, sel ast.SelectionSet, v map[string]any) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalMap(v)
+	return res
 }
 
 func (ec *executionContext) marshalOMemoryMetrics2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMemoryMetrics(ctx context.Context, sel ast.SelectionSet, v *ent.MemoryMetrics) graphql.Marshaler {

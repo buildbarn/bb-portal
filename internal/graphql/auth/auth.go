@@ -64,6 +64,7 @@ func AddDatabaseAuthInterceptors(authorizerConfiguration *auth_pb.AuthorizerConf
 	dbClient.ActionData.Intercept(createInterceptor(instanceNameAuthorizer, isActionDataAllowed))
 	dbClient.ActionSummary.Intercept(createInterceptor(instanceNameAuthorizer, isActionSummaryAllowed))
 	dbClient.ArtifactMetrics.Intercept(createInterceptor(instanceNameAuthorizer, isArtifactMetricsAllowed))
+	dbClient.AuthenticatedUser.Intercept(createInterceptor(instanceNameAuthorizer, isAuthenticatedUserAllowed))
 	dbClient.BazelInvocation.Intercept(createInterceptor(instanceNameAuthorizer, isBazelInvocationAllowed))
 	dbClient.BazelInvocationProblem.Intercept(createInterceptor(instanceNameAuthorizer, isBazelInvocationProblemAllowed))
 	dbClient.Blob.Intercept(createInterceptor(instanceNameAuthorizer, isBlobAllowed))
@@ -116,6 +117,11 @@ func isActionSummaryAllowed(ctx context.Context, instanceNameAuthorizer auth.Aut
 func isArtifactMetricsAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, artifactMetrics *ent.ArtifactMetrics) bool {
 	metrics, err := artifactMetrics.Metrics(ctx)
 	return err == nil && metrics != nil
+}
+
+func isAuthenticatedUserAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, authenticatedUser *ent.AuthenticatedUser) bool {
+	invocations, err := authenticatedUser.BazelInvocations(ctx)
+	return err == nil && invocations != nil && len(invocations) > 0
 }
 
 func isBazelInvocationAllowed(ctx context.Context, instanceNameAuthorizer auth.Authorizer, invocation *ent.BazelInvocation) bool {

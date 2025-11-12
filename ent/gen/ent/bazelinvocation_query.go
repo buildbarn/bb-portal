@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
@@ -37,6 +38,7 @@ type BazelInvocationQuery struct {
 	predicates                   []predicate.BazelInvocation
 	withInstanceName             *InstanceNameQuery
 	withBuild                    *BuildQuery
+	withAuthenticatedUser        *AuthenticatedUserQuery
 	withEventMetadata            *EventMetadataQuery
 	withConnectionMetadata       *ConnectionMetadataQuery
 	withProblems                 *BazelInvocationProblemQuery
@@ -131,6 +133,28 @@ func (biq *BazelInvocationQuery) QueryBuild() *BuildQuery {
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
 			sqlgraph.To(build.Table, build.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, bazelinvocation.BuildTable, bazelinvocation.BuildColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAuthenticatedUser chains the current query on the "authenticated_user" edge.
+func (biq *BazelInvocationQuery) QueryAuthenticatedUser() *AuthenticatedUserQuery {
+	query := (&AuthenticatedUserClient{config: biq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := biq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := biq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(authenticateduser.Table, authenticateduser.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, bazelinvocation.AuthenticatedUserTable, bazelinvocation.AuthenticatedUserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
 		return fromU, nil
@@ -552,6 +576,7 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		predicates:              append([]predicate.BazelInvocation{}, biq.predicates...),
 		withInstanceName:        biq.withInstanceName.Clone(),
 		withBuild:               biq.withBuild.Clone(),
+		withAuthenticatedUser:   biq.withAuthenticatedUser.Clone(),
 		withEventMetadata:       biq.withEventMetadata.Clone(),
 		withConnectionMetadata:  biq.withConnectionMetadata.Clone(),
 		withProblems:            biq.withProblems.Clone(),
@@ -588,6 +613,17 @@ func (biq *BazelInvocationQuery) WithBuild(opts ...func(*BuildQuery)) *BazelInvo
 		opt(query)
 	}
 	biq.withBuild = query
+	return biq
+}
+
+// WithAuthenticatedUser tells the query-builder to eager-load the nodes that are connected to
+// the "authenticated_user" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithAuthenticatedUser(opts ...func(*AuthenticatedUserQuery)) *BazelInvocationQuery {
+	query := (&AuthenticatedUserClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	biq.withAuthenticatedUser = query
 	return biq
 }
 
@@ -780,9 +816,10 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*BazelInvocation{}
 		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
-		loadedTypes = [12]bool{
+		loadedTypes = [13]bool{
 			biq.withInstanceName != nil,
 			biq.withBuild != nil,
+			biq.withAuthenticatedUser != nil,
 			biq.withEventMetadata != nil,
 			biq.withConnectionMetadata != nil,
 			biq.withProblems != nil,
@@ -795,7 +832,7 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			biq.withSourceControl != nil,
 		}
 	)
-	if biq.withInstanceName != nil || biq.withBuild != nil {
+	if biq.withInstanceName != nil || biq.withBuild != nil || biq.withAuthenticatedUser != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -831,6 +868,12 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	if query := biq.withBuild; query != nil {
 		if err := biq.loadBuild(ctx, query, nodes, nil,
 			func(n *BazelInvocation, e *Build) { n.Edges.Build = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := biq.withAuthenticatedUser; query != nil {
+		if err := biq.loadAuthenticatedUser(ctx, query, nodes, nil,
+			func(n *BazelInvocation, e *AuthenticatedUser) { n.Edges.AuthenticatedUser = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -1035,6 +1078,38 @@ func (biq *BazelInvocationQuery) loadBuild(ctx context.Context, query *BuildQuer
 		nodes, ok := nodeids[n.ID]
 		if !ok {
 			return fmt.Errorf(`unexpected foreign-key "build_invocations" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (biq *BazelInvocationQuery) loadAuthenticatedUser(ctx context.Context, query *AuthenticatedUserQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *AuthenticatedUser)) error {
+	ids := make([]int, 0, len(nodes))
+	nodeids := make(map[int][]*BazelInvocation)
+	for i := range nodes {
+		if nodes[i].authenticated_user_bazel_invocations == nil {
+			continue
+		}
+		fk := *nodes[i].authenticated_user_bazel_invocations
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(authenticateduser.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "authenticated_user_bazel_invocations" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

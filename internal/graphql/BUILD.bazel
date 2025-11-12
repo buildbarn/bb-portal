@@ -17,6 +17,7 @@ go_library(
     visibility = ["//:__subpackages__"],
     deps = [
         "//ent/gen/ent",
+        "//ent/gen/ent/authenticateduser",
         "//ent/gen/ent/bazelinvocation",
         "//ent/gen/ent/bazelinvocationproblem",
         "//ent/gen/ent/blob",

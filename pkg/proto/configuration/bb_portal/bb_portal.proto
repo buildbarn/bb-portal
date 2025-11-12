@@ -9,6 +9,7 @@ import "github.com/buildbarn/bb-storage/pkg/proto/configuration/blobstore/blobst
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/global/global.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/grpc/grpc.proto";
 import "github.com/buildbarn/bb-storage/pkg/proto/configuration/http/server/server.proto";
+import "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath/jmespath.proto";
 
 option go_package = "github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal";
 
@@ -32,6 +33,22 @@ message Database {
     SqliteSource sqlite = 1;
     PostgresSource postgres = 2;
   }
+}
+
+message AuthMetadataExtractorConfiguration {
+  // JMESPath Expression for extracting the external identity provider's
+  // (unique) identifier for a user.
+  buildbarn.configuration.jmespath.Expression
+      external_id_extraction_jmespath_expression = 1;
+
+  // JMESPath Expression for extracting a human-readable display name.
+  buildbarn.configuration.jmespath.Expression
+      display_name_extraction_jmespath_expression = 2;
+
+  // JMESPath Expression for extracting arbitrary structured data about
+  // the user.
+  buildbarn.configuration.jmespath.Expression
+      user_info_extraction_jmespath_expression = 3;
 }
 
 message BuildEventStreamService {
@@ -99,6 +116,24 @@ message BuildEventStreamService {
   // If you really want to disable it, just set the cleanup interval to a
   // very high value.
   DatabaseCleanupConfiguration database_cleanup_configuration = 7;
+
+  // JMESPath expressions to extract authentication metadata. Used to record
+  // information about the user responsible for an invocation.
+  // If configured, each expression is called against a JSON object with the
+  // following structure:
+  //
+  //     {
+  //       "authenticationMetadata": buildbarn.auth.AuthenticationMetadata,
+  //       "files": map<string, any>
+  //     }
+  //
+  // "authenticationMetadata" corresponds to the metadata that was
+  // obtained by the authentication process (See grpc.proto's
+  // ServerConfiguration.authentication_policy).
+  //
+  // "files" corresponds to any files that are specified within the
+  // buildbarn.configuration.jmespath.Expression configuration.
+  AuthMetadataExtractorConfiguration auth_metadata_key_configuration = 8;
 }
 
 message BrowserService {

@@ -25,6 +25,10 @@ export const BAZEL_INVOCATION_NODE_FRAGMENT = gql(/* GraphQL */ `
       Email
       LDAP
     }
+    authenticatedUser {
+      userUUID
+      displayName
+    }
     endedAt
     state {
       bepCompleted

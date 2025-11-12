@@ -8,7 +8,6 @@ import PortalDuration from '../PortalDuration';
 interface Props {
     command: string,
     cpu: string,
-    user: string,
     status: string,
     invocationId: string,
     instanceName: string | undefined,
@@ -25,7 +24,6 @@ interface Props {
 export const InvocationOverviewDisplay: React.FC<Props> = ({
     command,
     cpu,
-    user,
     status,
     invocationId,
     instanceName,
@@ -55,11 +53,6 @@ export const InvocationOverviewDisplay: React.FC<Props> = ({
                 <Descriptions.Item label="Duration">
                     <PortalDuration key="duration" from={startedAt} to={endedAt} includeIcon includePopover />
                 </Descriptions.Item>
-                {user != "" &&
-                    <Descriptions.Item label="User">
-                        {user}
-                    </Descriptions.Item>
-                }
                 {command != "" &&
                     <Descriptions.Item label="Command">
                         <code>

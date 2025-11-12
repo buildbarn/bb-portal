@@ -12,6 +12,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
@@ -214,6 +215,33 @@ func (f TraverseArtifactMetrics) Traverse(ctx context.Context, q ent.Query) erro
 		return f(ctx, q)
 	}
 	return fmt.Errorf("unexpected query type %T. expect *ent.ArtifactMetricsQuery", q)
+}
+
+// The AuthenticatedUserFunc type is an adapter to allow the use of ordinary function as a Querier.
+type AuthenticatedUserFunc func(context.Context, *ent.AuthenticatedUserQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f AuthenticatedUserFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.AuthenticatedUserQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.AuthenticatedUserQuery", q)
+}
+
+// The TraverseAuthenticatedUser type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseAuthenticatedUser func(context.Context, *ent.AuthenticatedUserQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseAuthenticatedUser) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseAuthenticatedUser) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AuthenticatedUserQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.AuthenticatedUserQuery", q)
 }
 
 // The BazelInvocationFunc type is an adapter to allow the use of ordinary function as a Querier.
@@ -1226,6 +1254,8 @@ func NewQuery(q ent.Query) (Query, error) {
 		return &query[*ent.ActionSummaryQuery, predicate.ActionSummary, actionsummary.OrderOption]{typ: ent.TypeActionSummary, tq: q}, nil
 	case *ent.ArtifactMetricsQuery:
 		return &query[*ent.ArtifactMetricsQuery, predicate.ArtifactMetrics, artifactmetrics.OrderOption]{typ: ent.TypeArtifactMetrics, tq: q}, nil
+	case *ent.AuthenticatedUserQuery:
+		return &query[*ent.AuthenticatedUserQuery, predicate.AuthenticatedUser, authenticateduser.OrderOption]{typ: ent.TypeAuthenticatedUser, tq: q}, nil
 	case *ent.BazelInvocationQuery:
 		return &query[*ent.BazelInvocationQuery, predicate.BazelInvocation, bazelinvocation.OrderOption]{typ: ent.TypeBazelInvocation, tq: q}, nil
 	case *ent.BazelInvocationProblemQuery:

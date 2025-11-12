@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
@@ -91,10 +92,11 @@ type BazelInvocation struct {
 	ProcessedEventWorkspaceStatus bool `json:"processed_event_workspace_status,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the BazelInvocationQuery when eager-loading is set.
-	Edges                           BazelInvocationEdges `json:"edges"`
-	build_invocations               *int
-	instance_name_bazel_invocations *int
-	selectValues                    sql.SelectValues
+	Edges                                BazelInvocationEdges `json:"edges"`
+	authenticated_user_bazel_invocations *int
+	build_invocations                    *int
+	instance_name_bazel_invocations      *int
+	selectValues                         sql.SelectValues
 }
 
 // BazelInvocationEdges holds the relations/edges for other nodes in the graph.
@@ -103,6 +105,8 @@ type BazelInvocationEdges struct {
 	InstanceName *InstanceName `json:"instance_name,omitempty"`
 	// Build holds the value of the build edge.
 	Build *Build `json:"build,omitempty"`
+	// AuthenticatedUser holds the value of the authenticated_user edge.
+	AuthenticatedUser *AuthenticatedUser `json:"authenticated_user,omitempty"`
 	// EventMetadata holds the value of the event_metadata edge.
 	EventMetadata []*EventMetadata `json:"event_metadata,omitempty"`
 	// ConnectionMetadata holds the value of the connection_metadata edge.
@@ -125,9 +129,9 @@ type BazelInvocationEdges struct {
 	SourceControl *SourceControl `json:"source_control,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [12]bool
+	loadedTypes [13]bool
 	// totalCount holds the count of the edges above.
-	totalCount [8]map[string]int
+	totalCount [9]map[string]int
 
 	namedEventMetadata       map[string][]*EventMetadata
 	namedConnectionMetadata  map[string][]*ConnectionMetadata
@@ -161,10 +165,21 @@ func (e BazelInvocationEdges) BuildOrErr() (*Build, error) {
 	return nil, &NotLoadedError{edge: "build"}
 }
 
+// AuthenticatedUserOrErr returns the AuthenticatedUser value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BazelInvocationEdges) AuthenticatedUserOrErr() (*AuthenticatedUser, error) {
+	if e.AuthenticatedUser != nil {
+		return e.AuthenticatedUser, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: authenticateduser.Label}
+	}
+	return nil, &NotLoadedError{edge: "authenticated_user"}
+}
+
 // EventMetadataOrErr returns the EventMetadata value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) EventMetadataOrErr() ([]*EventMetadata, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[3] {
 		return e.EventMetadata, nil
 	}
 	return nil, &NotLoadedError{edge: "event_metadata"}
@@ -173,7 +188,7 @@ func (e BazelInvocationEdges) EventMetadataOrErr() ([]*EventMetadata, error) {
 // ConnectionMetadataOrErr returns the ConnectionMetadata value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) ConnectionMetadataOrErr() ([]*ConnectionMetadata, error) {
-	if e.loadedTypes[3] {
+	if e.loadedTypes[4] {
 		return e.ConnectionMetadata, nil
 	}
 	return nil, &NotLoadedError{edge: "connection_metadata"}
@@ -182,7 +197,7 @@ func (e BazelInvocationEdges) ConnectionMetadataOrErr() ([]*ConnectionMetadata, 
 // ProblemsOrErr returns the Problems value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) ProblemsOrErr() ([]*BazelInvocationProblem, error) {
-	if e.loadedTypes[4] {
+	if e.loadedTypes[5] {
 		return e.Problems, nil
 	}
 	return nil, &NotLoadedError{edge: "problems"}
@@ -193,7 +208,7 @@ func (e BazelInvocationEdges) ProblemsOrErr() ([]*BazelInvocationProblem, error)
 func (e BazelInvocationEdges) MetricsOrErr() (*Metrics, error) {
 	if e.Metrics != nil {
 		return e.Metrics, nil
-	} else if e.loadedTypes[5] {
+	} else if e.loadedTypes[6] {
 		return nil, &NotFoundError{label: metrics.Label}
 	}
 	return nil, &NotLoadedError{edge: "metrics"}
@@ -202,7 +217,7 @@ func (e BazelInvocationEdges) MetricsOrErr() (*Metrics, error) {
 // IncompleteBuildLogsOrErr returns the IncompleteBuildLogs value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) IncompleteBuildLogsOrErr() ([]*IncompleteBuildLog, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[7] {
 		return e.IncompleteBuildLogs, nil
 	}
 	return nil, &NotLoadedError{edge: "incomplete_build_logs"}
@@ -211,7 +226,7 @@ func (e BazelInvocationEdges) IncompleteBuildLogsOrErr() ([]*IncompleteBuildLog,
 // InvocationFilesOrErr returns the InvocationFiles value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) InvocationFilesOrErr() ([]*InvocationFiles, error) {
-	if e.loadedTypes[7] {
+	if e.loadedTypes[8] {
 		return e.InvocationFiles, nil
 	}
 	return nil, &NotLoadedError{edge: "invocation_files"}
@@ -220,7 +235,7 @@ func (e BazelInvocationEdges) InvocationFilesOrErr() ([]*InvocationFiles, error)
 // TestCollectionOrErr returns the TestCollection value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
-	if e.loadedTypes[8] {
+	if e.loadedTypes[9] {
 		return e.TestCollection, nil
 	}
 	return nil, &NotLoadedError{edge: "test_collection"}
@@ -229,7 +244,7 @@ func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
 // InvocationTargetsOrErr returns the InvocationTargets value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[10] {
 		return e.InvocationTargets, nil
 	}
 	return nil, &NotLoadedError{edge: "invocation_targets"}
@@ -238,7 +253,7 @@ func (e BazelInvocationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, err
 // TargetKindMappingsOrErr returns the TargetKindMappings value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, error) {
-	if e.loadedTypes[10] {
+	if e.loadedTypes[11] {
 		return e.TargetKindMappings, nil
 	}
 	return nil, &NotLoadedError{edge: "target_kind_mappings"}
@@ -249,7 +264,7 @@ func (e BazelInvocationEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, e
 func (e BazelInvocationEdges) SourceControlOrErr() (*SourceControl, error) {
 	if e.SourceControl != nil {
 		return e.SourceControl, nil
-	} else if e.loadedTypes[11] {
+	} else if e.loadedTypes[12] {
 		return nil, &NotFoundError{label: sourcecontrol.Label}
 	}
 	return nil, &NotLoadedError{edge: "source_control"}
@@ -272,9 +287,11 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullTime)
 		case bazelinvocation.FieldInvocationID:
 			values[i] = new(uuid.UUID)
-		case bazelinvocation.ForeignKeys[0]: // build_invocations
+		case bazelinvocation.ForeignKeys[0]: // authenticated_user_bazel_invocations
 			values[i] = new(sql.NullInt64)
-		case bazelinvocation.ForeignKeys[1]: // instance_name_bazel_invocations
+		case bazelinvocation.ForeignKeys[1]: // build_invocations
+			values[i] = new(sql.NullInt64)
+		case bazelinvocation.ForeignKeys[2]: // instance_name_bazel_invocations
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -506,12 +523,19 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			}
 		case bazelinvocation.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field authenticated_user_bazel_invocations", value)
+			} else if value.Valid {
+				bi.authenticated_user_bazel_invocations = new(int)
+				*bi.authenticated_user_bazel_invocations = int(value.Int64)
+			}
+		case bazelinvocation.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field build_invocations", value)
 			} else if value.Valid {
 				bi.build_invocations = new(int)
 				*bi.build_invocations = int(value.Int64)
 			}
-		case bazelinvocation.ForeignKeys[1]:
+		case bazelinvocation.ForeignKeys[2]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field instance_name_bazel_invocations", value)
 			} else if value.Valid {
@@ -539,6 +563,11 @@ func (bi *BazelInvocation) QueryInstanceName() *InstanceNameQuery {
 // QueryBuild queries the "build" edge of the BazelInvocation entity.
 func (bi *BazelInvocation) QueryBuild() *BuildQuery {
 	return NewBazelInvocationClient(bi.config).QueryBuild(bi)
+}
+
+// QueryAuthenticatedUser queries the "authenticated_user" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryAuthenticatedUser() *AuthenticatedUserQuery {
+	return NewBazelInvocationClient(bi.config).QueryAuthenticatedUser(bi)
 }
 
 // QueryEventMetadata queries the "event_metadata" edge of the BazelInvocation entity.

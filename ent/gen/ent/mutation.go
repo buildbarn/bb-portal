@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
@@ -70,6 +71,7 @@ const (
 	TypeActionData             = "ActionData"
 	TypeActionSummary          = "ActionSummary"
 	TypeArtifactMetrics        = "ArtifactMetrics"
+	TypeAuthenticatedUser      = "AuthenticatedUser"
 	TypeBazelInvocation        = "BazelInvocation"
 	TypeBazelInvocationProblem = "BazelInvocationProblem"
 	TypeBlob                   = "Blob"
@@ -4335,6 +4337,628 @@ func (m *ArtifactMetricsMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown ArtifactMetrics edge %s", name)
 }
 
+// AuthenticatedUserMutation represents an operation that mutates the AuthenticatedUser nodes in the graph.
+type AuthenticatedUserMutation struct {
+	config
+	op                       Op
+	typ                      string
+	id                       *int
+	user_uuid                *uuid.UUID
+	external_id              *string
+	display_name             *string
+	user_info                *map[string]interface{}
+	clearedFields            map[string]struct{}
+	bazel_invocations        map[int]struct{}
+	removedbazel_invocations map[int]struct{}
+	clearedbazel_invocations bool
+	done                     bool
+	oldValue                 func(context.Context) (*AuthenticatedUser, error)
+	predicates               []predicate.AuthenticatedUser
+}
+
+var _ ent.Mutation = (*AuthenticatedUserMutation)(nil)
+
+// authenticateduserOption allows management of the mutation configuration using functional options.
+type authenticateduserOption func(*AuthenticatedUserMutation)
+
+// newAuthenticatedUserMutation creates new mutation for the AuthenticatedUser entity.
+func newAuthenticatedUserMutation(c config, op Op, opts ...authenticateduserOption) *AuthenticatedUserMutation {
+	m := &AuthenticatedUserMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeAuthenticatedUser,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withAuthenticatedUserID sets the ID field of the mutation.
+func withAuthenticatedUserID(id int) authenticateduserOption {
+	return func(m *AuthenticatedUserMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *AuthenticatedUser
+		)
+		m.oldValue = func(ctx context.Context) (*AuthenticatedUser, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().AuthenticatedUser.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withAuthenticatedUser sets the old AuthenticatedUser of the mutation.
+func withAuthenticatedUser(node *AuthenticatedUser) authenticateduserOption {
+	return func(m *AuthenticatedUserMutation) {
+		m.oldValue = func(context.Context) (*AuthenticatedUser, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m AuthenticatedUserMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m AuthenticatedUserMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *AuthenticatedUserMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *AuthenticatedUserMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().AuthenticatedUser.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetUserUUID sets the "user_uuid" field.
+func (m *AuthenticatedUserMutation) SetUserUUID(u uuid.UUID) {
+	m.user_uuid = &u
+}
+
+// UserUUID returns the value of the "user_uuid" field in the mutation.
+func (m *AuthenticatedUserMutation) UserUUID() (r uuid.UUID, exists bool) {
+	v := m.user_uuid
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserUUID returns the old "user_uuid" field's value of the AuthenticatedUser entity.
+// If the AuthenticatedUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AuthenticatedUserMutation) OldUserUUID(ctx context.Context) (v uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserUUID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserUUID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserUUID: %w", err)
+	}
+	return oldValue.UserUUID, nil
+}
+
+// ResetUserUUID resets all changes to the "user_uuid" field.
+func (m *AuthenticatedUserMutation) ResetUserUUID() {
+	m.user_uuid = nil
+}
+
+// SetExternalID sets the "external_id" field.
+func (m *AuthenticatedUserMutation) SetExternalID(s string) {
+	m.external_id = &s
+}
+
+// ExternalID returns the value of the "external_id" field in the mutation.
+func (m *AuthenticatedUserMutation) ExternalID() (r string, exists bool) {
+	v := m.external_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldExternalID returns the old "external_id" field's value of the AuthenticatedUser entity.
+// If the AuthenticatedUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AuthenticatedUserMutation) OldExternalID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldExternalID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldExternalID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldExternalID: %w", err)
+	}
+	return oldValue.ExternalID, nil
+}
+
+// ResetExternalID resets all changes to the "external_id" field.
+func (m *AuthenticatedUserMutation) ResetExternalID() {
+	m.external_id = nil
+}
+
+// SetDisplayName sets the "display_name" field.
+func (m *AuthenticatedUserMutation) SetDisplayName(s string) {
+	m.display_name = &s
+}
+
+// DisplayName returns the value of the "display_name" field in the mutation.
+func (m *AuthenticatedUserMutation) DisplayName() (r string, exists bool) {
+	v := m.display_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDisplayName returns the old "display_name" field's value of the AuthenticatedUser entity.
+// If the AuthenticatedUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AuthenticatedUserMutation) OldDisplayName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDisplayName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDisplayName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDisplayName: %w", err)
+	}
+	return oldValue.DisplayName, nil
+}
+
+// ClearDisplayName clears the value of the "display_name" field.
+func (m *AuthenticatedUserMutation) ClearDisplayName() {
+	m.display_name = nil
+	m.clearedFields[authenticateduser.FieldDisplayName] = struct{}{}
+}
+
+// DisplayNameCleared returns if the "display_name" field was cleared in this mutation.
+func (m *AuthenticatedUserMutation) DisplayNameCleared() bool {
+	_, ok := m.clearedFields[authenticateduser.FieldDisplayName]
+	return ok
+}
+
+// ResetDisplayName resets all changes to the "display_name" field.
+func (m *AuthenticatedUserMutation) ResetDisplayName() {
+	m.display_name = nil
+	delete(m.clearedFields, authenticateduser.FieldDisplayName)
+}
+
+// SetUserInfo sets the "user_info" field.
+func (m *AuthenticatedUserMutation) SetUserInfo(value map[string]interface{}) {
+	m.user_info = &value
+}
+
+// UserInfo returns the value of the "user_info" field in the mutation.
+func (m *AuthenticatedUserMutation) UserInfo() (r map[string]interface{}, exists bool) {
+	v := m.user_info
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserInfo returns the old "user_info" field's value of the AuthenticatedUser entity.
+// If the AuthenticatedUser object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AuthenticatedUserMutation) OldUserInfo(ctx context.Context) (v map[string]interface{}, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserInfo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserInfo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserInfo: %w", err)
+	}
+	return oldValue.UserInfo, nil
+}
+
+// ClearUserInfo clears the value of the "user_info" field.
+func (m *AuthenticatedUserMutation) ClearUserInfo() {
+	m.user_info = nil
+	m.clearedFields[authenticateduser.FieldUserInfo] = struct{}{}
+}
+
+// UserInfoCleared returns if the "user_info" field was cleared in this mutation.
+func (m *AuthenticatedUserMutation) UserInfoCleared() bool {
+	_, ok := m.clearedFields[authenticateduser.FieldUserInfo]
+	return ok
+}
+
+// ResetUserInfo resets all changes to the "user_info" field.
+func (m *AuthenticatedUserMutation) ResetUserInfo() {
+	m.user_info = nil
+	delete(m.clearedFields, authenticateduser.FieldUserInfo)
+}
+
+// AddBazelInvocationIDs adds the "bazel_invocations" edge to the BazelInvocation entity by ids.
+func (m *AuthenticatedUserMutation) AddBazelInvocationIDs(ids ...int) {
+	if m.bazel_invocations == nil {
+		m.bazel_invocations = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.bazel_invocations[ids[i]] = struct{}{}
+	}
+}
+
+// ClearBazelInvocations clears the "bazel_invocations" edge to the BazelInvocation entity.
+func (m *AuthenticatedUserMutation) ClearBazelInvocations() {
+	m.clearedbazel_invocations = true
+}
+
+// BazelInvocationsCleared reports if the "bazel_invocations" edge to the BazelInvocation entity was cleared.
+func (m *AuthenticatedUserMutation) BazelInvocationsCleared() bool {
+	return m.clearedbazel_invocations
+}
+
+// RemoveBazelInvocationIDs removes the "bazel_invocations" edge to the BazelInvocation entity by IDs.
+func (m *AuthenticatedUserMutation) RemoveBazelInvocationIDs(ids ...int) {
+	if m.removedbazel_invocations == nil {
+		m.removedbazel_invocations = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.bazel_invocations, ids[i])
+		m.removedbazel_invocations[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedBazelInvocations returns the removed IDs of the "bazel_invocations" edge to the BazelInvocation entity.
+func (m *AuthenticatedUserMutation) RemovedBazelInvocationsIDs() (ids []int) {
+	for id := range m.removedbazel_invocations {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// BazelInvocationsIDs returns the "bazel_invocations" edge IDs in the mutation.
+func (m *AuthenticatedUserMutation) BazelInvocationsIDs() (ids []int) {
+	for id := range m.bazel_invocations {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetBazelInvocations resets all changes to the "bazel_invocations" edge.
+func (m *AuthenticatedUserMutation) ResetBazelInvocations() {
+	m.bazel_invocations = nil
+	m.clearedbazel_invocations = false
+	m.removedbazel_invocations = nil
+}
+
+// Where appends a list predicates to the AuthenticatedUserMutation builder.
+func (m *AuthenticatedUserMutation) Where(ps ...predicate.AuthenticatedUser) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the AuthenticatedUserMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *AuthenticatedUserMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.AuthenticatedUser, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *AuthenticatedUserMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *AuthenticatedUserMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (AuthenticatedUser).
+func (m *AuthenticatedUserMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *AuthenticatedUserMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.user_uuid != nil {
+		fields = append(fields, authenticateduser.FieldUserUUID)
+	}
+	if m.external_id != nil {
+		fields = append(fields, authenticateduser.FieldExternalID)
+	}
+	if m.display_name != nil {
+		fields = append(fields, authenticateduser.FieldDisplayName)
+	}
+	if m.user_info != nil {
+		fields = append(fields, authenticateduser.FieldUserInfo)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *AuthenticatedUserMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case authenticateduser.FieldUserUUID:
+		return m.UserUUID()
+	case authenticateduser.FieldExternalID:
+		return m.ExternalID()
+	case authenticateduser.FieldDisplayName:
+		return m.DisplayName()
+	case authenticateduser.FieldUserInfo:
+		return m.UserInfo()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *AuthenticatedUserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case authenticateduser.FieldUserUUID:
+		return m.OldUserUUID(ctx)
+	case authenticateduser.FieldExternalID:
+		return m.OldExternalID(ctx)
+	case authenticateduser.FieldDisplayName:
+		return m.OldDisplayName(ctx)
+	case authenticateduser.FieldUserInfo:
+		return m.OldUserInfo(ctx)
+	}
+	return nil, fmt.Errorf("unknown AuthenticatedUser field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AuthenticatedUserMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case authenticateduser.FieldUserUUID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserUUID(v)
+		return nil
+	case authenticateduser.FieldExternalID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetExternalID(v)
+		return nil
+	case authenticateduser.FieldDisplayName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDisplayName(v)
+		return nil
+	case authenticateduser.FieldUserInfo:
+		v, ok := value.(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserInfo(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AuthenticatedUser field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *AuthenticatedUserMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *AuthenticatedUserMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AuthenticatedUserMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown AuthenticatedUser numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *AuthenticatedUserMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(authenticateduser.FieldDisplayName) {
+		fields = append(fields, authenticateduser.FieldDisplayName)
+	}
+	if m.FieldCleared(authenticateduser.FieldUserInfo) {
+		fields = append(fields, authenticateduser.FieldUserInfo)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *AuthenticatedUserMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *AuthenticatedUserMutation) ClearField(name string) error {
+	switch name {
+	case authenticateduser.FieldDisplayName:
+		m.ClearDisplayName()
+		return nil
+	case authenticateduser.FieldUserInfo:
+		m.ClearUserInfo()
+		return nil
+	}
+	return fmt.Errorf("unknown AuthenticatedUser nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *AuthenticatedUserMutation) ResetField(name string) error {
+	switch name {
+	case authenticateduser.FieldUserUUID:
+		m.ResetUserUUID()
+		return nil
+	case authenticateduser.FieldExternalID:
+		m.ResetExternalID()
+		return nil
+	case authenticateduser.FieldDisplayName:
+		m.ResetDisplayName()
+		return nil
+	case authenticateduser.FieldUserInfo:
+		m.ResetUserInfo()
+		return nil
+	}
+	return fmt.Errorf("unknown AuthenticatedUser field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *AuthenticatedUserMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.bazel_invocations != nil {
+		edges = append(edges, authenticateduser.EdgeBazelInvocations)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *AuthenticatedUserMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case authenticateduser.EdgeBazelInvocations:
+		ids := make([]ent.Value, 0, len(m.bazel_invocations))
+		for id := range m.bazel_invocations {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *AuthenticatedUserMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removedbazel_invocations != nil {
+		edges = append(edges, authenticateduser.EdgeBazelInvocations)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *AuthenticatedUserMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case authenticateduser.EdgeBazelInvocations:
+		ids := make([]ent.Value, 0, len(m.removedbazel_invocations))
+		for id := range m.removedbazel_invocations {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *AuthenticatedUserMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedbazel_invocations {
+		edges = append(edges, authenticateduser.EdgeBazelInvocations)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *AuthenticatedUserMutation) EdgeCleared(name string) bool {
+	switch name {
+	case authenticateduser.EdgeBazelInvocations:
+		return m.clearedbazel_invocations
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *AuthenticatedUserMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown AuthenticatedUser unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *AuthenticatedUserMutation) ResetEdge(name string) error {
+	switch name {
+	case authenticateduser.EdgeBazelInvocations:
+		m.ResetBazelInvocations()
+		return nil
+	}
+	return fmt.Errorf("unknown AuthenticatedUser edge %s", name)
+}
+
 // BazelInvocationMutation represents an operation that mutates the BazelInvocation nodes in the graph.
 type BazelInvocationMutation struct {
 	config
@@ -4387,6 +5011,8 @@ type BazelInvocationMutation struct {
 	clearedinstance_name                    bool
 	build                                   *int
 	clearedbuild                            bool
+	authenticated_user                      *int
+	clearedauthenticated_user               bool
 	event_metadata                          map[int]struct{}
 	removedevent_metadata                   map[int]struct{}
 	clearedevent_metadata                   bool
@@ -6257,6 +6883,45 @@ func (m *BazelInvocationMutation) ResetBuild() {
 	m.clearedbuild = false
 }
 
+// SetAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by id.
+func (m *BazelInvocationMutation) SetAuthenticatedUserID(id int) {
+	m.authenticated_user = &id
+}
+
+// ClearAuthenticatedUser clears the "authenticated_user" edge to the AuthenticatedUser entity.
+func (m *BazelInvocationMutation) ClearAuthenticatedUser() {
+	m.clearedauthenticated_user = true
+}
+
+// AuthenticatedUserCleared reports if the "authenticated_user" edge to the AuthenticatedUser entity was cleared.
+func (m *BazelInvocationMutation) AuthenticatedUserCleared() bool {
+	return m.clearedauthenticated_user
+}
+
+// AuthenticatedUserID returns the "authenticated_user" edge ID in the mutation.
+func (m *BazelInvocationMutation) AuthenticatedUserID() (id int, exists bool) {
+	if m.authenticated_user != nil {
+		return *m.authenticated_user, true
+	}
+	return
+}
+
+// AuthenticatedUserIDs returns the "authenticated_user" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AuthenticatedUserID instead. It exists only for internal usage by the builders.
+func (m *BazelInvocationMutation) AuthenticatedUserIDs() (ids []int) {
+	if id := m.authenticated_user; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetAuthenticatedUser resets all changes to the "authenticated_user" edge.
+func (m *BazelInvocationMutation) ResetAuthenticatedUser() {
+	m.authenticated_user = nil
+	m.clearedauthenticated_user = false
+}
+
 // AddEventMetadatumIDs adds the "event_metadata" edge to the EventMetadata entity by ids.
 func (m *BazelInvocationMutation) AddEventMetadatumIDs(ids ...int) {
 	if m.event_metadata == nil {
@@ -7648,12 +8313,15 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.instance_name != nil {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
 	if m.build != nil {
 		edges = append(edges, bazelinvocation.EdgeBuild)
+	}
+	if m.authenticated_user != nil {
+		edges = append(edges, bazelinvocation.EdgeAuthenticatedUser)
 	}
 	if m.event_metadata != nil {
 		edges = append(edges, bazelinvocation.EdgeEventMetadata)
@@ -7698,6 +8366,10 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 		}
 	case bazelinvocation.EdgeBuild:
 		if id := m.build; id != nil {
+			return []ent.Value{*id}
+		}
+	case bazelinvocation.EdgeAuthenticatedUser:
+		if id := m.authenticated_user; id != nil {
 			return []ent.Value{*id}
 		}
 	case bazelinvocation.EdgeEventMetadata:
@@ -7762,7 +8434,7 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.removedevent_metadata != nil {
 		edges = append(edges, bazelinvocation.EdgeEventMetadata)
 	}
@@ -7848,12 +8520,15 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.clearedinstance_name {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
 	if m.clearedbuild {
 		edges = append(edges, bazelinvocation.EdgeBuild)
+	}
+	if m.clearedauthenticated_user {
+		edges = append(edges, bazelinvocation.EdgeAuthenticatedUser)
 	}
 	if m.clearedevent_metadata {
 		edges = append(edges, bazelinvocation.EdgeEventMetadata)
@@ -7896,6 +8571,8 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedinstance_name
 	case bazelinvocation.EdgeBuild:
 		return m.clearedbuild
+	case bazelinvocation.EdgeAuthenticatedUser:
+		return m.clearedauthenticated_user
 	case bazelinvocation.EdgeEventMetadata:
 		return m.clearedevent_metadata
 	case bazelinvocation.EdgeConnectionMetadata:
@@ -7930,6 +8607,9 @@ func (m *BazelInvocationMutation) ClearEdge(name string) error {
 	case bazelinvocation.EdgeBuild:
 		m.ClearBuild()
 		return nil
+	case bazelinvocation.EdgeAuthenticatedUser:
+		m.ClearAuthenticatedUser()
+		return nil
 	case bazelinvocation.EdgeMetrics:
 		m.ClearMetrics()
 		return nil
@@ -7949,6 +8629,9 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeBuild:
 		m.ResetBuild()
+		return nil
+	case bazelinvocation.EdgeAuthenticatedUser:
+		m.ResetAuthenticatedUser()
 		return nil
 	case bazelinvocation.EdgeEventMetadata:
 		m.ResetEventMetadata()

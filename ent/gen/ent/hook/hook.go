@@ -57,6 +57,18 @@ func (f ArtifactMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Va
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ArtifactMetricsMutation", m)
 }
 
+// The AuthenticatedUserFunc type is an adapter to allow the use of ordinary
+// function as AuthenticatedUser mutator.
+type AuthenticatedUserFunc func(context.Context, *ent.AuthenticatedUserMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AuthenticatedUserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AuthenticatedUserMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AuthenticatedUserMutation", m)
+}
+
 // The BazelInvocationFunc type is an adapter to allow the use of ordinary
 // function as BazelInvocation mutator.
 type BazelInvocationFunc func(context.Context, *ent.BazelInvocationMutation) (ent.Value, error)

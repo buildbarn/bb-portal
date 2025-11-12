@@ -18,6 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
@@ -1128,6 +1129,255 @@ func (am *ArtifactMetrics) ToEdge(order *ArtifactMetricsOrder) *ArtifactMetricsE
 	return &ArtifactMetricsEdge{
 		Node:   am,
 		Cursor: order.Field.toCursor(am),
+	}
+}
+
+// AuthenticatedUserEdge is the edge representation of AuthenticatedUser.
+type AuthenticatedUserEdge struct {
+	Node   *AuthenticatedUser `json:"node"`
+	Cursor Cursor             `json:"cursor"`
+}
+
+// AuthenticatedUserConnection is the connection containing edges to AuthenticatedUser.
+type AuthenticatedUserConnection struct {
+	Edges      []*AuthenticatedUserEdge `json:"edges"`
+	PageInfo   PageInfo                 `json:"pageInfo"`
+	TotalCount int                      `json:"totalCount"`
+}
+
+func (c *AuthenticatedUserConnection) build(nodes []*AuthenticatedUser, pager *authenticateduserPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *AuthenticatedUser
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *AuthenticatedUser {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *AuthenticatedUser {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*AuthenticatedUserEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &AuthenticatedUserEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// AuthenticatedUserPaginateOption enables pagination customization.
+type AuthenticatedUserPaginateOption func(*authenticateduserPager) error
+
+// WithAuthenticatedUserOrder configures pagination ordering.
+func WithAuthenticatedUserOrder(order *AuthenticatedUserOrder) AuthenticatedUserPaginateOption {
+	if order == nil {
+		order = DefaultAuthenticatedUserOrder
+	}
+	o := *order
+	return func(pager *authenticateduserPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultAuthenticatedUserOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithAuthenticatedUserFilter configures pagination filter.
+func WithAuthenticatedUserFilter(filter func(*AuthenticatedUserQuery) (*AuthenticatedUserQuery, error)) AuthenticatedUserPaginateOption {
+	return func(pager *authenticateduserPager) error {
+		if filter == nil {
+			return errors.New("AuthenticatedUserQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type authenticateduserPager struct {
+	reverse bool
+	order   *AuthenticatedUserOrder
+	filter  func(*AuthenticatedUserQuery) (*AuthenticatedUserQuery, error)
+}
+
+func newAuthenticatedUserPager(opts []AuthenticatedUserPaginateOption, reverse bool) (*authenticateduserPager, error) {
+	pager := &authenticateduserPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultAuthenticatedUserOrder
+	}
+	return pager, nil
+}
+
+func (p *authenticateduserPager) applyFilter(query *AuthenticatedUserQuery) (*AuthenticatedUserQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *authenticateduserPager) toCursor(au *AuthenticatedUser) Cursor {
+	return p.order.Field.toCursor(au)
+}
+
+func (p *authenticateduserPager) applyCursors(query *AuthenticatedUserQuery, after, before *Cursor) (*AuthenticatedUserQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultAuthenticatedUserOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *authenticateduserPager) applyOrder(query *AuthenticatedUserQuery) *AuthenticatedUserQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultAuthenticatedUserOrder.Field {
+		query = query.Order(DefaultAuthenticatedUserOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *authenticateduserPager) orderExpr(query *AuthenticatedUserQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultAuthenticatedUserOrder.Field {
+			b.Comma().Ident(DefaultAuthenticatedUserOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to AuthenticatedUser.
+func (au *AuthenticatedUserQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...AuthenticatedUserPaginateOption,
+) (*AuthenticatedUserConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newAuthenticatedUserPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if au, err = pager.applyFilter(au); err != nil {
+		return nil, err
+	}
+	conn := &AuthenticatedUserConnection{Edges: []*AuthenticatedUserEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := au.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if au, err = pager.applyCursors(au, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		au.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := au.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	au = pager.applyOrder(au)
+	nodes, err := au.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+// AuthenticatedUserOrderField defines the ordering field of AuthenticatedUser.
+type AuthenticatedUserOrderField struct {
+	// Value extracts the ordering value from the given AuthenticatedUser.
+	Value    func(*AuthenticatedUser) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) authenticateduser.OrderOption
+	toCursor func(*AuthenticatedUser) Cursor
+}
+
+// AuthenticatedUserOrder defines the ordering of AuthenticatedUser.
+type AuthenticatedUserOrder struct {
+	Direction OrderDirection               `json:"direction"`
+	Field     *AuthenticatedUserOrderField `json:"field"`
+}
+
+// DefaultAuthenticatedUserOrder is the default ordering of AuthenticatedUser.
+var DefaultAuthenticatedUserOrder = &AuthenticatedUserOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &AuthenticatedUserOrderField{
+		Value: func(au *AuthenticatedUser) (ent.Value, error) {
+			return au.ID, nil
+		},
+		column: authenticateduser.FieldID,
+		toTerm: authenticateduser.ByID,
+		toCursor: func(au *AuthenticatedUser) Cursor {
+			return Cursor{ID: au.ID}
+		},
+	},
+}
+
+// ToEdge converts AuthenticatedUser into AuthenticatedUserEdge.
+func (au *AuthenticatedUser) ToEdge(order *AuthenticatedUserOrder) *AuthenticatedUserEdge {
+	if order == nil {
+		order = DefaultAuthenticatedUserOrder
+	}
+	return &AuthenticatedUserEdge{
+		Node:   au,
+		Cursor: order.Field.toCursor(au),
 	}
 }
 

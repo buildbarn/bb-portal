@@ -1,5 +1,6 @@
 {
   "bazelInvocation": {
+    "authenticatedUser": null,
     "bazelCommand": {
       "cmdLine": [
         "--enable_runfiles=1",

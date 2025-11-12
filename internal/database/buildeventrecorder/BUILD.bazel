@@ -26,6 +26,7 @@ go_library(
     visibility = ["//:__subpackages__"],
     deps = [
         "//ent/gen/ent",
+        "//ent/gen/ent/authenticateduser",
         "//ent/gen/ent/bazelinvocation",
         "//ent/gen/ent/blob",
         "//ent/gen/ent/build",
@@ -41,6 +42,7 @@ go_library(
         "//ent/gen/ent/testsummary",
         "//internal/api/common",
         "//internal/database/common",
+        "//pkg/authmetadataextraction",
         "//pkg/events",
         "//pkg/processing",
         "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",

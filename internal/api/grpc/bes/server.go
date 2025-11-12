@@ -16,6 +16,7 @@ import (
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
+	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
@@ -39,10 +40,12 @@ type BuildEventServer struct {
 	blobArchiver           processing.BlobMultiArchiver
 	saveTargetDataLevel    *bb_portal.BuildEventStreamService_SaveTargetDataLevel
 	tracerProvider         trace.TracerProvider
+	extractors             *authmetadataextraction.AuthMetadataExtractors
+	uuidGenerator          util.UUIDGenerator
 }
 
 // NewBuildEventServer creates a new BuildEventServer
-func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider) (*BuildEventServer, error) {
+func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider, uuidGenerator util.UUIDGenerator) (*BuildEventServer, error) {
 	if configuration.InstanceNameAuthorizer == nil {
 		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
@@ -61,12 +64,19 @@ func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiv
 		return nil, fmt.Errorf("No saveTargetDataLevel configured")
 	}
 
+	extractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to create AutheMetadataExtractors")
+	}
+
 	return &BuildEventServer{
 		instanceNameAuthorizer: instanceNameAuthorizer,
 		db:                     db,
 		blobArchiver:           blobArchiver,
 		saveTargetDataLevel:    saveTargetDataLevel,
 		tracerProvider:         tracerProvider,
+		extractors:             extractors,
+		uuidGenerator:          uuidGenerator,
 	}, nil
 }
 
@@ -106,6 +116,8 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 				req.GetOrderedBuildEvent().GetStreamId().GetInvocationId(),
 				req.GetOrderedBuildEvent().GetStreamId().GetBuildId(),
 				true, // isRealTime
+				s.extractors,
+				s.uuidGenerator,
 			)
 			if err != nil {
 				return util.StatusWrap(err, "Failed to create BuildEventRecorder")

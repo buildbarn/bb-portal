@@ -16,6 +16,7 @@ import (
 
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/interceptors#configuration)
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
+	"github.com/google/uuid"
 	"go.opentelemetry.io/otel"
 	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
 	"go.opentelemetry.io/otel/trace"
@@ -232,7 +233,7 @@ func newBuildEventStreamService(
 
 	// Handle BEP file uploads over HTTP.
 	if besConfiguration.EnableBepFileUpload {
-		bepUploader, err := bepuploader.NewBepUploader(dbClient, blobArchiver, configuration, dependenciesGroup, grpcClientFactory, tracerProvider)
+		bepUploader, err := bepuploader.NewBepUploader(dbClient, blobArchiver, configuration, dependenciesGroup, grpcClientFactory, tracerProvider, uuid.NewRandom)
 		if err != nil {
 			return util.StatusWrap(err, "Failed to create BEP file upload handler")
 		}
@@ -240,7 +241,7 @@ func newBuildEventStreamService(
 	}
 
 	// Handle the build event stream gRPC strem.
-	buildEventServer, err := bes.NewBuildEventServer(dbClient, blobArchiver, configuration, dependenciesGroup, grpcClientFactory, tracerProvider)
+	buildEventServer, err := bes.NewBuildEventServer(dbClient, blobArchiver, configuration, dependenciesGroup, grpcClientFactory, tracerProvider, uuid.NewRandom)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create BuildEventServer")
 	}

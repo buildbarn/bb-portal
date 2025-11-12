@@ -39,6 +39,7 @@ import styles from "../AppBar/index.module.css";
 import BuildLogsDisplay from "../BuildLogsDisplay";
 import ProfileDropdown from "../ProfileDropdown";
 import { InvocationTargetsTab } from "../InvocationTargets/InvocationTargetsTab";
+import UserStatusIndicator from "../UserStatusIndicator";
 
 const DEFAULT_TAB_KEY = "BazelInvocationTabs-Overview";
 
@@ -50,7 +51,6 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     bazelCommand,
     bazelVersion,
     sourceControl,
-    user,
     metrics,
     testCollection,
     numFetches,
@@ -98,7 +98,6 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
               bazelCommand.explicitCmdLine,
             ].join(" ").trim()}
             cpu={cpu ?? ""}
-            user={user?.LDAP ?? ""}
             invocationId={invocationID}
             instanceName={instanceName.name}
             configuration={configurationMnemonic ?? ""}
@@ -242,6 +241,7 @@ const getTitleBits = (invocationOverview: BazelInvocationInfoFragment): React.Re
   const {
     invocationID,
     state,
+    authenticatedUser,
     user,
   } = invocationOverview;
 
@@ -250,7 +250,7 @@ const getTitleBits = (invocationOverview: BazelInvocationInfoFragment): React.Re
     <span key="label">
       User:{" "}
       <Typography.Text type="secondary" className={styles.normalWeight}>
-        {user?.LDAP}
+        <UserStatusIndicator authenticatedUser={authenticatedUser} user={user} />
       </Typography.Text>
     </span>
   );
