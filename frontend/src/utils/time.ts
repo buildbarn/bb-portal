@@ -20,21 +20,21 @@ export const readableDuration = (
 
   if (duration.asDays() >= 1 || smallestUnit === "d") {
     if (smallestUnit === "d") {
-      return `${duration.days()}d`;
+      return `${Math.floor(duration.asDays())}d`;
     }
     return `${duration.days()}d ${duration.hours()}h`;
   }
 
   if (duration.asHours() >= 1 || smallestUnit === "h") {
     if (smallestUnit === "h") {
-      return `${duration.hours()}h`;
+      return `${Math.floor(duration.asHours())}h`;
     }
     return `${duration.hours()}h ${duration.minutes()}m`;
   }
 
   if (duration.asMinutes() >= 2 || smallestUnit === "m") {
     if (smallestUnit === "m") {
-      return `${duration.minutes()}m`;
+      return `${Math.floor(duration.asMinutes())}m`;
     }
     return `${duration.minutes()}m ${duration.seconds()}s`;
   }
@@ -48,7 +48,7 @@ export const readableDuration = (
 
   if (duration.asMilliseconds() >= 1 || smallestUnit === "ms") {
     if (smallestUnit === "ms") {
-      return `${duration.milliseconds()}ms`;
+      return `${Math.floor(duration.asMilliseconds())}ms`;
     }
     return `${duration.asMilliseconds().toPrecision(precision)}ms`;
   }
