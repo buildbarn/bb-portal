@@ -56,7 +56,22 @@ const BazelInvocationsTable: React.FC<Props> = ({ height }) => {
         wheres.push({ hasBuildWith: [{ buildUUID: filters['build'][0].toString() }] });
       }
       if (filters["user"]?.length){
-        wheres.push({ userLdapContains: filters['user'][0].toString() });
+        const userFilterValue = filters["user"][0].toString()
+        wheres.push({
+            or: [
+              {
+                hasAuthenticatedUserWith: [
+                  { displayNameContains: userFilterValue },
+                ],
+              },
+              {
+                and: [
+                  { userLdapContains: userFilterValue },
+                  { hasAuthenticatedUser: false },
+                ],
+              },
+            ],
+          });
       }
       wheres.push({startedAtNotNil: true})
 

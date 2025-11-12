@@ -22,6 +22,8 @@ type Tx struct {
 	ActionSummary *ActionSummaryClient
 	// ArtifactMetrics is the client for interacting with the ArtifactMetrics builders.
 	ArtifactMetrics *ArtifactMetricsClient
+	// AuthenticatedUser is the client for interacting with the AuthenticatedUser builders.
+	AuthenticatedUser *AuthenticatedUserClient
 	// BazelInvocation is the client for interacting with the BazelInvocation builders.
 	BazelInvocation *BazelInvocationClient
 	// BazelInvocationProblem is the client for interacting with the BazelInvocationProblem builders.
@@ -231,6 +233,7 @@ func (tx *Tx) init() {
 	tx.ActionData = NewActionDataClient(tx.config)
 	tx.ActionSummary = NewActionSummaryClient(tx.config)
 	tx.ArtifactMetrics = NewArtifactMetricsClient(tx.config)
+	tx.AuthenticatedUser = NewAuthenticatedUserClient(tx.config)
 	tx.BazelInvocation = NewBazelInvocationClient(tx.config)
 	tx.BazelInvocationProblem = NewBazelInvocationProblemClient(tx.config)
 	tx.Blob = NewBlobClient(tx.config)

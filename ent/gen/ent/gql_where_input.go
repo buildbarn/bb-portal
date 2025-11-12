@@ -11,6 +11,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
@@ -1749,6 +1750,302 @@ func (i *ArtifactMetricsWhereInput) P() (predicate.ArtifactMetrics, error) {
 	}
 }
 
+// AuthenticatedUserWhereInput represents a where input for filtering AuthenticatedUser queries.
+type AuthenticatedUserWhereInput struct {
+	Predicates []predicate.AuthenticatedUser  `json:"-"`
+	Not        *AuthenticatedUserWhereInput   `json:"not,omitempty"`
+	Or         []*AuthenticatedUserWhereInput `json:"or,omitempty"`
+	And        []*AuthenticatedUserWhereInput `json:"and,omitempty"`
+
+	// "id" field predicates.
+	ID      *int  `json:"id,omitempty"`
+	IDNEQ   *int  `json:"idNEQ,omitempty"`
+	IDIn    []int `json:"idIn,omitempty"`
+	IDNotIn []int `json:"idNotIn,omitempty"`
+	IDGT    *int  `json:"idGT,omitempty"`
+	IDGTE   *int  `json:"idGTE,omitempty"`
+	IDLT    *int  `json:"idLT,omitempty"`
+	IDLTE   *int  `json:"idLTE,omitempty"`
+
+	// "user_uuid" field predicates.
+	UserUUID      *uuid.UUID  `json:"userUUID,omitempty"`
+	UserUUIDNEQ   *uuid.UUID  `json:"userUUIDNEQ,omitempty"`
+	UserUUIDIn    []uuid.UUID `json:"userUUIDIn,omitempty"`
+	UserUUIDNotIn []uuid.UUID `json:"userUUIDNotIn,omitempty"`
+	UserUUIDGT    *uuid.UUID  `json:"userUUIDGT,omitempty"`
+	UserUUIDGTE   *uuid.UUID  `json:"userUUIDGTE,omitempty"`
+	UserUUIDLT    *uuid.UUID  `json:"userUUIDLT,omitempty"`
+	UserUUIDLTE   *uuid.UUID  `json:"userUUIDLTE,omitempty"`
+
+	// "external_id" field predicates.
+	ExternalID             *string  `json:"externalID,omitempty"`
+	ExternalIDNEQ          *string  `json:"externalIDNEQ,omitempty"`
+	ExternalIDIn           []string `json:"externalIDIn,omitempty"`
+	ExternalIDNotIn        []string `json:"externalIDNotIn,omitempty"`
+	ExternalIDGT           *string  `json:"externalIDGT,omitempty"`
+	ExternalIDGTE          *string  `json:"externalIDGTE,omitempty"`
+	ExternalIDLT           *string  `json:"externalIDLT,omitempty"`
+	ExternalIDLTE          *string  `json:"externalIDLTE,omitempty"`
+	ExternalIDContains     *string  `json:"externalIDContains,omitempty"`
+	ExternalIDHasPrefix    *string  `json:"externalIDHasPrefix,omitempty"`
+	ExternalIDHasSuffix    *string  `json:"externalIDHasSuffix,omitempty"`
+	ExternalIDEqualFold    *string  `json:"externalIDEqualFold,omitempty"`
+	ExternalIDContainsFold *string  `json:"externalIDContainsFold,omitempty"`
+
+	// "display_name" field predicates.
+	DisplayName             *string  `json:"displayName,omitempty"`
+	DisplayNameNEQ          *string  `json:"displayNameNEQ,omitempty"`
+	DisplayNameIn           []string `json:"displayNameIn,omitempty"`
+	DisplayNameNotIn        []string `json:"displayNameNotIn,omitempty"`
+	DisplayNameGT           *string  `json:"displayNameGT,omitempty"`
+	DisplayNameGTE          *string  `json:"displayNameGTE,omitempty"`
+	DisplayNameLT           *string  `json:"displayNameLT,omitempty"`
+	DisplayNameLTE          *string  `json:"displayNameLTE,omitempty"`
+	DisplayNameContains     *string  `json:"displayNameContains,omitempty"`
+	DisplayNameHasPrefix    *string  `json:"displayNameHasPrefix,omitempty"`
+	DisplayNameHasSuffix    *string  `json:"displayNameHasSuffix,omitempty"`
+	DisplayNameIsNil        bool     `json:"displayNameIsNil,omitempty"`
+	DisplayNameNotNil       bool     `json:"displayNameNotNil,omitempty"`
+	DisplayNameEqualFold    *string  `json:"displayNameEqualFold,omitempty"`
+	DisplayNameContainsFold *string  `json:"displayNameContainsFold,omitempty"`
+
+	// "bazel_invocations" edge predicates.
+	HasBazelInvocations     *bool                        `json:"hasBazelInvocations,omitempty"`
+	HasBazelInvocationsWith []*BazelInvocationWhereInput `json:"hasBazelInvocationsWith,omitempty"`
+}
+
+// AddPredicates adds custom predicates to the where input to be used during the filtering phase.
+func (i *AuthenticatedUserWhereInput) AddPredicates(predicates ...predicate.AuthenticatedUser) {
+	i.Predicates = append(i.Predicates, predicates...)
+}
+
+// Filter applies the AuthenticatedUserWhereInput filter on the AuthenticatedUserQuery builder.
+func (i *AuthenticatedUserWhereInput) Filter(q *AuthenticatedUserQuery) (*AuthenticatedUserQuery, error) {
+	if i == nil {
+		return q, nil
+	}
+	p, err := i.P()
+	if err != nil {
+		if err == ErrEmptyAuthenticatedUserWhereInput {
+			return q, nil
+		}
+		return nil, err
+	}
+	return q.Where(p), nil
+}
+
+// ErrEmptyAuthenticatedUserWhereInput is returned in case the AuthenticatedUserWhereInput is empty.
+var ErrEmptyAuthenticatedUserWhereInput = errors.New("ent: empty predicate AuthenticatedUserWhereInput")
+
+// P returns a predicate for filtering authenticatedusers.
+// An error is returned if the input is empty or invalid.
+func (i *AuthenticatedUserWhereInput) P() (predicate.AuthenticatedUser, error) {
+	var predicates []predicate.AuthenticatedUser
+	if i.Not != nil {
+		p, err := i.Not.P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'not'", err)
+		}
+		predicates = append(predicates, authenticateduser.Not(p))
+	}
+	switch n := len(i.Or); {
+	case n == 1:
+		p, err := i.Or[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'or'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		or := make([]predicate.AuthenticatedUser, 0, n)
+		for _, w := range i.Or {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'or'", err)
+			}
+			or = append(or, p)
+		}
+		predicates = append(predicates, authenticateduser.Or(or...))
+	}
+	switch n := len(i.And); {
+	case n == 1:
+		p, err := i.And[0].P()
+		if err != nil {
+			return nil, fmt.Errorf("%w: field 'and'", err)
+		}
+		predicates = append(predicates, p)
+	case n > 1:
+		and := make([]predicate.AuthenticatedUser, 0, n)
+		for _, w := range i.And {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'and'", err)
+			}
+			and = append(and, p)
+		}
+		predicates = append(predicates, authenticateduser.And(and...))
+	}
+	predicates = append(predicates, i.Predicates...)
+	if i.ID != nil {
+		predicates = append(predicates, authenticateduser.IDEQ(*i.ID))
+	}
+	if i.IDNEQ != nil {
+		predicates = append(predicates, authenticateduser.IDNEQ(*i.IDNEQ))
+	}
+	if len(i.IDIn) > 0 {
+		predicates = append(predicates, authenticateduser.IDIn(i.IDIn...))
+	}
+	if len(i.IDNotIn) > 0 {
+		predicates = append(predicates, authenticateduser.IDNotIn(i.IDNotIn...))
+	}
+	if i.IDGT != nil {
+		predicates = append(predicates, authenticateduser.IDGT(*i.IDGT))
+	}
+	if i.IDGTE != nil {
+		predicates = append(predicates, authenticateduser.IDGTE(*i.IDGTE))
+	}
+	if i.IDLT != nil {
+		predicates = append(predicates, authenticateduser.IDLT(*i.IDLT))
+	}
+	if i.IDLTE != nil {
+		predicates = append(predicates, authenticateduser.IDLTE(*i.IDLTE))
+	}
+	if i.UserUUID != nil {
+		predicates = append(predicates, authenticateduser.UserUUIDEQ(*i.UserUUID))
+	}
+	if i.UserUUIDNEQ != nil {
+		predicates = append(predicates, authenticateduser.UserUUIDNEQ(*i.UserUUIDNEQ))
+	}
+	if len(i.UserUUIDIn) > 0 {
+		predicates = append(predicates, authenticateduser.UserUUIDIn(i.UserUUIDIn...))
+	}
+	if len(i.UserUUIDNotIn) > 0 {
+		predicates = append(predicates, authenticateduser.UserUUIDNotIn(i.UserUUIDNotIn...))
+	}
+	if i.UserUUIDGT != nil {
+		predicates = append(predicates, authenticateduser.UserUUIDGT(*i.UserUUIDGT))
+	}
+	if i.UserUUIDGTE != nil {
+		predicates = append(predicates, authenticateduser.UserUUIDGTE(*i.UserUUIDGTE))
+	}
+	if i.UserUUIDLT != nil {
+		predicates = append(predicates, authenticateduser.UserUUIDLT(*i.UserUUIDLT))
+	}
+	if i.UserUUIDLTE != nil {
+		predicates = append(predicates, authenticateduser.UserUUIDLTE(*i.UserUUIDLTE))
+	}
+	if i.ExternalID != nil {
+		predicates = append(predicates, authenticateduser.ExternalIDEQ(*i.ExternalID))
+	}
+	if i.ExternalIDNEQ != nil {
+		predicates = append(predicates, authenticateduser.ExternalIDNEQ(*i.ExternalIDNEQ))
+	}
+	if len(i.ExternalIDIn) > 0 {
+		predicates = append(predicates, authenticateduser.ExternalIDIn(i.ExternalIDIn...))
+	}
+	if len(i.ExternalIDNotIn) > 0 {
+		predicates = append(predicates, authenticateduser.ExternalIDNotIn(i.ExternalIDNotIn...))
+	}
+	if i.ExternalIDGT != nil {
+		predicates = append(predicates, authenticateduser.ExternalIDGT(*i.ExternalIDGT))
+	}
+	if i.ExternalIDGTE != nil {
+		predicates = append(predicates, authenticateduser.ExternalIDGTE(*i.ExternalIDGTE))
+	}
+	if i.ExternalIDLT != nil {
+		predicates = append(predicates, authenticateduser.ExternalIDLT(*i.ExternalIDLT))
+	}
+	if i.ExternalIDLTE != nil {
+		predicates = append(predicates, authenticateduser.ExternalIDLTE(*i.ExternalIDLTE))
+	}
+	if i.ExternalIDContains != nil {
+		predicates = append(predicates, authenticateduser.ExternalIDContains(*i.ExternalIDContains))
+	}
+	if i.ExternalIDHasPrefix != nil {
+		predicates = append(predicates, authenticateduser.ExternalIDHasPrefix(*i.ExternalIDHasPrefix))
+	}
+	if i.ExternalIDHasSuffix != nil {
+		predicates = append(predicates, authenticateduser.ExternalIDHasSuffix(*i.ExternalIDHasSuffix))
+	}
+	if i.ExternalIDEqualFold != nil {
+		predicates = append(predicates, authenticateduser.ExternalIDEqualFold(*i.ExternalIDEqualFold))
+	}
+	if i.ExternalIDContainsFold != nil {
+		predicates = append(predicates, authenticateduser.ExternalIDContainsFold(*i.ExternalIDContainsFold))
+	}
+	if i.DisplayName != nil {
+		predicates = append(predicates, authenticateduser.DisplayNameEQ(*i.DisplayName))
+	}
+	if i.DisplayNameNEQ != nil {
+		predicates = append(predicates, authenticateduser.DisplayNameNEQ(*i.DisplayNameNEQ))
+	}
+	if len(i.DisplayNameIn) > 0 {
+		predicates = append(predicates, authenticateduser.DisplayNameIn(i.DisplayNameIn...))
+	}
+	if len(i.DisplayNameNotIn) > 0 {
+		predicates = append(predicates, authenticateduser.DisplayNameNotIn(i.DisplayNameNotIn...))
+	}
+	if i.DisplayNameGT != nil {
+		predicates = append(predicates, authenticateduser.DisplayNameGT(*i.DisplayNameGT))
+	}
+	if i.DisplayNameGTE != nil {
+		predicates = append(predicates, authenticateduser.DisplayNameGTE(*i.DisplayNameGTE))
+	}
+	if i.DisplayNameLT != nil {
+		predicates = append(predicates, authenticateduser.DisplayNameLT(*i.DisplayNameLT))
+	}
+	if i.DisplayNameLTE != nil {
+		predicates = append(predicates, authenticateduser.DisplayNameLTE(*i.DisplayNameLTE))
+	}
+	if i.DisplayNameContains != nil {
+		predicates = append(predicates, authenticateduser.DisplayNameContains(*i.DisplayNameContains))
+	}
+	if i.DisplayNameHasPrefix != nil {
+		predicates = append(predicates, authenticateduser.DisplayNameHasPrefix(*i.DisplayNameHasPrefix))
+	}
+	if i.DisplayNameHasSuffix != nil {
+		predicates = append(predicates, authenticateduser.DisplayNameHasSuffix(*i.DisplayNameHasSuffix))
+	}
+	if i.DisplayNameIsNil {
+		predicates = append(predicates, authenticateduser.DisplayNameIsNil())
+	}
+	if i.DisplayNameNotNil {
+		predicates = append(predicates, authenticateduser.DisplayNameNotNil())
+	}
+	if i.DisplayNameEqualFold != nil {
+		predicates = append(predicates, authenticateduser.DisplayNameEqualFold(*i.DisplayNameEqualFold))
+	}
+	if i.DisplayNameContainsFold != nil {
+		predicates = append(predicates, authenticateduser.DisplayNameContainsFold(*i.DisplayNameContainsFold))
+	}
+
+	if i.HasBazelInvocations != nil {
+		p := authenticateduser.HasBazelInvocations()
+		if !*i.HasBazelInvocations {
+			p = authenticateduser.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasBazelInvocationsWith) > 0 {
+		with := make([]predicate.BazelInvocation, 0, len(i.HasBazelInvocationsWith))
+		for _, w := range i.HasBazelInvocationsWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasBazelInvocationsWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, authenticateduser.HasBazelInvocationsWith(with...))
+	}
+	switch len(predicates) {
+	case 0:
+		return nil, ErrEmptyAuthenticatedUserWhereInput
+	case 1:
+		return predicates[0], nil
+	default:
+		return authenticateduser.And(predicates...), nil
+	}
+}
+
 // BazelInvocationWhereInput represents a where input for filtering BazelInvocation queries.
 type BazelInvocationWhereInput struct {
 	Predicates []predicate.BazelInvocation  `json:"-"`
@@ -2052,6 +2349,10 @@ type BazelInvocationWhereInput struct {
 	// "build" edge predicates.
 	HasBuild     *bool              `json:"hasBuild,omitempty"`
 	HasBuildWith []*BuildWhereInput `json:"hasBuildWith,omitempty"`
+
+	// "authenticated_user" edge predicates.
+	HasAuthenticatedUser     *bool                          `json:"hasAuthenticatedUser,omitempty"`
+	HasAuthenticatedUserWith []*AuthenticatedUserWhereInput `json:"hasAuthenticatedUserWith,omitempty"`
 
 	// "problems" edge predicates.
 	HasProblems     *bool                               `json:"hasProblems,omitempty"`
@@ -2930,6 +3231,24 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 			with = append(with, p)
 		}
 		predicates = append(predicates, bazelinvocation.HasBuildWith(with...))
+	}
+	if i.HasAuthenticatedUser != nil {
+		p := bazelinvocation.HasAuthenticatedUser()
+		if !*i.HasAuthenticatedUser {
+			p = bazelinvocation.Not(p)
+		}
+		predicates = append(predicates, p)
+	}
+	if len(i.HasAuthenticatedUserWith) > 0 {
+		with := make([]predicate.AuthenticatedUser, 0, len(i.HasAuthenticatedUserWith))
+		for _, w := range i.HasAuthenticatedUserWith {
+			p, err := w.P()
+			if err != nil {
+				return nil, fmt.Errorf("%w: field 'HasAuthenticatedUserWith'", err)
+			}
+			with = append(with, p)
+		}
+		predicates = append(predicates, bazelinvocation.HasAuthenticatedUserWith(with...))
 	}
 	if i.HasProblems != nil {
 		p := bazelinvocation.HasProblems()

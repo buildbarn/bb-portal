@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { BuildNodeFragment } from '@/graphql/__generated__/graphql';
 import { SearchFilterIcon, SearchWidget, TimeRangeSelector } from '@/components/SearchWidgets';
 import { Typography } from 'antd';
-import styles from '@/components/BazelInvocationsTable/Columns.module.css'
+import styles from '@/components/BazelInvocationColumns/Columns.module.css'
 import dayjs from 'dayjs';
 
 const buildUuidColumn: ColumnType<BuildNodeFragment> = {

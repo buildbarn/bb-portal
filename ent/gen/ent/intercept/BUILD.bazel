@@ -11,6 +11,7 @@ go_library(
         "//ent/gen/ent/actiondata",
         "//ent/gen/ent/actionsummary",
         "//ent/gen/ent/artifactmetrics",
+        "//ent/gen/ent/authenticateduser",
         "//ent/gen/ent/bazelinvocation",
         "//ent/gen/ent/bazelinvocationproblem",
         "//ent/gen/ent/blob",

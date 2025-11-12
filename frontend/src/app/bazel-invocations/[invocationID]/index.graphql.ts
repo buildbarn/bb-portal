@@ -150,6 +150,10 @@ fragment BazelInvocationInfo on BazelInvocation {
   instanceName {
     name
   }
+  authenticatedUser {
+    displayName
+    userUUID
+  }
   bazelVersion
   build {
     id

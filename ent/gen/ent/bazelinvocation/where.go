@@ -1767,6 +1767,29 @@ func HasBuildWith(preds ...predicate.Build) predicate.BazelInvocation {
 	})
 }
 
+// HasAuthenticatedUser applies the HasEdge predicate on the "authenticated_user" edge.
+func HasAuthenticatedUser() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, AuthenticatedUserTable, AuthenticatedUserColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAuthenticatedUserWith applies the HasEdge predicate on the "authenticated_user" edge with a given conditions (other predicates).
+func HasAuthenticatedUserWith(preds ...predicate.AuthenticatedUser) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newAuthenticatedUserStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasEventMetadata applies the HasEdge predicate on the "event_metadata" edge.
 func HasEventMetadata() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {

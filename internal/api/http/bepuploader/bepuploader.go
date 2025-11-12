@@ -12,6 +12,7 @@ import (
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
+	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
@@ -38,10 +39,12 @@ type BepUploader struct {
 	blobArchiver           processing.BlobMultiArchiver
 	saveTargetDataLevel    *bb_portal.BuildEventStreamService_SaveTargetDataLevel
 	tracerProvider         trace.TracerProvider
+	extractors             *authmetadataextraction.AuthMetadataExtractors
+	uuidGenerator          util.UUIDGenerator
 }
 
 // NewBepUploader creates a new BepUploader
-func NewBepUploader(db *ent.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider) (*BepUploader, error) {
+func NewBepUploader(db *ent.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider, uuidGenerator util.UUIDGenerator) (*BepUploader, error) {
 	if configuration.InstanceNameAuthorizer == nil {
 		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}
@@ -60,12 +63,19 @@ func NewBepUploader(db *ent.Client, blobArchiver processing.BlobMultiArchiver, c
 		return nil, fmt.Errorf("No saveTargetDataLevel configured")
 	}
 
+	extractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to create AutheMetadataExtractors")
+	}
+
 	return &BepUploader{
 		db:                     db,
 		instanceNameAuthorizer: instanceNameAuthorizer,
 		blobArchiver:           blobArchiver,
 		saveTargetDataLevel:    saveTargetDataLevel,
 		tracerProvider:         tracerProvider,
+		extractors:             extractors,
+		uuidGenerator:          uuidGenerator,
 	}, nil
 }
 
@@ -104,7 +114,9 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 				"",                                // instanceName
 				bazelEvent.GetStarted().GetUuid(), // invocationID
 				"",                                // correlatedInvocationID
-				false,                             // isRealTime
+				false,                             // isRealTime,
+				b.extractors,
+				b.uuidGenerator,
 			)
 			if err != nil {
 				return "", gprcErrorCodeToHTTPStatus(err), util.StatusWrap(err, "Failed to create BuildEventRecorder")

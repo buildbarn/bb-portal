@@ -101,6 +101,12 @@ go_deps.module_override(
     patches = ["@com_github_buildbarn_bb_storage//:patches/org_golang_x_sys/o-search.diff"],
     path = "golang.org/x/sys",
 )
+go_deps.module_override(
+    patches = [
+        "@com_github_buildbarn_bb_storage//:patches/org_uber_go_mock/mocks-for-funcs.diff",
+    ],
+    path = "go.uber.org/mock",
+)
 go_deps.from_file(go_mod = "//:go.mod")
 use_repo(
     go_deps,

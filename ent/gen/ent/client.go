@@ -19,6 +19,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
@@ -73,6 +74,8 @@ type Client struct {
 	ActionSummary *ActionSummaryClient
 	// ArtifactMetrics is the client for interacting with the ArtifactMetrics builders.
 	ArtifactMetrics *ArtifactMetricsClient
+	// AuthenticatedUser is the client for interacting with the AuthenticatedUser builders.
+	AuthenticatedUser *AuthenticatedUserClient
 	// BazelInvocation is the client for interacting with the BazelInvocation builders.
 	BazelInvocation *BazelInvocationClient
 	// BazelInvocationProblem is the client for interacting with the BazelInvocationProblem builders.
@@ -164,6 +167,7 @@ func (c *Client) init() {
 	c.ActionData = NewActionDataClient(c.config)
 	c.ActionSummary = NewActionSummaryClient(c.config)
 	c.ArtifactMetrics = NewArtifactMetricsClient(c.config)
+	c.AuthenticatedUser = NewAuthenticatedUserClient(c.config)
 	c.BazelInvocation = NewBazelInvocationClient(c.config)
 	c.BazelInvocationProblem = NewBazelInvocationProblemClient(c.config)
 	c.Blob = NewBlobClient(c.config)
@@ -297,6 +301,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ActionData:             NewActionDataClient(cfg),
 		ActionSummary:          NewActionSummaryClient(cfg),
 		ArtifactMetrics:        NewArtifactMetricsClient(cfg),
+		AuthenticatedUser:      NewAuthenticatedUserClient(cfg),
 		BazelInvocation:        NewBazelInvocationClient(cfg),
 		BazelInvocationProblem: NewBazelInvocationProblemClient(cfg),
 		Blob:                   NewBlobClient(cfg),
@@ -357,6 +362,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ActionData:             NewActionDataClient(cfg),
 		ActionSummary:          NewActionSummaryClient(cfg),
 		ArtifactMetrics:        NewArtifactMetricsClient(cfg),
+		AuthenticatedUser:      NewAuthenticatedUserClient(cfg),
 		BazelInvocation:        NewBazelInvocationClient(cfg),
 		BazelInvocationProblem: NewBazelInvocationProblemClient(cfg),
 		Blob:                   NewBlobClient(cfg),
@@ -424,8 +430,8 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
-		c.BazelInvocation, c.BazelInvocationProblem, c.Blob, c.Build,
-		c.BuildGraphMetrics, c.ConnectionMetadata, c.CumulativeMetrics,
+		c.AuthenticatedUser, c.BazelInvocation, c.BazelInvocationProblem, c.Blob,
+		c.Build, c.BuildGraphMetrics, c.ConnectionMetadata, c.CumulativeMetrics,
 		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.GarbageMetrics,
 		c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles, c.InvocationTarget,
 		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics,
@@ -444,8 +450,8 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
-		c.BazelInvocation, c.BazelInvocationProblem, c.Blob, c.Build,
-		c.BuildGraphMetrics, c.ConnectionMetadata, c.CumulativeMetrics,
+		c.AuthenticatedUser, c.BazelInvocation, c.BazelInvocationProblem, c.Blob,
+		c.Build, c.BuildGraphMetrics, c.ConnectionMetadata, c.CumulativeMetrics,
 		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.GarbageMetrics,
 		c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles, c.InvocationTarget,
 		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics,
@@ -470,6 +476,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.ActionSummary.mutate(ctx, m)
 	case *ArtifactMetricsMutation:
 		return c.ArtifactMetrics.mutate(ctx, m)
+	case *AuthenticatedUserMutation:
+		return c.AuthenticatedUser.mutate(ctx, m)
 	case *BazelInvocationMutation:
 		return c.BazelInvocation.mutate(ctx, m)
 	case *BazelInvocationProblemMutation:
@@ -1209,6 +1217,155 @@ func (c *ArtifactMetricsClient) mutate(ctx context.Context, m *ArtifactMetricsMu
 	}
 }
 
+// AuthenticatedUserClient is a client for the AuthenticatedUser schema.
+type AuthenticatedUserClient struct {
+	config
+}
+
+// NewAuthenticatedUserClient returns a client for the AuthenticatedUser from the given config.
+func NewAuthenticatedUserClient(c config) *AuthenticatedUserClient {
+	return &AuthenticatedUserClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `authenticateduser.Hooks(f(g(h())))`.
+func (c *AuthenticatedUserClient) Use(hooks ...Hook) {
+	c.hooks.AuthenticatedUser = append(c.hooks.AuthenticatedUser, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `authenticateduser.Intercept(f(g(h())))`.
+func (c *AuthenticatedUserClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AuthenticatedUser = append(c.inters.AuthenticatedUser, interceptors...)
+}
+
+// Create returns a builder for creating a AuthenticatedUser entity.
+func (c *AuthenticatedUserClient) Create() *AuthenticatedUserCreate {
+	mutation := newAuthenticatedUserMutation(c.config, OpCreate)
+	return &AuthenticatedUserCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AuthenticatedUser entities.
+func (c *AuthenticatedUserClient) CreateBulk(builders ...*AuthenticatedUserCreate) *AuthenticatedUserCreateBulk {
+	return &AuthenticatedUserCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AuthenticatedUserClient) MapCreateBulk(slice any, setFunc func(*AuthenticatedUserCreate, int)) *AuthenticatedUserCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AuthenticatedUserCreateBulk{err: fmt.Errorf("calling to AuthenticatedUserClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AuthenticatedUserCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AuthenticatedUserCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AuthenticatedUser.
+func (c *AuthenticatedUserClient) Update() *AuthenticatedUserUpdate {
+	mutation := newAuthenticatedUserMutation(c.config, OpUpdate)
+	return &AuthenticatedUserUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AuthenticatedUserClient) UpdateOne(au *AuthenticatedUser) *AuthenticatedUserUpdateOne {
+	mutation := newAuthenticatedUserMutation(c.config, OpUpdateOne, withAuthenticatedUser(au))
+	return &AuthenticatedUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AuthenticatedUserClient) UpdateOneID(id int) *AuthenticatedUserUpdateOne {
+	mutation := newAuthenticatedUserMutation(c.config, OpUpdateOne, withAuthenticatedUserID(id))
+	return &AuthenticatedUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AuthenticatedUser.
+func (c *AuthenticatedUserClient) Delete() *AuthenticatedUserDelete {
+	mutation := newAuthenticatedUserMutation(c.config, OpDelete)
+	return &AuthenticatedUserDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AuthenticatedUserClient) DeleteOne(au *AuthenticatedUser) *AuthenticatedUserDeleteOne {
+	return c.DeleteOneID(au.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AuthenticatedUserClient) DeleteOneID(id int) *AuthenticatedUserDeleteOne {
+	builder := c.Delete().Where(authenticateduser.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AuthenticatedUserDeleteOne{builder}
+}
+
+// Query returns a query builder for AuthenticatedUser.
+func (c *AuthenticatedUserClient) Query() *AuthenticatedUserQuery {
+	return &AuthenticatedUserQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAuthenticatedUser},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AuthenticatedUser entity by its id.
+func (c *AuthenticatedUserClient) Get(ctx context.Context, id int) (*AuthenticatedUser, error) {
+	return c.Query().Where(authenticateduser.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AuthenticatedUserClient) GetX(ctx context.Context, id int) *AuthenticatedUser {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocations queries the bazel_invocations edge of a AuthenticatedUser.
+func (c *AuthenticatedUserClient) QueryBazelInvocations(au *AuthenticatedUser) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := au.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(authenticateduser.Table, authenticateduser.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, authenticateduser.BazelInvocationsTable, authenticateduser.BazelInvocationsColumn),
+		)
+		fromV = sqlgraph.Neighbors(au.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *AuthenticatedUserClient) Hooks() []Hook {
+	return c.hooks.AuthenticatedUser
+}
+
+// Interceptors returns the client interceptors.
+func (c *AuthenticatedUserClient) Interceptors() []Interceptor {
+	return c.inters.AuthenticatedUser
+}
+
+func (c *AuthenticatedUserClient) mutate(ctx context.Context, m *AuthenticatedUserMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AuthenticatedUserCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AuthenticatedUserUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AuthenticatedUserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AuthenticatedUserDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AuthenticatedUser mutation op: %q", m.Op())
+	}
+}
+
 // BazelInvocationClient is a client for the BazelInvocation schema.
 type BazelInvocationClient struct {
 	config
@@ -1342,6 +1499,22 @@ func (c *BazelInvocationClient) QueryBuild(bi *BazelInvocation) *BuildQuery {
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(build.Table, build.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, bazelinvocation.BuildTable, bazelinvocation.BuildColumn),
+		)
+		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAuthenticatedUser queries the authenticated_user edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryAuthenticatedUser(bi *BazelInvocation) *AuthenticatedUserQuery {
+	query := (&AuthenticatedUserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := bi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(authenticateduser.Table, authenticateduser.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, bazelinvocation.AuthenticatedUserTable, bazelinvocation.AuthenticatedUserColumn),
 		)
 		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
 		return fromV, nil
@@ -7494,9 +7667,9 @@ func (c *TimingMetricsClient) mutate(ctx context.Context, m *TimingMetricsMutati
 type (
 	hooks struct {
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
-		BazelInvocation, BazelInvocationProblem, Blob, Build, BuildGraphMetrics,
-		ConnectionMetadata, CumulativeMetrics, EvaluationStat, EventMetadata,
-		ExectionInfo, GarbageMetrics, IncompleteBuildLog, InstanceName,
+		AuthenticatedUser, BazelInvocation, BazelInvocationProblem, Blob, Build,
+		BuildGraphMetrics, ConnectionMetadata, CumulativeMetrics, EvaluationStat,
+		EventMetadata, ExectionInfo, GarbageMetrics, IncompleteBuildLog, InstanceName,
 		InvocationFiles, InvocationTarget, MemoryMetrics, Metrics, MissDetail,
 		NamedSetOfFiles, NetworkMetrics, OutputGroup, PackageLoadMetrics,
 		PackageMetrics, ResourceUsage, RunnerCount, SourceControl, SystemNetworkStats,
@@ -7506,9 +7679,9 @@ type (
 	}
 	inters struct {
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
-		BazelInvocation, BazelInvocationProblem, Blob, Build, BuildGraphMetrics,
-		ConnectionMetadata, CumulativeMetrics, EvaluationStat, EventMetadata,
-		ExectionInfo, GarbageMetrics, IncompleteBuildLog, InstanceName,
+		AuthenticatedUser, BazelInvocation, BazelInvocationProblem, Blob, Build,
+		BuildGraphMetrics, ConnectionMetadata, CumulativeMetrics, EvaluationStat,
+		EventMetadata, ExectionInfo, GarbageMetrics, IncompleteBuildLog, InstanceName,
 		InvocationFiles, InvocationTarget, MemoryMetrics, Metrics, MissDetail,
 		NamedSetOfFiles, NetworkMetrics, OutputGroup, PackageLoadMetrics,
 		PackageMetrics, ResourceUsage, RunnerCount, SourceControl, SystemNetworkStats,

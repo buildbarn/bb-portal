@@ -1,6 +1,8 @@
 package integrationtest
 
 import (
+	"context"
+
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/testkit"
 )
@@ -26,7 +28,10 @@ type graphqlTestTable map[string]map[string]graphqlTestCase
 
 type testCase struct {
 	name                string
+	ctx                 context.Context
 	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel
+	extractors          *bb_portal.AuthMetadataExtractorConfiguration
+	mockUUID            *string
 	bepFileTestCases    []bepFileTestCase
 	graphqlTestCases    graphqlTestTable
 }

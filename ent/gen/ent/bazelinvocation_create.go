@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
@@ -487,6 +488,25 @@ func (bic *BazelInvocationCreate) SetBuild(b *Build) *BazelInvocationCreate {
 	return bic.SetBuildID(b.ID)
 }
 
+// SetAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by ID.
+func (bic *BazelInvocationCreate) SetAuthenticatedUserID(id int) *BazelInvocationCreate {
+	bic.mutation.SetAuthenticatedUserID(id)
+	return bic
+}
+
+// SetNillableAuthenticatedUserID sets the "authenticated_user" edge to the AuthenticatedUser entity by ID if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableAuthenticatedUserID(id *int) *BazelInvocationCreate {
+	if id != nil {
+		bic = bic.SetAuthenticatedUserID(*id)
+	}
+	return bic
+}
+
+// SetAuthenticatedUser sets the "authenticated_user" edge to the AuthenticatedUser entity.
+func (bic *BazelInvocationCreate) SetAuthenticatedUser(a *AuthenticatedUser) *BazelInvocationCreate {
+	return bic.SetAuthenticatedUserID(a.ID)
+}
+
 // AddEventMetadatumIDs adds the "event_metadata" edge to the EventMetadata entity by IDs.
 func (bic *BazelInvocationCreate) AddEventMetadatumIDs(ids ...int) *BazelInvocationCreate {
 	bic.mutation.AddEventMetadatumIDs(ids...)
@@ -930,6 +950,23 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.build_invocations = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.AuthenticatedUserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   bazelinvocation.AuthenticatedUserTable,
+			Columns: []string{bazelinvocation.AuthenticatedUserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(authenticateduser.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.authenticated_user_bazel_invocations = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := bic.mutation.EventMetadataIDs(); len(nodes) > 0 {

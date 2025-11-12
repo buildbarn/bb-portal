@@ -1,0 +1,31 @@
+{
+  "getAuthenticatedUser": {
+    "bazelInvocations": {
+      "edges": [
+        {
+          "node": {
+            "build": null,
+            "endedAt": "2024-05-03T00:24:29.605Z",
+            "invocationID": "fd03240f-697e-4b64-95bc-888e27445bf9",
+            "startedAt": "2024-05-03T00:24:28.621Z",
+            "state": {
+              "bepCompleted": true,
+              "exitCode": {
+                "code": 0,
+                "name": "SUCCESS"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "displayName": "example_username",
+    "userInfo": {
+      "age": 30,
+      "contact_information": {
+        "email": "user@example.com",
+        "phone_number": "800-555-0199"
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "authmetadataextraction",
+    srcs = ["authmetadataextraction.go"],
+    importpath = "github.com/buildbarn/bb-portal/pkg/authmetadataextraction",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/proto/configuration/bb_portal",
+        "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@com_github_buildbarn_bb_storage//pkg/clock",
+        "@com_github_buildbarn_bb_storage//pkg/jmespath",
+        "@com_github_buildbarn_bb_storage//pkg/program",
+        "@com_github_buildbarn_bb_storage//pkg/util",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)
+
+go_test(
+    name = "authmetadataextraction_test",
+    srcs = ["authmetadataextraction_test.go"],
+    deps = [
+        ":authmetadataextraction",
+        "//pkg/proto/configuration/bb_portal",
+        "@com_github_buildbarn_bb_storage//pkg/auth",
+        "@com_github_buildbarn_bb_storage//pkg/proto/configuration/jmespath",
+        "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_stretchr_testify//require",
+    ],
+)

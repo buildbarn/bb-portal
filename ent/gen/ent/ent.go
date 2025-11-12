@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actiondata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/actionsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/artifactmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
@@ -117,6 +118,7 @@ func checkColumn(table, column string) error {
 			actiondata.Table:             actiondata.ValidColumn,
 			actionsummary.Table:          actionsummary.ValidColumn,
 			artifactmetrics.Table:        artifactmetrics.ValidColumn,
+			authenticateduser.Table:      authenticateduser.ValidColumn,
 			bazelinvocation.Table:        bazelinvocation.ValidColumn,
 			bazelinvocationproblem.Table: bazelinvocationproblem.ValidColumn,
 			blob.Table:                   blob.ValidColumn,

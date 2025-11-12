@@ -8,9 +8,14 @@ import (
 	"os"
 	"testing"
 
+	"github.com/google/uuid"
+
 	databasecommon "github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/testkit"
+	"github.com/buildbarn/bb-storage/pkg/auth"
+	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
+	"github.com/buildbarn/bb-storage/pkg/util"
 	gql "github.com/machinebox/graphql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/require"
@@ -28,9 +33,10 @@ const (
 var (
 	updateGoldenFiles = flag.Bool("update-golden", false, "update golden (.golden.json) files")
 
-	errInvocationNotFound = errors.New("graphql: ent: bazel_invocation not found")
-	errBuildNotFound      = errors.New("graphql: ent: build not found")
-	errInvocationLocked   = errors.New("already exists and is locked for writing")
+	errInvocationNotFound        = errors.New("graphql: ent: bazel_invocation not found")
+	errBuildNotFound             = errors.New("graphql: ent: build not found")
+	errInvocationLocked          = errors.New("already exists and is locked for writing")
+	errAuthenticatedUserNotFound = errors.New("ent: authenticated_user not found")
 
 	// Defined BEP files for various test cases.
 	successfulBazelBuild = bepFile{
@@ -53,6 +59,10 @@ var (
 		filename:     "nextjs_analysis_fail.bep.ndjson",
 		invocationID: "df7178e2-a815-4654-a409-d18e845d1e35",
 	}
+	authenticatedUserUUID = "8bdb3187-e36c-487e-95b8-f8ca28a82068"
+
+	// An authenticated user UUID not present in any BEP file.
+	authenticatedUserUUIDNotFound = "A80031E0-1A11-4543-894C-13C48056074A"
 
 	// An invocation ID that is not present in any BEP file.
 	invocationIDNotFound = "4FF1C8C5-E51F-4ED1-8197-870FC389DA12" // uuidgen
@@ -204,6 +214,51 @@ var (
 			},
 			graphqlTestCases: graphqlTestTable{},
 		},
+		{
+			name: "TestGraphqlQueriesWithAuthMetadata",
+			saveTargetDataLevel: &bb_portal.BuildEventStreamService_SaveTargetDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveTargetDataLevel_Enriched{
+					Enriched: &emptypb.Empty{},
+				},
+			},
+			bepFileTestCases: []bepFileTestCase{
+				{bepFile: successfulBazelBuild},
+			},
+			extractors: &bb_portal.AuthMetadataExtractorConfiguration{
+				ExternalIdExtractionJmespathExpression:  &jmespath.Expression{Expression: "authenticationMetadata.private.external_id"},
+				DisplayNameExtractionJmespathExpression: &jmespath.Expression{Expression: "authenticationMetadata.private.display_name"},
+				UserInfoExtractionJmespathExpression:    &jmespath.Expression{Expression: "authenticationMetadata.public"},
+			},
+			ctx: auth.NewContextWithAuthenticationMetadata(context.Background(), util.Must(auth.NewAuthenticationMetadataFromRaw(map[string]any{
+				"private": map[string]any{
+					"external_id":  "6b939a5f-95b9-4a7c-ad89-961fb96c5cd1",
+					"display_name": "example_username",
+				},
+				"public": map[string]any{
+					"age": 30,
+					"contact_information": map[string]any{
+						"email":        "user@example.com",
+						"phone_number": "800-555-0199",
+					},
+				},
+			}))),
+			mockUUID: &authenticatedUserUUID,
+			graphqlTestCases: graphqlTestTable{
+				"GetAuthenticatedUser": {
+					"authenticated user not found": {
+						variables: testkit.Variables{
+							"userUUID": &authenticatedUserUUIDNotFound,
+						},
+						wantErr: errAuthenticatedUserNotFound,
+					},
+					"authenticated user found": {
+						variables: testkit.Variables{
+							"userUUID": &authenticatedUserUUID,
+						},
+					},
+				},
+			},
+		},
 	}
 )
 
@@ -228,10 +283,21 @@ func TestFromBesToGraphql(t *testing.T) {
 }
 
 func runTestCase(t *testing.T, queryRegistry *testkit.QueryRegistry, testCase testCase) {
-	ctx := context.Background()
+	var ctx context.Context
+	if ctx = testCase.ctx; ctx == nil {
+		ctx = context.Background()
+	}
+
+	var uuidGenerator util.UUIDGenerator
+	if testCase.mockUUID != nil {
+		uuidGenerator = createMockUUIDGenerator(t, *testCase.mockUUID, len(testCase.bepFileTestCases))
+	} else {
+		uuidGenerator = uuid.NewRandom
+	}
+
 	db := setupTestDB(t)
 
-	bepUploader := setupTestBepUploader(t, db, testCase)
+	bepUploader := setupTestBepUploader(t, db, testCase, uuidGenerator)
 
 	for _, bepFileTestCase := range testCase.bepFileTestCases {
 		t.Run(fmt.Sprintf("SavingFileToDb_%s", bepFileTestCase.bepFile.filename), func(t *testing.T) {

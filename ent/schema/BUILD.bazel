@@ -7,6 +7,7 @@ go_library(
         "actiondata.go",
         "actionsummary.go",
         "artifactmetrics.go",
+        "authenticateduser.go",
         "bazelinvocation.go",
         "bazelinvocationproblem.go",
         "blob.go",

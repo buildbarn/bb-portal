@@ -9,10 +9,12 @@ import (
 
 	entsql "entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	apicommon "github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-portal/internal/database/common"
+	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
@@ -54,6 +56,8 @@ func NewBuildEventRecorder(
 	invocationID string,
 	correlatedInvocationID string,
 	isRealTime bool,
+	extractors *authmetadataextraction.AuthMetadataExtractors,
+	uuidGenerator util.UUIDGenerator,
 ) (*BuildEventRecorder, error) {
 	if invocationID == "" {
 		return nil, status.Error(codes.InvalidArgument, "Invocation ID is required")
@@ -64,7 +68,12 @@ func NewBuildEventRecorder(
 
 	tracer := tracerProvider.Tracer("github.com/buildbarn/bb-portal/internal/database/buildeventrecorder")
 
-	instanceNameDbID, invocationDbID, err := findOrCreateInvocation(ctx, db, invocationID, instanceName, tracer)
+	userDb, err := findOrCreateAuthenticatedUser(ctx, db, extractors, uuidGenerator)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to find or create authenticated user")
+	}
+
+	instanceNameDbID, invocationDbID, err := findOrCreateInvocation(ctx, db, invocationID, instanceName, tracer, userDb)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to find or create bazel invocation")
 	}
@@ -85,12 +94,40 @@ func NewBuildEventRecorder(
 	}, nil
 }
 
+func findOrCreateAuthenticatedUser(
+	ctx context.Context,
+	db *ent.Client,
+	extractors *authmetadataextraction.AuthMetadataExtractors,
+	uuidGenerator util.UUIDGenerator,
+) (*int, error) {
+	userSummary := authmetadataextraction.AuthenticatedUserSummaryFromContext(ctx, extractors)
+	if userSummary == nil {
+		return nil, nil
+	}
+
+	// UserUUID is immutable and will not be regenerated
+	// if the object already exists.
+	userRecord := db.AuthenticatedUser.Create().
+		SetUserUUID(util.Must(uuidGenerator())).
+		SetExternalID(userSummary.ExternalID).
+		SetNillableDisplayName(userSummary.DisplayName)
+	if userSummary.UserInfo != nil {
+		userRecord.SetUserInfo(userSummary.UserInfo)
+	}
+	id, err := userRecord.OnConflictColumns(authenticateduser.FieldExternalID).UpdateNewValues().ID(ctx)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to upsert authenticated user")
+	}
+	return &id, nil
+}
+
 func findOrCreateInvocation(
 	ctx context.Context,
 	db *ent.Client,
 	invocationID string,
 	instanceName string,
 	tracer trace.Tracer,
+	authenticatedUserDbID *int,
 ) (int, int, error) {
 	ctx, span := tracer.Start(ctx,
 		fmt.Sprintf("BuildEventRecorder.findOrCreateInvocation"),
@@ -120,10 +157,15 @@ func findOrCreateInvocation(
 		return 0, 0, common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to create or find instance name"))
 	}
 
-	invocationDbID, err := tx.BazelInvocation.Create().
+	create := tx.BazelInvocation.Create().
 		SetInvocationID(invocationIDUUID).
-		SetInstanceNameID(instanceNameDbID).
-		OnConflictColumns(bazelinvocation.FieldInvocationID).
+		SetInstanceNameID(instanceNameDbID)
+
+	if authenticatedUserDbID != nil {
+		create.SetAuthenticatedUserID(*authenticatedUserDbID)
+	}
+
+	invocationDbID, err := create.OnConflictColumns(bazelinvocation.FieldInvocationID).
 		Ignore().
 		ID(ctx)
 	if err != nil {

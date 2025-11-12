@@ -18,6 +18,9 @@ type ActionSummary func(*sql.Selector)
 // ArtifactMetrics is the predicate function for artifactmetrics builders.
 type ArtifactMetrics func(*sql.Selector)
 
+// AuthenticatedUser is the predicate function for authenticateduser builders.
+type AuthenticatedUser func(*sql.Selector)
+
 // BazelInvocation is the predicate function for bazelinvocation builders.
 type BazelInvocation func(*sql.Selector)
 

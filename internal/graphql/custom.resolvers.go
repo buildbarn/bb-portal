@@ -13,6 +13,7 @@ import (
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
@@ -183,6 +184,14 @@ func (r *queryResolver) BazelInvocation(ctx context.Context, invocationID string
 		return nil, fmt.Errorf("invocationID was not a UUID: %w", err)
 	}
 	return r.client.BazelInvocation.Query().Where(bazelinvocation.InvocationID(invocationUUID)).First(ctx)
+}
+
+// GetAuthenticatedUser is the resolver for the getAuthenticatedUser field.
+func (r *queryResolver) GetAuthenticatedUser(ctx context.Context, userUUID *uuid.UUID) (*ent.AuthenticatedUser, error) {
+	if userUUID == nil {
+		return nil, errors.New("userUUID must be provided")
+	}
+	return r.client.AuthenticatedUser.Query().Where(authenticateduser.UserUUID(*userUUID)).First(ctx)
 }
 
 // GetBuild is the resolver for the getBuild field.

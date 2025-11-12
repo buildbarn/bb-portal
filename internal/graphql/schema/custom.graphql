@@ -1,5 +1,6 @@
 extend type Query {
   bazelInvocation(invocationId: String!): BazelInvocation!
+  getAuthenticatedUser(userUUID: UUID): AuthenticatedUser
   getBuild(buildURL: String, buildUUID: UUID): Build
   getTarget(
     instanceName: String!

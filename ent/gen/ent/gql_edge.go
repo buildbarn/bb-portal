@@ -84,6 +84,27 @@ func (am *ArtifactMetrics) Metrics(ctx context.Context) (*Metrics, error) {
 	return result, MaskNotFound(err)
 }
 
+func (au *AuthenticatedUser) BazelInvocations(
+	ctx context.Context, after *Cursor, first *int, before *Cursor, last *int, orderBy *BazelInvocationOrder, where *BazelInvocationWhereInput,
+) (*BazelInvocationConnection, error) {
+	opts := []BazelInvocationPaginateOption{
+		WithBazelInvocationOrder(orderBy),
+		WithBazelInvocationFilter(where.Filter),
+	}
+	alias := graphql.GetFieldContext(ctx).Field.Alias
+	totalCount, hasTotalCount := au.Edges.totalCount[0][alias]
+	if nodes, err := au.NamedBazelInvocations(alias); err == nil || hasTotalCount {
+		pager, err := newBazelInvocationPager(opts, last != nil)
+		if err != nil {
+			return nil, err
+		}
+		conn := &BazelInvocationConnection{Edges: []*BazelInvocationEdge{}, TotalCount: totalCount}
+		conn.build(nodes, pager, after, first, before, last)
+		return conn, nil
+	}
+	return au.QueryBazelInvocations().Paginate(ctx, after, first, before, last, opts...)
+}
+
 func (bi *BazelInvocation) InstanceName(ctx context.Context) (*InstanceName, error) {
 	result, err := bi.Edges.InstanceNameOrErr()
 	if IsNotLoaded(err) {
@@ -96,6 +117,14 @@ func (bi *BazelInvocation) Build(ctx context.Context) (*Build, error) {
 	result, err := bi.Edges.BuildOrErr()
 	if IsNotLoaded(err) {
 		result, err = bi.QueryBuild().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
+func (bi *BazelInvocation) AuthenticatedUser(ctx context.Context) (*AuthenticatedUser, error) {
+	result, err := bi.Edges.AuthenticatedUserOrErr()
+	if IsNotLoaded(err) {
+		result, err = bi.QueryAuthenticatedUser().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }
@@ -152,7 +181,7 @@ func (bi *BazelInvocation) InvocationTargets(
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := bi.Edges.totalCount[6][alias]
+	totalCount, hasTotalCount := bi.Edges.totalCount[7][alias]
 	if nodes, err := bi.NamedInvocationTargets(alias); err == nil || hasTotalCount {
 		pager, err := newInvocationTargetPager(opts, last != nil)
 		if err != nil {
