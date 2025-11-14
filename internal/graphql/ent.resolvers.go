@@ -208,16 +208,6 @@ func (r *queryResolver) FindBuilds(ctx context.Context, after *entgql.Cursor[int
 	return r.client.Build.Query().Paginate(ctx, after, first, before, last, ent.WithBuildFilter(where.Filter))
 }
 
-// FindMetrics is the resolver for the findMetrics field.
-func (r *queryResolver) FindMetrics(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.MetricsWhereInput) (*ent.MetricsConnection, error) {
-	return r.client.Metrics.Query().Paginate(ctx, after, first, before, last, ent.WithMetricsFilter(where.Filter))
-}
-
-// FindRunnerCounts is the resolver for the findRunnerCounts field.
-func (r *queryResolver) FindRunnerCounts(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.RunnerCountWhereInput) (*ent.RunnerCountConnection, error) {
-	return r.client.RunnerCount.Query().Paginate(ctx, after, first, before, last, ent.WithRunnerCountFilter(where.Filter))
-}
-
 // FindTargets is the resolver for the findTargets field.
 func (r *queryResolver) FindTargets(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.TargetWhereInput) (*ent.TargetConnection, error) {
 	return r.client.Target.Query().Paginate(ctx, after, first, before, last, ent.WithTargetFilter(where.Filter))
