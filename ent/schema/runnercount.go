@@ -1,9 +1,7 @@
 package schema
 
 import (
-	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
-	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
@@ -42,13 +40,5 @@ func (RunnerCount) Edges() []ent.Edge {
 func (RunnerCount) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Edges("action_summary"),
-	}
-}
-
-// Annotations of the Runner Counts.
-func (RunnerCount) Annotations() []schema.Annotation {
-	return []schema.Annotation{
-		entgql.RelayConnection(),
-		entgql.QueryField("findRunnerCounts"),
 	}
 }
