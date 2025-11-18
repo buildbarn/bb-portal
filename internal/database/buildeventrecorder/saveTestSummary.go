@@ -13,7 +13,7 @@ import (
 )
 
 func (r *BuildEventRecorder) saveTestSummary(ctx context.Context, tx *ent.Tx, testSummary *bes.TestSummary, label string) error {
-	if r.saveTargetDataLevel.GetNone() != nil {
+	if r.saveTestDataLevel.GetNone() != nil {
 		return nil
 	}
 
@@ -32,7 +32,7 @@ func (r *BuildEventRecorder) saveTestSummary(ctx context.Context, tx *ent.Tx, te
 		SetOverallStatus(testcollection.OverallStatus(bes.TestStatus_name[int32(testSummary.OverallStatus)])).
 		SetDurationMs(testSummary.TotalRunDuration.AsDuration().Milliseconds())
 
-	if r.saveTargetDataLevel.GetEnriched() != nil {
+	if r.saveTestDataLevel.GetEnriched() != nil {
 		testSummaryDb, err := tx.TestSummary.Create().
 			SetOverallStatus(testsummary.OverallStatus(bes.TestStatus_name[int32(testSummary.OverallStatus)])).
 			SetAttemptCount(testSummary.AttemptCount).

@@ -60,6 +60,7 @@
     enableBepFileUpload: true,
     enableGraphqlPlayground: true,
     saveTargetDataLevel: { enriched: {} },
+    saveTestDataLevel: { enriched: {} },
     databaseCleanupConfiguration: {
       cleanupInterval: '60s',
       invocationConnectionTimeout: '60s',

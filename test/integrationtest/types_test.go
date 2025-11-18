@@ -30,6 +30,7 @@ type testCase struct {
 	name                string
 	ctx                 context.Context
 	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel
+	saveTestDataLevel   *bb_portal.BuildEventStreamService_SaveTestDataLevel
 	extractors          *bb_portal.AuthMetadataExtractorConfiguration
 	mockUUID            *string
 	bepFileTestCases    []bepFileTestCase

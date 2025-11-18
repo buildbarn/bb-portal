@@ -39,6 +39,7 @@ type BepUploader struct {
 	instanceNameAuthorizer auth.Authorizer
 	blobArchiver           processing.BlobMultiArchiver
 	saveTargetDataLevel    *bb_portal.BuildEventStreamService_SaveTargetDataLevel
+	saveTestDataLevel      *bb_portal.BuildEventStreamService_SaveTestDataLevel
 	tracerProvider         trace.TracerProvider
 	extractors             *authmetadataextraction.AuthMetadataExtractors
 	uuidGenerator          util.UUIDGenerator
@@ -64,6 +65,11 @@ func NewBepUploader(db *ent.Client, blobArchiver processing.BlobMultiArchiver, c
 		return nil, fmt.Errorf("No saveTargetDataLevel configured")
 	}
 
+	saveTestDataLevel := besConfiguration.SaveTestDataLevel
+	if saveTestDataLevel == nil || saveTestDataLevel.Level == nil {
+		return nil, fmt.Errorf("No saveTestDataLevel configured")
+	}
+
 	extractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to create AutheMetadataExtractors")
@@ -74,6 +80,7 @@ func NewBepUploader(db *ent.Client, blobArchiver processing.BlobMultiArchiver, c
 		instanceNameAuthorizer: instanceNameAuthorizer,
 		blobArchiver:           blobArchiver,
 		saveTargetDataLevel:    saveTargetDataLevel,
+		saveTestDataLevel:      saveTestDataLevel,
 		tracerProvider:         tracerProvider,
 		extractors:             extractors,
 		uuidGenerator:          uuidGenerator,
@@ -120,6 +127,7 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 				b.instanceNameAuthorizer,
 				b.blobArchiver,
 				b.saveTargetDataLevel,
+				b.saveTestDataLevel,
 				b.tracerProvider,
 				"",                                // instanceName
 				bazelEvent.GetStarted().GetUuid(), // invocationID

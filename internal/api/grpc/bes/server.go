@@ -40,6 +40,7 @@ type BuildEventServer struct {
 	instanceNameAuthorizer auth.Authorizer
 	blobArchiver           processing.BlobMultiArchiver
 	saveTargetDataLevel    *bb_portal.BuildEventStreamService_SaveTargetDataLevel
+	saveTestDataLevel      *bb_portal.BuildEventStreamService_SaveTestDataLevel
 	tracerProvider         trace.TracerProvider
 	extractors             *authmetadataextraction.AuthMetadataExtractors
 	uuidGenerator          util.UUIDGenerator
@@ -65,6 +66,11 @@ func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiv
 		return nil, fmt.Errorf("No saveTargetDataLevel configured")
 	}
 
+	saveTestDataLevel := besConfiguration.SaveTestDataLevel
+	if saveTestDataLevel == nil || saveTestDataLevel.Level == nil {
+		return nil, fmt.Errorf("No saveTestDataLevel configured")
+	}
+
 	extractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
 	if err != nil {
 		return nil, util.StatusWrap(err, "Failed to create AutheMetadataExtractors")
@@ -75,6 +81,7 @@ func NewBuildEventServer(db *ent.Client, blobArchiver processing.BlobMultiArchiv
 		db:                     db,
 		blobArchiver:           blobArchiver,
 		saveTargetDataLevel:    saveTargetDataLevel,
+		saveTestDataLevel:      saveTestDataLevel,
 		tracerProvider:         tracerProvider,
 		extractors:             extractors,
 		uuidGenerator:          uuidGenerator,
@@ -115,6 +122,7 @@ func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildE
 				s.instanceNameAuthorizer,
 				s.blobArchiver,
 				s.saveTargetDataLevel,
+				s.saveTestDataLevel,
 				s.tracerProvider,
 				req.GetProjectId(),
 				req.GetOrderedBuildEvent().GetStreamId().GetInvocationId(),
