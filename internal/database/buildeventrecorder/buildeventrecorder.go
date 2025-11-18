@@ -34,6 +34,7 @@ type BuildEventRecorder struct {
 	problemDetector     detectors.ProblemDetector
 	blobArchiver        processing.BlobMultiArchiver
 	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel
+	saveTestDataLevel   *bb_portal.BuildEventStreamService_SaveTestDataLevel
 	tracer              trace.Tracer
 
 	InstanceName           string
@@ -51,6 +52,7 @@ func NewBuildEventRecorder(
 	instanceNameAuthorizer auth.Authorizer,
 	blobArchiver processing.BlobMultiArchiver,
 	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel,
+	saveTestDataLevel *bb_portal.BuildEventStreamService_SaveTestDataLevel,
 	tracerProvider trace.TracerProvider,
 	instanceName string,
 	invocationID string,
@@ -83,6 +85,7 @@ func NewBuildEventRecorder(
 		problemDetector:     detectors.NewProblemDetector(),
 		blobArchiver:        blobArchiver,
 		saveTargetDataLevel: saveTargetDataLevel,
+		saveTestDataLevel:   saveTestDataLevel,
 		tracer:              tracer,
 
 		InstanceName:           instanceName,

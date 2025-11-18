@@ -267,8 +267,9 @@ type BuildEventStreamService struct {
 	EnableBepFileUpload          bool                                                  `protobuf:"varint,4,opt,name=enable_bep_file_upload,json=enableBepFileUpload,proto3" json:"enable_bep_file_upload,omitempty"`
 	EnableGraphqlPlayground      bool                                                  `protobuf:"varint,5,opt,name=enable_graphql_playground,json=enableGraphqlPlayground,proto3" json:"enable_graphql_playground,omitempty"`
 	SaveTargetDataLevel          *BuildEventStreamService_SaveTargetDataLevel          `protobuf:"bytes,6,opt,name=save_target_data_level,json=saveTargetDataLevel,proto3" json:"save_target_data_level,omitempty"`
-	DatabaseCleanupConfiguration *BuildEventStreamService_DatabaseCleanupConfiguration `protobuf:"bytes,7,opt,name=database_cleanup_configuration,json=databaseCleanupConfiguration,proto3" json:"database_cleanup_configuration,omitempty"`
-	AuthMetadataKeyConfiguration *AuthMetadataExtractorConfiguration                   `protobuf:"bytes,8,opt,name=auth_metadata_key_configuration,json=authMetadataKeyConfiguration,proto3" json:"auth_metadata_key_configuration,omitempty"`
+	SaveTestDataLevel            *BuildEventStreamService_SaveTestDataLevel            `protobuf:"bytes,7,opt,name=save_test_data_level,json=saveTestDataLevel,proto3" json:"save_test_data_level,omitempty"`
+	DatabaseCleanupConfiguration *BuildEventStreamService_DatabaseCleanupConfiguration `protobuf:"bytes,8,opt,name=database_cleanup_configuration,json=databaseCleanupConfiguration,proto3" json:"database_cleanup_configuration,omitempty"`
+	AuthMetadataKeyConfiguration *AuthMetadataExtractorConfiguration                   `protobuf:"bytes,9,opt,name=auth_metadata_key_configuration,json=authMetadataKeyConfiguration,proto3" json:"auth_metadata_key_configuration,omitempty"`
 	unknownFields                protoimpl.UnknownFields
 	sizeCache                    protoimpl.SizeCache
 }
@@ -341,6 +342,13 @@ func (x *BuildEventStreamService) GetEnableGraphqlPlayground() bool {
 func (x *BuildEventStreamService) GetSaveTargetDataLevel() *BuildEventStreamService_SaveTargetDataLevel {
 	if x != nil {
 		return x.SaveTargetDataLevel
+	}
+	return nil
+}
+
+func (x *BuildEventStreamService) GetSaveTestDataLevel() *BuildEventStreamService_SaveTestDataLevel {
+	if x != nil {
+		return x.SaveTestDataLevel
 	}
 	return nil
 }
@@ -696,6 +704,107 @@ func (*BuildEventStreamService_SaveTargetDataLevel_Basic) isBuildEventStreamServ
 func (*BuildEventStreamService_SaveTargetDataLevel_Enriched) isBuildEventStreamService_SaveTargetDataLevel_Level() {
 }
 
+type BuildEventStreamService_SaveTestDataLevel struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to Level:
+	//
+	//	*BuildEventStreamService_SaveTestDataLevel_None
+	//	*BuildEventStreamService_SaveTestDataLevel_Basic
+	//	*BuildEventStreamService_SaveTestDataLevel_Enriched
+	Level         isBuildEventStreamService_SaveTestDataLevel_Level `protobuf_oneof:"level"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BuildEventStreamService_SaveTestDataLevel) Reset() {
+	*x = BuildEventStreamService_SaveTestDataLevel{}
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BuildEventStreamService_SaveTestDataLevel) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BuildEventStreamService_SaveTestDataLevel) ProtoMessage() {}
+
+func (x *BuildEventStreamService_SaveTestDataLevel) ProtoReflect() protoreflect.Message {
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BuildEventStreamService_SaveTestDataLevel.ProtoReflect.Descriptor instead.
+func (*BuildEventStreamService_SaveTestDataLevel) Descriptor() ([]byte, []int) {
+	return file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDescGZIP(), []int{4, 1}
+}
+
+func (x *BuildEventStreamService_SaveTestDataLevel) GetLevel() isBuildEventStreamService_SaveTestDataLevel_Level {
+	if x != nil {
+		return x.Level
+	}
+	return nil
+}
+
+func (x *BuildEventStreamService_SaveTestDataLevel) GetNone() *emptypb.Empty {
+	if x != nil {
+		if x, ok := x.Level.(*BuildEventStreamService_SaveTestDataLevel_None); ok {
+			return x.None
+		}
+	}
+	return nil
+}
+
+func (x *BuildEventStreamService_SaveTestDataLevel) GetBasic() *emptypb.Empty {
+	if x != nil {
+		if x, ok := x.Level.(*BuildEventStreamService_SaveTestDataLevel_Basic); ok {
+			return x.Basic
+		}
+	}
+	return nil
+}
+
+func (x *BuildEventStreamService_SaveTestDataLevel) GetEnriched() *emptypb.Empty {
+	if x != nil {
+		if x, ok := x.Level.(*BuildEventStreamService_SaveTestDataLevel_Enriched); ok {
+			return x.Enriched
+		}
+	}
+	return nil
+}
+
+type isBuildEventStreamService_SaveTestDataLevel_Level interface {
+	isBuildEventStreamService_SaveTestDataLevel_Level()
+}
+
+type BuildEventStreamService_SaveTestDataLevel_None struct {
+	None *emptypb.Empty `protobuf:"bytes,1,opt,name=none,proto3,oneof"`
+}
+
+type BuildEventStreamService_SaveTestDataLevel_Basic struct {
+	Basic *emptypb.Empty `protobuf:"bytes,2,opt,name=basic,proto3,oneof"`
+}
+
+type BuildEventStreamService_SaveTestDataLevel_Enriched struct {
+	Enriched *emptypb.Empty `protobuf:"bytes,3,opt,name=enriched,proto3,oneof"`
+}
+
+func (*BuildEventStreamService_SaveTestDataLevel_None) isBuildEventStreamService_SaveTestDataLevel_Level() {
+}
+
+func (*BuildEventStreamService_SaveTestDataLevel_Basic) isBuildEventStreamService_SaveTestDataLevel_Level() {
+}
+
+func (*BuildEventStreamService_SaveTestDataLevel_Enriched) isBuildEventStreamService_SaveTestDataLevel_Level() {
+}
+
 type BuildEventStreamService_DatabaseCleanupConfiguration struct {
 	state                       protoimpl.MessageState `protogen:"open.v1"`
 	CleanupInterval             *durationpb.Duration   `protobuf:"bytes,1,opt,name=cleanup_interval,json=cleanupInterval,proto3" json:"cleanup_interval,omitempty"`
@@ -708,7 +817,7 @@ type BuildEventStreamService_DatabaseCleanupConfiguration struct {
 
 func (x *BuildEventStreamService_DatabaseCleanupConfiguration) Reset() {
 	*x = BuildEventStreamService_DatabaseCleanupConfiguration{}
-	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_msgTypes[9]
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -720,7 +829,7 @@ func (x *BuildEventStreamService_DatabaseCleanupConfiguration) String() string {
 func (*BuildEventStreamService_DatabaseCleanupConfiguration) ProtoMessage() {}
 
 func (x *BuildEventStreamService_DatabaseCleanupConfiguration) ProtoReflect() protoreflect.Message {
-	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_msgTypes[9]
+	mi := &file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -733,7 +842,7 @@ func (x *BuildEventStreamService_DatabaseCleanupConfiguration) ProtoReflect() pr
 
 // Deprecated: Use BuildEventStreamService_DatabaseCleanupConfiguration.ProtoReflect.Descriptor instead.
 func (*BuildEventStreamService_DatabaseCleanupConfiguration) Descriptor() ([]byte, []int) {
-	return file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDescGZIP(), []int{4, 1}
+	return file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDescGZIP(), []int{4, 2}
 }
 
 func (x *BuildEventStreamService_DatabaseCleanupConfiguration) GetCleanupInterval() *durationpb.Duration {
@@ -780,18 +889,23 @@ const file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_p
 	"\"AuthMetadataExtractorConfiguration\x12\x88\x01\n" +
 	"*external_id_extraction_jmespath_expression\x18\x01 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR&externalIdExtractionJmespathExpression\x12\x8a\x01\n" +
 	"+display_name_extraction_jmespath_expression\x18\x02 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR'displayNameExtractionJmespathExpression\x12\x84\x01\n" +
-	"(user_info_extraction_jmespath_expression\x18\x03 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR$userInfoExtractionJmespathExpression\"\xb0\n" +
-	"\n" +
+	"(user_info_extraction_jmespath_expression\x18\x03 \x01(\v2,.buildbarn.configuration.jmespath.ExpressionR$userInfoExtractionJmespathExpression\"\xe2\f\n" +
 	"\x17BuildEventStreamService\x12T\n" +
 	"\fgrpc_servers\x18\x01 \x03(\v21.buildbarn.configuration.grpc.ServerConfigurationR\vgrpcServers\x12G\n" +
 	"\bdatabase\x18\x02 \x01(\v2+.buildbarn.configuration.bb_portal.DatabaseR\bdatabase\x12.\n" +
 	"\x13blob_archive_folder\x18\x03 \x01(\tR\x11blobArchiveFolder\x123\n" +
 	"\x16enable_bep_file_upload\x18\x04 \x01(\bR\x13enableBepFileUpload\x12:\n" +
 	"\x19enable_graphql_playground\x18\x05 \x01(\bR\x17enableGraphqlPlayground\x12\x83\x01\n" +
-	"\x16save_target_data_level\x18\x06 \x01(\v2N.buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTargetDataLevelR\x13saveTargetDataLevel\x12\x9d\x01\n" +
-	"\x1edatabase_cleanup_configuration\x18\a \x01(\v2W.buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfigurationR\x1cdatabaseCleanupConfiguration\x12\x8c\x01\n" +
-	"\x1fauth_metadata_key_configuration\x18\b \x01(\v2E.buildbarn.configuration.bb_portal.AuthMetadataExtractorConfigurationR\x1cauthMetadataKeyConfiguration\x1a\xb2\x01\n" +
+	"\x16save_target_data_level\x18\x06 \x01(\v2N.buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTargetDataLevelR\x13saveTargetDataLevel\x12}\n" +
+	"\x14save_test_data_level\x18\a \x01(\v2L.buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTestDataLevelR\x11saveTestDataLevel\x12\x9d\x01\n" +
+	"\x1edatabase_cleanup_configuration\x18\b \x01(\v2W.buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfigurationR\x1cdatabaseCleanupConfiguration\x12\x8c\x01\n" +
+	"\x1fauth_metadata_key_configuration\x18\t \x01(\v2E.buildbarn.configuration.bb_portal.AuthMetadataExtractorConfigurationR\x1cauthMetadataKeyConfiguration\x1a\xb2\x01\n" +
 	"\x13SaveTargetDataLevel\x12,\n" +
+	"\x04none\x18\x01 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x04none\x12.\n" +
+	"\x05basic\x18\x02 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x05basic\x124\n" +
+	"\benriched\x18\x03 \x01(\v2\x16.google.protobuf.EmptyH\x00R\benrichedB\a\n" +
+	"\x05level\x1a\xb0\x01\n" +
+	"\x11SaveTestDataLevel\x12,\n" +
 	"\x04none\x18\x01 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x04none\x12.\n" +
 	"\x05basic\x18\x02 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x05basic\x124\n" +
 	"\benriched\x18\x03 \x01(\v2\x16.google.protobuf.EmptyH\x00R\benrichedB\a\n" +
@@ -833,7 +947,7 @@ func file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_po
 	return file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDescData
 }
 
-var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_goTypes = []any{
 	(*PostgresSource)(nil),                                       // 0: buildbarn.configuration.bb_portal.PostgresSource
 	(*SqliteSource)(nil),                                         // 1: buildbarn.configuration.bb_portal.SqliteSource
@@ -844,52 +958,57 @@ var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_por
 	(*SchedulerService)(nil),                                     // 6: buildbarn.configuration.bb_portal.SchedulerService
 	(*ApplicationConfiguration)(nil),                             // 7: buildbarn.configuration.bb_portal.ApplicationConfiguration
 	(*BuildEventStreamService_SaveTargetDataLevel)(nil),          // 8: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTargetDataLevel
-	(*BuildEventStreamService_DatabaseCleanupConfiguration)(nil), // 9: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration
-	(*jmespath.Expression)(nil),                                  // 10: buildbarn.configuration.jmespath.Expression
-	(*grpc.ServerConfiguration)(nil),                             // 11: buildbarn.configuration.grpc.ServerConfiguration
-	(*blobstore.BlobAccessConfiguration)(nil),                    // 12: buildbarn.configuration.blobstore.BlobAccessConfiguration
-	(*grpc.ClientConfiguration)(nil),                             // 13: buildbarn.configuration.grpc.ClientConfiguration
-	(*auth.AuthorizerConfiguration)(nil),                         // 14: buildbarn.configuration.auth.AuthorizerConfiguration
-	(*server.Configuration)(nil),                                 // 15: buildbarn.configuration.http.server.Configuration
-	(*global.Configuration)(nil),                                 // 16: buildbarn.configuration.global.Configuration
-	(*emptypb.Empty)(nil),                                        // 17: google.protobuf.Empty
-	(*durationpb.Duration)(nil),                                  // 18: google.protobuf.Duration
+	(*BuildEventStreamService_SaveTestDataLevel)(nil),            // 9: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTestDataLevel
+	(*BuildEventStreamService_DatabaseCleanupConfiguration)(nil), // 10: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration
+	(*jmespath.Expression)(nil),                                  // 11: buildbarn.configuration.jmespath.Expression
+	(*grpc.ServerConfiguration)(nil),                             // 12: buildbarn.configuration.grpc.ServerConfiguration
+	(*blobstore.BlobAccessConfiguration)(nil),                    // 13: buildbarn.configuration.blobstore.BlobAccessConfiguration
+	(*grpc.ClientConfiguration)(nil),                             // 14: buildbarn.configuration.grpc.ClientConfiguration
+	(*auth.AuthorizerConfiguration)(nil),                         // 15: buildbarn.configuration.auth.AuthorizerConfiguration
+	(*server.Configuration)(nil),                                 // 16: buildbarn.configuration.http.server.Configuration
+	(*global.Configuration)(nil),                                 // 17: buildbarn.configuration.global.Configuration
+	(*emptypb.Empty)(nil),                                        // 18: google.protobuf.Empty
+	(*durationpb.Duration)(nil),                                  // 19: google.protobuf.Duration
 }
 var file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_depIdxs = []int32{
 	1,  // 0: buildbarn.configuration.bb_portal.Database.sqlite:type_name -> buildbarn.configuration.bb_portal.SqliteSource
 	0,  // 1: buildbarn.configuration.bb_portal.Database.postgres:type_name -> buildbarn.configuration.bb_portal.PostgresSource
-	10, // 2: buildbarn.configuration.bb_portal.AuthMetadataExtractorConfiguration.external_id_extraction_jmespath_expression:type_name -> buildbarn.configuration.jmespath.Expression
-	10, // 3: buildbarn.configuration.bb_portal.AuthMetadataExtractorConfiguration.display_name_extraction_jmespath_expression:type_name -> buildbarn.configuration.jmespath.Expression
-	10, // 4: buildbarn.configuration.bb_portal.AuthMetadataExtractorConfiguration.user_info_extraction_jmespath_expression:type_name -> buildbarn.configuration.jmespath.Expression
-	11, // 5: buildbarn.configuration.bb_portal.BuildEventStreamService.grpc_servers:type_name -> buildbarn.configuration.grpc.ServerConfiguration
+	11, // 2: buildbarn.configuration.bb_portal.AuthMetadataExtractorConfiguration.external_id_extraction_jmespath_expression:type_name -> buildbarn.configuration.jmespath.Expression
+	11, // 3: buildbarn.configuration.bb_portal.AuthMetadataExtractorConfiguration.display_name_extraction_jmespath_expression:type_name -> buildbarn.configuration.jmespath.Expression
+	11, // 4: buildbarn.configuration.bb_portal.AuthMetadataExtractorConfiguration.user_info_extraction_jmespath_expression:type_name -> buildbarn.configuration.jmespath.Expression
+	12, // 5: buildbarn.configuration.bb_portal.BuildEventStreamService.grpc_servers:type_name -> buildbarn.configuration.grpc.ServerConfiguration
 	2,  // 6: buildbarn.configuration.bb_portal.BuildEventStreamService.database:type_name -> buildbarn.configuration.bb_portal.Database
 	8,  // 7: buildbarn.configuration.bb_portal.BuildEventStreamService.save_target_data_level:type_name -> buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTargetDataLevel
-	9,  // 8: buildbarn.configuration.bb_portal.BuildEventStreamService.database_cleanup_configuration:type_name -> buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration
-	3,  // 9: buildbarn.configuration.bb_portal.BuildEventStreamService.auth_metadata_key_configuration:type_name -> buildbarn.configuration.bb_portal.AuthMetadataExtractorConfiguration
-	12, // 10: buildbarn.configuration.bb_portal.BrowserService.content_addressable_storage:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
-	12, // 11: buildbarn.configuration.bb_portal.BrowserService.action_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
-	12, // 12: buildbarn.configuration.bb_portal.BrowserService.initial_size_class_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
-	12, // 13: buildbarn.configuration.bb_portal.BrowserService.file_system_access_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
-	13, // 14: buildbarn.configuration.bb_portal.SchedulerService.build_queue_state_client:type_name -> buildbarn.configuration.grpc.ClientConfiguration
-	14, // 15: buildbarn.configuration.bb_portal.SchedulerService.kill_operations_authorizer:type_name -> buildbarn.configuration.auth.AuthorizerConfiguration
-	15, // 16: buildbarn.configuration.bb_portal.ApplicationConfiguration.http_servers:type_name -> buildbarn.configuration.http.server.Configuration
-	16, // 17: buildbarn.configuration.bb_portal.ApplicationConfiguration.global:type_name -> buildbarn.configuration.global.Configuration
-	4,  // 18: buildbarn.configuration.bb_portal.ApplicationConfiguration.bes_service_configuration:type_name -> buildbarn.configuration.bb_portal.BuildEventStreamService
-	5,  // 19: buildbarn.configuration.bb_portal.ApplicationConfiguration.browser_service_configuration:type_name -> buildbarn.configuration.bb_portal.BrowserService
-	6,  // 20: buildbarn.configuration.bb_portal.ApplicationConfiguration.scheduler_service_configuration:type_name -> buildbarn.configuration.bb_portal.SchedulerService
-	14, // 21: buildbarn.configuration.bb_portal.ApplicationConfiguration.instance_name_authorizer:type_name -> buildbarn.configuration.auth.AuthorizerConfiguration
-	17, // 22: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTargetDataLevel.none:type_name -> google.protobuf.Empty
-	17, // 23: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTargetDataLevel.basic:type_name -> google.protobuf.Empty
-	17, // 24: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTargetDataLevel.enriched:type_name -> google.protobuf.Empty
-	18, // 25: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.cleanup_interval:type_name -> google.protobuf.Duration
-	18, // 26: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_connection_timeout:type_name -> google.protobuf.Duration
-	18, // 27: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_message_timeout:type_name -> google.protobuf.Duration
-	18, // 28: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_retention:type_name -> google.protobuf.Duration
-	29, // [29:29] is the sub-list for method output_type
-	29, // [29:29] is the sub-list for method input_type
-	29, // [29:29] is the sub-list for extension type_name
-	29, // [29:29] is the sub-list for extension extendee
-	0,  // [0:29] is the sub-list for field type_name
+	9,  // 8: buildbarn.configuration.bb_portal.BuildEventStreamService.save_test_data_level:type_name -> buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTestDataLevel
+	10, // 9: buildbarn.configuration.bb_portal.BuildEventStreamService.database_cleanup_configuration:type_name -> buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration
+	3,  // 10: buildbarn.configuration.bb_portal.BuildEventStreamService.auth_metadata_key_configuration:type_name -> buildbarn.configuration.bb_portal.AuthMetadataExtractorConfiguration
+	13, // 11: buildbarn.configuration.bb_portal.BrowserService.content_addressable_storage:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
+	13, // 12: buildbarn.configuration.bb_portal.BrowserService.action_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
+	13, // 13: buildbarn.configuration.bb_portal.BrowserService.initial_size_class_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
+	13, // 14: buildbarn.configuration.bb_portal.BrowserService.file_system_access_cache:type_name -> buildbarn.configuration.blobstore.BlobAccessConfiguration
+	14, // 15: buildbarn.configuration.bb_portal.SchedulerService.build_queue_state_client:type_name -> buildbarn.configuration.grpc.ClientConfiguration
+	15, // 16: buildbarn.configuration.bb_portal.SchedulerService.kill_operations_authorizer:type_name -> buildbarn.configuration.auth.AuthorizerConfiguration
+	16, // 17: buildbarn.configuration.bb_portal.ApplicationConfiguration.http_servers:type_name -> buildbarn.configuration.http.server.Configuration
+	17, // 18: buildbarn.configuration.bb_portal.ApplicationConfiguration.global:type_name -> buildbarn.configuration.global.Configuration
+	4,  // 19: buildbarn.configuration.bb_portal.ApplicationConfiguration.bes_service_configuration:type_name -> buildbarn.configuration.bb_portal.BuildEventStreamService
+	5,  // 20: buildbarn.configuration.bb_portal.ApplicationConfiguration.browser_service_configuration:type_name -> buildbarn.configuration.bb_portal.BrowserService
+	6,  // 21: buildbarn.configuration.bb_portal.ApplicationConfiguration.scheduler_service_configuration:type_name -> buildbarn.configuration.bb_portal.SchedulerService
+	15, // 22: buildbarn.configuration.bb_portal.ApplicationConfiguration.instance_name_authorizer:type_name -> buildbarn.configuration.auth.AuthorizerConfiguration
+	18, // 23: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTargetDataLevel.none:type_name -> google.protobuf.Empty
+	18, // 24: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTargetDataLevel.basic:type_name -> google.protobuf.Empty
+	18, // 25: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTargetDataLevel.enriched:type_name -> google.protobuf.Empty
+	18, // 26: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTestDataLevel.none:type_name -> google.protobuf.Empty
+	18, // 27: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTestDataLevel.basic:type_name -> google.protobuf.Empty
+	18, // 28: buildbarn.configuration.bb_portal.BuildEventStreamService.SaveTestDataLevel.enriched:type_name -> google.protobuf.Empty
+	19, // 29: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.cleanup_interval:type_name -> google.protobuf.Duration
+	19, // 30: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_connection_timeout:type_name -> google.protobuf.Duration
+	19, // 31: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_message_timeout:type_name -> google.protobuf.Duration
+	19, // 32: buildbarn.configuration.bb_portal.BuildEventStreamService.DatabaseCleanupConfiguration.invocation_retention:type_name -> google.protobuf.Duration
+	33, // [33:33] is the sub-list for method output_type
+	33, // [33:33] is the sub-list for method input_type
+	33, // [33:33] is the sub-list for extension type_name
+	33, // [33:33] is the sub-list for extension extendee
+	0,  // [0:33] is the sub-list for field type_name
 }
 
 func init() {
@@ -908,13 +1027,18 @@ func file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_po
 		(*BuildEventStreamService_SaveTargetDataLevel_Basic)(nil),
 		(*BuildEventStreamService_SaveTargetDataLevel_Enriched)(nil),
 	}
+	file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_msgTypes[9].OneofWrappers = []any{
+		(*BuildEventStreamService_SaveTestDataLevel_None)(nil),
+		(*BuildEventStreamService_SaveTestDataLevel_Basic)(nil),
+		(*BuildEventStreamService_SaveTestDataLevel_Enriched)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDesc), len(file_github_com_buildbarn_bb_portal_pkg_proto_configuration_bb_portal_bb_portal_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

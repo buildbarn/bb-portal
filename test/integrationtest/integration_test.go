@@ -78,6 +78,11 @@ var (
 					Enriched: &emptypb.Empty{},
 				},
 			},
+			saveTestDataLevel: &bb_portal.BuildEventStreamService_SaveTestDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveTestDataLevel_Enriched{
+					Enriched: &emptypb.Empty{},
+				},
+			},
 			bepFileTestCases: []bepFileTestCase{
 				{bepFile: successfulBazelBuild},
 				{bepFile: failedBazelBuild},
@@ -203,6 +208,11 @@ var (
 					Enriched: &emptypb.Empty{},
 				},
 			},
+			saveTestDataLevel: &bb_portal.BuildEventStreamService_SaveTestDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveTestDataLevel_Enriched{
+					Enriched: &emptypb.Empty{},
+				},
+			},
 			bepFileTestCases: []bepFileTestCase{
 				{bepFile: successfulBazelBuild},
 				{bepFile: successfulBazelBuild, wantErr: errInvocationLocked},
@@ -213,6 +223,11 @@ var (
 			name: "TestGraphqlQueriesWithAuthMetadata",
 			saveTargetDataLevel: &bb_portal.BuildEventStreamService_SaveTargetDataLevel{
 				Level: &bb_portal.BuildEventStreamService_SaveTargetDataLevel_Enriched{
+					Enriched: &emptypb.Empty{},
+				},
+			},
+			saveTestDataLevel: &bb_portal.BuildEventStreamService_SaveTestDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveTestDataLevel_Enriched{
 					Enriched: &emptypb.Empty{},
 				},
 			},

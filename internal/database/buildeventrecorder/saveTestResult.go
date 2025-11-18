@@ -173,7 +173,7 @@ func (r *BuildEventRecorder) updateTestCollection(ctx context.Context, tx *ent.T
 }
 
 func (r *BuildEventRecorder) saveTestResult(ctx context.Context, tx *ent.Tx, testResult *bes.TestResult, label string) error {
-	if r.saveTargetDataLevel.GetNone() != nil {
+	if r.saveTestDataLevel.GetNone() != nil {
 		return nil
 	}
 
@@ -205,7 +205,7 @@ func (r *BuildEventRecorder) saveTestResult(ctx context.Context, tx *ent.Tx, tes
 		}
 	}
 
-	if r.saveTargetDataLevel.GetEnriched() != nil {
+	if r.saveTestDataLevel.GetEnriched() != nil {
 		err = r.saveTestResultBES(ctx, tx, testResult, label, testCollectionDbID)
 		if err != nil {
 			return util.StatusWrap(err, "failed to save test result BES message to database")

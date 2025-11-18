@@ -69,11 +69,11 @@ message BuildEventStreamService {
 
   message SaveTargetDataLevel {
     oneof level {
-      // Do not save any target data.
+      // Do not save any data.
       google.protobuf.Empty none = 1;
-      // Save basic target data.
+      // Save basic data.
       google.protobuf.Empty basic = 2;
-      // Save enriched target data.
+      // Save enriched data.
       google.protobuf.Empty enriched = 3;
     }
   }
@@ -82,6 +82,22 @@ message BuildEventStreamService {
   // NOTE: This is a beta feature, and it will likely change in the future,
   // including what data is stored at each level.
   SaveTargetDataLevel save_target_data_level = 6;
+
+  message SaveTestDataLevel {
+    oneof level {
+      // Do not save any data.
+      google.protobuf.Empty none = 1;
+      // Save basic data.
+      google.protobuf.Empty basic = 2;
+      // Save enriched data.
+      google.protobuf.Empty enriched = 3;
+    }
+  }
+
+  // Controls whether test data should be saved, and if so, to what extent.
+  // NOTE: This is a beta feature, and it will likely change in the future,
+  // including what data is stored at each level.
+  SaveTestDataLevel save_test_data_level = 7;
 
   message DatabaseCleanupConfiguration {
     // How often to run the cleanup job. 5% jitter will be applied to
@@ -113,7 +129,7 @@ message BuildEventStreamService {
   // required field, as otherwise the database will grow without bounds.
   // If you really want to disable it, just set the cleanup interval to a
   // very high value.
-  DatabaseCleanupConfiguration database_cleanup_configuration = 7;
+  DatabaseCleanupConfiguration database_cleanup_configuration = 8;
 
   // JMESPath expressions to extract authentication metadata. Used to record
   // information about the user responsible for an invocation.
@@ -131,7 +147,7 @@ message BuildEventStreamService {
   //
   // "files" corresponds to any files that are specified within the
   // buildbarn.configuration.jmespath.Expression configuration.
-  AuthMetadataExtractorConfiguration auth_metadata_key_configuration = 8;
+  AuthMetadataExtractorConfiguration auth_metadata_key_configuration = 9;
 }
 
 message BrowserService {
