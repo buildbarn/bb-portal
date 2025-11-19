@@ -1,23 +1,23 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+import { Descriptions, Space, Spin, Typography } from "antd";
+import Link from "next/link";
+import type React from "react";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import { FileSystemAccessProfileReference } from "@/lib/grpc-client/buildbarn/query/query";
 import type { BrowserPageParams } from "@/types/BrowserPageType";
 import {
-  PATH_HASH_BASE_HASH,
   generateFileSystemReferenceQueryParams,
+  PATH_HASH_BASE_HASH,
 } from "@/utils/bloomFilter";
 import {
   digestFunctionValueToString,
   getReducedActionDigest_SHA256,
 } from "@/utils/digestFunctionUtils";
 import { readableFileSizeFromString } from "@/utils/filesize";
-import { generateDirectoryUrl } from "@/utils/urlGenerator";
 import { readableDurationFromProtobufDuration } from "@/utils/time";
-import { useQuery } from "@tanstack/react-query";
-import { Descriptions, Space, Spin, Typography } from "antd";
-import Link from "next/link";
-import type React from "react";
+import { generateDirectoryUrl } from "@/utils/urlGenerator";
 import BrowserCommandDescription from "../BrowserCommandDescription";
 import BrowserDirectory from "../BrowserDirectory";
 import BrowserPreviousExecutionsDisplay from "../BrowserPreviousExecutionsDisplay";
@@ -62,29 +62,27 @@ const BrowserActionGrid: React.FC<Params> = ({
     ),
   });
 
-  let fileSystemAccessProfileReference:
-    | FileSystemAccessProfileReference
-    | undefined = undefined;
+  if (isPending) {
+    return <Spin />;
+  }
 
   if (isError) {
     return (
       <PortalAlert
-        className="error"
-        message={
-          <>
-            <Typography.Text>
-              There was a problem communicating with the backend server:
-            </Typography.Text>
-            <pre>{String(error)}</pre>
-          </>
+        showIcon
+        type="error"
+        message="Error fetching action"
+        description={
+          error.message ||
+          "Unknown error occurred while fetching data from the server."
         }
       />
     );
   }
 
-  if (isPending) {
-    return <Spin />;
-  }
+  let fileSystemAccessProfileReference:
+    | FileSystemAccessProfileReference
+    | undefined;
 
   if (data.fileSystemAccessProfile) {
     if (data.action.commandDigest && data.action.platform) {

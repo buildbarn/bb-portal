@@ -1,12 +1,11 @@
 import { useGrpcClients } from "@/context/GrpcClientsContext";
-import themeStyles from "@/theme/theme.module.css";
-import { CloseCircleOutlined, CodeOutlined } from "@ant-design/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Space, Typography } from "antd";
+import { Button, Space, Spin } from "antd";
 import { env } from "next-runtime-env";
 import { GrpcErrorCodes } from "../../utils/grpcErrorCodes";
 import ExecuteResponseDisplay from "../ExecutionResponseDisplay";
 import OperationStateDisplay from "../OperationStateDisplay";
+import PortalAlert from "../PortalAlert";
 
 interface Props {
   operationID: string;
@@ -55,35 +54,32 @@ const OperationDetails: React.FC<Props> = ({ operationID }) => {
     },
   });
 
-  if (isError) {
-    return (
-      <Typography.Text
-        disabled
-        className={themeStyles.tableEmptyTextTypography}
-      >
-        <Space direction="vertical">
-          <Space>
-            <CloseCircleOutlined />
-            There was an error fetching the operation details
-          </Space>
-          <pre>{String(error)}</pre>
-        </Space>
-      </Typography.Text>
-    );
+  if (isLoading) {
+    return <Spin />;
   }
 
-  if (isLoading)
+  if (isError) {
+    let errorMessage: string;
+    if (
+      error.message ===
+      "/buildbarn.buildqueuestate.BuildQueueState/GetOperation NOT_FOUND: Operation was not found"
+    ) {
+      errorMessage =
+        "The operation was not found. Operations are automatically removed 60 seconds after they have been completed. It may have already completed and been removed, or you may not have access to view it.";
+    } else {
+      errorMessage =
+        error.message ||
+        "Unknown error occurred while fetching data from the server.";
+    }
     return (
-      <Typography.Text
-        disabled
-        className={themeStyles.tableEmptyTextTypography}
-      >
-        <Space>
-          <CodeOutlined />
-          Loading...
-        </Space>
-      </Typography.Text>
+      <PortalAlert
+        showIcon
+        type="error"
+        message="Error fetching operation"
+        description={errorMessage}
+      />
     );
+  }
 
   return (
     <Space direction="vertical" size="middle" style={{ display: "flex" }}>

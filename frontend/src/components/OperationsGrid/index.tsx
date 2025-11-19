@@ -1,19 +1,17 @@
+import { useQuery } from "@tanstack/react-query";
+import { Table } from "antd";
+import { useSearchParams } from "next/navigation";
+import type React from "react";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import { RequestMetadata } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import themeStyles from "@/theme/theme.module.css";
-import useScreenSize from "@/utils/screen";
-import { CodeOutlined } from "@ant-design/icons";
-import { useQuery } from "@tanstack/react-query";
-import { Space, Table, Typography } from "antd";
-import { useSearchParams } from "next/navigation";
-import type React from "react";
 import OperationsInvocationFilter from "../OperationsInvocationFilter";
+import PortalAlert from "../PortalAlert";
 import getColumns from "./Columns";
 
 const PAGE_SIZE = 1000;
 
 const OperationsTable: React.FC = () => {
-  const screenSize = useScreenSize();
   const { buildQueueStateClient } = useGrpcClients();
   const searchParams = useSearchParams();
   const filterInvocationId = searchParams.get("filter_invocation_id");
@@ -29,7 +27,7 @@ const OperationsTable: React.FC = () => {
     return undefined;
   };
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["operationsTable", filterInvocationId],
     queryFn: buildQueueStateClient.listOperations.bind(window, {
       pageSize: PAGE_SIZE,
@@ -39,13 +37,25 @@ const OperationsTable: React.FC = () => {
     refetchOnMount: "always",
   });
 
-  let emptyText = "No active operations";
-  if (isError) emptyText = "There was a problem fetching the operations";
+  if (isError) {
+    return (
+      <PortalAlert
+        showIcon
+        type="error"
+        message="Error fetching operation"
+        description={
+          error.message ||
+          "Unknown error occurred while fetching data from the server."
+        }
+      />
+    );
+  }
 
   return (
     <>
       <OperationsInvocationFilter filterInvocationId={filterInvocationId} />
       <Table
+        loading={isLoading}
         dataSource={data?.operations}
         columns={getColumns()}
         pagination={{ pageSize: PAGE_SIZE }}
@@ -53,27 +63,7 @@ const OperationsTable: React.FC = () => {
         rowClassName={() => themeStyles.compactTable}
         rowKey={(item) => item.name}
         locale={{
-          emptyText: isLoading ? (
-            <Typography.Text
-              disabled
-              className={themeStyles.tableEmptyTextTypography}
-            >
-              <Space>
-                <CodeOutlined />
-                Loading...
-              </Space>
-            </Typography.Text>
-          ) : (
-            <Typography.Text
-              disabled
-              className={themeStyles.tableEmptyTextTypography}
-            >
-              <Space>
-                <CodeOutlined />
-                {emptyText}
-              </Space>
-            </Typography.Text>
-          ),
+          emptyText: "No active operations found (that you have access to).",
         }}
       />
     </>

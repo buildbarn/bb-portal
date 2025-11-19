@@ -1,9 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
+import { Spin } from "antd";
+import { useSearchParams } from "next/navigation";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import { FileSystemAccessProfileReference } from "@/lib/grpc-client/buildbarn/query/query";
 import type { BrowserPageParams } from "@/types/BrowserPageType";
-import { useQuery } from "@tanstack/react-query";
-import { Spin, Typography } from "antd";
-import { useSearchParams } from "next/navigation";
 import BrowserDirectory from "../BrowserDirectory";
 import PortalAlert from "../PortalAlert";
 
@@ -17,7 +17,7 @@ const BrowserDirectoryPage: React.FC<Params> = ({ browserPageParams }) => {
   const params = searchParams.get("fileSystemAccessProfile");
   let fileSystemAccessProfileReference:
     | FileSystemAccessProfileReference
-    | undefined = undefined;
+    | undefined;
 
   if (params) {
     try {
@@ -54,14 +54,12 @@ const BrowserDirectoryPage: React.FC<Params> = ({ browserPageParams }) => {
   if (isError) {
     return (
       <PortalAlert
-        className="error"
-        message={
-          <>
-            <Typography.Text>
-              There was a problem communicating with the backend server:
-            </Typography.Text>
-            <pre>{String(error)}</pre>
-          </>
+        showIcon
+        type="error"
+        message="Error fetching directory"
+        description={
+          error.message ||
+          "Unknown error occurred while fetching data from the server."
         }
       />
     );

@@ -1,16 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
+import { Table } from "antd";
+import type React from "react";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import themeStyles from "@/theme/theme.module.css";
-import { BuildOutlined } from "@ant-design/icons";
-import { useQuery } from "@tanstack/react-query";
-import { Space, Table, Typography } from "antd";
-import type React from "react";
+import PortalAlert from "../PortalAlert";
 import getColumns from "./Columns";
 import type { PlatformQueueTableState } from "./types";
 
 const PlatformQueuesTable: React.FC = () => {
   const { buildQueueStateClient } = useGrpcClients();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["listPlatformQueues"],
     queryFn: async (): Promise<PlatformQueueTableState[]> => {
       const queues = await buildQueueStateClient.listPlatformQueues({});
@@ -32,11 +32,24 @@ const PlatformQueuesTable: React.FC = () => {
     },
   });
 
-  const emptyText = "No platform queues can be found.";
+  if (isError) {
+    return (
+      <PortalAlert
+        showIcon
+        type="error"
+        message="Error fetching platform queues"
+        description={
+          error.message ||
+          "Unknown error occurred while fetching data from the server."
+        }
+      />
+    );
+  }
 
   return (
     <Table
       columns={getColumns()}
+      loading={isLoading}
       bordered={true}
       style={{ width: "100%" }}
       dataSource={data}
@@ -47,27 +60,7 @@ const PlatformQueuesTable: React.FC = () => {
         `instanceNamePrefix:${item.name?.instanceNamePrefix}-sizeClass:${item.sizeClassQueues[0].sizeClass}`
       }
       locale={{
-        emptyText: isLoading ? (
-          <Typography.Text
-            disabled
-            className={themeStyles.tableEmptyTextTypography}
-          >
-            <Space>
-              <BuildOutlined />
-              Loading...
-            </Space>
-          </Typography.Text>
-        ) : (
-          <Typography.Text
-            disabled
-            className={themeStyles.tableEmptyTextTypography}
-          >
-            <Space>
-              <BuildOutlined />
-              {emptyText}
-            </Space>
-          </Typography.Text>
-        ),
+        emptyText: "No platform queues found (that you have access to).",
       }}
     />
   );
