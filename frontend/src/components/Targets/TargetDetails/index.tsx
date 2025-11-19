@@ -85,6 +85,7 @@ export const TargetDetails: React.FC<Props> = ({
   if (error) {
     return (
       <PortalAlert
+        showIcon
         type="error"
         message="Error fetching target details"
         description={

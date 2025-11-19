@@ -1,3 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
+import { Row, Space } from "antd";
+import type React from "react";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import type {
   BuildQueueStateClient,
@@ -7,9 +10,6 @@ import type {
   WorkerState,
 } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import { ListWorkerFilterType } from "@/types/ListWorkerFilterType";
-import { useQuery } from "@tanstack/react-query";
-import { Row, Space, Typography } from "antd";
-import type React from "react";
 import PortalAlert from "../PortalAlert";
 import WorkersInfo from "../WorkersInfo";
 import WorkersTable from "../WorkersTable";
@@ -82,14 +82,12 @@ const WorkersGrid: React.FC<Props> = ({
   if (isError) {
     return (
       <PortalAlert
-        className="error"
-        message={
-          <>
-            <Typography.Text>
-              There was a problem communicating with the backend server:
-            </Typography.Text>
-            <pre>{String(error)}</pre>
-          </>
+        showIcon
+        type="error"
+        message="Error fetching workers"
+        description={
+          error.message ||
+          "Unknown error occurred while fetching data from the server."
         }
       />
     );

@@ -1,13 +1,12 @@
+import { Flex, Row, Space, Table } from "antd";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import type React from "react";
 import type {
   PaginationInfo,
   WorkerState,
 } from "@/lib/grpc-client/buildbarn/buildqueuestate/buildqueuestate";
 import themeStyles from "@/theme/theme.module.css";
 import type { ListWorkerFilterType } from "@/types/ListWorkerFilterType";
-import { BuildOutlined } from "@ant-design/icons";
-import { Flex, Row, Space, Table, Typography } from "antd";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type React from "react";
 import WorkersTablePageSelector from "../WorkersTablePageSelector";
 import WorkersTableTypeSelector from "../WorkersTableTypeSelector";
 import getColumns from "./Columns";
@@ -74,6 +73,7 @@ const WorkersTable: React.FC<Props> = ({
       <Row>
         <Table
           columns={getColumns()}
+          loading={isLoading}
           bordered={true}
           style={{ width: "100%" }}
           dataSource={data}
@@ -82,27 +82,8 @@ const WorkersTable: React.FC<Props> = ({
           pagination={false}
           rowKey={(item) => Object.entries(item.id).sort().join(",")}
           locale={{
-            emptyText: isLoading ? (
-              <Typography.Text
-                disabled
-                className={themeStyles.tableEmptyTextTypography}
-              >
-                <Space>
-                  <BuildOutlined />
-                  Loading...
-                </Space>
-              </Typography.Text>
-            ) : (
-              <Typography.Text
-                disabled
-                className={themeStyles.tableEmptyTextTypography}
-              >
-                <Space>
-                  <BuildOutlined />
-                  {"No workers matching the given criteria can be found."}
-                </Space>
-              </Typography.Text>
-            ),
+            emptyText:
+              "No workers matching the given criteria found (that you have access to).",
           }}
         />
       </Row>

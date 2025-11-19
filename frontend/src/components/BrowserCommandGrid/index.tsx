@@ -1,12 +1,12 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+import { Space, Spin, Typography } from "antd";
+import type React from "react";
 import { useGrpcClients } from "@/context/GrpcClientsContext";
 import { Command } from "@/lib/grpc-client/build/bazel/remote/execution/v2/remote_execution";
 import type { BrowserPageParams } from "@/types/BrowserPageType";
 import { fetchCasObjectAndParse } from "@/utils/fetchCasObject";
-import { useQuery } from "@tanstack/react-query";
-import { Space, Spin, Typography } from "antd";
-import type React from "react";
 import BrowserCommandDescription from "../BrowserCommandDescription";
 import FilesTable from "../FilesTable";
 import { filesTableEntriesFromOutputPath } from "../FilesTable/utils";
@@ -31,24 +31,22 @@ const BrowserCommandGrid: React.FC<Params> = ({ browserPageParams }) => {
       ),
   });
 
+  if (isPending) {
+    return <Spin />;
+  }
+
   if (isError) {
     return (
       <PortalAlert
-        className="error"
-        message={
-          <>
-            <Typography.Text>
-              There was a problem communicating with the backend server:
-            </Typography.Text>
-            <pre>{String(error)}</pre>
-          </>
+        showIcon
+        type="error"
+        message="Error fetching command"
+        description={
+          error.message ||
+          "Unknown error occurred while fetching data from the server."
         }
       />
     );
-  }
-
-  if (isPending) {
-    return <Spin />;
   }
 
   return (
