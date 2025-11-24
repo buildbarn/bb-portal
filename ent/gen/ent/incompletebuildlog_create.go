@@ -34,17 +34,9 @@ func (iblc *IncompleteBuildLogCreate) SetLogSnippet(s string) *IncompleteBuildLo
 	return iblc
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (iblc *IncompleteBuildLogCreate) SetBazelInvocationID(id int) *IncompleteBuildLogCreate {
-	iblc.mutation.SetBazelInvocationID(id)
-	return iblc
-}
-
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (iblc *IncompleteBuildLogCreate) SetNillableBazelInvocationID(id *int) *IncompleteBuildLogCreate {
-	if id != nil {
-		iblc = iblc.SetBazelInvocationID(*id)
-	}
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (iblc *IncompleteBuildLogCreate) SetBazelInvocationID(i int) *IncompleteBuildLogCreate {
+	iblc.mutation.SetBazelInvocationID(i)
 	return iblc
 }
 
@@ -92,6 +84,12 @@ func (iblc *IncompleteBuildLogCreate) check() error {
 	}
 	if _, ok := iblc.mutation.LogSnippet(); !ok {
 		return &ValidationError{Name: "log_snippet", err: errors.New(`ent: missing required field "IncompleteBuildLog.log_snippet"`)}
+	}
+	if _, ok := iblc.mutation.BazelInvocationID(); !ok {
+		return &ValidationError{Name: "bazel_invocation_id", err: errors.New(`ent: missing required field "IncompleteBuildLog.bazel_invocation_id"`)}
+	}
+	if len(iblc.mutation.BazelInvocationIDs()) == 0 {
+		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "IncompleteBuildLog.bazel_invocation"`)}
 	}
 	return nil
 }
@@ -142,7 +140,7 @@ func (iblc *IncompleteBuildLogCreate) createSpec() (*IncompleteBuildLog, *sqlgra
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.bazel_invocation_incomplete_build_logs = &nodes[0]
+		_node.BazelInvocationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -197,36 +195,6 @@ type (
 	}
 )
 
-// SetSnippetID sets the "snippet_id" field.
-func (u *IncompleteBuildLogUpsert) SetSnippetID(v int32) *IncompleteBuildLogUpsert {
-	u.Set(incompletebuildlog.FieldSnippetID, v)
-	return u
-}
-
-// UpdateSnippetID sets the "snippet_id" field to the value that was provided on create.
-func (u *IncompleteBuildLogUpsert) UpdateSnippetID() *IncompleteBuildLogUpsert {
-	u.SetExcluded(incompletebuildlog.FieldSnippetID)
-	return u
-}
-
-// AddSnippetID adds v to the "snippet_id" field.
-func (u *IncompleteBuildLogUpsert) AddSnippetID(v int32) *IncompleteBuildLogUpsert {
-	u.Add(incompletebuildlog.FieldSnippetID, v)
-	return u
-}
-
-// SetLogSnippet sets the "log_snippet" field.
-func (u *IncompleteBuildLogUpsert) SetLogSnippet(v string) *IncompleteBuildLogUpsert {
-	u.Set(incompletebuildlog.FieldLogSnippet, v)
-	return u
-}
-
-// UpdateLogSnippet sets the "log_snippet" field to the value that was provided on create.
-func (u *IncompleteBuildLogUpsert) UpdateLogSnippet() *IncompleteBuildLogUpsert {
-	u.SetExcluded(incompletebuildlog.FieldLogSnippet)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -237,6 +205,17 @@ func (u *IncompleteBuildLogUpsert) UpdateLogSnippet() *IncompleteBuildLogUpsert 
 //		Exec(ctx)
 func (u *IncompleteBuildLogUpsertOne) UpdateNewValues() *IncompleteBuildLogUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.SnippetID(); exists {
+			s.SetIgnore(incompletebuildlog.FieldSnippetID)
+		}
+		if _, exists := u.create.mutation.LogSnippet(); exists {
+			s.SetIgnore(incompletebuildlog.FieldLogSnippet)
+		}
+		if _, exists := u.create.mutation.BazelInvocationID(); exists {
+			s.SetIgnore(incompletebuildlog.FieldBazelInvocationID)
+		}
+	}))
 	return u
 }
 
@@ -265,41 +244,6 @@ func (u *IncompleteBuildLogUpsertOne) Update(set func(*IncompleteBuildLogUpsert)
 		set(&IncompleteBuildLogUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetSnippetID sets the "snippet_id" field.
-func (u *IncompleteBuildLogUpsertOne) SetSnippetID(v int32) *IncompleteBuildLogUpsertOne {
-	return u.Update(func(s *IncompleteBuildLogUpsert) {
-		s.SetSnippetID(v)
-	})
-}
-
-// AddSnippetID adds v to the "snippet_id" field.
-func (u *IncompleteBuildLogUpsertOne) AddSnippetID(v int32) *IncompleteBuildLogUpsertOne {
-	return u.Update(func(s *IncompleteBuildLogUpsert) {
-		s.AddSnippetID(v)
-	})
-}
-
-// UpdateSnippetID sets the "snippet_id" field to the value that was provided on create.
-func (u *IncompleteBuildLogUpsertOne) UpdateSnippetID() *IncompleteBuildLogUpsertOne {
-	return u.Update(func(s *IncompleteBuildLogUpsert) {
-		s.UpdateSnippetID()
-	})
-}
-
-// SetLogSnippet sets the "log_snippet" field.
-func (u *IncompleteBuildLogUpsertOne) SetLogSnippet(v string) *IncompleteBuildLogUpsertOne {
-	return u.Update(func(s *IncompleteBuildLogUpsert) {
-		s.SetLogSnippet(v)
-	})
-}
-
-// UpdateLogSnippet sets the "log_snippet" field to the value that was provided on create.
-func (u *IncompleteBuildLogUpsertOne) UpdateLogSnippet() *IncompleteBuildLogUpsertOne {
-	return u.Update(func(s *IncompleteBuildLogUpsert) {
-		s.UpdateLogSnippet()
-	})
 }
 
 // Exec executes the query.
@@ -475,6 +419,19 @@ type IncompleteBuildLogUpsertBulk struct {
 //		Exec(ctx)
 func (u *IncompleteBuildLogUpsertBulk) UpdateNewValues() *IncompleteBuildLogUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.SnippetID(); exists {
+				s.SetIgnore(incompletebuildlog.FieldSnippetID)
+			}
+			if _, exists := b.mutation.LogSnippet(); exists {
+				s.SetIgnore(incompletebuildlog.FieldLogSnippet)
+			}
+			if _, exists := b.mutation.BazelInvocationID(); exists {
+				s.SetIgnore(incompletebuildlog.FieldBazelInvocationID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -503,41 +460,6 @@ func (u *IncompleteBuildLogUpsertBulk) Update(set func(*IncompleteBuildLogUpsert
 		set(&IncompleteBuildLogUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetSnippetID sets the "snippet_id" field.
-func (u *IncompleteBuildLogUpsertBulk) SetSnippetID(v int32) *IncompleteBuildLogUpsertBulk {
-	return u.Update(func(s *IncompleteBuildLogUpsert) {
-		s.SetSnippetID(v)
-	})
-}
-
-// AddSnippetID adds v to the "snippet_id" field.
-func (u *IncompleteBuildLogUpsertBulk) AddSnippetID(v int32) *IncompleteBuildLogUpsertBulk {
-	return u.Update(func(s *IncompleteBuildLogUpsert) {
-		s.AddSnippetID(v)
-	})
-}
-
-// UpdateSnippetID sets the "snippet_id" field to the value that was provided on create.
-func (u *IncompleteBuildLogUpsertBulk) UpdateSnippetID() *IncompleteBuildLogUpsertBulk {
-	return u.Update(func(s *IncompleteBuildLogUpsert) {
-		s.UpdateSnippetID()
-	})
-}
-
-// SetLogSnippet sets the "log_snippet" field.
-func (u *IncompleteBuildLogUpsertBulk) SetLogSnippet(v string) *IncompleteBuildLogUpsertBulk {
-	return u.Update(func(s *IncompleteBuildLogUpsert) {
-		s.SetLogSnippet(v)
-	})
-}
-
-// UpdateLogSnippet sets the "log_snippet" field to the value that was provided on create.
-func (u *IncompleteBuildLogUpsertBulk) UpdateLogSnippet() *IncompleteBuildLogUpsertBulk {
-	return u.Update(func(s *IncompleteBuildLogUpsert) {
-		s.UpdateLogSnippet()
-	})
 }
 
 // Exec executes the query.

@@ -70,11 +70,6 @@ func ByEventReceivedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEventReceivedAt, opts...).ToFunc()
 }
 
-// ByEventHash orders the results by the event_hash field.
-func ByEventHash(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldEventHash, opts...).ToFunc()
-}
-
 // ByBazelInvocationID orders the results by the bazel_invocation_id field.
 func ByBazelInvocationID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBazelInvocationID, opts...).ToFunc()

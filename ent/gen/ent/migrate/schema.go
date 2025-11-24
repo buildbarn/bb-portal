@@ -486,7 +486,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "sequence_number", Type: field.TypeInt64},
 		{Name: "event_received_at", Type: field.TypeTime},
-		{Name: "event_hash", Type: field.TypeString},
+		{Name: "event_hash", Type: field.TypeBytes},
 		{Name: "bazel_invocation_id", Type: field.TypeInt},
 	}
 	// EventMetadataTable holds the schema information for the "event_metadata" table.
@@ -579,7 +579,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "snippet_id", Type: field.TypeInt32},
 		{Name: "log_snippet", Type: field.TypeString},
-		{Name: "bazel_invocation_incomplete_build_logs", Type: field.TypeInt, Nullable: true},
+		{Name: "bazel_invocation_id", Type: field.TypeInt},
 	}
 	// IncompleteBuildLogsTable holds the schema information for the "incomplete_build_logs" table.
 	IncompleteBuildLogsTable = &schema.Table{
@@ -596,12 +596,12 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "incompletebuildlog_bazel_invocation_incomplete_build_logs",
+				Name:    "incompletebuildlog_bazel_invocation_id",
 				Unique:  false,
 				Columns: []*schema.Column{IncompleteBuildLogsColumns[3]},
 			},
 			{
-				Name:    "incompletebuildlog_snippet_id_bazel_invocation_incomplete_build_logs",
+				Name:    "incompletebuildlog_snippet_id_bazel_invocation_id",
 				Unique:  true,
 				Columns: []*schema.Column{IncompleteBuildLogsColumns[1], IncompleteBuildLogsColumns[3]},
 			},
@@ -1086,8 +1086,8 @@ var (
 	TargetKindMappingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "start_time_in_ms", Type: field.TypeInt64, Nullable: true},
-		{Name: "bazel_invocation_target_kind_mappings", Type: field.TypeInt},
-		{Name: "target_target_kind_mappings", Type: field.TypeInt},
+		{Name: "bazel_invocation_id", Type: field.TypeInt},
+		{Name: "target_id", Type: field.TypeInt},
 	}
 	// TargetKindMappingsTable holds the schema information for the "target_kind_mappings" table.
 	TargetKindMappingsTable = &schema.Table{
@@ -1110,17 +1110,17 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "targetkindmapping_bazel_invocation_target_kind_mappings",
+				Name:    "targetkindmapping_bazel_invocation_id",
 				Unique:  false,
 				Columns: []*schema.Column{TargetKindMappingsColumns[2]},
 			},
 			{
-				Name:    "targetkindmapping_target_target_kind_mappings",
+				Name:    "targetkindmapping_target_id",
 				Unique:  false,
 				Columns: []*schema.Column{TargetKindMappingsColumns[3]},
 			},
 			{
-				Name:    "targetkindmapping_bazel_invocation_target_kind_mappings_target_target_kind_mappings",
+				Name:    "targetkindmapping_bazel_invocation_id_target_id",
 				Unique:  true,
 				Columns: []*schema.Column{TargetKindMappingsColumns[2], TargetKindMappingsColumns[3]},
 			},

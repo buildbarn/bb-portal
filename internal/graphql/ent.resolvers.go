@@ -84,11 +84,6 @@ func (r *garbageMetricsResolver) ID(ctx context.Context, obj *ent.GarbageMetrics
 }
 
 // ID is the resolver for the id field.
-func (r *incompleteBuildLogResolver) ID(ctx context.Context, obj *ent.IncompleteBuildLog) (string, error) {
-	return helpers.GraphQLIDFromTypeAndID("IncompleteBuildLog", obj.ID), nil
-}
-
-// ID is the resolver for the id field.
 func (r *instanceNameResolver) ID(ctx context.Context, obj *ent.InstanceName) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("InstanceName", obj.ID), nil
 }
@@ -805,46 +800,6 @@ func (r *garbageMetricsWhereInputResolver) IDLt(ctx context.Context, obj *ent.Ga
 
 // IDLte is the resolver for the idLTE field.
 func (r *garbageMetricsWhereInputResolver) IDLte(ctx context.Context, obj *ent.GarbageMetricsWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
-}
-
-// ID is the resolver for the id field.
-func (r *incompleteBuildLogWhereInputResolver) ID(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
-}
-
-// IDNeq is the resolver for the idNEQ field.
-func (r *incompleteBuildLogWhereInputResolver) IDNeq(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
-}
-
-// IDIn is the resolver for the idIn field.
-func (r *incompleteBuildLogWhereInputResolver) IDIn(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDIn - idIn"))
-}
-
-// IDNotIn is the resolver for the idNotIn field.
-func (r *incompleteBuildLogWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data []string) error {
-	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
-}
-
-// IDGt is the resolver for the idGT field.
-func (r *incompleteBuildLogWhereInputResolver) IDGt(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGt - idGT"))
-}
-
-// IDGte is the resolver for the idGTE field.
-func (r *incompleteBuildLogWhereInputResolver) IDGte(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
-}
-
-// IDLt is the resolver for the idLT field.
-func (r *incompleteBuildLogWhereInputResolver) IDLt(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
-	panic(fmt.Errorf("not implemented: IDLt - idLT"))
-}
-
-// IDLte is the resolver for the idLTE field.
-func (r *incompleteBuildLogWhereInputResolver) IDLte(ctx context.Context, obj *ent.IncompleteBuildLogWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
@@ -1860,11 +1815,6 @@ func (r *Resolver) ExectionInfo() ExectionInfoResolver { return &exectionInfoRes
 // GarbageMetrics returns GarbageMetricsResolver implementation.
 func (r *Resolver) GarbageMetrics() GarbageMetricsResolver { return &garbageMetricsResolver{r} }
 
-// IncompleteBuildLog returns IncompleteBuildLogResolver implementation.
-func (r *Resolver) IncompleteBuildLog() IncompleteBuildLogResolver {
-	return &incompleteBuildLogResolver{r}
-}
-
 // InstanceName returns InstanceNameResolver implementation.
 func (r *Resolver) InstanceName() InstanceNameResolver { return &instanceNameResolver{r} }
 
@@ -2010,11 +1960,6 @@ func (r *Resolver) GarbageMetricsWhereInput() GarbageMetricsWhereInputResolver {
 	return &garbageMetricsWhereInputResolver{r}
 }
 
-// IncompleteBuildLogWhereInput returns IncompleteBuildLogWhereInputResolver implementation.
-func (r *Resolver) IncompleteBuildLogWhereInput() IncompleteBuildLogWhereInputResolver {
-	return &incompleteBuildLogWhereInputResolver{r}
-}
-
 // InstanceNameWhereInput returns InstanceNameWhereInputResolver implementation.
 func (r *Resolver) InstanceNameWhereInput() InstanceNameWhereInputResolver {
 	return &instanceNameWhereInputResolver{r}
@@ -2148,7 +2093,6 @@ type (
 	evaluationStatResolver                   struct{ *Resolver }
 	exectionInfoResolver                     struct{ *Resolver }
 	garbageMetricsResolver                   struct{ *Resolver }
-	incompleteBuildLogResolver               struct{ *Resolver }
 	instanceNameResolver                     struct{ *Resolver }
 	invocationFilesResolver                  struct{ *Resolver }
 	invocationTargetResolver                 struct{ *Resolver }
@@ -2188,7 +2132,6 @@ type (
 	evaluationStatWhereInputResolver         struct{ *Resolver }
 	exectionInfoWhereInputResolver           struct{ *Resolver }
 	garbageMetricsWhereInputResolver         struct{ *Resolver }
-	incompleteBuildLogWhereInputResolver     struct{ *Resolver }
 	instanceNameWhereInputResolver           struct{ *Resolver }
 	invocationFilesWhereInputResolver        struct{ *Resolver }
 	invocationTargetWhereInputResolver       struct{ *Resolver }

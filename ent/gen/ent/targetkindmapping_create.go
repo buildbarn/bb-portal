@@ -23,6 +23,18 @@ type TargetKindMappingCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (tkmc *TargetKindMappingCreate) SetBazelInvocationID(i int) *TargetKindMappingCreate {
+	tkmc.mutation.SetBazelInvocationID(i)
+	return tkmc
+}
+
+// SetTargetID sets the "target_id" field.
+func (tkmc *TargetKindMappingCreate) SetTargetID(i int) *TargetKindMappingCreate {
+	tkmc.mutation.SetTargetID(i)
+	return tkmc
+}
+
 // SetStartTimeInMs sets the "start_time_in_ms" field.
 func (tkmc *TargetKindMappingCreate) SetStartTimeInMs(i int64) *TargetKindMappingCreate {
 	tkmc.mutation.SetStartTimeInMs(i)
@@ -37,21 +49,9 @@ func (tkmc *TargetKindMappingCreate) SetNillableStartTimeInMs(i *int64) *TargetK
 	return tkmc
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tkmc *TargetKindMappingCreate) SetBazelInvocationID(id int) *TargetKindMappingCreate {
-	tkmc.mutation.SetBazelInvocationID(id)
-	return tkmc
-}
-
 // SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
 func (tkmc *TargetKindMappingCreate) SetBazelInvocation(b *BazelInvocation) *TargetKindMappingCreate {
 	return tkmc.SetBazelInvocationID(b.ID)
-}
-
-// SetTargetID sets the "target" edge to the Target entity by ID.
-func (tkmc *TargetKindMappingCreate) SetTargetID(id int) *TargetKindMappingCreate {
-	tkmc.mutation.SetTargetID(id)
-	return tkmc
 }
 
 // SetTarget sets the "target" edge to the Target entity.
@@ -93,6 +93,12 @@ func (tkmc *TargetKindMappingCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (tkmc *TargetKindMappingCreate) check() error {
+	if _, ok := tkmc.mutation.BazelInvocationID(); !ok {
+		return &ValidationError{Name: "bazel_invocation_id", err: errors.New(`ent: missing required field "TargetKindMapping.bazel_invocation_id"`)}
+	}
+	if _, ok := tkmc.mutation.TargetID(); !ok {
+		return &ValidationError{Name: "target_id", err: errors.New(`ent: missing required field "TargetKindMapping.target_id"`)}
+	}
 	if len(tkmc.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "TargetKindMapping.bazel_invocation"`)}
 	}
@@ -144,7 +150,7 @@ func (tkmc *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.bazel_invocation_target_kind_mappings = &nodes[0]
+		_node.BazelInvocationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := tkmc.mutation.TargetIDs(); len(nodes) > 0 {
@@ -161,7 +167,7 @@ func (tkmc *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.target_target_kind_mappings = &nodes[0]
+		_node.TargetID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -171,7 +177,7 @@ func (tkmc *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph
 // of the `INSERT` statement. For example:
 //
 //	client.TargetKindMapping.Create().
-//		SetStartTimeInMs(v).
+//		SetBazelInvocationID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -180,7 +186,7 @@ func (tkmc *TargetKindMappingCreate) createSpec() (*TargetKindMapping, *sqlgraph
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.TargetKindMappingUpsert) {
-//			SetStartTimeInMs(v+v).
+//			SetBazelInvocationID(v+v).
 //		}).
 //		Exec(ctx)
 func (tkmc *TargetKindMappingCreate) OnConflict(opts ...sql.ConflictOption) *TargetKindMappingUpsertOne {
@@ -250,6 +256,14 @@ func (u *TargetKindMappingUpsert) ClearStartTimeInMs() *TargetKindMappingUpsert 
 //		Exec(ctx)
 func (u *TargetKindMappingUpsertOne) UpdateNewValues() *TargetKindMappingUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.BazelInvocationID(); exists {
+			s.SetIgnore(targetkindmapping.FieldBazelInvocationID)
+		}
+		if _, exists := u.create.mutation.TargetID(); exists {
+			s.SetIgnore(targetkindmapping.FieldTargetID)
+		}
+	}))
 	return u
 }
 
@@ -442,7 +456,7 @@ func (tkmcb *TargetKindMappingCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.TargetKindMappingUpsert) {
-//			SetStartTimeInMs(v+v).
+//			SetBazelInvocationID(v+v).
 //		}).
 //		Exec(ctx)
 func (tkmcb *TargetKindMappingCreateBulk) OnConflict(opts ...sql.ConflictOption) *TargetKindMappingUpsertBulk {
@@ -481,6 +495,16 @@ type TargetKindMappingUpsertBulk struct {
 //		Exec(ctx)
 func (u *TargetKindMappingUpsertBulk) UpdateNewValues() *TargetKindMappingUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.BazelInvocationID(); exists {
+				s.SetIgnore(targetkindmapping.FieldBazelInvocationID)
+			}
+			if _, exists := b.mutation.TargetID(); exists {
+				s.SetIgnore(targetkindmapping.FieldTargetID)
+			}
+		}
+	}))
 	return u
 }
 

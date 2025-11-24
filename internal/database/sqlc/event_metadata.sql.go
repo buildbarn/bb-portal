@@ -11,7 +11,45 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
+
+const createEventMetadataBulk = `-- name: CreateEventMetadataBulk :exec
+INSERT INTO event_metadata (
+    bazel_invocation_id,
+    event_hash,
+    event_received_at,
+    sequence_number
+)
+SELECT 
+    $1,
+    event_hash,
+    event_received_at,
+    sequence_number
+FROM (
+    SELECT 
+        unnest($2::bytea[]) AS event_hash,
+        unnest($3::timestamptz[]) AS event_received_at,
+        unnest($4::bigint[]) AS sequence_number
+) AS input
+`
+
+type CreateEventMetadataBulkParams struct {
+	BazelInvocationID int64
+	EventHashes       [][]byte
+	EventReceivedAts  []time.Time
+	SequenceNumbers   []int64
+}
+
+func (q *Queries) CreateEventMetadataBulk(ctx context.Context, arg CreateEventMetadataBulkParams) error {
+	_, err := q.db.ExecContext(ctx, createEventMetadataBulk,
+		arg.BazelInvocationID,
+		pq.Array(arg.EventHashes),
+		pq.Array(arg.EventReceivedAts),
+		pq.Array(arg.SequenceNumbers),
+	)
+	return err
+}
 
 const recordEventMetadata = `-- name: RecordEventMetadata :execresult
 INSERT INTO event_metadata (
@@ -33,7 +71,7 @@ WHERE b.invocation_id = $4
 type RecordEventMetadataParams struct {
 	SequenceNumber  int64
 	EventReceivedAt time.Time
-	EventHash       string
+	EventHash       []byte
 	InvocationID    uuid.UUID
 }
 

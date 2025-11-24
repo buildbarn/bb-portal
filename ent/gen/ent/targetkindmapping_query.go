@@ -26,7 +26,6 @@ type TargetKindMappingQuery struct {
 	predicates          []predicate.TargetKindMapping
 	withBazelInvocation *BazelInvocationQuery
 	withTarget          *TargetQuery
-	withFKs             bool
 	loadTotal           []func(context.Context, []*TargetKindMapping) error
 	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
@@ -338,12 +337,12 @@ func (tkmq *TargetKindMappingQuery) WithTarget(opts ...func(*TargetQuery)) *Targ
 // Example:
 //
 //	var v []struct {
-//		StartTimeInMs int64 `json:"start_time_in_ms,omitempty"`
+//		BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.TargetKindMapping.Query().
-//		GroupBy(targetkindmapping.FieldStartTimeInMs).
+//		GroupBy(targetkindmapping.FieldBazelInvocationID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (tkmq *TargetKindMappingQuery) GroupBy(field string, fields ...string) *TargetKindMappingGroupBy {
@@ -361,11 +360,11 @@ func (tkmq *TargetKindMappingQuery) GroupBy(field string, fields ...string) *Tar
 // Example:
 //
 //	var v []struct {
-//		StartTimeInMs int64 `json:"start_time_in_ms,omitempty"`
+//		BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
 //	}
 //
 //	client.TargetKindMapping.Query().
-//		Select(targetkindmapping.FieldStartTimeInMs).
+//		Select(targetkindmapping.FieldBazelInvocationID).
 //		Scan(ctx, &v)
 func (tkmq *TargetKindMappingQuery) Select(fields ...string) *TargetKindMappingSelect {
 	tkmq.ctx.Fields = append(tkmq.ctx.Fields, fields...)
@@ -409,19 +408,12 @@ func (tkmq *TargetKindMappingQuery) prepareQuery(ctx context.Context) error {
 func (tkmq *TargetKindMappingQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*TargetKindMapping, error) {
 	var (
 		nodes       = []*TargetKindMapping{}
-		withFKs     = tkmq.withFKs
 		_spec       = tkmq.querySpec()
 		loadedTypes = [2]bool{
 			tkmq.withBazelInvocation != nil,
 			tkmq.withTarget != nil,
 		}
 	)
-	if tkmq.withBazelInvocation != nil || tkmq.withTarget != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, targetkindmapping.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*TargetKindMapping).scanValues(nil, columns)
 	}
@@ -467,10 +459,7 @@ func (tkmq *TargetKindMappingQuery) loadBazelInvocation(ctx context.Context, que
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TargetKindMapping)
 	for i := range nodes {
-		if nodes[i].bazel_invocation_target_kind_mappings == nil {
-			continue
-		}
-		fk := *nodes[i].bazel_invocation_target_kind_mappings
+		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -487,7 +476,7 @@ func (tkmq *TargetKindMappingQuery) loadBazelInvocation(ctx context.Context, que
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_target_kind_mappings" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -499,10 +488,7 @@ func (tkmq *TargetKindMappingQuery) loadTarget(ctx context.Context, query *Targe
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*TargetKindMapping)
 	for i := range nodes {
-		if nodes[i].target_target_kind_mappings == nil {
-			continue
-		}
-		fk := *nodes[i].target_target_kind_mappings
+		fk := nodes[i].TargetID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -519,7 +505,7 @@ func (tkmq *TargetKindMappingQuery) loadTarget(ctx context.Context, query *Targe
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "target_target_kind_mappings" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "target_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -555,6 +541,12 @@ func (tkmq *TargetKindMappingQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != targetkindmapping.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if tkmq.withBazelInvocation != nil {
+			_spec.Node.AddColumnOnce(targetkindmapping.FieldBazelInvocationID)
+		}
+		if tkmq.withTarget != nil {
+			_spec.Node.AddColumnOnce(targetkindmapping.FieldTargetID)
 		}
 	}
 	if ps := tkmq.predicates; len(ps) > 0 {

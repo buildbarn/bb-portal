@@ -324,7 +324,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Fields: map[string]*sqlgraph.FieldSpec{
 			eventmetadata.FieldSequenceNumber:    {Type: field.TypeInt64, Column: eventmetadata.FieldSequenceNumber},
 			eventmetadata.FieldEventReceivedAt:   {Type: field.TypeTime, Column: eventmetadata.FieldEventReceivedAt},
-			eventmetadata.FieldEventHash:         {Type: field.TypeString, Column: eventmetadata.FieldEventHash},
+			eventmetadata.FieldEventHash:         {Type: field.TypeBytes, Column: eventmetadata.FieldEventHash},
 			eventmetadata.FieldBazelInvocationID: {Type: field.TypeInt, Column: eventmetadata.FieldBazelInvocationID},
 		},
 	}
@@ -372,8 +372,9 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "IncompleteBuildLog",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			incompletebuildlog.FieldSnippetID:  {Type: field.TypeInt32, Column: incompletebuildlog.FieldSnippetID},
-			incompletebuildlog.FieldLogSnippet: {Type: field.TypeString, Column: incompletebuildlog.FieldLogSnippet},
+			incompletebuildlog.FieldSnippetID:         {Type: field.TypeInt32, Column: incompletebuildlog.FieldSnippetID},
+			incompletebuildlog.FieldLogSnippet:        {Type: field.TypeString, Column: incompletebuildlog.FieldLogSnippet},
+			incompletebuildlog.FieldBazelInvocationID: {Type: field.TypeInt, Column: incompletebuildlog.FieldBazelInvocationID},
 		},
 	}
 	graph.Nodes[17] = &sqlgraph.Node{
@@ -651,7 +652,9 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "TargetKindMapping",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			targetkindmapping.FieldStartTimeInMs: {Type: field.TypeInt64, Column: targetkindmapping.FieldStartTimeInMs},
+			targetkindmapping.FieldBazelInvocationID: {Type: field.TypeInt, Column: targetkindmapping.FieldBazelInvocationID},
+			targetkindmapping.FieldTargetID:          {Type: field.TypeInt, Column: targetkindmapping.FieldTargetID},
+			targetkindmapping.FieldStartTimeInMs:     {Type: field.TypeInt64, Column: targetkindmapping.FieldStartTimeInMs},
 		},
 	}
 	graph.Nodes[34] = &sqlgraph.Node{
@@ -3440,8 +3443,8 @@ func (f *EventMetadataFilter) WhereEventReceivedAt(p entql.TimeP) {
 	f.Where(p.Field(eventmetadata.FieldEventReceivedAt))
 }
 
-// WhereEventHash applies the entql string predicate on the event_hash field.
-func (f *EventMetadataFilter) WhereEventHash(p entql.StringP) {
+// WhereEventHash applies the entql []byte predicate on the event_hash field.
+func (f *EventMetadataFilter) WhereEventHash(p entql.BytesP) {
 	f.Where(p.Field(eventmetadata.FieldEventHash))
 }
 
@@ -3683,6 +3686,11 @@ func (f *IncompleteBuildLogFilter) WhereSnippetID(p entql.Int32P) {
 // WhereLogSnippet applies the entql string predicate on the log_snippet field.
 func (f *IncompleteBuildLogFilter) WhereLogSnippet(p entql.StringP) {
 	f.Where(p.Field(incompletebuildlog.FieldLogSnippet))
+}
+
+// WhereBazelInvocationID applies the entql int predicate on the bazel_invocation_id field.
+func (f *IncompleteBuildLogFilter) WhereBazelInvocationID(p entql.IntP) {
+	f.Where(p.Field(incompletebuildlog.FieldBazelInvocationID))
 }
 
 // WhereHasBazelInvocation applies a predicate to check if query has an edge bazel_invocation.
@@ -5190,6 +5198,16 @@ func (f *TargetKindMappingFilter) Where(p entql.P) {
 // WhereID applies the entql int predicate on the id field.
 func (f *TargetKindMappingFilter) WhereID(p entql.IntP) {
 	f.Where(p.Field(targetkindmapping.FieldID))
+}
+
+// WhereBazelInvocationID applies the entql int predicate on the bazel_invocation_id field.
+func (f *TargetKindMappingFilter) WhereBazelInvocationID(p entql.IntP) {
+	f.Where(p.Field(targetkindmapping.FieldBazelInvocationID))
+}
+
+// WhereTargetID applies the entql int predicate on the target_id field.
+func (f *TargetKindMappingFilter) WhereTargetID(p entql.IntP) {
+	f.Where(p.Field(targetkindmapping.FieldTargetID))
 }
 
 // WhereStartTimeInMs applies the entql int64 predicate on the start_time_in_ms field.

@@ -3,15 +3,21 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "sqlc",
     srcs = [
+        "bazel_invocations.sql.go",
         "db.go",
         "event_metadata.sql.go",
+        "incomplete_build_logs.sql.go",
+        "invocation_targets.sql.go",
         "models.go",
         "querier.go",
+        "target_kind_mappings.sql.go",
+        "targets.sql.go",
     ],
     importpath = "github.com/buildbarn/bb-portal/internal/database/sqlc",
     visibility = ["//:__subpackages__"],
     deps = [
         "@com_github_google_uuid//:uuid",
+        "@com_github_lib_pq//:pq",
         "@com_github_sqlc_dev_pqtype//:pqtype",
     ],
 )

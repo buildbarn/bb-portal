@@ -137,18 +137,6 @@ func (bi *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
 	return result, MaskNotFound(err)
 }
 
-func (bi *BazelInvocation) IncompleteBuildLogs(ctx context.Context) (result []*IncompleteBuildLog, err error) {
-	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
-		result, err = bi.NamedIncompleteBuildLogs(graphql.GetFieldContext(ctx).Field.Alias)
-	} else {
-		result, err = bi.Edges.IncompleteBuildLogsOrErr()
-	}
-	if IsNotLoaded(err) {
-		result, err = bi.QueryIncompleteBuildLogs().All(ctx)
-	}
-	return result, err
-}
-
 func (bi *BazelInvocation) InvocationFiles(ctx context.Context) (result []*InvocationFiles, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = bi.NamedInvocationFiles(graphql.GetFieldContext(ctx).Field.Alias)
@@ -181,7 +169,7 @@ func (bi *BazelInvocation) InvocationTargets(
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := bi.Edges.totalCount[7][alias]
+	totalCount, hasTotalCount := bi.Edges.totalCount[6][alias]
 	if nodes, err := bi.NamedInvocationTargets(alias); err == nil || hasTotalCount {
 		pager, err := newInvocationTargetPager(opts, last != nil)
 		if err != nil {
@@ -334,14 +322,6 @@ func (gm *GarbageMetrics) MemoryMetrics(ctx context.Context) (*MemoryMetrics, er
 	result, err := gm.Edges.MemoryMetricsOrErr()
 	if IsNotLoaded(err) {
 		result, err = gm.QueryMemoryMetrics().Only(ctx)
-	}
-	return result, MaskNotFound(err)
-}
-
-func (ibl *IncompleteBuildLog) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
-	result, err := ibl.Edges.BazelInvocationOrErr()
-	if IsNotLoaded(err) {
-		result, err = ibl.QueryBazelInvocation().Only(ctx)
 	}
 	return result, MaskNotFound(err)
 }

@@ -162,7 +162,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "incompletebuildlog" package.
 	IncompleteBuildLogsInverseTable = "incomplete_build_logs"
 	// IncompleteBuildLogsColumn is the table column denoting the incomplete_build_logs relation/edge.
-	IncompleteBuildLogsColumn = "bazel_invocation_incomplete_build_logs"
+	IncompleteBuildLogsColumn = "bazel_invocation_id"
 	// InvocationFilesTable is the table that holds the invocation_files relation/edge.
 	InvocationFilesTable = "invocation_files"
 	// InvocationFilesInverseTable is the table name for the InvocationFiles entity.
@@ -190,7 +190,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "targetkindmapping" package.
 	TargetKindMappingsInverseTable = "target_kind_mappings"
 	// TargetKindMappingsColumn is the table column denoting the target_kind_mappings relation/edge.
-	TargetKindMappingsColumn = "bazel_invocation_target_kind_mappings"
+	TargetKindMappingsColumn = "bazel_invocation_id"
 	// SourceControlTable is the table that holds the source_control relation/edge.
 	SourceControlTable = "source_controls"
 	// SourceControlInverseTable is the table name for the SourceControl entity.

@@ -13565,7 +13565,7 @@ type EventMetadataMutation struct {
 	sequence_number         *int64
 	addsequence_number      *int64
 	event_received_at       *time.Time
-	event_hash              *string
+	event_hash              *[]byte
 	clearedFields           map[string]struct{}
 	bazel_invocation        *int
 	clearedbazel_invocation bool
@@ -13765,12 +13765,12 @@ func (m *EventMetadataMutation) ResetEventReceivedAt() {
 }
 
 // SetEventHash sets the "event_hash" field.
-func (m *EventMetadataMutation) SetEventHash(s string) {
-	m.event_hash = &s
+func (m *EventMetadataMutation) SetEventHash(b []byte) {
+	m.event_hash = &b
 }
 
 // EventHash returns the value of the "event_hash" field in the mutation.
-func (m *EventMetadataMutation) EventHash() (r string, exists bool) {
+func (m *EventMetadataMutation) EventHash() (r []byte, exists bool) {
 	v := m.event_hash
 	if v == nil {
 		return
@@ -13781,7 +13781,7 @@ func (m *EventMetadataMutation) EventHash() (r string, exists bool) {
 // OldEventHash returns the old "event_hash" field's value of the EventMetadata entity.
 // If the EventMetadata object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EventMetadataMutation) OldEventHash(ctx context.Context) (v string, err error) {
+func (m *EventMetadataMutation) OldEventHash(ctx context.Context) (v []byte, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldEventHash is only allowed on UpdateOne operations")
 	}
@@ -13967,7 +13967,7 @@ func (m *EventMetadataMutation) SetField(name string, value ent.Value) error {
 		m.SetEventReceivedAt(v)
 		return nil
 	case eventmetadata.FieldEventHash:
-		v, ok := value.(string)
+		v, ok := value.([]byte)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -15788,27 +15788,51 @@ func (m *IncompleteBuildLogMutation) ResetLogSnippet() {
 	m.log_snippet = nil
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *IncompleteBuildLogMutation) SetBazelInvocationID(id int) {
-	m.bazel_invocation = &id
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (m *IncompleteBuildLogMutation) SetBazelInvocationID(i int) {
+	m.bazel_invocation = &i
+}
+
+// BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
+func (m *IncompleteBuildLogMutation) BazelInvocationID() (r int, exists bool) {
+	v := m.bazel_invocation
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the IncompleteBuildLog entity.
+// If the IncompleteBuildLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *IncompleteBuildLogMutation) OldBazelInvocationID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBazelInvocationID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBazelInvocationID: %w", err)
+	}
+	return oldValue.BazelInvocationID, nil
+}
+
+// ResetBazelInvocationID resets all changes to the "bazel_invocation_id" field.
+func (m *IncompleteBuildLogMutation) ResetBazelInvocationID() {
+	m.bazel_invocation = nil
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
 func (m *IncompleteBuildLogMutation) ClearBazelInvocation() {
 	m.clearedbazel_invocation = true
+	m.clearedFields[incompletebuildlog.FieldBazelInvocationID] = struct{}{}
 }
 
 // BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
 func (m *IncompleteBuildLogMutation) BazelInvocationCleared() bool {
 	return m.clearedbazel_invocation
-}
-
-// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *IncompleteBuildLogMutation) BazelInvocationID() (id int, exists bool) {
-	if m.bazel_invocation != nil {
-		return *m.bazel_invocation, true
-	}
-	return
 }
 
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
@@ -15861,12 +15885,15 @@ func (m *IncompleteBuildLogMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *IncompleteBuildLogMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 3)
 	if m.snippet_id != nil {
 		fields = append(fields, incompletebuildlog.FieldSnippetID)
 	}
 	if m.log_snippet != nil {
 		fields = append(fields, incompletebuildlog.FieldLogSnippet)
+	}
+	if m.bazel_invocation != nil {
+		fields = append(fields, incompletebuildlog.FieldBazelInvocationID)
 	}
 	return fields
 }
@@ -15880,6 +15907,8 @@ func (m *IncompleteBuildLogMutation) Field(name string) (ent.Value, bool) {
 		return m.SnippetID()
 	case incompletebuildlog.FieldLogSnippet:
 		return m.LogSnippet()
+	case incompletebuildlog.FieldBazelInvocationID:
+		return m.BazelInvocationID()
 	}
 	return nil, false
 }
@@ -15893,6 +15922,8 @@ func (m *IncompleteBuildLogMutation) OldField(ctx context.Context, name string) 
 		return m.OldSnippetID(ctx)
 	case incompletebuildlog.FieldLogSnippet:
 		return m.OldLogSnippet(ctx)
+	case incompletebuildlog.FieldBazelInvocationID:
+		return m.OldBazelInvocationID(ctx)
 	}
 	return nil, fmt.Errorf("unknown IncompleteBuildLog field %s", name)
 }
@@ -15915,6 +15946,13 @@ func (m *IncompleteBuildLogMutation) SetField(name string, value ent.Value) erro
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLogSnippet(v)
+		return nil
+	case incompletebuildlog.FieldBazelInvocationID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBazelInvocationID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown IncompleteBuildLog field %s", name)
@@ -15985,6 +16023,9 @@ func (m *IncompleteBuildLogMutation) ResetField(name string) error {
 		return nil
 	case incompletebuildlog.FieldLogSnippet:
 		m.ResetLogSnippet()
+		return nil
+	case incompletebuildlog.FieldBazelInvocationID:
+		m.ResetBazelInvocationID()
 		return nil
 	}
 	return fmt.Errorf("unknown IncompleteBuildLog field %s", name)
@@ -28082,6 +28123,78 @@ func (m *TargetKindMappingMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (m *TargetKindMappingMutation) SetBazelInvocationID(i int) {
+	m.bazel_invocation = &i
+}
+
+// BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
+func (m *TargetKindMappingMutation) BazelInvocationID() (r int, exists bool) {
+	v := m.bazel_invocation
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the TargetKindMapping entity.
+// If the TargetKindMapping object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TargetKindMappingMutation) OldBazelInvocationID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBazelInvocationID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBazelInvocationID: %w", err)
+	}
+	return oldValue.BazelInvocationID, nil
+}
+
+// ResetBazelInvocationID resets all changes to the "bazel_invocation_id" field.
+func (m *TargetKindMappingMutation) ResetBazelInvocationID() {
+	m.bazel_invocation = nil
+}
+
+// SetTargetID sets the "target_id" field.
+func (m *TargetKindMappingMutation) SetTargetID(i int) {
+	m.target = &i
+}
+
+// TargetID returns the value of the "target_id" field in the mutation.
+func (m *TargetKindMappingMutation) TargetID() (r int, exists bool) {
+	v := m.target
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTargetID returns the old "target_id" field's value of the TargetKindMapping entity.
+// If the TargetKindMapping object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TargetKindMappingMutation) OldTargetID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTargetID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTargetID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTargetID: %w", err)
+	}
+	return oldValue.TargetID, nil
+}
+
+// ResetTargetID resets all changes to the "target_id" field.
+func (m *TargetKindMappingMutation) ResetTargetID() {
+	m.target = nil
+}
+
 // SetStartTimeInMs sets the "start_time_in_ms" field.
 func (m *TargetKindMappingMutation) SetStartTimeInMs(i int64) {
 	m.start_time_in_ms = &i
@@ -28152,27 +28265,15 @@ func (m *TargetKindMappingMutation) ResetStartTimeInMs() {
 	delete(m.clearedFields, targetkindmapping.FieldStartTimeInMs)
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *TargetKindMappingMutation) SetBazelInvocationID(id int) {
-	m.bazel_invocation = &id
-}
-
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
 func (m *TargetKindMappingMutation) ClearBazelInvocation() {
 	m.clearedbazel_invocation = true
+	m.clearedFields[targetkindmapping.FieldBazelInvocationID] = struct{}{}
 }
 
 // BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
 func (m *TargetKindMappingMutation) BazelInvocationCleared() bool {
 	return m.clearedbazel_invocation
-}
-
-// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *TargetKindMappingMutation) BazelInvocationID() (id int, exists bool) {
-	if m.bazel_invocation != nil {
-		return *m.bazel_invocation, true
-	}
-	return
 }
 
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
@@ -28191,27 +28292,15 @@ func (m *TargetKindMappingMutation) ResetBazelInvocation() {
 	m.clearedbazel_invocation = false
 }
 
-// SetTargetID sets the "target" edge to the Target entity by id.
-func (m *TargetKindMappingMutation) SetTargetID(id int) {
-	m.target = &id
-}
-
 // ClearTarget clears the "target" edge to the Target entity.
 func (m *TargetKindMappingMutation) ClearTarget() {
 	m.clearedtarget = true
+	m.clearedFields[targetkindmapping.FieldTargetID] = struct{}{}
 }
 
 // TargetCleared reports if the "target" edge to the Target entity was cleared.
 func (m *TargetKindMappingMutation) TargetCleared() bool {
 	return m.clearedtarget
-}
-
-// TargetID returns the "target" edge ID in the mutation.
-func (m *TargetKindMappingMutation) TargetID() (id int, exists bool) {
-	if m.target != nil {
-		return *m.target, true
-	}
-	return
 }
 
 // TargetIDs returns the "target" edge IDs in the mutation.
@@ -28264,7 +28353,13 @@ func (m *TargetKindMappingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TargetKindMappingMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 3)
+	if m.bazel_invocation != nil {
+		fields = append(fields, targetkindmapping.FieldBazelInvocationID)
+	}
+	if m.target != nil {
+		fields = append(fields, targetkindmapping.FieldTargetID)
+	}
 	if m.start_time_in_ms != nil {
 		fields = append(fields, targetkindmapping.FieldStartTimeInMs)
 	}
@@ -28276,6 +28371,10 @@ func (m *TargetKindMappingMutation) Fields() []string {
 // schema.
 func (m *TargetKindMappingMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case targetkindmapping.FieldBazelInvocationID:
+		return m.BazelInvocationID()
+	case targetkindmapping.FieldTargetID:
+		return m.TargetID()
 	case targetkindmapping.FieldStartTimeInMs:
 		return m.StartTimeInMs()
 	}
@@ -28287,6 +28386,10 @@ func (m *TargetKindMappingMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *TargetKindMappingMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case targetkindmapping.FieldBazelInvocationID:
+		return m.OldBazelInvocationID(ctx)
+	case targetkindmapping.FieldTargetID:
+		return m.OldTargetID(ctx)
 	case targetkindmapping.FieldStartTimeInMs:
 		return m.OldStartTimeInMs(ctx)
 	}
@@ -28298,6 +28401,20 @@ func (m *TargetKindMappingMutation) OldField(ctx context.Context, name string) (
 // type.
 func (m *TargetKindMappingMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case targetkindmapping.FieldBazelInvocationID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBazelInvocationID(v)
+		return nil
+	case targetkindmapping.FieldTargetID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTargetID(v)
+		return nil
 	case targetkindmapping.FieldStartTimeInMs:
 		v, ok := value.(int64)
 		if !ok {
@@ -28378,6 +28495,12 @@ func (m *TargetKindMappingMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *TargetKindMappingMutation) ResetField(name string) error {
 	switch name {
+	case targetkindmapping.FieldBazelInvocationID:
+		m.ResetBazelInvocationID()
+		return nil
+	case targetkindmapping.FieldTargetID:
+		m.ResetTargetID()
+		return nil
 	case targetkindmapping.FieldStartTimeInMs:
 		m.ResetStartTimeInMs()
 		return nil

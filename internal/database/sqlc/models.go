@@ -173,7 +173,7 @@ type EventMetadatum struct {
 	ID                int64
 	SequenceNumber    int64
 	EventReceivedAt   time.Time
-	EventHash         string
+	EventHash         []byte
 	BazelInvocationID int64
 }
 
@@ -195,10 +195,10 @@ type GarbageMetric struct {
 }
 
 type IncompleteBuildLog struct {
-	ID                                 int64
-	SnippetID                          int32
-	LogSnippet                         string
-	BazelInvocationIncompleteBuildLogs sql.NullInt64
+	ID                int64
+	SnippetID         int32
+	LogSnippet        string
+	BazelInvocationID int64
 }
 
 type InstanceName struct {
@@ -341,10 +341,10 @@ type Target struct {
 }
 
 type TargetKindMapping struct {
-	ID                                int64
-	StartTimeInMs                     sql.NullInt64
-	BazelInvocationTargetKindMappings int64
-	TargetTargetKindMappings          int64
+	ID                int64
+	StartTimeInMs     sql.NullInt64
+	BazelInvocationID int64
+	TargetID          int64
 }
 
 type TargetMetric struct {

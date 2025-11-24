@@ -33,6 +33,7 @@ require (
 	github.com/hedwigz/entviz v0.0.0-20221011080911-9d47f6f1d818
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/jackc/pgx/v5 v5.7.5
+	github.com/lib/pq v1.10.9
 	github.com/machinebox/graphql v0.2.2
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.23.2
@@ -129,7 +130,6 @@ require (
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/lazybeaver/xorshift v0.0.0-20170702203709-ce511d4823dd // indirect
-	github.com/lib/pq v1.10.9 // indirect
 	github.com/matryer/is v1.4.1 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect

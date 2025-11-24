@@ -8,6 +8,17 @@
           "instanceName": {
             "name": ""
           },
+          "label": "//:eslint",
+          "targetKind": "js_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjI=",
+          "instanceName": {
+            "name": ""
+          },
           "label": "//next.js/pages/api:api",
           "targetKind": "ts_project rule"
         }
@@ -15,7 +26,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjI=",
+          "id": "VGFyZ2V0OjM=",
           "instanceName": {
             "name": ""
           },
@@ -26,7 +37,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjM=",
+          "id": "VGFyZ2V0OjQ=",
           "instanceName": {
             "name": ""
           },
@@ -37,7 +48,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjQ=",
+          "id": "VGFyZ2V0OjU=",
           "instanceName": {
             "name": ""
           },
@@ -48,7 +59,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjU=",
+          "id": "VGFyZ2V0OjY=",
           "instanceName": {
             "name": ""
           },
@@ -59,7 +70,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjY=",
+          "id": "VGFyZ2V0Ojc=",
           "instanceName": {
             "name": ""
           },
@@ -70,7 +81,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0Ojc=",
+          "id": "VGFyZ2V0Ojg=",
           "instanceName": {
             "name": ""
           },
@@ -81,23 +92,12 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0Ojg=",
+          "id": "VGFyZ2V0Ojk=",
           "instanceName": {
             "name": ""
           },
           "label": "//next.js/pages:specs",
           "targetKind": "ts_project rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0Ojk=",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//next.js/styles:styles",
-          "targetKind": "js_library rule"
         }
       },
       {
@@ -118,6 +118,17 @@
           "instanceName": {
             "name": ""
           },
+          "label": "//next.js/styles:styles",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjEy",
+          "instanceName": {
+            "name": ""
+          },
           "label": "//next.js:build_smoke_test",
           "targetKind": "js_test rule"
         }
@@ -125,7 +136,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjEy",
+          "id": "VGFyZ2V0OjEz",
           "instanceName": {
             "name": ""
           },
@@ -136,7 +147,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjEz",
+          "id": "VGFyZ2V0OjE0",
           "instanceName": {
             "name": ""
           },
@@ -147,29 +158,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjE0",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//next.js:next",
-          "targetKind": "_run_binary rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
           "id": "VGFyZ2V0OjE1",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//next.js:next_dev",
-          "targetKind": "_js_run_devserver rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjE2",
           "instanceName": {
             "name": ""
           },
@@ -180,7 +169,29 @@
       {
         "node": {
           "aspect": "",
+          "id": "VGFyZ2V0OjE2",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:next",
+          "targetKind": "_run_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
           "id": "VGFyZ2V0OjE3",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//next.js:next_dev",
+          "targetKind": "_js_run_devserver rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjE4",
           "instanceName": {
             "name": ""
           },
@@ -191,7 +202,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjE4",
+          "id": "VGFyZ2V0OjE5",
           "instanceName": {
             "name": ""
           },
@@ -202,7 +213,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjE5",
+          "id": "VGFyZ2V0OjIw",
           "instanceName": {
             "name": ""
           },
@@ -213,7 +224,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjIw",
+          "id": "VGFyZ2V0OjIx",
           "instanceName": {
             "name": ""
           },
@@ -224,23 +235,12 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjIx",
+          "id": "VGFyZ2V0OjIy",
           "instanceName": {
             "name": ""
           },
           "label": "//packages/one:one",
           "targetKind": "_npm_package rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjIy",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/public:public",
-          "targetKind": "js_library rule"
         }
       },
       {
@@ -261,248 +261,6 @@
           "instanceName": {
             "name": ""
           },
-          "label": "//react/src:assets",
-          "targetKind": "js_library rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjI1",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:lint",
-          "targetKind": "eslint_test rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjI2",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:src_transpile",
-          "targetKind": "swc_compile rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjI3",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:src",
-          "targetKind": "js_library rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjI4",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:src_typecheck",
-          "targetKind": "filegroup rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjI5",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:src_typecheck_test",
-          "targetKind": "_empty_test rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjMw",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:src_typings",
-          "targetKind": "ts_project rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjMx",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:test",
-          "targetKind": "js_test rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjMy",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:test_lib",
-          "targetKind": "js_library rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjMz",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:test_lib_transpile",
-          "targetKind": "swc_compile rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjM0",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:test_lib_typecheck",
-          "targetKind": "filegroup rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjM1",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:test_lib_typecheck_test",
-          "targetKind": "_empty_test rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjM2",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react/src:test_lib_typings",
-          "targetKind": "ts_project rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjM3",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react:build",
-          "targetKind": "_run_binary rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjM4",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react:build_smoke_test",
-          "targetKind": "js_test rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjM5",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react:package_json",
-          "targetKind": "js_library rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjQw",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react:preview",
-          "targetKind": "js_binary rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjQx",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react:start",
-          "targetKind": "_js_run_devserver rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjQy",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react:tsconfig",
-          "targetKind": "ts_config rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjQz",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react:vite",
-          "targetKind": "js_binary rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjQ0",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react:vite.config",
-          "targetKind": "js_library rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjQ1",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//react:write_swcrc",
-          "targetKind": "_run_binary rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
-          "id": "VGFyZ2V0OjQ2",
-          "instanceName": {
-            "name": ""
-          },
           "label": "//react-webpack/src:transpile",
           "targetKind": "swc_compile rule"
         }
@@ -510,7 +268,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjQ3",
+          "id": "VGFyZ2V0OjI1",
           "instanceName": {
             "name": ""
           },
@@ -521,7 +279,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjQ4",
+          "id": "VGFyZ2V0OjI2",
           "instanceName": {
             "name": ""
           },
@@ -532,7 +290,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjQ5",
+          "id": "VGFyZ2V0OjI3",
           "instanceName": {
             "name": ""
           },
@@ -543,7 +301,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjUw",
+          "id": "VGFyZ2V0OjI4",
           "instanceName": {
             "name": ""
           },
@@ -554,7 +312,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjUx",
+          "id": "VGFyZ2V0OjI5",
           "instanceName": {
             "name": ""
           },
@@ -565,7 +323,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjUy",
+          "id": "VGFyZ2V0OjMw",
           "instanceName": {
             "name": ""
           },
@@ -576,7 +334,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjUz",
+          "id": "VGFyZ2V0OjMx",
           "instanceName": {
             "name": ""
           },
@@ -587,11 +345,253 @@
       {
         "node": {
           "aspect": "",
+          "id": "VGFyZ2V0OjMy",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/public:public",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjMz",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:assets",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM0",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:lint",
+          "targetKind": "eslint_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM1",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:src",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM2",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:src_transpile",
+          "targetKind": "swc_compile rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM3",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:src_typecheck",
+          "targetKind": "filegroup rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM4",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:src_typecheck_test",
+          "targetKind": "_empty_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjM5",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:src_typings",
+          "targetKind": "ts_project rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQw",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test",
+          "targetKind": "js_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQx",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test_lib",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQy",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test_lib_transpile",
+          "targetKind": "swc_compile rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQz",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test_lib_typecheck",
+          "targetKind": "filegroup rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ0",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test_lib_typecheck_test",
+          "targetKind": "_empty_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ1",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react/src:test_lib_typings",
+          "targetKind": "ts_project rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ2",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:build",
+          "targetKind": "_run_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ3",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:build_smoke_test",
+          "targetKind": "js_test rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ4",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:package_json",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjQ5",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:preview",
+          "targetKind": "js_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjUw",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:start",
+          "targetKind": "_js_run_devserver rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjUx",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:tsconfig",
+          "targetKind": "ts_config rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjUy",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:vite",
+          "targetKind": "js_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjUz",
+          "instanceName": {
+            "name": ""
+          },
+          "label": "//react:vite.config",
+          "targetKind": "js_library rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
           "id": "VGFyZ2V0OjU0",
           "instanceName": {
             "name": ""
           },
-          "label": "//vue/libraries/simple:build",
+          "label": "//react:write_swcrc",
           "targetKind": "_run_binary rule"
         }
       },
@@ -602,6 +602,17 @@
           "instanceName": {
             "name": ""
           },
+          "label": "//vue/libraries/simple:build",
+          "targetKind": "_run_binary rule"
+        }
+      },
+      {
+        "node": {
+          "aspect": "",
+          "id": "VGFyZ2V0OjU2",
+          "instanceName": {
+            "name": ""
+          },
           "label": "//vue/libraries/simple:simple",
           "targetKind": "_npm_package rule"
         }
@@ -609,7 +620,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjU2",
+          "id": "VGFyZ2V0OjU3",
           "instanceName": {
             "name": ""
           },
@@ -620,7 +631,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjU3",
+          "id": "VGFyZ2V0OjU4",
           "instanceName": {
             "name": ""
           },
@@ -631,7 +642,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjU4",
+          "id": "VGFyZ2V0OjU5",
           "instanceName": {
             "name": ""
           },
@@ -642,7 +653,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjU5",
+          "id": "VGFyZ2V0OjYw",
           "instanceName": {
             "name": ""
           },
@@ -653,7 +664,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjYw",
+          "id": "VGFyZ2V0OjYx",
           "instanceName": {
             "name": ""
           },
@@ -664,7 +675,7 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjYx",
+          "id": "VGFyZ2V0OjYy",
           "instanceName": {
             "name": ""
           },
@@ -675,22 +686,11 @@
       {
         "node": {
           "aspect": "",
-          "id": "VGFyZ2V0OjYy",
-          "instanceName": {
-            "name": ""
-          },
-          "label": "//vue:vite",
-          "targetKind": "js_binary rule"
-        }
-      },
-      {
-        "node": {
-          "aspect": "",
           "id": "VGFyZ2V0OjYz",
           "instanceName": {
             "name": ""
           },
-          "label": "//:eslint",
+          "label": "//vue:vite",
           "targetKind": "js_binary rule"
         }
       }

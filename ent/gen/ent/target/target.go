@@ -47,7 +47,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "targetkindmapping" package.
 	TargetKindMappingsInverseTable = "target_kind_mappings"
 	// TargetKindMappingsColumn is the table column denoting the target_kind_mappings relation/edge.
-	TargetKindMappingsColumn = "target_target_kind_mappings"
+	TargetKindMappingsColumn = "target_id"
 )
 
 // Columns holds all SQL columns for target fields.

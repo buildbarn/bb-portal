@@ -3,6 +3,7 @@ package bepuploader
 import (
 	"bufio"
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -26,6 +27,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
 const (
@@ -87,6 +89,16 @@ func NewBepUploader(db database.Client, blobArchiver processing.BlobMultiArchive
 	}, nil
 }
 
+func getEventHash(buildEvent *events.BuildEvent) ([]byte, error) {
+	marshalOptions := proto.MarshalOptions{Deterministic: true}
+	data, err := marshalOptions.Marshal(buildEvent)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to marshal build event")
+	}
+	hash := sha256.Sum256(data)
+	return hash[:], nil
+}
+
 // RecordEventNdjsonFile records all build events from an ndjson bep file.
 func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader) (string, int, error) {
 	// We can safely bypass authorization checks here, as we check that the
@@ -106,6 +118,7 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 	var buildEventRecorder *buildeventrecorder.BuildEventRecorder = nil
 
 	sequenceNumber := int64(0)
+	eventBuffer := make([]buildeventrecorder.BuildEventWithInfo, 0)
 	for scanner.Scan() {
 		// When reading from the BES stream, the first event has sequence
 		// number 1, so this is fine.
@@ -145,11 +158,19 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 		// done when we no longer need JSON serialization of events, like we do for
 		// BazelInvocationProblems.
 		buildEvent := events.NewBuildEvent(&bazelEvent, json.RawMessage(protojson.Format(&bazelEvent)))
-		if err = buildEventRecorder.RecordEvent(ctx, &buildEvent, sequenceNumber); err != nil {
-			return "", gprcErrorCodeToHTTPStatus(err), util.StatusWrap(err, "Failed to record build event")
+		hash, err := getEventHash(&buildEvent)
+		if err != nil {
+			return "", 0, util.StatusWrap(err, "Could not determine build event hash")
 		}
+		eventBuffer = append(eventBuffer, buildeventrecorder.BuildEventWithInfo{
+			Event:          &buildEvent,
+			SequenceNumber: sequenceNumber,
+			EventHash:      hash,
+		})
 	}
-
+	if err := buildEventRecorder.SaveBatch(ctx, eventBuffer); err != nil {
+		return "", gprcErrorCodeToHTTPStatus(err), util.StatusWrap(err, "Failed to record build event")
+	}
 	if err := scanner.Err(); err != nil {
 		return "", http.StatusInternalServerError, util.StatusWrap(err, "Failed to read build event file")
 	}

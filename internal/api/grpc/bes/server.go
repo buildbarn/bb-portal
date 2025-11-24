@@ -2,15 +2,17 @@ package bes
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io"
-	"log/slog"
+	"time"
 
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
@@ -89,93 +91,170 @@ func NewBuildEventServer(db database.Client, blobArchiver processing.BlobMultiAr
 }
 
 // PublishLifecycleEvent handles life cycle events.
-func (s BuildEventServer) PublishLifecycleEvent(ctx context.Context, request *build.PublishLifecycleEventRequest) (*emptypb.Empty, error) {
-	slog.InfoContext(ctx, "Received event", "event", protojson.Format(request.BuildEvent.GetEvent()))
+func (s *BuildEventServer) PublishLifecycleEvent(ctx context.Context, request *build.PublishLifecycleEventRequest) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, nil
 }
 
+func getEventHash(buildEvent *events.BuildEvent) ([]byte, error) {
+	marshalOptions := proto.MarshalOptions{Deterministic: true}
+	data, err := marshalOptions.Marshal(buildEvent)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Failed to marshal build event")
+	}
+	hash := sha256.Sum256(data)
+	return hash[:], nil
+}
+
+func requestToBuildEventWithInfo(req *build.PublishBuildToolEventStreamRequest) (*buildeventrecorder.BuildEventWithInfo, error) {
+	var bazelEvent bes.BuildEvent
+	var sequenceNumber int64
+	obe := req.GetOrderedBuildEvent()
+	be := obe.GetEvent()
+	sid := obe.GetStreamId()
+	sequenceNumber = obe.GetSequenceNumber()
+	if obe == nil || be == nil || sid == nil {
+		return nil, status.Error(codes.InvalidArgument, "Missing expected inputs.")
+	}
+
+	if be.GetBazelEvent() == nil {
+		return &buildeventrecorder.BuildEventWithInfo{
+			SequenceNumber: sequenceNumber,
+		}, nil
+	}
+
+	if err := be.GetBazelEvent().UnmarshalTo(&bazelEvent); err != nil {
+		return nil, status.Error(codes.InvalidArgument, "Could not unmarshall bazel event")
+	}
+
+	// TODO (isakstenstrom): Remove this and send the raw BES
+	// event instead. This can only be done when we no longer
+	// need JSON serialization of events, like we do for
+	// BazelInvocationProblems.
+	buildEvent := events.NewBuildEvent(&bazelEvent, json.RawMessage(protojson.Format(&bazelEvent)))
+	hash, err := getEventHash(&buildEvent)
+	if err != nil {
+		return nil, util.StatusWrap(err, "Could not determine build event hash")
+	}
+
+	// Add the event to the batch.
+	return &buildeventrecorder.BuildEventWithInfo{
+		Event:          &buildEvent,
+		SequenceNumber: sequenceNumber,
+		AddedAt:        time.Now(),
+		EventHash:      hash,
+	}, nil
+}
+
 // PublishBuildToolEventStream handles a build tool event stream.
-func (s BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildEvent_PublishBuildToolEventStreamServer) error {
+func (s *BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuildEvent_PublishBuildToolEventStreamServer) error {
 	// We can safely bypass authorization checks here, as we check that the
 	// user is allowed to upload to the instance name when creating the
 	// BuildEventRecorder.
 	ctx := dbauthservice.NewContextWithDbAuthServiceBypass(stream.Context())
-	slog.InfoContext(ctx, "Stream started", "event", ctx)
 
-	var buildEventRecorder *buildeventrecorder.BuildEventRecorder = nil
-
-	for {
-		req, err := stream.Recv()
-		if err != nil {
-			if err == io.EOF {
-				slog.InfoContext(ctx, "Stream finished", "event", ctx)
-				return nil
-			}
-			slog.ErrorContext(ctx, "Recv failed", "err", err)
-			return err
-		}
-
-		if buildEventRecorder == nil {
-			buildEventRecorder, err = buildeventrecorder.NewBuildEventRecorder(
-				ctx,
-				s.db,
-				s.instanceNameAuthorizer,
-				s.blobArchiver,
-				s.saveTargetDataLevel,
-				s.saveTestDataLevel,
-				s.tracerProvider,
-				req.GetProjectId(),
-				req.GetOrderedBuildEvent().GetStreamId().GetInvocationId(),
-				req.GetOrderedBuildEvent().GetStreamId().GetBuildId(),
-				true, // isRealTime
-				s.extractors,
-				s.uuidGenerator,
-			)
-			if err != nil {
-				return util.StatusWrap(err, "Failed to create BuildEventRecorder")
-			}
-
-			buildEventRecorder.StartLoggingConnectionMetadata(ctx)
-		}
-
-		err = s.handleBuildEvent(ctx, buildEventRecorder, req.OrderedBuildEvent.GetEvent(), req.OrderedBuildEvent.SequenceNumber)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to handle build event")
-		}
-
-		err = ackBuildEventStreamMessage(ctx, stream, req.GetOrderedBuildEvent().GetStreamId(), req.GetOrderedBuildEvent().GetSequenceNumber())
-		if err != nil {
-			return util.StatusWrap(err, "Failed to ACK build event")
-		}
-	}
-}
-
-func (s BuildEventServer) handleBuildEvent(ctx context.Context, buildEventRecorder *buildeventrecorder.BuildEventRecorder, event *build.BuildEvent, sequenceNumber int64) error {
-	if event.GetBazelEvent() == nil {
+	// Synchronously block for the first request to simplify
+	// initialization logic.
+	req, err := stream.Recv()
+	if err == io.EOF {
 		return nil
 	}
-	var bazelEvent bes.BuildEvent
-	err := event.GetBazelEvent().UnmarshalTo(&bazelEvent)
 	if err != nil {
-		return util.StatusWrap(err, "Failed to unmarshal BES event")
+		return util.StatusWrap(err, "Failed to recieve the initial event from the stream")
 	}
-	// TODO (isakstenstrom): Remove this and send the raw BES event instead. This can only be
-	// done when we no longer need JSON serialization of events, like we do for
-	// BazelInvocationProblems.
-	buildEvent := events.NewBuildEvent(&bazelEvent, json.RawMessage(protojson.Format(&bazelEvent)))
-	if err = buildEventRecorder.RecordEvent(ctx, &buildEvent, sequenceNumber); err != nil {
-		return util.StatusWrap(err, "Failed to record build event")
-	}
-	return nil
-}
 
-func ackBuildEventStreamMessage(ctx context.Context, stream build.PublishBuildEvent_PublishBuildToolEventStreamServer, streamID *build.StreamId, sequenceNumber int64) error {
-	err := stream.Send(&build.PublishBuildToolEventStreamResponse{
-		StreamId:       streamID,
-		SequenceNumber: sequenceNumber,
-	})
+	data, err := requestToBuildEventWithInfo(req)
 	if err != nil {
-		return util.StatusWrap(err, "Failed to send ACK for build event")
+		return util.StatusWrap(err, "Failed to convert the initial request to internal build event")
 	}
-	return nil
+	batcher := buildeventrecorder.NewBatcher[buildeventrecorder.BuildEventWithInfo]()
+	if data != nil {
+		// If the first message is a build event add it to the batch.
+		batcher.Add(*data)
+	}
+	streamID := req.GetOrderedBuildEvent().GetStreamId()
+
+	// initialize with the first message
+	buildEventRecorder, err := buildeventrecorder.NewBuildEventRecorder(
+		ctx,
+		s.db,
+		s.instanceNameAuthorizer,
+		s.blobArchiver,
+		s.saveTargetDataLevel,
+		s.saveTestDataLevel,
+		s.tracerProvider,
+		req.GetProjectId(),
+		streamID.GetInvocationId(),
+		streamID.GetBuildId(),
+		true, // isRealTime
+		s.extractors,
+		s.uuidGenerator,
+	)
+	if err != nil {
+		return util.StatusWrap(err, "Could not initialize build event recorder")
+	}
+	buildEventRecorder.StartLoggingConnectionMetadata(ctx)
+
+	errChan := make(chan error, 1)
+	go func() {
+		defer close(errChan)
+		for {
+			// This call blocks, but will be cancelled when we return
+			// the parent function.
+			req, err := stream.Recv()
+			if err == io.EOF {
+				return
+			}
+			if err != nil {
+				errChan <- err
+				return
+			}
+			data, err := requestToBuildEventWithInfo(req)
+			if err != nil {
+				errChan <- err
+				return
+			}
+			if data != nil {
+				batcher.Add(*data)
+			}
+		}
+	}()
+
+	processBatch := func(batch []buildeventrecorder.BuildEventWithInfo) error {
+		if err := buildEventRecorder.SaveBatch(ctx, batch); err != nil {
+			return util.StatusWrap(err, "Failed to commit build event batch")
+		}
+		for _, meta := range batch {
+			err := stream.Send(&build.PublishBuildToolEventStreamResponse{
+				StreamId:       streamID,
+				SequenceNumber: meta.SequenceNumber,
+			})
+			if err != nil {
+				return util.StatusWrap(err, "Failed to send ACK for build event")
+			}
+		}
+		return nil
+	}
+
+	prevBatch := make([]buildeventrecorder.BuildEventWithInfo, 0)
+	for {
+		// Block until receive an error or we've received a batch of
+		// requests.
+		select {
+		case err, more := <-errChan:
+			if err != nil {
+				return util.StatusWrap(err, "Failed to receive build event")
+			}
+			// Input stream is closed without error. Do last batch.
+			if !more {
+				nextBatch := batcher.Swap(prevBatch)
+				return processBatch(nextBatch)
+			}
+		case <-batcher.Ready():
+			nextBatch := batcher.Swap(prevBatch)
+			if err = processBatch(nextBatch); err != nil {
+				return util.StatusWrap(err, "Failed to process build event batch")
+			}
+			prevBatch = nextBatch[:0]
+		}
+	}
 }

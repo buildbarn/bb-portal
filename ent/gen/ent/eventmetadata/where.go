@@ -66,7 +66,7 @@ func EventReceivedAt(v time.Time) predicate.EventMetadata {
 }
 
 // EventHash applies equality check predicate on the "event_hash" field. It's identical to EventHashEQ.
-func EventHash(v string) predicate.EventMetadata {
+func EventHash(v []byte) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldEQ(FieldEventHash, v))
 }
 
@@ -156,68 +156,43 @@ func EventReceivedAtLTE(v time.Time) predicate.EventMetadata {
 }
 
 // EventHashEQ applies the EQ predicate on the "event_hash" field.
-func EventHashEQ(v string) predicate.EventMetadata {
+func EventHashEQ(v []byte) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldEQ(FieldEventHash, v))
 }
 
 // EventHashNEQ applies the NEQ predicate on the "event_hash" field.
-func EventHashNEQ(v string) predicate.EventMetadata {
+func EventHashNEQ(v []byte) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldNEQ(FieldEventHash, v))
 }
 
 // EventHashIn applies the In predicate on the "event_hash" field.
-func EventHashIn(vs ...string) predicate.EventMetadata {
+func EventHashIn(vs ...[]byte) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldIn(FieldEventHash, vs...))
 }
 
 // EventHashNotIn applies the NotIn predicate on the "event_hash" field.
-func EventHashNotIn(vs ...string) predicate.EventMetadata {
+func EventHashNotIn(vs ...[]byte) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldNotIn(FieldEventHash, vs...))
 }
 
 // EventHashGT applies the GT predicate on the "event_hash" field.
-func EventHashGT(v string) predicate.EventMetadata {
+func EventHashGT(v []byte) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldGT(FieldEventHash, v))
 }
 
 // EventHashGTE applies the GTE predicate on the "event_hash" field.
-func EventHashGTE(v string) predicate.EventMetadata {
+func EventHashGTE(v []byte) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldGTE(FieldEventHash, v))
 }
 
 // EventHashLT applies the LT predicate on the "event_hash" field.
-func EventHashLT(v string) predicate.EventMetadata {
+func EventHashLT(v []byte) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldLT(FieldEventHash, v))
 }
 
 // EventHashLTE applies the LTE predicate on the "event_hash" field.
-func EventHashLTE(v string) predicate.EventMetadata {
+func EventHashLTE(v []byte) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldLTE(FieldEventHash, v))
-}
-
-// EventHashContains applies the Contains predicate on the "event_hash" field.
-func EventHashContains(v string) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldContains(FieldEventHash, v))
-}
-
-// EventHashHasPrefix applies the HasPrefix predicate on the "event_hash" field.
-func EventHashHasPrefix(v string) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldHasPrefix(FieldEventHash, v))
-}
-
-// EventHashHasSuffix applies the HasSuffix predicate on the "event_hash" field.
-func EventHashHasSuffix(v string) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldHasSuffix(FieldEventHash, v))
-}
-
-// EventHashEqualFold applies the EqualFold predicate on the "event_hash" field.
-func EventHashEqualFold(v string) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldEqualFold(FieldEventHash, v))
-}
-
-// EventHashContainsFold applies the ContainsFold predicate on the "event_hash" field.
-func EventHashContainsFold(v string) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldContainsFold(FieldEventHash, v))
 }
 
 // BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
