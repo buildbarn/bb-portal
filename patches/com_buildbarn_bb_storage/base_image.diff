@@ -1,8 +1,8 @@
 diff --git MODULE.bazel MODULE.bazel
-index 42c11e5..cefd86d 100644
+index d52dbd8..c8f6dd1 100644
 --- MODULE.bazel
 +++ MODULE.bazel
-@@ -161,3 +161,19 @@ use_repo(
+@@ -167,3 +167,19 @@ use_repo(
      "distroless_static_linux_amd64",
      "distroless_static_linux_arm64_v8",
  )
@@ -23,10 +23,10 @@ index 42c11e5..cefd86d 100644
 +    "distroless_base_linux_arm64_v8",
 +)
 diff --git tools/container.bzl tools/container.bzl
-index 3f33c42..266cbc7 100644
+index dabeb52..604681c 100644
 --- tools/container.bzl
 +++ tools/container.bzl
-@@ -21,7 +21,7 @@ def multiarch_go_image(name, binary):
+@@ -22,7 +22,7 @@ def multiarch_go_image(name, binary):
  
      oci_image(
          name = image_target,
@@ -35,7 +35,7 @@ index 3f33c42..266cbc7 100644
          entrypoint = ["/app/{}".format(native.package_relative_label(binary).name)],
          tars = [tar_target],
          # Don't build un-transitioned images, as the default target architecture might be unsupported
-@@ -33,8 +33,8 @@ def multiarch_go_image(name, binary):
+@@ -34,8 +34,8 @@ def multiarch_go_image(name, binary):
          name = name,
          images = [image_target],
          platforms = [
@@ -46,12 +46,3 @@ index 3f33c42..266cbc7 100644
          ],
          visibility = ["//visibility:public"],
          target_compatible_with = select({
-@@ -47,7 +47,7 @@ def container_push_official(name, image, component):
-     oci_push(
-         name = name,
-         image = image,
--        repository = "ghcr.io/buildbarn/" + component,
-+        repository = "ghcr.io/buildbarn/" + component + "-backend",
-         remote_tags = "@com_github_buildbarn_bb_storage//tools:stamped_tags",
-         target_compatible_with = select({
-             Label("@platforms//os:windows"): [Label("@platforms//:incompatible")],

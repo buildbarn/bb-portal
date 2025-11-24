@@ -67,7 +67,7 @@ multiarch_go_image(
 
 container_push_official(
     name = "bb_portal_container_push",
-    component = "bb-portal",
+    component = "bb-portal-backend",
     image = ":bb_portal_container",
 )
 
