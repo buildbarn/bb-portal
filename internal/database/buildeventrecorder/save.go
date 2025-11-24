@@ -2,12 +2,11 @@ package buildeventrecorder
 
 import (
 	"context"
-	"crypto/sha256"
 	"database/sql"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"reflect"
+	"slices"
 	"time"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
@@ -23,7 +22,6 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/proto"
 )
 
 func eventTypeName(buildEvent *events.BuildEvent) string {
@@ -33,14 +31,14 @@ func eventTypeName(buildEvent *events.BuildEvent) string {
 	return "<nil>"
 }
 
-// RecordEvent records a build event in the database.
-func (r *BuildEventRecorder) RecordEvent(
+func (r *BuildEventRecorder) saveEvent(
 	ctx context.Context,
-	buildEvent *events.BuildEvent,
-	sequenceNumber int64,
+	info BuildEventWithInfo,
 ) error {
+	buildEvent := info.Event
+	sequenceNumber := info.SequenceNumber
 	ctx, span := r.tracer.Start(ctx,
-		fmt.Sprintf("BuildEventRecorder.recordEvent_%s", eventTypeName(buildEvent)),
+		fmt.Sprintf("BuildEventRecorder.saveEvent_%s", eventTypeName(buildEvent)),
 		trace.WithAttributes(
 			attribute.String("invocation.id", r.InvocationID),
 			attribute.String("invocation.instance_name", r.InstanceName),
@@ -49,19 +47,12 @@ func (r *BuildEventRecorder) RecordEvent(
 	)
 	defer span.End()
 
-	// We create the event hash before starting the transaction, as
-	// this operation does not need to be part of it.
-	eventHash, err := r.getEventHash(buildEvent)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to get event hash")
-	}
-
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create transaction")
 	}
 
-	err = r.createEventMetadata(ctx, tx, sequenceNumber, eventHash)
+	err = r.createEventMetadata(ctx, tx, sequenceNumber, info.EventHash)
 	if err != nil {
 		err2 := tx.Rollback()
 		if err2 != nil {
@@ -76,7 +67,7 @@ func (r *BuildEventRecorder) RecordEvent(
 		if err2 != nil {
 			return util.StatusWrap(errors.Join(err, err2), "Failed to create event metadata, and failed to query existing event metadata")
 		}
-		if eventMetadata.EventHash == eventHash {
+		if slices.Equal(eventMetadata.EventHash, info.EventHash) {
 			// This exact event has already been processed. Ignore it and send
 			// an ACK back.
 			return nil
@@ -94,18 +85,6 @@ func (r *BuildEventRecorder) RecordEvent(
 		return common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to save bazel invocation problems"))
 	}
 
-	if buildEvent.LastMessage {
-		err = tx.Ent().BazelInvocation.Update().
-			Where(
-				bazelinvocation.ID(r.InvocationDbID),
-			).
-			SetBepCompleted(true).
-			Exec(ctx)
-		if err != nil {
-			return common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to mark BEP as completed"))
-		}
-	}
-
 	err = tx.Commit()
 	if err != nil {
 		// If the commit fails, we check if the event has already been handled.
@@ -115,7 +94,7 @@ func (r *BuildEventRecorder) RecordEvent(
 			Where(
 				eventmetadata.HasBazelInvocationWith(bazelinvocation.ID(r.InvocationDbID)),
 				eventmetadata.SequenceNumber(sequenceNumber),
-				eventmetadata.EventHash(eventHash)).
+				eventmetadata.EventHash(info.EventHash)).
 			Exist(ctx)
 		if qerr != nil {
 			return util.StatusWrap(qerr, "Failed to check if event was already processed")
@@ -129,21 +108,11 @@ func (r *BuildEventRecorder) RecordEvent(
 	return nil
 }
 
-func (r *BuildEventRecorder) getEventHash(buildEvent *events.BuildEvent) (string, error) {
-	marshalOptions := proto.MarshalOptions{Deterministic: true}
-	data, err := marshalOptions.Marshal(buildEvent)
-	if err != nil {
-		return "", util.StatusWrap(err, "Failed to marshal build event")
-	}
-	h := sha256.Sum256(data)
-	return hex.EncodeToString(h[:]), nil
-}
-
 func (r *BuildEventRecorder) createEventMetadata(
 	ctx context.Context,
 	tx database.Tx,
 	sequenceNumber int64,
-	eventHash string,
+	eventHash []byte,
 ) error {
 	result, err := tx.Sqlc().RecordEventMetadata(ctx, sqlc.RecordEventMetadataParams{
 		SequenceNumber:  sequenceNumber,
@@ -185,10 +154,6 @@ func (r *BuildEventRecorder) saveBuildEvent(
 		return r.saveStructuredCommandLine(ctx, tx.Ent(), buildEvent.GetStructuredCommandLine())
 	case *bes.BuildEventId_Configuration:
 		return r.saveBuildConfiguration(ctx, tx.Ent(), buildEvent.GetConfiguration())
-	case *bes.BuildEventId_TargetConfigured:
-		return r.saveTargetConfigured(ctx, tx.Ent(), buildEvent.GetConfigured(), buildEvent.GetId().GetTargetConfigured())
-	case *bes.BuildEventId_TargetCompleted:
-		return r.saveTargetCompleted(ctx, tx.Ent(), buildEvent.GetCompleted(), buildEvent.GetId().GetTargetCompleted(), buildEvent.GetAborted())
 	case *bes.BuildEventId_Fetch:
 		return r.saveFetch(ctx, tx.Ent(), buildEvent.GetFetch())
 	case *bes.BuildEventId_TestResult:
@@ -197,8 +162,6 @@ func (r *BuildEventRecorder) saveBuildEvent(
 		return r.saveTestSummary(ctx, tx.Ent(), buildEvent.GetTestSummary(), buildEvent.GetId().GetTestSummary().Label)
 	case *bes.BuildEventId_BuildToolLogs:
 		return r.saveBuildToolLogs(ctx, tx.Ent(), buildEvent.GetBuildToolLogs())
-	case *bes.BuildEventId_Progress:
-		return r.saveBuildProgress(ctx, tx.Ent(), buildEvent, buildEvent.GetProgress())
 	case *bes.BuildEventId_WorkspaceStatus:
 		return r.saveWorkspaceStatus(ctx, tx.Ent(), buildEvent.GetWorkspaceStatus())
 	default:

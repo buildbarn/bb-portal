@@ -10,9 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 )
 
@@ -57,43 +55,9 @@ func (tkmu *TargetKindMappingUpdate) ClearStartTimeInMs() *TargetKindMappingUpda
 	return tkmu
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tkmu *TargetKindMappingUpdate) SetBazelInvocationID(id int) *TargetKindMappingUpdate {
-	tkmu.mutation.SetBazelInvocationID(id)
-	return tkmu
-}
-
-// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (tkmu *TargetKindMappingUpdate) SetBazelInvocation(b *BazelInvocation) *TargetKindMappingUpdate {
-	return tkmu.SetBazelInvocationID(b.ID)
-}
-
-// SetTargetID sets the "target" edge to the Target entity by ID.
-func (tkmu *TargetKindMappingUpdate) SetTargetID(id int) *TargetKindMappingUpdate {
-	tkmu.mutation.SetTargetID(id)
-	return tkmu
-}
-
-// SetTarget sets the "target" edge to the Target entity.
-func (tkmu *TargetKindMappingUpdate) SetTarget(t *Target) *TargetKindMappingUpdate {
-	return tkmu.SetTargetID(t.ID)
-}
-
 // Mutation returns the TargetKindMappingMutation object of the builder.
 func (tkmu *TargetKindMappingUpdate) Mutation() *TargetKindMappingMutation {
 	return tkmu.mutation
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (tkmu *TargetKindMappingUpdate) ClearBazelInvocation() *TargetKindMappingUpdate {
-	tkmu.mutation.ClearBazelInvocation()
-	return tkmu
-}
-
-// ClearTarget clears the "target" edge to the Target entity.
-func (tkmu *TargetKindMappingUpdate) ClearTarget() *TargetKindMappingUpdate {
-	tkmu.mutation.ClearTarget()
-	return tkmu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -161,64 +125,6 @@ func (tkmu *TargetKindMappingUpdate) sqlSave(ctx context.Context) (n int, err er
 	if tkmu.mutation.StartTimeInMsCleared() {
 		_spec.ClearField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64)
 	}
-	if tkmu.mutation.BazelInvocationCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   targetkindmapping.BazelInvocationTable,
-			Columns: []string{targetkindmapping.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tkmu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   targetkindmapping.BazelInvocationTable,
-			Columns: []string{targetkindmapping.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if tkmu.mutation.TargetCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   targetkindmapping.TargetTable,
-			Columns: []string{targetkindmapping.TargetColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tkmu.mutation.TargetIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   targetkindmapping.TargetTable,
-			Columns: []string{targetkindmapping.TargetColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	_spec.AddModifiers(tkmu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, tkmu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -268,43 +174,9 @@ func (tkmuo *TargetKindMappingUpdateOne) ClearStartTimeInMs() *TargetKindMapping
 	return tkmuo
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (tkmuo *TargetKindMappingUpdateOne) SetBazelInvocationID(id int) *TargetKindMappingUpdateOne {
-	tkmuo.mutation.SetBazelInvocationID(id)
-	return tkmuo
-}
-
-// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (tkmuo *TargetKindMappingUpdateOne) SetBazelInvocation(b *BazelInvocation) *TargetKindMappingUpdateOne {
-	return tkmuo.SetBazelInvocationID(b.ID)
-}
-
-// SetTargetID sets the "target" edge to the Target entity by ID.
-func (tkmuo *TargetKindMappingUpdateOne) SetTargetID(id int) *TargetKindMappingUpdateOne {
-	tkmuo.mutation.SetTargetID(id)
-	return tkmuo
-}
-
-// SetTarget sets the "target" edge to the Target entity.
-func (tkmuo *TargetKindMappingUpdateOne) SetTarget(t *Target) *TargetKindMappingUpdateOne {
-	return tkmuo.SetTargetID(t.ID)
-}
-
 // Mutation returns the TargetKindMappingMutation object of the builder.
 func (tkmuo *TargetKindMappingUpdateOne) Mutation() *TargetKindMappingMutation {
 	return tkmuo.mutation
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (tkmuo *TargetKindMappingUpdateOne) ClearBazelInvocation() *TargetKindMappingUpdateOne {
-	tkmuo.mutation.ClearBazelInvocation()
-	return tkmuo
-}
-
-// ClearTarget clears the "target" edge to the Target entity.
-func (tkmuo *TargetKindMappingUpdateOne) ClearTarget() *TargetKindMappingUpdateOne {
-	tkmuo.mutation.ClearTarget()
-	return tkmuo
 }
 
 // Where appends a list predicates to the TargetKindMappingUpdate builder.
@@ -401,64 +273,6 @@ func (tkmuo *TargetKindMappingUpdateOne) sqlSave(ctx context.Context) (_node *Ta
 	}
 	if tkmuo.mutation.StartTimeInMsCleared() {
 		_spec.ClearField(targetkindmapping.FieldStartTimeInMs, field.TypeInt64)
-	}
-	if tkmuo.mutation.BazelInvocationCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   targetkindmapping.BazelInvocationTable,
-			Columns: []string{targetkindmapping.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tkmuo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   targetkindmapping.BazelInvocationTable,
-			Columns: []string{targetkindmapping.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if tkmuo.mutation.TargetCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   targetkindmapping.TargetTable,
-			Columns: []string{targetkindmapping.TargetColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tkmuo.mutation.TargetIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   targetkindmapping.TargetTable,
-			Columns: []string{targetkindmapping.TargetColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_spec.AddModifiers(tkmuo.modifiers...)
 	_node = &TargetKindMapping{config: tkmuo.config}

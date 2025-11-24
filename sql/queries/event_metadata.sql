@@ -13,3 +13,22 @@ SELECT
 FROM bazel_invocations AS b
 WHERE b.invocation_id = sqlc.arg(invocation_id)
   AND b.bep_completed = FALSE;
+
+-- name: CreateEventMetadataBulk :exec
+INSERT INTO event_metadata (
+    bazel_invocation_id,
+    event_hash,
+    event_received_at,
+    sequence_number
+)
+SELECT 
+    sqlc.arg(bazel_invocation_id),
+    event_hash,
+    event_received_at,
+    sequence_number
+FROM (
+    SELECT 
+        unnest(sqlc.arg(event_hashes)::bytea[]) AS event_hash,
+        unnest(sqlc.arg(event_received_ats)::timestamptz[]) AS event_received_at,
+        unnest(sqlc.arg(sequence_numbers)::bigint[]) AS sequence_number
+) AS input;

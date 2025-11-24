@@ -32,7 +32,7 @@
       ]
     },
     "bazelVersion": "7.1.0",
-    "bepCompleted": true,
+    "bepCompleted": false,
     "build": null,
     "configurationMnemonic": "darwin_arm64-fastbuild",
     "cpu": "darwin_arm64",

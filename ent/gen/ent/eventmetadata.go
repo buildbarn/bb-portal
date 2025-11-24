@@ -23,7 +23,7 @@ type EventMetadata struct {
 	// EventReceivedAt holds the value of the "event_received_at" field.
 	EventReceivedAt time.Time `json:"event_received_at,omitempty"`
 	// EventHash holds the value of the "event_hash" field.
-	EventHash string `json:"event_hash,omitempty"`
+	EventHash []byte `json:"event_hash,omitempty"`
 	// BazelInvocationID holds the value of the "bazel_invocation_id" field.
 	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -59,10 +59,10 @@ func (*EventMetadata) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case eventmetadata.FieldEventHash:
+			values[i] = new([]byte)
 		case eventmetadata.FieldID, eventmetadata.FieldSequenceNumber, eventmetadata.FieldBazelInvocationID:
 			values[i] = new(sql.NullInt64)
-		case eventmetadata.FieldEventHash:
-			values[i] = new(sql.NullString)
 		case eventmetadata.FieldEventReceivedAt:
 			values[i] = new(sql.NullTime)
 		default:
@@ -99,10 +99,10 @@ func (em *EventMetadata) assignValues(columns []string, values []any) error {
 				em.EventReceivedAt = value.Time
 			}
 		case eventmetadata.FieldEventHash:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field event_hash", values[i])
-			} else if value.Valid {
-				em.EventHash = value.String
+			} else if value != nil {
+				em.EventHash = *value
 			}
 		case eventmetadata.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -158,7 +158,7 @@ func (em *EventMetadata) String() string {
 	builder.WriteString(em.EventReceivedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("event_hash=")
-	builder.WriteString(em.EventHash)
+	builder.WriteString(fmt.Sprintf("%v", em.EventHash))
 	builder.WriteString(", ")
 	builder.WriteString("bazel_invocation_id=")
 	builder.WriteString(fmt.Sprintf("%v", em.BazelInvocationID))

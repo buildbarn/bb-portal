@@ -24,7 +24,6 @@ type IncompleteBuildLogQuery struct {
 	inters              []Interceptor
 	predicates          []predicate.IncompleteBuildLog
 	withBazelInvocation *BazelInvocationQuery
-	withFKs             bool
 	loadTotal           []func(context.Context, []*IncompleteBuildLog) error
 	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
@@ -373,18 +372,11 @@ func (iblq *IncompleteBuildLogQuery) prepareQuery(ctx context.Context) error {
 func (iblq *IncompleteBuildLogQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*IncompleteBuildLog, error) {
 	var (
 		nodes       = []*IncompleteBuildLog{}
-		withFKs     = iblq.withFKs
 		_spec       = iblq.querySpec()
 		loadedTypes = [1]bool{
 			iblq.withBazelInvocation != nil,
 		}
 	)
-	if iblq.withBazelInvocation != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, incompletebuildlog.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*IncompleteBuildLog).scanValues(nil, columns)
 	}
@@ -424,10 +416,7 @@ func (iblq *IncompleteBuildLogQuery) loadBazelInvocation(ctx context.Context, qu
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*IncompleteBuildLog)
 	for i := range nodes {
-		if nodes[i].bazel_invocation_incomplete_build_logs == nil {
-			continue
-		}
-		fk := *nodes[i].bazel_invocation_incomplete_build_logs
+		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -444,7 +433,7 @@ func (iblq *IncompleteBuildLogQuery) loadBazelInvocation(ctx context.Context, qu
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_incomplete_build_logs" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -480,6 +469,9 @@ func (iblq *IncompleteBuildLogQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != incompletebuildlog.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if iblq.withBazelInvocation != nil {
+			_spec.Node.AddColumnOnce(incompletebuildlog.FieldBazelInvocationID)
 		}
 	}
 	if ps := iblq.predicates; len(ps) > 0 {

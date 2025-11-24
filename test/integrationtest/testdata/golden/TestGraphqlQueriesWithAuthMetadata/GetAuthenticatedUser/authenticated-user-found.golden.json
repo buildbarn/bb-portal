@@ -4,7 +4,7 @@
       "edges": [
         {
           "node": {
-            "bepCompleted": true,
+            "bepCompleted": false,
             "build": null,
             "endedAt": "2024-05-03T00:24:29.605Z",
             "exitCodeName": "SUCCESS",

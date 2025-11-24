@@ -63,6 +63,11 @@ func LogSnippet(v string) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldEQ(FieldLogSnippet, v))
 }
 
+// BazelInvocationID applies equality check predicate on the "bazel_invocation_id" field. It's identical to BazelInvocationIDEQ.
+func BazelInvocationID(v int) predicate.IncompleteBuildLog {
+	return predicate.IncompleteBuildLog(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
 // SnippetIDEQ applies the EQ predicate on the "snippet_id" field.
 func SnippetIDEQ(v int32) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldEQ(FieldSnippetID, v))
@@ -166,6 +171,26 @@ func LogSnippetEqualFold(v string) predicate.IncompleteBuildLog {
 // LogSnippetContainsFold applies the ContainsFold predicate on the "log_snippet" field.
 func LogSnippetContainsFold(v string) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldContainsFold(FieldLogSnippet, v))
+}
+
+// BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDEQ(v int) predicate.IncompleteBuildLog {
+	return predicate.IncompleteBuildLog(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDNEQ applies the NEQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNEQ(v int) predicate.IncompleteBuildLog {
+	return predicate.IncompleteBuildLog(sql.FieldNEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDIn applies the In predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIn(vs ...int) predicate.IncompleteBuildLog {
+	return predicate.IncompleteBuildLog(sql.FieldIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDNotIn applies the NotIn predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotIn(vs ...int) predicate.IncompleteBuildLog {
+	return predicate.IncompleteBuildLog(sql.FieldNotIn(FieldBazelInvocationID, vs...))
 }
 
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.

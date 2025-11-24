@@ -24,7 +24,7 @@ func (EventMetadata) Fields() []ent.Field {
 		field.Time("event_received_at").Immutable(),
 
 		// The hash of the event proto message.
-		field.String("event_hash").Immutable(),
+		field.Bytes("event_hash").Immutable(),
 
 		// Foreign key to bazel_invocation
 		field.Int("bazel_invocation_id").Immutable(),

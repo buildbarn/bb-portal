@@ -27,7 +27,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -130,11 +129,6 @@ var garbagemetricsImplementors = []string{"GarbageMetrics", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*GarbageMetrics) IsNode() {}
-
-var incompletebuildlogImplementors = []string{"IncompleteBuildLog", "Node"}
-
-// IsNode implements the Node interface check for GQLGen.
-func (*IncompleteBuildLog) IsNode() {}
 
 var instancenameImplementors = []string{"InstanceName", "Node"}
 
@@ -436,15 +430,6 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 			Where(garbagemetrics.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, garbagemetricsImplementors...); err != nil {
-				return nil, err
-			}
-		}
-		return query.Only(ctx)
-	case incompletebuildlog.Table:
-		query := c.IncompleteBuildLog.Query().
-			Where(incompletebuildlog.ID(id))
-		if fc := graphql.GetFieldContext(ctx); fc != nil {
-			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, incompletebuildlogImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -950,22 +935,6 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.GarbageMetrics.Query().
 			Where(garbagemetrics.IDIn(ids...))
 		query, err := query.CollectFields(ctx, garbagemetricsImplementors...)
-		if err != nil {
-			return nil, err
-		}
-		nodes, err := query.All(ctx)
-		if err != nil {
-			return nil, err
-		}
-		for _, node := range nodes {
-			for _, noder := range idmap[node.ID] {
-				*noder = node
-			}
-		}
-	case incompletebuildlog.Table:
-		query := c.IncompleteBuildLog.Query().
-			Where(incompletebuildlog.IDIn(ids...))
-		query, err := query.CollectFields(ctx, incompletebuildlogImplementors...)
 		if err != nil {
 			return nil, err
 		}

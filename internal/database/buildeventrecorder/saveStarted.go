@@ -16,8 +16,15 @@ func (r *BuildEventRecorder) saveStarted(ctx context.Context, tx *ent.Client, ev
 		return nil
 	}
 
-	if event.GetUuid() != r.InvocationID {
-		return fmt.Errorf("Invocation ID mismatch: event has %q, but expected %q", event.GetUuid(), r.InvocationID)
+	// For some unknown reason bazel emits build event streams for
+	// "query" which do not contain an invocation uuid. It still has one
+	// as part of the stream, but not in the started at event.
+	if event.GetCommand() != "query" || event.GetUuid() != "" {
+		// Atleast give an error if we for some reason have a uuid
+		// missmatch for any other reason.
+		if event.GetUuid() != r.InvocationID {
+			return fmt.Errorf("Invocation ID mismatch: event has %q, but expected %q", event.GetUuid(), r.InvocationID)
+		}
 	}
 
 	var startedAt time.Time

@@ -53,9 +53,59 @@ func IDLTE(id int) predicate.TargetKindMapping {
 	return predicate.TargetKindMapping(sql.FieldLTE(FieldID, id))
 }
 
+// BazelInvocationID applies equality check predicate on the "bazel_invocation_id" field. It's identical to BazelInvocationIDEQ.
+func BazelInvocationID(v int) predicate.TargetKindMapping {
+	return predicate.TargetKindMapping(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
+// TargetID applies equality check predicate on the "target_id" field. It's identical to TargetIDEQ.
+func TargetID(v int) predicate.TargetKindMapping {
+	return predicate.TargetKindMapping(sql.FieldEQ(FieldTargetID, v))
+}
+
 // StartTimeInMs applies equality check predicate on the "start_time_in_ms" field. It's identical to StartTimeInMsEQ.
 func StartTimeInMs(v int64) predicate.TargetKindMapping {
 	return predicate.TargetKindMapping(sql.FieldEQ(FieldStartTimeInMs, v))
+}
+
+// BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDEQ(v int) predicate.TargetKindMapping {
+	return predicate.TargetKindMapping(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDNEQ applies the NEQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNEQ(v int) predicate.TargetKindMapping {
+	return predicate.TargetKindMapping(sql.FieldNEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDIn applies the In predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIn(vs ...int) predicate.TargetKindMapping {
+	return predicate.TargetKindMapping(sql.FieldIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDNotIn applies the NotIn predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotIn(vs ...int) predicate.TargetKindMapping {
+	return predicate.TargetKindMapping(sql.FieldNotIn(FieldBazelInvocationID, vs...))
+}
+
+// TargetIDEQ applies the EQ predicate on the "target_id" field.
+func TargetIDEQ(v int) predicate.TargetKindMapping {
+	return predicate.TargetKindMapping(sql.FieldEQ(FieldTargetID, v))
+}
+
+// TargetIDNEQ applies the NEQ predicate on the "target_id" field.
+func TargetIDNEQ(v int) predicate.TargetKindMapping {
+	return predicate.TargetKindMapping(sql.FieldNEQ(FieldTargetID, v))
+}
+
+// TargetIDIn applies the In predicate on the "target_id" field.
+func TargetIDIn(vs ...int) predicate.TargetKindMapping {
+	return predicate.TargetKindMapping(sql.FieldIn(FieldTargetID, vs...))
+}
+
+// TargetIDNotIn applies the NotIn predicate on the "target_id" field.
+func TargetIDNotIn(vs ...int) predicate.TargetKindMapping {
+	return predicate.TargetKindMapping(sql.FieldNotIn(FieldTargetID, vs...))
 }
 
 // StartTimeInMsEQ applies the EQ predicate on the "start_time_in_ms" field.

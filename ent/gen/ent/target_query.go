@@ -607,7 +607,9 @@ func (tq *TargetQuery) loadTargetKindMappings(ctx context.Context, query *Target
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(targetkindmapping.FieldTargetID)
+	}
 	query.Where(predicate.TargetKindMapping(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(target.TargetKindMappingsColumn), fks...))
 	}))
@@ -616,13 +618,10 @@ func (tq *TargetQuery) loadTargetKindMappings(ctx context.Context, query *Target
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.target_target_kind_mappings
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "target_target_kind_mappings" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.TargetID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "target_target_kind_mappings" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "target_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

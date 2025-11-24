@@ -36,8 +36,8 @@ func (emc *EventMetadataCreate) SetEventReceivedAt(t time.Time) *EventMetadataCr
 }
 
 // SetEventHash sets the "event_hash" field.
-func (emc *EventMetadataCreate) SetEventHash(s string) *EventMetadataCreate {
-	emc.mutation.SetEventHash(s)
+func (emc *EventMetadataCreate) SetEventHash(b []byte) *EventMetadataCreate {
+	emc.mutation.SetEventHash(b)
 	return emc
 }
 
@@ -137,7 +137,7 @@ func (emc *EventMetadataCreate) createSpec() (*EventMetadata, *sqlgraph.CreateSp
 		_node.EventReceivedAt = value
 	}
 	if value, ok := emc.mutation.EventHash(); ok {
-		_spec.SetField(eventmetadata.FieldEventHash, field.TypeString, value)
+		_spec.SetField(eventmetadata.FieldEventHash, field.TypeBytes, value)
 		_node.EventHash = value
 	}
 	if nodes := emc.mutation.BazelInvocationIDs(); len(nodes) > 0 {

@@ -18,14 +18,16 @@ type TargetKindMapping struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// BazelInvocationID holds the value of the "bazel_invocation_id" field.
+	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
+	// TargetID holds the value of the "target_id" field.
+	TargetID int `json:"target_id,omitempty"`
 	// StartTimeInMs holds the value of the "start_time_in_ms" field.
 	StartTimeInMs int64 `json:"start_time_in_ms,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TargetKindMappingQuery when eager-loading is set.
-	Edges                                 TargetKindMappingEdges `json:"edges"`
-	bazel_invocation_target_kind_mappings *int
-	target_target_kind_mappings           *int
-	selectValues                          sql.SelectValues
+	Edges        TargetKindMappingEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // TargetKindMappingEdges holds the relations/edges for other nodes in the graph.
@@ -68,11 +70,7 @@ func (*TargetKindMapping) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case targetkindmapping.FieldID, targetkindmapping.FieldStartTimeInMs:
-			values[i] = new(sql.NullInt64)
-		case targetkindmapping.ForeignKeys[0]: // bazel_invocation_target_kind_mappings
-			values[i] = new(sql.NullInt64)
-		case targetkindmapping.ForeignKeys[1]: // target_target_kind_mappings
+		case targetkindmapping.FieldID, targetkindmapping.FieldBazelInvocationID, targetkindmapping.FieldTargetID, targetkindmapping.FieldStartTimeInMs:
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -95,25 +93,23 @@ func (tkm *TargetKindMapping) assignValues(columns []string, values []any) error
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			tkm.ID = int(value.Int64)
+		case targetkindmapping.FieldBazelInvocationID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
+			} else if value.Valid {
+				tkm.BazelInvocationID = int(value.Int64)
+			}
+		case targetkindmapping.FieldTargetID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field target_id", values[i])
+			} else if value.Valid {
+				tkm.TargetID = int(value.Int64)
+			}
 		case targetkindmapping.FieldStartTimeInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field start_time_in_ms", values[i])
 			} else if value.Valid {
 				tkm.StartTimeInMs = value.Int64
-			}
-		case targetkindmapping.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_target_kind_mappings", value)
-			} else if value.Valid {
-				tkm.bazel_invocation_target_kind_mappings = new(int)
-				*tkm.bazel_invocation_target_kind_mappings = int(value.Int64)
-			}
-		case targetkindmapping.ForeignKeys[1]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field target_target_kind_mappings", value)
-			} else if value.Valid {
-				tkm.target_target_kind_mappings = new(int)
-				*tkm.target_target_kind_mappings = int(value.Int64)
 			}
 		default:
 			tkm.selectValues.Set(columns[i], values[i])
@@ -161,6 +157,12 @@ func (tkm *TargetKindMapping) String() string {
 	var builder strings.Builder
 	builder.WriteString("TargetKindMapping(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", tkm.ID))
+	builder.WriteString("bazel_invocation_id=")
+	builder.WriteString(fmt.Sprintf("%v", tkm.BazelInvocationID))
+	builder.WriteString(", ")
+	builder.WriteString("target_id=")
+	builder.WriteString(fmt.Sprintf("%v", tkm.TargetID))
+	builder.WriteString(", ")
 	builder.WriteString("start_time_in_ms=")
 	builder.WriteString(fmt.Sprintf("%v", tkm.StartTimeInMs))
 	builder.WriteByte(')')

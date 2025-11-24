@@ -17,6 +17,10 @@ type TargetKindMapping struct {
 // Fields of the TargetKindMapping.
 func (TargetKindMapping) Fields() []ent.Field {
 	return []ent.Field{
+		// Foreign key to bazel_invocation
+		field.Int("bazel_invocation_id").Immutable(),
+		// Foreign key to target
+		field.Int("target_id").Immutable(),
 		// First time we saw this InvocationTarget.
 		field.Int64("start_time_in_ms").Optional(),
 	}
@@ -27,15 +31,19 @@ func (TargetKindMapping) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the bazel invocation.
 		edge.From("bazel_invocation", BazelInvocation.Type).
+			Field("bazel_invocation_id").
 			Ref("target_kind_mappings").
+			Unique().
 			Required().
-			Unique(),
+			Immutable(),
 
 		// Edge back to the target
 		edge.From("target", Target.Type).
+			Field("target_id").
 			Ref("target_kind_mappings").
+			Unique().
 			Required().
-			Unique(),
+			Immutable(),
 	}
 }
 

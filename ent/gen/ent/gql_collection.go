@@ -24,7 +24,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
@@ -747,19 +746,6 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			}
 			bi.withMetrics = query
 
-		case "incompleteBuildLogs":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&IncompleteBuildLogClient{config: bi.config}).Query()
-			)
-			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, incompletebuildlogImplementors)...); err != nil {
-				return err
-			}
-			bi.WithNamedIncompleteBuildLogs(alias, func(wq *IncompleteBuildLogQuery) {
-				*wq = *query
-			})
-
 		case "invocationFiles":
 			var (
 				alias = field.Alias
@@ -829,10 +815,10 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[7] == nil {
-								nodes[i].Edges.totalCount[7] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[7][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})
@@ -840,10 +826,10 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 					bi.loadTotal = append(bi.loadTotal, func(_ context.Context, nodes []*BazelInvocation) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.InvocationTargets)
-							if nodes[i].Edges.totalCount[7] == nil {
-								nodes[i].Edges.totalCount[7] = make(map[string]int)
+							if nodes[i].Edges.totalCount[6] == nil {
+								nodes[i].Edges.totalCount[6] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[7][alias] = n
+							nodes[i].Edges.totalCount[6][alias] = n
 						}
 						return nil
 					})
@@ -1882,89 +1868,6 @@ func newGarbageMetricsPaginateArgs(rv map[string]any) *garbagemetricsPaginateArg
 	}
 	if v, ok := rv[whereField].(*GarbageMetricsWhereInput); ok {
 		args.opts = append(args.opts, WithGarbageMetricsFilter(v.Filter))
-	}
-	return args
-}
-
-// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (ibl *IncompleteBuildLogQuery) CollectFields(ctx context.Context, satisfies ...string) (*IncompleteBuildLogQuery, error) {
-	fc := graphql.GetFieldContext(ctx)
-	if fc == nil {
-		return ibl, nil
-	}
-	if err := ibl.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
-		return nil, err
-	}
-	return ibl, nil
-}
-
-func (ibl *IncompleteBuildLogQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
-	path = append([]string(nil), path...)
-	var (
-		unknownSeen    bool
-		fieldSeen      = make(map[string]struct{}, len(incompletebuildlog.Columns))
-		selectedFields = []string{incompletebuildlog.FieldID}
-	)
-	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
-		switch field.Name {
-
-		case "bazelInvocation":
-			var (
-				alias = field.Alias
-				path  = append(path, alias)
-				query = (&BazelInvocationClient{config: ibl.config}).Query()
-			)
-			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
-				return err
-			}
-			ibl.withBazelInvocation = query
-		case "snippetID":
-			if _, ok := fieldSeen[incompletebuildlog.FieldSnippetID]; !ok {
-				selectedFields = append(selectedFields, incompletebuildlog.FieldSnippetID)
-				fieldSeen[incompletebuildlog.FieldSnippetID] = struct{}{}
-			}
-		case "logSnippet":
-			if _, ok := fieldSeen[incompletebuildlog.FieldLogSnippet]; !ok {
-				selectedFields = append(selectedFields, incompletebuildlog.FieldLogSnippet)
-				fieldSeen[incompletebuildlog.FieldLogSnippet] = struct{}{}
-			}
-		case "id":
-		case "__typename":
-		default:
-			unknownSeen = true
-		}
-	}
-	if !unknownSeen {
-		ibl.Select(selectedFields...)
-	}
-	return nil
-}
-
-type incompletebuildlogPaginateArgs struct {
-	first, last   *int
-	after, before *Cursor
-	opts          []IncompleteBuildLogPaginateOption
-}
-
-func newIncompleteBuildLogPaginateArgs(rv map[string]any) *incompletebuildlogPaginateArgs {
-	args := &incompletebuildlogPaginateArgs{}
-	if rv == nil {
-		return args
-	}
-	if v := rv[firstField]; v != nil {
-		args.first = v.(*int)
-	}
-	if v := rv[lastField]; v != nil {
-		args.last = v.(*int)
-	}
-	if v := rv[afterField]; v != nil {
-		args.after = v.(*Cursor)
-	}
-	if v := rv[beforeField]; v != nil {
-		args.before = v.(*Cursor)
-	}
-	if v, ok := rv[whereField].(*IncompleteBuildLogWhereInput); ok {
-		args.opts = append(args.opts, WithIncompleteBuildLogFilter(v.Filter))
 	}
 	return args
 }

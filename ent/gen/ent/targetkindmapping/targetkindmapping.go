@@ -12,6 +12,10 @@ const (
 	Label = "target_kind_mapping"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldBazelInvocationID holds the string denoting the bazel_invocation_id field in the database.
+	FieldBazelInvocationID = "bazel_invocation_id"
+	// FieldTargetID holds the string denoting the target_id field in the database.
+	FieldTargetID = "target_id"
 	// FieldStartTimeInMs holds the string denoting the start_time_in_ms field in the database.
 	FieldStartTimeInMs = "start_time_in_ms"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
@@ -26,38 +30,28 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "bazelinvocation" package.
 	BazelInvocationInverseTable = "bazel_invocations"
 	// BazelInvocationColumn is the table column denoting the bazel_invocation relation/edge.
-	BazelInvocationColumn = "bazel_invocation_target_kind_mappings"
+	BazelInvocationColumn = "bazel_invocation_id"
 	// TargetTable is the table that holds the target relation/edge.
 	TargetTable = "target_kind_mappings"
 	// TargetInverseTable is the table name for the Target entity.
 	// It exists in this package in order to avoid circular dependency with the "target" package.
 	TargetInverseTable = "targets"
 	// TargetColumn is the table column denoting the target relation/edge.
-	TargetColumn = "target_target_kind_mappings"
+	TargetColumn = "target_id"
 )
 
 // Columns holds all SQL columns for targetkindmapping fields.
 var Columns = []string{
 	FieldID,
+	FieldBazelInvocationID,
+	FieldTargetID,
 	FieldStartTimeInMs,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "target_kind_mappings"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"bazel_invocation_target_kind_mappings",
-	"target_target_kind_mappings",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -70,6 +64,16 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByBazelInvocationID orders the results by the bazel_invocation_id field.
+func ByBazelInvocationID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBazelInvocationID, opts...).ToFunc()
+}
+
+// ByTargetID orders the results by the target_id field.
+func ByTargetID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTargetID, opts...).ToFunc()
 }
 
 // ByStartTimeInMs orders the results by the start_time_in_ms field.

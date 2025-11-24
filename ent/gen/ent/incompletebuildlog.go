@@ -21,11 +21,12 @@ type IncompleteBuildLog struct {
 	SnippetID int32 `json:"snippet_id,omitempty"`
 	// LogSnippet holds the value of the "log_snippet" field.
 	LogSnippet string `json:"log_snippet,omitempty"`
+	// BazelInvocationID holds the value of the "bazel_invocation_id" field.
+	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the IncompleteBuildLogQuery when eager-loading is set.
-	Edges                                  IncompleteBuildLogEdges `json:"edges"`
-	bazel_invocation_incomplete_build_logs *int
-	selectValues                           sql.SelectValues
+	Edges        IncompleteBuildLogEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // IncompleteBuildLogEdges holds the relations/edges for other nodes in the graph.
@@ -55,12 +56,10 @@ func (*IncompleteBuildLog) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case incompletebuildlog.FieldID, incompletebuildlog.FieldSnippetID:
+		case incompletebuildlog.FieldID, incompletebuildlog.FieldSnippetID, incompletebuildlog.FieldBazelInvocationID:
 			values[i] = new(sql.NullInt64)
 		case incompletebuildlog.FieldLogSnippet:
 			values[i] = new(sql.NullString)
-		case incompletebuildlog.ForeignKeys[0]: // bazel_invocation_incomplete_build_logs
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -94,12 +93,11 @@ func (ibl *IncompleteBuildLog) assignValues(columns []string, values []any) erro
 			} else if value.Valid {
 				ibl.LogSnippet = value.String
 			}
-		case incompletebuildlog.ForeignKeys[0]:
+		case incompletebuildlog.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_incomplete_build_logs", value)
+				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				ibl.bazel_invocation_incomplete_build_logs = new(int)
-				*ibl.bazel_invocation_incomplete_build_logs = int(value.Int64)
+				ibl.BazelInvocationID = int(value.Int64)
 			}
 		default:
 			ibl.selectValues.Set(columns[i], values[i])
@@ -147,6 +145,9 @@ func (ibl *IncompleteBuildLog) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("log_snippet=")
 	builder.WriteString(ibl.LogSnippet)
+	builder.WriteString(", ")
+	builder.WriteString("bazel_invocation_id=")
+	builder.WriteString(fmt.Sprintf("%v", ibl.BazelInvocationID))
 	builder.WriteByte(')')
 	return builder.String()
 }

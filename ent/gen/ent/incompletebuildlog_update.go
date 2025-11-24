@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
@@ -29,69 +28,9 @@ func (iblu *IncompleteBuildLogUpdate) Where(ps ...predicate.IncompleteBuildLog) 
 	return iblu
 }
 
-// SetSnippetID sets the "snippet_id" field.
-func (iblu *IncompleteBuildLogUpdate) SetSnippetID(i int32) *IncompleteBuildLogUpdate {
-	iblu.mutation.ResetSnippetID()
-	iblu.mutation.SetSnippetID(i)
-	return iblu
-}
-
-// SetNillableSnippetID sets the "snippet_id" field if the given value is not nil.
-func (iblu *IncompleteBuildLogUpdate) SetNillableSnippetID(i *int32) *IncompleteBuildLogUpdate {
-	if i != nil {
-		iblu.SetSnippetID(*i)
-	}
-	return iblu
-}
-
-// AddSnippetID adds i to the "snippet_id" field.
-func (iblu *IncompleteBuildLogUpdate) AddSnippetID(i int32) *IncompleteBuildLogUpdate {
-	iblu.mutation.AddSnippetID(i)
-	return iblu
-}
-
-// SetLogSnippet sets the "log_snippet" field.
-func (iblu *IncompleteBuildLogUpdate) SetLogSnippet(s string) *IncompleteBuildLogUpdate {
-	iblu.mutation.SetLogSnippet(s)
-	return iblu
-}
-
-// SetNillableLogSnippet sets the "log_snippet" field if the given value is not nil.
-func (iblu *IncompleteBuildLogUpdate) SetNillableLogSnippet(s *string) *IncompleteBuildLogUpdate {
-	if s != nil {
-		iblu.SetLogSnippet(*s)
-	}
-	return iblu
-}
-
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (iblu *IncompleteBuildLogUpdate) SetBazelInvocationID(id int) *IncompleteBuildLogUpdate {
-	iblu.mutation.SetBazelInvocationID(id)
-	return iblu
-}
-
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (iblu *IncompleteBuildLogUpdate) SetNillableBazelInvocationID(id *int) *IncompleteBuildLogUpdate {
-	if id != nil {
-		iblu = iblu.SetBazelInvocationID(*id)
-	}
-	return iblu
-}
-
-// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (iblu *IncompleteBuildLogUpdate) SetBazelInvocation(b *BazelInvocation) *IncompleteBuildLogUpdate {
-	return iblu.SetBazelInvocationID(b.ID)
-}
-
 // Mutation returns the IncompleteBuildLogMutation object of the builder.
 func (iblu *IncompleteBuildLogUpdate) Mutation() *IncompleteBuildLogMutation {
 	return iblu.mutation
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (iblu *IncompleteBuildLogUpdate) ClearBazelInvocation() *IncompleteBuildLogUpdate {
-	iblu.mutation.ClearBazelInvocation()
-	return iblu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -121,6 +60,14 @@ func (iblu *IncompleteBuildLogUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (iblu *IncompleteBuildLogUpdate) check() error {
+	if iblu.mutation.BazelInvocationCleared() && len(iblu.mutation.BazelInvocationIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "IncompleteBuildLog.bazel_invocation"`)
+	}
+	return nil
+}
+
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (iblu *IncompleteBuildLogUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *IncompleteBuildLogUpdate {
 	iblu.modifiers = append(iblu.modifiers, modifiers...)
@@ -128,6 +75,9 @@ func (iblu *IncompleteBuildLogUpdate) Modify(modifiers ...func(u *sql.UpdateBuil
 }
 
 func (iblu *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := iblu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt))
 	if ps := iblu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -135,44 +85,6 @@ func (iblu *IncompleteBuildLogUpdate) sqlSave(ctx context.Context) (n int, err e
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := iblu.mutation.SnippetID(); ok {
-		_spec.SetField(incompletebuildlog.FieldSnippetID, field.TypeInt32, value)
-	}
-	if value, ok := iblu.mutation.AddedSnippetID(); ok {
-		_spec.AddField(incompletebuildlog.FieldSnippetID, field.TypeInt32, value)
-	}
-	if value, ok := iblu.mutation.LogSnippet(); ok {
-		_spec.SetField(incompletebuildlog.FieldLogSnippet, field.TypeString, value)
-	}
-	if iblu.mutation.BazelInvocationCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   incompletebuildlog.BazelInvocationTable,
-			Columns: []string{incompletebuildlog.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := iblu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   incompletebuildlog.BazelInvocationTable,
-			Columns: []string{incompletebuildlog.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_spec.AddModifiers(iblu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, iblu.driver, _spec); err != nil {
@@ -196,69 +108,9 @@ type IncompleteBuildLogUpdateOne struct {
 	modifiers []func(*sql.UpdateBuilder)
 }
 
-// SetSnippetID sets the "snippet_id" field.
-func (ibluo *IncompleteBuildLogUpdateOne) SetSnippetID(i int32) *IncompleteBuildLogUpdateOne {
-	ibluo.mutation.ResetSnippetID()
-	ibluo.mutation.SetSnippetID(i)
-	return ibluo
-}
-
-// SetNillableSnippetID sets the "snippet_id" field if the given value is not nil.
-func (ibluo *IncompleteBuildLogUpdateOne) SetNillableSnippetID(i *int32) *IncompleteBuildLogUpdateOne {
-	if i != nil {
-		ibluo.SetSnippetID(*i)
-	}
-	return ibluo
-}
-
-// AddSnippetID adds i to the "snippet_id" field.
-func (ibluo *IncompleteBuildLogUpdateOne) AddSnippetID(i int32) *IncompleteBuildLogUpdateOne {
-	ibluo.mutation.AddSnippetID(i)
-	return ibluo
-}
-
-// SetLogSnippet sets the "log_snippet" field.
-func (ibluo *IncompleteBuildLogUpdateOne) SetLogSnippet(s string) *IncompleteBuildLogUpdateOne {
-	ibluo.mutation.SetLogSnippet(s)
-	return ibluo
-}
-
-// SetNillableLogSnippet sets the "log_snippet" field if the given value is not nil.
-func (ibluo *IncompleteBuildLogUpdateOne) SetNillableLogSnippet(s *string) *IncompleteBuildLogUpdateOne {
-	if s != nil {
-		ibluo.SetLogSnippet(*s)
-	}
-	return ibluo
-}
-
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (ibluo *IncompleteBuildLogUpdateOne) SetBazelInvocationID(id int) *IncompleteBuildLogUpdateOne {
-	ibluo.mutation.SetBazelInvocationID(id)
-	return ibluo
-}
-
-// SetNillableBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID if the given value is not nil.
-func (ibluo *IncompleteBuildLogUpdateOne) SetNillableBazelInvocationID(id *int) *IncompleteBuildLogUpdateOne {
-	if id != nil {
-		ibluo = ibluo.SetBazelInvocationID(*id)
-	}
-	return ibluo
-}
-
-// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (ibluo *IncompleteBuildLogUpdateOne) SetBazelInvocation(b *BazelInvocation) *IncompleteBuildLogUpdateOne {
-	return ibluo.SetBazelInvocationID(b.ID)
-}
-
 // Mutation returns the IncompleteBuildLogMutation object of the builder.
 func (ibluo *IncompleteBuildLogUpdateOne) Mutation() *IncompleteBuildLogMutation {
 	return ibluo.mutation
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (ibluo *IncompleteBuildLogUpdateOne) ClearBazelInvocation() *IncompleteBuildLogUpdateOne {
-	ibluo.mutation.ClearBazelInvocation()
-	return ibluo
 }
 
 // Where appends a list predicates to the IncompleteBuildLogUpdate builder.
@@ -301,6 +153,14 @@ func (ibluo *IncompleteBuildLogUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (ibluo *IncompleteBuildLogUpdateOne) check() error {
+	if ibluo.mutation.BazelInvocationCleared() && len(ibluo.mutation.BazelInvocationIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "IncompleteBuildLog.bazel_invocation"`)
+	}
+	return nil
+}
+
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (ibluo *IncompleteBuildLogUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *IncompleteBuildLogUpdateOne {
 	ibluo.modifiers = append(ibluo.modifiers, modifiers...)
@@ -308,6 +168,9 @@ func (ibluo *IncompleteBuildLogUpdateOne) Modify(modifiers ...func(u *sql.Update
 }
 
 func (ibluo *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *IncompleteBuildLog, err error) {
+	if err := ibluo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(incompletebuildlog.Table, incompletebuildlog.Columns, sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt))
 	id, ok := ibluo.mutation.ID()
 	if !ok {
@@ -332,44 +195,6 @@ func (ibluo *IncompleteBuildLogUpdateOne) sqlSave(ctx context.Context) (_node *I
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := ibluo.mutation.SnippetID(); ok {
-		_spec.SetField(incompletebuildlog.FieldSnippetID, field.TypeInt32, value)
-	}
-	if value, ok := ibluo.mutation.AddedSnippetID(); ok {
-		_spec.AddField(incompletebuildlog.FieldSnippetID, field.TypeInt32, value)
-	}
-	if value, ok := ibluo.mutation.LogSnippet(); ok {
-		_spec.SetField(incompletebuildlog.FieldLogSnippet, field.TypeString, value)
-	}
-	if ibluo.mutation.BazelInvocationCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   incompletebuildlog.BazelInvocationTable,
-			Columns: []string{incompletebuildlog.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := ibluo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   incompletebuildlog.BazelInvocationTable,
-			Columns: []string{incompletebuildlog.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_spec.AddModifiers(ibluo.modifiers...)
 	_node = &IncompleteBuildLog{config: ibluo.config}

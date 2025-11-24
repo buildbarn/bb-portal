@@ -15,6 +15,7 @@ import (
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
+	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/processing"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
@@ -26,6 +27,18 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
+
+// BuildEventWithInfo couples a build event with additional metadata
+// required for processing.
+type BuildEventWithInfo struct {
+	Event          *events.BuildEvent
+	EventHash      []byte
+	SequenceNumber int64
+	// TODO: This field is only used for duration calculation of target
+	// completed events which is dubious to begin with. Might be worth
+	// removing.
+	AddedAt time.Time
+}
 
 // BuildEventRecorder contains information about a Bazel invocation that is
 // required when processing individual build events.
@@ -133,7 +146,7 @@ func findOrCreateInvocation(
 	authenticatedUserDbID *int,
 ) (int, int, error) {
 	ctx, span := tracer.Start(ctx,
-		fmt.Sprintf("BuildEventRecorder.findOrCreateInvocation"),
+		"BuildEventRecorder.findOrCreateInvocation",
 		trace.WithAttributes(
 			attribute.String("invocation.id", invocationID),
 			attribute.String("invocation.instance_name", instanceName),

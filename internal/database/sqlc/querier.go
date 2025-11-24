@@ -10,6 +10,20 @@ import (
 )
 
 type Querier interface {
+	CreateEventMetadataBulk(ctx context.Context, arg CreateEventMetadataBulkParams) error
+	CreateIncompleteBuildLogs(ctx context.Context, arg CreateIncompleteBuildLogsParams) error
+	CreateInvocationTargetsBulk(ctx context.Context, arg CreateInvocationTargetsBulkParams) error
+	CreateTargetKindMappingsBulk(ctx context.Context, arg CreateTargetKindMappingsBulkParams) error
+	// ORDER BY here is enforcing an insertion order for two reasons:
+	//   1. Prevent concurrent requests from deadlocking each other in case
+	// they have overlapping insertions of targets in different orders.
+	//   2. Explicitly collate to normalize sort order between database
+	// instantiations, otherwise golden file generation may have a different
+	// order than what's used during the test.
+	CreateTargets(ctx context.Context, arg CreateTargetsParams) ([]CreateTargetsRow, error)
+	FindMappedTargets(ctx context.Context, arg FindMappedTargetsParams) ([]FindMappedTargetsRow, error)
+	FindTargets(ctx context.Context, arg FindTargetsParams) ([]FindTargetsRow, error)
+	LockBazelInvocationCompletion(ctx context.Context, id int64) (LockBazelInvocationCompletionRow, error)
 	RecordEventMetadata(ctx context.Context, arg RecordEventMetadataParams) (sql.Result, error)
 }
 

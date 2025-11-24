@@ -1254,7 +1254,9 @@ func (biq *BazelInvocationQuery) loadIncompleteBuildLogs(ctx context.Context, qu
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(incompletebuildlog.FieldBazelInvocationID)
+	}
 	query.Where(predicate.IncompleteBuildLog(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(bazelinvocation.IncompleteBuildLogsColumn), fks...))
 	}))
@@ -1263,13 +1265,10 @@ func (biq *BazelInvocationQuery) loadIncompleteBuildLogs(ctx context.Context, qu
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.bazel_invocation_incomplete_build_logs
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "bazel_invocation_incomplete_build_logs" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.BazelInvocationID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_incomplete_build_logs" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1378,7 +1377,9 @@ func (biq *BazelInvocationQuery) loadTargetKindMappings(ctx context.Context, que
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(targetkindmapping.FieldBazelInvocationID)
+	}
 	query.Where(predicate.TargetKindMapping(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(bazelinvocation.TargetKindMappingsColumn), fks...))
 	}))
@@ -1387,13 +1388,10 @@ func (biq *BazelInvocationQuery) loadTargetKindMappings(ctx context.Context, que
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.bazel_invocation_target_kind_mappings
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "bazel_invocation_target_kind_mappings" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.BazelInvocationID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_target_kind_mappings" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

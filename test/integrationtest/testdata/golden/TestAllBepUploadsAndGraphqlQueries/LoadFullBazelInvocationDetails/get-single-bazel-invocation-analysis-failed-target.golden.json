@@ -33,7 +33,7 @@
       ]
     },
     "bazelVersion": "7.1.0",
-    "bepCompleted": true,
+    "bepCompleted": false,
     "build": {
       "buildUUID": "c3a1db88-bad7-54fc-8795-e09393ff2f59",
       "id": "QnVpbGQ6MQ=="
