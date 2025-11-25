@@ -2,3 +2,11 @@
   border: 0 !important;
   box-shadow: var(--ant-card-box-shadow);
 }
+
+/* Fixes sideways scrolling in the WindowVirtualizer */
+.logContainer > div {
+  width: max-content !important;
+}
+.logContainer > div > div {
+  width: max-content !important;
+}

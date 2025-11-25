@@ -1,11 +1,13 @@
-import PortalAlert from "@/components/PortalAlert";
 import type { ApolloError } from "@apollo/client";
 import { AnsiUp } from "ansi_up";
 import { Card, type CardProps, Spin } from "antd";
-import type React from "react";
 import type { RefAttributes } from "react";
+import React from "react";
 import { JSX } from "react/jsx-runtime";
+import { WindowVirtualizer } from "virtua";
+import PortalAlert from "@/components/PortalAlert";
 import styles from "./index.module.css";
+
 import IntrinsicAttributes = JSX.IntrinsicAttributes;
 
 const ansi = new AnsiUp();
@@ -17,6 +19,11 @@ interface Props {
 }
 
 const LogViewer: React.FC<Props> = ({ log, loading, error }) => {
+  const lines = React.useMemo(() => {
+    if (!log) return [];
+    return ansi.ansi_to_html(log).split("\n");
+  }, [log]);
+
   if (loading === true)
     return (
       <Spin>
@@ -46,8 +53,15 @@ const LogViewer: React.FC<Props> = ({ log, loading, error }) => {
     );
   }
 
-  const innerHTML = ansi.ansi_to_html(log);
-  return <pre dangerouslySetInnerHTML={{ __html: innerHTML }} />;
+  return (
+    <pre className={styles.logContainer}>
+      <WindowVirtualizer>
+        {lines.map((line, index) => (
+          <span key={index} dangerouslySetInnerHTML={{ __html: line }} />
+        ))}
+      </WindowVirtualizer>
+    </pre>
+  );
 };
 
 type LogViewerCardProps = Props &
