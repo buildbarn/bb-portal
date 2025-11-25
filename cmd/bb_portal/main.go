@@ -239,7 +239,7 @@ func allowCorsWrapper(allowedOrigins []string, httpHandler http.Handler) http.Ha
 				return slices.Contains(allowedOrigins, origin) || slices.Contains(allowedOrigins, "*")
 			},
 			AllowedMethods: []string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-			AllowedHeaders: []string{"Authorization", "Content-Type", "X-Grpc-Web"},
+			AllowedHeaders: []string{"Authorization", "Content-Type", "X-Grpc-Web", "X-Requested-With"},
 		},
 	).Handler(httpHandler)
 }
