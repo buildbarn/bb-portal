@@ -215,7 +215,7 @@ func (r *BuildEventRecorder) StartLoggingConnectionMetadata(ctx context.Context)
 			default:
 				err := r.db.ConnectionMetadata.Create().
 					SetBazelInvocationID(r.InvocationDbID).
-					SetConnectionLastOpenAt(time.Now()).
+					SetConnectionLastOpenAt(time.Now().UTC()).
 					OnConflictColumns(connectionmetadata.BazelInvocationColumn).
 					UpdateNewValues().
 					Exec(ctx)

@@ -163,7 +163,7 @@ func (r *BuildEventRecorder) createEventMetadata(
 		bazelinvocation.FieldInvocationID,
 		bazelinvocation.FieldBepCompleted,
 	)
-	args := []any{sequenceNumber, time.Now(), eventHash, r.InvocationID}
+	args := []any{sequenceNumber, time.Now().UTC(), eventHash, r.InvocationID}
 
 	result, err := tx.ExecContext(ctx, query, args...)
 	if err != nil {
