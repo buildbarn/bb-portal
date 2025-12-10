@@ -585,7 +585,7 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 
 		_, err = client.ConnectionMetadata.Create().
 			SetBazelInvocationID(inv.ID).
-			SetConnectionLastOpenAt(time.Now()).
+			SetConnectionLastOpenAt(time.Now().UTC()).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -617,7 +617,7 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 
 		_, err = client.ConnectionMetadata.Create().
 			SetBazelInvocationID(inv.ID).
-			SetConnectionLastOpenAt(time.Now()).
+			SetConnectionLastOpenAt(time.Now().UTC()).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -644,7 +644,7 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 		require.NoError(t, err)
 		_, err = client.ConnectionMetadata.Create().
 			SetBazelInvocationID(invDone.ID).
-			SetConnectionLastOpenAt(time.Now()).
+			SetConnectionLastOpenAt(time.Now().UTC()).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -657,7 +657,7 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 		require.NoError(t, err)
 		_, err = client.ConnectionMetadata.Create().
 			SetBazelInvocationID(invNotDone.ID).
-			SetConnectionLastOpenAt(time.Now()).
+			SetConnectionLastOpenAt(time.Now().UTC()).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -1090,7 +1090,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 		client := setupTestDB(t)
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 
-		buildObj, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now()).Save(ctx)
+		buildObj, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 		_, err = client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -1113,7 +1113,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 		client := setupTestDB(t)
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 
-		_, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now()).Save(ctx)
+		_, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 
 		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
@@ -1131,7 +1131,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 
 		// Build with invocation
-		buildWithInv, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now()).Save(ctx)
+		buildWithInv, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 		_, err = client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -1140,10 +1140,10 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 		// Build without invocation
-		_, err = client.Build.Create().SetBuildURL("2").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now()).Save(ctx)
+		_, err = client.Build.Create().SetBuildURL("2").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 		// Another build without invocation
-		_, err = client.Build.Create().SetBuildURL("3").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now()).Save(ctx)
+		_, err = client.Build.Create().SetBuildURL("3").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 
 		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)

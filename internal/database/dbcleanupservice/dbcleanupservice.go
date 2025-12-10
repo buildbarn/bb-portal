@@ -145,7 +145,7 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentConnections(ctx context.C
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.LockInvocationsWithNoRecentEvents")
 	defer span.End()
 
-	cutoffTime := dc.clock.Now().Add(-dc.invocationConnectionTimeout)
+	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationConnectionTimeout)
 
 	invocationsUpdated, err := dc.db.BazelInvocation.Update().
 		Where(
@@ -173,7 +173,7 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.LockInvocationsWithNoRecentEvents")
 	defer span.End()
 
-	cutoffTime := dc.clock.Now().Add(-dc.invocationMessageTimeout)
+	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationMessageTimeout)
 
 	tx, err := dc.db.BeginTx(ctx, &entsql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
@@ -276,7 +276,7 @@ func (dc *DbCleanupService) RemoveOldEventMetadata(ctx context.Context) error {
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveOldEventMetadata")
 	defer span.End()
 
-	cutoffTime := dc.clock.Now().Add(-dc.invocationMessageTimeout)
+	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationMessageTimeout)
 	// Remove all event metadata that is for invocations that have
 	// completed before the cutoff time.
 	deletedEM, err := dc.db.EventMetadata.Delete().
@@ -395,7 +395,7 @@ func (dc *DbCleanupService) RemoveOldInvocations(ctx context.Context) error {
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveOldInvocations")
 	defer span.End()
 
-	cutoffTime := dc.clock.Now().Add(-dc.invocationRetention)
+	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationRetention)
 	deletedInvocation, err := dc.db.BazelInvocation.Delete().
 		Where(
 			bazelinvocation.BepCompleted(true),

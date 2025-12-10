@@ -40,7 +40,7 @@ func NewDbAuthService(db *ent.Client, clock clock.Clock, instanceNameAuthroizer 
 // database. The list is cached for a short period of time to avoid excessive
 // database queries.
 func (s *DbAuthService) GetInstanceNames(ctx context.Context) []digest.InstanceName {
-	now := s.clock.Now()
+	now := s.clock.Now().UTC()
 	if now.Sub(s.lastUpdated) < s.updateThreshold {
 		return s.instanceNames
 	}

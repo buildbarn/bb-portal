@@ -138,7 +138,7 @@ func (r *BuildEventRecorder) createTestCollection(ctx context.Context, tx *ent.T
 		SetStrategy(strategy).
 		SetCachedLocally(cachedLocally).
 		SetCachedRemotely(cachedRemotely).
-		SetFirstSeen(time.Now()).
+		SetFirstSeen(time.Now().UTC()).
 		Save(ctx)
 	if err != nil {
 		return 0, util.StatusWrap(err, "failed to save test collection to database")
