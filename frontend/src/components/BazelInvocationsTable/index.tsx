@@ -1,133 +1,140 @@
-import React, { useCallback, useState } from 'react';
-import { Space, Table, TableProps, Typography } from 'antd';
-import { TablePaginationConfig } from 'antd/lib/table';
-import { BuildOutlined } from '@ant-design/icons';
-import { useQuery } from '@apollo/client';
-import { FilterValue } from 'antd/lib/table/interface';
-import getColumns from './Columns';
 import {
-  BazelInvocationNodeFragment,
-  BazelInvocationOrderField,
-  BazelInvocationWhereInput,
-  FindBazelInvocationsQueryVariables,
-  OrderDirection,
-} from '@/graphql/__generated__/graphql';
-import { getFragmentData } from '@/graphql/__generated__';
+  buildColumn,
+  durationColumn,
+  invocationIdColumn,
+  startedAtColumn,
+  statusColumn,
+  userColumn,
+} from "@/components/BazelInvocationColumns/Columns";
 import FIND_BAZEL_INVOCATIONS_QUERY, {
   BAZEL_INVOCATION_NODE_FRAGMENT
 } from '@/components/BazelInvocationsTable/query.graphql';
+import { getFragmentData } from '@/graphql/__generated__';
+import {
+  BazelInvocationNodeFragment,
+  BazelInvocationOrderField,
+  BazelInvocationWhereInput, OrderDirection
+} from '@/graphql/__generated__/graphql';
 import themeStyles from '@/theme/theme.module.css';
+import { BuildOutlined } from '@ant-design/icons';
+import { useQuery } from '@apollo/client';
+import { Space, Typography } from 'antd';
+import { FilterValue } from 'antd/lib/table/interface';
+import React from 'react';
+import { CursorTable, getNewPaginationVariables } from '../CursorTable';
+import { PaginationVariables } from '../CursorTable/types';
+import PortalAlert from "../PortalAlert";
+import styles from "@/theme/theme.module.css";
+import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
 
-const PAGE_SIZE = 100;
 
-type Props = {
-  height?: number;
-};
+const BazelInvocationsTable: React.FC = () => {
+  const [paginationVariables, setPaginationVariables] =
+    React.useState<PaginationVariables>(getNewPaginationVariables());
+  const [filterVariables, setFilterVariables] = React.useState<
+    BazelInvocationWhereInput[]
+  >([]);
 
-const BazelInvocationsTable: React.FC<Props> = ({ height }) => {
-  const [variables, setVariables] = useState<FindBazelInvocationsQueryVariables>({
-    first: PAGE_SIZE,
-    where: {startedAtNotNil: true},
-    orderBy: {
-      direction: OrderDirection.Desc,
-      field: BazelInvocationOrderField.StartedAt,
+  const { loading, data, error } = useQuery(FIND_BAZEL_INVOCATIONS_QUERY, {
+    variables: {
+      where: {
+        and: [{ startedAtNotNil: true }, ...filterVariables],
+      },
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: BazelInvocationOrderField.StartedAt,
+      },
+      ...paginationVariables,
     },
-  });
-
-  const { loading, data, previousData, error } = useQuery(FIND_BAZEL_INVOCATIONS_QUERY, {
-    variables,
-    pollInterval: 120000,
     fetchPolicy: "network-only",
   });
 
-  const onChange: TableProps<BazelInvocationNodeFragment>['onChange'] = useCallback(
-    (pagination: TablePaginationConfig, filters: Record<string, FilterValue | null>, extra: any) => {
-      const wheres: BazelInvocationWhereInput[] = [];
-      if (filters['invocationID']?.length) {
-        wheres.push({ invocationID: filters['invocationID'][0].toString() });
-      }
-      if (filters['startedAt']?.length === 2) {
-        if (filters['startedAt'][0]) {
-          wheres.push({ startedAtGTE: filters['startedAt'][0] });
-        }
-        if (filters['startedAt'][1]) {
-          wheres.push({ startedAtLTE: filters['startedAt'][1] });
-        }
-      }
-      if (filters['build']?.length) {
-        wheres.push({ hasBuildWith: [{ buildUUID: filters['build'][0].toString() }] });
-      }
-      if (filters["user"]?.length){
-        const userFilterValue = filters["user"][0].toString()
-        wheres.push({
-            or: [
-              {
-                hasAuthenticatedUserWith: [
-                  { displayNameContains: userFilterValue },
-                ],
-              },
-              {
-                and: [
-                  { userLdapContains: userFilterValue },
-                  { hasAuthenticatedUser: false },
-                ],
-              },
-            ],
-          });
-      }
-      wheres.push({startedAtNotNil: true})
+  const tableColumns = [
+    userColumn,
+    invocationIdColumn,
+    startedAtColumn,
+    durationColumn,
+    statusColumn,
+    buildColumn,
+  ];
 
-      setVariables({
-        first: PAGE_SIZE,
-        where: wheres.length ? { and: [...wheres] } : undefined,
-        orderBy: {
-          direction: OrderDirection.Desc,
-          field: BazelInvocationOrderField.StartedAt,
-        },
+  const onFilterChange = (filters: Record<string, FilterValue | null>) => {
+    const newFilters: BazelInvocationWhereInput[] = [];
+    tableColumns.forEach((column) => {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (
+          value &&
+          key === column.key &&
+          "applyFilter" in column &&
+          column.applyFilter
+        ) {
+          const appliedFilters = column.applyFilter(value);
+          if (appliedFilters) {
+            newFilters.push(...appliedFilters);
+          }
+        }
       });
-    },
-    [],
-  );
+    });
+    setFilterVariables(newFilters);
+  };
 
-  const activeData = loading ? previousData : data;
-
-  let emptyText = 'No Bazel invocations match the specified search criteria';
-  let dataSource: BazelInvocationNodeFragment[] = [];
   if (error) {
-    emptyText = error.message;
-    dataSource = [];
-  } else {
-    const bazelInvocationNodes = activeData?.findBazelInvocations.edges?.flatMap(edge => edge?.node) ?? [];
-    const bazelInvocationNodeFragments = bazelInvocationNodes.map(node => getFragmentData(BAZEL_INVOCATION_NODE_FRAGMENT, node));
-    dataSource = bazelInvocationNodeFragments.filter((nodeFragment): nodeFragment is BazelInvocationNodeFragment => !!nodeFragment);
+    return (
+      <PortalAlert
+        type="error"
+        message={
+          error?.message ||
+          "An unknown error occurred while fetching invocations."
+        }
+        showIcon
+        className={styles.alert}
+      />
+    );
   }
 
+  let emptyText = 'No Bazel invocations match the specified search criteria';
+
+  let dataSource: BazelInvocationNodeFragment[] = [];
+  const bazelInvocationNodes = parseGraphqlEdgeList(data?.findBazelInvocations)
+  const bazelInvocationNodeFragments = bazelInvocationNodes.map(node => getFragmentData(BAZEL_INVOCATION_NODE_FRAGMENT, node));
+  dataSource = bazelInvocationNodeFragments.filter((nodeFragment): nodeFragment is BazelInvocationNodeFragment => !!nodeFragment);
+
   return (
-    <Table
-      columns={getColumns()}
-      virtual
-      scroll={{ y: height ? height : 320, scrollToFirstRowOnChange: true }}
+    <CursorTable
+      columns={tableColumns}
       dataSource={dataSource}
-      pagination={false}
       rowKey={item => item.id}
-      onChange={onChange}
+      loading={loading}
       locale={{
-        emptyText: loading ? (
-          <Typography.Text disabled className={themeStyles.tableEmptyTextTypography}>
+        emptyText: (
+          <Typography.Text
+            disabled
+            className={themeStyles.tableEmptyTextTypography}
+          >
             <Space>
               <BuildOutlined />
-              <>Loading...</>
-            </Space>
-          </Typography.Text>
-        ) : (
-          <Typography.Text disabled className={themeStyles.tableEmptyTextTypography}>
-            <Space>
-              <BuildOutlined />
-              <>{emptyText}</>
+              {emptyText}
             </Space>
           </Typography.Text>
         ),
       }}
+      onChange={(_pagination, filters, _sorter, _extra) =>
+        onFilterChange(filters)
+      }
+      pagination={{
+        position: "bottom",
+        justify: "end",
+        size: "middle",
+      }}
+      pageInfo={{
+        startCursor: data?.findBazelInvocations.pageInfo.startCursor || "",
+        endCursor: data?.findBazelInvocations.pageInfo.endCursor || "",
+        hasNextPage: data?.findBazelInvocations.pageInfo.hasNextPage || false,
+        hasPreviousPage:
+          data?.findBazelInvocations.pageInfo.hasPreviousPage || false,
+      }}
+      paginationVariables={paginationVariables}
+      setPaginationVariables={setPaginationVariables}
     />
   );
 };
