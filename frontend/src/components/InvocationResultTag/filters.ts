@@ -19,3 +19,42 @@ export const invocationResultTagFilters = [
     value: InvocationResultTagEnum.BEP_UPLOAD_ABORTED,
   },
 ];
+
+export const applyInvocationResultTagFilter = (
+  value: FilterValue,
+): BazelInvocationWhereInput[] => {
+  const filters: BazelInvocationWhereInput[] = [];
+  value.forEach((v) => {
+    const tag = v as InvocationResultTagEnum;
+    switch (tag) {
+      case InvocationResultTagEnum.IN_PROGRESS:
+        filters.push({
+          and: [
+            { bepCompleted: false },
+            { or: [{ exitCodeNameIsNil: true }, { exitCodeName: "" }] },
+          ],
+        });
+        break;
+      case InvocationResultTagEnum.BEP_UPLOAD_ABORTED:
+        filters.push({
+          and: [
+            { bepCompleted: true },
+            { or: [{ exitCodeNameIsNil: true }, { exitCodeName: "" }] },
+          ],
+        });
+        break;
+      case InvocationResultTagEnum.UNKNOWN:
+        filters.push({
+          and: [
+            { exitCodeNameNotIn: Object.values(InvocationExitCodes) },
+            { or: [{ exitCodeNameNotNil: true }, { exitCodeNameNEQ: "" }] },
+          ],
+        });
+        break;
+      default:
+        filters.push({ exitCodeName: tag });
+        break;
+    }
+  });
+  return [{ or: filters }];
+};

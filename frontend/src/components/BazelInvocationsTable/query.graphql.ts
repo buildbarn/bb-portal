@@ -2,11 +2,20 @@ import { gql } from "@/graphql/__generated__";
 
 const FIND_BAZEL_INVOCATIONS_QUERY = gql(/* GraphQL */ `
   query FindBazelInvocations(
-    $first: Int!
+    $after: Cursor
+    $first: Int
+    $before: Cursor
+    $last: Int
     $orderBy: BazelInvocationOrder
     $where: BazelInvocationWhereInput
   ) {
-    findBazelInvocations(first: $first, orderBy: $orderBy, where: $where) {
+    findBazelInvocations(after: $after, first: $first, before: $before, last: $last, orderBy: $orderBy, where: $where) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
       edges {
         node {
           ...BazelInvocationNode
