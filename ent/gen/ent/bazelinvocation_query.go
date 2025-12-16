@@ -17,6 +17,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
@@ -45,6 +46,7 @@ type BazelInvocationQuery struct {
 	withProblems                 *BazelInvocationProblemQuery
 	withMetrics                  *MetricsQuery
 	withIncompleteBuildLogs      *IncompleteBuildLogQuery
+	withBuildLogChunks           *BuildLogChunkQuery
 	withInvocationFiles          *InvocationFilesQuery
 	withTestCollection           *TestCollectionQuery
 	withInvocationTargets        *InvocationTargetQuery
@@ -57,6 +59,7 @@ type BazelInvocationQuery struct {
 	withNamedConnectionMetadata  map[string]*ConnectionMetadataQuery
 	withNamedProblems            map[string]*BazelInvocationProblemQuery
 	withNamedIncompleteBuildLogs map[string]*IncompleteBuildLogQuery
+	withNamedBuildLogChunks      map[string]*BuildLogChunkQuery
 	withNamedInvocationFiles     map[string]*InvocationFilesQuery
 	withNamedTestCollection      map[string]*TestCollectionQuery
 	withNamedInvocationTargets   map[string]*InvocationTargetQuery
@@ -266,6 +269,28 @@ func (biq *BazelInvocationQuery) QueryIncompleteBuildLogs() *IncompleteBuildLogQ
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
 			sqlgraph.To(incompletebuildlog.Table, incompletebuildlog.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.IncompleteBuildLogsTable, bazelinvocation.IncompleteBuildLogsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryBuildLogChunks chains the current query on the "build_log_chunks" edge.
+func (biq *BazelInvocationQuery) QueryBuildLogChunks() *BuildLogChunkQuery {
+	query := (&BuildLogChunkClient{config: biq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := biq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := biq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(buildlogchunk.Table, buildlogchunk.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.BuildLogChunksTable, bazelinvocation.BuildLogChunksColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
 		return fromU, nil
@@ -583,6 +608,7 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		withProblems:            biq.withProblems.Clone(),
 		withMetrics:             biq.withMetrics.Clone(),
 		withIncompleteBuildLogs: biq.withIncompleteBuildLogs.Clone(),
+		withBuildLogChunks:      biq.withBuildLogChunks.Clone(),
 		withInvocationFiles:     biq.withInvocationFiles.Clone(),
 		withTestCollection:      biq.withTestCollection.Clone(),
 		withInvocationTargets:   biq.withInvocationTargets.Clone(),
@@ -680,6 +706,17 @@ func (biq *BazelInvocationQuery) WithIncompleteBuildLogs(opts ...func(*Incomplet
 		opt(query)
 	}
 	biq.withIncompleteBuildLogs = query
+	return biq
+}
+
+// WithBuildLogChunks tells the query-builder to eager-load the nodes that are connected to
+// the "build_log_chunks" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithBuildLogChunks(opts ...func(*BuildLogChunkQuery)) *BazelInvocationQuery {
+	query := (&BuildLogChunkClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	biq.withBuildLogChunks = query
 	return biq
 }
 
@@ -823,7 +860,7 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*BazelInvocation{}
 		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
-		loadedTypes = [13]bool{
+		loadedTypes = [14]bool{
 			biq.withInstanceName != nil,
 			biq.withBuild != nil,
 			biq.withAuthenticatedUser != nil,
@@ -832,6 +869,7 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			biq.withProblems != nil,
 			biq.withMetrics != nil,
 			biq.withIncompleteBuildLogs != nil,
+			biq.withBuildLogChunks != nil,
 			biq.withInvocationFiles != nil,
 			biq.withTestCollection != nil,
 			biq.withInvocationTargets != nil,
@@ -922,6 +960,13 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			return nil, err
 		}
 	}
+	if query := biq.withBuildLogChunks; query != nil {
+		if err := biq.loadBuildLogChunks(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.BuildLogChunks = []*BuildLogChunk{} },
+			func(n *BazelInvocation, e *BuildLogChunk) { n.Edges.BuildLogChunks = append(n.Edges.BuildLogChunks, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := biq.withInvocationFiles; query != nil {
 		if err := biq.loadInvocationFiles(ctx, query, nodes,
 			func(n *BazelInvocation) { n.Edges.InvocationFiles = []*InvocationFiles{} },
@@ -989,6 +1034,13 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		if err := biq.loadIncompleteBuildLogs(ctx, query, nodes,
 			func(n *BazelInvocation) { n.appendNamedIncompleteBuildLogs(name) },
 			func(n *BazelInvocation, e *IncompleteBuildLog) { n.appendNamedIncompleteBuildLogs(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range biq.withNamedBuildLogChunks {
+		if err := biq.loadBuildLogChunks(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedBuildLogChunks(name) },
+			func(n *BazelInvocation, e *BuildLogChunk) { n.appendNamedBuildLogChunks(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1269,6 +1321,37 @@ func (biq *BazelInvocationQuery) loadIncompleteBuildLogs(ctx context.Context, qu
 		node, ok := nodeids[fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (biq *BazelInvocationQuery) loadBuildLogChunks(ctx context.Context, query *BuildLogChunkQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *BuildLogChunk)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*BazelInvocation)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.BuildLogChunk(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.BuildLogChunksColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.bazel_invocation_build_log_chunks
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "bazel_invocation_build_log_chunks" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_build_log_chunks" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1572,6 +1655,20 @@ func (biq *BazelInvocationQuery) WithNamedIncompleteBuildLogs(name string, opts 
 		biq.withNamedIncompleteBuildLogs = make(map[string]*IncompleteBuildLogQuery)
 	}
 	biq.withNamedIncompleteBuildLogs[name] = query
+	return biq
+}
+
+// WithNamedBuildLogChunks tells the query-builder to eager-load the nodes that are connected to the "build_log_chunks"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithNamedBuildLogChunks(name string, opts ...func(*BuildLogChunkQuery)) *BazelInvocationQuery {
+	query := (&BuildLogChunkClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if biq.withNamedBuildLogChunks == nil {
+		biq.withNamedBuildLogChunks = make(map[string]*BuildLogChunkQuery)
+	}
+	biq.withNamedBuildLogChunks[name] = query
 	return biq
 }
 

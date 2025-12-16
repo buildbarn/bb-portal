@@ -8,7 +8,12 @@ import (
 	"time"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/klauspost/compress/zstd"
+
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
+	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
@@ -917,11 +922,19 @@ func TestCompactLogs(t *testing.T) {
 		require.NoError(t, err)
 		err = cleanup.CompactLogs(ctx)
 		require.NoError(t, err)
-		updatedInvocation, err := client.BazelInvocation.Get(ctx, inv.ID)
+		count, err := client.BuildLogChunk.Query().Where(
+			buildlogchunk.HasBazelInvocationWith(
+				bazelinvocation.ID(inv.ID),
+			),
+		).Count(ctx)
 		require.NoError(t, err)
-		require.Equal(t, "", updatedInvocation.BuildLogs)
+		require.Equal(t, 0, count)
 
-		count, err := client.IncompleteBuildLog.Query().Count(ctx)
+		count, err = client.IncompleteBuildLog.Query().Where(
+			incompletebuildlog.HasBazelInvocationWith(
+				bazelinvocation.ID(inv.ID),
+			),
+		).Count(ctx)
 		require.NoError(t, err)
 		require.Equal(t, 0, count)
 	})
@@ -955,9 +968,17 @@ func TestCompactLogs(t *testing.T) {
 		err = cleanup.CompactLogs(ctx)
 		require.NoError(t, err)
 		requireIncompleteLogCount(t, client, 6)
-		updatedInvocation, err := client.BazelInvocation.Get(ctx, inv.ID)
+		chunk, err := client.BuildLogChunk.Query().Where(
+			buildlogchunk.HasBazelInvocationWith(
+				bazelinvocation.IDEQ(inv.ID),
+			),
+		).Only(ctx)
 		require.NoError(t, err)
-		require.Equal(t, "\x1b[35mWARNING: \x1b[0mBuild options --dynamic_mode, --extra_execution_platforms, and --extra_toolchains have changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).\n\x1b[32mINFO: \x1b[0mAnalyzed target //:hello (0 packages loaded, 2 targets configured).\n\x1b[32mINFO: \x1b[0mFound 1 target...\nTarget //:hello up-to-date:\n  bazel-bin/hello.sh\n\x1b[32mINFO: \x1b[0mElapsed time: 0.137s, Critical Path: 0.02s\n\x1b[32mINFO: \x1b[0m2 processes: 1 internal, 1 linux-sandbox.\n\x1b[32mINFO: \x1b[0mBuild completed successfully, 2 total actions\n\x1b[32mINFO:\x1b[0m \n", updatedInvocation.BuildLogs)
+		decoder, err := zstd.NewReader(nil)
+		require.NoError(t, err)
+		data, err := decoder.DecodeAll(chunk.Data, nil)
+		require.NoError(t, err)
+		require.Equal(t, "\x1b[35mWARNING: \x1b[0mBuild options --dynamic_mode, --extra_execution_platforms, and --extra_toolchains have changed, discarding analysis cache (this can be expensive, see https://bazel.build/advanced/performance/iteration-speed).\n\x1b[32mINFO: \x1b[0mAnalyzed target //:hello (0 packages loaded, 2 targets configured).\n\x1b[32mINFO: \x1b[0mFound 1 target...\nTarget //:hello up-to-date:\n  bazel-bin/hello.sh\n\x1b[32mINFO: \x1b[0mElapsed time: 0.137s, Critical Path: 0.02s\n\x1b[32mINFO: \x1b[0m2 processes: 1 internal, 1 linux-sandbox.\n\x1b[32mINFO: \x1b[0mBuild completed successfully, 2 total actions\n\x1b[32mINFO:\x1b[0m \n", string(data))
 		// Now logs should be deleted
 		err = cleanup.DeleteIncompleteLogs(ctx)
 		require.NoError(t, err)
@@ -982,9 +1003,6 @@ func TestCompactLogs(t *testing.T) {
 		err = cleanup.CompactLogs(ctx)
 		require.NoError(t, err)
 		requireIncompleteLogCount(t, client, 6)
-		updatedInvocation, err := client.BazelInvocation.Get(ctx, inv.ID)
-		require.NoError(t, err)
-		require.Equal(t, "", updatedInvocation.BuildLogs)
 		err = cleanup.DeleteIncompleteLogs(ctx)
 		require.NoError(t, err)
 		requireIncompleteLogCount(t, client, 6)

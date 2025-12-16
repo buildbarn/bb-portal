@@ -35,6 +35,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
+	"github.com/buildbarn/bb-portal/internal/api/http/loghandler"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
@@ -186,10 +187,20 @@ func newBuildEventStreamService(
 	blobArchiver := processing.NewBlobMultiArchiver()
 	configureBlobArchiving(blobArchiver, blobArchiveFolder)
 
-	err = addGraphqlHandler(configuration, besConfiguration, dependenciesGroup, grpcClientFactory, router, dbClient.Ent(), tracerProvider)
+	instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
+	}
+	dbAuthService := dbauthservice.NewDbAuthService(dbClient.Ent(), clock.SystemClock, instanceNameAuthorizer, time.Second*5)
+
+	err = addGraphqlHandler(configuration, besConfiguration, dbAuthService, dependenciesGroup, grpcClientFactory, router, dbClient.Ent(), tracerProvider)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to add GraphQL handler for BuildEventStreamService")
 	}
+
+	// Handle log requests.
+	logHandler, err := loghandler.NewLogHandler(dbClient.Ent(), dbAuthService, tracerProvider)
+	router.Path("/api/v1/invocations/{invocation_id}/log").Methods("GET").Handler(logHandler)
 
 	// Handle BEP file uploads over HTTP.
 	if besConfiguration.EnableBepFileUpload {
@@ -221,6 +232,7 @@ func newBuildEventStreamService(
 func addGraphqlHandler(
 	configuration *bb_portal.ApplicationConfiguration,
 	besConfiguration *bb_portal.BuildEventStreamService,
+	dbAuthService *dbauthservice.DbAuthService,
 	dependenciesGroup program.Group,
 	grpcClientFactory bb_grpc.ClientFactory,
 	router *mux.Router,
@@ -241,13 +253,8 @@ func addGraphqlHandler(
 			return next(dbauthservice.NewContextWithDbAuthServiceBypass(ctx))
 		})
 	default:
-		instanceNameAuthorizer, err := auth_configuration.DefaultAuthorizerFactory.NewAuthorizerFromConfiguration(configuration.InstanceNameAuthorizer, dependenciesGroup, grpcClientFactory)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to create InstanceNameAuthorizer")
-		}
-		dbAuthServie := dbauthservice.NewDbAuthService(dbClient, clock.SystemClock, instanceNameAuthorizer, time.Second*5)
 		srv.AroundOperations(func(ctx context.Context, next gqlgen.OperationHandler) gqlgen.ResponseHandler {
-			return next(dbauthservice.NewContextWithDbAuthService(ctx, dbAuthServie))
+			return next(dbauthservice.NewContextWithDbAuthService(ctx, dbAuthService))
 		})
 	}
 

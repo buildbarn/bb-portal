@@ -47,9 +47,6 @@ func (BazelInvocation) Fields() []ent.Field {
 		// Ldap (username) of the user who launched the invocation if provided.
 		field.String("user_ldap").Optional().Annotations(entgql.OrderField("USER_LDAP")),
 
-		// The full logs from the build..
-		field.String("build_logs").Optional().Annotations(entgql.Skip(entgql.SkipType)),
-
 		// The cpu type from the configuration event(s).
 		field.String("cpu").Optional(),
 
@@ -145,6 +142,12 @@ func (BazelInvocation) Edges() []ent.Edge {
 
 		// Incomplete Build Log snippets for the Invocation
 		edge.To("incomplete_build_logs", IncompleteBuildLog.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
+
+		// Chunked Build Logs for the Invocation
+		edge.To("build_log_chunks", BuildLogChunk.Type).
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),

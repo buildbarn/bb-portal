@@ -2175,23 +2175,6 @@ type BazelInvocationWhereInput struct {
 	UserLdapEqualFold    *string  `json:"userLdapEqualFold,omitempty"`
 	UserLdapContainsFold *string  `json:"userLdapContainsFold,omitempty"`
 
-	// "build_logs" field predicates.
-	BuildLogs             *string  `json:"buildLogs,omitempty"`
-	BuildLogsNEQ          *string  `json:"buildLogsNEQ,omitempty"`
-	BuildLogsIn           []string `json:"buildLogsIn,omitempty"`
-	BuildLogsNotIn        []string `json:"buildLogsNotIn,omitempty"`
-	BuildLogsGT           *string  `json:"buildLogsGT,omitempty"`
-	BuildLogsGTE          *string  `json:"buildLogsGTE,omitempty"`
-	BuildLogsLT           *string  `json:"buildLogsLT,omitempty"`
-	BuildLogsLTE          *string  `json:"buildLogsLTE,omitempty"`
-	BuildLogsContains     *string  `json:"buildLogsContains,omitempty"`
-	BuildLogsHasPrefix    *string  `json:"buildLogsHasPrefix,omitempty"`
-	BuildLogsHasSuffix    *string  `json:"buildLogsHasSuffix,omitempty"`
-	BuildLogsIsNil        bool     `json:"buildLogsIsNil,omitempty"`
-	BuildLogsNotNil       bool     `json:"buildLogsNotNil,omitempty"`
-	BuildLogsEqualFold    *string  `json:"buildLogsEqualFold,omitempty"`
-	BuildLogsContainsFold *string  `json:"buildLogsContainsFold,omitempty"`
-
 	// "cpu" field predicates.
 	CPU             *string  `json:"cpu,omitempty"`
 	CPUNEQ          *string  `json:"cpuNEQ,omitempty"`
@@ -2757,51 +2740,6 @@ func (i *BazelInvocationWhereInput) P() (predicate.BazelInvocation, error) {
 	}
 	if i.UserLdapContainsFold != nil {
 		predicates = append(predicates, bazelinvocation.UserLdapContainsFold(*i.UserLdapContainsFold))
-	}
-	if i.BuildLogs != nil {
-		predicates = append(predicates, bazelinvocation.BuildLogsEQ(*i.BuildLogs))
-	}
-	if i.BuildLogsNEQ != nil {
-		predicates = append(predicates, bazelinvocation.BuildLogsNEQ(*i.BuildLogsNEQ))
-	}
-	if len(i.BuildLogsIn) > 0 {
-		predicates = append(predicates, bazelinvocation.BuildLogsIn(i.BuildLogsIn...))
-	}
-	if len(i.BuildLogsNotIn) > 0 {
-		predicates = append(predicates, bazelinvocation.BuildLogsNotIn(i.BuildLogsNotIn...))
-	}
-	if i.BuildLogsGT != nil {
-		predicates = append(predicates, bazelinvocation.BuildLogsGT(*i.BuildLogsGT))
-	}
-	if i.BuildLogsGTE != nil {
-		predicates = append(predicates, bazelinvocation.BuildLogsGTE(*i.BuildLogsGTE))
-	}
-	if i.BuildLogsLT != nil {
-		predicates = append(predicates, bazelinvocation.BuildLogsLT(*i.BuildLogsLT))
-	}
-	if i.BuildLogsLTE != nil {
-		predicates = append(predicates, bazelinvocation.BuildLogsLTE(*i.BuildLogsLTE))
-	}
-	if i.BuildLogsContains != nil {
-		predicates = append(predicates, bazelinvocation.BuildLogsContains(*i.BuildLogsContains))
-	}
-	if i.BuildLogsHasPrefix != nil {
-		predicates = append(predicates, bazelinvocation.BuildLogsHasPrefix(*i.BuildLogsHasPrefix))
-	}
-	if i.BuildLogsHasSuffix != nil {
-		predicates = append(predicates, bazelinvocation.BuildLogsHasSuffix(*i.BuildLogsHasSuffix))
-	}
-	if i.BuildLogsIsNil {
-		predicates = append(predicates, bazelinvocation.BuildLogsIsNil())
-	}
-	if i.BuildLogsNotNil {
-		predicates = append(predicates, bazelinvocation.BuildLogsNotNil())
-	}
-	if i.BuildLogsEqualFold != nil {
-		predicates = append(predicates, bazelinvocation.BuildLogsEqualFold(*i.BuildLogsEqualFold))
-	}
-	if i.BuildLogsContainsFold != nil {
-		predicates = append(predicates, bazelinvocation.BuildLogsContainsFold(*i.BuildLogsContainsFold))
 	}
 	if i.CPU != nil {
 		predicates = append(predicates, bazelinvocation.CPUEQ(*i.CPU))

@@ -76,7 +76,6 @@ type BazelInvocation struct {
 	StepLabel                           sql.NullString
 	UserEmail                           sql.NullString
 	UserLdap                            sql.NullString
-	BuildLogs                           sql.NullString
 	Cpu                                 sql.NullString
 	PlatformName                        sql.NullString
 	Hostname                            sql.NullString
@@ -147,6 +146,15 @@ type BuildGraphMetric struct {
 	BuildGraphMetricsBuiltValues              sql.NullInt64
 	BuildGraphMetricsCleanedValues            sql.NullInt64
 	MetricsBuildGraphMetrics                  sql.NullInt64
+}
+
+type BuildLogChunk struct {
+	ID                            int64
+	Data                          []byte
+	ChunkIndex                    int64
+	FirstLineIndex                int64
+	LastLineIndex                 int64
+	BazelInvocationBuildLogChunks int64
 }
 
 type ConnectionMetadatum struct {

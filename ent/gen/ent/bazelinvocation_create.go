@@ -15,6 +15,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
@@ -150,20 +151,6 @@ func (bic *BazelInvocationCreate) SetUserLdap(s string) *BazelInvocationCreate {
 func (bic *BazelInvocationCreate) SetNillableUserLdap(s *string) *BazelInvocationCreate {
 	if s != nil {
 		bic.SetUserLdap(*s)
-	}
-	return bic
-}
-
-// SetBuildLogs sets the "build_logs" field.
-func (bic *BazelInvocationCreate) SetBuildLogs(s string) *BazelInvocationCreate {
-	bic.mutation.SetBuildLogs(s)
-	return bic
-}
-
-// SetNillableBuildLogs sets the "build_logs" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableBuildLogs(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetBuildLogs(*s)
 	}
 	return bic
 }
@@ -586,6 +573,21 @@ func (bic *BazelInvocationCreate) AddIncompleteBuildLogs(i ...*IncompleteBuildLo
 	return bic.AddIncompleteBuildLogIDs(ids...)
 }
 
+// AddBuildLogChunkIDs adds the "build_log_chunks" edge to the BuildLogChunk entity by IDs.
+func (bic *BazelInvocationCreate) AddBuildLogChunkIDs(ids ...int) *BazelInvocationCreate {
+	bic.mutation.AddBuildLogChunkIDs(ids...)
+	return bic
+}
+
+// AddBuildLogChunks adds the "build_log_chunks" edges to the BuildLogChunk entity.
+func (bic *BazelInvocationCreate) AddBuildLogChunks(b ...*BuildLogChunk) *BazelInvocationCreate {
+	ids := make([]int, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return bic.AddBuildLogChunkIDs(ids...)
+}
+
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
 func (bic *BazelInvocationCreate) AddInvocationFileIDs(ids ...int) *BazelInvocationCreate {
 	bic.mutation.AddInvocationFileIDs(ids...)
@@ -825,10 +827,6 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_spec.SetField(bazelinvocation.FieldUserLdap, field.TypeString, value)
 		_node.UserLdap = value
 	}
-	if value, ok := bic.mutation.BuildLogs(); ok {
-		_spec.SetField(bazelinvocation.FieldBuildLogs, field.TypeString, value)
-		_node.BuildLogs = value
-	}
 	if value, ok := bic.mutation.CPU(); ok {
 		_spec.SetField(bazelinvocation.FieldCPU, field.TypeString, value)
 		_node.CPU = value
@@ -1045,6 +1043,22 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.BuildLogChunksIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.BuildLogChunksTable,
+			Columns: []string{bazelinvocation.BuildLogChunksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -1331,24 +1345,6 @@ func (u *BazelInvocationUpsert) UpdateUserLdap() *BazelInvocationUpsert {
 // ClearUserLdap clears the value of the "user_ldap" field.
 func (u *BazelInvocationUpsert) ClearUserLdap() *BazelInvocationUpsert {
 	u.SetNull(bazelinvocation.FieldUserLdap)
-	return u
-}
-
-// SetBuildLogs sets the "build_logs" field.
-func (u *BazelInvocationUpsert) SetBuildLogs(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldBuildLogs, v)
-	return u
-}
-
-// UpdateBuildLogs sets the "build_logs" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateBuildLogs() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldBuildLogs)
-	return u
-}
-
-// ClearBuildLogs clears the value of the "build_logs" field.
-func (u *BazelInvocationUpsert) ClearBuildLogs() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldBuildLogs)
 	return u
 }
 
@@ -1959,27 +1955,6 @@ func (u *BazelInvocationUpsertOne) UpdateUserLdap() *BazelInvocationUpsertOne {
 func (u *BazelInvocationUpsertOne) ClearUserLdap() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.ClearUserLdap()
-	})
-}
-
-// SetBuildLogs sets the "build_logs" field.
-func (u *BazelInvocationUpsertOne) SetBuildLogs(v string) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetBuildLogs(v)
-	})
-}
-
-// UpdateBuildLogs sets the "build_logs" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateBuildLogs() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateBuildLogs()
-	})
-}
-
-// ClearBuildLogs clears the value of the "build_logs" field.
-func (u *BazelInvocationUpsertOne) ClearBuildLogs() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearBuildLogs()
 	})
 }
 
@@ -2821,27 +2796,6 @@ func (u *BazelInvocationUpsertBulk) UpdateUserLdap() *BazelInvocationUpsertBulk 
 func (u *BazelInvocationUpsertBulk) ClearUserLdap() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.ClearUserLdap()
-	})
-}
-
-// SetBuildLogs sets the "build_logs" field.
-func (u *BazelInvocationUpsertBulk) SetBuildLogs(v string) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetBuildLogs(v)
-	})
-}
-
-// UpdateBuildLogs sets the "build_logs" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateBuildLogs() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateBuildLogs()
-	})
-}
-
-// ClearBuildLogs clears the value of the "build_logs" field.
-func (u *BazelInvocationUpsertBulk) ClearBuildLogs() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearBuildLogs()
 	})
 }
 

@@ -122,6 +122,7 @@ use_repo(
     "com_github_hedwigz_entviz",
     "com_github_improbable_eng_grpc_web",
     "com_github_jackc_pgx_v5",
+    "com_github_klauspost_compress",
     "com_github_lib_pq",
     "com_github_machinebox_graphql",
     "com_github_pkg_errors",

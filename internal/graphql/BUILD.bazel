@@ -30,7 +30,6 @@ go_library(
         "//ent/gen/ent/testcollection",
         "//ent/gen/ent/testresultbes",
         "//ent/gen/ent/testsummary",
-        "//internal/api/grpc/bes",
         "//internal/graphql/helpers",
         "//internal/graphql/model",
         "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",

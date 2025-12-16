@@ -22,7 +22,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
-	localbes "github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
 	"github.com/google/uuid"
@@ -99,16 +98,6 @@ func (r *bazelInvocationResolver) Profile(ctx context.Context, obj *ent.BazelInv
 		SizeInBytes:    int(profile.SizeBytes),
 		DigestFunction: profile.DigestFunction,
 	}, nil
-}
-
-// BuildLogs is the resolver for the buildLogs field.
-func (r *bazelInvocationResolver) BuildLogs(ctx context.Context, obj *ent.BazelInvocation) (*string, error) {
-	if obj.BuildLogs != "" {
-		return &obj.BuildLogs, nil
-	}
-
-	buildlogs, err := localbes.GetNormalizedIncompleteBuildLogs(ctx, obj)
-	return &buildlogs, err
 }
 
 // DownloadURL is the resolver for the downloadURL field.

@@ -129,6 +129,18 @@ func (f BuildGraphMetricsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildGraphMetricsMutation", m)
 }
 
+// The BuildLogChunkFunc type is an adapter to allow the use of ordinary
+// function as BuildLogChunk mutator.
+type BuildLogChunkFunc func(context.Context, *ent.BuildLogChunkMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f BuildLogChunkFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.BuildLogChunkMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.BuildLogChunkMutation", m)
+}
+
 // The ConnectionMetadataFunc type is an adapter to allow the use of ordinary
 // function as ConnectionMetadata mutator.
 type ConnectionMetadataFunc func(context.Context, *ent.ConnectionMetadataMutation) (ent.Value, error)

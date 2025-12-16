@@ -101,11 +101,6 @@ func UserLdap(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldUserLdap, v))
 }
 
-// BuildLogs applies equality check predicate on the "build_logs" field. It's identical to BuildLogsEQ.
-func BuildLogs(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldBuildLogs, v))
-}
-
 // CPU applies equality check predicate on the "cpu" field. It's identical to CPUEQ.
 func CPU(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldEQ(FieldCPU, v))
@@ -674,81 +669,6 @@ func UserLdapEqualFold(v string) predicate.BazelInvocation {
 // UserLdapContainsFold applies the ContainsFold predicate on the "user_ldap" field.
 func UserLdapContainsFold(v string) predicate.BazelInvocation {
 	return predicate.BazelInvocation(sql.FieldContainsFold(FieldUserLdap, v))
-}
-
-// BuildLogsEQ applies the EQ predicate on the "build_logs" field.
-func BuildLogsEQ(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEQ(FieldBuildLogs, v))
-}
-
-// BuildLogsNEQ applies the NEQ predicate on the "build_logs" field.
-func BuildLogsNEQ(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNEQ(FieldBuildLogs, v))
-}
-
-// BuildLogsIn applies the In predicate on the "build_logs" field.
-func BuildLogsIn(vs ...string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIn(FieldBuildLogs, vs...))
-}
-
-// BuildLogsNotIn applies the NotIn predicate on the "build_logs" field.
-func BuildLogsNotIn(vs ...string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotIn(FieldBuildLogs, vs...))
-}
-
-// BuildLogsGT applies the GT predicate on the "build_logs" field.
-func BuildLogsGT(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGT(FieldBuildLogs, v))
-}
-
-// BuildLogsGTE applies the GTE predicate on the "build_logs" field.
-func BuildLogsGTE(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldGTE(FieldBuildLogs, v))
-}
-
-// BuildLogsLT applies the LT predicate on the "build_logs" field.
-func BuildLogsLT(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLT(FieldBuildLogs, v))
-}
-
-// BuildLogsLTE applies the LTE predicate on the "build_logs" field.
-func BuildLogsLTE(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldLTE(FieldBuildLogs, v))
-}
-
-// BuildLogsContains applies the Contains predicate on the "build_logs" field.
-func BuildLogsContains(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldContains(FieldBuildLogs, v))
-}
-
-// BuildLogsHasPrefix applies the HasPrefix predicate on the "build_logs" field.
-func BuildLogsHasPrefix(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldHasPrefix(FieldBuildLogs, v))
-}
-
-// BuildLogsHasSuffix applies the HasSuffix predicate on the "build_logs" field.
-func BuildLogsHasSuffix(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldHasSuffix(FieldBuildLogs, v))
-}
-
-// BuildLogsIsNil applies the IsNil predicate on the "build_logs" field.
-func BuildLogsIsNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldIsNull(FieldBuildLogs))
-}
-
-// BuildLogsNotNil applies the NotNil predicate on the "build_logs" field.
-func BuildLogsNotNil() predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldNotNull(FieldBuildLogs))
-}
-
-// BuildLogsEqualFold applies the EqualFold predicate on the "build_logs" field.
-func BuildLogsEqualFold(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldEqualFold(FieldBuildLogs, v))
-}
-
-// BuildLogsContainsFold applies the ContainsFold predicate on the "build_logs" field.
-func BuildLogsContainsFold(v string) predicate.BazelInvocation {
-	return predicate.BazelInvocation(sql.FieldContainsFold(FieldBuildLogs, v))
 }
 
 // CPUEQ applies the EQ predicate on the "cpu" field.
@@ -1897,6 +1817,29 @@ func HasIncompleteBuildLogs() predicate.BazelInvocation {
 func HasIncompleteBuildLogsWith(preds ...predicate.IncompleteBuildLog) predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := newIncompleteBuildLogsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasBuildLogChunks applies the HasEdge predicate on the "build_log_chunks" edge.
+func HasBuildLogChunks() predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, BuildLogChunksTable, BuildLogChunksColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasBuildLogChunksWith applies the HasEdge predicate on the "build_log_chunks" edge with a given conditions (other predicates).
+func HasBuildLogChunksWith(preds ...predicate.BuildLogChunk) predicate.BazelInvocation {
+	return predicate.BazelInvocation(func(s *sql.Selector) {
+		step := newBuildLogChunksStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

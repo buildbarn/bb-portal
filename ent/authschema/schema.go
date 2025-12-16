@@ -23,6 +23,8 @@ type (
 	Blob struct{ schema.Blob }
 	// Build reexport with auth policy added
 	Build struct{ schema.Build }
+	// BuildLogChunk reexport with auth policy added
+	BuildLogChunk struct{ schema.BuildLogChunk }
 	// BuildGraphMetrics reexport with auth policy added
 	BuildGraphMetrics struct{ schema.BuildGraphMetrics }
 	// ConnectionMetadata reexport with auth policy added

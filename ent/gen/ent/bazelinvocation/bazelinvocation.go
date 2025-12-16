@@ -31,8 +31,6 @@ const (
 	FieldUserEmail = "user_email"
 	// FieldUserLdap holds the string denoting the user_ldap field in the database.
 	FieldUserLdap = "user_ldap"
-	// FieldBuildLogs holds the string denoting the build_logs field in the database.
-	FieldBuildLogs = "build_logs"
 	// FieldCPU holds the string denoting the cpu field in the database.
 	FieldCPU = "cpu"
 	// FieldPlatformName holds the string denoting the platform_name field in the database.
@@ -95,6 +93,8 @@ const (
 	EdgeMetrics = "metrics"
 	// EdgeIncompleteBuildLogs holds the string denoting the incomplete_build_logs edge name in mutations.
 	EdgeIncompleteBuildLogs = "incomplete_build_logs"
+	// EdgeBuildLogChunks holds the string denoting the build_log_chunks edge name in mutations.
+	EdgeBuildLogChunks = "build_log_chunks"
 	// EdgeInvocationFiles holds the string denoting the invocation_files edge name in mutations.
 	EdgeInvocationFiles = "invocation_files"
 	// EdgeTestCollection holds the string denoting the test_collection edge name in mutations.
@@ -163,6 +163,13 @@ const (
 	IncompleteBuildLogsInverseTable = "incomplete_build_logs"
 	// IncompleteBuildLogsColumn is the table column denoting the incomplete_build_logs relation/edge.
 	IncompleteBuildLogsColumn = "bazel_invocation_id"
+	// BuildLogChunksTable is the table that holds the build_log_chunks relation/edge.
+	BuildLogChunksTable = "build_log_chunks"
+	// BuildLogChunksInverseTable is the table name for the BuildLogChunk entity.
+	// It exists in this package in order to avoid circular dependency with the "buildlogchunk" package.
+	BuildLogChunksInverseTable = "build_log_chunks"
+	// BuildLogChunksColumn is the table column denoting the build_log_chunks relation/edge.
+	BuildLogChunksColumn = "bazel_invocation_build_log_chunks"
 	// InvocationFilesTable is the table that holds the invocation_files relation/edge.
 	InvocationFilesTable = "invocation_files"
 	// InvocationFilesInverseTable is the table name for the InvocationFiles entity.
@@ -212,7 +219,6 @@ var Columns = []string{
 	FieldStepLabel,
 	FieldUserEmail,
 	FieldUserLdap,
-	FieldBuildLogs,
 	FieldCPU,
 	FieldPlatformName,
 	FieldHostname,
@@ -336,11 +342,6 @@ func ByUserEmail(opts ...sql.OrderTermOption) OrderOption {
 // ByUserLdap orders the results by the user_ldap field.
 func ByUserLdap(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserLdap, opts...).ToFunc()
-}
-
-// ByBuildLogs orders the results by the build_logs field.
-func ByBuildLogs(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldBuildLogs, opts...).ToFunc()
 }
 
 // ByCPU orders the results by the cpu field.
@@ -522,6 +523,20 @@ func ByIncompleteBuildLogs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOpti
 	}
 }
 
+// ByBuildLogChunksCount orders the results by build_log_chunks count.
+func ByBuildLogChunksCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newBuildLogChunksStep(), opts...)
+	}
+}
+
+// ByBuildLogChunks orders the results by build_log_chunks terms.
+func ByBuildLogChunks(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newBuildLogChunksStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByInvocationFilesCount orders the results by invocation_files count.
 func ByInvocationFilesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -638,6 +653,13 @@ func newIncompleteBuildLogsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(IncompleteBuildLogsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, IncompleteBuildLogsTable, IncompleteBuildLogsColumn),
+	)
+}
+func newBuildLogChunksStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(BuildLogChunksInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, BuildLogChunksTable, BuildLogChunksColumn),
 	)
 }
 func newInvocationFilesStep() *sqlgraph.Step {

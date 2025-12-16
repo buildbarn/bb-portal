@@ -13,6 +13,7 @@ go_library(
         "blob.go",
         "build.go",
         "buildgraphmetrics.go",
+        "buildlogchunk.go",
         "connectionmetadata.go",
         "cumulativemetrics.go",
         "evaluationstat.go",
