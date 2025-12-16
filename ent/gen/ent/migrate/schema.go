@@ -169,7 +169,6 @@ var (
 		{Name: "step_label", Type: field.TypeString, Nullable: true},
 		{Name: "user_email", Type: field.TypeString, Nullable: true},
 		{Name: "user_ldap", Type: field.TypeString, Nullable: true},
-		{Name: "build_logs", Type: field.TypeString, Nullable: true},
 		{Name: "cpu", Type: field.TypeString, Nullable: true},
 		{Name: "platform_name", Type: field.TypeString, Nullable: true},
 		{Name: "hostname", Type: field.TypeString, Nullable: true},
@@ -205,19 +204,19 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "bazel_invocations_authenticated_users_bazel_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[34]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[33]},
 				RefColumns: []*schema.Column{AuthenticatedUsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "bazel_invocations_builds_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[35]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[34]},
 				RefColumns: []*schema.Column{BuildsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "bazel_invocations_instance_names_bazel_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[36]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[35]},
 				RefColumns: []*schema.Column{InstanceNamesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -236,12 +235,12 @@ var (
 			{
 				Name:    "bazelinvocation_build_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[35]},
+				Columns: []*schema.Column{BazelInvocationsColumns[34]},
 			},
 			{
 				Name:    "bazelinvocation_instance_name_bazel_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[36]},
+				Columns: []*schema.Column{BazelInvocationsColumns[35]},
 			},
 		},
 	}
@@ -402,6 +401,36 @@ var (
 				Name:    "buildgraphmetrics_metrics_build_graph_metrics",
 				Unique:  false,
 				Columns: []*schema.Column{BuildGraphMetricsColumns[14]},
+			},
+		},
+	}
+	// BuildLogChunksColumns holds the columns for the "build_log_chunks" table.
+	BuildLogChunksColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "data", Type: field.TypeBytes},
+		{Name: "chunk_index", Type: field.TypeInt},
+		{Name: "first_line_index", Type: field.TypeInt64},
+		{Name: "last_line_index", Type: field.TypeInt64},
+		{Name: "bazel_invocation_build_log_chunks", Type: field.TypeInt},
+	}
+	// BuildLogChunksTable holds the schema information for the "build_log_chunks" table.
+	BuildLogChunksTable = &schema.Table{
+		Name:       "build_log_chunks",
+		Columns:    BuildLogChunksColumns,
+		PrimaryKey: []*schema.Column{BuildLogChunksColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "build_log_chunks_bazel_invocations_build_log_chunks",
+				Columns:    []*schema.Column{BuildLogChunksColumns[5]},
+				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "buildlogchunk_chunk_index_bazel_invocation_build_log_chunks",
+				Unique:  true,
+				Columns: []*schema.Column{BuildLogChunksColumns[2], BuildLogChunksColumns[5]},
 			},
 		},
 	}
@@ -1437,6 +1466,7 @@ var (
 		BlobsTable,
 		BuildsTable,
 		BuildGraphMetricsTable,
+		BuildLogChunksTable,
 		ConnectionMetadataTable,
 		CumulativeMetricsTable,
 		EvaluationStatsTable,
@@ -1488,6 +1518,7 @@ func init() {
 	BuildGraphMetricsTable.ForeignKeys[2].RefTable = EvaluationStatsTable
 	BuildGraphMetricsTable.ForeignKeys[3].RefTable = EvaluationStatsTable
 	BuildGraphMetricsTable.ForeignKeys[4].RefTable = MetricsTable
+	BuildLogChunksTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	ConnectionMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	CumulativeMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	EvaluationStatsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable

@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
@@ -208,26 +209,6 @@ func (biu *BazelInvocationUpdate) SetNillableUserLdap(s *string) *BazelInvocatio
 // ClearUserLdap clears the value of the "user_ldap" field.
 func (biu *BazelInvocationUpdate) ClearUserLdap() *BazelInvocationUpdate {
 	biu.mutation.ClearUserLdap()
-	return biu
-}
-
-// SetBuildLogs sets the "build_logs" field.
-func (biu *BazelInvocationUpdate) SetBuildLogs(s string) *BazelInvocationUpdate {
-	biu.mutation.SetBuildLogs(s)
-	return biu
-}
-
-// SetNillableBuildLogs sets the "build_logs" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableBuildLogs(s *string) *BazelInvocationUpdate {
-	if s != nil {
-		biu.SetBuildLogs(*s)
-	}
-	return biu
-}
-
-// ClearBuildLogs clears the value of the "build_logs" field.
-func (biu *BazelInvocationUpdate) ClearBuildLogs() *BazelInvocationUpdate {
-	biu.mutation.ClearBuildLogs()
 	return biu
 }
 
@@ -789,6 +770,21 @@ func (biu *BazelInvocationUpdate) AddIncompleteBuildLogs(i ...*IncompleteBuildLo
 	return biu.AddIncompleteBuildLogIDs(ids...)
 }
 
+// AddBuildLogChunkIDs adds the "build_log_chunks" edge to the BuildLogChunk entity by IDs.
+func (biu *BazelInvocationUpdate) AddBuildLogChunkIDs(ids ...int) *BazelInvocationUpdate {
+	biu.mutation.AddBuildLogChunkIDs(ids...)
+	return biu
+}
+
+// AddBuildLogChunks adds the "build_log_chunks" edges to the BuildLogChunk entity.
+func (biu *BazelInvocationUpdate) AddBuildLogChunks(b ...*BuildLogChunk) *BazelInvocationUpdate {
+	ids := make([]int, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return biu.AddBuildLogChunkIDs(ids...)
+}
+
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
 func (biu *BazelInvocationUpdate) AddInvocationFileIDs(ids ...int) *BazelInvocationUpdate {
 	biu.mutation.AddInvocationFileIDs(ids...)
@@ -979,6 +975,27 @@ func (biu *BazelInvocationUpdate) RemoveIncompleteBuildLogs(i ...*IncompleteBuil
 		ids[j] = i[j].ID
 	}
 	return biu.RemoveIncompleteBuildLogIDs(ids...)
+}
+
+// ClearBuildLogChunks clears all "build_log_chunks" edges to the BuildLogChunk entity.
+func (biu *BazelInvocationUpdate) ClearBuildLogChunks() *BazelInvocationUpdate {
+	biu.mutation.ClearBuildLogChunks()
+	return biu
+}
+
+// RemoveBuildLogChunkIDs removes the "build_log_chunks" edge to BuildLogChunk entities by IDs.
+func (biu *BazelInvocationUpdate) RemoveBuildLogChunkIDs(ids ...int) *BazelInvocationUpdate {
+	biu.mutation.RemoveBuildLogChunkIDs(ids...)
+	return biu
+}
+
+// RemoveBuildLogChunks removes "build_log_chunks" edges to BuildLogChunk entities.
+func (biu *BazelInvocationUpdate) RemoveBuildLogChunks(b ...*BuildLogChunk) *BazelInvocationUpdate {
+	ids := make([]int, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return biu.RemoveBuildLogChunkIDs(ids...)
 }
 
 // ClearInvocationFiles clears all "invocation_files" edges to the InvocationFiles entity.
@@ -1174,12 +1191,6 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.UserLdapCleared() {
 		_spec.ClearField(bazelinvocation.FieldUserLdap, field.TypeString)
-	}
-	if value, ok := biu.mutation.BuildLogs(); ok {
-		_spec.SetField(bazelinvocation.FieldBuildLogs, field.TypeString, value)
-	}
-	if biu.mutation.BuildLogsCleared() {
-		_spec.ClearField(bazelinvocation.FieldBuildLogs, field.TypeString)
 	}
 	if value, ok := biu.mutation.CPU(); ok {
 		_spec.SetField(bazelinvocation.FieldCPU, field.TypeString, value)
@@ -1623,6 +1634,51 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if biu.mutation.BuildLogChunksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.BuildLogChunksTable,
+			Columns: []string{bazelinvocation.BuildLogChunksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.RemovedBuildLogChunksIDs(); len(nodes) > 0 && !biu.mutation.BuildLogChunksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.BuildLogChunksTable,
+			Columns: []string{bazelinvocation.BuildLogChunksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.BuildLogChunksIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.BuildLogChunksTable,
+			Columns: []string{bazelinvocation.BuildLogChunksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if biu.mutation.InvocationFilesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -2019,26 +2075,6 @@ func (biuo *BazelInvocationUpdateOne) SetNillableUserLdap(s *string) *BazelInvoc
 // ClearUserLdap clears the value of the "user_ldap" field.
 func (biuo *BazelInvocationUpdateOne) ClearUserLdap() *BazelInvocationUpdateOne {
 	biuo.mutation.ClearUserLdap()
-	return biuo
-}
-
-// SetBuildLogs sets the "build_logs" field.
-func (biuo *BazelInvocationUpdateOne) SetBuildLogs(s string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetBuildLogs(s)
-	return biuo
-}
-
-// SetNillableBuildLogs sets the "build_logs" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableBuildLogs(s *string) *BazelInvocationUpdateOne {
-	if s != nil {
-		biuo.SetBuildLogs(*s)
-	}
-	return biuo
-}
-
-// ClearBuildLogs clears the value of the "build_logs" field.
-func (biuo *BazelInvocationUpdateOne) ClearBuildLogs() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearBuildLogs()
 	return biuo
 }
 
@@ -2600,6 +2636,21 @@ func (biuo *BazelInvocationUpdateOne) AddIncompleteBuildLogs(i ...*IncompleteBui
 	return biuo.AddIncompleteBuildLogIDs(ids...)
 }
 
+// AddBuildLogChunkIDs adds the "build_log_chunks" edge to the BuildLogChunk entity by IDs.
+func (biuo *BazelInvocationUpdateOne) AddBuildLogChunkIDs(ids ...int) *BazelInvocationUpdateOne {
+	biuo.mutation.AddBuildLogChunkIDs(ids...)
+	return biuo
+}
+
+// AddBuildLogChunks adds the "build_log_chunks" edges to the BuildLogChunk entity.
+func (biuo *BazelInvocationUpdateOne) AddBuildLogChunks(b ...*BuildLogChunk) *BazelInvocationUpdateOne {
+	ids := make([]int, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return biuo.AddBuildLogChunkIDs(ids...)
+}
+
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by IDs.
 func (biuo *BazelInvocationUpdateOne) AddInvocationFileIDs(ids ...int) *BazelInvocationUpdateOne {
 	biuo.mutation.AddInvocationFileIDs(ids...)
@@ -2790,6 +2841,27 @@ func (biuo *BazelInvocationUpdateOne) RemoveIncompleteBuildLogs(i ...*Incomplete
 		ids[j] = i[j].ID
 	}
 	return biuo.RemoveIncompleteBuildLogIDs(ids...)
+}
+
+// ClearBuildLogChunks clears all "build_log_chunks" edges to the BuildLogChunk entity.
+func (biuo *BazelInvocationUpdateOne) ClearBuildLogChunks() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearBuildLogChunks()
+	return biuo
+}
+
+// RemoveBuildLogChunkIDs removes the "build_log_chunks" edge to BuildLogChunk entities by IDs.
+func (biuo *BazelInvocationUpdateOne) RemoveBuildLogChunkIDs(ids ...int) *BazelInvocationUpdateOne {
+	biuo.mutation.RemoveBuildLogChunkIDs(ids...)
+	return biuo
+}
+
+// RemoveBuildLogChunks removes "build_log_chunks" edges to BuildLogChunk entities.
+func (biuo *BazelInvocationUpdateOne) RemoveBuildLogChunks(b ...*BuildLogChunk) *BazelInvocationUpdateOne {
+	ids := make([]int, len(b))
+	for i := range b {
+		ids[i] = b[i].ID
+	}
+	return biuo.RemoveBuildLogChunkIDs(ids...)
 }
 
 // ClearInvocationFiles clears all "invocation_files" edges to the InvocationFiles entity.
@@ -3015,12 +3087,6 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.UserLdapCleared() {
 		_spec.ClearField(bazelinvocation.FieldUserLdap, field.TypeString)
-	}
-	if value, ok := biuo.mutation.BuildLogs(); ok {
-		_spec.SetField(bazelinvocation.FieldBuildLogs, field.TypeString, value)
-	}
-	if biuo.mutation.BuildLogsCleared() {
-		_spec.ClearField(bazelinvocation.FieldBuildLogs, field.TypeString)
 	}
 	if value, ok := biuo.mutation.CPU(); ok {
 		_spec.SetField(bazelinvocation.FieldCPU, field.TypeString, value)
@@ -3457,6 +3523,51 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(incompletebuildlog.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biuo.mutation.BuildLogChunksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.BuildLogChunksTable,
+			Columns: []string{bazelinvocation.BuildLogChunksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.RemovedBuildLogChunksIDs(); len(nodes) > 0 && !biuo.mutation.BuildLogChunksCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.BuildLogChunksTable,
+			Columns: []string{bazelinvocation.BuildLogChunksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.BuildLogChunksIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.BuildLogChunksTable,
+			Columns: []string{bazelinvocation.BuildLogChunksColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(buildlogchunk.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

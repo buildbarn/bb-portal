@@ -34,6 +34,8 @@ type Tx struct {
 	Build *BuildClient
 	// BuildGraphMetrics is the client for interacting with the BuildGraphMetrics builders.
 	BuildGraphMetrics *BuildGraphMetricsClient
+	// BuildLogChunk is the client for interacting with the BuildLogChunk builders.
+	BuildLogChunk *BuildLogChunkClient
 	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
 	ConnectionMetadata *ConnectionMetadataClient
 	// CumulativeMetrics is the client for interacting with the CumulativeMetrics builders.
@@ -239,6 +241,7 @@ func (tx *Tx) init() {
 	tx.Blob = NewBlobClient(tx.config)
 	tx.Build = NewBuildClient(tx.config)
 	tx.BuildGraphMetrics = NewBuildGraphMetricsClient(tx.config)
+	tx.BuildLogChunk = NewBuildLogChunkClient(tx.config)
 	tx.ConnectionMetadata = NewConnectionMetadataClient(tx.config)
 	tx.CumulativeMetrics = NewCumulativeMetricsClient(tx.config)
 	tx.EvaluationStat = NewEvaluationStatClient(tx.config)

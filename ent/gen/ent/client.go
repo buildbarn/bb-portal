@@ -25,6 +25,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
@@ -86,6 +87,8 @@ type Client struct {
 	Build *BuildClient
 	// BuildGraphMetrics is the client for interacting with the BuildGraphMetrics builders.
 	BuildGraphMetrics *BuildGraphMetricsClient
+	// BuildLogChunk is the client for interacting with the BuildLogChunk builders.
+	BuildLogChunk *BuildLogChunkClient
 	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
 	ConnectionMetadata *ConnectionMetadataClient
 	// CumulativeMetrics is the client for interacting with the CumulativeMetrics builders.
@@ -173,6 +176,7 @@ func (c *Client) init() {
 	c.Blob = NewBlobClient(c.config)
 	c.Build = NewBuildClient(c.config)
 	c.BuildGraphMetrics = NewBuildGraphMetricsClient(c.config)
+	c.BuildLogChunk = NewBuildLogChunkClient(c.config)
 	c.ConnectionMetadata = NewConnectionMetadataClient(c.config)
 	c.CumulativeMetrics = NewCumulativeMetricsClient(c.config)
 	c.EvaluationStat = NewEvaluationStatClient(c.config)
@@ -307,6 +311,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Blob:                   NewBlobClient(cfg),
 		Build:                  NewBuildClient(cfg),
 		BuildGraphMetrics:      NewBuildGraphMetricsClient(cfg),
+		BuildLogChunk:          NewBuildLogChunkClient(cfg),
 		ConnectionMetadata:     NewConnectionMetadataClient(cfg),
 		CumulativeMetrics:      NewCumulativeMetricsClient(cfg),
 		EvaluationStat:         NewEvaluationStatClient(cfg),
@@ -368,6 +373,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Blob:                   NewBlobClient(cfg),
 		Build:                  NewBuildClient(cfg),
 		BuildGraphMetrics:      NewBuildGraphMetricsClient(cfg),
+		BuildLogChunk:          NewBuildLogChunkClient(cfg),
 		ConnectionMetadata:     NewConnectionMetadataClient(cfg),
 		CumulativeMetrics:      NewCumulativeMetricsClient(cfg),
 		EvaluationStat:         NewEvaluationStatClient(cfg),
@@ -431,15 +437,15 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
 		c.AuthenticatedUser, c.BazelInvocation, c.BazelInvocationProblem, c.Blob,
-		c.Build, c.BuildGraphMetrics, c.ConnectionMetadata, c.CumulativeMetrics,
-		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.GarbageMetrics,
-		c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles, c.InvocationTarget,
-		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics,
-		c.OutputGroup, c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage,
-		c.RunnerCount, c.SourceControl, c.SystemNetworkStats, c.Target,
-		c.TargetKindMapping, c.TargetMetrics, c.TestCollection, c.TestFile,
-		c.TestResultBES, c.TestSummary, c.TimingBreakdown, c.TimingChild,
-		c.TimingMetrics,
+		c.Build, c.BuildGraphMetrics, c.BuildLogChunk, c.ConnectionMetadata,
+		c.CumulativeMetrics, c.EvaluationStat, c.EventMetadata, c.ExectionInfo,
+		c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles,
+		c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail,
+		c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup, c.PackageLoadMetrics,
+		c.PackageMetrics, c.ResourceUsage, c.RunnerCount, c.SourceControl,
+		c.SystemNetworkStats, c.Target, c.TargetKindMapping, c.TargetMetrics,
+		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
+		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
 	} {
 		n.Use(hooks...)
 	}
@@ -451,15 +457,15 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
 		c.AuthenticatedUser, c.BazelInvocation, c.BazelInvocationProblem, c.Blob,
-		c.Build, c.BuildGraphMetrics, c.ConnectionMetadata, c.CumulativeMetrics,
-		c.EvaluationStat, c.EventMetadata, c.ExectionInfo, c.GarbageMetrics,
-		c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles, c.InvocationTarget,
-		c.MemoryMetrics, c.Metrics, c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics,
-		c.OutputGroup, c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage,
-		c.RunnerCount, c.SourceControl, c.SystemNetworkStats, c.Target,
-		c.TargetKindMapping, c.TargetMetrics, c.TestCollection, c.TestFile,
-		c.TestResultBES, c.TestSummary, c.TimingBreakdown, c.TimingChild,
-		c.TimingMetrics,
+		c.Build, c.BuildGraphMetrics, c.BuildLogChunk, c.ConnectionMetadata,
+		c.CumulativeMetrics, c.EvaluationStat, c.EventMetadata, c.ExectionInfo,
+		c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles,
+		c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail,
+		c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup, c.PackageLoadMetrics,
+		c.PackageMetrics, c.ResourceUsage, c.RunnerCount, c.SourceControl,
+		c.SystemNetworkStats, c.Target, c.TargetKindMapping, c.TargetMetrics,
+		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
+		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -488,6 +494,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Build.mutate(ctx, m)
 	case *BuildGraphMetricsMutation:
 		return c.BuildGraphMetrics.mutate(ctx, m)
+	case *BuildLogChunkMutation:
+		return c.BuildLogChunk.mutate(ctx, m)
 	case *ConnectionMetadataMutation:
 		return c.ConnectionMetadata.mutate(ctx, m)
 	case *CumulativeMetricsMutation:
@@ -1603,6 +1611,22 @@ func (c *BazelInvocationClient) QueryIncompleteBuildLogs(bi *BazelInvocation) *I
 	return query
 }
 
+// QueryBuildLogChunks queries the build_log_chunks edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryBuildLogChunks(bi *BazelInvocation) *BuildLogChunkQuery {
+	query := (&BuildLogChunkClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := bi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(buildlogchunk.Table, buildlogchunk.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.BuildLogChunksTable, bazelinvocation.BuildLogChunksColumn),
+		)
+		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryInvocationFiles queries the invocation_files edge of a BazelInvocation.
 func (c *BazelInvocationClient) QueryInvocationFiles(bi *BazelInvocation) *InvocationFilesQuery {
 	query := (&InvocationFilesClient{config: c.config}).Query()
@@ -2399,6 +2423,155 @@ func (c *BuildGraphMetricsClient) mutate(ctx context.Context, m *BuildGraphMetri
 		return (&BuildGraphMetricsDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown BuildGraphMetrics mutation op: %q", m.Op())
+	}
+}
+
+// BuildLogChunkClient is a client for the BuildLogChunk schema.
+type BuildLogChunkClient struct {
+	config
+}
+
+// NewBuildLogChunkClient returns a client for the BuildLogChunk from the given config.
+func NewBuildLogChunkClient(c config) *BuildLogChunkClient {
+	return &BuildLogChunkClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `buildlogchunk.Hooks(f(g(h())))`.
+func (c *BuildLogChunkClient) Use(hooks ...Hook) {
+	c.hooks.BuildLogChunk = append(c.hooks.BuildLogChunk, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `buildlogchunk.Intercept(f(g(h())))`.
+func (c *BuildLogChunkClient) Intercept(interceptors ...Interceptor) {
+	c.inters.BuildLogChunk = append(c.inters.BuildLogChunk, interceptors...)
+}
+
+// Create returns a builder for creating a BuildLogChunk entity.
+func (c *BuildLogChunkClient) Create() *BuildLogChunkCreate {
+	mutation := newBuildLogChunkMutation(c.config, OpCreate)
+	return &BuildLogChunkCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of BuildLogChunk entities.
+func (c *BuildLogChunkClient) CreateBulk(builders ...*BuildLogChunkCreate) *BuildLogChunkCreateBulk {
+	return &BuildLogChunkCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *BuildLogChunkClient) MapCreateBulk(slice any, setFunc func(*BuildLogChunkCreate, int)) *BuildLogChunkCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &BuildLogChunkCreateBulk{err: fmt.Errorf("calling to BuildLogChunkClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*BuildLogChunkCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &BuildLogChunkCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for BuildLogChunk.
+func (c *BuildLogChunkClient) Update() *BuildLogChunkUpdate {
+	mutation := newBuildLogChunkMutation(c.config, OpUpdate)
+	return &BuildLogChunkUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *BuildLogChunkClient) UpdateOne(blc *BuildLogChunk) *BuildLogChunkUpdateOne {
+	mutation := newBuildLogChunkMutation(c.config, OpUpdateOne, withBuildLogChunk(blc))
+	return &BuildLogChunkUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *BuildLogChunkClient) UpdateOneID(id int) *BuildLogChunkUpdateOne {
+	mutation := newBuildLogChunkMutation(c.config, OpUpdateOne, withBuildLogChunkID(id))
+	return &BuildLogChunkUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for BuildLogChunk.
+func (c *BuildLogChunkClient) Delete() *BuildLogChunkDelete {
+	mutation := newBuildLogChunkMutation(c.config, OpDelete)
+	return &BuildLogChunkDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *BuildLogChunkClient) DeleteOne(blc *BuildLogChunk) *BuildLogChunkDeleteOne {
+	return c.DeleteOneID(blc.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *BuildLogChunkClient) DeleteOneID(id int) *BuildLogChunkDeleteOne {
+	builder := c.Delete().Where(buildlogchunk.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &BuildLogChunkDeleteOne{builder}
+}
+
+// Query returns a query builder for BuildLogChunk.
+func (c *BuildLogChunkClient) Query() *BuildLogChunkQuery {
+	return &BuildLogChunkQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeBuildLogChunk},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a BuildLogChunk entity by its id.
+func (c *BuildLogChunkClient) Get(ctx context.Context, id int) (*BuildLogChunk, error) {
+	return c.Query().Where(buildlogchunk.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *BuildLogChunkClient) GetX(ctx context.Context, id int) *BuildLogChunk {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a BuildLogChunk.
+func (c *BuildLogChunkClient) QueryBazelInvocation(blc *BuildLogChunk) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := blc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(buildlogchunk.Table, buildlogchunk.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, buildlogchunk.BazelInvocationTable, buildlogchunk.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(blc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *BuildLogChunkClient) Hooks() []Hook {
+	return c.hooks.BuildLogChunk
+}
+
+// Interceptors returns the client interceptors.
+func (c *BuildLogChunkClient) Interceptors() []Interceptor {
+	return c.inters.BuildLogChunk
+}
+
+func (c *BuildLogChunkClient) mutate(ctx context.Context, m *BuildLogChunkMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&BuildLogChunkCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&BuildLogChunkUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&BuildLogChunkUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&BuildLogChunkDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown BuildLogChunk mutation op: %q", m.Op())
 	}
 }
 
@@ -7672,26 +7845,26 @@ type (
 	hooks struct {
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, BazelInvocationProblem, Blob, Build,
-		BuildGraphMetrics, ConnectionMetadata, CumulativeMetrics, EvaluationStat,
-		EventMetadata, ExectionInfo, GarbageMetrics, IncompleteBuildLog, InstanceName,
-		InvocationFiles, InvocationTarget, MemoryMetrics, Metrics, MissDetail,
-		NamedSetOfFiles, NetworkMetrics, OutputGroup, PackageLoadMetrics,
-		PackageMetrics, ResourceUsage, RunnerCount, SourceControl, SystemNetworkStats,
-		Target, TargetKindMapping, TargetMetrics, TestCollection, TestFile,
-		TestResultBES, TestSummary, TimingBreakdown, TimingChild,
-		TimingMetrics []ent.Hook
+		BuildGraphMetrics, BuildLogChunk, ConnectionMetadata, CumulativeMetrics,
+		EvaluationStat, EventMetadata, ExectionInfo, GarbageMetrics,
+		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTarget,
+		MemoryMetrics, Metrics, MissDetail, NamedSetOfFiles, NetworkMetrics,
+		OutputGroup, PackageLoadMetrics, PackageMetrics, ResourceUsage, RunnerCount,
+		SourceControl, SystemNetworkStats, Target, TargetKindMapping, TargetMetrics,
+		TestCollection, TestFile, TestResultBES, TestSummary, TimingBreakdown,
+		TimingChild, TimingMetrics []ent.Hook
 	}
 	inters struct {
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, BazelInvocationProblem, Blob, Build,
-		BuildGraphMetrics, ConnectionMetadata, CumulativeMetrics, EvaluationStat,
-		EventMetadata, ExectionInfo, GarbageMetrics, IncompleteBuildLog, InstanceName,
-		InvocationFiles, InvocationTarget, MemoryMetrics, Metrics, MissDetail,
-		NamedSetOfFiles, NetworkMetrics, OutputGroup, PackageLoadMetrics,
-		PackageMetrics, ResourceUsage, RunnerCount, SourceControl, SystemNetworkStats,
-		Target, TargetKindMapping, TargetMetrics, TestCollection, TestFile,
-		TestResultBES, TestSummary, TimingBreakdown, TimingChild,
-		TimingMetrics []ent.Interceptor
+		BuildGraphMetrics, BuildLogChunk, ConnectionMetadata, CumulativeMetrics,
+		EvaluationStat, EventMetadata, ExectionInfo, GarbageMetrics,
+		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTarget,
+		MemoryMetrics, Metrics, MissDetail, NamedSetOfFiles, NetworkMetrics,
+		OutputGroup, PackageLoadMetrics, PackageMetrics, ResourceUsage, RunnerCount,
+		SourceControl, SystemNetworkStats, Target, TargetKindMapping, TargetMetrics,
+		TestCollection, TestFile, TestResultBES, TestSummary, TimingBreakdown,
+		TimingChild, TimingMetrics []ent.Interceptor
 	}
 )
 

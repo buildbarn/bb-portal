@@ -218,7 +218,6 @@ type ComplexityRoot struct {
 		BazelVersion          func(childComplexity int) int
 		BepCompleted          func(childComplexity int) int
 		Build                 func(childComplexity int) int
-		BuildLogs             func(childComplexity int) int
 		CPU                   func(childComplexity int) int
 		ChangeNumber          func(childComplexity int) int
 		ConfigurationMnemonic func(childComplexity int) int
@@ -763,7 +762,6 @@ type BazelInvocationResolver interface {
 	User(ctx context.Context, obj *ent.BazelInvocation) (*model.User, error)
 	Problems(ctx context.Context, obj *ent.BazelInvocation) ([]model.Problem, error)
 	Profile(ctx context.Context, obj *ent.BazelInvocation) (*model.Profile, error)
-	BuildLogs(ctx context.Context, obj *ent.BazelInvocation) (*string, error)
 }
 type BazelInvocationProblemResolver interface {
 	ID(ctx context.Context, obj *ent.BazelInvocationProblem) (string, error)
@@ -1715,13 +1713,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.BazelInvocation.Build(childComplexity), true
-
-	case "BazelInvocation.buildLogs":
-		if e.complexity.BazelInvocation.BuildLogs == nil {
-			break
-		}
-
-		return e.complexity.BazelInvocation.BuildLogs(childComplexity), true
 
 	case "BazelInvocation.cpu":
 		if e.complexity.BazelInvocation.CPU == nil {
@@ -10016,47 +10007,6 @@ func (ec *executionContext) fieldContext_BazelInvocation_profile(_ context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _BazelInvocation_buildLogs(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocation) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.BazelInvocation().BuildLogs(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_BazelInvocation_buildLogs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "BazelInvocation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _BazelInvocationConnection_edges(ctx context.Context, field graphql.CollectedField, obj *ent.BazelInvocationConnection) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_BazelInvocationConnection_edges(ctx, field)
 	if err != nil {
@@ -10300,8 +10250,6 @@ func (ec *executionContext) fieldContext_BazelInvocationEdge_node(_ context.Cont
 				return ec.fieldContext_BazelInvocation_problems(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
-			case "buildLogs":
-				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 		},
@@ -10583,8 +10531,6 @@ func (ec *executionContext) fieldContext_BazelInvocationProblem_bazelInvocation(
 				return ec.fieldContext_BazelInvocation_problems(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
-			case "buildLogs":
-				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 		},
@@ -11454,8 +11400,6 @@ func (ec *executionContext) fieldContext_Build_invocations(_ context.Context, fi
 				return ec.fieldContext_BazelInvocation_problems(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
-			case "buildLogs":
-				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 		},
@@ -13621,8 +13565,6 @@ func (ec *executionContext) fieldContext_InstanceName_bazelInvocations(_ context
 				return ec.fieldContext_BazelInvocation_problems(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
-			case "buildLogs":
-				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 		},
@@ -14149,8 +14091,6 @@ func (ec *executionContext) fieldContext_InvocationFiles_bazelInvocation(_ conte
 				return ec.fieldContext_BazelInvocation_problems(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
-			case "buildLogs":
-				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 		},
@@ -14596,8 +14536,6 @@ func (ec *executionContext) fieldContext_InvocationTarget_bazelInvocation(_ cont
 				return ec.fieldContext_BazelInvocation_problems(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
-			case "buildLogs":
-				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 		},
@@ -15342,8 +15280,6 @@ func (ec *executionContext) fieldContext_Metrics_bazelInvocation(_ context.Conte
 				return ec.fieldContext_BazelInvocation_problems(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
-			case "buildLogs":
-				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 		},
@@ -18197,8 +18133,6 @@ func (ec *executionContext) fieldContext_Query_bazelInvocation(ctx context.Conte
 				return ec.fieldContext_BazelInvocation_problems(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
-			case "buildLogs":
-				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 		},
@@ -20059,8 +19993,6 @@ func (ec *executionContext) fieldContext_SourceControl_bazelInvocation(_ context
 				return ec.fieldContext_BazelInvocation_problems(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
-			case "buildLogs":
-				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 		},
@@ -22112,8 +22044,6 @@ func (ec *executionContext) fieldContext_TestCollection_bazelInvocation(_ contex
 				return ec.fieldContext_BazelInvocation_problems(ctx, field)
 			case "profile":
 				return ec.fieldContext_BazelInvocation_profile(ctx, field)
-			case "buildLogs":
-				return ec.fieldContext_BazelInvocation_buildLogs(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BazelInvocation", field.Name)
 		},
@@ -30925,7 +30855,7 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "invocationID", "invocationIDNEQ", "invocationIDIn", "invocationIDNotIn", "invocationIDGT", "invocationIDGTE", "invocationIDLT", "invocationIDLTE", "startedAt", "startedAtNEQ", "startedAtIn", "startedAtNotIn", "startedAtGT", "startedAtGTE", "startedAtLT", "startedAtLTE", "startedAtIsNil", "startedAtNotNil", "endedAt", "endedAtNEQ", "endedAtIn", "endedAtNotIn", "endedAtGT", "endedAtGTE", "endedAtLT", "endedAtLTE", "endedAtIsNil", "endedAtNotNil", "changeNumber", "changeNumberNEQ", "changeNumberIn", "changeNumberNotIn", "changeNumberGT", "changeNumberGTE", "changeNumberLT", "changeNumberLTE", "changeNumberIsNil", "changeNumberNotNil", "patchsetNumber", "patchsetNumberNEQ", "patchsetNumberIn", "patchsetNumberNotIn", "patchsetNumberGT", "patchsetNumberGTE", "patchsetNumberLT", "patchsetNumberLTE", "patchsetNumberIsNil", "patchsetNumberNotNil", "bepCompleted", "bepCompletedNEQ", "stepLabel", "stepLabelNEQ", "stepLabelIn", "stepLabelNotIn", "stepLabelGT", "stepLabelGTE", "stepLabelLT", "stepLabelLTE", "stepLabelContains", "stepLabelHasPrefix", "stepLabelHasSuffix", "stepLabelIsNil", "stepLabelNotNil", "stepLabelEqualFold", "stepLabelContainsFold", "userEmail", "userEmailNEQ", "userEmailIn", "userEmailNotIn", "userEmailGT", "userEmailGTE", "userEmailLT", "userEmailLTE", "userEmailContains", "userEmailHasPrefix", "userEmailHasSuffix", "userEmailIsNil", "userEmailNotNil", "userEmailEqualFold", "userEmailContainsFold", "userLdap", "userLdapNEQ", "userLdapIn", "userLdapNotIn", "userLdapGT", "userLdapGTE", "userLdapLT", "userLdapLTE", "userLdapContains", "userLdapHasPrefix", "userLdapHasSuffix", "userLdapIsNil", "userLdapNotNil", "userLdapEqualFold", "userLdapContainsFold", "buildLogs", "buildLogsNEQ", "buildLogsIn", "buildLogsNotIn", "buildLogsGT", "buildLogsGTE", "buildLogsLT", "buildLogsLTE", "buildLogsContains", "buildLogsHasPrefix", "buildLogsHasSuffix", "buildLogsIsNil", "buildLogsNotNil", "buildLogsEqualFold", "buildLogsContainsFold", "cpu", "cpuNEQ", "cpuIn", "cpuNotIn", "cpuGT", "cpuGTE", "cpuLT", "cpuLTE", "cpuContains", "cpuHasPrefix", "cpuHasSuffix", "cpuIsNil", "cpuNotNil", "cpuEqualFold", "cpuContainsFold", "platformName", "platformNameNEQ", "platformNameIn", "platformNameNotIn", "platformNameGT", "platformNameGTE", "platformNameLT", "platformNameLTE", "platformNameContains", "platformNameHasPrefix", "platformNameHasSuffix", "platformNameIsNil", "platformNameNotNil", "platformNameEqualFold", "platformNameContainsFold", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "isCiWorker", "isCiWorkerNEQ", "isCiWorkerIsNil", "isCiWorkerNotNil", "configurationMnemonic", "configurationMnemonicNEQ", "configurationMnemonicIn", "configurationMnemonicNotIn", "configurationMnemonicGT", "configurationMnemonicGTE", "configurationMnemonicLT", "configurationMnemonicLTE", "configurationMnemonicContains", "configurationMnemonicHasPrefix", "configurationMnemonicHasSuffix", "configurationMnemonicIsNil", "configurationMnemonicNotNil", "configurationMnemonicEqualFold", "configurationMnemonicContainsFold", "numFetches", "numFetchesNEQ", "numFetchesIn", "numFetchesNotIn", "numFetchesGT", "numFetchesGTE", "numFetchesLT", "numFetchesLTE", "numFetchesIsNil", "numFetchesNotNil", "profileName", "profileNameNEQ", "profileNameIn", "profileNameNotIn", "profileNameGT", "profileNameGTE", "profileNameLT", "profileNameLTE", "profileNameContains", "profileNameHasPrefix", "profileNameHasSuffix", "profileNameIsNil", "profileNameNotNil", "profileNameEqualFold", "profileNameContainsFold", "bazelVersion", "bazelVersionNEQ", "bazelVersionIn", "bazelVersionNotIn", "bazelVersionGT", "bazelVersionGTE", "bazelVersionLT", "bazelVersionLTE", "bazelVersionContains", "bazelVersionHasPrefix", "bazelVersionHasSuffix", "bazelVersionIsNil", "bazelVersionNotNil", "bazelVersionEqualFold", "bazelVersionContainsFold", "exitCodeName", "exitCodeNameNEQ", "exitCodeNameIn", "exitCodeNameNotIn", "exitCodeNameGT", "exitCodeNameGTE", "exitCodeNameLT", "exitCodeNameLTE", "exitCodeNameContains", "exitCodeNameHasPrefix", "exitCodeNameHasSuffix", "exitCodeNameIsNil", "exitCodeNameNotNil", "exitCodeNameEqualFold", "exitCodeNameContainsFold", "exitCodeCode", "exitCodeCodeNEQ", "exitCodeCodeIn", "exitCodeCodeNotIn", "exitCodeCodeGT", "exitCodeCodeGTE", "exitCodeCodeLT", "exitCodeCodeLTE", "exitCodeCodeIsNil", "exitCodeCodeNotNil", "hasInstanceName", "hasInstanceNameWith", "hasBuild", "hasBuildWith", "hasAuthenticatedUser", "hasAuthenticatedUserWith", "hasProblems", "hasProblemsWith", "hasMetrics", "hasMetricsWith", "hasInvocationFiles", "hasInvocationFilesWith", "hasTestCollection", "hasTestCollectionWith", "hasInvocationTargets", "hasInvocationTargetsWith", "hasSourceControl", "hasSourceControlWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "invocationID", "invocationIDNEQ", "invocationIDIn", "invocationIDNotIn", "invocationIDGT", "invocationIDGTE", "invocationIDLT", "invocationIDLTE", "startedAt", "startedAtNEQ", "startedAtIn", "startedAtNotIn", "startedAtGT", "startedAtGTE", "startedAtLT", "startedAtLTE", "startedAtIsNil", "startedAtNotNil", "endedAt", "endedAtNEQ", "endedAtIn", "endedAtNotIn", "endedAtGT", "endedAtGTE", "endedAtLT", "endedAtLTE", "endedAtIsNil", "endedAtNotNil", "changeNumber", "changeNumberNEQ", "changeNumberIn", "changeNumberNotIn", "changeNumberGT", "changeNumberGTE", "changeNumberLT", "changeNumberLTE", "changeNumberIsNil", "changeNumberNotNil", "patchsetNumber", "patchsetNumberNEQ", "patchsetNumberIn", "patchsetNumberNotIn", "patchsetNumberGT", "patchsetNumberGTE", "patchsetNumberLT", "patchsetNumberLTE", "patchsetNumberIsNil", "patchsetNumberNotNil", "bepCompleted", "bepCompletedNEQ", "stepLabel", "stepLabelNEQ", "stepLabelIn", "stepLabelNotIn", "stepLabelGT", "stepLabelGTE", "stepLabelLT", "stepLabelLTE", "stepLabelContains", "stepLabelHasPrefix", "stepLabelHasSuffix", "stepLabelIsNil", "stepLabelNotNil", "stepLabelEqualFold", "stepLabelContainsFold", "userEmail", "userEmailNEQ", "userEmailIn", "userEmailNotIn", "userEmailGT", "userEmailGTE", "userEmailLT", "userEmailLTE", "userEmailContains", "userEmailHasPrefix", "userEmailHasSuffix", "userEmailIsNil", "userEmailNotNil", "userEmailEqualFold", "userEmailContainsFold", "userLdap", "userLdapNEQ", "userLdapIn", "userLdapNotIn", "userLdapGT", "userLdapGTE", "userLdapLT", "userLdapLTE", "userLdapContains", "userLdapHasPrefix", "userLdapHasSuffix", "userLdapIsNil", "userLdapNotNil", "userLdapEqualFold", "userLdapContainsFold", "cpu", "cpuNEQ", "cpuIn", "cpuNotIn", "cpuGT", "cpuGTE", "cpuLT", "cpuLTE", "cpuContains", "cpuHasPrefix", "cpuHasSuffix", "cpuIsNil", "cpuNotNil", "cpuEqualFold", "cpuContainsFold", "platformName", "platformNameNEQ", "platformNameIn", "platformNameNotIn", "platformNameGT", "platformNameGTE", "platformNameLT", "platformNameLTE", "platformNameContains", "platformNameHasPrefix", "platformNameHasSuffix", "platformNameIsNil", "platformNameNotNil", "platformNameEqualFold", "platformNameContainsFold", "hostname", "hostnameNEQ", "hostnameIn", "hostnameNotIn", "hostnameGT", "hostnameGTE", "hostnameLT", "hostnameLTE", "hostnameContains", "hostnameHasPrefix", "hostnameHasSuffix", "hostnameIsNil", "hostnameNotNil", "hostnameEqualFold", "hostnameContainsFold", "isCiWorker", "isCiWorkerNEQ", "isCiWorkerIsNil", "isCiWorkerNotNil", "configurationMnemonic", "configurationMnemonicNEQ", "configurationMnemonicIn", "configurationMnemonicNotIn", "configurationMnemonicGT", "configurationMnemonicGTE", "configurationMnemonicLT", "configurationMnemonicLTE", "configurationMnemonicContains", "configurationMnemonicHasPrefix", "configurationMnemonicHasSuffix", "configurationMnemonicIsNil", "configurationMnemonicNotNil", "configurationMnemonicEqualFold", "configurationMnemonicContainsFold", "numFetches", "numFetchesNEQ", "numFetchesIn", "numFetchesNotIn", "numFetchesGT", "numFetchesGTE", "numFetchesLT", "numFetchesLTE", "numFetchesIsNil", "numFetchesNotNil", "profileName", "profileNameNEQ", "profileNameIn", "profileNameNotIn", "profileNameGT", "profileNameGTE", "profileNameLT", "profileNameLTE", "profileNameContains", "profileNameHasPrefix", "profileNameHasSuffix", "profileNameIsNil", "profileNameNotNil", "profileNameEqualFold", "profileNameContainsFold", "bazelVersion", "bazelVersionNEQ", "bazelVersionIn", "bazelVersionNotIn", "bazelVersionGT", "bazelVersionGTE", "bazelVersionLT", "bazelVersionLTE", "bazelVersionContains", "bazelVersionHasPrefix", "bazelVersionHasSuffix", "bazelVersionIsNil", "bazelVersionNotNil", "bazelVersionEqualFold", "bazelVersionContainsFold", "exitCodeName", "exitCodeNameNEQ", "exitCodeNameIn", "exitCodeNameNotIn", "exitCodeNameGT", "exitCodeNameGTE", "exitCodeNameLT", "exitCodeNameLTE", "exitCodeNameContains", "exitCodeNameHasPrefix", "exitCodeNameHasSuffix", "exitCodeNameIsNil", "exitCodeNameNotNil", "exitCodeNameEqualFold", "exitCodeNameContainsFold", "exitCodeCode", "exitCodeCodeNEQ", "exitCodeCodeIn", "exitCodeCodeNotIn", "exitCodeCodeGT", "exitCodeCodeGTE", "exitCodeCodeLT", "exitCodeCodeLTE", "exitCodeCodeIsNil", "exitCodeCodeNotNil", "hasInstanceName", "hasInstanceNameWith", "hasBuild", "hasBuildWith", "hasAuthenticatedUser", "hasAuthenticatedUserWith", "hasProblems", "hasProblemsWith", "hasMetrics", "hasMetricsWith", "hasInvocationFiles", "hasInvocationFilesWith", "hasTestCollection", "hasTestCollectionWith", "hasInvocationTargets", "hasInvocationTargetsWith", "hasSourceControl", "hasSourceControlWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -31690,111 +31620,6 @@ func (ec *executionContext) unmarshalInputBazelInvocationWhereInput(ctx context.
 				return it, err
 			}
 			it.UserLdapContainsFold = data
-		case "buildLogs":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogs"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogs = data
-		case "buildLogsNEQ":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsNEQ"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsNEQ = data
-		case "buildLogsIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsIn = data
-		case "buildLogsNotIn":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsNotIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsNotIn = data
-		case "buildLogsGT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsGT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsGT = data
-		case "buildLogsGTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsGTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsGTE = data
-		case "buildLogsLT":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsLT"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsLT = data
-		case "buildLogsLTE":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsLTE"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsLTE = data
-		case "buildLogsContains":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsContains"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsContains = data
-		case "buildLogsHasPrefix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsHasPrefix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsHasPrefix = data
-		case "buildLogsHasSuffix":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsHasSuffix"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsHasSuffix = data
-		case "buildLogsIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsIsNil = data
-		case "buildLogsNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsNotNil = data
-		case "buildLogsEqualFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsEqualFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsEqualFold = data
-		case "buildLogsContainsFold":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("buildLogsContainsFold"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.BuildLogsContainsFold = data
 		case "cpu":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cpu"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -49138,39 +48963,6 @@ func (ec *executionContext) _BazelInvocation(ctx context.Context, sel ast.Select
 					}
 				}()
 				res = ec._BazelInvocation_profile(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "buildLogs":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._BazelInvocation_buildLogs(ctx, field, obj)
 				return res
 			}
 

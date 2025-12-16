@@ -10,6 +10,8 @@ go_library(
     visibility = ["//:__subpackages__"],
     deps = [
         "//ent/gen/ent",
+        "//ent/gen/ent/bazelinvocation",
+        "//ent/gen/ent/incompletebuildlog",
         "//internal/database",
         "//internal/database/buildeventrecorder",
         "//internal/database/dbauthservice",
@@ -23,6 +25,7 @@ go_library(
         "@com_github_buildbarn_bb_storage//pkg/grpc",
         "@com_github_buildbarn_bb_storage//pkg/program",
         "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_google_uuid//:uuid",
         "@io_opentelemetry_go_otel_trace//:trace",
         "@org_golang_google_genproto//googleapis/devtools/build/v1:build",
         "@org_golang_google_grpc//codes",

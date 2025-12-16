@@ -42,8 +42,6 @@ type BazelInvocation struct {
 	UserEmail string `json:"user_email,omitempty"`
 	// UserLdap holds the value of the "user_ldap" field.
 	UserLdap string `json:"user_ldap,omitempty"`
-	// BuildLogs holds the value of the "build_logs" field.
-	BuildLogs string `json:"build_logs,omitempty"`
 	// CPU holds the value of the "cpu" field.
 	CPU string `json:"cpu,omitempty"`
 	// PlatformName holds the value of the "platform_name" field.
@@ -117,6 +115,8 @@ type BazelInvocationEdges struct {
 	Metrics *Metrics `json:"metrics,omitempty"`
 	// IncompleteBuildLogs holds the value of the incomplete_build_logs edge.
 	IncompleteBuildLogs []*IncompleteBuildLog `json:"incomplete_build_logs,omitempty"`
+	// BuildLogChunks holds the value of the build_log_chunks edge.
+	BuildLogChunks []*BuildLogChunk `json:"build_log_chunks,omitempty"`
 	// InvocationFiles holds the value of the invocation_files edge.
 	InvocationFiles []*InvocationFiles `json:"invocation_files,omitempty"`
 	// TestCollection holds the value of the test_collection edge.
@@ -129,7 +129,7 @@ type BazelInvocationEdges struct {
 	SourceControl *SourceControl `json:"source_control,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [13]bool
+	loadedTypes [14]bool
 	// totalCount holds the count of the edges above.
 	totalCount [8]map[string]int
 
@@ -137,6 +137,7 @@ type BazelInvocationEdges struct {
 	namedConnectionMetadata  map[string][]*ConnectionMetadata
 	namedProblems            map[string][]*BazelInvocationProblem
 	namedIncompleteBuildLogs map[string][]*IncompleteBuildLog
+	namedBuildLogChunks      map[string][]*BuildLogChunk
 	namedInvocationFiles     map[string][]*InvocationFiles
 	namedTestCollection      map[string][]*TestCollection
 	namedInvocationTargets   map[string][]*InvocationTarget
@@ -223,10 +224,19 @@ func (e BazelInvocationEdges) IncompleteBuildLogsOrErr() ([]*IncompleteBuildLog,
 	return nil, &NotLoadedError{edge: "incomplete_build_logs"}
 }
 
+// BuildLogChunksOrErr returns the BuildLogChunks value or an error if the edge
+// was not loaded in eager-loading.
+func (e BazelInvocationEdges) BuildLogChunksOrErr() ([]*BuildLogChunk, error) {
+	if e.loadedTypes[8] {
+		return e.BuildLogChunks, nil
+	}
+	return nil, &NotLoadedError{edge: "build_log_chunks"}
+}
+
 // InvocationFilesOrErr returns the InvocationFiles value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) InvocationFilesOrErr() ([]*InvocationFiles, error) {
-	if e.loadedTypes[8] {
+	if e.loadedTypes[9] {
 		return e.InvocationFiles, nil
 	}
 	return nil, &NotLoadedError{edge: "invocation_files"}
@@ -235,7 +245,7 @@ func (e BazelInvocationEdges) InvocationFilesOrErr() ([]*InvocationFiles, error)
 // TestCollectionOrErr returns the TestCollection value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[10] {
 		return e.TestCollection, nil
 	}
 	return nil, &NotLoadedError{edge: "test_collection"}
@@ -244,7 +254,7 @@ func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
 // InvocationTargetsOrErr returns the InvocationTargets value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, error) {
-	if e.loadedTypes[10] {
+	if e.loadedTypes[11] {
 		return e.InvocationTargets, nil
 	}
 	return nil, &NotLoadedError{edge: "invocation_targets"}
@@ -253,7 +263,7 @@ func (e BazelInvocationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, err
 // TargetKindMappingsOrErr returns the TargetKindMappings value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, error) {
-	if e.loadedTypes[11] {
+	if e.loadedTypes[12] {
 		return e.TargetKindMappings, nil
 	}
 	return nil, &NotLoadedError{edge: "target_kind_mappings"}
@@ -264,7 +274,7 @@ func (e BazelInvocationEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, e
 func (e BazelInvocationEdges) SourceControlOrErr() (*SourceControl, error) {
 	if e.SourceControl != nil {
 		return e.SourceControl, nil
-	} else if e.loadedTypes[12] {
+	} else if e.loadedTypes[13] {
 		return nil, &NotFoundError{label: sourcecontrol.Label}
 	}
 	return nil, &NotLoadedError{edge: "source_control"}
@@ -281,7 +291,7 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber, bazelinvocation.FieldNumFetches, bazelinvocation.FieldExitCodeCode:
 			values[i] = new(sql.NullInt64)
-		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldBuildLogs, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldHostname, bazelinvocation.FieldConfigurationMnemonic, bazelinvocation.FieldProfileName, bazelinvocation.FieldBazelVersion, bazelinvocation.FieldExitCodeName, bazelinvocation.FieldCommandLineCommand, bazelinvocation.FieldCommandLineExecutable, bazelinvocation.FieldCommandLineResidual:
+		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldCPU, bazelinvocation.FieldPlatformName, bazelinvocation.FieldHostname, bazelinvocation.FieldConfigurationMnemonic, bazelinvocation.FieldProfileName, bazelinvocation.FieldBazelVersion, bazelinvocation.FieldExitCodeName, bazelinvocation.FieldCommandLineCommand, bazelinvocation.FieldCommandLineExecutable, bazelinvocation.FieldCommandLineResidual:
 			values[i] = new(sql.NullString)
 		case bazelinvocation.FieldStartedAt, bazelinvocation.FieldEndedAt:
 			values[i] = new(sql.NullTime)
@@ -368,12 +378,6 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field user_ldap", values[i])
 			} else if value.Valid {
 				bi.UserLdap = value.String
-			}
-		case bazelinvocation.FieldBuildLogs:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field build_logs", values[i])
-			} else if value.Valid {
-				bi.BuildLogs = value.String
 			}
 		case bazelinvocation.FieldCPU:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -595,6 +599,11 @@ func (bi *BazelInvocation) QueryIncompleteBuildLogs() *IncompleteBuildLogQuery {
 	return NewBazelInvocationClient(bi.config).QueryIncompleteBuildLogs(bi)
 }
 
+// QueryBuildLogChunks queries the "build_log_chunks" edge of the BazelInvocation entity.
+func (bi *BazelInvocation) QueryBuildLogChunks() *BuildLogChunkQuery {
+	return NewBazelInvocationClient(bi.config).QueryBuildLogChunks(bi)
+}
+
 // QueryInvocationFiles queries the "invocation_files" edge of the BazelInvocation entity.
 func (bi *BazelInvocation) QueryInvocationFiles() *InvocationFilesQuery {
 	return NewBazelInvocationClient(bi.config).QueryInvocationFiles(bi)
@@ -671,9 +680,6 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("user_ldap=")
 	builder.WriteString(bi.UserLdap)
-	builder.WriteString(", ")
-	builder.WriteString("build_logs=")
-	builder.WriteString(bi.BuildLogs)
 	builder.WriteString(", ")
 	builder.WriteString("cpu=")
 	builder.WriteString(bi.CPU)
@@ -840,6 +846,30 @@ func (bi *BazelInvocation) appendNamedIncompleteBuildLogs(name string, edges ...
 		bi.Edges.namedIncompleteBuildLogs[name] = []*IncompleteBuildLog{}
 	} else {
 		bi.Edges.namedIncompleteBuildLogs[name] = append(bi.Edges.namedIncompleteBuildLogs[name], edges...)
+	}
+}
+
+// NamedBuildLogChunks returns the BuildLogChunks named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (bi *BazelInvocation) NamedBuildLogChunks(name string) ([]*BuildLogChunk, error) {
+	if bi.Edges.namedBuildLogChunks == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := bi.Edges.namedBuildLogChunks[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (bi *BazelInvocation) appendNamedBuildLogChunks(name string, edges ...*BuildLogChunk) {
+	if bi.Edges.namedBuildLogChunks == nil {
+		bi.Edges.namedBuildLogChunks = make(map[string][]*BuildLogChunk)
+	}
+	if len(edges) == 0 {
+		bi.Edges.namedBuildLogChunks[name] = []*BuildLogChunk{}
+	} else {
+		bi.Edges.namedBuildLogChunks[name] = append(bi.Edges.namedBuildLogChunks[name], edges...)
 	}
 }
 

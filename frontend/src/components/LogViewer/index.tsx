@@ -15,7 +15,7 @@ const ansi = new AnsiUp();
 interface Props {
   log?: string | null;
   loading?: boolean;
-  error?: ApolloError | undefined;
+  error?: ApolloError | Error | null;
 }
 
 const LogViewer: React.FC<Props> = ({ log, loading, error }) => {

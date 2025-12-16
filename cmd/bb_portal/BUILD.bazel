@@ -17,6 +17,7 @@ go_library(
         "//internal/api/grpc/bes",
         "//internal/api/grpcweb/buildqueuestateproxy",
         "//internal/api/http/bepuploader",
+        "//internal/api/http/loghandler",
         "//internal/api/servefiles:servefiles_lib",
         "//internal/database",
         "//internal/database/common",

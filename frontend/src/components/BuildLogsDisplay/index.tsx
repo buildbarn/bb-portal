@@ -1,36 +1,37 @@
-import DownloadButton from "@/components/DownloadButton";
-import { GET_BUILD_LOGS } from "@/components/LogViewer/graphql";
-import PortalCard from "@/components/PortalCard";
-import type { GetBuildLogsQuery } from "@/graphql/__generated__/graphql";
 import {
   ExclamationCircleOutlined,
   FileSearchOutlined,
 } from "@ant-design/icons";
-import { useQuery } from "@apollo/client";
-import ansiRegex from "ansi-regex";
+import { useQuery } from "@tanstack/react-query";
 import { Tooltip } from "antd";
-import { useMemo } from "react";
+import { env } from "next-runtime-env";
+import DownloadButton from "@/components/DownloadButton";
+import PortalCard from "@/components/PortalCard";
 import LogViewer from "../LogViewer";
 
 interface Props {
   invocationId: string;
 }
 
+const fetchLog = async (id: string, start = 0, end = -1): Promise<string> => {
+  const params = new URLSearchParams({
+    start_line: start.toString(),
+    end_line: end.toString(),
+  });
+  const uri = `${env("NEXT_PUBLIC_BES_BACKEND_URL")}/api/v1/invocations/${id}/log?${params}`;
+  const response = await fetch(uri);
+  if (!response.ok) throw new Error("Failed to fetch logs");
+  return response.text();
+};
+
 const BuildLogsDisplay: React.FC<Props> = ({ invocationId }) => {
-  const { data, error, loading } = useQuery<GetBuildLogsQuery>(GET_BUILD_LOGS, {
-    variables: { invocationId: invocationId },
-    fetchPolicy: "cache-and-network",
-    notifyOnNetworkStatusChange: true,
+  // TODO: Only fetch the currently viewed parts of the log.
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["getLogs", invocationId],
+    queryFn: () => fetchLog(invocationId),
   });
 
-  const ansiEscapeRegex = ansiRegex();
-  const logDownloadUrl = useMemo(
-    () =>
-      data?.bazelInvocation.buildLogs
-        ? `data:text/plain;charset=utf-8,${encodeURIComponent(data?.bazelInvocation.buildLogs.replace(ansiEscapeRegex, ""))}`
-        : undefined,
-    [data?.bazelInvocation.buildLogs, ansiEscapeRegex],
-  );
+  const logDownloadUrl = `${env("NEXT_PUBLIC_BES_BACKEND_URL")}/api/v1/invocations/${invocationId}/log`;
 
   return (
     <PortalCard
@@ -38,11 +39,15 @@ const BuildLogsDisplay: React.FC<Props> = ({ invocationId }) => {
       icon={<FileSearchOutlined />}
       titleBits={["Raw Build Logs"]}
       extraBits={[
-        <Tooltip title="Bazel emits logs in ANSI format a screen at a time.  They are presented here concatenated for your convenience.">
+        <Tooltip
+          key="tooltip"
+          title="Bazel emits logs in ANSI format a screen at a time.  They are presented here concatenated for your convenience."
+        >
           <ExclamationCircleOutlined />
         </Tooltip>,
         logDownloadUrl && (
           <DownloadButton
+            key="downloadButton"
             enabled={true}
             buttonLabel="Download Log"
             fileName="log.txt"
@@ -51,11 +56,7 @@ const BuildLogsDisplay: React.FC<Props> = ({ invocationId }) => {
         ),
       ]}
     >
-      <LogViewer
-        loading={loading}
-        error={error}
-        log={data?.bazelInvocation.buildLogs}
-      />
+      <LogViewer loading={isLoading} error={error} log={data} />
     </PortalCard>
   );
 };

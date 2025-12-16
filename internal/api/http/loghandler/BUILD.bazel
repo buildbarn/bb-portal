@@ -1,0 +1,26 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "loghandler",
+    srcs = [
+        "get_log_line_reader.go",
+        "log_handler.go",
+    ],
+    importpath = "github.com/buildbarn/bb-portal/internal/api/http/loghandler",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//ent/gen/ent",
+        "//ent/gen/ent/bazelinvocation",
+        "//ent/gen/ent/buildlogchunk",
+        "//internal/api/grpc/bes",
+        "//internal/database/dbauthservice",
+        "@com_github_buildbarn_bb_storage//pkg/util",
+        "@com_github_google_uuid//:uuid",
+        "@com_github_gorilla_mux//:mux",
+        "@com_github_klauspost_compress//zstd",
+        "@io_opentelemetry_go_otel//codes",
+        "@io_opentelemetry_go_otel_trace//:trace",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)

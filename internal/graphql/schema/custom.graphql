@@ -162,7 +162,6 @@ type Profile {
 
 extend type BazelInvocation {
   profile: Profile
-  buildLogs: String @goField(forceResolver: true)
 }
 
 extend type Target {

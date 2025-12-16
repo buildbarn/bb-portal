@@ -5,24 +5,31 @@ import (
 	"context"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"github.com/google/uuid"
 )
 
 // GetNormalizedIncompleteBuildLogs retrieves all incomplete build logs
 // associated with the given Bazel invocation, concatenates them, normalizes
 // them by removing ANSI escape sequences that remove previous lines, and
 // returns the result.
-func GetNormalizedIncompleteBuildLogs(ctx context.Context, invocation *ent.BazelInvocation) (string, error) {
-	incompleteLogs, err := invocation.QueryIncompleteBuildLogs().Order(ent.Asc("snippet_id")).All(ctx)
+func GetNormalizedIncompleteBuildLogs(ctx context.Context, client *ent.Client, invocationID uuid.UUID) ([]byte, error) {
+	incompleteLogs, err := client.IncompleteBuildLog.Query().Where(
+		incompletebuildlog.HasBazelInvocationWith(
+			bazelinvocation.InvocationIDEQ(invocationID),
+		),
+	).Order(ent.Asc("snippet_id")).All(ctx)
 	if err != nil {
-		return "", util.StatusWrap(err, "Failed to query incomplete build logs from database")
+		return nil, util.StatusWrap(err, "Failed to query incomplete build logs from database")
 	}
 	// Read all snippets into one big buffer.
 	var buf bytes.Buffer
 	for _, logSnippet := range incompleteLogs {
 		_, err := buf.WriteString(logSnippet.LogSnippet)
 		if err != nil {
-			return "", util.StatusWrap(err, "Could not write to an in memory buffer, is your computer on fire?")
+			return nil, util.StatusWrap(err, "Could not write to an in memory buffer, is your computer on fire?")
 		}
 
 	}
@@ -65,5 +72,5 @@ func GetNormalizedIncompleteBuildLogs(ctx context.Context, invocation *ent.Bazel
 		cursor += end - start
 	}
 	// Return resulting string.
-	return string(data[:cursor]), nil
+	return data[:cursor], nil
 }

@@ -22,6 +22,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
@@ -77,6 +78,7 @@ const (
 	TypeBlob                   = "Blob"
 	TypeBuild                  = "Build"
 	TypeBuildGraphMetrics      = "BuildGraphMetrics"
+	TypeBuildLogChunk          = "BuildLogChunk"
 	TypeConnectionMetadata     = "ConnectionMetadata"
 	TypeCumulativeMetrics      = "CumulativeMetrics"
 	TypeEvaluationStat         = "EvaluationStat"
@@ -4976,7 +4978,6 @@ type BazelInvocationMutation struct {
 	step_label                              *string
 	user_email                              *string
 	user_ldap                               *string
-	build_logs                              *string
 	cpu                                     *string
 	platform_name                           *string
 	hostname                                *string
@@ -5027,6 +5028,9 @@ type BazelInvocationMutation struct {
 	incomplete_build_logs                   map[int]struct{}
 	removedincomplete_build_logs            map[int]struct{}
 	clearedincomplete_build_logs            bool
+	build_log_chunks                        map[int]struct{}
+	removedbuild_log_chunks                 map[int]struct{}
+	clearedbuild_log_chunks                 bool
 	invocation_files                        map[int]struct{}
 	removedinvocation_files                 map[int]struct{}
 	clearedinvocation_files                 bool
@@ -5599,55 +5603,6 @@ func (m *BazelInvocationMutation) UserLdapCleared() bool {
 func (m *BazelInvocationMutation) ResetUserLdap() {
 	m.user_ldap = nil
 	delete(m.clearedFields, bazelinvocation.FieldUserLdap)
-}
-
-// SetBuildLogs sets the "build_logs" field.
-func (m *BazelInvocationMutation) SetBuildLogs(s string) {
-	m.build_logs = &s
-}
-
-// BuildLogs returns the value of the "build_logs" field in the mutation.
-func (m *BazelInvocationMutation) BuildLogs() (r string, exists bool) {
-	v := m.build_logs
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldBuildLogs returns the old "build_logs" field's value of the BazelInvocation entity.
-// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldBuildLogs(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBuildLogs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBuildLogs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBuildLogs: %w", err)
-	}
-	return oldValue.BuildLogs, nil
-}
-
-// ClearBuildLogs clears the value of the "build_logs" field.
-func (m *BazelInvocationMutation) ClearBuildLogs() {
-	m.build_logs = nil
-	m.clearedFields[bazelinvocation.FieldBuildLogs] = struct{}{}
-}
-
-// BuildLogsCleared returns if the "build_logs" field was cleared in this mutation.
-func (m *BazelInvocationMutation) BuildLogsCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldBuildLogs]
-	return ok
-}
-
-// ResetBuildLogs resets all changes to the "build_logs" field.
-func (m *BazelInvocationMutation) ResetBuildLogs() {
-	m.build_logs = nil
-	delete(m.clearedFields, bazelinvocation.FieldBuildLogs)
 }
 
 // SetCPU sets the "cpu" field.
@@ -7177,6 +7132,60 @@ func (m *BazelInvocationMutation) ResetIncompleteBuildLogs() {
 	m.removedincomplete_build_logs = nil
 }
 
+// AddBuildLogChunkIDs adds the "build_log_chunks" edge to the BuildLogChunk entity by ids.
+func (m *BazelInvocationMutation) AddBuildLogChunkIDs(ids ...int) {
+	if m.build_log_chunks == nil {
+		m.build_log_chunks = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.build_log_chunks[ids[i]] = struct{}{}
+	}
+}
+
+// ClearBuildLogChunks clears the "build_log_chunks" edge to the BuildLogChunk entity.
+func (m *BazelInvocationMutation) ClearBuildLogChunks() {
+	m.clearedbuild_log_chunks = true
+}
+
+// BuildLogChunksCleared reports if the "build_log_chunks" edge to the BuildLogChunk entity was cleared.
+func (m *BazelInvocationMutation) BuildLogChunksCleared() bool {
+	return m.clearedbuild_log_chunks
+}
+
+// RemoveBuildLogChunkIDs removes the "build_log_chunks" edge to the BuildLogChunk entity by IDs.
+func (m *BazelInvocationMutation) RemoveBuildLogChunkIDs(ids ...int) {
+	if m.removedbuild_log_chunks == nil {
+		m.removedbuild_log_chunks = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.build_log_chunks, ids[i])
+		m.removedbuild_log_chunks[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedBuildLogChunks returns the removed IDs of the "build_log_chunks" edge to the BuildLogChunk entity.
+func (m *BazelInvocationMutation) RemovedBuildLogChunksIDs() (ids []int) {
+	for id := range m.removedbuild_log_chunks {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// BuildLogChunksIDs returns the "build_log_chunks" edge IDs in the mutation.
+func (m *BazelInvocationMutation) BuildLogChunksIDs() (ids []int) {
+	for id := range m.build_log_chunks {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetBuildLogChunks resets all changes to the "build_log_chunks" edge.
+func (m *BazelInvocationMutation) ResetBuildLogChunks() {
+	m.build_log_chunks = nil
+	m.clearedbuild_log_chunks = false
+	m.removedbuild_log_chunks = nil
+}
+
 // AddInvocationFileIDs adds the "invocation_files" edge to the InvocationFiles entity by ids.
 func (m *BazelInvocationMutation) AddInvocationFileIDs(ids ...int) {
 	if m.invocation_files == nil {
@@ -7466,7 +7475,7 @@ func (m *BazelInvocationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BazelInvocationMutation) Fields() []string {
-	fields := make([]string, 0, 33)
+	fields := make([]string, 0, 32)
 	if m.invocation_id != nil {
 		fields = append(fields, bazelinvocation.FieldInvocationID)
 	}
@@ -7493,9 +7502,6 @@ func (m *BazelInvocationMutation) Fields() []string {
 	}
 	if m.user_ldap != nil {
 		fields = append(fields, bazelinvocation.FieldUserLdap)
-	}
-	if m.build_logs != nil {
-		fields = append(fields, bazelinvocation.FieldBuildLogs)
 	}
 	if m.cpu != nil {
 		fields = append(fields, bazelinvocation.FieldCPU)
@@ -7592,8 +7598,6 @@ func (m *BazelInvocationMutation) Field(name string) (ent.Value, bool) {
 		return m.UserEmail()
 	case bazelinvocation.FieldUserLdap:
 		return m.UserLdap()
-	case bazelinvocation.FieldBuildLogs:
-		return m.BuildLogs()
 	case bazelinvocation.FieldCPU:
 		return m.CPU()
 	case bazelinvocation.FieldPlatformName:
@@ -7667,8 +7671,6 @@ func (m *BazelInvocationMutation) OldField(ctx context.Context, name string) (en
 		return m.OldUserEmail(ctx)
 	case bazelinvocation.FieldUserLdap:
 		return m.OldUserLdap(ctx)
-	case bazelinvocation.FieldBuildLogs:
-		return m.OldBuildLogs(ctx)
 	case bazelinvocation.FieldCPU:
 		return m.OldCPU(ctx)
 	case bazelinvocation.FieldPlatformName:
@@ -7786,13 +7788,6 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUserLdap(v)
-		return nil
-	case bazelinvocation.FieldBuildLogs:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetBuildLogs(v)
 		return nil
 	case bazelinvocation.FieldCPU:
 		v, ok := value.(string)
@@ -8057,9 +8052,6 @@ func (m *BazelInvocationMutation) ClearedFields() []string {
 	if m.FieldCleared(bazelinvocation.FieldUserLdap) {
 		fields = append(fields, bazelinvocation.FieldUserLdap)
 	}
-	if m.FieldCleared(bazelinvocation.FieldBuildLogs) {
-		fields = append(fields, bazelinvocation.FieldBuildLogs)
-	}
 	if m.FieldCleared(bazelinvocation.FieldCPU) {
 		fields = append(fields, bazelinvocation.FieldCPU)
 	}
@@ -8145,9 +8137,6 @@ func (m *BazelInvocationMutation) ClearField(name string) error {
 		return nil
 	case bazelinvocation.FieldUserLdap:
 		m.ClearUserLdap()
-		return nil
-	case bazelinvocation.FieldBuildLogs:
-		m.ClearBuildLogs()
 		return nil
 	case bazelinvocation.FieldCPU:
 		m.ClearCPU()
@@ -8235,9 +8224,6 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 	case bazelinvocation.FieldUserLdap:
 		m.ResetUserLdap()
 		return nil
-	case bazelinvocation.FieldBuildLogs:
-		m.ResetBuildLogs()
-		return nil
 	case bazelinvocation.FieldCPU:
 		m.ResetCPU()
 		return nil
@@ -8313,7 +8299,7 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 13)
+	edges := make([]string, 0, 14)
 	if m.instance_name != nil {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -8337,6 +8323,9 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	}
 	if m.incomplete_build_logs != nil {
 		edges = append(edges, bazelinvocation.EdgeIncompleteBuildLogs)
+	}
+	if m.build_log_chunks != nil {
+		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
 	}
 	if m.invocation_files != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
@@ -8400,6 +8389,12 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case bazelinvocation.EdgeBuildLogChunks:
+		ids := make([]ent.Value, 0, len(m.build_log_chunks))
+		for id := range m.build_log_chunks {
+			ids = append(ids, id)
+		}
+		return ids
 	case bazelinvocation.EdgeInvocationFiles:
 		ids := make([]ent.Value, 0, len(m.invocation_files))
 		for id := range m.invocation_files {
@@ -8434,7 +8429,7 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 13)
+	edges := make([]string, 0, 14)
 	if m.removedevent_metadata != nil {
 		edges = append(edges, bazelinvocation.EdgeEventMetadata)
 	}
@@ -8446,6 +8441,9 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 	}
 	if m.removedincomplete_build_logs != nil {
 		edges = append(edges, bazelinvocation.EdgeIncompleteBuildLogs)
+	}
+	if m.removedbuild_log_chunks != nil {
+		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
 	}
 	if m.removedinvocation_files != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
@@ -8490,6 +8488,12 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case bazelinvocation.EdgeBuildLogChunks:
+		ids := make([]ent.Value, 0, len(m.removedbuild_log_chunks))
+		for id := range m.removedbuild_log_chunks {
+			ids = append(ids, id)
+		}
+		return ids
 	case bazelinvocation.EdgeInvocationFiles:
 		ids := make([]ent.Value, 0, len(m.removedinvocation_files))
 		for id := range m.removedinvocation_files {
@@ -8520,7 +8524,7 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 13)
+	edges := make([]string, 0, 14)
 	if m.clearedinstance_name {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -8544,6 +8548,9 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	}
 	if m.clearedincomplete_build_logs {
 		edges = append(edges, bazelinvocation.EdgeIncompleteBuildLogs)
+	}
+	if m.clearedbuild_log_chunks {
+		edges = append(edges, bazelinvocation.EdgeBuildLogChunks)
 	}
 	if m.clearedinvocation_files {
 		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
@@ -8583,6 +8590,8 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedmetrics
 	case bazelinvocation.EdgeIncompleteBuildLogs:
 		return m.clearedincomplete_build_logs
+	case bazelinvocation.EdgeBuildLogChunks:
+		return m.clearedbuild_log_chunks
 	case bazelinvocation.EdgeInvocationFiles:
 		return m.clearedinvocation_files
 	case bazelinvocation.EdgeTestCollection:
@@ -8647,6 +8656,9 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeIncompleteBuildLogs:
 		m.ResetIncompleteBuildLogs()
+		return nil
+	case bazelinvocation.EdgeBuildLogChunks:
+		m.ResetBuildLogChunks()
 		return nil
 	case bazelinvocation.EdgeInvocationFiles:
 		m.ResetInvocationFiles()
@@ -12077,6 +12089,663 @@ func (m *BuildGraphMetricsMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown BuildGraphMetrics edge %s", name)
+}
+
+// BuildLogChunkMutation represents an operation that mutates the BuildLogChunk nodes in the graph.
+type BuildLogChunkMutation struct {
+	config
+	op                      Op
+	typ                     string
+	id                      *int
+	data                    *[]byte
+	chunk_index             *int
+	addchunk_index          *int
+	first_line_index        *int64
+	addfirst_line_index     *int64
+	last_line_index         *int64
+	addlast_line_index      *int64
+	clearedFields           map[string]struct{}
+	bazel_invocation        *int
+	clearedbazel_invocation bool
+	done                    bool
+	oldValue                func(context.Context) (*BuildLogChunk, error)
+	predicates              []predicate.BuildLogChunk
+}
+
+var _ ent.Mutation = (*BuildLogChunkMutation)(nil)
+
+// buildlogchunkOption allows management of the mutation configuration using functional options.
+type buildlogchunkOption func(*BuildLogChunkMutation)
+
+// newBuildLogChunkMutation creates new mutation for the BuildLogChunk entity.
+func newBuildLogChunkMutation(c config, op Op, opts ...buildlogchunkOption) *BuildLogChunkMutation {
+	m := &BuildLogChunkMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeBuildLogChunk,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withBuildLogChunkID sets the ID field of the mutation.
+func withBuildLogChunkID(id int) buildlogchunkOption {
+	return func(m *BuildLogChunkMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *BuildLogChunk
+		)
+		m.oldValue = func(ctx context.Context) (*BuildLogChunk, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().BuildLogChunk.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withBuildLogChunk sets the old BuildLogChunk of the mutation.
+func withBuildLogChunk(node *BuildLogChunk) buildlogchunkOption {
+	return func(m *BuildLogChunkMutation) {
+		m.oldValue = func(context.Context) (*BuildLogChunk, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m BuildLogChunkMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m BuildLogChunkMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *BuildLogChunkMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *BuildLogChunkMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().BuildLogChunk.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetData sets the "data" field.
+func (m *BuildLogChunkMutation) SetData(b []byte) {
+	m.data = &b
+}
+
+// Data returns the value of the "data" field in the mutation.
+func (m *BuildLogChunkMutation) Data() (r []byte, exists bool) {
+	v := m.data
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldData returns the old "data" field's value of the BuildLogChunk entity.
+// If the BuildLogChunk object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BuildLogChunkMutation) OldData(ctx context.Context) (v []byte, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldData is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldData requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldData: %w", err)
+	}
+	return oldValue.Data, nil
+}
+
+// ResetData resets all changes to the "data" field.
+func (m *BuildLogChunkMutation) ResetData() {
+	m.data = nil
+}
+
+// SetChunkIndex sets the "chunk_index" field.
+func (m *BuildLogChunkMutation) SetChunkIndex(i int) {
+	m.chunk_index = &i
+	m.addchunk_index = nil
+}
+
+// ChunkIndex returns the value of the "chunk_index" field in the mutation.
+func (m *BuildLogChunkMutation) ChunkIndex() (r int, exists bool) {
+	v := m.chunk_index
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChunkIndex returns the old "chunk_index" field's value of the BuildLogChunk entity.
+// If the BuildLogChunk object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BuildLogChunkMutation) OldChunkIndex(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChunkIndex is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChunkIndex requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChunkIndex: %w", err)
+	}
+	return oldValue.ChunkIndex, nil
+}
+
+// AddChunkIndex adds i to the "chunk_index" field.
+func (m *BuildLogChunkMutation) AddChunkIndex(i int) {
+	if m.addchunk_index != nil {
+		*m.addchunk_index += i
+	} else {
+		m.addchunk_index = &i
+	}
+}
+
+// AddedChunkIndex returns the value that was added to the "chunk_index" field in this mutation.
+func (m *BuildLogChunkMutation) AddedChunkIndex() (r int, exists bool) {
+	v := m.addchunk_index
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetChunkIndex resets all changes to the "chunk_index" field.
+func (m *BuildLogChunkMutation) ResetChunkIndex() {
+	m.chunk_index = nil
+	m.addchunk_index = nil
+}
+
+// SetFirstLineIndex sets the "first_line_index" field.
+func (m *BuildLogChunkMutation) SetFirstLineIndex(i int64) {
+	m.first_line_index = &i
+	m.addfirst_line_index = nil
+}
+
+// FirstLineIndex returns the value of the "first_line_index" field in the mutation.
+func (m *BuildLogChunkMutation) FirstLineIndex() (r int64, exists bool) {
+	v := m.first_line_index
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFirstLineIndex returns the old "first_line_index" field's value of the BuildLogChunk entity.
+// If the BuildLogChunk object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BuildLogChunkMutation) OldFirstLineIndex(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFirstLineIndex is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFirstLineIndex requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFirstLineIndex: %w", err)
+	}
+	return oldValue.FirstLineIndex, nil
+}
+
+// AddFirstLineIndex adds i to the "first_line_index" field.
+func (m *BuildLogChunkMutation) AddFirstLineIndex(i int64) {
+	if m.addfirst_line_index != nil {
+		*m.addfirst_line_index += i
+	} else {
+		m.addfirst_line_index = &i
+	}
+}
+
+// AddedFirstLineIndex returns the value that was added to the "first_line_index" field in this mutation.
+func (m *BuildLogChunkMutation) AddedFirstLineIndex() (r int64, exists bool) {
+	v := m.addfirst_line_index
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetFirstLineIndex resets all changes to the "first_line_index" field.
+func (m *BuildLogChunkMutation) ResetFirstLineIndex() {
+	m.first_line_index = nil
+	m.addfirst_line_index = nil
+}
+
+// SetLastLineIndex sets the "last_line_index" field.
+func (m *BuildLogChunkMutation) SetLastLineIndex(i int64) {
+	m.last_line_index = &i
+	m.addlast_line_index = nil
+}
+
+// LastLineIndex returns the value of the "last_line_index" field in the mutation.
+func (m *BuildLogChunkMutation) LastLineIndex() (r int64, exists bool) {
+	v := m.last_line_index
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastLineIndex returns the old "last_line_index" field's value of the BuildLogChunk entity.
+// If the BuildLogChunk object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *BuildLogChunkMutation) OldLastLineIndex(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastLineIndex is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastLineIndex requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastLineIndex: %w", err)
+	}
+	return oldValue.LastLineIndex, nil
+}
+
+// AddLastLineIndex adds i to the "last_line_index" field.
+func (m *BuildLogChunkMutation) AddLastLineIndex(i int64) {
+	if m.addlast_line_index != nil {
+		*m.addlast_line_index += i
+	} else {
+		m.addlast_line_index = &i
+	}
+}
+
+// AddedLastLineIndex returns the value that was added to the "last_line_index" field in this mutation.
+func (m *BuildLogChunkMutation) AddedLastLineIndex() (r int64, exists bool) {
+	v := m.addlast_line_index
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLastLineIndex resets all changes to the "last_line_index" field.
+func (m *BuildLogChunkMutation) ResetLastLineIndex() {
+	m.last_line_index = nil
+	m.addlast_line_index = nil
+}
+
+// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
+func (m *BuildLogChunkMutation) SetBazelInvocationID(id int) {
+	m.bazel_invocation = &id
+}
+
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
+func (m *BuildLogChunkMutation) ClearBazelInvocation() {
+	m.clearedbazel_invocation = true
+}
+
+// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
+func (m *BuildLogChunkMutation) BazelInvocationCleared() bool {
+	return m.clearedbazel_invocation
+}
+
+// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
+func (m *BuildLogChunkMutation) BazelInvocationID() (id int, exists bool) {
+	if m.bazel_invocation != nil {
+		return *m.bazel_invocation, true
+	}
+	return
+}
+
+// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BazelInvocationID instead. It exists only for internal usage by the builders.
+func (m *BuildLogChunkMutation) BazelInvocationIDs() (ids []int) {
+	if id := m.bazel_invocation; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
+func (m *BuildLogChunkMutation) ResetBazelInvocation() {
+	m.bazel_invocation = nil
+	m.clearedbazel_invocation = false
+}
+
+// Where appends a list predicates to the BuildLogChunkMutation builder.
+func (m *BuildLogChunkMutation) Where(ps ...predicate.BuildLogChunk) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the BuildLogChunkMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *BuildLogChunkMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.BuildLogChunk, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *BuildLogChunkMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *BuildLogChunkMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (BuildLogChunk).
+func (m *BuildLogChunkMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *BuildLogChunkMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.data != nil {
+		fields = append(fields, buildlogchunk.FieldData)
+	}
+	if m.chunk_index != nil {
+		fields = append(fields, buildlogchunk.FieldChunkIndex)
+	}
+	if m.first_line_index != nil {
+		fields = append(fields, buildlogchunk.FieldFirstLineIndex)
+	}
+	if m.last_line_index != nil {
+		fields = append(fields, buildlogchunk.FieldLastLineIndex)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *BuildLogChunkMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case buildlogchunk.FieldData:
+		return m.Data()
+	case buildlogchunk.FieldChunkIndex:
+		return m.ChunkIndex()
+	case buildlogchunk.FieldFirstLineIndex:
+		return m.FirstLineIndex()
+	case buildlogchunk.FieldLastLineIndex:
+		return m.LastLineIndex()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *BuildLogChunkMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case buildlogchunk.FieldData:
+		return m.OldData(ctx)
+	case buildlogchunk.FieldChunkIndex:
+		return m.OldChunkIndex(ctx)
+	case buildlogchunk.FieldFirstLineIndex:
+		return m.OldFirstLineIndex(ctx)
+	case buildlogchunk.FieldLastLineIndex:
+		return m.OldLastLineIndex(ctx)
+	}
+	return nil, fmt.Errorf("unknown BuildLogChunk field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BuildLogChunkMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case buildlogchunk.FieldData:
+		v, ok := value.([]byte)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetData(v)
+		return nil
+	case buildlogchunk.FieldChunkIndex:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChunkIndex(v)
+		return nil
+	case buildlogchunk.FieldFirstLineIndex:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFirstLineIndex(v)
+		return nil
+	case buildlogchunk.FieldLastLineIndex:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastLineIndex(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BuildLogChunk field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *BuildLogChunkMutation) AddedFields() []string {
+	var fields []string
+	if m.addchunk_index != nil {
+		fields = append(fields, buildlogchunk.FieldChunkIndex)
+	}
+	if m.addfirst_line_index != nil {
+		fields = append(fields, buildlogchunk.FieldFirstLineIndex)
+	}
+	if m.addlast_line_index != nil {
+		fields = append(fields, buildlogchunk.FieldLastLineIndex)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *BuildLogChunkMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case buildlogchunk.FieldChunkIndex:
+		return m.AddedChunkIndex()
+	case buildlogchunk.FieldFirstLineIndex:
+		return m.AddedFirstLineIndex()
+	case buildlogchunk.FieldLastLineIndex:
+		return m.AddedLastLineIndex()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *BuildLogChunkMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case buildlogchunk.FieldChunkIndex:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddChunkIndex(v)
+		return nil
+	case buildlogchunk.FieldFirstLineIndex:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddFirstLineIndex(v)
+		return nil
+	case buildlogchunk.FieldLastLineIndex:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLastLineIndex(v)
+		return nil
+	}
+	return fmt.Errorf("unknown BuildLogChunk numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *BuildLogChunkMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *BuildLogChunkMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *BuildLogChunkMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown BuildLogChunk nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *BuildLogChunkMutation) ResetField(name string) error {
+	switch name {
+	case buildlogchunk.FieldData:
+		m.ResetData()
+		return nil
+	case buildlogchunk.FieldChunkIndex:
+		m.ResetChunkIndex()
+		return nil
+	case buildlogchunk.FieldFirstLineIndex:
+		m.ResetFirstLineIndex()
+		return nil
+	case buildlogchunk.FieldLastLineIndex:
+		m.ResetLastLineIndex()
+		return nil
+	}
+	return fmt.Errorf("unknown BuildLogChunk field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *BuildLogChunkMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.bazel_invocation != nil {
+		edges = append(edges, buildlogchunk.EdgeBazelInvocation)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *BuildLogChunkMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case buildlogchunk.EdgeBazelInvocation:
+		if id := m.bazel_invocation; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *BuildLogChunkMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *BuildLogChunkMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *BuildLogChunkMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedbazel_invocation {
+		edges = append(edges, buildlogchunk.EdgeBazelInvocation)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *BuildLogChunkMutation) EdgeCleared(name string) bool {
+	switch name {
+	case buildlogchunk.EdgeBazelInvocation:
+		return m.clearedbazel_invocation
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *BuildLogChunkMutation) ClearEdge(name string) error {
+	switch name {
+	case buildlogchunk.EdgeBazelInvocation:
+		m.ClearBazelInvocation()
+		return nil
+	}
+	return fmt.Errorf("unknown BuildLogChunk unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *BuildLogChunkMutation) ResetEdge(name string) error {
+	switch name {
+	case buildlogchunk.EdgeBazelInvocation:
+		m.ResetBazelInvocation()
+		return nil
+	}
+	return fmt.Errorf("unknown BuildLogChunk edge %s", name)
 }
 
 // ConnectionMetadataMutation represents an operation that mutates the ConnectionMetadata nodes in the graph.
