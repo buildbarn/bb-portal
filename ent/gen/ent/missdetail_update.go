@@ -30,22 +30,16 @@ func (mdu *MissDetailUpdate) Where(ps ...predicate.MissDetail) *MissDetailUpdate
 }
 
 // SetReason sets the "reason" field.
-func (mdu *MissDetailUpdate) SetReason(m missdetail.Reason) *MissDetailUpdate {
-	mdu.mutation.SetReason(m)
+func (mdu *MissDetailUpdate) SetReason(s string) *MissDetailUpdate {
+	mdu.mutation.SetReason(s)
 	return mdu
 }
 
 // SetNillableReason sets the "reason" field if the given value is not nil.
-func (mdu *MissDetailUpdate) SetNillableReason(m *missdetail.Reason) *MissDetailUpdate {
-	if m != nil {
-		mdu.SetReason(*m)
+func (mdu *MissDetailUpdate) SetNillableReason(s *string) *MissDetailUpdate {
+	if s != nil {
+		mdu.SetReason(*s)
 	}
-	return mdu
-}
-
-// ClearReason clears the value of the "reason" field.
-func (mdu *MissDetailUpdate) ClearReason() *MissDetailUpdate {
-	mdu.mutation.ClearReason()
 	return mdu
 }
 
@@ -133,16 +127,6 @@ func (mdu *MissDetailUpdate) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (mdu *MissDetailUpdate) check() error {
-	if v, ok := mdu.mutation.Reason(); ok {
-		if err := missdetail.ReasonValidator(v); err != nil {
-			return &ValidationError{Name: "reason", err: fmt.Errorf(`ent: validator failed for field "MissDetail.reason": %w`, err)}
-		}
-	}
-	return nil
-}
-
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (mdu *MissDetailUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MissDetailUpdate {
 	mdu.modifiers = append(mdu.modifiers, modifiers...)
@@ -150,9 +134,6 @@ func (mdu *MissDetailUpdate) Modify(modifiers ...func(u *sql.UpdateBuilder)) *Mi
 }
 
 func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := mdu.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt))
 	if ps := mdu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -162,10 +143,7 @@ func (mdu *MissDetailUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := mdu.mutation.Reason(); ok {
-		_spec.SetField(missdetail.FieldReason, field.TypeEnum, value)
-	}
-	if mdu.mutation.ReasonCleared() {
-		_spec.ClearField(missdetail.FieldReason, field.TypeEnum)
+		_spec.SetField(missdetail.FieldReason, field.TypeString, value)
 	}
 	if value, ok := mdu.mutation.Count(); ok {
 		_spec.SetField(missdetail.FieldCount, field.TypeInt32, value)
@@ -228,22 +206,16 @@ type MissDetailUpdateOne struct {
 }
 
 // SetReason sets the "reason" field.
-func (mduo *MissDetailUpdateOne) SetReason(m missdetail.Reason) *MissDetailUpdateOne {
-	mduo.mutation.SetReason(m)
+func (mduo *MissDetailUpdateOne) SetReason(s string) *MissDetailUpdateOne {
+	mduo.mutation.SetReason(s)
 	return mduo
 }
 
 // SetNillableReason sets the "reason" field if the given value is not nil.
-func (mduo *MissDetailUpdateOne) SetNillableReason(m *missdetail.Reason) *MissDetailUpdateOne {
-	if m != nil {
-		mduo.SetReason(*m)
+func (mduo *MissDetailUpdateOne) SetNillableReason(s *string) *MissDetailUpdateOne {
+	if s != nil {
+		mduo.SetReason(*s)
 	}
-	return mduo
-}
-
-// ClearReason clears the value of the "reason" field.
-func (mduo *MissDetailUpdateOne) ClearReason() *MissDetailUpdateOne {
-	mduo.mutation.ClearReason()
 	return mduo
 }
 
@@ -344,16 +316,6 @@ func (mduo *MissDetailUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (mduo *MissDetailUpdateOne) check() error {
-	if v, ok := mduo.mutation.Reason(); ok {
-		if err := missdetail.ReasonValidator(v); err != nil {
-			return &ValidationError{Name: "reason", err: fmt.Errorf(`ent: validator failed for field "MissDetail.reason": %w`, err)}
-		}
-	}
-	return nil
-}
-
 // Modify adds a statement modifier for attaching custom logic to the UPDATE statement.
 func (mduo *MissDetailUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder)) *MissDetailUpdateOne {
 	mduo.modifiers = append(mduo.modifiers, modifiers...)
@@ -361,9 +323,6 @@ func (mduo *MissDetailUpdateOne) Modify(modifiers ...func(u *sql.UpdateBuilder))
 }
 
 func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail, err error) {
-	if err := mduo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(missdetail.Table, missdetail.Columns, sqlgraph.NewFieldSpec(missdetail.FieldID, field.TypeInt))
 	id, ok := mduo.mutation.ID()
 	if !ok {
@@ -390,10 +349,7 @@ func (mduo *MissDetailUpdateOne) sqlSave(ctx context.Context) (_node *MissDetail
 		}
 	}
 	if value, ok := mduo.mutation.Reason(); ok {
-		_spec.SetField(missdetail.FieldReason, field.TypeEnum, value)
-	}
-	if mduo.mutation.ReasonCleared() {
-		_spec.ClearField(missdetail.FieldReason, field.TypeEnum)
+		_spec.SetField(missdetail.FieldReason, field.TypeString, value)
 	}
 	if value, ok := mduo.mutation.Count(); ok {
 		_spec.SetField(missdetail.FieldCount, field.TypeInt32, value)

@@ -19,7 +19,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
@@ -16297,11 +16296,14 @@ func (ec *executionContext) _MissDetail_reason(ctx context.Context, field graphq
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(missdetail.Reason)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOMissDetailReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MissDetail_reason(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16311,7 +16313,7 @@ func (ec *executionContext) fieldContext_MissDetail_reason(_ context.Context, fi
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type MissDetailReason does not have child fields")
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -38636,7 +38638,7 @@ func (ec *executionContext) unmarshalInputMissDetailWhereInput(ctx context.Conte
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "reason", "reasonNEQ", "reasonIn", "reasonNotIn", "reasonIsNil", "reasonNotNil", "count", "countNEQ", "countIn", "countNotIn", "countGT", "countGTE", "countLT", "countLTE", "countIsNil", "countNotNil", "hasActionCacheStatistics", "hasActionCacheStatisticsWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "reason", "reasonNEQ", "reasonIn", "reasonNotIn", "reasonGT", "reasonGTE", "reasonLT", "reasonLTE", "reasonContains", "reasonHasPrefix", "reasonHasSuffix", "reasonEqualFold", "reasonContainsFold", "count", "countNEQ", "countIn", "countNotIn", "countGT", "countGTE", "countLT", "countLTE", "countIsNil", "countNotNil", "hasActionCacheStatistics", "hasActionCacheStatisticsWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -38738,46 +38740,95 @@ func (ec *executionContext) unmarshalInputMissDetailWhereInput(ctx context.Conte
 			}
 		case "reason":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reason"))
-			data, err := ec.unmarshalOMissDetailReason2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx, v)
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Reason = data
 		case "reasonNEQ":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonNEQ"))
-			data, err := ec.unmarshalOMissDetailReason2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx, v)
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ReasonNEQ = data
 		case "reasonIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonIn"))
-			data, err := ec.unmarshalOMissDetailReason2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReasonᚄ(ctx, v)
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ReasonIn = data
 		case "reasonNotIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonNotIn"))
-			data, err := ec.unmarshalOMissDetailReason2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReasonᚄ(ctx, v)
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.ReasonNotIn = data
-		case "reasonIsNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonIsNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+		case "reasonGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ReasonIsNil = data
-		case "reasonNotNil":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonNotNil"))
-			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			it.ReasonGT = data
+		case "reasonGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ReasonNotNil = data
+			it.ReasonGTE = data
+		case "reasonLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ReasonLT = data
+		case "reasonLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ReasonLTE = data
+		case "reasonContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ReasonContains = data
+		case "reasonHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ReasonHasPrefix = data
+		case "reasonHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ReasonHasSuffix = data
+		case "reasonEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ReasonEqualFold = data
+		case "reasonContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("reasonContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ReasonContainsFold = data
 		case "count":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("count"))
 			data, err := ec.unmarshalOInt2ᚖint32(ctx, v)
@@ -52668,6 +52719,9 @@ func (ec *executionContext) _MissDetail(ctx context.Context, sel ast.SelectionSe
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "reason":
 			out.Values[i] = ec._MissDetail_reason(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "count":
 			out.Values[i] = ec._MissDetail_count(ctx, field, obj)
 		case "actionCacheStatistics":
@@ -57169,16 +57223,6 @@ func (ec *executionContext) marshalNMissDetail2ᚖgithubᚗcomᚋbuildbarnᚋbb�
 	return ec._MissDetail(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMissDetailReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, v any) (missdetail.Reason, error) {
-	var res missdetail.Reason
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNMissDetailReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, sel ast.SelectionSet, v missdetail.Reason) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalNMissDetailWhereInput2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMissDetailWhereInput(ctx context.Context, v any) (*ent.MissDetailWhereInput, error) {
 	res, err := ec.unmarshalInputMissDetailWhereInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -59620,97 +59664,6 @@ func (ec *executionContext) marshalOMissDetail2ᚕᚖgithubᚗcomᚋbuildbarnᚋ
 	}
 
 	return ret
-}
-
-func (ec *executionContext) unmarshalOMissDetailReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, v any) (missdetail.Reason, error) {
-	var res missdetail.Reason
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOMissDetailReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, sel ast.SelectionSet, v missdetail.Reason) graphql.Marshaler {
-	return v
-}
-
-func (ec *executionContext) unmarshalOMissDetailReason2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReasonᚄ(ctx context.Context, v any) ([]missdetail.Reason, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []any
-	vSlice = graphql.CoerceList(v)
-	var err error
-	res := make([]missdetail.Reason, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNMissDetailReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOMissDetailReason2ᚕgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReasonᚄ(ctx context.Context, sel ast.SelectionSet, v []missdetail.Reason) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNMissDetailReason2githubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) unmarshalOMissDetailReason2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, v any) (*missdetail.Reason, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(missdetail.Reason)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOMissDetailReason2ᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚋmissdetailᚐReason(ctx context.Context, sel ast.SelectionSet, v *missdetail.Reason) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
 }
 
 func (ec *executionContext) unmarshalOMissDetailWhereInput2ᚕᚖgithubᚗcomᚋbuildbarnᚋbbᚑportalᚋentᚋgenᚋentᚐMissDetailWhereInputᚄ(ctx context.Context, v any) ([]*ent.MissDetailWhereInput, error) {

@@ -20031,7 +20031,7 @@ type MissDetailMutation struct {
 	op                             Op
 	typ                            string
 	id                             *int
-	reason                         *missdetail.Reason
+	reason                         *string
 	count                          *int32
 	addcount                       *int32
 	clearedFields                  map[string]struct{}
@@ -20141,12 +20141,12 @@ func (m *MissDetailMutation) IDs(ctx context.Context) ([]int, error) {
 }
 
 // SetReason sets the "reason" field.
-func (m *MissDetailMutation) SetReason(value missdetail.Reason) {
-	m.reason = &value
+func (m *MissDetailMutation) SetReason(s string) {
+	m.reason = &s
 }
 
 // Reason returns the value of the "reason" field in the mutation.
-func (m *MissDetailMutation) Reason() (r missdetail.Reason, exists bool) {
+func (m *MissDetailMutation) Reason() (r string, exists bool) {
 	v := m.reason
 	if v == nil {
 		return
@@ -20157,7 +20157,7 @@ func (m *MissDetailMutation) Reason() (r missdetail.Reason, exists bool) {
 // OldReason returns the old "reason" field's value of the MissDetail entity.
 // If the MissDetail object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MissDetailMutation) OldReason(ctx context.Context) (v missdetail.Reason, err error) {
+func (m *MissDetailMutation) OldReason(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldReason is only allowed on UpdateOne operations")
 	}
@@ -20171,22 +20171,9 @@ func (m *MissDetailMutation) OldReason(ctx context.Context) (v missdetail.Reason
 	return oldValue.Reason, nil
 }
 
-// ClearReason clears the value of the "reason" field.
-func (m *MissDetailMutation) ClearReason() {
-	m.reason = nil
-	m.clearedFields[missdetail.FieldReason] = struct{}{}
-}
-
-// ReasonCleared returns if the "reason" field was cleared in this mutation.
-func (m *MissDetailMutation) ReasonCleared() bool {
-	_, ok := m.clearedFields[missdetail.FieldReason]
-	return ok
-}
-
 // ResetReason resets all changes to the "reason" field.
 func (m *MissDetailMutation) ResetReason() {
 	m.reason = nil
-	delete(m.clearedFields, missdetail.FieldReason)
 }
 
 // SetCount sets the "count" field.
@@ -20374,7 +20361,7 @@ func (m *MissDetailMutation) OldField(ctx context.Context, name string) (ent.Val
 func (m *MissDetailMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case missdetail.FieldReason:
-		v, ok := value.(missdetail.Reason)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -20432,9 +20419,6 @@ func (m *MissDetailMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *MissDetailMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(missdetail.FieldReason) {
-		fields = append(fields, missdetail.FieldReason)
-	}
 	if m.FieldCleared(missdetail.FieldCount) {
 		fields = append(fields, missdetail.FieldCount)
 	}
@@ -20452,9 +20436,6 @@ func (m *MissDetailMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *MissDetailMutation) ClearField(name string) error {
 	switch name {
-	case missdetail.FieldReason:
-		m.ClearReason()
-		return nil
 	case missdetail.FieldCount:
 		m.ClearCount()
 		return nil

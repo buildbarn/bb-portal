@@ -302,7 +302,7 @@ func (mdq *MissDetailQuery) WithActionCacheStatistics(opts ...func(*ActionCacheS
 // Example:
 //
 //	var v []struct {
-//		Reason missdetail.Reason `json:"reason,omitempty"`
+//		Reason string `json:"reason,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -325,7 +325,7 @@ func (mdq *MissDetailQuery) GroupBy(field string, fields ...string) *MissDetailG
 // Example:
 //
 //	var v []struct {
-//		Reason missdetail.Reason `json:"reason,omitempty"`
+//		Reason string `json:"reason,omitempty"`
 //	}
 //
 //	client.MissDetail.Query().

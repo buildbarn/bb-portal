@@ -3,10 +3,6 @@
 package missdetail
 
 import (
-	"fmt"
-	"io"
-	"strconv"
-
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -61,38 +57,6 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// Reason defines the type for the "reason" enum field.
-type Reason string
-
-// ReasonUNKNOWN is the default value of the Reason enum.
-const DefaultReason = ReasonUNKNOWN
-
-// Reason values.
-const (
-	ReasonDIFFERENT_ACTION_KEY    Reason = "DIFFERENT_ACTION_KEY"
-	ReasonDIFFERENT_DEPS          Reason = "DIFFERENT_DEPS"
-	ReasonDIFFERENT_ENVIRONMENT   Reason = "DIFFERENT_ENVIRONMENT"
-	ReasonDIFFERENT_FILES         Reason = "DIFFERENT_FILES"
-	ReasonCORRUPTED_CACHE_ENTRY   Reason = "CORRUPTED_CACHE_ENTRY"
-	ReasonNOT_CACHED              Reason = "NOT_CACHED"
-	ReasonUNCONDITIONAL_EXECUTION Reason = "UNCONDITIONAL_EXECUTION"
-	ReasonUNKNOWN                 Reason = "UNKNOWN"
-)
-
-func (r Reason) String() string {
-	return string(r)
-}
-
-// ReasonValidator is a validator for the "reason" field enum values. It is called by the builders before save.
-func ReasonValidator(r Reason) error {
-	switch r {
-	case ReasonDIFFERENT_ACTION_KEY, ReasonDIFFERENT_DEPS, ReasonDIFFERENT_ENVIRONMENT, ReasonDIFFERENT_FILES, ReasonCORRUPTED_CACHE_ENTRY, ReasonNOT_CACHED, ReasonUNCONDITIONAL_EXECUTION, ReasonUNKNOWN:
-		return nil
-	default:
-		return fmt.Errorf("missdetail: invalid enum value for reason field: %q", r)
-	}
-}
-
 // OrderOption defines the ordering options for the MissDetail queries.
 type OrderOption func(*sql.Selector)
 
@@ -123,22 +87,4 @@ func newActionCacheStatisticsStep() *sqlgraph.Step {
 		sqlgraph.To(ActionCacheStatisticsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, ActionCacheStatisticsTable, ActionCacheStatisticsColumn),
 	)
-}
-
-// MarshalGQL implements graphql.Marshaler interface.
-func (e Reason) MarshalGQL(w io.Writer) {
-	io.WriteString(w, strconv.Quote(e.String()))
-}
-
-// UnmarshalGQL implements graphql.Unmarshaler interface.
-func (e *Reason) UnmarshalGQL(val interface{}) error {
-	str, ok := val.(string)
-	if !ok {
-		return fmt.Errorf("enum %T must be a string", val)
-	}
-	*e = Reason(str)
-	if err := ReasonValidator(*e); err != nil {
-		return fmt.Errorf("%s is not a valid Reason", str)
-	}
-	return nil
 }

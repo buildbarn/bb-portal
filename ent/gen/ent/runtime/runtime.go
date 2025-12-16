@@ -85,8 +85,6 @@ func init() {
 	invocationtargetDescSuccess := invocationtargetFields[0].Descriptor()
 	// invocationtarget.DefaultSuccess holds the default value on creation for the success field.
 	invocationtarget.DefaultSuccess = invocationtargetDescSuccess.Default.(bool)
-	missdetailFields := authschema.MissDetail{}.Fields()
-	_ = missdetailFields
 	target.Policy = privacy.NewPolicies(authschema.Target{})
 	target.Hooks[0] = func(next ent.Mutator) ent.Mutator {
 		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {

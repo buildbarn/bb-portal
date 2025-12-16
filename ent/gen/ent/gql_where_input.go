@@ -8062,12 +8062,19 @@ type MissDetailWhereInput struct {
 	IDLTE   *int  `json:"idLTE,omitempty"`
 
 	// "reason" field predicates.
-	Reason       *missdetail.Reason  `json:"reason,omitempty"`
-	ReasonNEQ    *missdetail.Reason  `json:"reasonNEQ,omitempty"`
-	ReasonIn     []missdetail.Reason `json:"reasonIn,omitempty"`
-	ReasonNotIn  []missdetail.Reason `json:"reasonNotIn,omitempty"`
-	ReasonIsNil  bool                `json:"reasonIsNil,omitempty"`
-	ReasonNotNil bool                `json:"reasonNotNil,omitempty"`
+	Reason             *string  `json:"reason,omitempty"`
+	ReasonNEQ          *string  `json:"reasonNEQ,omitempty"`
+	ReasonIn           []string `json:"reasonIn,omitempty"`
+	ReasonNotIn        []string `json:"reasonNotIn,omitempty"`
+	ReasonGT           *string  `json:"reasonGT,omitempty"`
+	ReasonGTE          *string  `json:"reasonGTE,omitempty"`
+	ReasonLT           *string  `json:"reasonLT,omitempty"`
+	ReasonLTE          *string  `json:"reasonLTE,omitempty"`
+	ReasonContains     *string  `json:"reasonContains,omitempty"`
+	ReasonHasPrefix    *string  `json:"reasonHasPrefix,omitempty"`
+	ReasonHasSuffix    *string  `json:"reasonHasSuffix,omitempty"`
+	ReasonEqualFold    *string  `json:"reasonEqualFold,omitempty"`
+	ReasonContainsFold *string  `json:"reasonContainsFold,omitempty"`
 
 	// "count" field predicates.
 	Count       *int32  `json:"count,omitempty"`
@@ -8193,11 +8200,32 @@ func (i *MissDetailWhereInput) P() (predicate.MissDetail, error) {
 	if len(i.ReasonNotIn) > 0 {
 		predicates = append(predicates, missdetail.ReasonNotIn(i.ReasonNotIn...))
 	}
-	if i.ReasonIsNil {
-		predicates = append(predicates, missdetail.ReasonIsNil())
+	if i.ReasonGT != nil {
+		predicates = append(predicates, missdetail.ReasonGT(*i.ReasonGT))
 	}
-	if i.ReasonNotNil {
-		predicates = append(predicates, missdetail.ReasonNotNil())
+	if i.ReasonGTE != nil {
+		predicates = append(predicates, missdetail.ReasonGTE(*i.ReasonGTE))
+	}
+	if i.ReasonLT != nil {
+		predicates = append(predicates, missdetail.ReasonLT(*i.ReasonLT))
+	}
+	if i.ReasonLTE != nil {
+		predicates = append(predicates, missdetail.ReasonLTE(*i.ReasonLTE))
+	}
+	if i.ReasonContains != nil {
+		predicates = append(predicates, missdetail.ReasonContains(*i.ReasonContains))
+	}
+	if i.ReasonHasPrefix != nil {
+		predicates = append(predicates, missdetail.ReasonHasPrefix(*i.ReasonHasPrefix))
+	}
+	if i.ReasonHasSuffix != nil {
+		predicates = append(predicates, missdetail.ReasonHasSuffix(*i.ReasonHasSuffix))
+	}
+	if i.ReasonEqualFold != nil {
+		predicates = append(predicates, missdetail.ReasonEqualFold(*i.ReasonEqualFold))
+	}
+	if i.ReasonContainsFold != nil {
+		predicates = append(predicates, missdetail.ReasonContainsFold(*i.ReasonContainsFold))
 	}
 	if i.Count != nil {
 		predicates = append(predicates, missdetail.CountEQ(*i.Count))

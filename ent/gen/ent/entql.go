@@ -466,7 +466,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "MissDetail",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			missdetail.FieldReason: {Type: field.TypeEnum, Column: missdetail.FieldReason},
+			missdetail.FieldReason: {Type: field.TypeString, Column: missdetail.FieldReason},
 			missdetail.FieldCount:  {Type: field.TypeInt32, Column: missdetail.FieldCount},
 		},
 	}

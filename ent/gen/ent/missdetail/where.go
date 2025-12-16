@@ -53,39 +53,79 @@ func IDLTE(id int) predicate.MissDetail {
 	return predicate.MissDetail(sql.FieldLTE(FieldID, id))
 }
 
+// Reason applies equality check predicate on the "reason" field. It's identical to ReasonEQ.
+func Reason(v string) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldEQ(FieldReason, v))
+}
+
 // Count applies equality check predicate on the "count" field. It's identical to CountEQ.
 func Count(v int32) predicate.MissDetail {
 	return predicate.MissDetail(sql.FieldEQ(FieldCount, v))
 }
 
 // ReasonEQ applies the EQ predicate on the "reason" field.
-func ReasonEQ(v Reason) predicate.MissDetail {
+func ReasonEQ(v string) predicate.MissDetail {
 	return predicate.MissDetail(sql.FieldEQ(FieldReason, v))
 }
 
 // ReasonNEQ applies the NEQ predicate on the "reason" field.
-func ReasonNEQ(v Reason) predicate.MissDetail {
+func ReasonNEQ(v string) predicate.MissDetail {
 	return predicate.MissDetail(sql.FieldNEQ(FieldReason, v))
 }
 
 // ReasonIn applies the In predicate on the "reason" field.
-func ReasonIn(vs ...Reason) predicate.MissDetail {
+func ReasonIn(vs ...string) predicate.MissDetail {
 	return predicate.MissDetail(sql.FieldIn(FieldReason, vs...))
 }
 
 // ReasonNotIn applies the NotIn predicate on the "reason" field.
-func ReasonNotIn(vs ...Reason) predicate.MissDetail {
+func ReasonNotIn(vs ...string) predicate.MissDetail {
 	return predicate.MissDetail(sql.FieldNotIn(FieldReason, vs...))
 }
 
-// ReasonIsNil applies the IsNil predicate on the "reason" field.
-func ReasonIsNil() predicate.MissDetail {
-	return predicate.MissDetail(sql.FieldIsNull(FieldReason))
+// ReasonGT applies the GT predicate on the "reason" field.
+func ReasonGT(v string) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldGT(FieldReason, v))
 }
 
-// ReasonNotNil applies the NotNil predicate on the "reason" field.
-func ReasonNotNil() predicate.MissDetail {
-	return predicate.MissDetail(sql.FieldNotNull(FieldReason))
+// ReasonGTE applies the GTE predicate on the "reason" field.
+func ReasonGTE(v string) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldGTE(FieldReason, v))
+}
+
+// ReasonLT applies the LT predicate on the "reason" field.
+func ReasonLT(v string) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldLT(FieldReason, v))
+}
+
+// ReasonLTE applies the LTE predicate on the "reason" field.
+func ReasonLTE(v string) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldLTE(FieldReason, v))
+}
+
+// ReasonContains applies the Contains predicate on the "reason" field.
+func ReasonContains(v string) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldContains(FieldReason, v))
+}
+
+// ReasonHasPrefix applies the HasPrefix predicate on the "reason" field.
+func ReasonHasPrefix(v string) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldHasPrefix(FieldReason, v))
+}
+
+// ReasonHasSuffix applies the HasSuffix predicate on the "reason" field.
+func ReasonHasSuffix(v string) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldHasSuffix(FieldReason, v))
+}
+
+// ReasonEqualFold applies the EqualFold predicate on the "reason" field.
+func ReasonEqualFold(v string) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldEqualFold(FieldReason, v))
+}
+
+// ReasonContainsFold applies the ContainsFold predicate on the "reason" field.
+func ReasonContainsFold(v string) predicate.MissDetail {
+	return predicate.MissDetail(sql.FieldContainsFold(FieldReason, v))
 }
 
 // CountEQ applies the EQ predicate on the "count" field.
