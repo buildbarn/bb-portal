@@ -25,7 +25,6 @@ go_library(
         "//ent/gen/ent/instancename",
         "//ent/gen/ent/invocationfiles",
         "//ent/gen/ent/invocationtarget",
-        "//ent/gen/ent/missdetail",
         "//ent/gen/ent/sourcecontrol",
         "//ent/gen/ent/target",
         "//ent/gen/ent/testcollection",

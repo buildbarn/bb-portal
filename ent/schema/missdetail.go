@@ -16,16 +16,7 @@ type MissDetail struct {
 func (MissDetail) Fields() []ent.Field {
 	return []ent.Field{
 		// Reasons for not finding an action in the cache.
-		field.Enum("reason").
-			Values("DIFFERENT_ACTION_KEY",
-				"DIFFERENT_DEPS",
-				"DIFFERENT_ENVIRONMENT",
-				"DIFFERENT_FILES",
-				"CORRUPTED_CACHE_ENTRY",
-				"NOT_CACHED",
-				"UNCONDITIONAL_EXECUTION",
-				"UNKNOWN").
-			Default("UNKNOWN").Optional(),
+		field.String("reason"),
 
 		// Counter for this type.
 		field.Int32("count").Optional(),

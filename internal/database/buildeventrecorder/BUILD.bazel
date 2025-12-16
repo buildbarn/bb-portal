@@ -33,7 +33,6 @@ go_library(
         "//ent/gen/ent/connectionmetadata",
         "//ent/gen/ent/eventmetadata",
         "//ent/gen/ent/invocationtarget",
-        "//ent/gen/ent/missdetail",
         "//ent/gen/ent/predicate",
         "//ent/gen/ent/target",
         "//ent/gen/ent/targetkindmapping",

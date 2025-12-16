@@ -2438,22 +2438,9 @@ input MetricsWhereInput {
 }
 type MissDetail implements Node {
   id: ID!
-  reason: MissDetailReason
+  reason: String!
   count: Int
   actionCacheStatistics: ActionCacheStatistics
-}
-"""
-MissDetailReason is enum for the field reason
-"""
-enum MissDetailReason @goModel(model: "github.com/buildbarn/bb-portal/ent/gen/ent/missdetail.Reason") {
-  DIFFERENT_ACTION_KEY
-  DIFFERENT_DEPS
-  DIFFERENT_ENVIRONMENT
-  DIFFERENT_FILES
-  CORRUPTED_CACHE_ENTRY
-  NOT_CACHED
-  UNCONDITIONAL_EXECUTION
-  UNKNOWN
 }
 """
 MissDetailWhereInput is used for filtering MissDetail objects.
@@ -2477,12 +2464,19 @@ input MissDetailWhereInput {
   """
   reason field predicates
   """
-  reason: MissDetailReason
-  reasonNEQ: MissDetailReason
-  reasonIn: [MissDetailReason!]
-  reasonNotIn: [MissDetailReason!]
-  reasonIsNil: Boolean
-  reasonNotNil: Boolean
+  reason: String
+  reasonNEQ: String
+  reasonIn: [String!]
+  reasonNotIn: [String!]
+  reasonGT: String
+  reasonGTE: String
+  reasonLT: String
+  reasonLTE: String
+  reasonContains: String
+  reasonHasPrefix: String
+  reasonHasSuffix: String
+  reasonEqualFold: String
+  reasonContainsFold: String
   """
   count field predicates
   """

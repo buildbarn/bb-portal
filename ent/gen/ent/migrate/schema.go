@@ -762,7 +762,7 @@ var (
 	// MissDetailsColumns holds the columns for the "miss_details" table.
 	MissDetailsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "reason", Type: field.TypeEnum, Nullable: true, Enums: []string{"DIFFERENT_ACTION_KEY", "DIFFERENT_DEPS", "DIFFERENT_ENVIRONMENT", "DIFFERENT_FILES", "CORRUPTED_CACHE_ENTRY", "NOT_CACHED", "UNCONDITIONAL_EXECUTION", "UNKNOWN"}, Default: "UNKNOWN"},
+		{Name: "reason", Type: field.TypeString},
 		{Name: "count", Type: field.TypeInt32, Nullable: true},
 		{Name: "action_cache_statistics_miss_details", Type: field.TypeInt, Nullable: true},
 	}

@@ -23,16 +23,8 @@ type MissDetailCreate struct {
 }
 
 // SetReason sets the "reason" field.
-func (mdc *MissDetailCreate) SetReason(m missdetail.Reason) *MissDetailCreate {
-	mdc.mutation.SetReason(m)
-	return mdc
-}
-
-// SetNillableReason sets the "reason" field if the given value is not nil.
-func (mdc *MissDetailCreate) SetNillableReason(m *missdetail.Reason) *MissDetailCreate {
-	if m != nil {
-		mdc.SetReason(*m)
-	}
+func (mdc *MissDetailCreate) SetReason(s string) *MissDetailCreate {
+	mdc.mutation.SetReason(s)
 	return mdc
 }
 
@@ -76,7 +68,6 @@ func (mdc *MissDetailCreate) Mutation() *MissDetailMutation {
 
 // Save creates the MissDetail in the database.
 func (mdc *MissDetailCreate) Save(ctx context.Context) (*MissDetail, error) {
-	mdc.defaults()
 	return withHooks(ctx, mdc.sqlSave, mdc.mutation, mdc.hooks)
 }
 
@@ -102,20 +93,10 @@ func (mdc *MissDetailCreate) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (mdc *MissDetailCreate) defaults() {
-	if _, ok := mdc.mutation.Reason(); !ok {
-		v := missdetail.DefaultReason
-		mdc.mutation.SetReason(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (mdc *MissDetailCreate) check() error {
-	if v, ok := mdc.mutation.Reason(); ok {
-		if err := missdetail.ReasonValidator(v); err != nil {
-			return &ValidationError{Name: "reason", err: fmt.Errorf(`ent: validator failed for field "MissDetail.reason": %w`, err)}
-		}
+	if _, ok := mdc.mutation.Reason(); !ok {
+		return &ValidationError{Name: "reason", err: errors.New(`ent: missing required field "MissDetail.reason"`)}
 	}
 	return nil
 }
@@ -145,7 +126,7 @@ func (mdc *MissDetailCreate) createSpec() (*MissDetail, *sqlgraph.CreateSpec) {
 	)
 	_spec.OnConflict = mdc.conflict
 	if value, ok := mdc.mutation.Reason(); ok {
-		_spec.SetField(missdetail.FieldReason, field.TypeEnum, value)
+		_spec.SetField(missdetail.FieldReason, field.TypeString, value)
 		_node.Reason = value
 	}
 	if value, ok := mdc.mutation.Count(); ok {
@@ -222,7 +203,7 @@ type (
 )
 
 // SetReason sets the "reason" field.
-func (u *MissDetailUpsert) SetReason(v missdetail.Reason) *MissDetailUpsert {
+func (u *MissDetailUpsert) SetReason(v string) *MissDetailUpsert {
 	u.Set(missdetail.FieldReason, v)
 	return u
 }
@@ -230,12 +211,6 @@ func (u *MissDetailUpsert) SetReason(v missdetail.Reason) *MissDetailUpsert {
 // UpdateReason sets the "reason" field to the value that was provided on create.
 func (u *MissDetailUpsert) UpdateReason() *MissDetailUpsert {
 	u.SetExcluded(missdetail.FieldReason)
-	return u
-}
-
-// ClearReason clears the value of the "reason" field.
-func (u *MissDetailUpsert) ClearReason() *MissDetailUpsert {
-	u.SetNull(missdetail.FieldReason)
 	return u
 }
 
@@ -304,7 +279,7 @@ func (u *MissDetailUpsertOne) Update(set func(*MissDetailUpsert)) *MissDetailUps
 }
 
 // SetReason sets the "reason" field.
-func (u *MissDetailUpsertOne) SetReason(v missdetail.Reason) *MissDetailUpsertOne {
+func (u *MissDetailUpsertOne) SetReason(v string) *MissDetailUpsertOne {
 	return u.Update(func(s *MissDetailUpsert) {
 		s.SetReason(v)
 	})
@@ -314,13 +289,6 @@ func (u *MissDetailUpsertOne) SetReason(v missdetail.Reason) *MissDetailUpsertOn
 func (u *MissDetailUpsertOne) UpdateReason() *MissDetailUpsertOne {
 	return u.Update(func(s *MissDetailUpsert) {
 		s.UpdateReason()
-	})
-}
-
-// ClearReason clears the value of the "reason" field.
-func (u *MissDetailUpsertOne) ClearReason() *MissDetailUpsertOne {
-	return u.Update(func(s *MissDetailUpsert) {
-		s.ClearReason()
 	})
 }
 
@@ -404,7 +372,6 @@ func (mdcb *MissDetailCreateBulk) Save(ctx context.Context) ([]*MissDetail, erro
 	for i := range mdcb.builders {
 		func(i int, root context.Context) {
 			builder := mdcb.builders[i]
-			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*MissDetailMutation)
 				if !ok {
@@ -557,7 +524,7 @@ func (u *MissDetailUpsertBulk) Update(set func(*MissDetailUpsert)) *MissDetailUp
 }
 
 // SetReason sets the "reason" field.
-func (u *MissDetailUpsertBulk) SetReason(v missdetail.Reason) *MissDetailUpsertBulk {
+func (u *MissDetailUpsertBulk) SetReason(v string) *MissDetailUpsertBulk {
 	return u.Update(func(s *MissDetailUpsert) {
 		s.SetReason(v)
 	})
@@ -567,13 +534,6 @@ func (u *MissDetailUpsertBulk) SetReason(v missdetail.Reason) *MissDetailUpsertB
 func (u *MissDetailUpsertBulk) UpdateReason() *MissDetailUpsertBulk {
 	return u.Update(func(s *MissDetailUpsert) {
 		s.UpdateReason()
-	})
-}
-
-// ClearReason clears the value of the "reason" field.
-func (u *MissDetailUpsertBulk) ClearReason() *MissDetailUpsertBulk {
-	return u.Update(func(s *MissDetailUpsert) {
-		s.ClearReason()
 	})
 }
 

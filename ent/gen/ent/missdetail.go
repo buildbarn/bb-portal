@@ -18,7 +18,7 @@ type MissDetail struct {
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
 	// Reason holds the value of the "reason" field.
-	Reason missdetail.Reason `json:"reason,omitempty"`
+	Reason string `json:"reason,omitempty"`
 	// Count holds the value of the "count" field.
 	Count int32 `json:"count,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -86,7 +86,7 @@ func (md *MissDetail) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field reason", values[i])
 			} else if value.Valid {
-				md.Reason = missdetail.Reason(value.String)
+				md.Reason = value.String
 			}
 		case missdetail.FieldCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -143,7 +143,7 @@ func (md *MissDetail) String() string {
 	builder.WriteString("MissDetail(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", md.ID))
 	builder.WriteString("reason=")
-	builder.WriteString(fmt.Sprintf("%v", md.Reason))
+	builder.WriteString(md.Reason)
 	builder.WriteString(", ")
 	builder.WriteString("count=")
 	builder.WriteString(fmt.Sprintf("%v", md.Count))

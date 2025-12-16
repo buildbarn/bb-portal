@@ -2,12 +2,13 @@ package buildeventrecorder
 
 import (
 	"context"
+	"fmt"
+	"log/slog"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	besmetrics "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics"
 	bescore "github.com/bazelbuild/bazel/src/main/protobuf"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
@@ -17,11 +18,18 @@ func (r *BuildEventRecorder) saveMissDetails(ctx context.Context, tx *ent.Tx, mi
 	}
 
 	err := tx.MissDetail.MapCreateBulk(missDetails, func(create *ent.MissDetailCreate, i int) {
-		missDetal := missDetails[i]
+		missDetail := missDetails[i]
+
 		create.
-			SetCount(missDetal.Count).
-			SetReason(missdetail.Reason(missDetal.Reason.String())).
+			SetCount(missDetail.Count).
 			SetActionCacheStatisticsID(actionCacheStatisticsDbID)
+
+		if value, ok := bescore.ActionCacheStatistics_MissReason_name[int32(*missDetail.Reason.Enum())]; ok {
+			create.SetReason(value)
+		} else {
+			create.SetReason("UNKOWN")
+			slog.Warn(fmt.Sprintf("Unknown ActionCacheStatistic Miss reason enum value: %d. This is probably because a new Bazel verison has a new enum value that bb-portal doens't implement.", *missDetail.Reason.Enum()))
+		}
 	}).Exec(ctx)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to save miss details to database")
