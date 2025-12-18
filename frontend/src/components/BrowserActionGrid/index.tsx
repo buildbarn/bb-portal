@@ -22,6 +22,7 @@ import BrowserCommandDescription from "../BrowserCommandDescription";
 import BrowserDirectory from "../BrowserDirectory";
 import BrowserPreviousExecutionsDisplay from "../BrowserPreviousExecutionsDisplay";
 import BrowserResultDescription from "../BrowserResultDescription";
+import ConditionalToolInvocationLink from "../ConditionalToolInvocationLink";
 import ExecutionMetadataTimeline from "../ExecutionMetadataTimeline";
 import FilesTable from "../FilesTable";
 import {
@@ -315,7 +316,9 @@ const BrowserActionGrid: React.FC<Params> = ({
               </Descriptions.Item>
             )}
             <Descriptions.Item label="Tool invocation ID">
-              {data.requestMetadata.toolInvocationId}
+              <ConditionalToolInvocationLink
+                toolInvocationID={data.requestMetadata.toolInvocationId}
+              />
             </Descriptions.Item>
             <Descriptions.Item label="Correlated invocations ID">
               {data.requestMetadata.correlatedInvocationsId}
