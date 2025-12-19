@@ -118,8 +118,6 @@ type BazelInvocationEdges struct {
 	BuildLogChunks []*BuildLogChunk `json:"build_log_chunks,omitempty"`
 	// InvocationFiles holds the value of the invocation_files edge.
 	InvocationFiles []*InvocationFiles `json:"invocation_files,omitempty"`
-	// TestCollection holds the value of the test_collection edge.
-	TestCollection []*TestCollection `json:"test_collection,omitempty"`
 	// InvocationTargets holds the value of the invocation_targets edge.
 	InvocationTargets []*InvocationTarget `json:"invocation_targets,omitempty"`
 	// TargetKindMappings holds the value of the target_kind_mappings edge.
@@ -128,9 +126,9 @@ type BazelInvocationEdges struct {
 	SourceControl *SourceControl `json:"source_control,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [16]bool
+	loadedTypes [15]bool
 	// totalCount holds the count of the edges above.
-	totalCount [10]map[string]int
+	totalCount [9]map[string]int
 
 	namedConnectionMetadata  map[string][]*ConnectionMetadata
 	namedConfigurations      map[string][]*Configuration
@@ -139,7 +137,6 @@ type BazelInvocationEdges struct {
 	namedIncompleteBuildLogs map[string][]*IncompleteBuildLog
 	namedBuildLogChunks      map[string][]*BuildLogChunk
 	namedInvocationFiles     map[string][]*InvocationFiles
-	namedTestCollection      map[string][]*TestCollection
 	namedInvocationTargets   map[string][]*InvocationTarget
 	namedTargetKindMappings  map[string][]*TargetKindMapping
 }
@@ -262,19 +259,10 @@ func (e BazelInvocationEdges) InvocationFilesOrErr() ([]*InvocationFiles, error)
 	return nil, &NotLoadedError{edge: "invocation_files"}
 }
 
-// TestCollectionOrErr returns the TestCollection value or an error if the edge
-// was not loaded in eager-loading.
-func (e BazelInvocationEdges) TestCollectionOrErr() ([]*TestCollection, error) {
-	if e.loadedTypes[12] {
-		return e.TestCollection, nil
-	}
-	return nil, &NotLoadedError{edge: "test_collection"}
-}
-
 // InvocationTargetsOrErr returns the InvocationTargets value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, error) {
-	if e.loadedTypes[13] {
+	if e.loadedTypes[12] {
 		return e.InvocationTargets, nil
 	}
 	return nil, &NotLoadedError{edge: "invocation_targets"}
@@ -283,7 +271,7 @@ func (e BazelInvocationEdges) InvocationTargetsOrErr() ([]*InvocationTarget, err
 // TargetKindMappingsOrErr returns the TargetKindMappings value or an error if the edge
 // was not loaded in eager-loading.
 func (e BazelInvocationEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, error) {
-	if e.loadedTypes[14] {
+	if e.loadedTypes[13] {
 		return e.TargetKindMappings, nil
 	}
 	return nil, &NotLoadedError{edge: "target_kind_mappings"}
@@ -294,7 +282,7 @@ func (e BazelInvocationEdges) TargetKindMappingsOrErr() ([]*TargetKindMapping, e
 func (e BazelInvocationEdges) SourceControlOrErr() (*SourceControl, error) {
 	if e.SourceControl != nil {
 		return e.SourceControl, nil
-	} else if e.loadedTypes[15] {
+	} else if e.loadedTypes[14] {
 		return nil, &NotFoundError{label: sourcecontrol.Label}
 	}
 	return nil, &NotLoadedError{edge: "source_control"}
@@ -621,11 +609,6 @@ func (bi *BazelInvocation) QueryInvocationFiles() *InvocationFilesQuery {
 	return NewBazelInvocationClient(bi.config).QueryInvocationFiles(bi)
 }
 
-// QueryTestCollection queries the "test_collection" edge of the BazelInvocation entity.
-func (bi *BazelInvocation) QueryTestCollection() *TestCollectionQuery {
-	return NewBazelInvocationClient(bi.config).QueryTestCollection(bi)
-}
-
 // QueryInvocationTargets queries the "invocation_targets" edge of the BazelInvocation entity.
 func (bi *BazelInvocation) QueryInvocationTargets() *InvocationTargetQuery {
 	return NewBazelInvocationClient(bi.config).QueryInvocationTargets(bi)
@@ -921,30 +904,6 @@ func (bi *BazelInvocation) appendNamedInvocationFiles(name string, edges ...*Inv
 		bi.Edges.namedInvocationFiles[name] = []*InvocationFiles{}
 	} else {
 		bi.Edges.namedInvocationFiles[name] = append(bi.Edges.namedInvocationFiles[name], edges...)
-	}
-}
-
-// NamedTestCollection returns the TestCollection named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedTestCollection(name string) ([]*TestCollection, error) {
-	if bi.Edges.namedTestCollection == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := bi.Edges.namedTestCollection[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (bi *BazelInvocation) appendNamedTestCollection(name string, edges ...*TestCollection) {
-	if bi.Edges.namedTestCollection == nil {
-		bi.Edges.namedTestCollection = make(map[string][]*TestCollection)
-	}
-	if len(edges) == 0 {
-		bi.Edges.namedTestCollection[name] = []*TestCollection{}
-	} else {
-		bi.Edges.namedTestCollection[name] = append(bi.Edges.namedTestCollection[name], edges...)
 	}
 }
 

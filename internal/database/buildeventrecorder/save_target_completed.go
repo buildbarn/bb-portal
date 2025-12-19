@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"log/slog"
 	"strings"
 	"time"
 
@@ -11,7 +12,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
-
+	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -23,8 +24,17 @@ import (
 // completed for a set of events where the corresponding target
 // configured event has already been handled.
 func (r *BuildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch []BuildEventWithInfo) error {
-	if r.saveTargetDataLevel.GetNone() != nil || len(batch) == 0 {
+	if len(batch) == 0 {
 		return nil
+	}
+
+	switch r.saveDataLevel.GetLevel().(type) {
+	case *bb_portal.BuildEventStreamService_SaveDataLevel_Basic:
+		return nil
+	case *bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTarget:
+		// Continue processing.
+	default:
+		return status.Error(codes.Internal, "Attempted to save target completed events when `saveDataLevel` is not recognized. This is probably a bug.")
 	}
 
 	ctx, span := r.tracer.Start(
@@ -58,8 +68,12 @@ func (r *BuildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch
 		return util.StatusWrap(err, "Failed to get target info mapping")
 	}
 
-	if err = createInvocationTargetsBulk(ctx, r.IsRealTime, r.InvocationDbID, tx, batch, targetInfoMap); err != nil {
+	if err := createInvocationTargetsBulk(ctx, r.IsRealTime, r.InvocationDbID, tx, batch, targetInfoMap); err != nil {
 		return util.StatusWrap(err, "Failed to bulk insert invocation targets")
+	}
+
+	if err := r.createTestSummariesFromTargetCompletedChildren(ctx, tx, batch); err != nil {
+		return util.StatusWrap(err, "Failed to bulk insert test summaries")
 	}
 
 	if err := r.saveHandledEventsForBatch(ctx, batch, tx); err != nil {
@@ -134,7 +148,56 @@ func createInvocationTargetsBulk(ctx context.Context, isRealTime bool, invocatio
 			params.AbortReasons[i] = string(invocationtarget.AbortReasonNONE)
 		}
 	}
-	return tx.Sqlc().CreateInvocationTargetsBulk(ctx, params)
+	if err := tx.Sqlc().CreateInvocationTargetsBulk(ctx, params); err != nil {
+		return util.StatusWrap(err, "Failed to create invocation targets in bulk")
+	}
+
+	return nil
+}
+
+func (r *BuildEventRecorder) createTestSummariesFromTargetCompletedChildren(ctx context.Context, tx database.Handle, batch []BuildEventWithInfo) error {
+	params := sqlc.CreateTestSummariesBulkParams{
+		BazelInvocationID: int64(r.InvocationDbID),
+		InstanceNameID:    int64(r.InstanceNameDbID),
+		Labels:            make([]string, 0, len(batch)),
+		ConfigIds:         make([]string, 0, len(batch)),
+	}
+
+	for _, x := range batch {
+		be := x.Event
+		targetCompletedID := be.GetId().GetTargetCompleted()
+
+		for _, child := range be.Children {
+			if child.GetTestSummary() != nil {
+				params.BazelInvocationID = int64(r.InvocationDbID)
+				params.Labels = append(params.Labels, targetCompletedID.Label)
+				params.ConfigIds = append(params.ConfigIds, targetCompletedID.GetConfiguration().GetId())
+
+				if targetCompletedID.Aspect != "" {
+					slog.Warn(
+						"Got TargetCompleted event with non-empty aspect and TestSummary child event. Buildbarn portal assumes that this should not happen, and the targets shown for this invocation might not be entirely correct.",
+						slog.String("invID", r.InvocationID),
+						slog.String("label", targetCompletedID.Label),
+						slog.String("aspect", targetCompletedID.Aspect),
+					)
+				}
+			}
+		}
+	}
+
+	if len(params.Labels) == 0 {
+		return nil
+	}
+
+	affectedRows, err := tx.Sqlc().CreateTestSummariesBulk(ctx, params)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to bulk insert test summaries")
+	}
+	if int(affectedRows) != len(params.Labels) {
+		return status.Errorf(codes.Internal, "Expected to insert %d test summaries, but only %d were inserted", len(params.Labels), affectedRows)
+	}
+
+	return nil
 }
 
 type invocationTargetKey struct {

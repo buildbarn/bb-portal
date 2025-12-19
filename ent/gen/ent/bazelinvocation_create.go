@@ -27,7 +27,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/google/uuid"
 )
 
@@ -603,21 +602,6 @@ func (bic *BazelInvocationCreate) AddInvocationFiles(i ...*InvocationFiles) *Baz
 	return bic.AddInvocationFileIDs(ids...)
 }
 
-// AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by IDs.
-func (bic *BazelInvocationCreate) AddTestCollectionIDs(ids ...int64) *BazelInvocationCreate {
-	bic.mutation.AddTestCollectionIDs(ids...)
-	return bic
-}
-
-// AddTestCollection adds the "test_collection" edges to the TestCollection entity.
-func (bic *BazelInvocationCreate) AddTestCollection(t ...*TestCollection) *BazelInvocationCreate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return bic.AddTestCollectionIDs(ids...)
-}
-
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by IDs.
 func (bic *BazelInvocationCreate) AddInvocationTargetIDs(ids ...int64) *BazelInvocationCreate {
 	bic.mutation.AddInvocationTargetIDs(ids...)
@@ -1101,22 +1085,6 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(invocationfiles.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := bic.mutation.TestCollectionIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.TestCollectionTable,
-			Columns: []string{bazelinvocation.TestCollectionColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

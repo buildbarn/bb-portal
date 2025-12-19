@@ -12,6 +12,7 @@ go_library(
         "//ent/gen/ent/build",
         "//ent/gen/ent/invocationtarget",
         "//ent/gen/ent/target",
+        "//ent/gen/ent/testsummary",
         "@io_entgo_ent//:ent",
         "@io_entgo_ent//privacy",
     ],

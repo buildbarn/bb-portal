@@ -9,10 +9,5 @@ go_library(
     ],
     importpath = "github.com/buildbarn/bb-portal/internal/graphql/model",
     visibility = ["//:__subpackages__"],
-    deps = [
-        "//ent/gen/ent",
-        "//ent/gen/ent/testcollection",
-        "//pkg/proto/bazelbuild/bazel/bes:build_event_stream",
-        "@com_github_google_uuid//:uuid",
-    ],
+    deps = ["//ent/gen/ent"],
 )

@@ -10,7 +10,9 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//ent/gen/ent",
+        "//ent/gen/ent/invocationtarget",
         "//ent/gen/ent/privacy",
+        "//ent/gen/ent/testsummary",
         "//ent/schema",
         "//internal/database/dbauthservice",
         "@io_entgo_ent//entql",

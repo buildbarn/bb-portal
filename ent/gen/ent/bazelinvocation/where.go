@@ -1677,29 +1677,6 @@ func HasInvocationFilesWith(preds ...predicate.InvocationFiles) predicate.BazelI
 	})
 }
 
-// HasTestCollection applies the HasEdge predicate on the "test_collection" edge.
-func HasTestCollection() predicate.BazelInvocation {
-	return predicate.BazelInvocation(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, TestCollectionTable, TestCollectionColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasTestCollectionWith applies the HasEdge predicate on the "test_collection" edge with a given conditions (other predicates).
-func HasTestCollectionWith(preds ...predicate.TestCollection) predicate.BazelInvocation {
-	return predicate.BazelInvocation(func(s *sql.Selector) {
-		step := newTestCollectionStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // HasInvocationTargets applies the HasEdge predicate on the "invocation_targets" edge.
 func HasInvocationTargets() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {

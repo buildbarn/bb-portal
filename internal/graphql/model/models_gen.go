@@ -8,10 +8,7 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
-	"github.com/google/uuid"
 )
 
 type BuildStep interface {
@@ -85,16 +82,6 @@ func (ProgressProblem) IsProblem()            {}
 func (this ProgressProblem) GetID() string    { return this.ID }
 func (this ProgressProblem) GetLabel() string { return this.Label }
 
-type TargetAggregate struct {
-	Label *string `json:"label,omitempty"`
-	Count *int    `json:"count,omitempty"`
-	Sum   *int    `json:"sum,omitempty"`
-	Min   *int    `json:"min,omitempty"`
-	Max   *int    `json:"max,omitempty"`
-	Avg   *int    `json:"avg,omitempty"`
-	Pass  *int    `json:"pass,omitempty"`
-}
-
 type TargetProblem struct {
 	ID    string `json:"id"`
 	Label string `json:"label"`
@@ -105,56 +92,6 @@ func (TargetProblem) IsNode() {}
 func (TargetProblem) IsProblem()            {}
 func (this TargetProblem) GetID() string    { return this.ID }
 func (this TargetProblem) GetLabel() string { return this.Label }
-
-type TestGridCell struct {
-	InvocationID *uuid.UUID                    `json:"invocationId,omitempty"`
-	Status       *testcollection.OverallStatus `json:"status,omitempty"`
-}
-
-type TestGridResult struct {
-	Total  *int           `json:"total,omitempty"`
-	Result []*TestGridRow `json:"result,omitempty"`
-}
-
-type TestGridRow struct {
-	Label    *string         `json:"label,omitempty"`
-	Count    *int            `json:"count,omitempty"`
-	Sum      *int            `json:"sum,omitempty"`
-	Min      *int            `json:"min,omitempty"`
-	Max      *int            `json:"max,omitempty"`
-	Avg      *float64        `json:"avg,omitempty"`
-	PassRate *float64        `json:"passRate,omitempty"`
-	Cells    []*TestGridCell `json:"cells,omitempty"`
-}
-
-type TestProblem struct {
-	ID      string        `json:"id"`
-	Label   string        `json:"label"`
-	Status  string        `json:"status"`
-	Results []*TestResult `json:"results"`
-}
-
-func (TestProblem) IsNode() {}
-
-func (TestProblem) IsProblem()            {}
-func (this TestProblem) GetID() string    { return this.ID }
-func (this TestProblem) GetLabel() string { return this.Label }
-
-type TestResult struct {
-	ID                    string         `json:"id"`
-	Run                   int            `json:"run"`
-	Shard                 int            `json:"shard"`
-	Attempt               int            `json:"attempt"`
-	Status                string         `json:"status"`
-	ActionLogOutput       *BlobReference `json:"actionLogOutput"`
-	UndeclaredTestOutputs *BlobReference `json:"undeclaredTestOutputs,omitempty"`
-	// TestResult object from the Build Event Stream
-	BESTestResult *proto.TestResult `json:"-"`
-	// IDs extracted for later use
-	TestResultID TestResultID `json:"-"`
-}
-
-func (TestResult) IsNode() {}
 
 type User struct {
 	ID    string `json:"id"`

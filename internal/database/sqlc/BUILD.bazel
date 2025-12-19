@@ -13,6 +13,8 @@ go_library(
         "querier.go",
         "target_kind_mappings.sql.go",
         "targets.sql.go",
+        "test_result.sql.go",
+        "test_summary.sql.go",
     ],
     importpath = "github.com/buildbarn/bb-portal/internal/database/sqlc",
     visibility = ["//:__subpackages__"],

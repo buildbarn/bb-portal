@@ -8,9 +8,13 @@ export interface ReadableFormatConfig {
 }
 
 export const readableDuration = (
-  duration: Duration,
+  duration: Duration | undefined | null,
   formatConfig: ReadableFormatConfig = {},
 ): string => {
+  if (duration === undefined || duration === null) {
+    return "-";
+  }
+
   const precision = formatConfig.precision ?? 3;
   const smallestUnit = formatConfig.smallestUnit;
 
@@ -68,21 +72,25 @@ export const readableDuration = (
 };
 
 export const readableDurationFromSeconds = (
-  totalSeconds: number,
+  totalSeconds: number | undefined | null,
   formatConfig: ReadableFormatConfig = {},
 ): string => {
   return readableDuration(
-    dayjs.duration(totalSeconds, "seconds"),
+    totalSeconds === undefined || totalSeconds === null
+      ? null
+      : dayjs.duration(totalSeconds, "seconds"),
     formatConfig,
   );
 };
 
 export const readableDurationFromMilliseconds = (
-  totalMilliseconds: number,
+  totalMilliseconds: number | undefined | null,
   formatConfig: ReadableFormatConfig = {},
 ): string => {
   return readableDuration(
-    dayjs.duration(totalMilliseconds, "milliseconds"),
+    totalMilliseconds === undefined || totalMilliseconds === null
+      ? null
+      : dayjs.duration(totalMilliseconds, "milliseconds"),
     formatConfig,
   );
 };

@@ -111,10 +111,6 @@ func (r *BuildEventRecorder) saveBuildEvent(
 		return r.saveActionExecuted(ctx, tx.Ent(), buildEvent.GetAction(), buildEvent.GetId().GetActionCompleted())
 	case *bes.BuildEventId_Fetch:
 		return r.saveFetch(ctx, tx.Ent(), buildEvent.GetFetch())
-	case *bes.BuildEventId_TestResult:
-		return r.saveTestResult(ctx, tx.Ent(), buildEvent.GetTestResult(), buildEvent.GetId().GetTestResult().Label)
-	case *bes.BuildEventId_TestSummary:
-		return r.saveTestSummary(ctx, tx.Ent(), buildEvent.GetTestSummary(), buildEvent.GetId().GetTestSummary().Label)
 	case *bes.BuildEventId_BuildToolLogs:
 		return r.saveBuildToolLogs(ctx, tx.Ent(), buildEvent.GetBuildToolLogs())
 	case *bes.BuildEventId_WorkspaceStatus:

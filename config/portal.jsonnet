@@ -80,8 +80,7 @@
     blobArchiveFolder: './blob-archive/',
     enableBepFileUpload: true,
     enableGraphqlPlayground: true,
-    saveTargetDataLevel: { enriched: {} },
-    saveTestDataLevel: { enriched: {} },
+    saveDataLevel: { basicAndTarget: {} },
     databaseCleanupConfiguration: {
       cleanupInterval: '60s',
       invocationConnectionTimeout: '60s',

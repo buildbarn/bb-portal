@@ -1,34 +1,48 @@
-import { gql } from '@/graphql/__generated__';
+import { gql } from "@/graphql/__generated__";
 
-export const FIND_TESTS_WITH_CACHE = gql(/* GraphQL */ `
-    query FindTestsWithCache(
-       $first: Int!
-       $where: TestCollectionWhereInput
-       $orderBy: TestCollectionOrder
-       $after: Cursor
-     ){
-     findTests (first: $first, where: $where, orderBy: $orderBy, after: $after){
-       totalCount
-       pageInfo{
-         startCursor
-         endCursor
-         hasNextPage
-         hasPreviousPage
-       }
-       edges {
-         node {
-           id
-           durationMs
-           firstSeen
-           label
-           overallStatus
-           cachedLocally
-           cachedRemotely
-           bazelInvocation {
-             invocationID
-           }
-         }
-       }
-     }
-   }
-   `);
+export const GET_TEST_DETAILS = gql(/* GraphQL */ `
+    query GetTestDetails(
+    $after: Cursor
+    $first: Int
+    $before: Cursor
+    $last: Int
+    $orderBy: TestSummaryOrder
+    $where: TestSummaryWhereInput
+  ){
+    findTestSummaries(
+      after: $after
+      first: $first
+      before: $before
+      last: $last
+      orderBy: $orderBy
+      where: $where
+    ) {
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          overallStatus
+          runCount
+          attemptCount
+          shardCount
+          firstStartTime
+          totalRunDurationInMs
+          testResults {
+            cachedLocally
+            cachedRemotely
+          }
+          invocationTarget {
+            bazelInvocation {
+              invocationID
+            }
+          }
+        }
+      }
+    }
+  }
+`);

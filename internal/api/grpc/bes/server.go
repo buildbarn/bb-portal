@@ -42,8 +42,7 @@ type BuildEventServer struct {
 	db                     database.Client
 	instanceNameAuthorizer auth.Authorizer
 	blobArchiver           processing.BlobMultiArchiver
-	saveTargetDataLevel    *bb_portal.BuildEventStreamService_SaveTargetDataLevel
-	saveTestDataLevel      *bb_portal.BuildEventStreamService_SaveTestDataLevel
+	saveDataLevel          *bb_portal.BuildEventStreamService_SaveDataLevel
 	tracerProvider         trace.TracerProvider
 	extractors             *authmetadataextraction.AuthMetadataExtractors
 	uuidGenerator          util.UUIDGenerator
@@ -64,14 +63,9 @@ func NewBuildEventServer(db database.Client, blobArchiver processing.BlobMultiAr
 		return nil, fmt.Errorf("No BesServiceConfiguration configured")
 	}
 
-	saveTargetDataLevel := besConfiguration.SaveTargetDataLevel
-	if saveTargetDataLevel == nil || saveTargetDataLevel.Level == nil {
-		return nil, fmt.Errorf("No saveTargetDataLevel configured")
-	}
-
-	saveTestDataLevel := besConfiguration.SaveTestDataLevel
-	if saveTestDataLevel == nil || saveTestDataLevel.Level == nil {
-		return nil, fmt.Errorf("No saveTestDataLevel configured")
+	saveDataLevel := besConfiguration.SaveDataLevel
+	if saveDataLevel == nil || saveDataLevel.Level == nil {
+		return nil, fmt.Errorf("No saveDataLevel configured")
 	}
 
 	extractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
@@ -83,8 +77,7 @@ func NewBuildEventServer(db database.Client, blobArchiver processing.BlobMultiAr
 		instanceNameAuthorizer: instanceNameAuthorizer,
 		db:                     db,
 		blobArchiver:           blobArchiver,
-		saveTargetDataLevel:    saveTargetDataLevel,
-		saveTestDataLevel:      saveTestDataLevel,
+		saveDataLevel:          saveDataLevel,
 		tracerProvider:         tracerProvider,
 		extractors:             extractors,
 		uuidGenerator:          uuidGenerator,
@@ -178,8 +171,7 @@ func (s *BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuild
 		s.db,
 		s.instanceNameAuthorizer,
 		s.blobArchiver,
-		s.saveTargetDataLevel,
-		s.saveTestDataLevel,
+		s.saveDataLevel,
 		s.tracerProvider,
 		req.GetProjectId(),
 		streamID.GetInvocationId(),

@@ -51,11 +51,15 @@ type InvocationTargetEdges struct {
 	Target *Target `json:"target,omitempty"`
 	// Configuration holds the value of the configuration edge.
 	Configuration *Configuration `json:"configuration,omitempty"`
+	// TestSummary holds the value of the test_summary edge.
+	TestSummary []*TestSummary `json:"test_summary,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [4]bool
 	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
+	totalCount [4]map[string]int
+
+	namedTestSummary map[string][]*TestSummary
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
@@ -89,6 +93,15 @@ func (e InvocationTargetEdges) ConfigurationOrErr() (*Configuration, error) {
 		return nil, &NotFoundError{label: configuration.Label}
 	}
 	return nil, &NotLoadedError{edge: "configuration"}
+}
+
+// TestSummaryOrErr returns the TestSummary value or an error if the edge
+// was not loaded in eager-loading.
+func (e InvocationTargetEdges) TestSummaryOrErr() ([]*TestSummary, error) {
+	if e.loadedTypes[3] {
+		return e.TestSummary, nil
+	}
+	return nil, &NotLoadedError{edge: "test_summary"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -224,6 +237,11 @@ func (it *InvocationTarget) QueryConfiguration() *ConfigurationQuery {
 	return NewInvocationTargetClient(it.config).QueryConfiguration(it)
 }
 
+// QueryTestSummary queries the "test_summary" edge of the InvocationTarget entity.
+func (it *InvocationTarget) QueryTestSummary() *TestSummaryQuery {
+	return NewInvocationTargetClient(it.config).QueryTestSummary(it)
+}
+
 // Update returns a builder for updating this InvocationTarget.
 // Note that you need to call InvocationTarget.Unwrap() before calling this method if this InvocationTarget
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -269,6 +287,30 @@ func (it *InvocationTarget) String() string {
 	builder.WriteString(fmt.Sprintf("%v", it.AbortReason))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedTestSummary returns the TestSummary named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (it *InvocationTarget) NamedTestSummary(name string) ([]*TestSummary, error) {
+	if it.Edges.namedTestSummary == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := it.Edges.namedTestSummary[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (it *InvocationTarget) appendNamedTestSummary(name string, edges ...*TestSummary) {
+	if it.Edges.namedTestSummary == nil {
+		it.Edges.namedTestSummary = make(map[string][]*TestSummary)
+	}
+	if len(edges) == 0 {
+		it.Edges.namedTestSummary[name] = []*TestSummary{}
+	} else {
+		it.Edges.namedTestSummary[name] = append(it.Edges.namedTestSummary[name], edges...)
+	}
 }
 
 // InvocationTargets is a parsable slice of InvocationTarget.

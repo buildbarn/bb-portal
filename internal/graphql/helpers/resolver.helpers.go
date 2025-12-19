@@ -11,7 +11,6 @@ import (
 	"entgo.io/contrib/entgql"
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/summary/detectors"
@@ -78,27 +77,6 @@ func (ph problemHelper) DBProblemToAPIProblem(ctx context.Context, problem *ent.
 			return nil, fmt.Errorf("could not get action type: %w", err)
 		}
 		return ph.actionProblemFromDBModel(problem, actionType), nil
-
-	case detectors.BazelInvocationTestProblem:
-		helper := testProblemHelper{BazelInvocationProblem: problem}
-		status, err := helper.Status(ctx)
-		if err != nil {
-			return nil, fmt.Errorf("could not get status: %w", err)
-		}
-		if status == testsummary.OverallStatusPASSED {
-			return nil, nil
-		}
-		results, err := helper.Results()
-		if err != nil {
-			return nil, fmt.Errorf("could not get results: %w", err)
-		}
-		return &model.TestProblem{
-			ID:      GraphQLIDFromTypeAndID("TestProblem", problem.ID),
-			Label:   problem.Label,
-			Status:  status.String(),
-			Results: results,
-		}, nil
-
 	case detectors.BazelInvocationProblemFailedTarget:
 		return &model.TargetProblem{
 			ID:    GraphQLIDFromTypeAndID("TargetProblem", problem.ID),
@@ -164,46 +142,6 @@ type testProblemHelper struct {
 func (problem testProblemHelper) GraphQLID() string {
 	// TODO: scalars.GraphQLIDFromString
 	return fmt.Sprintf("testProblem:%d", problem.ID)
-}
-
-// get the status of the problm helper.
-func (problem testProblemHelper) Status(ctx context.Context) (testsummary.OverallStatus, error) {
-	testSummary, err := problem.QueryBazelInvocation().QueryTestCollection().QueryTestSummary().Where(testsummary.LabelEQ(problem.Label)).Select(testsummary.FieldOverallStatus).Only(ctx)
-	return testSummary.OverallStatus, err
-}
-
-// The results.
-func (problem testProblemHelper) Results() ([]*model.TestResult, error) {
-	bepEvents, err := events.FromJSONArray(problem.BepEvents)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create test problem results: %w", err)
-	}
-	var results []*model.TestResult
-	for _, event := range bepEvents {
-		if event.IsTestResult() {
-			testResultEventID := event.GetId().GetTestResult()
-			helper := testResultOverviewHelper{
-				TestResult: event.GetTestResult(),
-				testResultID: model.TestResultID{
-					ProblemID: uint64(problem.ID), //nolint:gosec
-					Run:       testResultEventID.GetRun(),
-					Shard:     testResultEventID.GetShard(),
-					Attempt:   testResultEventID.GetAttempt(),
-				},
-			}
-			result := model.TestResult{
-				ID:            GraphQLIDFromTypeAndID("TestResult", problem.ID),
-				Run:           int(helper.Run()),
-				Shard:         int(helper.Shard()),
-				Attempt:       int(helper.Attempt()),
-				Status:        helper.Status(),
-				BESTestResult: event.GetTestResult(),
-			}
-
-			results = append(results, &result)
-		}
-	}
-	return results, nil
 }
 
 // The Progress problem helper.

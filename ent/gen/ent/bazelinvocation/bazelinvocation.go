@@ -95,8 +95,6 @@ const (
 	EdgeBuildLogChunks = "build_log_chunks"
 	// EdgeInvocationFiles holds the string denoting the invocation_files edge name in mutations.
 	EdgeInvocationFiles = "invocation_files"
-	// EdgeTestCollection holds the string denoting the test_collection edge name in mutations.
-	EdgeTestCollection = "test_collection"
 	// EdgeInvocationTargets holds the string denoting the invocation_targets edge name in mutations.
 	EdgeInvocationTargets = "invocation_targets"
 	// EdgeTargetKindMappings holds the string denoting the target_kind_mappings edge name in mutations.
@@ -189,13 +187,6 @@ const (
 	InvocationFilesInverseTable = "invocation_files"
 	// InvocationFilesColumn is the table column denoting the invocation_files relation/edge.
 	InvocationFilesColumn = "bazel_invocation_invocation_files"
-	// TestCollectionTable is the table that holds the test_collection relation/edge.
-	TestCollectionTable = "test_collections"
-	// TestCollectionInverseTable is the table name for the TestCollection entity.
-	// It exists in this package in order to avoid circular dependency with the "testcollection" package.
-	TestCollectionInverseTable = "test_collections"
-	// TestCollectionColumn is the table column denoting the test_collection relation/edge.
-	TestCollectionColumn = "bazel_invocation_test_collection"
 	// InvocationTargetsTable is the table that holds the invocation_targets relation/edge.
 	InvocationTargetsTable = "invocation_targets"
 	// InvocationTargetsInverseTable is the table name for the InvocationTarget entity.
@@ -566,20 +557,6 @@ func ByInvocationFiles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByTestCollectionCount orders the results by test_collection count.
-func ByTestCollectionCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTestCollectionStep(), opts...)
-	}
-}
-
-// ByTestCollection orders the results by test_collection terms.
-func ByTestCollection(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTestCollectionStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
 // ByInvocationTargetsCount orders the results by invocation_targets count.
 func ByInvocationTargetsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -696,13 +673,6 @@ func newInvocationFilesStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(InvocationFilesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, InvocationFilesTable, InvocationFilesColumn),
-	)
-}
-func newTestCollectionStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(TestCollectionInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, TestCollectionTable, TestCollectionColumn),
 	)
 }
 func newInvocationTargetsStep() *sqlgraph.Step {

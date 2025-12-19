@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 )
 
 // InvocationTargetUpdate is the builder for updating InvocationTarget entities.
@@ -220,6 +221,21 @@ func (itu *InvocationTargetUpdate) SetConfiguration(c *Configuration) *Invocatio
 	return itu.SetConfigurationID(c.ID)
 }
 
+// AddTestSummaryIDs adds the "test_summary" edge to the TestSummary entity by IDs.
+func (itu *InvocationTargetUpdate) AddTestSummaryIDs(ids ...int64) *InvocationTargetUpdate {
+	itu.mutation.AddTestSummaryIDs(ids...)
+	return itu
+}
+
+// AddTestSummary adds the "test_summary" edges to the TestSummary entity.
+func (itu *InvocationTargetUpdate) AddTestSummary(t ...*TestSummary) *InvocationTargetUpdate {
+	ids := make([]int64, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return itu.AddTestSummaryIDs(ids...)
+}
+
 // Mutation returns the InvocationTargetMutation object of the builder.
 func (itu *InvocationTargetUpdate) Mutation() *InvocationTargetMutation {
 	return itu.mutation
@@ -241,6 +257,27 @@ func (itu *InvocationTargetUpdate) ClearTarget() *InvocationTargetUpdate {
 func (itu *InvocationTargetUpdate) ClearConfiguration() *InvocationTargetUpdate {
 	itu.mutation.ClearConfiguration()
 	return itu
+}
+
+// ClearTestSummary clears all "test_summary" edges to the TestSummary entity.
+func (itu *InvocationTargetUpdate) ClearTestSummary() *InvocationTargetUpdate {
+	itu.mutation.ClearTestSummary()
+	return itu
+}
+
+// RemoveTestSummaryIDs removes the "test_summary" edge to TestSummary entities by IDs.
+func (itu *InvocationTargetUpdate) RemoveTestSummaryIDs(ids ...int64) *InvocationTargetUpdate {
+	itu.mutation.RemoveTestSummaryIDs(ids...)
+	return itu
+}
+
+// RemoveTestSummary removes "test_summary" edges to TestSummary entities.
+func (itu *InvocationTargetUpdate) RemoveTestSummary(t ...*TestSummary) *InvocationTargetUpdate {
+	ids := make([]int64, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return itu.RemoveTestSummaryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -434,6 +471,51 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if itu.mutation.TestSummaryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   invocationtarget.TestSummaryTable,
+			Columns: []string{invocationtarget.TestSummaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := itu.mutation.RemovedTestSummaryIDs(); len(nodes) > 0 && !itu.mutation.TestSummaryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   invocationtarget.TestSummaryTable,
+			Columns: []string{invocationtarget.TestSummaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := itu.mutation.TestSummaryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   invocationtarget.TestSummaryTable,
+			Columns: []string{invocationtarget.TestSummaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -651,6 +733,21 @@ func (ituo *InvocationTargetUpdateOne) SetConfiguration(c *Configuration) *Invoc
 	return ituo.SetConfigurationID(c.ID)
 }
 
+// AddTestSummaryIDs adds the "test_summary" edge to the TestSummary entity by IDs.
+func (ituo *InvocationTargetUpdateOne) AddTestSummaryIDs(ids ...int64) *InvocationTargetUpdateOne {
+	ituo.mutation.AddTestSummaryIDs(ids...)
+	return ituo
+}
+
+// AddTestSummary adds the "test_summary" edges to the TestSummary entity.
+func (ituo *InvocationTargetUpdateOne) AddTestSummary(t ...*TestSummary) *InvocationTargetUpdateOne {
+	ids := make([]int64, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return ituo.AddTestSummaryIDs(ids...)
+}
+
 // Mutation returns the InvocationTargetMutation object of the builder.
 func (ituo *InvocationTargetUpdateOne) Mutation() *InvocationTargetMutation {
 	return ituo.mutation
@@ -672,6 +769,27 @@ func (ituo *InvocationTargetUpdateOne) ClearTarget() *InvocationTargetUpdateOne 
 func (ituo *InvocationTargetUpdateOne) ClearConfiguration() *InvocationTargetUpdateOne {
 	ituo.mutation.ClearConfiguration()
 	return ituo
+}
+
+// ClearTestSummary clears all "test_summary" edges to the TestSummary entity.
+func (ituo *InvocationTargetUpdateOne) ClearTestSummary() *InvocationTargetUpdateOne {
+	ituo.mutation.ClearTestSummary()
+	return ituo
+}
+
+// RemoveTestSummaryIDs removes the "test_summary" edge to TestSummary entities by IDs.
+func (ituo *InvocationTargetUpdateOne) RemoveTestSummaryIDs(ids ...int64) *InvocationTargetUpdateOne {
+	ituo.mutation.RemoveTestSummaryIDs(ids...)
+	return ituo
+}
+
+// RemoveTestSummary removes "test_summary" edges to TestSummary entities.
+func (ituo *InvocationTargetUpdateOne) RemoveTestSummary(t ...*TestSummary) *InvocationTargetUpdateOne {
+	ids := make([]int64, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return ituo.RemoveTestSummaryIDs(ids...)
 }
 
 // Where appends a list predicates to the InvocationTargetUpdate builder.
@@ -895,6 +1013,51 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ituo.mutation.TestSummaryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   invocationtarget.TestSummaryTable,
+			Columns: []string{invocationtarget.TestSummaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ituo.mutation.RemovedTestSummaryIDs(); len(nodes) > 0 && !ituo.mutation.TestSummaryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   invocationtarget.TestSummaryTable,
+			Columns: []string{invocationtarget.TestSummaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ituo.mutation.TestSummaryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   invocationtarget.TestSummaryTable,
+			Columns: []string{invocationtarget.TestSummaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

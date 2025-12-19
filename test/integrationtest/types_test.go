@@ -27,12 +27,11 @@ type graphqlTestCase struct {
 type graphqlTestTable map[string]map[string]graphqlTestCase
 
 type testCase struct {
-	name                string
-	ctx                 context.Context
-	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel
-	saveTestDataLevel   *bb_portal.BuildEventStreamService_SaveTestDataLevel
-	extractors          *bb_portal.AuthMetadataExtractorConfiguration
-	mockUUID            *string
-	bepFileTestCases    []bepFileTestCase
-	graphqlTestCases    graphqlTestTable
+	name             string
+	ctx              context.Context
+	saveDataLevel    *bb_portal.BuildEventStreamService_SaveDataLevel
+	extractors       *bb_portal.AuthMetadataExtractorConfiguration
+	mockUUID         *string
+	bepFileTestCases []bepFileTestCase
+	graphqlTestCases graphqlTestTable
 }

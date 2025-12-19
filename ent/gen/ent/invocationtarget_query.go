@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -16,21 +17,24 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 )
 
 // InvocationTargetQuery is the builder for querying InvocationTarget entities.
 type InvocationTargetQuery struct {
 	config
-	ctx                 *QueryContext
-	order               []invocationtarget.OrderOption
-	inters              []Interceptor
-	predicates          []predicate.InvocationTarget
-	withBazelInvocation *BazelInvocationQuery
-	withTarget          *TargetQuery
-	withConfiguration   *ConfigurationQuery
-	withFKs             bool
-	loadTotal           []func(context.Context, []*InvocationTarget) error
-	modifiers           []func(*sql.Selector)
+	ctx                  *QueryContext
+	order                []invocationtarget.OrderOption
+	inters               []Interceptor
+	predicates           []predicate.InvocationTarget
+	withBazelInvocation  *BazelInvocationQuery
+	withTarget           *TargetQuery
+	withConfiguration    *ConfigurationQuery
+	withTestSummary      *TestSummaryQuery
+	withFKs              bool
+	loadTotal            []func(context.Context, []*InvocationTarget) error
+	modifiers            []func(*sql.Selector)
+	withNamedTestSummary map[string]*TestSummaryQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -126,6 +130,28 @@ func (itq *InvocationTargetQuery) QueryConfiguration() *ConfigurationQuery {
 			sqlgraph.From(invocationtarget.Table, invocationtarget.FieldID, selector),
 			sqlgraph.To(configuration.Table, configuration.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, invocationtarget.ConfigurationTable, invocationtarget.ConfigurationColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(itq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTestSummary chains the current query on the "test_summary" edge.
+func (itq *InvocationTargetQuery) QueryTestSummary() *TestSummaryQuery {
+	query := (&TestSummaryClient{config: itq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := itq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := itq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(invocationtarget.Table, invocationtarget.FieldID, selector),
+			sqlgraph.To(testsummary.Table, testsummary.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, invocationtarget.TestSummaryTable, invocationtarget.TestSummaryColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(itq.driver.Dialect(), step)
 		return fromU, nil
@@ -328,6 +354,7 @@ func (itq *InvocationTargetQuery) Clone() *InvocationTargetQuery {
 		withBazelInvocation: itq.withBazelInvocation.Clone(),
 		withTarget:          itq.withTarget.Clone(),
 		withConfiguration:   itq.withConfiguration.Clone(),
+		withTestSummary:     itq.withTestSummary.Clone(),
 		// clone intermediate query.
 		sql:       itq.sql.Clone(),
 		path:      itq.path,
@@ -365,6 +392,17 @@ func (itq *InvocationTargetQuery) WithConfiguration(opts ...func(*ConfigurationQ
 		opt(query)
 	}
 	itq.withConfiguration = query
+	return itq
+}
+
+// WithTestSummary tells the query-builder to eager-load the nodes that are connected to
+// the "test_summary" edge. The optional arguments are used to configure the query builder of the edge.
+func (itq *InvocationTargetQuery) WithTestSummary(opts ...func(*TestSummaryQuery)) *InvocationTargetQuery {
+	query := (&TestSummaryClient{config: itq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	itq.withTestSummary = query
 	return itq
 }
 
@@ -447,10 +485,11 @@ func (itq *InvocationTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook
 		nodes       = []*InvocationTarget{}
 		withFKs     = itq.withFKs
 		_spec       = itq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [4]bool{
 			itq.withBazelInvocation != nil,
 			itq.withTarget != nil,
 			itq.withConfiguration != nil,
+			itq.withTestSummary != nil,
 		}
 	)
 	if itq.withBazelInvocation != nil || itq.withTarget != nil || itq.withConfiguration != nil {
@@ -495,6 +534,20 @@ func (itq *InvocationTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook
 	if query := itq.withConfiguration; query != nil {
 		if err := itq.loadConfiguration(ctx, query, nodes, nil,
 			func(n *InvocationTarget, e *Configuration) { n.Edges.Configuration = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := itq.withTestSummary; query != nil {
+		if err := itq.loadTestSummary(ctx, query, nodes,
+			func(n *InvocationTarget) { n.Edges.TestSummary = []*TestSummary{} },
+			func(n *InvocationTarget, e *TestSummary) { n.Edges.TestSummary = append(n.Edges.TestSummary, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range itq.withNamedTestSummary {
+		if err := itq.loadTestSummary(ctx, query, nodes,
+			func(n *InvocationTarget) { n.appendNamedTestSummary(name) },
+			func(n *InvocationTarget, e *TestSummary) { n.appendNamedTestSummary(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -602,6 +655,37 @@ func (itq *InvocationTargetQuery) loadConfiguration(ctx context.Context, query *
 	}
 	return nil
 }
+func (itq *InvocationTargetQuery) loadTestSummary(ctx context.Context, query *TestSummaryQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *TestSummary)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*InvocationTarget)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.TestSummary(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(invocationtarget.TestSummaryColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.invocation_target_test_summary
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "invocation_target_test_summary" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "invocation_target_test_summary" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 
 func (itq *InvocationTargetQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := itq.querySpec()
@@ -694,6 +778,20 @@ func (itq *InvocationTargetQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (itq *InvocationTargetQuery) Modify(modifiers ...func(s *sql.Selector)) *InvocationTargetSelect {
 	itq.modifiers = append(itq.modifiers, modifiers...)
 	return itq.Select()
+}
+
+// WithNamedTestSummary tells the query-builder to eager-load the nodes that are connected to the "test_summary"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (itq *InvocationTargetQuery) WithNamedTestSummary(name string, opts ...func(*TestSummaryQuery)) *InvocationTargetQuery {
+	query := (&TestSummaryClient{config: itq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if itq.withNamedTestSummary == nil {
+		itq.withNamedTestSummary = make(map[string]*TestSummaryQuery)
+	}
+	itq.withNamedTestSummary[name] = query
+	return itq
 }
 
 // InvocationTargetGroupBy is the group-by builder for InvocationTarget entities.

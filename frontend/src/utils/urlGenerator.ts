@@ -71,3 +71,18 @@ export function generateLinkToTargetsPage(
   });
   return `/target?${params.toString()}`;
 }
+
+export function generateLinkToTestPage(
+  instanceName: string,
+  label: string,
+  aspect: string,
+  targetKind: string,
+): string {
+  const params = new URLSearchParams({
+    instanceName: encodeURIComponent(encodeURIComponent(instanceName)),
+    label: encodeURIComponent(encodeURIComponent(label)),
+    aspect: encodeURIComponent(encodeURIComponent(aspect)),
+    targetKind: encodeURIComponent(encodeURIComponent(targetKind)),
+  });
+  return `/test?${params.toString()}`;
+}

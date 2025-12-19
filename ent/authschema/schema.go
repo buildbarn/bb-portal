@@ -39,8 +39,6 @@ type (
 	EvaluationStat struct{ schema.EvaluationStat }
 	// EventMetadata reexport with auth policy added
 	EventMetadata struct{ schema.EventMetadata }
-	// ExectionInfo reexport with auth policy added
-	ExectionInfo struct{ schema.ExectionInfo }
 	// GarbageMetrics reexport with auth policy added
 	GarbageMetrics struct{ schema.GarbageMetrics }
 	// IncompleteBuildLog reexport with auth policy added
@@ -57,18 +55,12 @@ type (
 	Metrics struct{ schema.Metrics }
 	// MissDetail reexport with auth policy added
 	MissDetail struct{ schema.MissDetail }
-	// NamedSetOfFiles reexport with auth policy added
-	NamedSetOfFiles struct{ schema.NamedSetOfFiles }
 	// NetworkMetrics reexport with auth policy added
 	NetworkMetrics struct{ schema.NetworkMetrics }
-	// OutputGroup reexport with auth policy added
-	OutputGroup struct{ schema.OutputGroup }
 	// PackageLoadMetrics reexport with auth policy added
 	PackageLoadMetrics struct{ schema.PackageLoadMetrics }
 	// PackageMetrics reexport with auth policy added
 	PackageMetrics struct{ schema.PackageMetrics }
-	// ResourceUsage reexport with auth policy added
-	ResourceUsage struct{ schema.ResourceUsage }
 	// RunnerCount reexport with auth policy added
 	RunnerCount struct{ schema.RunnerCount }
 	// SourceControl reexport with auth policy added
@@ -81,18 +73,10 @@ type (
 	TargetKindMapping struct{ schema.TargetKindMapping }
 	// TargetMetrics reexport with auth policy added
 	TargetMetrics struct{ schema.TargetMetrics }
-	// TestCollection reexport with auth policy added
-	TestCollection struct{ schema.TestCollection }
-	// TestFile reexport with auth policy added
-	TestFile struct{ schema.TestFile }
-	// TestResultBES reexport with auth policy added
-	TestResultBES struct{ schema.TestResultBES }
+	// TestResult reexport with auth policy added
+	TestResult struct{ schema.TestResult }
 	// TestSummary reexport with auth policy added
 	TestSummary struct{ schema.TestSummary }
-	// TimingBreakdown reexport with auth policy added
-	TimingBreakdown struct{ schema.TimingBreakdown }
-	// TimingChild reexport with auth policy added
-	TimingChild struct{ schema.TimingChild }
 	// TimingMetrics reexport with auth policy added
 	TimingMetrics struct{ schema.TimingMetrics }
 )

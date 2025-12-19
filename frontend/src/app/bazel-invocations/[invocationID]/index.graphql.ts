@@ -192,15 +192,6 @@ fragment BazelInvocationInfo on BazelInvocation {
     sizeInBytes
     digestFunction
   }
-  testCollection {
-    id
-    label
-    strategy
-    durationMs
-    overallStatus
-    cachedLocally
-    cachedRemotely
-  }
   user {
     Email
     LDAP
@@ -255,26 +246,6 @@ export const PROBLEM_INFO_FRAGMENT = gql(/* GraphQL */ `
       ...BlobReferenceInfo
     }
   }
-  ... on TestProblem {
-    __typename
-    id
-    label
-    status
-    results {
-      __typename
-      id
-      run
-      shard
-      attempt
-      status
-      actionLogOutput {
-        ...BlobReferenceInfo
-      }
-      undeclaredTestOutputs {
-        ...BlobReferenceInfo
-      }
-    }
-  }
   ... on TargetProblem {
     __typename
     id
@@ -316,17 +287,3 @@ export const GET_ACTION_PROBLEM = gql(/* GraphQL */ `
     }
   }
 `);
-
-export const TEST_RESULT_FRAGMENT = gql(/* GraphQL */`
-fragment TestResultInfo on TestResult {
-      actionLogOutput {
-  ...BlobReferenceInfo
-  }
-  attempt
-  run
-  shard
-  status
-  undeclaredTestOutputs {
-    ...BlobReferenceInfo
-  }
-}`)

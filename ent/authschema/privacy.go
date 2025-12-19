@@ -6,7 +6,9 @@ import (
 
 	"entgo.io/ent/entql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/privacy"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 )
 
@@ -21,6 +23,16 @@ func addAuthenticatedUserFilter(f privacy.Filter, authorizedInstanceNames []any)
 	return entql.HasEdgeWith(
 		"bazel_invocations",
 		addDefaultFilter(f, authorizedInstanceNames),
+	)
+}
+
+func addTestSummaryFilter(f privacy.Filter, authorizedInstanceNames []any) entql.P {
+	return entql.HasEdgeWith(
+		testsummary.InvocationTargetColumn,
+		entql.HasEdgeWith(
+			invocationtarget.TargetColumn,
+			addDefaultFilter(f, authorizedInstanceNames),
+		),
 	)
 }
 
@@ -70,5 +82,12 @@ func (Build) Policy() ent.Policy {
 func (Target) Policy() ent.Policy {
 	return privacy.FilterFunc(func(ctx context.Context, f privacy.Filter) error {
 		return privacyFilterFunc(ctx, f, addDefaultFilter)
+	})
+}
+
+// Policy for TestSummary.
+func (TestSummary) Policy() ent.Policy {
+	return privacy.FilterFunc(func(ctx context.Context, f privacy.Filter) error {
+		return privacyFilterFunc(ctx, f, addTestSummaryFilter)
 	})
 }

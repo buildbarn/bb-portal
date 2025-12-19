@@ -205,35 +205,6 @@
     "sourceControl": null,
     "startedAt": "2024-05-13T23:43:23.045Z",
     "stepLabel": "nextjs_test",
-    "testCollection": [
-      {
-        "cachedLocally": true,
-        "cachedRemotely": false,
-        "durationMs": 97,
-        "id": "VGVzdENvbGxlY3Rpb246MzE=",
-        "label": "//next.js:build_test",
-        "overallStatus": "PASSED",
-        "strategy": ""
-      },
-      {
-        "cachedLocally": true,
-        "cachedRemotely": false,
-        "durationMs": 717,
-        "id": "VGVzdENvbGxlY3Rpb246MzI=",
-        "label": "//next.js:build_smoke_test",
-        "overallStatus": "PASSED",
-        "strategy": ""
-      },
-      {
-        "cachedLocally": false,
-        "cachedRemotely": false,
-        "durationMs": 1382,
-        "id": "VGVzdENvbGxlY3Rpb246MzM=",
-        "label": "//next.js/pages:jest_test",
-        "overallStatus": "FAILED",
-        "strategy": "darwin-sandbox"
-      }
-    ],
     "user": {
       "Email": "",
       "LDAP": "nameless"
