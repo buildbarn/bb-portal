@@ -20,10 +20,12 @@ bazel_dep(name = "gazelle", version = "0.45.0")
 bazel_dep(name = "googleapis", version = "0.0.0-20250826-a92cee39")
 bazel_dep(name = "googletest", version = "1.16.0")
 bazel_dep(name = "protobuf", version = "31.1")
+bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "rules_go", version = "0.57.0")
 bazel_dep(name = "rules_jsonnet", version = "0.7.2")
 bazel_dep(name = "rules_oci", version = "2.2.6")
 bazel_dep(name = "rules_proto", version = "7.1.0")
+bazel_dep(name = "rules_shell", version = "0.6.1")
 bazel_dep(name = "toolchains_llvm", version = "1.5.0")
 bazel_dep(name = "opentelemetry-proto", version = "1.7.0")
 
@@ -48,10 +50,6 @@ git_override(
 git_override(
     module_name = "com_github_buildbarn_bb_storage",
     commit = "7199df9e3c26961561ee32953216d7058f274b44",
-    patches = [
-        "//:patches/com_buildbarn_bb_storage/base_image.diff",
-        "//:patches/com_buildbarn_bb_storage/reformat.diff",
-    ],
     remote = "https://github.com/buildbarn/bb-storage.git",
 )
 
@@ -117,6 +115,7 @@ use_repo(
     "com_github_bazelbuild_bazel_src_main_java_com_google_devtools_build_lib_packages_metrics",
     "com_github_bazelbuild_bazel_src_main_protobuf",
     "com_github_bazelbuild_buildtools",
+    "com_github_fergusstrange_embedded_postgres",
     "com_github_google_uuid",
     "com_github_gorilla_mux",
     "com_github_hashicorp_go_multierror",
@@ -124,10 +123,10 @@ use_repo(
     "com_github_improbable_eng_grpc_web",
     "com_github_jackc_pgx_v5",
     "com_github_machinebox_graphql",
-    "com_github_mattn_go_sqlite3",
     "com_github_pkg_errors",
     "com_github_prometheus_client_golang",
     "com_github_rs_cors",
+    "com_github_sqlc_dev_pqtype",
     "com_github_stretchr_testify",
     "com_github_uptrace_opentelemetry_go_extra_otelsql",
     "com_github_vektah_gqlparser_v2",
@@ -152,3 +151,25 @@ llvm.toolchain(
 use_repo(llvm, "llvm_toolchain")
 
 register_toolchains("@llvm_toolchain//:all")
+
+# SQLC tooling
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+SQLC_VERSION = "1.30.0"
+
+SQLC_PLATFORMS = {
+    "darwin_amd64": "eb065ca44f02a9500f8e51cb63594a6bbd2486af04d18c0f81efadf7eadf5e29",
+    "darwin_arm64": "ff18793b97715d08dde364446f43082a06da87b7797b9ec79ef2b31aeb0894e5",
+    "linux_amd64": "468aecee071bfe55e97fcbcac52ea0208eeca444f67736f3b8f0f3d6a106132e",
+    "linux_arm64": "dd9ab43b022ba3b3402054f99d7ae6e5efea33c949e869c3c66b214415e0c82d",
+}
+
+[
+    http_archive(
+        name = "sqlc_" + platform,
+        build_file_content = """exports_files(["sqlc"])""",
+        sha256 = sha,
+        urls = ["https://github.com/sqlc-dev/sqlc/releases/download/v%s/sqlc_%s_%s.tar.gz" % (SQLC_VERSION, SQLC_VERSION, platform)],
+    )
+    for platform, sha in SQLC_PLATFORMS.items()
+]

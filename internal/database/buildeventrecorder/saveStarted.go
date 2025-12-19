@@ -11,7 +11,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveStarted(ctx context.Context, tx *ent.Tx, event *bes.BuildStarted) error {
+func (r *BuildEventRecorder) saveStarted(ctx context.Context, tx *ent.Client, event *bes.BuildStarted) error {
 	if event == nil {
 		return nil
 	}

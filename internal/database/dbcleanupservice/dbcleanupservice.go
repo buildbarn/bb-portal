@@ -17,6 +17,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	localbes "github.com/buildbarn/bb-portal/internal/api/grpc/bes"
+	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
@@ -39,7 +40,7 @@ import (
 //     is older than invocationRetention.
 //  4. Removing builds that do not have any associated invocations.
 type DbCleanupService struct {
-	db                          *ent.Client
+	db                          database.Client
 	clock                       clock.Clock
 	cleanupInterval             time.Duration
 	invocationConnectionTimeout time.Duration
@@ -50,7 +51,7 @@ type DbCleanupService struct {
 
 // NewDbCleanupService creates a new DbCleanupService.
 func NewDbCleanupService(
-	db *ent.Client,
+	db database.Client,
 	clock clock.Clock,
 	cleanupConfiguration *bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration,
 	tracerProvider trace.TracerProvider,
@@ -147,7 +148,7 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentConnections(ctx context.C
 
 	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationConnectionTimeout)
 
-	invocationsUpdated, err := dc.db.BazelInvocation.Update().
+	invocationsUpdated, err := dc.db.Ent().BazelInvocation.Update().
 		Where(
 			bazelinvocation.BepCompleted(false),
 			bazelinvocation.HasConnectionMetadataWith(
@@ -185,7 +186,7 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 		MaxTime        string `sql:"max_time"`
 	}
 
-	err = tx.EventMetadata.
+	err = tx.Ent().EventMetadata.
 		Query().
 		Modify(func(sel *entsql.Selector) {
 			sel.Select(
@@ -212,7 +213,7 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 		if err != nil {
 			return common.RollbackAndWrapError(tx, util.StatusWrapf(err, "Failed to parse time %s", r.MaxTime))
 		}
-		err = tx.BazelInvocation.
+		err = tx.Ent().BazelInvocation.
 			Update().
 			Where(
 				bazelinvocation.IDEQ(r.InvocationDbID),
@@ -230,7 +231,7 @@ func (dc *DbCleanupService) LockInvocationsWithNoRecentEvents(ctx context.Contex
 		invocationIDs = append(invocationIDs, r.InvocationDbID)
 	}
 
-	invocationsUpdated, err := tx.BazelInvocation.
+	invocationsUpdated, err := tx.Ent().BazelInvocation.
 		Update().
 		Where(bazelinvocation.IDIn(invocationIDs...)).
 		SetBepCompleted(true).
@@ -254,7 +255,7 @@ func (dc *DbCleanupService) RemoveOldInvocationConnections(ctx context.Context) 
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveOldInvocationConnections")
 	defer span.End()
 
-	deletedRows, err := dc.db.ConnectionMetadata.Delete().
+	deletedRows, err := dc.db.Ent().ConnectionMetadata.Delete().
 		Where(
 			connectionmetadata.HasBazelInvocationWith(
 				bazelinvocation.BepCompleted(true),
@@ -279,7 +280,7 @@ func (dc *DbCleanupService) RemoveOldEventMetadata(ctx context.Context) error {
 	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationMessageTimeout)
 	// Remove all event metadata that is for invocations that have
 	// completed before the cutoff time.
-	deletedEM, err := dc.db.EventMetadata.Delete().
+	deletedEM, err := dc.db.Ent().EventMetadata.Delete().
 		Where(
 			eventmetadata.HasBazelInvocationWith(
 				bazelinvocation.BepCompleted(true),
@@ -307,7 +308,7 @@ func (dc *DbCleanupService) normalizeInvocation(ctx context.Context, invocation 
 		return err
 	}
 
-	err = dc.db.BazelInvocation.
+	err = dc.db.Ent().BazelInvocation.
 		Update().
 		Where(
 			bazelinvocation.IDEQ(invocation.ID),
@@ -330,7 +331,7 @@ func (dc *DbCleanupService) CompactLogs(ctx context.Context) error {
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.CompactLogs")
 	defer span.End()
 
-	invocations, err := dc.db.BazelInvocation.Query().
+	invocations, err := dc.db.Ent().BazelInvocation.Query().
 		Where(
 			bazelinvocation.BepCompleted(true),
 			bazelinvocation.BuildLogsIsNil(),
@@ -371,7 +372,7 @@ func (dc *DbCleanupService) DeleteIncompleteLogs(ctx context.Context) error {
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.DeleteIncompleteLogs")
 	defer span.End()
 
-	_, err := dc.db.IncompleteBuildLog.Delete().
+	_, err := dc.db.Ent().IncompleteBuildLog.Delete().
 		Where(
 			incompletebuildlog.HasBazelInvocationWith(
 				bazelinvocation.BuildLogsNotNil(),
@@ -396,7 +397,7 @@ func (dc *DbCleanupService) RemoveOldInvocations(ctx context.Context) error {
 	defer span.End()
 
 	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationRetention)
-	deletedInvocation, err := dc.db.BazelInvocation.Delete().
+	deletedInvocation, err := dc.db.Ent().BazelInvocation.Delete().
 		Where(
 			bazelinvocation.BepCompleted(true),
 			bazelinvocation.EndedAtLT(cutoffTime),
@@ -417,7 +418,7 @@ func (dc *DbCleanupService) RemoveBuildsWithoutInvocations(ctx context.Context) 
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveBuildsWithoutInvocations")
 	defer span.End()
 
-	deletedBuilds, err := dc.db.Build.Delete().
+	deletedBuilds, err := dc.db.Ent().Build.Delete().
 		Where(
 			build.Not(build.HasInvocations()),
 		).

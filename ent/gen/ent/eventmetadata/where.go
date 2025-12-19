@@ -70,6 +70,11 @@ func EventHash(v string) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldEQ(FieldEventHash, v))
 }
 
+// BazelInvocationID applies equality check predicate on the "bazel_invocation_id" field. It's identical to BazelInvocationIDEQ.
+func BazelInvocationID(v int) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
 // SequenceNumberEQ applies the EQ predicate on the "sequence_number" field.
 func SequenceNumberEQ(v int64) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldEQ(FieldSequenceNumber, v))
@@ -213,6 +218,26 @@ func EventHashEqualFold(v string) predicate.EventMetadata {
 // EventHashContainsFold applies the ContainsFold predicate on the "event_hash" field.
 func EventHashContainsFold(v string) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldContainsFold(FieldEventHash, v))
+}
+
+// BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDEQ(v int) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDNEQ applies the NEQ predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNEQ(v int) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldNEQ(FieldBazelInvocationID, v))
+}
+
+// BazelInvocationIDIn applies the In predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDIn(vs ...int) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldIn(FieldBazelInvocationID, vs...))
+}
+
+// BazelInvocationIDNotIn applies the NotIn predicate on the "bazel_invocation_id" field.
+func BazelInvocationIDNotIn(vs ...int) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldNotIn(FieldBazelInvocationID, vs...))
 }
 
 // HasBazelInvocation applies the HasEdge predicate on the "bazel_invocation" edge.

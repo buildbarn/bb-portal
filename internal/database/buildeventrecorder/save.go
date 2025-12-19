@@ -5,18 +5,20 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"reflect"
 	"time"
 
-	entsql "entgo.io/ent/dialect/sql"
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
-	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
+	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/common"
+	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
@@ -54,25 +56,25 @@ func (r *BuildEventRecorder) RecordEvent(
 		return util.StatusWrap(err, "Failed to get event hash")
 	}
 
-	tx, err := r.db.BeginTx(ctx, &entsql.TxOptions{Isolation: sql.LevelSerializable})
+	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create transaction")
 	}
 
 	err = r.createEventMetadata(ctx, tx, sequenceNumber, eventHash)
 	if err != nil {
-		err = tx.Rollback()
-		if err != nil {
-			return util.StatusWrap(err, "Failed to create event metadata, and failed to rollback transaction")
+		err2 := tx.Rollback()
+		if err2 != nil {
+			return util.StatusWrap(errors.Join(err, err2), "Failed to create event metadata, and failed to rollback transaction")
 		}
-		eventMetadata, err := r.db.EventMetadata.Query().
+		eventMetadata, err2 := r.db.Ent().EventMetadata.Query().
 			Where(
 				eventmetadata.HasBazelInvocationWith(bazelinvocation.ID(r.InvocationDbID)),
 				eventmetadata.SequenceNumberEQ(sequenceNumber),
 			).
 			Only(ctx)
-		if err != nil {
-			return util.StatusWrap(err, "Failed to create event metadata, and failed to query existing event metadata")
+		if err2 != nil {
+			return util.StatusWrap(errors.Join(err, err2), "Failed to create event metadata, and failed to query existing event metadata")
 		}
 		if eventMetadata.EventHash == eventHash {
 			// This exact event has already been processed. Ignore it and send
@@ -87,13 +89,13 @@ func (r *BuildEventRecorder) RecordEvent(
 		return common.RollbackAndWrapError(tx, util.StatusWrapf(err, "Failed to save build event of type %T", buildEvent.GetId().GetId()))
 	}
 
-	err = r.saveBazelInvocationProblems(ctx, tx, buildEvent)
+	err = r.saveBazelInvocationProblems(ctx, tx.Ent(), buildEvent)
 	if err != nil {
 		return common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to save bazel invocation problems"))
 	}
 
 	if buildEvent.LastMessage {
-		err = tx.BazelInvocation.Update().
+		err = tx.Ent().BazelInvocation.Update().
 			Where(
 				bazelinvocation.ID(r.InvocationDbID),
 			).
@@ -109,7 +111,7 @@ func (r *BuildEventRecorder) RecordEvent(
 		// If the commit fails, we check if the event has already been handled.
 		// This can happen if two identical events are sent concurrently. In
 		// this case we should not return an error, and justs send an ACK back.
-		exist, qerr := r.db.EventMetadata.Query().
+		exist, qerr := r.db.Ent().EventMetadata.Query().
 			Where(
 				eventmetadata.HasBazelInvocationWith(bazelinvocation.ID(r.InvocationDbID)),
 				eventmetadata.SequenceNumber(sequenceNumber),
@@ -139,35 +141,18 @@ func (r *BuildEventRecorder) getEventHash(buildEvent *events.BuildEvent) (string
 
 func (r *BuildEventRecorder) createEventMetadata(
 	ctx context.Context,
-	tx *ent.Tx,
+	tx database.Tx,
 	sequenceNumber int64,
 	eventHash string,
 ) error {
-	// TODO: Rewrite error messages
-
-	// No SQL injections are possible here, as all the inputs to the query are
-	// table and column names from our own code, or parameters ($1, $2, ...).
-	// The parameters are passed separately to the query, so they cannot be
-	// interpreted as SQL code.
-	query := fmt.Sprintf(`
-		INSERT INTO %s (%s, %s, %s, %s)
-		SELECT $1, $2, $3, b.id
-		FROM %s AS b
-		WHERE b.%s = $4 AND b.%s = false`,
-		eventmetadata.Table,
-		eventmetadata.FieldSequenceNumber,
-		eventmetadata.FieldEventReceivedAt,
-		eventmetadata.FieldEventHash,
-		eventmetadata.BazelInvocationColumn,
-		bazelinvocation.Table,
-		bazelinvocation.FieldInvocationID,
-		bazelinvocation.FieldBepCompleted,
-	)
-	args := []any{sequenceNumber, time.Now().UTC(), eventHash, r.InvocationID}
-
-	result, err := tx.ExecContext(ctx, query, args...)
+	result, err := tx.Sqlc().RecordEventMetadata(ctx, sqlc.RecordEventMetadataParams{
+		SequenceNumber:  sequenceNumber,
+		EventHash:       eventHash,
+		EventReceivedAt: time.Now(),
+		InvocationID:    uuid.MustParse(r.InvocationID),
+	})
 	if err != nil {
-		return util.StatusWrap(err, "failed executing conditional insert")
+		return util.StatusWrap(err, "Failed recording event metadata")
 	}
 
 	rowsAffected, err := result.RowsAffected()
@@ -182,40 +167,40 @@ func (r *BuildEventRecorder) createEventMetadata(
 
 func (r *BuildEventRecorder) saveBuildEvent(
 	ctx context.Context,
-	tx *ent.Tx,
+	tx database.Tx,
 	buildEvent *events.BuildEvent,
 ) error {
 	switch buildEvent.GetId().GetId().(type) {
 	case *bes.BuildEventId_Started:
-		return r.saveStarted(ctx, tx, buildEvent.GetStarted())
+		return r.saveStarted(ctx, tx.Ent(), buildEvent.GetStarted())
 	case *bes.BuildEventId_BuildMetadata:
-		return r.saveBuildMetadata(ctx, tx, buildEvent.GetBuildMetadata())
+		return r.saveBuildMetadata(ctx, tx.Ent(), buildEvent.GetBuildMetadata())
 	case *bes.BuildEventId_OptionsParsed:
-		return r.saveOptionsParsed(ctx, tx, buildEvent.GetOptionsParsed())
+		return r.saveOptionsParsed(ctx, tx.Ent(), buildEvent.GetOptionsParsed())
 	case *bes.BuildEventId_BuildFinished:
-		return r.saveBuildFinished(ctx, tx, buildEvent.GetFinished())
+		return r.saveBuildFinished(ctx, tx.Ent(), buildEvent.GetFinished())
 	case *bes.BuildEventId_BuildMetrics:
-		return r.saveBuildMetrics(ctx, tx, buildEvent.GetBuildMetrics())
+		return r.saveBuildMetrics(ctx, tx.Ent(), buildEvent.GetBuildMetrics())
 	case *bes.BuildEventId_StructuredCommandLine:
-		return r.saveStructuredCommandLine(ctx, tx, buildEvent.GetStructuredCommandLine())
+		return r.saveStructuredCommandLine(ctx, tx.Ent(), buildEvent.GetStructuredCommandLine())
 	case *bes.BuildEventId_Configuration:
-		return r.saveBuildConfiguration(ctx, tx, buildEvent.GetConfiguration())
+		return r.saveBuildConfiguration(ctx, tx.Ent(), buildEvent.GetConfiguration())
 	case *bes.BuildEventId_TargetConfigured:
-		return r.saveTargetConfigured(ctx, tx, buildEvent.GetConfigured(), buildEvent.GetId().GetTargetConfigured())
+		return r.saveTargetConfigured(ctx, tx.Ent(), buildEvent.GetConfigured(), buildEvent.GetId().GetTargetConfigured())
 	case *bes.BuildEventId_TargetCompleted:
-		return r.saveTargetCompleted(ctx, tx, buildEvent.GetCompleted(), buildEvent.GetId().GetTargetCompleted(), buildEvent.GetAborted())
+		return r.saveTargetCompleted(ctx, tx.Ent(), buildEvent.GetCompleted(), buildEvent.GetId().GetTargetCompleted(), buildEvent.GetAborted())
 	case *bes.BuildEventId_Fetch:
-		return r.saveFetch(ctx, tx, buildEvent.GetFetch())
+		return r.saveFetch(ctx, tx.Ent(), buildEvent.GetFetch())
 	case *bes.BuildEventId_TestResult:
-		return r.saveTestResult(ctx, tx, buildEvent.GetTestResult(), buildEvent.GetId().GetTestResult().Label)
+		return r.saveTestResult(ctx, tx.Ent(), buildEvent.GetTestResult(), buildEvent.GetId().GetTestResult().Label)
 	case *bes.BuildEventId_TestSummary:
-		return r.saveTestSummary(ctx, tx, buildEvent.GetTestSummary(), buildEvent.GetId().GetTestSummary().Label)
+		return r.saveTestSummary(ctx, tx.Ent(), buildEvent.GetTestSummary(), buildEvent.GetId().GetTestSummary().Label)
 	case *bes.BuildEventId_BuildToolLogs:
-		return r.saveBuildToolLogs(ctx, tx, buildEvent.GetBuildToolLogs())
+		return r.saveBuildToolLogs(ctx, tx.Ent(), buildEvent.GetBuildToolLogs())
 	case *bes.BuildEventId_Progress:
-		return r.saveBuildProgress(ctx, tx, buildEvent, buildEvent.GetProgress())
+		return r.saveBuildProgress(ctx, tx.Ent(), buildEvent, buildEvent.GetProgress())
 	case *bes.BuildEventId_WorkspaceStatus:
-		return r.saveWorkspaceStatus(ctx, tx, buildEvent.GetWorkspaceStatus())
+		return r.saveWorkspaceStatus(ctx, tx.Ent(), buildEvent.GetWorkspaceStatus())
 	default:
 		return nil
 	}

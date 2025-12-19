@@ -20,19 +20,12 @@ message PostgresSource {
   string connection_string = 1;
 }
 
-// SQLite database source type.
-message SqliteSource {
-  // Database connection string for go-sqlite3, see:
-  // https://pkg.go.dev/github.com/mattn/go-sqlite3#readme-connection-string
-  string connection_string = 1;
-}
-
 message Database {
-  // Database source type. Currently supported types are SQLite and Postgres.
-  oneof source {
-    SqliteSource sqlite = 1;
-    PostgresSource postgres = 2;
-  }
+  // Was 'SqliteSource', configuration for running with a SQLite
+  // database.
+  reserved 1;
+  // Database source type. Currently only Postgres is supported.
+  oneof source { PostgresSource postgres = 2; }
 }
 
 message AuthMetadataExtractorConfiguration {

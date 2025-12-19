@@ -13800,27 +13800,51 @@ func (m *EventMetadataMutation) ResetEventHash() {
 	m.event_hash = nil
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *EventMetadataMutation) SetBazelInvocationID(id int) {
-	m.bazel_invocation = &id
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (m *EventMetadataMutation) SetBazelInvocationID(i int) {
+	m.bazel_invocation = &i
+}
+
+// BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
+func (m *EventMetadataMutation) BazelInvocationID() (r int, exists bool) {
+	v := m.bazel_invocation
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the EventMetadata entity.
+// If the EventMetadata object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EventMetadataMutation) OldBazelInvocationID(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBazelInvocationID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBazelInvocationID: %w", err)
+	}
+	return oldValue.BazelInvocationID, nil
+}
+
+// ResetBazelInvocationID resets all changes to the "bazel_invocation_id" field.
+func (m *EventMetadataMutation) ResetBazelInvocationID() {
+	m.bazel_invocation = nil
 }
 
 // ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
 func (m *EventMetadataMutation) ClearBazelInvocation() {
 	m.clearedbazel_invocation = true
+	m.clearedFields[eventmetadata.FieldBazelInvocationID] = struct{}{}
 }
 
 // BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
 func (m *EventMetadataMutation) BazelInvocationCleared() bool {
 	return m.clearedbazel_invocation
-}
-
-// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *EventMetadataMutation) BazelInvocationID() (id int, exists bool) {
-	if m.bazel_invocation != nil {
-		return *m.bazel_invocation, true
-	}
-	return
 }
 
 // BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
@@ -13873,7 +13897,7 @@ func (m *EventMetadataMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EventMetadataMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.sequence_number != nil {
 		fields = append(fields, eventmetadata.FieldSequenceNumber)
 	}
@@ -13882,6 +13906,9 @@ func (m *EventMetadataMutation) Fields() []string {
 	}
 	if m.event_hash != nil {
 		fields = append(fields, eventmetadata.FieldEventHash)
+	}
+	if m.bazel_invocation != nil {
+		fields = append(fields, eventmetadata.FieldBazelInvocationID)
 	}
 	return fields
 }
@@ -13897,6 +13924,8 @@ func (m *EventMetadataMutation) Field(name string) (ent.Value, bool) {
 		return m.EventReceivedAt()
 	case eventmetadata.FieldEventHash:
 		return m.EventHash()
+	case eventmetadata.FieldBazelInvocationID:
+		return m.BazelInvocationID()
 	}
 	return nil, false
 }
@@ -13912,6 +13941,8 @@ func (m *EventMetadataMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldEventReceivedAt(ctx)
 	case eventmetadata.FieldEventHash:
 		return m.OldEventHash(ctx)
+	case eventmetadata.FieldBazelInvocationID:
+		return m.OldBazelInvocationID(ctx)
 	}
 	return nil, fmt.Errorf("unknown EventMetadata field %s", name)
 }
@@ -13941,6 +13972,13 @@ func (m *EventMetadataMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEventHash(v)
+		return nil
+	case eventmetadata.FieldBazelInvocationID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBazelInvocationID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown EventMetadata field %s", name)
@@ -14014,6 +14052,9 @@ func (m *EventMetadataMutation) ResetField(name string) error {
 		return nil
 	case eventmetadata.FieldEventHash:
 		m.ResetEventHash()
+		return nil
+	case eventmetadata.FieldBazelInvocationID:
+		m.ResetBazelInvocationID()
 		return nil
 	}
 	return fmt.Errorf("unknown EventMetadata field %s", name)

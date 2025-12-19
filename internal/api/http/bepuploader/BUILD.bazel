@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/buildbarn/bb-portal/internal/api/http/bepuploader",
     visibility = ["//:__subpackages__"],
     deps = [
-        "//ent/gen/ent",
+        "//internal/database",
         "//internal/database/buildeventrecorder",
         "//internal/database/dbauthservice",
         "//pkg/authmetadataextraction",

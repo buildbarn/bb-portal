@@ -19,7 +19,6 @@ import (
 	jmespath "github.com/buildbarn/bb-storage/pkg/proto/configuration/jmespath"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	gql "github.com/machinebox/graphql"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -319,7 +318,7 @@ func runTestCase(t *testing.T, queryRegistry *testkit.QueryRegistry, testCase te
 		})
 	}
 
-	graphqlServer := startGraphqlHTTPServer(t, db)
+	graphqlServer := startGraphqlHTTPServer(t, db.Ent())
 
 	runGraphqlTestCases(ctx, t, graphqlServer.URL, queryRegistry, testCase)
 }

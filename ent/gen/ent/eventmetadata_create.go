@@ -41,9 +41,9 @@ func (emc *EventMetadataCreate) SetEventHash(s string) *EventMetadataCreate {
 	return emc
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (emc *EventMetadataCreate) SetBazelInvocationID(id int) *EventMetadataCreate {
-	emc.mutation.SetBazelInvocationID(id)
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (emc *EventMetadataCreate) SetBazelInvocationID(i int) *EventMetadataCreate {
+	emc.mutation.SetBazelInvocationID(i)
 	return emc
 }
 
@@ -94,6 +94,9 @@ func (emc *EventMetadataCreate) check() error {
 	}
 	if _, ok := emc.mutation.EventHash(); !ok {
 		return &ValidationError{Name: "event_hash", err: errors.New(`ent: missing required field "EventMetadata.event_hash"`)}
+	}
+	if _, ok := emc.mutation.BazelInvocationID(); !ok {
+		return &ValidationError{Name: "bazel_invocation_id", err: errors.New(`ent: missing required field "EventMetadata.bazel_invocation_id"`)}
 	}
 	if len(emc.mutation.BazelInvocationIDs()) == 0 {
 		return &ValidationError{Name: "bazel_invocation", err: errors.New(`ent: missing required edge "EventMetadata.bazel_invocation"`)}
@@ -151,7 +154,7 @@ func (emc *EventMetadataCreate) createSpec() (*EventMetadata, *sqlgraph.CreateSp
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.bazel_invocation_event_metadata = &nodes[0]
+		_node.BazelInvocationID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -225,6 +228,9 @@ func (u *EventMetadataUpsertOne) UpdateNewValues() *EventMetadataUpsertOne {
 		}
 		if _, exists := u.create.mutation.EventHash(); exists {
 			s.SetIgnore(eventmetadata.FieldEventHash)
+		}
+		if _, exists := u.create.mutation.BazelInvocationID(); exists {
+			s.SetIgnore(eventmetadata.FieldBazelInvocationID)
 		}
 	}))
 	return u
@@ -440,6 +446,9 @@ func (u *EventMetadataUpsertBulk) UpdateNewValues() *EventMetadataUpsertBulk {
 			}
 			if _, exists := b.mutation.EventHash(); exists {
 				s.SetIgnore(eventmetadata.FieldEventHash)
+			}
+			if _, exists := b.mutation.BazelInvocationID(); exists {
+				s.SetIgnore(eventmetadata.FieldBazelInvocationID)
 			}
 		}
 	}))

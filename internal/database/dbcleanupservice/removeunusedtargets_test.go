@@ -20,9 +20,10 @@ func TestRemoveUnusedTargets(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoTargets", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveUnusedTargets(ctx)
 		require.NoError(t, err)
@@ -33,7 +34,8 @@ func TestRemoveUnusedTargets(t *testing.T) {
 	})
 
 	t.Run("UnusedTarget", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
 		instanceName, err := client.InstanceName.Create().
 			SetName("instance").
@@ -48,7 +50,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveUnusedTargets(ctx)
 		require.NoError(t, err)
@@ -59,7 +61,8 @@ func TestRemoveUnusedTargets(t *testing.T) {
 	})
 
 	t.Run("TargetWithInvocationTarget", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
 		instanceName, err := client.InstanceName.Create().
 			SetName("instance").
@@ -87,7 +90,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveUnusedTargets(ctx)
 		require.NoError(t, err)
@@ -98,7 +101,8 @@ func TestRemoveUnusedTargets(t *testing.T) {
 	})
 
 	t.Run("TargetWithTargetKindMapping", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
 		instanceName, err := client.InstanceName.Create().
 			SetName("instance").
@@ -125,7 +129,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveUnusedTargets(ctx)
 		require.NoError(t, err)
@@ -136,7 +140,8 @@ func TestRemoveUnusedTargets(t *testing.T) {
 	})
 
 	t.Run("TargetWithInvocationTargetAndTargetKindMapping", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
 		instanceName, err := client.InstanceName.Create().
 			SetName("instance").
@@ -170,7 +175,7 @@ func TestRemoveUnusedTargets(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveUnusedTargets(ctx)
 		require.NoError(t, err)

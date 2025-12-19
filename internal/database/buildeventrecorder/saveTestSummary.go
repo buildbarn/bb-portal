@@ -12,7 +12,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveTestSummary(ctx context.Context, tx *ent.Tx, testSummary *bes.TestSummary, label string) error {
+func (r *BuildEventRecorder) saveTestSummary(ctx context.Context, tx *ent.Client, testSummary *bes.TestSummary, label string) error {
 	if r.saveTestDataLevel.GetNone() != nil {
 		return nil
 	}

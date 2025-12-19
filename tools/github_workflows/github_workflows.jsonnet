@@ -21,7 +21,7 @@ local install_bazel(os_param, arch_param="x86_64") =
 local bazel_step(platform, if_cond) = {
   name: platform + ": build and test",
   'if': if_cond,
-  run: "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:%s_cgo //..." % platform,
+  run: "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:%s //..." % platform,
 };
 
 // Define the list of platforms that need to be cross-compiled
@@ -37,7 +37,7 @@ local cross_build_step = {
   name: "Cross-platform builds",
   'if': "matrix.host.cross_compile",
   local platforms = std.join(",", [
-    "@rules_go//go/toolchain:%s_cgo" % p for p in cross_targets
+    "@rules_go//go/toolchain:%s" % p for p in cross_targets
   ]),
   run: "bazel build --platforms=%s //..." % platforms,
 };
@@ -92,7 +92,7 @@ local build_steps = [
 local lint_steps = [
   checkout_step,
   install_bazel('linux', 'arm64'),
-  { name: "Reformat", run: "bazel run @com_github_buildbarn_bb_storage//tools:reformat" },
+  { name: "Reformat", run: "bazel run //tools:reformat" },
   { name: "Test style conformance", run: "git add . && git diff --exit-code HEAD --" },
   { name: "Golint", run: "bazel run @org_golang_x_lint//golint -- -set_exit_status $(pwd)/..." },
 ];

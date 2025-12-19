@@ -11,7 +11,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveTargetConfigured(ctx context.Context, tx *ent.Tx, targetConfigured *bes.TargetConfigured, targetConfiguredID *bes.BuildEventId_TargetConfiguredId) error {
+func (r *BuildEventRecorder) saveTargetConfigured(ctx context.Context, tx *ent.Client, targetConfigured *bes.TargetConfigured, targetConfiguredID *bes.BuildEventId_TargetConfiguredId) error {
 	if r.saveTargetDataLevel.GetNone() != nil {
 		return nil
 	}

@@ -16,20 +16,15 @@ import (
 
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
-	"github.com/google/uuid"
-	"go.opentelemetry.io/otel"
-	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
-	"go.opentelemetry.io/otel/trace"
 
-	"entgo.io/ent/dialect"
-	entsql "entgo.io/ent/dialect/sql"
 	gqlgen "github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	_ "github.com/jackc/pgx/v5/stdlib"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/rs/cors"
-	"github.com/uptrace/opentelemetry-go-extra/otelsql"
+
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
 	go_grpc "google.golang.org/grpc"
@@ -40,6 +35,8 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/migrate"
 	"github.com/buildbarn/bb-portal/internal/api/grpc/bes"
 	"github.com/buildbarn/bb-portal/internal/api/http/bepuploader"
+	"github.com/buildbarn/bb-portal/internal/database"
+	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"
 	"github.com/buildbarn/bb-portal/internal/graphql"
@@ -148,9 +145,19 @@ func newBuildEventStreamService(
 		return nil
 	}
 
-	dbClient, err := newDatabaseClient(besConfiguration.Database, tracerProvider)
+	dialect, connection, err := common.NewSQLConnectionFromConfiguration(besConfiguration.Database, tracerProvider)
 	if err != nil {
-		return util.StatusWrap(err, "Failed to create database client for BuildEventStreamService")
+		return util.StatusWrap(err, "Failed to connect to database for BuildEventStreamService")
+	}
+
+	dbClient, err := database.New(dialect, connection)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to create database client from connection")
+	}
+
+	// Attempt to migrate towards ents model.
+	if err = dbClient.Ent().Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
+		return util.StatusWrap(err, "Could not automatically migrate to desired schema")
 	}
 
 	// Configure the database cleanup service.
@@ -179,7 +186,7 @@ func newBuildEventStreamService(
 	blobArchiver := processing.NewBlobMultiArchiver()
 	configureBlobArchiving(blobArchiver, blobArchiveFolder)
 
-	err = addGraphqlHandler(configuration, besConfiguration, dependenciesGroup, grpcClientFactory, router, dbClient, tracerProvider)
+	err = addGraphqlHandler(configuration, besConfiguration, dependenciesGroup, grpcClientFactory, router, dbClient.Ent(), tracerProvider)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to add GraphQL handler for BuildEventStreamService")
 	}
@@ -209,52 +216,6 @@ func newBuildEventStreamService(
 		return util.StatusWrap(err, "gRPC server failure")
 	}
 	return nil
-}
-
-func newDatabaseClient(dbConfig *bb_portal.Database, tracerProvider trace.TracerProvider) (*ent.Client, error) {
-	switch dbConfig := dbConfig.Source.(type) {
-	case *bb_portal.Database_Sqlite:
-		if dbConfig.Sqlite.ConnectionString == "" {
-			return nil, status.Error(codes.InvalidArgument, "Empty connection string for sqlite database")
-		}
-		db, err := otelsql.Open(
-			"sqlite3",
-			dbConfig.Sqlite.ConnectionString,
-			otelsql.WithTracerProvider(tracerProvider),
-			otelsql.WithAttributes(semconv.DBSystemNameSQLite),
-		)
-		if err != nil {
-			return nil, util.StatusWrap(err, "Failed to open sqlite database")
-		}
-		drv := entsql.OpenDB(dialect.SQLite, db)
-		dbClient := ent.NewClient(ent.Driver(drv))
-
-		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true)); err != nil {
-			return nil, util.StatusWrap(err, "Failed to run schema migration")
-		}
-		return dbClient, nil
-	case *bb_portal.Database_Postgres:
-		if dbConfig.Postgres.ConnectionString == "" {
-			return nil, status.Error(codes.InvalidArgument, "Empty connection string for postgres database")
-		}
-		db, err := otelsql.Open(
-			"pgx",
-			dbConfig.Postgres.ConnectionString,
-			otelsql.WithTracerProvider(tracerProvider),
-			otelsql.WithAttributes(semconv.DBSystemNamePostgreSQL),
-		)
-		if err != nil {
-			return nil, util.StatusWrap(err, "Failed to open postgres database")
-		}
-		drv := entsql.OpenDB(dialect.Postgres, db)
-		dbClient := ent.NewClient(ent.Driver(drv))
-		if err = dbClient.Schema.Create(context.Background(), migrate.WithGlobalUniqueID(true), migrate.WithDropIndex(true)); err != nil {
-			return nil, util.StatusWrap(err, "Failed to run schema migration")
-		}
-		return dbClient, nil
-	default:
-		return nil, status.Error(codes.InvalidArgument, "Missing database configuration")
-	}
 }
 
 func addGraphqlHandler(

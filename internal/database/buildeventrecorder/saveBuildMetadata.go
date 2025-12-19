@@ -9,7 +9,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveBuildMetadata(ctx context.Context, tx *ent.Tx, metadata *bes.BuildMetadata) error {
+func (r *BuildEventRecorder) saveBuildMetadata(ctx context.Context, tx *ent.Client, metadata *bes.BuildMetadata) error {
 	metadataMap := metadata.GetMetadata()
 	if metadataMap == nil {
 		return nil

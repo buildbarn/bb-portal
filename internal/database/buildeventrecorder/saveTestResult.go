@@ -13,7 +13,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveTimingChildren(ctx context.Context, tx *ent.Tx, children []*bes.TestResult_ExecutionInfo_TimingBreakdown) ([]*ent.TimingChild, error) {
+func (r *BuildEventRecorder) saveTimingChildren(ctx context.Context, tx *ent.Client, children []*bes.TestResult_ExecutionInfo_TimingBreakdown) ([]*ent.TimingChild, error) {
 	if children == nil || len(children) == 0 {
 		return nil, nil
 	}
@@ -30,7 +30,7 @@ func (r *BuildEventRecorder) saveTimingChildren(ctx context.Context, tx *ent.Tx,
 	return tc, nil
 }
 
-func (r *BuildEventRecorder) saveTimingBreakdown(ctx context.Context, tx *ent.Tx, timingBreakdown *bes.TestResult_ExecutionInfo_TimingBreakdown) (*ent.TimingBreakdown, error) {
+func (r *BuildEventRecorder) saveTimingBreakdown(ctx context.Context, tx *ent.Client, timingBreakdown *bes.TestResult_ExecutionInfo_TimingBreakdown) (*ent.TimingBreakdown, error) {
 	if timingBreakdown == nil {
 		return nil, nil
 	}
@@ -50,7 +50,7 @@ func (r *BuildEventRecorder) saveTimingBreakdown(ctx context.Context, tx *ent.Tx
 	return tb, nil
 }
 
-func (r *BuildEventRecorder) saveResourceUsage(ctx context.Context, tx *ent.Tx, resourceUsages []*bes.TestResult_ExecutionInfo_ResourceUsage) ([]*ent.ResourceUsage, error) {
+func (r *BuildEventRecorder) saveResourceUsage(ctx context.Context, tx *ent.Client, resourceUsages []*bes.TestResult_ExecutionInfo_ResourceUsage) ([]*ent.ResourceUsage, error) {
 	if resourceUsages == nil || len(resourceUsages) == 0 {
 		return nil, nil
 	}
@@ -67,7 +67,7 @@ func (r *BuildEventRecorder) saveResourceUsage(ctx context.Context, tx *ent.Tx, 
 	return ru, nil
 }
 
-func (r *BuildEventRecorder) saveExecutionInfo(ctx context.Context, tx *ent.Tx, executionInfo *bes.TestResult_ExecutionInfo) (*ent.ExectionInfo, error) {
+func (r *BuildEventRecorder) saveExecutionInfo(ctx context.Context, tx *ent.Client, executionInfo *bes.TestResult_ExecutionInfo) (*ent.ExectionInfo, error) {
 	if executionInfo == nil {
 		return nil, nil
 	}
@@ -96,7 +96,7 @@ func (r *BuildEventRecorder) saveExecutionInfo(ctx context.Context, tx *ent.Tx, 
 	return ei, nil
 }
 
-func (r *BuildEventRecorder) saveTestResultBES(ctx context.Context, tx *ent.Tx, testResult *bes.TestResult, label string, testCollectionDbID int) error {
+func (r *BuildEventRecorder) saveTestResultBES(ctx context.Context, tx *ent.Client, testResult *bes.TestResult, label string, testCollectionDbID int) error {
 	if label == "" {
 		return fmt.Errorf("missing label for Test Result BES message")
 	}
@@ -127,7 +127,7 @@ func (r *BuildEventRecorder) saveTestResultBES(ctx context.Context, tx *ent.Tx, 
 	return nil
 }
 
-func (r *BuildEventRecorder) createTestCollection(ctx context.Context, tx *ent.Tx, testResult *bes.TestResult, label string) (int, error) {
+func (r *BuildEventRecorder) createTestCollection(ctx context.Context, tx *ent.Client, testResult *bes.TestResult, label string) (int, error) {
 	cachedLocally := testResult.GetCachedLocally()
 	cachedRemotely := testResult.GetExecutionInfo().GetCachedRemotely()
 	strategy := testResult.GetExecutionInfo().GetStrategy()
@@ -147,7 +147,7 @@ func (r *BuildEventRecorder) createTestCollection(ctx context.Context, tx *ent.T
 	return testCollectionDb.ID, nil
 }
 
-func (r *BuildEventRecorder) updateTestCollection(ctx context.Context, tx *ent.Tx, testResult *bes.TestResult, label string, testCollectionDb *ent.TestCollection) (int, error) {
+func (r *BuildEventRecorder) updateTestCollection(ctx context.Context, tx *ent.Client, testResult *bes.TestResult, label string, testCollectionDb *ent.TestCollection) (int, error) {
 	cachedLocally := testResult.GetCachedLocally()
 	cachedRemotely := testResult.GetExecutionInfo().GetCachedRemotely()
 	strategy := testResult.GetExecutionInfo().GetStrategy()
@@ -172,7 +172,7 @@ func (r *BuildEventRecorder) updateTestCollection(ctx context.Context, tx *ent.T
 	return testCollectionDb.ID, nil
 }
 
-func (r *BuildEventRecorder) saveTestResult(ctx context.Context, tx *ent.Tx, testResult *bes.TestResult, label string) error {
+func (r *BuildEventRecorder) saveTestResult(ctx context.Context, tx *ent.Client, testResult *bes.TestResult, label string) error {
 	if r.saveTestDataLevel.GetNone() != nil {
 		return nil
 	}

@@ -9,7 +9,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveBuildProgress(ctx context.Context, tx *ent.Tx, buildEvent *events.BuildEvent, progress *bes.Progress) error {
+func (r *BuildEventRecorder) saveBuildProgress(ctx context.Context, tx *ent.Client, buildEvent *events.BuildEvent, progress *bes.Progress) error {
 	if buildEvent == nil || progress == nil {
 		return nil
 	}

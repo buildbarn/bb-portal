@@ -14,7 +14,6 @@ import (
 
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/require"
 )
 
@@ -36,7 +35,7 @@ func BenchmarkDbAuthService_GetAuthorizedInstanceNames(b *testing.B) {
 			},
 		})),
 	)
-	db := setupTestDB(b)
+	db := setupTestDB(b).Ent()
 	authorizer := auth.NewJMESPathExpressionAuthorizer(
 		jmespath.MustCompile("contains(authenticationMetadata.private.roles, 'admin')"),
 	)

@@ -31,9 +31,10 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoInvocations", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveTargetKindMappings(ctx)
 		require.NoError(t, err)
@@ -44,7 +45,8 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocation", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		target := createTestTarget(t, ctx, client, "targetName", instanceNameDbID)
@@ -62,7 +64,7 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveTargetKindMappings(ctx)
 		require.NoError(t, err)
@@ -73,7 +75,8 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 	})
 
 	t.Run("NoTargetKindMappings", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		_, err := client.BazelInvocation.Create().
@@ -83,7 +86,7 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveTargetKindMappings(ctx)
 		require.NoError(t, err)
@@ -94,7 +97,8 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 	})
 
 	t.Run("SingleTargetKindMapping", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		target := createTestTarget(t, ctx, client, "targetName", instanceNameDbID)
@@ -112,7 +116,7 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveTargetKindMappings(ctx)
 		require.NoError(t, err)
@@ -123,7 +127,8 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 	})
 
 	t.Run("MultipleTargetKindMappings", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		target1 := createTestTarget(t, ctx, client, "targetName1", instanceNameDbID)
@@ -161,7 +166,7 @@ func TestRemoveTargetKindMappings(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveTargetKindMappings(ctx)
 		require.NoError(t, err)
