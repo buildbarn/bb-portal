@@ -24,11 +24,12 @@ type EventMetadata struct {
 	EventReceivedAt time.Time `json:"event_received_at,omitempty"`
 	// EventHash holds the value of the "event_hash" field.
 	EventHash string `json:"event_hash,omitempty"`
+	// BazelInvocationID holds the value of the "bazel_invocation_id" field.
+	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EventMetadataQuery when eager-loading is set.
-	Edges                           EventMetadataEdges `json:"edges"`
-	bazel_invocation_event_metadata *int
-	selectValues                    sql.SelectValues
+	Edges        EventMetadataEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // EventMetadataEdges holds the relations/edges for other nodes in the graph.
@@ -58,14 +59,12 @@ func (*EventMetadata) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case eventmetadata.FieldID, eventmetadata.FieldSequenceNumber:
+		case eventmetadata.FieldID, eventmetadata.FieldSequenceNumber, eventmetadata.FieldBazelInvocationID:
 			values[i] = new(sql.NullInt64)
 		case eventmetadata.FieldEventHash:
 			values[i] = new(sql.NullString)
 		case eventmetadata.FieldEventReceivedAt:
 			values[i] = new(sql.NullTime)
-		case eventmetadata.ForeignKeys[0]: // bazel_invocation_event_metadata
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -105,12 +104,11 @@ func (em *EventMetadata) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				em.EventHash = value.String
 			}
-		case eventmetadata.ForeignKeys[0]:
+		case eventmetadata.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field bazel_invocation_event_metadata", value)
+				return fmt.Errorf("unexpected type %T for field bazel_invocation_id", values[i])
 			} else if value.Valid {
-				em.bazel_invocation_event_metadata = new(int)
-				*em.bazel_invocation_event_metadata = int(value.Int64)
+				em.BazelInvocationID = int(value.Int64)
 			}
 		default:
 			em.selectValues.Set(columns[i], values[i])
@@ -161,6 +159,9 @@ func (em *EventMetadata) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("event_hash=")
 	builder.WriteString(em.EventHash)
+	builder.WriteString(", ")
+	builder.WriteString("bazel_invocation_id=")
+	builder.WriteString(fmt.Sprintf("%v", em.BazelInvocationID))
 	builder.WriteByte(')')
 	return builder.String()
 }

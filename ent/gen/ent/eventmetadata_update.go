@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 )
@@ -29,26 +28,9 @@ func (emu *EventMetadataUpdate) Where(ps ...predicate.EventMetadata) *EventMetad
 	return emu
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (emu *EventMetadataUpdate) SetBazelInvocationID(id int) *EventMetadataUpdate {
-	emu.mutation.SetBazelInvocationID(id)
-	return emu
-}
-
-// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (emu *EventMetadataUpdate) SetBazelInvocation(b *BazelInvocation) *EventMetadataUpdate {
-	return emu.SetBazelInvocationID(b.ID)
-}
-
 // Mutation returns the EventMetadataMutation object of the builder.
 func (emu *EventMetadataUpdate) Mutation() *EventMetadataMutation {
 	return emu.mutation
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (emu *EventMetadataUpdate) ClearBazelInvocation() *EventMetadataUpdate {
-	emu.mutation.ClearBazelInvocation()
-	return emu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -104,35 +86,6 @@ func (emu *EventMetadataUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			}
 		}
 	}
-	if emu.mutation.BazelInvocationCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   eventmetadata.BazelInvocationTable,
-			Columns: []string{eventmetadata.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := emu.mutation.BazelInvocationIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   eventmetadata.BazelInvocationTable,
-			Columns: []string{eventmetadata.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	_spec.AddModifiers(emu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, emu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -155,26 +108,9 @@ type EventMetadataUpdateOne struct {
 	modifiers []func(*sql.UpdateBuilder)
 }
 
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by ID.
-func (emuo *EventMetadataUpdateOne) SetBazelInvocationID(id int) *EventMetadataUpdateOne {
-	emuo.mutation.SetBazelInvocationID(id)
-	return emuo
-}
-
-// SetBazelInvocation sets the "bazel_invocation" edge to the BazelInvocation entity.
-func (emuo *EventMetadataUpdateOne) SetBazelInvocation(b *BazelInvocation) *EventMetadataUpdateOne {
-	return emuo.SetBazelInvocationID(b.ID)
-}
-
 // Mutation returns the EventMetadataMutation object of the builder.
 func (emuo *EventMetadataUpdateOne) Mutation() *EventMetadataMutation {
 	return emuo.mutation
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (emuo *EventMetadataUpdateOne) ClearBazelInvocation() *EventMetadataUpdateOne {
-	emuo.mutation.ClearBazelInvocation()
-	return emuo
 }
 
 // Where appends a list predicates to the EventMetadataUpdate builder.
@@ -259,35 +195,6 @@ func (emuo *EventMetadataUpdateOne) sqlSave(ctx context.Context) (_node *EventMe
 				ps[i](selector)
 			}
 		}
-	}
-	if emuo.mutation.BazelInvocationCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   eventmetadata.BazelInvocationTable,
-			Columns: []string{eventmetadata.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := emuo.mutation.BazelInvocationIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   eventmetadata.BazelInvocationTable,
-			Columns: []string{eventmetadata.BazelInvocationColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(bazelinvocation.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_spec.AddModifiers(emuo.modifiers...)
 	_node = &EventMetadata{config: emuo.config}

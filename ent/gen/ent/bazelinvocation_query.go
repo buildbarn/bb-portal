@@ -1134,7 +1134,9 @@ func (biq *BazelInvocationQuery) loadEventMetadata(ctx context.Context, query *E
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(eventmetadata.FieldBazelInvocationID)
+	}
 	query.Where(predicate.EventMetadata(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(bazelinvocation.EventMetadataColumn), fks...))
 	}))
@@ -1143,13 +1145,10 @@ func (biq *BazelInvocationQuery) loadEventMetadata(ctx context.Context, query *E
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.bazel_invocation_event_metadata
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "bazel_invocation_event_metadata" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.BazelInvocationID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_event_metadata" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

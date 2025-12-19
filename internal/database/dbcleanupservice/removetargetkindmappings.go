@@ -15,7 +15,7 @@ func (dc *DbCleanupService) RemoveTargetKindMappings(ctx context.Context) error 
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveTargetKindMappings")
 	defer span.End()
 
-	deletedRows, err := dc.db.TargetKindMapping.Delete().
+	deletedRows, err := dc.db.Ent().TargetKindMapping.Delete().
 		Where(
 			targetkindmapping.HasBazelInvocationWith(
 				bazelinvocation.BepCompletedEQ(true),

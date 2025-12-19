@@ -12,7 +12,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) determineMissingBlobs(ctx context.Context, tx *ent.Tx, detectedBlobs []detectors.BlobURI) ([]detectors.BlobURI, error) {
+func (r *BuildEventRecorder) determineMissingBlobs(ctx context.Context, tx *ent.Client, detectedBlobs []detectors.BlobURI) ([]detectors.BlobURI, error) {
 	detectedBlobURIs := make([]string, 0, len(detectedBlobs))
 	blobMap := make(map[string]struct{}, len(detectedBlobs))
 	for _, detectedBlob := range detectedBlobs {
@@ -36,7 +36,7 @@ func (r *BuildEventRecorder) determineMissingBlobs(ctx context.Context, tx *ent.
 	return missingBlobs, nil
 }
 
-func (r *BuildEventRecorder) updateBlobRecord(ctx context.Context, tx *ent.Tx, b ent.Blob) {
+func (r *BuildEventRecorder) updateBlobRecord(ctx context.Context, tx *ent.Client, b ent.Blob) {
 	update := tx.Blob.Update().Where(blob.URI(b.URI)).SetArchivingStatus(b.ArchivingStatus)
 	if b.ArchiveURL != "" {
 		update = update.SetArchiveURL(b.ArchiveURL)
@@ -54,7 +54,7 @@ func (r *BuildEventRecorder) updateBlobRecord(ctx context.Context, tx *ent.Tx, b
 
 func (r *BuildEventRecorder) saveBazelInvocationProblems(
 	ctx context.Context,
-	tx *ent.Tx,
+	tx *ent.Client,
 	buildEvent *events.BuildEvent,
 ) error {
 	if buildEvent == nil {

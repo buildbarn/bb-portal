@@ -9,7 +9,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveBuildConfiguration(ctx context.Context, tx *ent.Tx, configuration *bes.Configuration) error {
+func (r *BuildEventRecorder) saveBuildConfiguration(ctx context.Context, tx *ent.Client, configuration *bes.Configuration) error {
 	if configuration == nil {
 		return nil
 	}

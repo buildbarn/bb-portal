@@ -322,9 +322,10 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "EventMetadata",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			eventmetadata.FieldSequenceNumber:  {Type: field.TypeInt64, Column: eventmetadata.FieldSequenceNumber},
-			eventmetadata.FieldEventReceivedAt: {Type: field.TypeTime, Column: eventmetadata.FieldEventReceivedAt},
-			eventmetadata.FieldEventHash:       {Type: field.TypeString, Column: eventmetadata.FieldEventHash},
+			eventmetadata.FieldSequenceNumber:    {Type: field.TypeInt64, Column: eventmetadata.FieldSequenceNumber},
+			eventmetadata.FieldEventReceivedAt:   {Type: field.TypeTime, Column: eventmetadata.FieldEventReceivedAt},
+			eventmetadata.FieldEventHash:         {Type: field.TypeString, Column: eventmetadata.FieldEventHash},
+			eventmetadata.FieldBazelInvocationID: {Type: field.TypeInt, Column: eventmetadata.FieldBazelInvocationID},
 		},
 	}
 	graph.Nodes[14] = &sqlgraph.Node{
@@ -3442,6 +3443,11 @@ func (f *EventMetadataFilter) WhereEventReceivedAt(p entql.TimeP) {
 // WhereEventHash applies the entql string predicate on the event_hash field.
 func (f *EventMetadataFilter) WhereEventHash(p entql.StringP) {
 	f.Where(p.Field(eventmetadata.FieldEventHash))
+}
+
+// WhereBazelInvocationID applies the entql int predicate on the bazel_invocation_id field.
+func (f *EventMetadataFilter) WhereBazelInvocationID(p entql.IntP) {
+	f.Where(p.Field(eventmetadata.FieldBazelInvocationID))
 }
 
 // WhereHasBazelInvocation applies a predicate to check if query has an edge bazel_invocation.

@@ -9,7 +9,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveWorkspaceStatus(ctx context.Context, tx *ent.Tx, workspaceStatus *bes.WorkspaceStatus) error {
+func (r *BuildEventRecorder) saveWorkspaceStatus(ctx context.Context, tx *ent.Client, workspaceStatus *bes.WorkspaceStatus) error {
 	if workspaceStatus == nil {
 		return nil
 	}

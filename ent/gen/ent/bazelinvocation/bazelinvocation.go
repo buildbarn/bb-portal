@@ -134,7 +134,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "eventmetadata" package.
 	EventMetadataInverseTable = "event_metadata"
 	// EventMetadataColumn is the table column denoting the event_metadata relation/edge.
-	EventMetadataColumn = "bazel_invocation_event_metadata"
+	EventMetadataColumn = "bazel_invocation_id"
 	// ConnectionMetadataTable is the table that holds the connection_metadata relation/edge.
 	ConnectionMetadataTable = "connection_metadata"
 	// ConnectionMetadataInverseTable is the table name for the ConnectionMetadata entity.

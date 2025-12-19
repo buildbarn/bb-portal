@@ -10,7 +10,7 @@ import (
 	"net/http"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
-	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/buildeventrecorder"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
@@ -35,7 +35,7 @@ const (
 
 // BepUploader handles upload of Build Event Protocol files via HTTP.
 type BepUploader struct {
-	db                     *ent.Client
+	db                     database.Client
 	instanceNameAuthorizer auth.Authorizer
 	blobArchiver           processing.BlobMultiArchiver
 	saveTargetDataLevel    *bb_portal.BuildEventStreamService_SaveTargetDataLevel
@@ -46,7 +46,7 @@ type BepUploader struct {
 }
 
 // NewBepUploader creates a new BepUploader
-func NewBepUploader(db *ent.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider, uuidGenerator util.UUIDGenerator) (*BepUploader, error) {
+func NewBepUploader(db database.Client, blobArchiver processing.BlobMultiArchiver, configuration *bb_portal.ApplicationConfiguration, dependenciesGroup program.Group, grpcClientFactory bb_grpc.ClientFactory, tracerProvider trace.TracerProvider, uuidGenerator util.UUIDGenerator) (*BepUploader, error) {
 	if configuration.InstanceNameAuthorizer == nil {
 		return nil, status.Error(codes.NotFound, "No InstanceNameAuthorizer configured")
 	}

@@ -25,6 +25,9 @@ func (EventMetadata) Fields() []ent.Field {
 
 		// The hash of the event proto message.
 		field.String("event_hash").Immutable(),
+
+		// Foreign key to bazel_invocation
+		field.Int("bazel_invocation_id").Immutable(),
 	}
 }
 
@@ -33,9 +36,11 @@ func (EventMetadata) Edges() []ent.Edge {
 	return []ent.Edge{
 		// Edge back to the bazel invocation.
 		edge.From("bazel_invocation", BazelInvocation.Type).
+			Field("bazel_invocation_id").
 			Ref("event_metadata").
 			Unique().
-			Required(),
+			Required().
+			Immutable(),
 	}
 }
 

@@ -12,3 +12,65 @@ go_library(
         "@org_golang_x_lint//:lint",
     ],
 )
+
+sh_binary(
+    name = "reformat",
+    srcs = ["reformat.sh"],
+    args = [
+        "$(rlocationpath @rules_go//go)",
+        "$(rlocationpath @cc_mvdan_gofumpt//:gofumpt)",
+        "$(rlocationpath @llvm_toolchain//:bin/clang-format)",
+        "$(rlocationpath //:gazelle)",
+        "$(rlocationpath :sqlc)",
+        "$(rlocationpath //cmd/bb_export_schema)",
+    ],
+    data = [
+        ":sqlc",
+        "//:gazelle",
+        "//cmd/bb_export_schema",
+        "@cc_mvdan_gofumpt//:gofumpt",
+        "@llvm_toolchain//:bin/clang-format",
+        "@rules_go//go",
+    ],
+    deps = ["@rules_shell//shell/runfiles"],
+)
+
+alias(
+    name = "sqlc",
+    actual = select({
+        "@platforms//os:linux": ":sqlc_linux",
+        "@platforms//os:macos": ":sqlc_macos",
+    }),
+    target_compatible_with = select({
+        "@platforms//os:linux": [],
+        "@platforms//os:macos": [],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "sqlc_linux",
+    actual = select({
+        "@platforms//cpu:x86_64": "@sqlc_linux_amd64//:sqlc",
+        "@platforms//cpu:aarch64": "@sqlc_linux_arm64//:sqlc",
+    }),
+    target_compatible_with = select({
+        "@platforms//cpu:aarch64": ["@platforms//os:linux"],
+        "@platforms//cpu:x86_64": ["@platforms//os:linux"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+)
+
+alias(
+    name = "sqlc_macos",
+    actual = select({
+        "@platforms//cpu:x86_64": "@sqlc_darwin_amd64//:sqlc",
+        "@platforms//cpu:aarch64": "@sqlc_darwin_arm64//:sqlc",
+    }),
+    target_compatible_with = select({
+        "@platforms//cpu:aarch64": ["@platforms//os:macos"],
+        "@platforms//cpu:x86_64": ["@platforms//os:macos"],
+        "//conditions:default": ["@platforms//:incompatible"],
+    }),
+)

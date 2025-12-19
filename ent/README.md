@@ -24,5 +24,5 @@ To add a new schema:
    policies.
 2. Add an import and re-export the schema in `ent/authschema/schema.go`.
 3. Add any necessary privacy policies in `ent/authschema/privacy.go`.
-4. Run `bazel run @com_github_buildbarn_bb_storage//tools:reformat` to
-   regenerate the code with the new schema and policies.
+4. Run `bazel run //tools:reformat` to regenerate the code with the new schema
+   and policies.

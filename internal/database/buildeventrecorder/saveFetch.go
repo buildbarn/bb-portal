@@ -9,7 +9,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveFetch(ctx context.Context, tx *ent.Tx, fetch *bes.Fetch) error {
+func (r *BuildEventRecorder) saveFetch(ctx context.Context, tx *ent.Client, fetch *bes.Fetch) error {
 	if fetch == nil {
 		return nil
 	}

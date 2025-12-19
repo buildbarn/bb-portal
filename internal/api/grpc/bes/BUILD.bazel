@@ -10,6 +10,7 @@ go_library(
     visibility = ["//:__subpackages__"],
     deps = [
         "//ent/gen/ent",
+        "//internal/database",
         "//internal/database/buildeventrecorder",
         "//internal/database/dbauthservice",
         "//pkg/authmetadataextraction",

@@ -2,20 +2,22 @@ package dbcleanupservice_test
 
 import (
 	"context"
+	"fmt"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
+	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
 	"github.com/buildbarn/bb-portal/internal/database/dbcleanupservice"
+	"github.com/buildbarn/bb-portal/internal/database/embedded"
 	"github.com/buildbarn/bb-portal/internal/mock"
 	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/clock"
-	_ "github.com/buildbarn/bb-storage/pkg/clock"
 	"github.com/google/uuid"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel/trace"
 	"go.opentelemetry.io/otel/trace/noop"
@@ -23,23 +25,49 @@ import (
 	"google.golang.org/protobuf/types/known/durationpb"
 )
 
-func setupTestDB(t *testing.T) *ent.Client {
-	client, err := ent.Open("sqlite3", "file:dbCleanupTestDatabase?mode=memory&cache=shared&_fk=1")
-	require.NoError(t, err)
-	t.Cleanup(func() { client.Close() })
-	err = client.Schema.Create(context.Background())
-	require.NoError(t, err)
-	return client
+var dbProvider *embedded.DatabaseProvider
+
+func TestMain(m *testing.M) {
+	var err error
+	tmpDir, err := os.MkdirTemp(os.TempDir(), "embedded_db_test")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Could not create temp dir: %v\n", err)
+		os.Exit(1)
+	}
+
+	dbProvider, err = embedded.NewDatabaseProvider(tmpDir, os.Stderr)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Could not start embedded DB: %v\n", err)
+		os.Exit(1)
+	}
+	defer func() {
+		dbProvider.Cleanup()
+		os.RemoveAll(tmpDir)
+	}()
+
+	code := m.Run()
+	os.Exit(code)
 }
 
-func getNewDbCleanupService(client *ent.Client, clock clock.Clock, traceProvider trace.TracerProvider) (*dbcleanupservice.DbCleanupService, error) {
+func setupTestDB(t testing.TB) database.Client {
+	conn, err := dbProvider.CreateDatabase()
+	require.NoError(t, err)
+	db, err := database.New("postgres", conn)
+	require.NoError(t, err)
+	t.Cleanup(func() { conn.Close() })
+	err = db.Ent().Schema.Create(context.Background())
+	require.NoError(t, err)
+	return db
+}
+
+func getNewDbCleanupService(db database.Client, clock clock.Clock, traceProvider trace.TracerProvider) (*dbcleanupservice.DbCleanupService, error) {
 	cleanupConfiguration := &bb_portal.BuildEventStreamService_DatabaseCleanupConfiguration{
 		CleanupInterval:             durationpb.New(1 * time.Minute),
 		InvocationConnectionTimeout: durationpb.New(30 * time.Second),
 		InvocationMessageTimeout:    durationpb.New(30 * time.Second),
 		InvocationRetention:         durationpb.New(30 * time.Minute),
 	}
-	return dbcleanupservice.NewDbCleanupService(client, clock, cleanupConfiguration, traceProvider)
+	return dbcleanupservice.NewDbCleanupService(db, clock, cleanupConfiguration, traceProvider)
 }
 
 func createInstanceName(t *testing.T, ctx context.Context, client *ent.Client, name string) int {
@@ -78,9 +106,10 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoInvocations", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 
 		clock.EXPECT().Now().Return(cleanupTime)
@@ -93,7 +122,8 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 	})
 
 	t.Run("InvocationsWithNoConnectionMetadata", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv1, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -108,7 +138,7 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 
 		clock.EXPECT().Now().Return(cleanupTime)
@@ -129,7 +159,8 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocationNoRecentConnections", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -143,7 +174,7 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 
 		clock.EXPECT().Now().Return(cleanupTime)
@@ -156,7 +187,8 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocationRecentConnection", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -170,7 +202,7 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 
 		clock.EXPECT().Now().Return(cleanupTime)
@@ -183,7 +215,8 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 	})
 
 	t.Run("FinishedInvocationWithOldConnection", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -198,7 +231,7 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 
 		clock.EXPECT().Now().Return(cleanupTime)
@@ -211,7 +244,8 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 	})
 
 	t.Run("MultipleMixedInvocations", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		// old connection -> should be locked
 		invOld, err := client.BazelInvocation.Create().
@@ -237,7 +271,7 @@ func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 
 		clock.EXPECT().Now().Return(cleanupTime)
@@ -262,8 +296,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoInvocations-NoEventMetadata", func(t *testing.T) {
-		client := setupTestDB(t)
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		db := setupTestDB(t)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -271,7 +305,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocation-NoEventMetadata", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		startInv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -279,7 +314,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -292,7 +327,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("FinishedInvocation-NoEventMetadata", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		startInv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -302,7 +338,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -315,7 +351,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocationWithoutEndedAt", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -330,7 +367,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -343,7 +380,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocationWithEndedAt", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -359,7 +397,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -372,7 +410,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("FinishedInvocationWithoutEndedAt", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -388,7 +427,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -401,7 +440,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("FinishedInvocationWithEndedAt", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -418,7 +458,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -431,7 +471,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocation-MultipleEventMetadata", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -460,7 +501,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -473,7 +514,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("MultipleUnfinishedInvocations", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb1, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -501,7 +543,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -519,7 +561,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocation-RecentEventMetadata", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		invocationDb, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -540,7 +583,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.LockInvocationsWithNoRecentEvents(ctx)
@@ -560,9 +603,10 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoConnections", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 
 		err = cleanup.RemoveOldInvocationConnections(ctx)
@@ -574,7 +618,8 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 	})
 
 	t.Run("ConnectionForCompletedInvocation", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -589,7 +634,7 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 
 		err = cleanup.RemoveOldInvocationConnections(ctx)
@@ -606,7 +651,8 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 	})
 
 	t.Run("ConnectionForUnfinishedInvocation", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -621,7 +667,7 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 
 		err = cleanup.RemoveOldInvocationConnections(ctx)
@@ -633,7 +679,8 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 	})
 
 	t.Run("MultipleMixedConnections", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		// Completed invocation
 		invDone, err := client.BazelInvocation.Create().
@@ -661,7 +708,7 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 
 		err = cleanup.RemoveOldInvocationConnections(ctx)
@@ -685,8 +732,9 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoEventMetadata", func(t *testing.T) {
-		client := setupTestDB(t)
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		db := setupTestDB(t)
+		client := db.Ent()
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -697,7 +745,8 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 	})
 
 	t.Run("EventMetadataNotOld", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -714,7 +763,7 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -725,7 +774,8 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 	})
 
 	t.Run("EventMetadataOld", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -742,7 +792,7 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -753,7 +803,8 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 	})
 
 	t.Run("EventMetadataOldButInvocationNotCompleted", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -769,7 +820,7 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -780,7 +831,8 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 	})
 
 	t.Run("EventMetadataOldButInvocationEndedAtAfterCutoff", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -797,7 +849,7 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -808,7 +860,8 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 	})
 
 	t.Run("MultipleEventMetadata", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -832,7 +885,7 @@ func TestRemoveOldEventMetadata(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldEventMetadata(ctx)
@@ -850,7 +903,8 @@ func TestCompactLogs(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("FinishedInvocationWithoutIncompleteLog", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -859,7 +913,7 @@ func TestCompactLogs(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.CompactLogs(ctx)
 		require.NoError(t, err)
@@ -879,7 +933,8 @@ func TestCompactLogs(t *testing.T) {
 	}
 
 	t.Run("FinishedInvocationWithIncompleteLog", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -890,7 +945,7 @@ func TestCompactLogs(t *testing.T) {
 
 		populateIncompleteBuildLog(t, ctx, client, inv.ID)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		// Delete attempt before compaction should not delete logs.
 		err = cleanup.DeleteIncompleteLogs(ctx)
@@ -910,7 +965,8 @@ func TestCompactLogs(t *testing.T) {
 	})
 
 	t.Run("UnfinishedInvocationWithIncompleteLog", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		inv, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -921,7 +977,7 @@ func TestCompactLogs(t *testing.T) {
 
 		populateIncompleteBuildLog(t, ctx, client, inv.ID)
 		requireIncompleteLogCount(t, client, 6)
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.CompactLogs(ctx)
 		require.NoError(t, err)
@@ -943,9 +999,10 @@ func TestRemoveOldInvocations(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoInvocations", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldInvocations(ctx)
@@ -957,7 +1014,8 @@ func TestRemoveOldInvocations(t *testing.T) {
 	})
 
 	t.Run("InvocationNotCompleted", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		_, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -966,7 +1024,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldInvocations(ctx)
@@ -978,7 +1036,8 @@ func TestRemoveOldInvocations(t *testing.T) {
 	})
 
 	t.Run("InvocationCompletedButNotOld", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		_, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -988,7 +1047,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldInvocations(ctx)
@@ -1000,7 +1059,8 @@ func TestRemoveOldInvocations(t *testing.T) {
 	})
 
 	t.Run("InvocationCompletedAndOld", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		_, err := client.BazelInvocation.Create().
 			SetInvocationID(uuid.New()).
@@ -1010,7 +1070,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldInvocations(ctx)
@@ -1022,7 +1082,8 @@ func TestRemoveOldInvocations(t *testing.T) {
 	})
 
 	t.Run("MultipleInvocationsMixed", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 		// Old and completed
 		_, err := client.BazelInvocation.Create().
@@ -1055,7 +1116,7 @@ func TestRemoveOldInvocations(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		clock.EXPECT().Now().Return(cleanupTime)
 		err = cleanup.RemoveOldInvocations(ctx)
@@ -1074,9 +1135,10 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	traceProvider := noop.NewTracerProvider()
 
 	t.Run("NoBuilds", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)
@@ -1087,7 +1149,8 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	})
 
 	t.Run("BuildWithInvocation", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 
 		buildObj, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
@@ -1099,7 +1162,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 			Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)
@@ -1110,13 +1173,14 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	})
 
 	t.Run("BuildWithoutInvocation", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 
 		_, err := client.Build.Create().SetBuildURL("1").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)
@@ -1127,7 +1191,8 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 	})
 
 	t.Run("MultipleBuildsMixed", func(t *testing.T) {
-		client := setupTestDB(t)
+		db := setupTestDB(t)
+		client := db.Ent()
 		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
 
 		// Build with invocation
@@ -1146,7 +1211,7 @@ func TestRemoveBuildsWithoutInvocations(t *testing.T) {
 		_, err = client.Build.Create().SetBuildURL("3").SetBuildUUID(uuid.New()).SetInstanceNameID(instanceNameDbID).SetTimestamp(time.Now().UTC()).Save(ctx)
 		require.NoError(t, err)
 
-		cleanup, err := getNewDbCleanupService(client, clock, traceProvider)
+		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
 		require.NoError(t, err)
 		err = cleanup.RemoveBuildsWithoutInvocations(ctx)
 		require.NoError(t, err)

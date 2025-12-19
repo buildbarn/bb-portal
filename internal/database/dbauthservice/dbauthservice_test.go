@@ -2,11 +2,14 @@ package dbauthservice_test
 
 import (
 	"context"
+	"fmt"
+	"os"
 	"testing"
 	"time"
 
-	"github.com/buildbarn/bb-portal/ent/gen/ent"
+	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/dbauthservice"
+	"github.com/buildbarn/bb-portal/internal/database/embedded"
 	"github.com/buildbarn/bb-portal/internal/mock"
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/digest"
@@ -16,15 +19,40 @@ import (
 
 	// Needed to avoid cyclic dependencies in ent (https://entgo.io/docs/privacy#privacy-policy-registration)
 	_ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/require"
 )
 
-func setupTestDB(t testing.TB) *ent.Client {
-	db, err := ent.Open("sqlite3", "file:testDb?mode=memory&cache=shared&_fk=1")
+var dbProvider *embedded.DatabaseProvider
+
+func TestMain(m *testing.M) {
+	var err error
+	tmpDir, err := os.MkdirTemp(os.TempDir(), "embedded_db_test")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Could not create temp dir: %v\n", err)
+		os.Exit(1)
+	}
+
+	dbProvider, err = embedded.NewDatabaseProvider(tmpDir, os.Stderr)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Could not start embedded DB: %v\n", err)
+		os.Exit(1)
+	}
+	defer func() {
+		dbProvider.Cleanup()
+		os.RemoveAll(tmpDir)
+	}()
+
+	code := m.Run()
+	os.Exit(code)
+}
+
+func setupTestDB(t testing.TB) database.Client {
+	conn, err := dbProvider.CreateDatabase()
 	require.NoError(t, err)
-	t.Cleanup(func() { db.Close() })
-	err = db.Schema.Create(dbauthservice.NewContextWithDbAuthServiceBypass(context.Background()))
+	db, err := database.New("postgres", conn)
+	require.NoError(t, err)
+	t.Cleanup(func() { conn.Close() })
+	err = db.Ent().Schema.Create(context.Background())
 	require.NoError(t, err)
 	return db
 }
@@ -36,7 +64,7 @@ func TestGetInstanceNames(t *testing.T) {
 	authorizer := auth.NewStaticAuthorizer(func(in digest.InstanceName) bool { return true })
 
 	t.Run("NoInstanceNames", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := setupTestDB(t).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
 
 		clock.EXPECT().Now().Return(time.Unix(1000, 0))
@@ -45,7 +73,7 @@ func TestGetInstanceNames(t *testing.T) {
 	})
 
 	t.Run("SkipInvalidNames", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := setupTestDB(t).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
 
 		_, err := db.InstanceName.Create().SetName("validName").Save(ctx)
@@ -60,7 +88,7 @@ func TestGetInstanceNames(t *testing.T) {
 	})
 
 	t.Run("MultipleInstanceNames", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := setupTestDB(t).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
 
 		_, err := db.InstanceName.Create().SetName("validName1").Save(ctx)
@@ -79,7 +107,7 @@ func TestGetInstanceNames(t *testing.T) {
 	})
 
 	t.Run("TestCache", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := setupTestDB(t).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, time.Second*10)
 
 		_, err := db.InstanceName.Create().SetName("validName1").Save(ctx)
@@ -121,7 +149,7 @@ func TestGetAuthorizedInstanceNames(t *testing.T) {
 	)
 
 	t.Run("NoInstanceNames", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := setupTestDB(t).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
 
 		got := dbAuthService.GetAuthorizedInstanceNames(ctx)
@@ -129,7 +157,7 @@ func TestGetAuthorizedInstanceNames(t *testing.T) {
 	})
 
 	t.Run("MultipleInstanceNames", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := setupTestDB(t).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
 
 		_, err := db.InstanceName.Create().SetName("validName1").Save(ctx)
@@ -159,7 +187,7 @@ func TestQueryFiltering(t *testing.T) {
 	)
 
 	t.Run("NoInvocations", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := setupTestDB(t).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
 		authCtx := dbauthservice.NewContextWithDbAuthService(ctx, dbAuthService)
 
@@ -172,7 +200,7 @@ func TestQueryFiltering(t *testing.T) {
 	})
 
 	t.Run("MultipleInvocations", func(t *testing.T) {
-		db := setupTestDB(t)
+		db := setupTestDB(t).Ent()
 		dbAuthService := dbauthservice.NewDbAuthService(db, clock, authorizer, 0)
 		authCtx := dbauthservice.NewContextWithDbAuthService(ctx, dbAuthService)
 

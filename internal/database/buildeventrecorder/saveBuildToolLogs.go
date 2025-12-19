@@ -49,7 +49,7 @@ func getFileDigestFunction(file *bes.File) string {
 	return strings.ToLower(remoteexecution.DigestFunction_SHA256.String())
 }
 
-func (r *BuildEventRecorder) saveBuildToolLogs(ctx context.Context, tx *ent.Tx, buildToolLogs *bes.BuildToolLogs) error {
+func (r *BuildEventRecorder) saveBuildToolLogs(ctx context.Context, tx *ent.Client, buildToolLogs *bes.BuildToolLogs) error {
 	if buildToolLogs == nil {
 		return nil
 	}

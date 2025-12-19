@@ -487,7 +487,7 @@ var (
 		{Name: "sequence_number", Type: field.TypeInt64},
 		{Name: "event_received_at", Type: field.TypeTime},
 		{Name: "event_hash", Type: field.TypeString},
-		{Name: "bazel_invocation_event_metadata", Type: field.TypeInt},
+		{Name: "bazel_invocation_id", Type: field.TypeInt},
 	}
 	// EventMetadataTable holds the schema information for the "event_metadata" table.
 	EventMetadataTable = &schema.Table{
@@ -504,12 +504,12 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "eventmetadata_bazel_invocation_event_metadata",
+				Name:    "eventmetadata_bazel_invocation_id",
 				Unique:  false,
 				Columns: []*schema.Column{EventMetadataColumns[4]},
 			},
 			{
-				Name:    "eventmetadata_sequence_number_bazel_invocation_event_metadata",
+				Name:    "eventmetadata_sequence_number_bazel_invocation_id",
 				Unique:  true,
 				Columns: []*schema.Column{EventMetadataColumns[1], EventMetadataColumns[4]},
 			},

@@ -20,6 +20,27 @@
 
 {
   global: {
+    tracing: {
+      backends: [
+        {
+          otlpSpanExporter: {
+            address: "localhost:4317"
+          },
+          batchSpanProcessor: {}
+        }
+      ],
+      resourceAttributes: [
+        {
+          key: "service.name",
+          value: {
+            stringValue: "bb-portal" 
+          }
+        }
+      ],
+      sampler: {
+        always: {}
+      }
+    },
     diagnosticsHttpServer: {
       httpServers: [{
         listenAddresses: [':9980'],
@@ -52,8 +73,8 @@
       maximumReceivedMessageSizeBytes: 10 * 1024 * 1024,
     }],
     database: {
-      sqlite: {
-        connectionString: 'file:buildportal.db?_journal=WAL&_fk=1',
+      postgres: {
+        connectionString: 'postgresql://app:password@localhost:5432/app',
       },
     },
     blobArchiveFolder: './blob-archive/',

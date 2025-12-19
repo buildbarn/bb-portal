@@ -8,11 +8,11 @@ import (
 	"time"
 
 	entsql "entgo.io/ent/dialect/sql"
-	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	apicommon "github.com/buildbarn/bb-portal/internal/api/common"
+	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/common"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/processing"
@@ -30,7 +30,7 @@ import (
 // BuildEventRecorder contains information about a Bazel invocation that is
 // required when processing individual build events.
 type BuildEventRecorder struct {
-	db                  *ent.Client
+	db                  database.Client
 	problemDetector     detectors.ProblemDetector
 	blobArchiver        processing.BlobMultiArchiver
 	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel
@@ -48,7 +48,7 @@ type BuildEventRecorder struct {
 // NewBuildEventRecorder creates a new BuildEventRecorder
 func NewBuildEventRecorder(
 	ctx context.Context,
-	db *ent.Client,
+	db database.Client,
 	instanceNameAuthorizer auth.Authorizer,
 	blobArchiver processing.BlobMultiArchiver,
 	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel,
@@ -99,7 +99,7 @@ func NewBuildEventRecorder(
 
 func findOrCreateAuthenticatedUser(
 	ctx context.Context,
-	db *ent.Client,
+	db database.Client,
 	extractors *authmetadataextraction.AuthMetadataExtractors,
 	uuidGenerator util.UUIDGenerator,
 ) (*int, error) {
@@ -110,7 +110,7 @@ func findOrCreateAuthenticatedUser(
 
 	// UserUUID is immutable and will not be regenerated
 	// if the object already exists.
-	userRecord := db.AuthenticatedUser.Create().
+	userRecord := db.Ent().AuthenticatedUser.Create().
 		SetUserUUID(util.Must(uuidGenerator())).
 		SetExternalID(userSummary.ExternalID).
 		SetNillableDisplayName(userSummary.DisplayName)
@@ -126,7 +126,7 @@ func findOrCreateAuthenticatedUser(
 
 func findOrCreateInvocation(
 	ctx context.Context,
-	db *ent.Client,
+	db database.Client,
 	invocationID string,
 	instanceName string,
 	tracer trace.Tracer,
@@ -150,8 +150,9 @@ func findOrCreateInvocation(
 	if err != nil {
 		return 0, 0, util.StatusWrap(err, "Failed to create transaction")
 	}
+	defer tx.Rollback()
 
-	instanceNameDbID, err := tx.InstanceName.Create().
+	instanceNameDbID, err := tx.Ent().InstanceName.Create().
 		SetName(instanceName).
 		OnConflictColumns("name").
 		Ignore().
@@ -160,7 +161,7 @@ func findOrCreateInvocation(
 		return 0, 0, common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to create or find instance name"))
 	}
 
-	create := tx.BazelInvocation.Create().
+	create := tx.Ent().BazelInvocation.Create().
 		SetInvocationID(invocationIDUUID).
 		SetInstanceNameID(instanceNameDbID)
 
@@ -175,7 +176,7 @@ func findOrCreateInvocation(
 		return 0, 0, common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to create or find bazel invocation"))
 	}
 
-	invocationDb, err := tx.BazelInvocation.Query().
+	invocationDb, err := tx.Ent().BazelInvocation.Query().
 		Where(bazelinvocation.ID(invocationDbID)).
 		Only(ctx)
 	if err != nil {
@@ -213,7 +214,7 @@ func (r *BuildEventRecorder) StartLoggingConnectionMetadata(ctx context.Context)
 			case <-ctx.Done():
 				return
 			default:
-				err := r.db.ConnectionMetadata.Create().
+				err := r.db.Ent().ConnectionMetadata.Create().
 					SetBazelInvocationID(r.InvocationDbID).
 					SetConnectionLastOpenAt(time.Now().UTC()).
 					OnConflictColumns(connectionmetadata.BazelInvocationColumn).

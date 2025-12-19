@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "bb_export_schema_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/buildbarn/bb-portal/cmd/bb_export_schema",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//ent/gen/ent",
+        "//ent/gen/ent/migrate",
+        "//internal/database/embedded",
+        "@com_github_buildbarn_bb_storage//pkg/program",
+        "@com_github_buildbarn_bb_storage//pkg/util",
+        "@io_entgo_ent//dialect/sql",
+        "@org_golang_google_grpc//codes",
+        "@org_golang_google_grpc//status",
+    ],
+)
+
+go_binary(
+    name = "bb_export_schema",
+    embed = [":bb_export_schema_lib"],
+    visibility = ["//visibility:public"],
+)

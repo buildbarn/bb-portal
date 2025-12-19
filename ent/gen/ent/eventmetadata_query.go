@@ -24,7 +24,6 @@ type EventMetadataQuery struct {
 	inters              []Interceptor
 	predicates          []predicate.EventMetadata
 	withBazelInvocation *BazelInvocationQuery
-	withFKs             bool
 	loadTotal           []func(context.Context, []*EventMetadata) error
 	modifiers           []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
@@ -373,18 +372,11 @@ func (emq *EventMetadataQuery) prepareQuery(ctx context.Context) error {
 func (emq *EventMetadataQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*EventMetadata, error) {
 	var (
 		nodes       = []*EventMetadata{}
-		withFKs     = emq.withFKs
 		_spec       = emq.querySpec()
 		loadedTypes = [1]bool{
 			emq.withBazelInvocation != nil,
 		}
 	)
-	if emq.withBazelInvocation != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, eventmetadata.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*EventMetadata).scanValues(nil, columns)
 	}
@@ -424,10 +416,7 @@ func (emq *EventMetadataQuery) loadBazelInvocation(ctx context.Context, query *B
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*EventMetadata)
 	for i := range nodes {
-		if nodes[i].bazel_invocation_event_metadata == nil {
-			continue
-		}
-		fk := *nodes[i].bazel_invocation_event_metadata
+		fk := nodes[i].BazelInvocationID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -444,7 +433,7 @@ func (emq *EventMetadataQuery) loadBazelInvocation(ctx context.Context, query *B
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_event_metadata" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "bazel_invocation_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -480,6 +469,9 @@ func (emq *EventMetadataQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != eventmetadata.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if emq.withBazelInvocation != nil {
+			_spec.Node.AddColumnOnce(eventmetadata.FieldBazelInvocationID)
 		}
 	}
 	if ps := emq.predicates; len(ps) > 0 {

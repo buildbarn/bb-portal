@@ -12,7 +12,7 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/util"
 )
 
-func (r *BuildEventRecorder) saveMissDetails(ctx context.Context, tx *ent.Tx, missDetails []*bescore.ActionCacheStatistics_MissDetail, actionCacheStatisticsDbID int) error {
+func (r *BuildEventRecorder) saveMissDetails(ctx context.Context, tx *ent.Client, missDetails []*bescore.ActionCacheStatistics_MissDetail, actionCacheStatisticsDbID int) error {
 	if missDetails == nil {
 		return nil
 	}
@@ -37,7 +37,7 @@ func (r *BuildEventRecorder) saveMissDetails(ctx context.Context, tx *ent.Tx, mi
 	return nil
 }
 
-func (r *BuildEventRecorder) saveActionCacheStatistics(ctx context.Context, tx *ent.Tx, actionCacheStastics *bescore.ActionCacheStatistics, actionSummaryDbID int) error {
+func (r *BuildEventRecorder) saveActionCacheStatistics(ctx context.Context, tx *ent.Client, actionCacheStastics *bescore.ActionCacheStatistics, actionSummaryDbID int) error {
 	if actionCacheStastics == nil {
 		return nil
 	}
@@ -60,7 +60,7 @@ func (r *BuildEventRecorder) saveActionCacheStatistics(ctx context.Context, tx *
 	return nil
 }
 
-func (r *BuildEventRecorder) saveRunnerCounts(ctx context.Context, tx *ent.Tx, runnerCounts []*bes.BuildMetrics_ActionSummary_RunnerCount, actionSummaryDbID int) error {
+func (r *BuildEventRecorder) saveRunnerCounts(ctx context.Context, tx *ent.Client, runnerCounts []*bes.BuildMetrics_ActionSummary_RunnerCount, actionSummaryDbID int) error {
 	if runnerCounts == nil {
 		return nil
 	}
@@ -80,7 +80,7 @@ func (r *BuildEventRecorder) saveRunnerCounts(ctx context.Context, tx *ent.Tx, r
 	return nil
 }
 
-func (r *BuildEventRecorder) saveActionDatas(ctx context.Context, tx *ent.Tx, actionDatas []*bes.BuildMetrics_ActionSummary_ActionData, actionSummaryDbID int) error {
+func (r *BuildEventRecorder) saveActionDatas(ctx context.Context, tx *ent.Client, actionDatas []*bes.BuildMetrics_ActionSummary_ActionData, actionSummaryDbID int) error {
 	if actionDatas == nil {
 		return nil
 	}
@@ -106,7 +106,7 @@ func (r *BuildEventRecorder) saveActionDatas(ctx context.Context, tx *ent.Tx, ac
 	return nil
 }
 
-func (r *BuildEventRecorder) saveActionSummary(ctx context.Context, tx *ent.Tx, actionSummary *bes.BuildMetrics_ActionSummary, metricsDbID int) error {
+func (r *BuildEventRecorder) saveActionSummary(ctx context.Context, tx *ent.Client, actionSummary *bes.BuildMetrics_ActionSummary, metricsDbID int) error {
 	if actionSummary == nil {
 		return nil
 	}
@@ -137,7 +137,7 @@ func (r *BuildEventRecorder) saveActionSummary(ctx context.Context, tx *ent.Tx, 
 	return nil
 }
 
-func (r *BuildEventRecorder) saveArtifactMetrics(ctx context.Context, tx *ent.Tx, artifactMetrics *bes.BuildMetrics_ArtifactMetrics, metricsDbID int) error {
+func (r *BuildEventRecorder) saveArtifactMetrics(ctx context.Context, tx *ent.Client, artifactMetrics *bes.BuildMetrics_ArtifactMetrics, metricsDbID int) error {
 	if artifactMetrics == nil {
 		return nil
 	}
@@ -176,7 +176,7 @@ func (r *BuildEventRecorder) saveArtifactMetrics(ctx context.Context, tx *ent.Tx
 	return nil
 }
 
-func (r *BuildEventRecorder) saveBuildGraphMetrics(ctx context.Context, tx *ent.Tx, buildGraphMetrics *bes.BuildMetrics_BuildGraphMetrics, metricsDbID int) error {
+func (r *BuildEventRecorder) saveBuildGraphMetrics(ctx context.Context, tx *ent.Client, buildGraphMetrics *bes.BuildMetrics_BuildGraphMetrics, metricsDbID int) error {
 	if buildGraphMetrics == nil {
 		return nil
 	}
@@ -199,7 +199,7 @@ func (r *BuildEventRecorder) saveBuildGraphMetrics(ctx context.Context, tx *ent.
 	return nil
 }
 
-func (r *BuildEventRecorder) saveCumulativeMetrics(ctx context.Context, tx *ent.Tx, cumulativeMetrics *bes.BuildMetrics_CumulativeMetrics, metricsDbID int) error {
+func (r *BuildEventRecorder) saveCumulativeMetrics(ctx context.Context, tx *ent.Client, cumulativeMetrics *bes.BuildMetrics_CumulativeMetrics, metricsDbID int) error {
 	if cumulativeMetrics == nil {
 		return nil
 	}
@@ -215,7 +215,7 @@ func (r *BuildEventRecorder) saveCumulativeMetrics(ctx context.Context, tx *ent.
 	return nil
 }
 
-func (r *BuildEventRecorder) saveGarbageMetrics(ctx context.Context, tx *ent.Tx, garbageMetrics []*bes.BuildMetrics_MemoryMetrics_GarbageMetrics, memoryMetricsDbID int) error {
+func (r *BuildEventRecorder) saveGarbageMetrics(ctx context.Context, tx *ent.Client, garbageMetrics []*bes.BuildMetrics_MemoryMetrics_GarbageMetrics, memoryMetricsDbID int) error {
 	if garbageMetrics == nil {
 		return nil
 	}
@@ -233,7 +233,7 @@ func (r *BuildEventRecorder) saveGarbageMetrics(ctx context.Context, tx *ent.Tx,
 	return nil
 }
 
-func (r *BuildEventRecorder) saveMemoryMetrics(ctx context.Context, tx *ent.Tx, memoryMetrics *bes.BuildMetrics_MemoryMetrics, metricsDbID int) error {
+func (r *BuildEventRecorder) saveMemoryMetrics(ctx context.Context, tx *ent.Client, memoryMetrics *bes.BuildMetrics_MemoryMetrics, metricsDbID int) error {
 	if memoryMetrics == nil {
 		return nil
 	}
@@ -255,7 +255,7 @@ func (r *BuildEventRecorder) saveMemoryMetrics(ctx context.Context, tx *ent.Tx, 
 	return nil
 }
 
-func (r *BuildEventRecorder) saveSystemNetworkStats(ctx context.Context, tx *ent.Tx, systemNetworkStats *bes.BuildMetrics_NetworkMetrics_SystemNetworkStats, networkMetricsDbID int) error {
+func (r *BuildEventRecorder) saveSystemNetworkStats(ctx context.Context, tx *ent.Client, systemNetworkStats *bes.BuildMetrics_NetworkMetrics_SystemNetworkStats, networkMetricsDbID int) error {
 	if systemNetworkStats == nil {
 		return nil
 	}
@@ -277,7 +277,7 @@ func (r *BuildEventRecorder) saveSystemNetworkStats(ctx context.Context, tx *ent
 	return nil
 }
 
-func (r *BuildEventRecorder) saveNetworkMetrics(ctx context.Context, tx *ent.Tx, networkMetrics *bes.BuildMetrics_NetworkMetrics, metricsDbID int) error {
+func (r *BuildEventRecorder) saveNetworkMetrics(ctx context.Context, tx *ent.Client, networkMetrics *bes.BuildMetrics_NetworkMetrics, metricsDbID int) error {
 	if networkMetrics == nil || networkMetrics.SystemNetworkStats == nil {
 		return nil
 	}
@@ -296,7 +296,7 @@ func (r *BuildEventRecorder) saveNetworkMetrics(ctx context.Context, tx *ent.Tx,
 	return nil
 }
 
-func (r *BuildEventRecorder) savePackageLoadMetrics(ctx context.Context, tx *ent.Tx, packageLoadMetrics []*besmetrics.PackageLoadMetrics, packageMetricsDbID int) error {
+func (r *BuildEventRecorder) savePackageLoadMetrics(ctx context.Context, tx *ent.Client, packageLoadMetrics []*besmetrics.PackageLoadMetrics, packageMetricsDbID int) error {
 	if packageLoadMetrics == nil {
 		return nil
 	}
@@ -320,7 +320,7 @@ func (r *BuildEventRecorder) savePackageLoadMetrics(ctx context.Context, tx *ent
 	return nil
 }
 
-func (r *BuildEventRecorder) savePackageMetrics(ctx context.Context, tx *ent.Tx, packageMetrics *bes.BuildMetrics_PackageMetrics, metricsDbID int) error {
+func (r *BuildEventRecorder) savePackageMetrics(ctx context.Context, tx *ent.Client, packageMetrics *bes.BuildMetrics_PackageMetrics, metricsDbID int) error {
 	if packageMetrics == nil {
 		return nil
 	}
@@ -340,7 +340,7 @@ func (r *BuildEventRecorder) savePackageMetrics(ctx context.Context, tx *ent.Tx,
 	return nil
 }
 
-func (r *BuildEventRecorder) saveTargetMetrics(ctx context.Context, tx *ent.Tx, targetMetrics *bes.BuildMetrics_TargetMetrics, metricsDbID int) error {
+func (r *BuildEventRecorder) saveTargetMetrics(ctx context.Context, tx *ent.Client, targetMetrics *bes.BuildMetrics_TargetMetrics, metricsDbID int) error {
 	if targetMetrics == nil {
 		return nil
 	}
@@ -357,7 +357,7 @@ func (r *BuildEventRecorder) saveTargetMetrics(ctx context.Context, tx *ent.Tx, 
 	return nil
 }
 
-func (r *BuildEventRecorder) saveTimingMetrics(ctx context.Context, tx *ent.Tx, timingMetrics *bes.BuildMetrics_TimingMetrics, metricsDbID int) error {
+func (r *BuildEventRecorder) saveTimingMetrics(ctx context.Context, tx *ent.Client, timingMetrics *bes.BuildMetrics_TimingMetrics, metricsDbID int) error {
 	if timingMetrics == nil {
 		return nil
 	}
@@ -376,7 +376,7 @@ func (r *BuildEventRecorder) saveTimingMetrics(ctx context.Context, tx *ent.Tx, 
 	return nil
 }
 
-func (r *BuildEventRecorder) saveBuildMetrics(ctx context.Context, tx *ent.Tx, metrics *bes.BuildMetrics) error {
+func (r *BuildEventRecorder) saveBuildMetrics(ctx context.Context, tx *ent.Client, metrics *bes.BuildMetrics) error {
 	if metrics == nil {
 		return nil
 	}

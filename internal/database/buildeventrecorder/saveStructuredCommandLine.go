@@ -59,7 +59,7 @@ func envToI(envVars map[string]string, name string) (int, error) {
 	return res, nil
 }
 
-func (r *BuildEventRecorder) recordSourceControl(ctx context.Context, tx *ent.Tx, envVars map[string]string) error {
+func (r *BuildEventRecorder) recordSourceControl(ctx context.Context, tx *ent.Client, envVars map[string]string) error {
 	sc := tx.SourceControl.Create().
 		SetBazelInvocationID(r.InvocationDbID)
 
@@ -241,7 +241,7 @@ func (r *BuildEventRecorder) getBuildURL(envVars map[string]string) string {
 	return ""
 }
 
-func (r *BuildEventRecorder) recordBuild(ctx context.Context, tx *ent.Tx, envVars map[string]string) error {
+func (r *BuildEventRecorder) recordBuild(ctx context.Context, tx *ent.Client, envVars map[string]string) error {
 	buildURL := r.getBuildURL(envVars)
 	if buildURL == "" {
 		return nil
@@ -291,7 +291,7 @@ func (r *BuildEventRecorder) recordBuild(ctx context.Context, tx *ent.Tx, envVar
 	}
 }
 
-func (r *BuildEventRecorder) saveStructuredCommandLine(ctx context.Context, tx *ent.Tx, structuredCommandLine *bescore.CommandLine) error {
+func (r *BuildEventRecorder) saveStructuredCommandLine(ctx context.Context, tx *ent.Client, structuredCommandLine *bescore.CommandLine) error {
 	if structuredCommandLine == nil {
 		return nil
 	}

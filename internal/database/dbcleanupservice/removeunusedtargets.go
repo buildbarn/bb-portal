@@ -14,7 +14,7 @@ func (dc *DbCleanupService) RemoveUnusedTargets(ctx context.Context) error {
 	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveUnusedTargets")
 	defer span.End()
 
-	deletedRows, err := dc.db.Target.Delete().
+	deletedRows, err := dc.db.Ent().Target.Delete().
 		Where(
 			target.Not(target.HasInvocationTargets()),
 			target.Not(target.HasTargetKindMappings()),

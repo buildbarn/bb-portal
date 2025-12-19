@@ -16,17 +16,17 @@
             {
                "if": "matrix.host.platform_name == 'linux_amd64'",
                "name": "linux_amd64: build and test",
-               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_amd64_cgo //..."
+               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_amd64 //..."
             },
             {
                "if": "matrix.host.platform_name == 'linux_arm64'",
                "name": "linux_arm64: build and test",
-               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_arm64_cgo //..."
+               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_arm64 //..."
             },
             {
                "if": "matrix.host.cross_compile",
                "name": "Cross-platform builds",
-               "run": "bazel build --platforms=@rules_go//go/toolchain:darwin_amd64_cgo,@rules_go//go/toolchain:darwin_arm64_cgo,@rules_go//go/toolchain:freebsd_amd64_cgo,@rules_go//go/toolchain:windows_amd64_cgo //..."
+               "run": "bazel build --platforms=@rules_go//go/toolchain:darwin_amd64,@rules_go//go/toolchain:darwin_arm64,@rules_go//go/toolchain:freebsd_amd64,@rules_go//go/toolchain:windows_amd64 //..."
             }
          ],
          "strategy": {
@@ -72,7 +72,7 @@
             },
             {
                "name": "Reformat",
-               "run": "bazel run @com_github_buildbarn_bb_storage//tools:reformat"
+               "run": "bazel run //tools:reformat"
             },
             {
                "name": "Test style conformance",
