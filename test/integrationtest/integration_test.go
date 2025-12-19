@@ -72,14 +72,9 @@ var (
 	testCases = []testCase{
 		{
 			name: "QueryWithProtoOutput",
-			saveTargetDataLevel: &bb_portal.BuildEventStreamService_SaveTargetDataLevel{
-				Level: &bb_portal.BuildEventStreamService_SaveTargetDataLevel_None{
-					None: &emptypb.Empty{},
-				},
-			},
-			saveTestDataLevel: &bb_portal.BuildEventStreamService_SaveTestDataLevel{
-				Level: &bb_portal.BuildEventStreamService_SaveTestDataLevel_None{
-					None: &emptypb.Empty{},
+			saveDataLevel: &bb_portal.BuildEventStreamService_SaveDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveDataLevel_Basic{
+					Basic: &emptypb.Empty{},
 				},
 			},
 			bepFileTestCases: []bepFileTestCase{
@@ -92,14 +87,9 @@ var (
 		},
 		{
 			name: "TestAllBepUploadsAndGraphqlQueries",
-			saveTargetDataLevel: &bb_portal.BuildEventStreamService_SaveTargetDataLevel{
-				Level: &bb_portal.BuildEventStreamService_SaveTargetDataLevel_Enriched{
-					Enriched: &emptypb.Empty{},
-				},
-			},
-			saveTestDataLevel: &bb_portal.BuildEventStreamService_SaveTestDataLevel{
-				Level: &bb_portal.BuildEventStreamService_SaveTestDataLevel_Enriched{
-					Enriched: &emptypb.Empty{},
+			saveDataLevel: &bb_portal.BuildEventStreamService_SaveDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTarget{
+					BasicAndTarget: &emptypb.Empty{},
 				},
 			},
 			bepFileTestCases: []bepFileTestCase{
@@ -222,14 +212,9 @@ var (
 		},
 		{
 			name: "TestGraphqlQueriesWithAuthMetadata",
-			saveTargetDataLevel: &bb_portal.BuildEventStreamService_SaveTargetDataLevel{
-				Level: &bb_portal.BuildEventStreamService_SaveTargetDataLevel_Enriched{
-					Enriched: &emptypb.Empty{},
-				},
-			},
-			saveTestDataLevel: &bb_portal.BuildEventStreamService_SaveTestDataLevel{
-				Level: &bb_portal.BuildEventStreamService_SaveTestDataLevel_Enriched{
-					Enriched: &emptypb.Empty{},
+			saveDataLevel: &bb_portal.BuildEventStreamService_SaveDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTarget{
+					BasicAndTarget: &emptypb.Empty{},
 				},
 			},
 			bepFileTestCases: []bepFileTestCase{

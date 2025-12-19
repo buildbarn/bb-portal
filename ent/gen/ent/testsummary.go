@@ -5,10 +5,11 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 )
 
@@ -18,7 +19,7 @@ type TestSummary struct {
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
 	// OverallStatus holds the value of the "overall_status" field.
-	OverallStatus testsummary.OverallStatus `json:"overall_status,omitempty"`
+	OverallStatus string `json:"overall_status,omitempty"`
 	// TotalRunCount holds the value of the "total_run_count" field.
 	TotalRunCount int32 `json:"total_run_count,omitempty"`
 	// RunCount holds the value of the "run_count" field.
@@ -30,65 +31,51 @@ type TestSummary struct {
 	// TotalNumCached holds the value of the "total_num_cached" field.
 	TotalNumCached int32 `json:"total_num_cached,omitempty"`
 	// FirstStartTime holds the value of the "first_start_time" field.
-	FirstStartTime int64 `json:"first_start_time,omitempty"`
+	FirstStartTime time.Time `json:"first_start_time,omitempty"`
 	// LastStopTime holds the value of the "last_stop_time" field.
-	LastStopTime int64 `json:"last_stop_time,omitempty"`
-	// TotalRunDuration holds the value of the "total_run_duration" field.
-	TotalRunDuration int64 `json:"total_run_duration,omitempty"`
-	// Label holds the value of the "label" field.
-	Label string `json:"label,omitempty"`
+	LastStopTime time.Time `json:"last_stop_time,omitempty"`
+	// TotalRunDurationInMs holds the value of the "total_run_duration_in_ms" field.
+	TotalRunDurationInMs int64 `json:"total_run_duration_in_ms,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TestSummaryQuery when eager-loading is set.
-	Edges                        TestSummaryEdges `json:"edges"`
-	test_collection_test_summary *int64
-	selectValues                 sql.SelectValues
+	Edges                          TestSummaryEdges `json:"edges"`
+	invocation_target_test_summary *int64
+	selectValues                   sql.SelectValues
 }
 
 // TestSummaryEdges holds the relations/edges for other nodes in the graph.
 type TestSummaryEdges struct {
-	// TestCollection holds the value of the test_collection edge.
-	TestCollection *TestCollection `json:"test_collection,omitempty"`
-	// Passed holds the value of the passed edge.
-	Passed []*TestFile `json:"passed,omitempty"`
-	// Failed holds the value of the failed edge.
-	Failed []*TestFile `json:"failed,omitempty"`
+	// InvocationTarget holds the value of the invocation_target edge.
+	InvocationTarget *InvocationTarget `json:"invocation_target,omitempty"`
+	// TestResults holds the value of the test_results edge.
+	TestResults []*TestResult `json:"test_results,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
+	totalCount [2]map[string]int
 
-	namedPassed map[string][]*TestFile
-	namedFailed map[string][]*TestFile
+	namedTestResults map[string][]*TestResult
 }
 
-// TestCollectionOrErr returns the TestCollection value or an error if the edge
+// InvocationTargetOrErr returns the InvocationTarget value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e TestSummaryEdges) TestCollectionOrErr() (*TestCollection, error) {
-	if e.TestCollection != nil {
-		return e.TestCollection, nil
+func (e TestSummaryEdges) InvocationTargetOrErr() (*InvocationTarget, error) {
+	if e.InvocationTarget != nil {
+		return e.InvocationTarget, nil
 	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: testcollection.Label}
+		return nil, &NotFoundError{label: invocationtarget.Label}
 	}
-	return nil, &NotLoadedError{edge: "test_collection"}
+	return nil, &NotLoadedError{edge: "invocation_target"}
 }
 
-// PassedOrErr returns the Passed value or an error if the edge
+// TestResultsOrErr returns the TestResults value or an error if the edge
 // was not loaded in eager-loading.
-func (e TestSummaryEdges) PassedOrErr() ([]*TestFile, error) {
+func (e TestSummaryEdges) TestResultsOrErr() ([]*TestResult, error) {
 	if e.loadedTypes[1] {
-		return e.Passed, nil
+		return e.TestResults, nil
 	}
-	return nil, &NotLoadedError{edge: "passed"}
-}
-
-// FailedOrErr returns the Failed value or an error if the edge
-// was not loaded in eager-loading.
-func (e TestSummaryEdges) FailedOrErr() ([]*TestFile, error) {
-	if e.loadedTypes[2] {
-		return e.Failed, nil
-	}
-	return nil, &NotLoadedError{edge: "failed"}
+	return nil, &NotLoadedError{edge: "test_results"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -96,11 +83,13 @@ func (*TestSummary) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case testsummary.FieldID, testsummary.FieldTotalRunCount, testsummary.FieldRunCount, testsummary.FieldAttemptCount, testsummary.FieldShardCount, testsummary.FieldTotalNumCached, testsummary.FieldFirstStartTime, testsummary.FieldLastStopTime, testsummary.FieldTotalRunDuration:
+		case testsummary.FieldID, testsummary.FieldTotalRunCount, testsummary.FieldRunCount, testsummary.FieldAttemptCount, testsummary.FieldShardCount, testsummary.FieldTotalNumCached, testsummary.FieldTotalRunDurationInMs:
 			values[i] = new(sql.NullInt64)
-		case testsummary.FieldOverallStatus, testsummary.FieldLabel:
+		case testsummary.FieldOverallStatus:
 			values[i] = new(sql.NullString)
-		case testsummary.ForeignKeys[0]: // test_collection_test_summary
+		case testsummary.FieldFirstStartTime, testsummary.FieldLastStopTime:
+			values[i] = new(sql.NullTime)
+		case testsummary.ForeignKeys[0]: // invocation_target_test_summary
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -127,7 +116,7 @@ func (ts *TestSummary) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field overall_status", values[i])
 			} else if value.Valid {
-				ts.OverallStatus = testsummary.OverallStatus(value.String)
+				ts.OverallStatus = value.String
 			}
 		case testsummary.FieldTotalRunCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -160,35 +149,29 @@ func (ts *TestSummary) assignValues(columns []string, values []any) error {
 				ts.TotalNumCached = int32(value.Int64)
 			}
 		case testsummary.FieldFirstStartTime:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field first_start_time", values[i])
 			} else if value.Valid {
-				ts.FirstStartTime = value.Int64
+				ts.FirstStartTime = value.Time
 			}
 		case testsummary.FieldLastStopTime:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last_stop_time", values[i])
 			} else if value.Valid {
-				ts.LastStopTime = value.Int64
+				ts.LastStopTime = value.Time
 			}
-		case testsummary.FieldTotalRunDuration:
+		case testsummary.FieldTotalRunDurationInMs:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field total_run_duration", values[i])
+				return fmt.Errorf("unexpected type %T for field total_run_duration_in_ms", values[i])
 			} else if value.Valid {
-				ts.TotalRunDuration = value.Int64
-			}
-		case testsummary.FieldLabel:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field label", values[i])
-			} else if value.Valid {
-				ts.Label = value.String
+				ts.TotalRunDurationInMs = value.Int64
 			}
 		case testsummary.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field test_collection_test_summary", value)
+				return fmt.Errorf("unexpected type %T for edge-field invocation_target_test_summary", value)
 			} else if value.Valid {
-				ts.test_collection_test_summary = new(int64)
-				*ts.test_collection_test_summary = int64(value.Int64)
+				ts.invocation_target_test_summary = new(int64)
+				*ts.invocation_target_test_summary = int64(value.Int64)
 			}
 		default:
 			ts.selectValues.Set(columns[i], values[i])
@@ -203,19 +186,14 @@ func (ts *TestSummary) Value(name string) (ent.Value, error) {
 	return ts.selectValues.Get(name)
 }
 
-// QueryTestCollection queries the "test_collection" edge of the TestSummary entity.
-func (ts *TestSummary) QueryTestCollection() *TestCollectionQuery {
-	return NewTestSummaryClient(ts.config).QueryTestCollection(ts)
+// QueryInvocationTarget queries the "invocation_target" edge of the TestSummary entity.
+func (ts *TestSummary) QueryInvocationTarget() *InvocationTargetQuery {
+	return NewTestSummaryClient(ts.config).QueryInvocationTarget(ts)
 }
 
-// QueryPassed queries the "passed" edge of the TestSummary entity.
-func (ts *TestSummary) QueryPassed() *TestFileQuery {
-	return NewTestSummaryClient(ts.config).QueryPassed(ts)
-}
-
-// QueryFailed queries the "failed" edge of the TestSummary entity.
-func (ts *TestSummary) QueryFailed() *TestFileQuery {
-	return NewTestSummaryClient(ts.config).QueryFailed(ts)
+// QueryTestResults queries the "test_results" edge of the TestSummary entity.
+func (ts *TestSummary) QueryTestResults() *TestResultQuery {
+	return NewTestSummaryClient(ts.config).QueryTestResults(ts)
 }
 
 // Update returns a builder for updating this TestSummary.
@@ -242,7 +220,7 @@ func (ts *TestSummary) String() string {
 	builder.WriteString("TestSummary(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", ts.ID))
 	builder.WriteString("overall_status=")
-	builder.WriteString(fmt.Sprintf("%v", ts.OverallStatus))
+	builder.WriteString(ts.OverallStatus)
 	builder.WriteString(", ")
 	builder.WriteString("total_run_count=")
 	builder.WriteString(fmt.Sprintf("%v", ts.TotalRunCount))
@@ -260,65 +238,38 @@ func (ts *TestSummary) String() string {
 	builder.WriteString(fmt.Sprintf("%v", ts.TotalNumCached))
 	builder.WriteString(", ")
 	builder.WriteString("first_start_time=")
-	builder.WriteString(fmt.Sprintf("%v", ts.FirstStartTime))
+	builder.WriteString(ts.FirstStartTime.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("last_stop_time=")
-	builder.WriteString(fmt.Sprintf("%v", ts.LastStopTime))
+	builder.WriteString(ts.LastStopTime.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("total_run_duration=")
-	builder.WriteString(fmt.Sprintf("%v", ts.TotalRunDuration))
-	builder.WriteString(", ")
-	builder.WriteString("label=")
-	builder.WriteString(ts.Label)
+	builder.WriteString("total_run_duration_in_ms=")
+	builder.WriteString(fmt.Sprintf("%v", ts.TotalRunDurationInMs))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// NamedPassed returns the Passed named value or an error if the edge was not
+// NamedTestResults returns the TestResults named value or an error if the edge was not
 // loaded in eager-loading with this name.
-func (ts *TestSummary) NamedPassed(name string) ([]*TestFile, error) {
-	if ts.Edges.namedPassed == nil {
+func (ts *TestSummary) NamedTestResults(name string) ([]*TestResult, error) {
+	if ts.Edges.namedTestResults == nil {
 		return nil, &NotLoadedError{edge: name}
 	}
-	nodes, ok := ts.Edges.namedPassed[name]
+	nodes, ok := ts.Edges.namedTestResults[name]
 	if !ok {
 		return nil, &NotLoadedError{edge: name}
 	}
 	return nodes, nil
 }
 
-func (ts *TestSummary) appendNamedPassed(name string, edges ...*TestFile) {
-	if ts.Edges.namedPassed == nil {
-		ts.Edges.namedPassed = make(map[string][]*TestFile)
+func (ts *TestSummary) appendNamedTestResults(name string, edges ...*TestResult) {
+	if ts.Edges.namedTestResults == nil {
+		ts.Edges.namedTestResults = make(map[string][]*TestResult)
 	}
 	if len(edges) == 0 {
-		ts.Edges.namedPassed[name] = []*TestFile{}
+		ts.Edges.namedTestResults[name] = []*TestResult{}
 	} else {
-		ts.Edges.namedPassed[name] = append(ts.Edges.namedPassed[name], edges...)
-	}
-}
-
-// NamedFailed returns the Failed named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (ts *TestSummary) NamedFailed(name string) ([]*TestFile, error) {
-	if ts.Edges.namedFailed == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := ts.Edges.namedFailed[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (ts *TestSummary) appendNamedFailed(name string, edges ...*TestFile) {
-	if ts.Edges.namedFailed == nil {
-		ts.Edges.namedFailed = make(map[string][]*TestFile)
-	}
-	if len(edges) == 0 {
-		ts.Edges.namedFailed[name] = []*TestFile{}
-	} else {
-		ts.Edges.namedFailed[name] = append(ts.Edges.namedFailed[name], edges...)
+		ts.Edges.namedTestResults[name] = append(ts.Edges.namedTestResults[name], edges...)
 	}
 }
 

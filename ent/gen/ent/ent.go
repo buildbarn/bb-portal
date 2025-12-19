@@ -29,7 +29,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
@@ -38,24 +37,17 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/namedsetoffiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/timingbreakdown"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/timingchild"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 )
 
@@ -134,7 +126,6 @@ func checkColumn(table, column string) error {
 			cumulativemetrics.Table:      cumulativemetrics.ValidColumn,
 			evaluationstat.Table:         evaluationstat.ValidColumn,
 			eventmetadata.Table:          eventmetadata.ValidColumn,
-			exectioninfo.Table:           exectioninfo.ValidColumn,
 			garbagemetrics.Table:         garbagemetrics.ValidColumn,
 			incompletebuildlog.Table:     incompletebuildlog.ValidColumn,
 			instancename.Table:           instancename.ValidColumn,
@@ -143,24 +134,17 @@ func checkColumn(table, column string) error {
 			memorymetrics.Table:          memorymetrics.ValidColumn,
 			metrics.Table:                metrics.ValidColumn,
 			missdetail.Table:             missdetail.ValidColumn,
-			namedsetoffiles.Table:        namedsetoffiles.ValidColumn,
 			networkmetrics.Table:         networkmetrics.ValidColumn,
-			outputgroup.Table:            outputgroup.ValidColumn,
 			packageloadmetrics.Table:     packageloadmetrics.ValidColumn,
 			packagemetrics.Table:         packagemetrics.ValidColumn,
-			resourceusage.Table:          resourceusage.ValidColumn,
 			runnercount.Table:            runnercount.ValidColumn,
 			sourcecontrol.Table:          sourcecontrol.ValidColumn,
 			systemnetworkstats.Table:     systemnetworkstats.ValidColumn,
 			target.Table:                 target.ValidColumn,
 			targetkindmapping.Table:      targetkindmapping.ValidColumn,
 			targetmetrics.Table:          targetmetrics.ValidColumn,
-			testcollection.Table:         testcollection.ValidColumn,
-			testfile.Table:               testfile.ValidColumn,
-			testresultbes.Table:          testresultbes.ValidColumn,
+			testresult.Table:             testresult.ValidColumn,
 			testsummary.Table:            testsummary.ValidColumn,
-			timingbreakdown.Table:        timingbreakdown.ValidColumn,
-			timingchild.Table:            timingchild.ValidColumn,
 			timingmetrics.Table:          timingmetrics.ValidColumn,
 		})
 	})

@@ -6,6 +6,7 @@ import (
 
 	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/sqlc"
+	"github.com/buildbarn/bb-portal/pkg/proto/configuration/bb_portal"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -20,8 +21,17 @@ type targetKey struct {
 // saveTargetConfiguredBatch efficiently saves a batch of target
 // configured events.
 func (r *BuildEventRecorder) saveTargetConfiguredBatch(ctx context.Context, batch []BuildEventWithInfo) error {
-	if r.saveTargetDataLevel.GetNone() != nil || len(batch) == 0 {
+	if len(batch) == 0 {
 		return nil
+	}
+
+	switch r.saveDataLevel.GetLevel().(type) {
+	case *bb_portal.BuildEventStreamService_SaveDataLevel_Basic:
+		return nil
+	case *bb_portal.BuildEventStreamService_SaveDataLevel_BasicAndTarget:
+		// Continue processing.
+	default:
+		return status.Error(codes.Internal, "Attempted to save target completed events when `saveDataLevel` is not recognized. This is probably a bug.")
 	}
 
 	ctx, span := r.tracer.Start(

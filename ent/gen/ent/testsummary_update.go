@@ -6,13 +6,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 )
 
@@ -31,15 +32,15 @@ func (tsu *TestSummaryUpdate) Where(ps ...predicate.TestSummary) *TestSummaryUpd
 }
 
 // SetOverallStatus sets the "overall_status" field.
-func (tsu *TestSummaryUpdate) SetOverallStatus(ts testsummary.OverallStatus) *TestSummaryUpdate {
-	tsu.mutation.SetOverallStatus(ts)
+func (tsu *TestSummaryUpdate) SetOverallStatus(s string) *TestSummaryUpdate {
+	tsu.mutation.SetOverallStatus(s)
 	return tsu
 }
 
 // SetNillableOverallStatus sets the "overall_status" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableOverallStatus(ts *testsummary.OverallStatus) *TestSummaryUpdate {
-	if ts != nil {
-		tsu.SetOverallStatus(*ts)
+func (tsu *TestSummaryUpdate) SetNillableOverallStatus(s *string) *TestSummaryUpdate {
+	if s != nil {
+		tsu.SetOverallStatus(*s)
 	}
 	return tsu
 }
@@ -186,23 +187,16 @@ func (tsu *TestSummaryUpdate) ClearTotalNumCached() *TestSummaryUpdate {
 }
 
 // SetFirstStartTime sets the "first_start_time" field.
-func (tsu *TestSummaryUpdate) SetFirstStartTime(i int64) *TestSummaryUpdate {
-	tsu.mutation.ResetFirstStartTime()
-	tsu.mutation.SetFirstStartTime(i)
+func (tsu *TestSummaryUpdate) SetFirstStartTime(t time.Time) *TestSummaryUpdate {
+	tsu.mutation.SetFirstStartTime(t)
 	return tsu
 }
 
 // SetNillableFirstStartTime sets the "first_start_time" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableFirstStartTime(i *int64) *TestSummaryUpdate {
-	if i != nil {
-		tsu.SetFirstStartTime(*i)
+func (tsu *TestSummaryUpdate) SetNillableFirstStartTime(t *time.Time) *TestSummaryUpdate {
+	if t != nil {
+		tsu.SetFirstStartTime(*t)
 	}
-	return tsu
-}
-
-// AddFirstStartTime adds i to the "first_start_time" field.
-func (tsu *TestSummaryUpdate) AddFirstStartTime(i int64) *TestSummaryUpdate {
-	tsu.mutation.AddFirstStartTime(i)
 	return tsu
 }
 
@@ -213,23 +207,16 @@ func (tsu *TestSummaryUpdate) ClearFirstStartTime() *TestSummaryUpdate {
 }
 
 // SetLastStopTime sets the "last_stop_time" field.
-func (tsu *TestSummaryUpdate) SetLastStopTime(i int64) *TestSummaryUpdate {
-	tsu.mutation.ResetLastStopTime()
-	tsu.mutation.SetLastStopTime(i)
+func (tsu *TestSummaryUpdate) SetLastStopTime(t time.Time) *TestSummaryUpdate {
+	tsu.mutation.SetLastStopTime(t)
 	return tsu
 }
 
 // SetNillableLastStopTime sets the "last_stop_time" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableLastStopTime(i *int64) *TestSummaryUpdate {
-	if i != nil {
-		tsu.SetLastStopTime(*i)
+func (tsu *TestSummaryUpdate) SetNillableLastStopTime(t *time.Time) *TestSummaryUpdate {
+	if t != nil {
+		tsu.SetLastStopTime(*t)
 	}
-	return tsu
-}
-
-// AddLastStopTime adds i to the "last_stop_time" field.
-func (tsu *TestSummaryUpdate) AddLastStopTime(i int64) *TestSummaryUpdate {
-	tsu.mutation.AddLastStopTime(i)
 	return tsu
 }
 
@@ -239,100 +226,57 @@ func (tsu *TestSummaryUpdate) ClearLastStopTime() *TestSummaryUpdate {
 	return tsu
 }
 
-// SetTotalRunDuration sets the "total_run_duration" field.
-func (tsu *TestSummaryUpdate) SetTotalRunDuration(i int64) *TestSummaryUpdate {
-	tsu.mutation.ResetTotalRunDuration()
-	tsu.mutation.SetTotalRunDuration(i)
+// SetTotalRunDurationInMs sets the "total_run_duration_in_ms" field.
+func (tsu *TestSummaryUpdate) SetTotalRunDurationInMs(i int64) *TestSummaryUpdate {
+	tsu.mutation.ResetTotalRunDurationInMs()
+	tsu.mutation.SetTotalRunDurationInMs(i)
 	return tsu
 }
 
-// SetNillableTotalRunDuration sets the "total_run_duration" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableTotalRunDuration(i *int64) *TestSummaryUpdate {
+// SetNillableTotalRunDurationInMs sets the "total_run_duration_in_ms" field if the given value is not nil.
+func (tsu *TestSummaryUpdate) SetNillableTotalRunDurationInMs(i *int64) *TestSummaryUpdate {
 	if i != nil {
-		tsu.SetTotalRunDuration(*i)
+		tsu.SetTotalRunDurationInMs(*i)
 	}
 	return tsu
 }
 
-// AddTotalRunDuration adds i to the "total_run_duration" field.
-func (tsu *TestSummaryUpdate) AddTotalRunDuration(i int64) *TestSummaryUpdate {
-	tsu.mutation.AddTotalRunDuration(i)
+// AddTotalRunDurationInMs adds i to the "total_run_duration_in_ms" field.
+func (tsu *TestSummaryUpdate) AddTotalRunDurationInMs(i int64) *TestSummaryUpdate {
+	tsu.mutation.AddTotalRunDurationInMs(i)
 	return tsu
 }
 
-// ClearTotalRunDuration clears the value of the "total_run_duration" field.
-func (tsu *TestSummaryUpdate) ClearTotalRunDuration() *TestSummaryUpdate {
-	tsu.mutation.ClearTotalRunDuration()
+// ClearTotalRunDurationInMs clears the value of the "total_run_duration_in_ms" field.
+func (tsu *TestSummaryUpdate) ClearTotalRunDurationInMs() *TestSummaryUpdate {
+	tsu.mutation.ClearTotalRunDurationInMs()
 	return tsu
 }
 
-// SetLabel sets the "label" field.
-func (tsu *TestSummaryUpdate) SetLabel(s string) *TestSummaryUpdate {
-	tsu.mutation.SetLabel(s)
+// SetInvocationTargetID sets the "invocation_target" edge to the InvocationTarget entity by ID.
+func (tsu *TestSummaryUpdate) SetInvocationTargetID(id int64) *TestSummaryUpdate {
+	tsu.mutation.SetInvocationTargetID(id)
 	return tsu
 }
 
-// SetNillableLabel sets the "label" field if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableLabel(s *string) *TestSummaryUpdate {
-	if s != nil {
-		tsu.SetLabel(*s)
-	}
+// SetInvocationTarget sets the "invocation_target" edge to the InvocationTarget entity.
+func (tsu *TestSummaryUpdate) SetInvocationTarget(i *InvocationTarget) *TestSummaryUpdate {
+	return tsu.SetInvocationTargetID(i.ID)
+}
+
+// AddTestResultIDs adds the "test_results" edge to the TestResult entity by IDs.
+func (tsu *TestSummaryUpdate) AddTestResultIDs(ids ...int64) *TestSummaryUpdate {
+	tsu.mutation.AddTestResultIDs(ids...)
 	return tsu
 }
 
-// ClearLabel clears the value of the "label" field.
-func (tsu *TestSummaryUpdate) ClearLabel() *TestSummaryUpdate {
-	tsu.mutation.ClearLabel()
-	return tsu
-}
-
-// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (tsu *TestSummaryUpdate) SetTestCollectionID(id int64) *TestSummaryUpdate {
-	tsu.mutation.SetTestCollectionID(id)
-	return tsu
-}
-
-// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (tsu *TestSummaryUpdate) SetNillableTestCollectionID(id *int64) *TestSummaryUpdate {
-	if id != nil {
-		tsu = tsu.SetTestCollectionID(*id)
-	}
-	return tsu
-}
-
-// SetTestCollection sets the "test_collection" edge to the TestCollection entity.
-func (tsu *TestSummaryUpdate) SetTestCollection(t *TestCollection) *TestSummaryUpdate {
-	return tsu.SetTestCollectionID(t.ID)
-}
-
-// AddPassedIDs adds the "passed" edge to the TestFile entity by IDs.
-func (tsu *TestSummaryUpdate) AddPassedIDs(ids ...int64) *TestSummaryUpdate {
-	tsu.mutation.AddPassedIDs(ids...)
-	return tsu
-}
-
-// AddPassed adds the "passed" edges to the TestFile entity.
-func (tsu *TestSummaryUpdate) AddPassed(t ...*TestFile) *TestSummaryUpdate {
+// AddTestResults adds the "test_results" edges to the TestResult entity.
+func (tsu *TestSummaryUpdate) AddTestResults(t ...*TestResult) *TestSummaryUpdate {
 	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
-	return tsu.AddPassedIDs(ids...)
-}
-
-// AddFailedIDs adds the "failed" edge to the TestFile entity by IDs.
-func (tsu *TestSummaryUpdate) AddFailedIDs(ids ...int64) *TestSummaryUpdate {
-	tsu.mutation.AddFailedIDs(ids...)
-	return tsu
-}
-
-// AddFailed adds the "failed" edges to the TestFile entity.
-func (tsu *TestSummaryUpdate) AddFailed(t ...*TestFile) *TestSummaryUpdate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tsu.AddFailedIDs(ids...)
+	return tsu.AddTestResultIDs(ids...)
 }
 
 // Mutation returns the TestSummaryMutation object of the builder.
@@ -340,52 +284,31 @@ func (tsu *TestSummaryUpdate) Mutation() *TestSummaryMutation {
 	return tsu.mutation
 }
 
-// ClearTestCollection clears the "test_collection" edge to the TestCollection entity.
-func (tsu *TestSummaryUpdate) ClearTestCollection() *TestSummaryUpdate {
-	tsu.mutation.ClearTestCollection()
+// ClearInvocationTarget clears the "invocation_target" edge to the InvocationTarget entity.
+func (tsu *TestSummaryUpdate) ClearInvocationTarget() *TestSummaryUpdate {
+	tsu.mutation.ClearInvocationTarget()
 	return tsu
 }
 
-// ClearPassed clears all "passed" edges to the TestFile entity.
-func (tsu *TestSummaryUpdate) ClearPassed() *TestSummaryUpdate {
-	tsu.mutation.ClearPassed()
+// ClearTestResults clears all "test_results" edges to the TestResult entity.
+func (tsu *TestSummaryUpdate) ClearTestResults() *TestSummaryUpdate {
+	tsu.mutation.ClearTestResults()
 	return tsu
 }
 
-// RemovePassedIDs removes the "passed" edge to TestFile entities by IDs.
-func (tsu *TestSummaryUpdate) RemovePassedIDs(ids ...int64) *TestSummaryUpdate {
-	tsu.mutation.RemovePassedIDs(ids...)
+// RemoveTestResultIDs removes the "test_results" edge to TestResult entities by IDs.
+func (tsu *TestSummaryUpdate) RemoveTestResultIDs(ids ...int64) *TestSummaryUpdate {
+	tsu.mutation.RemoveTestResultIDs(ids...)
 	return tsu
 }
 
-// RemovePassed removes "passed" edges to TestFile entities.
-func (tsu *TestSummaryUpdate) RemovePassed(t ...*TestFile) *TestSummaryUpdate {
+// RemoveTestResults removes "test_results" edges to TestResult entities.
+func (tsu *TestSummaryUpdate) RemoveTestResults(t ...*TestResult) *TestSummaryUpdate {
 	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
-	return tsu.RemovePassedIDs(ids...)
-}
-
-// ClearFailed clears all "failed" edges to the TestFile entity.
-func (tsu *TestSummaryUpdate) ClearFailed() *TestSummaryUpdate {
-	tsu.mutation.ClearFailed()
-	return tsu
-}
-
-// RemoveFailedIDs removes the "failed" edge to TestFile entities by IDs.
-func (tsu *TestSummaryUpdate) RemoveFailedIDs(ids ...int64) *TestSummaryUpdate {
-	tsu.mutation.RemoveFailedIDs(ids...)
-	return tsu
-}
-
-// RemoveFailed removes "failed" edges to TestFile entities.
-func (tsu *TestSummaryUpdate) RemoveFailed(t ...*TestFile) *TestSummaryUpdate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tsu.RemoveFailedIDs(ids...)
+	return tsu.RemoveTestResultIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -417,10 +340,8 @@ func (tsu *TestSummaryUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (tsu *TestSummaryUpdate) check() error {
-	if v, ok := tsu.mutation.OverallStatus(); ok {
-		if err := testsummary.OverallStatusValidator(v); err != nil {
-			return &ValidationError{Name: "overall_status", err: fmt.Errorf(`ent: validator failed for field "TestSummary.overall_status": %w`, err)}
-		}
+	if tsu.mutation.InvocationTargetCleared() && len(tsu.mutation.InvocationTargetIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "TestSummary.invocation_target"`)
 	}
 	return nil
 }
@@ -444,10 +365,10 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := tsu.mutation.OverallStatus(); ok {
-		_spec.SetField(testsummary.FieldOverallStatus, field.TypeEnum, value)
+		_spec.SetField(testsummary.FieldOverallStatus, field.TypeString, value)
 	}
 	if tsu.mutation.OverallStatusCleared() {
-		_spec.ClearField(testsummary.FieldOverallStatus, field.TypeEnum)
+		_spec.ClearField(testsummary.FieldOverallStatus, field.TypeString)
 	}
 	if value, ok := tsu.mutation.TotalRunCount(); ok {
 		_spec.SetField(testsummary.FieldTotalRunCount, field.TypeInt32, value)
@@ -495,60 +416,48 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.ClearField(testsummary.FieldTotalNumCached, field.TypeInt32)
 	}
 	if value, ok := tsu.mutation.FirstStartTime(); ok {
-		_spec.SetField(testsummary.FieldFirstStartTime, field.TypeInt64, value)
-	}
-	if value, ok := tsu.mutation.AddedFirstStartTime(); ok {
-		_spec.AddField(testsummary.FieldFirstStartTime, field.TypeInt64, value)
+		_spec.SetField(testsummary.FieldFirstStartTime, field.TypeTime, value)
 	}
 	if tsu.mutation.FirstStartTimeCleared() {
-		_spec.ClearField(testsummary.FieldFirstStartTime, field.TypeInt64)
+		_spec.ClearField(testsummary.FieldFirstStartTime, field.TypeTime)
 	}
 	if value, ok := tsu.mutation.LastStopTime(); ok {
-		_spec.SetField(testsummary.FieldLastStopTime, field.TypeInt64, value)
-	}
-	if value, ok := tsu.mutation.AddedLastStopTime(); ok {
-		_spec.AddField(testsummary.FieldLastStopTime, field.TypeInt64, value)
+		_spec.SetField(testsummary.FieldLastStopTime, field.TypeTime, value)
 	}
 	if tsu.mutation.LastStopTimeCleared() {
-		_spec.ClearField(testsummary.FieldLastStopTime, field.TypeInt64)
+		_spec.ClearField(testsummary.FieldLastStopTime, field.TypeTime)
 	}
-	if value, ok := tsu.mutation.TotalRunDuration(); ok {
-		_spec.SetField(testsummary.FieldTotalRunDuration, field.TypeInt64, value)
+	if value, ok := tsu.mutation.TotalRunDurationInMs(); ok {
+		_spec.SetField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64, value)
 	}
-	if value, ok := tsu.mutation.AddedTotalRunDuration(); ok {
-		_spec.AddField(testsummary.FieldTotalRunDuration, field.TypeInt64, value)
+	if value, ok := tsu.mutation.AddedTotalRunDurationInMs(); ok {
+		_spec.AddField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64, value)
 	}
-	if tsu.mutation.TotalRunDurationCleared() {
-		_spec.ClearField(testsummary.FieldTotalRunDuration, field.TypeInt64)
+	if tsu.mutation.TotalRunDurationInMsCleared() {
+		_spec.ClearField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64)
 	}
-	if value, ok := tsu.mutation.Label(); ok {
-		_spec.SetField(testsummary.FieldLabel, field.TypeString, value)
-	}
-	if tsu.mutation.LabelCleared() {
-		_spec.ClearField(testsummary.FieldLabel, field.TypeString)
-	}
-	if tsu.mutation.TestCollectionCleared() {
+	if tsu.mutation.InvocationTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   testsummary.TestCollectionTable,
-			Columns: []string{testsummary.TestCollectionColumn},
+			Table:   testsummary.InvocationTargetTable,
+			Columns: []string{testsummary.InvocationTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsu.mutation.TestCollectionIDs(); len(nodes) > 0 {
+	if nodes := tsu.mutation.InvocationTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   testsummary.TestCollectionTable,
-			Columns: []string{testsummary.TestCollectionColumn},
+			Table:   testsummary.InvocationTargetTable,
+			Columns: []string{testsummary.InvocationTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -556,28 +465,28 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tsu.mutation.PassedCleared() {
+	if tsu.mutation.TestResultsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   testsummary.PassedTable,
-			Columns: []string{testsummary.PassedColumn},
+			Table:   testsummary.TestResultsTable,
+			Columns: []string{testsummary.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsu.mutation.RemovedPassedIDs(); len(nodes) > 0 && !tsu.mutation.PassedCleared() {
+	if nodes := tsu.mutation.RemovedTestResultsIDs(); len(nodes) > 0 && !tsu.mutation.TestResultsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   testsummary.PassedTable,
-			Columns: []string{testsummary.PassedColumn},
+			Table:   testsummary.TestResultsTable,
+			Columns: []string{testsummary.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -585,60 +494,15 @@ func (tsu *TestSummaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsu.mutation.PassedIDs(); len(nodes) > 0 {
+	if nodes := tsu.mutation.TestResultsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   testsummary.PassedTable,
-			Columns: []string{testsummary.PassedColumn},
+			Table:   testsummary.TestResultsTable,
+			Columns: []string{testsummary.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if tsu.mutation.FailedCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   testsummary.FailedTable,
-			Columns: []string{testsummary.FailedColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tsu.mutation.RemovedFailedIDs(); len(nodes) > 0 && !tsu.mutation.FailedCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   testsummary.FailedTable,
-			Columns: []string{testsummary.FailedColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tsu.mutation.FailedIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   testsummary.FailedTable,
-			Columns: []string{testsummary.FailedColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -669,15 +533,15 @@ type TestSummaryUpdateOne struct {
 }
 
 // SetOverallStatus sets the "overall_status" field.
-func (tsuo *TestSummaryUpdateOne) SetOverallStatus(ts testsummary.OverallStatus) *TestSummaryUpdateOne {
-	tsuo.mutation.SetOverallStatus(ts)
+func (tsuo *TestSummaryUpdateOne) SetOverallStatus(s string) *TestSummaryUpdateOne {
+	tsuo.mutation.SetOverallStatus(s)
 	return tsuo
 }
 
 // SetNillableOverallStatus sets the "overall_status" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableOverallStatus(ts *testsummary.OverallStatus) *TestSummaryUpdateOne {
-	if ts != nil {
-		tsuo.SetOverallStatus(*ts)
+func (tsuo *TestSummaryUpdateOne) SetNillableOverallStatus(s *string) *TestSummaryUpdateOne {
+	if s != nil {
+		tsuo.SetOverallStatus(*s)
 	}
 	return tsuo
 }
@@ -824,23 +688,16 @@ func (tsuo *TestSummaryUpdateOne) ClearTotalNumCached() *TestSummaryUpdateOne {
 }
 
 // SetFirstStartTime sets the "first_start_time" field.
-func (tsuo *TestSummaryUpdateOne) SetFirstStartTime(i int64) *TestSummaryUpdateOne {
-	tsuo.mutation.ResetFirstStartTime()
-	tsuo.mutation.SetFirstStartTime(i)
+func (tsuo *TestSummaryUpdateOne) SetFirstStartTime(t time.Time) *TestSummaryUpdateOne {
+	tsuo.mutation.SetFirstStartTime(t)
 	return tsuo
 }
 
 // SetNillableFirstStartTime sets the "first_start_time" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableFirstStartTime(i *int64) *TestSummaryUpdateOne {
-	if i != nil {
-		tsuo.SetFirstStartTime(*i)
+func (tsuo *TestSummaryUpdateOne) SetNillableFirstStartTime(t *time.Time) *TestSummaryUpdateOne {
+	if t != nil {
+		tsuo.SetFirstStartTime(*t)
 	}
-	return tsuo
-}
-
-// AddFirstStartTime adds i to the "first_start_time" field.
-func (tsuo *TestSummaryUpdateOne) AddFirstStartTime(i int64) *TestSummaryUpdateOne {
-	tsuo.mutation.AddFirstStartTime(i)
 	return tsuo
 }
 
@@ -851,23 +708,16 @@ func (tsuo *TestSummaryUpdateOne) ClearFirstStartTime() *TestSummaryUpdateOne {
 }
 
 // SetLastStopTime sets the "last_stop_time" field.
-func (tsuo *TestSummaryUpdateOne) SetLastStopTime(i int64) *TestSummaryUpdateOne {
-	tsuo.mutation.ResetLastStopTime()
-	tsuo.mutation.SetLastStopTime(i)
+func (tsuo *TestSummaryUpdateOne) SetLastStopTime(t time.Time) *TestSummaryUpdateOne {
+	tsuo.mutation.SetLastStopTime(t)
 	return tsuo
 }
 
 // SetNillableLastStopTime sets the "last_stop_time" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableLastStopTime(i *int64) *TestSummaryUpdateOne {
-	if i != nil {
-		tsuo.SetLastStopTime(*i)
+func (tsuo *TestSummaryUpdateOne) SetNillableLastStopTime(t *time.Time) *TestSummaryUpdateOne {
+	if t != nil {
+		tsuo.SetLastStopTime(*t)
 	}
-	return tsuo
-}
-
-// AddLastStopTime adds i to the "last_stop_time" field.
-func (tsuo *TestSummaryUpdateOne) AddLastStopTime(i int64) *TestSummaryUpdateOne {
-	tsuo.mutation.AddLastStopTime(i)
 	return tsuo
 }
 
@@ -877,100 +727,57 @@ func (tsuo *TestSummaryUpdateOne) ClearLastStopTime() *TestSummaryUpdateOne {
 	return tsuo
 }
 
-// SetTotalRunDuration sets the "total_run_duration" field.
-func (tsuo *TestSummaryUpdateOne) SetTotalRunDuration(i int64) *TestSummaryUpdateOne {
-	tsuo.mutation.ResetTotalRunDuration()
-	tsuo.mutation.SetTotalRunDuration(i)
+// SetTotalRunDurationInMs sets the "total_run_duration_in_ms" field.
+func (tsuo *TestSummaryUpdateOne) SetTotalRunDurationInMs(i int64) *TestSummaryUpdateOne {
+	tsuo.mutation.ResetTotalRunDurationInMs()
+	tsuo.mutation.SetTotalRunDurationInMs(i)
 	return tsuo
 }
 
-// SetNillableTotalRunDuration sets the "total_run_duration" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableTotalRunDuration(i *int64) *TestSummaryUpdateOne {
+// SetNillableTotalRunDurationInMs sets the "total_run_duration_in_ms" field if the given value is not nil.
+func (tsuo *TestSummaryUpdateOne) SetNillableTotalRunDurationInMs(i *int64) *TestSummaryUpdateOne {
 	if i != nil {
-		tsuo.SetTotalRunDuration(*i)
+		tsuo.SetTotalRunDurationInMs(*i)
 	}
 	return tsuo
 }
 
-// AddTotalRunDuration adds i to the "total_run_duration" field.
-func (tsuo *TestSummaryUpdateOne) AddTotalRunDuration(i int64) *TestSummaryUpdateOne {
-	tsuo.mutation.AddTotalRunDuration(i)
+// AddTotalRunDurationInMs adds i to the "total_run_duration_in_ms" field.
+func (tsuo *TestSummaryUpdateOne) AddTotalRunDurationInMs(i int64) *TestSummaryUpdateOne {
+	tsuo.mutation.AddTotalRunDurationInMs(i)
 	return tsuo
 }
 
-// ClearTotalRunDuration clears the value of the "total_run_duration" field.
-func (tsuo *TestSummaryUpdateOne) ClearTotalRunDuration() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearTotalRunDuration()
+// ClearTotalRunDurationInMs clears the value of the "total_run_duration_in_ms" field.
+func (tsuo *TestSummaryUpdateOne) ClearTotalRunDurationInMs() *TestSummaryUpdateOne {
+	tsuo.mutation.ClearTotalRunDurationInMs()
 	return tsuo
 }
 
-// SetLabel sets the "label" field.
-func (tsuo *TestSummaryUpdateOne) SetLabel(s string) *TestSummaryUpdateOne {
-	tsuo.mutation.SetLabel(s)
+// SetInvocationTargetID sets the "invocation_target" edge to the InvocationTarget entity by ID.
+func (tsuo *TestSummaryUpdateOne) SetInvocationTargetID(id int64) *TestSummaryUpdateOne {
+	tsuo.mutation.SetInvocationTargetID(id)
 	return tsuo
 }
 
-// SetNillableLabel sets the "label" field if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableLabel(s *string) *TestSummaryUpdateOne {
-	if s != nil {
-		tsuo.SetLabel(*s)
-	}
+// SetInvocationTarget sets the "invocation_target" edge to the InvocationTarget entity.
+func (tsuo *TestSummaryUpdateOne) SetInvocationTarget(i *InvocationTarget) *TestSummaryUpdateOne {
+	return tsuo.SetInvocationTargetID(i.ID)
+}
+
+// AddTestResultIDs adds the "test_results" edge to the TestResult entity by IDs.
+func (tsuo *TestSummaryUpdateOne) AddTestResultIDs(ids ...int64) *TestSummaryUpdateOne {
+	tsuo.mutation.AddTestResultIDs(ids...)
 	return tsuo
 }
 
-// ClearLabel clears the value of the "label" field.
-func (tsuo *TestSummaryUpdateOne) ClearLabel() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearLabel()
-	return tsuo
-}
-
-// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (tsuo *TestSummaryUpdateOne) SetTestCollectionID(id int64) *TestSummaryUpdateOne {
-	tsuo.mutation.SetTestCollectionID(id)
-	return tsuo
-}
-
-// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (tsuo *TestSummaryUpdateOne) SetNillableTestCollectionID(id *int64) *TestSummaryUpdateOne {
-	if id != nil {
-		tsuo = tsuo.SetTestCollectionID(*id)
-	}
-	return tsuo
-}
-
-// SetTestCollection sets the "test_collection" edge to the TestCollection entity.
-func (tsuo *TestSummaryUpdateOne) SetTestCollection(t *TestCollection) *TestSummaryUpdateOne {
-	return tsuo.SetTestCollectionID(t.ID)
-}
-
-// AddPassedIDs adds the "passed" edge to the TestFile entity by IDs.
-func (tsuo *TestSummaryUpdateOne) AddPassedIDs(ids ...int64) *TestSummaryUpdateOne {
-	tsuo.mutation.AddPassedIDs(ids...)
-	return tsuo
-}
-
-// AddPassed adds the "passed" edges to the TestFile entity.
-func (tsuo *TestSummaryUpdateOne) AddPassed(t ...*TestFile) *TestSummaryUpdateOne {
+// AddTestResults adds the "test_results" edges to the TestResult entity.
+func (tsuo *TestSummaryUpdateOne) AddTestResults(t ...*TestResult) *TestSummaryUpdateOne {
 	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
-	return tsuo.AddPassedIDs(ids...)
-}
-
-// AddFailedIDs adds the "failed" edge to the TestFile entity by IDs.
-func (tsuo *TestSummaryUpdateOne) AddFailedIDs(ids ...int64) *TestSummaryUpdateOne {
-	tsuo.mutation.AddFailedIDs(ids...)
-	return tsuo
-}
-
-// AddFailed adds the "failed" edges to the TestFile entity.
-func (tsuo *TestSummaryUpdateOne) AddFailed(t ...*TestFile) *TestSummaryUpdateOne {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tsuo.AddFailedIDs(ids...)
+	return tsuo.AddTestResultIDs(ids...)
 }
 
 // Mutation returns the TestSummaryMutation object of the builder.
@@ -978,52 +785,31 @@ func (tsuo *TestSummaryUpdateOne) Mutation() *TestSummaryMutation {
 	return tsuo.mutation
 }
 
-// ClearTestCollection clears the "test_collection" edge to the TestCollection entity.
-func (tsuo *TestSummaryUpdateOne) ClearTestCollection() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearTestCollection()
+// ClearInvocationTarget clears the "invocation_target" edge to the InvocationTarget entity.
+func (tsuo *TestSummaryUpdateOne) ClearInvocationTarget() *TestSummaryUpdateOne {
+	tsuo.mutation.ClearInvocationTarget()
 	return tsuo
 }
 
-// ClearPassed clears all "passed" edges to the TestFile entity.
-func (tsuo *TestSummaryUpdateOne) ClearPassed() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearPassed()
+// ClearTestResults clears all "test_results" edges to the TestResult entity.
+func (tsuo *TestSummaryUpdateOne) ClearTestResults() *TestSummaryUpdateOne {
+	tsuo.mutation.ClearTestResults()
 	return tsuo
 }
 
-// RemovePassedIDs removes the "passed" edge to TestFile entities by IDs.
-func (tsuo *TestSummaryUpdateOne) RemovePassedIDs(ids ...int64) *TestSummaryUpdateOne {
-	tsuo.mutation.RemovePassedIDs(ids...)
+// RemoveTestResultIDs removes the "test_results" edge to TestResult entities by IDs.
+func (tsuo *TestSummaryUpdateOne) RemoveTestResultIDs(ids ...int64) *TestSummaryUpdateOne {
+	tsuo.mutation.RemoveTestResultIDs(ids...)
 	return tsuo
 }
 
-// RemovePassed removes "passed" edges to TestFile entities.
-func (tsuo *TestSummaryUpdateOne) RemovePassed(t ...*TestFile) *TestSummaryUpdateOne {
+// RemoveTestResults removes "test_results" edges to TestResult entities.
+func (tsuo *TestSummaryUpdateOne) RemoveTestResults(t ...*TestResult) *TestSummaryUpdateOne {
 	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
-	return tsuo.RemovePassedIDs(ids...)
-}
-
-// ClearFailed clears all "failed" edges to the TestFile entity.
-func (tsuo *TestSummaryUpdateOne) ClearFailed() *TestSummaryUpdateOne {
-	tsuo.mutation.ClearFailed()
-	return tsuo
-}
-
-// RemoveFailedIDs removes the "failed" edge to TestFile entities by IDs.
-func (tsuo *TestSummaryUpdateOne) RemoveFailedIDs(ids ...int64) *TestSummaryUpdateOne {
-	tsuo.mutation.RemoveFailedIDs(ids...)
-	return tsuo
-}
-
-// RemoveFailed removes "failed" edges to TestFile entities.
-func (tsuo *TestSummaryUpdateOne) RemoveFailed(t ...*TestFile) *TestSummaryUpdateOne {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tsuo.RemoveFailedIDs(ids...)
+	return tsuo.RemoveTestResultIDs(ids...)
 }
 
 // Where appends a list predicates to the TestSummaryUpdate builder.
@@ -1068,10 +854,8 @@ func (tsuo *TestSummaryUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (tsuo *TestSummaryUpdateOne) check() error {
-	if v, ok := tsuo.mutation.OverallStatus(); ok {
-		if err := testsummary.OverallStatusValidator(v); err != nil {
-			return &ValidationError{Name: "overall_status", err: fmt.Errorf(`ent: validator failed for field "TestSummary.overall_status": %w`, err)}
-		}
+	if tsuo.mutation.InvocationTargetCleared() && len(tsuo.mutation.InvocationTargetIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "TestSummary.invocation_target"`)
 	}
 	return nil
 }
@@ -1112,10 +896,10 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 		}
 	}
 	if value, ok := tsuo.mutation.OverallStatus(); ok {
-		_spec.SetField(testsummary.FieldOverallStatus, field.TypeEnum, value)
+		_spec.SetField(testsummary.FieldOverallStatus, field.TypeString, value)
 	}
 	if tsuo.mutation.OverallStatusCleared() {
-		_spec.ClearField(testsummary.FieldOverallStatus, field.TypeEnum)
+		_spec.ClearField(testsummary.FieldOverallStatus, field.TypeString)
 	}
 	if value, ok := tsuo.mutation.TotalRunCount(); ok {
 		_spec.SetField(testsummary.FieldTotalRunCount, field.TypeInt32, value)
@@ -1163,60 +947,48 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 		_spec.ClearField(testsummary.FieldTotalNumCached, field.TypeInt32)
 	}
 	if value, ok := tsuo.mutation.FirstStartTime(); ok {
-		_spec.SetField(testsummary.FieldFirstStartTime, field.TypeInt64, value)
-	}
-	if value, ok := tsuo.mutation.AddedFirstStartTime(); ok {
-		_spec.AddField(testsummary.FieldFirstStartTime, field.TypeInt64, value)
+		_spec.SetField(testsummary.FieldFirstStartTime, field.TypeTime, value)
 	}
 	if tsuo.mutation.FirstStartTimeCleared() {
-		_spec.ClearField(testsummary.FieldFirstStartTime, field.TypeInt64)
+		_spec.ClearField(testsummary.FieldFirstStartTime, field.TypeTime)
 	}
 	if value, ok := tsuo.mutation.LastStopTime(); ok {
-		_spec.SetField(testsummary.FieldLastStopTime, field.TypeInt64, value)
-	}
-	if value, ok := tsuo.mutation.AddedLastStopTime(); ok {
-		_spec.AddField(testsummary.FieldLastStopTime, field.TypeInt64, value)
+		_spec.SetField(testsummary.FieldLastStopTime, field.TypeTime, value)
 	}
 	if tsuo.mutation.LastStopTimeCleared() {
-		_spec.ClearField(testsummary.FieldLastStopTime, field.TypeInt64)
+		_spec.ClearField(testsummary.FieldLastStopTime, field.TypeTime)
 	}
-	if value, ok := tsuo.mutation.TotalRunDuration(); ok {
-		_spec.SetField(testsummary.FieldTotalRunDuration, field.TypeInt64, value)
+	if value, ok := tsuo.mutation.TotalRunDurationInMs(); ok {
+		_spec.SetField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64, value)
 	}
-	if value, ok := tsuo.mutation.AddedTotalRunDuration(); ok {
-		_spec.AddField(testsummary.FieldTotalRunDuration, field.TypeInt64, value)
+	if value, ok := tsuo.mutation.AddedTotalRunDurationInMs(); ok {
+		_spec.AddField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64, value)
 	}
-	if tsuo.mutation.TotalRunDurationCleared() {
-		_spec.ClearField(testsummary.FieldTotalRunDuration, field.TypeInt64)
+	if tsuo.mutation.TotalRunDurationInMsCleared() {
+		_spec.ClearField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64)
 	}
-	if value, ok := tsuo.mutation.Label(); ok {
-		_spec.SetField(testsummary.FieldLabel, field.TypeString, value)
-	}
-	if tsuo.mutation.LabelCleared() {
-		_spec.ClearField(testsummary.FieldLabel, field.TypeString)
-	}
-	if tsuo.mutation.TestCollectionCleared() {
+	if tsuo.mutation.InvocationTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   testsummary.TestCollectionTable,
-			Columns: []string{testsummary.TestCollectionColumn},
+			Table:   testsummary.InvocationTargetTable,
+			Columns: []string{testsummary.InvocationTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsuo.mutation.TestCollectionIDs(); len(nodes) > 0 {
+	if nodes := tsuo.mutation.InvocationTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   testsummary.TestCollectionTable,
-			Columns: []string{testsummary.TestCollectionColumn},
+			Table:   testsummary.InvocationTargetTable,
+			Columns: []string{testsummary.InvocationTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1224,28 +996,28 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if tsuo.mutation.PassedCleared() {
+	if tsuo.mutation.TestResultsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   testsummary.PassedTable,
-			Columns: []string{testsummary.PassedColumn},
+			Table:   testsummary.TestResultsTable,
+			Columns: []string{testsummary.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsuo.mutation.RemovedPassedIDs(); len(nodes) > 0 && !tsuo.mutation.PassedCleared() {
+	if nodes := tsuo.mutation.RemovedTestResultsIDs(); len(nodes) > 0 && !tsuo.mutation.TestResultsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   testsummary.PassedTable,
-			Columns: []string{testsummary.PassedColumn},
+			Table:   testsummary.TestResultsTable,
+			Columns: []string{testsummary.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1253,60 +1025,15 @@ func (tsuo *TestSummaryUpdateOne) sqlSave(ctx context.Context) (_node *TestSumma
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := tsuo.mutation.PassedIDs(); len(nodes) > 0 {
+	if nodes := tsuo.mutation.TestResultsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   testsummary.PassedTable,
-			Columns: []string{testsummary.PassedColumn},
+			Table:   testsummary.TestResultsTable,
+			Columns: []string{testsummary.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if tsuo.mutation.FailedCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   testsummary.FailedTable,
-			Columns: []string{testsummary.FailedColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tsuo.mutation.RemovedFailedIDs(); len(nodes) > 0 && !tsuo.mutation.FailedCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   testsummary.FailedTable,
-			Columns: []string{testsummary.FailedColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := tsuo.mutation.FailedIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   testsummary.FailedTable,
-			Columns: []string{testsummary.FailedColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

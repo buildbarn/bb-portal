@@ -1,147 +1,176 @@
-import React, { useState } from 'react';
-import { Space, Row, Statistic, TableColumnsType, Table } from 'antd';
-import TestStatusTag, { TestStatusEnum } from '../TestStatusTag';
-import type { StatisticProps } from "antd/lib";
-import { useQuery } from '@apollo/client';
-import { FindTestsQueryVariables, TestCollectionOverallStatus } from '@/graphql/__generated__/graphql';
-import TestGridRow from '../TestGridRow';
-import PortalAlert from '../PortalAlert';
-import { AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
-import { FIND_TESTS_WITH_CACHE } from './graphql';
-import PortalCard from '../PortalCard';
-import { FieldTimeOutlined, BorderInnerOutlined } from '@ant-design/icons/lib/icons';
-import NullBooleanTag from '../NullableBooleanTag';
-import styles from "@/theme/theme.module.css"
-import Link from 'next/link';
-import { readableDurationFromMilliseconds } from '@/utils/time';
+import {
+  BorderInnerOutlined,
+  FieldTimeOutlined,
+} from "@ant-design/icons/lib/icons";
+import { useQuery } from "@apollo/client";
+import { Descriptions, Space, Typography } from "antd";
+import React, { useMemo } from "react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import type { GetTestDetailsQuery } from "@/graphql/__generated__/graphql";
+import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
+import { CursorTable, getNewPaginationVariables } from "../CursorTable";
+import type { PaginationVariables } from "../CursorTable/types";
+import PortalAlert from "../PortalAlert";
+import PortalCard from "../PortalCard";
+import { columns, type TestDetailsRowType } from "./columns";
+import { GET_TEST_DETAILS } from "./graphql";
 
 interface Props {
-    label: string
+  instanceName: string;
+  label: string;
+  aspect: string;
+  targetKind: string;
 }
 
-export interface TestStatusType {
-    label: string
-    invocationId: string,
-    status: TestStatusEnum
-}
-const PAGE_SIZE = 10
-interface GraphDataPoint {
-    name: string
-    duration: number
-    local: boolean
-    remote: boolean
-    status: TestCollectionOverallStatus
-}
+export const TestDetails: React.FC<Props> = ({
+  instanceName,
+  label,
+  aspect,
+  targetKind,
+}) => {
+  const [paginationVariables, setPaginationVariables] =
+    React.useState<PaginationVariables>(getNewPaginationVariables());
 
-const test_columns: TableColumnsType<GraphDataPoint> = [
+  const { data, loading, error } = useQuery<GetTestDetailsQuery>(
+    GET_TEST_DETAILS,
     {
-        title: "Status",
-        dataIndex: "status",
-        render: (x) => <TestStatusTag displayText={true} key="status" status={x as TestStatusEnum} />,
+      variables: {
+        where: {
+          hasInvocationTargetWith: {
+            hasTargetWith: {
+              hasInstanceNameWith: {
+                name: instanceName,
+              },
+              label: label,
+              aspect: aspect,
+              targetKind: targetKind,
+            },
+          },
+        },
+        ...paginationVariables,
+      },
+      fetchPolicy: "network-only",
     },
-    {
-        title: "Invocation ID",
-        dataIndex: "name",
-        render: (_, record) => <Link href={"/bazel-invocations/" + record.name}>{record.name}</Link>,
-    },
-    {
-        title: "Cached Locally",
-        dataIndex: "local",
-        render: (x) => <NullBooleanTag key="local" status={x as boolean | null} />,
-    },
-    {
-        title: "Cached Remotely",
-        dataIndex: "remote",
-        render: (x) => <NullBooleanTag key="remote" status={x as boolean | null} />,
-    },
-    {
-        title: "Duration",
-        dataIndex: "duration",
-        render: (_, record) => <span className={styles.numberFormat}>{readableDurationFromMilliseconds(record.duration, {smallestUnit: "ms"})}</span>,
-        align: "right",
-    },
+  );
 
-]
-
-
-const TestDetails: React.FC<Props> = ({ label }) => {
-
-    const [variables, setVariables] = useState<FindTestsQueryVariables>({ first: 1000, where: { label: label } })
-    const { loading: labelLoading, data: labelData, previousData: labelPreviousData, error: labelError } = useQuery(FIND_TESTS_WITH_CACHE, {
-        variables: variables,
-        fetchPolicy: 'cache-and-network',
+  const testSummaries: TestDetailsRowType[] = useMemo(() => {
+    return parseGraphqlEdgeList(data?.findTestSummaries).map((ts) => {
+      console.table(ts);
+      var cachedLocally: boolean | null = null;
+      var cachedRemotely: boolean | null = null;
+      if (ts.testResults !== null && ts.testResults !== undefined) {
+        if (ts.testResults.every((tr) => tr.cachedLocally === true)) {
+          cachedLocally = true;
+        } else if (ts.testResults.some((tr) => tr.cachedLocally === false)) {
+          cachedLocally = false;
+        }
+        if (ts.testResults.every((tr) => tr.cachedRemotely === true)) {
+          cachedRemotely = true;
+        } else if (ts.testResults.some((tr) => tr.cachedRemotely === false)) {
+          cachedRemotely = false;
+        }
+      }
+      return {
+        ...ts,
+        cachedLocally: cachedLocally,
+        cachedRemotely: cachedRemotely,
+      };
     });
+  }, [data]);
 
-    //load the data from the remote
-    const data = labelLoading ? labelPreviousData : labelData;
-    var result: GraphDataPoint[] = []
-    var totalCnt: number = 0
-    var local_cached: number = 0
-    var remote_cached: number = 0
-    var total_duration: number = 0
-
-    if (labelError) {
-        <PortalAlert className="error" message="There was a problem communicating w/the backend server." />
-    } else {
-        totalCnt = data?.findTests.totalCount ?? 0
-        data?.findTests.edges?.map(edge => {
-            var row = edge?.node
-            result.push({
-                name: row?.bazelInvocation?.invocationID ?? "",
-                duration: row?.durationMs ?? 0,
-                local: row?.cachedLocally ?? false,
-                remote: row?.cachedRemotely ?? false,
-                status: row?.overallStatus ?? TestCollectionOverallStatus.NoStatus
-            })
-            if (row?.cachedLocally) {
-                local_cached++
-            }
-            if (row?.cachedRemotely) {
-                remote_cached++
-            }
-            total_duration += row?.durationMs ?? 0
-        });
-    }
-
+  if (error) {
     return (
-        <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
-            <h1>{label}</h1>
-            <Row>
-                <Space size="large">
-                    <Statistic title="Average Duration" value={readableDurationFromMilliseconds(total_duration / totalCnt, {smallestUnit: "ms"})} />
-                    <Statistic title="Total Runs" value={totalCnt} />
-                    <Statistic title="Cached Locally" value={local_cached} />
-                    <Statistic title="Cached Remotely" value={remote_cached} valueStyle={{ color: "#82ca9d" }} />
-                </Space>
-            </Row>
-            <PortalCard icon={<FieldTimeOutlined />} titleBits={["Test Duration Over Time"]} >
-                <AreaChart
-                    width={900}
-                    height={250}
-                    data={result}
-                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                    <defs>
-                        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                            <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-                        </linearGradient>
-                    </defs>
-                    <XAxis />
-                    <YAxis />
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="duration" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
-                </AreaChart>
-            </PortalCard>
-            <Row>
-                <PortalCard icon={<BorderInnerOutlined />} titleBits={["Per Invocation Details"]}>
-                    <Table
-                        columns={test_columns}
-                        dataSource={result}
-                    />
-                </PortalCard>
-            </Row>
-        </Space>
+      <PortalAlert
+        showIcon
+        type="error"
+        message="Error fetching test details"
+        description={
+          error?.message ||
+          "Unknown error occurred while fetching data from the server."
+        }
+      />
     );
-}
-export default TestDetails
+  }
+
+  return (
+    <Space direction="vertical" size="middle" style={{ display: "flex" }}>
+      <Descriptions column={1}>
+        <Descriptions.Item label="Instance Name">
+          {instanceName || "-"}
+        </Descriptions.Item>
+        <Descriptions.Item label="Target Kind">
+          {targetKind || "-"}
+        </Descriptions.Item>
+        <Descriptions.Item label="Target Label">
+          <Typography.Text copyable>{label || "-"}</Typography.Text>
+        </Descriptions.Item>
+        <Descriptions.Item label="Target Aspect">
+          {aspect || "-"}
+        </Descriptions.Item>
+      </Descriptions>
+      <PortalCard
+        icon={<FieldTimeOutlined />}
+        titleBits={["Test Duration Over Time"]}
+      >
+        <AreaChart
+          width={900}
+          height={250}
+          data={testSummaries}
+          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+        >
+          <defs>
+            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <XAxis />
+          <YAxis />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+          <Tooltip />
+          <Area
+            type="monotone"
+            dataKey="totalRunDurationInMs"
+            stroke="#8884d8"
+            fillOpacity={1}
+            fill="url(#colorUv)"
+          />
+        </AreaChart>
+      </PortalCard>
+      <PortalCard
+        icon={<BorderInnerOutlined />}
+        titleBits={["Per Invocation Details"]}
+      >
+        <CursorTable<TestDetailsRowType>
+          rowKey="id"
+          loading={loading}
+          dataSource={testSummaries}
+          columns={columns}
+          size="small"
+          pagination={{
+            position: "bottom",
+            justify: "end",
+            size: "middle",
+          }}
+          pageInfo={{
+            startCursor: data?.findTestSummaries.pageInfo.startCursor || "",
+            endCursor: data?.findTestSummaries.pageInfo.endCursor || "",
+            hasNextPage: data?.findTestSummaries.pageInfo.hasNextPage || false,
+            hasPreviousPage:
+              data?.findTestSummaries.pageInfo.hasPreviousPage || false,
+          }}
+          paginationVariables={paginationVariables}
+          setPaginationVariables={setPaginationVariables}
+        />
+      </PortalCard>
+    </Space>
+  );
+};
+export default TestDetails;

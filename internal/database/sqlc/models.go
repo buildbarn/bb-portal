@@ -214,16 +214,6 @@ type EventMetadatum struct {
 	BazelInvocationID int64
 }
 
-type ExectionInfo struct {
-	ID                         int64
-	TimeoutSeconds             sql.NullInt32
-	Strategy                   sql.NullString
-	CachedRemotely             sql.NullBool
-	ExitCode                   sql.NullInt32
-	Hostname                   sql.NullString
-	TestResultBesExecutionInfo sql.NullInt64
-}
-
 type GarbageMetric struct {
 	ID                          int64
 	Type                        sql.NullString
@@ -287,21 +277,9 @@ type MissDetail struct {
 	ActionCacheStatisticsMissDetails sql.NullInt64
 }
 
-type NamedSetOfFile struct {
-	ID                      int64
-	NamedSetOfFilesFileSets sql.NullInt64
-	OutputGroupFileSets     sql.NullInt64
-}
-
 type NetworkMetric struct {
 	ID                    int64
 	MetricsNetworkMetrics sql.NullInt64
-}
-
-type OutputGroup struct {
-	ID         int64
-	Name       sql.NullString
-	Incomplete sql.NullBool
 }
 
 type PackageLoadMetric struct {
@@ -319,13 +297,6 @@ type PackageMetric struct {
 	ID                    int64
 	PackagesLoaded        sql.NullInt64
 	MetricsPackageMetrics sql.NullInt64
-}
-
-type ResourceUsage struct {
-	ID                        int64
-	Name                      sql.NullString
-	Value                     sql.NullString
-	ExectionInfoResourceUsage sql.NullInt64
 }
 
 type RunnerCount struct {
@@ -393,73 +364,37 @@ type TargetMetric struct {
 	MetricsTargetMetrics                 sql.NullInt64
 }
 
-type TestCollection struct {
-	ID                            int64
-	Label                         sql.NullString
-	OverallStatus                 sql.NullString
-	Strategy                      sql.NullString
-	CachedLocally                 sql.NullBool
-	CachedRemotely                sql.NullBool
-	FirstSeen                     sql.NullTime
-	DurationMs                    sql.NullInt64
-	BazelInvocationTestCollection sql.NullInt64
-}
-
-type TestFile struct {
-	ID                            int64
-	Digest                        sql.NullString
-	File                          sql.NullString
-	Length                        sql.NullInt64
-	Name                          sql.NullString
-	Prefix                        pqtype.NullRawMessage
-	NamedSetOfFilesFiles          sql.NullInt64
-	OutputGroupInlineFiles        sql.NullInt64
-	TestResultBesTestActionOutput sql.NullInt64
-	TestSummaryPassed             sql.NullInt64
-	TestSummaryFailed             sql.NullInt64
-}
-
-type TestResultBeSs struct {
-	ID                          int64
-	TestStatus                  sql.NullString
-	StatusDetails               sql.NullString
-	Label                       sql.NullString
-	Warning                     pqtype.NullRawMessage
-	CachedLocally               sql.NullBool
-	TestAttemptStartMillisEpoch sql.NullInt64
-	TestAttemptStart            sql.NullString
-	TestAttemptDurationMillis   sql.NullInt64
-	TestAttemptDuration         sql.NullInt64
-	TestCollectionTestResults   sql.NullInt64
+type TestResult struct {
+	ID                      int64
+	Run                     int32
+	Shard                   int32
+	Attempt                 int32
+	Status                  sql.NullString
+	StatusDetails           sql.NullString
+	CachedLocally           sql.NullBool
+	TestAttemptStart        sql.NullTime
+	TestAttemptDurationInMs sql.NullInt64
+	Warning                 pqtype.NullRawMessage
+	Strategy                sql.NullString
+	CachedRemotely          sql.NullBool
+	ExitCode                sql.NullInt32
+	Hostname                sql.NullString
+	TimingBreakdown         pqtype.NullRawMessage
+	TestSummaryTestResults  int64
 }
 
 type TestSummary struct {
-	ID                        int64
-	OverallStatus             sql.NullString
-	TotalRunCount             sql.NullInt32
-	RunCount                  sql.NullInt32
-	AttemptCount              sql.NullInt32
-	ShardCount                sql.NullInt32
-	TotalNumCached            sql.NullInt32
-	FirstStartTime            sql.NullInt64
-	LastStopTime              sql.NullInt64
-	TotalRunDuration          sql.NullInt64
-	Label                     sql.NullString
-	TestCollectionTestSummary sql.NullInt64
-}
-
-type TimingBreakdown struct {
 	ID                          int64
-	Name                        sql.NullString
-	Time                        sql.NullString
-	ExectionInfoTimingBreakdown sql.NullInt64
-}
-
-type TimingChild struct {
-	ID                   int64
-	Name                 sql.NullString
-	Time                 sql.NullString
-	TimingBreakdownChild sql.NullInt64
+	OverallStatus               sql.NullString
+	TotalRunCount               sql.NullInt32
+	RunCount                    sql.NullInt32
+	AttemptCount                sql.NullInt32
+	ShardCount                  sql.NullInt32
+	TotalNumCached              sql.NullInt32
+	FirstStartTime              sql.NullTime
+	LastStopTime                sql.NullTime
+	TotalRunDurationInMs        sql.NullInt64
+	InvocationTargetTestSummary int64
 }
 
 type TimingMetric struct {

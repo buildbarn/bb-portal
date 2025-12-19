@@ -8,48 +8,6 @@ extend type Query {
     aspect: String!
     targetKind: String!
   ): Target
-  getUniqueTestLabels(param: String): [String]
-  getTestDurationAggregation(label: String): [TargetAggregate]
-  getTestPassAggregation(label: String): [TargetAggregate]
-  getTestsWithOffset(
-    label: String
-    offset: Int
-    limit: Int
-    sortBy: String
-    direction: String
-  ): TestGridResult
-  getAveragePassPercentageForLabel(label: String!): Float
-}
-
-type TargetAggregate {
-  label: String
-  count: Int
-  sum: Int
-  min: Int
-  max: Int
-  avg: Int
-  pass: Int
-}
-
-type TestGridResult {
-  total: Int
-  result: [TestGridRow]
-}
-
-type TestGridRow {
-  label: String
-  count: Int
-  sum: Int
-  min: Int
-  max: Int
-  avg: Float
-  passRate: Float
-  cells: [TestGridCell]
-}
-
-type TestGridCell {
-  invocationId: UUID
-  status: TestCollectionOverallStatus
 }
 
 type BazelCommand {
@@ -118,22 +76,6 @@ type TargetProblem implements Node & Problem {
   label: String!
 }
 
-type TestProblem implements Node & Problem {
-  id: ID!
-  label: String!
-  status: String!
-  results: [TestResult!]!
-}
-
-type TestResult implements Node {
-  id: ID!
-  run: Int!
-  shard: Int!
-  attempt: Int!
-  status: String!
-  actionLogOutput: BlobReference! @goField(forceResolver: true)
-  undeclaredTestOutputs: BlobReference @goField(forceResolver: true)
-}
 
 extend type BazelInvocation {
   problems: [Problem!]!

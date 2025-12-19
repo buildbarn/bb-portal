@@ -519,30 +519,6 @@ func (f EventMetadataMutationRuleFunc) EvalMutation(ctx context.Context, m ent.M
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.EventMetadataMutation", m)
 }
 
-// The ExectionInfoQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type ExectionInfoQueryRuleFunc func(context.Context, *ent.ExectionInfoQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f ExectionInfoQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.ExectionInfoQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.ExectionInfoQuery", q)
-}
-
-// The ExectionInfoMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type ExectionInfoMutationRuleFunc func(context.Context, *ent.ExectionInfoMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f ExectionInfoMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.ExectionInfoMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.ExectionInfoMutation", m)
-}
-
 // The GarbageMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type GarbageMetricsQueryRuleFunc func(context.Context, *ent.GarbageMetricsQuery) error
@@ -735,30 +711,6 @@ func (f MissDetailMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Muta
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.MissDetailMutation", m)
 }
 
-// The NamedSetOfFilesQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type NamedSetOfFilesQueryRuleFunc func(context.Context, *ent.NamedSetOfFilesQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f NamedSetOfFilesQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.NamedSetOfFilesQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.NamedSetOfFilesQuery", q)
-}
-
-// The NamedSetOfFilesMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type NamedSetOfFilesMutationRuleFunc func(context.Context, *ent.NamedSetOfFilesMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f NamedSetOfFilesMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.NamedSetOfFilesMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.NamedSetOfFilesMutation", m)
-}
-
 // The NetworkMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type NetworkMetricsQueryRuleFunc func(context.Context, *ent.NetworkMetricsQuery) error
@@ -781,30 +733,6 @@ func (f NetworkMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.
 		return f(ctx, m)
 	}
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.NetworkMetricsMutation", m)
-}
-
-// The OutputGroupQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type OutputGroupQueryRuleFunc func(context.Context, *ent.OutputGroupQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f OutputGroupQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.OutputGroupQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.OutputGroupQuery", q)
-}
-
-// The OutputGroupMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type OutputGroupMutationRuleFunc func(context.Context, *ent.OutputGroupMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f OutputGroupMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.OutputGroupMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.OutputGroupMutation", m)
 }
 
 // The PackageLoadMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -853,30 +781,6 @@ func (f PackageMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.
 		return f(ctx, m)
 	}
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.PackageMetricsMutation", m)
-}
-
-// The ResourceUsageQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type ResourceUsageQueryRuleFunc func(context.Context, *ent.ResourceUsageQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f ResourceUsageQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.ResourceUsageQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.ResourceUsageQuery", q)
-}
-
-// The ResourceUsageMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type ResourceUsageMutationRuleFunc func(context.Context, *ent.ResourceUsageMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f ResourceUsageMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.ResourceUsageMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.ResourceUsageMutation", m)
 }
 
 // The RunnerCountQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -1023,76 +927,28 @@ func (f TargetMetricsMutationRuleFunc) EvalMutation(ctx context.Context, m ent.M
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TargetMetricsMutation", m)
 }
 
-// The TestCollectionQueryRuleFunc type is an adapter to allow the use of ordinary
+// The TestResultQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type TestCollectionQueryRuleFunc func(context.Context, *ent.TestCollectionQuery) error
+type TestResultQueryRuleFunc func(context.Context, *ent.TestResultQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f TestCollectionQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.TestCollectionQuery); ok {
+func (f TestResultQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.TestResultQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.TestCollectionQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.TestResultQuery", q)
 }
 
-// The TestCollectionMutationRuleFunc type is an adapter to allow the use of ordinary
+// The TestResultMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type TestCollectionMutationRuleFunc func(context.Context, *ent.TestCollectionMutation) error
+type TestResultMutationRuleFunc func(context.Context, *ent.TestResultMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f TestCollectionMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.TestCollectionMutation); ok {
+func (f TestResultMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.TestResultMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TestCollectionMutation", m)
-}
-
-// The TestFileQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type TestFileQueryRuleFunc func(context.Context, *ent.TestFileQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f TestFileQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.TestFileQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.TestFileQuery", q)
-}
-
-// The TestFileMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type TestFileMutationRuleFunc func(context.Context, *ent.TestFileMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f TestFileMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.TestFileMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TestFileMutation", m)
-}
-
-// The TestResultBESQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type TestResultBESQueryRuleFunc func(context.Context, *ent.TestResultBESQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f TestResultBESQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.TestResultBESQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.TestResultBESQuery", q)
-}
-
-// The TestResultBESMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type TestResultBESMutationRuleFunc func(context.Context, *ent.TestResultBESMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f TestResultBESMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.TestResultBESMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TestResultBESMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TestResultMutation", m)
 }
 
 // The TestSummaryQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -1117,54 +973,6 @@ func (f TestSummaryMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mut
 		return f(ctx, m)
 	}
 	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TestSummaryMutation", m)
-}
-
-// The TimingBreakdownQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type TimingBreakdownQueryRuleFunc func(context.Context, *ent.TimingBreakdownQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f TimingBreakdownQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.TimingBreakdownQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.TimingBreakdownQuery", q)
-}
-
-// The TimingBreakdownMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type TimingBreakdownMutationRuleFunc func(context.Context, *ent.TimingBreakdownMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f TimingBreakdownMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.TimingBreakdownMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TimingBreakdownMutation", m)
-}
-
-// The TimingChildQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type TimingChildQueryRuleFunc func(context.Context, *ent.TimingChildQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f TimingChildQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.TimingChildQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.TimingChildQuery", q)
-}
-
-// The TimingChildMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type TimingChildMutationRuleFunc func(context.Context, *ent.TimingChildMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f TimingChildMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.TimingChildMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TimingChildMutation", m)
 }
 
 // The TimingMetricsQueryRuleFunc type is an adapter to allow the use of ordinary
@@ -1260,8 +1068,6 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.EventMetadataQuery:
 		return q.Filter(), nil
-	case *ent.ExectionInfoQuery:
-		return q.Filter(), nil
 	case *ent.GarbageMetricsQuery:
 		return q.Filter(), nil
 	case *ent.IncompleteBuildLogQuery:
@@ -1278,17 +1084,11 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.MissDetailQuery:
 		return q.Filter(), nil
-	case *ent.NamedSetOfFilesQuery:
-		return q.Filter(), nil
 	case *ent.NetworkMetricsQuery:
-		return q.Filter(), nil
-	case *ent.OutputGroupQuery:
 		return q.Filter(), nil
 	case *ent.PackageLoadMetricsQuery:
 		return q.Filter(), nil
 	case *ent.PackageMetricsQuery:
-		return q.Filter(), nil
-	case *ent.ResourceUsageQuery:
 		return q.Filter(), nil
 	case *ent.RunnerCountQuery:
 		return q.Filter(), nil
@@ -1302,17 +1102,9 @@ func queryFilter(q ent.Query) (Filter, error) {
 		return q.Filter(), nil
 	case *ent.TargetMetricsQuery:
 		return q.Filter(), nil
-	case *ent.TestCollectionQuery:
-		return q.Filter(), nil
-	case *ent.TestFileQuery:
-		return q.Filter(), nil
-	case *ent.TestResultBESQuery:
+	case *ent.TestResultQuery:
 		return q.Filter(), nil
 	case *ent.TestSummaryQuery:
-		return q.Filter(), nil
-	case *ent.TimingBreakdownQuery:
-		return q.Filter(), nil
-	case *ent.TimingChildQuery:
 		return q.Filter(), nil
 	case *ent.TimingMetricsQuery:
 		return q.Filter(), nil
@@ -1357,8 +1149,6 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 		return m.Filter(), nil
 	case *ent.EventMetadataMutation:
 		return m.Filter(), nil
-	case *ent.ExectionInfoMutation:
-		return m.Filter(), nil
 	case *ent.GarbageMetricsMutation:
 		return m.Filter(), nil
 	case *ent.IncompleteBuildLogMutation:
@@ -1375,17 +1165,11 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 		return m.Filter(), nil
 	case *ent.MissDetailMutation:
 		return m.Filter(), nil
-	case *ent.NamedSetOfFilesMutation:
-		return m.Filter(), nil
 	case *ent.NetworkMetricsMutation:
-		return m.Filter(), nil
-	case *ent.OutputGroupMutation:
 		return m.Filter(), nil
 	case *ent.PackageLoadMetricsMutation:
 		return m.Filter(), nil
 	case *ent.PackageMetricsMutation:
-		return m.Filter(), nil
-	case *ent.ResourceUsageMutation:
 		return m.Filter(), nil
 	case *ent.RunnerCountMutation:
 		return m.Filter(), nil
@@ -1399,17 +1183,9 @@ func mutationFilter(m ent.Mutation) (Filter, error) {
 		return m.Filter(), nil
 	case *ent.TargetMetricsMutation:
 		return m.Filter(), nil
-	case *ent.TestCollectionMutation:
-		return m.Filter(), nil
-	case *ent.TestFileMutation:
-		return m.Filter(), nil
-	case *ent.TestResultBESMutation:
+	case *ent.TestResultMutation:
 		return m.Filter(), nil
 	case *ent.TestSummaryMutation:
-		return m.Filter(), nil
-	case *ent.TimingBreakdownMutation:
-		return m.Filter(), nil
-	case *ent.TimingChildMutation:
 		return m.Filter(), nil
 	case *ent.TimingMetricsMutation:
 		return m.Filter(), nil

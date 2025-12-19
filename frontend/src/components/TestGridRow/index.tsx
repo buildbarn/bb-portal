@@ -1,52 +1,71 @@
-
-import React, { useState } from 'react';
-import { useQuery } from '@apollo/client';
-import FIND_TESTS from '@/app/tests/index.graphql';
-import { FindTestsQueryVariables, OrderDirection, TestCollection, TestCollectionOrderField, TestSummary } from '@/graphql/__generated__/graphql';
-import { TestStatusType } from '../TestGrid'
-import { Space, Row, Statistic, Table } from 'antd';
-import TestGridBtn from '../TestGridBtn';
-import { TestStatusEnum } from '../TestStatusTag';
-
+import { useQuery } from "@apollo/client";
+import { Space } from "antd";
+import type React from "react";
+import {
+  type GetTestsForTargetQuery,
+  InvocationTargetOrderField,
+  OrderDirection,
+  TestSummaryOrderField,
+} from "@/graphql/__generated__/graphql";
+import { parseGraphqlEdgeList } from "@/utils/parseGraphqlEdgeList";
+import TestGridBtn from "../TestGridBtn";
+import type { TestStatusEnum } from "../TestStatusTag";
+import { GET_TESTS_FOR_TARGET } from "./graphql";
 
 interface Props {
-    rowLabel: string;
-    first: number,
-    reverseOrder: boolean
+  instanceName: string;
+  label: string;
+  aspect: string;
+  targetKind: string;
+  numberOfElements: number;
+  direction: "oldToNew" | "newToOld";
 }
 
-const TestGridRow: React.FC<Props> = ({ rowLabel, first, reverseOrder }) => {
+const TestGridRow: React.FC<Props> = ({
+  instanceName,
+  label,
+  aspect,
+  targetKind,
+  numberOfElements,
+  direction,
+}) => {
+  var { data } = useQuery<GetTestsForTargetQuery>(GET_TESTS_FOR_TARGET, {
+    variables: {
+      first: numberOfElements,
+      where: {
+        hasInvocationTargetWith: {
+          hasTargetWith: {
+            hasInstanceNameWith: {
+              name: instanceName,
+            },
+            label: label,
+            aspect: aspect,
+            targetKind: targetKind,
+          },
+        },
+      },
+      orderBy: {
+        field: TestSummaryOrderField.FirstStartTime,
+        direction:
+          direction === "oldToNew" ? OrderDirection.Asc : OrderDirection.Desc,
+      },
+    },
+    fetchPolicy: "cache-and-network",
+  });
 
-    var { loading, data, previousData, error } = useQuery(FIND_TESTS, {
-        variables: {
-            first: first,
-            where: { label: rowLabel },
-            orderBy: {
-                direction: OrderDirection.Desc,
-                field: TestCollectionOrderField.FirstSeen
-            }
-        }, fetchPolicy: 'cache-and-network'
-    });
+  const rowData = parseGraphqlEdgeList(data?.findTestSummaries);
 
-    var activeData = loading ? previousData : data;
-    let rowDataSrc: TestCollection[] = []
-
-    if (error) {
-        rowDataSrc = [];
-    } else {
-        const rowTestData = activeData?.findTests.edges?.flatMap(edge => edge?.node) ?? [];
-        rowDataSrc = rowTestData.filter((x): x is TestCollection => !!x);
-        if (reverseOrder) {
-            rowDataSrc.reverse();
-        }
-    }
-    return (
-        <Space size="middle">
-            {rowDataSrc.map((item) => (
-                <TestGridBtn key={"test-grid-btn" + item.id} invocationId={item.bazelInvocation?.invocationID} status={item.overallStatus as TestStatusEnum} />
-            ))}
-        </Space>
-    );
+  return (
+    <Space size={0} style={{ paddingLeft: "40px" }}>
+      {rowData.map((item) => (
+        <TestGridBtn
+          key={"test-grid-btn" + item.id}
+          invocationId={item.invocationTarget.bazelInvocation.invocationID}
+          status={item.overallStatus as TestStatusEnum}
+        />
+      ))}
+    </Space>
+  );
 };
 
 export default TestGridRow;

@@ -30,7 +30,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 )
 
 // BazelInvocationQuery is the builder for querying BazelInvocation entities.
@@ -52,7 +51,6 @@ type BazelInvocationQuery struct {
 	withIncompleteBuildLogs      *IncompleteBuildLogQuery
 	withBuildLogChunks           *BuildLogChunkQuery
 	withInvocationFiles          *InvocationFilesQuery
-	withTestCollection           *TestCollectionQuery
 	withInvocationTargets        *InvocationTargetQuery
 	withTargetKindMappings       *TargetKindMappingQuery
 	withSourceControl            *SourceControlQuery
@@ -66,7 +64,6 @@ type BazelInvocationQuery struct {
 	withNamedIncompleteBuildLogs map[string]*IncompleteBuildLogQuery
 	withNamedBuildLogChunks      map[string]*BuildLogChunkQuery
 	withNamedInvocationFiles     map[string]*InvocationFilesQuery
-	withNamedTestCollection      map[string]*TestCollectionQuery
 	withNamedInvocationTargets   map[string]*InvocationTargetQuery
 	withNamedTargetKindMappings  map[string]*TargetKindMappingQuery
 	// intermediate query (i.e. traversal path).
@@ -369,28 +366,6 @@ func (biq *BazelInvocationQuery) QueryInvocationFiles() *InvocationFilesQuery {
 	return query
 }
 
-// QueryTestCollection chains the current query on the "test_collection" edge.
-func (biq *BazelInvocationQuery) QueryTestCollection() *TestCollectionQuery {
-	query := (&TestCollectionClient{config: biq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := biq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := biq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
-			sqlgraph.To(testcollection.Table, testcollection.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.TestCollectionTable, bazelinvocation.TestCollectionColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
 // QueryInvocationTargets chains the current query on the "invocation_targets" edge.
 func (biq *BazelInvocationQuery) QueryInvocationTargets() *InvocationTargetQuery {
 	query := (&InvocationTargetClient{config: biq.config}).Query()
@@ -661,7 +636,6 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		withIncompleteBuildLogs: biq.withIncompleteBuildLogs.Clone(),
 		withBuildLogChunks:      biq.withBuildLogChunks.Clone(),
 		withInvocationFiles:     biq.withInvocationFiles.Clone(),
-		withTestCollection:      biq.withTestCollection.Clone(),
 		withInvocationTargets:   biq.withInvocationTargets.Clone(),
 		withTargetKindMappings:  biq.withTargetKindMappings.Clone(),
 		withSourceControl:       biq.withSourceControl.Clone(),
@@ -804,17 +778,6 @@ func (biq *BazelInvocationQuery) WithInvocationFiles(opts ...func(*InvocationFil
 	return biq
 }
 
-// WithTestCollection tells the query-builder to eager-load the nodes that are connected to
-// the "test_collection" edge. The optional arguments are used to configure the query builder of the edge.
-func (biq *BazelInvocationQuery) WithTestCollection(opts ...func(*TestCollectionQuery)) *BazelInvocationQuery {
-	query := (&TestCollectionClient{config: biq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	biq.withTestCollection = query
-	return biq
-}
-
 // WithInvocationTargets tells the query-builder to eager-load the nodes that are connected to
 // the "invocation_targets" edge. The optional arguments are used to configure the query builder of the edge.
 func (biq *BazelInvocationQuery) WithInvocationTargets(opts ...func(*InvocationTargetQuery)) *BazelInvocationQuery {
@@ -933,7 +896,7 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*BazelInvocation{}
 		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
-		loadedTypes = [16]bool{
+		loadedTypes = [15]bool{
 			biq.withInstanceName != nil,
 			biq.withBuild != nil,
 			biq.withAuthenticatedUser != nil,
@@ -946,7 +909,6 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			biq.withIncompleteBuildLogs != nil,
 			biq.withBuildLogChunks != nil,
 			biq.withInvocationFiles != nil,
-			biq.withTestCollection != nil,
 			biq.withInvocationTargets != nil,
 			biq.withTargetKindMappings != nil,
 			biq.withSourceControl != nil,
@@ -1064,15 +1026,6 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			return nil, err
 		}
 	}
-	if query := biq.withTestCollection; query != nil {
-		if err := biq.loadTestCollection(ctx, query, nodes,
-			func(n *BazelInvocation) { n.Edges.TestCollection = []*TestCollection{} },
-			func(n *BazelInvocation, e *TestCollection) {
-				n.Edges.TestCollection = append(n.Edges.TestCollection, e)
-			}); err != nil {
-			return nil, err
-		}
-	}
 	if query := biq.withInvocationTargets; query != nil {
 		if err := biq.loadInvocationTargets(ctx, query, nodes,
 			func(n *BazelInvocation) { n.Edges.InvocationTargets = []*InvocationTarget{} },
@@ -1143,13 +1096,6 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		if err := biq.loadInvocationFiles(ctx, query, nodes,
 			func(n *BazelInvocation) { n.appendNamedInvocationFiles(name) },
 			func(n *BazelInvocation, e *InvocationFiles) { n.appendNamedInvocationFiles(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range biq.withNamedTestCollection {
-		if err := biq.loadTestCollection(ctx, query, nodes,
-			func(n *BazelInvocation) { n.appendNamedTestCollection(name) },
-			func(n *BazelInvocation, e *TestCollection) { n.appendNamedTestCollection(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1540,37 +1486,6 @@ func (biq *BazelInvocationQuery) loadInvocationFiles(ctx context.Context, query 
 	}
 	return nil
 }
-func (biq *BazelInvocationQuery) loadTestCollection(ctx context.Context, query *TestCollectionQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *TestCollection)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*BazelInvocation)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	query.withFKs = true
-	query.Where(predicate.TestCollection(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(bazelinvocation.TestCollectionColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.bazel_invocation_test_collection
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "bazel_invocation_test_collection" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_test_collection" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
 func (biq *BazelInvocationQuery) loadInvocationTargets(ctx context.Context, query *InvocationTargetQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *InvocationTarget)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[int64]*BazelInvocation)
@@ -1849,20 +1764,6 @@ func (biq *BazelInvocationQuery) WithNamedInvocationFiles(name string, opts ...f
 		biq.withNamedInvocationFiles = make(map[string]*InvocationFilesQuery)
 	}
 	biq.withNamedInvocationFiles[name] = query
-	return biq
-}
-
-// WithNamedTestCollection tells the query-builder to eager-load the nodes that are connected to the "test_collection"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (biq *BazelInvocationQuery) WithNamedTestCollection(name string, opts ...func(*TestCollectionQuery)) *BazelInvocationQuery {
-	query := (&TestCollectionClient{config: biq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if biq.withNamedTestCollection == nil {
-		biq.withNamedTestCollection = make(map[string]*TestCollectionQuery)
-	}
-	biq.withNamedTestCollection[name] = query
 	return biq
 }
 

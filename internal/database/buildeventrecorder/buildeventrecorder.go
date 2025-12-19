@@ -44,13 +44,12 @@ type BuildEventWithInfo struct {
 // BuildEventRecorder contains information about a Bazel invocation that is
 // required when processing individual build events.
 type BuildEventRecorder struct {
-	db                  database.Client
-	problemDetector     detectors.ProblemDetector
-	handledEvents       handledEvents
-	blobArchiver        processing.BlobMultiArchiver
-	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel
-	saveTestDataLevel   *bb_portal.BuildEventStreamService_SaveTestDataLevel
-	tracer              trace.Tracer
+	db              database.Client
+	problemDetector detectors.ProblemDetector
+	handledEvents   handledEvents
+	blobArchiver    processing.BlobMultiArchiver
+	saveDataLevel   *bb_portal.BuildEventStreamService_SaveDataLevel
+	tracer          trace.Tracer
 
 	InstanceName           string
 	InstanceNameDbID       int64
@@ -72,8 +71,7 @@ func NewBuildEventRecorder(
 	db database.Client,
 	instanceNameAuthorizer auth.Authorizer,
 	blobArchiver processing.BlobMultiArchiver,
-	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel,
-	saveTestDataLevel *bb_portal.BuildEventStreamService_SaveTestDataLevel,
+	saveDataLevel *bb_portal.BuildEventStreamService_SaveDataLevel,
 	tracerProvider trace.TracerProvider,
 	instanceName string,
 	invocationID string,
@@ -102,12 +100,11 @@ func NewBuildEventRecorder(
 	}
 
 	return &BuildEventRecorder{
-		db:                  db,
-		problemDetector:     detectors.NewProblemDetector(),
-		blobArchiver:        blobArchiver,
-		saveTargetDataLevel: saveTargetDataLevel,
-		saveTestDataLevel:   saveTestDataLevel,
-		tracer:              tracer,
+		db:              db,
+		problemDetector: detectors.NewProblemDetector(),
+		blobArchiver:    blobArchiver,
+		saveDataLevel:   saveDataLevel,
+		tracer:          tracer,
 
 		InstanceName:           instanceName,
 		InstanceNameDbID:       instanceNameDbID,

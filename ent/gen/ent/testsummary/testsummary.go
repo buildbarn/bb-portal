@@ -3,10 +3,7 @@
 package testsummary
 
 import (
-	"fmt"
-	"io"
-	"strconv"
-
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -32,39 +29,28 @@ const (
 	FieldFirstStartTime = "first_start_time"
 	// FieldLastStopTime holds the string denoting the last_stop_time field in the database.
 	FieldLastStopTime = "last_stop_time"
-	// FieldTotalRunDuration holds the string denoting the total_run_duration field in the database.
-	FieldTotalRunDuration = "total_run_duration"
-	// FieldLabel holds the string denoting the label field in the database.
-	FieldLabel = "label"
-	// EdgeTestCollection holds the string denoting the test_collection edge name in mutations.
-	EdgeTestCollection = "test_collection"
-	// EdgePassed holds the string denoting the passed edge name in mutations.
-	EdgePassed = "passed"
-	// EdgeFailed holds the string denoting the failed edge name in mutations.
-	EdgeFailed = "failed"
+	// FieldTotalRunDurationInMs holds the string denoting the total_run_duration_in_ms field in the database.
+	FieldTotalRunDurationInMs = "total_run_duration_in_ms"
+	// EdgeInvocationTarget holds the string denoting the invocation_target edge name in mutations.
+	EdgeInvocationTarget = "invocation_target"
+	// EdgeTestResults holds the string denoting the test_results edge name in mutations.
+	EdgeTestResults = "test_results"
 	// Table holds the table name of the testsummary in the database.
 	Table = "test_summaries"
-	// TestCollectionTable is the table that holds the test_collection relation/edge.
-	TestCollectionTable = "test_summaries"
-	// TestCollectionInverseTable is the table name for the TestCollection entity.
-	// It exists in this package in order to avoid circular dependency with the "testcollection" package.
-	TestCollectionInverseTable = "test_collections"
-	// TestCollectionColumn is the table column denoting the test_collection relation/edge.
-	TestCollectionColumn = "test_collection_test_summary"
-	// PassedTable is the table that holds the passed relation/edge.
-	PassedTable = "test_files"
-	// PassedInverseTable is the table name for the TestFile entity.
-	// It exists in this package in order to avoid circular dependency with the "testfile" package.
-	PassedInverseTable = "test_files"
-	// PassedColumn is the table column denoting the passed relation/edge.
-	PassedColumn = "test_summary_passed"
-	// FailedTable is the table that holds the failed relation/edge.
-	FailedTable = "test_files"
-	// FailedInverseTable is the table name for the TestFile entity.
-	// It exists in this package in order to avoid circular dependency with the "testfile" package.
-	FailedInverseTable = "test_files"
-	// FailedColumn is the table column denoting the failed relation/edge.
-	FailedColumn = "test_summary_failed"
+	// InvocationTargetTable is the table that holds the invocation_target relation/edge.
+	InvocationTargetTable = "test_summaries"
+	// InvocationTargetInverseTable is the table name for the InvocationTarget entity.
+	// It exists in this package in order to avoid circular dependency with the "invocationtarget" package.
+	InvocationTargetInverseTable = "invocation_targets"
+	// InvocationTargetColumn is the table column denoting the invocation_target relation/edge.
+	InvocationTargetColumn = "invocation_target_test_summary"
+	// TestResultsTable is the table that holds the test_results relation/edge.
+	TestResultsTable = "test_results"
+	// TestResultsInverseTable is the table name for the TestResult entity.
+	// It exists in this package in order to avoid circular dependency with the "testresult" package.
+	TestResultsInverseTable = "test_results"
+	// TestResultsColumn is the table column denoting the test_results relation/edge.
+	TestResultsColumn = "test_summary_test_results"
 )
 
 // Columns holds all SQL columns for testsummary fields.
@@ -78,14 +64,13 @@ var Columns = []string{
 	FieldTotalNumCached,
 	FieldFirstStartTime,
 	FieldLastStopTime,
-	FieldTotalRunDuration,
-	FieldLabel,
+	FieldTotalRunDurationInMs,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "test_summaries"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"test_collection_test_summary",
+	"invocation_target_test_summary",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -103,38 +88,15 @@ func ValidColumn(column string) bool {
 	return false
 }
 
-// OverallStatus defines the type for the "overall_status" enum field.
-type OverallStatus string
-
-// OverallStatusNO_STATUS is the default value of the OverallStatus enum.
-const DefaultOverallStatus = OverallStatusNO_STATUS
-
-// OverallStatus values.
-const (
-	OverallStatusNO_STATUS                  OverallStatus = "NO_STATUS"
-	OverallStatusPASSED                     OverallStatus = "PASSED"
-	OverallStatusFLAKY                      OverallStatus = "FLAKY"
-	OverallStatusTIMEOUT                    OverallStatus = "TIMEOUT"
-	OverallStatusFAILED                     OverallStatus = "FAILED"
-	OverallStatusINCOMPLETE                 OverallStatus = "INCOMPLETE"
-	OverallStatusREMOTE_FAILURE             OverallStatus = "REMOTE_FAILURE"
-	OverallStatusFAILED_TO_BUILD            OverallStatus = "FAILED_TO_BUILD"
-	OverallStatusTOOL_HALTED_BEFORE_TESTING OverallStatus = "TOOL_HALTED_BEFORE_TESTING"
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/buildbarn/bb-portal/ent/gen/ent/runtime"
+var (
+	Hooks  [1]ent.Hook
+	Policy ent.Policy
 )
-
-func (os OverallStatus) String() string {
-	return string(os)
-}
-
-// OverallStatusValidator is a validator for the "overall_status" field enum values. It is called by the builders before save.
-func OverallStatusValidator(os OverallStatus) error {
-	switch os {
-	case OverallStatusNO_STATUS, OverallStatusPASSED, OverallStatusFLAKY, OverallStatusTIMEOUT, OverallStatusFAILED, OverallStatusINCOMPLETE, OverallStatusREMOTE_FAILURE, OverallStatusFAILED_TO_BUILD, OverallStatusTOOL_HALTED_BEFORE_TESTING:
-		return nil
-	default:
-		return fmt.Errorf("testsummary: invalid enum value for overall_status field: %q", os)
-	}
-}
 
 // OrderOption defines the ordering options for the TestSummary queries.
 type OrderOption func(*sql.Selector)
@@ -184,86 +146,42 @@ func ByLastStopTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLastStopTime, opts...).ToFunc()
 }
 
-// ByTotalRunDuration orders the results by the total_run_duration field.
-func ByTotalRunDuration(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTotalRunDuration, opts...).ToFunc()
+// ByTotalRunDurationInMs orders the results by the total_run_duration_in_ms field.
+func ByTotalRunDurationInMs(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTotalRunDurationInMs, opts...).ToFunc()
 }
 
-// ByLabel orders the results by the label field.
-func ByLabel(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLabel, opts...).ToFunc()
-}
-
-// ByTestCollectionField orders the results by test_collection field.
-func ByTestCollectionField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByInvocationTargetField orders the results by invocation_target field.
+func ByInvocationTargetField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTestCollectionStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newInvocationTargetStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByPassedCount orders the results by passed count.
-func ByPassedCount(opts ...sql.OrderTermOption) OrderOption {
+// ByTestResultsCount orders the results by test_results count.
+func ByTestResultsCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newPassedStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newTestResultsStep(), opts...)
 	}
 }
 
-// ByPassed orders the results by passed terms.
-func ByPassed(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByTestResults orders the results by test_results terms.
+func ByTestResults(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newPassedStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newTestResultsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-
-// ByFailedCount orders the results by failed count.
-func ByFailedCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newFailedStep(), opts...)
-	}
-}
-
-// ByFailed orders the results by failed terms.
-func ByFailed(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newFailedStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-func newTestCollectionStep() *sqlgraph.Step {
+func newInvocationTargetStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(TestCollectionInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2O, true, TestCollectionTable, TestCollectionColumn),
+		sqlgraph.To(InvocationTargetInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, InvocationTargetTable, InvocationTargetColumn),
 	)
 }
-func newPassedStep() *sqlgraph.Step {
+func newTestResultsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(PassedInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, PassedTable, PassedColumn),
+		sqlgraph.To(TestResultsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TestResultsTable, TestResultsColumn),
 	)
-}
-func newFailedStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(FailedInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, FailedTable, FailedColumn),
-	)
-}
-
-// MarshalGQL implements graphql.Marshaler interface.
-func (e OverallStatus) MarshalGQL(w io.Writer) {
-	io.WriteString(w, strconv.Quote(e.String()))
-}
-
-// UnmarshalGQL implements graphql.Unmarshaler interface.
-func (e *OverallStatus) UnmarshalGQL(val interface{}) error {
-	str, ok := val.(string)
-	if !ok {
-		return fmt.Errorf("enum %T must be a string", val)
-	}
-	*e = OverallStatus(str)
-	if err := OverallStatusValidator(*e); err != nil {
-		return fmt.Errorf("%s is not a valid OverallStatus", str)
-	}
-	return nil
 }

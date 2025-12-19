@@ -29,7 +29,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/garbagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
@@ -38,25 +37,18 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/memorymetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/missdetail"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/namedsetoffiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/networkmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/outputgroup"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packageloadmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/packagemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/resourceusage"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/runnercount"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/systemnetworkstats"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetmetrics"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testresultbes"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/timingbreakdown"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/timingchild"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
 	"github.com/google/uuid"
 )
@@ -87,7 +79,6 @@ const (
 	TypeCumulativeMetrics      = "CumulativeMetrics"
 	TypeEvaluationStat         = "EvaluationStat"
 	TypeEventMetadata          = "EventMetadata"
-	TypeExectionInfo           = "ExectionInfo"
 	TypeGarbageMetrics         = "GarbageMetrics"
 	TypeIncompleteBuildLog     = "IncompleteBuildLog"
 	TypeInstanceName           = "InstanceName"
@@ -96,24 +87,17 @@ const (
 	TypeMemoryMetrics          = "MemoryMetrics"
 	TypeMetrics                = "Metrics"
 	TypeMissDetail             = "MissDetail"
-	TypeNamedSetOfFiles        = "NamedSetOfFiles"
 	TypeNetworkMetrics         = "NetworkMetrics"
-	TypeOutputGroup            = "OutputGroup"
 	TypePackageLoadMetrics     = "PackageLoadMetrics"
 	TypePackageMetrics         = "PackageMetrics"
-	TypeResourceUsage          = "ResourceUsage"
 	TypeRunnerCount            = "RunnerCount"
 	TypeSourceControl          = "SourceControl"
 	TypeSystemNetworkStats     = "SystemNetworkStats"
 	TypeTarget                 = "Target"
 	TypeTargetKindMapping      = "TargetKindMapping"
 	TypeTargetMetrics          = "TargetMetrics"
-	TypeTestCollection         = "TestCollection"
-	TypeTestFile               = "TestFile"
-	TypeTestResultBES          = "TestResultBES"
+	TypeTestResult             = "TestResult"
 	TypeTestSummary            = "TestSummary"
-	TypeTimingBreakdown        = "TimingBreakdown"
-	TypeTimingChild            = "TimingChild"
 	TypeTimingMetrics          = "TimingMetrics"
 )
 
@@ -6757,9 +6741,6 @@ type BazelInvocationMutation struct {
 	invocation_files                        map[int64]struct{}
 	removedinvocation_files                 map[int64]struct{}
 	clearedinvocation_files                 bool
-	test_collection                         map[int64]struct{}
-	removedtest_collection                  map[int64]struct{}
-	clearedtest_collection                  bool
 	invocation_targets                      map[int64]struct{}
 	removedinvocation_targets               map[int64]struct{}
 	clearedinvocation_targets               bool
@@ -8915,60 +8896,6 @@ func (m *BazelInvocationMutation) ResetInvocationFiles() {
 	m.removedinvocation_files = nil
 }
 
-// AddTestCollectionIDs adds the "test_collection" edge to the TestCollection entity by ids.
-func (m *BazelInvocationMutation) AddTestCollectionIDs(ids ...int64) {
-	if m.test_collection == nil {
-		m.test_collection = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.test_collection[ids[i]] = struct{}{}
-	}
-}
-
-// ClearTestCollection clears the "test_collection" edge to the TestCollection entity.
-func (m *BazelInvocationMutation) ClearTestCollection() {
-	m.clearedtest_collection = true
-}
-
-// TestCollectionCleared reports if the "test_collection" edge to the TestCollection entity was cleared.
-func (m *BazelInvocationMutation) TestCollectionCleared() bool {
-	return m.clearedtest_collection
-}
-
-// RemoveTestCollectionIDs removes the "test_collection" edge to the TestCollection entity by IDs.
-func (m *BazelInvocationMutation) RemoveTestCollectionIDs(ids ...int64) {
-	if m.removedtest_collection == nil {
-		m.removedtest_collection = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.test_collection, ids[i])
-		m.removedtest_collection[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTestCollection returns the removed IDs of the "test_collection" edge to the TestCollection entity.
-func (m *BazelInvocationMutation) RemovedTestCollectionIDs() (ids []int64) {
-	for id := range m.removedtest_collection {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// TestCollectionIDs returns the "test_collection" edge IDs in the mutation.
-func (m *BazelInvocationMutation) TestCollectionIDs() (ids []int64) {
-	for id := range m.test_collection {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetTestCollection resets all changes to the "test_collection" edge.
-func (m *BazelInvocationMutation) ResetTestCollection() {
-	m.test_collection = nil
-	m.clearedtest_collection = false
-	m.removedtest_collection = nil
-}
-
 // AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by ids.
 func (m *BazelInvocationMutation) AddInvocationTargetIDs(ids ...int64) {
 	if m.invocation_targets == nil {
@@ -9905,7 +9832,7 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 15)
 	if m.instance_name != nil {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -9941,9 +9868,6 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	}
 	if m.invocation_files != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
-	}
-	if m.test_collection != nil {
-		edges = append(edges, bazelinvocation.EdgeTestCollection)
 	}
 	if m.invocation_targets != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
@@ -10023,12 +9947,6 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeTestCollection:
-		ids := make([]ent.Value, 0, len(m.test_collection))
-		for id := range m.test_collection {
-			ids = append(ids, id)
-		}
-		return ids
 	case bazelinvocation.EdgeInvocationTargets:
 		ids := make([]ent.Value, 0, len(m.invocation_targets))
 		for id := range m.invocation_targets {
@@ -10051,7 +9969,7 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 15)
 	if m.removedconnection_metadata != nil {
 		edges = append(edges, bazelinvocation.EdgeConnectionMetadata)
 	}
@@ -10072,9 +9990,6 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 	}
 	if m.removedinvocation_files != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
-	}
-	if m.removedtest_collection != nil {
-		edges = append(edges, bazelinvocation.EdgeTestCollection)
 	}
 	if m.removedinvocation_targets != nil {
 		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
@@ -10131,12 +10046,6 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case bazelinvocation.EdgeTestCollection:
-		ids := make([]ent.Value, 0, len(m.removedtest_collection))
-		for id := range m.removedtest_collection {
-			ids = append(ids, id)
-		}
-		return ids
 	case bazelinvocation.EdgeInvocationTargets:
 		ids := make([]ent.Value, 0, len(m.removedinvocation_targets))
 		for id := range m.removedinvocation_targets {
@@ -10155,7 +10064,7 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 15)
 	if m.clearedinstance_name {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -10191,9 +10100,6 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	}
 	if m.clearedinvocation_files {
 		edges = append(edges, bazelinvocation.EdgeInvocationFiles)
-	}
-	if m.clearedtest_collection {
-		edges = append(edges, bazelinvocation.EdgeTestCollection)
 	}
 	if m.clearedinvocation_targets {
 		edges = append(edges, bazelinvocation.EdgeInvocationTargets)
@@ -10235,8 +10141,6 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedbuild_log_chunks
 	case bazelinvocation.EdgeInvocationFiles:
 		return m.clearedinvocation_files
-	case bazelinvocation.EdgeTestCollection:
-		return m.clearedtest_collection
 	case bazelinvocation.EdgeInvocationTargets:
 		return m.clearedinvocation_targets
 	case bazelinvocation.EdgeTargetKindMappings:
@@ -10312,9 +10216,6 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeInvocationFiles:
 		m.ResetInvocationFiles()
-		return nil
-	case bazelinvocation.EdgeTestCollection:
-		m.ResetTestCollection()
 		return nil
 	case bazelinvocation.EdgeInvocationTargets:
 		m.ResetInvocationTargets()
@@ -17486,934 +17387,6 @@ func (m *EventMetadataMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown EventMetadata edge %s", name)
 }
 
-// ExectionInfoMutation represents an operation that mutates the ExectionInfo nodes in the graph.
-type ExectionInfoMutation struct {
-	config
-	op                      Op
-	typ                     string
-	id                      *int64
-	timeout_seconds         *int32
-	addtimeout_seconds      *int32
-	strategy                *string
-	cached_remotely         *bool
-	exit_code               *int32
-	addexit_code            *int32
-	hostname                *string
-	clearedFields           map[string]struct{}
-	test_result             *int64
-	clearedtest_result      bool
-	timing_breakdown        *int64
-	clearedtiming_breakdown bool
-	resource_usage          map[int64]struct{}
-	removedresource_usage   map[int64]struct{}
-	clearedresource_usage   bool
-	done                    bool
-	oldValue                func(context.Context) (*ExectionInfo, error)
-	predicates              []predicate.ExectionInfo
-}
-
-var _ ent.Mutation = (*ExectionInfoMutation)(nil)
-
-// exectioninfoOption allows management of the mutation configuration using functional options.
-type exectioninfoOption func(*ExectionInfoMutation)
-
-// newExectionInfoMutation creates new mutation for the ExectionInfo entity.
-func newExectionInfoMutation(c config, op Op, opts ...exectioninfoOption) *ExectionInfoMutation {
-	m := &ExectionInfoMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeExectionInfo,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withExectionInfoID sets the ID field of the mutation.
-func withExectionInfoID(id int64) exectioninfoOption {
-	return func(m *ExectionInfoMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *ExectionInfo
-		)
-		m.oldValue = func(ctx context.Context) (*ExectionInfo, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().ExectionInfo.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withExectionInfo sets the old ExectionInfo of the mutation.
-func withExectionInfo(node *ExectionInfo) exectioninfoOption {
-	return func(m *ExectionInfoMutation) {
-		m.oldValue = func(context.Context) (*ExectionInfo, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ExectionInfoMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ExectionInfoMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of ExectionInfo entities.
-func (m *ExectionInfoMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *ExectionInfoMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *ExectionInfoMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().ExectionInfo.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetTimeoutSeconds sets the "timeout_seconds" field.
-func (m *ExectionInfoMutation) SetTimeoutSeconds(i int32) {
-	m.timeout_seconds = &i
-	m.addtimeout_seconds = nil
-}
-
-// TimeoutSeconds returns the value of the "timeout_seconds" field in the mutation.
-func (m *ExectionInfoMutation) TimeoutSeconds() (r int32, exists bool) {
-	v := m.timeout_seconds
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTimeoutSeconds returns the old "timeout_seconds" field's value of the ExectionInfo entity.
-// If the ExectionInfo object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ExectionInfoMutation) OldTimeoutSeconds(ctx context.Context) (v int32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTimeoutSeconds is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTimeoutSeconds requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTimeoutSeconds: %w", err)
-	}
-	return oldValue.TimeoutSeconds, nil
-}
-
-// AddTimeoutSeconds adds i to the "timeout_seconds" field.
-func (m *ExectionInfoMutation) AddTimeoutSeconds(i int32) {
-	if m.addtimeout_seconds != nil {
-		*m.addtimeout_seconds += i
-	} else {
-		m.addtimeout_seconds = &i
-	}
-}
-
-// AddedTimeoutSeconds returns the value that was added to the "timeout_seconds" field in this mutation.
-func (m *ExectionInfoMutation) AddedTimeoutSeconds() (r int32, exists bool) {
-	v := m.addtimeout_seconds
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearTimeoutSeconds clears the value of the "timeout_seconds" field.
-func (m *ExectionInfoMutation) ClearTimeoutSeconds() {
-	m.timeout_seconds = nil
-	m.addtimeout_seconds = nil
-	m.clearedFields[exectioninfo.FieldTimeoutSeconds] = struct{}{}
-}
-
-// TimeoutSecondsCleared returns if the "timeout_seconds" field was cleared in this mutation.
-func (m *ExectionInfoMutation) TimeoutSecondsCleared() bool {
-	_, ok := m.clearedFields[exectioninfo.FieldTimeoutSeconds]
-	return ok
-}
-
-// ResetTimeoutSeconds resets all changes to the "timeout_seconds" field.
-func (m *ExectionInfoMutation) ResetTimeoutSeconds() {
-	m.timeout_seconds = nil
-	m.addtimeout_seconds = nil
-	delete(m.clearedFields, exectioninfo.FieldTimeoutSeconds)
-}
-
-// SetStrategy sets the "strategy" field.
-func (m *ExectionInfoMutation) SetStrategy(s string) {
-	m.strategy = &s
-}
-
-// Strategy returns the value of the "strategy" field in the mutation.
-func (m *ExectionInfoMutation) Strategy() (r string, exists bool) {
-	v := m.strategy
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStrategy returns the old "strategy" field's value of the ExectionInfo entity.
-// If the ExectionInfo object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ExectionInfoMutation) OldStrategy(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStrategy is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStrategy requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStrategy: %w", err)
-	}
-	return oldValue.Strategy, nil
-}
-
-// ClearStrategy clears the value of the "strategy" field.
-func (m *ExectionInfoMutation) ClearStrategy() {
-	m.strategy = nil
-	m.clearedFields[exectioninfo.FieldStrategy] = struct{}{}
-}
-
-// StrategyCleared returns if the "strategy" field was cleared in this mutation.
-func (m *ExectionInfoMutation) StrategyCleared() bool {
-	_, ok := m.clearedFields[exectioninfo.FieldStrategy]
-	return ok
-}
-
-// ResetStrategy resets all changes to the "strategy" field.
-func (m *ExectionInfoMutation) ResetStrategy() {
-	m.strategy = nil
-	delete(m.clearedFields, exectioninfo.FieldStrategy)
-}
-
-// SetCachedRemotely sets the "cached_remotely" field.
-func (m *ExectionInfoMutation) SetCachedRemotely(b bool) {
-	m.cached_remotely = &b
-}
-
-// CachedRemotely returns the value of the "cached_remotely" field in the mutation.
-func (m *ExectionInfoMutation) CachedRemotely() (r bool, exists bool) {
-	v := m.cached_remotely
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCachedRemotely returns the old "cached_remotely" field's value of the ExectionInfo entity.
-// If the ExectionInfo object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ExectionInfoMutation) OldCachedRemotely(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCachedRemotely is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCachedRemotely requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCachedRemotely: %w", err)
-	}
-	return oldValue.CachedRemotely, nil
-}
-
-// ClearCachedRemotely clears the value of the "cached_remotely" field.
-func (m *ExectionInfoMutation) ClearCachedRemotely() {
-	m.cached_remotely = nil
-	m.clearedFields[exectioninfo.FieldCachedRemotely] = struct{}{}
-}
-
-// CachedRemotelyCleared returns if the "cached_remotely" field was cleared in this mutation.
-func (m *ExectionInfoMutation) CachedRemotelyCleared() bool {
-	_, ok := m.clearedFields[exectioninfo.FieldCachedRemotely]
-	return ok
-}
-
-// ResetCachedRemotely resets all changes to the "cached_remotely" field.
-func (m *ExectionInfoMutation) ResetCachedRemotely() {
-	m.cached_remotely = nil
-	delete(m.clearedFields, exectioninfo.FieldCachedRemotely)
-}
-
-// SetExitCode sets the "exit_code" field.
-func (m *ExectionInfoMutation) SetExitCode(i int32) {
-	m.exit_code = &i
-	m.addexit_code = nil
-}
-
-// ExitCode returns the value of the "exit_code" field in the mutation.
-func (m *ExectionInfoMutation) ExitCode() (r int32, exists bool) {
-	v := m.exit_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldExitCode returns the old "exit_code" field's value of the ExectionInfo entity.
-// If the ExectionInfo object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ExectionInfoMutation) OldExitCode(ctx context.Context) (v int32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldExitCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldExitCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldExitCode: %w", err)
-	}
-	return oldValue.ExitCode, nil
-}
-
-// AddExitCode adds i to the "exit_code" field.
-func (m *ExectionInfoMutation) AddExitCode(i int32) {
-	if m.addexit_code != nil {
-		*m.addexit_code += i
-	} else {
-		m.addexit_code = &i
-	}
-}
-
-// AddedExitCode returns the value that was added to the "exit_code" field in this mutation.
-func (m *ExectionInfoMutation) AddedExitCode() (r int32, exists bool) {
-	v := m.addexit_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearExitCode clears the value of the "exit_code" field.
-func (m *ExectionInfoMutation) ClearExitCode() {
-	m.exit_code = nil
-	m.addexit_code = nil
-	m.clearedFields[exectioninfo.FieldExitCode] = struct{}{}
-}
-
-// ExitCodeCleared returns if the "exit_code" field was cleared in this mutation.
-func (m *ExectionInfoMutation) ExitCodeCleared() bool {
-	_, ok := m.clearedFields[exectioninfo.FieldExitCode]
-	return ok
-}
-
-// ResetExitCode resets all changes to the "exit_code" field.
-func (m *ExectionInfoMutation) ResetExitCode() {
-	m.exit_code = nil
-	m.addexit_code = nil
-	delete(m.clearedFields, exectioninfo.FieldExitCode)
-}
-
-// SetHostname sets the "hostname" field.
-func (m *ExectionInfoMutation) SetHostname(s string) {
-	m.hostname = &s
-}
-
-// Hostname returns the value of the "hostname" field in the mutation.
-func (m *ExectionInfoMutation) Hostname() (r string, exists bool) {
-	v := m.hostname
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldHostname returns the old "hostname" field's value of the ExectionInfo entity.
-// If the ExectionInfo object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ExectionInfoMutation) OldHostname(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldHostname is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldHostname requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldHostname: %w", err)
-	}
-	return oldValue.Hostname, nil
-}
-
-// ClearHostname clears the value of the "hostname" field.
-func (m *ExectionInfoMutation) ClearHostname() {
-	m.hostname = nil
-	m.clearedFields[exectioninfo.FieldHostname] = struct{}{}
-}
-
-// HostnameCleared returns if the "hostname" field was cleared in this mutation.
-func (m *ExectionInfoMutation) HostnameCleared() bool {
-	_, ok := m.clearedFields[exectioninfo.FieldHostname]
-	return ok
-}
-
-// ResetHostname resets all changes to the "hostname" field.
-func (m *ExectionInfoMutation) ResetHostname() {
-	m.hostname = nil
-	delete(m.clearedFields, exectioninfo.FieldHostname)
-}
-
-// SetTestResultID sets the "test_result" edge to the TestResultBES entity by id.
-func (m *ExectionInfoMutation) SetTestResultID(id int64) {
-	m.test_result = &id
-}
-
-// ClearTestResult clears the "test_result" edge to the TestResultBES entity.
-func (m *ExectionInfoMutation) ClearTestResult() {
-	m.clearedtest_result = true
-}
-
-// TestResultCleared reports if the "test_result" edge to the TestResultBES entity was cleared.
-func (m *ExectionInfoMutation) TestResultCleared() bool {
-	return m.clearedtest_result
-}
-
-// TestResultID returns the "test_result" edge ID in the mutation.
-func (m *ExectionInfoMutation) TestResultID() (id int64, exists bool) {
-	if m.test_result != nil {
-		return *m.test_result, true
-	}
-	return
-}
-
-// TestResultIDs returns the "test_result" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// TestResultID instead. It exists only for internal usage by the builders.
-func (m *ExectionInfoMutation) TestResultIDs() (ids []int64) {
-	if id := m.test_result; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetTestResult resets all changes to the "test_result" edge.
-func (m *ExectionInfoMutation) ResetTestResult() {
-	m.test_result = nil
-	m.clearedtest_result = false
-}
-
-// SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by id.
-func (m *ExectionInfoMutation) SetTimingBreakdownID(id int64) {
-	m.timing_breakdown = &id
-}
-
-// ClearTimingBreakdown clears the "timing_breakdown" edge to the TimingBreakdown entity.
-func (m *ExectionInfoMutation) ClearTimingBreakdown() {
-	m.clearedtiming_breakdown = true
-}
-
-// TimingBreakdownCleared reports if the "timing_breakdown" edge to the TimingBreakdown entity was cleared.
-func (m *ExectionInfoMutation) TimingBreakdownCleared() bool {
-	return m.clearedtiming_breakdown
-}
-
-// TimingBreakdownID returns the "timing_breakdown" edge ID in the mutation.
-func (m *ExectionInfoMutation) TimingBreakdownID() (id int64, exists bool) {
-	if m.timing_breakdown != nil {
-		return *m.timing_breakdown, true
-	}
-	return
-}
-
-// TimingBreakdownIDs returns the "timing_breakdown" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// TimingBreakdownID instead. It exists only for internal usage by the builders.
-func (m *ExectionInfoMutation) TimingBreakdownIDs() (ids []int64) {
-	if id := m.timing_breakdown; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetTimingBreakdown resets all changes to the "timing_breakdown" edge.
-func (m *ExectionInfoMutation) ResetTimingBreakdown() {
-	m.timing_breakdown = nil
-	m.clearedtiming_breakdown = false
-}
-
-// AddResourceUsageIDs adds the "resource_usage" edge to the ResourceUsage entity by ids.
-func (m *ExectionInfoMutation) AddResourceUsageIDs(ids ...int64) {
-	if m.resource_usage == nil {
-		m.resource_usage = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.resource_usage[ids[i]] = struct{}{}
-	}
-}
-
-// ClearResourceUsage clears the "resource_usage" edge to the ResourceUsage entity.
-func (m *ExectionInfoMutation) ClearResourceUsage() {
-	m.clearedresource_usage = true
-}
-
-// ResourceUsageCleared reports if the "resource_usage" edge to the ResourceUsage entity was cleared.
-func (m *ExectionInfoMutation) ResourceUsageCleared() bool {
-	return m.clearedresource_usage
-}
-
-// RemoveResourceUsageIDs removes the "resource_usage" edge to the ResourceUsage entity by IDs.
-func (m *ExectionInfoMutation) RemoveResourceUsageIDs(ids ...int64) {
-	if m.removedresource_usage == nil {
-		m.removedresource_usage = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.resource_usage, ids[i])
-		m.removedresource_usage[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedResourceUsage returns the removed IDs of the "resource_usage" edge to the ResourceUsage entity.
-func (m *ExectionInfoMutation) RemovedResourceUsageIDs() (ids []int64) {
-	for id := range m.removedresource_usage {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResourceUsageIDs returns the "resource_usage" edge IDs in the mutation.
-func (m *ExectionInfoMutation) ResourceUsageIDs() (ids []int64) {
-	for id := range m.resource_usage {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetResourceUsage resets all changes to the "resource_usage" edge.
-func (m *ExectionInfoMutation) ResetResourceUsage() {
-	m.resource_usage = nil
-	m.clearedresource_usage = false
-	m.removedresource_usage = nil
-}
-
-// Where appends a list predicates to the ExectionInfoMutation builder.
-func (m *ExectionInfoMutation) Where(ps ...predicate.ExectionInfo) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the ExectionInfoMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ExectionInfoMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.ExectionInfo, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *ExectionInfoMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *ExectionInfoMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (ExectionInfo).
-func (m *ExectionInfoMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *ExectionInfoMutation) Fields() []string {
-	fields := make([]string, 0, 5)
-	if m.timeout_seconds != nil {
-		fields = append(fields, exectioninfo.FieldTimeoutSeconds)
-	}
-	if m.strategy != nil {
-		fields = append(fields, exectioninfo.FieldStrategy)
-	}
-	if m.cached_remotely != nil {
-		fields = append(fields, exectioninfo.FieldCachedRemotely)
-	}
-	if m.exit_code != nil {
-		fields = append(fields, exectioninfo.FieldExitCode)
-	}
-	if m.hostname != nil {
-		fields = append(fields, exectioninfo.FieldHostname)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *ExectionInfoMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case exectioninfo.FieldTimeoutSeconds:
-		return m.TimeoutSeconds()
-	case exectioninfo.FieldStrategy:
-		return m.Strategy()
-	case exectioninfo.FieldCachedRemotely:
-		return m.CachedRemotely()
-	case exectioninfo.FieldExitCode:
-		return m.ExitCode()
-	case exectioninfo.FieldHostname:
-		return m.Hostname()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *ExectionInfoMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case exectioninfo.FieldTimeoutSeconds:
-		return m.OldTimeoutSeconds(ctx)
-	case exectioninfo.FieldStrategy:
-		return m.OldStrategy(ctx)
-	case exectioninfo.FieldCachedRemotely:
-		return m.OldCachedRemotely(ctx)
-	case exectioninfo.FieldExitCode:
-		return m.OldExitCode(ctx)
-	case exectioninfo.FieldHostname:
-		return m.OldHostname(ctx)
-	}
-	return nil, fmt.Errorf("unknown ExectionInfo field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ExectionInfoMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case exectioninfo.FieldTimeoutSeconds:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTimeoutSeconds(v)
-		return nil
-	case exectioninfo.FieldStrategy:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStrategy(v)
-		return nil
-	case exectioninfo.FieldCachedRemotely:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCachedRemotely(v)
-		return nil
-	case exectioninfo.FieldExitCode:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetExitCode(v)
-		return nil
-	case exectioninfo.FieldHostname:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetHostname(v)
-		return nil
-	}
-	return fmt.Errorf("unknown ExectionInfo field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *ExectionInfoMutation) AddedFields() []string {
-	var fields []string
-	if m.addtimeout_seconds != nil {
-		fields = append(fields, exectioninfo.FieldTimeoutSeconds)
-	}
-	if m.addexit_code != nil {
-		fields = append(fields, exectioninfo.FieldExitCode)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *ExectionInfoMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case exectioninfo.FieldTimeoutSeconds:
-		return m.AddedTimeoutSeconds()
-	case exectioninfo.FieldExitCode:
-		return m.AddedExitCode()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ExectionInfoMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case exectioninfo.FieldTimeoutSeconds:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTimeoutSeconds(v)
-		return nil
-	case exectioninfo.FieldExitCode:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddExitCode(v)
-		return nil
-	}
-	return fmt.Errorf("unknown ExectionInfo numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *ExectionInfoMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(exectioninfo.FieldTimeoutSeconds) {
-		fields = append(fields, exectioninfo.FieldTimeoutSeconds)
-	}
-	if m.FieldCleared(exectioninfo.FieldStrategy) {
-		fields = append(fields, exectioninfo.FieldStrategy)
-	}
-	if m.FieldCleared(exectioninfo.FieldCachedRemotely) {
-		fields = append(fields, exectioninfo.FieldCachedRemotely)
-	}
-	if m.FieldCleared(exectioninfo.FieldExitCode) {
-		fields = append(fields, exectioninfo.FieldExitCode)
-	}
-	if m.FieldCleared(exectioninfo.FieldHostname) {
-		fields = append(fields, exectioninfo.FieldHostname)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *ExectionInfoMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ExectionInfoMutation) ClearField(name string) error {
-	switch name {
-	case exectioninfo.FieldTimeoutSeconds:
-		m.ClearTimeoutSeconds()
-		return nil
-	case exectioninfo.FieldStrategy:
-		m.ClearStrategy()
-		return nil
-	case exectioninfo.FieldCachedRemotely:
-		m.ClearCachedRemotely()
-		return nil
-	case exectioninfo.FieldExitCode:
-		m.ClearExitCode()
-		return nil
-	case exectioninfo.FieldHostname:
-		m.ClearHostname()
-		return nil
-	}
-	return fmt.Errorf("unknown ExectionInfo nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *ExectionInfoMutation) ResetField(name string) error {
-	switch name {
-	case exectioninfo.FieldTimeoutSeconds:
-		m.ResetTimeoutSeconds()
-		return nil
-	case exectioninfo.FieldStrategy:
-		m.ResetStrategy()
-		return nil
-	case exectioninfo.FieldCachedRemotely:
-		m.ResetCachedRemotely()
-		return nil
-	case exectioninfo.FieldExitCode:
-		m.ResetExitCode()
-		return nil
-	case exectioninfo.FieldHostname:
-		m.ResetHostname()
-		return nil
-	}
-	return fmt.Errorf("unknown ExectionInfo field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ExectionInfoMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.test_result != nil {
-		edges = append(edges, exectioninfo.EdgeTestResult)
-	}
-	if m.timing_breakdown != nil {
-		edges = append(edges, exectioninfo.EdgeTimingBreakdown)
-	}
-	if m.resource_usage != nil {
-		edges = append(edges, exectioninfo.EdgeResourceUsage)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *ExectionInfoMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case exectioninfo.EdgeTestResult:
-		if id := m.test_result; id != nil {
-			return []ent.Value{*id}
-		}
-	case exectioninfo.EdgeTimingBreakdown:
-		if id := m.timing_breakdown; id != nil {
-			return []ent.Value{*id}
-		}
-	case exectioninfo.EdgeResourceUsage:
-		ids := make([]ent.Value, 0, len(m.resource_usage))
-		for id := range m.resource_usage {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ExectionInfoMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.removedresource_usage != nil {
-		edges = append(edges, exectioninfo.EdgeResourceUsage)
-	}
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *ExectionInfoMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case exectioninfo.EdgeResourceUsage:
-		ids := make([]ent.Value, 0, len(m.removedresource_usage))
-		for id := range m.removedresource_usage {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ExectionInfoMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.clearedtest_result {
-		edges = append(edges, exectioninfo.EdgeTestResult)
-	}
-	if m.clearedtiming_breakdown {
-		edges = append(edges, exectioninfo.EdgeTimingBreakdown)
-	}
-	if m.clearedresource_usage {
-		edges = append(edges, exectioninfo.EdgeResourceUsage)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *ExectionInfoMutation) EdgeCleared(name string) bool {
-	switch name {
-	case exectioninfo.EdgeTestResult:
-		return m.clearedtest_result
-	case exectioninfo.EdgeTimingBreakdown:
-		return m.clearedtiming_breakdown
-	case exectioninfo.EdgeResourceUsage:
-		return m.clearedresource_usage
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *ExectionInfoMutation) ClearEdge(name string) error {
-	switch name {
-	case exectioninfo.EdgeTestResult:
-		m.ClearTestResult()
-		return nil
-	case exectioninfo.EdgeTimingBreakdown:
-		m.ClearTimingBreakdown()
-		return nil
-	}
-	return fmt.Errorf("unknown ExectionInfo unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *ExectionInfoMutation) ResetEdge(name string) error {
-	switch name {
-	case exectioninfo.EdgeTestResult:
-		m.ResetTestResult()
-		return nil
-	case exectioninfo.EdgeTimingBreakdown:
-		m.ResetTimingBreakdown()
-		return nil
-	case exectioninfo.EdgeResourceUsage:
-		m.ResetResourceUsage()
-		return nil
-	}
-	return fmt.Errorf("unknown ExectionInfo edge %s", name)
-}
-
 // GarbageMetricsMutation represents an operation that mutates the GarbageMetrics nodes in the graph.
 type GarbageMetricsMutation struct {
 	config
@@ -20904,6 +19877,9 @@ type InvocationTargetMutation struct {
 	clearedtarget           bool
 	configuration           *int64
 	clearedconfiguration    bool
+	test_summary            map[int64]struct{}
+	removedtest_summary     map[int64]struct{}
+	clearedtest_summary     bool
 	done                    bool
 	oldValue                func(context.Context) (*InvocationTarget, error)
 	predicates              []predicate.InvocationTarget
@@ -21526,6 +20502,60 @@ func (m *InvocationTargetMutation) ResetConfiguration() {
 	m.clearedconfiguration = false
 }
 
+// AddTestSummaryIDs adds the "test_summary" edge to the TestSummary entity by ids.
+func (m *InvocationTargetMutation) AddTestSummaryIDs(ids ...int64) {
+	if m.test_summary == nil {
+		m.test_summary = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.test_summary[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTestSummary clears the "test_summary" edge to the TestSummary entity.
+func (m *InvocationTargetMutation) ClearTestSummary() {
+	m.clearedtest_summary = true
+}
+
+// TestSummaryCleared reports if the "test_summary" edge to the TestSummary entity was cleared.
+func (m *InvocationTargetMutation) TestSummaryCleared() bool {
+	return m.clearedtest_summary
+}
+
+// RemoveTestSummaryIDs removes the "test_summary" edge to the TestSummary entity by IDs.
+func (m *InvocationTargetMutation) RemoveTestSummaryIDs(ids ...int64) {
+	if m.removedtest_summary == nil {
+		m.removedtest_summary = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.test_summary, ids[i])
+		m.removedtest_summary[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTestSummary returns the removed IDs of the "test_summary" edge to the TestSummary entity.
+func (m *InvocationTargetMutation) RemovedTestSummaryIDs() (ids []int64) {
+	for id := range m.removedtest_summary {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// TestSummaryIDs returns the "test_summary" edge IDs in the mutation.
+func (m *InvocationTargetMutation) TestSummaryIDs() (ids []int64) {
+	for id := range m.test_summary {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTestSummary resets all changes to the "test_summary" edge.
+func (m *InvocationTargetMutation) ResetTestSummary() {
+	m.test_summary = nil
+	m.clearedtest_summary = false
+	m.removedtest_summary = nil
+}
+
 // Where appends a list predicates to the InvocationTargetMutation builder.
 func (m *InvocationTargetMutation) Where(ps ...predicate.InvocationTarget) {
 	m.predicates = append(m.predicates, ps...)
@@ -21833,7 +20863,7 @@ func (m *InvocationTargetMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *InvocationTargetMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.bazel_invocation != nil {
 		edges = append(edges, invocationtarget.EdgeBazelInvocation)
 	}
@@ -21842,6 +20872,9 @@ func (m *InvocationTargetMutation) AddedEdges() []string {
 	}
 	if m.configuration != nil {
 		edges = append(edges, invocationtarget.EdgeConfiguration)
+	}
+	if m.test_summary != nil {
+		edges = append(edges, invocationtarget.EdgeTestSummary)
 	}
 	return edges
 }
@@ -21862,25 +20895,42 @@ func (m *InvocationTargetMutation) AddedIDs(name string) []ent.Value {
 		if id := m.configuration; id != nil {
 			return []ent.Value{*id}
 		}
+	case invocationtarget.EdgeTestSummary:
+		ids := make([]ent.Value, 0, len(m.test_summary))
+		for id := range m.test_summary {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *InvocationTargetMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
+	if m.removedtest_summary != nil {
+		edges = append(edges, invocationtarget.EdgeTestSummary)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *InvocationTargetMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case invocationtarget.EdgeTestSummary:
+		ids := make([]ent.Value, 0, len(m.removedtest_summary))
+		for id := range m.removedtest_summary {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *InvocationTargetMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 4)
 	if m.clearedbazel_invocation {
 		edges = append(edges, invocationtarget.EdgeBazelInvocation)
 	}
@@ -21889,6 +20939,9 @@ func (m *InvocationTargetMutation) ClearedEdges() []string {
 	}
 	if m.clearedconfiguration {
 		edges = append(edges, invocationtarget.EdgeConfiguration)
+	}
+	if m.clearedtest_summary {
+		edges = append(edges, invocationtarget.EdgeTestSummary)
 	}
 	return edges
 }
@@ -21903,6 +20956,8 @@ func (m *InvocationTargetMutation) EdgeCleared(name string) bool {
 		return m.clearedtarget
 	case invocationtarget.EdgeConfiguration:
 		return m.clearedconfiguration
+	case invocationtarget.EdgeTestSummary:
+		return m.clearedtest_summary
 	}
 	return false
 }
@@ -21936,6 +20991,9 @@ func (m *InvocationTargetMutation) ResetEdge(name string) error {
 		return nil
 	case invocationtarget.EdgeConfiguration:
 		m.ResetConfiguration()
+		return nil
+	case invocationtarget.EdgeTestSummary:
+		m.ResetTestSummary()
 		return nil
 	}
 	return fmt.Errorf("unknown InvocationTarget edge %s", name)
@@ -24078,487 +23136,6 @@ func (m *MissDetailMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown MissDetail edge %s", name)
 }
 
-// NamedSetOfFilesMutation represents an operation that mutates the NamedSetOfFiles nodes in the graph.
-type NamedSetOfFilesMutation struct {
-	config
-	op                  Op
-	typ                 string
-	id                  *int64
-	clearedFields       map[string]struct{}
-	output_group        *int64
-	clearedoutput_group bool
-	files               map[int64]struct{}
-	removedfiles        map[int64]struct{}
-	clearedfiles        bool
-	file_sets           *int64
-	clearedfile_sets    bool
-	done                bool
-	oldValue            func(context.Context) (*NamedSetOfFiles, error)
-	predicates          []predicate.NamedSetOfFiles
-}
-
-var _ ent.Mutation = (*NamedSetOfFilesMutation)(nil)
-
-// namedsetoffilesOption allows management of the mutation configuration using functional options.
-type namedsetoffilesOption func(*NamedSetOfFilesMutation)
-
-// newNamedSetOfFilesMutation creates new mutation for the NamedSetOfFiles entity.
-func newNamedSetOfFilesMutation(c config, op Op, opts ...namedsetoffilesOption) *NamedSetOfFilesMutation {
-	m := &NamedSetOfFilesMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeNamedSetOfFiles,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withNamedSetOfFilesID sets the ID field of the mutation.
-func withNamedSetOfFilesID(id int64) namedsetoffilesOption {
-	return func(m *NamedSetOfFilesMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *NamedSetOfFiles
-		)
-		m.oldValue = func(ctx context.Context) (*NamedSetOfFiles, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().NamedSetOfFiles.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withNamedSetOfFiles sets the old NamedSetOfFiles of the mutation.
-func withNamedSetOfFiles(node *NamedSetOfFiles) namedsetoffilesOption {
-	return func(m *NamedSetOfFilesMutation) {
-		m.oldValue = func(context.Context) (*NamedSetOfFiles, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m NamedSetOfFilesMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m NamedSetOfFilesMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of NamedSetOfFiles entities.
-func (m *NamedSetOfFilesMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *NamedSetOfFilesMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *NamedSetOfFilesMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().NamedSetOfFiles.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetOutputGroupID sets the "output_group" edge to the OutputGroup entity by id.
-func (m *NamedSetOfFilesMutation) SetOutputGroupID(id int64) {
-	m.output_group = &id
-}
-
-// ClearOutputGroup clears the "output_group" edge to the OutputGroup entity.
-func (m *NamedSetOfFilesMutation) ClearOutputGroup() {
-	m.clearedoutput_group = true
-}
-
-// OutputGroupCleared reports if the "output_group" edge to the OutputGroup entity was cleared.
-func (m *NamedSetOfFilesMutation) OutputGroupCleared() bool {
-	return m.clearedoutput_group
-}
-
-// OutputGroupID returns the "output_group" edge ID in the mutation.
-func (m *NamedSetOfFilesMutation) OutputGroupID() (id int64, exists bool) {
-	if m.output_group != nil {
-		return *m.output_group, true
-	}
-	return
-}
-
-// OutputGroupIDs returns the "output_group" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OutputGroupID instead. It exists only for internal usage by the builders.
-func (m *NamedSetOfFilesMutation) OutputGroupIDs() (ids []int64) {
-	if id := m.output_group; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetOutputGroup resets all changes to the "output_group" edge.
-func (m *NamedSetOfFilesMutation) ResetOutputGroup() {
-	m.output_group = nil
-	m.clearedoutput_group = false
-}
-
-// AddFileIDs adds the "files" edge to the TestFile entity by ids.
-func (m *NamedSetOfFilesMutation) AddFileIDs(ids ...int64) {
-	if m.files == nil {
-		m.files = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.files[ids[i]] = struct{}{}
-	}
-}
-
-// ClearFiles clears the "files" edge to the TestFile entity.
-func (m *NamedSetOfFilesMutation) ClearFiles() {
-	m.clearedfiles = true
-}
-
-// FilesCleared reports if the "files" edge to the TestFile entity was cleared.
-func (m *NamedSetOfFilesMutation) FilesCleared() bool {
-	return m.clearedfiles
-}
-
-// RemoveFileIDs removes the "files" edge to the TestFile entity by IDs.
-func (m *NamedSetOfFilesMutation) RemoveFileIDs(ids ...int64) {
-	if m.removedfiles == nil {
-		m.removedfiles = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.files, ids[i])
-		m.removedfiles[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedFiles returns the removed IDs of the "files" edge to the TestFile entity.
-func (m *NamedSetOfFilesMutation) RemovedFilesIDs() (ids []int64) {
-	for id := range m.removedfiles {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// FilesIDs returns the "files" edge IDs in the mutation.
-func (m *NamedSetOfFilesMutation) FilesIDs() (ids []int64) {
-	for id := range m.files {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetFiles resets all changes to the "files" edge.
-func (m *NamedSetOfFilesMutation) ResetFiles() {
-	m.files = nil
-	m.clearedfiles = false
-	m.removedfiles = nil
-}
-
-// SetFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by id.
-func (m *NamedSetOfFilesMutation) SetFileSetsID(id int64) {
-	m.file_sets = &id
-}
-
-// ClearFileSets clears the "file_sets" edge to the NamedSetOfFiles entity.
-func (m *NamedSetOfFilesMutation) ClearFileSets() {
-	m.clearedfile_sets = true
-}
-
-// FileSetsCleared reports if the "file_sets" edge to the NamedSetOfFiles entity was cleared.
-func (m *NamedSetOfFilesMutation) FileSetsCleared() bool {
-	return m.clearedfile_sets
-}
-
-// FileSetsID returns the "file_sets" edge ID in the mutation.
-func (m *NamedSetOfFilesMutation) FileSetsID() (id int64, exists bool) {
-	if m.file_sets != nil {
-		return *m.file_sets, true
-	}
-	return
-}
-
-// FileSetsIDs returns the "file_sets" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// FileSetsID instead. It exists only for internal usage by the builders.
-func (m *NamedSetOfFilesMutation) FileSetsIDs() (ids []int64) {
-	if id := m.file_sets; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetFileSets resets all changes to the "file_sets" edge.
-func (m *NamedSetOfFilesMutation) ResetFileSets() {
-	m.file_sets = nil
-	m.clearedfile_sets = false
-}
-
-// Where appends a list predicates to the NamedSetOfFilesMutation builder.
-func (m *NamedSetOfFilesMutation) Where(ps ...predicate.NamedSetOfFiles) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the NamedSetOfFilesMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *NamedSetOfFilesMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.NamedSetOfFiles, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *NamedSetOfFilesMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *NamedSetOfFilesMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (NamedSetOfFiles).
-func (m *NamedSetOfFilesMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *NamedSetOfFilesMutation) Fields() []string {
-	fields := make([]string, 0, 0)
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *NamedSetOfFilesMutation) Field(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *NamedSetOfFilesMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	return nil, fmt.Errorf("unknown NamedSetOfFiles field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *NamedSetOfFilesMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown NamedSetOfFiles field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *NamedSetOfFilesMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *NamedSetOfFilesMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *NamedSetOfFilesMutation) AddField(name string, value ent.Value) error {
-	return fmt.Errorf("unknown NamedSetOfFiles numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *NamedSetOfFilesMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *NamedSetOfFilesMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *NamedSetOfFilesMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown NamedSetOfFiles nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *NamedSetOfFilesMutation) ResetField(name string) error {
-	return fmt.Errorf("unknown NamedSetOfFiles field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *NamedSetOfFilesMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.output_group != nil {
-		edges = append(edges, namedsetoffiles.EdgeOutputGroup)
-	}
-	if m.files != nil {
-		edges = append(edges, namedsetoffiles.EdgeFiles)
-	}
-	if m.file_sets != nil {
-		edges = append(edges, namedsetoffiles.EdgeFileSets)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *NamedSetOfFilesMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case namedsetoffiles.EdgeOutputGroup:
-		if id := m.output_group; id != nil {
-			return []ent.Value{*id}
-		}
-	case namedsetoffiles.EdgeFiles:
-		ids := make([]ent.Value, 0, len(m.files))
-		for id := range m.files {
-			ids = append(ids, id)
-		}
-		return ids
-	case namedsetoffiles.EdgeFileSets:
-		if id := m.file_sets; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *NamedSetOfFilesMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.removedfiles != nil {
-		edges = append(edges, namedsetoffiles.EdgeFiles)
-	}
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *NamedSetOfFilesMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case namedsetoffiles.EdgeFiles:
-		ids := make([]ent.Value, 0, len(m.removedfiles))
-		for id := range m.removedfiles {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *NamedSetOfFilesMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.clearedoutput_group {
-		edges = append(edges, namedsetoffiles.EdgeOutputGroup)
-	}
-	if m.clearedfiles {
-		edges = append(edges, namedsetoffiles.EdgeFiles)
-	}
-	if m.clearedfile_sets {
-		edges = append(edges, namedsetoffiles.EdgeFileSets)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *NamedSetOfFilesMutation) EdgeCleared(name string) bool {
-	switch name {
-	case namedsetoffiles.EdgeOutputGroup:
-		return m.clearedoutput_group
-	case namedsetoffiles.EdgeFiles:
-		return m.clearedfiles
-	case namedsetoffiles.EdgeFileSets:
-		return m.clearedfile_sets
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *NamedSetOfFilesMutation) ClearEdge(name string) error {
-	switch name {
-	case namedsetoffiles.EdgeOutputGroup:
-		m.ClearOutputGroup()
-		return nil
-	case namedsetoffiles.EdgeFileSets:
-		m.ClearFileSets()
-		return nil
-	}
-	return fmt.Errorf("unknown NamedSetOfFiles unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *NamedSetOfFilesMutation) ResetEdge(name string) error {
-	switch name {
-	case namedsetoffiles.EdgeOutputGroup:
-		m.ResetOutputGroup()
-		return nil
-	case namedsetoffiles.EdgeFiles:
-		m.ResetFiles()
-		return nil
-	case namedsetoffiles.EdgeFileSets:
-		m.ResetFileSets()
-		return nil
-	}
-	return fmt.Errorf("unknown NamedSetOfFiles edge %s", name)
-}
-
 // NetworkMetricsMutation represents an operation that mutates the NetworkMetrics nodes in the graph.
 type NetworkMetricsMutation struct {
 	config
@@ -24953,585 +23530,6 @@ func (m *NetworkMetricsMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown NetworkMetrics edge %s", name)
-}
-
-// OutputGroupMutation represents an operation that mutates the OutputGroup nodes in the graph.
-type OutputGroupMutation struct {
-	config
-	op                  Op
-	typ                 string
-	id                  *int64
-	name                *string
-	incomplete          *bool
-	clearedFields       map[string]struct{}
-	inline_files        map[int64]struct{}
-	removedinline_files map[int64]struct{}
-	clearedinline_files bool
-	file_sets           *int64
-	clearedfile_sets    bool
-	done                bool
-	oldValue            func(context.Context) (*OutputGroup, error)
-	predicates          []predicate.OutputGroup
-}
-
-var _ ent.Mutation = (*OutputGroupMutation)(nil)
-
-// outputgroupOption allows management of the mutation configuration using functional options.
-type outputgroupOption func(*OutputGroupMutation)
-
-// newOutputGroupMutation creates new mutation for the OutputGroup entity.
-func newOutputGroupMutation(c config, op Op, opts ...outputgroupOption) *OutputGroupMutation {
-	m := &OutputGroupMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeOutputGroup,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withOutputGroupID sets the ID field of the mutation.
-func withOutputGroupID(id int64) outputgroupOption {
-	return func(m *OutputGroupMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *OutputGroup
-		)
-		m.oldValue = func(ctx context.Context) (*OutputGroup, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().OutputGroup.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withOutputGroup sets the old OutputGroup of the mutation.
-func withOutputGroup(node *OutputGroup) outputgroupOption {
-	return func(m *OutputGroupMutation) {
-		m.oldValue = func(context.Context) (*OutputGroup, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m OutputGroupMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m OutputGroupMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of OutputGroup entities.
-func (m *OutputGroupMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *OutputGroupMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *OutputGroupMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().OutputGroup.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetName sets the "name" field.
-func (m *OutputGroupMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *OutputGroupMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the OutputGroup entity.
-// If the OutputGroup object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OutputGroupMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ClearName clears the value of the "name" field.
-func (m *OutputGroupMutation) ClearName() {
-	m.name = nil
-	m.clearedFields[outputgroup.FieldName] = struct{}{}
-}
-
-// NameCleared returns if the "name" field was cleared in this mutation.
-func (m *OutputGroupMutation) NameCleared() bool {
-	_, ok := m.clearedFields[outputgroup.FieldName]
-	return ok
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *OutputGroupMutation) ResetName() {
-	m.name = nil
-	delete(m.clearedFields, outputgroup.FieldName)
-}
-
-// SetIncomplete sets the "incomplete" field.
-func (m *OutputGroupMutation) SetIncomplete(b bool) {
-	m.incomplete = &b
-}
-
-// Incomplete returns the value of the "incomplete" field in the mutation.
-func (m *OutputGroupMutation) Incomplete() (r bool, exists bool) {
-	v := m.incomplete
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldIncomplete returns the old "incomplete" field's value of the OutputGroup entity.
-// If the OutputGroup object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *OutputGroupMutation) OldIncomplete(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldIncomplete is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldIncomplete requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldIncomplete: %w", err)
-	}
-	return oldValue.Incomplete, nil
-}
-
-// ClearIncomplete clears the value of the "incomplete" field.
-func (m *OutputGroupMutation) ClearIncomplete() {
-	m.incomplete = nil
-	m.clearedFields[outputgroup.FieldIncomplete] = struct{}{}
-}
-
-// IncompleteCleared returns if the "incomplete" field was cleared in this mutation.
-func (m *OutputGroupMutation) IncompleteCleared() bool {
-	_, ok := m.clearedFields[outputgroup.FieldIncomplete]
-	return ok
-}
-
-// ResetIncomplete resets all changes to the "incomplete" field.
-func (m *OutputGroupMutation) ResetIncomplete() {
-	m.incomplete = nil
-	delete(m.clearedFields, outputgroup.FieldIncomplete)
-}
-
-// AddInlineFileIDs adds the "inline_files" edge to the TestFile entity by ids.
-func (m *OutputGroupMutation) AddInlineFileIDs(ids ...int64) {
-	if m.inline_files == nil {
-		m.inline_files = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.inline_files[ids[i]] = struct{}{}
-	}
-}
-
-// ClearInlineFiles clears the "inline_files" edge to the TestFile entity.
-func (m *OutputGroupMutation) ClearInlineFiles() {
-	m.clearedinline_files = true
-}
-
-// InlineFilesCleared reports if the "inline_files" edge to the TestFile entity was cleared.
-func (m *OutputGroupMutation) InlineFilesCleared() bool {
-	return m.clearedinline_files
-}
-
-// RemoveInlineFileIDs removes the "inline_files" edge to the TestFile entity by IDs.
-func (m *OutputGroupMutation) RemoveInlineFileIDs(ids ...int64) {
-	if m.removedinline_files == nil {
-		m.removedinline_files = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.inline_files, ids[i])
-		m.removedinline_files[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedInlineFiles returns the removed IDs of the "inline_files" edge to the TestFile entity.
-func (m *OutputGroupMutation) RemovedInlineFilesIDs() (ids []int64) {
-	for id := range m.removedinline_files {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// InlineFilesIDs returns the "inline_files" edge IDs in the mutation.
-func (m *OutputGroupMutation) InlineFilesIDs() (ids []int64) {
-	for id := range m.inline_files {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetInlineFiles resets all changes to the "inline_files" edge.
-func (m *OutputGroupMutation) ResetInlineFiles() {
-	m.inline_files = nil
-	m.clearedinline_files = false
-	m.removedinline_files = nil
-}
-
-// SetFileSetsID sets the "file_sets" edge to the NamedSetOfFiles entity by id.
-func (m *OutputGroupMutation) SetFileSetsID(id int64) {
-	m.file_sets = &id
-}
-
-// ClearFileSets clears the "file_sets" edge to the NamedSetOfFiles entity.
-func (m *OutputGroupMutation) ClearFileSets() {
-	m.clearedfile_sets = true
-}
-
-// FileSetsCleared reports if the "file_sets" edge to the NamedSetOfFiles entity was cleared.
-func (m *OutputGroupMutation) FileSetsCleared() bool {
-	return m.clearedfile_sets
-}
-
-// FileSetsID returns the "file_sets" edge ID in the mutation.
-func (m *OutputGroupMutation) FileSetsID() (id int64, exists bool) {
-	if m.file_sets != nil {
-		return *m.file_sets, true
-	}
-	return
-}
-
-// FileSetsIDs returns the "file_sets" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// FileSetsID instead. It exists only for internal usage by the builders.
-func (m *OutputGroupMutation) FileSetsIDs() (ids []int64) {
-	if id := m.file_sets; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetFileSets resets all changes to the "file_sets" edge.
-func (m *OutputGroupMutation) ResetFileSets() {
-	m.file_sets = nil
-	m.clearedfile_sets = false
-}
-
-// Where appends a list predicates to the OutputGroupMutation builder.
-func (m *OutputGroupMutation) Where(ps ...predicate.OutputGroup) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the OutputGroupMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *OutputGroupMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.OutputGroup, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *OutputGroupMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *OutputGroupMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (OutputGroup).
-func (m *OutputGroupMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *OutputGroupMutation) Fields() []string {
-	fields := make([]string, 0, 2)
-	if m.name != nil {
-		fields = append(fields, outputgroup.FieldName)
-	}
-	if m.incomplete != nil {
-		fields = append(fields, outputgroup.FieldIncomplete)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *OutputGroupMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case outputgroup.FieldName:
-		return m.Name()
-	case outputgroup.FieldIncomplete:
-		return m.Incomplete()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *OutputGroupMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case outputgroup.FieldName:
-		return m.OldName(ctx)
-	case outputgroup.FieldIncomplete:
-		return m.OldIncomplete(ctx)
-	}
-	return nil, fmt.Errorf("unknown OutputGroup field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *OutputGroupMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case outputgroup.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case outputgroup.FieldIncomplete:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetIncomplete(v)
-		return nil
-	}
-	return fmt.Errorf("unknown OutputGroup field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *OutputGroupMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *OutputGroupMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *OutputGroupMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown OutputGroup numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *OutputGroupMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(outputgroup.FieldName) {
-		fields = append(fields, outputgroup.FieldName)
-	}
-	if m.FieldCleared(outputgroup.FieldIncomplete) {
-		fields = append(fields, outputgroup.FieldIncomplete)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *OutputGroupMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *OutputGroupMutation) ClearField(name string) error {
-	switch name {
-	case outputgroup.FieldName:
-		m.ClearName()
-		return nil
-	case outputgroup.FieldIncomplete:
-		m.ClearIncomplete()
-		return nil
-	}
-	return fmt.Errorf("unknown OutputGroup nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *OutputGroupMutation) ResetField(name string) error {
-	switch name {
-	case outputgroup.FieldName:
-		m.ResetName()
-		return nil
-	case outputgroup.FieldIncomplete:
-		m.ResetIncomplete()
-		return nil
-	}
-	return fmt.Errorf("unknown OutputGroup field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *OutputGroupMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.inline_files != nil {
-		edges = append(edges, outputgroup.EdgeInlineFiles)
-	}
-	if m.file_sets != nil {
-		edges = append(edges, outputgroup.EdgeFileSets)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *OutputGroupMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case outputgroup.EdgeInlineFiles:
-		ids := make([]ent.Value, 0, len(m.inline_files))
-		for id := range m.inline_files {
-			ids = append(ids, id)
-		}
-		return ids
-	case outputgroup.EdgeFileSets:
-		if id := m.file_sets; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *OutputGroupMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.removedinline_files != nil {
-		edges = append(edges, outputgroup.EdgeInlineFiles)
-	}
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *OutputGroupMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case outputgroup.EdgeInlineFiles:
-		ids := make([]ent.Value, 0, len(m.removedinline_files))
-		for id := range m.removedinline_files {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *OutputGroupMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.clearedinline_files {
-		edges = append(edges, outputgroup.EdgeInlineFiles)
-	}
-	if m.clearedfile_sets {
-		edges = append(edges, outputgroup.EdgeFileSets)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *OutputGroupMutation) EdgeCleared(name string) bool {
-	switch name {
-	case outputgroup.EdgeInlineFiles:
-		return m.clearedinline_files
-	case outputgroup.EdgeFileSets:
-		return m.clearedfile_sets
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *OutputGroupMutation) ClearEdge(name string) error {
-	switch name {
-	case outputgroup.EdgeFileSets:
-		m.ClearFileSets()
-		return nil
-	}
-	return fmt.Errorf("unknown OutputGroup unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *OutputGroupMutation) ResetEdge(name string) error {
-	switch name {
-	case outputgroup.EdgeInlineFiles:
-		m.ResetInlineFiles()
-		return nil
-	case outputgroup.EdgeFileSets:
-		m.ResetFileSets()
-		return nil
-	}
-	return fmt.Errorf("unknown OutputGroup edge %s", name)
 }
 
 // PackageLoadMetricsMutation represents an operation that mutates the PackageLoadMetrics nodes in the graph.
@@ -27034,500 +25032,6 @@ func (m *PackageMetricsMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown PackageMetrics edge %s", name)
-}
-
-// ResourceUsageMutation represents an operation that mutates the ResourceUsage nodes in the graph.
-type ResourceUsageMutation struct {
-	config
-	op                    Op
-	typ                   string
-	id                    *int64
-	name                  *string
-	value                 *string
-	clearedFields         map[string]struct{}
-	execution_info        *int64
-	clearedexecution_info bool
-	done                  bool
-	oldValue              func(context.Context) (*ResourceUsage, error)
-	predicates            []predicate.ResourceUsage
-}
-
-var _ ent.Mutation = (*ResourceUsageMutation)(nil)
-
-// resourceusageOption allows management of the mutation configuration using functional options.
-type resourceusageOption func(*ResourceUsageMutation)
-
-// newResourceUsageMutation creates new mutation for the ResourceUsage entity.
-func newResourceUsageMutation(c config, op Op, opts ...resourceusageOption) *ResourceUsageMutation {
-	m := &ResourceUsageMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeResourceUsage,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withResourceUsageID sets the ID field of the mutation.
-func withResourceUsageID(id int64) resourceusageOption {
-	return func(m *ResourceUsageMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *ResourceUsage
-		)
-		m.oldValue = func(ctx context.Context) (*ResourceUsage, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().ResourceUsage.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withResourceUsage sets the old ResourceUsage of the mutation.
-func withResourceUsage(node *ResourceUsage) resourceusageOption {
-	return func(m *ResourceUsageMutation) {
-		m.oldValue = func(context.Context) (*ResourceUsage, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ResourceUsageMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ResourceUsageMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of ResourceUsage entities.
-func (m *ResourceUsageMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *ResourceUsageMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *ResourceUsageMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().ResourceUsage.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetName sets the "name" field.
-func (m *ResourceUsageMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *ResourceUsageMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the ResourceUsage entity.
-// If the ResourceUsage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ResourceUsageMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ClearName clears the value of the "name" field.
-func (m *ResourceUsageMutation) ClearName() {
-	m.name = nil
-	m.clearedFields[resourceusage.FieldName] = struct{}{}
-}
-
-// NameCleared returns if the "name" field was cleared in this mutation.
-func (m *ResourceUsageMutation) NameCleared() bool {
-	_, ok := m.clearedFields[resourceusage.FieldName]
-	return ok
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *ResourceUsageMutation) ResetName() {
-	m.name = nil
-	delete(m.clearedFields, resourceusage.FieldName)
-}
-
-// SetValue sets the "value" field.
-func (m *ResourceUsageMutation) SetValue(s string) {
-	m.value = &s
-}
-
-// Value returns the value of the "value" field in the mutation.
-func (m *ResourceUsageMutation) Value() (r string, exists bool) {
-	v := m.value
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldValue returns the old "value" field's value of the ResourceUsage entity.
-// If the ResourceUsage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ResourceUsageMutation) OldValue(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldValue is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldValue requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldValue: %w", err)
-	}
-	return oldValue.Value, nil
-}
-
-// ClearValue clears the value of the "value" field.
-func (m *ResourceUsageMutation) ClearValue() {
-	m.value = nil
-	m.clearedFields[resourceusage.FieldValue] = struct{}{}
-}
-
-// ValueCleared returns if the "value" field was cleared in this mutation.
-func (m *ResourceUsageMutation) ValueCleared() bool {
-	_, ok := m.clearedFields[resourceusage.FieldValue]
-	return ok
-}
-
-// ResetValue resets all changes to the "value" field.
-func (m *ResourceUsageMutation) ResetValue() {
-	m.value = nil
-	delete(m.clearedFields, resourceusage.FieldValue)
-}
-
-// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by id.
-func (m *ResourceUsageMutation) SetExecutionInfoID(id int64) {
-	m.execution_info = &id
-}
-
-// ClearExecutionInfo clears the "execution_info" edge to the ExectionInfo entity.
-func (m *ResourceUsageMutation) ClearExecutionInfo() {
-	m.clearedexecution_info = true
-}
-
-// ExecutionInfoCleared reports if the "execution_info" edge to the ExectionInfo entity was cleared.
-func (m *ResourceUsageMutation) ExecutionInfoCleared() bool {
-	return m.clearedexecution_info
-}
-
-// ExecutionInfoID returns the "execution_info" edge ID in the mutation.
-func (m *ResourceUsageMutation) ExecutionInfoID() (id int64, exists bool) {
-	if m.execution_info != nil {
-		return *m.execution_info, true
-	}
-	return
-}
-
-// ExecutionInfoIDs returns the "execution_info" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ExecutionInfoID instead. It exists only for internal usage by the builders.
-func (m *ResourceUsageMutation) ExecutionInfoIDs() (ids []int64) {
-	if id := m.execution_info; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetExecutionInfo resets all changes to the "execution_info" edge.
-func (m *ResourceUsageMutation) ResetExecutionInfo() {
-	m.execution_info = nil
-	m.clearedexecution_info = false
-}
-
-// Where appends a list predicates to the ResourceUsageMutation builder.
-func (m *ResourceUsageMutation) Where(ps ...predicate.ResourceUsage) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the ResourceUsageMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ResourceUsageMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.ResourceUsage, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *ResourceUsageMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *ResourceUsageMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (ResourceUsage).
-func (m *ResourceUsageMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *ResourceUsageMutation) Fields() []string {
-	fields := make([]string, 0, 2)
-	if m.name != nil {
-		fields = append(fields, resourceusage.FieldName)
-	}
-	if m.value != nil {
-		fields = append(fields, resourceusage.FieldValue)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *ResourceUsageMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case resourceusage.FieldName:
-		return m.Name()
-	case resourceusage.FieldValue:
-		return m.Value()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *ResourceUsageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case resourceusage.FieldName:
-		return m.OldName(ctx)
-	case resourceusage.FieldValue:
-		return m.OldValue(ctx)
-	}
-	return nil, fmt.Errorf("unknown ResourceUsage field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ResourceUsageMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case resourceusage.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case resourceusage.FieldValue:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetValue(v)
-		return nil
-	}
-	return fmt.Errorf("unknown ResourceUsage field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *ResourceUsageMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *ResourceUsageMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ResourceUsageMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown ResourceUsage numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *ResourceUsageMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(resourceusage.FieldName) {
-		fields = append(fields, resourceusage.FieldName)
-	}
-	if m.FieldCleared(resourceusage.FieldValue) {
-		fields = append(fields, resourceusage.FieldValue)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *ResourceUsageMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ResourceUsageMutation) ClearField(name string) error {
-	switch name {
-	case resourceusage.FieldName:
-		m.ClearName()
-		return nil
-	case resourceusage.FieldValue:
-		m.ClearValue()
-		return nil
-	}
-	return fmt.Errorf("unknown ResourceUsage nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *ResourceUsageMutation) ResetField(name string) error {
-	switch name {
-	case resourceusage.FieldName:
-		m.ResetName()
-		return nil
-	case resourceusage.FieldValue:
-		m.ResetValue()
-		return nil
-	}
-	return fmt.Errorf("unknown ResourceUsage field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ResourceUsageMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.execution_info != nil {
-		edges = append(edges, resourceusage.EdgeExecutionInfo)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *ResourceUsageMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case resourceusage.EdgeExecutionInfo:
-		if id := m.execution_info; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ResourceUsageMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *ResourceUsageMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ResourceUsageMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedexecution_info {
-		edges = append(edges, resourceusage.EdgeExecutionInfo)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *ResourceUsageMutation) EdgeCleared(name string) bool {
-	switch name {
-	case resourceusage.EdgeExecutionInfo:
-		return m.clearedexecution_info
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *ResourceUsageMutation) ClearEdge(name string) error {
-	switch name {
-	case resourceusage.EdgeExecutionInfo:
-		m.ClearExecutionInfo()
-		return nil
-	}
-	return fmt.Errorf("unknown ResourceUsage unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *ResourceUsageMutation) ResetEdge(name string) error {
-	switch name {
-	case resourceusage.EdgeExecutionInfo:
-		m.ResetExecutionInfo()
-		return nil
-	}
-	return fmt.Errorf("unknown ResourceUsage edge %s", name)
 }
 
 // RunnerCountMutation represents an operation that mutates the RunnerCount nodes in the graph.
@@ -32803,44 +30307,51 @@ func (m *TargetMetricsMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown TargetMetrics edge %s", name)
 }
 
-// TestCollectionMutation represents an operation that mutates the TestCollection nodes in the graph.
-type TestCollectionMutation struct {
+// TestResultMutation represents an operation that mutates the TestResult nodes in the graph.
+type TestResultMutation struct {
 	config
-	op                      Op
-	typ                     string
-	id                      *int64
-	label                   *string
-	overall_status          *testcollection.OverallStatus
-	strategy                *string
-	cached_locally          *bool
-	cached_remotely         *bool
-	first_seen              *time.Time
-	duration_ms             *int64
-	addduration_ms          *int64
-	clearedFields           map[string]struct{}
-	bazel_invocation        *int64
-	clearedbazel_invocation bool
-	test_summary            *int64
-	clearedtest_summary     bool
-	test_results            map[int64]struct{}
-	removedtest_results     map[int64]struct{}
-	clearedtest_results     bool
-	done                    bool
-	oldValue                func(context.Context) (*TestCollection, error)
-	predicates              []predicate.TestCollection
+	op                             Op
+	typ                            string
+	id                             *int64
+	run                            *int32
+	addrun                         *int32
+	shard                          *int32
+	addshard                       *int32
+	attempt                        *int32
+	addattempt                     *int32
+	status                         *string
+	status_details                 *string
+	cached_locally                 *bool
+	test_attempt_start             *time.Time
+	test_attempt_duration_in_ms    *int64
+	addtest_attempt_duration_in_ms *int64
+	warning                        *[]string
+	appendwarning                  []string
+	strategy                       *string
+	cached_remotely                *bool
+	exit_code                      *int32
+	addexit_code                   *int32
+	hostname                       *string
+	timing_breakdown               *map[string]interface{}
+	clearedFields                  map[string]struct{}
+	test_summary                   *int64
+	clearedtest_summary            bool
+	done                           bool
+	oldValue                       func(context.Context) (*TestResult, error)
+	predicates                     []predicate.TestResult
 }
 
-var _ ent.Mutation = (*TestCollectionMutation)(nil)
+var _ ent.Mutation = (*TestResultMutation)(nil)
 
-// testcollectionOption allows management of the mutation configuration using functional options.
-type testcollectionOption func(*TestCollectionMutation)
+// testresultOption allows management of the mutation configuration using functional options.
+type testresultOption func(*TestResultMutation)
 
-// newTestCollectionMutation creates new mutation for the TestCollection entity.
-func newTestCollectionMutation(c config, op Op, opts ...testcollectionOption) *TestCollectionMutation {
-	m := &TestCollectionMutation{
+// newTestResultMutation creates new mutation for the TestResult entity.
+func newTestResultMutation(c config, op Op, opts ...testresultOption) *TestResultMutation {
+	m := &TestResultMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeTestCollection,
+		typ:           TypeTestResult,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -32849,20 +30360,20 @@ func newTestCollectionMutation(c config, op Op, opts ...testcollectionOption) *T
 	return m
 }
 
-// withTestCollectionID sets the ID field of the mutation.
-func withTestCollectionID(id int64) testcollectionOption {
-	return func(m *TestCollectionMutation) {
+// withTestResultID sets the ID field of the mutation.
+func withTestResultID(id int64) testresultOption {
+	return func(m *TestResultMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *TestCollection
+			value *TestResult
 		)
-		m.oldValue = func(ctx context.Context) (*TestCollection, error) {
+		m.oldValue = func(ctx context.Context) (*TestResult, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().TestCollection.Get(ctx, id)
+					value, err = m.Client().TestResult.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -32871,10 +30382,10 @@ func withTestCollectionID(id int64) testcollectionOption {
 	}
 }
 
-// withTestCollection sets the old TestCollection of the mutation.
-func withTestCollection(node *TestCollection) testcollectionOption {
-	return func(m *TestCollectionMutation) {
-		m.oldValue = func(context.Context) (*TestCollection, error) {
+// withTestResult sets the old TestResult of the mutation.
+func withTestResult(node *TestResult) testresultOption {
+	return func(m *TestResultMutation) {
+		m.oldValue = func(context.Context) (*TestResult, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -32883,7 +30394,7 @@ func withTestCollection(node *TestCollection) testcollectionOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m TestCollectionMutation) Client() *Client {
+func (m TestResultMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -32891,7 +30402,7 @@ func (m TestCollectionMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m TestCollectionMutation) Tx() (*Tx, error) {
+func (m TestResultMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -32901,14 +30412,14 @@ func (m TestCollectionMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of TestCollection entities.
-func (m *TestCollectionMutation) SetID(id int64) {
+// operation is only accepted on creation of TestResult entities.
+func (m *TestResultMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TestCollectionMutation) ID() (id int64, exists bool) {
+func (m *TestResultMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -32919,7 +30430,7 @@ func (m *TestCollectionMutation) ID() (id int64, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TestCollectionMutation) IDs(ctx context.Context) ([]int64, error) {
+func (m *TestResultMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -32928,1880 +30439,236 @@ func (m *TestCollectionMutation) IDs(ctx context.Context) ([]int64, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().TestCollection.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().TestResult.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
-// SetLabel sets the "label" field.
-func (m *TestCollectionMutation) SetLabel(s string) {
-	m.label = &s
+// SetRun sets the "run" field.
+func (m *TestResultMutation) SetRun(i int32) {
+	m.run = &i
+	m.addrun = nil
 }
 
-// Label returns the value of the "label" field in the mutation.
-func (m *TestCollectionMutation) Label() (r string, exists bool) {
-	v := m.label
+// Run returns the value of the "run" field in the mutation.
+func (m *TestResultMutation) Run() (r int32, exists bool) {
+	v := m.run
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLabel returns the old "label" field's value of the TestCollection entity.
-// If the TestCollection object wasn't provided to the builder, the object is fetched from the database.
+// OldRun returns the old "run" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestCollectionMutation) OldLabel(ctx context.Context) (v string, err error) {
+func (m *TestResultMutation) OldRun(ctx context.Context) (v int32, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLabel is only allowed on UpdateOne operations")
+		return v, errors.New("OldRun is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLabel requires an ID field in the mutation")
+		return v, errors.New("OldRun requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLabel: %w", err)
+		return v, fmt.Errorf("querying old value for OldRun: %w", err)
 	}
-	return oldValue.Label, nil
+	return oldValue.Run, nil
 }
 
-// ClearLabel clears the value of the "label" field.
-func (m *TestCollectionMutation) ClearLabel() {
-	m.label = nil
-	m.clearedFields[testcollection.FieldLabel] = struct{}{}
-}
-
-// LabelCleared returns if the "label" field was cleared in this mutation.
-func (m *TestCollectionMutation) LabelCleared() bool {
-	_, ok := m.clearedFields[testcollection.FieldLabel]
-	return ok
-}
-
-// ResetLabel resets all changes to the "label" field.
-func (m *TestCollectionMutation) ResetLabel() {
-	m.label = nil
-	delete(m.clearedFields, testcollection.FieldLabel)
-}
-
-// SetOverallStatus sets the "overall_status" field.
-func (m *TestCollectionMutation) SetOverallStatus(ts testcollection.OverallStatus) {
-	m.overall_status = &ts
-}
-
-// OverallStatus returns the value of the "overall_status" field in the mutation.
-func (m *TestCollectionMutation) OverallStatus() (r testcollection.OverallStatus, exists bool) {
-	v := m.overall_status
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldOverallStatus returns the old "overall_status" field's value of the TestCollection entity.
-// If the TestCollection object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestCollectionMutation) OldOverallStatus(ctx context.Context) (v testcollection.OverallStatus, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOverallStatus is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOverallStatus requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOverallStatus: %w", err)
-	}
-	return oldValue.OverallStatus, nil
-}
-
-// ClearOverallStatus clears the value of the "overall_status" field.
-func (m *TestCollectionMutation) ClearOverallStatus() {
-	m.overall_status = nil
-	m.clearedFields[testcollection.FieldOverallStatus] = struct{}{}
-}
-
-// OverallStatusCleared returns if the "overall_status" field was cleared in this mutation.
-func (m *TestCollectionMutation) OverallStatusCleared() bool {
-	_, ok := m.clearedFields[testcollection.FieldOverallStatus]
-	return ok
-}
-
-// ResetOverallStatus resets all changes to the "overall_status" field.
-func (m *TestCollectionMutation) ResetOverallStatus() {
-	m.overall_status = nil
-	delete(m.clearedFields, testcollection.FieldOverallStatus)
-}
-
-// SetStrategy sets the "strategy" field.
-func (m *TestCollectionMutation) SetStrategy(s string) {
-	m.strategy = &s
-}
-
-// Strategy returns the value of the "strategy" field in the mutation.
-func (m *TestCollectionMutation) Strategy() (r string, exists bool) {
-	v := m.strategy
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStrategy returns the old "strategy" field's value of the TestCollection entity.
-// If the TestCollection object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestCollectionMutation) OldStrategy(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStrategy is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStrategy requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStrategy: %w", err)
-	}
-	return oldValue.Strategy, nil
-}
-
-// ClearStrategy clears the value of the "strategy" field.
-func (m *TestCollectionMutation) ClearStrategy() {
-	m.strategy = nil
-	m.clearedFields[testcollection.FieldStrategy] = struct{}{}
-}
-
-// StrategyCleared returns if the "strategy" field was cleared in this mutation.
-func (m *TestCollectionMutation) StrategyCleared() bool {
-	_, ok := m.clearedFields[testcollection.FieldStrategy]
-	return ok
-}
-
-// ResetStrategy resets all changes to the "strategy" field.
-func (m *TestCollectionMutation) ResetStrategy() {
-	m.strategy = nil
-	delete(m.clearedFields, testcollection.FieldStrategy)
-}
-
-// SetCachedLocally sets the "cached_locally" field.
-func (m *TestCollectionMutation) SetCachedLocally(b bool) {
-	m.cached_locally = &b
-}
-
-// CachedLocally returns the value of the "cached_locally" field in the mutation.
-func (m *TestCollectionMutation) CachedLocally() (r bool, exists bool) {
-	v := m.cached_locally
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCachedLocally returns the old "cached_locally" field's value of the TestCollection entity.
-// If the TestCollection object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestCollectionMutation) OldCachedLocally(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCachedLocally is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCachedLocally requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCachedLocally: %w", err)
-	}
-	return oldValue.CachedLocally, nil
-}
-
-// ClearCachedLocally clears the value of the "cached_locally" field.
-func (m *TestCollectionMutation) ClearCachedLocally() {
-	m.cached_locally = nil
-	m.clearedFields[testcollection.FieldCachedLocally] = struct{}{}
-}
-
-// CachedLocallyCleared returns if the "cached_locally" field was cleared in this mutation.
-func (m *TestCollectionMutation) CachedLocallyCleared() bool {
-	_, ok := m.clearedFields[testcollection.FieldCachedLocally]
-	return ok
-}
-
-// ResetCachedLocally resets all changes to the "cached_locally" field.
-func (m *TestCollectionMutation) ResetCachedLocally() {
-	m.cached_locally = nil
-	delete(m.clearedFields, testcollection.FieldCachedLocally)
-}
-
-// SetCachedRemotely sets the "cached_remotely" field.
-func (m *TestCollectionMutation) SetCachedRemotely(b bool) {
-	m.cached_remotely = &b
-}
-
-// CachedRemotely returns the value of the "cached_remotely" field in the mutation.
-func (m *TestCollectionMutation) CachedRemotely() (r bool, exists bool) {
-	v := m.cached_remotely
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCachedRemotely returns the old "cached_remotely" field's value of the TestCollection entity.
-// If the TestCollection object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestCollectionMutation) OldCachedRemotely(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCachedRemotely is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCachedRemotely requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCachedRemotely: %w", err)
-	}
-	return oldValue.CachedRemotely, nil
-}
-
-// ClearCachedRemotely clears the value of the "cached_remotely" field.
-func (m *TestCollectionMutation) ClearCachedRemotely() {
-	m.cached_remotely = nil
-	m.clearedFields[testcollection.FieldCachedRemotely] = struct{}{}
-}
-
-// CachedRemotelyCleared returns if the "cached_remotely" field was cleared in this mutation.
-func (m *TestCollectionMutation) CachedRemotelyCleared() bool {
-	_, ok := m.clearedFields[testcollection.FieldCachedRemotely]
-	return ok
-}
-
-// ResetCachedRemotely resets all changes to the "cached_remotely" field.
-func (m *TestCollectionMutation) ResetCachedRemotely() {
-	m.cached_remotely = nil
-	delete(m.clearedFields, testcollection.FieldCachedRemotely)
-}
-
-// SetFirstSeen sets the "first_seen" field.
-func (m *TestCollectionMutation) SetFirstSeen(t time.Time) {
-	m.first_seen = &t
-}
-
-// FirstSeen returns the value of the "first_seen" field in the mutation.
-func (m *TestCollectionMutation) FirstSeen() (r time.Time, exists bool) {
-	v := m.first_seen
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFirstSeen returns the old "first_seen" field's value of the TestCollection entity.
-// If the TestCollection object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestCollectionMutation) OldFirstSeen(ctx context.Context) (v *time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFirstSeen is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFirstSeen requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFirstSeen: %w", err)
-	}
-	return oldValue.FirstSeen, nil
-}
-
-// ClearFirstSeen clears the value of the "first_seen" field.
-func (m *TestCollectionMutation) ClearFirstSeen() {
-	m.first_seen = nil
-	m.clearedFields[testcollection.FieldFirstSeen] = struct{}{}
-}
-
-// FirstSeenCleared returns if the "first_seen" field was cleared in this mutation.
-func (m *TestCollectionMutation) FirstSeenCleared() bool {
-	_, ok := m.clearedFields[testcollection.FieldFirstSeen]
-	return ok
-}
-
-// ResetFirstSeen resets all changes to the "first_seen" field.
-func (m *TestCollectionMutation) ResetFirstSeen() {
-	m.first_seen = nil
-	delete(m.clearedFields, testcollection.FieldFirstSeen)
-}
-
-// SetDurationMs sets the "duration_ms" field.
-func (m *TestCollectionMutation) SetDurationMs(i int64) {
-	m.duration_ms = &i
-	m.addduration_ms = nil
-}
-
-// DurationMs returns the value of the "duration_ms" field in the mutation.
-func (m *TestCollectionMutation) DurationMs() (r int64, exists bool) {
-	v := m.duration_ms
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDurationMs returns the old "duration_ms" field's value of the TestCollection entity.
-// If the TestCollection object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestCollectionMutation) OldDurationMs(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDurationMs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDurationMs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDurationMs: %w", err)
-	}
-	return oldValue.DurationMs, nil
-}
-
-// AddDurationMs adds i to the "duration_ms" field.
-func (m *TestCollectionMutation) AddDurationMs(i int64) {
-	if m.addduration_ms != nil {
-		*m.addduration_ms += i
+// AddRun adds i to the "run" field.
+func (m *TestResultMutation) AddRun(i int32) {
+	if m.addrun != nil {
+		*m.addrun += i
 	} else {
-		m.addduration_ms = &i
+		m.addrun = &i
 	}
 }
 
-// AddedDurationMs returns the value that was added to the "duration_ms" field in this mutation.
-func (m *TestCollectionMutation) AddedDurationMs() (r int64, exists bool) {
-	v := m.addduration_ms
+// AddedRun returns the value that was added to the "run" field in this mutation.
+func (m *TestResultMutation) AddedRun() (r int32, exists bool) {
+	v := m.addrun
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearDurationMs clears the value of the "duration_ms" field.
-func (m *TestCollectionMutation) ClearDurationMs() {
-	m.duration_ms = nil
-	m.addduration_ms = nil
-	m.clearedFields[testcollection.FieldDurationMs] = struct{}{}
+// ResetRun resets all changes to the "run" field.
+func (m *TestResultMutation) ResetRun() {
+	m.run = nil
+	m.addrun = nil
 }
 
-// DurationMsCleared returns if the "duration_ms" field was cleared in this mutation.
-func (m *TestCollectionMutation) DurationMsCleared() bool {
-	_, ok := m.clearedFields[testcollection.FieldDurationMs]
-	return ok
+// SetShard sets the "shard" field.
+func (m *TestResultMutation) SetShard(i int32) {
+	m.shard = &i
+	m.addshard = nil
 }
 
-// ResetDurationMs resets all changes to the "duration_ms" field.
-func (m *TestCollectionMutation) ResetDurationMs() {
-	m.duration_ms = nil
-	m.addduration_ms = nil
-	delete(m.clearedFields, testcollection.FieldDurationMs)
-}
-
-// SetBazelInvocationID sets the "bazel_invocation" edge to the BazelInvocation entity by id.
-func (m *TestCollectionMutation) SetBazelInvocationID(id int64) {
-	m.bazel_invocation = &id
-}
-
-// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
-func (m *TestCollectionMutation) ClearBazelInvocation() {
-	m.clearedbazel_invocation = true
-}
-
-// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
-func (m *TestCollectionMutation) BazelInvocationCleared() bool {
-	return m.clearedbazel_invocation
-}
-
-// BazelInvocationID returns the "bazel_invocation" edge ID in the mutation.
-func (m *TestCollectionMutation) BazelInvocationID() (id int64, exists bool) {
-	if m.bazel_invocation != nil {
-		return *m.bazel_invocation, true
-	}
-	return
-}
-
-// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// BazelInvocationID instead. It exists only for internal usage by the builders.
-func (m *TestCollectionMutation) BazelInvocationIDs() (ids []int64) {
-	if id := m.bazel_invocation; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
-func (m *TestCollectionMutation) ResetBazelInvocation() {
-	m.bazel_invocation = nil
-	m.clearedbazel_invocation = false
-}
-
-// SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by id.
-func (m *TestCollectionMutation) SetTestSummaryID(id int64) {
-	m.test_summary = &id
-}
-
-// ClearTestSummary clears the "test_summary" edge to the TestSummary entity.
-func (m *TestCollectionMutation) ClearTestSummary() {
-	m.clearedtest_summary = true
-}
-
-// TestSummaryCleared reports if the "test_summary" edge to the TestSummary entity was cleared.
-func (m *TestCollectionMutation) TestSummaryCleared() bool {
-	return m.clearedtest_summary
-}
-
-// TestSummaryID returns the "test_summary" edge ID in the mutation.
-func (m *TestCollectionMutation) TestSummaryID() (id int64, exists bool) {
-	if m.test_summary != nil {
-		return *m.test_summary, true
-	}
-	return
-}
-
-// TestSummaryIDs returns the "test_summary" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// TestSummaryID instead. It exists only for internal usage by the builders.
-func (m *TestCollectionMutation) TestSummaryIDs() (ids []int64) {
-	if id := m.test_summary; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetTestSummary resets all changes to the "test_summary" edge.
-func (m *TestCollectionMutation) ResetTestSummary() {
-	m.test_summary = nil
-	m.clearedtest_summary = false
-}
-
-// AddTestResultIDs adds the "test_results" edge to the TestResultBES entity by ids.
-func (m *TestCollectionMutation) AddTestResultIDs(ids ...int64) {
-	if m.test_results == nil {
-		m.test_results = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.test_results[ids[i]] = struct{}{}
-	}
-}
-
-// ClearTestResults clears the "test_results" edge to the TestResultBES entity.
-func (m *TestCollectionMutation) ClearTestResults() {
-	m.clearedtest_results = true
-}
-
-// TestResultsCleared reports if the "test_results" edge to the TestResultBES entity was cleared.
-func (m *TestCollectionMutation) TestResultsCleared() bool {
-	return m.clearedtest_results
-}
-
-// RemoveTestResultIDs removes the "test_results" edge to the TestResultBES entity by IDs.
-func (m *TestCollectionMutation) RemoveTestResultIDs(ids ...int64) {
-	if m.removedtest_results == nil {
-		m.removedtest_results = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.test_results, ids[i])
-		m.removedtest_results[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTestResults returns the removed IDs of the "test_results" edge to the TestResultBES entity.
-func (m *TestCollectionMutation) RemovedTestResultsIDs() (ids []int64) {
-	for id := range m.removedtest_results {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// TestResultsIDs returns the "test_results" edge IDs in the mutation.
-func (m *TestCollectionMutation) TestResultsIDs() (ids []int64) {
-	for id := range m.test_results {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetTestResults resets all changes to the "test_results" edge.
-func (m *TestCollectionMutation) ResetTestResults() {
-	m.test_results = nil
-	m.clearedtest_results = false
-	m.removedtest_results = nil
-}
-
-// Where appends a list predicates to the TestCollectionMutation builder.
-func (m *TestCollectionMutation) Where(ps ...predicate.TestCollection) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the TestCollectionMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *TestCollectionMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.TestCollection, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *TestCollectionMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *TestCollectionMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (TestCollection).
-func (m *TestCollectionMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *TestCollectionMutation) Fields() []string {
-	fields := make([]string, 0, 7)
-	if m.label != nil {
-		fields = append(fields, testcollection.FieldLabel)
-	}
-	if m.overall_status != nil {
-		fields = append(fields, testcollection.FieldOverallStatus)
-	}
-	if m.strategy != nil {
-		fields = append(fields, testcollection.FieldStrategy)
-	}
-	if m.cached_locally != nil {
-		fields = append(fields, testcollection.FieldCachedLocally)
-	}
-	if m.cached_remotely != nil {
-		fields = append(fields, testcollection.FieldCachedRemotely)
-	}
-	if m.first_seen != nil {
-		fields = append(fields, testcollection.FieldFirstSeen)
-	}
-	if m.duration_ms != nil {
-		fields = append(fields, testcollection.FieldDurationMs)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *TestCollectionMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case testcollection.FieldLabel:
-		return m.Label()
-	case testcollection.FieldOverallStatus:
-		return m.OverallStatus()
-	case testcollection.FieldStrategy:
-		return m.Strategy()
-	case testcollection.FieldCachedLocally:
-		return m.CachedLocally()
-	case testcollection.FieldCachedRemotely:
-		return m.CachedRemotely()
-	case testcollection.FieldFirstSeen:
-		return m.FirstSeen()
-	case testcollection.FieldDurationMs:
-		return m.DurationMs()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *TestCollectionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case testcollection.FieldLabel:
-		return m.OldLabel(ctx)
-	case testcollection.FieldOverallStatus:
-		return m.OldOverallStatus(ctx)
-	case testcollection.FieldStrategy:
-		return m.OldStrategy(ctx)
-	case testcollection.FieldCachedLocally:
-		return m.OldCachedLocally(ctx)
-	case testcollection.FieldCachedRemotely:
-		return m.OldCachedRemotely(ctx)
-	case testcollection.FieldFirstSeen:
-		return m.OldFirstSeen(ctx)
-	case testcollection.FieldDurationMs:
-		return m.OldDurationMs(ctx)
-	}
-	return nil, fmt.Errorf("unknown TestCollection field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *TestCollectionMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case testcollection.FieldLabel:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLabel(v)
-		return nil
-	case testcollection.FieldOverallStatus:
-		v, ok := value.(testcollection.OverallStatus)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetOverallStatus(v)
-		return nil
-	case testcollection.FieldStrategy:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStrategy(v)
-		return nil
-	case testcollection.FieldCachedLocally:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCachedLocally(v)
-		return nil
-	case testcollection.FieldCachedRemotely:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCachedRemotely(v)
-		return nil
-	case testcollection.FieldFirstSeen:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFirstSeen(v)
-		return nil
-	case testcollection.FieldDurationMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDurationMs(v)
-		return nil
-	}
-	return fmt.Errorf("unknown TestCollection field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *TestCollectionMutation) AddedFields() []string {
-	var fields []string
-	if m.addduration_ms != nil {
-		fields = append(fields, testcollection.FieldDurationMs)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *TestCollectionMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case testcollection.FieldDurationMs:
-		return m.AddedDurationMs()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *TestCollectionMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case testcollection.FieldDurationMs:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddDurationMs(v)
-		return nil
-	}
-	return fmt.Errorf("unknown TestCollection numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *TestCollectionMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(testcollection.FieldLabel) {
-		fields = append(fields, testcollection.FieldLabel)
-	}
-	if m.FieldCleared(testcollection.FieldOverallStatus) {
-		fields = append(fields, testcollection.FieldOverallStatus)
-	}
-	if m.FieldCleared(testcollection.FieldStrategy) {
-		fields = append(fields, testcollection.FieldStrategy)
-	}
-	if m.FieldCleared(testcollection.FieldCachedLocally) {
-		fields = append(fields, testcollection.FieldCachedLocally)
-	}
-	if m.FieldCleared(testcollection.FieldCachedRemotely) {
-		fields = append(fields, testcollection.FieldCachedRemotely)
-	}
-	if m.FieldCleared(testcollection.FieldFirstSeen) {
-		fields = append(fields, testcollection.FieldFirstSeen)
-	}
-	if m.FieldCleared(testcollection.FieldDurationMs) {
-		fields = append(fields, testcollection.FieldDurationMs)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *TestCollectionMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *TestCollectionMutation) ClearField(name string) error {
-	switch name {
-	case testcollection.FieldLabel:
-		m.ClearLabel()
-		return nil
-	case testcollection.FieldOverallStatus:
-		m.ClearOverallStatus()
-		return nil
-	case testcollection.FieldStrategy:
-		m.ClearStrategy()
-		return nil
-	case testcollection.FieldCachedLocally:
-		m.ClearCachedLocally()
-		return nil
-	case testcollection.FieldCachedRemotely:
-		m.ClearCachedRemotely()
-		return nil
-	case testcollection.FieldFirstSeen:
-		m.ClearFirstSeen()
-		return nil
-	case testcollection.FieldDurationMs:
-		m.ClearDurationMs()
-		return nil
-	}
-	return fmt.Errorf("unknown TestCollection nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *TestCollectionMutation) ResetField(name string) error {
-	switch name {
-	case testcollection.FieldLabel:
-		m.ResetLabel()
-		return nil
-	case testcollection.FieldOverallStatus:
-		m.ResetOverallStatus()
-		return nil
-	case testcollection.FieldStrategy:
-		m.ResetStrategy()
-		return nil
-	case testcollection.FieldCachedLocally:
-		m.ResetCachedLocally()
-		return nil
-	case testcollection.FieldCachedRemotely:
-		m.ResetCachedRemotely()
-		return nil
-	case testcollection.FieldFirstSeen:
-		m.ResetFirstSeen()
-		return nil
-	case testcollection.FieldDurationMs:
-		m.ResetDurationMs()
-		return nil
-	}
-	return fmt.Errorf("unknown TestCollection field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *TestCollectionMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.bazel_invocation != nil {
-		edges = append(edges, testcollection.EdgeBazelInvocation)
-	}
-	if m.test_summary != nil {
-		edges = append(edges, testcollection.EdgeTestSummary)
-	}
-	if m.test_results != nil {
-		edges = append(edges, testcollection.EdgeTestResults)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *TestCollectionMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case testcollection.EdgeBazelInvocation:
-		if id := m.bazel_invocation; id != nil {
-			return []ent.Value{*id}
-		}
-	case testcollection.EdgeTestSummary:
-		if id := m.test_summary; id != nil {
-			return []ent.Value{*id}
-		}
-	case testcollection.EdgeTestResults:
-		ids := make([]ent.Value, 0, len(m.test_results))
-		for id := range m.test_results {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *TestCollectionMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.removedtest_results != nil {
-		edges = append(edges, testcollection.EdgeTestResults)
-	}
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *TestCollectionMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case testcollection.EdgeTestResults:
-		ids := make([]ent.Value, 0, len(m.removedtest_results))
-		for id := range m.removedtest_results {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *TestCollectionMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.clearedbazel_invocation {
-		edges = append(edges, testcollection.EdgeBazelInvocation)
-	}
-	if m.clearedtest_summary {
-		edges = append(edges, testcollection.EdgeTestSummary)
-	}
-	if m.clearedtest_results {
-		edges = append(edges, testcollection.EdgeTestResults)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *TestCollectionMutation) EdgeCleared(name string) bool {
-	switch name {
-	case testcollection.EdgeBazelInvocation:
-		return m.clearedbazel_invocation
-	case testcollection.EdgeTestSummary:
-		return m.clearedtest_summary
-	case testcollection.EdgeTestResults:
-		return m.clearedtest_results
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *TestCollectionMutation) ClearEdge(name string) error {
-	switch name {
-	case testcollection.EdgeBazelInvocation:
-		m.ClearBazelInvocation()
-		return nil
-	case testcollection.EdgeTestSummary:
-		m.ClearTestSummary()
-		return nil
-	}
-	return fmt.Errorf("unknown TestCollection unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *TestCollectionMutation) ResetEdge(name string) error {
-	switch name {
-	case testcollection.EdgeBazelInvocation:
-		m.ResetBazelInvocation()
-		return nil
-	case testcollection.EdgeTestSummary:
-		m.ResetTestSummary()
-		return nil
-	case testcollection.EdgeTestResults:
-		m.ResetTestResults()
-		return nil
-	}
-	return fmt.Errorf("unknown TestCollection edge %s", name)
-}
-
-// TestFileMutation represents an operation that mutates the TestFile nodes in the graph.
-type TestFileMutation struct {
-	config
-	op                 Op
-	typ                string
-	id                 *int64
-	digest             *string
-	file               *string
-	length             *int64
-	addlength          *int64
-	name               *string
-	prefix             *[]string
-	appendprefix       []string
-	clearedFields      map[string]struct{}
-	test_result        *int64
-	clearedtest_result bool
-	done               bool
-	oldValue           func(context.Context) (*TestFile, error)
-	predicates         []predicate.TestFile
-}
-
-var _ ent.Mutation = (*TestFileMutation)(nil)
-
-// testfileOption allows management of the mutation configuration using functional options.
-type testfileOption func(*TestFileMutation)
-
-// newTestFileMutation creates new mutation for the TestFile entity.
-func newTestFileMutation(c config, op Op, opts ...testfileOption) *TestFileMutation {
-	m := &TestFileMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeTestFile,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withTestFileID sets the ID field of the mutation.
-func withTestFileID(id int64) testfileOption {
-	return func(m *TestFileMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *TestFile
-		)
-		m.oldValue = func(ctx context.Context) (*TestFile, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().TestFile.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withTestFile sets the old TestFile of the mutation.
-func withTestFile(node *TestFile) testfileOption {
-	return func(m *TestFileMutation) {
-		m.oldValue = func(context.Context) (*TestFile, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m TestFileMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m TestFileMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of TestFile entities.
-func (m *TestFileMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *TestFileMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *TestFileMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().TestFile.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetDigest sets the "digest" field.
-func (m *TestFileMutation) SetDigest(s string) {
-	m.digest = &s
-}
-
-// Digest returns the value of the "digest" field in the mutation.
-func (m *TestFileMutation) Digest() (r string, exists bool) {
-	v := m.digest
+// Shard returns the value of the "shard" field in the mutation.
+func (m *TestResultMutation) Shard() (r int32, exists bool) {
+	v := m.shard
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldDigest returns the old "digest" field's value of the TestFile entity.
-// If the TestFile object wasn't provided to the builder, the object is fetched from the database.
+// OldShard returns the old "shard" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestFileMutation) OldDigest(ctx context.Context) (v string, err error) {
+func (m *TestResultMutation) OldShard(ctx context.Context) (v int32, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDigest is only allowed on UpdateOne operations")
+		return v, errors.New("OldShard is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDigest requires an ID field in the mutation")
+		return v, errors.New("OldShard requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDigest: %w", err)
+		return v, fmt.Errorf("querying old value for OldShard: %w", err)
 	}
-	return oldValue.Digest, nil
+	return oldValue.Shard, nil
 }
 
-// ClearDigest clears the value of the "digest" field.
-func (m *TestFileMutation) ClearDigest() {
-	m.digest = nil
-	m.clearedFields[testfile.FieldDigest] = struct{}{}
-}
-
-// DigestCleared returns if the "digest" field was cleared in this mutation.
-func (m *TestFileMutation) DigestCleared() bool {
-	_, ok := m.clearedFields[testfile.FieldDigest]
-	return ok
-}
-
-// ResetDigest resets all changes to the "digest" field.
-func (m *TestFileMutation) ResetDigest() {
-	m.digest = nil
-	delete(m.clearedFields, testfile.FieldDigest)
-}
-
-// SetFile sets the "file" field.
-func (m *TestFileMutation) SetFile(s string) {
-	m.file = &s
-}
-
-// File returns the value of the "file" field in the mutation.
-func (m *TestFileMutation) File() (r string, exists bool) {
-	v := m.file
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFile returns the old "file" field's value of the TestFile entity.
-// If the TestFile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestFileMutation) OldFile(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFile is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFile requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFile: %w", err)
-	}
-	return oldValue.File, nil
-}
-
-// ClearFile clears the value of the "file" field.
-func (m *TestFileMutation) ClearFile() {
-	m.file = nil
-	m.clearedFields[testfile.FieldFile] = struct{}{}
-}
-
-// FileCleared returns if the "file" field was cleared in this mutation.
-func (m *TestFileMutation) FileCleared() bool {
-	_, ok := m.clearedFields[testfile.FieldFile]
-	return ok
-}
-
-// ResetFile resets all changes to the "file" field.
-func (m *TestFileMutation) ResetFile() {
-	m.file = nil
-	delete(m.clearedFields, testfile.FieldFile)
-}
-
-// SetLength sets the "length" field.
-func (m *TestFileMutation) SetLength(i int64) {
-	m.length = &i
-	m.addlength = nil
-}
-
-// Length returns the value of the "length" field in the mutation.
-func (m *TestFileMutation) Length() (r int64, exists bool) {
-	v := m.length
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLength returns the old "length" field's value of the TestFile entity.
-// If the TestFile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestFileMutation) OldLength(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLength is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLength requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLength: %w", err)
-	}
-	return oldValue.Length, nil
-}
-
-// AddLength adds i to the "length" field.
-func (m *TestFileMutation) AddLength(i int64) {
-	if m.addlength != nil {
-		*m.addlength += i
+// AddShard adds i to the "shard" field.
+func (m *TestResultMutation) AddShard(i int32) {
+	if m.addshard != nil {
+		*m.addshard += i
 	} else {
-		m.addlength = &i
+		m.addshard = &i
 	}
 }
 
-// AddedLength returns the value that was added to the "length" field in this mutation.
-func (m *TestFileMutation) AddedLength() (r int64, exists bool) {
-	v := m.addlength
+// AddedShard returns the value that was added to the "shard" field in this mutation.
+func (m *TestResultMutation) AddedShard() (r int32, exists bool) {
+	v := m.addshard
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearLength clears the value of the "length" field.
-func (m *TestFileMutation) ClearLength() {
-	m.length = nil
-	m.addlength = nil
-	m.clearedFields[testfile.FieldLength] = struct{}{}
+// ResetShard resets all changes to the "shard" field.
+func (m *TestResultMutation) ResetShard() {
+	m.shard = nil
+	m.addshard = nil
 }
 
-// LengthCleared returns if the "length" field was cleared in this mutation.
-func (m *TestFileMutation) LengthCleared() bool {
-	_, ok := m.clearedFields[testfile.FieldLength]
-	return ok
+// SetAttempt sets the "attempt" field.
+func (m *TestResultMutation) SetAttempt(i int32) {
+	m.attempt = &i
+	m.addattempt = nil
 }
 
-// ResetLength resets all changes to the "length" field.
-func (m *TestFileMutation) ResetLength() {
-	m.length = nil
-	m.addlength = nil
-	delete(m.clearedFields, testfile.FieldLength)
-}
-
-// SetName sets the "name" field.
-func (m *TestFileMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *TestFileMutation) Name() (r string, exists bool) {
-	v := m.name
+// Attempt returns the value of the "attempt" field in the mutation.
+func (m *TestResultMutation) Attempt() (r int32, exists bool) {
+	v := m.attempt
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldName returns the old "name" field's value of the TestFile entity.
-// If the TestFile object wasn't provided to the builder, the object is fetched from the database.
+// OldAttempt returns the old "attempt" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestFileMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *TestResultMutation) OldAttempt(ctx context.Context) (v int32, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
+		return v, errors.New("OldAttempt is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
+		return v, errors.New("OldAttempt requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
+		return v, fmt.Errorf("querying old value for OldAttempt: %w", err)
 	}
-	return oldValue.Name, nil
+	return oldValue.Attempt, nil
 }
 
-// ClearName clears the value of the "name" field.
-func (m *TestFileMutation) ClearName() {
-	m.name = nil
-	m.clearedFields[testfile.FieldName] = struct{}{}
+// AddAttempt adds i to the "attempt" field.
+func (m *TestResultMutation) AddAttempt(i int32) {
+	if m.addattempt != nil {
+		*m.addattempt += i
+	} else {
+		m.addattempt = &i
+	}
 }
 
-// NameCleared returns if the "name" field was cleared in this mutation.
-func (m *TestFileMutation) NameCleared() bool {
-	_, ok := m.clearedFields[testfile.FieldName]
-	return ok
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *TestFileMutation) ResetName() {
-	m.name = nil
-	delete(m.clearedFields, testfile.FieldName)
-}
-
-// SetPrefix sets the "prefix" field.
-func (m *TestFileMutation) SetPrefix(s []string) {
-	m.prefix = &s
-	m.appendprefix = nil
-}
-
-// Prefix returns the value of the "prefix" field in the mutation.
-func (m *TestFileMutation) Prefix() (r []string, exists bool) {
-	v := m.prefix
+// AddedAttempt returns the value that was added to the "attempt" field in this mutation.
+func (m *TestResultMutation) AddedAttempt() (r int32, exists bool) {
+	v := m.addattempt
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPrefix returns the old "prefix" field's value of the TestFile entity.
-// If the TestFile object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestFileMutation) OldPrefix(ctx context.Context) (v []string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPrefix is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPrefix requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPrefix: %w", err)
-	}
-	return oldValue.Prefix, nil
+// ResetAttempt resets all changes to the "attempt" field.
+func (m *TestResultMutation) ResetAttempt() {
+	m.attempt = nil
+	m.addattempt = nil
 }
 
-// AppendPrefix adds s to the "prefix" field.
-func (m *TestFileMutation) AppendPrefix(s []string) {
-	m.appendprefix = append(m.appendprefix, s...)
+// SetStatus sets the "status" field.
+func (m *TestResultMutation) SetStatus(s string) {
+	m.status = &s
 }
 
-// AppendedPrefix returns the list of values that were appended to the "prefix" field in this mutation.
-func (m *TestFileMutation) AppendedPrefix() ([]string, bool) {
-	if len(m.appendprefix) == 0 {
-		return nil, false
-	}
-	return m.appendprefix, true
-}
-
-// ClearPrefix clears the value of the "prefix" field.
-func (m *TestFileMutation) ClearPrefix() {
-	m.prefix = nil
-	m.appendprefix = nil
-	m.clearedFields[testfile.FieldPrefix] = struct{}{}
-}
-
-// PrefixCleared returns if the "prefix" field was cleared in this mutation.
-func (m *TestFileMutation) PrefixCleared() bool {
-	_, ok := m.clearedFields[testfile.FieldPrefix]
-	return ok
-}
-
-// ResetPrefix resets all changes to the "prefix" field.
-func (m *TestFileMutation) ResetPrefix() {
-	m.prefix = nil
-	m.appendprefix = nil
-	delete(m.clearedFields, testfile.FieldPrefix)
-}
-
-// SetTestResultID sets the "test_result" edge to the TestResultBES entity by id.
-func (m *TestFileMutation) SetTestResultID(id int64) {
-	m.test_result = &id
-}
-
-// ClearTestResult clears the "test_result" edge to the TestResultBES entity.
-func (m *TestFileMutation) ClearTestResult() {
-	m.clearedtest_result = true
-}
-
-// TestResultCleared reports if the "test_result" edge to the TestResultBES entity was cleared.
-func (m *TestFileMutation) TestResultCleared() bool {
-	return m.clearedtest_result
-}
-
-// TestResultID returns the "test_result" edge ID in the mutation.
-func (m *TestFileMutation) TestResultID() (id int64, exists bool) {
-	if m.test_result != nil {
-		return *m.test_result, true
-	}
-	return
-}
-
-// TestResultIDs returns the "test_result" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// TestResultID instead. It exists only for internal usage by the builders.
-func (m *TestFileMutation) TestResultIDs() (ids []int64) {
-	if id := m.test_result; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetTestResult resets all changes to the "test_result" edge.
-func (m *TestFileMutation) ResetTestResult() {
-	m.test_result = nil
-	m.clearedtest_result = false
-}
-
-// Where appends a list predicates to the TestFileMutation builder.
-func (m *TestFileMutation) Where(ps ...predicate.TestFile) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the TestFileMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *TestFileMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.TestFile, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *TestFileMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *TestFileMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (TestFile).
-func (m *TestFileMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *TestFileMutation) Fields() []string {
-	fields := make([]string, 0, 5)
-	if m.digest != nil {
-		fields = append(fields, testfile.FieldDigest)
-	}
-	if m.file != nil {
-		fields = append(fields, testfile.FieldFile)
-	}
-	if m.length != nil {
-		fields = append(fields, testfile.FieldLength)
-	}
-	if m.name != nil {
-		fields = append(fields, testfile.FieldName)
-	}
-	if m.prefix != nil {
-		fields = append(fields, testfile.FieldPrefix)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *TestFileMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case testfile.FieldDigest:
-		return m.Digest()
-	case testfile.FieldFile:
-		return m.File()
-	case testfile.FieldLength:
-		return m.Length()
-	case testfile.FieldName:
-		return m.Name()
-	case testfile.FieldPrefix:
-		return m.Prefix()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *TestFileMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case testfile.FieldDigest:
-		return m.OldDigest(ctx)
-	case testfile.FieldFile:
-		return m.OldFile(ctx)
-	case testfile.FieldLength:
-		return m.OldLength(ctx)
-	case testfile.FieldName:
-		return m.OldName(ctx)
-	case testfile.FieldPrefix:
-		return m.OldPrefix(ctx)
-	}
-	return nil, fmt.Errorf("unknown TestFile field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *TestFileMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case testfile.FieldDigest:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDigest(v)
-		return nil
-	case testfile.FieldFile:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFile(v)
-		return nil
-	case testfile.FieldLength:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLength(v)
-		return nil
-	case testfile.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case testfile.FieldPrefix:
-		v, ok := value.([]string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPrefix(v)
-		return nil
-	}
-	return fmt.Errorf("unknown TestFile field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *TestFileMutation) AddedFields() []string {
-	var fields []string
-	if m.addlength != nil {
-		fields = append(fields, testfile.FieldLength)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *TestFileMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case testfile.FieldLength:
-		return m.AddedLength()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *TestFileMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case testfile.FieldLength:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddLength(v)
-		return nil
-	}
-	return fmt.Errorf("unknown TestFile numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *TestFileMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(testfile.FieldDigest) {
-		fields = append(fields, testfile.FieldDigest)
-	}
-	if m.FieldCleared(testfile.FieldFile) {
-		fields = append(fields, testfile.FieldFile)
-	}
-	if m.FieldCleared(testfile.FieldLength) {
-		fields = append(fields, testfile.FieldLength)
-	}
-	if m.FieldCleared(testfile.FieldName) {
-		fields = append(fields, testfile.FieldName)
-	}
-	if m.FieldCleared(testfile.FieldPrefix) {
-		fields = append(fields, testfile.FieldPrefix)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *TestFileMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *TestFileMutation) ClearField(name string) error {
-	switch name {
-	case testfile.FieldDigest:
-		m.ClearDigest()
-		return nil
-	case testfile.FieldFile:
-		m.ClearFile()
-		return nil
-	case testfile.FieldLength:
-		m.ClearLength()
-		return nil
-	case testfile.FieldName:
-		m.ClearName()
-		return nil
-	case testfile.FieldPrefix:
-		m.ClearPrefix()
-		return nil
-	}
-	return fmt.Errorf("unknown TestFile nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *TestFileMutation) ResetField(name string) error {
-	switch name {
-	case testfile.FieldDigest:
-		m.ResetDigest()
-		return nil
-	case testfile.FieldFile:
-		m.ResetFile()
-		return nil
-	case testfile.FieldLength:
-		m.ResetLength()
-		return nil
-	case testfile.FieldName:
-		m.ResetName()
-		return nil
-	case testfile.FieldPrefix:
-		m.ResetPrefix()
-		return nil
-	}
-	return fmt.Errorf("unknown TestFile field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *TestFileMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.test_result != nil {
-		edges = append(edges, testfile.EdgeTestResult)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *TestFileMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case testfile.EdgeTestResult:
-		if id := m.test_result; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *TestFileMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *TestFileMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *TestFileMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedtest_result {
-		edges = append(edges, testfile.EdgeTestResult)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *TestFileMutation) EdgeCleared(name string) bool {
-	switch name {
-	case testfile.EdgeTestResult:
-		return m.clearedtest_result
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *TestFileMutation) ClearEdge(name string) error {
-	switch name {
-	case testfile.EdgeTestResult:
-		m.ClearTestResult()
-		return nil
-	}
-	return fmt.Errorf("unknown TestFile unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *TestFileMutation) ResetEdge(name string) error {
-	switch name {
-	case testfile.EdgeTestResult:
-		m.ResetTestResult()
-		return nil
-	}
-	return fmt.Errorf("unknown TestFile edge %s", name)
-}
-
-// TestResultBESMutation represents an operation that mutates the TestResultBES nodes in the graph.
-type TestResultBESMutation struct {
-	config
-	op                                 Op
-	typ                                string
-	id                                 *int64
-	test_status                        *testresultbes.TestStatus
-	status_details                     *string
-	label                              *string
-	warning                            *[]string
-	appendwarning                      []string
-	cached_locally                     *bool
-	test_attempt_start_millis_epoch    *int64
-	addtest_attempt_start_millis_epoch *int64
-	test_attempt_start                 *string
-	test_attempt_duration_millis       *int64
-	addtest_attempt_duration_millis    *int64
-	test_attempt_duration              *int64
-	addtest_attempt_duration           *int64
-	clearedFields                      map[string]struct{}
-	test_collection                    *int64
-	clearedtest_collection             bool
-	test_action_output                 map[int64]struct{}
-	removedtest_action_output          map[int64]struct{}
-	clearedtest_action_output          bool
-	execution_info                     *int64
-	clearedexecution_info              bool
-	done                               bool
-	oldValue                           func(context.Context) (*TestResultBES, error)
-	predicates                         []predicate.TestResultBES
-}
-
-var _ ent.Mutation = (*TestResultBESMutation)(nil)
-
-// testresultbesOption allows management of the mutation configuration using functional options.
-type testresultbesOption func(*TestResultBESMutation)
-
-// newTestResultBESMutation creates new mutation for the TestResultBES entity.
-func newTestResultBESMutation(c config, op Op, opts ...testresultbesOption) *TestResultBESMutation {
-	m := &TestResultBESMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeTestResultBES,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withTestResultBESID sets the ID field of the mutation.
-func withTestResultBESID(id int64) testresultbesOption {
-	return func(m *TestResultBESMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *TestResultBES
-		)
-		m.oldValue = func(ctx context.Context) (*TestResultBES, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().TestResultBES.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withTestResultBES sets the old TestResultBES of the mutation.
-func withTestResultBES(node *TestResultBES) testresultbesOption {
-	return func(m *TestResultBESMutation) {
-		m.oldValue = func(context.Context) (*TestResultBES, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m TestResultBESMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m TestResultBESMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of TestResultBES entities.
-func (m *TestResultBESMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *TestResultBESMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *TestResultBESMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().TestResultBES.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetTestStatus sets the "test_status" field.
-func (m *TestResultBESMutation) SetTestStatus(ts testresultbes.TestStatus) {
-	m.test_status = &ts
-}
-
-// TestStatus returns the value of the "test_status" field in the mutation.
-func (m *TestResultBESMutation) TestStatus() (r testresultbes.TestStatus, exists bool) {
-	v := m.test_status
+// Status returns the value of the "status" field in the mutation.
+func (m *TestResultMutation) Status() (r string, exists bool) {
+	v := m.status
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldTestStatus returns the old "test_status" field's value of the TestResultBES entity.
-// If the TestResultBES object wasn't provided to the builder, the object is fetched from the database.
+// OldStatus returns the old "status" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestResultBESMutation) OldTestStatus(ctx context.Context) (v testresultbes.TestStatus, err error) {
+func (m *TestResultMutation) OldStatus(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTestStatus is only allowed on UpdateOne operations")
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTestStatus requires an ID field in the mutation")
+		return v, errors.New("OldStatus requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTestStatus: %w", err)
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
 	}
-	return oldValue.TestStatus, nil
+	return oldValue.Status, nil
 }
 
-// ClearTestStatus clears the value of the "test_status" field.
-func (m *TestResultBESMutation) ClearTestStatus() {
-	m.test_status = nil
-	m.clearedFields[testresultbes.FieldTestStatus] = struct{}{}
+// ClearStatus clears the value of the "status" field.
+func (m *TestResultMutation) ClearStatus() {
+	m.status = nil
+	m.clearedFields[testresult.FieldStatus] = struct{}{}
 }
 
-// TestStatusCleared returns if the "test_status" field was cleared in this mutation.
-func (m *TestResultBESMutation) TestStatusCleared() bool {
-	_, ok := m.clearedFields[testresultbes.FieldTestStatus]
+// StatusCleared returns if the "status" field was cleared in this mutation.
+func (m *TestResultMutation) StatusCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldStatus]
 	return ok
 }
 
-// ResetTestStatus resets all changes to the "test_status" field.
-func (m *TestResultBESMutation) ResetTestStatus() {
-	m.test_status = nil
-	delete(m.clearedFields, testresultbes.FieldTestStatus)
+// ResetStatus resets all changes to the "status" field.
+func (m *TestResultMutation) ResetStatus() {
+	m.status = nil
+	delete(m.clearedFields, testresult.FieldStatus)
 }
 
 // SetStatusDetails sets the "status_details" field.
-func (m *TestResultBESMutation) SetStatusDetails(s string) {
+func (m *TestResultMutation) SetStatusDetails(s string) {
 	m.status_details = &s
 }
 
 // StatusDetails returns the value of the "status_details" field in the mutation.
-func (m *TestResultBESMutation) StatusDetails() (r string, exists bool) {
+func (m *TestResultMutation) StatusDetails() (r string, exists bool) {
 	v := m.status_details
 	if v == nil {
 		return
@@ -34809,10 +30676,10 @@ func (m *TestResultBESMutation) StatusDetails() (r string, exists bool) {
 	return *v, true
 }
 
-// OldStatusDetails returns the old "status_details" field's value of the TestResultBES entity.
-// If the TestResultBES object wasn't provided to the builder, the object is fetched from the database.
+// OldStatusDetails returns the old "status_details" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestResultBESMutation) OldStatusDetails(ctx context.Context) (v string, err error) {
+func (m *TestResultMutation) OldStatusDetails(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStatusDetails is only allowed on UpdateOne operations")
 	}
@@ -34827,144 +30694,30 @@ func (m *TestResultBESMutation) OldStatusDetails(ctx context.Context) (v string,
 }
 
 // ClearStatusDetails clears the value of the "status_details" field.
-func (m *TestResultBESMutation) ClearStatusDetails() {
+func (m *TestResultMutation) ClearStatusDetails() {
 	m.status_details = nil
-	m.clearedFields[testresultbes.FieldStatusDetails] = struct{}{}
+	m.clearedFields[testresult.FieldStatusDetails] = struct{}{}
 }
 
 // StatusDetailsCleared returns if the "status_details" field was cleared in this mutation.
-func (m *TestResultBESMutation) StatusDetailsCleared() bool {
-	_, ok := m.clearedFields[testresultbes.FieldStatusDetails]
+func (m *TestResultMutation) StatusDetailsCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldStatusDetails]
 	return ok
 }
 
 // ResetStatusDetails resets all changes to the "status_details" field.
-func (m *TestResultBESMutation) ResetStatusDetails() {
+func (m *TestResultMutation) ResetStatusDetails() {
 	m.status_details = nil
-	delete(m.clearedFields, testresultbes.FieldStatusDetails)
-}
-
-// SetLabel sets the "label" field.
-func (m *TestResultBESMutation) SetLabel(s string) {
-	m.label = &s
-}
-
-// Label returns the value of the "label" field in the mutation.
-func (m *TestResultBESMutation) Label() (r string, exists bool) {
-	v := m.label
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLabel returns the old "label" field's value of the TestResultBES entity.
-// If the TestResultBES object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestResultBESMutation) OldLabel(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLabel is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLabel requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLabel: %w", err)
-	}
-	return oldValue.Label, nil
-}
-
-// ClearLabel clears the value of the "label" field.
-func (m *TestResultBESMutation) ClearLabel() {
-	m.label = nil
-	m.clearedFields[testresultbes.FieldLabel] = struct{}{}
-}
-
-// LabelCleared returns if the "label" field was cleared in this mutation.
-func (m *TestResultBESMutation) LabelCleared() bool {
-	_, ok := m.clearedFields[testresultbes.FieldLabel]
-	return ok
-}
-
-// ResetLabel resets all changes to the "label" field.
-func (m *TestResultBESMutation) ResetLabel() {
-	m.label = nil
-	delete(m.clearedFields, testresultbes.FieldLabel)
-}
-
-// SetWarning sets the "warning" field.
-func (m *TestResultBESMutation) SetWarning(s []string) {
-	m.warning = &s
-	m.appendwarning = nil
-}
-
-// Warning returns the value of the "warning" field in the mutation.
-func (m *TestResultBESMutation) Warning() (r []string, exists bool) {
-	v := m.warning
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldWarning returns the old "warning" field's value of the TestResultBES entity.
-// If the TestResultBES object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestResultBESMutation) OldWarning(ctx context.Context) (v []string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldWarning is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldWarning requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldWarning: %w", err)
-	}
-	return oldValue.Warning, nil
-}
-
-// AppendWarning adds s to the "warning" field.
-func (m *TestResultBESMutation) AppendWarning(s []string) {
-	m.appendwarning = append(m.appendwarning, s...)
-}
-
-// AppendedWarning returns the list of values that were appended to the "warning" field in this mutation.
-func (m *TestResultBESMutation) AppendedWarning() ([]string, bool) {
-	if len(m.appendwarning) == 0 {
-		return nil, false
-	}
-	return m.appendwarning, true
-}
-
-// ClearWarning clears the value of the "warning" field.
-func (m *TestResultBESMutation) ClearWarning() {
-	m.warning = nil
-	m.appendwarning = nil
-	m.clearedFields[testresultbes.FieldWarning] = struct{}{}
-}
-
-// WarningCleared returns if the "warning" field was cleared in this mutation.
-func (m *TestResultBESMutation) WarningCleared() bool {
-	_, ok := m.clearedFields[testresultbes.FieldWarning]
-	return ok
-}
-
-// ResetWarning resets all changes to the "warning" field.
-func (m *TestResultBESMutation) ResetWarning() {
-	m.warning = nil
-	m.appendwarning = nil
-	delete(m.clearedFields, testresultbes.FieldWarning)
+	delete(m.clearedFields, testresult.FieldStatusDetails)
 }
 
 // SetCachedLocally sets the "cached_locally" field.
-func (m *TestResultBESMutation) SetCachedLocally(b bool) {
+func (m *TestResultMutation) SetCachedLocally(b bool) {
 	m.cached_locally = &b
 }
 
 // CachedLocally returns the value of the "cached_locally" field in the mutation.
-func (m *TestResultBESMutation) CachedLocally() (r bool, exists bool) {
+func (m *TestResultMutation) CachedLocally() (r bool, exists bool) {
 	v := m.cached_locally
 	if v == nil {
 		return
@@ -34972,10 +30725,10 @@ func (m *TestResultBESMutation) CachedLocally() (r bool, exists bool) {
 	return *v, true
 }
 
-// OldCachedLocally returns the old "cached_locally" field's value of the TestResultBES entity.
-// If the TestResultBES object wasn't provided to the builder, the object is fetched from the database.
+// OldCachedLocally returns the old "cached_locally" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestResultBESMutation) OldCachedLocally(ctx context.Context) (v bool, err error) {
+func (m *TestResultMutation) OldCachedLocally(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCachedLocally is only allowed on UpdateOne operations")
 	}
@@ -34990,100 +30743,30 @@ func (m *TestResultBESMutation) OldCachedLocally(ctx context.Context) (v bool, e
 }
 
 // ClearCachedLocally clears the value of the "cached_locally" field.
-func (m *TestResultBESMutation) ClearCachedLocally() {
+func (m *TestResultMutation) ClearCachedLocally() {
 	m.cached_locally = nil
-	m.clearedFields[testresultbes.FieldCachedLocally] = struct{}{}
+	m.clearedFields[testresult.FieldCachedLocally] = struct{}{}
 }
 
 // CachedLocallyCleared returns if the "cached_locally" field was cleared in this mutation.
-func (m *TestResultBESMutation) CachedLocallyCleared() bool {
-	_, ok := m.clearedFields[testresultbes.FieldCachedLocally]
+func (m *TestResultMutation) CachedLocallyCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldCachedLocally]
 	return ok
 }
 
 // ResetCachedLocally resets all changes to the "cached_locally" field.
-func (m *TestResultBESMutation) ResetCachedLocally() {
+func (m *TestResultMutation) ResetCachedLocally() {
 	m.cached_locally = nil
-	delete(m.clearedFields, testresultbes.FieldCachedLocally)
-}
-
-// SetTestAttemptStartMillisEpoch sets the "test_attempt_start_millis_epoch" field.
-func (m *TestResultBESMutation) SetTestAttemptStartMillisEpoch(i int64) {
-	m.test_attempt_start_millis_epoch = &i
-	m.addtest_attempt_start_millis_epoch = nil
-}
-
-// TestAttemptStartMillisEpoch returns the value of the "test_attempt_start_millis_epoch" field in the mutation.
-func (m *TestResultBESMutation) TestAttemptStartMillisEpoch() (r int64, exists bool) {
-	v := m.test_attempt_start_millis_epoch
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTestAttemptStartMillisEpoch returns the old "test_attempt_start_millis_epoch" field's value of the TestResultBES entity.
-// If the TestResultBES object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestResultBESMutation) OldTestAttemptStartMillisEpoch(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTestAttemptStartMillisEpoch is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTestAttemptStartMillisEpoch requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTestAttemptStartMillisEpoch: %w", err)
-	}
-	return oldValue.TestAttemptStartMillisEpoch, nil
-}
-
-// AddTestAttemptStartMillisEpoch adds i to the "test_attempt_start_millis_epoch" field.
-func (m *TestResultBESMutation) AddTestAttemptStartMillisEpoch(i int64) {
-	if m.addtest_attempt_start_millis_epoch != nil {
-		*m.addtest_attempt_start_millis_epoch += i
-	} else {
-		m.addtest_attempt_start_millis_epoch = &i
-	}
-}
-
-// AddedTestAttemptStartMillisEpoch returns the value that was added to the "test_attempt_start_millis_epoch" field in this mutation.
-func (m *TestResultBESMutation) AddedTestAttemptStartMillisEpoch() (r int64, exists bool) {
-	v := m.addtest_attempt_start_millis_epoch
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearTestAttemptStartMillisEpoch clears the value of the "test_attempt_start_millis_epoch" field.
-func (m *TestResultBESMutation) ClearTestAttemptStartMillisEpoch() {
-	m.test_attempt_start_millis_epoch = nil
-	m.addtest_attempt_start_millis_epoch = nil
-	m.clearedFields[testresultbes.FieldTestAttemptStartMillisEpoch] = struct{}{}
-}
-
-// TestAttemptStartMillisEpochCleared returns if the "test_attempt_start_millis_epoch" field was cleared in this mutation.
-func (m *TestResultBESMutation) TestAttemptStartMillisEpochCleared() bool {
-	_, ok := m.clearedFields[testresultbes.FieldTestAttemptStartMillisEpoch]
-	return ok
-}
-
-// ResetTestAttemptStartMillisEpoch resets all changes to the "test_attempt_start_millis_epoch" field.
-func (m *TestResultBESMutation) ResetTestAttemptStartMillisEpoch() {
-	m.test_attempt_start_millis_epoch = nil
-	m.addtest_attempt_start_millis_epoch = nil
-	delete(m.clearedFields, testresultbes.FieldTestAttemptStartMillisEpoch)
+	delete(m.clearedFields, testresult.FieldCachedLocally)
 }
 
 // SetTestAttemptStart sets the "test_attempt_start" field.
-func (m *TestResultBESMutation) SetTestAttemptStart(s string) {
-	m.test_attempt_start = &s
+func (m *TestResultMutation) SetTestAttemptStart(t time.Time) {
+	m.test_attempt_start = &t
 }
 
 // TestAttemptStart returns the value of the "test_attempt_start" field in the mutation.
-func (m *TestResultBESMutation) TestAttemptStart() (r string, exists bool) {
+func (m *TestResultMutation) TestAttemptStart() (r time.Time, exists bool) {
 	v := m.test_attempt_start
 	if v == nil {
 		return
@@ -35091,10 +30774,10 @@ func (m *TestResultBESMutation) TestAttemptStart() (r string, exists bool) {
 	return *v, true
 }
 
-// OldTestAttemptStart returns the old "test_attempt_start" field's value of the TestResultBES entity.
-// If the TestResultBES object wasn't provided to the builder, the object is fetched from the database.
+// OldTestAttemptStart returns the old "test_attempt_start" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestResultBESMutation) OldTestAttemptStart(ctx context.Context) (v string, err error) {
+func (m *TestResultMutation) OldTestAttemptStart(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTestAttemptStart is only allowed on UpdateOne operations")
 	}
@@ -35109,304 +30792,472 @@ func (m *TestResultBESMutation) OldTestAttemptStart(ctx context.Context) (v stri
 }
 
 // ClearTestAttemptStart clears the value of the "test_attempt_start" field.
-func (m *TestResultBESMutation) ClearTestAttemptStart() {
+func (m *TestResultMutation) ClearTestAttemptStart() {
 	m.test_attempt_start = nil
-	m.clearedFields[testresultbes.FieldTestAttemptStart] = struct{}{}
+	m.clearedFields[testresult.FieldTestAttemptStart] = struct{}{}
 }
 
 // TestAttemptStartCleared returns if the "test_attempt_start" field was cleared in this mutation.
-func (m *TestResultBESMutation) TestAttemptStartCleared() bool {
-	_, ok := m.clearedFields[testresultbes.FieldTestAttemptStart]
+func (m *TestResultMutation) TestAttemptStartCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldTestAttemptStart]
 	return ok
 }
 
 // ResetTestAttemptStart resets all changes to the "test_attempt_start" field.
-func (m *TestResultBESMutation) ResetTestAttemptStart() {
+func (m *TestResultMutation) ResetTestAttemptStart() {
 	m.test_attempt_start = nil
-	delete(m.clearedFields, testresultbes.FieldTestAttemptStart)
+	delete(m.clearedFields, testresult.FieldTestAttemptStart)
 }
 
-// SetTestAttemptDurationMillis sets the "test_attempt_duration_millis" field.
-func (m *TestResultBESMutation) SetTestAttemptDurationMillis(i int64) {
-	m.test_attempt_duration_millis = &i
-	m.addtest_attempt_duration_millis = nil
+// SetTestAttemptDurationInMs sets the "test_attempt_duration_in_ms" field.
+func (m *TestResultMutation) SetTestAttemptDurationInMs(i int64) {
+	m.test_attempt_duration_in_ms = &i
+	m.addtest_attempt_duration_in_ms = nil
 }
 
-// TestAttemptDurationMillis returns the value of the "test_attempt_duration_millis" field in the mutation.
-func (m *TestResultBESMutation) TestAttemptDurationMillis() (r int64, exists bool) {
-	v := m.test_attempt_duration_millis
+// TestAttemptDurationInMs returns the value of the "test_attempt_duration_in_ms" field in the mutation.
+func (m *TestResultMutation) TestAttemptDurationInMs() (r int64, exists bool) {
+	v := m.test_attempt_duration_in_ms
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldTestAttemptDurationMillis returns the old "test_attempt_duration_millis" field's value of the TestResultBES entity.
-// If the TestResultBES object wasn't provided to the builder, the object is fetched from the database.
+// OldTestAttemptDurationInMs returns the old "test_attempt_duration_in_ms" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestResultBESMutation) OldTestAttemptDurationMillis(ctx context.Context) (v int64, err error) {
+func (m *TestResultMutation) OldTestAttemptDurationInMs(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTestAttemptDurationMillis is only allowed on UpdateOne operations")
+		return v, errors.New("OldTestAttemptDurationInMs is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTestAttemptDurationMillis requires an ID field in the mutation")
+		return v, errors.New("OldTestAttemptDurationInMs requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTestAttemptDurationMillis: %w", err)
+		return v, fmt.Errorf("querying old value for OldTestAttemptDurationInMs: %w", err)
 	}
-	return oldValue.TestAttemptDurationMillis, nil
+	return oldValue.TestAttemptDurationInMs, nil
 }
 
-// AddTestAttemptDurationMillis adds i to the "test_attempt_duration_millis" field.
-func (m *TestResultBESMutation) AddTestAttemptDurationMillis(i int64) {
-	if m.addtest_attempt_duration_millis != nil {
-		*m.addtest_attempt_duration_millis += i
+// AddTestAttemptDurationInMs adds i to the "test_attempt_duration_in_ms" field.
+func (m *TestResultMutation) AddTestAttemptDurationInMs(i int64) {
+	if m.addtest_attempt_duration_in_ms != nil {
+		*m.addtest_attempt_duration_in_ms += i
 	} else {
-		m.addtest_attempt_duration_millis = &i
+		m.addtest_attempt_duration_in_ms = &i
 	}
 }
 
-// AddedTestAttemptDurationMillis returns the value that was added to the "test_attempt_duration_millis" field in this mutation.
-func (m *TestResultBESMutation) AddedTestAttemptDurationMillis() (r int64, exists bool) {
-	v := m.addtest_attempt_duration_millis
+// AddedTestAttemptDurationInMs returns the value that was added to the "test_attempt_duration_in_ms" field in this mutation.
+func (m *TestResultMutation) AddedTestAttemptDurationInMs() (r int64, exists bool) {
+	v := m.addtest_attempt_duration_in_ms
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearTestAttemptDurationMillis clears the value of the "test_attempt_duration_millis" field.
-func (m *TestResultBESMutation) ClearTestAttemptDurationMillis() {
-	m.test_attempt_duration_millis = nil
-	m.addtest_attempt_duration_millis = nil
-	m.clearedFields[testresultbes.FieldTestAttemptDurationMillis] = struct{}{}
+// ClearTestAttemptDurationInMs clears the value of the "test_attempt_duration_in_ms" field.
+func (m *TestResultMutation) ClearTestAttemptDurationInMs() {
+	m.test_attempt_duration_in_ms = nil
+	m.addtest_attempt_duration_in_ms = nil
+	m.clearedFields[testresult.FieldTestAttemptDurationInMs] = struct{}{}
 }
 
-// TestAttemptDurationMillisCleared returns if the "test_attempt_duration_millis" field was cleared in this mutation.
-func (m *TestResultBESMutation) TestAttemptDurationMillisCleared() bool {
-	_, ok := m.clearedFields[testresultbes.FieldTestAttemptDurationMillis]
+// TestAttemptDurationInMsCleared returns if the "test_attempt_duration_in_ms" field was cleared in this mutation.
+func (m *TestResultMutation) TestAttemptDurationInMsCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldTestAttemptDurationInMs]
 	return ok
 }
 
-// ResetTestAttemptDurationMillis resets all changes to the "test_attempt_duration_millis" field.
-func (m *TestResultBESMutation) ResetTestAttemptDurationMillis() {
-	m.test_attempt_duration_millis = nil
-	m.addtest_attempt_duration_millis = nil
-	delete(m.clearedFields, testresultbes.FieldTestAttemptDurationMillis)
+// ResetTestAttemptDurationInMs resets all changes to the "test_attempt_duration_in_ms" field.
+func (m *TestResultMutation) ResetTestAttemptDurationInMs() {
+	m.test_attempt_duration_in_ms = nil
+	m.addtest_attempt_duration_in_ms = nil
+	delete(m.clearedFields, testresult.FieldTestAttemptDurationInMs)
 }
 
-// SetTestAttemptDuration sets the "test_attempt_duration" field.
-func (m *TestResultBESMutation) SetTestAttemptDuration(i int64) {
-	m.test_attempt_duration = &i
-	m.addtest_attempt_duration = nil
+// SetWarning sets the "warning" field.
+func (m *TestResultMutation) SetWarning(s []string) {
+	m.warning = &s
+	m.appendwarning = nil
 }
 
-// TestAttemptDuration returns the value of the "test_attempt_duration" field in the mutation.
-func (m *TestResultBESMutation) TestAttemptDuration() (r int64, exists bool) {
-	v := m.test_attempt_duration
+// Warning returns the value of the "warning" field in the mutation.
+func (m *TestResultMutation) Warning() (r []string, exists bool) {
+	v := m.warning
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldTestAttemptDuration returns the old "test_attempt_duration" field's value of the TestResultBES entity.
-// If the TestResultBES object wasn't provided to the builder, the object is fetched from the database.
+// OldWarning returns the old "warning" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestResultBESMutation) OldTestAttemptDuration(ctx context.Context) (v int64, err error) {
+func (m *TestResultMutation) OldWarning(ctx context.Context) (v []string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTestAttemptDuration is only allowed on UpdateOne operations")
+		return v, errors.New("OldWarning is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTestAttemptDuration requires an ID field in the mutation")
+		return v, errors.New("OldWarning requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTestAttemptDuration: %w", err)
+		return v, fmt.Errorf("querying old value for OldWarning: %w", err)
 	}
-	return oldValue.TestAttemptDuration, nil
+	return oldValue.Warning, nil
 }
 
-// AddTestAttemptDuration adds i to the "test_attempt_duration" field.
-func (m *TestResultBESMutation) AddTestAttemptDuration(i int64) {
-	if m.addtest_attempt_duration != nil {
-		*m.addtest_attempt_duration += i
-	} else {
-		m.addtest_attempt_duration = &i
-	}
+// AppendWarning adds s to the "warning" field.
+func (m *TestResultMutation) AppendWarning(s []string) {
+	m.appendwarning = append(m.appendwarning, s...)
 }
 
-// AddedTestAttemptDuration returns the value that was added to the "test_attempt_duration" field in this mutation.
-func (m *TestResultBESMutation) AddedTestAttemptDuration() (r int64, exists bool) {
-	v := m.addtest_attempt_duration
+// AppendedWarning returns the list of values that were appended to the "warning" field in this mutation.
+func (m *TestResultMutation) AppendedWarning() ([]string, bool) {
+	if len(m.appendwarning) == 0 {
+		return nil, false
+	}
+	return m.appendwarning, true
+}
+
+// ClearWarning clears the value of the "warning" field.
+func (m *TestResultMutation) ClearWarning() {
+	m.warning = nil
+	m.appendwarning = nil
+	m.clearedFields[testresult.FieldWarning] = struct{}{}
+}
+
+// WarningCleared returns if the "warning" field was cleared in this mutation.
+func (m *TestResultMutation) WarningCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldWarning]
+	return ok
+}
+
+// ResetWarning resets all changes to the "warning" field.
+func (m *TestResultMutation) ResetWarning() {
+	m.warning = nil
+	m.appendwarning = nil
+	delete(m.clearedFields, testresult.FieldWarning)
+}
+
+// SetStrategy sets the "strategy" field.
+func (m *TestResultMutation) SetStrategy(s string) {
+	m.strategy = &s
+}
+
+// Strategy returns the value of the "strategy" field in the mutation.
+func (m *TestResultMutation) Strategy() (r string, exists bool) {
+	v := m.strategy
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearTestAttemptDuration clears the value of the "test_attempt_duration" field.
-func (m *TestResultBESMutation) ClearTestAttemptDuration() {
-	m.test_attempt_duration = nil
-	m.addtest_attempt_duration = nil
-	m.clearedFields[testresultbes.FieldTestAttemptDuration] = struct{}{}
+// OldStrategy returns the old "strategy" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TestResultMutation) OldStrategy(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStrategy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStrategy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStrategy: %w", err)
+	}
+	return oldValue.Strategy, nil
 }
 
-// TestAttemptDurationCleared returns if the "test_attempt_duration" field was cleared in this mutation.
-func (m *TestResultBESMutation) TestAttemptDurationCleared() bool {
-	_, ok := m.clearedFields[testresultbes.FieldTestAttemptDuration]
+// ClearStrategy clears the value of the "strategy" field.
+func (m *TestResultMutation) ClearStrategy() {
+	m.strategy = nil
+	m.clearedFields[testresult.FieldStrategy] = struct{}{}
+}
+
+// StrategyCleared returns if the "strategy" field was cleared in this mutation.
+func (m *TestResultMutation) StrategyCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldStrategy]
 	return ok
 }
 
-// ResetTestAttemptDuration resets all changes to the "test_attempt_duration" field.
-func (m *TestResultBESMutation) ResetTestAttemptDuration() {
-	m.test_attempt_duration = nil
-	m.addtest_attempt_duration = nil
-	delete(m.clearedFields, testresultbes.FieldTestAttemptDuration)
+// ResetStrategy resets all changes to the "strategy" field.
+func (m *TestResultMutation) ResetStrategy() {
+	m.strategy = nil
+	delete(m.clearedFields, testresult.FieldStrategy)
 }
 
-// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by id.
-func (m *TestResultBESMutation) SetTestCollectionID(id int64) {
-	m.test_collection = &id
+// SetCachedRemotely sets the "cached_remotely" field.
+func (m *TestResultMutation) SetCachedRemotely(b bool) {
+	m.cached_remotely = &b
 }
 
-// ClearTestCollection clears the "test_collection" edge to the TestCollection entity.
-func (m *TestResultBESMutation) ClearTestCollection() {
-	m.clearedtest_collection = true
+// CachedRemotely returns the value of the "cached_remotely" field in the mutation.
+func (m *TestResultMutation) CachedRemotely() (r bool, exists bool) {
+	v := m.cached_remotely
+	if v == nil {
+		return
+	}
+	return *v, true
 }
 
-// TestCollectionCleared reports if the "test_collection" edge to the TestCollection entity was cleared.
-func (m *TestResultBESMutation) TestCollectionCleared() bool {
-	return m.clearedtest_collection
+// OldCachedRemotely returns the old "cached_remotely" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TestResultMutation) OldCachedRemotely(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCachedRemotely is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCachedRemotely requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCachedRemotely: %w", err)
+	}
+	return oldValue.CachedRemotely, nil
 }
 
-// TestCollectionID returns the "test_collection" edge ID in the mutation.
-func (m *TestResultBESMutation) TestCollectionID() (id int64, exists bool) {
-	if m.test_collection != nil {
-		return *m.test_collection, true
+// ClearCachedRemotely clears the value of the "cached_remotely" field.
+func (m *TestResultMutation) ClearCachedRemotely() {
+	m.cached_remotely = nil
+	m.clearedFields[testresult.FieldCachedRemotely] = struct{}{}
+}
+
+// CachedRemotelyCleared returns if the "cached_remotely" field was cleared in this mutation.
+func (m *TestResultMutation) CachedRemotelyCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldCachedRemotely]
+	return ok
+}
+
+// ResetCachedRemotely resets all changes to the "cached_remotely" field.
+func (m *TestResultMutation) ResetCachedRemotely() {
+	m.cached_remotely = nil
+	delete(m.clearedFields, testresult.FieldCachedRemotely)
+}
+
+// SetExitCode sets the "exit_code" field.
+func (m *TestResultMutation) SetExitCode(i int32) {
+	m.exit_code = &i
+	m.addexit_code = nil
+}
+
+// ExitCode returns the value of the "exit_code" field in the mutation.
+func (m *TestResultMutation) ExitCode() (r int32, exists bool) {
+	v := m.exit_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldExitCode returns the old "exit_code" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TestResultMutation) OldExitCode(ctx context.Context) (v int32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldExitCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldExitCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldExitCode: %w", err)
+	}
+	return oldValue.ExitCode, nil
+}
+
+// AddExitCode adds i to the "exit_code" field.
+func (m *TestResultMutation) AddExitCode(i int32) {
+	if m.addexit_code != nil {
+		*m.addexit_code += i
+	} else {
+		m.addexit_code = &i
+	}
+}
+
+// AddedExitCode returns the value that was added to the "exit_code" field in this mutation.
+func (m *TestResultMutation) AddedExitCode() (r int32, exists bool) {
+	v := m.addexit_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearExitCode clears the value of the "exit_code" field.
+func (m *TestResultMutation) ClearExitCode() {
+	m.exit_code = nil
+	m.addexit_code = nil
+	m.clearedFields[testresult.FieldExitCode] = struct{}{}
+}
+
+// ExitCodeCleared returns if the "exit_code" field was cleared in this mutation.
+func (m *TestResultMutation) ExitCodeCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldExitCode]
+	return ok
+}
+
+// ResetExitCode resets all changes to the "exit_code" field.
+func (m *TestResultMutation) ResetExitCode() {
+	m.exit_code = nil
+	m.addexit_code = nil
+	delete(m.clearedFields, testresult.FieldExitCode)
+}
+
+// SetHostname sets the "hostname" field.
+func (m *TestResultMutation) SetHostname(s string) {
+	m.hostname = &s
+}
+
+// Hostname returns the value of the "hostname" field in the mutation.
+func (m *TestResultMutation) Hostname() (r string, exists bool) {
+	v := m.hostname
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHostname returns the old "hostname" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TestResultMutation) OldHostname(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHostname is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHostname requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHostname: %w", err)
+	}
+	return oldValue.Hostname, nil
+}
+
+// ClearHostname clears the value of the "hostname" field.
+func (m *TestResultMutation) ClearHostname() {
+	m.hostname = nil
+	m.clearedFields[testresult.FieldHostname] = struct{}{}
+}
+
+// HostnameCleared returns if the "hostname" field was cleared in this mutation.
+func (m *TestResultMutation) HostnameCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldHostname]
+	return ok
+}
+
+// ResetHostname resets all changes to the "hostname" field.
+func (m *TestResultMutation) ResetHostname() {
+	m.hostname = nil
+	delete(m.clearedFields, testresult.FieldHostname)
+}
+
+// SetTimingBreakdown sets the "timing_breakdown" field.
+func (m *TestResultMutation) SetTimingBreakdown(value map[string]interface{}) {
+	m.timing_breakdown = &value
+}
+
+// TimingBreakdown returns the value of the "timing_breakdown" field in the mutation.
+func (m *TestResultMutation) TimingBreakdown() (r map[string]interface{}, exists bool) {
+	v := m.timing_breakdown
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTimingBreakdown returns the old "timing_breakdown" field's value of the TestResult entity.
+// If the TestResult object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TestResultMutation) OldTimingBreakdown(ctx context.Context) (v map[string]interface{}, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTimingBreakdown is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTimingBreakdown requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTimingBreakdown: %w", err)
+	}
+	return oldValue.TimingBreakdown, nil
+}
+
+// ClearTimingBreakdown clears the value of the "timing_breakdown" field.
+func (m *TestResultMutation) ClearTimingBreakdown() {
+	m.timing_breakdown = nil
+	m.clearedFields[testresult.FieldTimingBreakdown] = struct{}{}
+}
+
+// TimingBreakdownCleared returns if the "timing_breakdown" field was cleared in this mutation.
+func (m *TestResultMutation) TimingBreakdownCleared() bool {
+	_, ok := m.clearedFields[testresult.FieldTimingBreakdown]
+	return ok
+}
+
+// ResetTimingBreakdown resets all changes to the "timing_breakdown" field.
+func (m *TestResultMutation) ResetTimingBreakdown() {
+	m.timing_breakdown = nil
+	delete(m.clearedFields, testresult.FieldTimingBreakdown)
+}
+
+// SetTestSummaryID sets the "test_summary" edge to the TestSummary entity by id.
+func (m *TestResultMutation) SetTestSummaryID(id int64) {
+	m.test_summary = &id
+}
+
+// ClearTestSummary clears the "test_summary" edge to the TestSummary entity.
+func (m *TestResultMutation) ClearTestSummary() {
+	m.clearedtest_summary = true
+}
+
+// TestSummaryCleared reports if the "test_summary" edge to the TestSummary entity was cleared.
+func (m *TestResultMutation) TestSummaryCleared() bool {
+	return m.clearedtest_summary
+}
+
+// TestSummaryID returns the "test_summary" edge ID in the mutation.
+func (m *TestResultMutation) TestSummaryID() (id int64, exists bool) {
+	if m.test_summary != nil {
+		return *m.test_summary, true
 	}
 	return
 }
 
-// TestCollectionIDs returns the "test_collection" edge IDs in the mutation.
+// TestSummaryIDs returns the "test_summary" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// TestCollectionID instead. It exists only for internal usage by the builders.
-func (m *TestResultBESMutation) TestCollectionIDs() (ids []int64) {
-	if id := m.test_collection; id != nil {
+// TestSummaryID instead. It exists only for internal usage by the builders.
+func (m *TestResultMutation) TestSummaryIDs() (ids []int64) {
+	if id := m.test_summary; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetTestCollection resets all changes to the "test_collection" edge.
-func (m *TestResultBESMutation) ResetTestCollection() {
-	m.test_collection = nil
-	m.clearedtest_collection = false
+// ResetTestSummary resets all changes to the "test_summary" edge.
+func (m *TestResultMutation) ResetTestSummary() {
+	m.test_summary = nil
+	m.clearedtest_summary = false
 }
 
-// AddTestActionOutputIDs adds the "test_action_output" edge to the TestFile entity by ids.
-func (m *TestResultBESMutation) AddTestActionOutputIDs(ids ...int64) {
-	if m.test_action_output == nil {
-		m.test_action_output = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.test_action_output[ids[i]] = struct{}{}
-	}
-}
-
-// ClearTestActionOutput clears the "test_action_output" edge to the TestFile entity.
-func (m *TestResultBESMutation) ClearTestActionOutput() {
-	m.clearedtest_action_output = true
-}
-
-// TestActionOutputCleared reports if the "test_action_output" edge to the TestFile entity was cleared.
-func (m *TestResultBESMutation) TestActionOutputCleared() bool {
-	return m.clearedtest_action_output
-}
-
-// RemoveTestActionOutputIDs removes the "test_action_output" edge to the TestFile entity by IDs.
-func (m *TestResultBESMutation) RemoveTestActionOutputIDs(ids ...int64) {
-	if m.removedtest_action_output == nil {
-		m.removedtest_action_output = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.test_action_output, ids[i])
-		m.removedtest_action_output[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedTestActionOutput returns the removed IDs of the "test_action_output" edge to the TestFile entity.
-func (m *TestResultBESMutation) RemovedTestActionOutputIDs() (ids []int64) {
-	for id := range m.removedtest_action_output {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// TestActionOutputIDs returns the "test_action_output" edge IDs in the mutation.
-func (m *TestResultBESMutation) TestActionOutputIDs() (ids []int64) {
-	for id := range m.test_action_output {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetTestActionOutput resets all changes to the "test_action_output" edge.
-func (m *TestResultBESMutation) ResetTestActionOutput() {
-	m.test_action_output = nil
-	m.clearedtest_action_output = false
-	m.removedtest_action_output = nil
-}
-
-// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by id.
-func (m *TestResultBESMutation) SetExecutionInfoID(id int64) {
-	m.execution_info = &id
-}
-
-// ClearExecutionInfo clears the "execution_info" edge to the ExectionInfo entity.
-func (m *TestResultBESMutation) ClearExecutionInfo() {
-	m.clearedexecution_info = true
-}
-
-// ExecutionInfoCleared reports if the "execution_info" edge to the ExectionInfo entity was cleared.
-func (m *TestResultBESMutation) ExecutionInfoCleared() bool {
-	return m.clearedexecution_info
-}
-
-// ExecutionInfoID returns the "execution_info" edge ID in the mutation.
-func (m *TestResultBESMutation) ExecutionInfoID() (id int64, exists bool) {
-	if m.execution_info != nil {
-		return *m.execution_info, true
-	}
-	return
-}
-
-// ExecutionInfoIDs returns the "execution_info" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ExecutionInfoID instead. It exists only for internal usage by the builders.
-func (m *TestResultBESMutation) ExecutionInfoIDs() (ids []int64) {
-	if id := m.execution_info; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetExecutionInfo resets all changes to the "execution_info" edge.
-func (m *TestResultBESMutation) ResetExecutionInfo() {
-	m.execution_info = nil
-	m.clearedexecution_info = false
-}
-
-// Where appends a list predicates to the TestResultBESMutation builder.
-func (m *TestResultBESMutation) Where(ps ...predicate.TestResultBES) {
+// Where appends a list predicates to the TestResultMutation builder.
+func (m *TestResultMutation) Where(ps ...predicate.TestResult) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the TestResultBESMutation builder. Using this method,
+// WhereP appends storage-level predicates to the TestResultMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *TestResultBESMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.TestResultBES, len(ps))
+func (m *TestResultMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.TestResult, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -35414,51 +31265,66 @@ func (m *TestResultBESMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *TestResultBESMutation) Op() Op {
+func (m *TestResultMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *TestResultBESMutation) SetOp(op Op) {
+func (m *TestResultMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (TestResultBES).
-func (m *TestResultBESMutation) Type() string {
+// Type returns the node type of this mutation (TestResult).
+func (m *TestResultMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *TestResultBESMutation) Fields() []string {
-	fields := make([]string, 0, 9)
-	if m.test_status != nil {
-		fields = append(fields, testresultbes.FieldTestStatus)
+func (m *TestResultMutation) Fields() []string {
+	fields := make([]string, 0, 14)
+	if m.run != nil {
+		fields = append(fields, testresult.FieldRun)
+	}
+	if m.shard != nil {
+		fields = append(fields, testresult.FieldShard)
+	}
+	if m.attempt != nil {
+		fields = append(fields, testresult.FieldAttempt)
+	}
+	if m.status != nil {
+		fields = append(fields, testresult.FieldStatus)
 	}
 	if m.status_details != nil {
-		fields = append(fields, testresultbes.FieldStatusDetails)
-	}
-	if m.label != nil {
-		fields = append(fields, testresultbes.FieldLabel)
-	}
-	if m.warning != nil {
-		fields = append(fields, testresultbes.FieldWarning)
+		fields = append(fields, testresult.FieldStatusDetails)
 	}
 	if m.cached_locally != nil {
-		fields = append(fields, testresultbes.FieldCachedLocally)
-	}
-	if m.test_attempt_start_millis_epoch != nil {
-		fields = append(fields, testresultbes.FieldTestAttemptStartMillisEpoch)
+		fields = append(fields, testresult.FieldCachedLocally)
 	}
 	if m.test_attempt_start != nil {
-		fields = append(fields, testresultbes.FieldTestAttemptStart)
+		fields = append(fields, testresult.FieldTestAttemptStart)
 	}
-	if m.test_attempt_duration_millis != nil {
-		fields = append(fields, testresultbes.FieldTestAttemptDurationMillis)
+	if m.test_attempt_duration_in_ms != nil {
+		fields = append(fields, testresult.FieldTestAttemptDurationInMs)
 	}
-	if m.test_attempt_duration != nil {
-		fields = append(fields, testresultbes.FieldTestAttemptDuration)
+	if m.warning != nil {
+		fields = append(fields, testresult.FieldWarning)
+	}
+	if m.strategy != nil {
+		fields = append(fields, testresult.FieldStrategy)
+	}
+	if m.cached_remotely != nil {
+		fields = append(fields, testresult.FieldCachedRemotely)
+	}
+	if m.exit_code != nil {
+		fields = append(fields, testresult.FieldExitCode)
+	}
+	if m.hostname != nil {
+		fields = append(fields, testresult.FieldHostname)
+	}
+	if m.timing_breakdown != nil {
+		fields = append(fields, testresult.FieldTimingBreakdown)
 	}
 	return fields
 }
@@ -35466,26 +31332,36 @@ func (m *TestResultBESMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *TestResultBESMutation) Field(name string) (ent.Value, bool) {
+func (m *TestResultMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case testresultbes.FieldTestStatus:
-		return m.TestStatus()
-	case testresultbes.FieldStatusDetails:
+	case testresult.FieldRun:
+		return m.Run()
+	case testresult.FieldShard:
+		return m.Shard()
+	case testresult.FieldAttempt:
+		return m.Attempt()
+	case testresult.FieldStatus:
+		return m.Status()
+	case testresult.FieldStatusDetails:
 		return m.StatusDetails()
-	case testresultbes.FieldLabel:
-		return m.Label()
-	case testresultbes.FieldWarning:
-		return m.Warning()
-	case testresultbes.FieldCachedLocally:
+	case testresult.FieldCachedLocally:
 		return m.CachedLocally()
-	case testresultbes.FieldTestAttemptStartMillisEpoch:
-		return m.TestAttemptStartMillisEpoch()
-	case testresultbes.FieldTestAttemptStart:
+	case testresult.FieldTestAttemptStart:
 		return m.TestAttemptStart()
-	case testresultbes.FieldTestAttemptDurationMillis:
-		return m.TestAttemptDurationMillis()
-	case testresultbes.FieldTestAttemptDuration:
-		return m.TestAttemptDuration()
+	case testresult.FieldTestAttemptDurationInMs:
+		return m.TestAttemptDurationInMs()
+	case testresult.FieldWarning:
+		return m.Warning()
+	case testresult.FieldStrategy:
+		return m.Strategy()
+	case testresult.FieldCachedRemotely:
+		return m.CachedRemotely()
+	case testresult.FieldExitCode:
+		return m.ExitCode()
+	case testresult.FieldHostname:
+		return m.Hostname()
+	case testresult.FieldTimingBreakdown:
+		return m.TimingBreakdown()
 	}
 	return nil, false
 }
@@ -35493,114 +31369,165 @@ func (m *TestResultBESMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *TestResultBESMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *TestResultMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case testresultbes.FieldTestStatus:
-		return m.OldTestStatus(ctx)
-	case testresultbes.FieldStatusDetails:
+	case testresult.FieldRun:
+		return m.OldRun(ctx)
+	case testresult.FieldShard:
+		return m.OldShard(ctx)
+	case testresult.FieldAttempt:
+		return m.OldAttempt(ctx)
+	case testresult.FieldStatus:
+		return m.OldStatus(ctx)
+	case testresult.FieldStatusDetails:
 		return m.OldStatusDetails(ctx)
-	case testresultbes.FieldLabel:
-		return m.OldLabel(ctx)
-	case testresultbes.FieldWarning:
-		return m.OldWarning(ctx)
-	case testresultbes.FieldCachedLocally:
+	case testresult.FieldCachedLocally:
 		return m.OldCachedLocally(ctx)
-	case testresultbes.FieldTestAttemptStartMillisEpoch:
-		return m.OldTestAttemptStartMillisEpoch(ctx)
-	case testresultbes.FieldTestAttemptStart:
+	case testresult.FieldTestAttemptStart:
 		return m.OldTestAttemptStart(ctx)
-	case testresultbes.FieldTestAttemptDurationMillis:
-		return m.OldTestAttemptDurationMillis(ctx)
-	case testresultbes.FieldTestAttemptDuration:
-		return m.OldTestAttemptDuration(ctx)
+	case testresult.FieldTestAttemptDurationInMs:
+		return m.OldTestAttemptDurationInMs(ctx)
+	case testresult.FieldWarning:
+		return m.OldWarning(ctx)
+	case testresult.FieldStrategy:
+		return m.OldStrategy(ctx)
+	case testresult.FieldCachedRemotely:
+		return m.OldCachedRemotely(ctx)
+	case testresult.FieldExitCode:
+		return m.OldExitCode(ctx)
+	case testresult.FieldHostname:
+		return m.OldHostname(ctx)
+	case testresult.FieldTimingBreakdown:
+		return m.OldTimingBreakdown(ctx)
 	}
-	return nil, fmt.Errorf("unknown TestResultBES field %s", name)
+	return nil, fmt.Errorf("unknown TestResult field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *TestResultBESMutation) SetField(name string, value ent.Value) error {
+func (m *TestResultMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case testresultbes.FieldTestStatus:
-		v, ok := value.(testresultbes.TestStatus)
+	case testresult.FieldRun:
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetTestStatus(v)
+		m.SetRun(v)
 		return nil
-	case testresultbes.FieldStatusDetails:
+	case testresult.FieldShard:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetShard(v)
+		return nil
+	case testresult.FieldAttempt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAttempt(v)
+		return nil
+	case testresult.FieldStatus:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case testresult.FieldStatusDetails:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatusDetails(v)
 		return nil
-	case testresultbes.FieldLabel:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLabel(v)
-		return nil
-	case testresultbes.FieldWarning:
-		v, ok := value.([]string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetWarning(v)
-		return nil
-	case testresultbes.FieldCachedLocally:
+	case testresult.FieldCachedLocally:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCachedLocally(v)
 		return nil
-	case testresultbes.FieldTestAttemptStartMillisEpoch:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTestAttemptStartMillisEpoch(v)
-		return nil
-	case testresultbes.FieldTestAttemptStart:
-		v, ok := value.(string)
+	case testresult.FieldTestAttemptStart:
+		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTestAttemptStart(v)
 		return nil
-	case testresultbes.FieldTestAttemptDurationMillis:
+	case testresult.FieldTestAttemptDurationInMs:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetTestAttemptDurationMillis(v)
+		m.SetTestAttemptDurationInMs(v)
 		return nil
-	case testresultbes.FieldTestAttemptDuration:
-		v, ok := value.(int64)
+	case testresult.FieldWarning:
+		v, ok := value.([]string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetTestAttemptDuration(v)
+		m.SetWarning(v)
+		return nil
+	case testresult.FieldStrategy:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStrategy(v)
+		return nil
+	case testresult.FieldCachedRemotely:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCachedRemotely(v)
+		return nil
+	case testresult.FieldExitCode:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetExitCode(v)
+		return nil
+	case testresult.FieldHostname:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHostname(v)
+		return nil
+	case testresult.FieldTimingBreakdown:
+		v, ok := value.(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTimingBreakdown(v)
 		return nil
 	}
-	return fmt.Errorf("unknown TestResultBES field %s", name)
+	return fmt.Errorf("unknown TestResult field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *TestResultBESMutation) AddedFields() []string {
+func (m *TestResultMutation) AddedFields() []string {
 	var fields []string
-	if m.addtest_attempt_start_millis_epoch != nil {
-		fields = append(fields, testresultbes.FieldTestAttemptStartMillisEpoch)
+	if m.addrun != nil {
+		fields = append(fields, testresult.FieldRun)
 	}
-	if m.addtest_attempt_duration_millis != nil {
-		fields = append(fields, testresultbes.FieldTestAttemptDurationMillis)
+	if m.addshard != nil {
+		fields = append(fields, testresult.FieldShard)
 	}
-	if m.addtest_attempt_duration != nil {
-		fields = append(fields, testresultbes.FieldTestAttemptDuration)
+	if m.addattempt != nil {
+		fields = append(fields, testresult.FieldAttempt)
+	}
+	if m.addtest_attempt_duration_in_ms != nil {
+		fields = append(fields, testresult.FieldTestAttemptDurationInMs)
+	}
+	if m.addexit_code != nil {
+		fields = append(fields, testresult.FieldExitCode)
 	}
 	return fields
 }
@@ -35608,14 +31535,18 @@ func (m *TestResultBESMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *TestResultBESMutation) AddedField(name string) (ent.Value, bool) {
+func (m *TestResultMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case testresultbes.FieldTestAttemptStartMillisEpoch:
-		return m.AddedTestAttemptStartMillisEpoch()
-	case testresultbes.FieldTestAttemptDurationMillis:
-		return m.AddedTestAttemptDurationMillis()
-	case testresultbes.FieldTestAttemptDuration:
-		return m.AddedTestAttemptDuration()
+	case testresult.FieldRun:
+		return m.AddedRun()
+	case testresult.FieldShard:
+		return m.AddedShard()
+	case testresult.FieldAttempt:
+		return m.AddedAttempt()
+	case testresult.FieldTestAttemptDurationInMs:
+		return m.AddedTestAttemptDurationInMs()
+	case testresult.FieldExitCode:
+		return m.AddedExitCode()
 	}
 	return nil, false
 }
@@ -35623,175 +31554,200 @@ func (m *TestResultBESMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *TestResultBESMutation) AddField(name string, value ent.Value) error {
+func (m *TestResultMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case testresultbes.FieldTestAttemptStartMillisEpoch:
-		v, ok := value.(int64)
+	case testresult.FieldRun:
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddTestAttemptStartMillisEpoch(v)
+		m.AddRun(v)
 		return nil
-	case testresultbes.FieldTestAttemptDurationMillis:
-		v, ok := value.(int64)
+	case testresult.FieldShard:
+		v, ok := value.(int32)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddTestAttemptDurationMillis(v)
+		m.AddShard(v)
 		return nil
-	case testresultbes.FieldTestAttemptDuration:
+	case testresult.FieldAttempt:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAttempt(v)
+		return nil
+	case testresult.FieldTestAttemptDurationInMs:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddTestAttemptDuration(v)
+		m.AddTestAttemptDurationInMs(v)
+		return nil
+	case testresult.FieldExitCode:
+		v, ok := value.(int32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddExitCode(v)
 		return nil
 	}
-	return fmt.Errorf("unknown TestResultBES numeric field %s", name)
+	return fmt.Errorf("unknown TestResult numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *TestResultBESMutation) ClearedFields() []string {
+func (m *TestResultMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(testresultbes.FieldTestStatus) {
-		fields = append(fields, testresultbes.FieldTestStatus)
+	if m.FieldCleared(testresult.FieldStatus) {
+		fields = append(fields, testresult.FieldStatus)
 	}
-	if m.FieldCleared(testresultbes.FieldStatusDetails) {
-		fields = append(fields, testresultbes.FieldStatusDetails)
+	if m.FieldCleared(testresult.FieldStatusDetails) {
+		fields = append(fields, testresult.FieldStatusDetails)
 	}
-	if m.FieldCleared(testresultbes.FieldLabel) {
-		fields = append(fields, testresultbes.FieldLabel)
+	if m.FieldCleared(testresult.FieldCachedLocally) {
+		fields = append(fields, testresult.FieldCachedLocally)
 	}
-	if m.FieldCleared(testresultbes.FieldWarning) {
-		fields = append(fields, testresultbes.FieldWarning)
+	if m.FieldCleared(testresult.FieldTestAttemptStart) {
+		fields = append(fields, testresult.FieldTestAttemptStart)
 	}
-	if m.FieldCleared(testresultbes.FieldCachedLocally) {
-		fields = append(fields, testresultbes.FieldCachedLocally)
+	if m.FieldCleared(testresult.FieldTestAttemptDurationInMs) {
+		fields = append(fields, testresult.FieldTestAttemptDurationInMs)
 	}
-	if m.FieldCleared(testresultbes.FieldTestAttemptStartMillisEpoch) {
-		fields = append(fields, testresultbes.FieldTestAttemptStartMillisEpoch)
+	if m.FieldCleared(testresult.FieldWarning) {
+		fields = append(fields, testresult.FieldWarning)
 	}
-	if m.FieldCleared(testresultbes.FieldTestAttemptStart) {
-		fields = append(fields, testresultbes.FieldTestAttemptStart)
+	if m.FieldCleared(testresult.FieldStrategy) {
+		fields = append(fields, testresult.FieldStrategy)
 	}
-	if m.FieldCleared(testresultbes.FieldTestAttemptDurationMillis) {
-		fields = append(fields, testresultbes.FieldTestAttemptDurationMillis)
+	if m.FieldCleared(testresult.FieldCachedRemotely) {
+		fields = append(fields, testresult.FieldCachedRemotely)
 	}
-	if m.FieldCleared(testresultbes.FieldTestAttemptDuration) {
-		fields = append(fields, testresultbes.FieldTestAttemptDuration)
+	if m.FieldCleared(testresult.FieldExitCode) {
+		fields = append(fields, testresult.FieldExitCode)
+	}
+	if m.FieldCleared(testresult.FieldHostname) {
+		fields = append(fields, testresult.FieldHostname)
+	}
+	if m.FieldCleared(testresult.FieldTimingBreakdown) {
+		fields = append(fields, testresult.FieldTimingBreakdown)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *TestResultBESMutation) FieldCleared(name string) bool {
+func (m *TestResultMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *TestResultBESMutation) ClearField(name string) error {
+func (m *TestResultMutation) ClearField(name string) error {
 	switch name {
-	case testresultbes.FieldTestStatus:
-		m.ClearTestStatus()
+	case testresult.FieldStatus:
+		m.ClearStatus()
 		return nil
-	case testresultbes.FieldStatusDetails:
+	case testresult.FieldStatusDetails:
 		m.ClearStatusDetails()
 		return nil
-	case testresultbes.FieldLabel:
-		m.ClearLabel()
-		return nil
-	case testresultbes.FieldWarning:
-		m.ClearWarning()
-		return nil
-	case testresultbes.FieldCachedLocally:
+	case testresult.FieldCachedLocally:
 		m.ClearCachedLocally()
 		return nil
-	case testresultbes.FieldTestAttemptStartMillisEpoch:
-		m.ClearTestAttemptStartMillisEpoch()
-		return nil
-	case testresultbes.FieldTestAttemptStart:
+	case testresult.FieldTestAttemptStart:
 		m.ClearTestAttemptStart()
 		return nil
-	case testresultbes.FieldTestAttemptDurationMillis:
-		m.ClearTestAttemptDurationMillis()
+	case testresult.FieldTestAttemptDurationInMs:
+		m.ClearTestAttemptDurationInMs()
 		return nil
-	case testresultbes.FieldTestAttemptDuration:
-		m.ClearTestAttemptDuration()
+	case testresult.FieldWarning:
+		m.ClearWarning()
+		return nil
+	case testresult.FieldStrategy:
+		m.ClearStrategy()
+		return nil
+	case testresult.FieldCachedRemotely:
+		m.ClearCachedRemotely()
+		return nil
+	case testresult.FieldExitCode:
+		m.ClearExitCode()
+		return nil
+	case testresult.FieldHostname:
+		m.ClearHostname()
+		return nil
+	case testresult.FieldTimingBreakdown:
+		m.ClearTimingBreakdown()
 		return nil
 	}
-	return fmt.Errorf("unknown TestResultBES nullable field %s", name)
+	return fmt.Errorf("unknown TestResult nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *TestResultBESMutation) ResetField(name string) error {
+func (m *TestResultMutation) ResetField(name string) error {
 	switch name {
-	case testresultbes.FieldTestStatus:
-		m.ResetTestStatus()
+	case testresult.FieldRun:
+		m.ResetRun()
 		return nil
-	case testresultbes.FieldStatusDetails:
+	case testresult.FieldShard:
+		m.ResetShard()
+		return nil
+	case testresult.FieldAttempt:
+		m.ResetAttempt()
+		return nil
+	case testresult.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case testresult.FieldStatusDetails:
 		m.ResetStatusDetails()
 		return nil
-	case testresultbes.FieldLabel:
-		m.ResetLabel()
-		return nil
-	case testresultbes.FieldWarning:
-		m.ResetWarning()
-		return nil
-	case testresultbes.FieldCachedLocally:
+	case testresult.FieldCachedLocally:
 		m.ResetCachedLocally()
 		return nil
-	case testresultbes.FieldTestAttemptStartMillisEpoch:
-		m.ResetTestAttemptStartMillisEpoch()
-		return nil
-	case testresultbes.FieldTestAttemptStart:
+	case testresult.FieldTestAttemptStart:
 		m.ResetTestAttemptStart()
 		return nil
-	case testresultbes.FieldTestAttemptDurationMillis:
-		m.ResetTestAttemptDurationMillis()
+	case testresult.FieldTestAttemptDurationInMs:
+		m.ResetTestAttemptDurationInMs()
 		return nil
-	case testresultbes.FieldTestAttemptDuration:
-		m.ResetTestAttemptDuration()
+	case testresult.FieldWarning:
+		m.ResetWarning()
+		return nil
+	case testresult.FieldStrategy:
+		m.ResetStrategy()
+		return nil
+	case testresult.FieldCachedRemotely:
+		m.ResetCachedRemotely()
+		return nil
+	case testresult.FieldExitCode:
+		m.ResetExitCode()
+		return nil
+	case testresult.FieldHostname:
+		m.ResetHostname()
+		return nil
+	case testresult.FieldTimingBreakdown:
+		m.ResetTimingBreakdown()
 		return nil
 	}
-	return fmt.Errorf("unknown TestResultBES field %s", name)
+	return fmt.Errorf("unknown TestResult field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *TestResultBESMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.test_collection != nil {
-		edges = append(edges, testresultbes.EdgeTestCollection)
-	}
-	if m.test_action_output != nil {
-		edges = append(edges, testresultbes.EdgeTestActionOutput)
-	}
-	if m.execution_info != nil {
-		edges = append(edges, testresultbes.EdgeExecutionInfo)
+func (m *TestResultMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.test_summary != nil {
+		edges = append(edges, testresult.EdgeTestSummary)
 	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *TestResultBESMutation) AddedIDs(name string) []ent.Value {
+func (m *TestResultMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case testresultbes.EdgeTestCollection:
-		if id := m.test_collection; id != nil {
-			return []ent.Value{*id}
-		}
-	case testresultbes.EdgeTestActionOutput:
-		ids := make([]ent.Value, 0, len(m.test_action_output))
-		for id := range m.test_action_output {
-			ids = append(ids, id)
-		}
-		return ids
-	case testresultbes.EdgeExecutionInfo:
-		if id := m.execution_info; id != nil {
+	case testresult.EdgeTestSummary:
+		if id := m.test_summary; id != nil {
 			return []ent.Value{*id}
 		}
 	}
@@ -35799,124 +31755,88 @@ func (m *TestResultBESMutation) AddedIDs(name string) []ent.Value {
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *TestResultBESMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.removedtest_action_output != nil {
-		edges = append(edges, testresultbes.EdgeTestActionOutput)
-	}
+func (m *TestResultMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *TestResultBESMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case testresultbes.EdgeTestActionOutput:
-		ids := make([]ent.Value, 0, len(m.removedtest_action_output))
-		for id := range m.removedtest_action_output {
-			ids = append(ids, id)
-		}
-		return ids
-	}
+func (m *TestResultMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *TestResultBESMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.clearedtest_collection {
-		edges = append(edges, testresultbes.EdgeTestCollection)
-	}
-	if m.clearedtest_action_output {
-		edges = append(edges, testresultbes.EdgeTestActionOutput)
-	}
-	if m.clearedexecution_info {
-		edges = append(edges, testresultbes.EdgeExecutionInfo)
+func (m *TestResultMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedtest_summary {
+		edges = append(edges, testresult.EdgeTestSummary)
 	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *TestResultBESMutation) EdgeCleared(name string) bool {
+func (m *TestResultMutation) EdgeCleared(name string) bool {
 	switch name {
-	case testresultbes.EdgeTestCollection:
-		return m.clearedtest_collection
-	case testresultbes.EdgeTestActionOutput:
-		return m.clearedtest_action_output
-	case testresultbes.EdgeExecutionInfo:
-		return m.clearedexecution_info
+	case testresult.EdgeTestSummary:
+		return m.clearedtest_summary
 	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *TestResultBESMutation) ClearEdge(name string) error {
+func (m *TestResultMutation) ClearEdge(name string) error {
 	switch name {
-	case testresultbes.EdgeTestCollection:
-		m.ClearTestCollection()
-		return nil
-	case testresultbes.EdgeExecutionInfo:
-		m.ClearExecutionInfo()
+	case testresult.EdgeTestSummary:
+		m.ClearTestSummary()
 		return nil
 	}
-	return fmt.Errorf("unknown TestResultBES unique edge %s", name)
+	return fmt.Errorf("unknown TestResult unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *TestResultBESMutation) ResetEdge(name string) error {
+func (m *TestResultMutation) ResetEdge(name string) error {
 	switch name {
-	case testresultbes.EdgeTestCollection:
-		m.ResetTestCollection()
-		return nil
-	case testresultbes.EdgeTestActionOutput:
-		m.ResetTestActionOutput()
-		return nil
-	case testresultbes.EdgeExecutionInfo:
-		m.ResetExecutionInfo()
+	case testresult.EdgeTestSummary:
+		m.ResetTestSummary()
 		return nil
 	}
-	return fmt.Errorf("unknown TestResultBES edge %s", name)
+	return fmt.Errorf("unknown TestResult edge %s", name)
 }
 
 // TestSummaryMutation represents an operation that mutates the TestSummary nodes in the graph.
 type TestSummaryMutation struct {
 	config
-	op                     Op
-	typ                    string
-	id                     *int64
-	overall_status         *testsummary.OverallStatus
-	total_run_count        *int32
-	addtotal_run_count     *int32
-	run_count              *int32
-	addrun_count           *int32
-	attempt_count          *int32
-	addattempt_count       *int32
-	shard_count            *int32
-	addshard_count         *int32
-	total_num_cached       *int32
-	addtotal_num_cached    *int32
-	first_start_time       *int64
-	addfirst_start_time    *int64
-	last_stop_time         *int64
-	addlast_stop_time      *int64
-	total_run_duration     *int64
-	addtotal_run_duration  *int64
-	label                  *string
-	clearedFields          map[string]struct{}
-	test_collection        *int64
-	clearedtest_collection bool
-	passed                 map[int64]struct{}
-	removedpassed          map[int64]struct{}
-	clearedpassed          bool
-	failed                 map[int64]struct{}
-	removedfailed          map[int64]struct{}
-	clearedfailed          bool
-	done                   bool
-	oldValue               func(context.Context) (*TestSummary, error)
-	predicates             []predicate.TestSummary
+	op                          Op
+	typ                         string
+	id                          *int64
+	overall_status              *string
+	total_run_count             *int32
+	addtotal_run_count          *int32
+	run_count                   *int32
+	addrun_count                *int32
+	attempt_count               *int32
+	addattempt_count            *int32
+	shard_count                 *int32
+	addshard_count              *int32
+	total_num_cached            *int32
+	addtotal_num_cached         *int32
+	first_start_time            *time.Time
+	last_stop_time              *time.Time
+	total_run_duration_in_ms    *int64
+	addtotal_run_duration_in_ms *int64
+	clearedFields               map[string]struct{}
+	invocation_target           *int64
+	clearedinvocation_target    bool
+	test_results                map[int64]struct{}
+	removedtest_results         map[int64]struct{}
+	clearedtest_results         bool
+	done                        bool
+	oldValue                    func(context.Context) (*TestSummary, error)
+	predicates                  []predicate.TestSummary
 }
 
 var _ ent.Mutation = (*TestSummaryMutation)(nil)
@@ -36024,12 +31944,12 @@ func (m *TestSummaryMutation) IDs(ctx context.Context) ([]int64, error) {
 }
 
 // SetOverallStatus sets the "overall_status" field.
-func (m *TestSummaryMutation) SetOverallStatus(ts testsummary.OverallStatus) {
-	m.overall_status = &ts
+func (m *TestSummaryMutation) SetOverallStatus(s string) {
+	m.overall_status = &s
 }
 
 // OverallStatus returns the value of the "overall_status" field in the mutation.
-func (m *TestSummaryMutation) OverallStatus() (r testsummary.OverallStatus, exists bool) {
+func (m *TestSummaryMutation) OverallStatus() (r string, exists bool) {
 	v := m.overall_status
 	if v == nil {
 		return
@@ -36040,7 +31960,7 @@ func (m *TestSummaryMutation) OverallStatus() (r testsummary.OverallStatus, exis
 // OldOverallStatus returns the old "overall_status" field's value of the TestSummary entity.
 // If the TestSummary object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestSummaryMutation) OldOverallStatus(ctx context.Context) (v testsummary.OverallStatus, err error) {
+func (m *TestSummaryMutation) OldOverallStatus(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOverallStatus is only allowed on UpdateOne operations")
 	}
@@ -36423,13 +32343,12 @@ func (m *TestSummaryMutation) ResetTotalNumCached() {
 }
 
 // SetFirstStartTime sets the "first_start_time" field.
-func (m *TestSummaryMutation) SetFirstStartTime(i int64) {
-	m.first_start_time = &i
-	m.addfirst_start_time = nil
+func (m *TestSummaryMutation) SetFirstStartTime(t time.Time) {
+	m.first_start_time = &t
 }
 
 // FirstStartTime returns the value of the "first_start_time" field in the mutation.
-func (m *TestSummaryMutation) FirstStartTime() (r int64, exists bool) {
+func (m *TestSummaryMutation) FirstStartTime() (r time.Time, exists bool) {
 	v := m.first_start_time
 	if v == nil {
 		return
@@ -36440,7 +32359,7 @@ func (m *TestSummaryMutation) FirstStartTime() (r int64, exists bool) {
 // OldFirstStartTime returns the old "first_start_time" field's value of the TestSummary entity.
 // If the TestSummary object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestSummaryMutation) OldFirstStartTime(ctx context.Context) (v int64, err error) {
+func (m *TestSummaryMutation) OldFirstStartTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFirstStartTime is only allowed on UpdateOne operations")
 	}
@@ -36454,28 +32373,9 @@ func (m *TestSummaryMutation) OldFirstStartTime(ctx context.Context) (v int64, e
 	return oldValue.FirstStartTime, nil
 }
 
-// AddFirstStartTime adds i to the "first_start_time" field.
-func (m *TestSummaryMutation) AddFirstStartTime(i int64) {
-	if m.addfirst_start_time != nil {
-		*m.addfirst_start_time += i
-	} else {
-		m.addfirst_start_time = &i
-	}
-}
-
-// AddedFirstStartTime returns the value that was added to the "first_start_time" field in this mutation.
-func (m *TestSummaryMutation) AddedFirstStartTime() (r int64, exists bool) {
-	v := m.addfirst_start_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearFirstStartTime clears the value of the "first_start_time" field.
 func (m *TestSummaryMutation) ClearFirstStartTime() {
 	m.first_start_time = nil
-	m.addfirst_start_time = nil
 	m.clearedFields[testsummary.FieldFirstStartTime] = struct{}{}
 }
 
@@ -36488,18 +32388,16 @@ func (m *TestSummaryMutation) FirstStartTimeCleared() bool {
 // ResetFirstStartTime resets all changes to the "first_start_time" field.
 func (m *TestSummaryMutation) ResetFirstStartTime() {
 	m.first_start_time = nil
-	m.addfirst_start_time = nil
 	delete(m.clearedFields, testsummary.FieldFirstStartTime)
 }
 
 // SetLastStopTime sets the "last_stop_time" field.
-func (m *TestSummaryMutation) SetLastStopTime(i int64) {
-	m.last_stop_time = &i
-	m.addlast_stop_time = nil
+func (m *TestSummaryMutation) SetLastStopTime(t time.Time) {
+	m.last_stop_time = &t
 }
 
 // LastStopTime returns the value of the "last_stop_time" field in the mutation.
-func (m *TestSummaryMutation) LastStopTime() (r int64, exists bool) {
+func (m *TestSummaryMutation) LastStopTime() (r time.Time, exists bool) {
 	v := m.last_stop_time
 	if v == nil {
 		return
@@ -36510,7 +32408,7 @@ func (m *TestSummaryMutation) LastStopTime() (r int64, exists bool) {
 // OldLastStopTime returns the old "last_stop_time" field's value of the TestSummary entity.
 // If the TestSummary object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestSummaryMutation) OldLastStopTime(ctx context.Context) (v int64, err error) {
+func (m *TestSummaryMutation) OldLastStopTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLastStopTime is only allowed on UpdateOne operations")
 	}
@@ -36524,28 +32422,9 @@ func (m *TestSummaryMutation) OldLastStopTime(ctx context.Context) (v int64, err
 	return oldValue.LastStopTime, nil
 }
 
-// AddLastStopTime adds i to the "last_stop_time" field.
-func (m *TestSummaryMutation) AddLastStopTime(i int64) {
-	if m.addlast_stop_time != nil {
-		*m.addlast_stop_time += i
-	} else {
-		m.addlast_stop_time = &i
-	}
-}
-
-// AddedLastStopTime returns the value that was added to the "last_stop_time" field in this mutation.
-func (m *TestSummaryMutation) AddedLastStopTime() (r int64, exists bool) {
-	v := m.addlast_stop_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearLastStopTime clears the value of the "last_stop_time" field.
 func (m *TestSummaryMutation) ClearLastStopTime() {
 	m.last_stop_time = nil
-	m.addlast_stop_time = nil
 	m.clearedFields[testsummary.FieldLastStopTime] = struct{}{}
 }
 
@@ -36558,274 +32437,170 @@ func (m *TestSummaryMutation) LastStopTimeCleared() bool {
 // ResetLastStopTime resets all changes to the "last_stop_time" field.
 func (m *TestSummaryMutation) ResetLastStopTime() {
 	m.last_stop_time = nil
-	m.addlast_stop_time = nil
 	delete(m.clearedFields, testsummary.FieldLastStopTime)
 }
 
-// SetTotalRunDuration sets the "total_run_duration" field.
-func (m *TestSummaryMutation) SetTotalRunDuration(i int64) {
-	m.total_run_duration = &i
-	m.addtotal_run_duration = nil
+// SetTotalRunDurationInMs sets the "total_run_duration_in_ms" field.
+func (m *TestSummaryMutation) SetTotalRunDurationInMs(i int64) {
+	m.total_run_duration_in_ms = &i
+	m.addtotal_run_duration_in_ms = nil
 }
 
-// TotalRunDuration returns the value of the "total_run_duration" field in the mutation.
-func (m *TestSummaryMutation) TotalRunDuration() (r int64, exists bool) {
-	v := m.total_run_duration
+// TotalRunDurationInMs returns the value of the "total_run_duration_in_ms" field in the mutation.
+func (m *TestSummaryMutation) TotalRunDurationInMs() (r int64, exists bool) {
+	v := m.total_run_duration_in_ms
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldTotalRunDuration returns the old "total_run_duration" field's value of the TestSummary entity.
+// OldTotalRunDurationInMs returns the old "total_run_duration_in_ms" field's value of the TestSummary entity.
 // If the TestSummary object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestSummaryMutation) OldTotalRunDuration(ctx context.Context) (v int64, err error) {
+func (m *TestSummaryMutation) OldTotalRunDurationInMs(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTotalRunDuration is only allowed on UpdateOne operations")
+		return v, errors.New("OldTotalRunDurationInMs is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTotalRunDuration requires an ID field in the mutation")
+		return v, errors.New("OldTotalRunDurationInMs requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTotalRunDuration: %w", err)
+		return v, fmt.Errorf("querying old value for OldTotalRunDurationInMs: %w", err)
 	}
-	return oldValue.TotalRunDuration, nil
+	return oldValue.TotalRunDurationInMs, nil
 }
 
-// AddTotalRunDuration adds i to the "total_run_duration" field.
-func (m *TestSummaryMutation) AddTotalRunDuration(i int64) {
-	if m.addtotal_run_duration != nil {
-		*m.addtotal_run_duration += i
+// AddTotalRunDurationInMs adds i to the "total_run_duration_in_ms" field.
+func (m *TestSummaryMutation) AddTotalRunDurationInMs(i int64) {
+	if m.addtotal_run_duration_in_ms != nil {
+		*m.addtotal_run_duration_in_ms += i
 	} else {
-		m.addtotal_run_duration = &i
+		m.addtotal_run_duration_in_ms = &i
 	}
 }
 
-// AddedTotalRunDuration returns the value that was added to the "total_run_duration" field in this mutation.
-func (m *TestSummaryMutation) AddedTotalRunDuration() (r int64, exists bool) {
-	v := m.addtotal_run_duration
+// AddedTotalRunDurationInMs returns the value that was added to the "total_run_duration_in_ms" field in this mutation.
+func (m *TestSummaryMutation) AddedTotalRunDurationInMs() (r int64, exists bool) {
+	v := m.addtotal_run_duration_in_ms
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ClearTotalRunDuration clears the value of the "total_run_duration" field.
-func (m *TestSummaryMutation) ClearTotalRunDuration() {
-	m.total_run_duration = nil
-	m.addtotal_run_duration = nil
-	m.clearedFields[testsummary.FieldTotalRunDuration] = struct{}{}
+// ClearTotalRunDurationInMs clears the value of the "total_run_duration_in_ms" field.
+func (m *TestSummaryMutation) ClearTotalRunDurationInMs() {
+	m.total_run_duration_in_ms = nil
+	m.addtotal_run_duration_in_ms = nil
+	m.clearedFields[testsummary.FieldTotalRunDurationInMs] = struct{}{}
 }
 
-// TotalRunDurationCleared returns if the "total_run_duration" field was cleared in this mutation.
-func (m *TestSummaryMutation) TotalRunDurationCleared() bool {
-	_, ok := m.clearedFields[testsummary.FieldTotalRunDuration]
+// TotalRunDurationInMsCleared returns if the "total_run_duration_in_ms" field was cleared in this mutation.
+func (m *TestSummaryMutation) TotalRunDurationInMsCleared() bool {
+	_, ok := m.clearedFields[testsummary.FieldTotalRunDurationInMs]
 	return ok
 }
 
-// ResetTotalRunDuration resets all changes to the "total_run_duration" field.
-func (m *TestSummaryMutation) ResetTotalRunDuration() {
-	m.total_run_duration = nil
-	m.addtotal_run_duration = nil
-	delete(m.clearedFields, testsummary.FieldTotalRunDuration)
+// ResetTotalRunDurationInMs resets all changes to the "total_run_duration_in_ms" field.
+func (m *TestSummaryMutation) ResetTotalRunDurationInMs() {
+	m.total_run_duration_in_ms = nil
+	m.addtotal_run_duration_in_ms = nil
+	delete(m.clearedFields, testsummary.FieldTotalRunDurationInMs)
 }
 
-// SetLabel sets the "label" field.
-func (m *TestSummaryMutation) SetLabel(s string) {
-	m.label = &s
+// SetInvocationTargetID sets the "invocation_target" edge to the InvocationTarget entity by id.
+func (m *TestSummaryMutation) SetInvocationTargetID(id int64) {
+	m.invocation_target = &id
 }
 
-// Label returns the value of the "label" field in the mutation.
-func (m *TestSummaryMutation) Label() (r string, exists bool) {
-	v := m.label
-	if v == nil {
-		return
-	}
-	return *v, true
+// ClearInvocationTarget clears the "invocation_target" edge to the InvocationTarget entity.
+func (m *TestSummaryMutation) ClearInvocationTarget() {
+	m.clearedinvocation_target = true
 }
 
-// OldLabel returns the old "label" field's value of the TestSummary entity.
-// If the TestSummary object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TestSummaryMutation) OldLabel(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLabel is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLabel requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLabel: %w", err)
-	}
-	return oldValue.Label, nil
+// InvocationTargetCleared reports if the "invocation_target" edge to the InvocationTarget entity was cleared.
+func (m *TestSummaryMutation) InvocationTargetCleared() bool {
+	return m.clearedinvocation_target
 }
 
-// ClearLabel clears the value of the "label" field.
-func (m *TestSummaryMutation) ClearLabel() {
-	m.label = nil
-	m.clearedFields[testsummary.FieldLabel] = struct{}{}
-}
-
-// LabelCleared returns if the "label" field was cleared in this mutation.
-func (m *TestSummaryMutation) LabelCleared() bool {
-	_, ok := m.clearedFields[testsummary.FieldLabel]
-	return ok
-}
-
-// ResetLabel resets all changes to the "label" field.
-func (m *TestSummaryMutation) ResetLabel() {
-	m.label = nil
-	delete(m.clearedFields, testsummary.FieldLabel)
-}
-
-// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by id.
-func (m *TestSummaryMutation) SetTestCollectionID(id int64) {
-	m.test_collection = &id
-}
-
-// ClearTestCollection clears the "test_collection" edge to the TestCollection entity.
-func (m *TestSummaryMutation) ClearTestCollection() {
-	m.clearedtest_collection = true
-}
-
-// TestCollectionCleared reports if the "test_collection" edge to the TestCollection entity was cleared.
-func (m *TestSummaryMutation) TestCollectionCleared() bool {
-	return m.clearedtest_collection
-}
-
-// TestCollectionID returns the "test_collection" edge ID in the mutation.
-func (m *TestSummaryMutation) TestCollectionID() (id int64, exists bool) {
-	if m.test_collection != nil {
-		return *m.test_collection, true
+// InvocationTargetID returns the "invocation_target" edge ID in the mutation.
+func (m *TestSummaryMutation) InvocationTargetID() (id int64, exists bool) {
+	if m.invocation_target != nil {
+		return *m.invocation_target, true
 	}
 	return
 }
 
-// TestCollectionIDs returns the "test_collection" edge IDs in the mutation.
+// InvocationTargetIDs returns the "invocation_target" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// TestCollectionID instead. It exists only for internal usage by the builders.
-func (m *TestSummaryMutation) TestCollectionIDs() (ids []int64) {
-	if id := m.test_collection; id != nil {
+// InvocationTargetID instead. It exists only for internal usage by the builders.
+func (m *TestSummaryMutation) InvocationTargetIDs() (ids []int64) {
+	if id := m.invocation_target; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetTestCollection resets all changes to the "test_collection" edge.
-func (m *TestSummaryMutation) ResetTestCollection() {
-	m.test_collection = nil
-	m.clearedtest_collection = false
+// ResetInvocationTarget resets all changes to the "invocation_target" edge.
+func (m *TestSummaryMutation) ResetInvocationTarget() {
+	m.invocation_target = nil
+	m.clearedinvocation_target = false
 }
 
-// AddPassedIDs adds the "passed" edge to the TestFile entity by ids.
-func (m *TestSummaryMutation) AddPassedIDs(ids ...int64) {
-	if m.passed == nil {
-		m.passed = make(map[int64]struct{})
+// AddTestResultIDs adds the "test_results" edge to the TestResult entity by ids.
+func (m *TestSummaryMutation) AddTestResultIDs(ids ...int64) {
+	if m.test_results == nil {
+		m.test_results = make(map[int64]struct{})
 	}
 	for i := range ids {
-		m.passed[ids[i]] = struct{}{}
+		m.test_results[ids[i]] = struct{}{}
 	}
 }
 
-// ClearPassed clears the "passed" edge to the TestFile entity.
-func (m *TestSummaryMutation) ClearPassed() {
-	m.clearedpassed = true
+// ClearTestResults clears the "test_results" edge to the TestResult entity.
+func (m *TestSummaryMutation) ClearTestResults() {
+	m.clearedtest_results = true
 }
 
-// PassedCleared reports if the "passed" edge to the TestFile entity was cleared.
-func (m *TestSummaryMutation) PassedCleared() bool {
-	return m.clearedpassed
+// TestResultsCleared reports if the "test_results" edge to the TestResult entity was cleared.
+func (m *TestSummaryMutation) TestResultsCleared() bool {
+	return m.clearedtest_results
 }
 
-// RemovePassedIDs removes the "passed" edge to the TestFile entity by IDs.
-func (m *TestSummaryMutation) RemovePassedIDs(ids ...int64) {
-	if m.removedpassed == nil {
-		m.removedpassed = make(map[int64]struct{})
+// RemoveTestResultIDs removes the "test_results" edge to the TestResult entity by IDs.
+func (m *TestSummaryMutation) RemoveTestResultIDs(ids ...int64) {
+	if m.removedtest_results == nil {
+		m.removedtest_results = make(map[int64]struct{})
 	}
 	for i := range ids {
-		delete(m.passed, ids[i])
-		m.removedpassed[ids[i]] = struct{}{}
+		delete(m.test_results, ids[i])
+		m.removedtest_results[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedPassed returns the removed IDs of the "passed" edge to the TestFile entity.
-func (m *TestSummaryMutation) RemovedPassedIDs() (ids []int64) {
-	for id := range m.removedpassed {
+// RemovedTestResults returns the removed IDs of the "test_results" edge to the TestResult entity.
+func (m *TestSummaryMutation) RemovedTestResultsIDs() (ids []int64) {
+	for id := range m.removedtest_results {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// PassedIDs returns the "passed" edge IDs in the mutation.
-func (m *TestSummaryMutation) PassedIDs() (ids []int64) {
-	for id := range m.passed {
+// TestResultsIDs returns the "test_results" edge IDs in the mutation.
+func (m *TestSummaryMutation) TestResultsIDs() (ids []int64) {
+	for id := range m.test_results {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetPassed resets all changes to the "passed" edge.
-func (m *TestSummaryMutation) ResetPassed() {
-	m.passed = nil
-	m.clearedpassed = false
-	m.removedpassed = nil
-}
-
-// AddFailedIDs adds the "failed" edge to the TestFile entity by ids.
-func (m *TestSummaryMutation) AddFailedIDs(ids ...int64) {
-	if m.failed == nil {
-		m.failed = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.failed[ids[i]] = struct{}{}
-	}
-}
-
-// ClearFailed clears the "failed" edge to the TestFile entity.
-func (m *TestSummaryMutation) ClearFailed() {
-	m.clearedfailed = true
-}
-
-// FailedCleared reports if the "failed" edge to the TestFile entity was cleared.
-func (m *TestSummaryMutation) FailedCleared() bool {
-	return m.clearedfailed
-}
-
-// RemoveFailedIDs removes the "failed" edge to the TestFile entity by IDs.
-func (m *TestSummaryMutation) RemoveFailedIDs(ids ...int64) {
-	if m.removedfailed == nil {
-		m.removedfailed = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.failed, ids[i])
-		m.removedfailed[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedFailed returns the removed IDs of the "failed" edge to the TestFile entity.
-func (m *TestSummaryMutation) RemovedFailedIDs() (ids []int64) {
-	for id := range m.removedfailed {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// FailedIDs returns the "failed" edge IDs in the mutation.
-func (m *TestSummaryMutation) FailedIDs() (ids []int64) {
-	for id := range m.failed {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetFailed resets all changes to the "failed" edge.
-func (m *TestSummaryMutation) ResetFailed() {
-	m.failed = nil
-	m.clearedfailed = false
-	m.removedfailed = nil
+// ResetTestResults resets all changes to the "test_results" edge.
+func (m *TestSummaryMutation) ResetTestResults() {
+	m.test_results = nil
+	m.clearedtest_results = false
+	m.removedtest_results = nil
 }
 
 // Where appends a list predicates to the TestSummaryMutation builder.
@@ -36862,7 +32637,7 @@ func (m *TestSummaryMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TestSummaryMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 9)
 	if m.overall_status != nil {
 		fields = append(fields, testsummary.FieldOverallStatus)
 	}
@@ -36887,11 +32662,8 @@ func (m *TestSummaryMutation) Fields() []string {
 	if m.last_stop_time != nil {
 		fields = append(fields, testsummary.FieldLastStopTime)
 	}
-	if m.total_run_duration != nil {
-		fields = append(fields, testsummary.FieldTotalRunDuration)
-	}
-	if m.label != nil {
-		fields = append(fields, testsummary.FieldLabel)
+	if m.total_run_duration_in_ms != nil {
+		fields = append(fields, testsummary.FieldTotalRunDurationInMs)
 	}
 	return fields
 }
@@ -36917,10 +32689,8 @@ func (m *TestSummaryMutation) Field(name string) (ent.Value, bool) {
 		return m.FirstStartTime()
 	case testsummary.FieldLastStopTime:
 		return m.LastStopTime()
-	case testsummary.FieldTotalRunDuration:
-		return m.TotalRunDuration()
-	case testsummary.FieldLabel:
-		return m.Label()
+	case testsummary.FieldTotalRunDurationInMs:
+		return m.TotalRunDurationInMs()
 	}
 	return nil, false
 }
@@ -36946,10 +32716,8 @@ func (m *TestSummaryMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldFirstStartTime(ctx)
 	case testsummary.FieldLastStopTime:
 		return m.OldLastStopTime(ctx)
-	case testsummary.FieldTotalRunDuration:
-		return m.OldTotalRunDuration(ctx)
-	case testsummary.FieldLabel:
-		return m.OldLabel(ctx)
+	case testsummary.FieldTotalRunDurationInMs:
+		return m.OldTotalRunDurationInMs(ctx)
 	}
 	return nil, fmt.Errorf("unknown TestSummary field %s", name)
 }
@@ -36960,7 +32728,7 @@ func (m *TestSummaryMutation) OldField(ctx context.Context, name string) (ent.Va
 func (m *TestSummaryMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case testsummary.FieldOverallStatus:
-		v, ok := value.(testsummary.OverallStatus)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -37002,32 +32770,25 @@ func (m *TestSummaryMutation) SetField(name string, value ent.Value) error {
 		m.SetTotalNumCached(v)
 		return nil
 	case testsummary.FieldFirstStartTime:
-		v, ok := value.(int64)
+		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFirstStartTime(v)
 		return nil
 	case testsummary.FieldLastStopTime:
-		v, ok := value.(int64)
+		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLastStopTime(v)
 		return nil
-	case testsummary.FieldTotalRunDuration:
+	case testsummary.FieldTotalRunDurationInMs:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetTotalRunDuration(v)
-		return nil
-	case testsummary.FieldLabel:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLabel(v)
+		m.SetTotalRunDurationInMs(v)
 		return nil
 	}
 	return fmt.Errorf("unknown TestSummary field %s", name)
@@ -37052,14 +32813,8 @@ func (m *TestSummaryMutation) AddedFields() []string {
 	if m.addtotal_num_cached != nil {
 		fields = append(fields, testsummary.FieldTotalNumCached)
 	}
-	if m.addfirst_start_time != nil {
-		fields = append(fields, testsummary.FieldFirstStartTime)
-	}
-	if m.addlast_stop_time != nil {
-		fields = append(fields, testsummary.FieldLastStopTime)
-	}
-	if m.addtotal_run_duration != nil {
-		fields = append(fields, testsummary.FieldTotalRunDuration)
+	if m.addtotal_run_duration_in_ms != nil {
+		fields = append(fields, testsummary.FieldTotalRunDurationInMs)
 	}
 	return fields
 }
@@ -37079,12 +32834,8 @@ func (m *TestSummaryMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedShardCount()
 	case testsummary.FieldTotalNumCached:
 		return m.AddedTotalNumCached()
-	case testsummary.FieldFirstStartTime:
-		return m.AddedFirstStartTime()
-	case testsummary.FieldLastStopTime:
-		return m.AddedLastStopTime()
-	case testsummary.FieldTotalRunDuration:
-		return m.AddedTotalRunDuration()
+	case testsummary.FieldTotalRunDurationInMs:
+		return m.AddedTotalRunDurationInMs()
 	}
 	return nil, false
 }
@@ -37129,26 +32880,12 @@ func (m *TestSummaryMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddTotalNumCached(v)
 		return nil
-	case testsummary.FieldFirstStartTime:
+	case testsummary.FieldTotalRunDurationInMs:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddFirstStartTime(v)
-		return nil
-	case testsummary.FieldLastStopTime:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddLastStopTime(v)
-		return nil
-	case testsummary.FieldTotalRunDuration:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTotalRunDuration(v)
+		m.AddTotalRunDurationInMs(v)
 		return nil
 	}
 	return fmt.Errorf("unknown TestSummary numeric field %s", name)
@@ -37182,11 +32919,8 @@ func (m *TestSummaryMutation) ClearedFields() []string {
 	if m.FieldCleared(testsummary.FieldLastStopTime) {
 		fields = append(fields, testsummary.FieldLastStopTime)
 	}
-	if m.FieldCleared(testsummary.FieldTotalRunDuration) {
-		fields = append(fields, testsummary.FieldTotalRunDuration)
-	}
-	if m.FieldCleared(testsummary.FieldLabel) {
-		fields = append(fields, testsummary.FieldLabel)
+	if m.FieldCleared(testsummary.FieldTotalRunDurationInMs) {
+		fields = append(fields, testsummary.FieldTotalRunDurationInMs)
 	}
 	return fields
 }
@@ -37226,11 +32960,8 @@ func (m *TestSummaryMutation) ClearField(name string) error {
 	case testsummary.FieldLastStopTime:
 		m.ClearLastStopTime()
 		return nil
-	case testsummary.FieldTotalRunDuration:
-		m.ClearTotalRunDuration()
-		return nil
-	case testsummary.FieldLabel:
-		m.ClearLabel()
+	case testsummary.FieldTotalRunDurationInMs:
+		m.ClearTotalRunDurationInMs()
 		return nil
 	}
 	return fmt.Errorf("unknown TestSummary nullable field %s", name)
@@ -37264,11 +32995,8 @@ func (m *TestSummaryMutation) ResetField(name string) error {
 	case testsummary.FieldLastStopTime:
 		m.ResetLastStopTime()
 		return nil
-	case testsummary.FieldTotalRunDuration:
-		m.ResetTotalRunDuration()
-		return nil
-	case testsummary.FieldLabel:
-		m.ResetLabel()
+	case testsummary.FieldTotalRunDurationInMs:
+		m.ResetTotalRunDurationInMs()
 		return nil
 	}
 	return fmt.Errorf("unknown TestSummary field %s", name)
@@ -37276,15 +33004,12 @@ func (m *TestSummaryMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *TestSummaryMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.test_collection != nil {
-		edges = append(edges, testsummary.EdgeTestCollection)
+	edges := make([]string, 0, 2)
+	if m.invocation_target != nil {
+		edges = append(edges, testsummary.EdgeInvocationTarget)
 	}
-	if m.passed != nil {
-		edges = append(edges, testsummary.EdgePassed)
-	}
-	if m.failed != nil {
-		edges = append(edges, testsummary.EdgeFailed)
+	if m.test_results != nil {
+		edges = append(edges, testsummary.EdgeTestResults)
 	}
 	return edges
 }
@@ -37293,19 +33018,13 @@ func (m *TestSummaryMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *TestSummaryMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case testsummary.EdgeTestCollection:
-		if id := m.test_collection; id != nil {
+	case testsummary.EdgeInvocationTarget:
+		if id := m.invocation_target; id != nil {
 			return []ent.Value{*id}
 		}
-	case testsummary.EdgePassed:
-		ids := make([]ent.Value, 0, len(m.passed))
-		for id := range m.passed {
-			ids = append(ids, id)
-		}
-		return ids
-	case testsummary.EdgeFailed:
-		ids := make([]ent.Value, 0, len(m.failed))
-		for id := range m.failed {
+	case testsummary.EdgeTestResults:
+		ids := make([]ent.Value, 0, len(m.test_results))
+		for id := range m.test_results {
 			ids = append(ids, id)
 		}
 		return ids
@@ -37315,12 +33034,9 @@ func (m *TestSummaryMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *TestSummaryMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.removedpassed != nil {
-		edges = append(edges, testsummary.EdgePassed)
-	}
-	if m.removedfailed != nil {
-		edges = append(edges, testsummary.EdgeFailed)
+	edges := make([]string, 0, 2)
+	if m.removedtest_results != nil {
+		edges = append(edges, testsummary.EdgeTestResults)
 	}
 	return edges
 }
@@ -37329,15 +33045,9 @@ func (m *TestSummaryMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *TestSummaryMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case testsummary.EdgePassed:
-		ids := make([]ent.Value, 0, len(m.removedpassed))
-		for id := range m.removedpassed {
-			ids = append(ids, id)
-		}
-		return ids
-	case testsummary.EdgeFailed:
-		ids := make([]ent.Value, 0, len(m.removedfailed))
-		for id := range m.removedfailed {
+	case testsummary.EdgeTestResults:
+		ids := make([]ent.Value, 0, len(m.removedtest_results))
+		for id := range m.removedtest_results {
 			ids = append(ids, id)
 		}
 		return ids
@@ -37347,15 +33057,12 @@ func (m *TestSummaryMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *TestSummaryMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
-	if m.clearedtest_collection {
-		edges = append(edges, testsummary.EdgeTestCollection)
+	edges := make([]string, 0, 2)
+	if m.clearedinvocation_target {
+		edges = append(edges, testsummary.EdgeInvocationTarget)
 	}
-	if m.clearedpassed {
-		edges = append(edges, testsummary.EdgePassed)
-	}
-	if m.clearedfailed {
-		edges = append(edges, testsummary.EdgeFailed)
+	if m.clearedtest_results {
+		edges = append(edges, testsummary.EdgeTestResults)
 	}
 	return edges
 }
@@ -37364,12 +33071,10 @@ func (m *TestSummaryMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *TestSummaryMutation) EdgeCleared(name string) bool {
 	switch name {
-	case testsummary.EdgeTestCollection:
-		return m.clearedtest_collection
-	case testsummary.EdgePassed:
-		return m.clearedpassed
-	case testsummary.EdgeFailed:
-		return m.clearedfailed
+	case testsummary.EdgeInvocationTarget:
+		return m.clearedinvocation_target
+	case testsummary.EdgeTestResults:
+		return m.clearedtest_results
 	}
 	return false
 }
@@ -37378,8 +33083,8 @@ func (m *TestSummaryMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *TestSummaryMutation) ClearEdge(name string) error {
 	switch name {
-	case testsummary.EdgeTestCollection:
-		m.ClearTestCollection()
+	case testsummary.EdgeInvocationTarget:
+		m.ClearInvocationTarget()
 		return nil
 	}
 	return fmt.Errorf("unknown TestSummary unique edge %s", name)
@@ -37389,1090 +33094,14 @@ func (m *TestSummaryMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *TestSummaryMutation) ResetEdge(name string) error {
 	switch name {
-	case testsummary.EdgeTestCollection:
-		m.ResetTestCollection()
+	case testsummary.EdgeInvocationTarget:
+		m.ResetInvocationTarget()
 		return nil
-	case testsummary.EdgePassed:
-		m.ResetPassed()
-		return nil
-	case testsummary.EdgeFailed:
-		m.ResetFailed()
+	case testsummary.EdgeTestResults:
+		m.ResetTestResults()
 		return nil
 	}
 	return fmt.Errorf("unknown TestSummary edge %s", name)
-}
-
-// TimingBreakdownMutation represents an operation that mutates the TimingBreakdown nodes in the graph.
-type TimingBreakdownMutation struct {
-	config
-	op                    Op
-	typ                   string
-	id                    *int64
-	name                  *string
-	time                  *string
-	clearedFields         map[string]struct{}
-	execution_info        *int64
-	clearedexecution_info bool
-	child                 map[int64]struct{}
-	removedchild          map[int64]struct{}
-	clearedchild          bool
-	done                  bool
-	oldValue              func(context.Context) (*TimingBreakdown, error)
-	predicates            []predicate.TimingBreakdown
-}
-
-var _ ent.Mutation = (*TimingBreakdownMutation)(nil)
-
-// timingbreakdownOption allows management of the mutation configuration using functional options.
-type timingbreakdownOption func(*TimingBreakdownMutation)
-
-// newTimingBreakdownMutation creates new mutation for the TimingBreakdown entity.
-func newTimingBreakdownMutation(c config, op Op, opts ...timingbreakdownOption) *TimingBreakdownMutation {
-	m := &TimingBreakdownMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeTimingBreakdown,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withTimingBreakdownID sets the ID field of the mutation.
-func withTimingBreakdownID(id int64) timingbreakdownOption {
-	return func(m *TimingBreakdownMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *TimingBreakdown
-		)
-		m.oldValue = func(ctx context.Context) (*TimingBreakdown, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().TimingBreakdown.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withTimingBreakdown sets the old TimingBreakdown of the mutation.
-func withTimingBreakdown(node *TimingBreakdown) timingbreakdownOption {
-	return func(m *TimingBreakdownMutation) {
-		m.oldValue = func(context.Context) (*TimingBreakdown, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m TimingBreakdownMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m TimingBreakdownMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of TimingBreakdown entities.
-func (m *TimingBreakdownMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *TimingBreakdownMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *TimingBreakdownMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().TimingBreakdown.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetName sets the "name" field.
-func (m *TimingBreakdownMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *TimingBreakdownMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the TimingBreakdown entity.
-// If the TimingBreakdown object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TimingBreakdownMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ClearName clears the value of the "name" field.
-func (m *TimingBreakdownMutation) ClearName() {
-	m.name = nil
-	m.clearedFields[timingbreakdown.FieldName] = struct{}{}
-}
-
-// NameCleared returns if the "name" field was cleared in this mutation.
-func (m *TimingBreakdownMutation) NameCleared() bool {
-	_, ok := m.clearedFields[timingbreakdown.FieldName]
-	return ok
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *TimingBreakdownMutation) ResetName() {
-	m.name = nil
-	delete(m.clearedFields, timingbreakdown.FieldName)
-}
-
-// SetTime sets the "time" field.
-func (m *TimingBreakdownMutation) SetTime(s string) {
-	m.time = &s
-}
-
-// Time returns the value of the "time" field in the mutation.
-func (m *TimingBreakdownMutation) Time() (r string, exists bool) {
-	v := m.time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTime returns the old "time" field's value of the TimingBreakdown entity.
-// If the TimingBreakdown object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TimingBreakdownMutation) OldTime(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTime: %w", err)
-	}
-	return oldValue.Time, nil
-}
-
-// ClearTime clears the value of the "time" field.
-func (m *TimingBreakdownMutation) ClearTime() {
-	m.time = nil
-	m.clearedFields[timingbreakdown.FieldTime] = struct{}{}
-}
-
-// TimeCleared returns if the "time" field was cleared in this mutation.
-func (m *TimingBreakdownMutation) TimeCleared() bool {
-	_, ok := m.clearedFields[timingbreakdown.FieldTime]
-	return ok
-}
-
-// ResetTime resets all changes to the "time" field.
-func (m *TimingBreakdownMutation) ResetTime() {
-	m.time = nil
-	delete(m.clearedFields, timingbreakdown.FieldTime)
-}
-
-// SetExecutionInfoID sets the "execution_info" edge to the ExectionInfo entity by id.
-func (m *TimingBreakdownMutation) SetExecutionInfoID(id int64) {
-	m.execution_info = &id
-}
-
-// ClearExecutionInfo clears the "execution_info" edge to the ExectionInfo entity.
-func (m *TimingBreakdownMutation) ClearExecutionInfo() {
-	m.clearedexecution_info = true
-}
-
-// ExecutionInfoCleared reports if the "execution_info" edge to the ExectionInfo entity was cleared.
-func (m *TimingBreakdownMutation) ExecutionInfoCleared() bool {
-	return m.clearedexecution_info
-}
-
-// ExecutionInfoID returns the "execution_info" edge ID in the mutation.
-func (m *TimingBreakdownMutation) ExecutionInfoID() (id int64, exists bool) {
-	if m.execution_info != nil {
-		return *m.execution_info, true
-	}
-	return
-}
-
-// ExecutionInfoIDs returns the "execution_info" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// ExecutionInfoID instead. It exists only for internal usage by the builders.
-func (m *TimingBreakdownMutation) ExecutionInfoIDs() (ids []int64) {
-	if id := m.execution_info; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetExecutionInfo resets all changes to the "execution_info" edge.
-func (m *TimingBreakdownMutation) ResetExecutionInfo() {
-	m.execution_info = nil
-	m.clearedexecution_info = false
-}
-
-// AddChildIDs adds the "child" edge to the TimingChild entity by ids.
-func (m *TimingBreakdownMutation) AddChildIDs(ids ...int64) {
-	if m.child == nil {
-		m.child = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.child[ids[i]] = struct{}{}
-	}
-}
-
-// ClearChild clears the "child" edge to the TimingChild entity.
-func (m *TimingBreakdownMutation) ClearChild() {
-	m.clearedchild = true
-}
-
-// ChildCleared reports if the "child" edge to the TimingChild entity was cleared.
-func (m *TimingBreakdownMutation) ChildCleared() bool {
-	return m.clearedchild
-}
-
-// RemoveChildIDs removes the "child" edge to the TimingChild entity by IDs.
-func (m *TimingBreakdownMutation) RemoveChildIDs(ids ...int64) {
-	if m.removedchild == nil {
-		m.removedchild = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.child, ids[i])
-		m.removedchild[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedChild returns the removed IDs of the "child" edge to the TimingChild entity.
-func (m *TimingBreakdownMutation) RemovedChildIDs() (ids []int64) {
-	for id := range m.removedchild {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ChildIDs returns the "child" edge IDs in the mutation.
-func (m *TimingBreakdownMutation) ChildIDs() (ids []int64) {
-	for id := range m.child {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetChild resets all changes to the "child" edge.
-func (m *TimingBreakdownMutation) ResetChild() {
-	m.child = nil
-	m.clearedchild = false
-	m.removedchild = nil
-}
-
-// Where appends a list predicates to the TimingBreakdownMutation builder.
-func (m *TimingBreakdownMutation) Where(ps ...predicate.TimingBreakdown) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the TimingBreakdownMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *TimingBreakdownMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.TimingBreakdown, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *TimingBreakdownMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *TimingBreakdownMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (TimingBreakdown).
-func (m *TimingBreakdownMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *TimingBreakdownMutation) Fields() []string {
-	fields := make([]string, 0, 2)
-	if m.name != nil {
-		fields = append(fields, timingbreakdown.FieldName)
-	}
-	if m.time != nil {
-		fields = append(fields, timingbreakdown.FieldTime)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *TimingBreakdownMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case timingbreakdown.FieldName:
-		return m.Name()
-	case timingbreakdown.FieldTime:
-		return m.Time()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *TimingBreakdownMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case timingbreakdown.FieldName:
-		return m.OldName(ctx)
-	case timingbreakdown.FieldTime:
-		return m.OldTime(ctx)
-	}
-	return nil, fmt.Errorf("unknown TimingBreakdown field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *TimingBreakdownMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case timingbreakdown.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case timingbreakdown.FieldTime:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTime(v)
-		return nil
-	}
-	return fmt.Errorf("unknown TimingBreakdown field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *TimingBreakdownMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *TimingBreakdownMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *TimingBreakdownMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown TimingBreakdown numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *TimingBreakdownMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(timingbreakdown.FieldName) {
-		fields = append(fields, timingbreakdown.FieldName)
-	}
-	if m.FieldCleared(timingbreakdown.FieldTime) {
-		fields = append(fields, timingbreakdown.FieldTime)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *TimingBreakdownMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *TimingBreakdownMutation) ClearField(name string) error {
-	switch name {
-	case timingbreakdown.FieldName:
-		m.ClearName()
-		return nil
-	case timingbreakdown.FieldTime:
-		m.ClearTime()
-		return nil
-	}
-	return fmt.Errorf("unknown TimingBreakdown nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *TimingBreakdownMutation) ResetField(name string) error {
-	switch name {
-	case timingbreakdown.FieldName:
-		m.ResetName()
-		return nil
-	case timingbreakdown.FieldTime:
-		m.ResetTime()
-		return nil
-	}
-	return fmt.Errorf("unknown TimingBreakdown field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *TimingBreakdownMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.execution_info != nil {
-		edges = append(edges, timingbreakdown.EdgeExecutionInfo)
-	}
-	if m.child != nil {
-		edges = append(edges, timingbreakdown.EdgeChild)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *TimingBreakdownMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case timingbreakdown.EdgeExecutionInfo:
-		if id := m.execution_info; id != nil {
-			return []ent.Value{*id}
-		}
-	case timingbreakdown.EdgeChild:
-		ids := make([]ent.Value, 0, len(m.child))
-		for id := range m.child {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *TimingBreakdownMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.removedchild != nil {
-		edges = append(edges, timingbreakdown.EdgeChild)
-	}
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *TimingBreakdownMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case timingbreakdown.EdgeChild:
-		ids := make([]ent.Value, 0, len(m.removedchild))
-		for id := range m.removedchild {
-			ids = append(ids, id)
-		}
-		return ids
-	}
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *TimingBreakdownMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.clearedexecution_info {
-		edges = append(edges, timingbreakdown.EdgeExecutionInfo)
-	}
-	if m.clearedchild {
-		edges = append(edges, timingbreakdown.EdgeChild)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *TimingBreakdownMutation) EdgeCleared(name string) bool {
-	switch name {
-	case timingbreakdown.EdgeExecutionInfo:
-		return m.clearedexecution_info
-	case timingbreakdown.EdgeChild:
-		return m.clearedchild
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *TimingBreakdownMutation) ClearEdge(name string) error {
-	switch name {
-	case timingbreakdown.EdgeExecutionInfo:
-		m.ClearExecutionInfo()
-		return nil
-	}
-	return fmt.Errorf("unknown TimingBreakdown unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *TimingBreakdownMutation) ResetEdge(name string) error {
-	switch name {
-	case timingbreakdown.EdgeExecutionInfo:
-		m.ResetExecutionInfo()
-		return nil
-	case timingbreakdown.EdgeChild:
-		m.ResetChild()
-		return nil
-	}
-	return fmt.Errorf("unknown TimingBreakdown edge %s", name)
-}
-
-// TimingChildMutation represents an operation that mutates the TimingChild nodes in the graph.
-type TimingChildMutation struct {
-	config
-	op                      Op
-	typ                     string
-	id                      *int64
-	name                    *string
-	time                    *string
-	clearedFields           map[string]struct{}
-	timing_breakdown        *int64
-	clearedtiming_breakdown bool
-	done                    bool
-	oldValue                func(context.Context) (*TimingChild, error)
-	predicates              []predicate.TimingChild
-}
-
-var _ ent.Mutation = (*TimingChildMutation)(nil)
-
-// timingchildOption allows management of the mutation configuration using functional options.
-type timingchildOption func(*TimingChildMutation)
-
-// newTimingChildMutation creates new mutation for the TimingChild entity.
-func newTimingChildMutation(c config, op Op, opts ...timingchildOption) *TimingChildMutation {
-	m := &TimingChildMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeTimingChild,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withTimingChildID sets the ID field of the mutation.
-func withTimingChildID(id int64) timingchildOption {
-	return func(m *TimingChildMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *TimingChild
-		)
-		m.oldValue = func(ctx context.Context) (*TimingChild, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().TimingChild.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withTimingChild sets the old TimingChild of the mutation.
-func withTimingChild(node *TimingChild) timingchildOption {
-	return func(m *TimingChildMutation) {
-		m.oldValue = func(context.Context) (*TimingChild, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m TimingChildMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m TimingChildMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of TimingChild entities.
-func (m *TimingChildMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *TimingChildMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *TimingChildMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().TimingChild.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetName sets the "name" field.
-func (m *TimingChildMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *TimingChildMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the TimingChild entity.
-// If the TimingChild object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TimingChildMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ClearName clears the value of the "name" field.
-func (m *TimingChildMutation) ClearName() {
-	m.name = nil
-	m.clearedFields[timingchild.FieldName] = struct{}{}
-}
-
-// NameCleared returns if the "name" field was cleared in this mutation.
-func (m *TimingChildMutation) NameCleared() bool {
-	_, ok := m.clearedFields[timingchild.FieldName]
-	return ok
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *TimingChildMutation) ResetName() {
-	m.name = nil
-	delete(m.clearedFields, timingchild.FieldName)
-}
-
-// SetTime sets the "time" field.
-func (m *TimingChildMutation) SetTime(s string) {
-	m.time = &s
-}
-
-// Time returns the value of the "time" field in the mutation.
-func (m *TimingChildMutation) Time() (r string, exists bool) {
-	v := m.time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTime returns the old "time" field's value of the TimingChild entity.
-// If the TimingChild object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TimingChildMutation) OldTime(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTime: %w", err)
-	}
-	return oldValue.Time, nil
-}
-
-// ClearTime clears the value of the "time" field.
-func (m *TimingChildMutation) ClearTime() {
-	m.time = nil
-	m.clearedFields[timingchild.FieldTime] = struct{}{}
-}
-
-// TimeCleared returns if the "time" field was cleared in this mutation.
-func (m *TimingChildMutation) TimeCleared() bool {
-	_, ok := m.clearedFields[timingchild.FieldTime]
-	return ok
-}
-
-// ResetTime resets all changes to the "time" field.
-func (m *TimingChildMutation) ResetTime() {
-	m.time = nil
-	delete(m.clearedFields, timingchild.FieldTime)
-}
-
-// SetTimingBreakdownID sets the "timing_breakdown" edge to the TimingBreakdown entity by id.
-func (m *TimingChildMutation) SetTimingBreakdownID(id int64) {
-	m.timing_breakdown = &id
-}
-
-// ClearTimingBreakdown clears the "timing_breakdown" edge to the TimingBreakdown entity.
-func (m *TimingChildMutation) ClearTimingBreakdown() {
-	m.clearedtiming_breakdown = true
-}
-
-// TimingBreakdownCleared reports if the "timing_breakdown" edge to the TimingBreakdown entity was cleared.
-func (m *TimingChildMutation) TimingBreakdownCleared() bool {
-	return m.clearedtiming_breakdown
-}
-
-// TimingBreakdownID returns the "timing_breakdown" edge ID in the mutation.
-func (m *TimingChildMutation) TimingBreakdownID() (id int64, exists bool) {
-	if m.timing_breakdown != nil {
-		return *m.timing_breakdown, true
-	}
-	return
-}
-
-// TimingBreakdownIDs returns the "timing_breakdown" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// TimingBreakdownID instead. It exists only for internal usage by the builders.
-func (m *TimingChildMutation) TimingBreakdownIDs() (ids []int64) {
-	if id := m.timing_breakdown; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetTimingBreakdown resets all changes to the "timing_breakdown" edge.
-func (m *TimingChildMutation) ResetTimingBreakdown() {
-	m.timing_breakdown = nil
-	m.clearedtiming_breakdown = false
-}
-
-// Where appends a list predicates to the TimingChildMutation builder.
-func (m *TimingChildMutation) Where(ps ...predicate.TimingChild) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the TimingChildMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *TimingChildMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.TimingChild, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *TimingChildMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *TimingChildMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (TimingChild).
-func (m *TimingChildMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *TimingChildMutation) Fields() []string {
-	fields := make([]string, 0, 2)
-	if m.name != nil {
-		fields = append(fields, timingchild.FieldName)
-	}
-	if m.time != nil {
-		fields = append(fields, timingchild.FieldTime)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *TimingChildMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case timingchild.FieldName:
-		return m.Name()
-	case timingchild.FieldTime:
-		return m.Time()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *TimingChildMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case timingchild.FieldName:
-		return m.OldName(ctx)
-	case timingchild.FieldTime:
-		return m.OldTime(ctx)
-	}
-	return nil, fmt.Errorf("unknown TimingChild field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *TimingChildMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case timingchild.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case timingchild.FieldTime:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTime(v)
-		return nil
-	}
-	return fmt.Errorf("unknown TimingChild field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *TimingChildMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *TimingChildMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *TimingChildMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown TimingChild numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *TimingChildMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(timingchild.FieldName) {
-		fields = append(fields, timingchild.FieldName)
-	}
-	if m.FieldCleared(timingchild.FieldTime) {
-		fields = append(fields, timingchild.FieldTime)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *TimingChildMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *TimingChildMutation) ClearField(name string) error {
-	switch name {
-	case timingchild.FieldName:
-		m.ClearName()
-		return nil
-	case timingchild.FieldTime:
-		m.ClearTime()
-		return nil
-	}
-	return fmt.Errorf("unknown TimingChild nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *TimingChildMutation) ResetField(name string) error {
-	switch name {
-	case timingchild.FieldName:
-		m.ResetName()
-		return nil
-	case timingchild.FieldTime:
-		m.ResetTime()
-		return nil
-	}
-	return fmt.Errorf("unknown TimingChild field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *TimingChildMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.timing_breakdown != nil {
-		edges = append(edges, timingchild.EdgeTimingBreakdown)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *TimingChildMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case timingchild.EdgeTimingBreakdown:
-		if id := m.timing_breakdown; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *TimingChildMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *TimingChildMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *TimingChildMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedtiming_breakdown {
-		edges = append(edges, timingchild.EdgeTimingBreakdown)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *TimingChildMutation) EdgeCleared(name string) bool {
-	switch name {
-	case timingchild.EdgeTimingBreakdown:
-		return m.clearedtiming_breakdown
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *TimingChildMutation) ClearEdge(name string) error {
-	switch name {
-	case timingchild.EdgeTimingBreakdown:
-		m.ClearTimingBreakdown()
-		return nil
-	}
-	return fmt.Errorf("unknown TimingChild unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *TimingChildMutation) ResetEdge(name string) error {
-	switch name {
-	case timingchild.EdgeTimingBreakdown:
-		m.ResetTimingBreakdown()
-		return nil
-	}
-	return fmt.Errorf("unknown TimingChild edge %s", name)
 }
 
 // TimingMetricsMutation represents an operation that mutates the TimingMetrics nodes in the graph.

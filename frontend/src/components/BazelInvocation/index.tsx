@@ -2,7 +2,6 @@ import Link from "@/components/Link";
 import ArtifactsDataMetrics from "../Artifacts";
 import MemoryMetricsDisplay from "../MemoryMetrics";
 import SystemMetricsDisplay from "../SystemMetricsDisplay";
-import TestMetricsDisplay from "../TestsMetrics";
 import CommandLineDisplay from "../CommandLine";
 import SourceControlDisplay from "../SourceControlDisplay";
 import InvocationOverviewDisplay from "../InvocationOverviewDisplay";
@@ -36,6 +35,7 @@ import ActionStatisticsDisplay from "../ActionStatisticsDisplay";
 import styles from "../AppBar/index.module.css";
 import BuildLogsDisplay from "../BuildLogsDisplay";
 import ProfileDropdown from "../ProfileDropdown";
+import { TestTab } from "../TestTab";
 import { InvocationTargetsTab } from "../InvocationTargets/InvocationTargetsTab";
 import UserStatusIndicator from "../UserStatusIndicator";
 import { InvocationResultTag } from "../InvocationResultTag";
@@ -52,7 +52,6 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     bazelVersion,
     sourceControl,
     metrics,
-    testCollection,
     numFetches,
     configurations,
     stepLabel,
@@ -74,7 +73,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     && (metrics?.networkMetrics == undefined || metrics?.networkMetrics == null);
   const hideFailedActionsTab: boolean = actions == undefined || actions == null || actions.length == 0;
   const hideTargetsTab: boolean = !isFeatureEnabled(FeatureType.BES_PAGE_TARGETS);
-  const hideTestsTab: boolean = (testCollection == undefined || testCollection == null || testCollection.length == 0)
+  const hideTestsTab: boolean = !isFeatureEnabled(FeatureType.BES_PAGE_TESTS);
   const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null;
   const hideProblemsTab: boolean = invocationOverview.exitCodeName == "SUCCESS";
 
@@ -190,10 +189,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     icon: <ExperimentOutlined />,
     children: (
       <Space direction="vertical" size="middle" className={themeStyles.space}>
-        <TestMetricsDisplay
-          testMetrics={testCollection ?? undefined}
-          invocationId={invocationID}
-        />
+        <TestTab invocationId={invocationID}/>
       </Space>
     ),
   });

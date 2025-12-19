@@ -631,37 +631,6 @@ var (
 			},
 		},
 	}
-	// ExectionInfosColumns holds the columns for the "exection_infos" table.
-	ExectionInfosColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "timeout_seconds", Type: field.TypeInt32, Nullable: true},
-		{Name: "strategy", Type: field.TypeString, Nullable: true},
-		{Name: "cached_remotely", Type: field.TypeBool, Nullable: true},
-		{Name: "exit_code", Type: field.TypeInt32, Nullable: true},
-		{Name: "hostname", Type: field.TypeString, Nullable: true},
-		{Name: "test_result_bes_execution_info", Type: field.TypeInt64, Unique: true, Nullable: true},
-	}
-	// ExectionInfosTable holds the schema information for the "exection_infos" table.
-	ExectionInfosTable = &schema.Table{
-		Name:       "exection_infos",
-		Columns:    ExectionInfosColumns,
-		PrimaryKey: []*schema.Column{ExectionInfosColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "exection_infos_test_result_be_ss_execution_info",
-				Columns:    []*schema.Column{ExectionInfosColumns[6]},
-				RefColumns: []*schema.Column{TestResultBeSsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "exectioninfo_test_result_bes_execution_info",
-				Unique:  false,
-				Columns: []*schema.Column{ExectionInfosColumns[6]},
-			},
-		},
-	}
 	// GarbageMetricsColumns holds the columns for the "garbage_metrics" table.
 	GarbageMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -915,32 +884,6 @@ var (
 			},
 		},
 	}
-	// NamedSetOfFilesColumns holds the columns for the "named_set_of_files" table.
-	NamedSetOfFilesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "named_set_of_files_file_sets", Type: field.TypeInt64, Unique: true, Nullable: true},
-		{Name: "output_group_file_sets", Type: field.TypeInt64, Unique: true, Nullable: true},
-	}
-	// NamedSetOfFilesTable holds the schema information for the "named_set_of_files" table.
-	NamedSetOfFilesTable = &schema.Table{
-		Name:       "named_set_of_files",
-		Columns:    NamedSetOfFilesColumns,
-		PrimaryKey: []*schema.Column{NamedSetOfFilesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "named_set_of_files_named_set_of_files_file_sets",
-				Columns:    []*schema.Column{NamedSetOfFilesColumns[1]},
-				RefColumns: []*schema.Column{NamedSetOfFilesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "named_set_of_files_output_groups_file_sets",
-				Columns:    []*schema.Column{NamedSetOfFilesColumns[2]},
-				RefColumns: []*schema.Column{OutputGroupsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
 	// NetworkMetricsColumns holds the columns for the "network_metrics" table.
 	NetworkMetricsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -966,18 +909,6 @@ var (
 				Columns: []*schema.Column{NetworkMetricsColumns[1]},
 			},
 		},
-	}
-	// OutputGroupsColumns holds the columns for the "output_groups" table.
-	OutputGroupsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "name", Type: field.TypeString, Nullable: true},
-		{Name: "incomplete", Type: field.TypeBool, Nullable: true},
-	}
-	// OutputGroupsTable holds the schema information for the "output_groups" table.
-	OutputGroupsTable = &schema.Table{
-		Name:       "output_groups",
-		Columns:    OutputGroupsColumns,
-		PrimaryKey: []*schema.Column{OutputGroupsColumns[0]},
 	}
 	// PackageLoadMetricsColumns holds the columns for the "package_load_metrics" table.
 	PackageLoadMetricsColumns = []*schema.Column{
@@ -1035,34 +966,6 @@ var (
 				Name:    "packagemetrics_metrics_package_metrics",
 				Unique:  false,
 				Columns: []*schema.Column{PackageMetricsColumns[2]},
-			},
-		},
-	}
-	// ResourceUsagesColumns holds the columns for the "resource_usages" table.
-	ResourceUsagesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "name", Type: field.TypeString, Nullable: true},
-		{Name: "value", Type: field.TypeString, Nullable: true},
-		{Name: "exection_info_resource_usage", Type: field.TypeInt64, Nullable: true},
-	}
-	// ResourceUsagesTable holds the schema information for the "resource_usages" table.
-	ResourceUsagesTable = &schema.Table{
-		Name:       "resource_usages",
-		Columns:    ResourceUsagesColumns,
-		PrimaryKey: []*schema.Column{ResourceUsagesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "resource_usages_exection_infos_resource_usage",
-				Columns:    []*schema.Column{ResourceUsagesColumns[3]},
-				RefColumns: []*schema.Column{ExectionInfosColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "resourceusage_exection_info_resource_usage",
-				Unique:  false,
-				Columns: []*schema.Column{ResourceUsagesColumns[3]},
 			},
 		},
 	}
@@ -1204,6 +1107,11 @@ var (
 				Columns: []*schema.Column{TargetsColumns[1], TargetsColumns[2]},
 			},
 			{
+				Name:    "target_label_aspect_instance_name_targets",
+				Unique:  false,
+				Columns: []*schema.Column{TargetsColumns[1], TargetsColumns[2], TargetsColumns[4]},
+			},
+			{
 				Name:    "target_label_aspect_target_kind_instance_name_targets",
 				Unique:  true,
 				Columns: []*schema.Column{TargetsColumns[1], TargetsColumns[2], TargetsColumns[3], TargetsColumns[4]},
@@ -1283,162 +1191,59 @@ var (
 			},
 		},
 	}
-	// TestCollectionsColumns holds the columns for the "test_collections" table.
-	TestCollectionsColumns = []*schema.Column{
+	// TestResultsColumns holds the columns for the "test_results" table.
+	TestResultsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "label", Type: field.TypeString, Nullable: true},
-		{Name: "overall_status", Type: field.TypeEnum, Nullable: true, Enums: []string{"NO_STATUS", "PASSED", "FLAKY", "TIMEOUT", "FAILED", "INCOMPLETE", "REMOTE_FAILURE", "FAILED_TO_BUILD", "TOOL_HALTED_BEFORE_TESTING"}, Default: "NO_STATUS"},
-		{Name: "strategy", Type: field.TypeString, Nullable: true},
-		{Name: "cached_locally", Type: field.TypeBool, Nullable: true},
-		{Name: "cached_remotely", Type: field.TypeBool, Nullable: true},
-		{Name: "first_seen", Type: field.TypeTime, Nullable: true},
-		{Name: "duration_ms", Type: field.TypeInt64, Nullable: true},
-		{Name: "bazel_invocation_test_collection", Type: field.TypeInt64, Nullable: true},
-	}
-	// TestCollectionsTable holds the schema information for the "test_collections" table.
-	TestCollectionsTable = &schema.Table{
-		Name:       "test_collections",
-		Columns:    TestCollectionsColumns,
-		PrimaryKey: []*schema.Column{TestCollectionsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "test_collections_bazel_invocations_test_collection",
-				Columns:    []*schema.Column{TestCollectionsColumns[8]},
-				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "testcollection_label",
-				Unique:  false,
-				Columns: []*schema.Column{TestCollectionsColumns[1]},
-			},
-			{
-				Name:    "testcollection_bazel_invocation_test_collection",
-				Unique:  false,
-				Columns: []*schema.Column{TestCollectionsColumns[8]},
-			},
-			{
-				Name:    "testcollection_label_bazel_invocation_test_collection",
-				Unique:  true,
-				Columns: []*schema.Column{TestCollectionsColumns[1], TestCollectionsColumns[8]},
-			},
-		},
-	}
-	// TestFilesColumns holds the columns for the "test_files" table.
-	TestFilesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "digest", Type: field.TypeString, Nullable: true},
-		{Name: "file", Type: field.TypeString, Nullable: true},
-		{Name: "length", Type: field.TypeInt64, Nullable: true},
-		{Name: "name", Type: field.TypeString, Nullable: true},
-		{Name: "prefix", Type: field.TypeJSON, Nullable: true},
-		{Name: "named_set_of_files_files", Type: field.TypeInt64, Nullable: true},
-		{Name: "output_group_inline_files", Type: field.TypeInt64, Nullable: true},
-		{Name: "test_result_bes_test_action_output", Type: field.TypeInt64, Nullable: true},
-		{Name: "test_summary_passed", Type: field.TypeInt64, Nullable: true},
-		{Name: "test_summary_failed", Type: field.TypeInt64, Nullable: true},
-	}
-	// TestFilesTable holds the schema information for the "test_files" table.
-	TestFilesTable = &schema.Table{
-		Name:       "test_files",
-		Columns:    TestFilesColumns,
-		PrimaryKey: []*schema.Column{TestFilesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "test_files_named_set_of_files_files",
-				Columns:    []*schema.Column{TestFilesColumns[6]},
-				RefColumns: []*schema.Column{NamedSetOfFilesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "test_files_output_groups_inline_files",
-				Columns:    []*schema.Column{TestFilesColumns[7]},
-				RefColumns: []*schema.Column{OutputGroupsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "test_files_test_result_be_ss_test_action_output",
-				Columns:    []*schema.Column{TestFilesColumns[8]},
-				RefColumns: []*schema.Column{TestResultBeSsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "test_files_test_summaries_passed",
-				Columns:    []*schema.Column{TestFilesColumns[9]},
-				RefColumns: []*schema.Column{TestSummariesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "test_files_test_summaries_failed",
-				Columns:    []*schema.Column{TestFilesColumns[10]},
-				RefColumns: []*schema.Column{TestSummariesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "testfile_test_result_bes_test_action_output",
-				Unique:  false,
-				Columns: []*schema.Column{TestFilesColumns[8]},
-			},
-		},
-	}
-	// TestResultBeSsColumns holds the columns for the "test_result_be_ss" table.
-	TestResultBeSsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "test_status", Type: field.TypeEnum, Nullable: true, Enums: []string{"NO_STATUS", "PASSED", "FLAKY", "TIMEOUT", "FAILED", "INCOMPLETE", "REMOTE_FAILURE", "FAILED_TO_BUILD", "TOOL_HALTED_BEFORE_TESTING"}, Default: "NO_STATUS"},
+		{Name: "run", Type: field.TypeInt32},
+		{Name: "shard", Type: field.TypeInt32},
+		{Name: "attempt", Type: field.TypeInt32},
+		{Name: "status", Type: field.TypeString, Nullable: true},
 		{Name: "status_details", Type: field.TypeString, Nullable: true},
-		{Name: "label", Type: field.TypeString, Nullable: true},
-		{Name: "warning", Type: field.TypeJSON, Nullable: true},
 		{Name: "cached_locally", Type: field.TypeBool, Nullable: true},
-		{Name: "test_attempt_start_millis_epoch", Type: field.TypeInt64, Nullable: true},
-		{Name: "test_attempt_start", Type: field.TypeString, Nullable: true},
-		{Name: "test_attempt_duration_millis", Type: field.TypeInt64, Nullable: true},
-		{Name: "test_attempt_duration", Type: field.TypeInt64, Nullable: true},
-		{Name: "test_collection_test_results", Type: field.TypeInt64, Nullable: true},
+		{Name: "test_attempt_start", Type: field.TypeTime, Nullable: true},
+		{Name: "test_attempt_duration_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "warning", Type: field.TypeJSON, Nullable: true},
+		{Name: "strategy", Type: field.TypeString, Nullable: true},
+		{Name: "cached_remotely", Type: field.TypeBool, Nullable: true},
+		{Name: "exit_code", Type: field.TypeInt32, Nullable: true},
+		{Name: "hostname", Type: field.TypeString, Nullable: true},
+		{Name: "timing_breakdown", Type: field.TypeJSON, Nullable: true},
+		{Name: "test_summary_test_results", Type: field.TypeInt64},
 	}
-	// TestResultBeSsTable holds the schema information for the "test_result_be_ss" table.
-	TestResultBeSsTable = &schema.Table{
-		Name:       "test_result_be_ss",
-		Columns:    TestResultBeSsColumns,
-		PrimaryKey: []*schema.Column{TestResultBeSsColumns[0]},
+	// TestResultsTable holds the schema information for the "test_results" table.
+	TestResultsTable = &schema.Table{
+		Name:       "test_results",
+		Columns:    TestResultsColumns,
+		PrimaryKey: []*schema.Column{TestResultsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "test_result_be_ss_test_collections_test_results",
-				Columns:    []*schema.Column{TestResultBeSsColumns[10]},
-				RefColumns: []*schema.Column{TestCollectionsColumns[0]},
+				Symbol:     "test_results_test_summaries_test_results",
+				Columns:    []*schema.Column{TestResultsColumns[15]},
+				RefColumns: []*schema.Column{TestSummariesColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "testresultbes_label",
+				Name:    "testresult_test_summary_test_results",
 				Unique:  false,
-				Columns: []*schema.Column{TestResultBeSsColumns[3]},
-			},
-			{
-				Name:    "testresultbes_test_collection_test_results",
-				Unique:  false,
-				Columns: []*schema.Column{TestResultBeSsColumns[10]},
+				Columns: []*schema.Column{TestResultsColumns[15]},
 			},
 		},
 	}
 	// TestSummariesColumns holds the columns for the "test_summaries" table.
 	TestSummariesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "overall_status", Type: field.TypeEnum, Nullable: true, Enums: []string{"NO_STATUS", "PASSED", "FLAKY", "TIMEOUT", "FAILED", "INCOMPLETE", "REMOTE_FAILURE", "FAILED_TO_BUILD", "TOOL_HALTED_BEFORE_TESTING"}, Default: "NO_STATUS"},
+		{Name: "overall_status", Type: field.TypeString, Nullable: true},
 		{Name: "total_run_count", Type: field.TypeInt32, Nullable: true},
 		{Name: "run_count", Type: field.TypeInt32, Nullable: true},
 		{Name: "attempt_count", Type: field.TypeInt32, Nullable: true},
 		{Name: "shard_count", Type: field.TypeInt32, Nullable: true},
 		{Name: "total_num_cached", Type: field.TypeInt32, Nullable: true},
-		{Name: "first_start_time", Type: field.TypeInt64, Nullable: true},
-		{Name: "last_stop_time", Type: field.TypeInt64, Nullable: true},
-		{Name: "total_run_duration", Type: field.TypeInt64, Nullable: true},
-		{Name: "label", Type: field.TypeString, Nullable: true},
-		{Name: "test_collection_test_summary", Type: field.TypeInt64, Unique: true, Nullable: true},
+		{Name: "first_start_time", Type: field.TypeTime, Nullable: true},
+		{Name: "last_stop_time", Type: field.TypeTime, Nullable: true},
+		{Name: "total_run_duration_in_ms", Type: field.TypeInt64, Nullable: true},
+		{Name: "invocation_target_test_summary", Type: field.TypeInt64},
 	}
 	// TestSummariesTable holds the schema information for the "test_summaries" table.
 	TestSummariesTable = &schema.Table{
@@ -1447,78 +1252,17 @@ var (
 		PrimaryKey: []*schema.Column{TestSummariesColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "test_summaries_test_collections_test_summary",
-				Columns:    []*schema.Column{TestSummariesColumns[11]},
-				RefColumns: []*schema.Column{TestCollectionsColumns[0]},
+				Symbol:     "test_summaries_invocation_targets_test_summary",
+				Columns:    []*schema.Column{TestSummariesColumns[10]},
+				RefColumns: []*schema.Column{InvocationTargetsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "testsummary_label",
+				Name:    "testsummary_invocation_target_test_summary",
 				Unique:  false,
 				Columns: []*schema.Column{TestSummariesColumns[10]},
-			},
-			{
-				Name:    "testsummary_test_collection_test_summary",
-				Unique:  false,
-				Columns: []*schema.Column{TestSummariesColumns[11]},
-			},
-		},
-	}
-	// TimingBreakdownsColumns holds the columns for the "timing_breakdowns" table.
-	TimingBreakdownsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "name", Type: field.TypeString, Nullable: true},
-		{Name: "time", Type: field.TypeString, Nullable: true},
-		{Name: "exection_info_timing_breakdown", Type: field.TypeInt64, Unique: true, Nullable: true},
-	}
-	// TimingBreakdownsTable holds the schema information for the "timing_breakdowns" table.
-	TimingBreakdownsTable = &schema.Table{
-		Name:       "timing_breakdowns",
-		Columns:    TimingBreakdownsColumns,
-		PrimaryKey: []*schema.Column{TimingBreakdownsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "timing_breakdowns_exection_infos_timing_breakdown",
-				Columns:    []*schema.Column{TimingBreakdownsColumns[3]},
-				RefColumns: []*schema.Column{ExectionInfosColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "timingbreakdown_exection_info_timing_breakdown",
-				Unique:  false,
-				Columns: []*schema.Column{TimingBreakdownsColumns[3]},
-			},
-		},
-	}
-	// TimingChildsColumns holds the columns for the "timing_childs" table.
-	TimingChildsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "name", Type: field.TypeString, Nullable: true},
-		{Name: "time", Type: field.TypeString, Nullable: true},
-		{Name: "timing_breakdown_child", Type: field.TypeInt64, Nullable: true},
-	}
-	// TimingChildsTable holds the schema information for the "timing_childs" table.
-	TimingChildsTable = &schema.Table{
-		Name:       "timing_childs",
-		Columns:    TimingChildsColumns,
-		PrimaryKey: []*schema.Column{TimingChildsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "timing_childs_timing_breakdowns_child",
-				Columns:    []*schema.Column{TimingChildsColumns[3]},
-				RefColumns: []*schema.Column{TimingBreakdownsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "timingchild_timing_breakdown_child",
-				Unique:  false,
-				Columns: []*schema.Column{TimingChildsColumns[3]},
 			},
 		},
 	}
@@ -1572,7 +1316,6 @@ var (
 		CumulativeMetricsTable,
 		EvaluationStatsTable,
 		EventMetadataTable,
-		ExectionInfosTable,
 		GarbageMetricsTable,
 		IncompleteBuildLogsTable,
 		InstanceNamesTable,
@@ -1581,24 +1324,17 @@ var (
 		MemoryMetricsTable,
 		MetricsTable,
 		MissDetailsTable,
-		NamedSetOfFilesTable,
 		NetworkMetricsTable,
-		OutputGroupsTable,
 		PackageLoadMetricsTable,
 		PackageMetricsTable,
-		ResourceUsagesTable,
 		RunnerCountsTable,
 		SourceControlsTable,
 		SystemNetworkStatsTable,
 		TargetsTable,
 		TargetKindMappingsTable,
 		TargetMetricsTable,
-		TestCollectionsTable,
-		TestFilesTable,
-		TestResultBeSsTable,
+		TestResultsTable,
 		TestSummariesTable,
-		TimingBreakdownsTable,
-		TimingChildsTable,
 		TimingMetricsTable,
 	}
 )
@@ -1627,7 +1363,6 @@ func init() {
 	CumulativeMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	EvaluationStatsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
 	EventMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
-	ExectionInfosTable.ForeignKeys[0].RefTable = TestResultBeSsTable
 	GarbageMetricsTable.ForeignKeys[0].RefTable = MemoryMetricsTable
 	IncompleteBuildLogsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationFilesTable.ForeignKeys[0].RefTable = BazelInvocationsTable
@@ -1637,12 +1372,9 @@ func init() {
 	MemoryMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	MetricsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	MissDetailsTable.ForeignKeys[0].RefTable = ActionCacheStatisticsTable
-	NamedSetOfFilesTable.ForeignKeys[0].RefTable = NamedSetOfFilesTable
-	NamedSetOfFilesTable.ForeignKeys[1].RefTable = OutputGroupsTable
 	NetworkMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	PackageLoadMetricsTable.ForeignKeys[0].RefTable = PackageMetricsTable
 	PackageMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	ResourceUsagesTable.ForeignKeys[0].RefTable = ExectionInfosTable
 	RunnerCountsTable.ForeignKeys[0].RefTable = ActionSummariesTable
 	SourceControlsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	SystemNetworkStatsTable.ForeignKeys[0].RefTable = NetworkMetricsTable
@@ -1650,15 +1382,7 @@ func init() {
 	TargetKindMappingsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	TargetKindMappingsTable.ForeignKeys[1].RefTable = TargetsTable
 	TargetMetricsTable.ForeignKeys[0].RefTable = MetricsTable
-	TestCollectionsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
-	TestFilesTable.ForeignKeys[0].RefTable = NamedSetOfFilesTable
-	TestFilesTable.ForeignKeys[1].RefTable = OutputGroupsTable
-	TestFilesTable.ForeignKeys[2].RefTable = TestResultBeSsTable
-	TestFilesTable.ForeignKeys[3].RefTable = TestSummariesTable
-	TestFilesTable.ForeignKeys[4].RefTable = TestSummariesTable
-	TestResultBeSsTable.ForeignKeys[0].RefTable = TestCollectionsTable
-	TestSummariesTable.ForeignKeys[0].RefTable = TestCollectionsTable
-	TimingBreakdownsTable.ForeignKeys[0].RefTable = ExectionInfosTable
-	TimingChildsTable.ForeignKeys[0].RefTable = TimingBreakdownsTable
+	TestResultsTable.ForeignKeys[0].RefTable = TestSummariesTable
+	TestSummariesTable.ForeignKeys[0].RefTable = InvocationTargetsTable
 	TimingMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 }

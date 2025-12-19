@@ -36,6 +36,8 @@ const (
 	EdgeTarget = "target"
 	// EdgeConfiguration holds the string denoting the configuration edge name in mutations.
 	EdgeConfiguration = "configuration"
+	// EdgeTestSummary holds the string denoting the test_summary edge name in mutations.
+	EdgeTestSummary = "test_summary"
 	// Table holds the table name of the invocationtarget in the database.
 	Table = "invocation_targets"
 	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
@@ -59,6 +61,13 @@ const (
 	ConfigurationInverseTable = "configurations"
 	// ConfigurationColumn is the table column denoting the configuration relation/edge.
 	ConfigurationColumn = "invocation_target_configuration"
+	// TestSummaryTable is the table that holds the test_summary relation/edge.
+	TestSummaryTable = "test_summaries"
+	// TestSummaryInverseTable is the table name for the TestSummary entity.
+	// It exists in this package in order to avoid circular dependency with the "testsummary" package.
+	TestSummaryInverseTable = "test_summaries"
+	// TestSummaryColumn is the table column denoting the test_summary relation/edge.
+	TestSummaryColumn = "invocation_target_test_summary"
 )
 
 // Columns holds all SQL columns for invocationtarget fields.
@@ -193,6 +202,20 @@ func ByConfigurationField(field string, opts ...sql.OrderTermOption) OrderOption
 		sqlgraph.OrderByNeighborTerms(s, newConfigurationStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByTestSummaryCount orders the results by test_summary count.
+func ByTestSummaryCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTestSummaryStep(), opts...)
+	}
+}
+
+// ByTestSummary orders the results by test_summary terms.
+func ByTestSummary(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTestSummaryStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newBazelInvocationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -212,6 +235,13 @@ func newConfigurationStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ConfigurationInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, ConfigurationTable, ConfigurationColumn),
+	)
+}
+func newTestSummaryStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TestSummaryInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TestSummaryTable, TestSummaryColumn),
 	)
 }
 

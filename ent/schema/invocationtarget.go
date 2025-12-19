@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -78,6 +79,11 @@ func (InvocationTarget) Edges() []ent.Edge {
 		// Edge to the configuration used for this target
 		edge.To("configuration", Configuration.Type).
 			Unique(),
+
+		edge.To("test_summary", TestSummary.Type).
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
 

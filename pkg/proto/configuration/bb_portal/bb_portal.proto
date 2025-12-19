@@ -60,37 +60,20 @@ message BuildEventStreamService {
   // Enables the Graphql playground.
   bool enable_graphql_playground = 5;
 
-  message SaveTargetDataLevel {
+  // Was 'save_target_data_level'. Replaced by 'save_data_level'.
+  reserved 6;
+
+  message SaveDataLevel {
     oneof level {
-      // Do not save any data.
-      google.protobuf.Empty none = 1;
-      // Save basic data.
-      google.protobuf.Empty basic = 2;
-      // Save enriched data.
-      google.protobuf.Empty enriched = 3;
+      // Only save basic data about invocations, including invocation logs.
+      google.protobuf.Empty basic = 1;
+      // Save basic data, as well as data about targets and tests.
+      google.protobuf.Empty basic_and_target = 2;
     }
   }
 
-  // Controls whether target data should be saved, and if so, to what extent.
-  // NOTE: This is a beta feature, and it will likely change in the future,
-  // including what data is stored at each level.
-  SaveTargetDataLevel save_target_data_level = 6;
-
-  message SaveTestDataLevel {
-    oneof level {
-      // Do not save any data.
-      google.protobuf.Empty none = 1;
-      // Save basic data.
-      google.protobuf.Empty basic = 2;
-      // Save enriched data.
-      google.protobuf.Empty enriched = 3;
-    }
-  }
-
-  // Controls whether test data should be saved, and if so, to what extent.
-  // NOTE: This is a beta feature, and it will likely change in the future,
-  // including what data is stored at each level.
-  SaveTestDataLevel save_test_data_level = 7;
+  // Controls what data should be saved to the database.
+  SaveDataLevel save_data_level = 7;
 
   message DatabaseCleanupConfiguration {
     // How often to run the cleanup job. 5% jitter will be applied to

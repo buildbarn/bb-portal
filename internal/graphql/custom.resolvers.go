@@ -21,7 +21,6 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
 	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
 	"github.com/google/uuid"
@@ -188,124 +187,6 @@ func (r *queryResolver) GetTarget(ctx context.Context, instanceName, label, aspe
 	).Only(ctx)
 }
 
-// GetUniqueTestLabels is the resolver for the getUniqueTestLabels field.
-func (r *queryResolver) GetUniqueTestLabels(ctx context.Context, param *string) ([]*string, error) {
-	query := r.client.TestCollection.Query().Limit(100)
-	// started := time.Now()
-	if param != nil && *param != "" {
-		query = query.Where(testcollection.LabelContains(*param))
-	}
-	res, err := query.Unique(true).Select(testcollection.FieldLabel).Strings(ctx)
-	if err != nil {
-		return nil, err
-	}
-	// elapsed := time.Since(started)
-	// slog.Info("GetUniqueTestLabels", "elapsed:", elapsed.String())
-	return helpers.StringSliceArrayToPointerArray(res), nil
-}
-
-// GetTestDurationAggregation is the resolver for the getTestDurationAggregation field.
-func (r *queryResolver) GetTestDurationAggregation(ctx context.Context, label *string) ([]*model.TargetAggregate, error) {
-	var result []*model.TargetAggregate
-	err := r.client.TestCollection.Query().
-		Where(testcollection.LabelContains(*label)).
-		GroupBy(testcollection.FieldLabel).
-		Aggregate(ent.Count(),
-			ent.Sum(testcollection.FieldDurationMs),
-			ent.Min(testcollection.FieldDurationMs),
-			ent.Max(testcollection.FieldDurationMs)).
-		Scan(ctx, &result)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-// GetTestPassAggregation is the resolver for the getTestPassAggregation field.
-func (r *queryResolver) GetTestPassAggregation(ctx context.Context, label *string) ([]*model.TargetAggregate, error) {
-	var result []*model.TargetAggregate
-	err := r.client.TestCollection.Query().
-		Where(testcollection.And(
-			testcollection.LabelContains(*label),
-			testcollection.OverallStatusEQ(testcollection.OverallStatusPASSED),
-		)).
-		GroupBy(testcollection.FieldLabel).
-		Aggregate(ent.Count()).
-		Scan(ctx, &result)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-// GetTestsWithOffset is the resolver for the getTestsWithOffset field.
-func (r *queryResolver) GetTestsWithOffset(ctx context.Context, label *string, offset, limit *int, sortBy, direction *string) (*model.TestGridResult, error) {
-	maxLimit := 100
-	take := 10
-	skip := 0
-	if limit != nil {
-		if *limit > maxLimit {
-			return nil, fmt.Errorf("limit cannot exceed %d", maxLimit)
-		}
-		take = *limit
-	}
-	if offset != nil {
-		skip = *offset
-	}
-
-	var result []*model.TestGridRow
-	query := r.client.TestCollection.Query()
-
-	if label != nil && *label != "" {
-		query = query.Where(testcollection.LabelContains(*label))
-	}
-
-	err := query.
-		Limit(take).
-		Offset(skip).
-		GroupBy(testcollection.FieldLabel).
-		Aggregate(ent.Count(),
-			ent.As(ent.Mean(testcollection.FieldDurationMs), "avg"),
-			ent.Sum(testcollection.FieldDurationMs),
-			ent.Min(testcollection.FieldDurationMs),
-			ent.Max(testcollection.FieldDurationMs)).
-		Scan(ctx, &result)
-	if err != nil {
-		return nil, err
-	}
-	totalCount := 0
-	response := &model.TestGridResult{
-		Result: result,
-		Total:  &totalCount,
-	}
-	return response, nil
-}
-
-// GetAveragePassPercentageForLabel is the resolver for the getAveragePassPercentageForLabel field.
-func (r *queryResolver) GetAveragePassPercentageForLabel(ctx context.Context, label string) (*float64, error) {
-	// TODO: maybe there is a more elegant/faster way to do this with aggregaate
-	passCount, err := r.client.TestCollection.Query().
-		Where(testcollection.And(
-			testcollection.LabelEQ(label),
-			testcollection.OverallStatusEQ(testcollection.OverallStatusPASSED),
-		)).Count(ctx)
-	if err != nil {
-		return nil, err
-	}
-	totalCount, err := r.client.TestCollection.Query().
-		Where(testcollection.LabelEQ(label)).
-		Count(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if totalCount == 0 {
-		result := 0.0
-		return helpers.GetFloatPointer(&result), nil
-	}
-	result := float64(passCount/totalCount) * 100.0
-	return helpers.GetFloatPointer(&result), nil
-}
-
 // InvocationTargetsTotalDurationMillis is the resolver for the invocationTargetsTotalDurationMillis field.
 func (r *targetResolver) InvocationTargetsTotalDurationMillis(ctx context.Context, obj *ent.Target) (int, error) {
 	// If there are no invocation targets with a duration, SUM in SQL yields NULL
@@ -326,27 +207,13 @@ func (r *targetResolver) InvocationTargetsTotalDurationMillis(ctx context.Contex
 		Int(ctx)
 }
 
-// ActionLogOutput is the resolver for the actionLogOutput field.
-func (r *testResultResolver) ActionLogOutput(ctx context.Context, obj *model.TestResult) (*model.BlobReference, error) {
-	return helpers.GetTestResultActionLogOutput(ctx, r.client, obj)
-}
-
-// UndeclaredTestOutputs is the resolver for the undeclaredTestOutputs field.
-func (r *testResultResolver) UndeclaredTestOutputs(ctx context.Context, obj *model.TestResult) (*model.BlobReference, error) {
-	return helpers.GetTestResultUndeclaredTestOutputs(ctx, r.client, obj)
-}
-
 // ActionProblem returns ActionProblemResolver implementation.
 func (r *Resolver) ActionProblem() ActionProblemResolver { return &actionProblemResolver{r} }
 
 // BlobReference returns BlobReferenceResolver implementation.
 func (r *Resolver) BlobReference() BlobReferenceResolver { return &blobReferenceResolver{r} }
 
-// TestResult returns TestResultResolver implementation.
-func (r *Resolver) TestResult() TestResultResolver { return &testResultResolver{r} }
-
 type (
 	actionProblemResolver struct{ *Resolver }
 	blobReferenceResolver struct{ *Resolver }
-	testResultResolver    struct{ *Resolver }
 )

@@ -57,9 +57,6 @@ type EvaluationStat func(*sql.Selector)
 // EventMetadata is the predicate function for eventmetadata builders.
 type EventMetadata func(*sql.Selector)
 
-// ExectionInfo is the predicate function for exectioninfo builders.
-type ExectionInfo func(*sql.Selector)
-
 // GarbageMetrics is the predicate function for garbagemetrics builders.
 type GarbageMetrics func(*sql.Selector)
 
@@ -84,23 +81,14 @@ type Metrics func(*sql.Selector)
 // MissDetail is the predicate function for missdetail builders.
 type MissDetail func(*sql.Selector)
 
-// NamedSetOfFiles is the predicate function for namedsetoffiles builders.
-type NamedSetOfFiles func(*sql.Selector)
-
 // NetworkMetrics is the predicate function for networkmetrics builders.
 type NetworkMetrics func(*sql.Selector)
-
-// OutputGroup is the predicate function for outputgroup builders.
-type OutputGroup func(*sql.Selector)
 
 // PackageLoadMetrics is the predicate function for packageloadmetrics builders.
 type PackageLoadMetrics func(*sql.Selector)
 
 // PackageMetrics is the predicate function for packagemetrics builders.
 type PackageMetrics func(*sql.Selector)
-
-// ResourceUsage is the predicate function for resourceusage builders.
-type ResourceUsage func(*sql.Selector)
 
 // RunnerCount is the predicate function for runnercount builders.
 type RunnerCount func(*sql.Selector)
@@ -120,23 +108,11 @@ type TargetKindMapping func(*sql.Selector)
 // TargetMetrics is the predicate function for targetmetrics builders.
 type TargetMetrics func(*sql.Selector)
 
-// TestCollection is the predicate function for testcollection builders.
-type TestCollection func(*sql.Selector)
-
-// TestFile is the predicate function for testfile builders.
-type TestFile func(*sql.Selector)
-
-// TestResultBES is the predicate function for testresultbes builders.
-type TestResultBES func(*sql.Selector)
+// TestResult is the predicate function for testresult builders.
+type TestResult func(*sql.Selector)
 
 // TestSummary is the predicate function for testsummary builders.
 type TestSummary func(*sql.Selector)
-
-// TimingBreakdown is the predicate function for timingbreakdown builders.
-type TimingBreakdown func(*sql.Selector)
-
-// TimingChild is the predicate function for timingchild builders.
-type TimingChild func(*sql.Selector)
 
 // TimingMetrics is the predicate function for timingmetrics builders.
 type TimingMetrics func(*sql.Selector)

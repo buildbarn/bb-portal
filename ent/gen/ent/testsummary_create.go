@@ -6,12 +6,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testcollection"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/testfile"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 )
 
@@ -24,15 +25,15 @@ type TestSummaryCreate struct {
 }
 
 // SetOverallStatus sets the "overall_status" field.
-func (tsc *TestSummaryCreate) SetOverallStatus(ts testsummary.OverallStatus) *TestSummaryCreate {
-	tsc.mutation.SetOverallStatus(ts)
+func (tsc *TestSummaryCreate) SetOverallStatus(s string) *TestSummaryCreate {
+	tsc.mutation.SetOverallStatus(s)
 	return tsc
 }
 
 // SetNillableOverallStatus sets the "overall_status" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableOverallStatus(ts *testsummary.OverallStatus) *TestSummaryCreate {
-	if ts != nil {
-		tsc.SetOverallStatus(*ts)
+func (tsc *TestSummaryCreate) SetNillableOverallStatus(s *string) *TestSummaryCreate {
+	if s != nil {
+		tsc.SetOverallStatus(*s)
 	}
 	return tsc
 }
@@ -108,57 +109,43 @@ func (tsc *TestSummaryCreate) SetNillableTotalNumCached(i *int32) *TestSummaryCr
 }
 
 // SetFirstStartTime sets the "first_start_time" field.
-func (tsc *TestSummaryCreate) SetFirstStartTime(i int64) *TestSummaryCreate {
-	tsc.mutation.SetFirstStartTime(i)
+func (tsc *TestSummaryCreate) SetFirstStartTime(t time.Time) *TestSummaryCreate {
+	tsc.mutation.SetFirstStartTime(t)
 	return tsc
 }
 
 // SetNillableFirstStartTime sets the "first_start_time" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableFirstStartTime(i *int64) *TestSummaryCreate {
-	if i != nil {
-		tsc.SetFirstStartTime(*i)
+func (tsc *TestSummaryCreate) SetNillableFirstStartTime(t *time.Time) *TestSummaryCreate {
+	if t != nil {
+		tsc.SetFirstStartTime(*t)
 	}
 	return tsc
 }
 
 // SetLastStopTime sets the "last_stop_time" field.
-func (tsc *TestSummaryCreate) SetLastStopTime(i int64) *TestSummaryCreate {
-	tsc.mutation.SetLastStopTime(i)
+func (tsc *TestSummaryCreate) SetLastStopTime(t time.Time) *TestSummaryCreate {
+	tsc.mutation.SetLastStopTime(t)
 	return tsc
 }
 
 // SetNillableLastStopTime sets the "last_stop_time" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableLastStopTime(i *int64) *TestSummaryCreate {
-	if i != nil {
-		tsc.SetLastStopTime(*i)
+func (tsc *TestSummaryCreate) SetNillableLastStopTime(t *time.Time) *TestSummaryCreate {
+	if t != nil {
+		tsc.SetLastStopTime(*t)
 	}
 	return tsc
 }
 
-// SetTotalRunDuration sets the "total_run_duration" field.
-func (tsc *TestSummaryCreate) SetTotalRunDuration(i int64) *TestSummaryCreate {
-	tsc.mutation.SetTotalRunDuration(i)
+// SetTotalRunDurationInMs sets the "total_run_duration_in_ms" field.
+func (tsc *TestSummaryCreate) SetTotalRunDurationInMs(i int64) *TestSummaryCreate {
+	tsc.mutation.SetTotalRunDurationInMs(i)
 	return tsc
 }
 
-// SetNillableTotalRunDuration sets the "total_run_duration" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableTotalRunDuration(i *int64) *TestSummaryCreate {
+// SetNillableTotalRunDurationInMs sets the "total_run_duration_in_ms" field if the given value is not nil.
+func (tsc *TestSummaryCreate) SetNillableTotalRunDurationInMs(i *int64) *TestSummaryCreate {
 	if i != nil {
-		tsc.SetTotalRunDuration(*i)
-	}
-	return tsc
-}
-
-// SetLabel sets the "label" field.
-func (tsc *TestSummaryCreate) SetLabel(s string) *TestSummaryCreate {
-	tsc.mutation.SetLabel(s)
-	return tsc
-}
-
-// SetNillableLabel sets the "label" field if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableLabel(s *string) *TestSummaryCreate {
-	if s != nil {
-		tsc.SetLabel(*s)
+		tsc.SetTotalRunDurationInMs(*i)
 	}
 	return tsc
 }
@@ -169,53 +156,30 @@ func (tsc *TestSummaryCreate) SetID(i int64) *TestSummaryCreate {
 	return tsc
 }
 
-// SetTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID.
-func (tsc *TestSummaryCreate) SetTestCollectionID(id int64) *TestSummaryCreate {
-	tsc.mutation.SetTestCollectionID(id)
+// SetInvocationTargetID sets the "invocation_target" edge to the InvocationTarget entity by ID.
+func (tsc *TestSummaryCreate) SetInvocationTargetID(id int64) *TestSummaryCreate {
+	tsc.mutation.SetInvocationTargetID(id)
 	return tsc
 }
 
-// SetNillableTestCollectionID sets the "test_collection" edge to the TestCollection entity by ID if the given value is not nil.
-func (tsc *TestSummaryCreate) SetNillableTestCollectionID(id *int64) *TestSummaryCreate {
-	if id != nil {
-		tsc = tsc.SetTestCollectionID(*id)
-	}
+// SetInvocationTarget sets the "invocation_target" edge to the InvocationTarget entity.
+func (tsc *TestSummaryCreate) SetInvocationTarget(i *InvocationTarget) *TestSummaryCreate {
+	return tsc.SetInvocationTargetID(i.ID)
+}
+
+// AddTestResultIDs adds the "test_results" edge to the TestResult entity by IDs.
+func (tsc *TestSummaryCreate) AddTestResultIDs(ids ...int64) *TestSummaryCreate {
+	tsc.mutation.AddTestResultIDs(ids...)
 	return tsc
 }
 
-// SetTestCollection sets the "test_collection" edge to the TestCollection entity.
-func (tsc *TestSummaryCreate) SetTestCollection(t *TestCollection) *TestSummaryCreate {
-	return tsc.SetTestCollectionID(t.ID)
-}
-
-// AddPassedIDs adds the "passed" edge to the TestFile entity by IDs.
-func (tsc *TestSummaryCreate) AddPassedIDs(ids ...int64) *TestSummaryCreate {
-	tsc.mutation.AddPassedIDs(ids...)
-	return tsc
-}
-
-// AddPassed adds the "passed" edges to the TestFile entity.
-func (tsc *TestSummaryCreate) AddPassed(t ...*TestFile) *TestSummaryCreate {
+// AddTestResults adds the "test_results" edges to the TestResult entity.
+func (tsc *TestSummaryCreate) AddTestResults(t ...*TestResult) *TestSummaryCreate {
 	ids := make([]int64, len(t))
 	for i := range t {
 		ids[i] = t[i].ID
 	}
-	return tsc.AddPassedIDs(ids...)
-}
-
-// AddFailedIDs adds the "failed" edge to the TestFile entity by IDs.
-func (tsc *TestSummaryCreate) AddFailedIDs(ids ...int64) *TestSummaryCreate {
-	tsc.mutation.AddFailedIDs(ids...)
-	return tsc
-}
-
-// AddFailed adds the "failed" edges to the TestFile entity.
-func (tsc *TestSummaryCreate) AddFailed(t ...*TestFile) *TestSummaryCreate {
-	ids := make([]int64, len(t))
-	for i := range t {
-		ids[i] = t[i].ID
-	}
-	return tsc.AddFailedIDs(ids...)
+	return tsc.AddTestResultIDs(ids...)
 }
 
 // Mutation returns the TestSummaryMutation object of the builder.
@@ -225,7 +189,6 @@ func (tsc *TestSummaryCreate) Mutation() *TestSummaryMutation {
 
 // Save creates the TestSummary in the database.
 func (tsc *TestSummaryCreate) Save(ctx context.Context) (*TestSummary, error) {
-	tsc.defaults()
 	return withHooks(ctx, tsc.sqlSave, tsc.mutation, tsc.hooks)
 }
 
@@ -251,20 +214,10 @@ func (tsc *TestSummaryCreate) ExecX(ctx context.Context) {
 	}
 }
 
-// defaults sets the default values of the builder before save.
-func (tsc *TestSummaryCreate) defaults() {
-	if _, ok := tsc.mutation.OverallStatus(); !ok {
-		v := testsummary.DefaultOverallStatus
-		tsc.mutation.SetOverallStatus(v)
-	}
-}
-
 // check runs all checks and user-defined validators on the builder.
 func (tsc *TestSummaryCreate) check() error {
-	if v, ok := tsc.mutation.OverallStatus(); ok {
-		if err := testsummary.OverallStatusValidator(v); err != nil {
-			return &ValidationError{Name: "overall_status", err: fmt.Errorf(`ent: validator failed for field "TestSummary.overall_status": %w`, err)}
-		}
+	if len(tsc.mutation.InvocationTargetIDs()) == 0 {
+		return &ValidationError{Name: "invocation_target", err: errors.New(`ent: missing required edge "TestSummary.invocation_target"`)}
 	}
 	return nil
 }
@@ -300,7 +253,7 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 		_spec.ID.Value = id
 	}
 	if value, ok := tsc.mutation.OverallStatus(); ok {
-		_spec.SetField(testsummary.FieldOverallStatus, field.TypeEnum, value)
+		_spec.SetField(testsummary.FieldOverallStatus, field.TypeString, value)
 		_node.OverallStatus = value
 	}
 	if value, ok := tsc.mutation.TotalRunCount(); ok {
@@ -324,63 +277,43 @@ func (tsc *TestSummaryCreate) createSpec() (*TestSummary, *sqlgraph.CreateSpec) 
 		_node.TotalNumCached = value
 	}
 	if value, ok := tsc.mutation.FirstStartTime(); ok {
-		_spec.SetField(testsummary.FieldFirstStartTime, field.TypeInt64, value)
+		_spec.SetField(testsummary.FieldFirstStartTime, field.TypeTime, value)
 		_node.FirstStartTime = value
 	}
 	if value, ok := tsc.mutation.LastStopTime(); ok {
-		_spec.SetField(testsummary.FieldLastStopTime, field.TypeInt64, value)
+		_spec.SetField(testsummary.FieldLastStopTime, field.TypeTime, value)
 		_node.LastStopTime = value
 	}
-	if value, ok := tsc.mutation.TotalRunDuration(); ok {
-		_spec.SetField(testsummary.FieldTotalRunDuration, field.TypeInt64, value)
-		_node.TotalRunDuration = value
+	if value, ok := tsc.mutation.TotalRunDurationInMs(); ok {
+		_spec.SetField(testsummary.FieldTotalRunDurationInMs, field.TypeInt64, value)
+		_node.TotalRunDurationInMs = value
 	}
-	if value, ok := tsc.mutation.Label(); ok {
-		_spec.SetField(testsummary.FieldLabel, field.TypeString, value)
-		_node.Label = value
-	}
-	if nodes := tsc.mutation.TestCollectionIDs(); len(nodes) > 0 {
+	if nodes := tsc.mutation.InvocationTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
+			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   testsummary.TestCollectionTable,
-			Columns: []string{testsummary.TestCollectionColumn},
+			Table:   testsummary.InvocationTargetTable,
+			Columns: []string{testsummary.InvocationTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testcollection.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(invocationtarget.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.test_collection_test_summary = &nodes[0]
+		_node.invocation_target_test_summary = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := tsc.mutation.PassedIDs(); len(nodes) > 0 {
+	if nodes := tsc.mutation.TestResultsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   testsummary.PassedTable,
-			Columns: []string{testsummary.PassedColumn},
+			Table:   testsummary.TestResultsTable,
+			Columns: []string{testsummary.TestResultsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := tsc.mutation.FailedIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   testsummary.FailedTable,
-			Columns: []string{testsummary.FailedColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(testfile.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(testresult.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -441,7 +374,7 @@ type (
 )
 
 // SetOverallStatus sets the "overall_status" field.
-func (u *TestSummaryUpsert) SetOverallStatus(v testsummary.OverallStatus) *TestSummaryUpsert {
+func (u *TestSummaryUpsert) SetOverallStatus(v string) *TestSummaryUpsert {
 	u.Set(testsummary.FieldOverallStatus, v)
 	return u
 }
@@ -579,7 +512,7 @@ func (u *TestSummaryUpsert) ClearTotalNumCached() *TestSummaryUpsert {
 }
 
 // SetFirstStartTime sets the "first_start_time" field.
-func (u *TestSummaryUpsert) SetFirstStartTime(v int64) *TestSummaryUpsert {
+func (u *TestSummaryUpsert) SetFirstStartTime(v time.Time) *TestSummaryUpsert {
 	u.Set(testsummary.FieldFirstStartTime, v)
 	return u
 }
@@ -590,12 +523,6 @@ func (u *TestSummaryUpsert) UpdateFirstStartTime() *TestSummaryUpsert {
 	return u
 }
 
-// AddFirstStartTime adds v to the "first_start_time" field.
-func (u *TestSummaryUpsert) AddFirstStartTime(v int64) *TestSummaryUpsert {
-	u.Add(testsummary.FieldFirstStartTime, v)
-	return u
-}
-
 // ClearFirstStartTime clears the value of the "first_start_time" field.
 func (u *TestSummaryUpsert) ClearFirstStartTime() *TestSummaryUpsert {
 	u.SetNull(testsummary.FieldFirstStartTime)
@@ -603,7 +530,7 @@ func (u *TestSummaryUpsert) ClearFirstStartTime() *TestSummaryUpsert {
 }
 
 // SetLastStopTime sets the "last_stop_time" field.
-func (u *TestSummaryUpsert) SetLastStopTime(v int64) *TestSummaryUpsert {
+func (u *TestSummaryUpsert) SetLastStopTime(v time.Time) *TestSummaryUpsert {
 	u.Set(testsummary.FieldLastStopTime, v)
 	return u
 }
@@ -614,57 +541,33 @@ func (u *TestSummaryUpsert) UpdateLastStopTime() *TestSummaryUpsert {
 	return u
 }
 
-// AddLastStopTime adds v to the "last_stop_time" field.
-func (u *TestSummaryUpsert) AddLastStopTime(v int64) *TestSummaryUpsert {
-	u.Add(testsummary.FieldLastStopTime, v)
-	return u
-}
-
 // ClearLastStopTime clears the value of the "last_stop_time" field.
 func (u *TestSummaryUpsert) ClearLastStopTime() *TestSummaryUpsert {
 	u.SetNull(testsummary.FieldLastStopTime)
 	return u
 }
 
-// SetTotalRunDuration sets the "total_run_duration" field.
-func (u *TestSummaryUpsert) SetTotalRunDuration(v int64) *TestSummaryUpsert {
-	u.Set(testsummary.FieldTotalRunDuration, v)
+// SetTotalRunDurationInMs sets the "total_run_duration_in_ms" field.
+func (u *TestSummaryUpsert) SetTotalRunDurationInMs(v int64) *TestSummaryUpsert {
+	u.Set(testsummary.FieldTotalRunDurationInMs, v)
 	return u
 }
 
-// UpdateTotalRunDuration sets the "total_run_duration" field to the value that was provided on create.
-func (u *TestSummaryUpsert) UpdateTotalRunDuration() *TestSummaryUpsert {
-	u.SetExcluded(testsummary.FieldTotalRunDuration)
+// UpdateTotalRunDurationInMs sets the "total_run_duration_in_ms" field to the value that was provided on create.
+func (u *TestSummaryUpsert) UpdateTotalRunDurationInMs() *TestSummaryUpsert {
+	u.SetExcluded(testsummary.FieldTotalRunDurationInMs)
 	return u
 }
 
-// AddTotalRunDuration adds v to the "total_run_duration" field.
-func (u *TestSummaryUpsert) AddTotalRunDuration(v int64) *TestSummaryUpsert {
-	u.Add(testsummary.FieldTotalRunDuration, v)
+// AddTotalRunDurationInMs adds v to the "total_run_duration_in_ms" field.
+func (u *TestSummaryUpsert) AddTotalRunDurationInMs(v int64) *TestSummaryUpsert {
+	u.Add(testsummary.FieldTotalRunDurationInMs, v)
 	return u
 }
 
-// ClearTotalRunDuration clears the value of the "total_run_duration" field.
-func (u *TestSummaryUpsert) ClearTotalRunDuration() *TestSummaryUpsert {
-	u.SetNull(testsummary.FieldTotalRunDuration)
-	return u
-}
-
-// SetLabel sets the "label" field.
-func (u *TestSummaryUpsert) SetLabel(v string) *TestSummaryUpsert {
-	u.Set(testsummary.FieldLabel, v)
-	return u
-}
-
-// UpdateLabel sets the "label" field to the value that was provided on create.
-func (u *TestSummaryUpsert) UpdateLabel() *TestSummaryUpsert {
-	u.SetExcluded(testsummary.FieldLabel)
-	return u
-}
-
-// ClearLabel clears the value of the "label" field.
-func (u *TestSummaryUpsert) ClearLabel() *TestSummaryUpsert {
-	u.SetNull(testsummary.FieldLabel)
+// ClearTotalRunDurationInMs clears the value of the "total_run_duration_in_ms" field.
+func (u *TestSummaryUpsert) ClearTotalRunDurationInMs() *TestSummaryUpsert {
+	u.SetNull(testsummary.FieldTotalRunDurationInMs)
 	return u
 }
 
@@ -717,7 +620,7 @@ func (u *TestSummaryUpsertOne) Update(set func(*TestSummaryUpsert)) *TestSummary
 }
 
 // SetOverallStatus sets the "overall_status" field.
-func (u *TestSummaryUpsertOne) SetOverallStatus(v testsummary.OverallStatus) *TestSummaryUpsertOne {
+func (u *TestSummaryUpsertOne) SetOverallStatus(v string) *TestSummaryUpsertOne {
 	return u.Update(func(s *TestSummaryUpsert) {
 		s.SetOverallStatus(v)
 	})
@@ -878,16 +781,9 @@ func (u *TestSummaryUpsertOne) ClearTotalNumCached() *TestSummaryUpsertOne {
 }
 
 // SetFirstStartTime sets the "first_start_time" field.
-func (u *TestSummaryUpsertOne) SetFirstStartTime(v int64) *TestSummaryUpsertOne {
+func (u *TestSummaryUpsertOne) SetFirstStartTime(v time.Time) *TestSummaryUpsertOne {
 	return u.Update(func(s *TestSummaryUpsert) {
 		s.SetFirstStartTime(v)
-	})
-}
-
-// AddFirstStartTime adds v to the "first_start_time" field.
-func (u *TestSummaryUpsertOne) AddFirstStartTime(v int64) *TestSummaryUpsertOne {
-	return u.Update(func(s *TestSummaryUpsert) {
-		s.AddFirstStartTime(v)
 	})
 }
 
@@ -906,16 +802,9 @@ func (u *TestSummaryUpsertOne) ClearFirstStartTime() *TestSummaryUpsertOne {
 }
 
 // SetLastStopTime sets the "last_stop_time" field.
-func (u *TestSummaryUpsertOne) SetLastStopTime(v int64) *TestSummaryUpsertOne {
+func (u *TestSummaryUpsertOne) SetLastStopTime(v time.Time) *TestSummaryUpsertOne {
 	return u.Update(func(s *TestSummaryUpsert) {
 		s.SetLastStopTime(v)
-	})
-}
-
-// AddLastStopTime adds v to the "last_stop_time" field.
-func (u *TestSummaryUpsertOne) AddLastStopTime(v int64) *TestSummaryUpsertOne {
-	return u.Update(func(s *TestSummaryUpsert) {
-		s.AddLastStopTime(v)
 	})
 }
 
@@ -933,52 +822,31 @@ func (u *TestSummaryUpsertOne) ClearLastStopTime() *TestSummaryUpsertOne {
 	})
 }
 
-// SetTotalRunDuration sets the "total_run_duration" field.
-func (u *TestSummaryUpsertOne) SetTotalRunDuration(v int64) *TestSummaryUpsertOne {
+// SetTotalRunDurationInMs sets the "total_run_duration_in_ms" field.
+func (u *TestSummaryUpsertOne) SetTotalRunDurationInMs(v int64) *TestSummaryUpsertOne {
 	return u.Update(func(s *TestSummaryUpsert) {
-		s.SetTotalRunDuration(v)
+		s.SetTotalRunDurationInMs(v)
 	})
 }
 
-// AddTotalRunDuration adds v to the "total_run_duration" field.
-func (u *TestSummaryUpsertOne) AddTotalRunDuration(v int64) *TestSummaryUpsertOne {
+// AddTotalRunDurationInMs adds v to the "total_run_duration_in_ms" field.
+func (u *TestSummaryUpsertOne) AddTotalRunDurationInMs(v int64) *TestSummaryUpsertOne {
 	return u.Update(func(s *TestSummaryUpsert) {
-		s.AddTotalRunDuration(v)
+		s.AddTotalRunDurationInMs(v)
 	})
 }
 
-// UpdateTotalRunDuration sets the "total_run_duration" field to the value that was provided on create.
-func (u *TestSummaryUpsertOne) UpdateTotalRunDuration() *TestSummaryUpsertOne {
+// UpdateTotalRunDurationInMs sets the "total_run_duration_in_ms" field to the value that was provided on create.
+func (u *TestSummaryUpsertOne) UpdateTotalRunDurationInMs() *TestSummaryUpsertOne {
 	return u.Update(func(s *TestSummaryUpsert) {
-		s.UpdateTotalRunDuration()
+		s.UpdateTotalRunDurationInMs()
 	})
 }
 
-// ClearTotalRunDuration clears the value of the "total_run_duration" field.
-func (u *TestSummaryUpsertOne) ClearTotalRunDuration() *TestSummaryUpsertOne {
+// ClearTotalRunDurationInMs clears the value of the "total_run_duration_in_ms" field.
+func (u *TestSummaryUpsertOne) ClearTotalRunDurationInMs() *TestSummaryUpsertOne {
 	return u.Update(func(s *TestSummaryUpsert) {
-		s.ClearTotalRunDuration()
-	})
-}
-
-// SetLabel sets the "label" field.
-func (u *TestSummaryUpsertOne) SetLabel(v string) *TestSummaryUpsertOne {
-	return u.Update(func(s *TestSummaryUpsert) {
-		s.SetLabel(v)
-	})
-}
-
-// UpdateLabel sets the "label" field to the value that was provided on create.
-func (u *TestSummaryUpsertOne) UpdateLabel() *TestSummaryUpsertOne {
-	return u.Update(func(s *TestSummaryUpsert) {
-		s.UpdateLabel()
-	})
-}
-
-// ClearLabel clears the value of the "label" field.
-func (u *TestSummaryUpsertOne) ClearLabel() *TestSummaryUpsertOne {
-	return u.Update(func(s *TestSummaryUpsert) {
-		s.ClearLabel()
+		s.ClearTotalRunDurationInMs()
 	})
 }
 
@@ -1034,7 +902,6 @@ func (tscb *TestSummaryCreateBulk) Save(ctx context.Context) ([]*TestSummary, er
 	for i := range tscb.builders {
 		func(i int, root context.Context) {
 			builder := tscb.builders[i]
-			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TestSummaryMutation)
 				if !ok {
@@ -1197,7 +1064,7 @@ func (u *TestSummaryUpsertBulk) Update(set func(*TestSummaryUpsert)) *TestSummar
 }
 
 // SetOverallStatus sets the "overall_status" field.
-func (u *TestSummaryUpsertBulk) SetOverallStatus(v testsummary.OverallStatus) *TestSummaryUpsertBulk {
+func (u *TestSummaryUpsertBulk) SetOverallStatus(v string) *TestSummaryUpsertBulk {
 	return u.Update(func(s *TestSummaryUpsert) {
 		s.SetOverallStatus(v)
 	})
@@ -1358,16 +1225,9 @@ func (u *TestSummaryUpsertBulk) ClearTotalNumCached() *TestSummaryUpsertBulk {
 }
 
 // SetFirstStartTime sets the "first_start_time" field.
-func (u *TestSummaryUpsertBulk) SetFirstStartTime(v int64) *TestSummaryUpsertBulk {
+func (u *TestSummaryUpsertBulk) SetFirstStartTime(v time.Time) *TestSummaryUpsertBulk {
 	return u.Update(func(s *TestSummaryUpsert) {
 		s.SetFirstStartTime(v)
-	})
-}
-
-// AddFirstStartTime adds v to the "first_start_time" field.
-func (u *TestSummaryUpsertBulk) AddFirstStartTime(v int64) *TestSummaryUpsertBulk {
-	return u.Update(func(s *TestSummaryUpsert) {
-		s.AddFirstStartTime(v)
 	})
 }
 
@@ -1386,16 +1246,9 @@ func (u *TestSummaryUpsertBulk) ClearFirstStartTime() *TestSummaryUpsertBulk {
 }
 
 // SetLastStopTime sets the "last_stop_time" field.
-func (u *TestSummaryUpsertBulk) SetLastStopTime(v int64) *TestSummaryUpsertBulk {
+func (u *TestSummaryUpsertBulk) SetLastStopTime(v time.Time) *TestSummaryUpsertBulk {
 	return u.Update(func(s *TestSummaryUpsert) {
 		s.SetLastStopTime(v)
-	})
-}
-
-// AddLastStopTime adds v to the "last_stop_time" field.
-func (u *TestSummaryUpsertBulk) AddLastStopTime(v int64) *TestSummaryUpsertBulk {
-	return u.Update(func(s *TestSummaryUpsert) {
-		s.AddLastStopTime(v)
 	})
 }
 
@@ -1413,52 +1266,31 @@ func (u *TestSummaryUpsertBulk) ClearLastStopTime() *TestSummaryUpsertBulk {
 	})
 }
 
-// SetTotalRunDuration sets the "total_run_duration" field.
-func (u *TestSummaryUpsertBulk) SetTotalRunDuration(v int64) *TestSummaryUpsertBulk {
+// SetTotalRunDurationInMs sets the "total_run_duration_in_ms" field.
+func (u *TestSummaryUpsertBulk) SetTotalRunDurationInMs(v int64) *TestSummaryUpsertBulk {
 	return u.Update(func(s *TestSummaryUpsert) {
-		s.SetTotalRunDuration(v)
+		s.SetTotalRunDurationInMs(v)
 	})
 }
 
-// AddTotalRunDuration adds v to the "total_run_duration" field.
-func (u *TestSummaryUpsertBulk) AddTotalRunDuration(v int64) *TestSummaryUpsertBulk {
+// AddTotalRunDurationInMs adds v to the "total_run_duration_in_ms" field.
+func (u *TestSummaryUpsertBulk) AddTotalRunDurationInMs(v int64) *TestSummaryUpsertBulk {
 	return u.Update(func(s *TestSummaryUpsert) {
-		s.AddTotalRunDuration(v)
+		s.AddTotalRunDurationInMs(v)
 	})
 }
 
-// UpdateTotalRunDuration sets the "total_run_duration" field to the value that was provided on create.
-func (u *TestSummaryUpsertBulk) UpdateTotalRunDuration() *TestSummaryUpsertBulk {
+// UpdateTotalRunDurationInMs sets the "total_run_duration_in_ms" field to the value that was provided on create.
+func (u *TestSummaryUpsertBulk) UpdateTotalRunDurationInMs() *TestSummaryUpsertBulk {
 	return u.Update(func(s *TestSummaryUpsert) {
-		s.UpdateTotalRunDuration()
+		s.UpdateTotalRunDurationInMs()
 	})
 }
 
-// ClearTotalRunDuration clears the value of the "total_run_duration" field.
-func (u *TestSummaryUpsertBulk) ClearTotalRunDuration() *TestSummaryUpsertBulk {
+// ClearTotalRunDurationInMs clears the value of the "total_run_duration_in_ms" field.
+func (u *TestSummaryUpsertBulk) ClearTotalRunDurationInMs() *TestSummaryUpsertBulk {
 	return u.Update(func(s *TestSummaryUpsert) {
-		s.ClearTotalRunDuration()
-	})
-}
-
-// SetLabel sets the "label" field.
-func (u *TestSummaryUpsertBulk) SetLabel(v string) *TestSummaryUpsertBulk {
-	return u.Update(func(s *TestSummaryUpsert) {
-		s.SetLabel(v)
-	})
-}
-
-// UpdateLabel sets the "label" field to the value that was provided on create.
-func (u *TestSummaryUpsertBulk) UpdateLabel() *TestSummaryUpsertBulk {
-	return u.Update(func(s *TestSummaryUpsert) {
-		s.UpdateLabel()
-	})
-}
-
-// ClearLabel clears the value of the "label" field.
-func (u *TestSummaryUpsertBulk) ClearLabel() *TestSummaryUpsertBulk {
-	return u.Update(func(s *TestSummaryUpsert) {
-		s.ClearLabel()
+		s.ClearTotalRunDurationInMs()
 	})
 }
 

@@ -41,8 +41,7 @@ type BepUploader struct {
 	db                     database.Client
 	instanceNameAuthorizer auth.Authorizer
 	blobArchiver           processing.BlobMultiArchiver
-	saveTargetDataLevel    *bb_portal.BuildEventStreamService_SaveTargetDataLevel
-	saveTestDataLevel      *bb_portal.BuildEventStreamService_SaveTestDataLevel
+	saveDataLevel          *bb_portal.BuildEventStreamService_SaveDataLevel
 	tracerProvider         trace.TracerProvider
 	extractors             *authmetadataextraction.AuthMetadataExtractors
 	uuidGenerator          util.UUIDGenerator
@@ -63,14 +62,9 @@ func NewBepUploader(db database.Client, blobArchiver processing.BlobMultiArchive
 		return nil, fmt.Errorf("No BesServiceConfiguration configured")
 	}
 
-	saveTargetDataLevel := besConfiguration.SaveTargetDataLevel
-	if saveTargetDataLevel == nil || saveTargetDataLevel.Level == nil {
-		return nil, fmt.Errorf("No saveTargetDataLevel configured")
-	}
-
-	saveTestDataLevel := besConfiguration.SaveTestDataLevel
-	if saveTestDataLevel == nil || saveTestDataLevel.Level == nil {
-		return nil, fmt.Errorf("No saveTestDataLevel configured")
+	saveDataLevel := besConfiguration.SaveDataLevel
+	if saveDataLevel == nil || saveDataLevel.Level == nil {
+		return nil, fmt.Errorf("No saveDataLevel configured")
 	}
 
 	extractors, err := authmetadataextraction.AuthMetadataExtractorsFromConfiguration(besConfiguration.AuthMetadataKeyConfiguration, dependenciesGroup)
@@ -82,8 +76,7 @@ func NewBepUploader(db database.Client, blobArchiver processing.BlobMultiArchive
 		db:                     db,
 		instanceNameAuthorizer: instanceNameAuthorizer,
 		blobArchiver:           blobArchiver,
-		saveTargetDataLevel:    saveTargetDataLevel,
-		saveTestDataLevel:      saveTestDataLevel,
+		saveDataLevel:          saveDataLevel,
 		tracerProvider:         tracerProvider,
 		extractors:             extractors,
 		uuidGenerator:          uuidGenerator,
@@ -150,8 +143,7 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 				b.db,
 				b.instanceNameAuthorizer,
 				b.blobArchiver,
-				b.saveTargetDataLevel,
-				b.saveTestDataLevel,
+				b.saveDataLevel,
 				b.tracerProvider,
 				"", // instanceName
 				invocationID,

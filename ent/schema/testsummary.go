@@ -1,8 +1,10 @@
 package schema
 
 import (
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
@@ -18,17 +20,7 @@ func (TestSummary) Fields() []ent.Field {
 	return []ent.Field{
 		// Wrapper around BlazeTestStatus to support importing that enum to proto3.
 		// Overall status of test, accumulated over all runs, shards, and attempts.
-		field.Enum("overall_status").Optional().
-			Values("NO_STATUS",
-				"PASSED",
-				"FLAKY",
-				"TIMEOUT",
-				"FAILED",
-				"INCOMPLETE",
-				"REMOTE_FAILURE",
-				"FAILED_TO_BUILD",
-				"TOOL_HALTED_BEFORE_TESTING").
-			Default("NO_STATUS"),
+		field.String("overall_status").Optional(),
 
 		// Total number of shard attempts.
 		// E.g., if a target has 4 runs, 3 shards, each with 2 attempts,
@@ -50,35 +42,28 @@ func (TestSummary) Fields() []ent.Field {
 		field.Int32("total_num_cached").Optional(),
 
 		// When the test first started running.
-		field.Int64("first_start_time").Optional(),
+		field.Time("first_start_time").Optional().
+			Annotations(entgql.OrderField("FIRST_START_TIME")),
 
 		// When the test last finished running.
-		field.Int64("last_stop_time").Optional(),
+		field.Time("last_stop_time").Optional(),
 
 		// The total runtime of the test.
-		field.Int64("total_run_duration").Optional(),
-
-		// Test target label, possibly redundant and could be removed.
-		field.String("label").Optional(),
+		field.Int64("total_run_duration_in_ms").Optional().
+			Annotations(entgql.OrderField("TOTAL_RUN_DURATION_IN_MS")),
 	}
 }
 
 // Edges of the TestSummary.
 func (TestSummary) Edges() []ent.Edge {
 	return []ent.Edge{
-		// Edge back tot he test collection.
-		edge.From("test_collection", TestCollection.Type).
+		edge.From("invocation_target", InvocationTarget.Type).
 			Ref("test_summary").
+			Required().
 			Unique(),
 
-		// Path to logs of passed runs.
-		edge.To("passed", TestFile.Type).
-			Annotations(
-				entsql.OnDelete(entsql.Cascade),
-			),
-
-		// Path to logs of failed runs;
-		edge.To("failed", TestFile.Type).
+		// A collection of test results associated with this collection
+		edge.To("test_results", TestResult.Type).
 			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
@@ -88,8 +73,15 @@ func (TestSummary) Edges() []ent.Edge {
 // Indexes of the TestSummary.
 func (TestSummary) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("label"),
-		index.Edges("test_collection"),
+		index.Edges("invocation_target"),
+	}
+}
+
+// Annotations for TestSummary.
+func (TestSummary) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entgql.RelayConnection(),
+		entgql.QueryField("findTestSummaries"),
 	}
 }
 

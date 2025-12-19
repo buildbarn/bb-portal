@@ -75,8 +75,7 @@ func setupTestBepUploader(t *testing.T, db database.Client, testCase testCase, u
 			Policy: &auth.AuthorizerConfiguration_Allow{},
 		},
 		BesServiceConfiguration: &bb_portal.BuildEventStreamService{
-			SaveTargetDataLevel:          testCase.saveTargetDataLevel,
-			SaveTestDataLevel:            testCase.saveTestDataLevel,
+			SaveDataLevel:                testCase.saveDataLevel,
 			AuthMetadataKeyConfiguration: testCase.extractors,
 		},
 	}

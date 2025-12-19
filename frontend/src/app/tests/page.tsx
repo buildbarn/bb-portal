@@ -22,7 +22,7 @@ const Page: React.FC = () => {
                         icon={<ExperimentFilled />}
                         extraBits={[<Alert
                             showIcon
-                            message = "Search by label to further refine your result"
+                            message = "Search by label and/or instance name to further refine your result"
                             type = "info"
                           />]}
                         titleBits={[<span key="title">Tests Overview</span>]}>

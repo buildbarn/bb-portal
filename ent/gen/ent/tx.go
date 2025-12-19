@@ -48,8 +48,6 @@ type Tx struct {
 	EvaluationStat *EvaluationStatClient
 	// EventMetadata is the client for interacting with the EventMetadata builders.
 	EventMetadata *EventMetadataClient
-	// ExectionInfo is the client for interacting with the ExectionInfo builders.
-	ExectionInfo *ExectionInfoClient
 	// GarbageMetrics is the client for interacting with the GarbageMetrics builders.
 	GarbageMetrics *GarbageMetricsClient
 	// IncompleteBuildLog is the client for interacting with the IncompleteBuildLog builders.
@@ -66,18 +64,12 @@ type Tx struct {
 	Metrics *MetricsClient
 	// MissDetail is the client for interacting with the MissDetail builders.
 	MissDetail *MissDetailClient
-	// NamedSetOfFiles is the client for interacting with the NamedSetOfFiles builders.
-	NamedSetOfFiles *NamedSetOfFilesClient
 	// NetworkMetrics is the client for interacting with the NetworkMetrics builders.
 	NetworkMetrics *NetworkMetricsClient
-	// OutputGroup is the client for interacting with the OutputGroup builders.
-	OutputGroup *OutputGroupClient
 	// PackageLoadMetrics is the client for interacting with the PackageLoadMetrics builders.
 	PackageLoadMetrics *PackageLoadMetricsClient
 	// PackageMetrics is the client for interacting with the PackageMetrics builders.
 	PackageMetrics *PackageMetricsClient
-	// ResourceUsage is the client for interacting with the ResourceUsage builders.
-	ResourceUsage *ResourceUsageClient
 	// RunnerCount is the client for interacting with the RunnerCount builders.
 	RunnerCount *RunnerCountClient
 	// SourceControl is the client for interacting with the SourceControl builders.
@@ -90,18 +82,10 @@ type Tx struct {
 	TargetKindMapping *TargetKindMappingClient
 	// TargetMetrics is the client for interacting with the TargetMetrics builders.
 	TargetMetrics *TargetMetricsClient
-	// TestCollection is the client for interacting with the TestCollection builders.
-	TestCollection *TestCollectionClient
-	// TestFile is the client for interacting with the TestFile builders.
-	TestFile *TestFileClient
-	// TestResultBES is the client for interacting with the TestResultBES builders.
-	TestResultBES *TestResultBESClient
+	// TestResult is the client for interacting with the TestResult builders.
+	TestResult *TestResultClient
 	// TestSummary is the client for interacting with the TestSummary builders.
 	TestSummary *TestSummaryClient
-	// TimingBreakdown is the client for interacting with the TimingBreakdown builders.
-	TimingBreakdown *TimingBreakdownClient
-	// TimingChild is the client for interacting with the TimingChild builders.
-	TimingChild *TimingChildClient
 	// TimingMetrics is the client for interacting with the TimingMetrics builders.
 	TimingMetrics *TimingMetricsClient
 
@@ -252,7 +236,6 @@ func (tx *Tx) init() {
 	tx.CumulativeMetrics = NewCumulativeMetricsClient(tx.config)
 	tx.EvaluationStat = NewEvaluationStatClient(tx.config)
 	tx.EventMetadata = NewEventMetadataClient(tx.config)
-	tx.ExectionInfo = NewExectionInfoClient(tx.config)
 	tx.GarbageMetrics = NewGarbageMetricsClient(tx.config)
 	tx.IncompleteBuildLog = NewIncompleteBuildLogClient(tx.config)
 	tx.InstanceName = NewInstanceNameClient(tx.config)
@@ -261,24 +244,17 @@ func (tx *Tx) init() {
 	tx.MemoryMetrics = NewMemoryMetricsClient(tx.config)
 	tx.Metrics = NewMetricsClient(tx.config)
 	tx.MissDetail = NewMissDetailClient(tx.config)
-	tx.NamedSetOfFiles = NewNamedSetOfFilesClient(tx.config)
 	tx.NetworkMetrics = NewNetworkMetricsClient(tx.config)
-	tx.OutputGroup = NewOutputGroupClient(tx.config)
 	tx.PackageLoadMetrics = NewPackageLoadMetricsClient(tx.config)
 	tx.PackageMetrics = NewPackageMetricsClient(tx.config)
-	tx.ResourceUsage = NewResourceUsageClient(tx.config)
 	tx.RunnerCount = NewRunnerCountClient(tx.config)
 	tx.SourceControl = NewSourceControlClient(tx.config)
 	tx.SystemNetworkStats = NewSystemNetworkStatsClient(tx.config)
 	tx.Target = NewTargetClient(tx.config)
 	tx.TargetKindMapping = NewTargetKindMappingClient(tx.config)
 	tx.TargetMetrics = NewTargetMetricsClient(tx.config)
-	tx.TestCollection = NewTestCollectionClient(tx.config)
-	tx.TestFile = NewTestFileClient(tx.config)
-	tx.TestResultBES = NewTestResultBESClient(tx.config)
+	tx.TestResult = NewTestResultClient(tx.config)
 	tx.TestSummary = NewTestSummaryClient(tx.config)
-	tx.TimingBreakdown = NewTimingBreakdownClient(tx.config)
-	tx.TimingChild = NewTimingChildClient(tx.config)
 	tx.TimingMetrics = NewTimingMetricsClient(tx.config)
 }
 

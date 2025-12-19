@@ -160,12 +160,6 @@ func (BazelInvocation) Edges() []ent.Edge {
 				entsql.OnDelete(entsql.Cascade),
 			),
 
-		// Test Data for the completed Invocation
-		edge.To("test_collection", TestCollection.Type).
-			Annotations(
-				entsql.OnDelete(entsql.Cascade),
-			),
-
 		// Target Data for the completed Invocation
 		edge.To("invocation_targets", InvocationTarget.Type).
 			Annotations(

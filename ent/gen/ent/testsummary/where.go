@@ -3,6 +3,8 @@
 package testsummary
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
@@ -53,6 +55,11 @@ func IDLTE(id int64) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldLTE(FieldID, id))
 }
 
+// OverallStatus applies equality check predicate on the "overall_status" field. It's identical to OverallStatusEQ.
+func OverallStatus(v string) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldEQ(FieldOverallStatus, v))
+}
+
 // TotalRunCount applies equality check predicate on the "total_run_count" field. It's identical to TotalRunCountEQ.
 func TotalRunCount(v int32) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldEQ(FieldTotalRunCount, v))
@@ -79,38 +86,73 @@ func TotalNumCached(v int32) predicate.TestSummary {
 }
 
 // FirstStartTime applies equality check predicate on the "first_start_time" field. It's identical to FirstStartTimeEQ.
-func FirstStartTime(v int64) predicate.TestSummary {
+func FirstStartTime(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldEQ(FieldFirstStartTime, v))
 }
 
 // LastStopTime applies equality check predicate on the "last_stop_time" field. It's identical to LastStopTimeEQ.
-func LastStopTime(v int64) predicate.TestSummary {
+func LastStopTime(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldEQ(FieldLastStopTime, v))
 }
 
-// TotalRunDuration applies equality check predicate on the "total_run_duration" field. It's identical to TotalRunDurationEQ.
-func TotalRunDuration(v int64) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldEQ(FieldTotalRunDuration, v))
+// TotalRunDurationInMs applies equality check predicate on the "total_run_duration_in_ms" field. It's identical to TotalRunDurationInMsEQ.
+func TotalRunDurationInMs(v int64) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldEQ(FieldTotalRunDurationInMs, v))
 }
 
 // OverallStatusEQ applies the EQ predicate on the "overall_status" field.
-func OverallStatusEQ(v OverallStatus) predicate.TestSummary {
+func OverallStatusEQ(v string) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldEQ(FieldOverallStatus, v))
 }
 
 // OverallStatusNEQ applies the NEQ predicate on the "overall_status" field.
-func OverallStatusNEQ(v OverallStatus) predicate.TestSummary {
+func OverallStatusNEQ(v string) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldNEQ(FieldOverallStatus, v))
 }
 
 // OverallStatusIn applies the In predicate on the "overall_status" field.
-func OverallStatusIn(vs ...OverallStatus) predicate.TestSummary {
+func OverallStatusIn(vs ...string) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldIn(FieldOverallStatus, vs...))
 }
 
 // OverallStatusNotIn applies the NotIn predicate on the "overall_status" field.
-func OverallStatusNotIn(vs ...OverallStatus) predicate.TestSummary {
+func OverallStatusNotIn(vs ...string) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldNotIn(FieldOverallStatus, vs...))
+}
+
+// OverallStatusGT applies the GT predicate on the "overall_status" field.
+func OverallStatusGT(v string) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldGT(FieldOverallStatus, v))
+}
+
+// OverallStatusGTE applies the GTE predicate on the "overall_status" field.
+func OverallStatusGTE(v string) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldGTE(FieldOverallStatus, v))
+}
+
+// OverallStatusLT applies the LT predicate on the "overall_status" field.
+func OverallStatusLT(v string) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldLT(FieldOverallStatus, v))
+}
+
+// OverallStatusLTE applies the LTE predicate on the "overall_status" field.
+func OverallStatusLTE(v string) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldLTE(FieldOverallStatus, v))
+}
+
+// OverallStatusContains applies the Contains predicate on the "overall_status" field.
+func OverallStatusContains(v string) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldContains(FieldOverallStatus, v))
+}
+
+// OverallStatusHasPrefix applies the HasPrefix predicate on the "overall_status" field.
+func OverallStatusHasPrefix(v string) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldHasPrefix(FieldOverallStatus, v))
+}
+
+// OverallStatusHasSuffix applies the HasSuffix predicate on the "overall_status" field.
+func OverallStatusHasSuffix(v string) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldHasSuffix(FieldOverallStatus, v))
 }
 
 // OverallStatusIsNil applies the IsNil predicate on the "overall_status" field.
@@ -121,6 +163,16 @@ func OverallStatusIsNil() predicate.TestSummary {
 // OverallStatusNotNil applies the NotNil predicate on the "overall_status" field.
 func OverallStatusNotNil() predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldNotNull(FieldOverallStatus))
+}
+
+// OverallStatusEqualFold applies the EqualFold predicate on the "overall_status" field.
+func OverallStatusEqualFold(v string) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldEqualFold(FieldOverallStatus, v))
+}
+
+// OverallStatusContainsFold applies the ContainsFold predicate on the "overall_status" field.
+func OverallStatusContainsFold(v string) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldContainsFold(FieldOverallStatus, v))
 }
 
 // TotalRunCountEQ applies the EQ predicate on the "total_run_count" field.
@@ -374,42 +426,42 @@ func TotalNumCachedNotNil() predicate.TestSummary {
 }
 
 // FirstStartTimeEQ applies the EQ predicate on the "first_start_time" field.
-func FirstStartTimeEQ(v int64) predicate.TestSummary {
+func FirstStartTimeEQ(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldEQ(FieldFirstStartTime, v))
 }
 
 // FirstStartTimeNEQ applies the NEQ predicate on the "first_start_time" field.
-func FirstStartTimeNEQ(v int64) predicate.TestSummary {
+func FirstStartTimeNEQ(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldNEQ(FieldFirstStartTime, v))
 }
 
 // FirstStartTimeIn applies the In predicate on the "first_start_time" field.
-func FirstStartTimeIn(vs ...int64) predicate.TestSummary {
+func FirstStartTimeIn(vs ...time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldIn(FieldFirstStartTime, vs...))
 }
 
 // FirstStartTimeNotIn applies the NotIn predicate on the "first_start_time" field.
-func FirstStartTimeNotIn(vs ...int64) predicate.TestSummary {
+func FirstStartTimeNotIn(vs ...time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldNotIn(FieldFirstStartTime, vs...))
 }
 
 // FirstStartTimeGT applies the GT predicate on the "first_start_time" field.
-func FirstStartTimeGT(v int64) predicate.TestSummary {
+func FirstStartTimeGT(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldGT(FieldFirstStartTime, v))
 }
 
 // FirstStartTimeGTE applies the GTE predicate on the "first_start_time" field.
-func FirstStartTimeGTE(v int64) predicate.TestSummary {
+func FirstStartTimeGTE(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldGTE(FieldFirstStartTime, v))
 }
 
 // FirstStartTimeLT applies the LT predicate on the "first_start_time" field.
-func FirstStartTimeLT(v int64) predicate.TestSummary {
+func FirstStartTimeLT(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldLT(FieldFirstStartTime, v))
 }
 
 // FirstStartTimeLTE applies the LTE predicate on the "first_start_time" field.
-func FirstStartTimeLTE(v int64) predicate.TestSummary {
+func FirstStartTimeLTE(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldLTE(FieldFirstStartTime, v))
 }
 
@@ -424,42 +476,42 @@ func FirstStartTimeNotNil() predicate.TestSummary {
 }
 
 // LastStopTimeEQ applies the EQ predicate on the "last_stop_time" field.
-func LastStopTimeEQ(v int64) predicate.TestSummary {
+func LastStopTimeEQ(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldEQ(FieldLastStopTime, v))
 }
 
 // LastStopTimeNEQ applies the NEQ predicate on the "last_stop_time" field.
-func LastStopTimeNEQ(v int64) predicate.TestSummary {
+func LastStopTimeNEQ(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldNEQ(FieldLastStopTime, v))
 }
 
 // LastStopTimeIn applies the In predicate on the "last_stop_time" field.
-func LastStopTimeIn(vs ...int64) predicate.TestSummary {
+func LastStopTimeIn(vs ...time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldIn(FieldLastStopTime, vs...))
 }
 
 // LastStopTimeNotIn applies the NotIn predicate on the "last_stop_time" field.
-func LastStopTimeNotIn(vs ...int64) predicate.TestSummary {
+func LastStopTimeNotIn(vs ...time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldNotIn(FieldLastStopTime, vs...))
 }
 
 // LastStopTimeGT applies the GT predicate on the "last_stop_time" field.
-func LastStopTimeGT(v int64) predicate.TestSummary {
+func LastStopTimeGT(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldGT(FieldLastStopTime, v))
 }
 
 // LastStopTimeGTE applies the GTE predicate on the "last_stop_time" field.
-func LastStopTimeGTE(v int64) predicate.TestSummary {
+func LastStopTimeGTE(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldGTE(FieldLastStopTime, v))
 }
 
 // LastStopTimeLT applies the LT predicate on the "last_stop_time" field.
-func LastStopTimeLT(v int64) predicate.TestSummary {
+func LastStopTimeLT(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldLT(FieldLastStopTime, v))
 }
 
 // LastStopTimeLTE applies the LTE predicate on the "last_stop_time" field.
-func LastStopTimeLTE(v int64) predicate.TestSummary {
+func LastStopTimeLTE(v time.Time) predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldLTE(FieldLastStopTime, v))
 }
 
@@ -473,146 +525,71 @@ func LastStopTimeNotNil() predicate.TestSummary {
 	return predicate.TestSummary(sql.FieldNotNull(FieldLastStopTime))
 }
 
-// TotalRunDurationEQ applies the EQ predicate on the "total_run_duration" field.
-func TotalRunDurationEQ(v int64) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldEQ(FieldTotalRunDuration, v))
+// TotalRunDurationInMsEQ applies the EQ predicate on the "total_run_duration_in_ms" field.
+func TotalRunDurationInMsEQ(v int64) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldEQ(FieldTotalRunDurationInMs, v))
 }
 
-// TotalRunDurationNEQ applies the NEQ predicate on the "total_run_duration" field.
-func TotalRunDurationNEQ(v int64) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldNEQ(FieldTotalRunDuration, v))
+// TotalRunDurationInMsNEQ applies the NEQ predicate on the "total_run_duration_in_ms" field.
+func TotalRunDurationInMsNEQ(v int64) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldNEQ(FieldTotalRunDurationInMs, v))
 }
 
-// TotalRunDurationIn applies the In predicate on the "total_run_duration" field.
-func TotalRunDurationIn(vs ...int64) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldIn(FieldTotalRunDuration, vs...))
+// TotalRunDurationInMsIn applies the In predicate on the "total_run_duration_in_ms" field.
+func TotalRunDurationInMsIn(vs ...int64) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldIn(FieldTotalRunDurationInMs, vs...))
 }
 
-// TotalRunDurationNotIn applies the NotIn predicate on the "total_run_duration" field.
-func TotalRunDurationNotIn(vs ...int64) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldNotIn(FieldTotalRunDuration, vs...))
+// TotalRunDurationInMsNotIn applies the NotIn predicate on the "total_run_duration_in_ms" field.
+func TotalRunDurationInMsNotIn(vs ...int64) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldNotIn(FieldTotalRunDurationInMs, vs...))
 }
 
-// TotalRunDurationGT applies the GT predicate on the "total_run_duration" field.
-func TotalRunDurationGT(v int64) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldGT(FieldTotalRunDuration, v))
+// TotalRunDurationInMsGT applies the GT predicate on the "total_run_duration_in_ms" field.
+func TotalRunDurationInMsGT(v int64) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldGT(FieldTotalRunDurationInMs, v))
 }
 
-// TotalRunDurationGTE applies the GTE predicate on the "total_run_duration" field.
-func TotalRunDurationGTE(v int64) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldGTE(FieldTotalRunDuration, v))
+// TotalRunDurationInMsGTE applies the GTE predicate on the "total_run_duration_in_ms" field.
+func TotalRunDurationInMsGTE(v int64) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldGTE(FieldTotalRunDurationInMs, v))
 }
 
-// TotalRunDurationLT applies the LT predicate on the "total_run_duration" field.
-func TotalRunDurationLT(v int64) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldLT(FieldTotalRunDuration, v))
+// TotalRunDurationInMsLT applies the LT predicate on the "total_run_duration_in_ms" field.
+func TotalRunDurationInMsLT(v int64) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldLT(FieldTotalRunDurationInMs, v))
 }
 
-// TotalRunDurationLTE applies the LTE predicate on the "total_run_duration" field.
-func TotalRunDurationLTE(v int64) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldLTE(FieldTotalRunDuration, v))
+// TotalRunDurationInMsLTE applies the LTE predicate on the "total_run_duration_in_ms" field.
+func TotalRunDurationInMsLTE(v int64) predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldLTE(FieldTotalRunDurationInMs, v))
 }
 
-// TotalRunDurationIsNil applies the IsNil predicate on the "total_run_duration" field.
-func TotalRunDurationIsNil() predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldIsNull(FieldTotalRunDuration))
+// TotalRunDurationInMsIsNil applies the IsNil predicate on the "total_run_duration_in_ms" field.
+func TotalRunDurationInMsIsNil() predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldIsNull(FieldTotalRunDurationInMs))
 }
 
-// TotalRunDurationNotNil applies the NotNil predicate on the "total_run_duration" field.
-func TotalRunDurationNotNil() predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldNotNull(FieldTotalRunDuration))
+// TotalRunDurationInMsNotNil applies the NotNil predicate on the "total_run_duration_in_ms" field.
+func TotalRunDurationInMsNotNil() predicate.TestSummary {
+	return predicate.TestSummary(sql.FieldNotNull(FieldTotalRunDurationInMs))
 }
 
-// LabelEQ applies the EQ predicate on the "label" field.
-func LabelEQ(v string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldEQ(FieldLabel, v))
-}
-
-// LabelNEQ applies the NEQ predicate on the "label" field.
-func LabelNEQ(v string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldNEQ(FieldLabel, v))
-}
-
-// LabelIn applies the In predicate on the "label" field.
-func LabelIn(vs ...string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldIn(FieldLabel, vs...))
-}
-
-// LabelNotIn applies the NotIn predicate on the "label" field.
-func LabelNotIn(vs ...string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldNotIn(FieldLabel, vs...))
-}
-
-// LabelGT applies the GT predicate on the "label" field.
-func LabelGT(v string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldGT(FieldLabel, v))
-}
-
-// LabelGTE applies the GTE predicate on the "label" field.
-func LabelGTE(v string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldGTE(FieldLabel, v))
-}
-
-// LabelLT applies the LT predicate on the "label" field.
-func LabelLT(v string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldLT(FieldLabel, v))
-}
-
-// LabelLTE applies the LTE predicate on the "label" field.
-func LabelLTE(v string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldLTE(FieldLabel, v))
-}
-
-// LabelContains applies the Contains predicate on the "label" field.
-func LabelContains(v string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldContains(FieldLabel, v))
-}
-
-// LabelHasPrefix applies the HasPrefix predicate on the "label" field.
-func LabelHasPrefix(v string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldHasPrefix(FieldLabel, v))
-}
-
-// LabelHasSuffix applies the HasSuffix predicate on the "label" field.
-func LabelHasSuffix(v string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldHasSuffix(FieldLabel, v))
-}
-
-// LabelIsNil applies the IsNil predicate on the "label" field.
-func LabelIsNil() predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldIsNull(FieldLabel))
-}
-
-// LabelNotNil applies the NotNil predicate on the "label" field.
-func LabelNotNil() predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldNotNull(FieldLabel))
-}
-
-// LabelEqualFold applies the EqualFold predicate on the "label" field.
-func LabelEqualFold(v string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldEqualFold(FieldLabel, v))
-}
-
-// LabelContainsFold applies the ContainsFold predicate on the "label" field.
-func LabelContainsFold(v string) predicate.TestSummary {
-	return predicate.TestSummary(sql.FieldContainsFold(FieldLabel, v))
-}
-
-// HasTestCollection applies the HasEdge predicate on the "test_collection" edge.
-func HasTestCollection() predicate.TestSummary {
+// HasInvocationTarget applies the HasEdge predicate on the "invocation_target" edge.
+func HasInvocationTarget() predicate.TestSummary {
 	return predicate.TestSummary(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, TestCollectionTable, TestCollectionColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, InvocationTargetTable, InvocationTargetColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasTestCollectionWith applies the HasEdge predicate on the "test_collection" edge with a given conditions (other predicates).
-func HasTestCollectionWith(preds ...predicate.TestCollection) predicate.TestSummary {
+// HasInvocationTargetWith applies the HasEdge predicate on the "invocation_target" edge with a given conditions (other predicates).
+func HasInvocationTargetWith(preds ...predicate.InvocationTarget) predicate.TestSummary {
 	return predicate.TestSummary(func(s *sql.Selector) {
-		step := newTestCollectionStep()
+		step := newInvocationTargetStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -621,44 +598,21 @@ func HasTestCollectionWith(preds ...predicate.TestCollection) predicate.TestSumm
 	})
 }
 
-// HasPassed applies the HasEdge predicate on the "passed" edge.
-func HasPassed() predicate.TestSummary {
+// HasTestResults applies the HasEdge predicate on the "test_results" edge.
+func HasTestResults() predicate.TestSummary {
 	return predicate.TestSummary(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, PassedTable, PassedColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, TestResultsTable, TestResultsColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasPassedWith applies the HasEdge predicate on the "passed" edge with a given conditions (other predicates).
-func HasPassedWith(preds ...predicate.TestFile) predicate.TestSummary {
+// HasTestResultsWith applies the HasEdge predicate on the "test_results" edge with a given conditions (other predicates).
+func HasTestResultsWith(preds ...predicate.TestResult) predicate.TestSummary {
 	return predicate.TestSummary(func(s *sql.Selector) {
-		step := newPassedStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasFailed applies the HasEdge predicate on the "failed" edge.
-func HasFailed() predicate.TestSummary {
-	return predicate.TestSummary(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, FailedTable, FailedColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasFailedWith applies the HasEdge predicate on the "failed" edge with a given conditions (other predicates).
-func HasFailedWith(preds ...predicate.TestFile) predicate.TestSummary {
-	return predicate.TestSummary(func(s *sql.Selector) {
-		step := newFailedStep()
+		step := newTestResultsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -14,6 +14,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 )
 
 // InvocationTargetCreate is the builder for creating a InvocationTarget entity.
@@ -151,6 +152,21 @@ func (itc *InvocationTargetCreate) SetNillableConfigurationID(id *int64) *Invoca
 // SetConfiguration sets the "configuration" edge to the Configuration entity.
 func (itc *InvocationTargetCreate) SetConfiguration(c *Configuration) *InvocationTargetCreate {
 	return itc.SetConfigurationID(c.ID)
+}
+
+// AddTestSummaryIDs adds the "test_summary" edge to the TestSummary entity by IDs.
+func (itc *InvocationTargetCreate) AddTestSummaryIDs(ids ...int64) *InvocationTargetCreate {
+	itc.mutation.AddTestSummaryIDs(ids...)
+	return itc
+}
+
+// AddTestSummary adds the "test_summary" edges to the TestSummary entity.
+func (itc *InvocationTargetCreate) AddTestSummary(t ...*TestSummary) *InvocationTargetCreate {
+	ids := make([]int64, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return itc.AddTestSummaryIDs(ids...)
 }
 
 // Mutation returns the InvocationTargetMutation object of the builder.
@@ -323,6 +339,22 @@ func (itc *InvocationTargetCreate) createSpec() (*InvocationTarget, *sqlgraph.Cr
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.invocation_target_configuration = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := itc.mutation.TestSummaryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   invocationtarget.TestSummaryTable,
+			Columns: []string{invocationtarget.TestSummaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(testsummary.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
