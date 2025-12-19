@@ -20,6 +20,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
@@ -735,6 +736,19 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			}
 			bi.withAuthenticatedUser = query
 
+		case "configurations":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ConfigurationClient{config: bi.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, configurationImplementors)...); err != nil {
+				return err
+			}
+			bi.WithNamedConfigurations(alias, func(wq *ConfigurationQuery) {
+				*wq = *query
+			})
+
 		case "metrics":
 			var (
 				alias = field.Alias
@@ -815,10 +829,10 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 						}
 						for i := range nodes {
 							n := m[nodes[i].ID]
-							if nodes[i].Edges.totalCount[6] == nil {
-								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							if nodes[i].Edges.totalCount[7] == nil {
+								nodes[i].Edges.totalCount[7] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[6][alias] = n
+							nodes[i].Edges.totalCount[7][alias] = n
 						}
 						return nil
 					})
@@ -826,10 +840,10 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 					bi.loadTotal = append(bi.loadTotal, func(_ context.Context, nodes []*BazelInvocation) error {
 						for i := range nodes {
 							n := len(nodes[i].Edges.InvocationTargets)
-							if nodes[i].Edges.totalCount[6] == nil {
-								nodes[i].Edges.totalCount[6] = make(map[string]int)
+							if nodes[i].Edges.totalCount[7] == nil {
+								nodes[i].Edges.totalCount[7] = make(map[string]int)
 							}
-							nodes[i].Edges.totalCount[6][alias] = n
+							nodes[i].Edges.totalCount[7][alias] = n
 						}
 						return nil
 					})
@@ -916,16 +930,6 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				selectedFields = append(selectedFields, bazelinvocation.FieldUserLdap)
 				fieldSeen[bazelinvocation.FieldUserLdap] = struct{}{}
 			}
-		case "cpu":
-			if _, ok := fieldSeen[bazelinvocation.FieldCPU]; !ok {
-				selectedFields = append(selectedFields, bazelinvocation.FieldCPU)
-				fieldSeen[bazelinvocation.FieldCPU] = struct{}{}
-			}
-		case "platformName":
-			if _, ok := fieldSeen[bazelinvocation.FieldPlatformName]; !ok {
-				selectedFields = append(selectedFields, bazelinvocation.FieldPlatformName)
-				fieldSeen[bazelinvocation.FieldPlatformName] = struct{}{}
-			}
 		case "hostname":
 			if _, ok := fieldSeen[bazelinvocation.FieldHostname]; !ok {
 				selectedFields = append(selectedFields, bazelinvocation.FieldHostname)
@@ -935,11 +939,6 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 			if _, ok := fieldSeen[bazelinvocation.FieldIsCiWorker]; !ok {
 				selectedFields = append(selectedFields, bazelinvocation.FieldIsCiWorker)
 				fieldSeen[bazelinvocation.FieldIsCiWorker] = struct{}{}
-			}
-		case "configurationMnemonic":
-			if _, ok := fieldSeen[bazelinvocation.FieldConfigurationMnemonic]; !ok {
-				selectedFields = append(selectedFields, bazelinvocation.FieldConfigurationMnemonic)
-				fieldSeen[bazelinvocation.FieldConfigurationMnemonic] = struct{}{}
 			}
 		case "numFetches":
 			if _, ok := fieldSeen[bazelinvocation.FieldNumFetches]; !ok {
@@ -1497,6 +1496,126 @@ func newBuildGraphMetricsPaginateArgs(rv map[string]any) *buildgraphmetricsPagin
 	}
 	if v, ok := rv[whereField].(*BuildGraphMetricsWhereInput); ok {
 		args.opts = append(args.opts, WithBuildGraphMetricsFilter(v.Filter))
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (c *ConfigurationQuery) CollectFields(ctx context.Context, satisfies ...string) (*ConfigurationQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return c, nil
+	}
+	if err := c.collectField(ctx, false, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func (c *ConfigurationQuery) collectField(ctx context.Context, oneNode bool, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	var (
+		unknownSeen    bool
+		fieldSeen      = make(map[string]struct{}, len(configuration.Columns))
+		selectedFields = []string{configuration.FieldID}
+	)
+	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
+		switch field.Name {
+
+		case "bazelInvocation":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&BazelInvocationClient{config: c.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, bazelinvocationImplementors)...); err != nil {
+				return err
+			}
+			c.withBazelInvocation = query
+			if _, ok := fieldSeen[configuration.FieldBazelInvocationID]; !ok {
+				selectedFields = append(selectedFields, configuration.FieldBazelInvocationID)
+				fieldSeen[configuration.FieldBazelInvocationID] = struct{}{}
+			}
+
+		case "invocationTargets":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&InvocationTargetClient{config: c.config}).Query()
+			)
+			if err := query.collectField(ctx, false, opCtx, field, path, mayAddCondition(satisfies, invocationtargetImplementors)...); err != nil {
+				return err
+			}
+			c.WithNamedInvocationTargets(alias, func(wq *InvocationTargetQuery) {
+				*wq = *query
+			})
+		case "configurationID":
+			if _, ok := fieldSeen[configuration.FieldConfigurationID]; !ok {
+				selectedFields = append(selectedFields, configuration.FieldConfigurationID)
+				fieldSeen[configuration.FieldConfigurationID] = struct{}{}
+			}
+		case "mnemonic":
+			if _, ok := fieldSeen[configuration.FieldMnemonic]; !ok {
+				selectedFields = append(selectedFields, configuration.FieldMnemonic)
+				fieldSeen[configuration.FieldMnemonic] = struct{}{}
+			}
+		case "platformName":
+			if _, ok := fieldSeen[configuration.FieldPlatformName]; !ok {
+				selectedFields = append(selectedFields, configuration.FieldPlatformName)
+				fieldSeen[configuration.FieldPlatformName] = struct{}{}
+			}
+		case "cpu":
+			if _, ok := fieldSeen[configuration.FieldCPU]; !ok {
+				selectedFields = append(selectedFields, configuration.FieldCPU)
+				fieldSeen[configuration.FieldCPU] = struct{}{}
+			}
+		case "makeVariables":
+			if _, ok := fieldSeen[configuration.FieldMakeVariables]; !ok {
+				selectedFields = append(selectedFields, configuration.FieldMakeVariables)
+				fieldSeen[configuration.FieldMakeVariables] = struct{}{}
+			}
+		case "isTool":
+			if _, ok := fieldSeen[configuration.FieldIsTool]; !ok {
+				selectedFields = append(selectedFields, configuration.FieldIsTool)
+				fieldSeen[configuration.FieldIsTool] = struct{}{}
+			}
+		case "id":
+		case "__typename":
+		default:
+			unknownSeen = true
+		}
+	}
+	if !unknownSeen {
+		c.Select(selectedFields...)
+	}
+	return nil
+}
+
+type configurationPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []ConfigurationPaginateOption
+}
+
+func newConfigurationPaginateArgs(rv map[string]any) *configurationPaginateArgs {
+	args := &configurationPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	if v, ok := rv[whereField].(*ConfigurationWhereInput); ok {
+		args.opts = append(args.opts, WithConfigurationFilter(v.Filter))
 	}
 	return args
 }
@@ -2132,6 +2251,17 @@ func (it *InvocationTargetQuery) collectField(ctx context.Context, oneNode bool,
 				return err
 			}
 			it.withTarget = query
+
+		case "configuration":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = (&ConfigurationClient{config: it.config}).Query()
+			)
+			if err := query.collectField(ctx, oneNode, opCtx, field, path, mayAddCondition(satisfies, configurationImplementors)...); err != nil {
+				return err
+			}
+			it.withConfiguration = query
 		case "success":
 			if _, ok := fieldSeen[invocationtarget.FieldSuccess]; !ok {
 				selectedFields = append(selectedFields, invocationtarget.FieldSuccess)

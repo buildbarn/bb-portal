@@ -51,8 +51,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     metrics,
     testCollection,
     numFetches,
-    cpu,
-    configurationMnemonic,
+    configurations,
     stepLabel,
     hostname,
     isCiWorker,
@@ -94,10 +93,9 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
               bazelCommand.residual,
               bazelCommand.explicitCmdLine,
             ].join(" ").trim()}
-            cpu={cpu ?? ""}
             invocationId={invocationID}
             instanceName={instanceName.name}
-            configuration={configurationMnemonic ?? ""}
+            configurations={configurations || undefined}
             numFetches={numFetches ?? 0}
             startedAt={invocationOverview.startedAt}
             endedAt={invocationOverview.endedAt}

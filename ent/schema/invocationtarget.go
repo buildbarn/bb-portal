@@ -74,6 +74,10 @@ func (InvocationTarget) Edges() []ent.Edge {
 			Ref("invocation_targets").
 			Required().
 			Unique(),
+
+		// Edge to the configuration used for this target
+		edge.To("configuration", Configuration.Type).
+			Unique(),
 	}
 }
 
@@ -82,7 +86,8 @@ func (InvocationTarget) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Edges("bazel_invocation"),
 		index.Edges("target"),
-		index.Edges("bazel_invocation", "target"),
+		index.Edges("configuration"),
+		index.Edges("bazel_invocation", "target", "configuration"),
 	}
 }
 

@@ -34,6 +34,8 @@ const (
 	EdgeBazelInvocation = "bazel_invocation"
 	// EdgeTarget holds the string denoting the target edge name in mutations.
 	EdgeTarget = "target"
+	// EdgeConfiguration holds the string denoting the configuration edge name in mutations.
+	EdgeConfiguration = "configuration"
 	// Table holds the table name of the invocationtarget in the database.
 	Table = "invocation_targets"
 	// BazelInvocationTable is the table that holds the bazel_invocation relation/edge.
@@ -50,6 +52,13 @@ const (
 	TargetInverseTable = "targets"
 	// TargetColumn is the table column denoting the target relation/edge.
 	TargetColumn = "target_invocation_targets"
+	// ConfigurationTable is the table that holds the configuration relation/edge.
+	ConfigurationTable = "invocation_targets"
+	// ConfigurationInverseTable is the table name for the Configuration entity.
+	// It exists in this package in order to avoid circular dependency with the "configuration" package.
+	ConfigurationInverseTable = "configurations"
+	// ConfigurationColumn is the table column denoting the configuration relation/edge.
+	ConfigurationColumn = "invocation_target_configuration"
 )
 
 // Columns holds all SQL columns for invocationtarget fields.
@@ -68,6 +77,7 @@ var Columns = []string{
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"bazel_invocation_invocation_targets",
+	"invocation_target_configuration",
 	"target_invocation_targets",
 }
 
@@ -176,6 +186,13 @@ func ByTargetField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newTargetStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByConfigurationField orders the results by configuration field.
+func ByConfigurationField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newConfigurationStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newBazelInvocationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -188,6 +205,13 @@ func newTargetStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TargetInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, TargetTable, TargetColumn),
+	)
+}
+func newConfigurationStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ConfigurationInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, ConfigurationTable, ConfigurationColumn),
 	)
 }
 

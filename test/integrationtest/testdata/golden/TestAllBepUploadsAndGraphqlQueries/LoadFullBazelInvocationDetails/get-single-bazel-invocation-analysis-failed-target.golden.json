@@ -38,8 +38,18 @@
       "buildUUID": "c3a1db88-bad7-54fc-8795-e09393ff2f59",
       "id": "QnVpbGQ6MQ=="
     },
-    "configurationMnemonic": "darwin_arm64-fastbuild",
-    "cpu": "darwin_arm64",
+    "configurations": [
+      {
+        "cpu": "darwin_arm64",
+        "id": "Q29uZmlndXJhdGlvbjo3",
+        "mnemonic": "darwin_arm64-fastbuild"
+      },
+      {
+        "cpu": "darwin_arm64",
+        "id": "Q29uZmlndXJhdGlvbjo4",
+        "mnemonic": "darwin_arm64-fastbuild"
+      }
+    ],
     "endedAt": "2024-05-13T23:43:26.247Z",
     "exitCodeName": "TESTS_FAILED",
     "hostname": "Namelesss-MacBook-Pro.local",

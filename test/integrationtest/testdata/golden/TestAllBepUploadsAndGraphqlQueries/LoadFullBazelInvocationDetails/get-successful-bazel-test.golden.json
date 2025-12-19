@@ -34,8 +34,18 @@
     "bazelVersion": "7.1.0",
     "bepCompleted": false,
     "build": null,
-    "configurationMnemonic": "darwin_arm64-fastbuild",
-    "cpu": "darwin_arm64",
+    "configurations": [
+      {
+        "cpu": "darwin_arm64",
+        "id": "Q29uZmlndXJhdGlvbjo1",
+        "mnemonic": "darwin_arm64-fastbuild"
+      },
+      {
+        "cpu": "darwin_arm64",
+        "id": "Q29uZmlndXJhdGlvbjo2",
+        "mnemonic": "darwin_arm64-fastbuild"
+      }
+    ],
     "endedAt": "2024-05-03T00:23:40.441Z",
     "exitCodeName": "SUCCESS",
     "hostname": "Namelesss-MacBook-Pro.local",

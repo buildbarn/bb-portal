@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
@@ -26,6 +27,7 @@ type InvocationTargetQuery struct {
 	predicates          []predicate.InvocationTarget
 	withBazelInvocation *BazelInvocationQuery
 	withTarget          *TargetQuery
+	withConfiguration   *ConfigurationQuery
 	withFKs             bool
 	loadTotal           []func(context.Context, []*InvocationTarget) error
 	modifiers           []func(*sql.Selector)
@@ -102,6 +104,28 @@ func (itq *InvocationTargetQuery) QueryTarget() *TargetQuery {
 			sqlgraph.From(invocationtarget.Table, invocationtarget.FieldID, selector),
 			sqlgraph.To(target.Table, target.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, invocationtarget.TargetTable, invocationtarget.TargetColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(itq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryConfiguration chains the current query on the "configuration" edge.
+func (itq *InvocationTargetQuery) QueryConfiguration() *ConfigurationQuery {
+	query := (&ConfigurationClient{config: itq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := itq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := itq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(invocationtarget.Table, invocationtarget.FieldID, selector),
+			sqlgraph.To(configuration.Table, configuration.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, invocationtarget.ConfigurationTable, invocationtarget.ConfigurationColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(itq.driver.Dialect(), step)
 		return fromU, nil
@@ -303,6 +327,7 @@ func (itq *InvocationTargetQuery) Clone() *InvocationTargetQuery {
 		predicates:          append([]predicate.InvocationTarget{}, itq.predicates...),
 		withBazelInvocation: itq.withBazelInvocation.Clone(),
 		withTarget:          itq.withTarget.Clone(),
+		withConfiguration:   itq.withConfiguration.Clone(),
 		// clone intermediate query.
 		sql:       itq.sql.Clone(),
 		path:      itq.path,
@@ -329,6 +354,17 @@ func (itq *InvocationTargetQuery) WithTarget(opts ...func(*TargetQuery)) *Invoca
 		opt(query)
 	}
 	itq.withTarget = query
+	return itq
+}
+
+// WithConfiguration tells the query-builder to eager-load the nodes that are connected to
+// the "configuration" edge. The optional arguments are used to configure the query builder of the edge.
+func (itq *InvocationTargetQuery) WithConfiguration(opts ...func(*ConfigurationQuery)) *InvocationTargetQuery {
+	query := (&ConfigurationClient{config: itq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	itq.withConfiguration = query
 	return itq
 }
 
@@ -411,12 +447,13 @@ func (itq *InvocationTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook
 		nodes       = []*InvocationTarget{}
 		withFKs     = itq.withFKs
 		_spec       = itq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [3]bool{
 			itq.withBazelInvocation != nil,
 			itq.withTarget != nil,
+			itq.withConfiguration != nil,
 		}
 	)
-	if itq.withBazelInvocation != nil || itq.withTarget != nil {
+	if itq.withBazelInvocation != nil || itq.withTarget != nil || itq.withConfiguration != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -452,6 +489,12 @@ func (itq *InvocationTargetQuery) sqlAll(ctx context.Context, hooks ...queryHook
 	if query := itq.withTarget; query != nil {
 		if err := itq.loadTarget(ctx, query, nodes, nil,
 			func(n *InvocationTarget, e *Target) { n.Edges.Target = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := itq.withConfiguration; query != nil {
+		if err := itq.loadConfiguration(ctx, query, nodes, nil,
+			func(n *InvocationTarget, e *Configuration) { n.Edges.Configuration = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -520,6 +563,38 @@ func (itq *InvocationTargetQuery) loadTarget(ctx context.Context, query *TargetQ
 		nodes, ok := nodeids[n.ID]
 		if !ok {
 			return fmt.Errorf(`unexpected foreign-key "target_invocation_targets" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (itq *InvocationTargetQuery) loadConfiguration(ctx context.Context, query *ConfigurationQuery, nodes []*InvocationTarget, init func(*InvocationTarget), assign func(*InvocationTarget, *Configuration)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*InvocationTarget)
+	for i := range nodes {
+		if nodes[i].invocation_target_configuration == nil {
+			continue
+		}
+		fk := *nodes[i].invocation_target_configuration
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(configuration.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "invocation_target_configuration" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

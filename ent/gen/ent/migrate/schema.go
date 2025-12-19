@@ -169,11 +169,8 @@ var (
 		{Name: "step_label", Type: field.TypeString, Nullable: true},
 		{Name: "user_email", Type: field.TypeString, Nullable: true},
 		{Name: "user_ldap", Type: field.TypeString, Nullable: true},
-		{Name: "cpu", Type: field.TypeString, Nullable: true},
-		{Name: "platform_name", Type: field.TypeString, Nullable: true},
 		{Name: "hostname", Type: field.TypeString, Nullable: true},
 		{Name: "is_ci_worker", Type: field.TypeBool, Nullable: true},
-		{Name: "configuration_mnemonic", Type: field.TypeString, Nullable: true},
 		{Name: "num_fetches", Type: field.TypeInt64, Nullable: true},
 		{Name: "profile_name", Type: field.TypeString, Nullable: true},
 		{Name: "bazel_version", Type: field.TypeString, Nullable: true},
@@ -204,19 +201,19 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "bazel_invocations_authenticated_users_bazel_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[33]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[30]},
 				RefColumns: []*schema.Column{AuthenticatedUsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "bazel_invocations_builds_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[34]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[31]},
 				RefColumns: []*schema.Column{BuildsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "bazel_invocations_instance_names_bazel_invocations",
-				Columns:    []*schema.Column{BazelInvocationsColumns[35]},
+				Columns:    []*schema.Column{BazelInvocationsColumns[32]},
 				RefColumns: []*schema.Column{InstanceNamesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -235,12 +232,12 @@ var (
 			{
 				Name:    "bazelinvocation_build_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[34]},
+				Columns: []*schema.Column{BazelInvocationsColumns[31]},
 			},
 			{
 				Name:    "bazelinvocation_instance_name_bazel_invocations",
 				Unique:  false,
-				Columns: []*schema.Column{BazelInvocationsColumns[35]},
+				Columns: []*schema.Column{BazelInvocationsColumns[32]},
 			},
 		},
 	}
@@ -431,6 +428,48 @@ var (
 				Name:    "buildlogchunk_chunk_index_bazel_invocation_build_log_chunks",
 				Unique:  true,
 				Columns: []*schema.Column{BuildLogChunksColumns[2], BuildLogChunksColumns[5]},
+			},
+		},
+	}
+	// ConfigurationsColumns holds the columns for the "configurations" table.
+	ConfigurationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "configuration_id", Type: field.TypeString},
+		{Name: "mnemonic", Type: field.TypeString, Nullable: true},
+		{Name: "platform_name", Type: field.TypeString, Nullable: true},
+		{Name: "cpu", Type: field.TypeString, Nullable: true},
+		{Name: "make_variables", Type: field.TypeJSON, Nullable: true},
+		{Name: "is_tool", Type: field.TypeBool, Nullable: true},
+		{Name: "bazel_invocation_id", Type: field.TypeInt64},
+	}
+	// ConfigurationsTable holds the schema information for the "configurations" table.
+	ConfigurationsTable = &schema.Table{
+		Name:       "configurations",
+		Columns:    ConfigurationsColumns,
+		PrimaryKey: []*schema.Column{ConfigurationsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "configurations_bazel_invocations_configurations",
+				Columns:    []*schema.Column{ConfigurationsColumns[7]},
+				RefColumns: []*schema.Column{BazelInvocationsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "configuration_configuration_id",
+				Unique:  false,
+				Columns: []*schema.Column{ConfigurationsColumns[1]},
+			},
+			{
+				Name:    "configuration_bazel_invocation_id",
+				Unique:  false,
+				Columns: []*schema.Column{ConfigurationsColumns[7]},
+			},
+			{
+				Name:    "configuration_configuration_id_bazel_invocation_id",
+				Unique:  true,
+				Columns: []*schema.Column{ConfigurationsColumns[1], ConfigurationsColumns[7]},
 			},
 		},
 	}
@@ -689,6 +728,7 @@ var (
 		{Name: "failure_message", Type: field.TypeString, Nullable: true},
 		{Name: "abort_reason", Type: field.TypeEnum, Enums: []string{"ANALYSIS_FAILURE", "INCOMPLETE", "INTERNAL", "LOADING_FAILURE", "NO_ANALYZE", "NO_BUILD", "NONE", "OUT_OF_MEMORY", "REMOTE_ENVIRONMENT_FAILURE", "SKIPPED", "TIME_OUT", "UNKNOWN", "USER_INTERRUPTED"}},
 		{Name: "bazel_invocation_invocation_targets", Type: field.TypeInt64},
+		{Name: "invocation_target_configuration", Type: field.TypeInt64, Nullable: true},
 		{Name: "target_invocation_targets", Type: field.TypeInt64},
 	}
 	// InvocationTargetsTable holds the schema information for the "invocation_targets" table.
@@ -704,8 +744,14 @@ var (
 				OnDelete:   schema.Cascade,
 			},
 			{
-				Symbol:     "invocation_targets_targets_invocation_targets",
+				Symbol:     "invocation_targets_configurations_configuration",
 				Columns:    []*schema.Column{InvocationTargetsColumns[9]},
+				RefColumns: []*schema.Column{ConfigurationsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "invocation_targets_targets_invocation_targets",
+				Columns:    []*schema.Column{InvocationTargetsColumns[10]},
 				RefColumns: []*schema.Column{TargetsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -719,12 +765,17 @@ var (
 			{
 				Name:    "invocationtarget_target_invocation_targets",
 				Unique:  false,
+				Columns: []*schema.Column{InvocationTargetsColumns[10]},
+			},
+			{
+				Name:    "invocationtarget_invocation_target_configuration",
+				Unique:  false,
 				Columns: []*schema.Column{InvocationTargetsColumns[9]},
 			},
 			{
-				Name:    "invocationtarget_bazel_invocation_invocation_targets_target_invocation_targets",
+				Name:    "invocationtarget_bazel_invocation_invocation_targets_target_invocation_targets_invocation_target_configuration",
 				Unique:  false,
-				Columns: []*schema.Column{InvocationTargetsColumns[8], InvocationTargetsColumns[9]},
+				Columns: []*schema.Column{InvocationTargetsColumns[8], InvocationTargetsColumns[10], InvocationTargetsColumns[9]},
 			},
 		},
 	}
@@ -1462,6 +1513,7 @@ var (
 		BuildsTable,
 		BuildGraphMetricsTable,
 		BuildLogChunksTable,
+		ConfigurationsTable,
 		ConnectionMetadataTable,
 		CumulativeMetricsTable,
 		EvaluationStatsTable,
@@ -1514,6 +1566,7 @@ func init() {
 	BuildGraphMetricsTable.ForeignKeys[3].RefTable = EvaluationStatsTable
 	BuildGraphMetricsTable.ForeignKeys[4].RefTable = MetricsTable
 	BuildLogChunksTable.ForeignKeys[0].RefTable = BazelInvocationsTable
+	ConfigurationsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	ConnectionMetadataTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	CumulativeMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	EvaluationStatsTable.ForeignKeys[0].RefTable = BuildGraphMetricsTable
@@ -1523,7 +1576,8 @@ func init() {
 	IncompleteBuildLogsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationFilesTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	InvocationTargetsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
-	InvocationTargetsTable.ForeignKeys[1].RefTable = TargetsTable
+	InvocationTargetsTable.ForeignKeys[1].RefTable = ConfigurationsTable
+	InvocationTargetsTable.ForeignKeys[2].RefTable = TargetsTable
 	MemoryMetricsTable.ForeignKeys[0].RefTable = MetricsTable
 	MetricsTable.ForeignKeys[0].RefTable = BazelInvocationsTable
 	MissDetailsTable.ForeignKeys[0].RefTable = ActionCacheStatisticsTable

@@ -39,6 +39,9 @@ type BuildGraphMetrics func(*sql.Selector)
 // BuildLogChunk is the predicate function for buildlogchunk builders.
 type BuildLogChunk func(*sql.Selector)
 
+// Configuration is the predicate function for configuration builders.
+type Configuration func(*sql.Selector)
+
 // ConnectionMetadata is the predicate function for connectionmetadata builders.
 type ConnectionMetadata func(*sql.Selector)
 

@@ -76,11 +76,8 @@ type BazelInvocation struct {
 	StepLabel                           sql.NullString
 	UserEmail                           sql.NullString
 	UserLdap                            sql.NullString
-	Cpu                                 sql.NullString
-	PlatformName                        sql.NullString
 	Hostname                            sql.NullString
 	IsCiWorker                          sql.NullBool
-	ConfigurationMnemonic               sql.NullString
 	NumFetches                          sql.NullInt64
 	ProfileName                         sql.NullString
 	BazelVersion                        sql.NullString
@@ -155,6 +152,17 @@ type BuildLogChunk struct {
 	FirstLineIndex                int64
 	LastLineIndex                 int64
 	BazelInvocationBuildLogChunks int64
+}
+
+type Configuration struct {
+	ID                int64
+	ConfigurationID   string
+	Mnemonic          sql.NullString
+	PlatformName      sql.NullString
+	Cpu               sql.NullString
+	MakeVariables     pqtype.NullRawMessage
+	IsTool            sql.NullBool
+	BazelInvocationID int64
 }
 
 type ConnectionMetadatum struct {
@@ -234,6 +242,7 @@ type InvocationTarget struct {
 	FailureMessage                   sql.NullString
 	AbortReason                      string
 	BazelInvocationInvocationTargets int64
+	InvocationTargetConfiguration    sql.NullInt64
 	TargetInvocationTargets          int64
 }
 

@@ -15,6 +15,7 @@ const createInvocationTargetsBulk = `-- name: CreateInvocationTargetsBulk :exec
 INSERT INTO invocation_targets (
     bazel_invocation_invocation_targets,
     target_invocation_targets,
+    invocation_target_configuration,
     success,
     tags,
     start_time_in_ms,
@@ -25,30 +26,36 @@ INSERT INTO invocation_targets (
 )
 SELECT
     $1,
-    target_id,
-    success,
-    NULLIF(tags, '')::jsonb,
-    NULLIF(start_time, 0),
-    NULLIF(end_time, 0),
-    NULLIF(duration, 0),
-    NULLIF(failure_message, ''),
-    abort_reason
+    input.target_id,
+    cfg.id,
+    input.success,
+    NULLIF(input.tags, '')::jsonb,
+    NULLIF(input.start_time, 0),
+    NULLIF(input.end_time, 0),
+    NULLIF(input.duration, 0),
+    NULLIF(input.failure_message, ''),
+    input.abort_reason
 FROM (
-    SELECT 
+    SELECT
         unnest($2::bigint[]) AS target_id,
-        unnest($3::boolean[]) AS success,
-        unnest($4::text[]) AS tags,
-        unnest($5::bigint[]) AS start_time,
-        unnest($6::bigint[]) AS end_time,
-        unnest($7::bigint[]) AS duration,
-        unnest($8::text[]) AS failure_message,
-        unnest($9::text[]) AS abort_reason
+        unnest($3::text[]) AS configuration_external_id,
+        unnest($4::boolean[]) AS success,
+        unnest($5::text[]) AS tags,
+        unnest($6::bigint[]) AS start_time,
+        unnest($7::bigint[]) AS end_time,
+        unnest($8::bigint[]) AS duration,
+        unnest($9::text[]) AS failure_message,
+        unnest($10::text[]) AS abort_reason
 ) AS input
+JOIN configurations cfg
+  ON cfg.bazel_invocation_id = $1
+  AND cfg.configuration_id = input.configuration_external_id
 `
 
 type CreateInvocationTargetsBulkParams struct {
 	BazelInvocationID int64
 	TargetIds         []int64
+	ConfigurationIds  []string
 	Successes         []bool
 	TagsList          []string
 	StartTimes        []int64
@@ -62,6 +69,7 @@ func (q *Queries) CreateInvocationTargetsBulk(ctx context.Context, arg CreateInv
 	_, err := q.db.ExecContext(ctx, createInvocationTargetsBulk,
 		arg.BazelInvocationID,
 		pq.Array(arg.TargetIds),
+		pq.Array(arg.ConfigurationIds),
 		pq.Array(arg.Successes),
 		pq.Array(arg.TagsList),
 		pq.Array(arg.StartTimes),

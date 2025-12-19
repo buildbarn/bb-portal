@@ -26,6 +26,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
@@ -89,6 +90,8 @@ type Client struct {
 	BuildGraphMetrics *BuildGraphMetricsClient
 	// BuildLogChunk is the client for interacting with the BuildLogChunk builders.
 	BuildLogChunk *BuildLogChunkClient
+	// Configuration is the client for interacting with the Configuration builders.
+	Configuration *ConfigurationClient
 	// ConnectionMetadata is the client for interacting with the ConnectionMetadata builders.
 	ConnectionMetadata *ConnectionMetadataClient
 	// CumulativeMetrics is the client for interacting with the CumulativeMetrics builders.
@@ -177,6 +180,7 @@ func (c *Client) init() {
 	c.Build = NewBuildClient(c.config)
 	c.BuildGraphMetrics = NewBuildGraphMetricsClient(c.config)
 	c.BuildLogChunk = NewBuildLogChunkClient(c.config)
+	c.Configuration = NewConfigurationClient(c.config)
 	c.ConnectionMetadata = NewConnectionMetadataClient(c.config)
 	c.CumulativeMetrics = NewCumulativeMetricsClient(c.config)
 	c.EvaluationStat = NewEvaluationStatClient(c.config)
@@ -312,6 +316,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Build:                  NewBuildClient(cfg),
 		BuildGraphMetrics:      NewBuildGraphMetricsClient(cfg),
 		BuildLogChunk:          NewBuildLogChunkClient(cfg),
+		Configuration:          NewConfigurationClient(cfg),
 		ConnectionMetadata:     NewConnectionMetadataClient(cfg),
 		CumulativeMetrics:      NewCumulativeMetricsClient(cfg),
 		EvaluationStat:         NewEvaluationStatClient(cfg),
@@ -374,6 +379,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Build:                  NewBuildClient(cfg),
 		BuildGraphMetrics:      NewBuildGraphMetricsClient(cfg),
 		BuildLogChunk:          NewBuildLogChunkClient(cfg),
+		Configuration:          NewConfigurationClient(cfg),
 		ConnectionMetadata:     NewConnectionMetadataClient(cfg),
 		CumulativeMetrics:      NewCumulativeMetricsClient(cfg),
 		EvaluationStat:         NewEvaluationStatClient(cfg),
@@ -437,14 +443,14 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
 		c.AuthenticatedUser, c.BazelInvocation, c.BazelInvocationProblem, c.Blob,
-		c.Build, c.BuildGraphMetrics, c.BuildLogChunk, c.ConnectionMetadata,
-		c.CumulativeMetrics, c.EvaluationStat, c.EventMetadata, c.ExectionInfo,
-		c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles,
-		c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail,
-		c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup, c.PackageLoadMetrics,
-		c.PackageMetrics, c.ResourceUsage, c.RunnerCount, c.SourceControl,
-		c.SystemNetworkStats, c.Target, c.TargetKindMapping, c.TargetMetrics,
-		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
+		c.Build, c.BuildGraphMetrics, c.BuildLogChunk, c.Configuration,
+		c.ConnectionMetadata, c.CumulativeMetrics, c.EvaluationStat, c.EventMetadata,
+		c.ExectionInfo, c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName,
+		c.InvocationFiles, c.InvocationTarget, c.MemoryMetrics, c.Metrics,
+		c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup,
+		c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage, c.RunnerCount,
+		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetKindMapping,
+		c.TargetMetrics, c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
 		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
 	} {
 		n.Use(hooks...)
@@ -457,14 +463,14 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.ActionCacheStatistics, c.ActionData, c.ActionSummary, c.ArtifactMetrics,
 		c.AuthenticatedUser, c.BazelInvocation, c.BazelInvocationProblem, c.Blob,
-		c.Build, c.BuildGraphMetrics, c.BuildLogChunk, c.ConnectionMetadata,
-		c.CumulativeMetrics, c.EvaluationStat, c.EventMetadata, c.ExectionInfo,
-		c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName, c.InvocationFiles,
-		c.InvocationTarget, c.MemoryMetrics, c.Metrics, c.MissDetail,
-		c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup, c.PackageLoadMetrics,
-		c.PackageMetrics, c.ResourceUsage, c.RunnerCount, c.SourceControl,
-		c.SystemNetworkStats, c.Target, c.TargetKindMapping, c.TargetMetrics,
-		c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
+		c.Build, c.BuildGraphMetrics, c.BuildLogChunk, c.Configuration,
+		c.ConnectionMetadata, c.CumulativeMetrics, c.EvaluationStat, c.EventMetadata,
+		c.ExectionInfo, c.GarbageMetrics, c.IncompleteBuildLog, c.InstanceName,
+		c.InvocationFiles, c.InvocationTarget, c.MemoryMetrics, c.Metrics,
+		c.MissDetail, c.NamedSetOfFiles, c.NetworkMetrics, c.OutputGroup,
+		c.PackageLoadMetrics, c.PackageMetrics, c.ResourceUsage, c.RunnerCount,
+		c.SourceControl, c.SystemNetworkStats, c.Target, c.TargetKindMapping,
+		c.TargetMetrics, c.TestCollection, c.TestFile, c.TestResultBES, c.TestSummary,
 		c.TimingBreakdown, c.TimingChild, c.TimingMetrics,
 	} {
 		n.Intercept(interceptors...)
@@ -496,6 +502,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.BuildGraphMetrics.mutate(ctx, m)
 	case *BuildLogChunkMutation:
 		return c.BuildLogChunk.mutate(ctx, m)
+	case *ConfigurationMutation:
+		return c.Configuration.mutate(ctx, m)
 	case *ConnectionMetadataMutation:
 		return c.ConnectionMetadata.mutate(ctx, m)
 	case *CumulativeMetricsMutation:
@@ -1563,6 +1571,22 @@ func (c *BazelInvocationClient) QueryConnectionMetadata(bi *BazelInvocation) *Co
 	return query
 }
 
+// QueryConfigurations queries the configurations edge of a BazelInvocation.
+func (c *BazelInvocationClient) QueryConfigurations(bi *BazelInvocation) *ConfigurationQuery {
+	query := (&ConfigurationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := bi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
+			sqlgraph.To(configuration.Table, configuration.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ConfigurationsTable, bazelinvocation.ConfigurationsColumn),
+		)
+		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryProblems queries the problems edge of a BazelInvocation.
 func (c *BazelInvocationClient) QueryProblems(bi *BazelInvocation) *BazelInvocationProblemQuery {
 	query := (&BazelInvocationProblemClient{config: c.config}).Query()
@@ -2572,6 +2596,171 @@ func (c *BuildLogChunkClient) mutate(ctx context.Context, m *BuildLogChunkMutati
 		return (&BuildLogChunkDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown BuildLogChunk mutation op: %q", m.Op())
+	}
+}
+
+// ConfigurationClient is a client for the Configuration schema.
+type ConfigurationClient struct {
+	config
+}
+
+// NewConfigurationClient returns a client for the Configuration from the given config.
+func NewConfigurationClient(c config) *ConfigurationClient {
+	return &ConfigurationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `configuration.Hooks(f(g(h())))`.
+func (c *ConfigurationClient) Use(hooks ...Hook) {
+	c.hooks.Configuration = append(c.hooks.Configuration, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `configuration.Intercept(f(g(h())))`.
+func (c *ConfigurationClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Configuration = append(c.inters.Configuration, interceptors...)
+}
+
+// Create returns a builder for creating a Configuration entity.
+func (c *ConfigurationClient) Create() *ConfigurationCreate {
+	mutation := newConfigurationMutation(c.config, OpCreate)
+	return &ConfigurationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Configuration entities.
+func (c *ConfigurationClient) CreateBulk(builders ...*ConfigurationCreate) *ConfigurationCreateBulk {
+	return &ConfigurationCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ConfigurationClient) MapCreateBulk(slice any, setFunc func(*ConfigurationCreate, int)) *ConfigurationCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ConfigurationCreateBulk{err: fmt.Errorf("calling to ConfigurationClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ConfigurationCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ConfigurationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Configuration.
+func (c *ConfigurationClient) Update() *ConfigurationUpdate {
+	mutation := newConfigurationMutation(c.config, OpUpdate)
+	return &ConfigurationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ConfigurationClient) UpdateOne(co *Configuration) *ConfigurationUpdateOne {
+	mutation := newConfigurationMutation(c.config, OpUpdateOne, withConfiguration(co))
+	return &ConfigurationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ConfigurationClient) UpdateOneID(id int64) *ConfigurationUpdateOne {
+	mutation := newConfigurationMutation(c.config, OpUpdateOne, withConfigurationID(id))
+	return &ConfigurationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Configuration.
+func (c *ConfigurationClient) Delete() *ConfigurationDelete {
+	mutation := newConfigurationMutation(c.config, OpDelete)
+	return &ConfigurationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ConfigurationClient) DeleteOne(co *Configuration) *ConfigurationDeleteOne {
+	return c.DeleteOneID(co.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ConfigurationClient) DeleteOneID(id int64) *ConfigurationDeleteOne {
+	builder := c.Delete().Where(configuration.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ConfigurationDeleteOne{builder}
+}
+
+// Query returns a query builder for Configuration.
+func (c *ConfigurationClient) Query() *ConfigurationQuery {
+	return &ConfigurationQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeConfiguration},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Configuration entity by its id.
+func (c *ConfigurationClient) Get(ctx context.Context, id int64) (*Configuration, error) {
+	return c.Query().Where(configuration.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ConfigurationClient) GetX(ctx context.Context, id int64) *Configuration {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryBazelInvocation queries the bazel_invocation edge of a Configuration.
+func (c *ConfigurationClient) QueryBazelInvocation(co *Configuration) *BazelInvocationQuery {
+	query := (&BazelInvocationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(configuration.Table, configuration.FieldID, id),
+			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, configuration.BazelInvocationTable, configuration.BazelInvocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryInvocationTargets queries the invocation_targets edge of a Configuration.
+func (c *ConfigurationClient) QueryInvocationTargets(co *Configuration) *InvocationTargetQuery {
+	query := (&InvocationTargetClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := co.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(configuration.Table, configuration.FieldID, id),
+			sqlgraph.To(invocationtarget.Table, invocationtarget.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, configuration.InvocationTargetsTable, configuration.InvocationTargetsColumn),
+		)
+		fromV = sqlgraph.Neighbors(co.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ConfigurationClient) Hooks() []Hook {
+	return c.hooks.Configuration
+}
+
+// Interceptors returns the client interceptors.
+func (c *ConfigurationClient) Interceptors() []Interceptor {
+	return c.inters.Configuration
+}
+
+func (c *ConfigurationClient) mutate(ctx context.Context, m *ConfigurationMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ConfigurationCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ConfigurationUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ConfigurationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ConfigurationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Configuration mutation op: %q", m.Op())
 	}
 }
 
@@ -4129,6 +4318,22 @@ func (c *InvocationTargetClient) QueryTarget(it *InvocationTarget) *TargetQuery 
 			sqlgraph.From(invocationtarget.Table, invocationtarget.FieldID, id),
 			sqlgraph.To(target.Table, target.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, invocationtarget.TargetTable, invocationtarget.TargetColumn),
+		)
+		fromV = sqlgraph.Neighbors(it.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryConfiguration queries the configuration edge of a InvocationTarget.
+func (c *InvocationTargetClient) QueryConfiguration(it *InvocationTarget) *ConfigurationQuery {
+	query := (&ConfigurationClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := it.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(invocationtarget.Table, invocationtarget.FieldID, id),
+			sqlgraph.To(configuration.Table, configuration.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, invocationtarget.ConfigurationTable, invocationtarget.ConfigurationColumn),
 		)
 		fromV = sqlgraph.Neighbors(it.driver.Dialect(), step)
 		return fromV, nil
@@ -7845,8 +8050,8 @@ type (
 	hooks struct {
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, BazelInvocationProblem, Blob, Build,
-		BuildGraphMetrics, BuildLogChunk, ConnectionMetadata, CumulativeMetrics,
-		EvaluationStat, EventMetadata, ExectionInfo, GarbageMetrics,
+		BuildGraphMetrics, BuildLogChunk, Configuration, ConnectionMetadata,
+		CumulativeMetrics, EvaluationStat, EventMetadata, ExectionInfo, GarbageMetrics,
 		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTarget,
 		MemoryMetrics, Metrics, MissDetail, NamedSetOfFiles, NetworkMetrics,
 		OutputGroup, PackageLoadMetrics, PackageMetrics, ResourceUsage, RunnerCount,
@@ -7857,8 +8062,8 @@ type (
 	inters struct {
 		ActionCacheStatistics, ActionData, ActionSummary, ArtifactMetrics,
 		AuthenticatedUser, BazelInvocation, BazelInvocationProblem, Blob, Build,
-		BuildGraphMetrics, BuildLogChunk, ConnectionMetadata, CumulativeMetrics,
-		EvaluationStat, EventMetadata, ExectionInfo, GarbageMetrics,
+		BuildGraphMetrics, BuildLogChunk, Configuration, ConnectionMetadata,
+		CumulativeMetrics, EvaluationStat, EventMetadata, ExectionInfo, GarbageMetrics,
 		IncompleteBuildLog, InstanceName, InvocationFiles, InvocationTarget,
 		MemoryMetrics, Metrics, MissDetail, NamedSetOfFiles, NetworkMetrics,
 		OutputGroup, PackageLoadMetrics, PackageMetrics, ResourceUsage, RunnerCount,

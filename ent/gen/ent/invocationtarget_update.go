@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
@@ -200,6 +201,25 @@ func (itu *InvocationTargetUpdate) SetTarget(t *Target) *InvocationTargetUpdate 
 	return itu.SetTargetID(t.ID)
 }
 
+// SetConfigurationID sets the "configuration" edge to the Configuration entity by ID.
+func (itu *InvocationTargetUpdate) SetConfigurationID(id int64) *InvocationTargetUpdate {
+	itu.mutation.SetConfigurationID(id)
+	return itu
+}
+
+// SetNillableConfigurationID sets the "configuration" edge to the Configuration entity by ID if the given value is not nil.
+func (itu *InvocationTargetUpdate) SetNillableConfigurationID(id *int64) *InvocationTargetUpdate {
+	if id != nil {
+		itu = itu.SetConfigurationID(*id)
+	}
+	return itu
+}
+
+// SetConfiguration sets the "configuration" edge to the Configuration entity.
+func (itu *InvocationTargetUpdate) SetConfiguration(c *Configuration) *InvocationTargetUpdate {
+	return itu.SetConfigurationID(c.ID)
+}
+
 // Mutation returns the InvocationTargetMutation object of the builder.
 func (itu *InvocationTargetUpdate) Mutation() *InvocationTargetMutation {
 	return itu.mutation
@@ -214,6 +234,12 @@ func (itu *InvocationTargetUpdate) ClearBazelInvocation() *InvocationTargetUpdat
 // ClearTarget clears the "target" edge to the Target entity.
 func (itu *InvocationTargetUpdate) ClearTarget() *InvocationTargetUpdate {
 	itu.mutation.ClearTarget()
+	return itu
+}
+
+// ClearConfiguration clears the "configuration" edge to the Configuration entity.
+func (itu *InvocationTargetUpdate) ClearConfiguration() *InvocationTargetUpdate {
+	itu.mutation.ClearConfiguration()
 	return itu
 }
 
@@ -379,6 +405,35 @@ func (itu *InvocationTargetUpdate) sqlSave(ctx context.Context) (n int, err erro
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if itu.mutation.ConfigurationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   invocationtarget.ConfigurationTable,
+			Columns: []string{invocationtarget.ConfigurationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := itu.mutation.ConfigurationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   invocationtarget.ConfigurationTable,
+			Columns: []string{invocationtarget.ConfigurationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -577,6 +632,25 @@ func (ituo *InvocationTargetUpdateOne) SetTarget(t *Target) *InvocationTargetUpd
 	return ituo.SetTargetID(t.ID)
 }
 
+// SetConfigurationID sets the "configuration" edge to the Configuration entity by ID.
+func (ituo *InvocationTargetUpdateOne) SetConfigurationID(id int64) *InvocationTargetUpdateOne {
+	ituo.mutation.SetConfigurationID(id)
+	return ituo
+}
+
+// SetNillableConfigurationID sets the "configuration" edge to the Configuration entity by ID if the given value is not nil.
+func (ituo *InvocationTargetUpdateOne) SetNillableConfigurationID(id *int64) *InvocationTargetUpdateOne {
+	if id != nil {
+		ituo = ituo.SetConfigurationID(*id)
+	}
+	return ituo
+}
+
+// SetConfiguration sets the "configuration" edge to the Configuration entity.
+func (ituo *InvocationTargetUpdateOne) SetConfiguration(c *Configuration) *InvocationTargetUpdateOne {
+	return ituo.SetConfigurationID(c.ID)
+}
+
 // Mutation returns the InvocationTargetMutation object of the builder.
 func (ituo *InvocationTargetUpdateOne) Mutation() *InvocationTargetMutation {
 	return ituo.mutation
@@ -591,6 +665,12 @@ func (ituo *InvocationTargetUpdateOne) ClearBazelInvocation() *InvocationTargetU
 // ClearTarget clears the "target" edge to the Target entity.
 func (ituo *InvocationTargetUpdateOne) ClearTarget() *InvocationTargetUpdateOne {
 	ituo.mutation.ClearTarget()
+	return ituo
+}
+
+// ClearConfiguration clears the "configuration" edge to the Configuration entity.
+func (ituo *InvocationTargetUpdateOne) ClearConfiguration() *InvocationTargetUpdateOne {
+	ituo.mutation.ClearConfiguration()
 	return ituo
 }
 
@@ -786,6 +866,35 @@ func (ituo *InvocationTargetUpdateOne) sqlSave(ctx context.Context) (_node *Invo
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(target.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if ituo.mutation.ConfigurationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   invocationtarget.ConfigurationTable,
+			Columns: []string{invocationtarget.ConfigurationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := ituo.mutation.ConfigurationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   invocationtarget.ConfigurationTable,
+			Columns: []string{invocationtarget.ConfigurationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

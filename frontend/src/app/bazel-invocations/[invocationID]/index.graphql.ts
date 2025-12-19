@@ -183,8 +183,11 @@ fragment BazelInvocationInfo on BazelInvocation {
   endedAt
   exitCodeName
   bepCompleted
-  configurationMnemonic
-  cpu
+  configurations {
+    id
+    cpu
+    mnemonic
+  }
   numFetches
   stepLabel
   hostname
