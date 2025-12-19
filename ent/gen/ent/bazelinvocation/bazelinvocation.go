@@ -31,16 +31,10 @@ const (
 	FieldUserEmail = "user_email"
 	// FieldUserLdap holds the string denoting the user_ldap field in the database.
 	FieldUserLdap = "user_ldap"
-	// FieldCPU holds the string denoting the cpu field in the database.
-	FieldCPU = "cpu"
-	// FieldPlatformName holds the string denoting the platform_name field in the database.
-	FieldPlatformName = "platform_name"
 	// FieldHostname holds the string denoting the hostname field in the database.
 	FieldHostname = "hostname"
 	// FieldIsCiWorker holds the string denoting the is_ci_worker field in the database.
 	FieldIsCiWorker = "is_ci_worker"
-	// FieldConfigurationMnemonic holds the string denoting the configuration_mnemonic field in the database.
-	FieldConfigurationMnemonic = "configuration_mnemonic"
 	// FieldNumFetches holds the string denoting the num_fetches field in the database.
 	FieldNumFetches = "num_fetches"
 	// FieldProfileName holds the string denoting the profile_name field in the database.
@@ -87,6 +81,8 @@ const (
 	EdgeEventMetadata = "event_metadata"
 	// EdgeConnectionMetadata holds the string denoting the connection_metadata edge name in mutations.
 	EdgeConnectionMetadata = "connection_metadata"
+	// EdgeConfigurations holds the string denoting the configurations edge name in mutations.
+	EdgeConfigurations = "configurations"
 	// EdgeProblems holds the string denoting the problems edge name in mutations.
 	EdgeProblems = "problems"
 	// EdgeMetrics holds the string denoting the metrics edge name in mutations.
@@ -142,6 +138,13 @@ const (
 	ConnectionMetadataInverseTable = "connection_metadata"
 	// ConnectionMetadataColumn is the table column denoting the connection_metadata relation/edge.
 	ConnectionMetadataColumn = "bazel_invocation_connection_metadata"
+	// ConfigurationsTable is the table that holds the configurations relation/edge.
+	ConfigurationsTable = "configurations"
+	// ConfigurationsInverseTable is the table name for the Configuration entity.
+	// It exists in this package in order to avoid circular dependency with the "configuration" package.
+	ConfigurationsInverseTable = "configurations"
+	// ConfigurationsColumn is the table column denoting the configurations relation/edge.
+	ConfigurationsColumn = "bazel_invocation_id"
 	// ProblemsTable is the table that holds the problems relation/edge.
 	ProblemsTable = "bazel_invocation_problems"
 	// ProblemsInverseTable is the table name for the BazelInvocationProblem entity.
@@ -219,11 +222,8 @@ var Columns = []string{
 	FieldStepLabel,
 	FieldUserEmail,
 	FieldUserLdap,
-	FieldCPU,
-	FieldPlatformName,
 	FieldHostname,
 	FieldIsCiWorker,
-	FieldConfigurationMnemonic,
 	FieldNumFetches,
 	FieldProfileName,
 	FieldBazelVersion,
@@ -344,16 +344,6 @@ func ByUserLdap(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserLdap, opts...).ToFunc()
 }
 
-// ByCPU orders the results by the cpu field.
-func ByCPU(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCPU, opts...).ToFunc()
-}
-
-// ByPlatformName orders the results by the platform_name field.
-func ByPlatformName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPlatformName, opts...).ToFunc()
-}
-
 // ByHostname orders the results by the hostname field.
 func ByHostname(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldHostname, opts...).ToFunc()
@@ -362,11 +352,6 @@ func ByHostname(opts ...sql.OrderTermOption) OrderOption {
 // ByIsCiWorker orders the results by the is_ci_worker field.
 func ByIsCiWorker(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldIsCiWorker, opts...).ToFunc()
-}
-
-// ByConfigurationMnemonic orders the results by the configuration_mnemonic field.
-func ByConfigurationMnemonic(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldConfigurationMnemonic, opts...).ToFunc()
 }
 
 // ByNumFetches orders the results by the num_fetches field.
@@ -478,6 +463,20 @@ func ByConnectionMetadataCount(opts ...sql.OrderTermOption) OrderOption {
 func ByConnectionMetadata(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newConnectionMetadataStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByConfigurationsCount orders the results by configurations count.
+func ByConfigurationsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newConfigurationsStep(), opts...)
+	}
+}
+
+// ByConfigurations orders the results by configurations terms.
+func ByConfigurations(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newConfigurationsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -625,6 +624,13 @@ func newConnectionMetadataStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(ConnectionMetadataInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, ConnectionMetadataTable, ConnectionMetadataColumn),
+	)
+}
+func newConfigurationsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ConfigurationsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ConfigurationsTable, ConfigurationsColumn),
 	)
 }
 func newProblemsStep() *sqlgraph.Step {

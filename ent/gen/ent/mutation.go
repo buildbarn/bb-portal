@@ -23,6 +23,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
@@ -79,6 +80,7 @@ const (
 	TypeBuild                  = "Build"
 	TypeBuildGraphMetrics      = "BuildGraphMetrics"
 	TypeBuildLogChunk          = "BuildLogChunk"
+	TypeConfiguration          = "Configuration"
 	TypeConnectionMetadata     = "ConnectionMetadata"
 	TypeCumulativeMetrics      = "CumulativeMetrics"
 	TypeEvaluationStat         = "EvaluationStat"
@@ -5008,11 +5010,8 @@ type BazelInvocationMutation struct {
 	step_label                              *string
 	user_email                              *string
 	user_ldap                               *string
-	cpu                                     *string
-	platform_name                           *string
 	hostname                                *string
 	is_ci_worker                            *bool
-	configuration_mnemonic                  *string
 	num_fetches                             *int64
 	addnum_fetches                          *int64
 	profile_name                            *string
@@ -5049,6 +5048,9 @@ type BazelInvocationMutation struct {
 	connection_metadata                     map[int64]struct{}
 	removedconnection_metadata              map[int64]struct{}
 	clearedconnection_metadata              bool
+	configurations                          map[int64]struct{}
+	removedconfigurations                   map[int64]struct{}
+	clearedconfigurations                   bool
 	problems                                map[int64]struct{}
 	removedproblems                         map[int64]struct{}
 	clearedproblems                         bool
@@ -5640,104 +5642,6 @@ func (m *BazelInvocationMutation) ResetUserLdap() {
 	delete(m.clearedFields, bazelinvocation.FieldUserLdap)
 }
 
-// SetCPU sets the "cpu" field.
-func (m *BazelInvocationMutation) SetCPU(s string) {
-	m.cpu = &s
-}
-
-// CPU returns the value of the "cpu" field in the mutation.
-func (m *BazelInvocationMutation) CPU() (r string, exists bool) {
-	v := m.cpu
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCPU returns the old "cpu" field's value of the BazelInvocation entity.
-// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldCPU(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCPU is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCPU requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCPU: %w", err)
-	}
-	return oldValue.CPU, nil
-}
-
-// ClearCPU clears the value of the "cpu" field.
-func (m *BazelInvocationMutation) ClearCPU() {
-	m.cpu = nil
-	m.clearedFields[bazelinvocation.FieldCPU] = struct{}{}
-}
-
-// CPUCleared returns if the "cpu" field was cleared in this mutation.
-func (m *BazelInvocationMutation) CPUCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldCPU]
-	return ok
-}
-
-// ResetCPU resets all changes to the "cpu" field.
-func (m *BazelInvocationMutation) ResetCPU() {
-	m.cpu = nil
-	delete(m.clearedFields, bazelinvocation.FieldCPU)
-}
-
-// SetPlatformName sets the "platform_name" field.
-func (m *BazelInvocationMutation) SetPlatformName(s string) {
-	m.platform_name = &s
-}
-
-// PlatformName returns the value of the "platform_name" field in the mutation.
-func (m *BazelInvocationMutation) PlatformName() (r string, exists bool) {
-	v := m.platform_name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPlatformName returns the old "platform_name" field's value of the BazelInvocation entity.
-// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldPlatformName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPlatformName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPlatformName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPlatformName: %w", err)
-	}
-	return oldValue.PlatformName, nil
-}
-
-// ClearPlatformName clears the value of the "platform_name" field.
-func (m *BazelInvocationMutation) ClearPlatformName() {
-	m.platform_name = nil
-	m.clearedFields[bazelinvocation.FieldPlatformName] = struct{}{}
-}
-
-// PlatformNameCleared returns if the "platform_name" field was cleared in this mutation.
-func (m *BazelInvocationMutation) PlatformNameCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldPlatformName]
-	return ok
-}
-
-// ResetPlatformName resets all changes to the "platform_name" field.
-func (m *BazelInvocationMutation) ResetPlatformName() {
-	m.platform_name = nil
-	delete(m.clearedFields, bazelinvocation.FieldPlatformName)
-}
-
 // SetHostname sets the "hostname" field.
 func (m *BazelInvocationMutation) SetHostname(s string) {
 	m.hostname = &s
@@ -5834,55 +5738,6 @@ func (m *BazelInvocationMutation) IsCiWorkerCleared() bool {
 func (m *BazelInvocationMutation) ResetIsCiWorker() {
 	m.is_ci_worker = nil
 	delete(m.clearedFields, bazelinvocation.FieldIsCiWorker)
-}
-
-// SetConfigurationMnemonic sets the "configuration_mnemonic" field.
-func (m *BazelInvocationMutation) SetConfigurationMnemonic(s string) {
-	m.configuration_mnemonic = &s
-}
-
-// ConfigurationMnemonic returns the value of the "configuration_mnemonic" field in the mutation.
-func (m *BazelInvocationMutation) ConfigurationMnemonic() (r string, exists bool) {
-	v := m.configuration_mnemonic
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldConfigurationMnemonic returns the old "configuration_mnemonic" field's value of the BazelInvocation entity.
-// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldConfigurationMnemonic(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldConfigurationMnemonic is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldConfigurationMnemonic requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldConfigurationMnemonic: %w", err)
-	}
-	return oldValue.ConfigurationMnemonic, nil
-}
-
-// ClearConfigurationMnemonic clears the value of the "configuration_mnemonic" field.
-func (m *BazelInvocationMutation) ClearConfigurationMnemonic() {
-	m.configuration_mnemonic = nil
-	m.clearedFields[bazelinvocation.FieldConfigurationMnemonic] = struct{}{}
-}
-
-// ConfigurationMnemonicCleared returns if the "configuration_mnemonic" field was cleared in this mutation.
-func (m *BazelInvocationMutation) ConfigurationMnemonicCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldConfigurationMnemonic]
-	return ok
-}
-
-// ResetConfigurationMnemonic resets all changes to the "configuration_mnemonic" field.
-func (m *BazelInvocationMutation) ResetConfigurationMnemonic() {
-	m.configuration_mnemonic = nil
-	delete(m.clearedFields, bazelinvocation.FieldConfigurationMnemonic)
 }
 
 // SetNumFetches sets the "num_fetches" field.
@@ -7005,6 +6860,60 @@ func (m *BazelInvocationMutation) ResetConnectionMetadata() {
 	m.removedconnection_metadata = nil
 }
 
+// AddConfigurationIDs adds the "configurations" edge to the Configuration entity by ids.
+func (m *BazelInvocationMutation) AddConfigurationIDs(ids ...int64) {
+	if m.configurations == nil {
+		m.configurations = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.configurations[ids[i]] = struct{}{}
+	}
+}
+
+// ClearConfigurations clears the "configurations" edge to the Configuration entity.
+func (m *BazelInvocationMutation) ClearConfigurations() {
+	m.clearedconfigurations = true
+}
+
+// ConfigurationsCleared reports if the "configurations" edge to the Configuration entity was cleared.
+func (m *BazelInvocationMutation) ConfigurationsCleared() bool {
+	return m.clearedconfigurations
+}
+
+// RemoveConfigurationIDs removes the "configurations" edge to the Configuration entity by IDs.
+func (m *BazelInvocationMutation) RemoveConfigurationIDs(ids ...int64) {
+	if m.removedconfigurations == nil {
+		m.removedconfigurations = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.configurations, ids[i])
+		m.removedconfigurations[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedConfigurations returns the removed IDs of the "configurations" edge to the Configuration entity.
+func (m *BazelInvocationMutation) RemovedConfigurationsIDs() (ids []int64) {
+	for id := range m.removedconfigurations {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ConfigurationsIDs returns the "configurations" edge IDs in the mutation.
+func (m *BazelInvocationMutation) ConfigurationsIDs() (ids []int64) {
+	for id := range m.configurations {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetConfigurations resets all changes to the "configurations" edge.
+func (m *BazelInvocationMutation) ResetConfigurations() {
+	m.configurations = nil
+	m.clearedconfigurations = false
+	m.removedconfigurations = nil
+}
+
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by ids.
 func (m *BazelInvocationMutation) AddProblemIDs(ids ...int64) {
 	if m.problems == nil {
@@ -7495,7 +7404,7 @@ func (m *BazelInvocationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BazelInvocationMutation) Fields() []string {
-	fields := make([]string, 0, 32)
+	fields := make([]string, 0, 29)
 	if m.invocation_id != nil {
 		fields = append(fields, bazelinvocation.FieldInvocationID)
 	}
@@ -7523,20 +7432,11 @@ func (m *BazelInvocationMutation) Fields() []string {
 	if m.user_ldap != nil {
 		fields = append(fields, bazelinvocation.FieldUserLdap)
 	}
-	if m.cpu != nil {
-		fields = append(fields, bazelinvocation.FieldCPU)
-	}
-	if m.platform_name != nil {
-		fields = append(fields, bazelinvocation.FieldPlatformName)
-	}
 	if m.hostname != nil {
 		fields = append(fields, bazelinvocation.FieldHostname)
 	}
 	if m.is_ci_worker != nil {
 		fields = append(fields, bazelinvocation.FieldIsCiWorker)
-	}
-	if m.configuration_mnemonic != nil {
-		fields = append(fields, bazelinvocation.FieldConfigurationMnemonic)
 	}
 	if m.num_fetches != nil {
 		fields = append(fields, bazelinvocation.FieldNumFetches)
@@ -7618,16 +7518,10 @@ func (m *BazelInvocationMutation) Field(name string) (ent.Value, bool) {
 		return m.UserEmail()
 	case bazelinvocation.FieldUserLdap:
 		return m.UserLdap()
-	case bazelinvocation.FieldCPU:
-		return m.CPU()
-	case bazelinvocation.FieldPlatformName:
-		return m.PlatformName()
 	case bazelinvocation.FieldHostname:
 		return m.Hostname()
 	case bazelinvocation.FieldIsCiWorker:
 		return m.IsCiWorker()
-	case bazelinvocation.FieldConfigurationMnemonic:
-		return m.ConfigurationMnemonic()
 	case bazelinvocation.FieldNumFetches:
 		return m.NumFetches()
 	case bazelinvocation.FieldProfileName:
@@ -7691,16 +7585,10 @@ func (m *BazelInvocationMutation) OldField(ctx context.Context, name string) (en
 		return m.OldUserEmail(ctx)
 	case bazelinvocation.FieldUserLdap:
 		return m.OldUserLdap(ctx)
-	case bazelinvocation.FieldCPU:
-		return m.OldCPU(ctx)
-	case bazelinvocation.FieldPlatformName:
-		return m.OldPlatformName(ctx)
 	case bazelinvocation.FieldHostname:
 		return m.OldHostname(ctx)
 	case bazelinvocation.FieldIsCiWorker:
 		return m.OldIsCiWorker(ctx)
-	case bazelinvocation.FieldConfigurationMnemonic:
-		return m.OldConfigurationMnemonic(ctx)
 	case bazelinvocation.FieldNumFetches:
 		return m.OldNumFetches(ctx)
 	case bazelinvocation.FieldProfileName:
@@ -7809,20 +7697,6 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUserLdap(v)
 		return nil
-	case bazelinvocation.FieldCPU:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCPU(v)
-		return nil
-	case bazelinvocation.FieldPlatformName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPlatformName(v)
-		return nil
 	case bazelinvocation.FieldHostname:
 		v, ok := value.(string)
 		if !ok {
@@ -7836,13 +7710,6 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetIsCiWorker(v)
-		return nil
-	case bazelinvocation.FieldConfigurationMnemonic:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetConfigurationMnemonic(v)
 		return nil
 	case bazelinvocation.FieldNumFetches:
 		v, ok := value.(int64)
@@ -8072,20 +7939,11 @@ func (m *BazelInvocationMutation) ClearedFields() []string {
 	if m.FieldCleared(bazelinvocation.FieldUserLdap) {
 		fields = append(fields, bazelinvocation.FieldUserLdap)
 	}
-	if m.FieldCleared(bazelinvocation.FieldCPU) {
-		fields = append(fields, bazelinvocation.FieldCPU)
-	}
-	if m.FieldCleared(bazelinvocation.FieldPlatformName) {
-		fields = append(fields, bazelinvocation.FieldPlatformName)
-	}
 	if m.FieldCleared(bazelinvocation.FieldHostname) {
 		fields = append(fields, bazelinvocation.FieldHostname)
 	}
 	if m.FieldCleared(bazelinvocation.FieldIsCiWorker) {
 		fields = append(fields, bazelinvocation.FieldIsCiWorker)
-	}
-	if m.FieldCleared(bazelinvocation.FieldConfigurationMnemonic) {
-		fields = append(fields, bazelinvocation.FieldConfigurationMnemonic)
 	}
 	if m.FieldCleared(bazelinvocation.FieldNumFetches) {
 		fields = append(fields, bazelinvocation.FieldNumFetches)
@@ -8158,20 +8016,11 @@ func (m *BazelInvocationMutation) ClearField(name string) error {
 	case bazelinvocation.FieldUserLdap:
 		m.ClearUserLdap()
 		return nil
-	case bazelinvocation.FieldCPU:
-		m.ClearCPU()
-		return nil
-	case bazelinvocation.FieldPlatformName:
-		m.ClearPlatformName()
-		return nil
 	case bazelinvocation.FieldHostname:
 		m.ClearHostname()
 		return nil
 	case bazelinvocation.FieldIsCiWorker:
 		m.ClearIsCiWorker()
-		return nil
-	case bazelinvocation.FieldConfigurationMnemonic:
-		m.ClearConfigurationMnemonic()
 		return nil
 	case bazelinvocation.FieldNumFetches:
 		m.ClearNumFetches()
@@ -8244,20 +8093,11 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 	case bazelinvocation.FieldUserLdap:
 		m.ResetUserLdap()
 		return nil
-	case bazelinvocation.FieldCPU:
-		m.ResetCPU()
-		return nil
-	case bazelinvocation.FieldPlatformName:
-		m.ResetPlatformName()
-		return nil
 	case bazelinvocation.FieldHostname:
 		m.ResetHostname()
 		return nil
 	case bazelinvocation.FieldIsCiWorker:
 		m.ResetIsCiWorker()
-		return nil
-	case bazelinvocation.FieldConfigurationMnemonic:
-		m.ResetConfigurationMnemonic()
 		return nil
 	case bazelinvocation.FieldNumFetches:
 		m.ResetNumFetches()
@@ -8319,7 +8159,7 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *BazelInvocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 14)
+	edges := make([]string, 0, 15)
 	if m.instance_name != nil {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -8334,6 +8174,9 @@ func (m *BazelInvocationMutation) AddedEdges() []string {
 	}
 	if m.connection_metadata != nil {
 		edges = append(edges, bazelinvocation.EdgeConnectionMetadata)
+	}
+	if m.configurations != nil {
+		edges = append(edges, bazelinvocation.EdgeConfigurations)
 	}
 	if m.problems != nil {
 		edges = append(edges, bazelinvocation.EdgeProblems)
@@ -8388,6 +8231,12 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 	case bazelinvocation.EdgeConnectionMetadata:
 		ids := make([]ent.Value, 0, len(m.connection_metadata))
 		for id := range m.connection_metadata {
+			ids = append(ids, id)
+		}
+		return ids
+	case bazelinvocation.EdgeConfigurations:
+		ids := make([]ent.Value, 0, len(m.configurations))
+		for id := range m.configurations {
 			ids = append(ids, id)
 		}
 		return ids
@@ -8447,9 +8296,12 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 14)
+	edges := make([]string, 0, 15)
 	if m.removedconnection_metadata != nil {
 		edges = append(edges, bazelinvocation.EdgeConnectionMetadata)
+	}
+	if m.removedconfigurations != nil {
+		edges = append(edges, bazelinvocation.EdgeConfigurations)
 	}
 	if m.removedproblems != nil {
 		edges = append(edges, bazelinvocation.EdgeProblems)
@@ -8482,6 +8334,12 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 	case bazelinvocation.EdgeConnectionMetadata:
 		ids := make([]ent.Value, 0, len(m.removedconnection_metadata))
 		for id := range m.removedconnection_metadata {
+			ids = append(ids, id)
+		}
+		return ids
+	case bazelinvocation.EdgeConfigurations:
+		ids := make([]ent.Value, 0, len(m.removedconfigurations))
+		for id := range m.removedconfigurations {
 			ids = append(ids, id)
 		}
 		return ids
@@ -8533,7 +8391,7 @@ func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *BazelInvocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 14)
+	edges := make([]string, 0, 15)
 	if m.clearedinstance_name {
 		edges = append(edges, bazelinvocation.EdgeInstanceName)
 	}
@@ -8548,6 +8406,9 @@ func (m *BazelInvocationMutation) ClearedEdges() []string {
 	}
 	if m.clearedconnection_metadata {
 		edges = append(edges, bazelinvocation.EdgeConnectionMetadata)
+	}
+	if m.clearedconfigurations {
+		edges = append(edges, bazelinvocation.EdgeConfigurations)
 	}
 	if m.clearedproblems {
 		edges = append(edges, bazelinvocation.EdgeProblems)
@@ -8593,6 +8454,8 @@ func (m *BazelInvocationMutation) EdgeCleared(name string) bool {
 		return m.clearedevent_metadata
 	case bazelinvocation.EdgeConnectionMetadata:
 		return m.clearedconnection_metadata
+	case bazelinvocation.EdgeConfigurations:
+		return m.clearedconfigurations
 	case bazelinvocation.EdgeProblems:
 		return m.clearedproblems
 	case bazelinvocation.EdgeMetrics:
@@ -8659,6 +8522,9 @@ func (m *BazelInvocationMutation) ResetEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeConnectionMetadata:
 		m.ResetConnectionMetadata()
+		return nil
+	case bazelinvocation.EdgeConfigurations:
+		m.ResetConfigurations()
 		return nil
 	case bazelinvocation.EdgeProblems:
 		m.ResetProblems()
@@ -12788,6 +12654,902 @@ func (m *BuildLogChunkMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown BuildLogChunk edge %s", name)
+}
+
+// ConfigurationMutation represents an operation that mutates the Configuration nodes in the graph.
+type ConfigurationMutation struct {
+	config
+	op                        Op
+	typ                       string
+	id                        *int64
+	configuration_id          *string
+	mnemonic                  *string
+	platform_name             *string
+	cpu                       *string
+	make_variables            *map[string]string
+	is_tool                   *bool
+	clearedFields             map[string]struct{}
+	bazel_invocation          *int64
+	clearedbazel_invocation   bool
+	invocation_targets        map[int64]struct{}
+	removedinvocation_targets map[int64]struct{}
+	clearedinvocation_targets bool
+	done                      bool
+	oldValue                  func(context.Context) (*Configuration, error)
+	predicates                []predicate.Configuration
+}
+
+var _ ent.Mutation = (*ConfigurationMutation)(nil)
+
+// configurationOption allows management of the mutation configuration using functional options.
+type configurationOption func(*ConfigurationMutation)
+
+// newConfigurationMutation creates new mutation for the Configuration entity.
+func newConfigurationMutation(c config, op Op, opts ...configurationOption) *ConfigurationMutation {
+	m := &ConfigurationMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeConfiguration,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withConfigurationID sets the ID field of the mutation.
+func withConfigurationID(id int64) configurationOption {
+	return func(m *ConfigurationMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Configuration
+		)
+		m.oldValue = func(ctx context.Context) (*Configuration, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Configuration.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withConfiguration sets the old Configuration of the mutation.
+func withConfiguration(node *Configuration) configurationOption {
+	return func(m *ConfigurationMutation) {
+		m.oldValue = func(context.Context) (*Configuration, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ConfigurationMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ConfigurationMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Configuration entities.
+func (m *ConfigurationMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ConfigurationMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ConfigurationMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Configuration.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetConfigurationID sets the "configuration_id" field.
+func (m *ConfigurationMutation) SetConfigurationID(s string) {
+	m.configuration_id = &s
+}
+
+// ConfigurationID returns the value of the "configuration_id" field in the mutation.
+func (m *ConfigurationMutation) ConfigurationID() (r string, exists bool) {
+	v := m.configuration_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConfigurationID returns the old "configuration_id" field's value of the Configuration entity.
+// If the Configuration object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ConfigurationMutation) OldConfigurationID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConfigurationID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConfigurationID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConfigurationID: %w", err)
+	}
+	return oldValue.ConfigurationID, nil
+}
+
+// ResetConfigurationID resets all changes to the "configuration_id" field.
+func (m *ConfigurationMutation) ResetConfigurationID() {
+	m.configuration_id = nil
+}
+
+// SetMnemonic sets the "mnemonic" field.
+func (m *ConfigurationMutation) SetMnemonic(s string) {
+	m.mnemonic = &s
+}
+
+// Mnemonic returns the value of the "mnemonic" field in the mutation.
+func (m *ConfigurationMutation) Mnemonic() (r string, exists bool) {
+	v := m.mnemonic
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMnemonic returns the old "mnemonic" field's value of the Configuration entity.
+// If the Configuration object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ConfigurationMutation) OldMnemonic(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMnemonic is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMnemonic requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMnemonic: %w", err)
+	}
+	return oldValue.Mnemonic, nil
+}
+
+// ClearMnemonic clears the value of the "mnemonic" field.
+func (m *ConfigurationMutation) ClearMnemonic() {
+	m.mnemonic = nil
+	m.clearedFields[configuration.FieldMnemonic] = struct{}{}
+}
+
+// MnemonicCleared returns if the "mnemonic" field was cleared in this mutation.
+func (m *ConfigurationMutation) MnemonicCleared() bool {
+	_, ok := m.clearedFields[configuration.FieldMnemonic]
+	return ok
+}
+
+// ResetMnemonic resets all changes to the "mnemonic" field.
+func (m *ConfigurationMutation) ResetMnemonic() {
+	m.mnemonic = nil
+	delete(m.clearedFields, configuration.FieldMnemonic)
+}
+
+// SetPlatformName sets the "platform_name" field.
+func (m *ConfigurationMutation) SetPlatformName(s string) {
+	m.platform_name = &s
+}
+
+// PlatformName returns the value of the "platform_name" field in the mutation.
+func (m *ConfigurationMutation) PlatformName() (r string, exists bool) {
+	v := m.platform_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPlatformName returns the old "platform_name" field's value of the Configuration entity.
+// If the Configuration object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ConfigurationMutation) OldPlatformName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPlatformName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPlatformName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPlatformName: %w", err)
+	}
+	return oldValue.PlatformName, nil
+}
+
+// ClearPlatformName clears the value of the "platform_name" field.
+func (m *ConfigurationMutation) ClearPlatformName() {
+	m.platform_name = nil
+	m.clearedFields[configuration.FieldPlatformName] = struct{}{}
+}
+
+// PlatformNameCleared returns if the "platform_name" field was cleared in this mutation.
+func (m *ConfigurationMutation) PlatformNameCleared() bool {
+	_, ok := m.clearedFields[configuration.FieldPlatformName]
+	return ok
+}
+
+// ResetPlatformName resets all changes to the "platform_name" field.
+func (m *ConfigurationMutation) ResetPlatformName() {
+	m.platform_name = nil
+	delete(m.clearedFields, configuration.FieldPlatformName)
+}
+
+// SetCPU sets the "cpu" field.
+func (m *ConfigurationMutation) SetCPU(s string) {
+	m.cpu = &s
+}
+
+// CPU returns the value of the "cpu" field in the mutation.
+func (m *ConfigurationMutation) CPU() (r string, exists bool) {
+	v := m.cpu
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCPU returns the old "cpu" field's value of the Configuration entity.
+// If the Configuration object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ConfigurationMutation) OldCPU(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCPU is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCPU requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCPU: %w", err)
+	}
+	return oldValue.CPU, nil
+}
+
+// ClearCPU clears the value of the "cpu" field.
+func (m *ConfigurationMutation) ClearCPU() {
+	m.cpu = nil
+	m.clearedFields[configuration.FieldCPU] = struct{}{}
+}
+
+// CPUCleared returns if the "cpu" field was cleared in this mutation.
+func (m *ConfigurationMutation) CPUCleared() bool {
+	_, ok := m.clearedFields[configuration.FieldCPU]
+	return ok
+}
+
+// ResetCPU resets all changes to the "cpu" field.
+func (m *ConfigurationMutation) ResetCPU() {
+	m.cpu = nil
+	delete(m.clearedFields, configuration.FieldCPU)
+}
+
+// SetMakeVariables sets the "make_variables" field.
+func (m *ConfigurationMutation) SetMakeVariables(value map[string]string) {
+	m.make_variables = &value
+}
+
+// MakeVariables returns the value of the "make_variables" field in the mutation.
+func (m *ConfigurationMutation) MakeVariables() (r map[string]string, exists bool) {
+	v := m.make_variables
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMakeVariables returns the old "make_variables" field's value of the Configuration entity.
+// If the Configuration object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ConfigurationMutation) OldMakeVariables(ctx context.Context) (v map[string]string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMakeVariables is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMakeVariables requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMakeVariables: %w", err)
+	}
+	return oldValue.MakeVariables, nil
+}
+
+// ClearMakeVariables clears the value of the "make_variables" field.
+func (m *ConfigurationMutation) ClearMakeVariables() {
+	m.make_variables = nil
+	m.clearedFields[configuration.FieldMakeVariables] = struct{}{}
+}
+
+// MakeVariablesCleared returns if the "make_variables" field was cleared in this mutation.
+func (m *ConfigurationMutation) MakeVariablesCleared() bool {
+	_, ok := m.clearedFields[configuration.FieldMakeVariables]
+	return ok
+}
+
+// ResetMakeVariables resets all changes to the "make_variables" field.
+func (m *ConfigurationMutation) ResetMakeVariables() {
+	m.make_variables = nil
+	delete(m.clearedFields, configuration.FieldMakeVariables)
+}
+
+// SetIsTool sets the "is_tool" field.
+func (m *ConfigurationMutation) SetIsTool(b bool) {
+	m.is_tool = &b
+}
+
+// IsTool returns the value of the "is_tool" field in the mutation.
+func (m *ConfigurationMutation) IsTool() (r bool, exists bool) {
+	v := m.is_tool
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsTool returns the old "is_tool" field's value of the Configuration entity.
+// If the Configuration object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ConfigurationMutation) OldIsTool(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsTool is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsTool requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsTool: %w", err)
+	}
+	return oldValue.IsTool, nil
+}
+
+// ClearIsTool clears the value of the "is_tool" field.
+func (m *ConfigurationMutation) ClearIsTool() {
+	m.is_tool = nil
+	m.clearedFields[configuration.FieldIsTool] = struct{}{}
+}
+
+// IsToolCleared returns if the "is_tool" field was cleared in this mutation.
+func (m *ConfigurationMutation) IsToolCleared() bool {
+	_, ok := m.clearedFields[configuration.FieldIsTool]
+	return ok
+}
+
+// ResetIsTool resets all changes to the "is_tool" field.
+func (m *ConfigurationMutation) ResetIsTool() {
+	m.is_tool = nil
+	delete(m.clearedFields, configuration.FieldIsTool)
+}
+
+// SetBazelInvocationID sets the "bazel_invocation_id" field.
+func (m *ConfigurationMutation) SetBazelInvocationID(i int64) {
+	m.bazel_invocation = &i
+}
+
+// BazelInvocationID returns the value of the "bazel_invocation_id" field in the mutation.
+func (m *ConfigurationMutation) BazelInvocationID() (r int64, exists bool) {
+	v := m.bazel_invocation
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBazelInvocationID returns the old "bazel_invocation_id" field's value of the Configuration entity.
+// If the Configuration object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ConfigurationMutation) OldBazelInvocationID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBazelInvocationID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBazelInvocationID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBazelInvocationID: %w", err)
+	}
+	return oldValue.BazelInvocationID, nil
+}
+
+// ResetBazelInvocationID resets all changes to the "bazel_invocation_id" field.
+func (m *ConfigurationMutation) ResetBazelInvocationID() {
+	m.bazel_invocation = nil
+}
+
+// ClearBazelInvocation clears the "bazel_invocation" edge to the BazelInvocation entity.
+func (m *ConfigurationMutation) ClearBazelInvocation() {
+	m.clearedbazel_invocation = true
+	m.clearedFields[configuration.FieldBazelInvocationID] = struct{}{}
+}
+
+// BazelInvocationCleared reports if the "bazel_invocation" edge to the BazelInvocation entity was cleared.
+func (m *ConfigurationMutation) BazelInvocationCleared() bool {
+	return m.clearedbazel_invocation
+}
+
+// BazelInvocationIDs returns the "bazel_invocation" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BazelInvocationID instead. It exists only for internal usage by the builders.
+func (m *ConfigurationMutation) BazelInvocationIDs() (ids []int64) {
+	if id := m.bazel_invocation; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBazelInvocation resets all changes to the "bazel_invocation" edge.
+func (m *ConfigurationMutation) ResetBazelInvocation() {
+	m.bazel_invocation = nil
+	m.clearedbazel_invocation = false
+}
+
+// AddInvocationTargetIDs adds the "invocation_targets" edge to the InvocationTarget entity by ids.
+func (m *ConfigurationMutation) AddInvocationTargetIDs(ids ...int64) {
+	if m.invocation_targets == nil {
+		m.invocation_targets = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.invocation_targets[ids[i]] = struct{}{}
+	}
+}
+
+// ClearInvocationTargets clears the "invocation_targets" edge to the InvocationTarget entity.
+func (m *ConfigurationMutation) ClearInvocationTargets() {
+	m.clearedinvocation_targets = true
+}
+
+// InvocationTargetsCleared reports if the "invocation_targets" edge to the InvocationTarget entity was cleared.
+func (m *ConfigurationMutation) InvocationTargetsCleared() bool {
+	return m.clearedinvocation_targets
+}
+
+// RemoveInvocationTargetIDs removes the "invocation_targets" edge to the InvocationTarget entity by IDs.
+func (m *ConfigurationMutation) RemoveInvocationTargetIDs(ids ...int64) {
+	if m.removedinvocation_targets == nil {
+		m.removedinvocation_targets = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.invocation_targets, ids[i])
+		m.removedinvocation_targets[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedInvocationTargets returns the removed IDs of the "invocation_targets" edge to the InvocationTarget entity.
+func (m *ConfigurationMutation) RemovedInvocationTargetsIDs() (ids []int64) {
+	for id := range m.removedinvocation_targets {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// InvocationTargetsIDs returns the "invocation_targets" edge IDs in the mutation.
+func (m *ConfigurationMutation) InvocationTargetsIDs() (ids []int64) {
+	for id := range m.invocation_targets {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetInvocationTargets resets all changes to the "invocation_targets" edge.
+func (m *ConfigurationMutation) ResetInvocationTargets() {
+	m.invocation_targets = nil
+	m.clearedinvocation_targets = false
+	m.removedinvocation_targets = nil
+}
+
+// Where appends a list predicates to the ConfigurationMutation builder.
+func (m *ConfigurationMutation) Where(ps ...predicate.Configuration) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ConfigurationMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ConfigurationMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Configuration, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ConfigurationMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ConfigurationMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Configuration).
+func (m *ConfigurationMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ConfigurationMutation) Fields() []string {
+	fields := make([]string, 0, 7)
+	if m.configuration_id != nil {
+		fields = append(fields, configuration.FieldConfigurationID)
+	}
+	if m.mnemonic != nil {
+		fields = append(fields, configuration.FieldMnemonic)
+	}
+	if m.platform_name != nil {
+		fields = append(fields, configuration.FieldPlatformName)
+	}
+	if m.cpu != nil {
+		fields = append(fields, configuration.FieldCPU)
+	}
+	if m.make_variables != nil {
+		fields = append(fields, configuration.FieldMakeVariables)
+	}
+	if m.is_tool != nil {
+		fields = append(fields, configuration.FieldIsTool)
+	}
+	if m.bazel_invocation != nil {
+		fields = append(fields, configuration.FieldBazelInvocationID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ConfigurationMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case configuration.FieldConfigurationID:
+		return m.ConfigurationID()
+	case configuration.FieldMnemonic:
+		return m.Mnemonic()
+	case configuration.FieldPlatformName:
+		return m.PlatformName()
+	case configuration.FieldCPU:
+		return m.CPU()
+	case configuration.FieldMakeVariables:
+		return m.MakeVariables()
+	case configuration.FieldIsTool:
+		return m.IsTool()
+	case configuration.FieldBazelInvocationID:
+		return m.BazelInvocationID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ConfigurationMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case configuration.FieldConfigurationID:
+		return m.OldConfigurationID(ctx)
+	case configuration.FieldMnemonic:
+		return m.OldMnemonic(ctx)
+	case configuration.FieldPlatformName:
+		return m.OldPlatformName(ctx)
+	case configuration.FieldCPU:
+		return m.OldCPU(ctx)
+	case configuration.FieldMakeVariables:
+		return m.OldMakeVariables(ctx)
+	case configuration.FieldIsTool:
+		return m.OldIsTool(ctx)
+	case configuration.FieldBazelInvocationID:
+		return m.OldBazelInvocationID(ctx)
+	}
+	return nil, fmt.Errorf("unknown Configuration field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ConfigurationMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case configuration.FieldConfigurationID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConfigurationID(v)
+		return nil
+	case configuration.FieldMnemonic:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMnemonic(v)
+		return nil
+	case configuration.FieldPlatformName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPlatformName(v)
+		return nil
+	case configuration.FieldCPU:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCPU(v)
+		return nil
+	case configuration.FieldMakeVariables:
+		v, ok := value.(map[string]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMakeVariables(v)
+		return nil
+	case configuration.FieldIsTool:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsTool(v)
+		return nil
+	case configuration.FieldBazelInvocationID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBazelInvocationID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Configuration field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ConfigurationMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ConfigurationMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ConfigurationMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Configuration numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ConfigurationMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(configuration.FieldMnemonic) {
+		fields = append(fields, configuration.FieldMnemonic)
+	}
+	if m.FieldCleared(configuration.FieldPlatformName) {
+		fields = append(fields, configuration.FieldPlatformName)
+	}
+	if m.FieldCleared(configuration.FieldCPU) {
+		fields = append(fields, configuration.FieldCPU)
+	}
+	if m.FieldCleared(configuration.FieldMakeVariables) {
+		fields = append(fields, configuration.FieldMakeVariables)
+	}
+	if m.FieldCleared(configuration.FieldIsTool) {
+		fields = append(fields, configuration.FieldIsTool)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ConfigurationMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ConfigurationMutation) ClearField(name string) error {
+	switch name {
+	case configuration.FieldMnemonic:
+		m.ClearMnemonic()
+		return nil
+	case configuration.FieldPlatformName:
+		m.ClearPlatformName()
+		return nil
+	case configuration.FieldCPU:
+		m.ClearCPU()
+		return nil
+	case configuration.FieldMakeVariables:
+		m.ClearMakeVariables()
+		return nil
+	case configuration.FieldIsTool:
+		m.ClearIsTool()
+		return nil
+	}
+	return fmt.Errorf("unknown Configuration nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ConfigurationMutation) ResetField(name string) error {
+	switch name {
+	case configuration.FieldConfigurationID:
+		m.ResetConfigurationID()
+		return nil
+	case configuration.FieldMnemonic:
+		m.ResetMnemonic()
+		return nil
+	case configuration.FieldPlatformName:
+		m.ResetPlatformName()
+		return nil
+	case configuration.FieldCPU:
+		m.ResetCPU()
+		return nil
+	case configuration.FieldMakeVariables:
+		m.ResetMakeVariables()
+		return nil
+	case configuration.FieldIsTool:
+		m.ResetIsTool()
+		return nil
+	case configuration.FieldBazelInvocationID:
+		m.ResetBazelInvocationID()
+		return nil
+	}
+	return fmt.Errorf("unknown Configuration field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ConfigurationMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.bazel_invocation != nil {
+		edges = append(edges, configuration.EdgeBazelInvocation)
+	}
+	if m.invocation_targets != nil {
+		edges = append(edges, configuration.EdgeInvocationTargets)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ConfigurationMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case configuration.EdgeBazelInvocation:
+		if id := m.bazel_invocation; id != nil {
+			return []ent.Value{*id}
+		}
+	case configuration.EdgeInvocationTargets:
+		ids := make([]ent.Value, 0, len(m.invocation_targets))
+		for id := range m.invocation_targets {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ConfigurationMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.removedinvocation_targets != nil {
+		edges = append(edges, configuration.EdgeInvocationTargets)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ConfigurationMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case configuration.EdgeInvocationTargets:
+		ids := make([]ent.Value, 0, len(m.removedinvocation_targets))
+		for id := range m.removedinvocation_targets {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ConfigurationMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedbazel_invocation {
+		edges = append(edges, configuration.EdgeBazelInvocation)
+	}
+	if m.clearedinvocation_targets {
+		edges = append(edges, configuration.EdgeInvocationTargets)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ConfigurationMutation) EdgeCleared(name string) bool {
+	switch name {
+	case configuration.EdgeBazelInvocation:
+		return m.clearedbazel_invocation
+	case configuration.EdgeInvocationTargets:
+		return m.clearedinvocation_targets
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ConfigurationMutation) ClearEdge(name string) error {
+	switch name {
+	case configuration.EdgeBazelInvocation:
+		m.ClearBazelInvocation()
+		return nil
+	}
+	return fmt.Errorf("unknown Configuration unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ConfigurationMutation) ResetEdge(name string) error {
+	switch name {
+	case configuration.EdgeBazelInvocation:
+		m.ResetBazelInvocation()
+		return nil
+	case configuration.EdgeInvocationTargets:
+		m.ResetInvocationTargets()
+		return nil
+	}
+	return fmt.Errorf("unknown Configuration edge %s", name)
 }
 
 // ConnectionMetadataMutation represents an operation that mutates the ConnectionMetadata nodes in the graph.
@@ -18285,6 +19047,8 @@ type InvocationTargetMutation struct {
 	clearedbazel_invocation bool
 	target                  *int64
 	clearedtarget           bool
+	configuration           *int64
+	clearedconfiguration    bool
 	done                    bool
 	oldValue                func(context.Context) (*InvocationTarget, error)
 	predicates              []predicate.InvocationTarget
@@ -18868,6 +19632,45 @@ func (m *InvocationTargetMutation) ResetTarget() {
 	m.clearedtarget = false
 }
 
+// SetConfigurationID sets the "configuration" edge to the Configuration entity by id.
+func (m *InvocationTargetMutation) SetConfigurationID(id int64) {
+	m.configuration = &id
+}
+
+// ClearConfiguration clears the "configuration" edge to the Configuration entity.
+func (m *InvocationTargetMutation) ClearConfiguration() {
+	m.clearedconfiguration = true
+}
+
+// ConfigurationCleared reports if the "configuration" edge to the Configuration entity was cleared.
+func (m *InvocationTargetMutation) ConfigurationCleared() bool {
+	return m.clearedconfiguration
+}
+
+// ConfigurationID returns the "configuration" edge ID in the mutation.
+func (m *InvocationTargetMutation) ConfigurationID() (id int64, exists bool) {
+	if m.configuration != nil {
+		return *m.configuration, true
+	}
+	return
+}
+
+// ConfigurationIDs returns the "configuration" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ConfigurationID instead. It exists only for internal usage by the builders.
+func (m *InvocationTargetMutation) ConfigurationIDs() (ids []int64) {
+	if id := m.configuration; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetConfiguration resets all changes to the "configuration" edge.
+func (m *InvocationTargetMutation) ResetConfiguration() {
+	m.configuration = nil
+	m.clearedconfiguration = false
+}
+
 // Where appends a list predicates to the InvocationTargetMutation builder.
 func (m *InvocationTargetMutation) Where(ps ...predicate.InvocationTarget) {
 	m.predicates = append(m.predicates, ps...)
@@ -19175,12 +19978,15 @@ func (m *InvocationTargetMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *InvocationTargetMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.bazel_invocation != nil {
 		edges = append(edges, invocationtarget.EdgeBazelInvocation)
 	}
 	if m.target != nil {
 		edges = append(edges, invocationtarget.EdgeTarget)
+	}
+	if m.configuration != nil {
+		edges = append(edges, invocationtarget.EdgeConfiguration)
 	}
 	return edges
 }
@@ -19197,13 +20003,17 @@ func (m *InvocationTargetMutation) AddedIDs(name string) []ent.Value {
 		if id := m.target; id != nil {
 			return []ent.Value{*id}
 		}
+	case invocationtarget.EdgeConfiguration:
+		if id := m.configuration; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *InvocationTargetMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	return edges
 }
 
@@ -19215,12 +20025,15 @@ func (m *InvocationTargetMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *InvocationTargetMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.clearedbazel_invocation {
 		edges = append(edges, invocationtarget.EdgeBazelInvocation)
 	}
 	if m.clearedtarget {
 		edges = append(edges, invocationtarget.EdgeTarget)
+	}
+	if m.clearedconfiguration {
+		edges = append(edges, invocationtarget.EdgeConfiguration)
 	}
 	return edges
 }
@@ -19233,6 +20046,8 @@ func (m *InvocationTargetMutation) EdgeCleared(name string) bool {
 		return m.clearedbazel_invocation
 	case invocationtarget.EdgeTarget:
 		return m.clearedtarget
+	case invocationtarget.EdgeConfiguration:
+		return m.clearedconfiguration
 	}
 	return false
 }
@@ -19247,6 +20062,9 @@ func (m *InvocationTargetMutation) ClearEdge(name string) error {
 	case invocationtarget.EdgeTarget:
 		m.ClearTarget()
 		return nil
+	case invocationtarget.EdgeConfiguration:
+		m.ClearConfiguration()
+		return nil
 	}
 	return fmt.Errorf("unknown InvocationTarget unique edge %s", name)
 }
@@ -19260,6 +20078,9 @@ func (m *InvocationTargetMutation) ResetEdge(name string) error {
 		return nil
 	case invocationtarget.EdgeTarget:
 		m.ResetTarget()
+		return nil
+	case invocationtarget.EdgeConfiguration:
+		m.ResetConfiguration()
 		return nil
 	}
 	return fmt.Errorf("unknown InvocationTarget edge %s", name)

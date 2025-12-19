@@ -18,6 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
@@ -43,6 +44,7 @@ type BazelInvocationQuery struct {
 	withAuthenticatedUser        *AuthenticatedUserQuery
 	withEventMetadata            *EventMetadataQuery
 	withConnectionMetadata       *ConnectionMetadataQuery
+	withConfigurations           *ConfigurationQuery
 	withProblems                 *BazelInvocationProblemQuery
 	withMetrics                  *MetricsQuery
 	withIncompleteBuildLogs      *IncompleteBuildLogQuery
@@ -56,6 +58,7 @@ type BazelInvocationQuery struct {
 	loadTotal                    []func(context.Context, []*BazelInvocation) error
 	modifiers                    []func(*sql.Selector)
 	withNamedConnectionMetadata  map[string]*ConnectionMetadataQuery
+	withNamedConfigurations      map[string]*ConfigurationQuery
 	withNamedProblems            map[string]*BazelInvocationProblemQuery
 	withNamedIncompleteBuildLogs map[string]*IncompleteBuildLogQuery
 	withNamedBuildLogChunks      map[string]*BuildLogChunkQuery
@@ -202,6 +205,28 @@ func (biq *BazelInvocationQuery) QueryConnectionMetadata() *ConnectionMetadataQu
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
 			sqlgraph.To(connectionmetadata.Table, connectionmetadata.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ConnectionMetadataTable, bazelinvocation.ConnectionMetadataColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryConfigurations chains the current query on the "configurations" edge.
+func (biq *BazelInvocationQuery) QueryConfigurations() *ConfigurationQuery {
+	query := (&ConfigurationClient{config: biq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := biq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := biq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
+			sqlgraph.To(configuration.Table, configuration.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.ConfigurationsTable, bazelinvocation.ConfigurationsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
 		return fromU, nil
@@ -604,6 +629,7 @@ func (biq *BazelInvocationQuery) Clone() *BazelInvocationQuery {
 		withAuthenticatedUser:   biq.withAuthenticatedUser.Clone(),
 		withEventMetadata:       biq.withEventMetadata.Clone(),
 		withConnectionMetadata:  biq.withConnectionMetadata.Clone(),
+		withConfigurations:      biq.withConfigurations.Clone(),
 		withProblems:            biq.withProblems.Clone(),
 		withMetrics:             biq.withMetrics.Clone(),
 		withIncompleteBuildLogs: biq.withIncompleteBuildLogs.Clone(),
@@ -672,6 +698,17 @@ func (biq *BazelInvocationQuery) WithConnectionMetadata(opts ...func(*Connection
 		opt(query)
 	}
 	biq.withConnectionMetadata = query
+	return biq
+}
+
+// WithConfigurations tells the query-builder to eager-load the nodes that are connected to
+// the "configurations" edge. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithConfigurations(opts ...func(*ConfigurationQuery)) *BazelInvocationQuery {
+	query := (&ConfigurationClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	biq.withConfigurations = query
 	return biq
 }
 
@@ -859,12 +896,13 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*BazelInvocation{}
 		withFKs     = biq.withFKs
 		_spec       = biq.querySpec()
-		loadedTypes = [14]bool{
+		loadedTypes = [15]bool{
 			biq.withInstanceName != nil,
 			biq.withBuild != nil,
 			biq.withAuthenticatedUser != nil,
 			biq.withEventMetadata != nil,
 			biq.withConnectionMetadata != nil,
+			biq.withConfigurations != nil,
 			biq.withProblems != nil,
 			biq.withMetrics != nil,
 			biq.withIncompleteBuildLogs != nil,
@@ -933,6 +971,13 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 			func(n *BazelInvocation, e *ConnectionMetadata) {
 				n.Edges.ConnectionMetadata = append(n.Edges.ConnectionMetadata, e)
 			}); err != nil {
+			return nil, err
+		}
+	}
+	if query := biq.withConfigurations; query != nil {
+		if err := biq.loadConfigurations(ctx, query, nodes,
+			func(n *BazelInvocation) { n.Edges.Configurations = []*Configuration{} },
+			func(n *BazelInvocation, e *Configuration) { n.Edges.Configurations = append(n.Edges.Configurations, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1011,6 +1056,13 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		if err := biq.loadConnectionMetadata(ctx, query, nodes,
 			func(n *BazelInvocation) { n.appendNamedConnectionMetadata(name) },
 			func(n *BazelInvocation, e *ConnectionMetadata) { n.appendNamedConnectionMetadata(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range biq.withNamedConfigurations {
+		if err := biq.loadConfigurations(ctx, query, nodes,
+			func(n *BazelInvocation) { n.appendNamedConfigurations(name) },
+			func(n *BazelInvocation, e *Configuration) { n.appendNamedConfigurations(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1220,6 +1272,36 @@ func (biq *BazelInvocationQuery) loadConnectionMetadata(ctx context.Context, que
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_connection_metadata" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (biq *BazelInvocationQuery) loadConfigurations(ctx context.Context, query *ConfigurationQuery, nodes []*BazelInvocation, init func(*BazelInvocation), assign func(*BazelInvocation, *Configuration)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*BazelInvocation)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(configuration.FieldBazelInvocationID)
+	}
+	query.Where(predicate.Configuration(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(bazelinvocation.ConfigurationsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.BazelInvocationID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "bazel_invocation_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1601,6 +1683,20 @@ func (biq *BazelInvocationQuery) WithNamedConnectionMetadata(name string, opts .
 		biq.withNamedConnectionMetadata = make(map[string]*ConnectionMetadataQuery)
 	}
 	biq.withNamedConnectionMetadata[name] = query
+	return biq
+}
+
+// WithNamedConfigurations tells the query-builder to eager-load the nodes that are connected to the "configurations"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (biq *BazelInvocationQuery) WithNamedConfigurations(name string, opts ...func(*ConfigurationQuery)) *BazelInvocationQuery {
+	query := (&ConfigurationClient{config: biq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if biq.withNamedConfigurations == nil {
+		biq.withNamedConfigurations = make(map[string]*ConfigurationQuery)
+	}
+	biq.withNamedConfigurations[name] = query
 	return biq
 }
 

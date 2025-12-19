@@ -64,6 +64,23 @@ func (r *buildGraphMetricsResolver) ID(ctx context.Context, obj *ent.BuildGraphM
 }
 
 // ID is the resolver for the id field.
+func (r *configurationResolver) ID(ctx context.Context, obj *ent.Configuration) (string, error) {
+	return helpers.GraphQLIDFromTypeAndID("Configuration", obj.ID), nil
+}
+
+// MakeVariables is the resolver for the makeVariables field.
+func (r *configurationResolver) MakeVariables(ctx context.Context, obj *ent.Configuration) (map[string]any, error) {
+	if obj.MakeVariables == nil {
+		return nil, nil
+	}
+	res := make(map[string]any, len(obj.MakeVariables))
+	for k, v := range obj.MakeVariables {
+		res[k] = v
+	}
+	return res, nil
+}
+
+// ID is the resolver for the id field.
 func (r *cumulativeMetricsResolver) ID(ctx context.Context, obj *ent.CumulativeMetrics) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("CumulativeMetrics", obj.ID), nil
 }
@@ -640,6 +657,46 @@ func (r *buildWhereInputResolver) IDLt(ctx context.Context, obj *ent.BuildWhereI
 
 // IDLte is the resolver for the idLTE field.
 func (r *buildWhereInputResolver) IDLte(ctx context.Context, obj *ent.BuildWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
+}
+
+// ID is the resolver for the id field.
+func (r *configurationWhereInputResolver) ID(ctx context.Context, obj *ent.ConfigurationWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// IDNeq is the resolver for the idNEQ field.
+func (r *configurationWhereInputResolver) IDNeq(ctx context.Context, obj *ent.ConfigurationWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDNeq - idNEQ"))
+}
+
+// IDIn is the resolver for the idIn field.
+func (r *configurationWhereInputResolver) IDIn(ctx context.Context, obj *ent.ConfigurationWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDIn - idIn"))
+}
+
+// IDNotIn is the resolver for the idNotIn field.
+func (r *configurationWhereInputResolver) IDNotIn(ctx context.Context, obj *ent.ConfigurationWhereInput, data []string) error {
+	panic(fmt.Errorf("not implemented: IDNotIn - idNotIn"))
+}
+
+// IDGt is the resolver for the idGT field.
+func (r *configurationWhereInputResolver) IDGt(ctx context.Context, obj *ent.ConfigurationWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGt - idGT"))
+}
+
+// IDGte is the resolver for the idGTE field.
+func (r *configurationWhereInputResolver) IDGte(ctx context.Context, obj *ent.ConfigurationWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDGte - idGTE"))
+}
+
+// IDLt is the resolver for the idLT field.
+func (r *configurationWhereInputResolver) IDLt(ctx context.Context, obj *ent.ConfigurationWhereInput, data *string) error {
+	panic(fmt.Errorf("not implemented: IDLt - idLT"))
+}
+
+// IDLte is the resolver for the idLTE field.
+func (r *configurationWhereInputResolver) IDLte(ctx context.Context, obj *ent.ConfigurationWhereInput, data *string) error {
 	panic(fmt.Errorf("not implemented: IDLte - idLTE"))
 }
 
@@ -1801,6 +1858,9 @@ func (r *Resolver) BuildGraphMetrics() BuildGraphMetricsResolver {
 	return &buildGraphMetricsResolver{r}
 }
 
+// Configuration returns ConfigurationResolver implementation.
+func (r *Resolver) Configuration() ConfigurationResolver { return &configurationResolver{r} }
+
 // CumulativeMetrics returns CumulativeMetricsResolver implementation.
 func (r *Resolver) CumulativeMetrics() CumulativeMetricsResolver {
 	return &cumulativeMetricsResolver{r}
@@ -1939,6 +1999,11 @@ func (r *Resolver) BuildGraphMetricsWhereInput() BuildGraphMetricsWhereInputReso
 
 // BuildWhereInput returns BuildWhereInputResolver implementation.
 func (r *Resolver) BuildWhereInput() BuildWhereInputResolver { return &buildWhereInputResolver{r} }
+
+// ConfigurationWhereInput returns ConfigurationWhereInputResolver implementation.
+func (r *Resolver) ConfigurationWhereInput() ConfigurationWhereInputResolver {
+	return &configurationWhereInputResolver{r}
+}
 
 // CumulativeMetricsWhereInput returns CumulativeMetricsWhereInputResolver implementation.
 func (r *Resolver) CumulativeMetricsWhereInput() CumulativeMetricsWhereInputResolver {
@@ -2089,6 +2154,7 @@ type (
 	blobResolver                             struct{ *Resolver }
 	buildResolver                            struct{ *Resolver }
 	buildGraphMetricsResolver                struct{ *Resolver }
+	configurationResolver                    struct{ *Resolver }
 	cumulativeMetricsResolver                struct{ *Resolver }
 	evaluationStatResolver                   struct{ *Resolver }
 	exectionInfoResolver                     struct{ *Resolver }
@@ -2128,6 +2194,7 @@ type (
 	blobWhereInputResolver                   struct{ *Resolver }
 	buildGraphMetricsWhereInputResolver      struct{ *Resolver }
 	buildWhereInputResolver                  struct{ *Resolver }
+	configurationWhereInputResolver          struct{ *Resolver }
 	cumulativeMetricsWhereInputResolver      struct{ *Resolver }
 	evaluationStatWhereInputResolver         struct{ *Resolver }
 	exectionInfoWhereInputResolver           struct{ *Resolver }

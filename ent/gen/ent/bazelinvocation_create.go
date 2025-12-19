@@ -16,6 +16,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
@@ -155,34 +156,6 @@ func (bic *BazelInvocationCreate) SetNillableUserLdap(s *string) *BazelInvocatio
 	return bic
 }
 
-// SetCPU sets the "cpu" field.
-func (bic *BazelInvocationCreate) SetCPU(s string) *BazelInvocationCreate {
-	bic.mutation.SetCPU(s)
-	return bic
-}
-
-// SetNillableCPU sets the "cpu" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableCPU(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetCPU(*s)
-	}
-	return bic
-}
-
-// SetPlatformName sets the "platform_name" field.
-func (bic *BazelInvocationCreate) SetPlatformName(s string) *BazelInvocationCreate {
-	bic.mutation.SetPlatformName(s)
-	return bic
-}
-
-// SetNillablePlatformName sets the "platform_name" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillablePlatformName(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetPlatformName(*s)
-	}
-	return bic
-}
-
 // SetHostname sets the "hostname" field.
 func (bic *BazelInvocationCreate) SetHostname(s string) *BazelInvocationCreate {
 	bic.mutation.SetHostname(s)
@@ -207,20 +180,6 @@ func (bic *BazelInvocationCreate) SetIsCiWorker(b bool) *BazelInvocationCreate {
 func (bic *BazelInvocationCreate) SetNillableIsCiWorker(b *bool) *BazelInvocationCreate {
 	if b != nil {
 		bic.SetIsCiWorker(*b)
-	}
-	return bic
-}
-
-// SetConfigurationMnemonic sets the "configuration_mnemonic" field.
-func (bic *BazelInvocationCreate) SetConfigurationMnemonic(s string) *BazelInvocationCreate {
-	bic.mutation.SetConfigurationMnemonic(s)
-	return bic
-}
-
-// SetNillableConfigurationMnemonic sets the "configuration_mnemonic" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableConfigurationMnemonic(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetConfigurationMnemonic(*s)
 	}
 	return bic
 }
@@ -534,6 +493,21 @@ func (bic *BazelInvocationCreate) AddConnectionMetadata(c ...*ConnectionMetadata
 	return bic.AddConnectionMetadatumIDs(ids...)
 }
 
+// AddConfigurationIDs adds the "configurations" edge to the Configuration entity by IDs.
+func (bic *BazelInvocationCreate) AddConfigurationIDs(ids ...int64) *BazelInvocationCreate {
+	bic.mutation.AddConfigurationIDs(ids...)
+	return bic
+}
+
+// AddConfigurations adds the "configurations" edges to the Configuration entity.
+func (bic *BazelInvocationCreate) AddConfigurations(c ...*Configuration) *BazelInvocationCreate {
+	ids := make([]int64, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return bic.AddConfigurationIDs(ids...)
+}
+
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
 func (bic *BazelInvocationCreate) AddProblemIDs(ids ...int64) *BazelInvocationCreate {
 	bic.mutation.AddProblemIDs(ids...)
@@ -843,14 +817,6 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_spec.SetField(bazelinvocation.FieldUserLdap, field.TypeString, value)
 		_node.UserLdap = value
 	}
-	if value, ok := bic.mutation.CPU(); ok {
-		_spec.SetField(bazelinvocation.FieldCPU, field.TypeString, value)
-		_node.CPU = value
-	}
-	if value, ok := bic.mutation.PlatformName(); ok {
-		_spec.SetField(bazelinvocation.FieldPlatformName, field.TypeString, value)
-		_node.PlatformName = value
-	}
 	if value, ok := bic.mutation.Hostname(); ok {
 		_spec.SetField(bazelinvocation.FieldHostname, field.TypeString, value)
 		_node.Hostname = value
@@ -858,10 +824,6 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	if value, ok := bic.mutation.IsCiWorker(); ok {
 		_spec.SetField(bazelinvocation.FieldIsCiWorker, field.TypeBool, value)
 		_node.IsCiWorker = value
-	}
-	if value, ok := bic.mutation.ConfigurationMnemonic(); ok {
-		_spec.SetField(bazelinvocation.FieldConfigurationMnemonic, field.TypeString, value)
-		_node.ConfigurationMnemonic = value
 	}
 	if value, ok := bic.mutation.NumFetches(); ok {
 		_spec.SetField(bazelinvocation.FieldNumFetches, field.TypeInt64, value)
@@ -1011,6 +973,22 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := bic.mutation.ConfigurationsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConfigurationsTable,
+			Columns: []string{bazelinvocation.ConfigurationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1364,42 +1342,6 @@ func (u *BazelInvocationUpsert) ClearUserLdap() *BazelInvocationUpsert {
 	return u
 }
 
-// SetCPU sets the "cpu" field.
-func (u *BazelInvocationUpsert) SetCPU(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldCPU, v)
-	return u
-}
-
-// UpdateCPU sets the "cpu" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateCPU() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldCPU)
-	return u
-}
-
-// ClearCPU clears the value of the "cpu" field.
-func (u *BazelInvocationUpsert) ClearCPU() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldCPU)
-	return u
-}
-
-// SetPlatformName sets the "platform_name" field.
-func (u *BazelInvocationUpsert) SetPlatformName(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldPlatformName, v)
-	return u
-}
-
-// UpdatePlatformName sets the "platform_name" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdatePlatformName() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldPlatformName)
-	return u
-}
-
-// ClearPlatformName clears the value of the "platform_name" field.
-func (u *BazelInvocationUpsert) ClearPlatformName() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldPlatformName)
-	return u
-}
-
 // SetHostname sets the "hostname" field.
 func (u *BazelInvocationUpsert) SetHostname(v string) *BazelInvocationUpsert {
 	u.Set(bazelinvocation.FieldHostname, v)
@@ -1433,24 +1375,6 @@ func (u *BazelInvocationUpsert) UpdateIsCiWorker() *BazelInvocationUpsert {
 // ClearIsCiWorker clears the value of the "is_ci_worker" field.
 func (u *BazelInvocationUpsert) ClearIsCiWorker() *BazelInvocationUpsert {
 	u.SetNull(bazelinvocation.FieldIsCiWorker)
-	return u
-}
-
-// SetConfigurationMnemonic sets the "configuration_mnemonic" field.
-func (u *BazelInvocationUpsert) SetConfigurationMnemonic(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldConfigurationMnemonic, v)
-	return u
-}
-
-// UpdateConfigurationMnemonic sets the "configuration_mnemonic" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateConfigurationMnemonic() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldConfigurationMnemonic)
-	return u
-}
-
-// ClearConfigurationMnemonic clears the value of the "configuration_mnemonic" field.
-func (u *BazelInvocationUpsert) ClearConfigurationMnemonic() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldConfigurationMnemonic)
 	return u
 }
 
@@ -1980,48 +1904,6 @@ func (u *BazelInvocationUpsertOne) ClearUserLdap() *BazelInvocationUpsertOne {
 	})
 }
 
-// SetCPU sets the "cpu" field.
-func (u *BazelInvocationUpsertOne) SetCPU(v string) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetCPU(v)
-	})
-}
-
-// UpdateCPU sets the "cpu" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateCPU() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateCPU()
-	})
-}
-
-// ClearCPU clears the value of the "cpu" field.
-func (u *BazelInvocationUpsertOne) ClearCPU() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearCPU()
-	})
-}
-
-// SetPlatformName sets the "platform_name" field.
-func (u *BazelInvocationUpsertOne) SetPlatformName(v string) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetPlatformName(v)
-	})
-}
-
-// UpdatePlatformName sets the "platform_name" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdatePlatformName() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdatePlatformName()
-	})
-}
-
-// ClearPlatformName clears the value of the "platform_name" field.
-func (u *BazelInvocationUpsertOne) ClearPlatformName() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearPlatformName()
-	})
-}
-
 // SetHostname sets the "hostname" field.
 func (u *BazelInvocationUpsertOne) SetHostname(v string) *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
@@ -2061,27 +1943,6 @@ func (u *BazelInvocationUpsertOne) UpdateIsCiWorker() *BazelInvocationUpsertOne 
 func (u *BazelInvocationUpsertOne) ClearIsCiWorker() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.ClearIsCiWorker()
-	})
-}
-
-// SetConfigurationMnemonic sets the "configuration_mnemonic" field.
-func (u *BazelInvocationUpsertOne) SetConfigurationMnemonic(v string) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetConfigurationMnemonic(v)
-	})
-}
-
-// UpdateConfigurationMnemonic sets the "configuration_mnemonic" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateConfigurationMnemonic() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateConfigurationMnemonic()
-	})
-}
-
-// ClearConfigurationMnemonic clears the value of the "configuration_mnemonic" field.
-func (u *BazelInvocationUpsertOne) ClearConfigurationMnemonic() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearConfigurationMnemonic()
 	})
 }
 
@@ -2827,48 +2688,6 @@ func (u *BazelInvocationUpsertBulk) ClearUserLdap() *BazelInvocationUpsertBulk {
 	})
 }
 
-// SetCPU sets the "cpu" field.
-func (u *BazelInvocationUpsertBulk) SetCPU(v string) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetCPU(v)
-	})
-}
-
-// UpdateCPU sets the "cpu" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateCPU() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateCPU()
-	})
-}
-
-// ClearCPU clears the value of the "cpu" field.
-func (u *BazelInvocationUpsertBulk) ClearCPU() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearCPU()
-	})
-}
-
-// SetPlatformName sets the "platform_name" field.
-func (u *BazelInvocationUpsertBulk) SetPlatformName(v string) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetPlatformName(v)
-	})
-}
-
-// UpdatePlatformName sets the "platform_name" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdatePlatformName() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdatePlatformName()
-	})
-}
-
-// ClearPlatformName clears the value of the "platform_name" field.
-func (u *BazelInvocationUpsertBulk) ClearPlatformName() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearPlatformName()
-	})
-}
-
 // SetHostname sets the "hostname" field.
 func (u *BazelInvocationUpsertBulk) SetHostname(v string) *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
@@ -2908,27 +2727,6 @@ func (u *BazelInvocationUpsertBulk) UpdateIsCiWorker() *BazelInvocationUpsertBul
 func (u *BazelInvocationUpsertBulk) ClearIsCiWorker() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.ClearIsCiWorker()
-	})
-}
-
-// SetConfigurationMnemonic sets the "configuration_mnemonic" field.
-func (u *BazelInvocationUpsertBulk) SetConfigurationMnemonic(v string) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetConfigurationMnemonic(v)
-	})
-}
-
-// UpdateConfigurationMnemonic sets the "configuration_mnemonic" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateConfigurationMnemonic() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateConfigurationMnemonic()
-	})
-}
-
-// ClearConfigurationMnemonic clears the value of the "configuration_mnemonic" field.
-func (u *BazelInvocationUpsertBulk) ClearConfigurationMnemonic() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearConfigurationMnemonic()
 	})
 }
 

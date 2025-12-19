@@ -47,20 +47,11 @@ func (BazelInvocation) Fields() []ent.Field {
 		// Ldap (username) of the user who launched the invocation if provided.
 		field.String("user_ldap").Optional().Annotations(entgql.OrderField("USER_LDAP")),
 
-		// The cpu type from the configuration event(s).
-		field.String("cpu").Optional(),
-
-		// The platform name from the configuration event(s).
-		field.String("platform_name").Optional(),
-
 		// The host name from the system where the invocation was launched
 		field.String("hostname").Optional(),
 
 		// If this invocation is part of CI
 		field.Bool("is_ci_worker").Optional(),
-
-		// The name from the configuration event(s).
-		field.String("configuration_mnemonic").Optional(),
 
 		// The number of successful fetch events seen.
 		field.Int64("num_fetches").Optional(),
@@ -123,6 +114,11 @@ func (BazelInvocation) Edges() []ent.Edge {
 		edge.To("connection_metadata", ConnectionMetadata.Type).
 			Annotations(
 				entgql.Skip(entgql.SkipType),
+				entsql.OnDelete(entsql.Cascade),
+			),
+
+		edge.To("configurations", Configuration.Type).
+			Annotations(
 				entsql.OnDelete(entsql.Cascade),
 			),
 

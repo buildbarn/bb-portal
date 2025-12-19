@@ -27,6 +27,8 @@ type (
 	BuildLogChunk struct{ schema.BuildLogChunk }
 	// BuildGraphMetrics reexport with auth policy added
 	BuildGraphMetrics struct{ schema.BuildGraphMetrics }
+	// Configuration reexport with auth policy added
+	Configuration struct{ schema.Configuration }
 	// ConnectionMetadata reexport with auth policy added
 	ConnectionMetadata struct{ schema.ConnectionMetadata }
 	// CumulativeMetrics reexport with auth policy added

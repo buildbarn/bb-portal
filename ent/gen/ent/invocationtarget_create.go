@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 )
@@ -131,6 +132,25 @@ func (itc *InvocationTargetCreate) SetTargetID(id int64) *InvocationTargetCreate
 // SetTarget sets the "target" edge to the Target entity.
 func (itc *InvocationTargetCreate) SetTarget(t *Target) *InvocationTargetCreate {
 	return itc.SetTargetID(t.ID)
+}
+
+// SetConfigurationID sets the "configuration" edge to the Configuration entity by ID.
+func (itc *InvocationTargetCreate) SetConfigurationID(id int64) *InvocationTargetCreate {
+	itc.mutation.SetConfigurationID(id)
+	return itc
+}
+
+// SetNillableConfigurationID sets the "configuration" edge to the Configuration entity by ID if the given value is not nil.
+func (itc *InvocationTargetCreate) SetNillableConfigurationID(id *int64) *InvocationTargetCreate {
+	if id != nil {
+		itc = itc.SetConfigurationID(*id)
+	}
+	return itc
+}
+
+// SetConfiguration sets the "configuration" edge to the Configuration entity.
+func (itc *InvocationTargetCreate) SetConfiguration(c *Configuration) *InvocationTargetCreate {
+	return itc.SetConfigurationID(c.ID)
 }
 
 // Mutation returns the InvocationTargetMutation object of the builder.
@@ -286,6 +306,23 @@ func (itc *InvocationTargetCreate) createSpec() (*InvocationTarget, *sqlgraph.Cr
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.target_invocation_targets = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := itc.mutation.ConfigurationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   invocationtarget.ConfigurationTable,
+			Columns: []string{invocationtarget.ConfigurationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.invocation_target_configuration = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

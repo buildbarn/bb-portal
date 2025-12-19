@@ -389,6 +389,29 @@ func HasTargetWith(preds ...predicate.Target) predicate.InvocationTarget {
 	})
 }
 
+// HasConfiguration applies the HasEdge predicate on the "configuration" edge.
+func HasConfiguration() predicate.InvocationTarget {
+	return predicate.InvocationTarget(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, ConfigurationTable, ConfigurationColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasConfigurationWith applies the HasEdge predicate on the "configuration" edge with a given conditions (other predicates).
+func HasConfigurationWith(preds ...predicate.Configuration) predicate.InvocationTarget {
+	return predicate.InvocationTarget(func(s *sql.Selector) {
+		step := newConfigurationStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.InvocationTarget) predicate.InvocationTarget {
 	return predicate.InvocationTarget(sql.AndPredicates(predicates...))

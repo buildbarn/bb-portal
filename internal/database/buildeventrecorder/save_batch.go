@@ -31,6 +31,14 @@ func (r *BuildEventRecorder) saveBatch(ctx context.Context, batch []BuildEventWi
 		return util.StatusWrap(err, "Failed to save batch progress events")
 	}
 
+	batch, rest, err = filterConfigurationBatch(rest)
+	if err != nil {
+		return util.StatusWrap(err, "Failed to filter configuration events from batch")
+	}
+	if err = r.saveConfigurationBatch(ctx, batch); err != nil {
+		return util.StatusWrap(err, "Failed to save batch configuration events")
+	}
+
 	batch, rest, err = filterTargetConfiguredBatch(rest)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to filter target configured events from batch")
@@ -146,6 +154,18 @@ func filterProgress(batch []BuildEventWithInfo) (filtered, rest []BuildEventWith
 	return filtered, rest, nil
 }
 
+func filterConfigurationBatch(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo, err error) {
+	for _, x := range batch {
+		switch x.Event.GetId().GetId().(type) {
+		case *bes.BuildEventId_Configuration:
+			filtered = append(filtered, x)
+		default:
+			rest = append(rest, x)
+		}
+	}
+	return filtered, rest, nil
+}
+
 func filterNamedSet(batch []BuildEventWithInfo) (filtered, rest []BuildEventWithInfo, err error) {
 	for _, x := range batch {
 		switch x.Event.GetId().GetId().(type) {
@@ -195,7 +215,6 @@ func filterIgnoredIndividualEvents(batch []BuildEventWithInfo) (filtered, rest [
 			*bes.BuildEventId_BuildFinished,
 			*bes.BuildEventId_BuildMetrics,
 			*bes.BuildEventId_StructuredCommandLine,
-			*bes.BuildEventId_Configuration,
 			*bes.BuildEventId_Fetch,
 			*bes.BuildEventId_TestResult,
 			*bes.BuildEventId_TestSummary,

@@ -17,6 +17,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocationproblem"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildlogchunk"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/incompletebuildlog"
@@ -212,46 +213,6 @@ func (biu *BazelInvocationUpdate) ClearUserLdap() *BazelInvocationUpdate {
 	return biu
 }
 
-// SetCPU sets the "cpu" field.
-func (biu *BazelInvocationUpdate) SetCPU(s string) *BazelInvocationUpdate {
-	biu.mutation.SetCPU(s)
-	return biu
-}
-
-// SetNillableCPU sets the "cpu" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableCPU(s *string) *BazelInvocationUpdate {
-	if s != nil {
-		biu.SetCPU(*s)
-	}
-	return biu
-}
-
-// ClearCPU clears the value of the "cpu" field.
-func (biu *BazelInvocationUpdate) ClearCPU() *BazelInvocationUpdate {
-	biu.mutation.ClearCPU()
-	return biu
-}
-
-// SetPlatformName sets the "platform_name" field.
-func (biu *BazelInvocationUpdate) SetPlatformName(s string) *BazelInvocationUpdate {
-	biu.mutation.SetPlatformName(s)
-	return biu
-}
-
-// SetNillablePlatformName sets the "platform_name" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillablePlatformName(s *string) *BazelInvocationUpdate {
-	if s != nil {
-		biu.SetPlatformName(*s)
-	}
-	return biu
-}
-
-// ClearPlatformName clears the value of the "platform_name" field.
-func (biu *BazelInvocationUpdate) ClearPlatformName() *BazelInvocationUpdate {
-	biu.mutation.ClearPlatformName()
-	return biu
-}
-
 // SetHostname sets the "hostname" field.
 func (biu *BazelInvocationUpdate) SetHostname(s string) *BazelInvocationUpdate {
 	biu.mutation.SetHostname(s)
@@ -289,26 +250,6 @@ func (biu *BazelInvocationUpdate) SetNillableIsCiWorker(b *bool) *BazelInvocatio
 // ClearIsCiWorker clears the value of the "is_ci_worker" field.
 func (biu *BazelInvocationUpdate) ClearIsCiWorker() *BazelInvocationUpdate {
 	biu.mutation.ClearIsCiWorker()
-	return biu
-}
-
-// SetConfigurationMnemonic sets the "configuration_mnemonic" field.
-func (biu *BazelInvocationUpdate) SetConfigurationMnemonic(s string) *BazelInvocationUpdate {
-	biu.mutation.SetConfigurationMnemonic(s)
-	return biu
-}
-
-// SetNillableConfigurationMnemonic sets the "configuration_mnemonic" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableConfigurationMnemonic(s *string) *BazelInvocationUpdate {
-	if s != nil {
-		biu.SetConfigurationMnemonic(*s)
-	}
-	return biu
-}
-
-// ClearConfigurationMnemonic clears the value of the "configuration_mnemonic" field.
-func (biu *BazelInvocationUpdate) ClearConfigurationMnemonic() *BazelInvocationUpdate {
-	biu.mutation.ClearConfigurationMnemonic()
 	return biu
 }
 
@@ -725,6 +666,21 @@ func (biu *BazelInvocationUpdate) AddConnectionMetadata(c ...*ConnectionMetadata
 	return biu.AddConnectionMetadatumIDs(ids...)
 }
 
+// AddConfigurationIDs adds the "configurations" edge to the Configuration entity by IDs.
+func (biu *BazelInvocationUpdate) AddConfigurationIDs(ids ...int64) *BazelInvocationUpdate {
+	biu.mutation.AddConfigurationIDs(ids...)
+	return biu
+}
+
+// AddConfigurations adds the "configurations" edges to the Configuration entity.
+func (biu *BazelInvocationUpdate) AddConfigurations(c ...*Configuration) *BazelInvocationUpdate {
+	ids := make([]int64, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return biu.AddConfigurationIDs(ids...)
+}
+
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
 func (biu *BazelInvocationUpdate) AddProblemIDs(ids ...int64) *BazelInvocationUpdate {
 	biu.mutation.AddProblemIDs(ids...)
@@ -916,6 +872,27 @@ func (biu *BazelInvocationUpdate) RemoveConnectionMetadata(c ...*ConnectionMetad
 		ids[i] = c[i].ID
 	}
 	return biu.RemoveConnectionMetadatumIDs(ids...)
+}
+
+// ClearConfigurations clears all "configurations" edges to the Configuration entity.
+func (biu *BazelInvocationUpdate) ClearConfigurations() *BazelInvocationUpdate {
+	biu.mutation.ClearConfigurations()
+	return biu
+}
+
+// RemoveConfigurationIDs removes the "configurations" edge to Configuration entities by IDs.
+func (biu *BazelInvocationUpdate) RemoveConfigurationIDs(ids ...int64) *BazelInvocationUpdate {
+	biu.mutation.RemoveConfigurationIDs(ids...)
+	return biu
+}
+
+// RemoveConfigurations removes "configurations" edges to Configuration entities.
+func (biu *BazelInvocationUpdate) RemoveConfigurations(c ...*Configuration) *BazelInvocationUpdate {
+	ids := make([]int64, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return biu.RemoveConfigurationIDs(ids...)
 }
 
 // ClearProblems clears all "problems" edges to the BazelInvocationProblem entity.
@@ -1181,18 +1158,6 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	if biu.mutation.UserLdapCleared() {
 		_spec.ClearField(bazelinvocation.FieldUserLdap, field.TypeString)
 	}
-	if value, ok := biu.mutation.CPU(); ok {
-		_spec.SetField(bazelinvocation.FieldCPU, field.TypeString, value)
-	}
-	if biu.mutation.CPUCleared() {
-		_spec.ClearField(bazelinvocation.FieldCPU, field.TypeString)
-	}
-	if value, ok := biu.mutation.PlatformName(); ok {
-		_spec.SetField(bazelinvocation.FieldPlatformName, field.TypeString, value)
-	}
-	if biu.mutation.PlatformNameCleared() {
-		_spec.ClearField(bazelinvocation.FieldPlatformName, field.TypeString)
-	}
 	if value, ok := biu.mutation.Hostname(); ok {
 		_spec.SetField(bazelinvocation.FieldHostname, field.TypeString, value)
 	}
@@ -1204,12 +1169,6 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.IsCiWorkerCleared() {
 		_spec.ClearField(bazelinvocation.FieldIsCiWorker, field.TypeBool)
-	}
-	if value, ok := biu.mutation.ConfigurationMnemonic(); ok {
-		_spec.SetField(bazelinvocation.FieldConfigurationMnemonic, field.TypeString, value)
-	}
-	if biu.mutation.ConfigurationMnemonicCleared() {
-		_spec.ClearField(bazelinvocation.FieldConfigurationMnemonic, field.TypeString)
 	}
 	if value, ok := biu.mutation.NumFetches(); ok {
 		_spec.SetField(bazelinvocation.FieldNumFetches, field.TypeInt64, value)
@@ -1481,6 +1440,51 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biu.mutation.ConfigurationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConfigurationsTable,
+			Columns: []string{bazelinvocation.ConfigurationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.RemovedConfigurationsIDs(); len(nodes) > 0 && !biu.mutation.ConfigurationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConfigurationsTable,
+			Columns: []string{bazelinvocation.ConfigurationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biu.mutation.ConfigurationsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConfigurationsTable,
+			Columns: []string{bazelinvocation.ConfigurationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -2051,46 +2055,6 @@ func (biuo *BazelInvocationUpdateOne) ClearUserLdap() *BazelInvocationUpdateOne 
 	return biuo
 }
 
-// SetCPU sets the "cpu" field.
-func (biuo *BazelInvocationUpdateOne) SetCPU(s string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetCPU(s)
-	return biuo
-}
-
-// SetNillableCPU sets the "cpu" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableCPU(s *string) *BazelInvocationUpdateOne {
-	if s != nil {
-		biuo.SetCPU(*s)
-	}
-	return biuo
-}
-
-// ClearCPU clears the value of the "cpu" field.
-func (biuo *BazelInvocationUpdateOne) ClearCPU() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearCPU()
-	return biuo
-}
-
-// SetPlatformName sets the "platform_name" field.
-func (biuo *BazelInvocationUpdateOne) SetPlatformName(s string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetPlatformName(s)
-	return biuo
-}
-
-// SetNillablePlatformName sets the "platform_name" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillablePlatformName(s *string) *BazelInvocationUpdateOne {
-	if s != nil {
-		biuo.SetPlatformName(*s)
-	}
-	return biuo
-}
-
-// ClearPlatformName clears the value of the "platform_name" field.
-func (biuo *BazelInvocationUpdateOne) ClearPlatformName() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearPlatformName()
-	return biuo
-}
-
 // SetHostname sets the "hostname" field.
 func (biuo *BazelInvocationUpdateOne) SetHostname(s string) *BazelInvocationUpdateOne {
 	biuo.mutation.SetHostname(s)
@@ -2128,26 +2092,6 @@ func (biuo *BazelInvocationUpdateOne) SetNillableIsCiWorker(b *bool) *BazelInvoc
 // ClearIsCiWorker clears the value of the "is_ci_worker" field.
 func (biuo *BazelInvocationUpdateOne) ClearIsCiWorker() *BazelInvocationUpdateOne {
 	biuo.mutation.ClearIsCiWorker()
-	return biuo
-}
-
-// SetConfigurationMnemonic sets the "configuration_mnemonic" field.
-func (biuo *BazelInvocationUpdateOne) SetConfigurationMnemonic(s string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetConfigurationMnemonic(s)
-	return biuo
-}
-
-// SetNillableConfigurationMnemonic sets the "configuration_mnemonic" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableConfigurationMnemonic(s *string) *BazelInvocationUpdateOne {
-	if s != nil {
-		biuo.SetConfigurationMnemonic(*s)
-	}
-	return biuo
-}
-
-// ClearConfigurationMnemonic clears the value of the "configuration_mnemonic" field.
-func (biuo *BazelInvocationUpdateOne) ClearConfigurationMnemonic() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearConfigurationMnemonic()
 	return biuo
 }
 
@@ -2564,6 +2508,21 @@ func (biuo *BazelInvocationUpdateOne) AddConnectionMetadata(c ...*ConnectionMeta
 	return biuo.AddConnectionMetadatumIDs(ids...)
 }
 
+// AddConfigurationIDs adds the "configurations" edge to the Configuration entity by IDs.
+func (biuo *BazelInvocationUpdateOne) AddConfigurationIDs(ids ...int64) *BazelInvocationUpdateOne {
+	biuo.mutation.AddConfigurationIDs(ids...)
+	return biuo
+}
+
+// AddConfigurations adds the "configurations" edges to the Configuration entity.
+func (biuo *BazelInvocationUpdateOne) AddConfigurations(c ...*Configuration) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return biuo.AddConfigurationIDs(ids...)
+}
+
 // AddProblemIDs adds the "problems" edge to the BazelInvocationProblem entity by IDs.
 func (biuo *BazelInvocationUpdateOne) AddProblemIDs(ids ...int64) *BazelInvocationUpdateOne {
 	biuo.mutation.AddProblemIDs(ids...)
@@ -2755,6 +2714,27 @@ func (biuo *BazelInvocationUpdateOne) RemoveConnectionMetadata(c ...*ConnectionM
 		ids[i] = c[i].ID
 	}
 	return biuo.RemoveConnectionMetadatumIDs(ids...)
+}
+
+// ClearConfigurations clears all "configurations" edges to the Configuration entity.
+func (biuo *BazelInvocationUpdateOne) ClearConfigurations() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearConfigurations()
+	return biuo
+}
+
+// RemoveConfigurationIDs removes the "configurations" edge to Configuration entities by IDs.
+func (biuo *BazelInvocationUpdateOne) RemoveConfigurationIDs(ids ...int64) *BazelInvocationUpdateOne {
+	biuo.mutation.RemoveConfigurationIDs(ids...)
+	return biuo
+}
+
+// RemoveConfigurations removes "configurations" edges to Configuration entities.
+func (biuo *BazelInvocationUpdateOne) RemoveConfigurations(c ...*Configuration) *BazelInvocationUpdateOne {
+	ids := make([]int64, len(c))
+	for i := range c {
+		ids[i] = c[i].ID
+	}
+	return biuo.RemoveConfigurationIDs(ids...)
 }
 
 // ClearProblems clears all "problems" edges to the BazelInvocationProblem entity.
@@ -3050,18 +3030,6 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	if biuo.mutation.UserLdapCleared() {
 		_spec.ClearField(bazelinvocation.FieldUserLdap, field.TypeString)
 	}
-	if value, ok := biuo.mutation.CPU(); ok {
-		_spec.SetField(bazelinvocation.FieldCPU, field.TypeString, value)
-	}
-	if biuo.mutation.CPUCleared() {
-		_spec.ClearField(bazelinvocation.FieldCPU, field.TypeString)
-	}
-	if value, ok := biuo.mutation.PlatformName(); ok {
-		_spec.SetField(bazelinvocation.FieldPlatformName, field.TypeString, value)
-	}
-	if biuo.mutation.PlatformNameCleared() {
-		_spec.ClearField(bazelinvocation.FieldPlatformName, field.TypeString)
-	}
 	if value, ok := biuo.mutation.Hostname(); ok {
 		_spec.SetField(bazelinvocation.FieldHostname, field.TypeString, value)
 	}
@@ -3073,12 +3041,6 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.IsCiWorkerCleared() {
 		_spec.ClearField(bazelinvocation.FieldIsCiWorker, field.TypeBool)
-	}
-	if value, ok := biuo.mutation.ConfigurationMnemonic(); ok {
-		_spec.SetField(bazelinvocation.FieldConfigurationMnemonic, field.TypeString, value)
-	}
-	if biuo.mutation.ConfigurationMnemonicCleared() {
-		_spec.ClearField(bazelinvocation.FieldConfigurationMnemonic, field.TypeString)
 	}
 	if value, ok := biuo.mutation.NumFetches(); ok {
 		_spec.SetField(bazelinvocation.FieldNumFetches, field.TypeInt64, value)
@@ -3350,6 +3312,51 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(connectionmetadata.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if biuo.mutation.ConfigurationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConfigurationsTable,
+			Columns: []string{bazelinvocation.ConfigurationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.RemovedConfigurationsIDs(); len(nodes) > 0 && !biuo.mutation.ConfigurationsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConfigurationsTable,
+			Columns: []string{bazelinvocation.ConfigurationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := biuo.mutation.ConfigurationsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   bazelinvocation.ConfigurationsTable,
+			Columns: []string{bazelinvocation.ConfigurationsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(configuration.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

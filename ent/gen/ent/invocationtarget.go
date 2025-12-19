@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
 )
@@ -37,6 +38,7 @@ type InvocationTarget struct {
 	// The values are being populated by the InvocationTargetQuery when eager-loading is set.
 	Edges                               InvocationTargetEdges `json:"edges"`
 	bazel_invocation_invocation_targets *int64
+	invocation_target_configuration     *int64
 	target_invocation_targets           *int64
 	selectValues                        sql.SelectValues
 }
@@ -47,11 +49,13 @@ type InvocationTargetEdges struct {
 	BazelInvocation *BazelInvocation `json:"bazel_invocation,omitempty"`
 	// Target holds the value of the target edge.
 	Target *Target `json:"target,omitempty"`
+	// Configuration holds the value of the configuration edge.
+	Configuration *Configuration `json:"configuration,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 	// totalCount holds the count of the edges above.
-	totalCount [2]map[string]int
+	totalCount [3]map[string]int
 }
 
 // BazelInvocationOrErr returns the BazelInvocation value or an error if the edge
@@ -76,6 +80,17 @@ func (e InvocationTargetEdges) TargetOrErr() (*Target, error) {
 	return nil, &NotLoadedError{edge: "target"}
 }
 
+// ConfigurationOrErr returns the Configuration value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e InvocationTargetEdges) ConfigurationOrErr() (*Configuration, error) {
+	if e.Configuration != nil {
+		return e.Configuration, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: configuration.Label}
+	}
+	return nil, &NotLoadedError{edge: "configuration"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*InvocationTarget) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -91,7 +106,9 @@ func (*InvocationTarget) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case invocationtarget.ForeignKeys[0]: // bazel_invocation_invocation_targets
 			values[i] = new(sql.NullInt64)
-		case invocationtarget.ForeignKeys[1]: // target_invocation_targets
+		case invocationtarget.ForeignKeys[1]: // invocation_target_configuration
+			values[i] = new(sql.NullInt64)
+		case invocationtarget.ForeignKeys[2]: // target_invocation_targets
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -167,6 +184,13 @@ func (it *InvocationTarget) assignValues(columns []string, values []any) error {
 			}
 		case invocationtarget.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field invocation_target_configuration", value)
+			} else if value.Valid {
+				it.invocation_target_configuration = new(int64)
+				*it.invocation_target_configuration = int64(value.Int64)
+			}
+		case invocationtarget.ForeignKeys[2]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field target_invocation_targets", value)
 			} else if value.Valid {
 				it.target_invocation_targets = new(int64)
@@ -193,6 +217,11 @@ func (it *InvocationTarget) QueryBazelInvocation() *BazelInvocationQuery {
 // QueryTarget queries the "target" edge of the InvocationTarget entity.
 func (it *InvocationTarget) QueryTarget() *TargetQuery {
 	return NewInvocationTargetClient(it.config).QueryTarget(it)
+}
+
+// QueryConfiguration queries the "configuration" edge of the InvocationTarget entity.
+func (it *InvocationTarget) QueryConfiguration() *ConfigurationQuery {
+	return NewInvocationTargetClient(it.config).QueryConfiguration(it)
 }
 
 // Update returns a builder for updating this InvocationTarget.

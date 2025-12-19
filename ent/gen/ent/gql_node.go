@@ -23,6 +23,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
@@ -109,6 +110,11 @@ var buildgraphmetricsImplementors = []string{"BuildGraphMetrics", "Node"}
 
 // IsNode implements the Node interface check for GQLGen.
 func (*BuildGraphMetrics) IsNode() {}
+
+var configurationImplementors = []string{"Configuration", "Node"}
+
+// IsNode implements the Node interface check for GQLGen.
+func (*Configuration) IsNode() {}
 
 var cumulativemetricsImplementors = []string{"CumulativeMetrics", "Node"}
 
@@ -394,6 +400,15 @@ func (c *Client) noder(ctx context.Context, table string, id int64) (Noder, erro
 			Where(buildgraphmetrics.ID(id))
 		if fc := graphql.GetFieldContext(ctx); fc != nil {
 			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, buildgraphmetricsImplementors...); err != nil {
+				return nil, err
+			}
+		}
+		return query.Only(ctx)
+	case configuration.Table:
+		query := c.Configuration.Query().
+			Where(configuration.ID(id))
+		if fc := graphql.GetFieldContext(ctx); fc != nil {
+			if err := query.collectField(ctx, true, graphql.GetOperationContext(ctx), fc.Field, nil, configurationImplementors...); err != nil {
 				return nil, err
 			}
 		}
@@ -871,6 +886,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int64) ([]Noder
 		query := c.BuildGraphMetrics.Query().
 			Where(buildgraphmetrics.IDIn(ids...))
 		query, err := query.CollectFields(ctx, buildgraphmetricsImplementors...)
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case configuration.Table:
+		query := c.Configuration.Query().
+			Where(configuration.IDIn(ids...))
+		query, err := query.CollectFields(ctx, configurationImplementors...)
 		if err != nil {
 			return nil, err
 		}

@@ -77,6 +77,7 @@ func createInvocationTargetsBulk(ctx context.Context, isRealTime bool, invocatio
 	params := sqlc.CreateInvocationTargetsBulkParams{
 		BazelInvocationID: int64(invocationDbID),
 		TargetIds:         make([]int64, len(batch)),
+		ConfigurationIds:  make([]string, len(batch)),
 		Successes:         make([]bool, len(batch)),
 		TagsList:          make([]string, len(batch)),
 		StartTimes:        make([]int64, len(batch)),
@@ -97,6 +98,8 @@ func createInvocationTargetsBulk(ctx context.Context, isRealTime bool, invocatio
 		targetInfo := targetInfoMap[key]
 
 		params.TargetIds[i] = int64(targetInfo.targetID)
+
+		params.ConfigurationIds[i] = targetCompletedID.GetConfiguration().GetId()
 
 		// TODO: This logic is really bothersome, maybe we should just
 		// remove it completely and/or fetch it from the profile or

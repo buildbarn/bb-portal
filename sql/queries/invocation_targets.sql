@@ -2,6 +2,7 @@
 INSERT INTO invocation_targets (
     bazel_invocation_invocation_targets,
     target_invocation_targets,
+    invocation_target_configuration,
     success,
     tags,
     start_time_in_ms,
@@ -12,17 +13,19 @@ INSERT INTO invocation_targets (
 )
 SELECT
     sqlc.arg(bazel_invocation_id),
-    target_id,
-    success,
-    NULLIF(tags, '')::jsonb,
-    NULLIF(start_time, 0),
-    NULLIF(end_time, 0),
-    NULLIF(duration, 0),
-    NULLIF(failure_message, ''),
-    abort_reason
+    input.target_id,
+    cfg.id,
+    input.success,
+    NULLIF(input.tags, '')::jsonb,
+    NULLIF(input.start_time, 0),
+    NULLIF(input.end_time, 0),
+    NULLIF(input.duration, 0),
+    NULLIF(input.failure_message, ''),
+    input.abort_reason
 FROM (
-    SELECT 
+    SELECT
         unnest(sqlc.arg(target_ids)::bigint[]) AS target_id,
+        unnest(sqlc.arg(configuration_ids)::text[]) AS configuration_external_id,
         unnest(sqlc.arg(successes)::boolean[]) AS success,
         unnest(sqlc.arg(tags_list)::text[]) AS tags,
         unnest(sqlc.arg(start_times)::bigint[]) AS start_time,
@@ -30,4 +33,7 @@ FROM (
         unnest(sqlc.arg(durations)::bigint[]) AS duration,
         unnest(sqlc.arg(failure_messages)::text[]) AS failure_message,
         unnest(sqlc.arg(abort_reasons)::text[]) AS abort_reason
-) AS input;
+) AS input
+JOIN configurations cfg
+  ON cfg.bazel_invocation_id = sqlc.arg(bazel_invocation_id)
+  AND cfg.configuration_id = input.configuration_external_id;

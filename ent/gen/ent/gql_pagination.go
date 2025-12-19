@@ -24,6 +24,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/blob"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/buildgraphmetrics"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/configuration"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/cumulativemetrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/evaluationstat"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/exectioninfo"
@@ -2734,6 +2735,255 @@ func (bgm *BuildGraphMetrics) ToEdge(order *BuildGraphMetricsOrder) *BuildGraphM
 	return &BuildGraphMetricsEdge{
 		Node:   bgm,
 		Cursor: order.Field.toCursor(bgm),
+	}
+}
+
+// ConfigurationEdge is the edge representation of Configuration.
+type ConfigurationEdge struct {
+	Node   *Configuration `json:"node"`
+	Cursor Cursor         `json:"cursor"`
+}
+
+// ConfigurationConnection is the connection containing edges to Configuration.
+type ConfigurationConnection struct {
+	Edges      []*ConfigurationEdge `json:"edges"`
+	PageInfo   PageInfo             `json:"pageInfo"`
+	TotalCount int                  `json:"totalCount"`
+}
+
+func (c *ConfigurationConnection) build(nodes []*Configuration, pager *configurationPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *Configuration
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *Configuration {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *Configuration {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*ConfigurationEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &ConfigurationEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// ConfigurationPaginateOption enables pagination customization.
+type ConfigurationPaginateOption func(*configurationPager) error
+
+// WithConfigurationOrder configures pagination ordering.
+func WithConfigurationOrder(order *ConfigurationOrder) ConfigurationPaginateOption {
+	if order == nil {
+		order = DefaultConfigurationOrder
+	}
+	o := *order
+	return func(pager *configurationPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultConfigurationOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithConfigurationFilter configures pagination filter.
+func WithConfigurationFilter(filter func(*ConfigurationQuery) (*ConfigurationQuery, error)) ConfigurationPaginateOption {
+	return func(pager *configurationPager) error {
+		if filter == nil {
+			return errors.New("ConfigurationQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type configurationPager struct {
+	reverse bool
+	order   *ConfigurationOrder
+	filter  func(*ConfigurationQuery) (*ConfigurationQuery, error)
+}
+
+func newConfigurationPager(opts []ConfigurationPaginateOption, reverse bool) (*configurationPager, error) {
+	pager := &configurationPager{reverse: reverse}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultConfigurationOrder
+	}
+	return pager, nil
+}
+
+func (p *configurationPager) applyFilter(query *ConfigurationQuery) (*ConfigurationQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *configurationPager) toCursor(c *Configuration) Cursor {
+	return p.order.Field.toCursor(c)
+}
+
+func (p *configurationPager) applyCursors(query *ConfigurationQuery, after, before *Cursor) (*ConfigurationQuery, error) {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultConfigurationOrder.Field.column, p.order.Field.column, direction) {
+		query = query.Where(predicate)
+	}
+	return query, nil
+}
+
+func (p *configurationPager) applyOrder(query *ConfigurationQuery) *ConfigurationQuery {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultConfigurationOrder.Field {
+		query = query.Order(DefaultConfigurationOrder.Field.toTerm(direction.OrderTermOption()))
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return query
+}
+
+func (p *configurationPager) orderExpr(query *ConfigurationQuery) sql.Querier {
+	direction := p.order.Direction
+	if p.reverse {
+		direction = direction.Reverse()
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(p.order.Field.column)
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultConfigurationOrder.Field {
+			b.Comma().Ident(DefaultConfigurationOrder.Field.column).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to Configuration.
+func (c *ConfigurationQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...ConfigurationPaginateOption,
+) (*ConfigurationConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newConfigurationPager(opts, last != nil)
+	if err != nil {
+		return nil, err
+	}
+	if c, err = pager.applyFilter(c); err != nil {
+		return nil, err
+	}
+	conn := &ConfigurationConnection{Edges: []*ConfigurationEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			c := c.Clone()
+			c.ctx.Fields = nil
+			if conn.TotalCount, err = c.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+	if c, err = pager.applyCursors(c, after, before); err != nil {
+		return nil, err
+	}
+	limit := paginateLimit(first, last)
+	if limit != 0 {
+		c.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := c.collectField(ctx, limit == 1, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+	c = pager.applyOrder(c)
+	nodes, err := c.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+// ConfigurationOrderField defines the ordering field of Configuration.
+type ConfigurationOrderField struct {
+	// Value extracts the ordering value from the given Configuration.
+	Value    func(*Configuration) (ent.Value, error)
+	column   string // field or computed.
+	toTerm   func(...sql.OrderTermOption) configuration.OrderOption
+	toCursor func(*Configuration) Cursor
+}
+
+// ConfigurationOrder defines the ordering of Configuration.
+type ConfigurationOrder struct {
+	Direction OrderDirection           `json:"direction"`
+	Field     *ConfigurationOrderField `json:"field"`
+}
+
+// DefaultConfigurationOrder is the default ordering of Configuration.
+var DefaultConfigurationOrder = &ConfigurationOrder{
+	Direction: entgql.OrderDirectionAsc,
+	Field: &ConfigurationOrderField{
+		Value: func(c *Configuration) (ent.Value, error) {
+			return c.ID, nil
+		},
+		column: configuration.FieldID,
+		toTerm: configuration.ByID,
+		toCursor: func(c *Configuration) Cursor {
+			return Cursor{ID: c.ID}
+		},
+	},
+}
+
+// ToEdge converts Configuration into ConfigurationEdge.
+func (c *Configuration) ToEdge(order *ConfigurationOrder) *ConfigurationEdge {
+	if order == nil {
+		order = DefaultConfigurationOrder
+	}
+	return &ConfigurationEdge{
+		Node:   c,
+		Cursor: order.Field.toCursor(c),
 	}
 }
 

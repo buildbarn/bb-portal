@@ -129,6 +129,18 @@ func (bi *BazelInvocation) AuthenticatedUser(ctx context.Context) (*Authenticate
 	return result, MaskNotFound(err)
 }
 
+func (bi *BazelInvocation) Configurations(ctx context.Context) (result []*Configuration, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = bi.NamedConfigurations(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = bi.Edges.ConfigurationsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = bi.QueryConfigurations().All(ctx)
+	}
+	return result, err
+}
+
 func (bi *BazelInvocation) Metrics(ctx context.Context) (*Metrics, error) {
 	result, err := bi.Edges.MetricsOrErr()
 	if IsNotLoaded(err) {
@@ -169,7 +181,7 @@ func (bi *BazelInvocation) InvocationTargets(
 		WithInvocationTargetFilter(where.Filter),
 	}
 	alias := graphql.GetFieldContext(ctx).Field.Alias
-	totalCount, hasTotalCount := bi.Edges.totalCount[6][alias]
+	totalCount, hasTotalCount := bi.Edges.totalCount[7][alias]
 	if nodes, err := bi.NamedInvocationTargets(alias); err == nil || hasTotalCount {
 		pager, err := newInvocationTargetPager(opts, last != nil)
 		if err != nil {
@@ -272,6 +284,26 @@ func (bgm *BuildGraphMetrics) EvaluatedValues(ctx context.Context) (*EvaluationS
 		result, err = bgm.QueryEvaluatedValues().Only(ctx)
 	}
 	return result, MaskNotFound(err)
+}
+
+func (c *Configuration) BazelInvocation(ctx context.Context) (*BazelInvocation, error) {
+	result, err := c.Edges.BazelInvocationOrErr()
+	if IsNotLoaded(err) {
+		result, err = c.QueryBazelInvocation().Only(ctx)
+	}
+	return result, err
+}
+
+func (c *Configuration) InvocationTargets(ctx context.Context) (result []*InvocationTarget, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = c.NamedInvocationTargets(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = c.Edges.InvocationTargetsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = c.QueryInvocationTargets().All(ctx)
+	}
+	return result, err
 }
 
 func (cm *CumulativeMetrics) Metrics(ctx context.Context) (*Metrics, error) {
@@ -396,6 +428,14 @@ func (it *InvocationTarget) Target(ctx context.Context) (*Target, error) {
 		result, err = it.QueryTarget().Only(ctx)
 	}
 	return result, err
+}
+
+func (it *InvocationTarget) Configuration(ctx context.Context) (*Configuration, error) {
+	result, err := it.Edges.ConfigurationOrErr()
+	if IsNotLoaded(err) {
+		result, err = it.QueryConfiguration().Only(ctx)
+	}
+	return result, MaskNotFound(err)
 }
 
 func (mm *MemoryMetrics) Metrics(ctx context.Context) (*Metrics, error) {
