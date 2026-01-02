@@ -127,8 +127,8 @@ local lint_steps = [
     },
     permissions: { contents: "read", "id-token": "write" },
     jobs: {
-      publish: {
-        name: "Publish bb-portal images",
+      publish_backend: {
+        name: "Publish Backend (Bazel)",
         "runs-on": "ubuntu-24.04-arm",
         steps: [
           checkout_step,
@@ -138,6 +138,22 @@ local lint_steps = [
             name: "Build and push backend",
             run: "bazel run --stamp //cmd/bb_portal:bb_portal_container_push"
           },
+        ],
+      },
+      publish_frontend_images: {
+        name: "Build Frontend (${{ matrix.arch }})",
+        "runs-on": "${{ matrix.runner }}",
+        strategy: {
+          matrix: {
+            include: [
+              { arch: "arm64", runner: "ubuntu-24.04-arm" },
+              { arch: "amd64", runner: "ubuntu-24.04" },
+            ],
+          },
+        },
+        steps: [
+          checkout_step,
+          docker_credentials_step,
           {
             name: "Set tag variables",
             run: |||
@@ -146,14 +162,44 @@ local lint_steps = [
             |||
           },
           {
-            name: "Build and push frontend",
+            name: "Build and push variant",
             uses: "docker/build-push-action@v4",
             with: {
               context: "frontend",
               file: "./frontend/Dockerfile",
               push: true,
-              tags: "ghcr.io/buildbarn/bb-portal-frontend:${{ env.TIMESTAMP }}-${{ env.SHA_SHORT }}",
+              tags: "ghcr.io/buildbarn/bb-portal-frontend:${{ env.TIMESTAMP }}-${{ env.SHA_SHORT }}-${{ matrix.arch }}",
             },
+          },
+        ],
+      },
+
+      publish_frontend_manifest: {
+        name: "Merge Frontend Manifest",
+        needs: ["publish_frontend_images"],
+        "runs-on": "ubuntu-24.04-arm",
+        steps: [
+          checkout_step,
+          docker_credentials_step,
+          {
+            name: "Set tag variables",
+            run: |||
+              echo "TIMESTAMP=$(TZ=UTC date --date "@$(git show -s --format=%ct HEAD)" +%Y%m%dT%H%M%SZ)" >> $GITHUB_ENV
+              echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+            |||
+          },
+          {
+            name: "Create and Push Manifest",
+            run: |||
+              # Base image name
+              IMAGE="ghcr.io/buildbarn/bb-portal-frontend"
+              TAG="${{ env.TIMESTAMP }}-${{ env.SHA_SHORT }}"
+
+              # Create a manifest list (a "virtual" image) that points to both arch-specific images
+              docker buildx imagetools create -t ${IMAGE}:${TAG} \
+                ${IMAGE}:${TAG}-amd64 \
+                ${IMAGE}:${TAG}-arm64
+            |||
           },
         ],
       },
