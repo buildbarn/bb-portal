@@ -36,7 +36,7 @@ export const getColumns = (
   return [
     {
       title: "Workflow",
-      dataIndex: "workflow",
+      dataIndex: ["sourceControl","workflow"],
       filterSearch: true,
       filterIcon: (filtered) => (
         <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
@@ -53,7 +53,7 @@ export const getColumns = (
     },
     {
       title: "Job",
-      dataIndex: "sourceControl.job",
+      dataIndex: ["sourceControl","job"],
       filterSearch: true,
       filterIcon: (filtered) => (
         <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
@@ -66,7 +66,7 @@ export const getColumns = (
     },
     {
       title: "Action",
-      dataIndex: "action",
+      dataIndex: ["sourceControl", "action"],
       filterSearch: true,
       filterIcon: (filtered) => (
         <SearchFilterIcon icon={<SearchOutlined />} filtered={filtered} />
@@ -78,11 +78,6 @@ export const getColumns = (
           b.sourceControl?.action ?? "",
         ),
       filters: action_filters.map((x) => ({ text: x, value: x })),
-    },
-
-    {
-      title: "User",
-      dataIndex: "user",
     },
     {
       title: "Invocation ID",
