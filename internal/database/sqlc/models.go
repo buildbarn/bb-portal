@@ -205,7 +205,7 @@ type GarbageMetric struct {
 type IncompleteBuildLog struct {
 	ID                int64
 	SnippetID         int32
-	LogSnippet        string
+	LogSnippet        []byte
 	BazelInvocationID int64
 }
 

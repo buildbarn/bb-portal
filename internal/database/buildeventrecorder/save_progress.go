@@ -47,7 +47,7 @@ func (r *BuildEventRecorder) saveProgressBatch(ctx context.Context, batch []Buil
 	params := sqlc.CreateIncompleteBuildLogsParams{
 		BazelInvocationID: int64(r.InvocationDbID),
 		SnippetIds:        make([]int32, 0, len(batch)),
-		LogSnippets:       make([]string, 0, len(batch)),
+		LogSnippets:       make([][]byte, 0, len(batch)),
 	}
 	for _, x := range batch {
 		be := x.Event
@@ -62,7 +62,7 @@ func (r *BuildEventRecorder) saveProgressBatch(ctx context.Context, batch []Buil
 		}
 		if logText != "" {
 			params.SnippetIds = append(params.SnippetIds, opaqueCount)
-			params.LogSnippets = append(params.LogSnippets, logText)
+			params.LogSnippets = append(params.LogSnippets, []byte(logText))
 		}
 	}
 

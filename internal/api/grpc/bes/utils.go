@@ -27,7 +27,7 @@ func GetNormalizedIncompleteBuildLogs(ctx context.Context, client *ent.Client, i
 	// Read all snippets into one big buffer.
 	var buf bytes.Buffer
 	for _, logSnippet := range incompleteLogs {
-		_, err := buf.WriteString(logSnippet.LogSnippet)
+		_, err := buf.Write(logSnippet.LogSnippet)
 		if err != nil {
 			return nil, util.StatusWrap(err, "Could not write to an in memory buffer, is your computer on fire?")
 		}

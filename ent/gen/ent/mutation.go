@@ -16258,7 +16258,7 @@ type IncompleteBuildLogMutation struct {
 	id                      *int
 	snippet_id              *int32
 	addsnippet_id           *int32
-	log_snippet             *string
+	log_snippet             *[]byte
 	clearedFields           map[string]struct{}
 	bazel_invocation        *int
 	clearedbazel_invocation bool
@@ -16422,12 +16422,12 @@ func (m *IncompleteBuildLogMutation) ResetSnippetID() {
 }
 
 // SetLogSnippet sets the "log_snippet" field.
-func (m *IncompleteBuildLogMutation) SetLogSnippet(s string) {
-	m.log_snippet = &s
+func (m *IncompleteBuildLogMutation) SetLogSnippet(b []byte) {
+	m.log_snippet = &b
 }
 
 // LogSnippet returns the value of the "log_snippet" field in the mutation.
-func (m *IncompleteBuildLogMutation) LogSnippet() (r string, exists bool) {
+func (m *IncompleteBuildLogMutation) LogSnippet() (r []byte, exists bool) {
 	v := m.log_snippet
 	if v == nil {
 		return
@@ -16438,7 +16438,7 @@ func (m *IncompleteBuildLogMutation) LogSnippet() (r string, exists bool) {
 // OldLogSnippet returns the old "log_snippet" field's value of the IncompleteBuildLog entity.
 // If the IncompleteBuildLog object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *IncompleteBuildLogMutation) OldLogSnippet(ctx context.Context) (v string, err error) {
+func (m *IncompleteBuildLogMutation) OldLogSnippet(ctx context.Context) (v []byte, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLogSnippet is only allowed on UpdateOne operations")
 	}
@@ -16610,7 +16610,7 @@ func (m *IncompleteBuildLogMutation) SetField(name string, value ent.Value) erro
 		m.SetSnippetID(v)
 		return nil
 	case incompletebuildlog.FieldLogSnippet:
-		v, ok := value.(string)
+		v, ok := value.([]byte)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

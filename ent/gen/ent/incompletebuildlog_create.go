@@ -29,8 +29,8 @@ func (iblc *IncompleteBuildLogCreate) SetSnippetID(i int32) *IncompleteBuildLogC
 }
 
 // SetLogSnippet sets the "log_snippet" field.
-func (iblc *IncompleteBuildLogCreate) SetLogSnippet(s string) *IncompleteBuildLogCreate {
-	iblc.mutation.SetLogSnippet(s)
+func (iblc *IncompleteBuildLogCreate) SetLogSnippet(b []byte) *IncompleteBuildLogCreate {
+	iblc.mutation.SetLogSnippet(b)
 	return iblc
 }
 
@@ -123,7 +123,7 @@ func (iblc *IncompleteBuildLogCreate) createSpec() (*IncompleteBuildLog, *sqlgra
 		_node.SnippetID = value
 	}
 	if value, ok := iblc.mutation.LogSnippet(); ok {
-		_spec.SetField(incompletebuildlog.FieldLogSnippet, field.TypeString, value)
+		_spec.SetField(incompletebuildlog.FieldLogSnippet, field.TypeBytes, value)
 		_node.LogSnippet = value
 	}
 	if nodes := iblc.mutation.BazelInvocationIDs(); len(nodes) > 0 {

@@ -97,7 +97,7 @@ func populateIncompleteBuildLog(t *testing.T, ctx context.Context, client *ent.C
 			SetBazelInvocationID(invocationDbID).
 			// LogSnippetID is 1-indexed.
 			SetSnippetID(int32(i + 1)).
-			SetLogSnippet(snippet).
+			SetLogSnippet([]byte(snippet)).
 			Save(ctx)
 		require.NoError(t, err)
 	}
