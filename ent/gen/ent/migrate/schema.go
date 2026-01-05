@@ -607,7 +607,7 @@ var (
 	IncompleteBuildLogsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "snippet_id", Type: field.TypeInt32},
-		{Name: "log_snippet", Type: field.TypeString},
+		{Name: "log_snippet", Type: field.TypeBytes},
 		{Name: "bazel_invocation_id", Type: field.TypeInt},
 	}
 	// IncompleteBuildLogsTable holds the schema information for the "incomplete_build_logs" table.

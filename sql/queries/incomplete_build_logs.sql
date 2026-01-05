@@ -11,5 +11,5 @@ SELECT
 FROM (
     SELECT 
         unnest(sqlc.arg(snippet_ids)::int[]) AS snippet_id,
-        unnest(sqlc.arg(log_snippets)::text[]) AS log_snippet
+        unnest(sqlc.arg(log_snippets)::bytea[]) AS log_snippet
 ) AS input;

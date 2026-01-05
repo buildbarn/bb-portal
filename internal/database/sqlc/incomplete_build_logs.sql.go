@@ -24,14 +24,14 @@ SELECT
 FROM (
     SELECT 
         unnest($2::int[]) AS snippet_id,
-        unnest($3::text[]) AS log_snippet
+        unnest($3::bytea[]) AS log_snippet
 ) AS input
 `
 
 type CreateIncompleteBuildLogsParams struct {
 	BazelInvocationID int64
 	SnippetIds        []int32
-	LogSnippets       []string
+	LogSnippets       [][]byte
 }
 
 func (q *Queries) CreateIncompleteBuildLogs(ctx context.Context, arg CreateIncompleteBuildLogsParams) error {

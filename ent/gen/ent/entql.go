@@ -390,7 +390,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 		Type: "IncompleteBuildLog",
 		Fields: map[string]*sqlgraph.FieldSpec{
 			incompletebuildlog.FieldSnippetID:         {Type: field.TypeInt32, Column: incompletebuildlog.FieldSnippetID},
-			incompletebuildlog.FieldLogSnippet:        {Type: field.TypeString, Column: incompletebuildlog.FieldLogSnippet},
+			incompletebuildlog.FieldLogSnippet:        {Type: field.TypeBytes, Column: incompletebuildlog.FieldLogSnippet},
 			incompletebuildlog.FieldBazelInvocationID: {Type: field.TypeInt, Column: incompletebuildlog.FieldBazelInvocationID},
 		},
 	}
@@ -3807,8 +3807,8 @@ func (f *IncompleteBuildLogFilter) WhereSnippetID(p entql.Int32P) {
 	f.Where(p.Field(incompletebuildlog.FieldSnippetID))
 }
 
-// WhereLogSnippet applies the entql string predicate on the log_snippet field.
-func (f *IncompleteBuildLogFilter) WhereLogSnippet(p entql.StringP) {
+// WhereLogSnippet applies the entql []byte predicate on the log_snippet field.
+func (f *IncompleteBuildLogFilter) WhereLogSnippet(p entql.BytesP) {
 	f.Where(p.Field(incompletebuildlog.FieldLogSnippet))
 }
 

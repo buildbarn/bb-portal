@@ -62,11 +62,6 @@ func BySnippetID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSnippetID, opts...).ToFunc()
 }
 
-// ByLogSnippet orders the results by the log_snippet field.
-func ByLogSnippet(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLogSnippet, opts...).ToFunc()
-}
-
 // ByBazelInvocationID orders the results by the bazel_invocation_id field.
 func ByBazelInvocationID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBazelInvocationID, opts...).ToFunc()

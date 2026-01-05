@@ -21,7 +21,7 @@ func (IncompleteBuildLog) Fields() []ent.Field {
 		field.Int32("snippet_id").Immutable(),
 
 		// A log snippet
-		field.String("log_snippet").Immutable(),
+		field.Bytes("log_snippet").Immutable(),
 
 		// Foreign key to bazel invocation
 		field.Int("bazel_invocation_id").Immutable(),

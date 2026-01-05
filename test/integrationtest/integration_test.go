@@ -71,6 +71,26 @@ var (
 	// testCases defines all integration test cases to be run.
 	testCases = []testCase{
 		{
+			name: "QueryWithProtoOutput",
+			saveTargetDataLevel: &bb_portal.BuildEventStreamService_SaveTargetDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveTargetDataLevel_None{
+					None: &emptypb.Empty{},
+				},
+			},
+			saveTestDataLevel: &bb_portal.BuildEventStreamService_SaveTestDataLevel{
+				Level: &bb_portal.BuildEventStreamService_SaveTestDataLevel_None{
+					None: &emptypb.Empty{},
+				},
+			},
+			bepFileTestCases: []bepFileTestCase{
+				{
+					bepFile: bepFile{
+						filename: "query_proto.bep.ndjson",
+					},
+				},
+			},
+		},
+		{
 			name: "TestAllBepUploadsAndGraphqlQueries",
 			saveTargetDataLevel: &bb_portal.BuildEventStreamService_SaveTargetDataLevel{
 				Level: &bb_portal.BuildEventStreamService_SaveTargetDataLevel_Enriched{

@@ -59,7 +59,7 @@ func SnippetID(v int32) predicate.IncompleteBuildLog {
 }
 
 // LogSnippet applies equality check predicate on the "log_snippet" field. It's identical to LogSnippetEQ.
-func LogSnippet(v string) predicate.IncompleteBuildLog {
+func LogSnippet(v []byte) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldEQ(FieldLogSnippet, v))
 }
 
@@ -109,68 +109,43 @@ func SnippetIDLTE(v int32) predicate.IncompleteBuildLog {
 }
 
 // LogSnippetEQ applies the EQ predicate on the "log_snippet" field.
-func LogSnippetEQ(v string) predicate.IncompleteBuildLog {
+func LogSnippetEQ(v []byte) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldEQ(FieldLogSnippet, v))
 }
 
 // LogSnippetNEQ applies the NEQ predicate on the "log_snippet" field.
-func LogSnippetNEQ(v string) predicate.IncompleteBuildLog {
+func LogSnippetNEQ(v []byte) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldNEQ(FieldLogSnippet, v))
 }
 
 // LogSnippetIn applies the In predicate on the "log_snippet" field.
-func LogSnippetIn(vs ...string) predicate.IncompleteBuildLog {
+func LogSnippetIn(vs ...[]byte) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldIn(FieldLogSnippet, vs...))
 }
 
 // LogSnippetNotIn applies the NotIn predicate on the "log_snippet" field.
-func LogSnippetNotIn(vs ...string) predicate.IncompleteBuildLog {
+func LogSnippetNotIn(vs ...[]byte) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldNotIn(FieldLogSnippet, vs...))
 }
 
 // LogSnippetGT applies the GT predicate on the "log_snippet" field.
-func LogSnippetGT(v string) predicate.IncompleteBuildLog {
+func LogSnippetGT(v []byte) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldGT(FieldLogSnippet, v))
 }
 
 // LogSnippetGTE applies the GTE predicate on the "log_snippet" field.
-func LogSnippetGTE(v string) predicate.IncompleteBuildLog {
+func LogSnippetGTE(v []byte) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldGTE(FieldLogSnippet, v))
 }
 
 // LogSnippetLT applies the LT predicate on the "log_snippet" field.
-func LogSnippetLT(v string) predicate.IncompleteBuildLog {
+func LogSnippetLT(v []byte) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldLT(FieldLogSnippet, v))
 }
 
 // LogSnippetLTE applies the LTE predicate on the "log_snippet" field.
-func LogSnippetLTE(v string) predicate.IncompleteBuildLog {
+func LogSnippetLTE(v []byte) predicate.IncompleteBuildLog {
 	return predicate.IncompleteBuildLog(sql.FieldLTE(FieldLogSnippet, v))
-}
-
-// LogSnippetContains applies the Contains predicate on the "log_snippet" field.
-func LogSnippetContains(v string) predicate.IncompleteBuildLog {
-	return predicate.IncompleteBuildLog(sql.FieldContains(FieldLogSnippet, v))
-}
-
-// LogSnippetHasPrefix applies the HasPrefix predicate on the "log_snippet" field.
-func LogSnippetHasPrefix(v string) predicate.IncompleteBuildLog {
-	return predicate.IncompleteBuildLog(sql.FieldHasPrefix(FieldLogSnippet, v))
-}
-
-// LogSnippetHasSuffix applies the HasSuffix predicate on the "log_snippet" field.
-func LogSnippetHasSuffix(v string) predicate.IncompleteBuildLog {
-	return predicate.IncompleteBuildLog(sql.FieldHasSuffix(FieldLogSnippet, v))
-}
-
-// LogSnippetEqualFold applies the EqualFold predicate on the "log_snippet" field.
-func LogSnippetEqualFold(v string) predicate.IncompleteBuildLog {
-	return predicate.IncompleteBuildLog(sql.FieldEqualFold(FieldLogSnippet, v))
-}
-
-// LogSnippetContainsFold applies the ContainsFold predicate on the "log_snippet" field.
-func LogSnippetContainsFold(v string) predicate.IncompleteBuildLog {
-	return predicate.IncompleteBuildLog(sql.FieldContainsFold(FieldLogSnippet, v))
 }
 
 // BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.

@@ -23,6 +23,7 @@ import (
 	bb_grpc "github.com/buildbarn/bb-storage/pkg/grpc"
 	"github.com/buildbarn/bb-storage/pkg/program"
 	"github.com/buildbarn/bb-storage/pkg/util"
+	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -134,6 +135,16 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 		}
 
 		if buildEventRecorder == nil {
+			invocationID := bazelEvent.GetStarted().GetUuid()
+			// Bazel does create an InvocationId for query commands, but
+			// for some reason does not write this into the Started
+			// event for queries.
+			if invocationID == "" {
+				if bazelEvent.GetStarted().GetCommand() != "query" {
+					return "", http.StatusBadRequest, status.Error(codes.InvalidArgument, "An invocation must have an invocation id")
+				}
+				invocationID = uuid.NewString()
+			}
 			buildEventRecorder, err = buildeventrecorder.NewBuildEventRecorder(
 				ctx,
 				b.db,
@@ -142,10 +153,10 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 				b.saveTargetDataLevel,
 				b.saveTestDataLevel,
 				b.tracerProvider,
-				"",                                // instanceName
-				bazelEvent.GetStarted().GetUuid(), // invocationID
-				"",                                // correlatedInvocationID
-				false,                             // isRealTime,
+				"", // instanceName
+				invocationID,
+				"",    // correlatedInvocationID
+				false, // isRealTime,
 				b.extractors,
 				b.uuidGenerator,
 			)
