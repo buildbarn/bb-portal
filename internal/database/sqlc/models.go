@@ -86,40 +86,34 @@ type AuthenticatedUser struct {
 }
 
 type BazelInvocation struct {
-	ID                                  int64
-	InvocationID                        uuid.UUID
-	CreatedTimestamp                    time.Time
-	StartedAt                           sql.NullTime
-	EndedAt                             sql.NullTime
-	ChangeNumber                        sql.NullInt64
-	PatchsetNumber                      sql.NullInt64
-	BepCompleted                        bool
-	StepLabel                           sql.NullString
-	UserEmail                           sql.NullString
-	UserLdap                            sql.NullString
-	Hostname                            sql.NullString
-	IsCiWorker                          sql.NullBool
-	NumFetches                          sql.NullInt64
-	ProfileName                         sql.NullString
-	BazelVersion                        sql.NullString
-	ExitCodeName                        sql.NullString
-	ExitCodeCode                        sql.NullInt32
-	CommandLineCommand                  sql.NullString
-	CommandLineExecutable               sql.NullString
-	CommandLineResidual                 sql.NullString
-	CommandLine                         pqtype.NullRawMessage
-	ExplicitCommandLine                 pqtype.NullRawMessage
-	StartupOptions                      pqtype.NullRawMessage
-	ExplicitStartupOptions              pqtype.NullRawMessage
-	ProcessedEventStarted               bool
-	ProcessedEventBuildMetadata         bool
-	ProcessedEventOptionsParsed         bool
-	ProcessedEventBuildFinished         bool
-	ProcessedEventStructuredCommandLine bool
-	ProcessedEventWorkspaceStatus       bool
-	AuthenticatedUserBazelInvocations   sql.NullInt64
-	BuildInvocations                    sql.NullInt64
-	InstanceNameBazelInvocations        int64
+	ID                                int64
+	InvocationID                      uuid.UUID
+	CreatedTimestamp                  time.Time
+	StartedAt                         sql.NullTime
+	EndedAt                           sql.NullTime
+	ChangeNumber                      sql.NullInt64
+	PatchsetNumber                    sql.NullInt64
+	BepCompleted                      bool
+	StepLabel                         sql.NullString
+	UserEmail                         sql.NullString
+	UserLdap                          sql.NullString
+	Hostname                          sql.NullString
+	IsCiWorker                        sql.NullBool
+	NumFetches                        sql.NullInt64
+	ProfileName                       sql.NullString
+	BazelVersion                      sql.NullString
+	ExitCodeName                      sql.NullString
+	ExitCodeCode                      sql.NullInt32
+	CanonicalCommandLine              pqtype.NullRawMessage
+	OriginalCommandLine               pqtype.NullRawMessage
+	OptionsParsed                     pqtype.NullRawMessage
+	ProcessedEventStarted             bool
+	ProcessedEventBuildMetadata       bool
+	ProcessedEventBuildFinished       bool
+	ProcessedEventWorkspaceStatus     bool
+	AuthenticatedUserBazelInvocations sql.NullInt64
+	BuildInvocations                  sql.NullInt64
+	InstanceNameBazelInvocations      int64
 }
 
 type Build struct {

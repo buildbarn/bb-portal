@@ -3,21 +3,26 @@ package buildeventrecorder
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 
-	bescore "github.com/bazelbuild/bazel/src/main/protobuf"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/internal/database"
 	"github.com/buildbarn/bb-portal/internal/database/common"
+	"github.com/buildbarn/bb-portal/pkg/invocation"
 	"github.com/buildbarn/bb-storage/pkg/util"
+
+	bes "github.com/bazelbuild/bazel/src/main/protobuf"
 )
 
-func parseEnvVarsFromSectionOptions(section *bescore.CommandLineSection, destMap *map[string]string) {
+func parseEnvVarsFromSectionOptions(section *bes.CommandLineSection) map[string]string {
 	if section.GetOptionList() == nil {
-		return
+		return nil
 	}
+	ret := make(map[string]string)
 	options := section.GetOptionList().GetOption()
 	for _, option := range options {
 		if option.GetOptionName() != "client_env" {
@@ -32,11 +37,12 @@ func parseEnvVarsFromSectionOptions(section *bescore.CommandLineSection, destMap
 		}
 		envName := envPair[:equalIndex]
 		envValue := envPair[equalIndex+1:]
-		(*destMap)[envName] = envValue
+		ret[envName] = envValue
 	}
+	return ret
 }
 
-func parseProfileNameFromSectionOptions(section *bescore.CommandLineSection) string {
+func parseProfileNameFromSectionOptions(section *bes.CommandLineSection) string {
 	if section.GetOptionList() != nil {
 		options := section.GetOptionList().GetOption()
 		for _, option := range options {
@@ -291,42 +297,42 @@ func (r *buildEventRecorder) recordBuild(ctx context.Context, tx *ent.Client, en
 	}
 }
 
-func (r *buildEventRecorder) saveStructuredCommandLine(ctx context.Context, tx *ent.Client, structuredCommandLine *bescore.CommandLine) error {
-	if structuredCommandLine == nil {
-		return nil
-	}
-	if structuredCommandLine.GetCommandLineLabel() != "original" {
-		return nil
+func (r *buildEventRecorder) saveStructuredCommandLine(ctx context.Context, tx database.Tx, buildEvent *bes.CommandLine) error {
+	envVars, data, profileName := parseSections(buildEvent.GetSections())
+
+	switch buildEvent.CommandLineLabel {
+	case "canonical":
+		_, err := tx.Ent().BazelInvocation.
+			UpdateOneID(r.InvocationDbID).
+			SetProfileName(profileName).
+			SetCanonicalCommandLine(&data).
+			Save(ctx)
+		if err != nil {
+			return util.StatusWrapf(err, "Failed to save command line data")
+		}
+		r.recordMetadataFromEnvVars(ctx, tx.Ent(), envVars)
+		if err := r.recordBuild(ctx, tx.Ent(), envVars); err != nil {
+			return util.StatusWrap(err, "Failed to create build from env vars")
+		}
+		if err := r.recordSourceControl(ctx, tx.Ent(), envVars); err != nil {
+			return util.StatusWrap(err, "Failed to save source control information from env vars")
+		}
+	case "original":
+		_, err := tx.Ent().BazelInvocation.UpdateOneID(r.InvocationDbID).SetOriginalCommandLine(&data).Save(ctx)
+		if err != nil {
+			return util.StatusWrapf(err, "Failed to save command line data")
+		}
 	}
 
+	return nil
+}
+
+func (r *buildEventRecorder) recordMetadataFromEnvVars(ctx context.Context, tx *ent.Client, envVars map[string]string) error {
 	update := tx.BazelInvocation.
 		Update().
 		Where(
 			bazelinvocation.ID(r.InvocationDbID),
-			bazelinvocation.ProcessedEventStructuredCommandLine(false),
-		).
-		SetProcessedEventStructuredCommandLine(true)
-
-	envVars := map[string]string{}
-
-	sections := structuredCommandLine.GetSections()
-	for _, section := range sections {
-		label := section.GetSectionLabel()
-		if label == "command options" {
-			parseEnvVarsFromSectionOptions(section, &envVars)
-			update.SetProfileName(parseProfileNameFromSectionOptions(section))
-		} else if section.GetChunkList() != nil {
-			sectionChunksStr := strings.Join(section.GetChunkList().GetChunk(), " ")
-			switch label {
-			case "executable":
-				update.SetCommandLineExecutable(sectionChunksStr)
-			case "command":
-				update.SetCommandLineCommand(sectionChunksStr)
-			case "residual":
-				update.SetCommandLineResidual(sectionChunksStr)
-			}
-		}
-	}
+		)
 
 	// Parse Gerrit change number if available.
 	if changeNumberStr, ok := envVars["GERRIT_CHANGE_NUMBER"]; ok && changeNumberStr != "" {
@@ -407,15 +413,56 @@ func (r *buildEventRecorder) saveStructuredCommandLine(ctx context.Context, tx *
 	if err != nil {
 		return util.StatusWrap(err, "Failed to save structured command line to database")
 	}
-
-	err = r.recordBuild(ctx, tx, envVars)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save build data")
-	}
-
-	err = r.recordSourceControl(ctx, tx, envVars)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to save source control data")
-	}
 	return nil
+}
+
+func parseSections(buildEventSections []*bes.CommandLineSection) (envVars map[string]string, data invocation.CommandLineData, profileName string) {
+	// Explicitly set empty slices rather than rely on nil equivalence as the
+	// json encoder will explicitly map nil slices to nil rather than empty
+	// list.
+	data = invocation.CommandLineData{
+		Options:        []invocation.CommandLineOption{},
+		StartupOptions: []invocation.CommandLineOption{},
+		Residual:       []string{},
+	}
+
+	for _, section := range buildEventSections {
+		switch section.GetSectionLabel() {
+		case "executable":
+			if list := section.GetChunkList(); list != nil && len(list.Chunk) > 0 {
+				data.Executable = list.Chunk[0]
+			}
+		case "command":
+			if list := section.GetChunkList(); list != nil && len(list.Chunk) > 0 {
+				data.Command = list.Chunk[0]
+			}
+		case "startup options":
+			data.StartupOptions = extractOptions(section.GetOptionList().GetOption())
+		case "command options":
+			data.Options = extractOptions(section.GetOptionList().GetOption())
+			envVars = parseEnvVarsFromSectionOptions(section)
+			profileName = parseProfileNameFromSectionOptions(section)
+		case "residual":
+			if list := section.GetChunkList(); list != nil {
+				data.Residual = append(data.Residual, list.Chunk...)
+			}
+		}
+	}
+	return envVars, data, profileName
+}
+
+func extractOptions(protoOptions []*bes.Option) []invocation.CommandLineOption {
+	result := make([]invocation.CommandLineOption, 0, len(protoOptions))
+	for _, opt := range protoOptions {
+		// Tags marked as hidden may contain sensitive information or
+		// information not relevant to a user.
+		if slices.Contains(opt.MetadataTags, bes.OptionMetadataTag_HIDDEN) {
+			continue
+		}
+		result = append(result, invocation.CommandLineOption{
+			Option: opt.GetOptionName(),
+			Value:  opt.GetOptionValue(),
+		})
+	}
+	return result
 }

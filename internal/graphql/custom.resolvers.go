@@ -6,7 +6,6 @@ package graphql
 
 import (
 	"context"
-	"strings"
 	"time"
 
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
@@ -17,24 +16,9 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationfiles"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/invocationtarget"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/target"
-	"github.com/buildbarn/bb-portal/internal/graphql/helpers"
 	"github.com/buildbarn/bb-portal/internal/graphql/model"
 	"github.com/google/uuid"
 )
-
-// BazelCommand is the resolver for the bazelCommand field.
-func (r *bazelInvocationResolver) BazelCommand(ctx context.Context, obj *ent.BazelInvocation) (*model.BazelCommand, error) {
-	return &model.BazelCommand{
-		// TODO: Scalar ID
-		Command:                obj.CommandLineCommand,
-		Executable:             obj.CommandLineExecutable,
-		Residual:               obj.CommandLineResidual,
-		ExplicitCmdLine:        strings.Join(obj.ExplicitCommandLine, " "),
-		CmdLine:                helpers.StringSliceArrayToPointerArray(obj.CommandLine),
-		StartupOptions:         helpers.StringSliceArrayToPointerArray(obj.StartupOptions),
-		ExplicitStartupOptions: helpers.StringSliceArrayToPointerArray(obj.ExplicitStartupOptions),
-	}, nil
-}
 
 // User is the resolver for the user field.
 func (r *bazelInvocationResolver) User(ctx context.Context, obj *ent.BazelInvocation) (*model.User, error) {

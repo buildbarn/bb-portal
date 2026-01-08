@@ -47,30 +47,18 @@ const (
 	FieldExitCodeName = "exit_code_name"
 	// FieldExitCodeCode holds the string denoting the exit_code_code field in the database.
 	FieldExitCodeCode = "exit_code_code"
-	// FieldCommandLineCommand holds the string denoting the command_line_command field in the database.
-	FieldCommandLineCommand = "command_line_command"
-	// FieldCommandLineExecutable holds the string denoting the command_line_executable field in the database.
-	FieldCommandLineExecutable = "command_line_executable"
-	// FieldCommandLineResidual holds the string denoting the command_line_residual field in the database.
-	FieldCommandLineResidual = "command_line_residual"
-	// FieldCommandLine holds the string denoting the command_line field in the database.
-	FieldCommandLine = "command_line"
-	// FieldExplicitCommandLine holds the string denoting the explicit_command_line field in the database.
-	FieldExplicitCommandLine = "explicit_command_line"
-	// FieldStartupOptions holds the string denoting the startup_options field in the database.
-	FieldStartupOptions = "startup_options"
-	// FieldExplicitStartupOptions holds the string denoting the explicit_startup_options field in the database.
-	FieldExplicitStartupOptions = "explicit_startup_options"
+	// FieldCanonicalCommandLine holds the string denoting the canonical_command_line field in the database.
+	FieldCanonicalCommandLine = "canonical_command_line"
+	// FieldOriginalCommandLine holds the string denoting the original_command_line field in the database.
+	FieldOriginalCommandLine = "original_command_line"
+	// FieldOptionsParsed holds the string denoting the options_parsed field in the database.
+	FieldOptionsParsed = "options_parsed"
 	// FieldProcessedEventStarted holds the string denoting the processed_event_started field in the database.
 	FieldProcessedEventStarted = "processed_event_started"
 	// FieldProcessedEventBuildMetadata holds the string denoting the processed_event_build_metadata field in the database.
 	FieldProcessedEventBuildMetadata = "processed_event_build_metadata"
-	// FieldProcessedEventOptionsParsed holds the string denoting the processed_event_options_parsed field in the database.
-	FieldProcessedEventOptionsParsed = "processed_event_options_parsed"
 	// FieldProcessedEventBuildFinished holds the string denoting the processed_event_build_finished field in the database.
 	FieldProcessedEventBuildFinished = "processed_event_build_finished"
-	// FieldProcessedEventStructuredCommandLine holds the string denoting the processed_event_structured_command_line field in the database.
-	FieldProcessedEventStructuredCommandLine = "processed_event_structured_command_line"
 	// FieldProcessedEventWorkspaceStatus holds the string denoting the processed_event_workspace_status field in the database.
 	FieldProcessedEventWorkspaceStatus = "processed_event_workspace_status"
 	// EdgeInstanceName holds the string denoting the instance_name edge name in mutations.
@@ -223,18 +211,12 @@ var Columns = []string{
 	FieldBazelVersion,
 	FieldExitCodeName,
 	FieldExitCodeCode,
-	FieldCommandLineCommand,
-	FieldCommandLineExecutable,
-	FieldCommandLineResidual,
-	FieldCommandLine,
-	FieldExplicitCommandLine,
-	FieldStartupOptions,
-	FieldExplicitStartupOptions,
+	FieldCanonicalCommandLine,
+	FieldOriginalCommandLine,
+	FieldOptionsParsed,
 	FieldProcessedEventStarted,
 	FieldProcessedEventBuildMetadata,
-	FieldProcessedEventOptionsParsed,
 	FieldProcessedEventBuildFinished,
-	FieldProcessedEventStructuredCommandLine,
 	FieldProcessedEventWorkspaceStatus,
 }
 
@@ -275,12 +257,8 @@ var (
 	DefaultProcessedEventStarted bool
 	// DefaultProcessedEventBuildMetadata holds the default value on creation for the "processed_event_build_metadata" field.
 	DefaultProcessedEventBuildMetadata bool
-	// DefaultProcessedEventOptionsParsed holds the default value on creation for the "processed_event_options_parsed" field.
-	DefaultProcessedEventOptionsParsed bool
 	// DefaultProcessedEventBuildFinished holds the default value on creation for the "processed_event_build_finished" field.
 	DefaultProcessedEventBuildFinished bool
-	// DefaultProcessedEventStructuredCommandLine holds the default value on creation for the "processed_event_structured_command_line" field.
-	DefaultProcessedEventStructuredCommandLine bool
 	// DefaultProcessedEventWorkspaceStatus holds the default value on creation for the "processed_event_workspace_status" field.
 	DefaultProcessedEventWorkspaceStatus bool
 )
@@ -378,21 +356,6 @@ func ByExitCodeCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldExitCodeCode, opts...).ToFunc()
 }
 
-// ByCommandLineCommand orders the results by the command_line_command field.
-func ByCommandLineCommand(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCommandLineCommand, opts...).ToFunc()
-}
-
-// ByCommandLineExecutable orders the results by the command_line_executable field.
-func ByCommandLineExecutable(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCommandLineExecutable, opts...).ToFunc()
-}
-
-// ByCommandLineResidual orders the results by the command_line_residual field.
-func ByCommandLineResidual(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldCommandLineResidual, opts...).ToFunc()
-}
-
 // ByProcessedEventStarted orders the results by the processed_event_started field.
 func ByProcessedEventStarted(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProcessedEventStarted, opts...).ToFunc()
@@ -403,19 +366,9 @@ func ByProcessedEventBuildMetadata(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProcessedEventBuildMetadata, opts...).ToFunc()
 }
 
-// ByProcessedEventOptionsParsed orders the results by the processed_event_options_parsed field.
-func ByProcessedEventOptionsParsed(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldProcessedEventOptionsParsed, opts...).ToFunc()
-}
-
 // ByProcessedEventBuildFinished orders the results by the processed_event_build_finished field.
 func ByProcessedEventBuildFinished(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProcessedEventBuildFinished, opts...).ToFunc()
-}
-
-// ByProcessedEventStructuredCommandLine orders the results by the processed_event_structured_command_line field.
-func ByProcessedEventStructuredCommandLine(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldProcessedEventStructuredCommandLine, opts...).ToFunc()
 }
 
 // ByProcessedEventWorkspaceStatus orders the results by the processed_event_workspace_status field.

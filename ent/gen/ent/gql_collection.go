@@ -1113,6 +1113,21 @@ func (bi *BazelInvocationQuery) collectField(ctx context.Context, oneNode bool, 
 				selectedFields = append(selectedFields, bazelinvocation.FieldExitCodeCode)
 				fieldSeen[bazelinvocation.FieldExitCodeCode] = struct{}{}
 			}
+		case "canonicalCommandLine":
+			if _, ok := fieldSeen[bazelinvocation.FieldCanonicalCommandLine]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldCanonicalCommandLine)
+				fieldSeen[bazelinvocation.FieldCanonicalCommandLine] = struct{}{}
+			}
+		case "originalCommandLine":
+			if _, ok := fieldSeen[bazelinvocation.FieldOriginalCommandLine]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldOriginalCommandLine)
+				fieldSeen[bazelinvocation.FieldOriginalCommandLine] = struct{}{}
+			}
+		case "optionsParsed":
+			if _, ok := fieldSeen[bazelinvocation.FieldOptionsParsed]; !ok {
+				selectedFields = append(selectedFields, bazelinvocation.FieldOptionsParsed)
+				fieldSeen[bazelinvocation.FieldOptionsParsed] = struct{}{}
+			}
 		case "id":
 		case "__typename":
 		default:

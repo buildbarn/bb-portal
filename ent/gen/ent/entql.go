@@ -179,36 +179,30 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "BazelInvocation",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			bazelinvocation.FieldInvocationID:                        {Type: field.TypeUUID, Column: bazelinvocation.FieldInvocationID},
-			bazelinvocation.FieldCreatedTimestamp:                    {Type: field.TypeTime, Column: bazelinvocation.FieldCreatedTimestamp},
-			bazelinvocation.FieldStartedAt:                           {Type: field.TypeTime, Column: bazelinvocation.FieldStartedAt},
-			bazelinvocation.FieldEndedAt:                             {Type: field.TypeTime, Column: bazelinvocation.FieldEndedAt},
-			bazelinvocation.FieldChangeNumber:                        {Type: field.TypeInt, Column: bazelinvocation.FieldChangeNumber},
-			bazelinvocation.FieldPatchsetNumber:                      {Type: field.TypeInt, Column: bazelinvocation.FieldPatchsetNumber},
-			bazelinvocation.FieldBepCompleted:                        {Type: field.TypeBool, Column: bazelinvocation.FieldBepCompleted},
-			bazelinvocation.FieldStepLabel:                           {Type: field.TypeString, Column: bazelinvocation.FieldStepLabel},
-			bazelinvocation.FieldUserEmail:                           {Type: field.TypeString, Column: bazelinvocation.FieldUserEmail},
-			bazelinvocation.FieldUserLdap:                            {Type: field.TypeString, Column: bazelinvocation.FieldUserLdap},
-			bazelinvocation.FieldHostname:                            {Type: field.TypeString, Column: bazelinvocation.FieldHostname},
-			bazelinvocation.FieldIsCiWorker:                          {Type: field.TypeBool, Column: bazelinvocation.FieldIsCiWorker},
-			bazelinvocation.FieldNumFetches:                          {Type: field.TypeInt64, Column: bazelinvocation.FieldNumFetches},
-			bazelinvocation.FieldProfileName:                         {Type: field.TypeString, Column: bazelinvocation.FieldProfileName},
-			bazelinvocation.FieldBazelVersion:                        {Type: field.TypeString, Column: bazelinvocation.FieldBazelVersion},
-			bazelinvocation.FieldExitCodeName:                        {Type: field.TypeString, Column: bazelinvocation.FieldExitCodeName},
-			bazelinvocation.FieldExitCodeCode:                        {Type: field.TypeInt32, Column: bazelinvocation.FieldExitCodeCode},
-			bazelinvocation.FieldCommandLineCommand:                  {Type: field.TypeString, Column: bazelinvocation.FieldCommandLineCommand},
-			bazelinvocation.FieldCommandLineExecutable:               {Type: field.TypeString, Column: bazelinvocation.FieldCommandLineExecutable},
-			bazelinvocation.FieldCommandLineResidual:                 {Type: field.TypeString, Column: bazelinvocation.FieldCommandLineResidual},
-			bazelinvocation.FieldCommandLine:                         {Type: field.TypeJSON, Column: bazelinvocation.FieldCommandLine},
-			bazelinvocation.FieldExplicitCommandLine:                 {Type: field.TypeJSON, Column: bazelinvocation.FieldExplicitCommandLine},
-			bazelinvocation.FieldStartupOptions:                      {Type: field.TypeJSON, Column: bazelinvocation.FieldStartupOptions},
-			bazelinvocation.FieldExplicitStartupOptions:              {Type: field.TypeJSON, Column: bazelinvocation.FieldExplicitStartupOptions},
-			bazelinvocation.FieldProcessedEventStarted:               {Type: field.TypeBool, Column: bazelinvocation.FieldProcessedEventStarted},
-			bazelinvocation.FieldProcessedEventBuildMetadata:         {Type: field.TypeBool, Column: bazelinvocation.FieldProcessedEventBuildMetadata},
-			bazelinvocation.FieldProcessedEventOptionsParsed:         {Type: field.TypeBool, Column: bazelinvocation.FieldProcessedEventOptionsParsed},
-			bazelinvocation.FieldProcessedEventBuildFinished:         {Type: field.TypeBool, Column: bazelinvocation.FieldProcessedEventBuildFinished},
-			bazelinvocation.FieldProcessedEventStructuredCommandLine: {Type: field.TypeBool, Column: bazelinvocation.FieldProcessedEventStructuredCommandLine},
-			bazelinvocation.FieldProcessedEventWorkspaceStatus:       {Type: field.TypeBool, Column: bazelinvocation.FieldProcessedEventWorkspaceStatus},
+			bazelinvocation.FieldInvocationID:                  {Type: field.TypeUUID, Column: bazelinvocation.FieldInvocationID},
+			bazelinvocation.FieldCreatedTimestamp:              {Type: field.TypeTime, Column: bazelinvocation.FieldCreatedTimestamp},
+			bazelinvocation.FieldStartedAt:                     {Type: field.TypeTime, Column: bazelinvocation.FieldStartedAt},
+			bazelinvocation.FieldEndedAt:                       {Type: field.TypeTime, Column: bazelinvocation.FieldEndedAt},
+			bazelinvocation.FieldChangeNumber:                  {Type: field.TypeInt, Column: bazelinvocation.FieldChangeNumber},
+			bazelinvocation.FieldPatchsetNumber:                {Type: field.TypeInt, Column: bazelinvocation.FieldPatchsetNumber},
+			bazelinvocation.FieldBepCompleted:                  {Type: field.TypeBool, Column: bazelinvocation.FieldBepCompleted},
+			bazelinvocation.FieldStepLabel:                     {Type: field.TypeString, Column: bazelinvocation.FieldStepLabel},
+			bazelinvocation.FieldUserEmail:                     {Type: field.TypeString, Column: bazelinvocation.FieldUserEmail},
+			bazelinvocation.FieldUserLdap:                      {Type: field.TypeString, Column: bazelinvocation.FieldUserLdap},
+			bazelinvocation.FieldHostname:                      {Type: field.TypeString, Column: bazelinvocation.FieldHostname},
+			bazelinvocation.FieldIsCiWorker:                    {Type: field.TypeBool, Column: bazelinvocation.FieldIsCiWorker},
+			bazelinvocation.FieldNumFetches:                    {Type: field.TypeInt64, Column: bazelinvocation.FieldNumFetches},
+			bazelinvocation.FieldProfileName:                   {Type: field.TypeString, Column: bazelinvocation.FieldProfileName},
+			bazelinvocation.FieldBazelVersion:                  {Type: field.TypeString, Column: bazelinvocation.FieldBazelVersion},
+			bazelinvocation.FieldExitCodeName:                  {Type: field.TypeString, Column: bazelinvocation.FieldExitCodeName},
+			bazelinvocation.FieldExitCodeCode:                  {Type: field.TypeInt32, Column: bazelinvocation.FieldExitCodeCode},
+			bazelinvocation.FieldCanonicalCommandLine:          {Type: field.TypeJSON, Column: bazelinvocation.FieldCanonicalCommandLine},
+			bazelinvocation.FieldOriginalCommandLine:           {Type: field.TypeJSON, Column: bazelinvocation.FieldOriginalCommandLine},
+			bazelinvocation.FieldOptionsParsed:                 {Type: field.TypeJSON, Column: bazelinvocation.FieldOptionsParsed},
+			bazelinvocation.FieldProcessedEventStarted:         {Type: field.TypeBool, Column: bazelinvocation.FieldProcessedEventStarted},
+			bazelinvocation.FieldProcessedEventBuildMetadata:   {Type: field.TypeBool, Column: bazelinvocation.FieldProcessedEventBuildMetadata},
+			bazelinvocation.FieldProcessedEventBuildFinished:   {Type: field.TypeBool, Column: bazelinvocation.FieldProcessedEventBuildFinished},
+			bazelinvocation.FieldProcessedEventWorkspaceStatus: {Type: field.TypeBool, Column: bazelinvocation.FieldProcessedEventWorkspaceStatus},
 		},
 	}
 	graph.Nodes[7] = &sqlgraph.Node{
@@ -2229,39 +2223,19 @@ func (f *BazelInvocationFilter) WhereExitCodeCode(p entql.Int32P) {
 	f.Where(p.Field(bazelinvocation.FieldExitCodeCode))
 }
 
-// WhereCommandLineCommand applies the entql string predicate on the command_line_command field.
-func (f *BazelInvocationFilter) WhereCommandLineCommand(p entql.StringP) {
-	f.Where(p.Field(bazelinvocation.FieldCommandLineCommand))
+// WhereCanonicalCommandLine applies the entql json.RawMessage predicate on the canonical_command_line field.
+func (f *BazelInvocationFilter) WhereCanonicalCommandLine(p entql.BytesP) {
+	f.Where(p.Field(bazelinvocation.FieldCanonicalCommandLine))
 }
 
-// WhereCommandLineExecutable applies the entql string predicate on the command_line_executable field.
-func (f *BazelInvocationFilter) WhereCommandLineExecutable(p entql.StringP) {
-	f.Where(p.Field(bazelinvocation.FieldCommandLineExecutable))
+// WhereOriginalCommandLine applies the entql json.RawMessage predicate on the original_command_line field.
+func (f *BazelInvocationFilter) WhereOriginalCommandLine(p entql.BytesP) {
+	f.Where(p.Field(bazelinvocation.FieldOriginalCommandLine))
 }
 
-// WhereCommandLineResidual applies the entql string predicate on the command_line_residual field.
-func (f *BazelInvocationFilter) WhereCommandLineResidual(p entql.StringP) {
-	f.Where(p.Field(bazelinvocation.FieldCommandLineResidual))
-}
-
-// WhereCommandLine applies the entql json.RawMessage predicate on the command_line field.
-func (f *BazelInvocationFilter) WhereCommandLine(p entql.BytesP) {
-	f.Where(p.Field(bazelinvocation.FieldCommandLine))
-}
-
-// WhereExplicitCommandLine applies the entql json.RawMessage predicate on the explicit_command_line field.
-func (f *BazelInvocationFilter) WhereExplicitCommandLine(p entql.BytesP) {
-	f.Where(p.Field(bazelinvocation.FieldExplicitCommandLine))
-}
-
-// WhereStartupOptions applies the entql json.RawMessage predicate on the startup_options field.
-func (f *BazelInvocationFilter) WhereStartupOptions(p entql.BytesP) {
-	f.Where(p.Field(bazelinvocation.FieldStartupOptions))
-}
-
-// WhereExplicitStartupOptions applies the entql json.RawMessage predicate on the explicit_startup_options field.
-func (f *BazelInvocationFilter) WhereExplicitStartupOptions(p entql.BytesP) {
-	f.Where(p.Field(bazelinvocation.FieldExplicitStartupOptions))
+// WhereOptionsParsed applies the entql json.RawMessage predicate on the options_parsed field.
+func (f *BazelInvocationFilter) WhereOptionsParsed(p entql.BytesP) {
+	f.Where(p.Field(bazelinvocation.FieldOptionsParsed))
 }
 
 // WhereProcessedEventStarted applies the entql bool predicate on the processed_event_started field.
@@ -2274,19 +2248,9 @@ func (f *BazelInvocationFilter) WhereProcessedEventBuildMetadata(p entql.BoolP) 
 	f.Where(p.Field(bazelinvocation.FieldProcessedEventBuildMetadata))
 }
 
-// WhereProcessedEventOptionsParsed applies the entql bool predicate on the processed_event_options_parsed field.
-func (f *BazelInvocationFilter) WhereProcessedEventOptionsParsed(p entql.BoolP) {
-	f.Where(p.Field(bazelinvocation.FieldProcessedEventOptionsParsed))
-}
-
 // WhereProcessedEventBuildFinished applies the entql bool predicate on the processed_event_build_finished field.
 func (f *BazelInvocationFilter) WhereProcessedEventBuildFinished(p entql.BoolP) {
 	f.Where(p.Field(bazelinvocation.FieldProcessedEventBuildFinished))
-}
-
-// WhereProcessedEventStructuredCommandLine applies the entql bool predicate on the processed_event_structured_command_line field.
-func (f *BazelInvocationFilter) WhereProcessedEventStructuredCommandLine(p entql.BoolP) {
-	f.Where(p.Field(bazelinvocation.FieldProcessedEventStructuredCommandLine))
 }
 
 // WhereProcessedEventWorkspaceStatus applies the entql bool predicate on the processed_event_workspace_status field.

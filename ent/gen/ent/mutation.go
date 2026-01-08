@@ -43,6 +43,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testresult"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/testsummary"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/timingmetrics"
+	"github.com/buildbarn/bb-portal/pkg/invocation"
 	"github.com/google/uuid"
 )
 
@@ -6656,86 +6657,76 @@ func (m *AuthenticatedUserMutation) ResetEdge(name string) error {
 // BazelInvocationMutation represents an operation that mutates the BazelInvocation nodes in the graph.
 type BazelInvocationMutation struct {
 	config
-	op                                      Op
-	typ                                     string
-	id                                      *int64
-	invocation_id                           *uuid.UUID
-	created_timestamp                       *time.Time
-	started_at                              *time.Time
-	ended_at                                *time.Time
-	change_number                           *int
-	addchange_number                        *int
-	patchset_number                         *int
-	addpatchset_number                      *int
-	bep_completed                           *bool
-	step_label                              *string
-	user_email                              *string
-	user_ldap                               *string
-	hostname                                *string
-	is_ci_worker                            *bool
-	num_fetches                             *int64
-	addnum_fetches                          *int64
-	profile_name                            *string
-	bazel_version                           *string
-	exit_code_name                          *string
-	exit_code_code                          *int32
-	addexit_code_code                       *int32
-	command_line_command                    *string
-	command_line_executable                 *string
-	command_line_residual                   *string
-	command_line                            *[]string
-	appendcommand_line                      []string
-	explicit_command_line                   *[]string
-	appendexplicit_command_line             []string
-	startup_options                         *[]string
-	appendstartup_options                   []string
-	explicit_startup_options                *[]string
-	appendexplicit_startup_options          []string
-	processed_event_started                 *bool
-	processed_event_build_metadata          *bool
-	processed_event_options_parsed          *bool
-	processed_event_build_finished          *bool
-	processed_event_structured_command_line *bool
-	processed_event_workspace_status        *bool
-	clearedFields                           map[string]struct{}
-	instance_name                           *int64
-	clearedinstance_name                    bool
-	build                                   *int64
-	clearedbuild                            bool
-	authenticated_user                      *int64
-	clearedauthenticated_user               bool
-	event_metadata                          *int64
-	clearedevent_metadata                   bool
-	connection_metadata                     *int64
-	clearedconnection_metadata              bool
-	configurations                          map[int64]struct{}
-	removedconfigurations                   map[int64]struct{}
-	clearedconfigurations                   bool
-	actions                                 map[int64]struct{}
-	removedactions                          map[int64]struct{}
-	clearedactions                          bool
-	metrics                                 *int64
-	clearedmetrics                          bool
-	incomplete_build_logs                   map[int64]struct{}
-	removedincomplete_build_logs            map[int64]struct{}
-	clearedincomplete_build_logs            bool
-	build_log_chunks                        map[int64]struct{}
-	removedbuild_log_chunks                 map[int64]struct{}
-	clearedbuild_log_chunks                 bool
-	invocation_files                        map[int64]struct{}
-	removedinvocation_files                 map[int64]struct{}
-	clearedinvocation_files                 bool
-	invocation_targets                      map[int64]struct{}
-	removedinvocation_targets               map[int64]struct{}
-	clearedinvocation_targets               bool
-	target_kind_mappings                    map[int64]struct{}
-	removedtarget_kind_mappings             map[int64]struct{}
-	clearedtarget_kind_mappings             bool
-	source_control                          *int64
-	clearedsource_control                   bool
-	done                                    bool
-	oldValue                                func(context.Context) (*BazelInvocation, error)
-	predicates                              []predicate.BazelInvocation
+	op                               Op
+	typ                              string
+	id                               *int64
+	invocation_id                    *uuid.UUID
+	created_timestamp                *time.Time
+	started_at                       *time.Time
+	ended_at                         *time.Time
+	change_number                    *int
+	addchange_number                 *int
+	patchset_number                  *int
+	addpatchset_number               *int
+	bep_completed                    *bool
+	step_label                       *string
+	user_email                       *string
+	user_ldap                        *string
+	hostname                         *string
+	is_ci_worker                     *bool
+	num_fetches                      *int64
+	addnum_fetches                   *int64
+	profile_name                     *string
+	bazel_version                    *string
+	exit_code_name                   *string
+	exit_code_code                   *int32
+	addexit_code_code                *int32
+	canonical_command_line           **invocation.CommandLineData
+	original_command_line            **invocation.CommandLineData
+	options_parsed                   **invocation.ParsedCommandLineOptions
+	processed_event_started          *bool
+	processed_event_build_metadata   *bool
+	processed_event_build_finished   *bool
+	processed_event_workspace_status *bool
+	clearedFields                    map[string]struct{}
+	instance_name                    *int64
+	clearedinstance_name             bool
+	build                            *int64
+	clearedbuild                     bool
+	authenticated_user               *int64
+	clearedauthenticated_user        bool
+	event_metadata                   *int64
+	clearedevent_metadata            bool
+	connection_metadata              *int64
+	clearedconnection_metadata       bool
+	configurations                   map[int64]struct{}
+	removedconfigurations            map[int64]struct{}
+	clearedconfigurations            bool
+	actions                          map[int64]struct{}
+	removedactions                   map[int64]struct{}
+	clearedactions                   bool
+	metrics                          *int64
+	clearedmetrics                   bool
+	incomplete_build_logs            map[int64]struct{}
+	removedincomplete_build_logs     map[int64]struct{}
+	clearedincomplete_build_logs     bool
+	build_log_chunks                 map[int64]struct{}
+	removedbuild_log_chunks          map[int64]struct{}
+	clearedbuild_log_chunks          bool
+	invocation_files                 map[int64]struct{}
+	removedinvocation_files          map[int64]struct{}
+	clearedinvocation_files          bool
+	invocation_targets               map[int64]struct{}
+	removedinvocation_targets        map[int64]struct{}
+	clearedinvocation_targets        bool
+	target_kind_mappings             map[int64]struct{}
+	removedtarget_kind_mappings      map[int64]struct{}
+	clearedtarget_kind_mappings      bool
+	source_control                   *int64
+	clearedsource_control            bool
+	done                             bool
+	oldValue                         func(context.Context) (*BazelInvocation, error)
+	predicates                       []predicate.BazelInvocation
 }
 
 var _ ent.Mutation = (*BazelInvocationMutation)(nil)
@@ -7720,411 +7711,151 @@ func (m *BazelInvocationMutation) ResetExitCodeCode() {
 	delete(m.clearedFields, bazelinvocation.FieldExitCodeCode)
 }
 
-// SetCommandLineCommand sets the "command_line_command" field.
-func (m *BazelInvocationMutation) SetCommandLineCommand(s string) {
-	m.command_line_command = &s
+// SetCanonicalCommandLine sets the "canonical_command_line" field.
+func (m *BazelInvocationMutation) SetCanonicalCommandLine(ild *invocation.CommandLineData) {
+	m.canonical_command_line = &ild
 }
 
-// CommandLineCommand returns the value of the "command_line_command" field in the mutation.
-func (m *BazelInvocationMutation) CommandLineCommand() (r string, exists bool) {
-	v := m.command_line_command
+// CanonicalCommandLine returns the value of the "canonical_command_line" field in the mutation.
+func (m *BazelInvocationMutation) CanonicalCommandLine() (r *invocation.CommandLineData, exists bool) {
+	v := m.canonical_command_line
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCommandLineCommand returns the old "command_line_command" field's value of the BazelInvocation entity.
+// OldCanonicalCommandLine returns the old "canonical_command_line" field's value of the BazelInvocation entity.
 // If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldCommandLineCommand(ctx context.Context) (v string, err error) {
+func (m *BazelInvocationMutation) OldCanonicalCommandLine(ctx context.Context) (v *invocation.CommandLineData, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCommandLineCommand is only allowed on UpdateOne operations")
+		return v, errors.New("OldCanonicalCommandLine is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCommandLineCommand requires an ID field in the mutation")
+		return v, errors.New("OldCanonicalCommandLine requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCommandLineCommand: %w", err)
+		return v, fmt.Errorf("querying old value for OldCanonicalCommandLine: %w", err)
 	}
-	return oldValue.CommandLineCommand, nil
+	return oldValue.CanonicalCommandLine, nil
 }
 
-// ClearCommandLineCommand clears the value of the "command_line_command" field.
-func (m *BazelInvocationMutation) ClearCommandLineCommand() {
-	m.command_line_command = nil
-	m.clearedFields[bazelinvocation.FieldCommandLineCommand] = struct{}{}
+// ClearCanonicalCommandLine clears the value of the "canonical_command_line" field.
+func (m *BazelInvocationMutation) ClearCanonicalCommandLine() {
+	m.canonical_command_line = nil
+	m.clearedFields[bazelinvocation.FieldCanonicalCommandLine] = struct{}{}
 }
 
-// CommandLineCommandCleared returns if the "command_line_command" field was cleared in this mutation.
-func (m *BazelInvocationMutation) CommandLineCommandCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldCommandLineCommand]
+// CanonicalCommandLineCleared returns if the "canonical_command_line" field was cleared in this mutation.
+func (m *BazelInvocationMutation) CanonicalCommandLineCleared() bool {
+	_, ok := m.clearedFields[bazelinvocation.FieldCanonicalCommandLine]
 	return ok
 }
 
-// ResetCommandLineCommand resets all changes to the "command_line_command" field.
-func (m *BazelInvocationMutation) ResetCommandLineCommand() {
-	m.command_line_command = nil
-	delete(m.clearedFields, bazelinvocation.FieldCommandLineCommand)
+// ResetCanonicalCommandLine resets all changes to the "canonical_command_line" field.
+func (m *BazelInvocationMutation) ResetCanonicalCommandLine() {
+	m.canonical_command_line = nil
+	delete(m.clearedFields, bazelinvocation.FieldCanonicalCommandLine)
 }
 
-// SetCommandLineExecutable sets the "command_line_executable" field.
-func (m *BazelInvocationMutation) SetCommandLineExecutable(s string) {
-	m.command_line_executable = &s
+// SetOriginalCommandLine sets the "original_command_line" field.
+func (m *BazelInvocationMutation) SetOriginalCommandLine(ild *invocation.CommandLineData) {
+	m.original_command_line = &ild
 }
 
-// CommandLineExecutable returns the value of the "command_line_executable" field in the mutation.
-func (m *BazelInvocationMutation) CommandLineExecutable() (r string, exists bool) {
-	v := m.command_line_executable
+// OriginalCommandLine returns the value of the "original_command_line" field in the mutation.
+func (m *BazelInvocationMutation) OriginalCommandLine() (r *invocation.CommandLineData, exists bool) {
+	v := m.original_command_line
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCommandLineExecutable returns the old "command_line_executable" field's value of the BazelInvocation entity.
+// OldOriginalCommandLine returns the old "original_command_line" field's value of the BazelInvocation entity.
 // If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldCommandLineExecutable(ctx context.Context) (v string, err error) {
+func (m *BazelInvocationMutation) OldOriginalCommandLine(ctx context.Context) (v *invocation.CommandLineData, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCommandLineExecutable is only allowed on UpdateOne operations")
+		return v, errors.New("OldOriginalCommandLine is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCommandLineExecutable requires an ID field in the mutation")
+		return v, errors.New("OldOriginalCommandLine requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCommandLineExecutable: %w", err)
+		return v, fmt.Errorf("querying old value for OldOriginalCommandLine: %w", err)
 	}
-	return oldValue.CommandLineExecutable, nil
+	return oldValue.OriginalCommandLine, nil
 }
 
-// ClearCommandLineExecutable clears the value of the "command_line_executable" field.
-func (m *BazelInvocationMutation) ClearCommandLineExecutable() {
-	m.command_line_executable = nil
-	m.clearedFields[bazelinvocation.FieldCommandLineExecutable] = struct{}{}
+// ClearOriginalCommandLine clears the value of the "original_command_line" field.
+func (m *BazelInvocationMutation) ClearOriginalCommandLine() {
+	m.original_command_line = nil
+	m.clearedFields[bazelinvocation.FieldOriginalCommandLine] = struct{}{}
 }
 
-// CommandLineExecutableCleared returns if the "command_line_executable" field was cleared in this mutation.
-func (m *BazelInvocationMutation) CommandLineExecutableCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldCommandLineExecutable]
+// OriginalCommandLineCleared returns if the "original_command_line" field was cleared in this mutation.
+func (m *BazelInvocationMutation) OriginalCommandLineCleared() bool {
+	_, ok := m.clearedFields[bazelinvocation.FieldOriginalCommandLine]
 	return ok
 }
 
-// ResetCommandLineExecutable resets all changes to the "command_line_executable" field.
-func (m *BazelInvocationMutation) ResetCommandLineExecutable() {
-	m.command_line_executable = nil
-	delete(m.clearedFields, bazelinvocation.FieldCommandLineExecutable)
+// ResetOriginalCommandLine resets all changes to the "original_command_line" field.
+func (m *BazelInvocationMutation) ResetOriginalCommandLine() {
+	m.original_command_line = nil
+	delete(m.clearedFields, bazelinvocation.FieldOriginalCommandLine)
 }
 
-// SetCommandLineResidual sets the "command_line_residual" field.
-func (m *BazelInvocationMutation) SetCommandLineResidual(s string) {
-	m.command_line_residual = &s
+// SetOptionsParsed sets the "options_parsed" field.
+func (m *BazelInvocationMutation) SetOptionsParsed(iclo *invocation.ParsedCommandLineOptions) {
+	m.options_parsed = &iclo
 }
 
-// CommandLineResidual returns the value of the "command_line_residual" field in the mutation.
-func (m *BazelInvocationMutation) CommandLineResidual() (r string, exists bool) {
-	v := m.command_line_residual
+// OptionsParsed returns the value of the "options_parsed" field in the mutation.
+func (m *BazelInvocationMutation) OptionsParsed() (r *invocation.ParsedCommandLineOptions, exists bool) {
+	v := m.options_parsed
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCommandLineResidual returns the old "command_line_residual" field's value of the BazelInvocation entity.
+// OldOptionsParsed returns the old "options_parsed" field's value of the BazelInvocation entity.
 // If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldCommandLineResidual(ctx context.Context) (v string, err error) {
+func (m *BazelInvocationMutation) OldOptionsParsed(ctx context.Context) (v *invocation.ParsedCommandLineOptions, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCommandLineResidual is only allowed on UpdateOne operations")
+		return v, errors.New("OldOptionsParsed is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCommandLineResidual requires an ID field in the mutation")
+		return v, errors.New("OldOptionsParsed requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCommandLineResidual: %w", err)
+		return v, fmt.Errorf("querying old value for OldOptionsParsed: %w", err)
 	}
-	return oldValue.CommandLineResidual, nil
+	return oldValue.OptionsParsed, nil
 }
 
-// ClearCommandLineResidual clears the value of the "command_line_residual" field.
-func (m *BazelInvocationMutation) ClearCommandLineResidual() {
-	m.command_line_residual = nil
-	m.clearedFields[bazelinvocation.FieldCommandLineResidual] = struct{}{}
+// ClearOptionsParsed clears the value of the "options_parsed" field.
+func (m *BazelInvocationMutation) ClearOptionsParsed() {
+	m.options_parsed = nil
+	m.clearedFields[bazelinvocation.FieldOptionsParsed] = struct{}{}
 }
 
-// CommandLineResidualCleared returns if the "command_line_residual" field was cleared in this mutation.
-func (m *BazelInvocationMutation) CommandLineResidualCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldCommandLineResidual]
+// OptionsParsedCleared returns if the "options_parsed" field was cleared in this mutation.
+func (m *BazelInvocationMutation) OptionsParsedCleared() bool {
+	_, ok := m.clearedFields[bazelinvocation.FieldOptionsParsed]
 	return ok
 }
 
-// ResetCommandLineResidual resets all changes to the "command_line_residual" field.
-func (m *BazelInvocationMutation) ResetCommandLineResidual() {
-	m.command_line_residual = nil
-	delete(m.clearedFields, bazelinvocation.FieldCommandLineResidual)
-}
-
-// SetCommandLine sets the "command_line" field.
-func (m *BazelInvocationMutation) SetCommandLine(s []string) {
-	m.command_line = &s
-	m.appendcommand_line = nil
-}
-
-// CommandLine returns the value of the "command_line" field in the mutation.
-func (m *BazelInvocationMutation) CommandLine() (r []string, exists bool) {
-	v := m.command_line
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCommandLine returns the old "command_line" field's value of the BazelInvocation entity.
-// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldCommandLine(ctx context.Context) (v []string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCommandLine is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCommandLine requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCommandLine: %w", err)
-	}
-	return oldValue.CommandLine, nil
-}
-
-// AppendCommandLine adds s to the "command_line" field.
-func (m *BazelInvocationMutation) AppendCommandLine(s []string) {
-	m.appendcommand_line = append(m.appendcommand_line, s...)
-}
-
-// AppendedCommandLine returns the list of values that were appended to the "command_line" field in this mutation.
-func (m *BazelInvocationMutation) AppendedCommandLine() ([]string, bool) {
-	if len(m.appendcommand_line) == 0 {
-		return nil, false
-	}
-	return m.appendcommand_line, true
-}
-
-// ClearCommandLine clears the value of the "command_line" field.
-func (m *BazelInvocationMutation) ClearCommandLine() {
-	m.command_line = nil
-	m.appendcommand_line = nil
-	m.clearedFields[bazelinvocation.FieldCommandLine] = struct{}{}
-}
-
-// CommandLineCleared returns if the "command_line" field was cleared in this mutation.
-func (m *BazelInvocationMutation) CommandLineCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldCommandLine]
-	return ok
-}
-
-// ResetCommandLine resets all changes to the "command_line" field.
-func (m *BazelInvocationMutation) ResetCommandLine() {
-	m.command_line = nil
-	m.appendcommand_line = nil
-	delete(m.clearedFields, bazelinvocation.FieldCommandLine)
-}
-
-// SetExplicitCommandLine sets the "explicit_command_line" field.
-func (m *BazelInvocationMutation) SetExplicitCommandLine(s []string) {
-	m.explicit_command_line = &s
-	m.appendexplicit_command_line = nil
-}
-
-// ExplicitCommandLine returns the value of the "explicit_command_line" field in the mutation.
-func (m *BazelInvocationMutation) ExplicitCommandLine() (r []string, exists bool) {
-	v := m.explicit_command_line
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldExplicitCommandLine returns the old "explicit_command_line" field's value of the BazelInvocation entity.
-// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldExplicitCommandLine(ctx context.Context) (v []string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldExplicitCommandLine is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldExplicitCommandLine requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldExplicitCommandLine: %w", err)
-	}
-	return oldValue.ExplicitCommandLine, nil
-}
-
-// AppendExplicitCommandLine adds s to the "explicit_command_line" field.
-func (m *BazelInvocationMutation) AppendExplicitCommandLine(s []string) {
-	m.appendexplicit_command_line = append(m.appendexplicit_command_line, s...)
-}
-
-// AppendedExplicitCommandLine returns the list of values that were appended to the "explicit_command_line" field in this mutation.
-func (m *BazelInvocationMutation) AppendedExplicitCommandLine() ([]string, bool) {
-	if len(m.appendexplicit_command_line) == 0 {
-		return nil, false
-	}
-	return m.appendexplicit_command_line, true
-}
-
-// ClearExplicitCommandLine clears the value of the "explicit_command_line" field.
-func (m *BazelInvocationMutation) ClearExplicitCommandLine() {
-	m.explicit_command_line = nil
-	m.appendexplicit_command_line = nil
-	m.clearedFields[bazelinvocation.FieldExplicitCommandLine] = struct{}{}
-}
-
-// ExplicitCommandLineCleared returns if the "explicit_command_line" field was cleared in this mutation.
-func (m *BazelInvocationMutation) ExplicitCommandLineCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldExplicitCommandLine]
-	return ok
-}
-
-// ResetExplicitCommandLine resets all changes to the "explicit_command_line" field.
-func (m *BazelInvocationMutation) ResetExplicitCommandLine() {
-	m.explicit_command_line = nil
-	m.appendexplicit_command_line = nil
-	delete(m.clearedFields, bazelinvocation.FieldExplicitCommandLine)
-}
-
-// SetStartupOptions sets the "startup_options" field.
-func (m *BazelInvocationMutation) SetStartupOptions(s []string) {
-	m.startup_options = &s
-	m.appendstartup_options = nil
-}
-
-// StartupOptions returns the value of the "startup_options" field in the mutation.
-func (m *BazelInvocationMutation) StartupOptions() (r []string, exists bool) {
-	v := m.startup_options
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldStartupOptions returns the old "startup_options" field's value of the BazelInvocation entity.
-// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldStartupOptions(ctx context.Context) (v []string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStartupOptions is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStartupOptions requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStartupOptions: %w", err)
-	}
-	return oldValue.StartupOptions, nil
-}
-
-// AppendStartupOptions adds s to the "startup_options" field.
-func (m *BazelInvocationMutation) AppendStartupOptions(s []string) {
-	m.appendstartup_options = append(m.appendstartup_options, s...)
-}
-
-// AppendedStartupOptions returns the list of values that were appended to the "startup_options" field in this mutation.
-func (m *BazelInvocationMutation) AppendedStartupOptions() ([]string, bool) {
-	if len(m.appendstartup_options) == 0 {
-		return nil, false
-	}
-	return m.appendstartup_options, true
-}
-
-// ClearStartupOptions clears the value of the "startup_options" field.
-func (m *BazelInvocationMutation) ClearStartupOptions() {
-	m.startup_options = nil
-	m.appendstartup_options = nil
-	m.clearedFields[bazelinvocation.FieldStartupOptions] = struct{}{}
-}
-
-// StartupOptionsCleared returns if the "startup_options" field was cleared in this mutation.
-func (m *BazelInvocationMutation) StartupOptionsCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldStartupOptions]
-	return ok
-}
-
-// ResetStartupOptions resets all changes to the "startup_options" field.
-func (m *BazelInvocationMutation) ResetStartupOptions() {
-	m.startup_options = nil
-	m.appendstartup_options = nil
-	delete(m.clearedFields, bazelinvocation.FieldStartupOptions)
-}
-
-// SetExplicitStartupOptions sets the "explicit_startup_options" field.
-func (m *BazelInvocationMutation) SetExplicitStartupOptions(s []string) {
-	m.explicit_startup_options = &s
-	m.appendexplicit_startup_options = nil
-}
-
-// ExplicitStartupOptions returns the value of the "explicit_startup_options" field in the mutation.
-func (m *BazelInvocationMutation) ExplicitStartupOptions() (r []string, exists bool) {
-	v := m.explicit_startup_options
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldExplicitStartupOptions returns the old "explicit_startup_options" field's value of the BazelInvocation entity.
-// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldExplicitStartupOptions(ctx context.Context) (v []string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldExplicitStartupOptions is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldExplicitStartupOptions requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldExplicitStartupOptions: %w", err)
-	}
-	return oldValue.ExplicitStartupOptions, nil
-}
-
-// AppendExplicitStartupOptions adds s to the "explicit_startup_options" field.
-func (m *BazelInvocationMutation) AppendExplicitStartupOptions(s []string) {
-	m.appendexplicit_startup_options = append(m.appendexplicit_startup_options, s...)
-}
-
-// AppendedExplicitStartupOptions returns the list of values that were appended to the "explicit_startup_options" field in this mutation.
-func (m *BazelInvocationMutation) AppendedExplicitStartupOptions() ([]string, bool) {
-	if len(m.appendexplicit_startup_options) == 0 {
-		return nil, false
-	}
-	return m.appendexplicit_startup_options, true
-}
-
-// ClearExplicitStartupOptions clears the value of the "explicit_startup_options" field.
-func (m *BazelInvocationMutation) ClearExplicitStartupOptions() {
-	m.explicit_startup_options = nil
-	m.appendexplicit_startup_options = nil
-	m.clearedFields[bazelinvocation.FieldExplicitStartupOptions] = struct{}{}
-}
-
-// ExplicitStartupOptionsCleared returns if the "explicit_startup_options" field was cleared in this mutation.
-func (m *BazelInvocationMutation) ExplicitStartupOptionsCleared() bool {
-	_, ok := m.clearedFields[bazelinvocation.FieldExplicitStartupOptions]
-	return ok
-}
-
-// ResetExplicitStartupOptions resets all changes to the "explicit_startup_options" field.
-func (m *BazelInvocationMutation) ResetExplicitStartupOptions() {
-	m.explicit_startup_options = nil
-	m.appendexplicit_startup_options = nil
-	delete(m.clearedFields, bazelinvocation.FieldExplicitStartupOptions)
+// ResetOptionsParsed resets all changes to the "options_parsed" field.
+func (m *BazelInvocationMutation) ResetOptionsParsed() {
+	m.options_parsed = nil
+	delete(m.clearedFields, bazelinvocation.FieldOptionsParsed)
 }
 
 // SetProcessedEventStarted sets the "processed_event_started" field.
@@ -8199,42 +7930,6 @@ func (m *BazelInvocationMutation) ResetProcessedEventBuildMetadata() {
 	m.processed_event_build_metadata = nil
 }
 
-// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
-func (m *BazelInvocationMutation) SetProcessedEventOptionsParsed(b bool) {
-	m.processed_event_options_parsed = &b
-}
-
-// ProcessedEventOptionsParsed returns the value of the "processed_event_options_parsed" field in the mutation.
-func (m *BazelInvocationMutation) ProcessedEventOptionsParsed() (r bool, exists bool) {
-	v := m.processed_event_options_parsed
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldProcessedEventOptionsParsed returns the old "processed_event_options_parsed" field's value of the BazelInvocation entity.
-// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldProcessedEventOptionsParsed(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProcessedEventOptionsParsed is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProcessedEventOptionsParsed requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProcessedEventOptionsParsed: %w", err)
-	}
-	return oldValue.ProcessedEventOptionsParsed, nil
-}
-
-// ResetProcessedEventOptionsParsed resets all changes to the "processed_event_options_parsed" field.
-func (m *BazelInvocationMutation) ResetProcessedEventOptionsParsed() {
-	m.processed_event_options_parsed = nil
-}
-
 // SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
 func (m *BazelInvocationMutation) SetProcessedEventBuildFinished(b bool) {
 	m.processed_event_build_finished = &b
@@ -8269,42 +7964,6 @@ func (m *BazelInvocationMutation) OldProcessedEventBuildFinished(ctx context.Con
 // ResetProcessedEventBuildFinished resets all changes to the "processed_event_build_finished" field.
 func (m *BazelInvocationMutation) ResetProcessedEventBuildFinished() {
 	m.processed_event_build_finished = nil
-}
-
-// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
-func (m *BazelInvocationMutation) SetProcessedEventStructuredCommandLine(b bool) {
-	m.processed_event_structured_command_line = &b
-}
-
-// ProcessedEventStructuredCommandLine returns the value of the "processed_event_structured_command_line" field in the mutation.
-func (m *BazelInvocationMutation) ProcessedEventStructuredCommandLine() (r bool, exists bool) {
-	v := m.processed_event_structured_command_line
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldProcessedEventStructuredCommandLine returns the old "processed_event_structured_command_line" field's value of the BazelInvocation entity.
-// If the BazelInvocation object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *BazelInvocationMutation) OldProcessedEventStructuredCommandLine(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProcessedEventStructuredCommandLine is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProcessedEventStructuredCommandLine requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProcessedEventStructuredCommandLine: %w", err)
-	}
-	return oldValue.ProcessedEventStructuredCommandLine, nil
-}
-
-// ResetProcessedEventStructuredCommandLine resets all changes to the "processed_event_structured_command_line" field.
-func (m *BazelInvocationMutation) ResetProcessedEventStructuredCommandLine() {
-	m.processed_event_structured_command_line = nil
 }
 
 // SetProcessedEventWorkspaceStatus sets the "processed_event_workspace_status" field.
@@ -9028,7 +8687,7 @@ func (m *BazelInvocationMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *BazelInvocationMutation) Fields() []string {
-	fields := make([]string, 0, 30)
+	fields := make([]string, 0, 24)
 	if m.invocation_id != nil {
 		fields = append(fields, bazelinvocation.FieldInvocationID)
 	}
@@ -9080,26 +8739,14 @@ func (m *BazelInvocationMutation) Fields() []string {
 	if m.exit_code_code != nil {
 		fields = append(fields, bazelinvocation.FieldExitCodeCode)
 	}
-	if m.command_line_command != nil {
-		fields = append(fields, bazelinvocation.FieldCommandLineCommand)
+	if m.canonical_command_line != nil {
+		fields = append(fields, bazelinvocation.FieldCanonicalCommandLine)
 	}
-	if m.command_line_executable != nil {
-		fields = append(fields, bazelinvocation.FieldCommandLineExecutable)
+	if m.original_command_line != nil {
+		fields = append(fields, bazelinvocation.FieldOriginalCommandLine)
 	}
-	if m.command_line_residual != nil {
-		fields = append(fields, bazelinvocation.FieldCommandLineResidual)
-	}
-	if m.command_line != nil {
-		fields = append(fields, bazelinvocation.FieldCommandLine)
-	}
-	if m.explicit_command_line != nil {
-		fields = append(fields, bazelinvocation.FieldExplicitCommandLine)
-	}
-	if m.startup_options != nil {
-		fields = append(fields, bazelinvocation.FieldStartupOptions)
-	}
-	if m.explicit_startup_options != nil {
-		fields = append(fields, bazelinvocation.FieldExplicitStartupOptions)
+	if m.options_parsed != nil {
+		fields = append(fields, bazelinvocation.FieldOptionsParsed)
 	}
 	if m.processed_event_started != nil {
 		fields = append(fields, bazelinvocation.FieldProcessedEventStarted)
@@ -9107,14 +8754,8 @@ func (m *BazelInvocationMutation) Fields() []string {
 	if m.processed_event_build_metadata != nil {
 		fields = append(fields, bazelinvocation.FieldProcessedEventBuildMetadata)
 	}
-	if m.processed_event_options_parsed != nil {
-		fields = append(fields, bazelinvocation.FieldProcessedEventOptionsParsed)
-	}
 	if m.processed_event_build_finished != nil {
 		fields = append(fields, bazelinvocation.FieldProcessedEventBuildFinished)
-	}
-	if m.processed_event_structured_command_line != nil {
-		fields = append(fields, bazelinvocation.FieldProcessedEventStructuredCommandLine)
 	}
 	if m.processed_event_workspace_status != nil {
 		fields = append(fields, bazelinvocation.FieldProcessedEventWorkspaceStatus)
@@ -9161,30 +8802,18 @@ func (m *BazelInvocationMutation) Field(name string) (ent.Value, bool) {
 		return m.ExitCodeName()
 	case bazelinvocation.FieldExitCodeCode:
 		return m.ExitCodeCode()
-	case bazelinvocation.FieldCommandLineCommand:
-		return m.CommandLineCommand()
-	case bazelinvocation.FieldCommandLineExecutable:
-		return m.CommandLineExecutable()
-	case bazelinvocation.FieldCommandLineResidual:
-		return m.CommandLineResidual()
-	case bazelinvocation.FieldCommandLine:
-		return m.CommandLine()
-	case bazelinvocation.FieldExplicitCommandLine:
-		return m.ExplicitCommandLine()
-	case bazelinvocation.FieldStartupOptions:
-		return m.StartupOptions()
-	case bazelinvocation.FieldExplicitStartupOptions:
-		return m.ExplicitStartupOptions()
+	case bazelinvocation.FieldCanonicalCommandLine:
+		return m.CanonicalCommandLine()
+	case bazelinvocation.FieldOriginalCommandLine:
+		return m.OriginalCommandLine()
+	case bazelinvocation.FieldOptionsParsed:
+		return m.OptionsParsed()
 	case bazelinvocation.FieldProcessedEventStarted:
 		return m.ProcessedEventStarted()
 	case bazelinvocation.FieldProcessedEventBuildMetadata:
 		return m.ProcessedEventBuildMetadata()
-	case bazelinvocation.FieldProcessedEventOptionsParsed:
-		return m.ProcessedEventOptionsParsed()
 	case bazelinvocation.FieldProcessedEventBuildFinished:
 		return m.ProcessedEventBuildFinished()
-	case bazelinvocation.FieldProcessedEventStructuredCommandLine:
-		return m.ProcessedEventStructuredCommandLine()
 	case bazelinvocation.FieldProcessedEventWorkspaceStatus:
 		return m.ProcessedEventWorkspaceStatus()
 	}
@@ -9230,30 +8859,18 @@ func (m *BazelInvocationMutation) OldField(ctx context.Context, name string) (en
 		return m.OldExitCodeName(ctx)
 	case bazelinvocation.FieldExitCodeCode:
 		return m.OldExitCodeCode(ctx)
-	case bazelinvocation.FieldCommandLineCommand:
-		return m.OldCommandLineCommand(ctx)
-	case bazelinvocation.FieldCommandLineExecutable:
-		return m.OldCommandLineExecutable(ctx)
-	case bazelinvocation.FieldCommandLineResidual:
-		return m.OldCommandLineResidual(ctx)
-	case bazelinvocation.FieldCommandLine:
-		return m.OldCommandLine(ctx)
-	case bazelinvocation.FieldExplicitCommandLine:
-		return m.OldExplicitCommandLine(ctx)
-	case bazelinvocation.FieldStartupOptions:
-		return m.OldStartupOptions(ctx)
-	case bazelinvocation.FieldExplicitStartupOptions:
-		return m.OldExplicitStartupOptions(ctx)
+	case bazelinvocation.FieldCanonicalCommandLine:
+		return m.OldCanonicalCommandLine(ctx)
+	case bazelinvocation.FieldOriginalCommandLine:
+		return m.OldOriginalCommandLine(ctx)
+	case bazelinvocation.FieldOptionsParsed:
+		return m.OldOptionsParsed(ctx)
 	case bazelinvocation.FieldProcessedEventStarted:
 		return m.OldProcessedEventStarted(ctx)
 	case bazelinvocation.FieldProcessedEventBuildMetadata:
 		return m.OldProcessedEventBuildMetadata(ctx)
-	case bazelinvocation.FieldProcessedEventOptionsParsed:
-		return m.OldProcessedEventOptionsParsed(ctx)
 	case bazelinvocation.FieldProcessedEventBuildFinished:
 		return m.OldProcessedEventBuildFinished(ctx)
-	case bazelinvocation.FieldProcessedEventStructuredCommandLine:
-		return m.OldProcessedEventStructuredCommandLine(ctx)
 	case bazelinvocation.FieldProcessedEventWorkspaceStatus:
 		return m.OldProcessedEventWorkspaceStatus(ctx)
 	}
@@ -9384,54 +9001,26 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetExitCodeCode(v)
 		return nil
-	case bazelinvocation.FieldCommandLineCommand:
-		v, ok := value.(string)
+	case bazelinvocation.FieldCanonicalCommandLine:
+		v, ok := value.(*invocation.CommandLineData)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCommandLineCommand(v)
+		m.SetCanonicalCommandLine(v)
 		return nil
-	case bazelinvocation.FieldCommandLineExecutable:
-		v, ok := value.(string)
+	case bazelinvocation.FieldOriginalCommandLine:
+		v, ok := value.(*invocation.CommandLineData)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCommandLineExecutable(v)
+		m.SetOriginalCommandLine(v)
 		return nil
-	case bazelinvocation.FieldCommandLineResidual:
-		v, ok := value.(string)
+	case bazelinvocation.FieldOptionsParsed:
+		v, ok := value.(*invocation.ParsedCommandLineOptions)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCommandLineResidual(v)
-		return nil
-	case bazelinvocation.FieldCommandLine:
-		v, ok := value.([]string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCommandLine(v)
-		return nil
-	case bazelinvocation.FieldExplicitCommandLine:
-		v, ok := value.([]string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetExplicitCommandLine(v)
-		return nil
-	case bazelinvocation.FieldStartupOptions:
-		v, ok := value.([]string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetStartupOptions(v)
-		return nil
-	case bazelinvocation.FieldExplicitStartupOptions:
-		v, ok := value.([]string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetExplicitStartupOptions(v)
+		m.SetOptionsParsed(v)
 		return nil
 	case bazelinvocation.FieldProcessedEventStarted:
 		v, ok := value.(bool)
@@ -9447,26 +9036,12 @@ func (m *BazelInvocationMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetProcessedEventBuildMetadata(v)
 		return nil
-	case bazelinvocation.FieldProcessedEventOptionsParsed:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetProcessedEventOptionsParsed(v)
-		return nil
 	case bazelinvocation.FieldProcessedEventBuildFinished:
 		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetProcessedEventBuildFinished(v)
-		return nil
-	case bazelinvocation.FieldProcessedEventStructuredCommandLine:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetProcessedEventStructuredCommandLine(v)
 		return nil
 	case bazelinvocation.FieldProcessedEventWorkspaceStatus:
 		v, ok := value.(bool)
@@ -9598,26 +9173,14 @@ func (m *BazelInvocationMutation) ClearedFields() []string {
 	if m.FieldCleared(bazelinvocation.FieldExitCodeCode) {
 		fields = append(fields, bazelinvocation.FieldExitCodeCode)
 	}
-	if m.FieldCleared(bazelinvocation.FieldCommandLineCommand) {
-		fields = append(fields, bazelinvocation.FieldCommandLineCommand)
+	if m.FieldCleared(bazelinvocation.FieldCanonicalCommandLine) {
+		fields = append(fields, bazelinvocation.FieldCanonicalCommandLine)
 	}
-	if m.FieldCleared(bazelinvocation.FieldCommandLineExecutable) {
-		fields = append(fields, bazelinvocation.FieldCommandLineExecutable)
+	if m.FieldCleared(bazelinvocation.FieldOriginalCommandLine) {
+		fields = append(fields, bazelinvocation.FieldOriginalCommandLine)
 	}
-	if m.FieldCleared(bazelinvocation.FieldCommandLineResidual) {
-		fields = append(fields, bazelinvocation.FieldCommandLineResidual)
-	}
-	if m.FieldCleared(bazelinvocation.FieldCommandLine) {
-		fields = append(fields, bazelinvocation.FieldCommandLine)
-	}
-	if m.FieldCleared(bazelinvocation.FieldExplicitCommandLine) {
-		fields = append(fields, bazelinvocation.FieldExplicitCommandLine)
-	}
-	if m.FieldCleared(bazelinvocation.FieldStartupOptions) {
-		fields = append(fields, bazelinvocation.FieldStartupOptions)
-	}
-	if m.FieldCleared(bazelinvocation.FieldExplicitStartupOptions) {
-		fields = append(fields, bazelinvocation.FieldExplicitStartupOptions)
+	if m.FieldCleared(bazelinvocation.FieldOptionsParsed) {
+		fields = append(fields, bazelinvocation.FieldOptionsParsed)
 	}
 	return fields
 }
@@ -9675,26 +9238,14 @@ func (m *BazelInvocationMutation) ClearField(name string) error {
 	case bazelinvocation.FieldExitCodeCode:
 		m.ClearExitCodeCode()
 		return nil
-	case bazelinvocation.FieldCommandLineCommand:
-		m.ClearCommandLineCommand()
+	case bazelinvocation.FieldCanonicalCommandLine:
+		m.ClearCanonicalCommandLine()
 		return nil
-	case bazelinvocation.FieldCommandLineExecutable:
-		m.ClearCommandLineExecutable()
+	case bazelinvocation.FieldOriginalCommandLine:
+		m.ClearOriginalCommandLine()
 		return nil
-	case bazelinvocation.FieldCommandLineResidual:
-		m.ClearCommandLineResidual()
-		return nil
-	case bazelinvocation.FieldCommandLine:
-		m.ClearCommandLine()
-		return nil
-	case bazelinvocation.FieldExplicitCommandLine:
-		m.ClearExplicitCommandLine()
-		return nil
-	case bazelinvocation.FieldStartupOptions:
-		m.ClearStartupOptions()
-		return nil
-	case bazelinvocation.FieldExplicitStartupOptions:
-		m.ClearExplicitStartupOptions()
+	case bazelinvocation.FieldOptionsParsed:
+		m.ClearOptionsParsed()
 		return nil
 	}
 	return fmt.Errorf("unknown BazelInvocation nullable field %s", name)
@@ -9755,26 +9306,14 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 	case bazelinvocation.FieldExitCodeCode:
 		m.ResetExitCodeCode()
 		return nil
-	case bazelinvocation.FieldCommandLineCommand:
-		m.ResetCommandLineCommand()
+	case bazelinvocation.FieldCanonicalCommandLine:
+		m.ResetCanonicalCommandLine()
 		return nil
-	case bazelinvocation.FieldCommandLineExecutable:
-		m.ResetCommandLineExecutable()
+	case bazelinvocation.FieldOriginalCommandLine:
+		m.ResetOriginalCommandLine()
 		return nil
-	case bazelinvocation.FieldCommandLineResidual:
-		m.ResetCommandLineResidual()
-		return nil
-	case bazelinvocation.FieldCommandLine:
-		m.ResetCommandLine()
-		return nil
-	case bazelinvocation.FieldExplicitCommandLine:
-		m.ResetExplicitCommandLine()
-		return nil
-	case bazelinvocation.FieldStartupOptions:
-		m.ResetStartupOptions()
-		return nil
-	case bazelinvocation.FieldExplicitStartupOptions:
-		m.ResetExplicitStartupOptions()
+	case bazelinvocation.FieldOptionsParsed:
+		m.ResetOptionsParsed()
 		return nil
 	case bazelinvocation.FieldProcessedEventStarted:
 		m.ResetProcessedEventStarted()
@@ -9782,14 +9321,8 @@ func (m *BazelInvocationMutation) ResetField(name string) error {
 	case bazelinvocation.FieldProcessedEventBuildMetadata:
 		m.ResetProcessedEventBuildMetadata()
 		return nil
-	case bazelinvocation.FieldProcessedEventOptionsParsed:
-		m.ResetProcessedEventOptionsParsed()
-		return nil
 	case bazelinvocation.FieldProcessedEventBuildFinished:
 		m.ResetProcessedEventBuildFinished()
-		return nil
-	case bazelinvocation.FieldProcessedEventStructuredCommandLine:
-		m.ResetProcessedEventStructuredCommandLine()
 		return nil
 	case bazelinvocation.FieldProcessedEventWorkspaceStatus:
 		m.ResetProcessedEventWorkspaceStatus()
