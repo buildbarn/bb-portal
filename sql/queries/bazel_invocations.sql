@@ -3,3 +3,25 @@ SELECT id, bep_completed
 FROM bazel_invocations
 WHERE id = sqlc.arg(id)
 FOR SHARE;
+-- name: CreateBazelInvocation :one
+--
+-- An idempotent function for creating bazel invocations. If the
+-- invocation already exists, it will return the existing id.
+WITH new_row AS (
+    INSERT INTO bazel_invocations (
+        invocation_id,
+        instance_name_bazel_invocations,
+        authenticated_user_bazel_invocations
+    )
+    VALUES (sqlc.arg(invocation_id), sqlc.arg(instance_name_id), sqlc.arg(authenticated_user_id))
+    ON CONFLICT (invocation_id) DO NOTHING
+    RETURNING id
+)
+SELECT id FROM new_row
+UNION ALL
+SELECT id FROM bazel_invocations
+WHERE invocation_id = sqlc.arg(invocation_id)
+  AND instance_name_bazel_invocations = sqlc.arg(instance_name_id)
+  AND authenticated_user_bazel_invocations IS NOT DISTINCT FROM sqlc.arg(authenticated_user_id)
+  AND bep_completed = false
+LIMIT 1;
