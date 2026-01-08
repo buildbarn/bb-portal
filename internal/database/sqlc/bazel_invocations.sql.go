@@ -7,7 +7,46 @@ package sqlc
 
 import (
 	"context"
+	"database/sql"
+
+	"github.com/google/uuid"
 )
+
+const createBazelInvocation = `-- name: CreateBazelInvocation :one
+WITH new_row AS (
+    INSERT INTO bazel_invocations (
+        invocation_id,
+        instance_name_bazel_invocations,
+        authenticated_user_bazel_invocations
+    )
+    VALUES ($1, $2, $3)
+    ON CONFLICT (invocation_id) DO NOTHING
+    RETURNING id
+)
+SELECT id FROM new_row
+UNION ALL
+SELECT id FROM bazel_invocations
+WHERE invocation_id = $1
+  AND instance_name_bazel_invocations = $2
+  AND authenticated_user_bazel_invocations IS NOT DISTINCT FROM $3
+  AND bep_completed = false
+LIMIT 1
+`
+
+type CreateBazelInvocationParams struct {
+	InvocationID        uuid.UUID
+	InstanceNameID      int64
+	AuthenticatedUserID sql.NullInt64
+}
+
+// An idempotent function for creating bazel invocations. If the
+// invocation already exists, it will return the existing id.
+func (q *Queries) CreateBazelInvocation(ctx context.Context, arg CreateBazelInvocationParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, createBazelInvocation, arg.InvocationID, arg.InstanceNameID, arg.AuthenticatedUserID)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
+}
 
 const lockBazelInvocationCompletion = `-- name: LockBazelInvocationCompletion :one
 SELECT id, bep_completed

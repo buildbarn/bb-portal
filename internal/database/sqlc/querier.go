@@ -10,8 +10,16 @@ import (
 )
 
 type Querier interface {
+	//
+	// An idempotent function for creating bazel invocations. If the
+	// invocation already exists, it will return the existing id.
+	CreateBazelInvocation(ctx context.Context, arg CreateBazelInvocationParams) (int64, error)
 	CreateEventMetadataBulk(ctx context.Context, arg CreateEventMetadataBulkParams) error
 	CreateIncompleteBuildLogs(ctx context.Context, arg CreateIncompleteBuildLogsParams) error
+	//
+	// An idempotent function for creating an instance name. If the instance
+	// name already exists, it will return the existing id.
+	CreateInstanceName(ctx context.Context, name string) (int64, error)
 	CreateInvocationTargetsBulk(ctx context.Context, arg CreateInvocationTargetsBulkParams) error
 	CreateTargetKindMappingsBulk(ctx context.Context, arg CreateTargetKindMappingsBulkParams) error
 	// ORDER BY here is enforcing an insertion order for two reasons:

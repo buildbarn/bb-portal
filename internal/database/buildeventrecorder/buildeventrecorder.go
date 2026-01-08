@@ -7,13 +7,11 @@ import (
 	"log/slog"
 	"time"
 
-	entsql "entgo.io/ent/dialect/sql"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	apicommon "github.com/buildbarn/bb-portal/internal/api/common"
 	"github.com/buildbarn/bb-portal/internal/database"
-	"github.com/buildbarn/bb-portal/internal/database/common"
+	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-portal/pkg/authmetadataextraction"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-portal/pkg/processing"
@@ -22,7 +20,6 @@ import (
 	"github.com/buildbarn/bb-storage/pkg/auth"
 	"github.com/buildbarn/bb-storage/pkg/util"
 	"github.com/google/uuid"
-	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -102,9 +99,9 @@ func NewBuildEventRecorder(
 		tracer:              tracer,
 
 		InstanceName:           instanceName,
-		InstanceNameDbID:       instanceNameDbID,
+		InstanceNameDbID:       int(instanceNameDbID),
 		InvocationID:           invocationID,
-		InvocationDbID:         invocationDbID,
+		InvocationDbID:         int(invocationDbID),
 		CorrelatedInvocationID: correlatedInvocationID,
 		IsRealTime:             isRealTime,
 	}, nil
@@ -144,76 +141,40 @@ func findOrCreateInvocation(
 	instanceName string,
 	tracer trace.Tracer,
 	authenticatedUserDbID *int,
-) (int, int, error) {
-	ctx, span := tracer.Start(ctx,
-		"BuildEventRecorder.findOrCreateInvocation",
-		trace.WithAttributes(
-			attribute.String("invocation.id", invocationID),
-			attribute.String("invocation.instance_name", instanceName),
-		),
-	)
-	defer span.End()
-
-	invocationIDUUID, err := uuid.Parse(invocationID)
+) (int64, int64, error) {
+	invocationUUID, err := uuid.Parse(invocationID)
 	if err != nil {
 		return 0, 0, util.StatusWrap(err, "Failed to parse invocation ID")
 	}
 
-	tx, err := db.BeginTx(ctx, &entsql.TxOptions{Isolation: sql.LevelSerializable})
-	if err != nil {
-		return 0, 0, util.StatusWrap(err, "Failed to create transaction")
-	}
-	defer tx.Rollback()
-
-	instanceNameDbID, err := tx.Ent().InstanceName.Create().
-		SetName(instanceName).
-		OnConflictColumns("name").
-		Ignore().
-		ID(ctx)
-	if err != nil {
-		return 0, 0, common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to create or find instance name"))
-	}
-
-	create := tx.Ent().BazelInvocation.Create().
-		SetInvocationID(invocationIDUUID).
-		SetInstanceNameID(instanceNameDbID)
-
+	var userID sql.NullInt64
 	if authenticatedUserDbID != nil {
-		create.SetAuthenticatedUserID(*authenticatedUserDbID)
+		userID = sql.NullInt64{Int64: int64(*authenticatedUserDbID), Valid: true}
 	}
 
-	invocationDbID, err := create.OnConflictColumns(bazelinvocation.FieldInvocationID).
-		Ignore().
-		ID(ctx)
+	instanceNameDbID, err := db.Sqlc().CreateInstanceName(ctx, instanceName)
 	if err != nil {
-		return 0, 0, common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to create or find bazel invocation"))
+		return 0, 0, util.StatusWrap(err, "Failed to create instance name")
 	}
-
-	invocationDb, err := tx.Ent().BazelInvocation.Query().
-		Where(bazelinvocation.ID(invocationDbID)).
-		Only(ctx)
+	// There is a race condition here where the just selected instance
+	// name becomes deleted between the select and the insert. This is
+	// fine as the client will retry.
+	invocationDbID, err := db.Sqlc().CreateBazelInvocation(ctx, sqlc.CreateBazelInvocationParams{
+		InvocationID:        invocationUUID,
+		InstanceNameID:      instanceNameDbID,
+		AuthenticatedUserID: userID,
+	})
 	if err != nil {
-		return 0, 0, common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to query bazel invocation by ID"))
+		if err == sql.ErrNoRows {
+			return 0, 0, status.Errorf(codes.FailedPrecondition,
+				"Failed to create invocation with id %s. The id may refer to a invocation that is locked for writing",
+				invocationID,
+			)
+		}
+		return 0, 0, util.StatusWrap(err, "Failed to create bazel invocation")
 	}
 
-	instanceNameDb, err := invocationDb.InstanceName(ctx)
-	if err != nil {
-		return 0, 0, common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to get existing invocation instance name"))
-	}
-
-	if instanceNameDb.ID != instanceNameDbID {
-		return 0, 0, common.RollbackAndWrapError(tx, status.Errorf(codes.FailedPrecondition, "Invocation with ID %q already exists with different instance name. Possible UUID collision.", invocationID))
-	}
-	if invocationDb.BepCompleted {
-		return 0, 0, common.RollbackAndWrapError(tx, status.Errorf(codes.FailedPrecondition, "Invocation with ID %q already exists and is locked for writing", invocationID))
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		return 0, 0, util.StatusWrap(err, "Failed to commit transaction")
-	}
-
-	return instanceNameDbID, invocationDb.ID, nil
+	return instanceNameDbID, invocationDbID, nil
 }
 
 // StartLoggingConnectionMetadata starts a goroutine that periodically

@@ -7,6 +7,7 @@ go_library(
         "db.go",
         "event_metadata.sql.go",
         "incomplete_build_logs.sql.go",
+        "instance_names.sql.go",
         "invocation_targets.sql.go",
         "models.go",
         "querier.go",

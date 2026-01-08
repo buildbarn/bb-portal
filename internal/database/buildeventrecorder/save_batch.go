@@ -23,13 +23,7 @@ func (r *BuildEventRecorder) saveBatch(ctx context.Context, batch []BuildEventWi
 	)
 	defer span.End()
 
-	rest := filterNilEvents(batch)
-	rest, err := r.filterHandledEvents(ctx, rest)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to filter already handled events from batch")
-	}
-
-	batch, rest, err = filterProgress(rest)
+	batch, rest, err := filterProgress(batch)
 	if err != nil {
 		return util.StatusWrap(err, "Failed to filter progress events from batch")
 	}
@@ -88,19 +82,38 @@ func (r *BuildEventRecorder) SaveBatch(ctx context.Context, batch []BuildEventWi
 	)
 	defer span.End()
 	retryCtx, cancel := context.WithTimeout(ctx, 1*time.Second)
-	defer cancel()
+	defer func() { cancel() }()
 
+	batch = filterNilEvents(batch)
+	// Filter events that have already been handled, ignore errors at
+	// this stage and let the errors be handled in the retry loop.
+	if preBatch, err := r.filterHandledEvents(ctx, batch); err == nil {
+		batch = preBatch
+	}
 	backoff := 1 * time.Millisecond
 	var errs []error
 	for {
-		err := r.saveBatch(ctx, batch)
-		if err == nil {
+		var batchErr error
+		if batchErr = r.saveBatch(ctx, batch); batchErr == nil {
 			return nil
 		}
-		errs = append(errs, err)
+		// Check for forward progress. As long as we have forward
+		// progress we reset the retry loop.
+		if postBatch, err := r.filterHandledEvents(ctx, batch); err == nil {
+			if len(postBatch) < len(batch) {
+				cancel()
+				retryCtx, cancel = context.WithTimeout(ctx, 1*time.Second)
+				backoff = 1 * time.Millisecond
+				batch = postBatch
+				errs = nil
+				continue
+			}
+		}
+		// No forward progress, perform sleep and retry.
+		errs = append(errs, batchErr)
 		jitter := time.Duration(float64(backoff) * (0.9 + 0.2*rand.Float64()))
 		span.AddEvent("Retrying", trace.WithAttributes(
-			attribute.String("last_error", err.Error()),
+			attribute.String("last_error", batchErr.Error()),
 			attribute.Int64("backoff", int64(jitter)),
 		))
 		select {

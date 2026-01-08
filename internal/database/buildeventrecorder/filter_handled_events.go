@@ -41,7 +41,7 @@ func (r *BuildEventRecorder) filterHandledEvents(ctx context.Context, batch []Bu
 	for _, row := range foundRows {
 		existingEvents[row.SequenceNumber] = row.EventHash
 	}
-	unhandled := make([]BuildEventWithInfo, 0, len(batch)-len(existingEvents))
+	unhandled := make([]BuildEventWithInfo, 0, len(batch))
 	for _, info := range batch {
 		storedHash, exists := existingEvents[info.SequenceNumber]
 		if exists && slices.Equal(storedHash, info.EventHash) {
