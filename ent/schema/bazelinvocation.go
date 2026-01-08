@@ -8,6 +8,7 @@ import (
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
+	"github.com/buildbarn/bb-portal/pkg/invocation"
 	"github.com/google/uuid"
 )
 
@@ -68,21 +69,26 @@ func (BazelInvocation) Fields() []ent.Field {
 
 		field.Int32("exit_code_code").Optional(),
 
-		field.String("command_line_command").Optional().Annotations(entgql.Skip()),
-		field.String("command_line_executable").Optional().Annotations(entgql.Skip()),
-		field.String("command_line_residual").Optional().Annotations(entgql.Skip()),
-		field.Strings("command_line").Optional().Annotations(entgql.Skip()),
-		field.Strings("explicit_command_line").Optional().Annotations(entgql.Skip()),
-		field.Strings("startup_options").Optional().Annotations(entgql.Skip()),
-		field.Strings("explicit_startup_options").Optional().Annotations(entgql.Skip()),
+		field.JSON("canonical_command_line", &invocation.CommandLineData{}).
+			Optional().
+			Annotations(entgql.Type("Map")).
+			Comment("JSON representation of the canonical command line options."),
+
+		field.JSON("original_command_line", &invocation.CommandLineData{}).
+			Optional().
+			Annotations(entgql.Type("Map")).
+			Comment("JSON representation of the original command line options."),
+
+		field.JSON("options_parsed", &invocation.ParsedCommandLineOptions{}).
+			Optional().
+			Annotations(entgql.Type("Map")).
+			Comment("JSON representation of the parsed command line options"),
 
 		// Track which event types have been processed. Used to block duplicate
 		// events.
 		field.Bool("processed_event_started").Default(false).Annotations(entgql.Skip()),
 		field.Bool("processed_event_build_metadata").Default(false).Annotations(entgql.Skip()),
-		field.Bool("processed_event_options_parsed").Default(false).Annotations(entgql.Skip()),
 		field.Bool("processed_event_build_finished").Default(false).Annotations(entgql.Skip()),
-		field.Bool("processed_event_structured_command_line").Default(false).Annotations(entgql.Skip()),
 		field.Bool("processed_event_workspace_status").Default(false).Annotations(entgql.Skip()),
 	}
 }

@@ -99,16 +99,9 @@ fragment BazelInvocationInfo on BazelInvocation {
       }
     }
   }
-  bazelCommand {
-    id
-    command
-    executable
-    residual
-    explicitCmdLine
-    cmdLine
-    startupOptions
-    explicitStartupOptions
-  }
+  canonicalCommandLine
+  originalCommandLine
+  optionsParsed
   id
   invocationID
   instanceName {

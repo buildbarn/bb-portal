@@ -2,34 +2,79 @@
   "getBazelInvocation": {
     "actions": [],
     "authenticatedUser": null,
-    "bazelCommand": {
-      "cmdLine": [
-        "--noanalyze",
-        "--build_event_json_file=noanalyze.bep.ndjson"
-      ],
-      "command": "build",
-      "executable": "bazel",
-      "explicitCmdLine": "--noanalyze --build_event_json_file=noanalyze.bep.ndjson",
-      "explicitStartupOptions": [],
-      "id": "",
-      "residual": "//...",
-      "startupOptions": [
-        "--max_idle_secs=10800",
-        "--noshutdown_on_low_sys_mem",
-        "--connect_timeout_secs=30",
-        "--output_user_root=/root/.cache/bazel/_bazel_root",
-        "--output_base=/root/.cache/bazel/_bazel_root/4840bc3b0605137b5083e9143d97f64c",
-        "--failure_detail_out=/root/.cache/bazel/_bazel_root/4840bc3b0605137b5083e9143d97f64c/failure_detail.rawproto",
-        "--idle_server_tasks",
-        "--write_command_log",
-        "--nowatchfs",
-        "--nofatal_event_bus_exceptions",
-        "--nowindows_enable_symlinks",
-        "--noclient_debug"
-      ]
-    },
     "bazelVersion": "8.1.1",
     "build": null,
+    "canonicalCommandLine": {
+      "command": "build",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "analyze",
+          "value": "0"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "noanalyze.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": [
+        {
+          "option": "max_idle_secs",
+          "value": "10800"
+        },
+        {
+          "option": "shutdown_on_low_sys_mem",
+          "value": "0"
+        },
+        {
+          "option": "connect_timeout_secs",
+          "value": "30"
+        },
+        {
+          "option": "output_user_root",
+          "value": "/root/.cache/bazel/_bazel_root"
+        },
+        {
+          "option": "output_base",
+          "value": "/root/.cache/bazel/_bazel_root/4840bc3b0605137b5083e9143d97f64c"
+        },
+        {
+          "option": "failure_detail_out",
+          "value": "/root/.cache/bazel/_bazel_root/4840bc3b0605137b5083e9143d97f64c/failure_detail.rawproto"
+        },
+        {
+          "option": "idle_server_tasks",
+          "value": "1"
+        },
+        {
+          "option": "write_command_log",
+          "value": "1"
+        },
+        {
+          "option": "watchfs",
+          "value": "0"
+        },
+        {
+          "option": "fatal_event_bus_exceptions",
+          "value": "0"
+        },
+        {
+          "option": "windows_enable_symlinks",
+          "value": "0"
+        },
+        {
+          "option": "client_debug",
+          "value": "false"
+        },
+        {
+          "option": "ignore_all_rc_files",
+          "value": "1"
+        }
+      ]
+    },
     "configurations": [],
     "connectionMetadata": null,
     "endedAt": "2026-02-04T08:41:31.302Z",
@@ -127,6 +172,34 @@
       }
     },
     "numFetches": 1,
+    "optionsParsed": {
+      "explicitOptions": [
+        "--noanalyze",
+        "--build_event_json_file=noanalyze.bep.ndjson"
+      ],
+      "options": [
+        "--noanalyze",
+        "--build_event_json_file=noanalyze.bep.ndjson"
+      ]
+    },
+    "originalCommandLine": {
+      "command": "build",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "analyze",
+          "value": "0"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "noanalyze.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": []
+    },
     "profile": null,
     "sourceControl": null,
     "startedAt": "2026-02-04T08:41:30.06Z",

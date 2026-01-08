@@ -18,6 +18,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
+	"github.com/buildbarn/bb-portal/pkg/invocation"
 	"github.com/google/uuid"
 )
 
@@ -60,30 +61,18 @@ type BazelInvocation struct {
 	ExitCodeName string `json:"exit_code_name,omitempty"`
 	// ExitCodeCode holds the value of the "exit_code_code" field.
 	ExitCodeCode int32 `json:"exit_code_code,omitempty"`
-	// CommandLineCommand holds the value of the "command_line_command" field.
-	CommandLineCommand string `json:"command_line_command,omitempty"`
-	// CommandLineExecutable holds the value of the "command_line_executable" field.
-	CommandLineExecutable string `json:"command_line_executable,omitempty"`
-	// CommandLineResidual holds the value of the "command_line_residual" field.
-	CommandLineResidual string `json:"command_line_residual,omitempty"`
-	// CommandLine holds the value of the "command_line" field.
-	CommandLine []string `json:"command_line,omitempty"`
-	// ExplicitCommandLine holds the value of the "explicit_command_line" field.
-	ExplicitCommandLine []string `json:"explicit_command_line,omitempty"`
-	// StartupOptions holds the value of the "startup_options" field.
-	StartupOptions []string `json:"startup_options,omitempty"`
-	// ExplicitStartupOptions holds the value of the "explicit_startup_options" field.
-	ExplicitStartupOptions []string `json:"explicit_startup_options,omitempty"`
+	// JSON representation of the canonical command line options.
+	CanonicalCommandLine *invocation.CommandLineData `json:"canonical_command_line,omitempty"`
+	// JSON representation of the original command line options.
+	OriginalCommandLine *invocation.CommandLineData `json:"original_command_line,omitempty"`
+	// JSON representation of the parsed command line options
+	OptionsParsed *invocation.ParsedCommandLineOptions `json:"options_parsed,omitempty"`
 	// ProcessedEventStarted holds the value of the "processed_event_started" field.
 	ProcessedEventStarted bool `json:"processed_event_started,omitempty"`
 	// ProcessedEventBuildMetadata holds the value of the "processed_event_build_metadata" field.
 	ProcessedEventBuildMetadata bool `json:"processed_event_build_metadata,omitempty"`
-	// ProcessedEventOptionsParsed holds the value of the "processed_event_options_parsed" field.
-	ProcessedEventOptionsParsed bool `json:"processed_event_options_parsed,omitempty"`
 	// ProcessedEventBuildFinished holds the value of the "processed_event_build_finished" field.
 	ProcessedEventBuildFinished bool `json:"processed_event_build_finished,omitempty"`
-	// ProcessedEventStructuredCommandLine holds the value of the "processed_event_structured_command_line" field.
-	ProcessedEventStructuredCommandLine bool `json:"processed_event_structured_command_line,omitempty"`
 	// ProcessedEventWorkspaceStatus holds the value of the "processed_event_workspace_status" field.
 	ProcessedEventWorkspaceStatus bool `json:"processed_event_workspace_status,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -285,13 +274,13 @@ func (*BazelInvocation) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case bazelinvocation.FieldCommandLine, bazelinvocation.FieldExplicitCommandLine, bazelinvocation.FieldStartupOptions, bazelinvocation.FieldExplicitStartupOptions:
+		case bazelinvocation.FieldCanonicalCommandLine, bazelinvocation.FieldOriginalCommandLine, bazelinvocation.FieldOptionsParsed:
 			values[i] = new([]byte)
-		case bazelinvocation.FieldBepCompleted, bazelinvocation.FieldIsCiWorker, bazelinvocation.FieldProcessedEventStarted, bazelinvocation.FieldProcessedEventBuildMetadata, bazelinvocation.FieldProcessedEventOptionsParsed, bazelinvocation.FieldProcessedEventBuildFinished, bazelinvocation.FieldProcessedEventStructuredCommandLine, bazelinvocation.FieldProcessedEventWorkspaceStatus:
+		case bazelinvocation.FieldBepCompleted, bazelinvocation.FieldIsCiWorker, bazelinvocation.FieldProcessedEventStarted, bazelinvocation.FieldProcessedEventBuildMetadata, bazelinvocation.FieldProcessedEventBuildFinished, bazelinvocation.FieldProcessedEventWorkspaceStatus:
 			values[i] = new(sql.NullBool)
 		case bazelinvocation.FieldID, bazelinvocation.FieldChangeNumber, bazelinvocation.FieldPatchsetNumber, bazelinvocation.FieldNumFetches, bazelinvocation.FieldExitCodeCode:
 			values[i] = new(sql.NullInt64)
-		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldHostname, bazelinvocation.FieldProfileName, bazelinvocation.FieldBazelVersion, bazelinvocation.FieldExitCodeName, bazelinvocation.FieldCommandLineCommand, bazelinvocation.FieldCommandLineExecutable, bazelinvocation.FieldCommandLineResidual:
+		case bazelinvocation.FieldStepLabel, bazelinvocation.FieldUserEmail, bazelinvocation.FieldUserLdap, bazelinvocation.FieldHostname, bazelinvocation.FieldProfileName, bazelinvocation.FieldBazelVersion, bazelinvocation.FieldExitCodeName:
 			values[i] = new(sql.NullString)
 		case bazelinvocation.FieldCreatedTimestamp, bazelinvocation.FieldStartedAt, bazelinvocation.FieldEndedAt:
 			values[i] = new(sql.NullTime)
@@ -427,54 +416,28 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				bi.ExitCodeCode = int32(value.Int64)
 			}
-		case bazelinvocation.FieldCommandLineCommand:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field command_line_command", values[i])
-			} else if value.Valid {
-				bi.CommandLineCommand = value.String
-			}
-		case bazelinvocation.FieldCommandLineExecutable:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field command_line_executable", values[i])
-			} else if value.Valid {
-				bi.CommandLineExecutable = value.String
-			}
-		case bazelinvocation.FieldCommandLineResidual:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field command_line_residual", values[i])
-			} else if value.Valid {
-				bi.CommandLineResidual = value.String
-			}
-		case bazelinvocation.FieldCommandLine:
+		case bazelinvocation.FieldCanonicalCommandLine:
 			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field command_line", values[i])
+				return fmt.Errorf("unexpected type %T for field canonical_command_line", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &bi.CommandLine); err != nil {
-					return fmt.Errorf("unmarshal field command_line: %w", err)
+				if err := json.Unmarshal(*value, &bi.CanonicalCommandLine); err != nil {
+					return fmt.Errorf("unmarshal field canonical_command_line: %w", err)
 				}
 			}
-		case bazelinvocation.FieldExplicitCommandLine:
+		case bazelinvocation.FieldOriginalCommandLine:
 			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field explicit_command_line", values[i])
+				return fmt.Errorf("unexpected type %T for field original_command_line", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &bi.ExplicitCommandLine); err != nil {
-					return fmt.Errorf("unmarshal field explicit_command_line: %w", err)
+				if err := json.Unmarshal(*value, &bi.OriginalCommandLine); err != nil {
+					return fmt.Errorf("unmarshal field original_command_line: %w", err)
 				}
 			}
-		case bazelinvocation.FieldStartupOptions:
+		case bazelinvocation.FieldOptionsParsed:
 			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field startup_options", values[i])
+				return fmt.Errorf("unexpected type %T for field options_parsed", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &bi.StartupOptions); err != nil {
-					return fmt.Errorf("unmarshal field startup_options: %w", err)
-				}
-			}
-		case bazelinvocation.FieldExplicitStartupOptions:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field explicit_startup_options", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &bi.ExplicitStartupOptions); err != nil {
-					return fmt.Errorf("unmarshal field explicit_startup_options: %w", err)
+				if err := json.Unmarshal(*value, &bi.OptionsParsed); err != nil {
+					return fmt.Errorf("unmarshal field options_parsed: %w", err)
 				}
 			}
 		case bazelinvocation.FieldProcessedEventStarted:
@@ -489,23 +452,11 @@ func (bi *BazelInvocation) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				bi.ProcessedEventBuildMetadata = value.Bool
 			}
-		case bazelinvocation.FieldProcessedEventOptionsParsed:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field processed_event_options_parsed", values[i])
-			} else if value.Valid {
-				bi.ProcessedEventOptionsParsed = value.Bool
-			}
 		case bazelinvocation.FieldProcessedEventBuildFinished:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field processed_event_build_finished", values[i])
 			} else if value.Valid {
 				bi.ProcessedEventBuildFinished = value.Bool
-			}
-		case bazelinvocation.FieldProcessedEventStructuredCommandLine:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field processed_event_structured_command_line", values[i])
-			} else if value.Valid {
-				bi.ProcessedEventStructuredCommandLine = value.Bool
 			}
 		case bazelinvocation.FieldProcessedEventWorkspaceStatus:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -693,26 +644,14 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString("exit_code_code=")
 	builder.WriteString(fmt.Sprintf("%v", bi.ExitCodeCode))
 	builder.WriteString(", ")
-	builder.WriteString("command_line_command=")
-	builder.WriteString(bi.CommandLineCommand)
+	builder.WriteString("canonical_command_line=")
+	builder.WriteString(fmt.Sprintf("%v", bi.CanonicalCommandLine))
 	builder.WriteString(", ")
-	builder.WriteString("command_line_executable=")
-	builder.WriteString(bi.CommandLineExecutable)
+	builder.WriteString("original_command_line=")
+	builder.WriteString(fmt.Sprintf("%v", bi.OriginalCommandLine))
 	builder.WriteString(", ")
-	builder.WriteString("command_line_residual=")
-	builder.WriteString(bi.CommandLineResidual)
-	builder.WriteString(", ")
-	builder.WriteString("command_line=")
-	builder.WriteString(fmt.Sprintf("%v", bi.CommandLine))
-	builder.WriteString(", ")
-	builder.WriteString("explicit_command_line=")
-	builder.WriteString(fmt.Sprintf("%v", bi.ExplicitCommandLine))
-	builder.WriteString(", ")
-	builder.WriteString("startup_options=")
-	builder.WriteString(fmt.Sprintf("%v", bi.StartupOptions))
-	builder.WriteString(", ")
-	builder.WriteString("explicit_startup_options=")
-	builder.WriteString(fmt.Sprintf("%v", bi.ExplicitStartupOptions))
+	builder.WriteString("options_parsed=")
+	builder.WriteString(fmt.Sprintf("%v", bi.OptionsParsed))
 	builder.WriteString(", ")
 	builder.WriteString("processed_event_started=")
 	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventStarted))
@@ -720,14 +659,8 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString("processed_event_build_metadata=")
 	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventBuildMetadata))
 	builder.WriteString(", ")
-	builder.WriteString("processed_event_options_parsed=")
-	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventOptionsParsed))
-	builder.WriteString(", ")
 	builder.WriteString("processed_event_build_finished=")
 	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventBuildFinished))
-	builder.WriteString(", ")
-	builder.WriteString("processed_event_structured_command_line=")
-	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventStructuredCommandLine))
 	builder.WriteString(", ")
 	builder.WriteString("processed_event_workspace_status=")
 	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventWorkspaceStatus))

@@ -10,17 +10,6 @@ extend type Query {
   ): Target
 }
 
-type BazelCommand {
-  id: ID!
-  command: String!
-  executable: String!
-  residual: String!
-  explicitCmdLine: String!
-  cmdLine: [String]
-  startupOptions: [String]
-  explicitStartupOptions: [String]
-}
-
 type User {
   id: ID!
   Email: String!
@@ -36,7 +25,6 @@ type Profile {
 }
 
 extend type BazelInvocation {
-  bazelCommand: BazelCommand!
   user: User
   profile: Profile
 }

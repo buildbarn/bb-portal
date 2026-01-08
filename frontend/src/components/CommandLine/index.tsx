@@ -1,57 +1,92 @@
-import React from "react";
-import { Space, Table, Row, Col, Statistic, List } from 'antd';
-import { CodeOutlined, DeploymentUnitOutlined, SearchOutlined } from '@ant-design/icons';
-import type { StatisticProps, TableColumnsType } from "antd/lib";
-import { BazelCommand } from "@/graphql/__generated__/graphql";
-import PortalCard from "../PortalCard";
-import { SearchFilterIcon, SearchWidget } from '@/components/SearchWidgets';
-import NullBooleanTag from "../NullableBooleanTag";
-import styles from "../../theme/theme.module.css"
+import { CodeOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Empty, List, Row, Tooltip, Typography } from 'antd';
+import React from 'react';
+import PortalCard from '../PortalCard';
 
+// TODO: find a way to apply these interfaces automatically to the
+// output of graphql while remaining a scalar with regard to the graphql
+// api.
+interface CommandLineData {
+  executable: string
+  command: string
+  options: CommandLineOptions[]
+  startupOptions: CommandLineOptions[]
+  residual: string[]
+}
 
+interface CommandLineOptions {
+  option: string
+  value: string
+}
 
-const CommandLineDisplay: React.FC<{ commandLineData: BazelCommand | undefined | null }> = ({
-    commandLineData: commandLineData
-}) => {
+interface ParsedOptions {
+  explicitOptions: string[]
+  options: string[]
+}
 
-    var commandLineOptions: string[] = []
-    commandLineData?.cmdLine?.forEach(x => commandLineOptions.push(x ?? ""))
-    var cmdLine = [commandLineData?.executable, commandLineData?.command, commandLineData?.residual, commandLineData?.explicitCmdLine].join(" ")
+interface Props {
+  rawCommand: string | null
+  canonicalCommandLine: CommandLineData | null
+  parsedOptions: ParsedOptions
+}
 
-    return (
+const CommandLineDisplay: React.FC<Props> = ({rawCommand, canonicalCommandLine, parsedOptions}) => {
+  if (!canonicalCommandLine) {
+    return <PortalCard icon={<CodeOutlined />} titleBits={["Command Line", rawCommand]}>
+      <Empty description="No information about the command line available..." />
+    </PortalCard>;
+  }
+  
+  const opts = canonicalCommandLine.options.filter(x => x.option !== 'config')
 
-        <Space direction="vertical" size="middle" style={{ display: 'flex' }} >
-            <PortalCard type="inner" icon={<CodeOutlined />} titleBits={["Explicit Command Line:", cmdLine]}>
-                <Row>
-                    <List
-                        bordered
-                        size="small"
-                        header={<div><strong>Raw Command Line Options:</strong></div>}
-                        dataSource={commandLineData?.cmdLine?.filter(x => x !== undefined) as string[]}
-                        renderItem={(item) => <List.Item>{item}</List.Item>}
-                    />
-                </Row>
-                <Row>
-                    <List
-                        bordered
-                        size="small"
-                        header={<div><strong>Explicit Startup Options:</strong></div>}
-                        dataSource={commandLineData?.explicitStartupOptions?.filter(x => x !== undefined) as string[]}
-                        renderItem={(item) => <List.Item>{item}</List.Item>}
-                    />
-                </Row>
-                <Row>
-                    <List
-                        bordered
-                        size="small"
-                        header={<div><strong>Effective Startup Options:</strong></div>}
-                        dataSource={commandLineData?.startupOptions?.filter(x => x !== undefined) as string[]}
-                        renderItem={(item) => <List.Item>{item}</List.Item>}
-                    />
-                </Row>
-            </PortalCard>
-        </Space>
-    )
+  return (
+    <PortalCard icon={<CodeOutlined />} titleBits={["Command Line", rawCommand]}>
+      { !parsedOptions ? null :
+      <List
+        bordered
+        size="small"
+        style={{ width: "100%" }}
+        header={
+          <strong>
+            <Tooltip title="The expanded command line options before normalization">
+              Parsed Options <InfoCircleOutlined />
+            </Tooltip>
+          </strong>
+        }
+        dataSource={parsedOptions.options}
+        renderItem={x => <List.Item>{x}</List.Item>}
+        />
+      }
+      <List
+        bordered
+        size="small"
+        style={{ width: "100%" }}
+        header={
+          <strong>
+            <Tooltip title="The expanded command line options used by bazel flags after normalization">
+              Normalized Options <InfoCircleOutlined />
+            </Tooltip>
+          </strong>
+        }
+        dataSource={opts}
+        renderItem={(item) => <List.Item>--{item.option}={item.value}</List.Item>}
+      />
+      <List
+        bordered
+        size="small"
+        style={{ width: "100%" }}
+        header={
+          <strong>
+            <Tooltip title="The startup options for the bazel server process">
+              Startup Options <InfoCircleOutlined />
+            </Tooltip>
+          </strong>
+        }
+        dataSource={canonicalCommandLine.startupOptions}
+        renderItem={(item) => <List.Item>--{item.option}={item.value}</List.Item>}
+      />
+    </PortalCard>
+  );
 }
 
 export default CommandLineDisplay;

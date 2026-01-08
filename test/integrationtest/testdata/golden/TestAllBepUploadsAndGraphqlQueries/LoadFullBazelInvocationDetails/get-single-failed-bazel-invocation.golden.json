@@ -45,38 +45,91 @@
       }
     ],
     "authenticatedUser": null,
-    "bazelCommand": {
-      "cmdLine": [
-        "--enable_runfiles=1",
-        "--build_event_json_file=./pkg/summary/testdata/nextjs_build_fail.bep.ndjson"
-      ],
-      "command": "test",
-      "executable": "bazel",
-      "explicitCmdLine": "--build_event_json_file=./pkg/summary/testdata/nextjs_build_fail.bep.ndjson",
-      "explicitStartupOptions": [
-        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
-      ],
-      "id": "",
-      "residual": "//...",
-      "startupOptions": [
-        "--max_idle_secs=10800",
-        "--noshutdown_on_low_sys_mem",
-        "--connect_timeout_secs=30",
-        "--output_user_root=/var/tmp/_bazel_nameless",
-        "--output_base=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096",
-        "--failure_detail_out=/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/failure_detail.rawproto",
-        "--expand_configs_in_place",
-        "--idle_server_tasks",
-        "--write_command_log",
-        "--nowatchfs",
-        "--nofatal_event_bus_exceptions",
-        "--nowindows_enable_symlinks",
-        "--noclient_debug",
-        "--host_jvm_args=-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
-      ]
-    },
     "bazelVersion": "7.1.0",
     "build": null,
+    "canonicalCommandLine": {
+      "command": "test",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "enable_runfiles",
+          "value": "1"
+        },
+        {
+          "option": "build_event_json_file",
+          "value": "./pkg/summary/testdata/nextjs_build_fail.bep.ndjson"
+        },
+        {
+          "option": "@@aspect_rules_ts~//ts:skipLibCheck",
+          "value": "always"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": [
+        {
+          "option": "max_idle_secs",
+          "value": "10800"
+        },
+        {
+          "option": "shutdown_on_low_sys_mem",
+          "value": "0"
+        },
+        {
+          "option": "connect_timeout_secs",
+          "value": "30"
+        },
+        {
+          "option": "output_user_root",
+          "value": "/var/tmp/_bazel_nameless"
+        },
+        {
+          "option": "output_base",
+          "value": "/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096"
+        },
+        {
+          "option": "failure_detail_out",
+          "value": "/private/var/tmp/_bazel_nameless/785aba6fa73b7504b05bf113721e0096/failure_detail.rawproto"
+        },
+        {
+          "option": "expand_configs_in_place",
+          "value": "1"
+        },
+        {
+          "option": "idle_server_tasks",
+          "value": "1"
+        },
+        {
+          "option": "write_command_log",
+          "value": "1"
+        },
+        {
+          "option": "watchfs",
+          "value": "0"
+        },
+        {
+          "option": "fatal_event_bus_exceptions",
+          "value": "0"
+        },
+        {
+          "option": "windows_enable_symlinks",
+          "value": "0"
+        },
+        {
+          "option": "client_debug",
+          "value": "false"
+        },
+        {
+          "option": "host_jvm_args",
+          "value": "-DBAZEL_TRACK_SOURCE_DIRECTORIES=1"
+        },
+        {
+          "option": "ignore_all_rc_files",
+          "value": "1"
+        }
+      ]
+    },
     "configurations": [
       {
         "cpu": "darwin_arm64",
@@ -240,6 +293,42 @@
       }
     },
     "numFetches": 0,
+    "optionsParsed": {
+      "explicitOptions": [
+        "--build_event_json_file=./pkg/summary/testdata/nextjs_build_fail.bep.ndjson"
+      ],
+      "options": [
+        "--enable_runfiles=1",
+        "--build_event_json_file=./pkg/summary/testdata/nextjs_build_fail.bep.ndjson"
+      ]
+    },
+    "originalCommandLine": {
+      "command": "test",
+      "executable": "bazel",
+      "options": [
+        {
+          "option": "build_event_json_file",
+          "value": "./pkg/summary/testdata/nextjs_build_fail.bep.ndjson"
+        }
+      ],
+      "residual": [
+        "//..."
+      ],
+      "startupOptions": [
+        {
+          "option": "",
+          "value": ""
+        },
+        {
+          "option": "",
+          "value": ""
+        },
+        {
+          "option": "",
+          "value": ""
+        }
+      ]
+    },
     "profile": null,
     "sourceControl": null,
     "startedAt": "2024-05-03T00:24:15.374Z",

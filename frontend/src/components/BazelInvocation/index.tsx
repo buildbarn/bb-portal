@@ -46,7 +46,9 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     actions,
     invocationID,
     instanceName,
-    bazelCommand,
+    canonicalCommandLine,
+    originalCommandLine,
+    optionsParsed,
     bazelVersion,
     sourceControl,
     metrics,
@@ -74,6 +76,17 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
   const hideTestsTab: boolean = !isFeatureEnabled(FeatureType.BES_PAGE_TESTS);
   const hideSourceControlTab: boolean = sourceControl == undefined || sourceControl == null;
 
+  const command = ((cmd) => {
+    if (!cmd)
+      return "unknown"
+    return [
+      cmd.executable,
+      cmd.command,
+      ...cmd.options.map((x: any) => `--${x?.option}=${x?.value}`),
+      ...cmd.residual,
+    ].join(" ");
+  })(originalCommandLine)
+
   const items: TabsProps["items"] = [];
   items.push({
     key: "BazelInvocationTabs-Overview",
@@ -87,12 +100,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
           titleBits={["Invocation Overview"]}
         >
           <InvocationOverviewDisplay
-            command={[
-              bazelCommand.executable,
-              bazelCommand.command,
-              bazelCommand.residual,
-              bazelCommand.explicitCmdLine,
-            ].join(" ").trim()}
+            command={command}
             invocationId={invocationID}
             instanceName={instanceName.name}
             configurations={configurations || undefined}
@@ -136,7 +144,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     icon: <FileSearchOutlined />,
     children: (
       <Space direction="vertical" size="middle" className={themeStyles.space}>
-        <BuildLogsDisplay invocationId={invocationID} />
+        <BuildLogsDisplay rawCommand={command} invocationId={invocationID} />
       </Space>
     ),
   });
@@ -203,7 +211,7 @@ const getTabItems = (invocationOverview: BazelInvocationInfoFragment): TabsProps
     icon: <CodeOutlined />,
     children: (
       <Space direction="vertical" size="middle" className={themeStyles.space}>
-        <CommandLineDisplay commandLineData={bazelCommand ?? undefined} />
+        <CommandLineDisplay parsedOptions={optionsParsed} rawCommand={command} canonicalCommandLine={canonicalCommandLine} />
       </Space>
     ),
   });

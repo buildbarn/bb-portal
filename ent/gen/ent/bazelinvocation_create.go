@@ -26,6 +26,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
+	"github.com/buildbarn/bb-portal/pkg/invocation"
 	"github.com/google/uuid"
 )
 
@@ -259,69 +260,21 @@ func (bic *BazelInvocationCreate) SetNillableExitCodeCode(i *int32) *BazelInvoca
 	return bic
 }
 
-// SetCommandLineCommand sets the "command_line_command" field.
-func (bic *BazelInvocationCreate) SetCommandLineCommand(s string) *BazelInvocationCreate {
-	bic.mutation.SetCommandLineCommand(s)
+// SetCanonicalCommandLine sets the "canonical_command_line" field.
+func (bic *BazelInvocationCreate) SetCanonicalCommandLine(ild *invocation.CommandLineData) *BazelInvocationCreate {
+	bic.mutation.SetCanonicalCommandLine(ild)
 	return bic
 }
 
-// SetNillableCommandLineCommand sets the "command_line_command" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableCommandLineCommand(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetCommandLineCommand(*s)
-	}
+// SetOriginalCommandLine sets the "original_command_line" field.
+func (bic *BazelInvocationCreate) SetOriginalCommandLine(ild *invocation.CommandLineData) *BazelInvocationCreate {
+	bic.mutation.SetOriginalCommandLine(ild)
 	return bic
 }
 
-// SetCommandLineExecutable sets the "command_line_executable" field.
-func (bic *BazelInvocationCreate) SetCommandLineExecutable(s string) *BazelInvocationCreate {
-	bic.mutation.SetCommandLineExecutable(s)
-	return bic
-}
-
-// SetNillableCommandLineExecutable sets the "command_line_executable" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableCommandLineExecutable(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetCommandLineExecutable(*s)
-	}
-	return bic
-}
-
-// SetCommandLineResidual sets the "command_line_residual" field.
-func (bic *BazelInvocationCreate) SetCommandLineResidual(s string) *BazelInvocationCreate {
-	bic.mutation.SetCommandLineResidual(s)
-	return bic
-}
-
-// SetNillableCommandLineResidual sets the "command_line_residual" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableCommandLineResidual(s *string) *BazelInvocationCreate {
-	if s != nil {
-		bic.SetCommandLineResidual(*s)
-	}
-	return bic
-}
-
-// SetCommandLine sets the "command_line" field.
-func (bic *BazelInvocationCreate) SetCommandLine(s []string) *BazelInvocationCreate {
-	bic.mutation.SetCommandLine(s)
-	return bic
-}
-
-// SetExplicitCommandLine sets the "explicit_command_line" field.
-func (bic *BazelInvocationCreate) SetExplicitCommandLine(s []string) *BazelInvocationCreate {
-	bic.mutation.SetExplicitCommandLine(s)
-	return bic
-}
-
-// SetStartupOptions sets the "startup_options" field.
-func (bic *BazelInvocationCreate) SetStartupOptions(s []string) *BazelInvocationCreate {
-	bic.mutation.SetStartupOptions(s)
-	return bic
-}
-
-// SetExplicitStartupOptions sets the "explicit_startup_options" field.
-func (bic *BazelInvocationCreate) SetExplicitStartupOptions(s []string) *BazelInvocationCreate {
-	bic.mutation.SetExplicitStartupOptions(s)
+// SetOptionsParsed sets the "options_parsed" field.
+func (bic *BazelInvocationCreate) SetOptionsParsed(iclo *invocation.ParsedCommandLineOptions) *BazelInvocationCreate {
+	bic.mutation.SetOptionsParsed(iclo)
 	return bic
 }
 
@@ -353,20 +306,6 @@ func (bic *BazelInvocationCreate) SetNillableProcessedEventBuildMetadata(b *bool
 	return bic
 }
 
-// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
-func (bic *BazelInvocationCreate) SetProcessedEventOptionsParsed(b bool) *BazelInvocationCreate {
-	bic.mutation.SetProcessedEventOptionsParsed(b)
-	return bic
-}
-
-// SetNillableProcessedEventOptionsParsed sets the "processed_event_options_parsed" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableProcessedEventOptionsParsed(b *bool) *BazelInvocationCreate {
-	if b != nil {
-		bic.SetProcessedEventOptionsParsed(*b)
-	}
-	return bic
-}
-
 // SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
 func (bic *BazelInvocationCreate) SetProcessedEventBuildFinished(b bool) *BazelInvocationCreate {
 	bic.mutation.SetProcessedEventBuildFinished(b)
@@ -377,20 +316,6 @@ func (bic *BazelInvocationCreate) SetProcessedEventBuildFinished(b bool) *BazelI
 func (bic *BazelInvocationCreate) SetNillableProcessedEventBuildFinished(b *bool) *BazelInvocationCreate {
 	if b != nil {
 		bic.SetProcessedEventBuildFinished(*b)
-	}
-	return bic
-}
-
-// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
-func (bic *BazelInvocationCreate) SetProcessedEventStructuredCommandLine(b bool) *BazelInvocationCreate {
-	bic.mutation.SetProcessedEventStructuredCommandLine(b)
-	return bic
-}
-
-// SetNillableProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field if the given value is not nil.
-func (bic *BazelInvocationCreate) SetNillableProcessedEventStructuredCommandLine(b *bool) *BazelInvocationCreate {
-	if b != nil {
-		bic.SetProcessedEventStructuredCommandLine(*b)
 	}
 	return bic
 }
@@ -694,17 +619,9 @@ func (bic *BazelInvocationCreate) defaults() error {
 		v := bazelinvocation.DefaultProcessedEventBuildMetadata
 		bic.mutation.SetProcessedEventBuildMetadata(v)
 	}
-	if _, ok := bic.mutation.ProcessedEventOptionsParsed(); !ok {
-		v := bazelinvocation.DefaultProcessedEventOptionsParsed
-		bic.mutation.SetProcessedEventOptionsParsed(v)
-	}
 	if _, ok := bic.mutation.ProcessedEventBuildFinished(); !ok {
 		v := bazelinvocation.DefaultProcessedEventBuildFinished
 		bic.mutation.SetProcessedEventBuildFinished(v)
-	}
-	if _, ok := bic.mutation.ProcessedEventStructuredCommandLine(); !ok {
-		v := bazelinvocation.DefaultProcessedEventStructuredCommandLine
-		bic.mutation.SetProcessedEventStructuredCommandLine(v)
 	}
 	if _, ok := bic.mutation.ProcessedEventWorkspaceStatus(); !ok {
 		v := bazelinvocation.DefaultProcessedEventWorkspaceStatus
@@ -730,14 +647,8 @@ func (bic *BazelInvocationCreate) check() error {
 	if _, ok := bic.mutation.ProcessedEventBuildMetadata(); !ok {
 		return &ValidationError{Name: "processed_event_build_metadata", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_build_metadata"`)}
 	}
-	if _, ok := bic.mutation.ProcessedEventOptionsParsed(); !ok {
-		return &ValidationError{Name: "processed_event_options_parsed", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_options_parsed"`)}
-	}
 	if _, ok := bic.mutation.ProcessedEventBuildFinished(); !ok {
 		return &ValidationError{Name: "processed_event_build_finished", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_build_finished"`)}
-	}
-	if _, ok := bic.mutation.ProcessedEventStructuredCommandLine(); !ok {
-		return &ValidationError{Name: "processed_event_structured_command_line", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_structured_command_line"`)}
 	}
 	if _, ok := bic.mutation.ProcessedEventWorkspaceStatus(); !ok {
 		return &ValidationError{Name: "processed_event_workspace_status", err: errors.New(`ent: missing required field "BazelInvocation.processed_event_workspace_status"`)}
@@ -846,33 +757,17 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_spec.SetField(bazelinvocation.FieldExitCodeCode, field.TypeInt32, value)
 		_node.ExitCodeCode = value
 	}
-	if value, ok := bic.mutation.CommandLineCommand(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLineCommand, field.TypeString, value)
-		_node.CommandLineCommand = value
+	if value, ok := bic.mutation.CanonicalCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldCanonicalCommandLine, field.TypeJSON, value)
+		_node.CanonicalCommandLine = value
 	}
-	if value, ok := bic.mutation.CommandLineExecutable(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLineExecutable, field.TypeString, value)
-		_node.CommandLineExecutable = value
+	if value, ok := bic.mutation.OriginalCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldOriginalCommandLine, field.TypeJSON, value)
+		_node.OriginalCommandLine = value
 	}
-	if value, ok := bic.mutation.CommandLineResidual(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLineResidual, field.TypeString, value)
-		_node.CommandLineResidual = value
-	}
-	if value, ok := bic.mutation.CommandLine(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLine, field.TypeJSON, value)
-		_node.CommandLine = value
-	}
-	if value, ok := bic.mutation.ExplicitCommandLine(); ok {
-		_spec.SetField(bazelinvocation.FieldExplicitCommandLine, field.TypeJSON, value)
-		_node.ExplicitCommandLine = value
-	}
-	if value, ok := bic.mutation.StartupOptions(); ok {
-		_spec.SetField(bazelinvocation.FieldStartupOptions, field.TypeJSON, value)
-		_node.StartupOptions = value
-	}
-	if value, ok := bic.mutation.ExplicitStartupOptions(); ok {
-		_spec.SetField(bazelinvocation.FieldExplicitStartupOptions, field.TypeJSON, value)
-		_node.ExplicitStartupOptions = value
+	if value, ok := bic.mutation.OptionsParsed(); ok {
+		_spec.SetField(bazelinvocation.FieldOptionsParsed, field.TypeJSON, value)
+		_node.OptionsParsed = value
 	}
 	if value, ok := bic.mutation.ProcessedEventStarted(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventStarted, field.TypeBool, value)
@@ -882,17 +777,9 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 		_spec.SetField(bazelinvocation.FieldProcessedEventBuildMetadata, field.TypeBool, value)
 		_node.ProcessedEventBuildMetadata = value
 	}
-	if value, ok := bic.mutation.ProcessedEventOptionsParsed(); ok {
-		_spec.SetField(bazelinvocation.FieldProcessedEventOptionsParsed, field.TypeBool, value)
-		_node.ProcessedEventOptionsParsed = value
-	}
 	if value, ok := bic.mutation.ProcessedEventBuildFinished(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventBuildFinished, field.TypeBool, value)
 		_node.ProcessedEventBuildFinished = value
-	}
-	if value, ok := bic.mutation.ProcessedEventStructuredCommandLine(); ok {
-		_spec.SetField(bazelinvocation.FieldProcessedEventStructuredCommandLine, field.TypeBool, value)
-		_node.ProcessedEventStructuredCommandLine = value
 	}
 	if value, ok := bic.mutation.ProcessedEventWorkspaceStatus(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventWorkspaceStatus, field.TypeBool, value)
@@ -1465,129 +1352,57 @@ func (u *BazelInvocationUpsert) ClearExitCodeCode() *BazelInvocationUpsert {
 	return u
 }
 
-// SetCommandLineCommand sets the "command_line_command" field.
-func (u *BazelInvocationUpsert) SetCommandLineCommand(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldCommandLineCommand, v)
+// SetCanonicalCommandLine sets the "canonical_command_line" field.
+func (u *BazelInvocationUpsert) SetCanonicalCommandLine(v *invocation.CommandLineData) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldCanonicalCommandLine, v)
 	return u
 }
 
-// UpdateCommandLineCommand sets the "command_line_command" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateCommandLineCommand() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldCommandLineCommand)
+// UpdateCanonicalCommandLine sets the "canonical_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateCanonicalCommandLine() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldCanonicalCommandLine)
 	return u
 }
 
-// ClearCommandLineCommand clears the value of the "command_line_command" field.
-func (u *BazelInvocationUpsert) ClearCommandLineCommand() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldCommandLineCommand)
+// ClearCanonicalCommandLine clears the value of the "canonical_command_line" field.
+func (u *BazelInvocationUpsert) ClearCanonicalCommandLine() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldCanonicalCommandLine)
 	return u
 }
 
-// SetCommandLineExecutable sets the "command_line_executable" field.
-func (u *BazelInvocationUpsert) SetCommandLineExecutable(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldCommandLineExecutable, v)
+// SetOriginalCommandLine sets the "original_command_line" field.
+func (u *BazelInvocationUpsert) SetOriginalCommandLine(v *invocation.CommandLineData) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldOriginalCommandLine, v)
 	return u
 }
 
-// UpdateCommandLineExecutable sets the "command_line_executable" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateCommandLineExecutable() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldCommandLineExecutable)
+// UpdateOriginalCommandLine sets the "original_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateOriginalCommandLine() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldOriginalCommandLine)
 	return u
 }
 
-// ClearCommandLineExecutable clears the value of the "command_line_executable" field.
-func (u *BazelInvocationUpsert) ClearCommandLineExecutable() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldCommandLineExecutable)
+// ClearOriginalCommandLine clears the value of the "original_command_line" field.
+func (u *BazelInvocationUpsert) ClearOriginalCommandLine() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldOriginalCommandLine)
 	return u
 }
 
-// SetCommandLineResidual sets the "command_line_residual" field.
-func (u *BazelInvocationUpsert) SetCommandLineResidual(v string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldCommandLineResidual, v)
+// SetOptionsParsed sets the "options_parsed" field.
+func (u *BazelInvocationUpsert) SetOptionsParsed(v *invocation.ParsedCommandLineOptions) *BazelInvocationUpsert {
+	u.Set(bazelinvocation.FieldOptionsParsed, v)
 	return u
 }
 
-// UpdateCommandLineResidual sets the "command_line_residual" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateCommandLineResidual() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldCommandLineResidual)
+// UpdateOptionsParsed sets the "options_parsed" field to the value that was provided on create.
+func (u *BazelInvocationUpsert) UpdateOptionsParsed() *BazelInvocationUpsert {
+	u.SetExcluded(bazelinvocation.FieldOptionsParsed)
 	return u
 }
 
-// ClearCommandLineResidual clears the value of the "command_line_residual" field.
-func (u *BazelInvocationUpsert) ClearCommandLineResidual() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldCommandLineResidual)
-	return u
-}
-
-// SetCommandLine sets the "command_line" field.
-func (u *BazelInvocationUpsert) SetCommandLine(v []string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldCommandLine, v)
-	return u
-}
-
-// UpdateCommandLine sets the "command_line" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateCommandLine() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldCommandLine)
-	return u
-}
-
-// ClearCommandLine clears the value of the "command_line" field.
-func (u *BazelInvocationUpsert) ClearCommandLine() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldCommandLine)
-	return u
-}
-
-// SetExplicitCommandLine sets the "explicit_command_line" field.
-func (u *BazelInvocationUpsert) SetExplicitCommandLine(v []string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldExplicitCommandLine, v)
-	return u
-}
-
-// UpdateExplicitCommandLine sets the "explicit_command_line" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateExplicitCommandLine() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldExplicitCommandLine)
-	return u
-}
-
-// ClearExplicitCommandLine clears the value of the "explicit_command_line" field.
-func (u *BazelInvocationUpsert) ClearExplicitCommandLine() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldExplicitCommandLine)
-	return u
-}
-
-// SetStartupOptions sets the "startup_options" field.
-func (u *BazelInvocationUpsert) SetStartupOptions(v []string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldStartupOptions, v)
-	return u
-}
-
-// UpdateStartupOptions sets the "startup_options" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateStartupOptions() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldStartupOptions)
-	return u
-}
-
-// ClearStartupOptions clears the value of the "startup_options" field.
-func (u *BazelInvocationUpsert) ClearStartupOptions() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldStartupOptions)
-	return u
-}
-
-// SetExplicitStartupOptions sets the "explicit_startup_options" field.
-func (u *BazelInvocationUpsert) SetExplicitStartupOptions(v []string) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldExplicitStartupOptions, v)
-	return u
-}
-
-// UpdateExplicitStartupOptions sets the "explicit_startup_options" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateExplicitStartupOptions() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldExplicitStartupOptions)
-	return u
-}
-
-// ClearExplicitStartupOptions clears the value of the "explicit_startup_options" field.
-func (u *BazelInvocationUpsert) ClearExplicitStartupOptions() *BazelInvocationUpsert {
-	u.SetNull(bazelinvocation.FieldExplicitStartupOptions)
+// ClearOptionsParsed clears the value of the "options_parsed" field.
+func (u *BazelInvocationUpsert) ClearOptionsParsed() *BazelInvocationUpsert {
+	u.SetNull(bazelinvocation.FieldOptionsParsed)
 	return u
 }
 
@@ -1615,18 +1430,6 @@ func (u *BazelInvocationUpsert) UpdateProcessedEventBuildMetadata() *BazelInvoca
 	return u
 }
 
-// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
-func (u *BazelInvocationUpsert) SetProcessedEventOptionsParsed(v bool) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldProcessedEventOptionsParsed, v)
-	return u
-}
-
-// UpdateProcessedEventOptionsParsed sets the "processed_event_options_parsed" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateProcessedEventOptionsParsed() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldProcessedEventOptionsParsed)
-	return u
-}
-
 // SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
 func (u *BazelInvocationUpsert) SetProcessedEventBuildFinished(v bool) *BazelInvocationUpsert {
 	u.Set(bazelinvocation.FieldProcessedEventBuildFinished, v)
@@ -1636,18 +1439,6 @@ func (u *BazelInvocationUpsert) SetProcessedEventBuildFinished(v bool) *BazelInv
 // UpdateProcessedEventBuildFinished sets the "processed_event_build_finished" field to the value that was provided on create.
 func (u *BazelInvocationUpsert) UpdateProcessedEventBuildFinished() *BazelInvocationUpsert {
 	u.SetExcluded(bazelinvocation.FieldProcessedEventBuildFinished)
-	return u
-}
-
-// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
-func (u *BazelInvocationUpsert) SetProcessedEventStructuredCommandLine(v bool) *BazelInvocationUpsert {
-	u.Set(bazelinvocation.FieldProcessedEventStructuredCommandLine, v)
-	return u
-}
-
-// UpdateProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field to the value that was provided on create.
-func (u *BazelInvocationUpsert) UpdateProcessedEventStructuredCommandLine() *BazelInvocationUpsert {
-	u.SetExcluded(bazelinvocation.FieldProcessedEventStructuredCommandLine)
 	return u
 }
 
@@ -2053,150 +1844,66 @@ func (u *BazelInvocationUpsertOne) ClearExitCodeCode() *BazelInvocationUpsertOne
 	})
 }
 
-// SetCommandLineCommand sets the "command_line_command" field.
-func (u *BazelInvocationUpsertOne) SetCommandLineCommand(v string) *BazelInvocationUpsertOne {
+// SetCanonicalCommandLine sets the "canonical_command_line" field.
+func (u *BazelInvocationUpsertOne) SetCanonicalCommandLine(v *invocation.CommandLineData) *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetCommandLineCommand(v)
+		s.SetCanonicalCommandLine(v)
 	})
 }
 
-// UpdateCommandLineCommand sets the "command_line_command" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateCommandLineCommand() *BazelInvocationUpsertOne {
+// UpdateCanonicalCommandLine sets the "canonical_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateCanonicalCommandLine() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateCommandLineCommand()
+		s.UpdateCanonicalCommandLine()
 	})
 }
 
-// ClearCommandLineCommand clears the value of the "command_line_command" field.
-func (u *BazelInvocationUpsertOne) ClearCommandLineCommand() *BazelInvocationUpsertOne {
+// ClearCanonicalCommandLine clears the value of the "canonical_command_line" field.
+func (u *BazelInvocationUpsertOne) ClearCanonicalCommandLine() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearCommandLineCommand()
+		s.ClearCanonicalCommandLine()
 	})
 }
 
-// SetCommandLineExecutable sets the "command_line_executable" field.
-func (u *BazelInvocationUpsertOne) SetCommandLineExecutable(v string) *BazelInvocationUpsertOne {
+// SetOriginalCommandLine sets the "original_command_line" field.
+func (u *BazelInvocationUpsertOne) SetOriginalCommandLine(v *invocation.CommandLineData) *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetCommandLineExecutable(v)
+		s.SetOriginalCommandLine(v)
 	})
 }
 
-// UpdateCommandLineExecutable sets the "command_line_executable" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateCommandLineExecutable() *BazelInvocationUpsertOne {
+// UpdateOriginalCommandLine sets the "original_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateOriginalCommandLine() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateCommandLineExecutable()
+		s.UpdateOriginalCommandLine()
 	})
 }
 
-// ClearCommandLineExecutable clears the value of the "command_line_executable" field.
-func (u *BazelInvocationUpsertOne) ClearCommandLineExecutable() *BazelInvocationUpsertOne {
+// ClearOriginalCommandLine clears the value of the "original_command_line" field.
+func (u *BazelInvocationUpsertOne) ClearOriginalCommandLine() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearCommandLineExecutable()
+		s.ClearOriginalCommandLine()
 	})
 }
 
-// SetCommandLineResidual sets the "command_line_residual" field.
-func (u *BazelInvocationUpsertOne) SetCommandLineResidual(v string) *BazelInvocationUpsertOne {
+// SetOptionsParsed sets the "options_parsed" field.
+func (u *BazelInvocationUpsertOne) SetOptionsParsed(v *invocation.ParsedCommandLineOptions) *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetCommandLineResidual(v)
+		s.SetOptionsParsed(v)
 	})
 }
 
-// UpdateCommandLineResidual sets the "command_line_residual" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateCommandLineResidual() *BazelInvocationUpsertOne {
+// UpdateOptionsParsed sets the "options_parsed" field to the value that was provided on create.
+func (u *BazelInvocationUpsertOne) UpdateOptionsParsed() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateCommandLineResidual()
+		s.UpdateOptionsParsed()
 	})
 }
 
-// ClearCommandLineResidual clears the value of the "command_line_residual" field.
-func (u *BazelInvocationUpsertOne) ClearCommandLineResidual() *BazelInvocationUpsertOne {
+// ClearOptionsParsed clears the value of the "options_parsed" field.
+func (u *BazelInvocationUpsertOne) ClearOptionsParsed() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearCommandLineResidual()
-	})
-}
-
-// SetCommandLine sets the "command_line" field.
-func (u *BazelInvocationUpsertOne) SetCommandLine(v []string) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetCommandLine(v)
-	})
-}
-
-// UpdateCommandLine sets the "command_line" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateCommandLine() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateCommandLine()
-	})
-}
-
-// ClearCommandLine clears the value of the "command_line" field.
-func (u *BazelInvocationUpsertOne) ClearCommandLine() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearCommandLine()
-	})
-}
-
-// SetExplicitCommandLine sets the "explicit_command_line" field.
-func (u *BazelInvocationUpsertOne) SetExplicitCommandLine(v []string) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetExplicitCommandLine(v)
-	})
-}
-
-// UpdateExplicitCommandLine sets the "explicit_command_line" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateExplicitCommandLine() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateExplicitCommandLine()
-	})
-}
-
-// ClearExplicitCommandLine clears the value of the "explicit_command_line" field.
-func (u *BazelInvocationUpsertOne) ClearExplicitCommandLine() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearExplicitCommandLine()
-	})
-}
-
-// SetStartupOptions sets the "startup_options" field.
-func (u *BazelInvocationUpsertOne) SetStartupOptions(v []string) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetStartupOptions(v)
-	})
-}
-
-// UpdateStartupOptions sets the "startup_options" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateStartupOptions() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateStartupOptions()
-	})
-}
-
-// ClearStartupOptions clears the value of the "startup_options" field.
-func (u *BazelInvocationUpsertOne) ClearStartupOptions() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearStartupOptions()
-	})
-}
-
-// SetExplicitStartupOptions sets the "explicit_startup_options" field.
-func (u *BazelInvocationUpsertOne) SetExplicitStartupOptions(v []string) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetExplicitStartupOptions(v)
-	})
-}
-
-// UpdateExplicitStartupOptions sets the "explicit_startup_options" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateExplicitStartupOptions() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateExplicitStartupOptions()
-	})
-}
-
-// ClearExplicitStartupOptions clears the value of the "explicit_startup_options" field.
-func (u *BazelInvocationUpsertOne) ClearExplicitStartupOptions() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearExplicitStartupOptions()
+		s.ClearOptionsParsed()
 	})
 }
 
@@ -2228,20 +1935,6 @@ func (u *BazelInvocationUpsertOne) UpdateProcessedEventBuildMetadata() *BazelInv
 	})
 }
 
-// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
-func (u *BazelInvocationUpsertOne) SetProcessedEventOptionsParsed(v bool) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetProcessedEventOptionsParsed(v)
-	})
-}
-
-// UpdateProcessedEventOptionsParsed sets the "processed_event_options_parsed" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateProcessedEventOptionsParsed() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateProcessedEventOptionsParsed()
-	})
-}
-
 // SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
 func (u *BazelInvocationUpsertOne) SetProcessedEventBuildFinished(v bool) *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
@@ -2253,20 +1946,6 @@ func (u *BazelInvocationUpsertOne) SetProcessedEventBuildFinished(v bool) *Bazel
 func (u *BazelInvocationUpsertOne) UpdateProcessedEventBuildFinished() *BazelInvocationUpsertOne {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.UpdateProcessedEventBuildFinished()
-	})
-}
-
-// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
-func (u *BazelInvocationUpsertOne) SetProcessedEventStructuredCommandLine(v bool) *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetProcessedEventStructuredCommandLine(v)
-	})
-}
-
-// UpdateProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field to the value that was provided on create.
-func (u *BazelInvocationUpsertOne) UpdateProcessedEventStructuredCommandLine() *BazelInvocationUpsertOne {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateProcessedEventStructuredCommandLine()
 	})
 }
 
@@ -2840,150 +2519,66 @@ func (u *BazelInvocationUpsertBulk) ClearExitCodeCode() *BazelInvocationUpsertBu
 	})
 }
 
-// SetCommandLineCommand sets the "command_line_command" field.
-func (u *BazelInvocationUpsertBulk) SetCommandLineCommand(v string) *BazelInvocationUpsertBulk {
+// SetCanonicalCommandLine sets the "canonical_command_line" field.
+func (u *BazelInvocationUpsertBulk) SetCanonicalCommandLine(v *invocation.CommandLineData) *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetCommandLineCommand(v)
+		s.SetCanonicalCommandLine(v)
 	})
 }
 
-// UpdateCommandLineCommand sets the "command_line_command" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateCommandLineCommand() *BazelInvocationUpsertBulk {
+// UpdateCanonicalCommandLine sets the "canonical_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateCanonicalCommandLine() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateCommandLineCommand()
+		s.UpdateCanonicalCommandLine()
 	})
 }
 
-// ClearCommandLineCommand clears the value of the "command_line_command" field.
-func (u *BazelInvocationUpsertBulk) ClearCommandLineCommand() *BazelInvocationUpsertBulk {
+// ClearCanonicalCommandLine clears the value of the "canonical_command_line" field.
+func (u *BazelInvocationUpsertBulk) ClearCanonicalCommandLine() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearCommandLineCommand()
+		s.ClearCanonicalCommandLine()
 	})
 }
 
-// SetCommandLineExecutable sets the "command_line_executable" field.
-func (u *BazelInvocationUpsertBulk) SetCommandLineExecutable(v string) *BazelInvocationUpsertBulk {
+// SetOriginalCommandLine sets the "original_command_line" field.
+func (u *BazelInvocationUpsertBulk) SetOriginalCommandLine(v *invocation.CommandLineData) *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetCommandLineExecutable(v)
+		s.SetOriginalCommandLine(v)
 	})
 }
 
-// UpdateCommandLineExecutable sets the "command_line_executable" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateCommandLineExecutable() *BazelInvocationUpsertBulk {
+// UpdateOriginalCommandLine sets the "original_command_line" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateOriginalCommandLine() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateCommandLineExecutable()
+		s.UpdateOriginalCommandLine()
 	})
 }
 
-// ClearCommandLineExecutable clears the value of the "command_line_executable" field.
-func (u *BazelInvocationUpsertBulk) ClearCommandLineExecutable() *BazelInvocationUpsertBulk {
+// ClearOriginalCommandLine clears the value of the "original_command_line" field.
+func (u *BazelInvocationUpsertBulk) ClearOriginalCommandLine() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearCommandLineExecutable()
+		s.ClearOriginalCommandLine()
 	})
 }
 
-// SetCommandLineResidual sets the "command_line_residual" field.
-func (u *BazelInvocationUpsertBulk) SetCommandLineResidual(v string) *BazelInvocationUpsertBulk {
+// SetOptionsParsed sets the "options_parsed" field.
+func (u *BazelInvocationUpsertBulk) SetOptionsParsed(v *invocation.ParsedCommandLineOptions) *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetCommandLineResidual(v)
+		s.SetOptionsParsed(v)
 	})
 }
 
-// UpdateCommandLineResidual sets the "command_line_residual" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateCommandLineResidual() *BazelInvocationUpsertBulk {
+// UpdateOptionsParsed sets the "options_parsed" field to the value that was provided on create.
+func (u *BazelInvocationUpsertBulk) UpdateOptionsParsed() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateCommandLineResidual()
+		s.UpdateOptionsParsed()
 	})
 }
 
-// ClearCommandLineResidual clears the value of the "command_line_residual" field.
-func (u *BazelInvocationUpsertBulk) ClearCommandLineResidual() *BazelInvocationUpsertBulk {
+// ClearOptionsParsed clears the value of the "options_parsed" field.
+func (u *BazelInvocationUpsertBulk) ClearOptionsParsed() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearCommandLineResidual()
-	})
-}
-
-// SetCommandLine sets the "command_line" field.
-func (u *BazelInvocationUpsertBulk) SetCommandLine(v []string) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetCommandLine(v)
-	})
-}
-
-// UpdateCommandLine sets the "command_line" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateCommandLine() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateCommandLine()
-	})
-}
-
-// ClearCommandLine clears the value of the "command_line" field.
-func (u *BazelInvocationUpsertBulk) ClearCommandLine() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearCommandLine()
-	})
-}
-
-// SetExplicitCommandLine sets the "explicit_command_line" field.
-func (u *BazelInvocationUpsertBulk) SetExplicitCommandLine(v []string) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetExplicitCommandLine(v)
-	})
-}
-
-// UpdateExplicitCommandLine sets the "explicit_command_line" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateExplicitCommandLine() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateExplicitCommandLine()
-	})
-}
-
-// ClearExplicitCommandLine clears the value of the "explicit_command_line" field.
-func (u *BazelInvocationUpsertBulk) ClearExplicitCommandLine() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearExplicitCommandLine()
-	})
-}
-
-// SetStartupOptions sets the "startup_options" field.
-func (u *BazelInvocationUpsertBulk) SetStartupOptions(v []string) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetStartupOptions(v)
-	})
-}
-
-// UpdateStartupOptions sets the "startup_options" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateStartupOptions() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateStartupOptions()
-	})
-}
-
-// ClearStartupOptions clears the value of the "startup_options" field.
-func (u *BazelInvocationUpsertBulk) ClearStartupOptions() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearStartupOptions()
-	})
-}
-
-// SetExplicitStartupOptions sets the "explicit_startup_options" field.
-func (u *BazelInvocationUpsertBulk) SetExplicitStartupOptions(v []string) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetExplicitStartupOptions(v)
-	})
-}
-
-// UpdateExplicitStartupOptions sets the "explicit_startup_options" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateExplicitStartupOptions() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateExplicitStartupOptions()
-	})
-}
-
-// ClearExplicitStartupOptions clears the value of the "explicit_startup_options" field.
-func (u *BazelInvocationUpsertBulk) ClearExplicitStartupOptions() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.ClearExplicitStartupOptions()
+		s.ClearOptionsParsed()
 	})
 }
 
@@ -3015,20 +2610,6 @@ func (u *BazelInvocationUpsertBulk) UpdateProcessedEventBuildMetadata() *BazelIn
 	})
 }
 
-// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
-func (u *BazelInvocationUpsertBulk) SetProcessedEventOptionsParsed(v bool) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetProcessedEventOptionsParsed(v)
-	})
-}
-
-// UpdateProcessedEventOptionsParsed sets the "processed_event_options_parsed" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateProcessedEventOptionsParsed() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateProcessedEventOptionsParsed()
-	})
-}
-
 // SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
 func (u *BazelInvocationUpsertBulk) SetProcessedEventBuildFinished(v bool) *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
@@ -3040,20 +2621,6 @@ func (u *BazelInvocationUpsertBulk) SetProcessedEventBuildFinished(v bool) *Baze
 func (u *BazelInvocationUpsertBulk) UpdateProcessedEventBuildFinished() *BazelInvocationUpsertBulk {
 	return u.Update(func(s *BazelInvocationUpsert) {
 		s.UpdateProcessedEventBuildFinished()
-	})
-}
-
-// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
-func (u *BazelInvocationUpsertBulk) SetProcessedEventStructuredCommandLine(v bool) *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.SetProcessedEventStructuredCommandLine(v)
-	})
-}
-
-// UpdateProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field to the value that was provided on create.
-func (u *BazelInvocationUpsertBulk) UpdateProcessedEventStructuredCommandLine() *BazelInvocationUpsertBulk {
-	return u.Update(func(s *BazelInvocationUpsert) {
-		s.UpdateProcessedEventStructuredCommandLine()
 	})
 }
 

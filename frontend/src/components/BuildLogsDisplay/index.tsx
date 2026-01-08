@@ -11,6 +11,7 @@ import LogViewer from "../LogViewer";
 
 interface Props {
   invocationId: string;
+  rawCommand: string|null;
 }
 
 const fetchLog = async (id: string, start = 0, end = -1): Promise<string> => {
@@ -24,7 +25,7 @@ const fetchLog = async (id: string, start = 0, end = -1): Promise<string> => {
   return response.text();
 };
 
-const BuildLogsDisplay: React.FC<Props> = ({ invocationId }) => {
+const BuildLogsDisplay: React.FC<Props> = ({ invocationId, rawCommand }) => {
   // TODO: Only fetch the currently viewed parts of the log.
   const { data, error, isLoading } = useQuery({
     queryKey: ["getLogs", invocationId],
@@ -37,7 +38,7 @@ const BuildLogsDisplay: React.FC<Props> = ({ invocationId }) => {
     <PortalCard
       type="inner"
       icon={<FileSearchOutlined />}
-      titleBits={["Raw Build Logs"]}
+      titleBits={["Raw Build Logs", rawCommand]}
       extraBits={[
         <Tooltip
           key="tooltip"
@@ -56,6 +57,7 @@ const BuildLogsDisplay: React.FC<Props> = ({ invocationId }) => {
         ),
       ]}
     >
+
       <LogViewer loading={isLoading} error={error} log={data} />
     </PortalCard>
   );

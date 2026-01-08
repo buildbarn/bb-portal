@@ -6,6 +6,7 @@ package graphql
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"entgo.io/contrib/entgql"
@@ -47,6 +48,54 @@ func (r *authenticatedUserResolver) ID(ctx context.Context, obj *ent.Authenticat
 // ID is the resolver for the id field.
 func (r *bazelInvocationResolver) ID(ctx context.Context, obj *ent.BazelInvocation) (string, error) {
 	return helpers.GraphQLIDFromTypeAndID("BazelInvocation", obj.ID), nil
+}
+
+// CanonicalCommandLine is the resolver for the canonicalCommandLine field.
+func (r *bazelInvocationResolver) CanonicalCommandLine(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error) {
+	if obj.CanonicalCommandLine == nil {
+		return nil, nil
+	}
+	b, err := json.Marshal(obj.CanonicalCommandLine)
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]any
+	if err := json.Unmarshal(b, &m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// OriginalCommandLine is the resolver for the originalCommandLine field.
+func (r *bazelInvocationResolver) OriginalCommandLine(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error) {
+	if obj.OriginalCommandLine == nil {
+		return nil, nil
+	}
+	b, err := json.Marshal(obj.OriginalCommandLine)
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]any
+	if err := json.Unmarshal(b, &m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// OptionsParsed is the resolver for the optionsParsed field.
+func (r *bazelInvocationResolver) OptionsParsed(ctx context.Context, obj *ent.BazelInvocation) (map[string]any, error) {
+	if obj.OptionsParsed == nil {
+		return nil, nil
+	}
+	b, err := json.Marshal(obj.OptionsParsed)
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]any
+	if err := json.Unmarshal(b, &m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // ID is the resolver for the id field.

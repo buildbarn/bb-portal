@@ -2,17 +2,6 @@
 
 package model
 
-type BazelCommand struct {
-	ID                     string    `json:"id"`
-	Command                string    `json:"command"`
-	Executable             string    `json:"executable"`
-	Residual               string    `json:"residual"`
-	ExplicitCmdLine        string    `json:"explicitCmdLine"`
-	CmdLine                []*string `json:"cmdLine,omitempty"`
-	StartupOptions         []*string `json:"startupOptions,omitempty"`
-	ExplicitStartupOptions []*string `json:"explicitStartupOptions,omitempty"`
-}
-
 type Profile struct {
 	ID             string `json:"id"`
 	Name           string `json:"name"`

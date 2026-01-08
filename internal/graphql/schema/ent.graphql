@@ -870,6 +870,18 @@ type BazelInvocation implements Node {
   bazelVersion: String
   exitCodeName: String
   exitCodeCode: Int
+  """
+  JSON representation of the canonical command line options.
+  """
+  canonicalCommandLine: Map
+  """
+  JSON representation of the original command line options.
+  """
+  originalCommandLine: Map
+  """
+  JSON representation of the parsed command line options
+  """
+  optionsParsed: Map
   instanceName: InstanceName!
   build: Build
   authenticatedUser: AuthenticatedUser

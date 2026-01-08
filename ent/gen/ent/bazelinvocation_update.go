@@ -10,7 +10,6 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/action"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
@@ -28,6 +27,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/predicate"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/targetkindmapping"
+	"github.com/buildbarn/bb-portal/pkg/invocation"
 )
 
 // BazelInvocationUpdate is the builder for updating BazelInvocation entities.
@@ -366,135 +366,39 @@ func (biu *BazelInvocationUpdate) ClearExitCodeCode() *BazelInvocationUpdate {
 	return biu
 }
 
-// SetCommandLineCommand sets the "command_line_command" field.
-func (biu *BazelInvocationUpdate) SetCommandLineCommand(s string) *BazelInvocationUpdate {
-	biu.mutation.SetCommandLineCommand(s)
+// SetCanonicalCommandLine sets the "canonical_command_line" field.
+func (biu *BazelInvocationUpdate) SetCanonicalCommandLine(ild *invocation.CommandLineData) *BazelInvocationUpdate {
+	biu.mutation.SetCanonicalCommandLine(ild)
 	return biu
 }
 
-// SetNillableCommandLineCommand sets the "command_line_command" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableCommandLineCommand(s *string) *BazelInvocationUpdate {
-	if s != nil {
-		biu.SetCommandLineCommand(*s)
-	}
+// ClearCanonicalCommandLine clears the value of the "canonical_command_line" field.
+func (biu *BazelInvocationUpdate) ClearCanonicalCommandLine() *BazelInvocationUpdate {
+	biu.mutation.ClearCanonicalCommandLine()
 	return biu
 }
 
-// ClearCommandLineCommand clears the value of the "command_line_command" field.
-func (biu *BazelInvocationUpdate) ClearCommandLineCommand() *BazelInvocationUpdate {
-	biu.mutation.ClearCommandLineCommand()
+// SetOriginalCommandLine sets the "original_command_line" field.
+func (biu *BazelInvocationUpdate) SetOriginalCommandLine(ild *invocation.CommandLineData) *BazelInvocationUpdate {
+	biu.mutation.SetOriginalCommandLine(ild)
 	return biu
 }
 
-// SetCommandLineExecutable sets the "command_line_executable" field.
-func (biu *BazelInvocationUpdate) SetCommandLineExecutable(s string) *BazelInvocationUpdate {
-	biu.mutation.SetCommandLineExecutable(s)
+// ClearOriginalCommandLine clears the value of the "original_command_line" field.
+func (biu *BazelInvocationUpdate) ClearOriginalCommandLine() *BazelInvocationUpdate {
+	biu.mutation.ClearOriginalCommandLine()
 	return biu
 }
 
-// SetNillableCommandLineExecutable sets the "command_line_executable" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableCommandLineExecutable(s *string) *BazelInvocationUpdate {
-	if s != nil {
-		biu.SetCommandLineExecutable(*s)
-	}
+// SetOptionsParsed sets the "options_parsed" field.
+func (biu *BazelInvocationUpdate) SetOptionsParsed(iclo *invocation.ParsedCommandLineOptions) *BazelInvocationUpdate {
+	biu.mutation.SetOptionsParsed(iclo)
 	return biu
 }
 
-// ClearCommandLineExecutable clears the value of the "command_line_executable" field.
-func (biu *BazelInvocationUpdate) ClearCommandLineExecutable() *BazelInvocationUpdate {
-	biu.mutation.ClearCommandLineExecutable()
-	return biu
-}
-
-// SetCommandLineResidual sets the "command_line_residual" field.
-func (biu *BazelInvocationUpdate) SetCommandLineResidual(s string) *BazelInvocationUpdate {
-	biu.mutation.SetCommandLineResidual(s)
-	return biu
-}
-
-// SetNillableCommandLineResidual sets the "command_line_residual" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableCommandLineResidual(s *string) *BazelInvocationUpdate {
-	if s != nil {
-		biu.SetCommandLineResidual(*s)
-	}
-	return biu
-}
-
-// ClearCommandLineResidual clears the value of the "command_line_residual" field.
-func (biu *BazelInvocationUpdate) ClearCommandLineResidual() *BazelInvocationUpdate {
-	biu.mutation.ClearCommandLineResidual()
-	return biu
-}
-
-// SetCommandLine sets the "command_line" field.
-func (biu *BazelInvocationUpdate) SetCommandLine(s []string) *BazelInvocationUpdate {
-	biu.mutation.SetCommandLine(s)
-	return biu
-}
-
-// AppendCommandLine appends s to the "command_line" field.
-func (biu *BazelInvocationUpdate) AppendCommandLine(s []string) *BazelInvocationUpdate {
-	biu.mutation.AppendCommandLine(s)
-	return biu
-}
-
-// ClearCommandLine clears the value of the "command_line" field.
-func (biu *BazelInvocationUpdate) ClearCommandLine() *BazelInvocationUpdate {
-	biu.mutation.ClearCommandLine()
-	return biu
-}
-
-// SetExplicitCommandLine sets the "explicit_command_line" field.
-func (biu *BazelInvocationUpdate) SetExplicitCommandLine(s []string) *BazelInvocationUpdate {
-	biu.mutation.SetExplicitCommandLine(s)
-	return biu
-}
-
-// AppendExplicitCommandLine appends s to the "explicit_command_line" field.
-func (biu *BazelInvocationUpdate) AppendExplicitCommandLine(s []string) *BazelInvocationUpdate {
-	biu.mutation.AppendExplicitCommandLine(s)
-	return biu
-}
-
-// ClearExplicitCommandLine clears the value of the "explicit_command_line" field.
-func (biu *BazelInvocationUpdate) ClearExplicitCommandLine() *BazelInvocationUpdate {
-	biu.mutation.ClearExplicitCommandLine()
-	return biu
-}
-
-// SetStartupOptions sets the "startup_options" field.
-func (biu *BazelInvocationUpdate) SetStartupOptions(s []string) *BazelInvocationUpdate {
-	biu.mutation.SetStartupOptions(s)
-	return biu
-}
-
-// AppendStartupOptions appends s to the "startup_options" field.
-func (biu *BazelInvocationUpdate) AppendStartupOptions(s []string) *BazelInvocationUpdate {
-	biu.mutation.AppendStartupOptions(s)
-	return biu
-}
-
-// ClearStartupOptions clears the value of the "startup_options" field.
-func (biu *BazelInvocationUpdate) ClearStartupOptions() *BazelInvocationUpdate {
-	biu.mutation.ClearStartupOptions()
-	return biu
-}
-
-// SetExplicitStartupOptions sets the "explicit_startup_options" field.
-func (biu *BazelInvocationUpdate) SetExplicitStartupOptions(s []string) *BazelInvocationUpdate {
-	biu.mutation.SetExplicitStartupOptions(s)
-	return biu
-}
-
-// AppendExplicitStartupOptions appends s to the "explicit_startup_options" field.
-func (biu *BazelInvocationUpdate) AppendExplicitStartupOptions(s []string) *BazelInvocationUpdate {
-	biu.mutation.AppendExplicitStartupOptions(s)
-	return biu
-}
-
-// ClearExplicitStartupOptions clears the value of the "explicit_startup_options" field.
-func (biu *BazelInvocationUpdate) ClearExplicitStartupOptions() *BazelInvocationUpdate {
-	biu.mutation.ClearExplicitStartupOptions()
+// ClearOptionsParsed clears the value of the "options_parsed" field.
+func (biu *BazelInvocationUpdate) ClearOptionsParsed() *BazelInvocationUpdate {
+	biu.mutation.ClearOptionsParsed()
 	return biu
 }
 
@@ -526,20 +430,6 @@ func (biu *BazelInvocationUpdate) SetNillableProcessedEventBuildMetadata(b *bool
 	return biu
 }
 
-// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
-func (biu *BazelInvocationUpdate) SetProcessedEventOptionsParsed(b bool) *BazelInvocationUpdate {
-	biu.mutation.SetProcessedEventOptionsParsed(b)
-	return biu
-}
-
-// SetNillableProcessedEventOptionsParsed sets the "processed_event_options_parsed" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableProcessedEventOptionsParsed(b *bool) *BazelInvocationUpdate {
-	if b != nil {
-		biu.SetProcessedEventOptionsParsed(*b)
-	}
-	return biu
-}
-
 // SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
 func (biu *BazelInvocationUpdate) SetProcessedEventBuildFinished(b bool) *BazelInvocationUpdate {
 	biu.mutation.SetProcessedEventBuildFinished(b)
@@ -550,20 +440,6 @@ func (biu *BazelInvocationUpdate) SetProcessedEventBuildFinished(b bool) *BazelI
 func (biu *BazelInvocationUpdate) SetNillableProcessedEventBuildFinished(b *bool) *BazelInvocationUpdate {
 	if b != nil {
 		biu.SetProcessedEventBuildFinished(*b)
-	}
-	return biu
-}
-
-// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
-func (biu *BazelInvocationUpdate) SetProcessedEventStructuredCommandLine(b bool) *BazelInvocationUpdate {
-	biu.mutation.SetProcessedEventStructuredCommandLine(b)
-	return biu
-}
-
-// SetNillableProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field if the given value is not nil.
-func (biu *BazelInvocationUpdate) SetNillableProcessedEventStructuredCommandLine(b *bool) *BazelInvocationUpdate {
-	if b != nil {
-		biu.SetProcessedEventStructuredCommandLine(*b)
 	}
 	return biu
 }
@@ -1158,67 +1034,23 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	if biu.mutation.ExitCodeCodeCleared() {
 		_spec.ClearField(bazelinvocation.FieldExitCodeCode, field.TypeInt32)
 	}
-	if value, ok := biu.mutation.CommandLineCommand(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLineCommand, field.TypeString, value)
+	if value, ok := biu.mutation.CanonicalCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldCanonicalCommandLine, field.TypeJSON, value)
 	}
-	if biu.mutation.CommandLineCommandCleared() {
-		_spec.ClearField(bazelinvocation.FieldCommandLineCommand, field.TypeString)
+	if biu.mutation.CanonicalCommandLineCleared() {
+		_spec.ClearField(bazelinvocation.FieldCanonicalCommandLine, field.TypeJSON)
 	}
-	if value, ok := biu.mutation.CommandLineExecutable(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLineExecutable, field.TypeString, value)
+	if value, ok := biu.mutation.OriginalCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldOriginalCommandLine, field.TypeJSON, value)
 	}
-	if biu.mutation.CommandLineExecutableCleared() {
-		_spec.ClearField(bazelinvocation.FieldCommandLineExecutable, field.TypeString)
+	if biu.mutation.OriginalCommandLineCleared() {
+		_spec.ClearField(bazelinvocation.FieldOriginalCommandLine, field.TypeJSON)
 	}
-	if value, ok := biu.mutation.CommandLineResidual(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLineResidual, field.TypeString, value)
+	if value, ok := biu.mutation.OptionsParsed(); ok {
+		_spec.SetField(bazelinvocation.FieldOptionsParsed, field.TypeJSON, value)
 	}
-	if biu.mutation.CommandLineResidualCleared() {
-		_spec.ClearField(bazelinvocation.FieldCommandLineResidual, field.TypeString)
-	}
-	if value, ok := biu.mutation.CommandLine(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLine, field.TypeJSON, value)
-	}
-	if value, ok := biu.mutation.AppendedCommandLine(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, bazelinvocation.FieldCommandLine, value)
-		})
-	}
-	if biu.mutation.CommandLineCleared() {
-		_spec.ClearField(bazelinvocation.FieldCommandLine, field.TypeJSON)
-	}
-	if value, ok := biu.mutation.ExplicitCommandLine(); ok {
-		_spec.SetField(bazelinvocation.FieldExplicitCommandLine, field.TypeJSON, value)
-	}
-	if value, ok := biu.mutation.AppendedExplicitCommandLine(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, bazelinvocation.FieldExplicitCommandLine, value)
-		})
-	}
-	if biu.mutation.ExplicitCommandLineCleared() {
-		_spec.ClearField(bazelinvocation.FieldExplicitCommandLine, field.TypeJSON)
-	}
-	if value, ok := biu.mutation.StartupOptions(); ok {
-		_spec.SetField(bazelinvocation.FieldStartupOptions, field.TypeJSON, value)
-	}
-	if value, ok := biu.mutation.AppendedStartupOptions(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, bazelinvocation.FieldStartupOptions, value)
-		})
-	}
-	if biu.mutation.StartupOptionsCleared() {
-		_spec.ClearField(bazelinvocation.FieldStartupOptions, field.TypeJSON)
-	}
-	if value, ok := biu.mutation.ExplicitStartupOptions(); ok {
-		_spec.SetField(bazelinvocation.FieldExplicitStartupOptions, field.TypeJSON, value)
-	}
-	if value, ok := biu.mutation.AppendedExplicitStartupOptions(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, bazelinvocation.FieldExplicitStartupOptions, value)
-		})
-	}
-	if biu.mutation.ExplicitStartupOptionsCleared() {
-		_spec.ClearField(bazelinvocation.FieldExplicitStartupOptions, field.TypeJSON)
+	if biu.mutation.OptionsParsedCleared() {
+		_spec.ClearField(bazelinvocation.FieldOptionsParsed, field.TypeJSON)
 	}
 	if value, ok := biu.mutation.ProcessedEventStarted(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventStarted, field.TypeBool, value)
@@ -1226,14 +1058,8 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	if value, ok := biu.mutation.ProcessedEventBuildMetadata(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventBuildMetadata, field.TypeBool, value)
 	}
-	if value, ok := biu.mutation.ProcessedEventOptionsParsed(); ok {
-		_spec.SetField(bazelinvocation.FieldProcessedEventOptionsParsed, field.TypeBool, value)
-	}
 	if value, ok := biu.mutation.ProcessedEventBuildFinished(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventBuildFinished, field.TypeBool, value)
-	}
-	if value, ok := biu.mutation.ProcessedEventStructuredCommandLine(); ok {
-		_spec.SetField(bazelinvocation.FieldProcessedEventStructuredCommandLine, field.TypeBool, value)
 	}
 	if value, ok := biu.mutation.ProcessedEventWorkspaceStatus(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventWorkspaceStatus, field.TypeBool, value)
@@ -2100,135 +1926,39 @@ func (biuo *BazelInvocationUpdateOne) ClearExitCodeCode() *BazelInvocationUpdate
 	return biuo
 }
 
-// SetCommandLineCommand sets the "command_line_command" field.
-func (biuo *BazelInvocationUpdateOne) SetCommandLineCommand(s string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetCommandLineCommand(s)
+// SetCanonicalCommandLine sets the "canonical_command_line" field.
+func (biuo *BazelInvocationUpdateOne) SetCanonicalCommandLine(ild *invocation.CommandLineData) *BazelInvocationUpdateOne {
+	biuo.mutation.SetCanonicalCommandLine(ild)
 	return biuo
 }
 
-// SetNillableCommandLineCommand sets the "command_line_command" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableCommandLineCommand(s *string) *BazelInvocationUpdateOne {
-	if s != nil {
-		biuo.SetCommandLineCommand(*s)
-	}
+// ClearCanonicalCommandLine clears the value of the "canonical_command_line" field.
+func (biuo *BazelInvocationUpdateOne) ClearCanonicalCommandLine() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearCanonicalCommandLine()
 	return biuo
 }
 
-// ClearCommandLineCommand clears the value of the "command_line_command" field.
-func (biuo *BazelInvocationUpdateOne) ClearCommandLineCommand() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearCommandLineCommand()
+// SetOriginalCommandLine sets the "original_command_line" field.
+func (biuo *BazelInvocationUpdateOne) SetOriginalCommandLine(ild *invocation.CommandLineData) *BazelInvocationUpdateOne {
+	biuo.mutation.SetOriginalCommandLine(ild)
 	return biuo
 }
 
-// SetCommandLineExecutable sets the "command_line_executable" field.
-func (biuo *BazelInvocationUpdateOne) SetCommandLineExecutable(s string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetCommandLineExecutable(s)
+// ClearOriginalCommandLine clears the value of the "original_command_line" field.
+func (biuo *BazelInvocationUpdateOne) ClearOriginalCommandLine() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearOriginalCommandLine()
 	return biuo
 }
 
-// SetNillableCommandLineExecutable sets the "command_line_executable" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableCommandLineExecutable(s *string) *BazelInvocationUpdateOne {
-	if s != nil {
-		biuo.SetCommandLineExecutable(*s)
-	}
+// SetOptionsParsed sets the "options_parsed" field.
+func (biuo *BazelInvocationUpdateOne) SetOptionsParsed(iclo *invocation.ParsedCommandLineOptions) *BazelInvocationUpdateOne {
+	biuo.mutation.SetOptionsParsed(iclo)
 	return biuo
 }
 
-// ClearCommandLineExecutable clears the value of the "command_line_executable" field.
-func (biuo *BazelInvocationUpdateOne) ClearCommandLineExecutable() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearCommandLineExecutable()
-	return biuo
-}
-
-// SetCommandLineResidual sets the "command_line_residual" field.
-func (biuo *BazelInvocationUpdateOne) SetCommandLineResidual(s string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetCommandLineResidual(s)
-	return biuo
-}
-
-// SetNillableCommandLineResidual sets the "command_line_residual" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableCommandLineResidual(s *string) *BazelInvocationUpdateOne {
-	if s != nil {
-		biuo.SetCommandLineResidual(*s)
-	}
-	return biuo
-}
-
-// ClearCommandLineResidual clears the value of the "command_line_residual" field.
-func (biuo *BazelInvocationUpdateOne) ClearCommandLineResidual() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearCommandLineResidual()
-	return biuo
-}
-
-// SetCommandLine sets the "command_line" field.
-func (biuo *BazelInvocationUpdateOne) SetCommandLine(s []string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetCommandLine(s)
-	return biuo
-}
-
-// AppendCommandLine appends s to the "command_line" field.
-func (biuo *BazelInvocationUpdateOne) AppendCommandLine(s []string) *BazelInvocationUpdateOne {
-	biuo.mutation.AppendCommandLine(s)
-	return biuo
-}
-
-// ClearCommandLine clears the value of the "command_line" field.
-func (biuo *BazelInvocationUpdateOne) ClearCommandLine() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearCommandLine()
-	return biuo
-}
-
-// SetExplicitCommandLine sets the "explicit_command_line" field.
-func (biuo *BazelInvocationUpdateOne) SetExplicitCommandLine(s []string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetExplicitCommandLine(s)
-	return biuo
-}
-
-// AppendExplicitCommandLine appends s to the "explicit_command_line" field.
-func (biuo *BazelInvocationUpdateOne) AppendExplicitCommandLine(s []string) *BazelInvocationUpdateOne {
-	biuo.mutation.AppendExplicitCommandLine(s)
-	return biuo
-}
-
-// ClearExplicitCommandLine clears the value of the "explicit_command_line" field.
-func (biuo *BazelInvocationUpdateOne) ClearExplicitCommandLine() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearExplicitCommandLine()
-	return biuo
-}
-
-// SetStartupOptions sets the "startup_options" field.
-func (biuo *BazelInvocationUpdateOne) SetStartupOptions(s []string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetStartupOptions(s)
-	return biuo
-}
-
-// AppendStartupOptions appends s to the "startup_options" field.
-func (biuo *BazelInvocationUpdateOne) AppendStartupOptions(s []string) *BazelInvocationUpdateOne {
-	biuo.mutation.AppendStartupOptions(s)
-	return biuo
-}
-
-// ClearStartupOptions clears the value of the "startup_options" field.
-func (biuo *BazelInvocationUpdateOne) ClearStartupOptions() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearStartupOptions()
-	return biuo
-}
-
-// SetExplicitStartupOptions sets the "explicit_startup_options" field.
-func (biuo *BazelInvocationUpdateOne) SetExplicitStartupOptions(s []string) *BazelInvocationUpdateOne {
-	biuo.mutation.SetExplicitStartupOptions(s)
-	return biuo
-}
-
-// AppendExplicitStartupOptions appends s to the "explicit_startup_options" field.
-func (biuo *BazelInvocationUpdateOne) AppendExplicitStartupOptions(s []string) *BazelInvocationUpdateOne {
-	biuo.mutation.AppendExplicitStartupOptions(s)
-	return biuo
-}
-
-// ClearExplicitStartupOptions clears the value of the "explicit_startup_options" field.
-func (biuo *BazelInvocationUpdateOne) ClearExplicitStartupOptions() *BazelInvocationUpdateOne {
-	biuo.mutation.ClearExplicitStartupOptions()
+// ClearOptionsParsed clears the value of the "options_parsed" field.
+func (biuo *BazelInvocationUpdateOne) ClearOptionsParsed() *BazelInvocationUpdateOne {
+	biuo.mutation.ClearOptionsParsed()
 	return biuo
 }
 
@@ -2260,20 +1990,6 @@ func (biuo *BazelInvocationUpdateOne) SetNillableProcessedEventBuildMetadata(b *
 	return biuo
 }
 
-// SetProcessedEventOptionsParsed sets the "processed_event_options_parsed" field.
-func (biuo *BazelInvocationUpdateOne) SetProcessedEventOptionsParsed(b bool) *BazelInvocationUpdateOne {
-	biuo.mutation.SetProcessedEventOptionsParsed(b)
-	return biuo
-}
-
-// SetNillableProcessedEventOptionsParsed sets the "processed_event_options_parsed" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableProcessedEventOptionsParsed(b *bool) *BazelInvocationUpdateOne {
-	if b != nil {
-		biuo.SetProcessedEventOptionsParsed(*b)
-	}
-	return biuo
-}
-
 // SetProcessedEventBuildFinished sets the "processed_event_build_finished" field.
 func (biuo *BazelInvocationUpdateOne) SetProcessedEventBuildFinished(b bool) *BazelInvocationUpdateOne {
 	biuo.mutation.SetProcessedEventBuildFinished(b)
@@ -2284,20 +2000,6 @@ func (biuo *BazelInvocationUpdateOne) SetProcessedEventBuildFinished(b bool) *Ba
 func (biuo *BazelInvocationUpdateOne) SetNillableProcessedEventBuildFinished(b *bool) *BazelInvocationUpdateOne {
 	if b != nil {
 		biuo.SetProcessedEventBuildFinished(*b)
-	}
-	return biuo
-}
-
-// SetProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field.
-func (biuo *BazelInvocationUpdateOne) SetProcessedEventStructuredCommandLine(b bool) *BazelInvocationUpdateOne {
-	biuo.mutation.SetProcessedEventStructuredCommandLine(b)
-	return biuo
-}
-
-// SetNillableProcessedEventStructuredCommandLine sets the "processed_event_structured_command_line" field if the given value is not nil.
-func (biuo *BazelInvocationUpdateOne) SetNillableProcessedEventStructuredCommandLine(b *bool) *BazelInvocationUpdateOne {
-	if b != nil {
-		biuo.SetProcessedEventStructuredCommandLine(*b)
 	}
 	return biuo
 }
@@ -2922,67 +2624,23 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	if biuo.mutation.ExitCodeCodeCleared() {
 		_spec.ClearField(bazelinvocation.FieldExitCodeCode, field.TypeInt32)
 	}
-	if value, ok := biuo.mutation.CommandLineCommand(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLineCommand, field.TypeString, value)
+	if value, ok := biuo.mutation.CanonicalCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldCanonicalCommandLine, field.TypeJSON, value)
 	}
-	if biuo.mutation.CommandLineCommandCleared() {
-		_spec.ClearField(bazelinvocation.FieldCommandLineCommand, field.TypeString)
+	if biuo.mutation.CanonicalCommandLineCleared() {
+		_spec.ClearField(bazelinvocation.FieldCanonicalCommandLine, field.TypeJSON)
 	}
-	if value, ok := biuo.mutation.CommandLineExecutable(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLineExecutable, field.TypeString, value)
+	if value, ok := biuo.mutation.OriginalCommandLine(); ok {
+		_spec.SetField(bazelinvocation.FieldOriginalCommandLine, field.TypeJSON, value)
 	}
-	if biuo.mutation.CommandLineExecutableCleared() {
-		_spec.ClearField(bazelinvocation.FieldCommandLineExecutable, field.TypeString)
+	if biuo.mutation.OriginalCommandLineCleared() {
+		_spec.ClearField(bazelinvocation.FieldOriginalCommandLine, field.TypeJSON)
 	}
-	if value, ok := biuo.mutation.CommandLineResidual(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLineResidual, field.TypeString, value)
+	if value, ok := biuo.mutation.OptionsParsed(); ok {
+		_spec.SetField(bazelinvocation.FieldOptionsParsed, field.TypeJSON, value)
 	}
-	if biuo.mutation.CommandLineResidualCleared() {
-		_spec.ClearField(bazelinvocation.FieldCommandLineResidual, field.TypeString)
-	}
-	if value, ok := biuo.mutation.CommandLine(); ok {
-		_spec.SetField(bazelinvocation.FieldCommandLine, field.TypeJSON, value)
-	}
-	if value, ok := biuo.mutation.AppendedCommandLine(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, bazelinvocation.FieldCommandLine, value)
-		})
-	}
-	if biuo.mutation.CommandLineCleared() {
-		_spec.ClearField(bazelinvocation.FieldCommandLine, field.TypeJSON)
-	}
-	if value, ok := biuo.mutation.ExplicitCommandLine(); ok {
-		_spec.SetField(bazelinvocation.FieldExplicitCommandLine, field.TypeJSON, value)
-	}
-	if value, ok := biuo.mutation.AppendedExplicitCommandLine(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, bazelinvocation.FieldExplicitCommandLine, value)
-		})
-	}
-	if biuo.mutation.ExplicitCommandLineCleared() {
-		_spec.ClearField(bazelinvocation.FieldExplicitCommandLine, field.TypeJSON)
-	}
-	if value, ok := biuo.mutation.StartupOptions(); ok {
-		_spec.SetField(bazelinvocation.FieldStartupOptions, field.TypeJSON, value)
-	}
-	if value, ok := biuo.mutation.AppendedStartupOptions(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, bazelinvocation.FieldStartupOptions, value)
-		})
-	}
-	if biuo.mutation.StartupOptionsCleared() {
-		_spec.ClearField(bazelinvocation.FieldStartupOptions, field.TypeJSON)
-	}
-	if value, ok := biuo.mutation.ExplicitStartupOptions(); ok {
-		_spec.SetField(bazelinvocation.FieldExplicitStartupOptions, field.TypeJSON, value)
-	}
-	if value, ok := biuo.mutation.AppendedExplicitStartupOptions(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, bazelinvocation.FieldExplicitStartupOptions, value)
-		})
-	}
-	if biuo.mutation.ExplicitStartupOptionsCleared() {
-		_spec.ClearField(bazelinvocation.FieldExplicitStartupOptions, field.TypeJSON)
+	if biuo.mutation.OptionsParsedCleared() {
+		_spec.ClearField(bazelinvocation.FieldOptionsParsed, field.TypeJSON)
 	}
 	if value, ok := biuo.mutation.ProcessedEventStarted(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventStarted, field.TypeBool, value)
@@ -2990,14 +2648,8 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	if value, ok := biuo.mutation.ProcessedEventBuildMetadata(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventBuildMetadata, field.TypeBool, value)
 	}
-	if value, ok := biuo.mutation.ProcessedEventOptionsParsed(); ok {
-		_spec.SetField(bazelinvocation.FieldProcessedEventOptionsParsed, field.TypeBool, value)
-	}
 	if value, ok := biuo.mutation.ProcessedEventBuildFinished(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventBuildFinished, field.TypeBool, value)
-	}
-	if value, ok := biuo.mutation.ProcessedEventStructuredCommandLine(); ok {
-		_spec.SetField(bazelinvocation.FieldProcessedEventStructuredCommandLine, field.TypeBool, value)
 	}
 	if value, ok := biuo.mutation.ProcessedEventWorkspaceStatus(); ok {
 		_spec.SetField(bazelinvocation.FieldProcessedEventWorkspaceStatus, field.TypeBool, value)

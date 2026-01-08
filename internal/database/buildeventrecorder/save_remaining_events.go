@@ -77,7 +77,7 @@ func (r *buildEventRecorder) saveBuildEvent(
 	case *bes.BuildEventId_BuildMetrics:
 		return r.saveBuildMetrics(ctx, tx.Ent(), buildEvent.GetBuildMetrics())
 	case *bes.BuildEventId_StructuredCommandLine:
-		return r.saveStructuredCommandLine(ctx, tx.Ent(), buildEvent.GetStructuredCommandLine())
+		return r.saveStructuredCommandLine(ctx, tx, buildEvent.GetStructuredCommandLine())
 	case *bes.BuildEventId_ActionCompleted:
 		return r.saveActionExecuted(ctx, tx.Ent(), buildEvent.GetAction(), buildEvent.GetId().GetActionCompleted())
 	case *bes.BuildEventId_Fetch:
