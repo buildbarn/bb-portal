@@ -55,9 +55,9 @@ func IDLTE(id int) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldLTE(FieldID, id))
 }
 
-// SequenceNumber applies equality check predicate on the "sequence_number" field. It's identical to SequenceNumberEQ.
-func SequenceNumber(v int64) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldEQ(FieldSequenceNumber, v))
+// Handled applies equality check predicate on the "handled" field. It's identical to HandledEQ.
+func Handled(v []byte) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldEQ(FieldHandled, v))
 }
 
 // EventReceivedAt applies equality check predicate on the "event_received_at" field. It's identical to EventReceivedAtEQ.
@@ -65,9 +65,9 @@ func EventReceivedAt(v time.Time) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldEQ(FieldEventReceivedAt, v))
 }
 
-// EventHash applies equality check predicate on the "event_hash" field. It's identical to EventHashEQ.
-func EventHash(v []byte) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldEQ(FieldEventHash, v))
+// Version applies equality check predicate on the "version" field. It's identical to VersionEQ.
+func Version(v int64) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldEQ(FieldVersion, v))
 }
 
 // BazelInvocationID applies equality check predicate on the "bazel_invocation_id" field. It's identical to BazelInvocationIDEQ.
@@ -75,44 +75,44 @@ func BazelInvocationID(v int) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldEQ(FieldBazelInvocationID, v))
 }
 
-// SequenceNumberEQ applies the EQ predicate on the "sequence_number" field.
-func SequenceNumberEQ(v int64) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldEQ(FieldSequenceNumber, v))
+// HandledEQ applies the EQ predicate on the "handled" field.
+func HandledEQ(v []byte) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldEQ(FieldHandled, v))
 }
 
-// SequenceNumberNEQ applies the NEQ predicate on the "sequence_number" field.
-func SequenceNumberNEQ(v int64) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldNEQ(FieldSequenceNumber, v))
+// HandledNEQ applies the NEQ predicate on the "handled" field.
+func HandledNEQ(v []byte) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldNEQ(FieldHandled, v))
 }
 
-// SequenceNumberIn applies the In predicate on the "sequence_number" field.
-func SequenceNumberIn(vs ...int64) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldIn(FieldSequenceNumber, vs...))
+// HandledIn applies the In predicate on the "handled" field.
+func HandledIn(vs ...[]byte) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldIn(FieldHandled, vs...))
 }
 
-// SequenceNumberNotIn applies the NotIn predicate on the "sequence_number" field.
-func SequenceNumberNotIn(vs ...int64) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldNotIn(FieldSequenceNumber, vs...))
+// HandledNotIn applies the NotIn predicate on the "handled" field.
+func HandledNotIn(vs ...[]byte) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldNotIn(FieldHandled, vs...))
 }
 
-// SequenceNumberGT applies the GT predicate on the "sequence_number" field.
-func SequenceNumberGT(v int64) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldGT(FieldSequenceNumber, v))
+// HandledGT applies the GT predicate on the "handled" field.
+func HandledGT(v []byte) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldGT(FieldHandled, v))
 }
 
-// SequenceNumberGTE applies the GTE predicate on the "sequence_number" field.
-func SequenceNumberGTE(v int64) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldGTE(FieldSequenceNumber, v))
+// HandledGTE applies the GTE predicate on the "handled" field.
+func HandledGTE(v []byte) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldGTE(FieldHandled, v))
 }
 
-// SequenceNumberLT applies the LT predicate on the "sequence_number" field.
-func SequenceNumberLT(v int64) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldLT(FieldSequenceNumber, v))
+// HandledLT applies the LT predicate on the "handled" field.
+func HandledLT(v []byte) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldLT(FieldHandled, v))
 }
 
-// SequenceNumberLTE applies the LTE predicate on the "sequence_number" field.
-func SequenceNumberLTE(v int64) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldLTE(FieldSequenceNumber, v))
+// HandledLTE applies the LTE predicate on the "handled" field.
+func HandledLTE(v []byte) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldLTE(FieldHandled, v))
 }
 
 // EventReceivedAtEQ applies the EQ predicate on the "event_received_at" field.
@@ -155,44 +155,44 @@ func EventReceivedAtLTE(v time.Time) predicate.EventMetadata {
 	return predicate.EventMetadata(sql.FieldLTE(FieldEventReceivedAt, v))
 }
 
-// EventHashEQ applies the EQ predicate on the "event_hash" field.
-func EventHashEQ(v []byte) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldEQ(FieldEventHash, v))
+// VersionEQ applies the EQ predicate on the "version" field.
+func VersionEQ(v int64) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldEQ(FieldVersion, v))
 }
 
-// EventHashNEQ applies the NEQ predicate on the "event_hash" field.
-func EventHashNEQ(v []byte) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldNEQ(FieldEventHash, v))
+// VersionNEQ applies the NEQ predicate on the "version" field.
+func VersionNEQ(v int64) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldNEQ(FieldVersion, v))
 }
 
-// EventHashIn applies the In predicate on the "event_hash" field.
-func EventHashIn(vs ...[]byte) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldIn(FieldEventHash, vs...))
+// VersionIn applies the In predicate on the "version" field.
+func VersionIn(vs ...int64) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldIn(FieldVersion, vs...))
 }
 
-// EventHashNotIn applies the NotIn predicate on the "event_hash" field.
-func EventHashNotIn(vs ...[]byte) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldNotIn(FieldEventHash, vs...))
+// VersionNotIn applies the NotIn predicate on the "version" field.
+func VersionNotIn(vs ...int64) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldNotIn(FieldVersion, vs...))
 }
 
-// EventHashGT applies the GT predicate on the "event_hash" field.
-func EventHashGT(v []byte) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldGT(FieldEventHash, v))
+// VersionGT applies the GT predicate on the "version" field.
+func VersionGT(v int64) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldGT(FieldVersion, v))
 }
 
-// EventHashGTE applies the GTE predicate on the "event_hash" field.
-func EventHashGTE(v []byte) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldGTE(FieldEventHash, v))
+// VersionGTE applies the GTE predicate on the "version" field.
+func VersionGTE(v int64) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldGTE(FieldVersion, v))
 }
 
-// EventHashLT applies the LT predicate on the "event_hash" field.
-func EventHashLT(v []byte) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldLT(FieldEventHash, v))
+// VersionLT applies the LT predicate on the "version" field.
+func VersionLT(v int64) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldLT(FieldVersion, v))
 }
 
-// EventHashLTE applies the LTE predicate on the "event_hash" field.
-func EventHashLTE(v []byte) predicate.EventMetadata {
-	return predicate.EventMetadata(sql.FieldLTE(FieldEventHash, v))
+// VersionLTE applies the LTE predicate on the "version" field.
+func VersionLTE(v int64) predicate.EventMetadata {
+	return predicate.EventMetadata(sql.FieldLTE(FieldVersion, v))
 }
 
 // BazelInvocationIDEQ applies the EQ predicate on the "bazel_invocation_id" field.
@@ -220,7 +220,7 @@ func HasBazelInvocation() predicate.EventMetadata {
 	return predicate.EventMetadata(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, BazelInvocationTable, BazelInvocationColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, BazelInvocationTable, BazelInvocationColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

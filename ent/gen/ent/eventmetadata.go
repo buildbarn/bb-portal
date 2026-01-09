@@ -18,13 +18,13 @@ type EventMetadata struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// SequenceNumber holds the value of the "sequence_number" field.
-	SequenceNumber int64 `json:"sequence_number,omitempty"`
-	// EventReceivedAt holds the value of the "event_received_at" field.
+	// Binary representation of the events that have been handled
+	Handled []byte `json:"handled,omitempty"`
+	// Last time an event was received
 	EventReceivedAt time.Time `json:"event_received_at,omitempty"`
-	// EventHash holds the value of the "event_hash" field.
-	EventHash []byte `json:"event_hash,omitempty"`
-	// BazelInvocationID holds the value of the "bazel_invocation_id" field.
+	// Optimistic lock version number
+	Version int64 `json:"version,omitempty"`
+	// The id of the bazel invocation
 	BazelInvocationID int `json:"bazel_invocation_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the EventMetadataQuery when eager-loading is set.
@@ -59,9 +59,9 @@ func (*EventMetadata) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case eventmetadata.FieldEventHash:
+		case eventmetadata.FieldHandled:
 			values[i] = new([]byte)
-		case eventmetadata.FieldID, eventmetadata.FieldSequenceNumber, eventmetadata.FieldBazelInvocationID:
+		case eventmetadata.FieldID, eventmetadata.FieldVersion, eventmetadata.FieldBazelInvocationID:
 			values[i] = new(sql.NullInt64)
 		case eventmetadata.FieldEventReceivedAt:
 			values[i] = new(sql.NullTime)
@@ -86,11 +86,11 @@ func (em *EventMetadata) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			em.ID = int(value.Int64)
-		case eventmetadata.FieldSequenceNumber:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field sequence_number", values[i])
-			} else if value.Valid {
-				em.SequenceNumber = value.Int64
+		case eventmetadata.FieldHandled:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field handled", values[i])
+			} else if value != nil {
+				em.Handled = *value
 			}
 		case eventmetadata.FieldEventReceivedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -98,11 +98,11 @@ func (em *EventMetadata) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				em.EventReceivedAt = value.Time
 			}
-		case eventmetadata.FieldEventHash:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field event_hash", values[i])
-			} else if value != nil {
-				em.EventHash = *value
+		case eventmetadata.FieldVersion:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field version", values[i])
+			} else if value.Valid {
+				em.Version = value.Int64
 			}
 		case eventmetadata.FieldBazelInvocationID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -151,14 +151,14 @@ func (em *EventMetadata) String() string {
 	var builder strings.Builder
 	builder.WriteString("EventMetadata(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", em.ID))
-	builder.WriteString("sequence_number=")
-	builder.WriteString(fmt.Sprintf("%v", em.SequenceNumber))
+	builder.WriteString("handled=")
+	builder.WriteString(fmt.Sprintf("%v", em.Handled))
 	builder.WriteString(", ")
 	builder.WriteString("event_received_at=")
 	builder.WriteString(em.EventReceivedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("event_hash=")
-	builder.WriteString(fmt.Sprintf("%v", em.EventHash))
+	builder.WriteString("version=")
+	builder.WriteString(fmt.Sprintf("%v", em.Version))
 	builder.WriteString(", ")
 	builder.WriteString("bazel_invocation_id=")
 	builder.WriteString(fmt.Sprintf("%v", em.BazelInvocationID))

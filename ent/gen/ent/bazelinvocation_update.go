@@ -691,19 +691,23 @@ func (biu *BazelInvocationUpdate) SetAuthenticatedUser(a *AuthenticatedUser) *Ba
 	return biu.SetAuthenticatedUserID(a.ID)
 }
 
-// AddEventMetadatumIDs adds the "event_metadata" edge to the EventMetadata entity by IDs.
-func (biu *BazelInvocationUpdate) AddEventMetadatumIDs(ids ...int) *BazelInvocationUpdate {
-	biu.mutation.AddEventMetadatumIDs(ids...)
+// SetEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID.
+func (biu *BazelInvocationUpdate) SetEventMetadataID(id int) *BazelInvocationUpdate {
+	biu.mutation.SetEventMetadataID(id)
 	return biu
 }
 
-// AddEventMetadata adds the "event_metadata" edges to the EventMetadata entity.
-func (biu *BazelInvocationUpdate) AddEventMetadata(e ...*EventMetadata) *BazelInvocationUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID if the given value is not nil.
+func (biu *BazelInvocationUpdate) SetNillableEventMetadataID(id *int) *BazelInvocationUpdate {
+	if id != nil {
+		biu = biu.SetEventMetadataID(*id)
 	}
-	return biu.AddEventMetadatumIDs(ids...)
+	return biu
+}
+
+// SetEventMetadata sets the "event_metadata" edge to the EventMetadata entity.
+func (biu *BazelInvocationUpdate) SetEventMetadata(e *EventMetadata) *BazelInvocationUpdate {
+	return biu.SetEventMetadataID(e.ID)
 }
 
 // AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
@@ -887,25 +891,10 @@ func (biu *BazelInvocationUpdate) ClearAuthenticatedUser() *BazelInvocationUpdat
 	return biu
 }
 
-// ClearEventMetadata clears all "event_metadata" edges to the EventMetadata entity.
+// ClearEventMetadata clears the "event_metadata" edge to the EventMetadata entity.
 func (biu *BazelInvocationUpdate) ClearEventMetadata() *BazelInvocationUpdate {
 	biu.mutation.ClearEventMetadata()
 	return biu
-}
-
-// RemoveEventMetadatumIDs removes the "event_metadata" edge to EventMetadata entities by IDs.
-func (biu *BazelInvocationUpdate) RemoveEventMetadatumIDs(ids ...int) *BazelInvocationUpdate {
-	biu.mutation.RemoveEventMetadatumIDs(ids...)
-	return biu
-}
-
-// RemoveEventMetadata removes "event_metadata" edges to EventMetadata entities.
-func (biu *BazelInvocationUpdate) RemoveEventMetadata(e ...*EventMetadata) *BazelInvocationUpdate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return biu.RemoveEventMetadatumIDs(ids...)
 }
 
 // ClearConnectionMetadata clears all "connection_metadata" edges to the ConnectionMetadata entity.
@@ -1427,7 +1416,7 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if biu.mutation.EventMetadataCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.EventMetadataTable,
 			Columns: []string{bazelinvocation.EventMetadataColumn},
@@ -1435,28 +1424,12 @@ func (biu *BazelInvocationUpdate) sqlSave(ctx context.Context) (n int, err error
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := biu.mutation.RemovedEventMetadataIDs(); len(nodes) > 0 && !biu.mutation.EventMetadataCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.EventMetadataTable,
-			Columns: []string{bazelinvocation.EventMetadataColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := biu.mutation.EventMetadataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.EventMetadataTable,
 			Columns: []string{bazelinvocation.EventMetadataColumn},
@@ -2557,19 +2530,23 @@ func (biuo *BazelInvocationUpdateOne) SetAuthenticatedUser(a *AuthenticatedUser)
 	return biuo.SetAuthenticatedUserID(a.ID)
 }
 
-// AddEventMetadatumIDs adds the "event_metadata" edge to the EventMetadata entity by IDs.
-func (biuo *BazelInvocationUpdateOne) AddEventMetadatumIDs(ids ...int) *BazelInvocationUpdateOne {
-	biuo.mutation.AddEventMetadatumIDs(ids...)
+// SetEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID.
+func (biuo *BazelInvocationUpdateOne) SetEventMetadataID(id int) *BazelInvocationUpdateOne {
+	biuo.mutation.SetEventMetadataID(id)
 	return biuo
 }
 
-// AddEventMetadata adds the "event_metadata" edges to the EventMetadata entity.
-func (biuo *BazelInvocationUpdateOne) AddEventMetadata(e ...*EventMetadata) *BazelInvocationUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID if the given value is not nil.
+func (biuo *BazelInvocationUpdateOne) SetNillableEventMetadataID(id *int) *BazelInvocationUpdateOne {
+	if id != nil {
+		biuo = biuo.SetEventMetadataID(*id)
 	}
-	return biuo.AddEventMetadatumIDs(ids...)
+	return biuo
+}
+
+// SetEventMetadata sets the "event_metadata" edge to the EventMetadata entity.
+func (biuo *BazelInvocationUpdateOne) SetEventMetadata(e *EventMetadata) *BazelInvocationUpdateOne {
+	return biuo.SetEventMetadataID(e.ID)
 }
 
 // AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
@@ -2753,25 +2730,10 @@ func (biuo *BazelInvocationUpdateOne) ClearAuthenticatedUser() *BazelInvocationU
 	return biuo
 }
 
-// ClearEventMetadata clears all "event_metadata" edges to the EventMetadata entity.
+// ClearEventMetadata clears the "event_metadata" edge to the EventMetadata entity.
 func (biuo *BazelInvocationUpdateOne) ClearEventMetadata() *BazelInvocationUpdateOne {
 	biuo.mutation.ClearEventMetadata()
 	return biuo
-}
-
-// RemoveEventMetadatumIDs removes the "event_metadata" edge to EventMetadata entities by IDs.
-func (biuo *BazelInvocationUpdateOne) RemoveEventMetadatumIDs(ids ...int) *BazelInvocationUpdateOne {
-	biuo.mutation.RemoveEventMetadatumIDs(ids...)
-	return biuo
-}
-
-// RemoveEventMetadata removes "event_metadata" edges to EventMetadata entities.
-func (biuo *BazelInvocationUpdateOne) RemoveEventMetadata(e ...*EventMetadata) *BazelInvocationUpdateOne {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
-	}
-	return biuo.RemoveEventMetadatumIDs(ids...)
 }
 
 // ClearConnectionMetadata clears all "connection_metadata" edges to the ConnectionMetadata entity.
@@ -3323,7 +3285,7 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 	}
 	if biuo.mutation.EventMetadataCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.EventMetadataTable,
 			Columns: []string{bazelinvocation.EventMetadataColumn},
@@ -3331,28 +3293,12 @@ func (biuo *BazelInvocationUpdateOne) sqlSave(ctx context.Context) (_node *Bazel
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := biuo.mutation.RemovedEventMetadataIDs(); len(nodes) > 0 && !biuo.mutation.EventMetadataCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   bazelinvocation.EventMetadataTable,
-			Columns: []string{bazelinvocation.EventMetadataColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := biuo.mutation.EventMetadataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.EventMetadataTable,
 			Columns: []string{bazelinvocation.EventMetadataColumn},

@@ -179,9 +179,9 @@ type EvaluationStat struct {
 
 type EventMetadatum struct {
 	ID                int64
-	SequenceNumber    int64
+	Handled           []byte
 	EventReceivedAt   time.Time
-	EventHash         []byte
+	Version           int64
 	BazelInvocationID int64
 }
 

@@ -118,7 +118,7 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 
 	var buildEventRecorder *buildeventrecorder.BuildEventRecorder = nil
 
-	sequenceNumber := int64(0)
+	sequenceNumber := uint32(0)
 	eventBuffer := make([]buildeventrecorder.BuildEventWithInfo, 0)
 	for scanner.Scan() {
 		// When reading from the BES stream, the first event has sequence
@@ -169,14 +169,9 @@ func (b *BepUploader) RecordEventNdjsonFile(ctx context.Context, file io.Reader)
 		// done when we no longer need JSON serialization of events, like we do for
 		// BazelInvocationProblems.
 		buildEvent := events.NewBuildEvent(&bazelEvent, json.RawMessage(protojson.Format(&bazelEvent)))
-		hash, err := getEventHash(&buildEvent)
-		if err != nil {
-			return "", 0, util.StatusWrap(err, "Could not determine build event hash")
-		}
 		eventBuffer = append(eventBuffer, buildeventrecorder.BuildEventWithInfo{
 			Event:          &buildEvent,
 			SequenceNumber: sequenceNumber,
-			EventHash:      hash,
 		})
 	}
 	if err := buildEventRecorder.SaveBatch(ctx, eventBuffer); err != nil {

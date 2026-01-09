@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"time"
 
 	build "google.golang.org/genproto/googleapis/devtools/build/v1"
@@ -107,14 +108,17 @@ func getEventHash(buildEvent *events.BuildEvent) ([]byte, error) {
 
 func requestToBuildEventWithInfo(req *build.PublishBuildToolEventStreamRequest) (*buildeventrecorder.BuildEventWithInfo, error) {
 	var bazelEvent bes.BuildEvent
-	var sequenceNumber int64
 	obe := req.GetOrderedBuildEvent()
 	be := obe.GetEvent()
 	sid := obe.GetStreamId()
-	sequenceNumber = obe.GetSequenceNumber()
+	sequenceNumber64 := obe.GetSequenceNumber()
 	if obe == nil || be == nil || sid == nil {
 		return nil, status.Error(codes.InvalidArgument, "Missing expected inputs.")
 	}
+	if sequenceNumber64 > math.MaxUint32 || sequenceNumber64 <= 0 {
+		return nil, status.Errorf(codes.InvalidArgument, "Sequence number out of range: %d", sequenceNumber64)
+	}
+	sequenceNumber := uint32(sequenceNumber64)
 
 	if be.GetBazelEvent() == nil {
 		return &buildeventrecorder.BuildEventWithInfo{
@@ -131,17 +135,12 @@ func requestToBuildEventWithInfo(req *build.PublishBuildToolEventStreamRequest) 
 	// need JSON serialization of events, like we do for
 	// BazelInvocationProblems.
 	buildEvent := events.NewBuildEvent(&bazelEvent, json.RawMessage(protojson.Format(&bazelEvent)))
-	hash, err := getEventHash(&buildEvent)
-	if err != nil {
-		return nil, util.StatusWrap(err, "Could not determine build event hash")
-	}
 
 	// Add the event to the batch.
 	return &buildeventrecorder.BuildEventWithInfo{
 		Event:          &buildEvent,
 		SequenceNumber: sequenceNumber,
 		AddedAt:        time.Now(),
-		EventHash:      hash,
 	}, nil
 }
 
@@ -226,7 +225,7 @@ func (s *BuildEventServer) PublishBuildToolEventStream(stream build.PublishBuild
 		for _, meta := range batch {
 			err := stream.Send(&build.PublishBuildToolEventStreamResponse{
 				StreamId:       streamID,
-				SequenceNumber: meta.SequenceNumber,
+				SequenceNumber: int64(meta.SequenceNumber),
 			})
 			if err != nil {
 				return util.StatusWrap(err, "Failed to send ACK for build event")

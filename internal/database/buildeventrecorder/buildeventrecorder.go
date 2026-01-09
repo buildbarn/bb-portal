@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/RoaringBitmap/roaring"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/connectionmetadata"
 	apicommon "github.com/buildbarn/bb-portal/internal/api/common"
@@ -28,9 +29,12 @@ import (
 // BuildEventWithInfo couples a build event with additional metadata
 // required for processing.
 type BuildEventWithInfo struct {
-	Event          *events.BuildEvent
-	EventHash      []byte
-	SequenceNumber int64
+	Event *events.BuildEvent
+	// Sequence number is int64 by spec, however it is also starting at
+	// 1 and incrementing by 1 for each event by spec. We therefore
+	// assume we can fit the SequenceNumber in an uint32 and in case we
+	// can not we will refuse to process the event.
+	SequenceNumber uint32
 	// TODO: This field is only used for duration calculation of target
 	// completed events which is dubious to begin with. Might be worth
 	// removing.
@@ -42,6 +46,7 @@ type BuildEventWithInfo struct {
 type BuildEventRecorder struct {
 	db                  database.Client
 	problemDetector     detectors.ProblemDetector
+	handledEvents       handledEvents
 	blobArchiver        processing.BlobMultiArchiver
 	saveTargetDataLevel *bb_portal.BuildEventStreamService_SaveTargetDataLevel
 	saveTestDataLevel   *bb_portal.BuildEventStreamService_SaveTestDataLevel
@@ -53,6 +58,12 @@ type BuildEventRecorder struct {
 	InvocationDbID         int
 	CorrelatedInvocationID string
 	IsRealTime             bool
+}
+
+type handledEvents struct {
+	bitmap  *roaring.Bitmap
+	version int64
+	id      int64
 }
 
 // NewBuildEventRecorder creates a new BuildEventRecorder

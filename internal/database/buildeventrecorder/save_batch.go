@@ -85,21 +85,20 @@ func (r *BuildEventRecorder) SaveBatch(ctx context.Context, batch []BuildEventWi
 	defer func() { cancel() }()
 
 	batch = filterNilEvents(batch)
-	// Filter events that have already been handled, ignore errors at
-	// this stage and let the errors be handled in the retry loop.
-	if preBatch, err := r.filterHandledEvents(ctx, batch); err == nil {
-		batch = preBatch
-	}
 	backoff := 1 * time.Millisecond
 	var errs []error
 	for {
 		var batchErr error
-		if batchErr = r.saveBatch(ctx, batch); batchErr == nil {
-			return nil
+		if batchErr = r.loadHandledEvents(ctx); batchErr == nil {
+			batch = r.filterHandledEvents(batch)
+			if batchErr = r.saveBatch(ctx, batch); batchErr == nil {
+				return nil
+			}
 		}
 		// Check for forward progress. As long as we have forward
 		// progress we reset the retry loop.
-		if postBatch, err := r.filterHandledEvents(ctx, batch); err == nil {
+		if err := r.loadHandledEvents(ctx); err == nil {
+			postBatch := r.filterHandledEvents(batch)
 			if len(postBatch) < len(batch) {
 				cancel()
 				retryCtx, cancel = context.WithTimeout(ctx, 1*time.Second)

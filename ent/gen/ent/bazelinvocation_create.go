@@ -494,19 +494,23 @@ func (bic *BazelInvocationCreate) SetAuthenticatedUser(a *AuthenticatedUser) *Ba
 	return bic.SetAuthenticatedUserID(a.ID)
 }
 
-// AddEventMetadatumIDs adds the "event_metadata" edge to the EventMetadata entity by IDs.
-func (bic *BazelInvocationCreate) AddEventMetadatumIDs(ids ...int) *BazelInvocationCreate {
-	bic.mutation.AddEventMetadatumIDs(ids...)
+// SetEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID.
+func (bic *BazelInvocationCreate) SetEventMetadataID(id int) *BazelInvocationCreate {
+	bic.mutation.SetEventMetadataID(id)
 	return bic
 }
 
-// AddEventMetadata adds the "event_metadata" edges to the EventMetadata entity.
-func (bic *BazelInvocationCreate) AddEventMetadata(e ...*EventMetadata) *BazelInvocationCreate {
-	ids := make([]int, len(e))
-	for i := range e {
-		ids[i] = e[i].ID
+// SetNillableEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by ID if the given value is not nil.
+func (bic *BazelInvocationCreate) SetNillableEventMetadataID(id *int) *BazelInvocationCreate {
+	if id != nil {
+		bic = bic.SetEventMetadataID(*id)
 	}
-	return bic.AddEventMetadatumIDs(ids...)
+	return bic
+}
+
+// SetEventMetadata sets the "event_metadata" edge to the EventMetadata entity.
+func (bic *BazelInvocationCreate) SetEventMetadata(e *EventMetadata) *BazelInvocationCreate {
+	return bic.SetEventMetadataID(e.ID)
 }
 
 // AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by IDs.
@@ -972,7 +976,7 @@ func (bic *BazelInvocationCreate) createSpec() (*BazelInvocation, *sqlgraph.Crea
 	}
 	if nodes := bic.mutation.EventMetadataIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.EventMetadataTable,
 			Columns: []string{bazelinvocation.EventMetadataColumn},

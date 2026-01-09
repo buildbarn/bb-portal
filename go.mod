@@ -18,6 +18,7 @@ require (
 	entgo.io/contrib v0.6.0
 	entgo.io/ent v0.14.4
 	github.com/99designs/gqlgen v0.17.76
+	github.com/RoaringBitmap/roaring v1.9.4
 	github.com/aereal/otelgqlgen v0.10.2
 	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto v0.0.0
 	github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/packages/metrics v0.0.0
@@ -93,6 +94,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.38.6 // indirect
 	github.com/aws/smithy-go v1.23.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/bits-and-blooms/bitset v1.12.0 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
 	github.com/buildbarn/go-sha256tree v0.0.0-20250310211320-0f70f20e855b // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
@@ -132,6 +134,7 @@ require (
 	github.com/lazybeaver/xorshift v0.0.0-20170702203709-ce511d4823dd // indirect
 	github.com/matryer/is v1.4.1 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
+	github.com/mschoch/smat v0.2.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect

@@ -3,22 +3,16 @@ package buildeventrecorder
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	"reflect"
-	"slices"
 	"time"
 
 	bes "github.com/bazelbuild/bazel/src/main/java/com/google/devtools/build/lib/buildeventstream/proto"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
-	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/internal/database"
-	"github.com/buildbarn/bb-portal/internal/database/common"
-	"github.com/buildbarn/bb-portal/internal/database/sqlc"
 	"github.com/buildbarn/bb-portal/pkg/events"
 	"github.com/buildbarn/bb-storage/pkg/util"
-	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/attribute"
+	otelcodes "go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -34,7 +28,7 @@ func eventTypeName(buildEvent *events.BuildEvent) string {
 func (r *BuildEventRecorder) saveEvent(
 	ctx context.Context,
 	info BuildEventWithInfo,
-) error {
+) (err error) {
 	buildEvent := info.Event
 	sequenceNumber := info.SequenceNumber
 	ctx, span := r.tracer.Start(ctx,
@@ -42,94 +36,55 @@ func (r *BuildEventRecorder) saveEvent(
 		trace.WithAttributes(
 			attribute.String("invocation.id", r.InvocationID),
 			attribute.String("invocation.instance_name", r.InstanceName),
+			attribute.Int("build_event.sequence_number", int(sequenceNumber)),
 			attribute.String("build_event.type", eventTypeName(buildEvent)),
 		),
 	)
-	defer span.End()
+	defer func() {
+		if err != nil {
+			span.SetStatus(otelcodes.Error, err.Error())
+			span.RecordError(err)
+		}
+		span.End()
+	}()
 
-	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	// ReadCommitted is most often going to be sufficient, but there may
+	// be edge cases in some saveBuildEvent implementations.
+	//
+	// The outer logic revolving around bep_completed and event metadata
+	// is guaranteed to be consistent during the transaction due to the
+	// use of a shared read lock for the invocation and an optimistic
+	// lock for the event metadata.
+	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
 	if err != nil {
 		return util.StatusWrap(err, "Failed to create transaction")
 	}
+	defer tx.Rollback()
 
-	err = r.createEventMetadata(ctx, tx, sequenceNumber, info.EventHash)
+	lock, err := tx.Sqlc().LockBazelInvocationCompletion(ctx, int64(r.InvocationDbID))
 	if err != nil {
-		err2 := tx.Rollback()
-		if err2 != nil {
-			return util.StatusWrap(errors.Join(err, err2), "Failed to create event metadata, and failed to rollback transaction")
-		}
-		eventMetadata, err2 := r.db.Ent().EventMetadata.Query().
-			Where(
-				eventmetadata.HasBazelInvocationWith(bazelinvocation.ID(r.InvocationDbID)),
-				eventmetadata.SequenceNumberEQ(sequenceNumber),
-			).
-			Only(ctx)
-		if err2 != nil {
-			return util.StatusWrap(errors.Join(err, err2), "Failed to create event metadata, and failed to query existing event metadata")
-		}
-		if slices.Equal(eventMetadata.EventHash, info.EventHash) {
-			// This exact event has already been processed. Ignore it and send
-			// an ACK back.
-			return nil
-		}
-		return status.Errorf(codes.AlreadyExists, "Event with invocation ID %s and sequence number %d already processed with different content", r.InvocationID, sequenceNumber)
+		return util.StatusWrap(err, "Failed to lock bep completed for invocation")
+	}
+	if lock.BepCompleted {
+		return status.Error(codes.FailedPrecondition, "Attempted to insert a build event but  but the invocation was already completed.")
 	}
 
 	err = r.saveBuildEvent(ctx, tx, buildEvent)
 	if err != nil {
-		return common.RollbackAndWrapError(tx, util.StatusWrapf(err, "Failed to save build event of type %T", buildEvent.GetId().GetId()))
+		return util.StatusWrapf(err, "Failed to save build event of type %T", buildEvent.GetId().GetId())
 	}
 
 	err = r.saveBazelInvocationProblems(ctx, tx.Ent(), buildEvent)
 	if err != nil {
-		return common.RollbackAndWrapError(tx, util.StatusWrap(err, "Failed to save bazel invocation problems"))
+		return util.StatusWrap(err, "Failed to save bazel invocation problems")
 	}
+
+	r.handledEvents.bitmap.Add(sequenceNumber)
+	r.saveHandledEvents(ctx, tx, time.Now())
 
 	err = tx.Commit()
 	if err != nil {
-		// If the commit fails, we check if the event has already been handled.
-		// This can happen if two identical events are sent concurrently. In
-		// this case we should not return an error, and justs send an ACK back.
-		exist, qerr := r.db.Ent().EventMetadata.Query().
-			Where(
-				eventmetadata.HasBazelInvocationWith(bazelinvocation.ID(r.InvocationDbID)),
-				eventmetadata.SequenceNumber(sequenceNumber),
-				eventmetadata.EventHash(info.EventHash)).
-			Exist(ctx)
-		if qerr != nil {
-			return util.StatusWrap(qerr, "Failed to check if event was already processed")
-		}
-		if exist {
-			// This exact event has already been processed. Ignore it.
-			return nil
-		}
 		return util.StatusWrap(err, "Failed to commit transaction")
-	}
-	return nil
-}
-
-func (r *BuildEventRecorder) createEventMetadata(
-	ctx context.Context,
-	tx database.Tx,
-	sequenceNumber int64,
-	eventHash []byte,
-) error {
-	result, err := tx.Sqlc().RecordEventMetadata(ctx, sqlc.RecordEventMetadataParams{
-		SequenceNumber:  sequenceNumber,
-		EventHash:       eventHash,
-		EventReceivedAt: time.Now(),
-		InvocationID:    uuid.MustParse(r.InvocationID),
-	})
-	if err != nil {
-		return util.StatusWrap(err, "Failed recording event metadata")
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return util.StatusWrap(err, "failed to get rows affected by insert")
-	}
-	if rowsAffected != 1 {
-		return status.Errorf(codes.AlreadyExists, "Event with invocation ID %s and sequence number %d already processed.", r.InvocationID, sequenceNumber)
 	}
 	return nil
 }

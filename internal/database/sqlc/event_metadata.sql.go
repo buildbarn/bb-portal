@@ -7,79 +7,75 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 	"time"
-
-	"github.com/google/uuid"
-	"github.com/lib/pq"
 )
 
-const createEventMetadataBulk = `-- name: CreateEventMetadataBulk :exec
-INSERT INTO event_metadata (
-    bazel_invocation_id,
-    event_hash,
-    event_received_at,
-    sequence_number
+const getOrCreateEventMetadata = `-- name: GetOrCreateEventMetadata :one
+WITH new_row AS (
+    INSERT INTO event_metadata (
+        bazel_invocation_id,
+        handled,
+        event_received_at,
+        version
+    ) VALUES (
+        $1, '\x', NOW(), 0
+    )
+    ON CONFLICT (bazel_invocation_id) DO NOTHING
+    RETURNING id, handled, event_received_at, version
 )
-SELECT 
-    $1,
-    event_hash,
-    event_received_at,
-    sequence_number
-FROM (
-    SELECT 
-        unnest($2::bytea[]) AS event_hash,
-        unnest($3::timestamptz[]) AS event_received_at,
-        unnest($4::bigint[]) AS sequence_number
-) AS input
+SELECT id, handled, event_received_at, version FROM new_row
+UNION ALL
+SELECT id, handled, event_received_at, version
+FROM event_metadata
+WHERE bazel_invocation_id = $1
 `
 
-type CreateEventMetadataBulkParams struct {
-	BazelInvocationID int64
-	EventHashes       [][]byte
-	EventReceivedAts  []time.Time
-	SequenceNumbers   []int64
-}
-
-func (q *Queries) CreateEventMetadataBulk(ctx context.Context, arg CreateEventMetadataBulkParams) error {
-	_, err := q.db.ExecContext(ctx, createEventMetadataBulk,
-		arg.BazelInvocationID,
-		pq.Array(arg.EventHashes),
-		pq.Array(arg.EventReceivedAts),
-		pq.Array(arg.SequenceNumbers),
-	)
-	return err
-}
-
-const recordEventMetadata = `-- name: RecordEventMetadata :execresult
-INSERT INTO event_metadata (
-    sequence_number,
-    event_received_at,
-    event_hash,
-    bazel_invocation_id
-)
-SELECT 
-    $1,
-    $2,
-    $3,
-    b.id
-FROM bazel_invocations AS b
-WHERE b.invocation_id = $4
-  AND b.bep_completed = FALSE
-`
-
-type RecordEventMetadataParams struct {
-	SequenceNumber  int64
+type GetOrCreateEventMetadataRow struct {
+	ID              int64
+	Handled         []byte
 	EventReceivedAt time.Time
-	EventHash       []byte
-	InvocationID    uuid.UUID
+	Version         int64
 }
 
-func (q *Queries) RecordEventMetadata(ctx context.Context, arg RecordEventMetadataParams) (sql.Result, error) {
-	return q.db.ExecContext(ctx, recordEventMetadata,
-		arg.SequenceNumber,
-		arg.EventReceivedAt,
-		arg.EventHash,
-		arg.InvocationID,
+func (q *Queries) GetOrCreateEventMetadata(ctx context.Context, bazelInvocationID int64) (GetOrCreateEventMetadataRow, error) {
+	row := q.db.QueryRowContext(ctx, getOrCreateEventMetadata, bazelInvocationID)
+	var i GetOrCreateEventMetadataRow
+	err := row.Scan(
+		&i.ID,
+		&i.Handled,
+		&i.EventReceivedAt,
+		&i.Version,
 	)
+	return i, err
+}
+
+const updateEventMetadata = `-- name: UpdateEventMetadata :one
+UPDATE event_metadata
+SET 
+    handled = $1,
+    event_received_at = $2,
+    version = version + 1
+WHERE 
+    id = $3
+    AND version = $4
+RETURNING version
+`
+
+type UpdateEventMetadataParams struct {
+	Handled         []byte
+	EventReceivedAt time.Time
+	ID              int64
+	Version         int64
+}
+
+func (q *Queries) UpdateEventMetadata(ctx context.Context, arg UpdateEventMetadataParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, updateEventMetadata,
+		arg.Handled,
+		arg.EventReceivedAt,
+		arg.ID,
+		arg.Version,
+	)
+	var version int64
+	err := row.Scan(&version)
+	return version, err
 }

@@ -1,34 +1,29 @@
--- name: RecordEventMetadata :execresult
-INSERT INTO event_metadata (
-    sequence_number,
-    event_received_at,
-    event_hash,
-    bazel_invocation_id
+-- name: GetOrCreateEventMetadata :one
+WITH new_row AS (
+    INSERT INTO event_metadata (
+        bazel_invocation_id,
+        handled,
+        event_received_at,
+        version
+    ) VALUES (
+        sqlc.arg(bazel_invocation_id), '\x', NOW(), 0
+    )
+    ON CONFLICT (bazel_invocation_id) DO NOTHING
+    RETURNING id, handled, event_received_at, version
 )
-SELECT 
-    sqlc.arg(sequence_number),
-    sqlc.arg(event_received_at),
-    sqlc.arg(event_hash),
-    b.id
-FROM bazel_invocations AS b
-WHERE b.invocation_id = sqlc.arg(invocation_id)
-  AND b.bep_completed = FALSE;
+SELECT * FROM new_row
+UNION ALL
+SELECT id, handled, event_received_at, version
+FROM event_metadata
+WHERE bazel_invocation_id = sqlc.arg(bazel_invocation_id);
 
--- name: CreateEventMetadataBulk :exec
-INSERT INTO event_metadata (
-    bazel_invocation_id,
-    event_hash,
-    event_received_at,
-    sequence_number
-)
-SELECT 
-    sqlc.arg(bazel_invocation_id),
-    event_hash,
-    event_received_at,
-    sequence_number
-FROM (
-    SELECT 
-        unnest(sqlc.arg(event_hashes)::bytea[]) AS event_hash,
-        unnest(sqlc.arg(event_received_ats)::timestamptz[]) AS event_received_at,
-        unnest(sqlc.arg(sequence_numbers)::bigint[]) AS sequence_number
-) AS input;
+-- name: UpdateEventMetadata :one
+UPDATE event_metadata
+SET 
+    handled = sqlc.arg(handled),
+    event_received_at = sqlc.arg(event_received_at),
+    version = version + 1
+WHERE 
+    id = sqlc.arg(id)
+    AND version = sqlc.arg(version)
+RETURNING version;

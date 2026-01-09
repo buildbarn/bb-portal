@@ -13,6 +13,7 @@ import (
 	"github.com/buildbarn/bb-portal/ent/gen/ent/authenticateduser"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/bazelinvocation"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/build"
+	"github.com/buildbarn/bb-portal/ent/gen/ent/eventmetadata"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/instancename"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/metrics"
 	"github.com/buildbarn/bb-portal/ent/gen/ent/sourcecontrol"
@@ -106,7 +107,7 @@ type BazelInvocationEdges struct {
 	// AuthenticatedUser holds the value of the authenticated_user edge.
 	AuthenticatedUser *AuthenticatedUser `json:"authenticated_user,omitempty"`
 	// EventMetadata holds the value of the event_metadata edge.
-	EventMetadata []*EventMetadata `json:"event_metadata,omitempty"`
+	EventMetadata *EventMetadata `json:"event_metadata,omitempty"`
 	// ConnectionMetadata holds the value of the connection_metadata edge.
 	ConnectionMetadata []*ConnectionMetadata `json:"connection_metadata,omitempty"`
 	// Problems holds the value of the problems edge.
@@ -133,7 +134,6 @@ type BazelInvocationEdges struct {
 	// totalCount holds the count of the edges above.
 	totalCount [8]map[string]int
 
-	namedEventMetadata       map[string][]*EventMetadata
 	namedConnectionMetadata  map[string][]*ConnectionMetadata
 	namedProblems            map[string][]*BazelInvocationProblem
 	namedIncompleteBuildLogs map[string][]*IncompleteBuildLog
@@ -178,10 +178,12 @@ func (e BazelInvocationEdges) AuthenticatedUserOrErr() (*AuthenticatedUser, erro
 }
 
 // EventMetadataOrErr returns the EventMetadata value or an error if the edge
-// was not loaded in eager-loading.
-func (e BazelInvocationEdges) EventMetadataOrErr() ([]*EventMetadata, error) {
-	if e.loadedTypes[3] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e BazelInvocationEdges) EventMetadataOrErr() (*EventMetadata, error) {
+	if e.EventMetadata != nil {
 		return e.EventMetadata, nil
+	} else if e.loadedTypes[3] {
+		return nil, &NotFoundError{label: eventmetadata.Label}
 	}
 	return nil, &NotLoadedError{edge: "event_metadata"}
 }
@@ -751,30 +753,6 @@ func (bi *BazelInvocation) String() string {
 	builder.WriteString(fmt.Sprintf("%v", bi.ProcessedEventWorkspaceStatus))
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedEventMetadata returns the EventMetadata named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (bi *BazelInvocation) NamedEventMetadata(name string) ([]*EventMetadata, error) {
-	if bi.Edges.namedEventMetadata == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := bi.Edges.namedEventMetadata[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (bi *BazelInvocation) appendNamedEventMetadata(name string, edges ...*EventMetadata) {
-	if bi.Edges.namedEventMetadata == nil {
-		bi.Edges.namedEventMetadata = make(map[string][]*EventMetadata)
-	}
-	if len(edges) == 0 {
-		bi.Edges.namedEventMetadata[name] = []*EventMetadata{}
-	} else {
-		bi.Edges.namedEventMetadata[name] = append(bi.Edges.namedEventMetadata[name], edges...)
-	}
 }
 
 // NamedConnectionMetadata returns the ConnectionMetadata named value or an error if the edge was not

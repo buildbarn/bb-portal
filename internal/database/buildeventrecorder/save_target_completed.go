@@ -62,7 +62,7 @@ func (r *BuildEventRecorder) saveTargetCompletedBatch(ctx context.Context, batch
 		return util.StatusWrap(err, "Failed to bulk insert invocation targets")
 	}
 
-	if err := r.createEventMetadatasForBatch(ctx, batch, tx); err != nil {
+	if err := r.saveHandledEventsForBatch(ctx, batch, tx); err != nil {
 		return util.StatusWrap(err, "Failed to bulk insert event metadata")
 	}
 

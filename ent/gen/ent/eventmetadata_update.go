@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -25,6 +26,47 @@ type EventMetadataUpdate struct {
 // Where appends a list predicates to the EventMetadataUpdate builder.
 func (emu *EventMetadataUpdate) Where(ps ...predicate.EventMetadata) *EventMetadataUpdate {
 	emu.mutation.Where(ps...)
+	return emu
+}
+
+// SetHandled sets the "handled" field.
+func (emu *EventMetadataUpdate) SetHandled(b []byte) *EventMetadataUpdate {
+	emu.mutation.SetHandled(b)
+	return emu
+}
+
+// SetEventReceivedAt sets the "event_received_at" field.
+func (emu *EventMetadataUpdate) SetEventReceivedAt(t time.Time) *EventMetadataUpdate {
+	emu.mutation.SetEventReceivedAt(t)
+	return emu
+}
+
+// SetNillableEventReceivedAt sets the "event_received_at" field if the given value is not nil.
+func (emu *EventMetadataUpdate) SetNillableEventReceivedAt(t *time.Time) *EventMetadataUpdate {
+	if t != nil {
+		emu.SetEventReceivedAt(*t)
+	}
+	return emu
+}
+
+// SetVersion sets the "version" field.
+func (emu *EventMetadataUpdate) SetVersion(i int64) *EventMetadataUpdate {
+	emu.mutation.ResetVersion()
+	emu.mutation.SetVersion(i)
+	return emu
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (emu *EventMetadataUpdate) SetNillableVersion(i *int64) *EventMetadataUpdate {
+	if i != nil {
+		emu.SetVersion(*i)
+	}
+	return emu
+}
+
+// AddVersion adds i to the "version" field.
+func (emu *EventMetadataUpdate) AddVersion(i int64) *EventMetadataUpdate {
+	emu.mutation.AddVersion(i)
 	return emu
 }
 
@@ -86,6 +128,18 @@ func (emu *EventMetadataUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			}
 		}
 	}
+	if value, ok := emu.mutation.Handled(); ok {
+		_spec.SetField(eventmetadata.FieldHandled, field.TypeBytes, value)
+	}
+	if value, ok := emu.mutation.EventReceivedAt(); ok {
+		_spec.SetField(eventmetadata.FieldEventReceivedAt, field.TypeTime, value)
+	}
+	if value, ok := emu.mutation.Version(); ok {
+		_spec.SetField(eventmetadata.FieldVersion, field.TypeInt64, value)
+	}
+	if value, ok := emu.mutation.AddedVersion(); ok {
+		_spec.AddField(eventmetadata.FieldVersion, field.TypeInt64, value)
+	}
 	_spec.AddModifiers(emu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, emu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -106,6 +160,47 @@ type EventMetadataUpdateOne struct {
 	hooks     []Hook
 	mutation  *EventMetadataMutation
 	modifiers []func(*sql.UpdateBuilder)
+}
+
+// SetHandled sets the "handled" field.
+func (emuo *EventMetadataUpdateOne) SetHandled(b []byte) *EventMetadataUpdateOne {
+	emuo.mutation.SetHandled(b)
+	return emuo
+}
+
+// SetEventReceivedAt sets the "event_received_at" field.
+func (emuo *EventMetadataUpdateOne) SetEventReceivedAt(t time.Time) *EventMetadataUpdateOne {
+	emuo.mutation.SetEventReceivedAt(t)
+	return emuo
+}
+
+// SetNillableEventReceivedAt sets the "event_received_at" field if the given value is not nil.
+func (emuo *EventMetadataUpdateOne) SetNillableEventReceivedAt(t *time.Time) *EventMetadataUpdateOne {
+	if t != nil {
+		emuo.SetEventReceivedAt(*t)
+	}
+	return emuo
+}
+
+// SetVersion sets the "version" field.
+func (emuo *EventMetadataUpdateOne) SetVersion(i int64) *EventMetadataUpdateOne {
+	emuo.mutation.ResetVersion()
+	emuo.mutation.SetVersion(i)
+	return emuo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (emuo *EventMetadataUpdateOne) SetNillableVersion(i *int64) *EventMetadataUpdateOne {
+	if i != nil {
+		emuo.SetVersion(*i)
+	}
+	return emuo
+}
+
+// AddVersion adds i to the "version" field.
+func (emuo *EventMetadataUpdateOne) AddVersion(i int64) *EventMetadataUpdateOne {
+	emuo.mutation.AddVersion(i)
+	return emuo
 }
 
 // Mutation returns the EventMetadataMutation object of the builder.
@@ -195,6 +290,18 @@ func (emuo *EventMetadataUpdateOne) sqlSave(ctx context.Context) (_node *EventMe
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := emuo.mutation.Handled(); ok {
+		_spec.SetField(eventmetadata.FieldHandled, field.TypeBytes, value)
+	}
+	if value, ok := emuo.mutation.EventReceivedAt(); ok {
+		_spec.SetField(eventmetadata.FieldEventReceivedAt, field.TypeTime, value)
+	}
+	if value, ok := emuo.mutation.Version(); ok {
+		_spec.SetField(eventmetadata.FieldVersion, field.TypeInt64, value)
+	}
+	if value, ok := emuo.mutation.AddedVersion(); ok {
+		_spec.AddField(eventmetadata.FieldVersion, field.TypeInt64, value)
 	}
 	_spec.AddModifiers(emuo.modifiers...)
 	_node = &EventMetadata{config: emuo.config}

@@ -55,7 +55,6 @@ type BazelInvocationQuery struct {
 	withFKs                      bool
 	loadTotal                    []func(context.Context, []*BazelInvocation) error
 	modifiers                    []func(*sql.Selector)
-	withNamedEventMetadata       map[string]*EventMetadataQuery
 	withNamedConnectionMetadata  map[string]*ConnectionMetadataQuery
 	withNamedProblems            map[string]*BazelInvocationProblemQuery
 	withNamedIncompleteBuildLogs map[string]*IncompleteBuildLogQuery
@@ -180,7 +179,7 @@ func (biq *BazelInvocationQuery) QueryEventMetadata() *EventMetadataQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, selector),
 			sqlgraph.To(eventmetadata.Table, eventmetadata.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.EventMetadataTable, bazelinvocation.EventMetadataColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, bazelinvocation.EventMetadataTable, bazelinvocation.EventMetadataColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(biq.driver.Dialect(), step)
 		return fromU, nil
@@ -923,9 +922,8 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		}
 	}
 	if query := biq.withEventMetadata; query != nil {
-		if err := biq.loadEventMetadata(ctx, query, nodes,
-			func(n *BazelInvocation) { n.Edges.EventMetadata = []*EventMetadata{} },
-			func(n *BazelInvocation, e *EventMetadata) { n.Edges.EventMetadata = append(n.Edges.EventMetadata, e) }); err != nil {
+		if err := biq.loadEventMetadata(ctx, query, nodes, nil,
+			func(n *BazelInvocation, e *EventMetadata) { n.Edges.EventMetadata = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -1006,13 +1004,6 @@ func (biq *BazelInvocationQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	if query := biq.withSourceControl; query != nil {
 		if err := biq.loadSourceControl(ctx, query, nodes, nil,
 			func(n *BazelInvocation, e *SourceControl) { n.Edges.SourceControl = e }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range biq.withNamedEventMetadata {
-		if err := biq.loadEventMetadata(ctx, query, nodes,
-			func(n *BazelInvocation) { n.appendNamedEventMetadata(name) },
-			func(n *BazelInvocation, e *EventMetadata) { n.appendNamedEventMetadata(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1182,9 +1173,6 @@ func (biq *BazelInvocationQuery) loadEventMetadata(ctx context.Context, query *E
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
 	}
 	if len(query.ctx.Fields) > 0 {
 		query.ctx.AppendFieldOnce(eventmetadata.FieldBazelInvocationID)
@@ -1600,20 +1588,6 @@ func (biq *BazelInvocationQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (biq *BazelInvocationQuery) Modify(modifiers ...func(s *sql.Selector)) *BazelInvocationSelect {
 	biq.modifiers = append(biq.modifiers, modifiers...)
 	return biq.Select()
-}
-
-// WithNamedEventMetadata tells the query-builder to eager-load the nodes that are connected to the "event_metadata"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (biq *BazelInvocationQuery) WithNamedEventMetadata(name string, opts ...func(*EventMetadataQuery)) *BazelInvocationQuery {
-	query := (&EventMetadataClient{config: biq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	if biq.withNamedEventMetadata == nil {
-		biq.withNamedEventMetadata = make(map[string]*EventMetadataQuery)
-	}
-	biq.withNamedEventMetadata[name] = query
-	return biq
 }
 
 // WithNamedConnectionMetadata tells the query-builder to eager-load the nodes that are connected to the "connection_metadata"

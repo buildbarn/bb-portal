@@ -6,7 +6,6 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 )
 
 type Querier interface {
@@ -14,7 +13,6 @@ type Querier interface {
 	// An idempotent function for creating bazel invocations. If the
 	// invocation already exists, it will return the existing id.
 	CreateBazelInvocation(ctx context.Context, arg CreateBazelInvocationParams) (int64, error)
-	CreateEventMetadataBulk(ctx context.Context, arg CreateEventMetadataBulkParams) error
 	CreateIncompleteBuildLogs(ctx context.Context, arg CreateIncompleteBuildLogsParams) error
 	//
 	// An idempotent function for creating an instance name. If the instance
@@ -31,8 +29,9 @@ type Querier interface {
 	CreateTargets(ctx context.Context, arg CreateTargetsParams) ([]CreateTargetsRow, error)
 	FindMappedTargets(ctx context.Context, arg FindMappedTargetsParams) ([]FindMappedTargetsRow, error)
 	FindTargets(ctx context.Context, arg FindTargetsParams) ([]FindTargetsRow, error)
+	GetOrCreateEventMetadata(ctx context.Context, bazelInvocationID int64) (GetOrCreateEventMetadataRow, error)
 	LockBazelInvocationCompletion(ctx context.Context, id int64) (LockBazelInvocationCompletionRow, error)
-	RecordEventMetadata(ctx context.Context, arg RecordEventMetadataParams) (sql.Result, error)
+	UpdateEventMetadata(ctx context.Context, arg UpdateEventMetadataParams) (int64, error)
 }
 
 var _ Querier = (*Queries)(nil)
