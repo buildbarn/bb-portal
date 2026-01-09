@@ -460,17 +460,10 @@ func ByAuthenticatedUserField(field string, opts ...sql.OrderTermOption) OrderOp
 	}
 }
 
-// ByEventMetadataCount orders the results by event_metadata count.
-func ByEventMetadataCount(opts ...sql.OrderTermOption) OrderOption {
+// ByEventMetadataField orders the results by event_metadata field.
+func ByEventMetadataField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newEventMetadataStep(), opts...)
-	}
-}
-
-// ByEventMetadata orders the results by event_metadata terms.
-func ByEventMetadata(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newEventMetadataStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newEventMetadataStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -624,7 +617,7 @@ func newEventMetadataStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(EventMetadataInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, EventMetadataTable, EventMetadataColumn),
+		sqlgraph.Edge(sqlgraph.O2O, false, EventMetadataTable, EventMetadataColumn),
 	)
 }
 func newConnectionMetadataStep() *sqlgraph.Step {

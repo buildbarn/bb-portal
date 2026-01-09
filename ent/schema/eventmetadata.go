@@ -17,17 +17,16 @@ type EventMetadata struct {
 // Fields of the EventMetadata.
 func (EventMetadata) Fields() []ent.Field {
 	return []ent.Field{
-		// The sequence number of the event in the invocation.
-		field.Int64("sequence_number").Immutable(),
-
-		// The time when the event was saved received.
-		field.Time("event_received_at").Immutable(),
-
-		// The hash of the event proto message.
-		field.Bytes("event_hash").Immutable(),
-
-		// Foreign key to bazel_invocation
-		field.Int("bazel_invocation_id").Immutable(),
+		field.Bytes("handled").
+			Comment("Binary representation of the events that have been handled"),
+		field.Time("event_received_at").
+			Comment("Last time an event was received"),
+		field.Int64("version").
+			Comment("Optimistic lock version number"),
+		field.Int("bazel_invocation_id").
+			Comment("The id of the bazel invocation").
+			Immutable().
+			Unique(),
 	}
 }
 
@@ -47,10 +46,7 @@ func (EventMetadata) Edges() []ent.Edge {
 // Indexes of the EventMetadata.
 func (EventMetadata) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Edges("bazel_invocation"),
-		index.Fields("sequence_number").
-			Edges("bazel_invocation").
-			Unique(),
+		index.Fields("event_received_at"),
 	}
 }
 

@@ -12,12 +12,12 @@ const (
 	Label = "event_metadata"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldSequenceNumber holds the string denoting the sequence_number field in the database.
-	FieldSequenceNumber = "sequence_number"
+	// FieldHandled holds the string denoting the handled field in the database.
+	FieldHandled = "handled"
 	// FieldEventReceivedAt holds the string denoting the event_received_at field in the database.
 	FieldEventReceivedAt = "event_received_at"
-	// FieldEventHash holds the string denoting the event_hash field in the database.
-	FieldEventHash = "event_hash"
+	// FieldVersion holds the string denoting the version field in the database.
+	FieldVersion = "version"
 	// FieldBazelInvocationID holds the string denoting the bazel_invocation_id field in the database.
 	FieldBazelInvocationID = "bazel_invocation_id"
 	// EdgeBazelInvocation holds the string denoting the bazel_invocation edge name in mutations.
@@ -36,9 +36,9 @@ const (
 // Columns holds all SQL columns for eventmetadata fields.
 var Columns = []string{
 	FieldID,
-	FieldSequenceNumber,
+	FieldHandled,
 	FieldEventReceivedAt,
-	FieldEventHash,
+	FieldVersion,
 	FieldBazelInvocationID,
 }
 
@@ -60,14 +60,14 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// BySequenceNumber orders the results by the sequence_number field.
-func BySequenceNumber(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSequenceNumber, opts...).ToFunc()
-}
-
 // ByEventReceivedAt orders the results by the event_received_at field.
 func ByEventReceivedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEventReceivedAt, opts...).ToFunc()
+}
+
+// ByVersion orders the results by the version field.
+func ByVersion(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldVersion, opts...).ToFunc()
 }
 
 // ByBazelInvocationID orders the results by the bazel_invocation_id field.
@@ -85,6 +85,6 @@ func newBazelInvocationStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(BazelInvocationInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, BazelInvocationTable, BazelInvocationColumn),
+		sqlgraph.Edge(sqlgraph.O2O, true, BazelInvocationTable, BazelInvocationColumn),
 	)
 }

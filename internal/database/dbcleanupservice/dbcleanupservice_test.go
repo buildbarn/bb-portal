@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/RoaringBitmap/roaring"
 	"github.com/buildbarn/bb-portal/ent/gen/ent"
 	"github.com/klauspost/compress/zstd"
 
@@ -101,6 +102,13 @@ func populateIncompleteBuildLog(t *testing.T, ctx context.Context, client *ent.C
 			Save(ctx)
 		require.NoError(t, err)
 	}
+}
+
+func roaringBytes(params ...uint32) []byte {
+	bitmap := roaring.NewBitmap()
+	bitmap.AddMany(params)
+	bytes, _ := bitmap.ToBytes()
+	return bytes
 }
 
 func TestLockInvocationsWithNoRecentConnections(t *testing.T) {
@@ -366,8 +374,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		require.NoError(t, err)
 		em, err := client.EventMetadata.Create().
 			SetBazelInvocationID(invocationDb.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash")).
+			SetHandled(roaringBytes(1)).
+			SetVersion(0).
 			SetEventReceivedAt(cleanupTime.Add(-60 * time.Second)).
 			Save(ctx)
 		require.NoError(t, err)
@@ -396,8 +404,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		require.NoError(t, err)
 		_, err = client.EventMetadata.Create().
 			SetBazelInvocationID(invocationDb.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash")).
+			SetHandled(roaringBytes(1)).
+			SetVersion(0).
 			SetEventReceivedAt(cleanupTime.Add(-50 * time.Second)).
 			Save(ctx)
 		require.NoError(t, err)
@@ -426,8 +434,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		require.NoError(t, err)
 		em, err := client.EventMetadata.Create().
 			SetBazelInvocationID(invocationDb.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash")).
+			SetHandled(roaringBytes(1)).
+			SetVersion(0).
 			SetEventReceivedAt(cleanupTime.Add(-50 * time.Second)).
 			Save(ctx)
 		require.NoError(t, err)
@@ -457,8 +465,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		require.NoError(t, err)
 		_, err = client.EventMetadata.Create().
 			SetBazelInvocationID(invocationDb.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash")).
+			SetHandled(roaringBytes(1)).
+			SetVersion(0).
 			SetEventReceivedAt(cleanupTime.Add(-50 * time.Second)).
 			Save(ctx)
 		require.NoError(t, err)
@@ -484,25 +492,11 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 			SetInstanceNameID(instanceNameDbID).
 			Save(ctx)
 		require.NoError(t, err)
-		_, err = client.EventMetadata.Create().
+		em, err := client.EventMetadata.Create().
 			SetBazelInvocationID(invocationDb.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash1")).
+			SetHandled(roaringBytes(1, 2, 3)).
+			SetVersion(0).
 			SetEventReceivedAt(cleanupTime.Add(-59 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-		_, err = client.EventMetadata.Create().
-			SetBazelInvocationID(invocationDb.ID).
-			SetSequenceNumber(2).
-			SetEventHash([]byte("hash2")).
-			SetEventReceivedAt(cleanupTime.Add(-58 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-		em3, err := client.EventMetadata.Create().
-			SetBazelInvocationID(invocationDb.ID).
-			SetSequenceNumber(3).
-			SetEventHash([]byte("hash3")).
-			SetEventReceivedAt(cleanupTime.Add(-57 * time.Second)).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -514,7 +508,7 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 
 		inv, err := client.BazelInvocation.Get(ctx, invocationDb.ID)
 		require.NoError(t, err)
-		require.Equal(t, em3.EventReceivedAt.UTC(), inv.EndedAt.UTC())
+		require.Equal(t, em.EventReceivedAt.UTC(), inv.EndedAt.UTC())
 		require.True(t, inv.BepCompleted)
 	})
 
@@ -529,8 +523,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		require.NoError(t, err)
 		em1, err := client.EventMetadata.Create().
 			SetBazelInvocationID(invocationDb1.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash1")).
+			SetHandled(roaringBytes(1)).
+			SetVersion(0).
 			SetEventReceivedAt(cleanupTime.Add(-60 * time.Second)).
 			Save(ctx)
 		require.NoError(t, err)
@@ -542,8 +536,8 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		require.NoError(t, err)
 		em2, err := client.EventMetadata.Create().
 			SetBazelInvocationID(invocationDb2.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash2")).
+			SetHandled(roaringBytes(1)).
+			SetVersion(0).
 			SetEventReceivedAt(cleanupTime.Add(-50 * time.Second)).
 			Save(ctx)
 		require.NoError(t, err)
@@ -576,15 +570,9 @@ func TestLockInvocationsWithNoRecentEvents(t *testing.T) {
 		require.NoError(t, err)
 		_, err = client.EventMetadata.Create().
 			SetBazelInvocationID(invocationDb.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash")).
+			SetHandled(roaringBytes(1)).
+			SetVersion(0).
 			SetEventReceivedAt(cleanupTime.Add(-20 * time.Second)).
-			Save(ctx)
-		_, err = client.EventMetadata.Create().
-			SetBazelInvocationID(invocationDb.ID).
-			SetSequenceNumber(2).
-			SetEventHash([]byte("hash")).
-			SetEventReceivedAt(cleanupTime.Add(-10 * time.Second)).
 			Save(ctx)
 		require.NoError(t, err)
 
@@ -726,178 +714,6 @@ func TestRemoveOldInvocationConnections(t *testing.T) {
 		invDbId, err := conns[0].QueryBazelInvocation().OnlyID(ctx)
 		require.NoError(t, err)
 		require.Equal(t, int(invNotDone.ID), invDbId)
-	})
-}
-
-func TestRemoveOldEventMetadata(t *testing.T) {
-	ctrl, ctx := gomock.WithContext(context.Background(), t)
-	ctx = dbauthservice.NewContextWithDbAuthServiceBypass(ctx)
-	clock := mock.NewMockClock(ctrl)
-	cleanupTime := time.Unix(1600000120, 0)
-	traceProvider := noop.NewTracerProvider()
-
-	t.Run("NoEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
-		client := db.Ent()
-		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
-		require.NoError(t, err)
-		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.RemoveOldEventMetadata(ctx)
-		require.NoError(t, err)
-		count, err := client.EventMetadata.Query().Count(ctx)
-		require.NoError(t, err)
-		require.Equal(t, 0, count)
-	})
-
-	t.Run("EventMetadataNotOld", func(t *testing.T) {
-		db := setupTestDB(t)
-		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		inv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			SetBepCompleted(true).
-			SetEndedAt(cleanupTime.Add(-15 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-		_, err = client.EventMetadata.Create().
-			SetBazelInvocationID(inv.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash")).
-			SetEventReceivedAt(cleanupTime.Add(-15 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-
-		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
-		require.NoError(t, err)
-		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.RemoveOldEventMetadata(ctx)
-		require.NoError(t, err)
-		count, err := client.EventMetadata.Query().Count(ctx)
-		require.NoError(t, err)
-		require.Equal(t, 1, count)
-	})
-
-	t.Run("EventMetadataOld", func(t *testing.T) {
-		db := setupTestDB(t)
-		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		inv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			SetBepCompleted(true).
-			SetEndedAt(cleanupTime.Add(-60 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-		_, err = client.EventMetadata.Create().
-			SetBazelInvocationID(inv.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash")).
-			SetEventReceivedAt(cleanupTime.Add(-60 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-
-		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
-		require.NoError(t, err)
-		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.RemoveOldEventMetadata(ctx)
-		require.NoError(t, err)
-		count, err := client.EventMetadata.Query().Count(ctx)
-		require.NoError(t, err)
-		require.Equal(t, 0, count)
-	})
-
-	t.Run("EventMetadataOldButInvocationNotCompleted", func(t *testing.T) {
-		db := setupTestDB(t)
-		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		inv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			SetEndedAt(cleanupTime.Add(-60 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-		_, err = client.EventMetadata.Create().
-			SetBazelInvocationID(inv.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash")).
-			SetEventReceivedAt(cleanupTime.Add(-60 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-
-		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
-		require.NoError(t, err)
-		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.RemoveOldEventMetadata(ctx)
-		require.NoError(t, err)
-		count, err := client.EventMetadata.Query().Count(ctx)
-		require.NoError(t, err)
-		require.Equal(t, 1, count)
-	})
-
-	t.Run("EventMetadataOldButInvocationEndedAtAfterCutoff", func(t *testing.T) {
-		db := setupTestDB(t)
-		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		inv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			SetBepCompleted(true).
-			SetEndedAt(cleanupTime.Add(-15 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-		_, err = client.EventMetadata.Create().
-			SetBazelInvocationID(inv.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash")).
-			SetEventReceivedAt(cleanupTime.Add(-60 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-
-		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
-		require.NoError(t, err)
-		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.RemoveOldEventMetadata(ctx)
-		require.NoError(t, err)
-		count, err := client.EventMetadata.Query().Count(ctx)
-		require.NoError(t, err)
-		require.Equal(t, 1, count)
-	})
-
-	t.Run("MultipleEventMetadata", func(t *testing.T) {
-		db := setupTestDB(t)
-		client := db.Ent()
-		instanceNameDbID := createInstanceName(t, ctx, client, "testInstance")
-		inv, err := client.BazelInvocation.Create().
-			SetInvocationID(uuid.New()).
-			SetInstanceNameID(instanceNameDbID).
-			SetBepCompleted(true).
-			SetEndedAt(cleanupTime.Add(-60 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-		_, err = client.EventMetadata.Create().
-			SetBazelInvocationID(inv.ID).
-			SetSequenceNumber(1).
-			SetEventHash([]byte("hash1")).
-			SetEventReceivedAt(cleanupTime.Add(-60 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-		_, err = client.EventMetadata.Create().
-			SetBazelInvocationID(inv.ID).
-			SetSequenceNumber(2).
-			SetEventHash([]byte("hash2")).
-			SetEventReceivedAt(cleanupTime.Add(-15 * time.Second)).
-			Save(ctx)
-		require.NoError(t, err)
-
-		cleanup, err := getNewDbCleanupService(db, clock, traceProvider)
-		require.NoError(t, err)
-		clock.EXPECT().Now().Return(cleanupTime)
-		err = cleanup.RemoveOldEventMetadata(ctx)
-		require.NoError(t, err)
-		count, err := client.EventMetadata.Query().Count(ctx)
-		require.NoError(t, err)
-		require.Equal(t, 0, count)
 	})
 }
 

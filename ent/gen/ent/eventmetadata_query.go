@@ -76,7 +76,7 @@ func (emq *EventMetadataQuery) QueryBazelInvocation() *BazelInvocationQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(eventmetadata.Table, eventmetadata.FieldID, selector),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, eventmetadata.BazelInvocationTable, eventmetadata.BazelInvocationColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, eventmetadata.BazelInvocationTable, eventmetadata.BazelInvocationColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(emq.driver.Dialect(), step)
 		return fromU, nil
@@ -301,12 +301,12 @@ func (emq *EventMetadataQuery) WithBazelInvocation(opts ...func(*BazelInvocation
 // Example:
 //
 //	var v []struct {
-//		SequenceNumber int64 `json:"sequence_number,omitempty"`
+//		Handled []byte `json:"handled,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.EventMetadata.Query().
-//		GroupBy(eventmetadata.FieldSequenceNumber).
+//		GroupBy(eventmetadata.FieldHandled).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (emq *EventMetadataQuery) GroupBy(field string, fields ...string) *EventMetadataGroupBy {
@@ -324,11 +324,11 @@ func (emq *EventMetadataQuery) GroupBy(field string, fields ...string) *EventMet
 // Example:
 //
 //	var v []struct {
-//		SequenceNumber int64 `json:"sequence_number,omitempty"`
+//		Handled []byte `json:"handled,omitempty"`
 //	}
 //
 //	client.EventMetadata.Query().
-//		Select(eventmetadata.FieldSequenceNumber).
+//		Select(eventmetadata.FieldHandled).
 //		Scan(ctx, &v)
 func (emq *EventMetadataQuery) Select(fields ...string) *EventMetadataSelect {
 	emq.ctx.Fields = append(emq.ctx.Fields, fields...)

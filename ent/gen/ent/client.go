@@ -1539,7 +1539,7 @@ func (c *BazelInvocationClient) QueryEventMetadata(bi *BazelInvocation) *EventMe
 		step := sqlgraph.NewStep(
 			sqlgraph.From(bazelinvocation.Table, bazelinvocation.FieldID, id),
 			sqlgraph.To(eventmetadata.Table, eventmetadata.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, bazelinvocation.EventMetadataTable, bazelinvocation.EventMetadataColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, bazelinvocation.EventMetadataTable, bazelinvocation.EventMetadataColumn),
 		)
 		fromV = sqlgraph.Neighbors(bi.driver.Dialect(), step)
 		return fromV, nil
@@ -3138,7 +3138,7 @@ func (c *EventMetadataClient) QueryBazelInvocation(em *EventMetadata) *BazelInvo
 		step := sqlgraph.NewStep(
 			sqlgraph.From(eventmetadata.Table, eventmetadata.FieldID, id),
 			sqlgraph.To(bazelinvocation.Table, bazelinvocation.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, eventmetadata.BazelInvocationTable, eventmetadata.BazelInvocationColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, eventmetadata.BazelInvocationTable, eventmetadata.BazelInvocationColumn),
 		)
 		fromV = sqlgraph.Neighbors(em.driver.Dialect(), step)
 		return fromV, nil

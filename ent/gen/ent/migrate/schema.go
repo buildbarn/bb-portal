@@ -513,10 +513,10 @@ var (
 	// EventMetadataColumns holds the columns for the "event_metadata" table.
 	EventMetadataColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "sequence_number", Type: field.TypeInt64},
+		{Name: "handled", Type: field.TypeBytes},
 		{Name: "event_received_at", Type: field.TypeTime},
-		{Name: "event_hash", Type: field.TypeBytes},
-		{Name: "bazel_invocation_id", Type: field.TypeInt},
+		{Name: "version", Type: field.TypeInt64},
+		{Name: "bazel_invocation_id", Type: field.TypeInt, Unique: true},
 	}
 	// EventMetadataTable holds the schema information for the "event_metadata" table.
 	EventMetadataTable = &schema.Table{
@@ -533,14 +533,9 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "eventmetadata_bazel_invocation_id",
+				Name:    "eventmetadata_event_received_at",
 				Unique:  false,
-				Columns: []*schema.Column{EventMetadataColumns[4]},
-			},
-			{
-				Name:    "eventmetadata_sequence_number_bazel_invocation_id",
-				Unique:  true,
-				Columns: []*schema.Column{EventMetadataColumns[1], EventMetadataColumns[4]},
+				Columns: []*schema.Column{EventMetadataColumns[2]},
 			},
 		},
 	}

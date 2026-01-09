@@ -5014,8 +5014,7 @@ type BazelInvocationMutation struct {
 	clearedbuild                            bool
 	authenticated_user                      *int
 	clearedauthenticated_user               bool
-	event_metadata                          map[int]struct{}
-	removedevent_metadata                   map[int]struct{}
+	event_metadata                          *int
 	clearedevent_metadata                   bool
 	connection_metadata                     map[int]struct{}
 	removedconnection_metadata              map[int]struct{}
@@ -6877,14 +6876,9 @@ func (m *BazelInvocationMutation) ResetAuthenticatedUser() {
 	m.clearedauthenticated_user = false
 }
 
-// AddEventMetadatumIDs adds the "event_metadata" edge to the EventMetadata entity by ids.
-func (m *BazelInvocationMutation) AddEventMetadatumIDs(ids ...int) {
-	if m.event_metadata == nil {
-		m.event_metadata = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.event_metadata[ids[i]] = struct{}{}
-	}
+// SetEventMetadataID sets the "event_metadata" edge to the EventMetadata entity by id.
+func (m *BazelInvocationMutation) SetEventMetadataID(id int) {
+	m.event_metadata = &id
 }
 
 // ClearEventMetadata clears the "event_metadata" edge to the EventMetadata entity.
@@ -6897,29 +6891,20 @@ func (m *BazelInvocationMutation) EventMetadataCleared() bool {
 	return m.clearedevent_metadata
 }
 
-// RemoveEventMetadatumIDs removes the "event_metadata" edge to the EventMetadata entity by IDs.
-func (m *BazelInvocationMutation) RemoveEventMetadatumIDs(ids ...int) {
-	if m.removedevent_metadata == nil {
-		m.removedevent_metadata = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.event_metadata, ids[i])
-		m.removedevent_metadata[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedEventMetadata returns the removed IDs of the "event_metadata" edge to the EventMetadata entity.
-func (m *BazelInvocationMutation) RemovedEventMetadataIDs() (ids []int) {
-	for id := range m.removedevent_metadata {
-		ids = append(ids, id)
+// EventMetadataID returns the "event_metadata" edge ID in the mutation.
+func (m *BazelInvocationMutation) EventMetadataID() (id int, exists bool) {
+	if m.event_metadata != nil {
+		return *m.event_metadata, true
 	}
 	return
 }
 
 // EventMetadataIDs returns the "event_metadata" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// EventMetadataID instead. It exists only for internal usage by the builders.
 func (m *BazelInvocationMutation) EventMetadataIDs() (ids []int) {
-	for id := range m.event_metadata {
-		ids = append(ids, id)
+	if id := m.event_metadata; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -6928,7 +6913,6 @@ func (m *BazelInvocationMutation) EventMetadataIDs() (ids []int) {
 func (m *BazelInvocationMutation) ResetEventMetadata() {
 	m.event_metadata = nil
 	m.clearedevent_metadata = false
-	m.removedevent_metadata = nil
 }
 
 // AddConnectionMetadatumIDs adds the "connection_metadata" edge to the ConnectionMetadata entity by ids.
@@ -8362,11 +8346,9 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 			return []ent.Value{*id}
 		}
 	case bazelinvocation.EdgeEventMetadata:
-		ids := make([]ent.Value, 0, len(m.event_metadata))
-		for id := range m.event_metadata {
-			ids = append(ids, id)
+		if id := m.event_metadata; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	case bazelinvocation.EdgeConnectionMetadata:
 		ids := make([]ent.Value, 0, len(m.connection_metadata))
 		for id := range m.connection_metadata {
@@ -8430,9 +8412,6 @@ func (m *BazelInvocationMutation) AddedIDs(name string) []ent.Value {
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *BazelInvocationMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 14)
-	if m.removedevent_metadata != nil {
-		edges = append(edges, bazelinvocation.EdgeEventMetadata)
-	}
 	if m.removedconnection_metadata != nil {
 		edges = append(edges, bazelinvocation.EdgeConnectionMetadata)
 	}
@@ -8464,12 +8443,6 @@ func (m *BazelInvocationMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *BazelInvocationMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case bazelinvocation.EdgeEventMetadata:
-		ids := make([]ent.Value, 0, len(m.removedevent_metadata))
-		for id := range m.removedevent_metadata {
-			ids = append(ids, id)
-		}
-		return ids
 	case bazelinvocation.EdgeConnectionMetadata:
 		ids := make([]ent.Value, 0, len(m.removedconnection_metadata))
 		for id := range m.removedconnection_metadata {
@@ -8618,6 +8591,9 @@ func (m *BazelInvocationMutation) ClearEdge(name string) error {
 		return nil
 	case bazelinvocation.EdgeAuthenticatedUser:
 		m.ClearAuthenticatedUser()
+		return nil
+	case bazelinvocation.EdgeEventMetadata:
+		m.ClearEventMetadata()
 		return nil
 	case bazelinvocation.EdgeMetrics:
 		m.ClearMetrics()
@@ -14231,10 +14207,10 @@ type EventMetadataMutation struct {
 	op                      Op
 	typ                     string
 	id                      *int
-	sequence_number         *int64
-	addsequence_number      *int64
+	handled                 *[]byte
 	event_received_at       *time.Time
-	event_hash              *[]byte
+	version                 *int64
+	addversion              *int64
 	clearedFields           map[string]struct{}
 	bazel_invocation        *int
 	clearedbazel_invocation bool
@@ -14341,60 +14317,40 @@ func (m *EventMetadataMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetSequenceNumber sets the "sequence_number" field.
-func (m *EventMetadataMutation) SetSequenceNumber(i int64) {
-	m.sequence_number = &i
-	m.addsequence_number = nil
+// SetHandled sets the "handled" field.
+func (m *EventMetadataMutation) SetHandled(b []byte) {
+	m.handled = &b
 }
 
-// SequenceNumber returns the value of the "sequence_number" field in the mutation.
-func (m *EventMetadataMutation) SequenceNumber() (r int64, exists bool) {
-	v := m.sequence_number
+// Handled returns the value of the "handled" field in the mutation.
+func (m *EventMetadataMutation) Handled() (r []byte, exists bool) {
+	v := m.handled
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldSequenceNumber returns the old "sequence_number" field's value of the EventMetadata entity.
+// OldHandled returns the old "handled" field's value of the EventMetadata entity.
 // If the EventMetadata object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EventMetadataMutation) OldSequenceNumber(ctx context.Context) (v int64, err error) {
+func (m *EventMetadataMutation) OldHandled(ctx context.Context) (v []byte, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSequenceNumber is only allowed on UpdateOne operations")
+		return v, errors.New("OldHandled is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSequenceNumber requires an ID field in the mutation")
+		return v, errors.New("OldHandled requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSequenceNumber: %w", err)
+		return v, fmt.Errorf("querying old value for OldHandled: %w", err)
 	}
-	return oldValue.SequenceNumber, nil
+	return oldValue.Handled, nil
 }
 
-// AddSequenceNumber adds i to the "sequence_number" field.
-func (m *EventMetadataMutation) AddSequenceNumber(i int64) {
-	if m.addsequence_number != nil {
-		*m.addsequence_number += i
-	} else {
-		m.addsequence_number = &i
-	}
-}
-
-// AddedSequenceNumber returns the value that was added to the "sequence_number" field in this mutation.
-func (m *EventMetadataMutation) AddedSequenceNumber() (r int64, exists bool) {
-	v := m.addsequence_number
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetSequenceNumber resets all changes to the "sequence_number" field.
-func (m *EventMetadataMutation) ResetSequenceNumber() {
-	m.sequence_number = nil
-	m.addsequence_number = nil
+// ResetHandled resets all changes to the "handled" field.
+func (m *EventMetadataMutation) ResetHandled() {
+	m.handled = nil
 }
 
 // SetEventReceivedAt sets the "event_received_at" field.
@@ -14433,40 +14389,60 @@ func (m *EventMetadataMutation) ResetEventReceivedAt() {
 	m.event_received_at = nil
 }
 
-// SetEventHash sets the "event_hash" field.
-func (m *EventMetadataMutation) SetEventHash(b []byte) {
-	m.event_hash = &b
+// SetVersion sets the "version" field.
+func (m *EventMetadataMutation) SetVersion(i int64) {
+	m.version = &i
+	m.addversion = nil
 }
 
-// EventHash returns the value of the "event_hash" field in the mutation.
-func (m *EventMetadataMutation) EventHash() (r []byte, exists bool) {
-	v := m.event_hash
+// Version returns the value of the "version" field in the mutation.
+func (m *EventMetadataMutation) Version() (r int64, exists bool) {
+	v := m.version
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldEventHash returns the old "event_hash" field's value of the EventMetadata entity.
+// OldVersion returns the old "version" field's value of the EventMetadata entity.
 // If the EventMetadata object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EventMetadataMutation) OldEventHash(ctx context.Context) (v []byte, err error) {
+func (m *EventMetadataMutation) OldVersion(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEventHash is only allowed on UpdateOne operations")
+		return v, errors.New("OldVersion is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEventHash requires an ID field in the mutation")
+		return v, errors.New("OldVersion requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEventHash: %w", err)
+		return v, fmt.Errorf("querying old value for OldVersion: %w", err)
 	}
-	return oldValue.EventHash, nil
+	return oldValue.Version, nil
 }
 
-// ResetEventHash resets all changes to the "event_hash" field.
-func (m *EventMetadataMutation) ResetEventHash() {
-	m.event_hash = nil
+// AddVersion adds i to the "version" field.
+func (m *EventMetadataMutation) AddVersion(i int64) {
+	if m.addversion != nil {
+		*m.addversion += i
+	} else {
+		m.addversion = &i
+	}
+}
+
+// AddedVersion returns the value that was added to the "version" field in this mutation.
+func (m *EventMetadataMutation) AddedVersion() (r int64, exists bool) {
+	v := m.addversion
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetVersion resets all changes to the "version" field.
+func (m *EventMetadataMutation) ResetVersion() {
+	m.version = nil
+	m.addversion = nil
 }
 
 // SetBazelInvocationID sets the "bazel_invocation_id" field.
@@ -14567,14 +14543,14 @@ func (m *EventMetadataMutation) Type() string {
 // AddedFields().
 func (m *EventMetadataMutation) Fields() []string {
 	fields := make([]string, 0, 4)
-	if m.sequence_number != nil {
-		fields = append(fields, eventmetadata.FieldSequenceNumber)
+	if m.handled != nil {
+		fields = append(fields, eventmetadata.FieldHandled)
 	}
 	if m.event_received_at != nil {
 		fields = append(fields, eventmetadata.FieldEventReceivedAt)
 	}
-	if m.event_hash != nil {
-		fields = append(fields, eventmetadata.FieldEventHash)
+	if m.version != nil {
+		fields = append(fields, eventmetadata.FieldVersion)
 	}
 	if m.bazel_invocation != nil {
 		fields = append(fields, eventmetadata.FieldBazelInvocationID)
@@ -14587,12 +14563,12 @@ func (m *EventMetadataMutation) Fields() []string {
 // schema.
 func (m *EventMetadataMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case eventmetadata.FieldSequenceNumber:
-		return m.SequenceNumber()
+	case eventmetadata.FieldHandled:
+		return m.Handled()
 	case eventmetadata.FieldEventReceivedAt:
 		return m.EventReceivedAt()
-	case eventmetadata.FieldEventHash:
-		return m.EventHash()
+	case eventmetadata.FieldVersion:
+		return m.Version()
 	case eventmetadata.FieldBazelInvocationID:
 		return m.BazelInvocationID()
 	}
@@ -14604,12 +14580,12 @@ func (m *EventMetadataMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *EventMetadataMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case eventmetadata.FieldSequenceNumber:
-		return m.OldSequenceNumber(ctx)
+	case eventmetadata.FieldHandled:
+		return m.OldHandled(ctx)
 	case eventmetadata.FieldEventReceivedAt:
 		return m.OldEventReceivedAt(ctx)
-	case eventmetadata.FieldEventHash:
-		return m.OldEventHash(ctx)
+	case eventmetadata.FieldVersion:
+		return m.OldVersion(ctx)
 	case eventmetadata.FieldBazelInvocationID:
 		return m.OldBazelInvocationID(ctx)
 	}
@@ -14621,12 +14597,12 @@ func (m *EventMetadataMutation) OldField(ctx context.Context, name string) (ent.
 // type.
 func (m *EventMetadataMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case eventmetadata.FieldSequenceNumber:
-		v, ok := value.(int64)
+	case eventmetadata.FieldHandled:
+		v, ok := value.([]byte)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetSequenceNumber(v)
+		m.SetHandled(v)
 		return nil
 	case eventmetadata.FieldEventReceivedAt:
 		v, ok := value.(time.Time)
@@ -14635,12 +14611,12 @@ func (m *EventMetadataMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEventReceivedAt(v)
 		return nil
-	case eventmetadata.FieldEventHash:
-		v, ok := value.([]byte)
+	case eventmetadata.FieldVersion:
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetEventHash(v)
+		m.SetVersion(v)
 		return nil
 	case eventmetadata.FieldBazelInvocationID:
 		v, ok := value.(int)
@@ -14657,8 +14633,8 @@ func (m *EventMetadataMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *EventMetadataMutation) AddedFields() []string {
 	var fields []string
-	if m.addsequence_number != nil {
-		fields = append(fields, eventmetadata.FieldSequenceNumber)
+	if m.addversion != nil {
+		fields = append(fields, eventmetadata.FieldVersion)
 	}
 	return fields
 }
@@ -14668,8 +14644,8 @@ func (m *EventMetadataMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *EventMetadataMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case eventmetadata.FieldSequenceNumber:
-		return m.AddedSequenceNumber()
+	case eventmetadata.FieldVersion:
+		return m.AddedVersion()
 	}
 	return nil, false
 }
@@ -14679,12 +14655,12 @@ func (m *EventMetadataMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *EventMetadataMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case eventmetadata.FieldSequenceNumber:
+	case eventmetadata.FieldVersion:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddSequenceNumber(v)
+		m.AddVersion(v)
 		return nil
 	}
 	return fmt.Errorf("unknown EventMetadata numeric field %s", name)
@@ -14713,14 +14689,14 @@ func (m *EventMetadataMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *EventMetadataMutation) ResetField(name string) error {
 	switch name {
-	case eventmetadata.FieldSequenceNumber:
-		m.ResetSequenceNumber()
+	case eventmetadata.FieldHandled:
+		m.ResetHandled()
 		return nil
 	case eventmetadata.FieldEventReceivedAt:
 		m.ResetEventReceivedAt()
 		return nil
-	case eventmetadata.FieldEventHash:
-		m.ResetEventHash()
+	case eventmetadata.FieldVersion:
+		m.ResetVersion()
 		return nil
 	case eventmetadata.FieldBazelInvocationID:
 		m.ResetBazelInvocationID()

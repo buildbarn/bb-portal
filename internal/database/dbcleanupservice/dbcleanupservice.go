@@ -106,9 +106,6 @@ func (dc *DbCleanupService) StartDbCleanupService(ctx context.Context, group pro
 				if err := dc.RemoveOldInvocationConnections(ctx); err != nil {
 					slog.Warn("Failed to remove old invocation connections", "err", err)
 				}
-				if err := dc.RemoveOldEventMetadata(ctx); err != nil {
-					slog.Warn("Failed to remove old event metadata", "err", err)
-				}
 				if err := dc.CompactLogs(ctx); err != nil {
 					slog.Warn("Failed to compact logs", "err", err)
 				}
@@ -262,32 +259,6 @@ func (dc *DbCleanupService) RemoveOldInvocationConnections(ctx context.Context) 
 	}
 
 	slog.Info("Removed old invocations connections", "count", deletedRows)
-	return nil
-}
-
-// RemoveOldEventMetadata removes event metadata for invocations that have
-// completed before a certain cutoff time.
-func (dc *DbCleanupService) RemoveOldEventMetadata(ctx context.Context) error {
-	slog.Info("Removing old event metadata")
-
-	ctx, span := dc.tracer.Start(ctx, "DbCleanupService.RemoveOldEventMetadata")
-	defer span.End()
-
-	cutoffTime := dc.clock.Now().UTC().Add(-dc.invocationMessageTimeout)
-	// Remove all event metadata that is for invocations that have
-	// completed before the cutoff time.
-	deletedEM, err := dc.db.Ent().EventMetadata.Delete().
-		Where(
-			eventmetadata.HasBazelInvocationWith(
-				bazelinvocation.BepCompleted(true),
-				bazelinvocation.EndedAtLT(cutoffTime),
-			),
-		).
-		Exec(ctx)
-	if err != nil {
-		return util.StatusWrap(err, "Failed to remove old event metadata")
-	}
-	slog.Info("Removed old event metadata", "count", deletedEM)
 	return nil
 }
 

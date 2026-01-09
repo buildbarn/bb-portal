@@ -113,6 +113,7 @@ func (BazelInvocation) Edges() []ent.Edge {
 
 		// Event metadata for all events processed for this invocation.
 		edge.To("event_metadata", EventMetadata.Type).
+			Unique().
 			Annotations(
 				entgql.Skip(entgql.SkipType),
 				entsql.OnDelete(entsql.Cascade),

@@ -24,7 +24,7 @@ func (r *BuildEventRecorder) saveIgnoredEventsBatch(ctx context.Context, batch [
 	)
 	defer span.End()
 
-	if err := r.createEventMetadatasForBatch(ctx, batch, r.db); err != nil {
+	if err := r.saveHandledEventsForBatch(ctx, batch, r.db); err != nil {
 		return util.StatusWrap(err, "Failed to bulk insert event metadata")
 	}
 

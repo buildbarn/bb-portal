@@ -1715,7 +1715,7 @@ func HasEventMetadata() predicate.BazelInvocation {
 	return predicate.BazelInvocation(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, EventMetadataTable, EventMetadataColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, EventMetadataTable, EventMetadataColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

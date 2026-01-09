@@ -23,9 +23,9 @@ type EventMetadataCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetSequenceNumber sets the "sequence_number" field.
-func (emc *EventMetadataCreate) SetSequenceNumber(i int64) *EventMetadataCreate {
-	emc.mutation.SetSequenceNumber(i)
+// SetHandled sets the "handled" field.
+func (emc *EventMetadataCreate) SetHandled(b []byte) *EventMetadataCreate {
+	emc.mutation.SetHandled(b)
 	return emc
 }
 
@@ -35,9 +35,9 @@ func (emc *EventMetadataCreate) SetEventReceivedAt(t time.Time) *EventMetadataCr
 	return emc
 }
 
-// SetEventHash sets the "event_hash" field.
-func (emc *EventMetadataCreate) SetEventHash(b []byte) *EventMetadataCreate {
-	emc.mutation.SetEventHash(b)
+// SetVersion sets the "version" field.
+func (emc *EventMetadataCreate) SetVersion(i int64) *EventMetadataCreate {
+	emc.mutation.SetVersion(i)
 	return emc
 }
 
@@ -86,14 +86,14 @@ func (emc *EventMetadataCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (emc *EventMetadataCreate) check() error {
-	if _, ok := emc.mutation.SequenceNumber(); !ok {
-		return &ValidationError{Name: "sequence_number", err: errors.New(`ent: missing required field "EventMetadata.sequence_number"`)}
+	if _, ok := emc.mutation.Handled(); !ok {
+		return &ValidationError{Name: "handled", err: errors.New(`ent: missing required field "EventMetadata.handled"`)}
 	}
 	if _, ok := emc.mutation.EventReceivedAt(); !ok {
 		return &ValidationError{Name: "event_received_at", err: errors.New(`ent: missing required field "EventMetadata.event_received_at"`)}
 	}
-	if _, ok := emc.mutation.EventHash(); !ok {
-		return &ValidationError{Name: "event_hash", err: errors.New(`ent: missing required field "EventMetadata.event_hash"`)}
+	if _, ok := emc.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "EventMetadata.version"`)}
 	}
 	if _, ok := emc.mutation.BazelInvocationID(); !ok {
 		return &ValidationError{Name: "bazel_invocation_id", err: errors.New(`ent: missing required field "EventMetadata.bazel_invocation_id"`)}
@@ -128,21 +128,21 @@ func (emc *EventMetadataCreate) createSpec() (*EventMetadata, *sqlgraph.CreateSp
 		_spec = sqlgraph.NewCreateSpec(eventmetadata.Table, sqlgraph.NewFieldSpec(eventmetadata.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = emc.conflict
-	if value, ok := emc.mutation.SequenceNumber(); ok {
-		_spec.SetField(eventmetadata.FieldSequenceNumber, field.TypeInt64, value)
-		_node.SequenceNumber = value
+	if value, ok := emc.mutation.Handled(); ok {
+		_spec.SetField(eventmetadata.FieldHandled, field.TypeBytes, value)
+		_node.Handled = value
 	}
 	if value, ok := emc.mutation.EventReceivedAt(); ok {
 		_spec.SetField(eventmetadata.FieldEventReceivedAt, field.TypeTime, value)
 		_node.EventReceivedAt = value
 	}
-	if value, ok := emc.mutation.EventHash(); ok {
-		_spec.SetField(eventmetadata.FieldEventHash, field.TypeBytes, value)
-		_node.EventHash = value
+	if value, ok := emc.mutation.Version(); ok {
+		_spec.SetField(eventmetadata.FieldVersion, field.TypeInt64, value)
+		_node.Version = value
 	}
 	if nodes := emc.mutation.BazelInvocationIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   eventmetadata.BazelInvocationTable,
 			Columns: []string{eventmetadata.BazelInvocationColumn},
@@ -164,7 +164,7 @@ func (emc *EventMetadataCreate) createSpec() (*EventMetadata, *sqlgraph.CreateSp
 // of the `INSERT` statement. For example:
 //
 //	client.EventMetadata.Create().
-//		SetSequenceNumber(v).
+//		SetHandled(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -173,7 +173,7 @@ func (emc *EventMetadataCreate) createSpec() (*EventMetadata, *sqlgraph.CreateSp
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.EventMetadataUpsert) {
-//			SetSequenceNumber(v+v).
+//			SetHandled(v+v).
 //		}).
 //		Exec(ctx)
 func (emc *EventMetadataCreate) OnConflict(opts ...sql.ConflictOption) *EventMetadataUpsertOne {
@@ -209,6 +209,48 @@ type (
 	}
 )
 
+// SetHandled sets the "handled" field.
+func (u *EventMetadataUpsert) SetHandled(v []byte) *EventMetadataUpsert {
+	u.Set(eventmetadata.FieldHandled, v)
+	return u
+}
+
+// UpdateHandled sets the "handled" field to the value that was provided on create.
+func (u *EventMetadataUpsert) UpdateHandled() *EventMetadataUpsert {
+	u.SetExcluded(eventmetadata.FieldHandled)
+	return u
+}
+
+// SetEventReceivedAt sets the "event_received_at" field.
+func (u *EventMetadataUpsert) SetEventReceivedAt(v time.Time) *EventMetadataUpsert {
+	u.Set(eventmetadata.FieldEventReceivedAt, v)
+	return u
+}
+
+// UpdateEventReceivedAt sets the "event_received_at" field to the value that was provided on create.
+func (u *EventMetadataUpsert) UpdateEventReceivedAt() *EventMetadataUpsert {
+	u.SetExcluded(eventmetadata.FieldEventReceivedAt)
+	return u
+}
+
+// SetVersion sets the "version" field.
+func (u *EventMetadataUpsert) SetVersion(v int64) *EventMetadataUpsert {
+	u.Set(eventmetadata.FieldVersion, v)
+	return u
+}
+
+// UpdateVersion sets the "version" field to the value that was provided on create.
+func (u *EventMetadataUpsert) UpdateVersion() *EventMetadataUpsert {
+	u.SetExcluded(eventmetadata.FieldVersion)
+	return u
+}
+
+// AddVersion adds v to the "version" field.
+func (u *EventMetadataUpsert) AddVersion(v int64) *EventMetadataUpsert {
+	u.Add(eventmetadata.FieldVersion, v)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -220,15 +262,6 @@ type (
 func (u *EventMetadataUpsertOne) UpdateNewValues() *EventMetadataUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		if _, exists := u.create.mutation.SequenceNumber(); exists {
-			s.SetIgnore(eventmetadata.FieldSequenceNumber)
-		}
-		if _, exists := u.create.mutation.EventReceivedAt(); exists {
-			s.SetIgnore(eventmetadata.FieldEventReceivedAt)
-		}
-		if _, exists := u.create.mutation.EventHash(); exists {
-			s.SetIgnore(eventmetadata.FieldEventHash)
-		}
 		if _, exists := u.create.mutation.BazelInvocationID(); exists {
 			s.SetIgnore(eventmetadata.FieldBazelInvocationID)
 		}
@@ -261,6 +294,55 @@ func (u *EventMetadataUpsertOne) Update(set func(*EventMetadataUpsert)) *EventMe
 		set(&EventMetadataUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetHandled sets the "handled" field.
+func (u *EventMetadataUpsertOne) SetHandled(v []byte) *EventMetadataUpsertOne {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.SetHandled(v)
+	})
+}
+
+// UpdateHandled sets the "handled" field to the value that was provided on create.
+func (u *EventMetadataUpsertOne) UpdateHandled() *EventMetadataUpsertOne {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.UpdateHandled()
+	})
+}
+
+// SetEventReceivedAt sets the "event_received_at" field.
+func (u *EventMetadataUpsertOne) SetEventReceivedAt(v time.Time) *EventMetadataUpsertOne {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.SetEventReceivedAt(v)
+	})
+}
+
+// UpdateEventReceivedAt sets the "event_received_at" field to the value that was provided on create.
+func (u *EventMetadataUpsertOne) UpdateEventReceivedAt() *EventMetadataUpsertOne {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.UpdateEventReceivedAt()
+	})
+}
+
+// SetVersion sets the "version" field.
+func (u *EventMetadataUpsertOne) SetVersion(v int64) *EventMetadataUpsertOne {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.SetVersion(v)
+	})
+}
+
+// AddVersion adds v to the "version" field.
+func (u *EventMetadataUpsertOne) AddVersion(v int64) *EventMetadataUpsertOne {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.AddVersion(v)
+	})
+}
+
+// UpdateVersion sets the "version" field to the value that was provided on create.
+func (u *EventMetadataUpsertOne) UpdateVersion() *EventMetadataUpsertOne {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.UpdateVersion()
+	})
 }
 
 // Exec executes the query.
@@ -397,7 +479,7 @@ func (emcb *EventMetadataCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.EventMetadataUpsert) {
-//			SetSequenceNumber(v+v).
+//			SetHandled(v+v).
 //		}).
 //		Exec(ctx)
 func (emcb *EventMetadataCreateBulk) OnConflict(opts ...sql.ConflictOption) *EventMetadataUpsertBulk {
@@ -438,15 +520,6 @@ func (u *EventMetadataUpsertBulk) UpdateNewValues() *EventMetadataUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
-			if _, exists := b.mutation.SequenceNumber(); exists {
-				s.SetIgnore(eventmetadata.FieldSequenceNumber)
-			}
-			if _, exists := b.mutation.EventReceivedAt(); exists {
-				s.SetIgnore(eventmetadata.FieldEventReceivedAt)
-			}
-			if _, exists := b.mutation.EventHash(); exists {
-				s.SetIgnore(eventmetadata.FieldEventHash)
-			}
 			if _, exists := b.mutation.BazelInvocationID(); exists {
 				s.SetIgnore(eventmetadata.FieldBazelInvocationID)
 			}
@@ -480,6 +553,55 @@ func (u *EventMetadataUpsertBulk) Update(set func(*EventMetadataUpsert)) *EventM
 		set(&EventMetadataUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetHandled sets the "handled" field.
+func (u *EventMetadataUpsertBulk) SetHandled(v []byte) *EventMetadataUpsertBulk {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.SetHandled(v)
+	})
+}
+
+// UpdateHandled sets the "handled" field to the value that was provided on create.
+func (u *EventMetadataUpsertBulk) UpdateHandled() *EventMetadataUpsertBulk {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.UpdateHandled()
+	})
+}
+
+// SetEventReceivedAt sets the "event_received_at" field.
+func (u *EventMetadataUpsertBulk) SetEventReceivedAt(v time.Time) *EventMetadataUpsertBulk {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.SetEventReceivedAt(v)
+	})
+}
+
+// UpdateEventReceivedAt sets the "event_received_at" field to the value that was provided on create.
+func (u *EventMetadataUpsertBulk) UpdateEventReceivedAt() *EventMetadataUpsertBulk {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.UpdateEventReceivedAt()
+	})
+}
+
+// SetVersion sets the "version" field.
+func (u *EventMetadataUpsertBulk) SetVersion(v int64) *EventMetadataUpsertBulk {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.SetVersion(v)
+	})
+}
+
+// AddVersion adds v to the "version" field.
+func (u *EventMetadataUpsertBulk) AddVersion(v int64) *EventMetadataUpsertBulk {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.AddVersion(v)
+	})
+}
+
+// UpdateVersion sets the "version" field to the value that was provided on create.
+func (u *EventMetadataUpsertBulk) UpdateVersion() *EventMetadataUpsertBulk {
+	return u.Update(func(s *EventMetadataUpsert) {
+		s.UpdateVersion()
+	})
 }
 
 // Exec executes the query.

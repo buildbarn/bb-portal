@@ -70,7 +70,7 @@ func (r *BuildEventRecorder) saveProgressBatch(ctx context.Context, batch []Buil
 		return util.StatusWrap(err, "Failed to bulk insert incomplete build logs")
 	}
 
-	if err := r.createEventMetadatasForBatch(ctx, batch, tx); err != nil {
+	if err := r.saveHandledEventsForBatch(ctx, batch, tx); err != nil {
 		return util.StatusWrap(err, "Failed to bulk insert event metadata")
 	}
 

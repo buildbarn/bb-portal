@@ -339,9 +339,9 @@ var schemaGraph = func() *sqlgraph.Schema {
 		},
 		Type: "EventMetadata",
 		Fields: map[string]*sqlgraph.FieldSpec{
-			eventmetadata.FieldSequenceNumber:    {Type: field.TypeInt64, Column: eventmetadata.FieldSequenceNumber},
+			eventmetadata.FieldHandled:           {Type: field.TypeBytes, Column: eventmetadata.FieldHandled},
 			eventmetadata.FieldEventReceivedAt:   {Type: field.TypeTime, Column: eventmetadata.FieldEventReceivedAt},
-			eventmetadata.FieldEventHash:         {Type: field.TypeBytes, Column: eventmetadata.FieldEventHash},
+			eventmetadata.FieldVersion:           {Type: field.TypeInt64, Column: eventmetadata.FieldVersion},
 			eventmetadata.FieldBazelInvocationID: {Type: field.TypeInt, Column: eventmetadata.FieldBazelInvocationID},
 		},
 	}
@@ -968,7 +968,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 	graph.MustAddE(
 		"event_metadata",
 		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   bazelinvocation.EventMetadataTable,
 			Columns: []string{bazelinvocation.EventMetadataColumn},
@@ -1268,7 +1268,7 @@ var schemaGraph = func() *sqlgraph.Schema {
 	graph.MustAddE(
 		"bazel_invocation",
 		&sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
+			Rel:     sqlgraph.O2O,
 			Inverse: true,
 			Table:   eventmetadata.BazelInvocationTable,
 			Columns: []string{eventmetadata.BazelInvocationColumn},
@@ -3557,9 +3557,9 @@ func (f *EventMetadataFilter) WhereID(p entql.IntP) {
 	f.Where(p.Field(eventmetadata.FieldID))
 }
 
-// WhereSequenceNumber applies the entql int64 predicate on the sequence_number field.
-func (f *EventMetadataFilter) WhereSequenceNumber(p entql.Int64P) {
-	f.Where(p.Field(eventmetadata.FieldSequenceNumber))
+// WhereHandled applies the entql []byte predicate on the handled field.
+func (f *EventMetadataFilter) WhereHandled(p entql.BytesP) {
+	f.Where(p.Field(eventmetadata.FieldHandled))
 }
 
 // WhereEventReceivedAt applies the entql time.Time predicate on the event_received_at field.
@@ -3567,9 +3567,9 @@ func (f *EventMetadataFilter) WhereEventReceivedAt(p entql.TimeP) {
 	f.Where(p.Field(eventmetadata.FieldEventReceivedAt))
 }
 
-// WhereEventHash applies the entql []byte predicate on the event_hash field.
-func (f *EventMetadataFilter) WhereEventHash(p entql.BytesP) {
-	f.Where(p.Field(eventmetadata.FieldEventHash))
+// WhereVersion applies the entql int64 predicate on the version field.
+func (f *EventMetadataFilter) WhereVersion(p entql.Int64P) {
+	f.Where(p.Field(eventmetadata.FieldVersion))
 }
 
 // WhereBazelInvocationID applies the entql int predicate on the bazel_invocation_id field.
