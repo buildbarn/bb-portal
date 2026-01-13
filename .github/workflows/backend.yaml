@@ -1,0 +1,101 @@
+{
+   "jobs": {
+      "build_and_test": {
+         "name": "build_and_test ${{ matrix.host.platform_name }}",
+         "runs-on": "${{ matrix.host.runs_on }}",
+         "steps": [
+            {
+               "name": "Check out source code",
+               "uses": "actions/checkout@v4"
+            },
+            {
+               "name": "Installing Bazel",
+               "run": "v=$(cat .bazelversion)\nmkdir -p ~/bin\ncurl -L https://github.com/bazelbuild/bazel/releases/download/${v}/bazel-${v}-${{matrix.host.bazel_os}}-${{matrix.host.bazel_arch}} > ~/bin/bazel\nchmod +x ~/bin/bazel\necho ~/bin >> ${GITHUB_PATH}\n",
+               "shell": "bash"
+            },
+            {
+               "if": "matrix.host.platform_name == 'linux_amd64'",
+               "name": "linux_amd64: build and test",
+               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_amd64_cgo //..."
+            },
+            {
+               "if": "matrix.host.platform_name == 'linux_arm64'",
+               "name": "linux_arm64: build and test",
+               "run": "bazel test --test_output=errors --platforms=@rules_go//go/toolchain:linux_arm64_cgo //..."
+            },
+            {
+               "if": "matrix.host.cross_compile",
+               "name": "Cross-platform builds",
+               "run": "bazel build --platforms=@rules_go//go/toolchain:darwin_amd64_cgo,@rules_go//go/toolchain:darwin_arm64_cgo,@rules_go//go/toolchain:freebsd_amd64_cgo,@rules_go//go/toolchain:windows_amd64_cgo //..."
+            }
+         ],
+         "strategy": {
+            "matrix": {
+               "host": [
+                  {
+                     "bazel_arch": "x86_64",
+                     "bazel_os": "linux",
+                     "cross_compile": false,
+                     "platform_name": "linux_amd64",
+                     "runs_on": "ubuntu-24.04"
+                  },
+                  {
+                     "bazel_arch": "arm64",
+                     "bazel_os": "linux",
+                     "cross_compile": false,
+                     "platform_name": "linux_arm64",
+                     "runs_on": "ubuntu-24.04-arm"
+                  },
+                  {
+                     "bazel_arch": "arm64",
+                     "bazel_os": "linux",
+                     "cross_compile": true,
+                     "platform_name": "cross_compiler",
+                     "runs_on": "ubuntu-24.04-arm"
+                  }
+               ]
+            }
+         }
+      },
+      "lint": {
+         "name": "lint",
+         "runs-on": "ubuntu-24.04-arm",
+         "steps": [
+            {
+               "name": "Check out source code",
+               "uses": "actions/checkout@v4"
+            },
+            {
+               "name": "Installing Bazel",
+               "run": "v=$(cat .bazelversion)\nmkdir -p ~/bin\ncurl -L https://github.com/bazelbuild/bazel/releases/download/${v}/bazel-${v}-linux-arm64 > ~/bin/bazel\nchmod +x ~/bin/bazel\necho ~/bin >> ${GITHUB_PATH}\n",
+               "shell": "bash"
+            },
+            {
+               "name": "Reformat",
+               "run": "bazel run @com_github_buildbarn_bb_storage//tools:reformat"
+            },
+            {
+               "name": "Test style conformance",
+               "run": "git add . && git diff --exit-code HEAD --"
+            },
+            {
+               "name": "Golint",
+               "run": "bazel run @org_golang_x_lint//golint -- -set_exit_status $(pwd)/..."
+            }
+         ]
+      }
+   },
+   "name": "Build and test backend",
+   "on": {
+      "pull_request": {
+         "branches": [
+            "main"
+         ]
+      },
+      "push": {
+         "branches": [
+            "main"
+         ]
+      }
+   }
+}
