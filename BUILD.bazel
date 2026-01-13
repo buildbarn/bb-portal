@@ -1,4 +1,5 @@
 # gazelle:ignore
+load("@aspect_bazel_lib//lib:write_source_files.bzl", "write_source_files")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 load("@gazelle//:def.bzl", "gazelle")
 
@@ -26,4 +27,14 @@ gazelle(
 
 buildifier(
     name = "buildifier",
+)
+
+write_source_files(
+    name = "update_workflows",
+    files = {
+        "//:.github/workflows/backend.yaml": "//tools/github_workflows:backend.yaml",
+        "//:.github/workflows/frontend.yaml": "//tools/github_workflows:frontend.yaml",
+        "//:.github/workflows/publish-docker.yaml": "//tools/github_workflows:publish-docker.yaml",
+    },
+    suggested_update_target = "//tools/github_workflows:update_workflows",
 )

@@ -51,7 +51,6 @@ git_override(
     patches = [
         "//:patches/com_buildbarn_bb_storage/base_image.diff",
         "//:patches/com_buildbarn_bb_storage/reformat.diff",
-        "//:patches/com_buildbarn_bb_storage/workflows_template.diff",
     ],
     remote = "https://github.com/buildbarn/bb-storage.git",
 )
@@ -140,3 +139,6 @@ llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", 
 llvm.toolchain(
     llvm_version = "17.0.6",
 )
+use_repo(llvm, "llvm_toolchain")
+
+register_toolchains("@llvm_toolchain//:all")

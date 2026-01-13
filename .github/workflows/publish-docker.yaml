@@ -1,0 +1,57 @@
+{
+   "jobs": {
+      "publish": {
+         "name": "Publish bb-portal images",
+         "runs-on": "ubuntu-24.04-arm",
+         "steps": [
+            {
+               "name": "Check out source code",
+               "uses": "actions/checkout@v4"
+            },
+            {
+               "env": {
+                  "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+               },
+               "name": "Install Docker credentials",
+               "run": "echo \"${GITHUB_TOKEN}\" | docker login ghcr.io -u $ --password-stdin"
+            },
+            {
+               "name": "Installing Bazel",
+               "run": "v=$(cat .bazelversion)\nmkdir -p ~/bin\ncurl -L https://github.com/bazelbuild/bazel/releases/download/${v}/bazel-${v}-linux-arm64 > ~/bin/bazel\nchmod +x ~/bin/bazel\necho ~/bin >> ${GITHUB_PATH}\n",
+               "shell": "bash"
+            },
+            {
+               "name": "Build and push backend",
+               "run": "bazel run --stamp //cmd/bb_portal:bb_portal_container_push"
+            },
+            {
+               "name": "Set tag variables",
+               "run": "echo \"TIMESTAMP=$(TZ=UTC date --date \"@$(git show -s --format=%ct HEAD)\" +%Y%m%dT%H%M%SZ)\" >> $GITHUB_ENV\necho \"SHA_SHORT=$(git rev-parse --short HEAD)\" >> $GITHUB_ENV\n"
+            },
+            {
+               "name": "Build and push frontend",
+               "uses": "docker/build-push-action@v4",
+               "with": {
+                  "context": "frontend",
+                  "file": "./frontend/Dockerfile",
+                  "push": true,
+                  "tags": "ghcr.io/buildbarn/bb-portal-frontend:${{ env.TIMESTAMP }}-${{ env.SHA_SHORT }}"
+               }
+            }
+         ]
+      }
+   },
+   "name": "Build and publish docker images",
+   "on": {
+      "push": {
+         "branches": [
+            "main"
+         ]
+      },
+      "workflow_dispatch": null
+   },
+   "permissions": {
+      "contents": "read",
+      "id-token": "write"
+   }
+}

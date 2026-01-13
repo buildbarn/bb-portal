@@ -7,7 +7,7 @@ index bdb856d..e49855f 100755
  $go mod tidy || true
  
 +# Generate ent database files
-+go generate
++$go generate
 +
  # Gazelle
 -find . -name '*.pb.go' -delete

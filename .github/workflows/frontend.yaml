@@ -1,0 +1,37 @@
+{
+   "jobs": {
+      "build_and_test": {
+         "name": "Build and test frontend",
+         "runs-on": "ubuntu-24.04-arm",
+         "steps": [
+            {
+               "name": "Check out source code",
+               "uses": "actions/checkout@v4"
+            },
+            {
+               "name": "Build docker image",
+               "uses": "docker/build-push-action@v4",
+               "with": {
+                  "context": "frontend/",
+                  "file": "./frontend/Dockerfile",
+                  "push": false,
+                  "tags": "ghcr.io/buildbarn/bb-portal-frontend"
+               }
+            }
+         ]
+      }
+   },
+   "name": "Build and test frontend",
+   "on": {
+      "pull_request": {
+         "branches": [
+            "main"
+         ]
+      },
+      "push": {
+         "branches": [
+            "main"
+         ]
+      }
+   }
+}
